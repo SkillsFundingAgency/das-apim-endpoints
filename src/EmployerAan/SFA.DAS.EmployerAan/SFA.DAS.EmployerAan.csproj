@@ -7,7 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Entities\**" />
+    <EmbeddedResource Remove="Entities\**" />
+    <None Remove="Entities\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MediatR" />
+    <PackageReference Include="RestEase" />
+    <PackageReference Include="RestEase.HttpClientFactory" />
   </ItemGroup>
 
   <ItemGroup>

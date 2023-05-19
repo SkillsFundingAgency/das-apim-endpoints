@@ -13,19 +13,17 @@ public class ProfilesControllerTests
 {
     [Test]
     [MoqAutoData]
-    public async Task And_MediatorCommandSuccessful_Then_ReturnOk(GetProfilesByUserTypeQueryResult response,
-        [Frozen] Mock<IMediator> mockMediator)
+    public async Task And_MediatorCommandSuccessful_Then_ReturnOk(
+        GetProfilesByUserTypeQueryResult response,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] ProfilesController sut,
+        CancellationToken cancellationToken)
     {
         mockMediator.Setup(m => m.Send(It.IsAny<GetProfilesByUserTypeQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(response);
-        var controller = new ProfilesController(mockMediator.Object);
 
         var userType = "employer";
-        var result = await controller.GetProfilesByUserType(userType) as OkObjectResult;
+        var result = await sut.GetProfilesByUserType(userType, cancellationToken);
 
-        result.Should().NotBeNull();
-
-        var model = result?.Value;
-
-        model.Should().BeEquivalentTo(response);
+        result.As<OkObjectResult>().Value.Should().Be(response);
     }
 }

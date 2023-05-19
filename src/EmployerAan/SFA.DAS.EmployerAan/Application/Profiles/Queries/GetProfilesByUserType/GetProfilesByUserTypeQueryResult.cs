@@ -1,6 +1,4 @@
-﻿using SFA.DAS.EmployerAan.Entities;
-
-namespace SFA.DAS.EmployerAan.Application.Profiles.Queries.GetProfilesByUserType;
+﻿namespace SFA.DAS.EmployerAan.Application.Profiles.Queries.GetProfilesByUserType;
 
 public class GetProfilesByUserTypeQueryResult
 {
