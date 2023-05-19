@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
@@ -9,7 +10,6 @@ namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 public class CalendarEventsController : ControllerBase
 {
     private readonly IMediator _mediator;
-    public const string RequestedByMemberIdHeader = "X-RequestedByMemberId";
 
     public CalendarEventsController(IMediator mediator)
     {
@@ -18,17 +18,10 @@ public class CalendarEventsController : ControllerBase
 
     [HttpGet]
     [Route("")]
-    // [ProducesResponseType(typeof(GetCalendarEventsQueryResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetCalendarEventsQueryResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetCalendarEvents([FromHeader(Name = RequestedByMemberIdHeader)] Guid requestedByMemberId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCalendarEvents([FromHeader(Name = Constants.RequestedByMemberIdHeader)] Guid requestedByMemberId, CancellationToken cancellationToken)
     {
-
-
-        var query = new GetCalendarEventsQuery();
-
-
-        var x = await _mediator.Send(query, cancellationToken);
-
-        return NotFound();
+        return Ok(await _mediator.Send(new GetCalendarEventsQuery(requestedByMemberId), cancellationToken));
     }
 }

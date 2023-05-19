@@ -1,7 +1,7 @@
 ﻿namespace SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 public class CalendarEvent
 {
-    public Guid Id { get; set; }
+    public Guid CalendarEventId { get; set; }
     public string? CalendarName { get; set; }
     public string? EventFormat { get; set; }
     public DateTime Start { get; set; }
@@ -14,5 +14,5 @@ public class CalendarEvent
     public double? Longitude { get; set; }
     public double? Latitude { get; set; }
     public double? Distance { get; set; }
-    public bool Attending { get; set; }
+    public bool IsAttending { get; set; }
 }
