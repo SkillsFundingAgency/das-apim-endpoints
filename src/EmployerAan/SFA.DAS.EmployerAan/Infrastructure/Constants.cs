@@ -1,10 +1,9 @@
-﻿namespace SFA.DAS.EmployerAan.Infrastructure
+﻿namespace SFA.DAS.EmployerAan.Infrastructure;
+
+public static class Constants
 {
-    public static class Constants
+    public static class ApiHeaders
     {
-        public static class ApiHeaders
-        {
-            public const string RequestedByMemberIdHeader = "X-RequestedByMemberId";
-        }
+        public const string RequestedByMemberIdHeader = "X-RequestedByMemberId";
     }
 }
