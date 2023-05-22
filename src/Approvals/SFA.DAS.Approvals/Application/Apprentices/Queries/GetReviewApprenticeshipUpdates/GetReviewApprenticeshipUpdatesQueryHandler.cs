@@ -36,7 +36,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprentices
         {
             var apprenticeshipTask = _apiClient.GetWithResponseCode<GetApprenticeshipResponse>(new GetApprenticeshipRequest(request.ApprenticeshipId));
 
-            var updatesTask = _apiClient.GetWithResponseCode<GetApprenticeshipUpdatesResponse>(new GetApprenticeshipUpdatesRequest(request.ApprenticeshipId, ApprenticeshipStatus.WaitingToStart));
+            var updatesTask = _apiClient.GetWithResponseCode<GetApprenticeshipUpdatesResponse>(new GetApprenticeshipUpdatesRequest(request.ApprenticeshipId, ApprenticeshipUpdateStatus.Pending));
 
             await Task.WhenAll(updatesTask, apprenticeshipTask);
 

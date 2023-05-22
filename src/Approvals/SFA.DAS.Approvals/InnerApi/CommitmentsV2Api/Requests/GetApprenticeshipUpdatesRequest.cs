@@ -7,12 +7,12 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests
     public class GetApprenticeshipUpdatesRequest : IGetApiRequest
     {
         public readonly long ApprenticeshipId;
-        public byte Status { get; set; }
+        public ApprenticeshipUpdateStatus Status { get; set; }
 
-        public GetApprenticeshipUpdatesRequest(long apprenticeshipId, ApprenticeshipStatus status)
+        public GetApprenticeshipUpdatesRequest(long apprenticeshipId, ApprenticeshipUpdateStatus status)
         {
             ApprenticeshipId = apprenticeshipId;
-            Status = Convert.ToByte(status);
+            Status = status;
         }
 
         public string GetUrl => $"api/apprenticeships/{ApprenticeshipId}/updates?Status={Status}";
