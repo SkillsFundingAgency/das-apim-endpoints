@@ -7,7 +7,7 @@ namespace SFA.DAS.EmployerAan.Infrastructure;
 
 public interface IAanHubRestApiClient
 {
-    public const string RequestedByMemberId = "X-RequestedByMemberId";
+    public const string RequestedByMemberId = Constants.ApiHeaders.RequestedByMemberIdHeader;
 
     [Get("/profiles/{userType}")]
     Task<GetProfilesByUserTypeQueryResult> GetProfiles([Path] string userType, CancellationToken cancellationToken);
