@@ -2,11 +2,9 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
+using RestEase;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
-using SFA.DAS.EmployerAan.Configuration;
-using SFA.DAS.EmployerAan.InnerApi.Requests;
-using SFA.DAS.EmployerAan.Services;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.EmployerAan.Infrastructure;
 
 namespace SFA.DAS.EmployerAan.UnitTests.Application.Employer.Queries.GetEmployerMember;
 public class GetEmployerMemberQueryHandlerTests
@@ -15,24 +13,30 @@ public class GetEmployerMemberQueryHandlerTests
     [AutoData]
     public async Task Handle_OkApiResponse_ReturnsResult(
         GetEmployerMemberQuery query,
-        GetEmployerMemberQueryResult expectedResponse)
+        GetEmployerMemberQueryResult expectedResponse,
+        CancellationToken cancellationToken)
     {
-        Mock<IAanHubApiClient<AanHubApiConfiguration>> apiclientMock = new();
-        apiclientMock.Setup(c => c.GetWithResponseCode<GetEmployerMemberQueryResult>(It.Is<GetEmployerMemberRequest>(r => r.UserRef == query.UserRef))).ReturnsAsync(new ApiResponse<GetEmployerMemberQueryResult>(expectedResponse, HttpStatusCode.OK, null));
-        GetEmployerMemberQueryHandler sut = new(apiclientMock.Object);
-        var result = await sut.Handle(query, It.IsAny<CancellationToken>());
+        Mock<IAanHubRestApiClient> apiClientMock = new();
+        apiClientMock
+            .Setup(c => c.GetEmployer(query.UserRef, cancellationToken))
+            .ReturnsAsync(new Response<GetEmployerMemberQueryResult?>(string.Empty, new(HttpStatusCode.OK), () => expectedResponse));
+        GetEmployerMemberQueryHandler sut = new(apiClientMock.Object);
+        var result = await sut.Handle(query, cancellationToken);
         result.Should().Be(expectedResponse);
     }
 
     [Test]
     [AutoData]
     public async Task Handle_NotFoundApiResponse_ReturnsNull(
-        GetEmployerMemberQuery query)
+        GetEmployerMemberQuery query,
+        CancellationToken cancellationToken)
     {
-        Mock<IAanHubApiClient<AanHubApiConfiguration>> apiclientMock = new();
-        apiclientMock.Setup(c => c.GetWithResponseCode<GetEmployerMemberQueryResult>(It.Is<GetEmployerMemberRequest>(r => r.UserRef == query.UserRef))).ReturnsAsync(new ApiResponse<GetEmployerMemberQueryResult>(null!, HttpStatusCode.NotFound, null));
-        GetEmployerMemberQueryHandler sut = new(apiclientMock.Object);
-        var result = await sut.Handle(query, It.IsAny<CancellationToken>());
+        Mock<IAanHubRestApiClient> apiClientMock = new();
+        apiClientMock
+            .Setup(c => c.GetEmployer(query.UserRef, cancellationToken))
+            .ReturnsAsync(new Response<GetEmployerMemberQueryResult?>(string.Empty, new(HttpStatusCode.NotFound), () => null));
+        GetEmployerMemberQueryHandler sut = new(apiClientMock.Object);
+        var result = await sut.Handle(query, cancellationToken);
         result.Should().BeNull();
     }
 
@@ -40,12 +44,17 @@ public class GetEmployerMemberQueryHandlerTests
     [Test]
     [AutoData]
     public async Task Handle_UnexpectedApiResponse_ThrowsException(
-        GetEmployerMemberQuery query)
+        GetEmployerMemberQuery query,
+        CancellationToken cancellationToken)
     {
-        Mock<IAanHubApiClient<AanHubApiConfiguration>> apiclientMock = new();
-        apiclientMock.Setup(c => c.GetWithResponseCode<GetEmployerMemberQueryResult>(It.Is<GetEmployerMemberRequest>(r => r.UserRef == query.UserRef))).ReturnsAsync(new ApiResponse<GetEmployerMemberQueryResult>(null!, HttpStatusCode.InternalServerError, null));
-        GetEmployerMemberQueryHandler sut = new(apiclientMock.Object);
-        Func<Task> action = () => sut.Handle(query, It.IsAny<CancellationToken>());
+        Mock<IAanHubRestApiClient> apiClientMock = new();
+        apiClientMock
+            .Setup(c => c.GetEmployer(query.UserRef, cancellationToken))
+            .ReturnsAsync(new Response<GetEmployerMemberQueryResult?>(string.Empty, new(HttpStatusCode.InternalServerError), () => null));
+        GetEmployerMemberQueryHandler sut = new(apiClientMock.Object);
+
+        Func<Task> action = () => sut.Handle(query, cancellationToken);
+
         await action.Should().ThrowAsync<InvalidOperationException>();
     }
 }
