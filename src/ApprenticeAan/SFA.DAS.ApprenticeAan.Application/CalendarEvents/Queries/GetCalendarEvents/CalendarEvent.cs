@@ -11,8 +11,8 @@ public class CalendarEvent
     public string Summary { get; set; } = null!;
     public string Location { get; set; } = null!;
     public string Postcode { get; set; } = null!;
-    public double Longitude { get; set; }
-    public double Latitude { get; set; }
-    public double Distance { get; set; }
+    public double? Longitude { get; set; }
+    public double? Latitude { get; set; }
+    public double? Distance { get; set; }
     public bool IsAttending { get; set; }
 }
