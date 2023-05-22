@@ -19,12 +19,9 @@ public class CalendarEventsController : ControllerBase
     [HttpGet]
     [Route("")]
     [ProducesResponseType(typeof(GetCalendarEventsQueryResult), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetCalendarEvents([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(new GetCalendarEventsQuery(requestedByMemberId), cancellationToken);
-        if (response == null)
-            return NotFound();
         return Ok(response);
     }
 }

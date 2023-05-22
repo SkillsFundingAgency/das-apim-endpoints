@@ -10,7 +10,7 @@ public class GetCalendarEventsQueryHandlerTests
 {
     [Test]
     [MoqAutoData]
-    public async Task Handle_ReturnAllRegions(
+    public async Task Handle_ReturnCalendarEvents(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         GetCalendarEventsQueryHandler handler,
         GetCalendarEventsQueryResult expected,
