@@ -19,9 +19,9 @@ namespace SFA.DAS.ApprenticeAan.Api.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(typeof(GetRegionsQueryResult), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetRegions()
+        public async Task<IActionResult> GetRegions(CancellationToken cancellationToken)
         {
-            return Ok(await _mediator.Send(new GetRegionsQuery()));
+            return Ok(await _mediator.Send(new GetRegionsQuery(), cancellationToken));
         }
     }
 }

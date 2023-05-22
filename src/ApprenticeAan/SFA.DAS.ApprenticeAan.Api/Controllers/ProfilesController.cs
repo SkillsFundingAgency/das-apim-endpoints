@@ -20,9 +20,9 @@ namespace SFA.DAS.ApprenticeAan.Api.Controllers
         [Route("{userType}")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(GetProfilesByUserTypeQueryResult), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetProfilesByUserType([FromRoute] string userType)
+        public async Task<IActionResult> GetProfilesByUserType([FromRoute] string userType, CancellationToken cancellationToken)
         {
-            return Ok(await _mediator.Send(new GetProfilesByUserTypeQuery(userType)));
+            return Ok(await _mediator.Send(new GetProfilesByUserTypeQuery(userType), cancellationToken));
         }
     }
 }
