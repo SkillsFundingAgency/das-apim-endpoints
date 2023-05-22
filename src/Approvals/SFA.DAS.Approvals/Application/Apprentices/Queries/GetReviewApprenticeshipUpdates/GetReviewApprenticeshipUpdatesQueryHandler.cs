@@ -36,7 +36,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprentices
         {
             var apprenticeshipTask = _apiClient.GetWithResponseCode<GetApprenticeshipResponse>(new GetApprenticeshipRequest(request.ApprenticeshipId));
 
-            var updatesTask = _apiClient.GetWithResponseCode<GetApprenticeshipUpdatesResponse>(new GetApprenticeshipUpdatesRequest(request.ApprenticeshipId, Convert.ToByte(ApprenticeshipStatus.WaitingToStart)));
+            var updatesTask = _apiClient.GetWithResponseCode<GetApprenticeshipUpdatesResponse>(new GetApprenticeshipUpdatesRequest(request.ApprenticeshipId, ApprenticeshipStatus.WaitingToStart));
 
             await Task.WhenAll(updatesTask, apprenticeshipTask);
 
@@ -67,10 +67,13 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprentices
                 return null;
             }
 
-            if (apprenticeshipUpdates.ApprenticeshipUpdates.Count == 1)
+            if (apprenticeshipUpdates.ApprenticeshipUpdates.Count > 1)
             {
-                var update = apprenticeshipUpdates.ApprenticeshipUpdates.First();
-                var reviewApprenticeshipUpdatesQueryResult = new GetReviewApprenticeshipUpdatesQueryResult
+                throw new Exception("Multiple pending updates found");
+            }
+          
+            var update = apprenticeshipUpdates.ApprenticeshipUpdates.First();
+                var result = new GetReviewApprenticeshipUpdatesQueryResult
                 {
                     ProviderName = apprenticeship.ProviderName,
                     EmployerName = apprenticeship.EmployerName,
@@ -118,7 +121,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprentices
 
                     var standard = providerStandardsData.Standards.FirstOrDefault(x => x.CourseCode.Trim() == update.TrainingCode.Trim());
 
-                    reviewApprenticeshipUpdatesQueryResult.IsValidCourseCode = standard != null;
+                    result.IsValidCourseCode = standard != null;
                 }
 
 
@@ -133,12 +136,10 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprentices
                     priceEpisodesResponse.EnsureSuccessStatusCode();
 
                     var priceEpisodes = priceEpisodesResponse.Body;
-                    reviewApprenticeshipUpdatesQueryResult.OriginalApprenticeship.Cost = priceEpisodes.PriceEpisodes.GetPrice();
+                    result.OriginalApprenticeship.Cost = priceEpisodes.PriceEpisodes.GetPrice();
                 }
 
-                return reviewApprenticeshipUpdatesQueryResult;
-            }
-            throw new Exception("Multiple pending updates found");
+                return result;
         }
     }
 }

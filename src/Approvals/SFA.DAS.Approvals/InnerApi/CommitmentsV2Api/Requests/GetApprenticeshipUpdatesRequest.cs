@@ -1,4 +1,6 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Approvals.Enums;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 
 namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests
 {
@@ -7,10 +9,10 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests
         public readonly long ApprenticeshipId;
         public byte Status { get; set; }
 
-        public GetApprenticeshipUpdatesRequest(long apprenticeshipId, byte status)
+        public GetApprenticeshipUpdatesRequest(long apprenticeshipId, ApprenticeshipStatus status)
         {
             ApprenticeshipId = apprenticeshipId;
-            Status = status;
+            Status = Convert.ToByte(status);
         }
 
         public string GetUrl => $"api/apprenticeships/{ApprenticeshipId}/updates?Status={Status}";
