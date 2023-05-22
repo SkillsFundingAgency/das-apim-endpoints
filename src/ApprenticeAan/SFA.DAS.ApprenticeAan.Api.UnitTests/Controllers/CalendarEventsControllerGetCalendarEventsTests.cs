@@ -26,22 +26,6 @@ public class CalendarEventsControllerGetCalendarEventsTests
     }
 
     [Test]
-    [MoqAutoData]
-    public async Task Get_HandlerReturnsNullResult_ReturnsBadRequest(
-        [Frozen] Mock<IMediator> mediatorMock,
-        [Greedy] CalendarEventsController sut,
-        Guid requestedByMemberId,
-        CancellationToken cancellationToken)
-    {
-        var nullResponse = (GetCalendarEventsQueryResult?)null;
-        mediatorMock.Setup(m => m.Send(It.Is<GetCalendarEventsQuery>(q => q.RequestedByMemberId == requestedByMemberId), It.IsAny<CancellationToken>()))!
-            .ReturnsAsync(nullResponse);
-
-        var result = await sut.GetCalendarEvents(requestedByMemberId, cancellationToken);
-        result.As<BadRequestResult>().Should().NotBeNull();
-    }
-
-    [Test]
     [RecursiveMoqAutoData]
     public async Task Get_HandlerReturnsData_ReturnsOkResponse(
         [Frozen] Mock<IMediator> mediatorMock,

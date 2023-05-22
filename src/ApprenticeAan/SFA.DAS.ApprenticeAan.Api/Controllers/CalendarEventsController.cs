@@ -22,8 +22,6 @@ public class CalendarEventsController : ControllerBase
     public async Task<IActionResult> GetCalendarEvents([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(new GetCalendarEventsQuery(requestedByMemberId), cancellationToken);
-        if (response == null)
-            return BadRequest();
         return Ok(response);
     }
 }
