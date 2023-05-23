@@ -1,4 +1,7 @@
-﻿using RestEase;
+﻿
+using RestEase;
+using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
 
@@ -6,8 +9,6 @@ namespace SFA.DAS.ApprenticeAan.Application.Infrastructure;
 
 public interface IAanHubRestApiClient
 {
-    public const string RequestedByMemberId = "X-RequestedByMemberId";
-
     [Get("/regions")]
     Task<GetRegionsQueryResult> GetRegions(CancellationToken cancellationToken);
 
@@ -16,11 +17,6 @@ public interface IAanHubRestApiClient
 
 
 
-    /// [Get("calendarEvents")]
-    /// [AllowAnyStatusCode]
-    /// Task<Response<GetCalendarEventsQueryResult>> GetCalendarEvents(
-    ///     [Header(ApiHeaders.RequestedByMemberId)] string requestedByMemberId);
-
-
-
+    [Get("calendarEvents")]
+    Task<GetCalendarEventsQueryResult> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] string requestedByMemberId, CancellationToken cancellationToken);
 }
