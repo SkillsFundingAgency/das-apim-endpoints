@@ -15,6 +15,6 @@ public class GetCalendarEventsQueryHandler : IRequestHandler<GetCalendarEventsQu
         CancellationToken cancellationToken)
     {
         var response = await _apiClient.GetCalendarEvents(request.RequestedByMemberId.ToString(), cancellationToken);
-        return response.StringContent == null ? null : response.GetContent();
+        return response.GetContent();
     }
 }
