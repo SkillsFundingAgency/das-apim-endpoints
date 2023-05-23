@@ -19,7 +19,7 @@ public interface IAanHubRestApiClient
     [Put("/CalendarEvents/{calendarEventId}/attendance")]
     Task PutAttendance(
         [Path] Guid calendarEventId,
-        [Header("X-RequestedByMemberId")] Guid requestedByMemberId,
+        [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
         [Body] AttendanceStatus putAttendanceRequest,
         CancellationToken cancellationToken);
 

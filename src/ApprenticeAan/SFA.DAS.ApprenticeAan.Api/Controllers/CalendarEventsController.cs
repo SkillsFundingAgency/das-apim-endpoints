@@ -30,7 +30,7 @@ public class CalendarEventsController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PutAttendance(
     Guid calendarEventId,
-    [FromHeader(Name = "X-RequestedByMemberId")] Guid requestedByMemberId,
+    [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
     [FromBody] AttendanceStatus request,
     CancellationToken cancellationToken)
     {
