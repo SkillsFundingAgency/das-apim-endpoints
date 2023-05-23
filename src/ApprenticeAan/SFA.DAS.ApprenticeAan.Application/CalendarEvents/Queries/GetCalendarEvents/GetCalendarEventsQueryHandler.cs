@@ -14,7 +14,6 @@ public class GetCalendarEventsQueryHandler : IRequestHandler<GetCalendarEventsQu
     public async Task<GetCalendarEventsQueryResult?> Handle(GetCalendarEventsQuery request,
         CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetCalendarEvents(request.RequestedByMemberId.ToString(), cancellationToken);
-        return response.GetContent();
+        return await _apiClient.GetCalendarEvents(request.RequestedByMemberId.ToString(), cancellationToken);
     }
 }
