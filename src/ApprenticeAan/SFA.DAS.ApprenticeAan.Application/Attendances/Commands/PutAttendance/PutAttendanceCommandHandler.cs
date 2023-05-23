@@ -2,6 +2,7 @@
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 
 namespace SFA.DAS.ApprenticeAan.Application.Attendances.Commands.PutAttendance;
+
 public class PutAttendanceCommandHandler : IRequestHandler<PutAttendanceCommand, Unit>
 {
     private readonly IAanHubRestApiClient _apiClient;
