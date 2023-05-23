@@ -25,8 +25,7 @@ public class CalendarEventsControllerGetCalendarEventsTests
                 It.IsAny<CancellationToken>()));
     }
 
-    [Test]
-    [RecursiveMoqAutoData]
+    [Test, MoqAutoData]
     public async Task Get_HandlerReturnsData_ReturnsOkResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] CalendarEventsController sut,

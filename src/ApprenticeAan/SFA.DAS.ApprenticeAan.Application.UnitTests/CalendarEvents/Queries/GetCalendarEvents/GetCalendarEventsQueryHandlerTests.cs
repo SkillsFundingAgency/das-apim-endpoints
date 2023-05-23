@@ -25,18 +25,4 @@ public class GetCalendarEventsQueryHandlerTests
         var actual = await handler.Handle(query, cancellationToken);
         actual.Should().Be(expected.GetContent());
     }
-
-    [Test]
-    [MoqAutoData]
-    public async Task Handle_ApiInvalidResponse_ThrowsInvalidOperationException(
-        [Frozen] Mock<IAanHubRestApiClient> apiClient,
-        GetCalendarEventsQueryHandler handler,
-        Guid requestedByMemberId,
-        CancellationToken cancellationToken)
-    {
-        var query = new GetCalendarEventsQuery(requestedByMemberId);
-        apiClient.Setup(x => x.GetCalendarEvents(requestedByMemberId.ToString(), cancellationToken)).ReturnsAsync(new Response<GetCalendarEventsQueryResult>(null, new HttpResponseMessage(HttpStatusCode.BadRequest), null!));
-        Func<Task> act = () => handler.Handle(query, cancellationToken);
-        await act.Should().ThrowAsync<InvalidOperationException>();
-    }
 }

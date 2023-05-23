@@ -17,7 +17,6 @@ public class CalendarEventsController : ControllerBase
     }
 
     [HttpGet]
-    [Route("")]
     [ProducesResponseType(typeof(GetCalendarEventsQueryResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetCalendarEvents([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, CancellationToken cancellationToken)
     {

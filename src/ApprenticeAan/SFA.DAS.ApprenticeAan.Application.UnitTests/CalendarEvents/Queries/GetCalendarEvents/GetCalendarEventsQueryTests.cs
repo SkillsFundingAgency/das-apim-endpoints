@@ -6,7 +6,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.CalendarEvents.Queries.Get
 public class GetCalendarEventsQueryTests
 {
     [Test, AutoData]
-    public void Operator_PopulatesModelFroParameter(Guid memberId)
+    public void Operator_PopulatesModelFromParameter(Guid memberId)
     {
         var model = new GetCalendarEventsQuery(memberId);
         model.RequestedByMemberId.Should().Be(memberId);
