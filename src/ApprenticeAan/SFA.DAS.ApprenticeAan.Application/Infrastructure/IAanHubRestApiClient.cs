@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Mvc;
 using RestEase;
 using SFA.DAS.ApprenticeAan.Application.Apprentices.Commands.CreateApprenticeMember;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
@@ -29,4 +30,11 @@ public interface IAanHubRestApiClient
 
     [Get("calendarEvents")]
     Task<GetCalendarEventsQueryResult> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] string requestedByMemberId, CancellationToken cancellationToken);
+
+    [Get("calendarevents/{calendarEventId}")]
+    [AllowAnyStatusCode]
+    Task<Response<CalendarEvent>> GetCalendarEventById(
+        [Path] Guid calendarEventId, 
+        [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+        CancellationToken cancellationToken);
 }
