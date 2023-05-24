@@ -262,7 +262,6 @@ namespace SFA.DAS.Approvals.Api.Controllers
             {
                 CohortId = cohortId,
                 DraftApprenticeshipId = draftApprenticeshipId,
-                CostBeforeRpl = request.CostBeforeRpl,
                 DurationReducedBy = request.DurationReducedBy,
                 DurationReducedByHours = request.DurationReducedByHours,
                 IsDurationReducedByRpl = request.IsDurationReducedByRpl,

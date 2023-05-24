@@ -65,7 +65,6 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
                     It.Is<PostAddPriorLearningDataRequest>(r =>
                         r.CohortId == _request.CohortId &&
                         r.DraftApprenticeshipId == _request.DraftApprenticeshipId &&
-                            ((AddPriorLearningDataRequest)r.Data).CostBeforeRpl == _request.CostBeforeRpl &&
                             ((AddPriorLearningDataRequest)r.Data).DurationReducedBy == _request.DurationReducedBy &&
                             ((AddPriorLearningDataRequest)r.Data).DurationReducedByHours == _request.DurationReducedByHours &&
                             ((AddPriorLearningDataRequest)r.Data).IsDurationReducedByRpl == _request.IsDurationReducedByRpl &&
