@@ -3,7 +3,7 @@ using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 
 namespace SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEventById;
 
-public class GetCalendarEventByIdQueryHandler : IRequestHandler<GetCalendarEventByIdQuery, GetCalendarEventByIdQueryResponse>
+public class GetCalendarEventByIdQueryHandler : IRequestHandler<GetCalendarEventByIdQuery, CalendarEventDetails?>
 {
     private readonly IAanHubRestApiClient _apiClient;
 
@@ -12,9 +12,12 @@ public class GetCalendarEventByIdQueryHandler : IRequestHandler<GetCalendarEvent
         _apiClient = apiClient;
     }
 
-    public async Task<GetCalendarEventByIdQueryResponse> Handle(GetCalendarEventByIdQuery command, CancellationToken cancellationToken)
+    public async Task<CalendarEventDetails?> Handle(GetCalendarEventByIdQuery command, CancellationToken cancellationToken)
     {
         var result = await _apiClient.GetCalendarEventById(command.CalendarEventId, command.RequestedByMemberId, cancellationToken);
-        return new GetCalendarEventByIdQueryResponse(result.GetContent(), result.ResponseMessage.StatusCode);
+
+        return result.ResponseMessage.StatusCode != System.Net.HttpStatusCode.OK
+            ? null
+            : result.GetContent();
     }
 }

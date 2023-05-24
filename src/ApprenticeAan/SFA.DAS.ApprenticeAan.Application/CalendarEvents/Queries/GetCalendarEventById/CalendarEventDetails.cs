@@ -1,6 +1,8 @@
-﻿namespace SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+﻿using SFA.DAS.ApprenticeAan.Application.Entities;
 
-public class CalendarEvent
+namespace SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEventById;
+
+public record CalendarEventDetails
 {
     public Guid CalendarEventId { get; set; }
     public string CalendarName { get; set; } = null!;
@@ -16,4 +18,7 @@ public class CalendarEvent
     public double? Latitude { get; set; }
     public double? Distance { get; set; }
     public bool IsAttending { get; set; }
+    public string? CancelReason { get; set; } = null!;
+    public IEnumerable<Attendee> Attendees { get; set; } = null!;
+    public IEnumerable<EventGuest> EventGuests { get; set; } = null!;
 }

@@ -29,10 +29,10 @@ public class GetCalendarEventByIdQueryHandlerTests
 
     [Test]
     [MoqAutoData]
-    public async Task Handle_ReturnsCalendarEventFromRestApiClient(
+    public async Task Handle_ApiClientReturnsCalendarEvent_ReturnsSameCalendarEvent(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         GetCalendarEventByIdQueryHandler sut,
-        Response<CalendarEvent> expected,
+        Response<CalendarEventDetails> expected,
         Guid calendarEventId,
         Guid requestedByMemberId,
         CancellationToken cancellationToken)
@@ -43,6 +43,25 @@ public class GetCalendarEventByIdQueryHandlerTests
 
         var actual = await sut.Handle(query, cancellationToken);
 
-        actual.CalendarEvent.Should().Be(expected.GetContent());
+        actual.Should().Be(expected.GetContent());
+    }
+
+    [Test]
+    [MoqAutoData]
+    public async Task Handle_ApiClientReturnsNull_ReturnsNull(
+        [Frozen] Mock<IAanHubRestApiClient> apiClient,
+        GetCalendarEventByIdQueryHandler sut,
+        Response<CalendarEventDetails> expected,
+        Guid calendarEventId,
+        Guid requestedByMemberId,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetCalendarEventByIdQuery(calendarEventId, requestedByMemberId);
+        apiClient.Setup(x => x.GetCalendarEventById(calendarEventId, requestedByMemberId, cancellationToken))
+                 .ReturnsAsync(() => null!); ;
+
+        var actual = await sut.Handle(query, cancellationToken);
+
+        actual.Should().BeNull();
     }
 }

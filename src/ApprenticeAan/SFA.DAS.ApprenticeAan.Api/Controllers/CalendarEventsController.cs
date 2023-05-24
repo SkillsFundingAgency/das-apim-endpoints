@@ -39,12 +39,10 @@ public class CalendarEventsController : ControllerBase
     {
         var response = await _mediator.Send(new GetCalendarEventByIdQuery(calendarEventId, requestedByMemberId), cancellationToken);
 
-        return response.StatusCode switch
-        {
-            HttpStatusCode.OK => Ok(response.CalendarEvent),
-            HttpStatusCode.NotFound => NotFound(),
-            _ => BadRequest(),
-        };
+        //TODO: What if the header is not supplied and we get a Bad Request?
+        if (response == null) return NotFound();
+
+        return Ok(response);
     }
 
     [HttpPut("{calendarEventId}/attendance")]
