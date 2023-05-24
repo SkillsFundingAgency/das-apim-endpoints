@@ -12,6 +12,9 @@ using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraftAppr
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeship;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipCourse;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipDeliveryModel;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLearningData;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipPriorLearningData;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipPriorLearningSummary;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -235,6 +238,50 @@ namespace SFA.DAS.Approvals.Api.Controllers
             await _mediator.Send(command);
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit/prior-learning-data")]
+        public async Task<IActionResult> GetPriorLearningData(long cohortId, long draftApprenticeshipId)
+        {
+            var result = await _mediator.Send(new GetEditDraftApprenticeshipPriorLearningDataQuery(cohortId,draftApprenticeshipId));
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit/prior-learning-data")]
+        public async Task<IActionResult> AddPriorLearningData(long cohortId, long draftApprenticeshipId, [FromBody] AddPriorLearningDataRequest request)
+        {
+            var command = new AddPriorLearningDataCommand
+            {
+                CohortId = cohortId,
+                DraftApprenticeshipId = draftApprenticeshipId,
+                CostBeforeRpl = request.CostBeforeRpl,
+                DurationReducedBy = request.DurationReducedBy,
+                DurationReducedByHours = request.DurationReducedByHours,
+                IsDurationReducedByRpl = request.IsDurationReducedByRpl,
+                PriceReducedBy = request.PriceReducedBy,
+                TrainingTotalHours = request.TrainingTotalHours
+            };
+
+            var response = await _mediator.Send(command);
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit/prior-learning-summary")]
+        public async Task<IActionResult> GetPriorLearningSummary(long cohortId, long draftApprenticeshipId)
+        {
+            var result = await _mediator.Send(new GetEditDraftApprenticeshipPriorLearningSummaryQuery(cohortId, draftApprenticeshipId));
+
+            return Ok(result);
         }
     }
 }
