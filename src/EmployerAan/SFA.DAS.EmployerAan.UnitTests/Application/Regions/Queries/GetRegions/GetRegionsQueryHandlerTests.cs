@@ -9,8 +9,7 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Regions.Queries.GetRegions;
 
 public class GetRegionsQueryHandlerTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_ReturnAllRegions(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         GetRegionsQueryHandler handler,

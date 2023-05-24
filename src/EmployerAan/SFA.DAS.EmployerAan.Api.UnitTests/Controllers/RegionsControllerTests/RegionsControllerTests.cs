@@ -11,8 +11,7 @@ namespace SFA.DAS.EmployerAan.Api.UnitTests.RegionsControllerTests;
 
 public class RegionsControllerTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task And_MediatorCommandSuccessful_Then_ReturnOk(
     GetRegionsQueryResult response,
     [Frozen] Mock<IMediator> mockMediator,

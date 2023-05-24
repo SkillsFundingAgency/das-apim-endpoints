@@ -12,10 +12,6 @@ public class RegionsController : Controller
 
     public RegionsController(IMediator mediator) => _mediator = mediator;
 
-    /// <summary>
-    ///     Get list of regions
-    /// </summary>
-    /// <returns></returns>
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(typeof(GetRegionsQueryResult), StatusCodes.Status200OK)]
