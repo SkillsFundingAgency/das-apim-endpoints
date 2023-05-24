@@ -1,4 +1,7 @@
-﻿namespace SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+﻿using SFA.DAS.ApprenticeAan.Application.Entities;
+
+namespace SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+
 public class CalendarEvent
 {
     public Guid CalendarEventId { get; set; }

@@ -1,2 +1,3 @@
 ﻿namespace SFA.DAS.ApprenticeAan.Application.Entities;
-public record struct AttendeeModel(Guid MemberId, string UserType, string MemberName);
+
+public record struct Attendee(Guid MemberId, string UserType, string MemberName);

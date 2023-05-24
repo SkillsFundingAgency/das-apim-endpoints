@@ -1,7 +1,6 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
-using RestEase;
+﻿using RestEase;
 using SFA.DAS.ApprenticeAan.Application.Apprentices.Commands.CreateApprenticeMember;
+using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEventById;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
