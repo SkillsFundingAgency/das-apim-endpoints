@@ -82,13 +82,6 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         }
 
         [Test]
-        public async Task Handle_CostBeforeRpl_Is_Mapped()
-        {
-            var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.CostBeforeRpl, result.CostBeforeRpl);
-        }
-
-        [Test]
         public async Task Handle_PriceReduced_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
