@@ -39,7 +39,6 @@ public class CalendarEventsController : ControllerBase
     {
         var response = await _mediator.Send(new GetCalendarEventByIdQuery(calendarEventId, requestedByMemberId), cancellationToken);
 
-        //TODO: What if the header is not supplied and we get a Bad Request?
         if (response == null) return NotFound();
 
         return Ok(response);
