@@ -33,7 +33,7 @@ public interface IAanHubRestApiClient
 
     [Get("calendarevents/{calendarEventId}")]
     [AllowAnyStatusCode]
-    Task<Response<CalendarEventDetails>> GetCalendarEventById(
+    Task<Response<CalendarEventSummary>> GetCalendarEventById(
         [Path] Guid calendarEventId, 
         [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
         CancellationToken cancellationToken);

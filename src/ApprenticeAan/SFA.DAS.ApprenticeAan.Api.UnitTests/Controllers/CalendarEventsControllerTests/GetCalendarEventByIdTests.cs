@@ -16,7 +16,7 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.CalendarEventsControll
         public async Task GetCalendarEventById_OkResponse_ReturnsOkWithEvent(
             [Frozen] Mock<IMediator> mediatorMock,
             [Frozen] GetCalendarEventByIdQuery query,
-            CalendarEventDetails calendarEventDetails,
+            CalendarEventSummary calendarEventDetails,
             CancellationToken cancellationToken)
         {
             mediatorMock.Setup(m => m.Send(It.IsAny<GetCalendarEventByIdQuery>(), cancellationToken))

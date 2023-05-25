@@ -29,8 +29,8 @@ public class CalendarEventsController : ControllerBase
     }
 
     [HttpGet("{calendarEventId}")]
-    [ProducesResponseType(typeof(CalendarEvent), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(CalendarEvent), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(CalendarEventSummary), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(CalendarEventSummary), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetCalendarEventById(
         Guid calendarEventId,
         [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, 
