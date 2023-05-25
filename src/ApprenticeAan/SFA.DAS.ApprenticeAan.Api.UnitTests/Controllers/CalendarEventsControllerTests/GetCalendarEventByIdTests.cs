@@ -16,17 +16,17 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.CalendarEventsControll
         public async Task GetCalendarEventById_OkResponse_ReturnsOkWithEvent(
             [Frozen] Mock<IMediator> mediatorMock,
             [Frozen] GetCalendarEventByIdQuery query,
-            CalendarEventSummary calendarEventDetails,
+            CalendarEvent calendarEvent,
             CancellationToken cancellationToken)
         {
             mediatorMock.Setup(m => m.Send(It.IsAny<GetCalendarEventByIdQuery>(), cancellationToken))
-                        .ReturnsAsync(calendarEventDetails);
+                        .ReturnsAsync(calendarEvent);
 
             var sut = new CalendarEventsController(mediatorMock.Object);
 
             var result = await sut.GetCalendarEventById(query.CalendarEventId, query.RequestedByMemberId, cancellationToken);
 
-            result.As<OkObjectResult>().Value.Should().Be(calendarEventDetails);
+            result.As<OkObjectResult>().Value.Should().Be(calendarEvent);
         }
 
         [Test, RecursiveMoqAutoData]

@@ -5,7 +5,6 @@ using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEventB
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
-using System.Net;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
@@ -29,8 +28,8 @@ public class CalendarEventsController : ControllerBase
     }
 
     [HttpGet("{calendarEventId}")]
-    [ProducesResponseType(typeof(CalendarEventSummary), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(CalendarEventSummary), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(CalendarEvent), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(CalendarEvent), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetCalendarEventById(
         Guid calendarEventId,
         [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, 
