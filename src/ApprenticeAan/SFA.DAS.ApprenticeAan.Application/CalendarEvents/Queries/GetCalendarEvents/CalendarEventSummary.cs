@@ -1,8 +1,9 @@
 ﻿using SFA.DAS.ApprenticeAan.Application.Entities;
+using System.Text.Json.Serialization;
 
-namespace SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEventById;
+namespace SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 
-public record CalendarEventDetails
+public class CalendarEventSummary
 {
     public Guid CalendarEventId { get; set; }
     public string CalendarName { get; set; } = null!;

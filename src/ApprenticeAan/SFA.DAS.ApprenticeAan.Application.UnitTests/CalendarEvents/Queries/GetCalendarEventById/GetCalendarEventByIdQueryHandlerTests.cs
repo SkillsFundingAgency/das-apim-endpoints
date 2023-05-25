@@ -29,14 +29,19 @@ public class GetCalendarEventByIdQueryHandlerTests
 
     [Test]
     [MoqAutoData]
-    public async Task Handle_ApiClientReturnsCalendarEvent_ReturnsSameCalendarEvent(
+    public async Task Handle_ApiClientReturnsCalendarEventAndHttpOkStatus_ReturnsSameCalendarEvent(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         GetCalendarEventByIdQueryHandler sut,
-        Response<CalendarEventDetails> expected,
+        CalendarEventSummary calendarEventSummary,
         Guid calendarEventId,
         Guid requestedByMemberId,
         CancellationToken cancellationToken)
     {
+        var expected = new Response<CalendarEventSummary>(
+            "not used", 
+            new HttpResponseMessage(System.Net.HttpStatusCode.OK), 
+            () => calendarEventSummary);
+        
         var query = new GetCalendarEventByIdQuery(calendarEventId, requestedByMemberId);
         apiClient.Setup(x => x.GetCalendarEventById(calendarEventId, requestedByMemberId, cancellationToken))
                  .ReturnsAsync(expected);
@@ -48,17 +53,22 @@ public class GetCalendarEventByIdQueryHandlerTests
 
     [Test]
     [MoqAutoData]
-    public async Task Handle_ApiClientReturnsNull_ReturnsNull(
+    public async Task Handle_ApiClientReturnsNotFound_ReturnsNull(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         GetCalendarEventByIdQueryHandler sut,
-        Response<CalendarEventDetails> expected,
+        CalendarEventSummary calendarEventSummary,
         Guid calendarEventId,
         Guid requestedByMemberId,
         CancellationToken cancellationToken)
     {
+        var expected = new Response<CalendarEventSummary>(
+            "not used",
+            new HttpResponseMessage(System.Net.HttpStatusCode.NotFound),
+            () => calendarEventSummary);
+
         var query = new GetCalendarEventByIdQuery(calendarEventId, requestedByMemberId);
         apiClient.Setup(x => x.GetCalendarEventById(calendarEventId, requestedByMemberId, cancellationToken))
-                 .ReturnsAsync(() => null!); ;
+                 .ReturnsAsync(expected);
 
         var actual = await sut.Handle(query, cancellationToken);
 
