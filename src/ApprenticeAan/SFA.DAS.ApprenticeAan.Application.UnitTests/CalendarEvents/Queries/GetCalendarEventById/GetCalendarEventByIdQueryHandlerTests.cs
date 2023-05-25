@@ -32,15 +32,15 @@ public class GetCalendarEventByIdQueryHandlerTests
     public async Task Handle_ApiClientReturnsCalendarEventAndHttpOkStatus_ReturnsSameCalendarEvent(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         GetCalendarEventByIdQueryHandler sut,
-        CalendarEventSummary calendarEventSummary,
+        CalendarEvent calendarEvent,
         Guid calendarEventId,
         Guid requestedByMemberId,
         CancellationToken cancellationToken)
     {
-        var expected = new Response<CalendarEventSummary>(
+        var expected = new Response<CalendarEvent>(
             "not used", 
             new HttpResponseMessage(System.Net.HttpStatusCode.OK), 
-            () => calendarEventSummary);
+            () => calendarEvent);
         
         var query = new GetCalendarEventByIdQuery(calendarEventId, requestedByMemberId);
         apiClient.Setup(x => x.GetCalendarEventById(calendarEventId, requestedByMemberId, cancellationToken))
@@ -56,15 +56,15 @@ public class GetCalendarEventByIdQueryHandlerTests
     public async Task Handle_ApiClientReturnsNotFound_ReturnsNull(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         GetCalendarEventByIdQueryHandler sut,
-        CalendarEventSummary calendarEventSummary,
+        CalendarEvent calendarEvent,
         Guid calendarEventId,
         Guid requestedByMemberId,
         CancellationToken cancellationToken)
     {
-        var expected = new Response<CalendarEventSummary>(
+        var expected = new Response<CalendarEvent>(
             "not used",
             new HttpResponseMessage(System.Net.HttpStatusCode.NotFound),
-            () => calendarEventSummary);
+            () => calendarEvent);
 
         var query = new GetCalendarEventByIdQuery(calendarEventId, requestedByMemberId);
         apiClient.Setup(x => x.GetCalendarEventById(calendarEventId, requestedByMemberId, cancellationToken))
