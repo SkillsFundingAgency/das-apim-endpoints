@@ -5,15 +5,15 @@ using System;
 
 namespace SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests
 {
-    public class PatchApprenticeRequest : IPatchApiRequest<JsonPatchDocument<Apprentice>>
+    public class PatchApprenticeRequest : IPatchApiRequest<PatchApprentice>
     {
-        private readonly Guid _apprenticeId;
+        public string PatchUrl => $"apprentices/{Data.ApprenticeId}";
+        public PatchApprentice Data { get; set; }
+    }
 
-        public PatchApprenticeRequest(Guid apprenticeId)
-        {
-            _apprenticeId = apprenticeId;
-        }
-        public string PatchUrl => $"apprentices/{_apprenticeId}";
-        public JsonPatchDocument<Apprentice> Data { get; set; }
+    public class PatchApprentice
+    {
+        public Guid ApprenticeId { get; set; }
+        public JsonPatchDocument<Apprentice> Patch { get; set; }
     }
 }
