@@ -23,13 +23,12 @@ namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeAccounts
         {
             _logger.LogInformation("[ApprenticeUpdateCommandHandler] request {@request}", request);
 
-            var patchApprenticeRequest = new PatchApprentice
+            var patchApprenticeRequest = new PatchApprenticeRequest(request.ApprenticeId)
             {
-                ApprenticeId = request.ApprenticeId,
-                Patch = request.Patch
+                Data = request.Patch
             };
 
-            await _client.Patch(new PatchApprenticeRequest { Data = patchApprenticeRequest });
+            await _client.Patch(patchApprenticeRequest);
 
             return Unit.Value;
         }
