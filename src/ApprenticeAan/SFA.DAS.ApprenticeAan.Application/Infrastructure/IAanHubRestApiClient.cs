@@ -1,5 +1,6 @@
 ﻿
 using RestEase;
+using SFA.DAS.ApprenticeAan.Application.Apprentices.Commands.CreateApprenticeMember;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
@@ -15,6 +16,9 @@ public interface IAanHubRestApiClient
 
     [Get("/profiles/{userType}")]
     Task<GetProfilesByUserTypeQueryResult> GetProfiles([Path] string userType, CancellationToken cancellationToken);
+
+    [Post("/apprentices")]
+    Task<CreateApprenticeMemberCommandResult> PostApprenticeMember([Body] CreateApprenticeMemberCommand command, CancellationToken cancellationToken);
 
     [Put("/CalendarEvents/{calendarEventId}/attendance")]
     Task PutAttendance(
