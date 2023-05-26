@@ -18,7 +18,9 @@ public class CalendarEventsControllerGetCalendarEventsTests
       Guid requestedByMemberId,
       CancellationToken cancellationToken)
     {
-        await sut.GetCalendarEvents(requestedByMemberId, cancellationToken);
+        DateTime startDate = DateTime.Today;
+        DateTime endDate = DateTime.Today.AddDays(7);
+        await sut.GetCalendarEvents(requestedByMemberId, startDate, endDate, cancellationToken);
 
         mediatorMock.Verify(
             m => m.Send(It.Is<GetCalendarEventsQuery>(q => q.RequestedByMemberId == requestedByMemberId),
@@ -33,11 +35,12 @@ public class CalendarEventsControllerGetCalendarEventsTests
         GetCalendarEventsQueryResult queryResult,
         CancellationToken cancellationToken)
     {
-
+        DateTime startDate = DateTime.Today;
+        DateTime endDate = DateTime.Today.AddDays(7);
         mediatorMock.Setup(m => m.Send(It.Is<GetCalendarEventsQuery>(q => q.RequestedByMemberId == requestedByMemberId), It.IsAny<CancellationToken>()))
                     .ReturnsAsync(queryResult);
 
-        var result = await sut.GetCalendarEvents(requestedByMemberId, cancellationToken);
+        var result = await sut.GetCalendarEvents(requestedByMemberId, startDate, endDate, cancellationToken);
 
         result.As<OkObjectResult>().Should().NotBeNull();
         result.As<OkObjectResult>().Value.Should().Be(queryResult);

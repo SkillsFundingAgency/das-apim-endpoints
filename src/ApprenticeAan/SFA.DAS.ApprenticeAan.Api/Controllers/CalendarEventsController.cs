@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.Attendances.Commands.PutAttendance;
-using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 

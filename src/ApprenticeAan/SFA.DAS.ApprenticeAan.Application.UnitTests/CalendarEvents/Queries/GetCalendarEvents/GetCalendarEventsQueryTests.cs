@@ -6,9 +6,11 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.CalendarEvents.Queries.Get
 public class GetCalendarEventsQueryTests
 {
     [Test, AutoData]
-    public void Operator_PopulatesModelFromParameter(Guid memberId)
+    public void Operator_PopulatesModelFromParameter(Guid memberId, DateTime startDate, DateTime endDate)
     {
-        var model = new GetCalendarEventsQuery(memberId);
+        var model = new GetCalendarEventsQuery(memberId, startDate, endDate);
         model.RequestedByMemberId.Should().Be(memberId);
+        model.StartDate.Should().Be(startDate.ToString("yyyy-MM-dd"));
+        model.EndDate.Should().Be(endDate.ToString("yyyy-MM-dd"));
     }
 }
