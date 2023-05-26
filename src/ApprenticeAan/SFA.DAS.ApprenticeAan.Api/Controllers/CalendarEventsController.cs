@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.ApprenticeAan.Application.Attendances.Commands.PutAttendance;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 
@@ -22,5 +24,18 @@ public class CalendarEventsController : ControllerBase
     {
         var response = await _mediator.Send(new GetCalendarEventsQuery(requestedByMemberId, startDate, endDate), cancellationToken);
         return Ok(response);
+    }
+
+    [HttpPut("{calendarEventId}/attendance")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> PutAttendance(
+    Guid calendarEventId,
+    [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+    [FromBody] AttendanceStatus request,
+    CancellationToken cancellationToken)
+    {
+        var command = new PutAttendanceCommand(calendarEventId, requestedByMemberId, request);
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
     }
 }
