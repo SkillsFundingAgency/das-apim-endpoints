@@ -1,9 +1,7 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using RestEase;
 using SFA.DAS.ApprenticePortal.Application.Queries.ApprenticeAccounts;
-using SFA.DAS.ApprenticePortal.Models;
 using System;
 using System.Threading.Tasks;
 using SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeAccounts;
@@ -34,7 +32,7 @@ namespace SFA.DAS.ApprenticePortal.Api.Controllers
         }
 
         [HttpPatch("/apprentices/{apprenticeId}")]
-        public async Task<IActionResult> UpdateApprentice([Path] Guid apprenticeId, [Body] JsonPatchDocument<Apprentice> patch)
+        public async Task<IActionResult> UpdateApprentice([Path] Guid apprenticeId, [Body] object patch)
         {
             await _mediator.Send(new ApprenticePatchCommand
             {

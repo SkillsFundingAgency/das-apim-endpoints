@@ -58,7 +58,7 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public Task Patch<TData>(IPatchApiRequest<TData> request)
         {
-            throw new System.NotImplementedException();
+            return _apiClient.Patch(request);
         }
 
         public Task Put(IPutApiRequest request)

@@ -46,6 +46,21 @@ namespace SFA.DAS.ApprenticePortal.MockApis
             return this;
         }
 
+        public ApprenticeAccountsInnerApiMock WithPatchApprentice(Guid apprenticeId)
+        {
+            MockServer
+                .Given(
+                    Request.Create()
+                        .WithPath($"/apprentices/{apprenticeId}")
+                        .UsingPatch()
+                )
+                .RespondWith(
+                    Response.Create()
+                );
+            return this;
+        }
+
+
         public ApprenticeAccountsInnerApiMock WithoutMyApprenticeship(Apprentice apprentice)
         {
             MockServer
