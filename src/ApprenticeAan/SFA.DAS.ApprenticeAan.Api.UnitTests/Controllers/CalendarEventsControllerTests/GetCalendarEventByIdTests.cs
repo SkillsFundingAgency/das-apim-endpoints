@@ -36,7 +36,7 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.CalendarEventsControll
             CancellationToken cancellationToken)
         {
             mediatorMock.Setup(m => m.Send(It.IsAny<GetCalendarEventByIdQuery>(), cancellationToken))
-                        .ReturnsAsync(() => null);
+                        .ReturnsAsync(() => null!);
 
             var sut = new CalendarEventsController(mediatorMock.Object);
 
