@@ -42,10 +42,10 @@ public class ApprenticesController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(CreateApprenticeMemberCommandResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> CreateApprenticeMember([FromBody] CreateApprenticeMemberCommand command, CancellationToken cancellationToken)
     {
-        await _mediator.Send(command, cancellationToken);
-        return Ok();
+        var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
     }
 }
