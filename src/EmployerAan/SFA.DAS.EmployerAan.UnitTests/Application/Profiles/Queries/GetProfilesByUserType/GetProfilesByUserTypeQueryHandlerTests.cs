@@ -8,8 +8,7 @@ using SFA.DAS.Testing.AutoFixture;
 namespace SFA.DAS.EmployerAan.UnitTests.Application.Profiles.Queries.GetProfilesByUserType;
 public class GetProfilesByUserTypeQueryHandlerTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_ReturnAllProfiles(
         GetProfilesByUserTypeQuery query,
         [Frozen] Mock<IAanHubRestApiClient> apiClientMock,
