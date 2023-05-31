@@ -9,8 +9,7 @@ using SFA.DAS.EmployerAan.Infrastructure;
 namespace SFA.DAS.EmployerAan.UnitTests.Application.Employer.Queries.GetEmployerMember;
 public class GetEmployerMemberQueryHandlerTests
 {
-    [Test]
-    [AutoData]
+    [Test, AutoData]
     public async Task Handle_OkApiResponse_ReturnsResult(
         GetEmployerMemberQuery query,
         GetEmployerMemberQueryResult expectedResponse,
@@ -25,8 +24,7 @@ public class GetEmployerMemberQueryHandlerTests
         result.Should().Be(expectedResponse);
     }
 
-    [Test]
-    [AutoData]
+    [Test, AutoData]
     public async Task Handle_NotFoundApiResponse_ReturnsNull(
         GetEmployerMemberQuery query,
         CancellationToken cancellationToken)
@@ -41,8 +39,7 @@ public class GetEmployerMemberQueryHandlerTests
     }
 
 
-    [Test]
-    [AutoData]
+    [Test, AutoData]
     public async Task Handle_UnexpectedApiResponse_ThrowsException(
         GetEmployerMemberQuery query,
         CancellationToken cancellationToken)
