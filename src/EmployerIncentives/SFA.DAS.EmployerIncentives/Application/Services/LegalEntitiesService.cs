@@ -27,10 +27,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
 
             return response.ToArray();
         }
-        
+
         public async Task<AccountLegalEntity> GetLegalEntity(long accountId, long accountLegalEntityId)
         {
-            var response = await _client.Get<AccountLegalEntity>(new GetLegalEntityRequest(accountId, accountLegalEntityId));
+            var response =
+                await _client.Get<AccountLegalEntity>(new GetLegalEntityRequest(accountId, accountLegalEntityId));
 
             return response;
         }
@@ -39,14 +40,16 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         {
             await _client.Delete(new DeleteAccountLegalEntityRequest(accountId, accountLegalEntityId));
         }
-        
+
         public async Task CreateLegalEntity(AccountLegalEntityCreateRequest accountLegalEntity)
         {
             var request = new PutAccountLegalEntityRequest { Data = accountLegalEntity };
             await _client.Put(request);
         }
-        
-        public async Task RefreshLegalEntities(IEnumerable<InnerApi.Responses.Accounts.AccountLegalEntity> accountLegalEntities, int pageNumber, int pageSize, int totalPages)
+
+        public async Task RefreshLegalEntities(
+            IEnumerable<InnerApi.Responses.Accounts.AccountLegalEntity> accountLegalEntities, int pageNumber,
+            int pageSize, int totalPages)
         {
             var accountLegalEntitiesData = new Dictionary<string, object>
             {
@@ -55,7 +58,8 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
                 { "PageSize", pageSize },
                 { "TotalPages", totalPages }
             };
-            var request = new RefreshLegalEntitiesRequestData { Type = JobType.RefreshLegalEntities, Data = accountLegalEntitiesData };
+            var request = new RefreshLegalEntitiesRequestData
+                { Type = JobType.RefreshLegalEntities, Data = accountLegalEntitiesData };
             await _client.Put(new RefreshLegalEntitiesRequest { Data = request });
         }
 
@@ -63,13 +67,17 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         {
             await _client.Patch(new PatchSignAgreementRequest { Data = request });
         }
-        
-        public async Task BlockAccountLegalEntitiesForPayments(BlockAccountLegalEntityForPaymentsRequest blockRequest)
-        {
-            var apiRequest = new PatchVendorBlockRequest(blockRequest);
-            var response = await _client.PatchWithResponseCode(apiRequest);
 
-            response.EnsureSuccessStatusCode();
+        public async Task BlockAccountLegalEntitiesForPayments(
+            List<BlockAccountLegalEntityForPaymentsRequest> blockRequest)
+        {
+            foreach (var request in blockRequest)
+            {
+                var apiRequest = new PatchVendorBlockRequest(request);
+                var response = await _client.PatchWithResponseCode(apiRequest);
+
+                response.EnsureSuccessStatusCode();
+            }
         }
     }
 }
