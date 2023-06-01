@@ -45,10 +45,10 @@ public class CalendarEventsController : ControllerBase
     [HttpPut("{calendarEventId}/attendance")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PutAttendance(
-    Guid calendarEventId,
-    [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
-    [FromBody] AttendanceStatus request,
-    CancellationToken cancellationToken)
+        Guid calendarEventId,
+        [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+        [FromBody] AttendanceStatus request,
+        CancellationToken cancellationToken)
     {
         var command = new PutAttendanceCommand(calendarEventId, requestedByMemberId, request);
         await _mediator.Send(command, cancellationToken);
