@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.ApprenticeAan.Api.Controllers;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+using SFA.DAS.ApprenticeAan.Application.Common;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.CalendarEventsControllerTests;
@@ -22,6 +23,7 @@ public class GetCalendarEventsTests
         var fromDate = DateTime.Today;
         var toDate = DateTime.Today.AddDays(7);
         await sut.GetCalendarEvents(requestedByMemberId, fromDate, toDate, cancellationToken);
+        await sut.GetCalendarEvents(requestedByMemberId, startDate, endDate, new List<EventFormat>(), cancellationToken);
 
         mediatorMock.Verify(
             m => m.Send(It.Is<GetCalendarEventsQuery>(q => q.RequestedByMemberId == requestedByMemberId),
@@ -38,10 +40,12 @@ public class GetCalendarEventsTests
     {
         var fromDate = DateTime.Today;
         var toDate = DateTime.Today.AddDays(7);
+        var eventFormats = new List<EventFormat>();
+
         mediatorMock.Setup(m => m.Send(It.Is<GetCalendarEventsQuery>(q => q.RequestedByMemberId == requestedByMemberId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(queryResult);
 
-        var result = await sut.GetCalendarEvents(requestedByMemberId, fromDate, toDate, cancellationToken);
+        var result = await sut.GetCalendarEvents(requestedByMemberId, fromDate, toDate, eventFormats, cancellationToken);
 
         result.As<OkObjectResult>().Should().NotBeNull();
         result.As<OkObjectResult>().Value.Should().Be(queryResult);

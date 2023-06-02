@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Moq;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+using SFA.DAS.ApprenticeAan.Application.Common;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -17,10 +18,11 @@ public class GetCalendarEventsQueryHandlerTests
         Guid requestedByMemberId,
         DateTime fromDate,
         DateTime toDate,
+        List<EventFormat> eventFormats,
         CancellationToken cancellationToken)
     {
-        var query = new GetCalendarEventsQuery(requestedByMemberId, fromDate, toDate);
-        apiClient.Setup(x => x.GetCalendarEvents(requestedByMemberId.ToString(), It.IsAny<string>(), It.IsAny<string>(), cancellationToken)).ReturnsAsync(expected);
+        var query = new GetCalendarEventsQuery(requestedByMemberId, fromDate, toDate,eventFormats);
+        apiClient.Setup(x => x.GetCalendarEvents(requestedByMemberId.ToString(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<EventFormat>>(), cancellationToken)).ReturnsAsync(expected);
         var actual = await handler.Handle(query, cancellationToken);
         actual.Should().Be(expected);
     }
