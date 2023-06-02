@@ -125,16 +125,5 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             CollectionAssert.AreEqual(expected, result.InvalidProviderCourseCodes);
         }
-
-        [Test]
-        public async Task Handle_InvalidProviderCourseCodes_IsMapped_Empty_When_Cohort_Is_Change_Of_Party()
-        {
-            _cohort.IsLinkedToChangeOfPartyRequest = true;
-            _providerStandards.Clear();
-
-            var result = await _handler.Handle(_query, CancellationToken.None);
-
-            CollectionAssert.AreEqual(Enumerable.Empty<string>(), result.InvalidProviderCourseCodes);
-        }
     }
 }

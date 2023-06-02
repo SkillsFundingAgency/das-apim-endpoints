@@ -10,8 +10,7 @@ using SFA.DAS.Testing.AutoFixture;
 namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.EmployerControllerTests;
 public class GetEmployerMemberTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task GetEmployer_InvokesMediator(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] EmployersController sut,
@@ -23,8 +22,7 @@ public class GetEmployerMemberTests
         mediatorMock.Verify(m => m.Send(It.Is<GetEmployerMemberQuery>(q => q.UserRef == userRef), cancellationToken));
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task GetEmployer_MediatorSuccessful_ReturnResult(
     [Frozen] Mock<IMediator> mediatorMock,
     [Greedy] EmployersController sut,
@@ -39,8 +37,7 @@ public class GetEmployerMemberTests
         actualResult.As<OkObjectResult>().Value.Should().Be(expectedResult);
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task GetEmployer_MediatorUnsuccessful_ReturnsNotFound(
     [Frozen] Mock<IMediator> mediatorMock,
     [Greedy] EmployersController sut,
