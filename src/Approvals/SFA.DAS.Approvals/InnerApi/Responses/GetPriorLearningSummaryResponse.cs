@@ -6,7 +6,6 @@
         public long CohortId { get; set; }
         public int? TrainingTotalHours { get; set; }
         public int? DurationReducedByHours { get; set; }
-        public int? CostBeforeRpl { get; set; }
         public int? PriceReducedBy { get; set; }
         public int? FundingBandMaximum { get; set; }
         public decimal? PercentageOfPriorLearning { get; set; }
