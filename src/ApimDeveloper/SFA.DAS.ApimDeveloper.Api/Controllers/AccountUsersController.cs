@@ -38,7 +38,7 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e,"Error calling GetUserAccounts");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
