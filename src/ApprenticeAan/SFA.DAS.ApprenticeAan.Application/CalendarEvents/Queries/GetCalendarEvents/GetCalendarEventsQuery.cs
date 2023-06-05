@@ -4,12 +4,12 @@ namespace SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEv
 public class GetCalendarEventsQuery : IRequest<GetCalendarEventsQueryResult>
 {
     public Guid RequestedByMemberId { get; }
-    public string? StartDate { get; }
-    public string? EndDate { get; }
-    public GetCalendarEventsQuery(Guid requestedByMemberId, DateTime? startDate, DateTime? endDate)
+    public string? FromDate { get; }
+    public string? ToDate { get; }
+    public GetCalendarEventsQuery(Guid requestedByMemberId, DateTime? fromDate, DateTime? toDate)
     {
         RequestedByMemberId = requestedByMemberId;
-        StartDate = startDate?.ToString("yyyy-MM-dd");
-        EndDate = endDate?.ToString("yyyy-MM-dd");
+        FromDate = fromDate?.ToString("yyyy-MM-dd");
+        this.ToDate = toDate?.ToString("yyyy-MM-dd");
     }
 }

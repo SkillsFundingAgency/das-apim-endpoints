@@ -6,12 +6,12 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.CalendarEvents.Queries.Get
 public class GetCalendarEventsQueryTests
 {
     [Test, AutoData]
-    public void Operator_PopulatesModelFromParameters(Guid memberId, DateTime startDate, DateTime endDate)
+    public void Operator_PopulatesModelFromParameters(Guid memberId, DateTime fromDate, DateTime toDate)
     {
-        var model = new GetCalendarEventsQuery(memberId, startDate, endDate);
+        var model = new GetCalendarEventsQuery(memberId, fromDate, toDate);
         model.RequestedByMemberId.Should().Be(memberId);
-        model.StartDate.Should().Be(startDate.ToString("yyyy-MM-dd"));
-        model.EndDate.Should().Be(endDate.ToString("yyyy-MM-dd"));
+        model.FromDate.Should().Be(fromDate.ToString("yyyy-MM-dd"));
+        model.ToDate.Should().Be(toDate.ToString("yyyy-MM-dd"));
     }
 
     [Test, AutoData]
@@ -20,7 +20,7 @@ public class GetCalendarEventsQueryTests
 
         var model = new GetCalendarEventsQuery(memberId, null, null);
         model.RequestedByMemberId.Should().Be(memberId);
-        model.StartDate.Should().BeNull();
-        model.EndDate.Should().BeNull();
+        model.FromDate.Should().BeNull();
+        model.ToDate.Should().BeNull();
     }
 }

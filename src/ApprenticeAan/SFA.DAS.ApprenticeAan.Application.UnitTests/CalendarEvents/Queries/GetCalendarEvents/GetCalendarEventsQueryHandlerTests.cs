@@ -15,11 +15,11 @@ public class GetCalendarEventsQueryHandlerTests
         GetCalendarEventsQueryHandler handler,
         GetCalendarEventsQueryResult expected,
         Guid requestedByMemberId,
-        DateTime startDate,
-        DateTime endDate,
+        DateTime fromDate,
+        DateTime toDate,
         CancellationToken cancellationToken)
     {
-        var query = new GetCalendarEventsQuery(requestedByMemberId, startDate, endDate);
+        var query = new GetCalendarEventsQuery(requestedByMemberId, fromDate, toDate);
         apiClient.Setup(x => x.GetCalendarEvents(requestedByMemberId.ToString(), It.IsAny<string>(), It.IsAny<string>(), cancellationToken)).ReturnsAsync(expected);
         var actual = await handler.Handle(query, cancellationToken);
         actual.Should().Be(expected);
