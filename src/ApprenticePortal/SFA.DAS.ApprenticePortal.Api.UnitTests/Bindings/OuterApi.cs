@@ -26,6 +26,9 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.Bindings
                     {"Environment", "LOCAL_ACCEPTANCE_TESTS"},
                     {"ApprenticeAccountsInnerApi:url", _context?.ApprenticeAccountsInnerApi?.BaseAddress + "/"},
                     {"ApprenticeCommitmentsInnerApi:url", _context?.ApprenticeCommitmentsInnerApi?.BaseAddress + "/"},
+                    {"CommitmentsV2InnerApi:url", _context?.CommitmentsV2InnerApi?.BaseAddress + "/"},
+                    {"TrainingProviderApi:url", _context?.TrainingProviderInnerApi?.BaseAddress + "/"},
+                    {"CoursesApi:url", _context?.CoursesInnerApi?.BaseAddress + "/"},
                     {"AzureAD:tenant", ""},
                     {"AzureAD:identifier", ""}
                 };

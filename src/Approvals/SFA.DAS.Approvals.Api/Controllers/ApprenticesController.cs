@@ -12,12 +12,14 @@ using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEm
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Inform;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprenticeshipUpdates;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class ApprenticesController: ControllerBase
+    public class ApprenticesController : ControllerBase
     {
         private readonly ILogger<ApprenticesController> _logger;
         private readonly IMediator _mediator;
@@ -34,11 +36,11 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetApprenticeQuery{ ApprenticeId = id});
+                var result = await _mediator.Send(new GetApprenticeQuery { ApprenticeId = id });
                 if (result == null)
                 {
                     return NotFound();
-                }                
+                }
                 return Ok(result);
             }
             catch (Exception e)
@@ -83,7 +85,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetConfirmEmployerQuery
-                    { ApprenticeshipId = apprenticeshipId, ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId});
+                { ApprenticeshipId = apprenticeshipId, ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId });
 
                 if (result == null)
                 {
@@ -144,7 +146,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetSelectDeliveryModelQuery
-                    { ApprenticeshipId = apprenticeshipId, ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId});
+                { ApprenticeshipId = apprenticeshipId, ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId });
 
                 if (result == null)
                 {
@@ -211,6 +213,54 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 return BadRequest();
             }
         }
+
+        
+        [HttpGet]
+        [Route("/employer/{providerId}/apprentices/{apprenticeshipId}/edit/select-course")]
+        [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/edit/select-course")]
+        public async Task<IActionResult> GetEditApprenticeshipCourse(long apprenticeshipId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetEditApprenticeshipCourseQuery { ApprenticeshipId = apprenticeshipId });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok((GetEditApprenticeshipCourseResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in GetEditApprenticeshipCourse apprenticeship {apprenticeshipId}");
+                return BadRequest();
+            }
+        }
+		
+		[HttpGet]
+        [Route("/employer/{providerId}/apprentices/{apprenticeshipId}/changes/review")]
+        [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/changes/review")]
+        public async Task<IActionResult> GetReviewApprenticeshipUpdates(long apprenticeshipId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetReviewApprenticeshipUpdatesQuery { ApprenticeshipId = apprenticeshipId });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok((GetReviewApprenticeshipUpdatesResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in GetReviewApprenticeshipUpdates apprenticeship {apprenticeshipId}");
+                return BadRequest();
+            }
+        }
+
 
         [HttpGet]
         [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/details")]
