@@ -40,10 +40,35 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.AccountUsers
                     .Excluding(c => c.IsSuspended)
                     .Excluding(c => c.DisplayName)
             );
-            actual.FirstName.Equals(teamResponse.FirstOrDefault().FirstName);
-            actual.LastName.Equals(teamResponse.FirstOrDefault().LastName);
-            actual.EmployerUserId.Equals(teamResponse.FirstOrDefault().UserId);
-            actual.IsSuspended.Equals(teamResponse.FirstOrDefault().IsSuspended);
+            actual.FirstName.Should().Be(teamResponse.FirstOrDefault().FirstName);
+            actual.LastName.Should().Be(teamResponse.FirstOrDefault().LastName);
+            actual.EmployerUserId.Should().Be(teamResponse.FirstOrDefault().UserId);
+            actual.IsSuspended.Should().Be(teamResponse.FirstOrDefault().IsSuspended);
+        }
+        [Test, MoqAutoData]
+        public async Task Then_The_Query_Is_Handled_And_Data_Returned_with_No_Accounts(
+            GetAccountsQuery query,
+            EmployerAccountUser response,
+            [Frozen] Mock<IEmployerAccountsService> accountsService,
+            GetAccountsQueryHandler handler)
+        {
+            response.Role = null;
+            response.DasAccountName = null;
+            response.EncodedAccountId = null;
+            query.UserId = Guid.NewGuid().ToString();
+            accountsService.Setup(x =>
+                    x.GetEmployerAccounts(It.Is<EmployerProfile>(c =>
+                        c.Email.Equals(query.Email) && c.UserId.Equals(query.UserId))))
+                .ReturnsAsync(new List<EmployerAccountUser> {response});
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            
+            actual.FirstName.Should().Be(response.FirstName);
+            actual.LastName.Should().Be(response.LastName);
+            actual.EmployerUserId.Should().Be(response.UserId);
+            actual.IsSuspended.Should().Be(response.IsSuspended);
+            actual.UserAccountResponse.Should().BeEmpty();
         }
     }
 }

@@ -1,6 +1,9 @@
-namespace SFA.DAS.SharedOuterApi.Models
+﻿using MediatR;
+using SFA.DAS.SharedOuterApi.Models;
+
+namespace SFA.DAS.EmployerProfiles.Application.AccountUsers.Commands
 {
-    public class EmployerProfile
+    public class UpsertAccountCommand : IRequest<EmployerProfile>
     {
         public string UserId { get; set; }
         public string Email { get; set; }

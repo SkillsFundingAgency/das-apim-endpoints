@@ -1,11 +1,14 @@
-namespace SFA.DAS.SharedOuterApi.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SFA.DAS.EmployerProfiles.Api.Models
 {
-    public class EmployerProfile
+    public class UpsertAccountRequest
     {
-        public string UserId { get; set; }
+        [Required]
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        [Required]
         public string GovIdentifier { get; set; }
     }
 }
