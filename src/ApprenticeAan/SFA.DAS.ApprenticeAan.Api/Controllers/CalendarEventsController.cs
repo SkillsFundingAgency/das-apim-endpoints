@@ -22,9 +22,10 @@ public class CalendarEventsController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(GetCalendarEventsQueryResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetCalendarEvents([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate, [FromQuery] List<EventFormat> eventFormats, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCalendarEvents([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate, [FromQuery] List<EventFormat>? eventFormat, CancellationToken cancellationToken)
     {
-        var response = await _mediator.Send(new GetCalendarEventsQuery(requestedByMemberId, startDate, endDate, eventFormats), cancellationToken);
+
+        var response = await _mediator.Send(new GetCalendarEventsQuery(requestedByMemberId, fromDate, toDate, eventFormat), cancellationToken);
         return Ok(response);
     }
 

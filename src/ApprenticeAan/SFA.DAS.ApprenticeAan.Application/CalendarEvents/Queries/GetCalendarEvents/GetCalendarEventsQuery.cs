@@ -7,11 +7,12 @@ public class GetCalendarEventsQuery : IRequest<GetCalendarEventsQueryResult>
     public Guid RequestedByMemberId { get; }
     public string? FromDate { get; }
     public string? ToDate { get; }
-    public GetCalendarEventsQuery(Guid requestedByMemberId, DateTime? fromDate, DateTime? toDate, List<EventFormat>? eventFormats)
+    public List<EventFormat>? EventFormat { get; }
+    public GetCalendarEventsQuery(Guid requestedByMemberId, DateTime? fromDate, DateTime? toDate, List<EventFormat>? eventFormat)
     {
         RequestedByMemberId = requestedByMemberId;
         FromDate = fromDate?.ToString("yyyy-MM-dd");
-        this.ToDate = toDate?.ToString("yyyy-MM-dd");
-        EventFormats = eventFormats;
+        ToDate = toDate?.ToString("yyyy-MM-dd");
+        EventFormat = eventFormat;
     }
 }

@@ -9,11 +9,11 @@ public class GetCalendarEventsQueryTests
     [Test, AutoData]
     public void Operator_PopulatesModelFromParameters(Guid memberId, DateTime fromDate, DateTime toDate, List<EventFormat>? eventFormats)
     {
-        var model = new GetCalendarEventsQuery(memberId, fromDate, toDate,EventFormats);
+        var model = new GetCalendarEventsQuery(memberId, fromDate, toDate, eventFormats);
         model.RequestedByMemberId.Should().Be(memberId);
         model.FromDate.Should().Be(fromDate.ToString("yyyy-MM-dd"));
         model.ToDate.Should().Be(toDate.ToString("yyyy-MM-dd"));
-        model.EventFormats.Should().BeEquivalentTo(eventFormats);
+        model.EventFormat.Should().BeEquivalentTo(eventFormats);
     }
 
     [Test, AutoData]
@@ -24,6 +24,6 @@ public class GetCalendarEventsQueryTests
         model.RequestedByMemberId.Should().Be(memberId);
         model.FromDate.Should().BeNull();
         model.ToDate.Should().BeNull();
-        model.EventFormats.Should().BeNull();
+        model.EventFormat.Should().BeNull();
     }
 }

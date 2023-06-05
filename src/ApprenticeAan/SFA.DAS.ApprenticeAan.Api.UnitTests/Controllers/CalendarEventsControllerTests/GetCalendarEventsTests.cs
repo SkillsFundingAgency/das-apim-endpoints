@@ -22,8 +22,7 @@ public class GetCalendarEventsTests
     {
         var fromDate = DateTime.Today;
         var toDate = DateTime.Today.AddDays(7);
-        await sut.GetCalendarEvents(requestedByMemberId, fromDate, toDate, cancellationToken);
-        await sut.GetCalendarEvents(requestedByMemberId, startDate, endDate, new List<EventFormat>(), cancellationToken);
+        await sut.GetCalendarEvents(requestedByMemberId, fromDate, toDate, new List<EventFormat>(), cancellationToken);
 
         mediatorMock.Verify(
             m => m.Send(It.Is<GetCalendarEventsQuery>(q => q.RequestedByMemberId == requestedByMemberId),

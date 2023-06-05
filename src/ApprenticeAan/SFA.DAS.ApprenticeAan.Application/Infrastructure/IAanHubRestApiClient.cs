@@ -28,7 +28,7 @@ public interface IAanHubRestApiClient
         CancellationToken cancellationToken);
 
     [Get("calendarEvents")]
-    Task<GetCalendarEventsQueryResult> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] string requestedByMemberId, [Query] string fromDate, [Query] string toDate, [Query] List<EventFormat> eventFormats, CancellationToken cancellationToken);
+    Task<GetCalendarEventsQueryResult> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] string requestedByMemberId, [Query] string fromDate, [Query] string toDate, [Query] List<EventFormat>? eventFormat, CancellationToken cancellationToken);
 
     [Get("calendarevents/{calendarEventId}")]
     [AllowAnyStatusCode]
