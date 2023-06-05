@@ -6,9 +6,6 @@ using SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries;
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using SFA.DAS.ApimDeveloper.Api.ApiRequests;
-using SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Commands;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.ApimDeveloper.Api.Controllers
 {
@@ -38,35 +35,6 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
                 });
 
                 return Ok((UserAccountsApiResponse)result);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
-        }
-
-        /// <summary>
-        /// Endpoint to add & update the employer information.
-        /// </summary>
-        /// <param name="userId">Email address/Gov Unique Identifier.</param>
-        /// <param name="request">model UpsertAccountRequest.</param>
-        /// <returns>UpsertUserApiResponse.</returns>
-        [HttpPut]
-        [Route("{userId}/upsert-user")]
-        public async Task<IActionResult> UpsertUserAccount(string userId, [FromBody] UpsertAccountRequest request)
-        {
-            try
-            {
-                var result = await _mediator.Send(new UpsertAccountCommand
-                {
-                    GovIdentifier = userId,
-                    Email = request.Email,
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                });
-
-                return Ok((UpsertUserApiResponse)result);
             }
             catch (Exception e)
             {
