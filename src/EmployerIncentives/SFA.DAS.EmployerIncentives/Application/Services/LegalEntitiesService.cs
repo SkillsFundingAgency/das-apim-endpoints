@@ -71,13 +71,11 @@ namespace SFA.DAS.EmployerIncentives.Application.Services
         public async Task BlockAccountLegalEntitiesForPayments(
             List<BlockAccountLegalEntityForPaymentsRequest> blockRequest)
         {
-            foreach (var request in blockRequest)
-            {
-                var apiRequest = new PatchVendorBlockRequest(request);
-                var response = await _client.PatchWithResponseCode(apiRequest);
 
-                response.EnsureSuccessStatusCode();
-            }
+            var apiRequest = new PatchVendorBlockRequest(blockRequest);
+            var response = await _client.PatchWithResponseCode(apiRequest);
+
+            response.EnsureSuccessStatusCode();
         }
     }
 }
