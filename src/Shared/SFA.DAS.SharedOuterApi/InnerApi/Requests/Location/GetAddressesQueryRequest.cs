@@ -5,15 +5,15 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
     public class GetAddressesQueryRequest : IGetApiRequest
     {
-        private readonly string _query;
-        private readonly double _minMatch;
+        public string Query { get; }
+        public double MinMatch { get; }
 
         public GetAddressesQueryRequest(string query, double minMatch)
         {
-            _query = query;
-            _minMatch = minMatch;
+            Query = query;
+            MinMatch = minMatch;
         }
-        
-        public string GetUrl => $"api/addresses?query={HttpUtility.UrlEncode(_query)}&minMatch={_minMatch}";
+
+        public string GetUrl => $"api/addresses?query={HttpUtility.UrlEncode(Query)}&minMatch={MinMatch}";
     }
 }
