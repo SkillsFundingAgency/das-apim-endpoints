@@ -118,7 +118,6 @@ namespace SFA.DAS.Approvals.Services
 
                 return providerStandards.Select(
                 x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel)).OrderBy(x => x.Name);
-
             }
             catch (Exception e)
             {
