@@ -112,17 +112,17 @@ namespace SFA.DAS.Approvals.Services
 
                 if (providerStandards.IsNullOrEmpty())
                 {
-                    _logger.LogWarning("No Standards Declared");
-                    return null;
+                    _logger.LogWarning($"No Standards Declared For Provider {providerId}");
+                    return Enumerable.Empty<Standard>();
                 }
 
                 return providerStandards.Select(
-                x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel)).OrderBy(x => x.Name);
+                x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel)).OrderBy(x => x.Name).ToList();
             }
             catch (Exception e)
             {
-                _logger.LogError("No Standards Declared", e);
-                return null;
+                _logger.LogError($"No Standards Declared For Provider {providerId}", e);
+                return Enumerable.Empty<Standard>();
             }
         }
     }

@@ -9,16 +9,16 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.Cohorts;
-using SFA.DAS.Approvals.Application.Cohorts.Queries.GetHasDeclaredStandards;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployerDeclaredStandards;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
 {
     [TestFixture]
-    public class WhenGettingHasDeclaredStandardsTests
+    public class WhenGettingConfirmEmployerDeclaredStandards
     {
         private CohortController _controller;
         private Mock<IMediator> _mediator;
-        private GetHasDeclaredStandardsQueryResult _queryResult;
+        private GetConfirmEmployerDeclaredStandardsQueryResult _queryResult;
 
         private long _providerId;
 
@@ -26,13 +26,12 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
         public void Setup()
         {
             var fixture = new Fixture();
-            _queryResult = fixture.Create<GetHasDeclaredStandardsQueryResult>();
+            _queryResult = fixture.Create<GetConfirmEmployerDeclaredStandardsQueryResult>();
 
             _providerId = fixture.Create<long>();
 
             _mediator = new Mock<IMediator>();
-            _mediator.Setup(x => x.Send(It.Is<GetHasDeclaredStandardsQuery>(q =>
-                        q.ProviderId == _providerId),
+            _mediator.Setup(x => x.Send(It.IsAny<GetConfirmEmployerDeclaredStandardsQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_queryResult);
 
@@ -40,14 +39,14 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
         }
 
         [Test]
-        public async Task GetHasDeclaredStandardsResponseIsReturned()
+        public async Task GetConfirmEmployerDeclaredStandardsIsReturned()
         {
-            var result = await _controller.GetHasDeclaredStandards(_providerId);
+            var result = await _controller.GetConfirmEmployerDeclaredStandards();
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okObjectResult = (OkObjectResult) result;
-            Assert.IsInstanceOf<GetHasDeclaredStandardsResponse>(okObjectResult.Value);
-            var objectResult = (GetHasDeclaredStandardsResponse) okObjectResult.Value;
+            Assert.IsInstanceOf<GetConfirmEmployerDeclaredStandardsResponse>(okObjectResult.Value);
+            var objectResult = (GetConfirmEmployerDeclaredStandardsResponse) okObjectResult.Value;
 
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
 

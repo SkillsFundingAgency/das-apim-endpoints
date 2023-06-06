@@ -2,23 +2,23 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using Party = SFA.DAS.Approvals.Application.Shared.Enums.Party;
 
-namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetHasDeclaredStandards
+namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployerDeclaredStandards
 {
-    public class GetHasDeclaredStandardsQueryHandler : IRequestHandler<GetHasDeclaredStandardsQuery, GetHasDeclaredStandardsQueryResult>
+    public class GetConfirmEmployerDeclaredStandardsQueryHandler : IRequestHandler<GetConfirmEmployerDeclaredStandardsQuery, GetConfirmEmployerDeclaredStandardsQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly IProviderStandardsService _providerStandardsService;
         private readonly ServiceParameters _serviceParameters;
 
-        public GetHasDeclaredStandardsQueryHandler(
+        public GetConfirmEmployerDeclaredStandardsQueryHandler(
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
             IProviderStandardsService providerStandardsService,
             ServiceParameters serviceParameters)
@@ -28,11 +28,9 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetHasDeclaredStandards
             _serviceParameters = serviceParameters;
         }
 
-        public async Task<GetHasDeclaredStandardsQueryResult> Handle(GetHasDeclaredStandardsQuery request, CancellationToken cancellationToken)
+        public async Task<GetConfirmEmployerDeclaredStandardsQueryResult> Handle(GetConfirmEmployerDeclaredStandardsQuery request, CancellationToken cancellationToken)
         {
-            var providerId = _serviceParameters.CallingParty == Party.Employer
-                ? request.ProviderId.Value
-                : _serviceParameters.CallingPartyId;
+            var providerId =  _serviceParameters.CallingPartyId;
 
             var providerResponseResult = await _apiClient.GetWithResponseCode<GetProviderResponse>(new GetProviderRequest(providerId));
 
@@ -49,9 +47,9 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetHasDeclaredStandards
 
             var providerStandardsData = await _providerStandardsService.GetStandardsData(_serviceParameters.CallingPartyId);
 
-            return new GetHasDeclaredStandardsQueryResult
+            return new GetConfirmEmployerDeclaredStandardsQueryResult
             {
-                HasNoDeclaredStandards = providerStandardsData.Standards == null
+                HasNoDeclaredStandards = providerStandardsData.Standards.IsNullOrEmpty()
             };
         }
     }

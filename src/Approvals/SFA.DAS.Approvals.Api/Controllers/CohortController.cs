@@ -12,7 +12,7 @@ using SFA.DAS.Approvals.Exceptions;
 using System;
 using System.Threading.Tasks;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDeliveryModel;
-using SFA.DAS.Approvals.Application.Cohorts.Queries.GetHasDeclaredStandards;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployerDeclaredStandards;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -152,25 +152,23 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("employer/{accountId}/unapproved/add/confirm-employer")]
         [Route("provider/{providerId}/unapproved/add/confirm-employer")]
-        public async Task<IActionResult> GetHasDeclaredStandards([FromQuery] long? providerId)
+        public async Task<IActionResult> GetConfirmEmployerDeclaredStandards()
         {
             try
             {
-                var result = await _mediator.Send(new GetHasDeclaredStandardsQuery
-                { ProviderId = providerId });
+                var result = await _mediator.Send(new GetConfirmEmployerDeclaredStandardsQuery());
 
                 if (result == null)
                 {
                     return NotFound();
                 }
 
-                return Ok((GetHasDeclaredStandardsResponse)result);
+                return Ok((GetConfirmEmployerDeclaredStandardsResponse)result);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error in GetHasDeclaredStandards");
+                _logger.LogError(e, $"Error in GetConfirmEmployerDeclaredStandards");
                 return BadRequest();
             }
         }

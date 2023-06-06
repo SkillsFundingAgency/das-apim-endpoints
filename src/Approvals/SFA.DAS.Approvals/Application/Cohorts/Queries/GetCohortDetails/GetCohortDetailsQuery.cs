@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.Approvals.Extensions;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.Requests;
@@ -86,7 +87,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             {
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
-                HasNoDeclaredStandards = providerCourses.Standards == null,
+                HasNoDeclaredStandards = providerCourses.Standards.IsNullOrEmpty(),
                 HasUnavailableFlexiJobAgencyDeliveryModel = !isOnRegister && draftApprenticeships.DraftApprenticeships.Any(a => a.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency)),
                 InvalidProviderCourseCodes = cohort.IsLinkedToChangeOfPartyRequest ? Enumerable.Empty<string>() : invalidCourses
             };
