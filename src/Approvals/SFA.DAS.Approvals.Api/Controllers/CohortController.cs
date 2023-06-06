@@ -12,6 +12,7 @@ using SFA.DAS.Approvals.Exceptions;
 using System;
 using System.Threading.Tasks;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDeliveryModel;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetHasDeclaredStandards;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -146,6 +147,30 @@ namespace SFA.DAS.Approvals.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error in GetAddDraftApprenticeshipCourse ale {accountLegalEntityId}");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("employer/{accountId}/unapproved/add/confirm-employer")]
+        [Route("provider/{providerId}/unapproved/add/confirm-employer")]
+        public async Task<IActionResult> GetHasDeclaredStandards([FromQuery] long? providerId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetHasDeclaredStandardsQuery
+                { ProviderId = providerId });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok((GetHasDeclaredStandardsResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in GetHasDeclaredStandards");
                 return BadRequest();
             }
         }
