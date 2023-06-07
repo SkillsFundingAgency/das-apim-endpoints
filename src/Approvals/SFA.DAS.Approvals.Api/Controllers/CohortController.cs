@@ -12,7 +12,7 @@ using SFA.DAS.Approvals.Exceptions;
 using System;
 using System.Threading.Tasks;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDeliveryModel;
-using SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployerDeclaredStandards;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployer;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -153,22 +153,22 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
         [HttpGet]
         [Route("provider/{providerId}/unapproved/add/confirm-employer")]
-        public async Task<IActionResult> GetConfirmEmployerDeclaredStandards()
+        public async Task<IActionResult> GetConfirmEmployer()
         {
             try
             {
-                var result = await _mediator.Send(new GetConfirmEmployerDeclaredStandardsQuery());
+                var result = await _mediator.Send(new GetConfirmEmployerQuery());
 
                 if (result == null)
                 {
                     return NotFound();
                 }
 
-                return Ok((GetConfirmEmployerDeclaredStandardsResponse)result);
+                return Ok((GetConfirmEmployerResponse)result);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error in GetConfirmEmployerDeclaredStandards");
+                _logger.LogError(e, $"Error in GetConfirmEmployer");
                 return BadRequest();
             }
         }

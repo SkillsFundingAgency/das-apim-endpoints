@@ -10,15 +10,15 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployerDeclaredStandards
+namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployer
 {
-    public class GetConfirmEmployerDeclaredStandardsQueryHandler : IRequestHandler<GetConfirmEmployerDeclaredStandardsQuery, GetConfirmEmployerDeclaredStandardsQueryResult>
+    public class GetConfirmEmployerQueryHandler : IRequestHandler<GetConfirmEmployerQuery, GetConfirmEmployerResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly IProviderStandardsService _providerStandardsService;
         private readonly ServiceParameters _serviceParameters;
 
-        public GetConfirmEmployerDeclaredStandardsQueryHandler(
+        public GetConfirmEmployerQueryHandler(
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
             IProviderStandardsService providerStandardsService,
             ServiceParameters serviceParameters)
@@ -28,7 +28,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployerDeclar
             _serviceParameters = serviceParameters;
         }
 
-        public async Task<GetConfirmEmployerDeclaredStandardsQueryResult> Handle(GetConfirmEmployerDeclaredStandardsQuery request, CancellationToken cancellationToken)
+        public async Task<GetConfirmEmployerResult> Handle(GetConfirmEmployerQuery request, CancellationToken cancellationToken)
         {
             var providerId =  _serviceParameters.CallingPartyId;
 
@@ -47,7 +47,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployerDeclar
 
             var providerStandardsData = await _providerStandardsService.GetStandardsData(_serviceParameters.CallingPartyId);
 
-            return new GetConfirmEmployerDeclaredStandardsQueryResult
+            return new GetConfirmEmployerResult
             {
                 HasNoDeclaredStandards = providerStandardsData.Standards.IsNullOrEmpty()
             };
