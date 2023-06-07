@@ -1,5 +1,6 @@
 ﻿namespace SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
-public class CalendarEvent
+
+public class CalendarEventSummary
 {
     public Guid CalendarEventId { get; set; }
     public string CalendarName { get; set; } = null!;
