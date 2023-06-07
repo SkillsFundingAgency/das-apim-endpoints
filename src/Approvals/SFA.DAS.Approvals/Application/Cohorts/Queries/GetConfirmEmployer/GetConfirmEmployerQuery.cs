@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployer
 {
-    public class GetConfirmEmployerQuery : IRequest<GetConfirmEmployerResult>
+    public class GetConfirmEmployerQuery : IRequest<GetConfirmEmployerQueryResult>
     {
 
     }

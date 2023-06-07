@@ -12,7 +12,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployer
 {
-    public class GetConfirmEmployerQueryHandler : IRequestHandler<GetConfirmEmployerQuery, GetConfirmEmployerResult>
+    public class GetConfirmEmployerQueryHandler : IRequestHandler<GetConfirmEmployerQuery, GetConfirmEmployerQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly IProviderStandardsService _providerStandardsService;
@@ -28,7 +28,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployer
             _serviceParameters = serviceParameters;
         }
 
-        public async Task<GetConfirmEmployerResult> Handle(GetConfirmEmployerQuery request, CancellationToken cancellationToken)
+        public async Task<GetConfirmEmployerQueryResult> Handle(GetConfirmEmployerQuery request, CancellationToken cancellationToken)
         {
             var providerId =  _serviceParameters.CallingPartyId;
 
@@ -47,7 +47,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployer
 
             var providerStandardsData = await _providerStandardsService.GetStandardsData(_serviceParameters.CallingPartyId);
 
-            return new GetConfirmEmployerResult
+            return new GetConfirmEmployerQueryResult
             {
                 HasNoDeclaredStandards = providerStandardsData.Standards.IsNullOrEmpty()
             };

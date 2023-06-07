@@ -18,7 +18,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
     {
         private CohortController _controller;
         private Mock<IMediator> _mediator;
-        private GetConfirmEmployerResult _queryResult;
+        private GetConfirmEmployerQueryResult _queryResult;
 
         private long _providerId;
 
@@ -26,7 +26,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
         public void Setup()
         {
             var fixture = new Fixture();
-            _queryResult = fixture.Create<GetConfirmEmployerResult>();
+            _queryResult = fixture.Create<GetConfirmEmployerQueryResult>();
 
             _providerId = fixture.Create<long>();
 

@@ -6,7 +6,7 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
     {
         public bool HasNoDeclaredStandards { get; set; }
 
-        public static implicit operator GetConfirmEmployerResponse(GetConfirmEmployerResult source)
+        public static implicit operator GetConfirmEmployerResponse(GetConfirmEmployerQueryResult source)
         {
             return new GetConfirmEmployerResponse
             {
