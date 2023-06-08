@@ -1,8 +1,8 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
@@ -49,8 +49,8 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployer
 
             return new GetConfirmEmployerQueryResult
             {
-                HasNoDeclaredStandards = providerStandardsData.Standards.IsNullOrEmpty()
-            };
+                HasNoDeclaredStandards = providerStandardsData.Standards?.Any() != true,
+        };
         }
     }
 }

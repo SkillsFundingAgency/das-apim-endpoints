@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
@@ -110,7 +109,7 @@ namespace SFA.DAS.Approvals.Services
                     await _providerCoursesApiClient.Get<IEnumerable<GetProviderStandardsResponse>>(
                         new GetProviderStandardsRequest(providerId));
 
-                if (providerStandards.IsNullOrEmpty())
+                if (providerStandards?.Any() != true)
                 {
                     _logger.LogWarning($"No Standards Declared For Provider {providerId}");
                     return Enumerable.Empty<Standard>();
