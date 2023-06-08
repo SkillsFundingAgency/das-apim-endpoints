@@ -1,8 +1,11 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.ApprenticeAan.Api.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
+
+[assembly: ApiController]
 
 var builder = WebApplication.CreateBuilder(args);
 
