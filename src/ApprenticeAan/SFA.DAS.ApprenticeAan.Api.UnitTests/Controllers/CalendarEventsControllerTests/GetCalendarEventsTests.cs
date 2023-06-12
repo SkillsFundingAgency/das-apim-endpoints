@@ -34,12 +34,12 @@ public class GetCalendarEventsTests
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] CalendarEventsController sut,
         Guid requestedByMemberId,
+        List<EventFormat> eventFormats,
         GetCalendarEventsQueryResult queryResult,
         CancellationToken cancellationToken)
     {
         var fromDate = DateTime.Today;
         var toDate = DateTime.Today.AddDays(7);
-        var eventFormats = new List<EventFormat>();
 
         mediatorMock.Setup(m => m.Send(It.Is<GetCalendarEventsQuery>(q => q.RequestedByMemberId == requestedByMemberId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(queryResult);
