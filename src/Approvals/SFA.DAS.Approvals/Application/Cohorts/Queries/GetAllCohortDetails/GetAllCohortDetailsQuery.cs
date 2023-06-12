@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.Extensions;
 using SFA.DAS.Approvals.InnerApi;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAllCohortDetails
 {
@@ -73,7 +75,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAllCohortDetails
 
             var draftApprenticeshipTask = _apiClient.GetWithResponseCode<GetDraftApprenticeshipsResponse>(apiRequest);
             var cohortResponseTask = _apiClient.GetWithResponseCode<GetCohortResponse>(cohortRequest);
-            var emailOverlapsResponseTask = _apiClient.GetWithResponseCode<GetApprenticeshipEmailOverlapResponse>(cohortRequest);
+            var emailOverlapsResponseTask = _apiClient.Get<GetApprenticeshipEmailOverlapResponse>(new GetApprenticeshipEmailOverlapRequest(request.CohortId));
 
             await Task.WhenAll(draftApprenticeshipTask, cohortResponseTask, emailOverlapsResponseTask);
 
@@ -84,10 +86,9 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAllCohortDetails
 
             draftApprenticeshipTask.Result.EnsureSuccessStatusCode();
             cohortResponseTask.Result.EnsureSuccessStatusCode();
-            emailOverlapsResponseTask.Result.EnsureSuccessStatusCode();
 
             var draftApprenticeships = draftApprenticeshipTask.Result.Body;
-            var emailOverlaps = emailOverlapsResponseTask.Result.Body;
+           var emailOverlaps = emailOverlapsResponseTask.Result;
             var cohort = cohortResponseTask.Result.Body;
 
             if (!cohort.CheckParty(_serviceParameters))

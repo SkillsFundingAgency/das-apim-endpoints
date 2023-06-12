@@ -74,8 +74,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("employer/{accountId}/unapproved/{cohortId}")]
-        [Route("provider/{providerId}/unapproved/{cohortId}")]
+        [Route("employer/{accountId}/unapproved/{cohortId}/all-cohort-details")]
+        [Route("provider/{providerId}/unapproved/{cohortId}/all-cohort-details")]
         public async Task<IActionResult> GetAllCohortDetails(long cohortId, long providerId)
         {
             try
