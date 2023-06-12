@@ -1,10 +1,11 @@
-using System;
-using System.Net;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerProfiles.Api.Models;
 using SFA.DAS.EmployerProfiles.Application.AccountUsers.Queries;
+using System;
+using System.Net;
+using System.Threading.Tasks;
+using SFA.DAS.EmployerProfiles.Application.AccountUsers.Commands;
 
 namespace SFA.DAS.EmployerProfiles.Api.Controllers
 {
@@ -14,14 +15,14 @@ namespace SFA.DAS.EmployerProfiles.Api.Controllers
     {
         private readonly IMediator _mediator;
 
-        public AccountUsersController (IMediator mediator)
+        public AccountUsersController(IMediator mediator)
         {
             _mediator = mediator;
         }
-        
+
         [HttpGet]
         [Route("{userId}/accounts")]
-        public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery]string email)
+        public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery] string email)
         {
             try
             {
@@ -31,12 +32,42 @@ namespace SFA.DAS.EmployerProfiles.Api.Controllers
                     Email = email
                 });
 
-                return Ok((UserAccountsApiResponse) result);
+                return Ok((UserAccountsApiResponse)result);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        /// <summary>
+        /// Endpoint to add & update the employer information.
+        /// </summary>
+        /// <param name="userId">Email address/Gov Unique Identifier.</param>
+        /// <param name="request">model UpsertAccountRequest.</param>
+        /// <returns>UpsertUserApiResponse.</returns>
+        [HttpPut]
+        [Route("{userId}/upsert-user")]
+        public async Task<IActionResult> UpsertUserAccount(string userId, [FromBody] UpsertAccountRequest request)
+        {
+            try
+            {
+                var result = await _mediator.Send(new UpsertAccountCommand
+                {
+                    UserId = userId,
+                    GovIdentifier = request.GovIdentifier,
+                    Email = request.Email,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                });
+
+                return Ok((UpsertUserApiResponse)result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
     }

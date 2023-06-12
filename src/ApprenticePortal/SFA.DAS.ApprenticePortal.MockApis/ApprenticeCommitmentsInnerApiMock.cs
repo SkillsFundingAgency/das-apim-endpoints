@@ -19,7 +19,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis
 
         public ApprenticeCommitmentsInnerApiMock(int port, bool ssl = false) : base(port, ssl)
         {
-            Console.WriteLine($"Apprentice Accounts Fake Api Running ({BaseAddress})");
+            Console.WriteLine($"Apprentice Commitments Fake Api Running ({BaseAddress})");
             _existingApprenticeships = new GetApprenticeApprenticeshipsResult
             {
                 Apprenticeships = new List<Apprenticeship>()

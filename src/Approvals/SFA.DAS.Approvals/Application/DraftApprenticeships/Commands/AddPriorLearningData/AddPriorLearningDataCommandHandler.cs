@@ -26,7 +26,6 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLe
                 DurationReducedByHours = request.DurationReducedByHours,
                 IsDurationReducedByRpl = request.IsDurationReducedByRpl,
                 DurationReducedBy = request.DurationReducedBy,
-                CostBeforeRpl = request.CostBeforeRpl,
                 PriceReducedBy = request.PriceReducedBy
             };
             var result = await _apiClient.PostWithResponseCode<AddPriorLearningDataResponse>(new PostAddPriorLearningDataRequest(request.CohortId, request.DraftApprenticeshipId, addPriorLearningRequest), false);

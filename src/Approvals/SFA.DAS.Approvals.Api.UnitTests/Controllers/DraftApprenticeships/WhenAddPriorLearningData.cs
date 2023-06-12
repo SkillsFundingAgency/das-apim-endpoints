@@ -41,7 +41,6 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
             _mediator.Setup(x => x.Send(It.Is<AddPriorLearningDataCommand>(y =>
                 y.CohortId == cohortId &&
                 y.DraftApprenticeshipId == draftApprenticeshipId &&
-                y.CostBeforeRpl == _request.CostBeforeRpl &&
                 y.DurationReducedBy == _request.DurationReducedBy &&
                 y.DurationReducedByHours == _request.DurationReducedByHours &&
                 y.IsDurationReducedByRpl == _request.IsDurationReducedByRpl &&

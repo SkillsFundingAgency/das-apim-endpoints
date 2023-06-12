@@ -29,7 +29,6 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
             {
                 TrainingTotalHours = rplSummary?.TrainingTotalHours,
                 DurationReducedByHours = rplSummary?.DurationReducedByHours,
-                CostBeforeRpl = rplSummary?.CostBeforeRpl,
                 PriceReducedBy = rplSummary?.PriceReducedBy,
                 FundingBandMaximum = rplSummary?.FundingBandMaximum,
                 PercentageOfPriorLearning = rplSummary?.PercentageOfPriorLearning,

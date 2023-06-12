@@ -6,7 +6,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticePatch
+namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeAccounts
 {
     public class ApprenticePatchCommandHandler : IRequestHandler<ApprenticePatchCommand, Unit>
     {
@@ -19,17 +19,16 @@ namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticePatch
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(ApprenticePatchCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ApprenticePatchCommand command, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("[ApprenticeUpdateCommandHandler] request {@request}", request);
+            _logger.LogInformation("[ApprenticeUpdateCommandHandler] command {@command}", command);
 
-            var patchApprenticeRequest = new PatchApprentice
+            var patchApprenticeRequest = new PatchApprenticeRequest(command.ApprenticeId)
             {
-                ApprenticeId = request.ApprenticeId,
-                Patch = request.Patch
+                Data = command.Patch
             };
 
-            await _client.Patch(new PatchApprenticeRequest { Data = patchApprenticeRequest });
+            await _client.Patch(patchApprenticeRequest);
 
             return Unit.Value;
         }
