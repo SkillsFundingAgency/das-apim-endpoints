@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.Attendances.Commands.PutAttendance;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEventById;
-using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
@@ -33,7 +32,7 @@ public class CalendarEventsController : ControllerBase
     [ProducesResponseType(typeof(CalendarEvent), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetCalendarEventById(
         Guid calendarEventId,
-        [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, 
+        [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
         CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(new GetCalendarEventByIdQuery(calendarEventId, requestedByMemberId), cancellationToken);
