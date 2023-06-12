@@ -51,6 +51,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAllCohortDetails
         public IEnumerable<string> InvalidProviderCourseCodes { get; set; }
         public IEnumerable<DraftApprenticeship> DraftApprenticeships { get; set; }
         public IEnumerable<ApprenticeshipEmailOverlap> ApprenticeshipEmailOverlaps { get; set; }
+        public IEnumerable<long> RplErrorDraftApprenticeshipIds { get; set; }
     }
 
     public class GetAllCohortDetailsQueryHandler : IRequestHandler<GetAllCohortDetailsQuery, GetAllCohortDetailsQueryResult>
@@ -76,7 +77,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAllCohortDetails
             var draftApprenticeshipTask = _apiClient.GetWithResponseCode<GetDraftApprenticeshipsResponse>(apiRequest);
             var cohortResponseTask = _apiClient.GetWithResponseCode<GetCohortResponse>(cohortRequest);
             var emailOverlapsResponseTask = _apiClient.Get<GetApprenticeshipEmailOverlapResponse>(new GetApprenticeshipEmailOverlapRequest(request.CohortId));
-
+            
             await Task.WhenAll(draftApprenticeshipTask, cohortResponseTask, emailOverlapsResponseTask);
 
             if (draftApprenticeshipTask.Result.StatusCode == HttpStatusCode.NotFound || cohortResponseTask.Result.StatusCode == HttpStatusCode.NotFound)
@@ -88,7 +89,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAllCohortDetails
             cohortResponseTask.Result.EnsureSuccessStatusCode();
 
             var draftApprenticeships = draftApprenticeshipTask.Result.Body;
-           var emailOverlaps = emailOverlapsResponseTask.Result;
+            var emailOverlaps = emailOverlapsResponseTask.Result;
             var cohort = cohortResponseTask.Result.Body;
 
             if (!cohort.CheckParty(_serviceParameters))
@@ -106,6 +107,18 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAllCohortDetails
 
             var invalidCourses = draftApprenticeships.DraftApprenticeships.Select(x => x.CourseCode).Distinct()
                 .Where(c => providerCourses.Standards.All(x => x.CourseCode != c));
+
+
+            // rpl
+            var rplErrorDraftApprenticeshipIds = new List<long>();
+
+            foreach (DraftApprenticeship a in draftApprenticeships.DraftApprenticeships) {
+                var rplSummary = await _apiClient.Get<GetPriorLearningSummaryResponse>(new GetPriorLearningSummaryRequest(request.CohortId, a.Id));
+
+                if (rplSummary.RplPriceReductionError == true) {
+                    rplErrorDraftApprenticeshipIds.Add(a.Id);
+                }
+            }
 
             return new GetAllCohortDetailsQueryResult
             {
@@ -134,7 +147,8 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAllCohortDetails
                 LastAction = cohort.LastAction,
                 ApprenticeEmailIsRequired = cohort.ApprenticeEmailIsRequired,
                 DraftApprenticeships = draftApprenticeships.DraftApprenticeships,
-                ApprenticeshipEmailOverlaps = emailOverlaps.ApprenticeshipEmailOverlaps
+                ApprenticeshipEmailOverlaps = emailOverlaps.ApprenticeshipEmailOverlaps,
+                RplErrorDraftApprenticeshipIds = rplErrorDraftApprenticeshipIds
             };
         }
     }

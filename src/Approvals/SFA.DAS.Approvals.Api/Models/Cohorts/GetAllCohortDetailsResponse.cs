@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAllCohortDetails;
 using SFA.DAS.Approvals.InnerApi.Responses;
 
@@ -32,6 +33,7 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
         public IEnumerable<string> InvalidProviderCourseCodes { get; set; }
         public IEnumerable<DraftApprenticeship> DraftApprenticeships { get; set; }
         public IEnumerable<ApprenticeshipEmailOverlap> ApprenticeshipEmailOverlaps { get; set; }
+        public IEnumerable<long> RplErrorDraftApprenticeshipIds { get; set; }
 
         public static implicit operator GetAllCohortDetailsResponse(GetAllCohortDetailsQueryResult source)
         {
@@ -61,7 +63,8 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
                 TransferApprovalStatus = source.TransferApprovalStatus,
                 LastAction = source.LastAction,
                 DraftApprenticeships = source.DraftApprenticeships,
-                ApprenticeshipEmailOverlaps = source.ApprenticeshipEmailOverlaps
+                ApprenticeshipEmailOverlaps = source.ApprenticeshipEmailOverlaps,
+                RplErrorDraftApprenticeshipIds = source.RplErrorDraftApprenticeshipIds
             };
         }
     }
