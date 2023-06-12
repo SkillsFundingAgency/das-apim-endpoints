@@ -8,7 +8,6 @@ using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
-[ApiController]
 [Route("[controller]")]
 public class CalendarEventsController : ControllerBase
 {
@@ -32,7 +31,7 @@ public class CalendarEventsController : ControllerBase
     [ProducesResponseType(typeof(CalendarEvent), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetCalendarEventById(
         Guid calendarEventId,
-        [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, 
+        [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
         CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(new GetCalendarEventByIdQuery(calendarEventId, requestedByMemberId), cancellationToken);

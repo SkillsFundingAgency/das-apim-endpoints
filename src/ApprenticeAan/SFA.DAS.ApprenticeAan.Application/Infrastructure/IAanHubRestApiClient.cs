@@ -29,10 +29,17 @@ public interface IAanHubRestApiClient
     [Get("calendarEvents")]
     Task<GetCalendarEventsQueryResult> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] string requestedByMemberId, CancellationToken cancellationToken);
 
-    [Get("calendarevents/{calendarEventId}")]
+    [Get("calendarEvents/{calendarEventId}")]
     [AllowAnyStatusCode]
     Task<Response<CalendarEvent>> GetCalendarEventById(
-        [Path] Guid calendarEventId, 
+        [Path] Guid calendarEventId,
         [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+        CancellationToken cancellationToken);
+
+    [Get("attendances")]
+    Task<GetAttendancesResponse> GetAttendances(
+        [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+        string FromDate,
+        string ToDate,
         CancellationToken cancellationToken);
 }
