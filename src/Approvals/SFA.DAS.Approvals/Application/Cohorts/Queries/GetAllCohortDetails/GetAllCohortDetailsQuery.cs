@@ -1,19 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.Approvals.Extensions;
 using SFA.DAS.Approvals.InnerApi;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAllCohortDetails
 {
@@ -108,10 +106,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAllCohortDetails
             var invalidCourses = draftApprenticeships.DraftApprenticeships.Select(x => x.CourseCode).Distinct()
                 .Where(c => providerCourses.Standards.All(x => x.CourseCode != c));
 
-
-            // rpl
             var rplErrorDraftApprenticeshipIds = new List<long>();
-
             foreach (DraftApprenticeship a in draftApprenticeships.DraftApprenticeships) {
                 var rplSummary = await _apiClient.Get<GetPriorLearningSummaryResponse>(new GetPriorLearningSummaryRequest(request.CohortId, a.Id));
 

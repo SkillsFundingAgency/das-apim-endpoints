@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAllCohortDetails;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 using SFA.DAS.Approvals.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.Api.Models.Cohorts
