@@ -107,13 +107,14 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAllCohortDetails
                 .Where(c => providerCourses.Standards.All(x => x.CourseCode != c));
 
             var rplErrorDraftApprenticeshipIds = new List<long>();
-            foreach (DraftApprenticeship a in draftApprenticeships.DraftApprenticeships) {
+            var rplPriceReductionErrorTask = draftApprenticeships.DraftApprenticeships.Select(async a =>
+            {
                 var rplSummary = await _apiClient.Get<GetPriorLearningSummaryResponse>(new GetPriorLearningSummaryRequest(request.CohortId, a.Id));
-
                 if (rplSummary.RplPriceReductionError == true) {
                     rplErrorDraftApprenticeshipIds.Add(a.Id);
                 }
-            }
+            });
+            await Task.WhenAll(rplPriceReductionErrorTask);
 
             return new GetAllCohortDetailsQueryResult
             {
