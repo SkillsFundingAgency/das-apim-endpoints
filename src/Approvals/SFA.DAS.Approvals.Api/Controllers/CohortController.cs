@@ -80,6 +80,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
+                
                 var result = await _mediator.Send(new GetAllCohortDetailsQuery { CohortId = cohortId, ProviderId = providerId });
 
                 if (result == null)
