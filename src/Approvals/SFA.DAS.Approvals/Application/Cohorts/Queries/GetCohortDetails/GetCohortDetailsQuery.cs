@@ -18,15 +18,38 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
     public class GetCohortDetailsQuery : IRequest<GetCohortDetailsQueryResult>
     {
         public long CohortId { get; set; }
+        public long ProviderId { get; set; }
     }
 
     public class GetCohortDetailsQueryResult
     {
-        public string ProviderName { get; set; }
+        public long CohortId { get; set; }
+        public long AccountId { get; set; }
+        public long AccountLegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
+        public string ProviderName { get; set; }
+        public long? ProviderId { get; set; }
+        public bool IsFundedByTransfer { get; set; }
+        public long? TransferSenderId { get; set; }
+        public int? PledgeApplicationId { get; set; }
+        public Party WithParty { get; set; }
+        public string LatestMessageCreatedByEmployer { get; set; }
+        public string LatestMessageCreatedByProvider { get; set; }
+        public bool IsApprovedByEmployer { get; set; }
+        public bool IsApprovedByProvider { get; set; }
+        public bool IsCompleteForEmployer { get; set; }
+        public bool IsCompleteForProvider { get; set; }
+        public ApprenticeshipEmployerType LevyStatus { get; set; }
+        public long? ChangeOfPartyRequestId { get; set; }
+        public bool IsLinkedToChangeOfPartyRequest { get; set; }
+        public TransferApprovalStatus? TransferApprovalStatus { get; set; }
+        public LastAction LastAction { get; set; }
+        public bool ApprenticeEmailIsRequired { get; set; }
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
         public IEnumerable<string> InvalidProviderCourseCodes { get; set; }
-
+        public IEnumerable<DraftApprenticeship> DraftApprenticeships { get; set; }
+        public IEnumerable<ApprenticeshipEmailOverlap> ApprenticeshipEmailOverlaps { get; set; }
+        public IEnumerable<long> RplErrorDraftApprenticeshipIds { get; set; }
     }
 
     public class GetCohortDetailsQueryHandler : IRequestHandler<GetCohortDetailsQuery, GetCohortDetailsQueryResult>
@@ -51,8 +74,9 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
 
             var draftApprenticeshipTask = _apiClient.GetWithResponseCode<GetDraftApprenticeshipsResponse>(apiRequest);
             var cohortResponseTask = _apiClient.GetWithResponseCode<GetCohortResponse>(cohortRequest);
+            var emailOverlapsResponseTask = _apiClient.Get<GetApprenticeshipEmailOverlapResponse>(new GetApprenticeshipEmailOverlapRequest(request.CohortId));
 
-            await Task.WhenAll(draftApprenticeshipTask, cohortResponseTask);
+            await Task.WhenAll(draftApprenticeshipTask, cohortResponseTask, emailOverlapsResponseTask);
 
             if (draftApprenticeshipTask.Result.StatusCode == HttpStatusCode.NotFound || cohortResponseTask.Result.StatusCode == HttpStatusCode.NotFound)
             {
@@ -63,6 +87,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             cohortResponseTask.Result.EnsureSuccessStatusCode();
 
             var draftApprenticeships = draftApprenticeshipTask.Result.Body;
+            var emailOverlaps = emailOverlapsResponseTask.Result;
             var cohort = cohortResponseTask.Result.Body;
 
             if (!cohort.CheckParty(_serviceParameters))
@@ -81,12 +106,46 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             var invalidCourses = draftApprenticeships.DraftApprenticeships.Select(x => x.CourseCode).Distinct()
                 .Where(c => providerCourses.Standards.All(x => x.CourseCode != c));
 
+            var rplErrorDraftApprenticeshipIds = new List<long>();
+            var rplPriceReductionErrorTask = draftApprenticeships.DraftApprenticeships.Select(async a =>
+            {
+                var rplSummary = await _apiClient.Get<GetPriorLearningSummaryResponse>(new GetPriorLearningSummaryRequest(request.CohortId, a.Id));
+                if (rplSummary.RplPriceReductionError == true)
+                {
+                    rplErrorDraftApprenticeshipIds.Add(a.Id);
+                }
+            });
+            await Task.WhenAll(rplPriceReductionErrorTask);
+
             return new GetCohortDetailsQueryResult
             {
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
                 HasUnavailableFlexiJobAgencyDeliveryModel = !isOnRegister && draftApprenticeships.DraftApprenticeships.Any(a => a.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency)),
-                InvalidProviderCourseCodes = invalidCourses
+                InvalidProviderCourseCodes = invalidCourses,
+                CohortId = cohort.CohortId,
+                AccountId = cohort.AccountId,
+                AccountLegalEntityId = cohort.AccountLegalEntityId,
+                ProviderId = cohort.ProviderId,
+                IsFundedByTransfer = cohort.IsFundedByTransfer,
+                TransferSenderId = cohort.TransferSenderId,
+                PledgeApplicationId = cohort.PledgeApplicationId,
+                WithParty = cohort.WithParty,
+                LatestMessageCreatedByEmployer = cohort.LatestMessageCreatedByEmployer,
+                LatestMessageCreatedByProvider = cohort.LatestMessageCreatedByProvider,
+                IsApprovedByEmployer = cohort.IsApprovedByEmployer,
+                IsApprovedByProvider = cohort.IsApprovedByProvider,
+                IsCompleteForEmployer = cohort.IsCompleteForEmployer,
+                IsCompleteForProvider = cohort.IsCompleteForProvider,
+                LevyStatus = cohort.LevyStatus,
+                ChangeOfPartyRequestId = cohort.ChangeOfPartyRequestId,
+                IsLinkedToChangeOfPartyRequest = cohort.IsLinkedToChangeOfPartyRequest,
+                TransferApprovalStatus = cohort.TransferApprovalStatus,
+                LastAction = cohort.LastAction,
+                ApprenticeEmailIsRequired = cohort.ApprenticeEmailIsRequired,
+                DraftApprenticeships = draftApprenticeships.DraftApprenticeships,
+                ApprenticeshipEmailOverlaps = emailOverlaps.ApprenticeshipEmailOverlaps,
+                RplErrorDraftApprenticeshipIds = rplErrorDraftApprenticeshipIds
             };
         }
     }

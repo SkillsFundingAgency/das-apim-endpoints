@@ -8,7 +8,6 @@ using SFA.DAS.Approvals.Application.Cohorts.Queries;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipCourse;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
-using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAllCohortDetails;
 using SFA.DAS.Approvals.Exceptions;
 using System;
 using System.Threading.Tasks;
@@ -53,11 +52,11 @@ namespace SFA.DAS.Approvals.Api.Controllers
         [HttpGet]
         [Route("employer/{accountId}/unapproved/{cohortId}")]
         [Route("provider/{providerId}/unapproved/{cohortId}")]
-        public async Task<IActionResult> GetCohortDetails(long cohortId)
+        public async Task<IActionResult> GetCohortDetails(long cohortId, long providerId)
         {
             try
             {
-                var result = await _mediator.Send(new GetCohortDetailsQuery { CohortId = cohortId });
+                var result = await _mediator.Send(new GetCohortDetailsQuery { CohortId = cohortId, ProviderId = providerId });
 
                 if (result == null)
                 {
@@ -65,30 +64,6 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 }
 
                 return Ok((GetCohortDetailsResponse)result);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error in Get Cohort Details - cohort id {cohortId}");
-                return BadRequest();
-            }
-        }
-
-        [HttpGet]
-        [Route("employer/{accountId}/unapproved/{cohortId}/all-cohort-details")]
-        [Route("provider/{providerId}/unapproved/{cohortId}/all-cohort-details")]
-        public async Task<IActionResult> GetAllCohortDetails(long cohortId, long providerId)
-        {
-            try
-            {
-                
-                var result = await _mediator.Send(new GetAllCohortDetailsQuery { CohortId = cohortId, ProviderId = providerId });
-
-                if (result == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok((GetAllCohortDetailsResponse)result);
             }
             catch (Exception e)
             {
