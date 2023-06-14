@@ -75,8 +75,9 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             var draftApprenticeshipTask = _apiClient.GetWithResponseCode<GetDraftApprenticeshipsResponse>(apiRequest);
             var cohortResponseTask = _apiClient.GetWithResponseCode<GetCohortResponse>(cohortRequest);
             var emailOverlapsResponseTask = _apiClient.Get<GetApprenticeshipEmailOverlapResponse>(new GetApprenticeshipEmailOverlapRequest(request.CohortId));
+            var rplErrorTask = _apiClient.Get<GetPriorLearningErrorResponse>(new GetPriorLearningErrorRequest(request.CohortId));
 
-            await Task.WhenAll(draftApprenticeshipTask, cohortResponseTask, emailOverlapsResponseTask);
+            await Task.WhenAll(draftApprenticeshipTask, cohortResponseTask, emailOverlapsResponseTask, rplErrorTask);
 
             if (draftApprenticeshipTask.Result.StatusCode == HttpStatusCode.NotFound || cohortResponseTask.Result.StatusCode == HttpStatusCode.NotFound)
             {
@@ -88,6 +89,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
 
             var draftApprenticeships = draftApprenticeshipTask.Result.Body;
             var emailOverlaps = emailOverlapsResponseTask.Result;
+            var rplErrors = rplErrorTask.Result;
             var cohort = cohortResponseTask.Result.Body;
 
             if (!cohort.CheckParty(_serviceParameters))
@@ -105,19 +107,6 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
 
             var invalidCourses = draftApprenticeships.DraftApprenticeships.Select(x => x.CourseCode).Distinct()
                 .Where(c => providerCourses.Standards.All(x => x.CourseCode != c));
-
-            var rplErrorDraftApprenticeshipIds = new List<long>();
-            var rplPriceReductionErrorTask = draftApprenticeships.DraftApprenticeships.Select(async a =>
-            {
-                var rplSummary = await _apiClient.Get<GetPriorLearningSummaryResponse>(new GetPriorLearningSummaryRequest(request.CohortId, a.Id));
-                if (rplSummary.RplPriceReductionError == true)
-                {
-                    rplErrorDraftApprenticeshipIds.Add(a.Id);
-                }
-            });
-            await Task.WhenAll(rplPriceReductionErrorTask);
-
-            var rplErrorIds = await _apiClient.Get<GetPriorLearningErrorResponse>(new GetPriorLearningErrorRequest(request.CohortId));
 
             return new GetCohortDetailsQueryResult
             {
@@ -147,7 +136,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
                 ApprenticeEmailIsRequired = cohort.ApprenticeEmailIsRequired,
                 DraftApprenticeships = draftApprenticeships.DraftApprenticeships,
                 ApprenticeshipEmailOverlaps = emailOverlaps.ApprenticeshipEmailOverlaps,
-                RplErrorDraftApprenticeshipIds = rplErrorDraftApprenticeshipIds
+                RplErrorDraftApprenticeshipIds = rplErrors.DraftApprenticeshipIds
             };
         }
     }
