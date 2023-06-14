@@ -114,8 +114,13 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
                 {
                     rplErrorDraftApprenticeshipIds.Add(a.Id);
                 }
+
+                // new way
             });
             await Task.WhenAll(rplPriceReductionErrorTask);
+
+            var rplErrorIds = await _apiClient.Get<GetPriorLearningErrorResponse>(new GetPriorLearningErrorRequest(request.CohortId));
+
 
             return new GetCohortDetailsQueryResult
             {
