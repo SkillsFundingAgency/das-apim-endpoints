@@ -74,12 +74,14 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
 
             var draftApprenticeshipTask = _apiClient.GetWithResponseCode<GetDraftApprenticeshipsResponse>(apiRequest);
             var cohortResponseTask = _apiClient.GetWithResponseCode<GetCohortResponse>(cohortRequest);
-            var emailOverlapsResponseTask = _apiClient.Get<GetApprenticeshipEmailOverlapResponse>(new GetApprenticeshipEmailOverlapRequest(request.CohortId));
-            var rplErrorTask = _apiClient.Get<GetPriorLearningErrorResponse>(new GetPriorLearningErrorRequest(request.CohortId));
+            var emailOverlapsResponseTask = _apiClient.GetWithResponseCode<GetApprenticeshipEmailOverlapResponse>(new GetApprenticeshipEmailOverlapRequest(request.CohortId));
+            var rplErrorTask = _apiClient.GetWithResponseCode<GetPriorLearningErrorResponse>(new GetPriorLearningErrorRequest(request.CohortId));
 
             await Task.WhenAll(draftApprenticeshipTask, cohortResponseTask, emailOverlapsResponseTask, rplErrorTask);
 
-            if (draftApprenticeshipTask.Result.StatusCode == HttpStatusCode.NotFound || cohortResponseTask.Result.StatusCode == HttpStatusCode.NotFound)
+            if (draftApprenticeshipTask.Result.StatusCode == HttpStatusCode.NotFound || cohortResponseTask.Result.StatusCode == HttpStatusCode.NotFound ||
+                emailOverlapsResponseTask.Result.StatusCode == HttpStatusCode.NotFound || rplErrorTask.Result.StatusCode == HttpStatusCode.NotFound
+                )
             {
                 return null;
             }
@@ -88,8 +90,8 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             cohortResponseTask.Result.EnsureSuccessStatusCode();
 
             var draftApprenticeships = draftApprenticeshipTask.Result.Body;
-            var emailOverlaps = emailOverlapsResponseTask.Result;
-            var rplErrors = rplErrorTask.Result;
+            var emailOverlaps = emailOverlapsResponseTask.Result.Body;
+            var rplErrors = rplErrorTask.Result.Body;
             var cohort = cohortResponseTask.Result.Body;
 
             if (!cohort.CheckParty(_serviceParameters))

@@ -32,6 +32,11 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
         private GetDraftApprenticeshipsResponse _draftApprenticeship;
 
+        private GetApprenticeshipEmailOverlapResponse _emailOverlaps;
+
+        private GetPriorLearningErrorResponse _rplErrors;
+
+
         private GetEditDraftApprenticeshipDeliveryModelQueryResult _queryEditDraftResult;
         private List<Standard> _providerStandards;
 
@@ -57,6 +62,11 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             _draftApprenticeship = fixture.Create<GetDraftApprenticeshipsResponse>();
 
+            _emailOverlaps = fixture.Create<GetApprenticeshipEmailOverlapResponse>();
+
+            _rplErrors = fixture.Create<GetPriorLearningErrorResponse>();
+
+
             _deliveryModels = fixture.Create<List<string>>();
 
             _apiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
@@ -69,6 +79,15 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             _apiClient.Setup(x =>
                     x.GetWithResponseCode<GetDraftApprenticeshipsResponse>(It.Is<GetDraftApprenticeshipsRequest>(r => r.CohortId == _query.CohortId)))
                 .ReturnsAsync(new ApiResponse<GetDraftApprenticeshipsResponse>(_draftApprenticeship, HttpStatusCode.OK, string.Empty));
+
+            _apiClient.Setup(x =>
+                    x.GetWithResponseCode<GetApprenticeshipEmailOverlapResponse>(It.Is<GetApprenticeshipEmailOverlapRequest>(r => r.CohortId == _query.CohortId)))
+                .ReturnsAsync(new ApiResponse<GetApprenticeshipEmailOverlapResponse>(_emailOverlaps, HttpStatusCode.OK, string.Empty));
+
+
+            _apiClient.Setup(x =>
+                    x.GetWithResponseCode<GetPriorLearningErrorResponse>(It.Is<GetPriorLearningErrorRequest>(r => r.CohortId == _query.CohortId)))
+                .ReturnsAsync(new ApiResponse<GetPriorLearningErrorResponse>(_rplErrors, HttpStatusCode.OK, string.Empty));
 
 
             _deliveryModelService = new Mock<IDeliveryModelService>();
