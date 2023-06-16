@@ -1,9 +1,10 @@
 ﻿using MediatR;
+using SFA.DAS.ApprenticeAan.Application.Entities;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 
 namespace SFA.DAS.ApprenticeAan.Application.Calendars.Queries.GetCalendars;
 
-public class GetCalendarsQueryHandler : IRequestHandler<GetCalendarsQuery, IEnumerable<CalendarModel>>
+public class GetCalendarsQueryHandler : IRequestHandler<GetCalendarsQuery, IEnumerable<Calendar>>
 {
     private readonly IAanHubRestApiClient _apiClient;
 
@@ -12,9 +13,9 @@ public class GetCalendarsQueryHandler : IRequestHandler<GetCalendarsQuery, IEnum
         _apiClient = apiClient;
     }
 
-    public async Task<IEnumerable<CalendarModel>> Handle(GetCalendarsQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Calendar>> Handle(GetCalendarsQuery request, CancellationToken cancellationToken)
     {
-        var calendars = await _apiClient.GetCalendars(cancellationToken);
-        return calendars.Select(cal => (CalendarModel)cal);
+        return await _apiClient.GetCalendars(cancellationToken);
+
     }
 }

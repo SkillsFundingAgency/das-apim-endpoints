@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.Calendars.Queries.GetCalendars;
+using SFA.DAS.ApprenticeAan.Application.Entities;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
@@ -14,7 +15,7 @@ public class CalendarsController : Controller
 
     [HttpGet]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(IEnumerable<CalendarModel>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(IEnumerable<Calendar>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GeCalendars(CancellationToken cancellationToken)
     {
         return Ok(await _mediator.Send(new GetCalendarsQuery(), cancellationToken));
