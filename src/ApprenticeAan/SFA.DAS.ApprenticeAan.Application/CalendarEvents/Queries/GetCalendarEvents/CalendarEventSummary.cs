@@ -7,7 +7,6 @@ public class CalendarEventSummary
     public string EventFormat { get; set; } = null!;
     public DateTime Start { get; set; }
     public DateTime End { get; set; }
-
     public string Description { get; set; } = null!;
     public string Summary { get; set; } = null!;
     public string Location { get; set; } = null!;
