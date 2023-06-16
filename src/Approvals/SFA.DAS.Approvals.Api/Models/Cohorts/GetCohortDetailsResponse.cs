@@ -7,6 +7,7 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
     {
         public string LegalEntityName { get; set; }
         public string ProviderName { get; set; }
+        public bool HasNoDeclaredStandards { get; set; }
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
         public IEnumerable<string> InvalidProviderCourseCodes { get; set; }
 
@@ -16,6 +17,7 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
             {
                 LegalEntityName = source.LegalEntityName,
                 ProviderName = source.ProviderName,
+                HasNoDeclaredStandards = source.HasNoDeclaredStandards,
                 HasUnavailableFlexiJobAgencyDeliveryModel = source.HasUnavailableFlexiJobAgencyDeliveryModel,
                 InvalidProviderCourseCodes = source.InvalidProviderCourseCodes
             };

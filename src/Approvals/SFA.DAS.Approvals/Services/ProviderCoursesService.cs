@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
@@ -26,6 +28,7 @@ namespace SFA.DAS.Approvals.Services
         private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _providerCoursesApiClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
         private readonly ICacheStorageService _cacheStorageService;
+        private readonly ILogger<ProviderStandardsService> _logger;
 
         public const string AllStandardsCacheKey = "ProviderCoursesService.GetAllStandardsResponse";
         public const string ProviderDetailsCacheKey = "ProviderCoursesService.TrainingProviderResponse";
@@ -35,13 +38,15 @@ namespace SFA.DAS.Approvals.Services
             ITrainingProviderService trainingProviderService,
             IProviderCoursesApiClient<ProviderCoursesApiConfiguration> providerCoursesApiClient,
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient,
-            ICacheStorageService cacheStorageService)
+            ICacheStorageService cacheStorageService,
+            ILogger<ProviderStandardsService> logger)
         {
             _serviceParameters = serviceParameters;
             _trainingProviderService = trainingProviderService;
             _commitmentsV2ApiClient = commitmentsV2ApiClient;
             _cacheStorageService = cacheStorageService;
             _providerCoursesApiClient = providerCoursesApiClient;
+            _logger = logger;
         }
 
         public async Task<ProviderStandardsData> GetStandardsData(long providerId)
@@ -98,12 +103,26 @@ namespace SFA.DAS.Approvals.Services
 
         private async Task<IEnumerable<Standard>> GetStandardsForProvider(long providerId)
         {
-            var providerStandards =
-                await _providerCoursesApiClient.Get<IEnumerable<GetProviderStandardsResponse>>(
-                    new GetProviderStandardsRequest(providerId));
+            try
+            {
+                var providerStandards =
+                    await _providerCoursesApiClient.Get<IEnumerable<GetProviderStandardsResponse>>(
+                        new GetProviderStandardsRequest(providerId));
 
-            return providerStandards.Select(
-                x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel)).OrderBy(x => x.Name);
+                if (providerStandards?.Any() != true)
+                {
+                    _logger.LogWarning($"No Standards Declared For Provider {providerId}");
+                    return Enumerable.Empty<Standard>();
+                }
+
+                return providerStandards.Select(
+                x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel)).OrderBy(x => x.Name).ToList();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"No Standards Declared For Provider {providerId}", e);
+                return Enumerable.Empty<Standard>();
+            }
         }
     }
 }
