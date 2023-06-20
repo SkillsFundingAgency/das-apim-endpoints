@@ -7,6 +7,7 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
     public class GetCohortDetailsResponse
     {
         public long CohortId { get; set; }
+        public string CohortReference { get; set; }
         public long AccountId { get; set; }
         public long AccountLegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
@@ -34,7 +35,6 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
         public IEnumerable<ApprenticeshipEmailOverlap> ApprenticeshipEmailOverlaps { get; set; }
         public IEnumerable<long> RplErrorDraftApprenticeshipIds { get; set; }
 
-
         public static implicit operator GetCohortDetailsResponse(GetCohortDetailsQueryResult source)
         {
             return new GetCohortDetailsResponse
@@ -44,6 +44,7 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
                 HasUnavailableFlexiJobAgencyDeliveryModel = source.HasUnavailableFlexiJobAgencyDeliveryModel,
                 InvalidProviderCourseCodes = source.InvalidProviderCourseCodes,
                 CohortId = source.CohortId,
+                CohortReference = source.CohortReference,
                 AccountId = source.AccountId,
                 AccountLegalEntityId = source.AccountLegalEntityId,
                 ProviderId = source.ProviderId,

@@ -52,11 +52,11 @@ namespace SFA.DAS.Approvals.Api.Controllers
         [HttpGet]
         [Route("employer/{accountId}/unapproved/{cohortId}")]
         [Route("provider/{providerId}/unapproved/{cohortId}")]
-        public async Task<IActionResult> GetCohortDetails(long cohortId, long providerId)
+        public async Task<IActionResult> GetCohortDetails(long cohortId)
         {
             try
             {
-                var result = await _mediator.Send(new GetCohortDetailsQuery { CohortId = cohortId, ProviderId = providerId });
+                var result = await _mediator.Send(new GetCohortDetailsQuery { CohortId = cohortId });
 
                 if (result == null)
                 {
@@ -67,7 +67,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error in Get All Cohort Details - cohort id {cohortId} provider id {providerId}");
+                _logger.LogError(e, $"Error in Get All Cohort Details - cohort id {cohortId}");
                 return BadRequest();
             }
         }

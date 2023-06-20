@@ -21,7 +21,6 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
         private GetCohortDetailsQueryResult _queryResult;
 
         private long _cohortId;
-        private long _providerId;
 
         [SetUp]
         public void Setup()
@@ -30,11 +29,10 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
             _queryResult = fixture.Create<GetCohortDetailsQueryResult>();
 
             _cohortId = fixture.Create<long>();
-            _providerId = fixture.Create<long>();
 
             _mediator = new Mock<IMediator>();
             _mediator.Setup(x => x.Send(It.Is<GetCohortDetailsQuery>(q =>
-                        q.CohortId == _cohortId && q.ProviderId == _providerId),
+                        q.CohortId == _cohortId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_queryResult);
 
@@ -44,7 +42,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
         [Test]
         public async Task GetCohortDetailsResponseIsReturned()
         {
-            var result = await _controller.GetCohortDetails(_cohortId, _providerId);
+            var result = await _controller.GetCohortDetails(_cohortId);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okObjectResult = (OkObjectResult)result;

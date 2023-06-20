@@ -18,12 +18,12 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
     public class GetCohortDetailsQuery : IRequest<GetCohortDetailsQueryResult>
     {
         public long CohortId { get; set; }
-        public long ProviderId { get; set; }
     }
 
     public class GetCohortDetailsQueryResult
     {
         public long CohortId { get; set; }
+        public string CohortReference { get; set; }
         public long AccountId { get; set; }
         public long AccountLegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
@@ -117,6 +117,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
                 HasUnavailableFlexiJobAgencyDeliveryModel = !isOnRegister && draftApprenticeships.DraftApprenticeships.Any(a => a.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency)),
                 InvalidProviderCourseCodes = invalidCourses,
                 CohortId = cohort.CohortId,
+                CohortReference = cohort.CohortReference,
                 AccountId = cohort.AccountId,
                 AccountLegalEntityId = cohort.AccountLegalEntityId,
                 ProviderId = cohort.ProviderId,
