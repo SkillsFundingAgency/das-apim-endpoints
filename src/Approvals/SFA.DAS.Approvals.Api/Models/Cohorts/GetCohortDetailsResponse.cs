@@ -56,7 +56,7 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
                 WithParty = source.WithParty,
                 LatestMessageCreatedByEmployer = source.LatestMessageCreatedByEmployer,
                 LatestMessageCreatedByProvider = source.LatestMessageCreatedByProvider,
-                IsApprovedByEmployer = source.IsApprovedByProvider,
+                IsApprovedByEmployer = source.IsApprovedByEmployer,
                 IsApprovedByProvider = source.IsApprovedByProvider,
                 IsCompleteForEmployer = source.IsCompleteForEmployer,
                 IsCompleteForProvider = source.IsCompleteForProvider,

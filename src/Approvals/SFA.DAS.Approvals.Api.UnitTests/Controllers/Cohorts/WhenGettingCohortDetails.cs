@@ -51,7 +51,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
 
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
 
-            var comparisonResult = compare.Compare(objectResult, objectResult);
+            var comparisonResult = compare.Compare(_queryResult, objectResult);
             Assert.IsTrue(comparisonResult.AreEqual);
         }
     }
