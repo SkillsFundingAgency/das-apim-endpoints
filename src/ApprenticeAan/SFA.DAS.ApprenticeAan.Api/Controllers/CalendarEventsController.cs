@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.Attendances.Commands.PutAttendance;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEventById;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+using SFA.DAS.ApprenticeAan.Application.Common;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
-[ApiController]
 [Route("[controller]")]
 public class CalendarEventsController : ControllerBase
 {
@@ -21,9 +21,9 @@ public class CalendarEventsController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(GetCalendarEventsQueryResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetCalendarEvents([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCalendarEvents([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate, [FromQuery] List<EventFormat>? eventFormat, [FromQuery] List<int>? calendarId, [FromQuery] List<int> regionId, CancellationToken cancellationToken)
     {
-        var response = await _mediator.Send(new GetCalendarEventsQuery(requestedByMemberId), cancellationToken);
+        var response = await _mediator.Send(new GetCalendarEventsQuery(requestedByMemberId, fromDate, toDate, eventFormat, calendarId, regionId), cancellationToken);
         return Ok(response);
     }
 
@@ -32,7 +32,7 @@ public class CalendarEventsController : ControllerBase
     [ProducesResponseType(typeof(CalendarEvent), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetCalendarEventById(
         Guid calendarEventId,
-        [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, 
+        [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
         CancellationToken cancellationToken)
     {
         var response = await _mediator.Send(new GetCalendarEventByIdQuery(calendarEventId, requestedByMemberId), cancellationToken);

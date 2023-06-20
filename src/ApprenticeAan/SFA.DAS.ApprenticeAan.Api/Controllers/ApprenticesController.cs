@@ -6,7 +6,6 @@ using SFA.DAS.ApprenticeAan.Application.Apprentices.Queries.GetApprentice;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
-[ApiController]
 [Route("[controller]")]
 public class ApprenticesController : ControllerBase
 {

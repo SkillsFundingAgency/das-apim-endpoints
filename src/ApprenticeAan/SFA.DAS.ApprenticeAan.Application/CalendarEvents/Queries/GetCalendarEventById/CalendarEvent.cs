@@ -6,10 +6,11 @@ public class CalendarEvent
 {
     public Guid CalendarEventId { get; set; }
     public string CalendarName { get; set; } = null!;
-    public string EventFormat { get; set; } = string.Empty;
+    public string EventFormat { get; set; } = null!;
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
-    public string Description { get; set; } = string.Empty;
+    public string Title { get; set; } = null!;
+    public string Description { get; set; } = null!;
     public string? Summary { get; set; }
     public int? RegionId { get; set; }
     public string? Location { get; set; }

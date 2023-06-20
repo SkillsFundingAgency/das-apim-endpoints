@@ -27,6 +27,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
         public long AccountId { get; set; }
         public long AccountLegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
+        public bool HasNoDeclaredStandards { get; set; }
         public string ProviderName { get; set; }
         public long? ProviderId { get; set; }
         public bool IsFundedByTransfer { get; set; }
@@ -114,6 +115,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails
             {
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
+                HasNoDeclaredStandards = providerCourses.Standards?.Any() != true,
                 HasUnavailableFlexiJobAgencyDeliveryModel = !isOnRegister && draftApprenticeships.DraftApprenticeships.Any(a => a.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency)),
                 InvalidProviderCourseCodes = invalidCourses,
                 CohortId = cohort.CohortId,

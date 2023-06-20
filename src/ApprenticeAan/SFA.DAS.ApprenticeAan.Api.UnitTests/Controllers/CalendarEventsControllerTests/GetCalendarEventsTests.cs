@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.ApprenticeAan.Api.Controllers;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+using SFA.DAS.ApprenticeAan.Application.Common;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.CalendarEventsControllerTests;
@@ -14,12 +15,14 @@ public class GetCalendarEventsTests
     [Test]
     [MoqAutoData]
     public async Task Get_InvokesQueryHandler(
-      [Frozen] Mock<IMediator> mediatorMock,
-      [Greedy] CalendarEventsController sut,
-      Guid requestedByMemberId,
-      CancellationToken cancellationToken)
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] CalendarEventsController sut,
+        Guid requestedByMemberId,
+        CancellationToken cancellationToken)
     {
-        await sut.GetCalendarEvents(requestedByMemberId, cancellationToken);
+        var fromDate = DateTime.Today;
+        var toDate = DateTime.Today.AddDays(7);
+        await sut.GetCalendarEvents(requestedByMemberId, fromDate, toDate, new List<EventFormat>(), new List<int>(), new List<int>(), cancellationToken);
 
         mediatorMock.Verify(
             m => m.Send(It.Is<GetCalendarEventsQuery>(q => q.RequestedByMemberId == requestedByMemberId),
@@ -31,14 +34,19 @@ public class GetCalendarEventsTests
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] CalendarEventsController sut,
         Guid requestedByMemberId,
+        List<EventFormat> eventFormats,
+        List<int> calendarIds,
+        List<int> regionIds,
         GetCalendarEventsQueryResult queryResult,
         CancellationToken cancellationToken)
     {
-
+        var fromDate = DateTime.Today;
+        var toDate = DateTime.Today.AddDays(7);
         mediatorMock.Setup(m => m.Send(It.Is<GetCalendarEventsQuery>(q => q.RequestedByMemberId == requestedByMemberId), It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(queryResult);
+            .ReturnsAsync(queryResult);
 
-        var result = await sut.GetCalendarEvents(requestedByMemberId, cancellationToken);
+        var result = await sut.GetCalendarEvents(requestedByMemberId, fromDate, toDate, eventFormats, calendarIds, regionIds, cancellationToken);
+
 
         result.As<OkObjectResult>().Should().NotBeNull();
         result.As<OkObjectResult>().Value.Should().Be(queryResult);
