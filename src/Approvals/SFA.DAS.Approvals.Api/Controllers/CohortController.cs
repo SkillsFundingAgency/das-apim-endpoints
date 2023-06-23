@@ -64,7 +64,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     return NotFound();
                 }
 
-                return Ok((GetCohortDetailsResponse)result);
+                return Ok(result);
             }
             catch (Exception e)
             {

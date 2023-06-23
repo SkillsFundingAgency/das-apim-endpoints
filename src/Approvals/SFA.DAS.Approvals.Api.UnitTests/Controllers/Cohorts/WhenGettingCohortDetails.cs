@@ -46,8 +46,8 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okObjectResult = (OkObjectResult)result;
-            Assert.IsInstanceOf<GetCohortDetailsResponse>(okObjectResult.Value);
-            var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
+            Assert.IsInstanceOf<GetCohortDetailsQueryResult>(okObjectResult.Value);
+            var objectResult = (GetCohortDetailsQueryResult)okObjectResult.Value;
 
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
 
