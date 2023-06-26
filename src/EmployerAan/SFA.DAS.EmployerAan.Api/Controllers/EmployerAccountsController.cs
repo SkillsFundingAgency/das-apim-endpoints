@@ -16,10 +16,10 @@ public class EmployerAccountsController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{userId}/accounts")]
-    public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery] string email)
+    [Route("{userId}")]
+    public async Task<IActionResult> GetUserAccounts([FromRoute] string userId, [FromQuery] string email, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(new GetUserAccountsQuery(userId, email));
+        var result = await _mediator.Send(new GetUserAccountsQuery(userId, email), cancellationToken);
 
         return Ok(result);
     }
