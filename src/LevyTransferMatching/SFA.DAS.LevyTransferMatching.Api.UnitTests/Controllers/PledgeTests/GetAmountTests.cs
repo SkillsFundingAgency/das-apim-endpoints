@@ -46,7 +46,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             Assert.IsNotNull(response);
 
             Assert.AreEqual(_queryResult.RemainingTransferAllowance, response.RemainingTransferAllowance);
-            Assert.AreEqual(_queryResult.DasAccountName, response.DasAccountName);
         }
     }
 }

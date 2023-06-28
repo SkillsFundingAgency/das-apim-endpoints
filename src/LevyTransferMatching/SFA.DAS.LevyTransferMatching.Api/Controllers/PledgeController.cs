@@ -185,7 +185,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
                 var response = new GetAmountResponse
                 {
-                    DasAccountName = queryResult.DasAccountName,
                     RemainingTransferAllowance = queryResult.RemainingTransferAllowance
                 };
 

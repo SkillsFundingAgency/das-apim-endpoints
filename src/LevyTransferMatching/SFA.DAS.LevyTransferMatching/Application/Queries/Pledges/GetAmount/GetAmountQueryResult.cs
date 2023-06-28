@@ -2,7 +2,6 @@
 {
     public class GetAmountQueryResult
     {
-        public string DasAccountName { get; set; }
         public decimal RemainingTransferAllowance { get; set; }
     }
 }

@@ -37,11 +37,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
             Assert.AreEqual(result.RemainingTransferAllowance, _account.RemainingTransferAllowance);
         }
 
-        [Test]
-        public async Task Handle_Result_Has_Correct_AccountName()
-        {
-            var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(result.DasAccountName, _account.DasAccountName);
-        }
+      
     }
 }
