@@ -185,7 +185,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
                 var response = new GetAmountResponse
                 {
-                    RemainingTransferAllowance = queryResult.RemainingTransferAllowance
+                    RemainingTransferAllowance = queryResult.RemainingTransferAllowance,
+                    StartingTransferAllowance = queryResult.StartingTransferAllowance
                 };
 
                 return Ok(response);
