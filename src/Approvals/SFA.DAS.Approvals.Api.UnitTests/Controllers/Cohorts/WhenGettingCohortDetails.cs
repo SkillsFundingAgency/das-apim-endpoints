@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using KellermanSoftware.CompareNetObjects;
@@ -49,11 +51,38 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
             Assert.IsInstanceOf<GetCohortDetailsResponse>(okObjectResult.Value);
             var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
 
-            var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
+            var compare = new CompareLogic(new ComparisonConfig { MembersToIgnore = new List<string> { "DraftApprenticeships", "ApprenticeshipEmailOverlaps" }, IgnoreObjectTypes = true });
 
             var comparisonResult = compare.Compare(_queryResult, objectResult);
             Assert.IsTrue(comparisonResult.AreEqual);
+        }
 
+        [Test]
+        public async Task GetCohortDetailsResponseWithCorrectlyMappedDraftApprenticeshipsIsReturned()
+        {
+            var result = await _controller.GetCohortDetails(_cohortId);
+
+            var okObjectResult = (OkObjectResult)result;
+            var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
+
+            var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
+
+            var comparisonResult = compare.Compare(_queryResult.DraftApprenticeships.Last(), objectResult.DraftApprenticeships.Last());
+            Assert.IsTrue(comparisonResult.AreEqual);
+        }
+
+        [Test]
+        public async Task GetCohortDetailsResponseWithCorrectlyMappedApprenticeshipEmailOverlapsIsReturned()
+        {
+            var result = await _controller.GetCohortDetails(_cohortId);
+
+            var okObjectResult = (OkObjectResult)result;
+            var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
+
+            var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
+
+            var comparisonResult = compare.Compare(_queryResult.ApprenticeshipEmailOverlaps.Last(), objectResult.ApprenticeshipEmailOverlaps.Last());
+            Assert.IsTrue(comparisonResult.AreEqual);
         }
     }
 }
