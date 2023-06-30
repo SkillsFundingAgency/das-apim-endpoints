@@ -26,7 +26,9 @@ namespace SFA.DAS.EmployerProfiles.UnitTests.Application.AccountUsers
                         && c.UserId.Equals(request.UserId)
                         && c.FirstName.Equals(request.FirstName)
                         && c.LastName.Equals(request.LastName)
-                        && c.GovIdentifier.Equals(request.GovIdentifier))))
+                        && c.GovIdentifier.Equals(request.GovIdentifier)
+                        && c.CorrelationId.Equals(request.CorrelationId)
+                        )))
                 .ReturnsAsync(response);
 
             var actual = await handler.Handle(request, CancellationToken.None);
