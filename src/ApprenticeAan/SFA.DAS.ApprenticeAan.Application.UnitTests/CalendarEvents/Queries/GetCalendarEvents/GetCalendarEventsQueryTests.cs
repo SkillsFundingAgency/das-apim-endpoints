@@ -1,5 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
+using SFA.DAS.ApprenticeAan.Api.Models;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Common;
 
@@ -7,23 +8,26 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.CalendarEvents.Queries.Get
 public class GetCalendarEventsQueryTests
 {
     [Test, AutoData]
-    public void Operator_PopulatesModelFromParameters(Guid memberId, DateTime fromDate, DateTime toDate, List<EventFormat>? eventFormats, List<int>? calendarIds, List<int>? regionIds, int? page, int? pageSize)
+    public void Operator_PopulatesModelFromParameters(Guid memberId, DateTime? fromDate, DateTime? toDate, List<EventFormat> eventFormats, List<int> calendarIds, List<int> regionIds, int? page, int? pageSize)
     {
-        var model = new GetCalendarEventsQuery
+        var model = new GetCalendarEventsModel
         {
             RequestedByMemberId = memberId,
-            FromDate = fromDate.ToString("yyyy-MM-dd"),
-            ToDate = toDate.ToString("yyyy-MM-dd"),
+            FromDate = fromDate,
+            ToDate = toDate,
             EventFormat = eventFormats,
-            CalendarIds = calendarIds,
-            RegionIds = regionIds,
+            CalendarId = calendarIds,
+            RegionId = regionIds,
             Page = page,
             PageSize = pageSize
         };
-        model.RequestedByMemberId.Should().Be(memberId);
-        model.FromDate.Should().Be(fromDate.ToString("yyyy-MM-dd"));
-        model.ToDate.Should().Be(toDate.ToString("yyyy-MM-dd"));
-        model.EventFormat.Should().BeEquivalentTo(eventFormats);
+
+        var query = (GetCalendarEventsQuery)model;
+
+        query.RequestedByMemberId.Should().Be(memberId);
+        query.FromDate.Should().Be(fromDate?.ToString("yyyy-MM-dd"));
+        query.ToDate.Should().Be(toDate?.ToString("yyyy-MM-dd"));
+        query.EventFormat.Should().BeEquivalentTo(eventFormats);
     }
 
     [Test, AutoData]
