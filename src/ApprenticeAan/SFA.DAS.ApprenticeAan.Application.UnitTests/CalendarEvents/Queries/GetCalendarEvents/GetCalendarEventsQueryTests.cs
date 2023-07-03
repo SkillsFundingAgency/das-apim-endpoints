@@ -28,6 +28,31 @@ public class GetCalendarEventsQueryTests
         query.FromDate.Should().Be(fromDate?.ToString("yyyy-MM-dd"));
         query.ToDate.Should().Be(toDate?.ToString("yyyy-MM-dd"));
         query.EventFormat.Should().BeEquivalentTo(eventFormats);
+        query.Page.Should().Be(page);
+        query.PageSize.Should().Be(pageSize);
+    }
+
+    [Test, AutoData]
+    public void Operator_PopulatesModelFromParametersWithNulls(Guid memberId, List<EventFormat> eventFormats, List<int> calendarIds, List<int> regionIds)
+    {
+        var model = new GetCalendarEventsModel
+        {
+            RequestedByMemberId = memberId,
+            FromDate = null,
+            ToDate = null,
+            EventFormat = eventFormats,
+            CalendarId = calendarIds,
+            RegionId = regionIds,
+            Page = null,
+            PageSize = null
+        };
+
+        var query = (GetCalendarEventsQuery)model;
+
+        query.FromDate.Should().BeNull();
+        query.ToDate.Should().BeNull();
+        query.Page.Should().BeNull();
+        query.PageSize.Should().BeNull();
     }
 
     [Test, AutoData]
