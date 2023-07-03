@@ -7,9 +7,19 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.CalendarEvents.Queries.Get
 public class GetCalendarEventsQueryTests
 {
     [Test, AutoData]
-    public void Operator_PopulatesModelFromParameters(Guid memberId, DateTime fromDate, DateTime toDate, List<EventFormat>? eventFormats, List<int>? calendarIds, List<int>? regionIds)
+    public void Operator_PopulatesModelFromParameters(Guid memberId, DateTime fromDate, DateTime toDate, List<EventFormat>? eventFormats, List<int>? calendarIds, List<int>? regionIds, int? page, int? pageSize)
     {
-        var model = new GetCalendarEventsQuery(memberId, fromDate, toDate, eventFormats, calendarIds, regionIds);
+        var model = new GetCalendarEventsQuery
+        {
+            RequestedByMemberId = memberId,
+            FromDate = fromDate.ToString("yyyy-MM-dd"),
+            ToDate = toDate.ToString("yyyy-MM-dd"),
+            EventFormat = eventFormats,
+            CalendarIds = calendarIds,
+            RegionIds = regionIds,
+            Page = page,
+            PageSize = pageSize
+        };
         model.RequestedByMemberId.Should().Be(memberId);
         model.FromDate.Should().Be(fromDate.ToString("yyyy-MM-dd"));
         model.ToDate.Should().Be(toDate.ToString("yyyy-MM-dd"));
@@ -19,10 +29,15 @@ public class GetCalendarEventsQueryTests
     [Test, AutoData]
     public void Operator_PopulatesModelFromParametersDatesNull(Guid memberId)
     {
-        var model = new GetCalendarEventsQuery(memberId, null, null, null, null, null);
+        var model = new GetCalendarEventsQuery
+        {
+            RequestedByMemberId = memberId
+        };
         model.RequestedByMemberId.Should().Be(memberId);
         model.FromDate.Should().BeNull();
         model.ToDate.Should().BeNull();
         model.EventFormat.Should().BeNull();
+        model.Page.Should().BeNull();
+        model.PageSize.Should().BeNull();
     }
 }

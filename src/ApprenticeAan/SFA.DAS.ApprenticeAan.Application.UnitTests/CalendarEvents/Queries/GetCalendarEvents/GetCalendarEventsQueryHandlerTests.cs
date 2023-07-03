@@ -16,15 +16,28 @@ public class GetCalendarEventsQueryHandlerTests
         GetCalendarEventsQueryHandler handler,
         GetCalendarEventsQueryResult expected,
         Guid requestedByMemberId,
-        DateTime fromDate,
-        DateTime toDate,
+        DateTime? fromDate,
+        DateTime? toDate,
         List<EventFormat> eventFormats,
         List<int> calendarIds,
         List<int> regionIds,
+        int? page,
+        int? pageSize,
         CancellationToken cancellationToken)
     {
-        var query = new GetCalendarEventsQuery(requestedByMemberId, fromDate, toDate, eventFormats, calendarIds, regionIds);
-        apiClient.Setup(x => x.GetCalendarEvents(requestedByMemberId.ToString(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<EventFormat>>(), It.IsAny<List<int>>(), It.IsAny<List<int>>(), cancellationToken)).ReturnsAsync(expected);
+        var query = new GetCalendarEventsQuery
+        {
+            RequestedByMemberId = requestedByMemberId,
+            FromDate = fromDate?.ToString("yyyy-MM-dd"),
+            ToDate = toDate?.ToString("yyyy-MM-dd"),
+            EventFormat = eventFormats,
+            CalendarIds = calendarIds,
+            RegionIds = regionIds,
+            Page = page,
+            PageSize = pageSize
+
+        };
+        apiClient.Setup(x => x.GetCalendarEvents(requestedByMemberId.ToString(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<EventFormat>>(), It.IsAny<List<int>>(), It.IsAny<List<int>>(), It.IsAny<int?>(), It.IsAny<int?>(), cancellationToken)).ReturnsAsync(expected);
         var actual = await handler.Handle(query, cancellationToken);
         actual.Should().Be(expected);
     }
