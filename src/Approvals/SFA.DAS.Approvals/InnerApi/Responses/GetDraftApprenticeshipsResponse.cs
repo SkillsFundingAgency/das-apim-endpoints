@@ -37,6 +37,5 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         public int? WeightageReducedBy { get; set; }
         public string QualificationsForRplReduction { get; set; }
         public string ReasonForRplReduction { get; set; }
-
     }
 }

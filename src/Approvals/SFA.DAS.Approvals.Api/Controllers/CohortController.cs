@@ -64,11 +64,11 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     return NotFound();
                 }
 
-                return Ok(result);
+                return Ok((GetCohortDetailsResponse)result);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error in Get All Cohort Details - cohort id {cohortId}");
+                _logger.LogError(e, $"Error in get cohort details - cohort id {cohortId}");
                 return BadRequest();
             }
         }
