@@ -90,7 +90,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     return NotFound();
                 }
 
-                return Ok(result);
+                return Ok((GetViewDraftApprenticeshipResponse)result);
             }
             catch (Exception e)
             {

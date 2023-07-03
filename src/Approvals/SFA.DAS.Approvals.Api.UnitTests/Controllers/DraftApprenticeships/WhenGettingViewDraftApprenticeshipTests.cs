@@ -1,12 +1,14 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using KellermanSoftware.CompareNetObjects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
+using SFA.DAS.Approvals.Api.Models.DraftApprenticeships;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetViewDraftApprenticeship;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
@@ -47,8 +49,13 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okObjectResult = (OkObjectResult) result;
-            Assert.IsInstanceOf<GetViewDraftApprenticeshipQueryResult>(okObjectResult.Value);
-            Assert.AreEqual(_queryResult, okObjectResult.Value);
+            Assert.IsInstanceOf<GetViewDraftApprenticeshipResponse>(okObjectResult.Value);
+            var objectResult = (GetViewDraftApprenticeshipResponse)okObjectResult.Value;
+
+            var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
+
+            var comparisonResult = compare.Compare(_queryResult, objectResult);
+            Assert.IsTrue(comparisonResult.AreEqual);
         }
 
         [Test]
