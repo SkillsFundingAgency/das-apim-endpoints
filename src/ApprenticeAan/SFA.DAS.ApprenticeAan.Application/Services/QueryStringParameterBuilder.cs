@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.ApprenticeAan.Application.Services;
 
-public class QueryStringParameterBuilder
+public static class QueryStringParameterBuilder
 {
 
     public static Dictionary<string, string[]> BuildQueryStringParameters(GetCalendarEventsQuery request)
@@ -17,12 +17,12 @@ public class QueryStringParameterBuilder
 
         if (request.CalendarIds != null)
         {
-            parameters.Add("calendarIds", request.CalendarIds.Select(cal => cal.ToString()).ToArray());
+            parameters.Add("calendarId", request.CalendarIds.Select(cal => cal.ToString()).ToArray());
         }
 
         if (request.RegionIds != null)
         {
-            parameters.Add("regionIds", request.RegionIds.Select(region => region.ToString()).ToArray());
+            parameters.Add("regionId", request.RegionIds.Select(region => region.ToString()).ToArray());
         }
 
         if (request.Page != null) parameters.Add("page", new[] { request.Page?.ToString() }!);

@@ -38,7 +38,6 @@ public class GetCalendarEventsQueryHandlerTests
 
         };
 
-        //   var params = QueryStringParameterBuilder.BuildQueryStringParameters(query);
         apiClient.Setup(x => x.GetCalendarEvents(requestedByMemberId, It.IsAny<Dictionary<string, string[]>>(), cancellationToken)).ReturnsAsync(expected);
         var actual = await handler.Handle(query, cancellationToken);
         actual.Should().Be(expected);
