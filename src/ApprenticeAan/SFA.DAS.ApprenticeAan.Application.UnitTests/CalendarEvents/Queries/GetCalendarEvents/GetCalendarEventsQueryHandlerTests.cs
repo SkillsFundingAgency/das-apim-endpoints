@@ -37,7 +37,9 @@ public class GetCalendarEventsQueryHandlerTests
             PageSize = pageSize
 
         };
-        apiClient.Setup(x => x.GetCalendarEvents(requestedByMemberId.ToString(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<EventFormat>>(), It.IsAny<List<int>>(), It.IsAny<List<int>>(), It.IsAny<int?>(), It.IsAny<int?>(), cancellationToken)).ReturnsAsync(expected);
+
+        //   var params = QueryStringParameterBuilder.BuildQueryStringParameters(query);
+        apiClient.Setup(x => x.GetCalendarEvents(requestedByMemberId, It.IsAny<Dictionary<string, string[]>>(), cancellationToken)).ReturnsAsync(expected);
         var actual = await handler.Handle(query, cancellationToken);
         actual.Should().Be(expected);
     }
