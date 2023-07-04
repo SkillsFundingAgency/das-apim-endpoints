@@ -34,6 +34,7 @@ namespace SFA.DAS.EmployerProfiles.Api.UnitTests.Controllers.AccountUsers
                         && c.FirstName.Equals(request.FirstName)
                         && c.LastName.Equals(request.LastName)
                         && c.UserId.Equals(userId)
+                        && c.CorrelationId.Equals(request.CorrelationId)
                         ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
