@@ -56,6 +56,8 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
             public long SenderEmployerAccountId { get; set; }
             public string SenderEmployerAccountName { get; set; }
             public IEnumerable<CostProjection> CostProjections { get; set; }
+            public bool? AutoApproveFullMatches { get; set; }
+
 
             public class ApplicationLocation
             {

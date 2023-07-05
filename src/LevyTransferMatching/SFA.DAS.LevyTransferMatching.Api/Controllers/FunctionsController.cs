@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationWithdrawnAfterAcceptance;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveAutomaticApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
@@ -219,5 +220,30 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
             return Ok();
         }
+
+
+        [Route("application-auto-approval")]
+        [HttpGet]
+        public async Task<IActionResult> ApplicationsWithAutomaticApproval()
+        {
+            var result = await _mediator.Send(new ApplicationsWithAutomaticApprovalQuery());
+
+            return Ok(result);
+        }
+
+
+        [Route("approve-automatic-application")]
+        [HttpPost]
+        public async Task<IActionResult> ApproveAutomaticApplication(ApproveAutomaticApplicationRequest request)
+        {
+            await _mediator.Send(new ApproveAutomaticApplicationCommand
+            {
+                ApplicationId = request.ApplicationId,
+                PledgeId = request.PledgeId             
+            });
+
+            return Ok();
+        }
+
     }
 }
