@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerAan.Application.Employer.Commands.CreateEmployerMember;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
+using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMemberSummary;
 
 namespace SFA.DAS.EmployerAan.Api.Controllers;
 
@@ -22,6 +23,15 @@ public class EmployersController : ControllerBase
     public async Task<IActionResult> GetEmployerMember(Guid userRef, CancellationToken cancellationToken)
     {
         var employer = await _mediator.Send(new GetEmployerMemberQuery(userRef), cancellationToken);
+        return employer is null ? NotFound() : Ok(employer);
+    }
+
+    [HttpGet]
+    [Route("{employerAccountId}/summary")]
+    [ProducesResponseType(typeof(GetEmployerMemberSummaryQueryResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetEmployerMemberSummary(int employerAccountId, CancellationToken cancellationToken)
+    {
+        var employer = await _mediator.Send(new GetEmployerMemberSummaryQuery(employerAccountId), cancellationToken);
         return employer is null ? NotFound() : Ok(employer);
     }
 

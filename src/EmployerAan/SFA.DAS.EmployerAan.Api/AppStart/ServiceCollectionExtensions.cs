@@ -44,6 +44,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
 
         AddAanHubApiClient(services, configuration);
+        //AddCommitmentsV2ApiClient(services, configuration);
         return services;
     }
 
@@ -72,9 +73,23 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton(apiConfig);
 
-        services.AddScoped<InnerApiAuthenticationHeaderHandler>();
+        services.AddScoped<AanHubApiHttpMessageHandler>();
 
         services.AddRestEaseClient<IAanHubRestApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler<InnerApiAuthenticationHeaderHandler>();
+            .AddHttpMessageHandler<AanHubApiHttpMessageHandler>();
+    }
+
+    private static void AddCommitmentsV2ApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = configuration
+                .GetSection(nameof(CommitmentsV2ApiConfiguration))
+                .Get<CommitmentsV2ApiConfiguration>();
+
+        services.AddSingleton(apiConfig);
+
+        services.AddScoped<CommitmentsV2ApiHttpMessageHandler>();
+
+        services.AddRestEaseClient<ICommitmentsV2ApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler<CommitmentsV2ApiHttpMessageHandler>();
     }
 }
