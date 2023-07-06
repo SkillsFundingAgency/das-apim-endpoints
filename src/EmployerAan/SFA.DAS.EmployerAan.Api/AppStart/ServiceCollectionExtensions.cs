@@ -44,7 +44,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
 
         AddAanHubApiClient(services, configuration);
-        //AddCommitmentsV2ApiClient(services, configuration);
+        AddCommitmentsV2ApiClient(services, configuration);
         return services;
     }
 

@@ -5,7 +5,7 @@ namespace SFA.DAS.EmployerAan.Infrastructure;
 
 public interface ICommitmentsV2ApiClient
 {
-    [Get("/api/accounts/{EmployerAccountId}/summary")]
+    [Get("/api/accounts/{employerAccountId}/summary")]
     [AllowAnyStatusCode]
     Task<Response<GetEmployerMemberSummaryQueryResult?>> GetEmployerAccounts([Path] int employerAccountId, CancellationToken cancellationToken);
 
