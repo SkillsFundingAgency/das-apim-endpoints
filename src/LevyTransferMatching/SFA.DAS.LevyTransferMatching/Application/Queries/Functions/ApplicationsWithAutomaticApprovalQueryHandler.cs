@@ -67,6 +67,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
                 if (app.PledgeId != pledgeId)
                 {
                     remainingPledge = app.PledgeRemainingAmount;
+                    pledgeId = app.PledgeId;
                 }
 
                 remainingPledge -= app.TotalAmount;
