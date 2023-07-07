@@ -20,10 +20,10 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Employer.Queries.GetEmployer
         ApprenticeshipsFilterValues expectedApprenticeshipsFilterValues,
         CancellationToken cancellationToken)
         {
-            apiClient.Setup(x => x.GetEmployerAccounts(query.employerAccontId, cancellationToken))
+            apiClient.Setup(x => x.GetEmployerAccounts(query.EmployerAccountId, cancellationToken))
                 .ReturnsAsync(new Response<AccountsSummary?>(string.Empty, new(HttpStatusCode.OK), () => expectedAccountsSummary));
 
-            apiClient.Setup(x => x.GetApprenticeshipsSummaryForEmployer(query.employerAccontId, cancellationToken))
+            apiClient.Setup(x => x.GetApprenticeshipsSummaryForEmployer(query.EmployerAccountId, cancellationToken))
                 .ReturnsAsync(new Response<ApprenticeshipsFilterValues?>(string.Empty, new(HttpStatusCode.OK), () => expectedApprenticeshipsFilterValues));
 
             GetEmployerMemberSummaryQueryResult expectedEmployerAccount =

@@ -14,8 +14,8 @@ namespace SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMemberSumm
 
         public async Task<GetEmployerMemberSummaryQueryResult?> Handle(GetEmployerMemberSummaryQuery request, CancellationToken cancellationToken)
         {
-            var responseEmployerAccount = await _commitmentsV2ApiClient.GetEmployerAccounts(request.employerAccontId, cancellationToken);
-            var responseEmployerSummary = await _commitmentsV2ApiClient.GetApprenticeshipsSummaryForEmployer(request.employerAccontId, cancellationToken);
+            var responseEmployerAccount = await _commitmentsV2ApiClient.GetEmployerAccounts(request.EmployerAccountId, cancellationToken);
+            var responseEmployerSummary = await _commitmentsV2ApiClient.GetApprenticeshipsSummaryForEmployer(request.EmployerAccountId, cancellationToken);
 
             GetEmployerMemberSummaryQueryResult result = new();
 
