@@ -7,9 +7,9 @@ public interface ICommitmentsV2ApiClient
 {
     [Get("/api/accounts/{employerAccountId}/summary")]
     [AllowAnyStatusCode]
-    Task<Response<GetEmployerMemberSummaryQueryResult?>> GetEmployerAccounts([Path] int employerAccountId, CancellationToken cancellationToken);
+    Task<Response<AccountsSummary?>> GetEmployerAccounts([Path] int employerAccountId, CancellationToken cancellationToken);
 
     [Get("/api/apprenticeships/filters")]
     [AllowAnyStatusCode]
-    Task<Response<GetEmployerMemberSummaryQueryResult?>> GetApprenticeshipsSummaryForEmployer([Query] int employerAccountId, CancellationToken cancellationToken);
+    Task<Response<ApprenticeshipsFilterValues?>> GetApprenticeshipsSummaryForEmployer([Query] int employerAccountId, CancellationToken cancellationToken);
 }

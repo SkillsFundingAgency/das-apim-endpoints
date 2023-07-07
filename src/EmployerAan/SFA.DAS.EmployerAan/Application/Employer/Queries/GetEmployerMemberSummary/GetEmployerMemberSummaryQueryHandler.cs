@@ -14,19 +14,23 @@ namespace SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMemberSumm
 
         public async Task<GetEmployerMemberSummaryQueryResult?> Handle(GetEmployerMemberSummaryQuery request, CancellationToken cancellationToken)
         {
-            var response1 = await _commitmentsV2ApiClient.GetEmployerAccounts(request.employerAccontId, cancellationToken);
-            //var response2 = await _commitmentsV2ApiClient.GetApprenticeshipsSummaryForEmployer(request.employerAccontId, cancellationToken);
+            var responseEmployerAccount = await _commitmentsV2ApiClient.GetEmployerAccounts(request.employerAccontId, cancellationToken);
+            var responseEmployerSummary = await _commitmentsV2ApiClient.GetApprenticeshipsSummaryForEmployer(request.employerAccontId, cancellationToken);
 
-            //var result = new GetEmployerMemberSummaryQueryResult() { ActiveCount = 100, StartDate = DateTime.Now, Sectors = new List<string>() };
-            //var result = response.ResponseMessage.StatusCode switch
-            //{
-            //    HttpStatusCode.OK => response.GetContent(),
-            //    HttpStatusCode.NotFound => null,
-            //    _ => throw new InvalidOperationException($"Get employer member didn't some back with successful response")
-            //};
-            //return result;
+            GetEmployerMemberSummaryQueryResult result = new();
 
-            return new();
+            if (responseEmployerAccount.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                result.ActiveCount = responseEmployerAccount.GetContent()!.ApprenticeshipStatusSummaryResponse!.FirstOrDefault()!.ActiveCount;
+            }
+
+            if (responseEmployerSummary.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                result.StartDate = responseEmployerSummary.GetContent()!.StartDates!.Min(x => x.Date);
+                result.Sectors = responseEmployerSummary.GetContent()!.Sectors!;
+            }
+
+            return result;
         }
     }
 }
