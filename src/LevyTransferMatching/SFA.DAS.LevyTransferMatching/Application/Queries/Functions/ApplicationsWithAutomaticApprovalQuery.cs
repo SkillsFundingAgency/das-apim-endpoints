@@ -6,9 +6,9 @@ using System.Text;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 {
-    public  class ApplicationsWithAutomaticApprovalQuery : IRequest<ApplicationsWithAutomaticApprovalQueryResult>
+    public class ApplicationsWithAutomaticApprovalQuery : IRequest<ApplicationsWithAutomaticApprovalQueryResult>
     {
-       
+        public int? PledgeId { get; set; }
     }
 
 }

@@ -37,7 +37,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
                 .Where(x => x.MatchPercentage == 100 &&
                             x.AutoApproveFullMatches.HasValue &&
                            (x.AutoApproveFullMatches == true) ||
-                           (x.AutoApproveFullMatches == false && x.CreatedOn <= sixWeeksAgo))
+                           (x.AutoApproveFullMatches == false && x.CreatedOn <= sixWeeksAgo)
+                            && (request.PledgeId.HasValue && x.PledgeId == request.PledgeId)
+                           )
                     .OrderBy(x => x.PledgeId)
                     .ThenBy(x => x.CreatedOn)
                 .ToList();

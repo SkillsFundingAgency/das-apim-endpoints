@@ -39,6 +39,9 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public bool MatchLevel { get; set; }
         public bool MatchLocation { get; set; }
         public int MatchPercentage { get; set; }
+        public int PledgeRemainingAmount { get; set; }
+        public bool? AutoApproveFullMatches { get; set; }
+
         public class ApplicationLocation
         {
             public int Id { get; set; }
