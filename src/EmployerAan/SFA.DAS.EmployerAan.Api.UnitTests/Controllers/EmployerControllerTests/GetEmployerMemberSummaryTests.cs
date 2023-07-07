@@ -24,11 +24,11 @@ public class GetEmployerMemberSummaryTests
 
     [Test, MoqAutoData]
     public async Task GetEmployerMemberSummary_MediatorSuccessful_ReturnResult(
-    [Frozen] Mock<IMediator> mediatorMock,
-    [Greedy] EmployersController sut,
-    int employerAccountId,
-    CancellationToken cancellationToken,
-    GetEmployerMemberSummaryQueryResult expectedResult)
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] EmployersController sut,
+        int employerAccountId,
+        GetEmployerMemberSummaryQueryResult expectedResult,
+        CancellationToken cancellationToken)
     {
         mediatorMock.Setup(m => m.Send(It.Is<GetEmployerMemberSummaryQuery>(q => q.EmployerAccountId == employerAccountId), cancellationToken)).ReturnsAsync(expectedResult);
 
@@ -39,10 +39,10 @@ public class GetEmployerMemberSummaryTests
 
     [Test, MoqAutoData]
     public async Task GetEmployerMemberSummary_MediatorUnsuccessful_ReturnsNotFound(
-    [Frozen] Mock<IMediator> mediatorMock,
-    [Greedy] EmployersController sut,
-    int employerAccountId,
-    CancellationToken cancellationToken)
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] EmployersController sut,
+        int employerAccountId,
+        CancellationToken cancellationToken)
     {
         mediatorMock.Setup(m => m.Send(It.Is<GetEmployerMemberSummaryQuery>(q => q.EmployerAccountId == employerAccountId), cancellationToken)).ReturnsAsync((GetEmployerMemberSummaryQueryResult?)null);
 
