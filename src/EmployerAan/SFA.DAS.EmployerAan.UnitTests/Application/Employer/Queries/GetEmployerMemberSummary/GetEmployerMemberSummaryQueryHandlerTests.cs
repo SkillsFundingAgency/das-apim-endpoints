@@ -13,12 +13,12 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Employer.Queries.GetEmployer
     {
         [Test, MoqAutoData]
         public async Task Handle_ReturnEmployerMemberSummary(
-        [Frozen] Mock<ICommitmentsV2ApiClient> apiClient,
-        GetEmployerMemberSummaryQueryHandler handler,
-        GetEmployerMemberSummaryQuery query,
-        AccountsSummary expectedAccountsSummary,
-        ApprenticeshipsFilterValues expectedApprenticeshipsFilterValues,
-        CancellationToken cancellationToken)
+            [Frozen] Mock<ICommitmentsV2ApiClient> apiClient,
+            GetEmployerMemberSummaryQueryHandler handler,
+            GetEmployerMemberSummaryQuery query,
+            AccountsSummary expectedAccountsSummary,
+            ApprenticeshipsFilterValues expectedApprenticeshipsFilterValues,
+            CancellationToken cancellationToken)
         {
             apiClient.Setup(x => x.GetEmployerAccounts(query.EmployerAccountId, cancellationToken))
                 .ReturnsAsync(new Response<AccountsSummary?>(string.Empty, new(HttpStatusCode.OK), () => expectedAccountsSummary));

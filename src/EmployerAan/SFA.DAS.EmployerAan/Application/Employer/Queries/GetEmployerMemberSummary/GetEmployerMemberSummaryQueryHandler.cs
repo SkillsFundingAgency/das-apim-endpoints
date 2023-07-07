@@ -14,20 +14,22 @@ namespace SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMemberSumm
 
         public async Task<GetEmployerMemberSummaryQueryResult?> Handle(GetEmployerMemberSummaryQuery request, CancellationToken cancellationToken)
         {
-            var responseEmployerAccount = await _commitmentsV2ApiClient.GetEmployerAccounts(request.EmployerAccountId, cancellationToken);
-            var responseEmployerSummary = await _commitmentsV2ApiClient.GetApprenticeshipsSummaryForEmployer(request.EmployerAccountId, cancellationToken);
+            var responseEmployerAccountTask = _commitmentsV2ApiClient.GetEmployerAccounts(request.EmployerAccountId, cancellationToken);
+            var responseEmployerSummaryTask = _commitmentsV2ApiClient.GetApprenticeshipsSummaryForEmployer(request.EmployerAccountId, cancellationToken);
+
+            await Task.WhenAll(responseEmployerAccountTask, responseEmployerSummaryTask);
 
             GetEmployerMemberSummaryQueryResult result = new();
 
-            if (responseEmployerAccount.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+            if (responseEmployerAccountTask.Result.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                result.ActiveCount = responseEmployerAccount.GetContent()!.ApprenticeshipStatusSummaryResponse!.FirstOrDefault()!.ActiveCount;
+                result.ActiveCount = responseEmployerAccountTask.Result.GetContent()!.ApprenticeshipStatusSummaryResponse!.FirstOrDefault()!.ActiveCount;
             }
 
-            if (responseEmployerSummary.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+            if (responseEmployerSummaryTask.Result.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                result.StartDate = responseEmployerSummary.GetContent()!.StartDates!.Min(x => x.Date);
-                result.Sectors = responseEmployerSummary.GetContent()!.Sectors!;
+                result.StartDate = responseEmployerSummaryTask.Result.GetContent()!.StartDates!.Min(x => x.Date);
+                result.Sectors = responseEmployerSummaryTask.Result.GetContent()!.Sectors!;
             }
 
             return result;
