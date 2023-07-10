@@ -21,7 +21,6 @@
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
         <PackageReference Include="Microsoft.Extensions.Options" />
-        <PackageReference Include="Newtonsoft.Json" />
         <PackageReference Include="NLog.Web.AspNetCore" />
         <PackageReference Include="RestEase" />
         <PackageReference Include="SFA.DAS.Api.Common" />
