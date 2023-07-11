@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.LevyTransferMatching.Models.Constants;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 {
@@ -28,16 +30,15 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
                 SortDirection = "Ascending"
             });
 
-            DateTime sixWeeksAgo = DateTime.UtcNow.AddDays(-42);
+            var sixWeeksAgo = DateTime.UtcNow.AddDays(-42);
 
             var applications = new List<GetApplicationsResponse.Application>();
             if (getApplicationsResponse != null)
             {
                 applications = getApplicationsResponse.Applications
                 .Where(x => x.MatchPercentage == 100 &&
-                            x.AutoApproveFullMatches.HasValue &&
-                           (x.AutoApproveFullMatches == true) ||
-                           (x.AutoApproveFullMatches == false && x.CreatedOn <= sixWeeksAgo)
+                           (x.AutomaticApprovalOption == GetApplicationsResponse.AutomaticApprovalOption.ImmediateAutoApproval) ||
+                           (x.AutomaticApprovalOption == GetApplicationsResponse.AutomaticApprovalOption.DelayedAutoApproval && x.CreatedOn <= sixWeeksAgo)
                             && (request.PledgeId.HasValue && x.PledgeId == request.PledgeId)
                            )
                     .OrderBy(x => x.PledgeId)
@@ -72,7 +73,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
                     pledgeId = app.PledgeId;
                 }
 
-                remainingPledge -= app.TotalAmount;
+                remainingPledge -= app.Amount;
                 if (remainingPledge >= 0)
                 {
                     autoApprovals.Add(app);

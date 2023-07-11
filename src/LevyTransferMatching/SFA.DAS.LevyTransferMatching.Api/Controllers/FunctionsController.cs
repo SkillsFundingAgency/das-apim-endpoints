@@ -222,16 +222,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             return Ok();
         }
 
-
         [Route("application-auto-approval")]
         [HttpGet]
-        public async Task<IActionResult> ApplicationsWithAutomaticApproval(ApplicationAutomaticApprovalRequest request)
+        public async Task<IActionResult> ApplicationsWithAutomaticApproval(int? pledgeId = null)
         {
-            var result = await _mediator.Send(new ApplicationsWithAutomaticApprovalQuery { PledgeId = request.PledgeId});
+            var result = await _mediator.Send(new ApplicationsWithAutomaticApprovalQuery { PledgeId = pledgeId});
 
             return Ok(result);
         }
-
 
         [Route("approve-automatic-application")]
         [HttpPost]
@@ -258,6 +256,5 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
             return Ok();
         }
-
     }
 }

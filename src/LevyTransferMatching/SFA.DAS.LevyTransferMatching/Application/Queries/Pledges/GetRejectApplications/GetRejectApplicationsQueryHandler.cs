@@ -5,6 +5,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications
 {

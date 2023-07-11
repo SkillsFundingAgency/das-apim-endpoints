@@ -1,13 +1,13 @@
-﻿
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
+using static SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching.GetApplicationsResponse;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 {
     public class ApplicationsWithAutomaticApprovalQueryResult
     {
-
         public IEnumerable<Application> Applications { get; set; }
 
         public class Application
@@ -16,8 +16,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
             public long EmployerAccountId { get; set; }
             public int PledgeId { get; set; }
             public int MatchPercentage { get; set; }
-            public bool? AutoApproveFullMatches { get; set; }
-            public int TotalAmount { get; set; }
+            public AutomaticApprovalOption AutomaticApprovalOption { get; set; }
+            public int Amount { get; set; }
             public DateTime CreatedOn { get; set; }
             public string Status { get; set; }
 
@@ -34,8 +34,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
                     EmployerAccountId = source.EmployerAccountId,
                     PledgeId = source.PledgeId,
                     MatchPercentage = source.MatchPercentage,
-                    AutoApproveFullMatches = source.AutoApproveFullMatches,
-                    TotalAmount = source.TotalAmount,
+                    AutomaticApprovalOption = source.AutomaticApprovalOption,
+                    Amount = source.Amount,
                     CreatedOn = source.CreatedOn,
                     Status = source.Status
                 };

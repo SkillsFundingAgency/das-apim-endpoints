@@ -1,16 +1,9 @@
 ﻿using MediatR;
-using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveAutomaticApplication;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Functions;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using NLog;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
-using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationCreatedForImmediateAutoApproval
@@ -32,7 +25,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationCreatedFo
 
             var getApplicationResponse = await _levyTransferMatchingService.GetApplication(new GetApplicationRequest(request.PledgeId, request.ApplicationId));
           
-            if (getApplicationResponse.TotalAmount <= getApplicationResponse.PledgeRemainingAmount
+            if (getApplicationResponse.Amount <= getApplicationResponse.PledgeRemainingAmount
                 && getApplicationResponse.AutoApproveFullMatches.HasValue 
                 && getApplicationResponse.AutoApproveFullMatches.Value 
                 && getApplicationResponse.MatchPercentage == 100)
