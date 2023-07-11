@@ -5,6 +5,7 @@ using System.Threading;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationCreatedForImmediateAutoApproval
 {
@@ -17,17 +18,14 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationCreatedFo
         {
             _levyTransferMatchingService = levyTransferMatchingService;
             _logger = logger;
-
         }
 
         public async Task<Unit> Handle(ApplicationCreatedForImmediateAutoApprovalCommand request, CancellationToken cancellationToken)
         {
-
             var getApplicationResponse = await _levyTransferMatchingService.GetApplication(new GetApplicationRequest(request.PledgeId, request.ApplicationId));
           
             if (getApplicationResponse.Amount <= getApplicationResponse.PledgeRemainingAmount
-                && getApplicationResponse.AutoApproveFullMatches.HasValue 
-                && getApplicationResponse.AutoApproveFullMatches.Value 
+                && getApplicationResponse.AutomaticApprovalOption == AutomaticApprovalOption.ImmediateAutoApproval
                 && getApplicationResponse.MatchPercentage == 100)
             {
                 var apiRequestData = new ApproveApplicationRequestData
@@ -43,8 +41,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationCreatedFo
             }
 
             return Unit.Value;
-
         }
-
     }
 }

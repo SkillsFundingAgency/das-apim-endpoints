@@ -37,8 +37,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
             {
                 applications = getApplicationsResponse.Applications
                 .Where(x => x.MatchPercentage == 100 &&
-                           (x.AutomaticApprovalOption == GetApplicationsResponse.AutomaticApprovalOption.ImmediateAutoApproval) ||
-                           (x.AutomaticApprovalOption == GetApplicationsResponse.AutomaticApprovalOption.DelayedAutoApproval && x.CreatedOn <= sixWeeksAgo)
+                           (x.AutomaticApprovalOption == AutomaticApprovalOption.ImmediateAutoApproval) ||
+                           (x.AutomaticApprovalOption == AutomaticApprovalOption.DelayedAutoApproval && x.CreatedOn <= sixWeeksAgo)
                             && (request.PledgeId.HasValue && x.PledgeId == request.PledgeId)
                            )
                     .OrderBy(x => x.PledgeId)
