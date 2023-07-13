@@ -246,7 +246,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [Route("application-created-immediate-auto-approval")]
         [HttpPost]
-        public async Task<IActionResult> ApplicationCreatedForImmediateAutoApproval(ApproveApplicationRequest request)
+        public async Task<IActionResult> ApplicationCreatedForImmediateAutoApproval(ApplicationCreatedForImmediateAutoApprovalRequest request)
         {
             await _mediator.Send(new ApplicationCreatedForImmediateAutoApprovalCommand
             {
