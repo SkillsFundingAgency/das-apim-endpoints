@@ -56,7 +56,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching
             public long SenderEmployerAccountId { get; set; }
             public string SenderEmployerAccountName { get; set; }
             public IEnumerable<CostProjection> CostProjections { get; set; }
-            public AutomaticApprovalOption AutomaticApprovalOption { get; set; }
+            public AutomaticApprovalOption PledgeAutomaticApprovalOption { get; set; }
 
             public class ApplicationLocation
             {

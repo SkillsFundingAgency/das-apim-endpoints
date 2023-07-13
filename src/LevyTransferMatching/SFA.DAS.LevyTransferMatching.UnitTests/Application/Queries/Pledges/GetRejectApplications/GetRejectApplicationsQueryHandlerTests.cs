@@ -30,7 +30,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
             _query = _fixture.Create<GetRejectApplicationsQuery>();
             _service = new Mock<ILevyTransferMatchingService>();
             _service.Setup(x => x.GetApplications(It.Is<GetApplicationsRequest>(p => p.PledgeId == _query.PledgeId 
-                                && p.ApplicationStatusFilter == PledgeStatus.Pending)))
+                                && p.ApplicationStatusFilter == ApplicationStatus.Pending)))
                 .ReturnsAsync(new GetApplicationsResponse()
                 {
                     Applications = new List<GetApplicationsResponse.Application>

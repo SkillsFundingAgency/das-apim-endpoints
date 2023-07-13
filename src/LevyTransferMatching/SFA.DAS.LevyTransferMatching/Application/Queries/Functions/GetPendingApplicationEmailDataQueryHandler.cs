@@ -41,7 +41,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
         {
             var emailDataList = new List<GetPendingApplicationEmailDataQueryResult.EmailData>();
             
-            var getApplicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest { ApplicationStatusFilter = PledgeStatus.Pending });
+            var getApplicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest { ApplicationStatusFilter = ApplicationStatus.Pending });
             var employerAccountIds = getApplicationsResponse.Applications.Select(x => x.SenderEmployerAccountId).Distinct();
 
             foreach (var employerAccountId in employerAccountIds)

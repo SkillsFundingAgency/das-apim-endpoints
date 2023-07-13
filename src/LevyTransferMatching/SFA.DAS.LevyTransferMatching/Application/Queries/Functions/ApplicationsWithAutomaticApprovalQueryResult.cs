@@ -16,7 +16,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
             public long EmployerAccountId { get; set; }
             public int PledgeId { get; set; }
             public int MatchPercentage { get; set; }
-            public AutomaticApprovalOption AutomaticApprovalOption { get; set; }
+            public AutomaticApprovalOption PledgeAutomaticApprovalOption { get; set; }
             public int Amount { get; set; }
             public DateTime CreatedOn { get; set; }
             public string Status { get; set; }
@@ -34,7 +34,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
                     EmployerAccountId = source.EmployerAccountId,
                     PledgeId = source.PledgeId,
                     MatchPercentage = source.MatchPercentage,
-                    AutomaticApprovalOption = source.AutomaticApprovalOption,
+                    PledgeAutomaticApprovalOption = source.PledgeAutomaticApprovalOption,
                     Amount = source.Amount,
                     CreatedOn = source.CreatedOn,
                     Status = source.Status

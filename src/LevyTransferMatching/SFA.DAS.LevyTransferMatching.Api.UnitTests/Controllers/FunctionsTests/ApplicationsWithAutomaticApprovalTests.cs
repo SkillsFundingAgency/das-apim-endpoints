@@ -26,7 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
         [Test]
         public async Task Action_Calls_Handler()
         {
-            var result = await _controller.ApplicationsWithAutomaticApproval();
+            var result = await _controller.ApplicationsForAutomaticApproval();
 
             _mediator.Verify(x =>
                 x.Send(It.IsAny<ApplicationsWithAutomaticApprovalQuery>(), It.IsAny<CancellationToken>()));
@@ -41,7 +41,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
                 .ReturnsAsync(expectedResult);
 
             // Act
-            var result = await _controller.ApplicationsWithAutomaticApproval();
+            var result = await _controller.ApplicationsForAutomaticApproval();
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);

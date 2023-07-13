@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Authentication;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
-using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ClosePledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
@@ -24,6 +23,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApp
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers

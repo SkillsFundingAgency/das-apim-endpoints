@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication
+namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome
 {
     public class ReceiverApplicationApprovedEmailCommand : IRequest
     { 

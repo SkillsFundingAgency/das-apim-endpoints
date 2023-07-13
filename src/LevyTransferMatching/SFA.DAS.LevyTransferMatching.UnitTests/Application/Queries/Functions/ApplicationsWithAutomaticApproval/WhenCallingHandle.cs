@@ -36,11 +36,11 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.A
 
             var applications = new List<GetApplicationsResponse.Application>
             {
-                new GetApplicationsResponse.Application { PledgeId = 1, Amount = 1000, PledgeRemainingAmount = 1000, MatchPercentage = 100, AutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, CreatedOn = DateTime.Now.AddDays(-50) },
-                new GetApplicationsResponse.Application { PledgeId = 1, Amount = 500, PledgeRemainingAmount = 1000,MatchPercentage = 100, AutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, CreatedOn = DateTime.Now.AddDays(-50) },
-                new GetApplicationsResponse.Application { PledgeId = 2, Amount = 500, PledgeRemainingAmount = 600, MatchPercentage = 100, AutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, CreatedOn = DateTime.Now.AddDays(-50) },
-                new GetApplicationsResponse.Application {PledgeId = 2, Amount = 300, PledgeRemainingAmount = 600, MatchPercentage = 100, AutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, CreatedOn = DateTime.Now.AddDays(-50)},
-                new GetApplicationsResponse.Application {PledgeId = 3, Amount = 300, PledgeRemainingAmount = 600, MatchPercentage = 100, AutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, CreatedOn = DateTime.Now.AddDays(-10)}
+                new GetApplicationsResponse.Application { PledgeId = 1, Amount = 1000, PledgeRemainingAmount = 1000, MatchPercentage = 100, PledgeAutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, CreatedOn = DateTime.Now.AddDays(-50) },
+                new GetApplicationsResponse.Application { PledgeId = 1, Amount = 500, PledgeRemainingAmount = 1000,MatchPercentage = 100, PledgeAutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, CreatedOn = DateTime.Now.AddDays(-50) },
+                new GetApplicationsResponse.Application { PledgeId = 2, Amount = 500, PledgeRemainingAmount = 600, MatchPercentage = 100, PledgeAutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, CreatedOn = DateTime.Now.AddDays(-50) },
+                new GetApplicationsResponse.Application {PledgeId = 2, Amount = 300, PledgeRemainingAmount = 600, MatchPercentage = 100, PledgeAutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, CreatedOn = DateTime.Now.AddDays(-50)},
+                new GetApplicationsResponse.Application {PledgeId = 3, Amount = 300, PledgeRemainingAmount = 600, MatchPercentage = 100, PledgeAutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, CreatedOn = DateTime.Now.AddDays(-10)}
             };
 
             _levyTransferMatchingServiceMock.Setup(x => x.GetApplications(It.IsAny<GetApplicationsRequest>()))

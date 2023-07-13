@@ -8,13 +8,13 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationCreatedForImmediateAutoApproval;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationWithdrawnAfterAcceptance;
-using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
-using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveAutomaticApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.AutoApproveApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RecalculateApplicationCostProjections;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SendEmails;
+using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Functions;
 using SFA.DAS.LevyTransferMatching.Extensions;
 
@@ -222,20 +222,20 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             return Ok();
         }
 
-        [Route("application-auto-approval")]
+        [Route("applications-for-auto-approval")]
         [HttpGet]
-        public async Task<IActionResult> ApplicationsWithAutomaticApproval(int? pledgeId = null)
+        public async Task<IActionResult> ApplicationsForAutomaticApproval(int? pledgeId = null)
         {
             var result = await _mediator.Send(new ApplicationsWithAutomaticApprovalQuery { PledgeId = pledgeId});
 
             return Ok(result);
         }
 
-        [Route("approve-automatic-application")]
+        [Route("approve-application")]
         [HttpPost]
-        public async Task<IActionResult> ApproveAutomaticApplication(ApproveAutomaticApplicationRequest request)
+        public async Task<IActionResult> ApproveApplication(ApproveApplicationRequest request)
         {
-            await _mediator.Send(new ApproveAutomaticApplicationCommand
+            await _mediator.Send(new AutoApproveApplicationCommand
             {
                 ApplicationId = request.ApplicationId,
                 PledgeId = request.PledgeId             
@@ -244,9 +244,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             return Ok();
         }
 
-        [Route("approve-automatic-application-immediate")]
+        [Route("application-created-immediate-auto-approval")]
         [HttpPost]
-        public async Task<IActionResult> ApplicationCreatedForImmediateAutoApproval(ApproveAutomaticApplicationRequest request)
+        public async Task<IActionResult> ApplicationCreatedForImmediateAutoApproval(ApproveApplicationRequest request)
         {
             await _mediator.Send(new ApplicationCreatedForImmediateAutoApprovalCommand
             {
