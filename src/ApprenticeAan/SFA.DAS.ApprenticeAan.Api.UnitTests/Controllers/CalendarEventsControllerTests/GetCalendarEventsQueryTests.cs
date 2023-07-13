@@ -4,13 +4,13 @@ using SFA.DAS.ApprenticeAan.Api.Models;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Common;
 
-namespace SFA.DAS.ApprenticeAan.Application.UnitTests.CalendarEvents.Queries.GetCalendarEvents;
-public class GetCalendarEventsQueryTests
+namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.CalendarEventsControllerTests;
+public class GetCalendarEventsRequestModelTests
 {
     [Test, AutoData]
     public void Operator_PopulatesModelFromParameters(Guid memberId, DateTime? fromDate, DateTime? toDate, List<EventFormat> eventFormats, List<int> calendarIds, List<int> regionIds, int? page, int? pageSize)
     {
-        var model = new GetCalendarEventsModel
+        var model = new GetCalendarEventsRequestModel
         {
             RequestedByMemberId = memberId,
             FromDate = fromDate,
@@ -35,7 +35,7 @@ public class GetCalendarEventsQueryTests
     [Test, AutoData]
     public void Operator_PopulatesModelFromParametersWithNulls(Guid memberId, List<EventFormat> eventFormats, List<int> calendarIds, List<int> regionIds)
     {
-        var model = new GetCalendarEventsModel
+        var model = new GetCalendarEventsRequestModel
         {
             RequestedByMemberId = memberId,
             FromDate = null,

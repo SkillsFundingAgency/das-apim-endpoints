@@ -5,7 +5,7 @@ using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 
 namespace SFA.DAS.ApprenticeAan.Api.Models;
 
-public class GetCalendarEventsModel
+public class GetCalendarEventsRequestModel
 {
     [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)]
     public Guid RequestedByMemberId { get; set; }
@@ -28,17 +28,18 @@ public class GetCalendarEventsModel
     [FromQuery]
     public int? Page { get; set; }
 
-    [FromQuery] public int? PageSize { get; set; }
+    [FromQuery]
+    public int? PageSize { get; set; }
 
-    public static implicit operator GetCalendarEventsQuery(GetCalendarEventsModel model) => new()
+    public static implicit operator GetCalendarEventsQuery(GetCalendarEventsRequestModel requestModel) => new()
     {
-        RequestedByMemberId = model.RequestedByMemberId,
-        FromDate = model.FromDate?.ToString("yyyy-MM-dd"),
-        ToDate = model.ToDate?.ToString("yyyy-MM-dd"),
-        EventFormat = model.EventFormat,
-        RegionIds = model.RegionId,
-        CalendarIds = model.CalendarId,
-        Page = model.Page,
-        PageSize = model.PageSize
+        RequestedByMemberId = requestModel.RequestedByMemberId,
+        FromDate = requestModel.FromDate?.ToString("yyyy-MM-dd"),
+        ToDate = requestModel.ToDate?.ToString("yyyy-MM-dd"),
+        EventFormat = requestModel.EventFormat,
+        RegionIds = requestModel.RegionId,
+        CalendarIds = requestModel.CalendarId,
+        Page = requestModel.Page,
+        PageSize = requestModel.PageSize
     };
 }

@@ -21,9 +21,9 @@ public class CalendarEventsController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(GetCalendarEventsQueryResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetCalendarEvents([FromQuery] GetCalendarEventsModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCalendarEvents([FromQuery] GetCalendarEventsRequestModel requestModel, CancellationToken cancellationToken)
     {
-        var response = await _mediator.Send((GetCalendarEventsQuery)model, cancellationToken);
+        var response = await _mediator.Send((GetCalendarEventsQuery)requestModel, cancellationToken);
         return Ok(response);
     }
 

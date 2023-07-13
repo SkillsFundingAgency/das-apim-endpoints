@@ -23,7 +23,7 @@ public class GetCalendarEventsTests
     {
         var fromDate = DateTime.Today;
         var toDate = DateTime.Today.AddDays(7);
-        var model = new GetCalendarEventsModel
+        var model = new GetCalendarEventsRequestModel
         {
             RequestedByMemberId = requestedByMemberId,
             FromDate = fromDate,
@@ -58,7 +58,7 @@ public class GetCalendarEventsTests
         mediatorMock.Setup(m => m.Send(It.Is<GetCalendarEventsQuery>(q => q.RequestedByMemberId == requestedByMemberId), It.IsAny<CancellationToken>()))
             .ReturnsAsync(queryResult);
 
-        var model = new GetCalendarEventsModel
+        var model = new GetCalendarEventsRequestModel
         {
             RequestedByMemberId = requestedByMemberId,
             FromDate = fromDate,

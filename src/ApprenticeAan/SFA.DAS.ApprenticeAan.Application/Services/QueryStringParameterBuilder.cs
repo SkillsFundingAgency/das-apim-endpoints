@@ -10,17 +10,17 @@ public static class QueryStringParameterBuilder
         var parameters = new Dictionary<string, string[]>();
         if (request.FromDate != null) parameters.Add("fromDate", new[] { request.FromDate });
         if (request.ToDate != null) parameters.Add("toDate", new[] { request.ToDate });
-        if (request.EventFormat != null)
+        if (request.EventFormat != null && request.EventFormat.Any())
         {
             parameters.Add("eventFormat", request.EventFormat.Select(format => format.ToString()).ToArray());
         }
 
-        if (request.CalendarIds != null)
+        if (request.CalendarIds != null && request.CalendarIds.Any())
         {
             parameters.Add("calendarId", request.CalendarIds.Select(cal => cal.ToString()).ToArray());
         }
 
-        if (request.RegionIds != null)
+        if (request.RegionIds != null && request.RegionIds.Any())
         {
             parameters.Add("regionId", request.RegionIds.Select(region => region.ToString()).ToArray());
         }
