@@ -5,6 +5,7 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.ApprenticeAan.Api.AppStart;
 using SFA.DAS.ApprenticeAan.Api.HealthCheck;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System.Text.Json.Serialization;
 
 [assembly: ApiController]
@@ -44,7 +45,13 @@ builder.Services
 builder.Services.AddHealthChecks()
     .AddCheck<ApprenticeAanInnerApiHealthCheck>(ApprenticeAanInnerApiHealthCheck.HealthCheckResultDescription,
     failureStatus: HealthStatus.Unhealthy,
-    tags: new[] { "ready" });
+    tags: new[] { "ready" })
+    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription,
+        failureStatus: HealthStatus.Unhealthy,
+        tags: new[] { "ready" })
+    .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription,
+        failureStatus: HealthStatus.Unhealthy,
+        tags: new[] { "ready" }); ;
 
 var app = builder.Build();
 
