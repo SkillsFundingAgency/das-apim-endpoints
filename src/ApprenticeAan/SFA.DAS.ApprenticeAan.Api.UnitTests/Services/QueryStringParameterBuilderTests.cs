@@ -1,10 +1,11 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
+using SFA.DAS.ApprenticeAan.Api.Models;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Common;
 using SFA.DAS.ApprenticeAan.Application.Services;
 
-namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Services;
+namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Services;
 
 public class QueryStringParameterBuilderTests
 {
