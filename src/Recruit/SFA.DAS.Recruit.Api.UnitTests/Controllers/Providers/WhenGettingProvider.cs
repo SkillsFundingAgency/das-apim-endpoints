@@ -49,7 +49,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
                 .Setup(mediator => mediator.Send(
                     It.IsAny<GetProviderQuery>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync((GetProviderQueryResult)null);
+                .ReturnsAsync(() => null);
 
             var controllerResult = await controller.GetProvider(It.IsAny<int>()) as NotFoundResult;
 

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ namespace SFA.DAS.Recruit.Application.Queries.GetProvider
                 LegalName = response.LegalName,
                 TradingName = response.TradingName,
                 Ukprn = response.Ukprn,
-                ProviderType = new GetProviderQueryResult.ProviderTypeResponse
+                ProviderType = new ProviderTypeResponse
                 {
                     Id = response.ProviderType.Id,
                 }

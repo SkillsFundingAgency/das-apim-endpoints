@@ -1,5 +1,7 @@
 ﻿using System;
 using SFA.DAS.Recruit.Application.Queries.GetProvider;
+using SFA.DAS.Recruit.Enums;
+using SFA.DAS.Recruit.InnerApi.Responses;
 
 namespace SFA.DAS.Recruit.Api.Models
 {
@@ -12,18 +14,6 @@ namespace SFA.DAS.Recruit.Api.Models
         public ProviderTypeResponse ProviderType { get; set; }
 
         public bool IsMainProvider => ProviderType.Id == (short)ProviderTypeIdentifier.MainProvider;
-
-        public class ProviderTypeResponse
-        {
-            public short Id { get; set; }
-        }
-
-        public enum ProviderTypeIdentifier : short
-        {
-            MainProvider = 1,
-            EmployerProvider = 2,
-            SupportingProvider = 3
-        }
 
         public static implicit operator GetTrainingProviderResponse(GetProviderQueryResult source)
         {
