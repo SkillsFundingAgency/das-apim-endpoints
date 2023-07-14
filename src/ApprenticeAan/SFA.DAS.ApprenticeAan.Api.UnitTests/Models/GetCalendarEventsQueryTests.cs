@@ -7,8 +7,22 @@ using SFA.DAS.ApprenticeAan.Application.Common;
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Models;
 public class GetCalendarEventsRequestModelTests
 {
+
     [Test, AutoData]
-    public void Operator_PopulatesQueryFromModel(Guid memberId, DateTime? fromDate, DateTime? toDate, List<EventFormat> eventFormats, List<int> calendarIds, List<int> regionIds, int? page, int? pageSize)
+    public void Operator_PopulatesQueryFromModel(GetCalendarEventsRequestModel model)
+    {
+        var query = (GetCalendarEventsQuery)model;
+
+        query.RequestedByMemberId.Should().Be(model.RequestedByMemberId);
+        query.FromDate.Should().Be(model.FromDate?.ToString("yyyy-MM-dd"));
+        query.ToDate.Should().Be(model.ToDate?.ToString("yyyy-MM-dd"));
+        query.EventFormat.Should().BeEquivalentTo(model.EventFormat);
+        query.Page.Should().Be(model.Page);
+        query.PageSize.Should().Be(model.PageSize);
+    }
+
+    [Test, AutoData]
+    public void Operator_PopulatesQueryFromModelFields(Guid memberId, DateTime? fromDate, DateTime? toDate, List<EventFormat> eventFormats, List<int> calendarIds, List<int> regionIds, int? page, int? pageSize)
     {
         var model = new GetCalendarEventsRequestModel
         {
