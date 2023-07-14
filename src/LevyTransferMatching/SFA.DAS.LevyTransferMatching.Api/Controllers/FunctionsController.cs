@@ -228,7 +228,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             var result = await _mediator.Send(new ApplicationsWithAutomaticApprovalQuery { PledgeId = pledgeId});
 
-            return Ok(result);
+            return Ok((GetApplicationsForAutomaticApprovalResponse)result);
         }
 
         [Route("approve-application")]
