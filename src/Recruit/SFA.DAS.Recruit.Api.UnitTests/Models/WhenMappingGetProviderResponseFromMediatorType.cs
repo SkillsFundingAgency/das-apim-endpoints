@@ -1,8 +1,8 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.InnerApi.Responses;
+using GetProviderResponse = SFA.DAS.Recruit.Api.Models.GetProviderResponse;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Models
 {
