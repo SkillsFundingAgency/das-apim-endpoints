@@ -4,11 +4,11 @@ using SFA.DAS.ApprenticeAan.Api.Models;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Common;
 
-namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.CalendarEventsControllerTests;
+namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Models;
 public class GetCalendarEventsRequestModelTests
 {
     [Test, AutoData]
-    public void Operator_PopulatesModelFromParameters(Guid memberId, DateTime? fromDate, DateTime? toDate, List<EventFormat> eventFormats, List<int> calendarIds, List<int> regionIds, int? page, int? pageSize)
+    public void Operator_PopulatesQueryFromModel(Guid memberId, DateTime? fromDate, DateTime? toDate, List<EventFormat> eventFormats, List<int> calendarIds, List<int> regionIds, int? page, int? pageSize)
     {
         var model = new GetCalendarEventsRequestModel
         {
@@ -33,30 +33,7 @@ public class GetCalendarEventsRequestModelTests
     }
 
     [Test, AutoData]
-    public void Operator_PopulatesModelFromParametersWithNulls(Guid memberId, List<EventFormat> eventFormats, List<int> calendarIds, List<int> regionIds)
-    {
-        var model = new GetCalendarEventsRequestModel
-        {
-            RequestedByMemberId = memberId,
-            FromDate = null,
-            ToDate = null,
-            EventFormat = eventFormats,
-            CalendarId = calendarIds,
-            RegionId = regionIds,
-            Page = null,
-            PageSize = null
-        };
-
-        var query = (GetCalendarEventsQuery)model;
-
-        query.FromDate.Should().BeNull();
-        query.ToDate.Should().BeNull();
-        query.Page.Should().BeNull();
-        query.PageSize.Should().BeNull();
-    }
-
-    [Test, AutoData]
-    public void Operator_PopulatesModelFromParametersDatesNull(Guid memberId)
+    public void Operator_PopulatesQueryFromModelWithNulls(Guid memberId)
     {
         var model = new GetCalendarEventsQuery
         {

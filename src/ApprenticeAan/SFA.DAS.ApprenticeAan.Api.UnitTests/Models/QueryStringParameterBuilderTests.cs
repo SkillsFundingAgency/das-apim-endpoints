@@ -5,7 +5,7 @@ using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents
 using SFA.DAS.ApprenticeAan.Application.Common;
 using SFA.DAS.ApprenticeAan.Application.Services;
 
-namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Services;
+namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Models;
 
 public class QueryStringParameterBuilderTests
 {
@@ -14,7 +14,7 @@ public class QueryStringParameterBuilderTests
     public void Operator_PopulatesModelFromParameters(Guid memberId, DateTime? fromDate, DateTime? toDate,
         List<EventFormat> eventFormats, List<int> calendarIds, List<int> regionIds, int? page, int? pageSize)
     {
-        var model = new GetCalendarEventsRequestModel
+        var sut = new GetCalendarEventsRequestModel
         {
             RequestedByMemberId = memberId,
             FromDate = fromDate,
@@ -26,7 +26,7 @@ public class QueryStringParameterBuilderTests
             PageSize = pageSize
         };
 
-        var query = (GetCalendarEventsQuery)model;
+        var query = (GetCalendarEventsQuery)sut;
 
         var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(query);
 
