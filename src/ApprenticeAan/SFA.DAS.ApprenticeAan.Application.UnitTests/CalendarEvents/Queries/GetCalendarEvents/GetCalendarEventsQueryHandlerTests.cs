@@ -16,6 +16,7 @@ public class GetCalendarEventsQueryHandlerTests
         GetCalendarEventsQueryHandler handler,
         GetCalendarEventsQueryResult expected,
         Guid requestedByMemberId,
+        String keyword,
         DateTime? fromDate,
         DateTime? toDate,
         List<EventFormat> eventFormats,
@@ -28,6 +29,7 @@ public class GetCalendarEventsQueryHandlerTests
         var query = new GetCalendarEventsQuery
         {
             RequestedByMemberId = requestedByMemberId,
+            Keyword = keyword,
             FromDate = fromDate?.ToString("yyyy-MM-dd"),
             ToDate = toDate?.ToString("yyyy-MM-dd"),
             EventFormat = eventFormats,

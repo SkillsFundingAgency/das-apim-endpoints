@@ -5,6 +5,8 @@ namespace SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEv
 public class GetCalendarEventsQuery : IRequest<GetCalendarEventsQueryResult>
 {
     public Guid RequestedByMemberId { get; set; }
+    public string Keyword { get; set; } = string.Empty;
+
     public string? FromDate { get; set; }
     public string? ToDate { get; set; }
     public List<EventFormat>? EventFormat { get; set; }
