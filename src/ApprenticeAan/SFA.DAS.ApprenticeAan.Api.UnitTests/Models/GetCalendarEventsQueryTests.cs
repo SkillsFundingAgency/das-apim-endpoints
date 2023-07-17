@@ -33,7 +33,6 @@ public class GetCalendarEventsRequestModelTests
         query.RequestedByMemberId.Should().Be(memberId);
         query.FromDate.Should().BeNull();
         query.ToDate.Should().BeNull();
-        query.EventFormat.Should().BeNull();
         query.Page.Should().BeNull();
         query.PageSize.Should().BeNull();
     }
