@@ -11,12 +11,13 @@ public class QueryStringParameterBuilderTests
 {
 
     [Test, AutoData]
-    public void Operator_PopulatesModelFromParameters(Guid memberId, DateTime? fromDate, DateTime? toDate,
+    public void Operator_PopulatesModelFromParameters(Guid memberId, string keyword, DateTime? fromDate, DateTime? toDate,
         List<EventFormat> eventFormats, List<int> calendarIds, List<int> regionIds, int? page, int? pageSize)
     {
         var sut = new GetCalendarEventsRequestModel
         {
             RequestedByMemberId = memberId,
+            Keyword = keyword,
             FromDate = fromDate,
             ToDate = toDate,
             EventFormat = eventFormats,
@@ -29,6 +30,9 @@ public class QueryStringParameterBuilderTests
         var query = (GetCalendarEventsQuery)sut;
 
         var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(query);
+
+        parameters.TryGetValue("keyword", out string[]? keywordResult);
+        keywordResult![0].Should().Be(keyword);
 
         parameters.TryGetValue("fromDate", out string[]? fromDateResult);
         fromDateResult![0].Should().Be(fromDate?.ToString("yyyy-MM-dd"));
