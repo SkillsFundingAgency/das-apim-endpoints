@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System;
+using MediatR;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EmployerProfiles.Application.AccountUsers.Commands
@@ -10,5 +11,6 @@ namespace SFA.DAS.EmployerProfiles.Application.AccountUsers.Commands
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string GovIdentifier { get; set; }
+        public Guid? CorrelationId { get; set; }
     }
 }
