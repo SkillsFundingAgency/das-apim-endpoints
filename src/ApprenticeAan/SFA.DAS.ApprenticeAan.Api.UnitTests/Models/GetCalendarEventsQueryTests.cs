@@ -32,7 +32,7 @@ public class GetCalendarEventsRequestModelTests
         var query = (GetCalendarEventsQuery)model;
 
         query.RequestedByMemberId.Should().Be(memberId);
-        query.Keyword.Should().BeEmpty();
+        query.Keyword.Should().BeNull();
         query.FromDate.Should().BeNull();
         query.ToDate.Should().BeNull();
         query.Page.Should().BeNull();
