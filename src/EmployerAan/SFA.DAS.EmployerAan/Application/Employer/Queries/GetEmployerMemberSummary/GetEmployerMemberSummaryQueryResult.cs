@@ -3,6 +3,6 @@
 public class GetEmployerMemberSummaryQueryResult
 {
     public int ActiveCount { get; set; }
-    public DateTime StartDate { get; set; }
-    public List<string>? Sectors { get; set; }
+    public DateTime? StartDate { get; set; }
+    public IEnumerable<string> Sectors { get; set; } = Enumerable.Empty<string>();
 }

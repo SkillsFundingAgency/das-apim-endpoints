@@ -2,6 +2,6 @@
 
 public class ApprenticeshipsFilterValues
 {
-    public List<DateTime>? StartDates { get; set; }
-    public List<string>? Sectors { get; set; }
+    public IEnumerable<DateTime> StartDates { get; set; } = Enumerable.Empty<DateTime>();
+    public IEnumerable<string> Sectors { get; set; } = Enumerable.Empty<string>();
 }

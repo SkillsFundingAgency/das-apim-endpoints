@@ -2,7 +2,7 @@
 
 public class AccountsSummary
 {
-    public List<ApprenticeshipStatusSummaryResponse>? ApprenticeshipStatusSummaryResponse { get; set; }
+    public IEnumerable<ApprenticeshipStatusSummaryResponse> ApprenticeshipStatusSummaryResponse { get; set; } = Enumerable.Empty<ApprenticeshipStatusSummaryResponse>();
 }
 public class ApprenticeshipStatusSummaryResponse
 {

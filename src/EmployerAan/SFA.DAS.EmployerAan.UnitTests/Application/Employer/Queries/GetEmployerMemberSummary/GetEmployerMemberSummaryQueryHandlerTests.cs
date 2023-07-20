@@ -1,8 +1,6 @@
-﻿using System.Net;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
-using RestEase;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMemberSummary;
 using SFA.DAS.EmployerAan.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
@@ -20,11 +18,11 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Employer.Queries.GetEmployer
             ApprenticeshipsFilterValues expectedApprenticeshipsFilterValues,
             CancellationToken cancellationToken)
         {
-            apiClient.Setup(x => x.GetEmployerAccounts(query.EmployerAccountId, cancellationToken))
-                .ReturnsAsync(new Response<AccountsSummary?>(string.Empty, new(HttpStatusCode.OK), () => expectedAccountsSummary));
+            apiClient.Setup(x => x.GetEmployerAccountSummary(query.EmployerAccountId, cancellationToken))
+                .ReturnsAsync(expectedAccountsSummary);
 
             apiClient.Setup(x => x.GetApprenticeshipsSummaryForEmployer(query.EmployerAccountId, cancellationToken))
-                .ReturnsAsync(new Response<ApprenticeshipsFilterValues?>(string.Empty, new(HttpStatusCode.OK), () => expectedApprenticeshipsFilterValues));
+                .ReturnsAsync(expectedApprenticeshipsFilterValues);
 
             GetEmployerMemberSummaryQueryResult expectedEmployerAccount =
                 new GetEmployerMemberSummaryQueryResult()
@@ -32,6 +30,36 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Employer.Queries.GetEmployer
                     ActiveCount = expectedAccountsSummary.ApprenticeshipStatusSummaryResponse!.FirstOrDefault()!.ActiveCount,
                     StartDate = expectedApprenticeshipsFilterValues.StartDates!.Min(x => x.Date),
                     Sectors = expectedApprenticeshipsFilterValues.Sectors!
+                };
+
+            var actual = await handler.Handle(query, cancellationToken);
+
+            actual.Should().BeEquivalentTo(expectedEmployerAccount);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Handle_ReturnEmployerMemberSummaryWhenNoAccoutSummaryAndNoApprenticeshipsFilterValues(
+            [Frozen] Mock<ICommitmentsV2ApiClient> apiClient,
+            GetEmployerMemberSummaryQueryHandler handler,
+            GetEmployerMemberSummaryQuery query,
+            CancellationToken cancellationToken)
+        {
+            AccountsSummary expectedAccountsSummary = new();
+
+            apiClient.Setup(x => x.GetEmployerAccountSummary(query.EmployerAccountId, cancellationToken))
+                .ReturnsAsync(expectedAccountsSummary);
+
+            ApprenticeshipsFilterValues expectedApprenticeshipsFilterValues = new();
+
+            apiClient.Setup(x => x.GetApprenticeshipsSummaryForEmployer(query.EmployerAccountId, cancellationToken))
+                .ReturnsAsync(expectedApprenticeshipsFilterValues);
+
+            GetEmployerMemberSummaryQueryResult expectedEmployerAccount =
+                new GetEmployerMemberSummaryQueryResult()
+                {
+                    ActiveCount = 0,
+                    StartDate = null,
+                    Sectors = Enumerable.Empty<string>()
                 };
 
             var actual = await handler.Handle(query, cancellationToken);
