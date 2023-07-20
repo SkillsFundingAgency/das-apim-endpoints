@@ -14,8 +14,8 @@ namespace SFA.DAS.Approvals.Api.Clients
     /// </summary>
     public class LocalCommitmentsApiInternalApiClient : CommitmentsApiInternalApiClient
     {
-        public LocalCommitmentsApiInternalApiClient(IHttpClientFactory httpClientFactory, CommitmentsV2ApiConfiguration apiConfiguration, IAzureClientCredentialHelper azureClientCredentialHelper, ILogger<CommitmentsApiInternalApiClient> logger) 
-            : base(httpClientFactory, apiConfiguration, azureClientCredentialHelper, logger)
+        public LocalCommitmentsApiInternalApiClient(IHttpClientFactory httpClientFactory, CommitmentsV2ApiConfiguration apiConfiguration, IAzureClientCredentialHelper azureClientCredentialHelper, Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor, ILogger<CommitmentsApiInternalApiClient> logger) 
+            : base(httpClientFactory, apiConfiguration, azureClientCredentialHelper,httpContextAccessor, logger)
         {
         }
 
