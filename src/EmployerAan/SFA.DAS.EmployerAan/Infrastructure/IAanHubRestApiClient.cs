@@ -1,9 +1,9 @@
 ﻿using RestEase;
 using SFA.DAS.EmployerAan.Application.Employer.Commands.CreateEmployerMember;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
-using SFA.DAS.EmployerAan.Application.InnerApi.Attendances;
 using SFA.DAS.EmployerAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.EmployerAan.Application.Regions.Queries.GetRegions;
+using SFA.DAS.EmployerAan.InnerApi.Attendances;
 namespace SFA.DAS.EmployerAan.Infrastructure;
 
 public interface IAanHubRestApiClient
