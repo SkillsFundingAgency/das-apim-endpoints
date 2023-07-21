@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerAan.Api", "SFA.DAS.EmployerAan.Api\SFA.DAS.EmployerAan.Api.csproj", "{9059B489-2152-4A60-B1AB-062F51DA42CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerAan.Api", "SFA.DAS.EmployerAan.Api\SFA.DAS.EmployerAan.Api.csproj", "{9059B489-2152-4A60-B1AB-062F51DA42CD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{AA7E4C47-E8CB-4A33-827F-C290A1D45408}"
 EndProject
@@ -13,9 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.Unit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerAan", "SFA.DAS.EmployerAan\SFA.DAS.EmployerAan.csproj", "{E4F955F7-3F49-4367-A548-C9734DFD704C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerAan.UnitTests", "SFA.DAS.EmployerAan.UnitTests\SFA.DAS.EmployerAan.UnitTests.csproj", "{A46DF58F-898C-410C-A2D3-F654688A498F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerAan.UnitTests", "SFA.DAS.EmployerAan.UnitTests\SFA.DAS.EmployerAan.UnitTests.csproj", "{A46DF58F-898C-410C-A2D3-F654688A498F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerAan.Api.UnitTests", "SFA.DAS.EmployerAan.Api.UnitTests\SFA.DAS.EmployerAan.Api.UnitTests.csproj", "{A2AC248D-0CCC-4B28-9366-C7EE449EE5A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerAan.Api.UnitTests", "SFA.DAS.EmployerAan.Api.UnitTests\SFA.DAS.EmployerAan.Api.UnitTests.csproj", "{A2AC248D-0CCC-4B28-9366-C7EE449EE5A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerAan.Application", "SFA.DAS.EmployerAan.Application\SFA.DAS.EmployerAan.Application.csproj", "{B6E21412-97E9-4A1D-A05F-1C0FF04D1ACD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{A2AC248D-0CCC-4B28-9366-C7EE449EE5A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2AC248D-0CCC-4B28-9366-C7EE449EE5A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2AC248D-0CCC-4B28-9366-C7EE449EE5A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6E21412-97E9-4A1D-A05F-1C0FF04D1ACD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6E21412-97E9-4A1D-A05F-1C0FF04D1ACD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6E21412-97E9-4A1D-A05F-1C0FF04D1ACD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6E21412-97E9-4A1D-A05F-1C0FF04D1ACD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
