@@ -4,7 +4,6 @@ namespace SFA.DAS.EmployerAan.Application.Employer.Commands.CreateEmployerMember
 
 public class CreateEmployerMemberCommand : IRequest<CreateEmployerMemberCommandResult>
 {
-    public Guid EmployerId { get; set; }
     public string Email { get; set; } = null!;
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
