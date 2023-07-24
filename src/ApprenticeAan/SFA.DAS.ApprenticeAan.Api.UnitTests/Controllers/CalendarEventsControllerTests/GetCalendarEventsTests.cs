@@ -26,6 +26,7 @@ public class GetCalendarEventsTests
         var model = new GetCalendarEventsRequestModel
         {
             RequestedByMemberId = requestedByMemberId,
+            Keyword = string.Empty,
             FromDate = fromDate,
             ToDate = toDate,
             EventFormat = new List<EventFormat>(),
@@ -45,6 +46,7 @@ public class GetCalendarEventsTests
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] CalendarEventsController sut,
         Guid requestedByMemberId,
+        string keyword,
         List<EventFormat> eventFormats,
         List<int> calendarIds,
         List<int> regionIds,
@@ -61,6 +63,7 @@ public class GetCalendarEventsTests
         var model = new GetCalendarEventsRequestModel
         {
             RequestedByMemberId = requestedByMemberId,
+            Keyword = keyword,
             FromDate = fromDate,
             ToDate = toDate,
             EventFormat = eventFormats,

@@ -13,6 +13,7 @@ public class GetCalendarEventsRequestModelTests
         var query = (GetCalendarEventsQuery)model;
 
         query.RequestedByMemberId.Should().Be(model.RequestedByMemberId);
+        query.Keyword.Should().Be(model.Keyword);
         query.FromDate.Should().Be(model.FromDate?.ToString("yyyy-MM-dd"));
         query.ToDate.Should().Be(model.ToDate?.ToString("yyyy-MM-dd"));
         query.EventFormat.Should().BeEquivalentTo(model.EventFormat);
@@ -31,6 +32,7 @@ public class GetCalendarEventsRequestModelTests
         var query = (GetCalendarEventsQuery)model;
 
         query.RequestedByMemberId.Should().Be(memberId);
+        query.Keyword.Should().BeNull();
         query.FromDate.Should().BeNull();
         query.ToDate.Should().BeNull();
         query.Page.Should().BeNull();
