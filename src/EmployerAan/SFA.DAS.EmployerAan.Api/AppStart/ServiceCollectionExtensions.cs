@@ -82,8 +82,8 @@ public static class ServiceCollectionExtensions
     private static void AddCommitmentsV2ApiClient(IServiceCollection services, IConfiguration configuration)
     {
         var apiConfig = configuration
-                .GetSection(nameof(CommitmentsV2ApiConfiguration))
-                .Get<CommitmentsV2ApiConfiguration>();
+                .GetSection(nameof(SFA.DAS.EmployerAan.Configuration.CommitmentsV2ApiConfiguration))
+                .Get<SFA.DAS.EmployerAan.Configuration.CommitmentsV2ApiConfiguration>();
 
         services.AddSingleton(apiConfig);
 
