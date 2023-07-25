@@ -68,7 +68,6 @@ public class GetCalendarEventsTests
         };
         var result = await sut.GetCalendarEvents(model, cancellationToken);
 
-        result.As<OkObjectResult>().Should().NotBeNull();
         result.As<OkObjectResult>().Value.Should().Be(queryResult);
     }
 }
