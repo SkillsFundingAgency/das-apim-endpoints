@@ -8,8 +8,7 @@ using SFA.DAS.Testing.AutoFixture;
 namespace SFA.DAS.AdminAan.UnitTests.Application.CalendarEvents.Queries.GetCalendarEvents;
 public class GetCalendarEventsQueryHandlerTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_ReturnCalendarEvents(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         GetCalendarEventsQueryHandler handler,

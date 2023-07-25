@@ -11,8 +11,7 @@ using SFA.DAS.Testing.AutoFixture;
 namespace SFA.DAS.AdminAan.Api.UnitTests.Controllers;
 public class GetCalendarEventsTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Get_InvokesQueryHandler(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] CalendarEventsController sut,
@@ -69,7 +68,6 @@ public class GetCalendarEventsTests
         };
         var result = await sut.GetCalendarEvents(model, cancellationToken);
 
-        result.As<OkObjectResult>().Should().NotBeNull();
         result.As<OkObjectResult>().Value.Should().Be(queryResult);
     }
 }
