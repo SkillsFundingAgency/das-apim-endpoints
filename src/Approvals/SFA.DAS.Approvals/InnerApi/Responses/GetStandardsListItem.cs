@@ -1,6 +1,6 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+﻿using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Collections.Generic;
 
 namespace SFA.DAS.Approvals.InnerApi.Responses
 {
@@ -18,5 +18,6 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         public List<string> Options { get; set; }
         public StandardVersionDetail VersionDetail { get; set; }
         public string StandardPageUrl { get; set; }
+        public string Route { get; set; }
     }
 }
