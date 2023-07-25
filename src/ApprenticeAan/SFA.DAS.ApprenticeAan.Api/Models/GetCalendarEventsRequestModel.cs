@@ -11,6 +11,9 @@ public class GetCalendarEventsRequestModel
     public Guid RequestedByMemberId { get; set; }
 
     [FromQuery]
+    public string? Keyword { get; set; }
+
+    [FromQuery]
     public DateTime? FromDate { get; set; }
 
     [FromQuery]
@@ -34,6 +37,7 @@ public class GetCalendarEventsRequestModel
     public static implicit operator GetCalendarEventsQuery(GetCalendarEventsRequestModel requestModel) => new()
     {
         RequestedByMemberId = requestModel.RequestedByMemberId,
+        Keyword = requestModel.Keyword,
         FromDate = requestModel.FromDate?.ToString("yyyy-MM-dd"),
         ToDate = requestModel.ToDate?.ToString("yyyy-MM-dd"),
         EventFormat = requestModel.EventFormat,
