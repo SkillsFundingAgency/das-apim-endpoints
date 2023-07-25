@@ -36,7 +36,8 @@ namespace SFA.DAS.EmployerFinance.Api.Controllers
                 var model = new GetCountsResponse
                 {
                     PledgesCount = response.PledgesCount,
-                    ApplicationsCount = response.ApplicationsCount
+                    ApplicationsCount = response.ApplicationsCount,
+                    CurrentYearEstimatedCommittedSpend = response.CurrentYearEstimatedCommittedSpend
                 };
 
                 return Ok(model);

@@ -68,7 +68,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error in Get Cohort Details - cohort id {cohortId}");
+                _logger.LogError(e, $"Error in get cohort details - cohort id {cohortId}");
                 return BadRequest();
             }
         }
