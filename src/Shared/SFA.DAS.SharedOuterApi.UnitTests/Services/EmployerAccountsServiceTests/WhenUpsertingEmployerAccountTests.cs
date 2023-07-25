@@ -9,6 +9,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -25,6 +26,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             EmployerProfile employerProfile,
             EmployerProfileUsersApiResponse profileUserResponse,
             [Frozen] Mock<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>> employerProfilesApiClient,
+            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
             EmployerAccountsService handler)
         {
             employerProfile.UserId = Guid.NewGuid().ToString();
@@ -48,6 +50,15 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
            
             employerProfilesApiClient.Verify(x => x.PutWithResponseCode<EmployerProfileUsersApiResponse>(
                 It.IsAny<PutUpsertEmployerUserAccountRequest>()), Times.Once);
+            accountsApiClient.Verify(x=>x.PutWithResponseCode<NullResponse>(
+                It.Is<PutAccountUserRequest>(c=>
+                    c.PutUrl.Contains("api/user/upsert")
+                    && c.Data.GetType().GetProperty("CorrelationId").GetValue(c.Data, null).ToString() == employerProfile.CorrelationId.Value.ToString()
+                    && c.Data.GetType().GetProperty("UserRef").GetValue(c.Data, null).ToString() == employerProfile.UserId
+                    && c.Data.GetType().GetProperty("FirstName").GetValue(c.Data, null).ToString() == employerProfile.FirstName
+                    && c.Data.GetType().GetProperty("LastName").GetValue(c.Data, null).ToString() == employerProfile.LastName
+                    && c.Data.GetType().GetProperty("EmailAddress").GetValue(c.Data, null).ToString() == employerProfile.Email
+                )), Times.Once);
         }
 
         [Test, MoqAutoData]

@@ -37,6 +37,7 @@ namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.Transfers
 
             Assert.AreEqual(mediatorResult.PledgesCount, getIndexResponse.PledgesCount);
             Assert.AreEqual(mediatorResult.ApplicationsCount, getIndexResponse.ApplicationsCount);
+            Assert.AreEqual(mediatorResult.CurrentYearEstimatedCommittedSpend, getIndexResponse.CurrentYearEstimatedCommittedSpend);
         }
     }
 }

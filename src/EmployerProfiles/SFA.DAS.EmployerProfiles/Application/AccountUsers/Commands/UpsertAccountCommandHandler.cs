@@ -23,6 +23,7 @@ namespace SFA.DAS.EmployerProfiles.Application.AccountUsers.Commands
                 UserId = request.UserId,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
+                CorrelationId = request.CorrelationId
             });
         }
     }

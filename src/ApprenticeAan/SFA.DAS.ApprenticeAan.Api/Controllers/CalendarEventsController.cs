@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.ApprenticeAan.Api.Models;
 using SFA.DAS.ApprenticeAan.Application.Attendances.Commands.PutAttendance;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEventById;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
-using SFA.DAS.ApprenticeAan.Application.Common;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
 
@@ -21,9 +21,9 @@ public class CalendarEventsController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(GetCalendarEventsQueryResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetCalendarEvents([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [FromQuery] DateTime? fromDate, [FromQuery] DateTime? toDate, [FromQuery] List<EventFormat>? eventFormat, [FromQuery] List<int>? calendarId, [FromQuery] List<int> regionId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCalendarEvents([FromQuery] GetCalendarEventsRequestModel requestModel, CancellationToken cancellationToken)
     {
-        var response = await _mediator.Send(new GetCalendarEventsQuery(requestedByMemberId, fromDate, toDate, eventFormat, calendarId, regionId), cancellationToken);
+        var response = await _mediator.Send((GetCalendarEventsQuery)requestModel, cancellationToken);
         return Ok(response);
     }
 
