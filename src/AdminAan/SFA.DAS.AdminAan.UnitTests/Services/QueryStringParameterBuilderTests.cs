@@ -23,7 +23,7 @@ public class QueryStringParameterBuilderTests
         }
         else
         {
-            fromDateResult.Should().BeNull();
+            fromDateResult![0].Should().Be(DateTime.Today.ToString("yyyy-MM-dd"));
         }
     }
 

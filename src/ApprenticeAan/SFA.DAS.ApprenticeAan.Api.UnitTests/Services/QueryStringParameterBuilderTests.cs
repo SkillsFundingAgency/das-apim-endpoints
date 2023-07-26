@@ -62,9 +62,8 @@ public class QueryStringParameterBuilderTests
         isActiveResult![0].Should().Be("true");
     }
 
-    [TestCase(null)]
-    [TestCase("2030-06-01")]
-    public void Builder_ConstructParameters_FromDate(DateTime? fromDate)
+    [TestCase("2030-06-01", "2030-06-01")]
+    public void Builder_ConstructParameters_FromDateNotToday(DateTime? fromDate, string expectedFromDate)
     {
         var model = new GetCalendarEventsRequestModel
         {
@@ -74,15 +73,35 @@ public class QueryStringParameterBuilderTests
         var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model);
 
         parameters.TryGetValue("fromDate", out var fromDateResult);
-        if (fromDate != null)
-        {
-            fromDateResult![0].Should().Be(fromDate?.ToString("yyyy-MM-dd"));
-        }
-        else
-        {
-            fromDateResult.Should().BeNull();
-        }
+
+        fromDateResult![0].Should().Be(expectedFromDate);
     }
+
+    [TestCase("null")]
+    [TestCase("today")]
+    public void Builder_ConstructParameters_FromDateToday(string fromDateSelector)
+    {
+
+        DateTime? fromDate = null;
+
+        if (fromDateSelector == "today") fromDate = DateTime.Today;
+
+        var model = new GetCalendarEventsRequestModel
+        {
+            RequestedByMemberId = Guid.NewGuid(),
+            FromDate = fromDate
+        };
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model);
+
+        parameters.TryGetValue("fromDate", out var fromDateResult);
+
+        DateTime.TryParse(fromDateResult![0], out var fromDateResultValue);
+
+        fromDateResultValue.Date.Should().Be(DateTime.Today);
+        fromDateResultValue.ToLocalTime().Should().BeOnOrBefore(DateTime.Now);
+        fromDateResultValue.ToLocalTime().Should().BeAfter(DateTime.Now.AddSeconds(-1));
+    }
+
 
     [TestCase(null)]
     [TestCase("2030-06-01")]
