@@ -25,6 +25,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
         public DateTime? EndDate { get; set; }
 
         public int? Cost { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
 
         public int? EmploymentPrice { get; set; }
 

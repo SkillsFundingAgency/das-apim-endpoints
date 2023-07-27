@@ -76,6 +76,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 ActualStartDate =  apprenticeship.ActualStartDate,
                 EndDate = apprenticeship.EndDate,
                 Cost = apprenticeship.Cost,
+                TrainingPrice = apprenticeship.TrainingPrice,
+                EndPointAssessmentPrice = apprenticeship.EndPointAssessmentPrice,
                 EmploymentPrice = apprenticeship.EmploymentPrice,
                 EmploymentEndDate = apprenticeship.EmploymentEndDate,
                 EmployerReference = apprenticeship.EmployerReference,

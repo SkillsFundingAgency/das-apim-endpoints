@@ -239,6 +239,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 ActualStartDate = request.ActualStartDate,
                 StartDate = request.StartDate,
                 Cost = request.Cost,
+                TrainingPrice = request.TrainingPrice,
+                EndPointAssessmentPrice = request.EndPointAssessmentPrice,
                 CourseCode = request.CourseCode,
                 DateOfBirth = request.DateOfBirth,
                 DeliveryModel = request.DeliveryModel,

@@ -28,6 +28,8 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public DateTime? EndDate { get; set; }
 
         public int? Cost { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
 
         public int? EmploymentPrice { get; set; }
 
@@ -71,6 +73,8 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 ActualStartDate = source.ActualStartDate,
                 EndDate = source.EndDate,
                 Cost = source.Cost,
+                TrainingPrice = source.TrainingPrice,
+                EndPointAssessmentPrice = source.EndPointAssessmentPrice,
                 EmploymentPrice = source.EmploymentPrice,
                 EmploymentEndDate = source.EmploymentEndDate,
                 EmployerReference = source.EmployerReference,
