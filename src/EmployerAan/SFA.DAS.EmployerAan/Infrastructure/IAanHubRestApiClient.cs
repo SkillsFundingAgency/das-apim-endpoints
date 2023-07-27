@@ -19,7 +19,7 @@ public interface IAanHubRestApiClient
     [Get("/employers/{userRef}")]
     [AllowAnyStatusCode]
     Task<Response<GetEmployerMemberQueryResult?>> GetEmployer([Path] Guid userRef, CancellationToken cancellationToken);
-
     [Post("/employers")]
     Task<CreateEmployerMemberCommandResult> PostEmployerMember([Body] CreateEmployerMemberCommand command, CancellationToken cancellationToken);
+    
 }
