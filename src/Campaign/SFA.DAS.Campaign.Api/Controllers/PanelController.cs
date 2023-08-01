@@ -20,20 +20,20 @@ namespace SFA.DAS.Campaign.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{slug}")]
+        [Route("{panelId}")]
 
-        public async Task<IActionResult> GetPanelAsync(string slug, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetPanelAsync(int panelId, CancellationToken cancellationToken)
         {
             var result = await mediator.Send(new GetPanelQuery
             {
-                Slug = slug
+                Id = panelId
             }, cancellationToken);
 
-            if (result == null)
+            if (result.Panel == null)
             {
                 return new NotFoundObjectResult(new NotFoundResponse
                 {
-                    Message = $"Panel not found for {slug}"
+                    Message = $"Panel not found for panel id {panelId}."
                 });
             }
 
@@ -45,19 +45,19 @@ namespace SFA.DAS.Campaign.Api.Controllers
         }
 
         [HttpGet]
-        [Route("preview/{slug}")]
-        public async Task<IActionResult> GetPreviewPanelAsync(string slug, CancellationToken cancellationToken)
+        [Route("preview/{panelId}")]
+        public async Task<IActionResult> GetPreviewPanelAsync(int panelId, CancellationToken cancellationToken)
         {
             var result = await mediator.Send(new GetPreviewPanelQuery
             {
-                Slug = slug
+                Id = panelId
             }, cancellationToken);
 
             if (result == null)
             {
                 return new NotFoundObjectResult(new NotFoundResponse
                 {
-                    Message = $"Preview Panel not found for {slug}"
+                    Message = $"Preview Panel not found for panel id {panelId}."
                 });
             }
 

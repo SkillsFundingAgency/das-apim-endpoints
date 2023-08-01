@@ -6,24 +6,21 @@ using SFA.DAS.Campaign.Interfaces;
 using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.Campaign.Models;
-using SFA.DAS.Campaign.Extensions;
 
 namespace SFA.DAS.Campaign.Application.Queries.PreviewPanel
 {
     public class GetPreviewPanelQueryHandler : IRequestHandler<GetPreviewPanelQuery, GetPreviewPanelQueryResult>
     {
         private readonly IContentfulPreviewApiClient<ContentfulPreviewApiConfiguration> _client;
-        private readonly IMediator _mediator;
 
-        public GetPreviewPanelQueryHandler(IContentfulPreviewApiClient<ContentfulPreviewApiConfiguration> client, IMediator mediator)
+        public GetPreviewPanelQueryHandler(IContentfulPreviewApiClient<ContentfulPreviewApiConfiguration> client)
         {
             _client = client;
-            _mediator = mediator;
         }
 
         public async Task<GetPreviewPanelQueryResult> Handle(GetPreviewPanelQuery request, CancellationToken cancellationToken)
         {
-            var panel = await _client.Get<CmsContent>(new GetPanelRequest(request.Slug));
+            var panel = await _client.Get<CmsContent>(new GetPanelRequest(request.Id));
             
             var pageModel = new PanelModel().Build(panel);
 

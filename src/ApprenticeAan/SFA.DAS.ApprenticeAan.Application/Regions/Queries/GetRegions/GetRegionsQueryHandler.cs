@@ -1,22 +1,19 @@
 ﻿using MediatR;
-using SFA.DAS.ApprenticeAan.Api.Configuration;
-using SFA.DAS.ApprenticeAan.Application.InnerApi.Regions.Requests;
-using SFA.DAS.ApprenticeAan.Application.Services;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 
-namespace SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions
+namespace SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
+
+public class GetRegionsQueryHandler : IRequestHandler<GetRegionsQuery, GetRegionsQueryResult>
 {
-    public class GetRegionsQueryHandler : IRequestHandler<GetRegionsQuery, GetRegionsQueryResult?>
+    private readonly IAanHubRestApiClient _apiClient;
+
+    public GetRegionsQueryHandler(IAanHubRestApiClient apiClient)
     {
-        private readonly IAanHubApiClient<AanHubApiConfiguration> _apiClient;
+        _apiClient = apiClient;
+    }
 
-        public GetRegionsQueryHandler(IAanHubApiClient<AanHubApiConfiguration> apiClient)
-        {
-            _apiClient = apiClient;
-        }
-
-        public async Task<GetRegionsQueryResult?> Handle(GetRegionsQuery request, CancellationToken cancellationToken)
-        {
-            return await _apiClient.Get<GetRegionsQueryResult>(new GetRegionsQueryRequest());
-        }
+    public async Task<GetRegionsQueryResult> Handle(GetRegionsQuery request, CancellationToken cancellationToken)
+    {
+        return await _apiClient.GetRegions(cancellationToken);
     }
 }
