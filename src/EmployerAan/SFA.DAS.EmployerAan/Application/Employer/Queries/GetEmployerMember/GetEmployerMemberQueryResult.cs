@@ -3,5 +3,4 @@
 public class GetEmployerMemberQueryResult
 {
     public Guid MemberId { get; set; }
-    public string Name { get; set; } = null!;
 }

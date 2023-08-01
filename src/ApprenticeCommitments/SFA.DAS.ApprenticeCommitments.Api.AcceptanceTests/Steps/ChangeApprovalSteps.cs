@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
-using SFA.DAS.ApprenticeCommitments.Apis.TrainingProviderApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System.Collections.Generic;
@@ -16,6 +15,7 @@ using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using System;
 using System.Globalization;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 {
@@ -26,7 +26,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         private readonly TestContext _context;
         private UpdateApprovalCommand _request;
         private IEnumerable<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse> _approvedApprenticeships;
-        private IEnumerable<Apis.TrainingProviderApi.TrainingProviderResponse> _trainingProviderResponses;
+        private IEnumerable<TrainingProviderResponse> _trainingProviderResponses;
         private IEnumerable<Apis.Courses.StandardResponse> _courseResponses;
 
         public ChangeApprovalSteps(TestContext context)
@@ -70,7 +70,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [Given("the following training providers exist")]
         public void GivenTheFollowingTrainingProvidersExist(Table table)
         {
-            _trainingProviderResponses = table.CreateSet<Apis.TrainingProviderApi.TrainingProviderResponse>();
+            _trainingProviderResponses = table.CreateSet<TrainingProviderResponse>();
 
             foreach (var trainingProvider in _trainingProviderResponses)
             {

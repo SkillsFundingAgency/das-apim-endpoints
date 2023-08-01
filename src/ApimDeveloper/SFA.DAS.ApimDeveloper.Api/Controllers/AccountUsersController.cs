@@ -1,11 +1,11 @@
-using System;
-using System.Net;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
 using SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ApimDeveloper.Api.Controllers
 {
@@ -16,15 +16,15 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
         private readonly IMediator _mediator;
         private readonly ILogger<AccountUsersController> _logger;
 
-        public AccountUsersController (IMediator mediator, ILogger<AccountUsersController> logger)
+        public AccountUsersController(IMediator mediator, ILogger<AccountUsersController> logger)
         {
             _mediator = mediator;
             _logger = logger;
         }
-        
+
         [HttpGet]
         [Route("{userId}/accounts")]
-        public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery]string email)
+        public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery] string email)
         {
             try
             {
@@ -34,12 +34,12 @@ namespace SFA.DAS.ApimDeveloper.Api.Controllers
                     Email = email
                 });
 
-                return Ok((UserAccountsApiResponse) result);
+                return Ok((UserAccountsApiResponse)result);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+                _logger.LogError(e,"Error calling GetUserAccounts");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
     }

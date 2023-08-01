@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
@@ -58,22 +58,22 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public Task Patch<TData>(IPatchApiRequest<TData> request)
         {
-            return _apiClient.Patch<TData>(request);
+            return _apiClient.Patch(request);
         }
 
         public Task Put(IPutApiRequest request)
         {
-            throw new System.NotImplementedException();
+            return _apiClient.Put(request);
         }
 
         public Task Put<TData>(IPutApiRequest<TData> request)
         {
-            throw new System.NotImplementedException();
+            return _apiClient.Put(request);
         }
 
         public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
         {
-            throw new System.NotImplementedException();
+            return _apiClient.PostWithResponseCode<TResponse>(request, includeResponse);
         }
 
         public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)

@@ -13,21 +13,19 @@ namespace SFA.DAS.Campaign.Application.Queries.Panel
     public class GetPanelQueryHandler : IRequestHandler<GetPanelQuery, GetPanelQueryResult>
     {
         private readonly IReliableCacheStorageService _reliableCacheStorageService;
-        private readonly IMediator _mediator;
         private readonly IContentService _contentService;
 
         public GetPanelQueryHandler(
-            IReliableCacheStorageService reliableCacheStorageService, IMediator mediator, IContentService contentService)
+            IReliableCacheStorageService reliableCacheStorageService, IContentService contentService)
         {
             _reliableCacheStorageService = reliableCacheStorageService;
-            _mediator = mediator;
             _contentService = contentService;
         }
         public async Task<GetPanelQueryResult> Handle(GetPanelQuery request, CancellationToken cancellationToken)
         {
             var panel = await _reliableCacheStorageService.GetData<CmsContent>(
-                new GetPanelRequest(request.Slug),
-                $"{request.Slug}",
+                new GetPanelRequest(request.Id),
+                $"{request.Id}",
                 _contentService.HasContent);
 
             var pageModel = new PanelModel().Build(panel);

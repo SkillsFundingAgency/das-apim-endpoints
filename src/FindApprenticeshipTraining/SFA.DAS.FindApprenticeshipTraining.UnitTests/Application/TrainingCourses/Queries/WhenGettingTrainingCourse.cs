@@ -125,7 +125,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         public async Task Then_If_No_Standard_Found_Returns_Empty_Response(
             GetTrainingCourseQuery query,
             GetLevelsListResponse levelsApiResponse,
-            GetTotalProvidersForStandardResponse courseDirectoryApiResponse,
+            GetTotalProvidersForStandardResponse roatpCourseManagementApiResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseQueryHandler handler)
@@ -143,7 +143,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     client.Get<GetTotalProvidersForStandardResponse>(
                         It.Is<GetTotalProvidersForStandardRequest>((c =>
                             c.GetUrl.Equals(url)))))
-                .ReturnsAsync(courseDirectoryApiResponse);
+                .ReturnsAsync(roatpCourseManagementApiResponse);
 
             //Act
             var result = await handler.Handle(query, CancellationToken.None);

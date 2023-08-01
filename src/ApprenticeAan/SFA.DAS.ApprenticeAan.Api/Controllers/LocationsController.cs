@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.Locations.Queries.GetAddresses;
+using SFA.DAS.ApprenticeAan.Application.Locations.Queries.GetPostcodes;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
-[ApiController]
 [Route("[controller]")]
 public class LocationsController : ControllerBase
 {
@@ -20,7 +20,16 @@ public class LocationsController : ControllerBase
     {
         var queryResponse = await _mediator.Send(new GetAddressesQuery(query));
 
-        if (!queryResponse.Addresses.Any()) return NotFound();
+        return Ok(queryResponse);
+    }
+
+    [HttpGet]
+    [Route("{postcode}")]
+    public async Task<IActionResult> GetCoordinates([FromRoute] string postcode)
+    {
+        var queryResponse = await _mediator.Send(new GetPostcodeQuery(postcode));
+
+        if (queryResponse == null) return NotFound();
 
         return Ok(queryResponse);
     }

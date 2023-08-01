@@ -20,6 +20,9 @@ using System.Collections.Generic;
 using MediatR.Extensions.FluentValidation.AspNetCore;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using CommitmentsV2HealthCheck = SFA.DAS.ApprenticeCommitments.Infrastructure.CommitmentsV2HealthCheck;
+using CoursesApiHealthCheck = SFA.DAS.ApprenticeCommitments.Infrastructure.CoursesApiHealthCheck;
 
 namespace SFA.DAS.ApprenticeCommitments.Api
 {
