@@ -16,7 +16,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             actual.PutUrl.Should().Be($"api/users/{userId}");
             actual.Data.Should().BeEquivalentTo(new
             {
-                GovUkIdentifier = id,
+                GovIdentifier = id,
                 FirstName = firstName, 
                 LastName = lastName,
                 Email = email

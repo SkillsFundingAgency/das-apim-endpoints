@@ -19,9 +19,10 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.Transfers.GetCou
         public async Task And_AccountId_Specified_Then_Counts_Returned(
             long accountId,
             GetPledgesResponse getPledgesResponse,
-            GetAccountTransferStatusResponse getAccountTransferStatusResponse,
+            GetTransferFinancialBreakdownResponse getTransferFinancialBreakdownResponse,
             GetApplicationsResponse getApplicationsResponse,
             [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> levyTransferMatchingClient,
+            [Frozen] Mock<IForecastingApiClient<ForecastingApiConfiguration>> forecastingApiConfiguration,
             GetCountsQueryHandler getCountsQueryHandler)
         {
             GetCountsQuery getCountsQuery = new GetCountsQuery()
@@ -33,6 +34,10 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.Transfers.GetCou
                 .Setup(x => x.Get<GetPledgesResponse>(It.IsAny<GetPledgesRequest>()))
                 .ReturnsAsync(getPledgesResponse);
 
+            forecastingApiConfiguration
+                .Setup(x => x.Get<GetTransferFinancialBreakdownResponse>(It.IsAny<GetTransferFinancialBreakdownRequest>()))
+                .ReturnsAsync(getTransferFinancialBreakdownResponse);
+
             levyTransferMatchingClient
                 .Setup(x => x.Get<GetApplicationsResponse>(It.IsAny<GetApplicationsRequest>()))
                 .ReturnsAsync(getApplicationsResponse);
@@ -41,6 +46,10 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.Transfers.GetCou
 
             Assert.AreEqual(getPledgesResponse.TotalPledges, results.PledgesCount);
             Assert.AreEqual(getApplicationsResponse.Applications.Count(), results.ApplicationsCount);
+            Assert.AreEqual((getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
+                             getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications)
+                             + getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments)
+                             + getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.TransferConnections)), results.CurrentYearEstimatedCommittedSpend);
         }
     }
 }

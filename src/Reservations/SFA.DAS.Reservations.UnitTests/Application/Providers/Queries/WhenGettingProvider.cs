@@ -16,55 +16,12 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Providers.Queries
     public class WhenGettingProvider
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Provider_From_CourseDelivery_Api(
-            GetProviderQuery query,
-            GetProviderResponse apiResponse,
-            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
-            [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpApiClient,
-            FeatureToggles featureToggles)
-        {
-            featureToggles.RoatpProvidersEnabled = false;
-            GetProviderQueryHandler handler = new GetProviderQueryHandler(mockApiClient.Object, roatpApiClient.Object, featureToggles);
-            mockApiClient
-                .Setup(client => client.Get<GetProviderResponse>(It.Is<GetProviderRequest>(request => request.Ukprn == query.Ukprn)))
-                .ReturnsAsync(apiResponse);
-
-            var result = await handler.Handle(query, CancellationToken.None);
-
-            result.Provider.Should().BeEquivalentTo(apiResponse);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_Gets_Null_From_CourseDelivery_Api(
-            GetProviderQuery query,
-            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
-            [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpApiClient,
-            FeatureToggles featureToggles)
-        {
-            featureToggles.RoatpProvidersEnabled = false;
-            GetProviderResponse apiResponse = null;
-
-            GetProviderQueryHandler handler = new GetProviderQueryHandler(mockApiClient.Object, roatpApiClient.Object, featureToggles);
-            mockApiClient
-                .Setup(client => client.Get<GetProviderResponse>(It.Is<GetProviderRequest>(request => request.Ukprn == query.Ukprn)))
-                .ReturnsAsync(apiResponse);
-
-            var result = await handler.Handle(query, CancellationToken.None);
-
-            Assert.IsNotNull(result);
-            Assert.IsNull(result.Provider);
-        }
-
-        [Test, MoqAutoData]
         public async Task Then_Gets_Provider_From_Roatp_Api(
             GetProviderQuery query,
             GetRoatpProviderResponse apiResponse,
-            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
-            [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpApiClient,
-            FeatureToggles featureToggles)
+            [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpApiClient)
         {
-            featureToggles.RoatpProvidersEnabled = true;
-            GetProviderQueryHandler handler = new GetProviderQueryHandler(mockApiClient.Object, roatpApiClient.Object, featureToggles);
+            GetProviderQueryHandler handler = new GetProviderQueryHandler(roatpApiClient.Object);
             roatpApiClient
                 .Setup(client => client.Get<GetRoatpProviderResponse>(It.Is<GetProviderRequest>(request => request.Ukprn == query.Ukprn)))
                 .ReturnsAsync(apiResponse);
@@ -72,23 +29,20 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Providers.Queries
             var result = await handler.Handle(query, CancellationToken.None);
 
             Assert.IsNotNull(result);
-            result.Should().BeEquivalentTo(new GetProviderResult { Provider = apiResponse });
+            result.Should().BeEquivalentTo(new GetProviderResult { Provider = (GetProviderResponse)apiResponse });
         }
 
         [Test, MoqAutoData]
         public async Task Then_Gets_Null_From_Roatp_Api(
             GetProviderQuery query,
-            [Frozen] Mock<ICourseDeliveryApiClient<CourseDeliveryApiConfiguration>> mockApiClient,
-            [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpApiClient,
-            FeatureToggles featureToggles)
+            [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> roatpApiClient)
         {
-            featureToggles.RoatpProvidersEnabled = true;
-            GetRoatpProviderResponseSummary apiResponse = null;
+            GetRoatpProviderResponse apiResponse = null;
 
-            GetProviderQueryHandler handler = new GetProviderQueryHandler(mockApiClient.Object, roatpApiClient.Object, featureToggles);
+            GetProviderQueryHandler handler = new GetProviderQueryHandler( roatpApiClient.Object);
             roatpApiClient
                 .Setup(client =>
-                    client.Get<GetRoatpProviderResponseSummary>(
+                    client.Get<GetRoatpProviderResponse>(
                         It.Is<GetProviderRequest>(request => request.Ukprn == query.Ukprn)))
                 .ReturnsAsync(apiResponse);
 
