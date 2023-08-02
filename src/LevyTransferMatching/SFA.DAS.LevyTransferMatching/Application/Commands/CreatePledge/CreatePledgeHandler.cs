@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
+using SFA.DAS.LevyTransferMatching.Models.Constants;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
 {
@@ -56,6 +57,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge
                 JobRoles = request.JobRoles,
                 Levels = request.Levels,
                 Locations = locationDataItems,
+                AutomaticApprovalOption = string.IsNullOrWhiteSpace(request.AutomaticApprovalOption)
+                    ? AutomaticApprovalOption.Default
+                    : request.AutomaticApprovalOption,
                 UserId = request.UserId,
                 UserDisplayName = request.UserDisplayName
             });

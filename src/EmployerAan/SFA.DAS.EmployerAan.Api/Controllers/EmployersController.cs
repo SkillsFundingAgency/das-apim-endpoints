@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.EmployerAan.Application.Employer.Commands.CreateEmployerMember;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
+using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMemberSummary;
 
 namespace SFA.DAS.EmployerAan.Api.Controllers;
 
@@ -22,5 +24,22 @@ public class EmployersController : ControllerBase
     {
         var employer = await _mediator.Send(new GetEmployerMemberQuery(userRef), cancellationToken);
         return employer is null ? NotFound() : Ok(employer);
+    }
+
+    [HttpGet]
+    [Route("{employerAccountId}/summary")]
+    [ProducesResponseType(typeof(GetEmployerMemberSummaryQueryResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetEmployerMemberSummary(int employerAccountId, CancellationToken cancellationToken)
+    {
+        var employer = await _mediator.Send(new GetEmployerMemberSummaryQuery(employerAccountId), cancellationToken);
+        return employer is null ? NotFound() : Ok(employer);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(CreateEmployerMemberCommandResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> CreateEmployerMember([FromBody] CreateEmployerMemberCommand command, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
     }
 }

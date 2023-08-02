@@ -57,6 +57,9 @@ public class QueryStringParameterBuilderTests
 
         parameters.TryGetValue("pageSize", out string[]? pageSizeResult);
         pageSizeResult![0].Should().Be(pageSize?.ToString());
+
+        parameters.TryGetValue("isActive", out string[]? isActiveResult);
+        isActiveResult![0].Should().Be("true");
     }
 
     [TestCase(null)]

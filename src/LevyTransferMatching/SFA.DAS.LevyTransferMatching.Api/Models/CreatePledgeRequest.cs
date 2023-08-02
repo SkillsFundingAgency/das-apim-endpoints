@@ -24,6 +24,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models
 
         [Required]
         public List<string> Locations { get; set; }
+        public string AutomaticApprovalOption { get; set; }
 
         public string UserId { get; set; }
         public string UserDisplayName { get; set; }
