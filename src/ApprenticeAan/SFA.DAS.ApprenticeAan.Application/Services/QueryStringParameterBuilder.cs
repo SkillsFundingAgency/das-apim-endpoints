@@ -28,6 +28,7 @@ public static class QueryStringParameterBuilder
 
         if (request.Page != null) parameters.Add("page", new[] { request.Page?.ToString() }!);
         if (request.PageSize != null) parameters.Add("pageSize", new[] { request.PageSize?.ToString() }!);
+        parameters.Add("isActive", new[] { "true" });
         return parameters;
     }
 }
