@@ -19,7 +19,7 @@ namespace SFA.DAS.Approvals.Api.Models
         public int VersionMinor { get; set; }
         public List<string> Options { get; set; }
         public StandardVersionDetail VersionDetail { get; set; }
-        
+
         public int Duration { get; set; }
         public int MaxFunding { get; set; }
         public DateTime? EffectiveFrom { get; set; }
@@ -27,6 +27,7 @@ namespace SFA.DAS.Approvals.Api.Models
         public DateTime? LastDateForNewStarts { get; set; }
         public List<GetStandardFundingResponse> ApprenticeshipFunding { get; set; }
         public string StandardPageUrl { get; set; }
+        public string Route { get; set; }
 
         public static implicit operator GetStandardResponse(GetStandardsListItem source)
         {
@@ -49,7 +50,8 @@ namespace SFA.DAS.Approvals.Api.Models
                 EffectiveTo = source.StandardDates?.EffectiveTo,
                 LastDateForNewStarts = source.StandardDates?.LastDateStarts,
                 ApprenticeshipFunding = source.ApprenticeshipFunding.Select(c => (GetStandardFundingResponse)c).ToList(),
-                StandardPageUrl = source.StandardPageUrl
+                StandardPageUrl = source.StandardPageUrl,
+                Route = source.Route
             };
         }
     }

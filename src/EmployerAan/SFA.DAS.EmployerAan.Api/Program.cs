@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration.BuildSharedConfiguration();
 
 builder.Services
+    .AddConfigurationOptions(configuration)
     .AddServiceRegistration(configuration)
     .AddAuthentication(configuration)
     .AddApplicationInsightsTelemetry()

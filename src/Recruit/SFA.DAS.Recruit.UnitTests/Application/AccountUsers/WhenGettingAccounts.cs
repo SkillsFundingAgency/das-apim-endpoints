@@ -41,5 +41,7 @@ public class WhenGettingAccounts
         );
         actual.UserId.Should().Be(teamResponse.FirstOrDefault()?.UserId);
         actual.IsSuspended.Should().Be(teamResponse.FirstOrDefault().IsSuspended);
+        actual.FirstName.Should().Be(teamResponse.FirstOrDefault().FirstName);
+        actual.LastName.Should().Be(teamResponse.FirstOrDefault().LastName);
     }
 }

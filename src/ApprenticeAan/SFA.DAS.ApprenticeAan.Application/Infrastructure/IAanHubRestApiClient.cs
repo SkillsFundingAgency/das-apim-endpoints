@@ -1,7 +1,6 @@
 ﻿using RestEase;
 using SFA.DAS.ApprenticeAan.Application.Apprentices.Commands.CreateApprenticeMember;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
-using SFA.DAS.ApprenticeAan.Application.Common;
 using SFA.DAS.ApprenticeAan.Application.Entities;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
@@ -32,7 +31,7 @@ public interface IAanHubRestApiClient
         CancellationToken cancellationToken);
 
     [Get("calendarEvents")]
-    Task<GetCalendarEventsQueryResult> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] string requestedByMemberId, [Query] string fromDate, [Query] string toDate, [Query] List<EventFormat>? eventFormat, [Query] List<int>? calendarId, [Query] List<int>? regionId, CancellationToken cancellationToken);
+    Task<GetCalendarEventsQueryResult> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
 
     [Get("calendarEvents/{calendarEventId}")]
     [AllowAnyStatusCode]

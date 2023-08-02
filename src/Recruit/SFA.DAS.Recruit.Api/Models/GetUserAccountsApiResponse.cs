@@ -9,7 +9,9 @@ namespace SFA.DAS.Recruit.Api.Models
         public string EmployerUserId { get; set; }
         public List<UserAccountsApiResponseItem> UserAccounts { get; set; }
         public bool IsSuspended { get; set; }
+        public string LastName { get; set; }
 
+        public string FirstName { get; set; }
         public static implicit operator GetUserAccountsApiResponse(GetAccountsQueryResult source)
         {
             var accounts = source?.UserAccountResponse == null
@@ -20,9 +22,13 @@ namespace SFA.DAS.Recruit.Api.Models
             {
                 EmployerUserId = source?.UserId,
                 IsSuspended = source?.IsSuspended ?? false,
-                UserAccounts = accounts
+                UserAccounts = accounts,
+                FirstName = source?.FirstName,
+                LastName = source?.LastName,
             };
         }
+
+        
     }
 
     public class UserAccountsApiResponseItem

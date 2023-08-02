@@ -142,7 +142,8 @@ namespace SFA.DAS.SharedOuterApi.Services
                     employerProfile.UserId,
                     employerProfile.Email,
                     employerProfile.FirstName,
-                    employerProfile.LastName));
+                    employerProfile.LastName,
+                    employerProfile.CorrelationId));
 
                 return new EmployerProfile
                 {

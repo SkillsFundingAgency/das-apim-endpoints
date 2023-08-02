@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace SFA.DAS.EmployerProfiles.Api.Models
 {
@@ -10,5 +11,6 @@ namespace SFA.DAS.EmployerProfiles.Api.Models
         public string LastName { get; set; }
         [Required]
         public string GovIdentifier { get; set; }
+        public Guid? CorrelationId { get; set; }
     }
 }

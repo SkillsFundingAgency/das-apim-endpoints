@@ -60,6 +60,7 @@ namespace SFA.DAS.EmployerProfiles.Api.Controllers
                     Email = request.Email,
                     FirstName = request.FirstName,
                     LastName = request.LastName,
+                    CorrelationId = request.CorrelationId
                 });
 
                 return Ok((UpsertUserApiResponse)result);
