@@ -21,7 +21,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount
             return new GetAmountQueryResult
             {
                 RemainingTransferAllowance = account.RemainingTransferAllowance,
-                DasAccountName = account.DasAccountName
+                StartingTransferAllowance = account.StartingTransferAllowance
+
             };
         }
     }

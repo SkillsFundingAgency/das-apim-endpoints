@@ -1,4 +1,5 @@
 ﻿using RestEase;
+using SFA.DAS.EmployerAan.Application.Employer.Commands.CreateEmployerMember;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
 using SFA.DAS.EmployerAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.EmployerAan.Application.Regions.Queries.GetRegions;
@@ -18,4 +19,7 @@ public interface IAanHubRestApiClient
     [Get("/employers/{userRef}")]
     [AllowAnyStatusCode]
     Task<Response<GetEmployerMemberQueryResult?>> GetEmployer([Path] Guid userRef, CancellationToken cancellationToken);
+    [Post("/employers")]
+    Task<CreateEmployerMemberCommandResult> PostEmployerMember([Body] CreateEmployerMemberCommand command, CancellationToken cancellationToken);
+    
 }
