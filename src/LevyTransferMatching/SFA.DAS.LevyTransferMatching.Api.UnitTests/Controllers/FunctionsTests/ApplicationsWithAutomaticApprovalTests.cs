@@ -30,6 +30,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
         [Test]
         public async Task Action_Calls_Handler()
         {
+            // Arrange
+            var fixture = new Fixture();
+            var expectedResult = fixture.Create<ApplicationsWithAutomaticApprovalQueryResult>();
+            _mediator.Setup(x => x.Send(It.IsAny<ApplicationsWithAutomaticApprovalQuery>(), default))
+                .ReturnsAsync(expectedResult);
+
             var result = await _controller.ApplicationsForAutomaticApproval();
 
             _mediator.Verify(x =>
