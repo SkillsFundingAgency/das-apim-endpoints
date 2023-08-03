@@ -31,6 +31,7 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests
             public IEnumerable<string> JobRoles { get; set; }
             public IEnumerable<string> Levels { get; set; }
             public List<LocationDataItem> Locations { get; set; }
+            public string AutomaticApprovalOption { get; set; }
             public string UserId { get; set; }
             public string UserDisplayName { get; set; }
         }

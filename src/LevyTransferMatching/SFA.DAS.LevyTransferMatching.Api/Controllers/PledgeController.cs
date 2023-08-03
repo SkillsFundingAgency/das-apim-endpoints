@@ -96,20 +96,21 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpPost]
         [Route("accounts/{accountId}/pledges/create")]
-        public async Task<IActionResult> CreatePledge(long accountId, [FromBody]CreatePledgeRequest createPledgeRequest)
+        public async Task<IActionResult> CreatePledge(long accountId, [FromBody]CreatePledgeRequest request)
         {
             var commandResult = await _mediator.Send(new CreatePledgeCommand
             {
                 AccountId = accountId,
-                Amount = createPledgeRequest.Amount,
-                IsNamePublic = createPledgeRequest.IsNamePublic,
-                DasAccountName = createPledgeRequest.DasAccountName,
-                JobRoles = createPledgeRequest.JobRoles,
-                Levels = createPledgeRequest.Levels,
-                Sectors = createPledgeRequest.Sectors,
-                Locations = createPledgeRequest.Locations,
-                UserId = createPledgeRequest.UserId,
-                UserDisplayName = createPledgeRequest.UserDisplayName
+                Amount = request.Amount,
+                IsNamePublic = request.IsNamePublic,
+                DasAccountName = request.DasAccountName,
+                JobRoles = request.JobRoles,
+                Levels = request.Levels,
+                Sectors = request.Sectors,
+                Locations = request.Locations,
+                AutomaticApprovalOption = request.AutomaticApprovalOption,
+                UserId = request.UserId,
+                UserDisplayName = request.UserDisplayName
             });
 
             return new CreatedResult(
