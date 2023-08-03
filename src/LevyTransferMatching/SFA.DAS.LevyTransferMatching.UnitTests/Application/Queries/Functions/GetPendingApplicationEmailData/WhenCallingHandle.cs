@@ -7,7 +7,7 @@ using SFA.DAS.LevyTransferMatching.InnerApi.Requests.EmployerAccounts;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;

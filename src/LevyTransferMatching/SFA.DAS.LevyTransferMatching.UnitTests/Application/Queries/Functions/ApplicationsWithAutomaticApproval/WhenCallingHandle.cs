@@ -6,9 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System.Linq;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.ApplicationsWithAutomaticApproval
 {
@@ -34,12 +34,12 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.A
 
             var applications = new List<GetApplicationsResponse.Application>
             {
-                new GetApplicationsResponse.Application { PledgeId = 1, TotalAmount = 1000, PledgeRemainingAmount = 1000, MatchPercentage = 100, AutoApproveFullMatches = false, CreatedOn = DateTime.Now.AddDays(-50) },
-                new GetApplicationsResponse.Application { PledgeId = 1, TotalAmount = 500, PledgeRemainingAmount = 1000,MatchPercentage = 100, AutoApproveFullMatches = false, CreatedOn = DateTime.Now.AddDays(-50) },
-                new GetApplicationsResponse.Application { PledgeId = 2, TotalAmount = 500, PledgeRemainingAmount = 600, MatchPercentage = 100, AutoApproveFullMatches = false, CreatedOn = DateTime.Now.AddDays(-50) },
-                new GetApplicationsResponse.Application {PledgeId = 2, TotalAmount = 300, PledgeRemainingAmount = 600, MatchPercentage = 100, AutoApproveFullMatches = false, CreatedOn = DateTime.Now.AddDays(-50)},
-                new GetApplicationsResponse.Application {PledgeId = 3, TotalAmount = 300, PledgeRemainingAmount = 600, MatchPercentage = 100, AutoApproveFullMatches = false, CreatedOn = DateTime.Now.AddDays(-10)}
-            };
+                new GetApplicationsResponse.Application { PledgeId = 1, Amount = 1000, PledgeRemainingAmount = 1000, MatchPercentage = 100, PledgeAutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, CreatedOn = DateTime.Now.AddDays(-50) },
+                new GetApplicationsResponse.Application { PledgeId = 1, Amount = 500, PledgeRemainingAmount = 1000,MatchPercentage = 100, PledgeAutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, CreatedOn = DateTime.Now.AddDays(-50) },
+                new GetApplicationsResponse.Application { PledgeId = 2, Amount = 500, PledgeRemainingAmount = 600, MatchPercentage = 100, PledgeAutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, CreatedOn = DateTime.Now.AddDays(-50) },
+                new GetApplicationsResponse.Application {PledgeId = 2, Amount = 300, PledgeRemainingAmount = 600, MatchPercentage = 100, PledgeAutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, CreatedOn = DateTime.Now.AddDays(-50)},
+                new GetApplicationsResponse.Application {PledgeId = 3, Amount = 300, PledgeRemainingAmount = 600, MatchPercentage = 100, PledgeAutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, CreatedOn = DateTime.Now.AddDays(-10)}
+            };        
 
             _levyTransferMatchingServiceMock.Setup(x => x.GetApplications(It.IsAny<GetApplicationsRequest>()))
                 .ReturnsAsync(new GetApplicationsResponse { Applications = applications });
@@ -69,10 +69,10 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.A
             // Arrange
             var applications = new List<GetApplicationsResponse.Application>
             {
-                new GetApplicationsResponse.Application { PledgeId = 1, TotalAmount = 1000, PledgeRemainingAmount = 1000 },
-                new GetApplicationsResponse.Application { PledgeId = 1, TotalAmount = 500, PledgeRemainingAmount = 1000 },
-                new GetApplicationsResponse.Application { PledgeId = 2, TotalAmount = 500, PledgeRemainingAmount = 600 },
-                new GetApplicationsResponse.Application { PledgeId = 2, TotalAmount = 300, PledgeRemainingAmount = 600 }
+                new GetApplicationsResponse.Application { PledgeId = 1, Amount = 1000, PledgeRemainingAmount = 1000 },
+                new GetApplicationsResponse.Application { PledgeId = 1, Amount = 500, PledgeRemainingAmount = 1000 },
+                new GetApplicationsResponse.Application { PledgeId = 2, Amount = 500, PledgeRemainingAmount = 600 },
+                new GetApplicationsResponse.Application { PledgeId = 2, Amount = 300, PledgeRemainingAmount = 600 }
             };
 
             // Act

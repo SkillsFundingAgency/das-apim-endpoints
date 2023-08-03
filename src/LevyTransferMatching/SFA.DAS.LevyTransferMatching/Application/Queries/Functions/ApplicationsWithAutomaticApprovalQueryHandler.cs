@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.LevyTransferMatching.Models.Constants;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 {
@@ -22,10 +22,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 
         public async Task<ApplicationsWithAutomaticApprovalQueryResult> Handle(ApplicationsWithAutomaticApprovalQuery request, CancellationToken cancellationToken)
         {   
-            var getApplicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest { 
-                ApplicationStatusFilter = PledgeStatus.Pending,
-                SortOrder = "ApplicationDate",
-                SortDirection = "Ascending"
+            var getApplicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest {
+                ApplicationStatusFilter = ApplicationStatus.Pending,
+                SortOrder = ApplicationSortColumn.ApplicationDate,
+                SortDirection = SortOrder.Ascending
             });
 
             DateTime sixWeeksAgo = DateTime.UtcNow.AddDays(-42);
@@ -34,10 +34,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
             if (getApplicationsResponse != null)
             {
                 applications = getApplicationsResponse.Applications
-                .Where(x => x.MatchPercentage == 100 &&
-                            x.AutoApproveFullMatches.HasValue &&
-                           (x.AutoApproveFullMatches == true) ||
-                           (x.AutoApproveFullMatches == false && x.CreatedOn <= sixWeeksAgo))
+                .Where(x => x.MatchPercentage == 100
+                    && (x.PledgeAutomaticApprovalOption == AutomaticApprovalOption.ImmediateAutoApproval
+                        || (x.PledgeAutomaticApprovalOption == AutomaticApprovalOption.DelayedAutoApproval && x.CreatedOn <= sixWeeksAgo)))
                     .OrderBy(x => x.PledgeId)
                     .ThenBy(x => x.CreatedOn)
                 .ToList();
@@ -70,7 +69,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
                     pledgeId = app.PledgeId;
                 }
 
-                remainingPledge -= app.TotalAmount;
+                remainingPledge -= app.Amount;
                 if (remainingPledge >= 0)
                 {
                     autoApprovals.Add(app);
