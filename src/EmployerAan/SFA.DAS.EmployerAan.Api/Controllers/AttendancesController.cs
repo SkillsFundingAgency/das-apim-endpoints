@@ -2,6 +2,8 @@
 using SFA.DAS.EmployerAan.Infrastructure;
 
 namespace SFA.DAS.EmployerAan.Api.Controllers;
+
+[ApiController]
 [Route("[controller]")]
 public class AttendancesController
 {
