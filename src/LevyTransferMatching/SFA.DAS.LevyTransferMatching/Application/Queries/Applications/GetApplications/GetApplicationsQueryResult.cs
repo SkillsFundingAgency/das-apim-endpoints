@@ -45,9 +45,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                     Status = source.Status,
                 };
             }
-
-
         }
-
     }
 }

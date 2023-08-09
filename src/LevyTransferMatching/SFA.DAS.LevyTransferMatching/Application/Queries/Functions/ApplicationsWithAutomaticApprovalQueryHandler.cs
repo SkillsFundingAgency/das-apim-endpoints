@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
+using SFA.DAS.LevyTransferMatching.Models.Constants;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
+using AutomaticApprovalOption = SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching.AutomaticApprovalOption;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 {
@@ -28,7 +30,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
                 SortDirection = SortOrder.Ascending
             });
 
-            DateTime sixWeeksAgo = DateTime.UtcNow.AddDays(-42);
+            var sixWeeksAgo = DateTime.UtcNow.AddDays(-42);
 
             var applications = new List<GetApplicationsResponse.Application>();
             if (getApplicationsResponse != null)
@@ -36,7 +38,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
                 applications = getApplicationsResponse.Applications
                 .Where(x => x.MatchPercentage == 100
                     && (x.PledgeAutomaticApprovalOption == AutomaticApprovalOption.ImmediateAutoApproval
-                        || (x.PledgeAutomaticApprovalOption == AutomaticApprovalOption.DelayedAutoApproval && x.CreatedOn <= sixWeeksAgo)))
+                        || (x.PledgeAutomaticApprovalOption == AutomaticApprovalOption.DelayedAutoApproval && x.CreatedOn <= sixWeeksAgo))
+                    && (!request.PledgeId.HasValue || x.PledgeId == request.PledgeId))
                     .OrderBy(x => x.PledgeId)
                     .ThenBy(x => x.CreatedOn)
                 .ToList();
@@ -58,8 +61,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
                 return autoApprovals;
             }
 
-            var pledgeId = applications[0].PledgeId;
-            var remainingPledge = applications[0].PledgeRemainingAmount;
+            var pledgeId = applications.First().PledgeId;
+            var remainingPledge = applications.First().PledgeRemainingAmount;
 
             foreach (var app in applications)
             {

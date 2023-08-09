@@ -1,26 +1,26 @@
-﻿using MediatR;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApproveAutomaticApplication
+namespace SFA.DAS.LevyTransferMatching.Application.Commands.AutoApproveApplication
 {
-    public class ApproveAutomaticApplicationCommandHandler : IRequestHandler<ApproveAutomaticApplicationCommand>
+    public class AutoApproveApplicationCommandHandler : IRequestHandler<AutoApproveApplicationCommand>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
-        private readonly ILogger<ApproveAutomaticApplicationCommandHandler> _logger;
+        private readonly ILogger<AutoApproveApplicationCommandHandler> _logger;
 
-        public ApproveAutomaticApplicationCommandHandler(ILevyTransferMatchingService levyTransferMatchingService, ILogger<ApproveAutomaticApplicationCommandHandler> logger)
+        public AutoApproveApplicationCommandHandler(ILevyTransferMatchingService levyTransferMatchingService, ILogger<AutoApproveApplicationCommandHandler> logger)
         {
             _levyTransferMatchingService = levyTransferMatchingService;
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(ApproveAutomaticApplicationCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(AutoApproveApplicationCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Approving Automatic Application {request.ApplicationId} for Pledge {request.PledgeId}");
+            _logger.LogInformation($"Auto Approving Application {request.ApplicationId} for Pledge {request.PledgeId}");
 
             var apiRequestData = new ApproveApplicationRequestData
             {

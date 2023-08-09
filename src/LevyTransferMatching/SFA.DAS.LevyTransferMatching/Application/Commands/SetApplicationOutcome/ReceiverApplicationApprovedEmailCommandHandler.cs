@@ -8,7 +8,7 @@ using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication
+namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome
 {
     public class ReceiverApplicationApprovedEmailCommandHandler : IRequestHandler<ReceiverApplicationApprovedEmailCommand>
     {

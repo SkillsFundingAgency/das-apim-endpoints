@@ -58,7 +58,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching
             public IEnumerable<CostProjection> CostProjections { get; set; }
             public AutomaticApprovalOption PledgeAutomaticApprovalOption { get; set; }
 
-
             public class ApplicationLocation
             {
                 public int Id { get; set; }

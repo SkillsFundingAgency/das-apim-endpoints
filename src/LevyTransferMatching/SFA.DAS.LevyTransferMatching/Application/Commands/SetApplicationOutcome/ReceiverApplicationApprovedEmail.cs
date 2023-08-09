@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Models.Messages;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication
+namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome
 {
     public class ReceiverApplicationApprovedEmail : EmailTemplateArguments
     {
