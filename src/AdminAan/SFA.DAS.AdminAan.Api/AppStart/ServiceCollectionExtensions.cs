@@ -47,7 +47,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
 
         services.AddMediatR(typeof(GetRegionsQuery).Assembly);
-        
+
         AddAanHubApiClient(services, configuration);
 
         return services;
@@ -70,8 +70,6 @@ public static class ServiceCollectionExtensions
     private static void AddConfigurationOptions(IServiceCollection services, IConfigurationRoot configuration)
     {
         services.AddOptions();
-        services.Configure<AanHubApiConfiguration>(configuration.GetSection(nameof(AanHubApiConfiguration)));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<AanHubApiConfiguration>>()!.Value);
         services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
         services.AddSingleton(c => c.GetService<IOptions<LocationApiConfiguration>>()!.Value);
     }

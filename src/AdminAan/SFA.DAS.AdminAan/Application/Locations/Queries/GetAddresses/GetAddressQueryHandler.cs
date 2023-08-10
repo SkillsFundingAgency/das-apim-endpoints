@@ -17,7 +17,7 @@ public class GetAddressesQueryHandler : IRequestHandler<GetAddressesQuery, GetAd
 
     public async Task<GetAddressesQueryResult> Handle(GetAddressesQuery request, CancellationToken cancellationToken)
     {
-        var isFullPostcode = Regex.IsMatch(request.Query, PostcodeRegex);
+        var isFullPostcode = Regex.IsMatch(request.Query, PostcodeRegex, RegexOptions.None, TimeSpan.FromSeconds(5));
         var minMatch = isFullPostcode ? MaximumMatch : MinimumMatch;
         var addressesResponse = await _locationApiClient.Get<GetAddressesListResponse>(new GetAddressesQueryRequest(request.Query, minMatch));
 
