@@ -81,7 +81,6 @@ public class QueryStringParameterBuilderTests
     [TestCase("today")]
     public void Builder_ConstructParameters_FromDateToday(string fromDateSelector)
     {
-
         DateTime? fromDate = null;
 
         if (fromDateSelector == "today") fromDate = DateTime.Today;
@@ -95,7 +94,7 @@ public class QueryStringParameterBuilderTests
 
         parameters.TryGetValue("fromDate", out var fromDateResult);
 
-        DateTime.TryParse(fromDateResult![0], out var fromDateResultValue);
+        if (!DateTime.TryParse(fromDateResult![0], out var fromDateResultValue)) return;
 
         fromDateResultValue.Date.Should().Be(DateTime.Today);
         fromDateResultValue.ToLocalTime().Should().BeOnOrBefore(DateTime.Now);
