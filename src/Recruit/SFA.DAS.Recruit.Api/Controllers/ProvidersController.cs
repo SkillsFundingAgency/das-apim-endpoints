@@ -62,7 +62,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, string.Format("Error getting provider {0}", ukprn));
+                _logger.LogError(e, "Error getting provider:" + ukprn);
                 return BadRequest();
             }
         }

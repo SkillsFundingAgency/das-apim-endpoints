@@ -7,6 +7,7 @@
         public string ContactUrl { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
+        public int ProviderTypeId { get; set; }
         public GetProvidersListItemAddress Address { get; set; }
     }
 }
