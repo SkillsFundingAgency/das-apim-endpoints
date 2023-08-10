@@ -12,6 +12,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
         }
 
         public long ProviderId { get; set; }
+        public bool RplDataExtended { get; set; }
         public UserInfo UserInfo { get; set; }
         public IEnumerable<BulkUploadAddDraftApprenticeshipRequest> BulkUploadAddDraftApprenticeships { get; set; }
     }

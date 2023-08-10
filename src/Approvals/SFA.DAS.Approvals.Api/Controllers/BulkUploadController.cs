@@ -65,6 +65,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 new BulkUploadAddDraftApprenticeshipsCommand
                 {
                     ProviderId = request.ProviderId,
+                    RplDataExtended = request.RplDataExtended,
                     BulkUploadAddDraftApprenticeships = request.BulkUploadDraftApprenticeships?.ToList(),
                     UserInfo = request.UserInfo
                 });
