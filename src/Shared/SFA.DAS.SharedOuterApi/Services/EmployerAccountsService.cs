@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -14,6 +15,7 @@ namespace SFA.DAS.SharedOuterApi.Services
     public interface IEmployerAccountsService
     {
         Task<IEnumerable<EmployerAccountUser>> GetEmployerAccounts(EmployerProfile employerProfile);
+        Task<EmployerProfile> PutEmployerAccount(EmployerProfile employerProfile);
     }
 
     public class EmployerAccountsService : IEmployerAccountsService
@@ -58,6 +60,17 @@ namespace SFA.DAS.SharedOuterApi.Services
             }
             else
             {
+                // logic to check if the email address is the different/changed for the user account.
+                // if true then update the EmployerAccount with latest information.
+                if (!Guid.TryParse(employerProfile.UserId, out _) && userResponse.Body.Email != employerProfile.Email)
+                {
+                    employerProfile.UserId = userResponse.Body.Id;
+                    employerProfile.FirstName = userResponse.Body.FirstName;
+                    employerProfile.LastName = userResponse.Body.LastName;
+                    employerProfile.GovIdentifier = userResponse.Body.GovUkIdentifier;
+                    await PutEmployerAccount(employerProfile);
+                }
+
                 userId = userResponse.Body.Id;
                 firstName = userResponse.Body.FirstName;
                 lastName = userResponse.Body.LastName;
@@ -92,7 +105,56 @@ namespace SFA.DAS.SharedOuterApi.Services
                 }
             }
 
+            if (returnList.Count == 0)
+            {
+                returnList.Add(new EmployerAccountUser
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    UserId = userId,
+                    DisplayName = displayName,
+                    IsSuspended = isSuspended
+                });
+            }
+
             return returnList;
+        }
+
+        /// <summary>
+        /// Method to insert/update the user information.
+        /// </summary>
+        /// <param name="employerProfile">typeof EmployerProfile.</param>
+        /// <returns>typeof EmployerProfile.</returns>
+        public async Task<EmployerProfile> PutEmployerAccount(EmployerProfile employerProfile)
+        {
+            var employerUserResponse = await _employerProfilesApiClient.PutWithResponseCode<EmployerProfileUsersApiResponse>(
+                new PutUpsertEmployerUserAccountRequest(
+                    new Guid(employerProfile.UserId),
+                    employerProfile.GovIdentifier,
+                    employerProfile.Email,
+                    employerProfile.FirstName,
+                    employerProfile.LastName));
+            
+            if (employerUserResponse?.Body != null)
+            {
+                // external api call to update the employer_account repo with latest information.
+                var response = await _accountsApiClient.PutWithResponseCode<NullResponse>(new PutAccountUserRequest(
+                    employerProfile.UserId,
+                    employerProfile.Email,
+                    employerProfile.FirstName,
+                    employerProfile.LastName,
+                    employerProfile.CorrelationId));
+
+                return new EmployerProfile
+                {
+                    Email = employerUserResponse.Body.Email,
+                    FirstName = employerUserResponse.Body.FirstName,
+                    LastName = employerUserResponse.Body.LastName,
+                    UserId = employerUserResponse.Body.GovUkIdentifier
+                };
+            };
+
+            return null;
         }
     }
 }

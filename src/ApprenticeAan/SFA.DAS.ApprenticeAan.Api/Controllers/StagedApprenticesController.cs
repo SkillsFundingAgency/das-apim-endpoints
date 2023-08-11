@@ -5,7 +5,6 @@ using SFA.DAS.ApprenticeAan.Application.StagedApprentices.Queries.GetStagedAppre
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
-[ApiController]
 [Route("[controller]")]
 public class StagedApprenticesController : ControllerBase
 {

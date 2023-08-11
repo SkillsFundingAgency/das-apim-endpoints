@@ -25,6 +25,7 @@ using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetOrganisationName;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -95,20 +96,21 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpPost]
         [Route("accounts/{accountId}/pledges/create")]
-        public async Task<IActionResult> CreatePledge(long accountId, [FromBody]CreatePledgeRequest createPledgeRequest)
+        public async Task<IActionResult> CreatePledge(long accountId, [FromBody]CreatePledgeRequest request)
         {
             var commandResult = await _mediator.Send(new CreatePledgeCommand
             {
                 AccountId = accountId,
-                Amount = createPledgeRequest.Amount,
-                IsNamePublic = createPledgeRequest.IsNamePublic,
-                DasAccountName = createPledgeRequest.DasAccountName,
-                JobRoles = createPledgeRequest.JobRoles,
-                Levels = createPledgeRequest.Levels,
-                Sectors = createPledgeRequest.Sectors,
-                Locations = createPledgeRequest.Locations,
-                UserId = createPledgeRequest.UserId,
-                UserDisplayName = createPledgeRequest.UserDisplayName
+                Amount = request.Amount,
+                IsNamePublic = request.IsNamePublic,
+                DasAccountName = request.DasAccountName,
+                JobRoles = request.JobRoles,
+                Levels = request.Levels,
+                Sectors = request.Sectors,
+                Locations = request.Locations,
+                AutomaticApprovalOption = request.AutomaticApprovalOption,
+                UserId = request.UserId,
+                UserDisplayName = request.UserDisplayName
             });
 
             return new CreatedResult(
@@ -185,8 +187,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
                 var response = new GetAmountResponse
                 {
-                    DasAccountName = queryResult.DasAccountName,
-                    RemainingTransferAllowance = queryResult.RemainingTransferAllowance
+                    RemainingTransferAllowance = queryResult.RemainingTransferAllowance,
+                    StartingTransferAllowance = queryResult.StartingTransferAllowance
                 };
 
                 return Ok(response);
@@ -194,6 +196,28 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to get Amount result");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("accounts/{accountId}/pledges/create/organisation")]
+        public async Task<IActionResult> Organisation(string accountId)
+        {
+            try
+            {
+                var queryResult = await _mediator.Send(new GetOrganisationNameQuery { EncodedAccountId = accountId });
+
+                var response = new GetOrganisationNameResponse
+                {
+                    DasAccountName = queryResult.DasAccountName
+                };
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to get Organisation Name result");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

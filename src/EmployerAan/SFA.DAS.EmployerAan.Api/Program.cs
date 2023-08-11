@@ -11,7 +11,7 @@ var configuration = builder.Configuration.BuildSharedConfiguration();
 
 builder.Services
     .AddConfigurationOptions(configuration)
-    .AddServiceRegistration()
+    .AddServiceRegistration(configuration)
     .AddAuthentication(configuration)
     .AddApplicationInsightsTelemetry()
     .AddEndpointsApiExplorer()

@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.ApprenticeAan.Application.Apprentices.Commands.CreateApprenticeMember;
 
-public class CreateApprenticeMemberCommand : IRequest<Unit>
+public class CreateApprenticeMemberCommand : IRequest<CreateApprenticeMemberCommandResult>
 {
     public Guid ApprenticeId { get; set; }
     public string Email { get; set; } = null!;

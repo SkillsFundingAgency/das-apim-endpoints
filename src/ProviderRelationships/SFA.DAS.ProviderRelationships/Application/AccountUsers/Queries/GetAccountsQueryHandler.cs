@@ -27,7 +27,7 @@ public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, GetAcco
             FirstName = employerAccounts.FirstOrDefault()?.FirstName,
             LastName = employerAccounts.FirstOrDefault()?.LastName,
             IsSuspended = employerAccounts.FirstOrDefault()?.IsSuspended ?? false,
-            UserAccountResponse = employerAccounts.Select(c=> new AccountUser
+            UserAccountResponse = employerAccounts.Where(c=>c.EncodedAccountId != null).Select(c=> new AccountUser
             {
                 DasAccountName = c.DasAccountName,
                 EncodedAccountId = c.EncodedAccountId,

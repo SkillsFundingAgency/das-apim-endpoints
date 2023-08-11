@@ -1,3 +1,5 @@
+using System;
+
 namespace SFA.DAS.SharedOuterApi.Models
 {
     public class EmployerProfile
@@ -6,5 +8,7 @@ namespace SFA.DAS.SharedOuterApi.Models
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string GovIdentifier { get; set; }
+        public Guid? CorrelationId { get; set; }
     }
 }
