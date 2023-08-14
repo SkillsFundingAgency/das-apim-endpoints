@@ -13,6 +13,7 @@ using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Inform;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprenticeshipUpdates;
 
 namespace SFA.DAS.Approvals.Api.Controllers
@@ -284,5 +285,35 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet]
+        [Route("/provider/{providerId}/apprenticeships/{apprenticeshipId}/details")]
+        [Route("/employer/{accountId}/apprenticeships/{apprenticeshipId}/details")]
+        public async Task<IActionResult> ManageApprenticeshipDetails(long apprenticeshipId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetManageApprenticeshipDetailsQuery
+                    {ApprenticeshipId = apprenticeshipId});
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(result);
+            }
+            catch (UnauthorizedAccessException ue)
+            {
+                _logger.LogError(ue, $"Permission denied when accessing Apprenticeship {apprenticeshipId}");
+                return Unauthorized();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in GetManageApprenticeship {apprenticeshipId}");
+                return BadRequest();
+            }
+        }
+
     }
 }
