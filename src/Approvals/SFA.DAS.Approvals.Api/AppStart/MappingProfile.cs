@@ -2,8 +2,6 @@
 using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetPriceEpisodesResponse;
 
 namespace SFA.DAS.Approvals.Api.AppStart
