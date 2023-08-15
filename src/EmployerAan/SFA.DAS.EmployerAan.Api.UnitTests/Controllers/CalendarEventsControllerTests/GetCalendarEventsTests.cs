@@ -6,7 +6,7 @@ using Moq;
 using SFA.DAS.EmployerAan.Api.Controllers;
 using SFA.DAS.EmployerAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.EmployerAan.Application.Models;
-using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.EmployerAan.Common;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.CalendarEventsControllerTests;

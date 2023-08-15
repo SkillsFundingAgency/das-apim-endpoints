@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.EmployerAan.Common;
 
 namespace SFA.DAS.EmployerAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 public class GetCalendarEventsQuery : IRequest<GetCalendarEventsQueryResult>

@@ -1,13 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerAan.Application.CalendarEvents.Queries.GetCalendarEvents;
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.Infrastructure.Configuration;
+using SFA.DAS.EmployerAan.Common;
+using SFA.DAS.EmployerAan.Infrastructure;
 
 namespace SFA.DAS.EmployerAan.Application.Models
 {
     public class GetCalendarEventsRequestModel
     {
-        [FromHeader(Name = Constants.RequestedByMemberIdHeader)]
+        [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)]
         public Guid RequestedByMemberId { get; set; }
 
         [FromQuery]

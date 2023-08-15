@@ -3,7 +3,7 @@ using FluentAssertions;
 using SFA.DAS.EmployerAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.EmployerAan.Application.Models;
 using SFA.DAS.EmployerAan.Application.Services;
-using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.EmployerAan.Common;
 
 namespace SFA.DAS.EmployerAan.UnitTests.Application.Services;
 public class QueryStringParameterBuilderTests

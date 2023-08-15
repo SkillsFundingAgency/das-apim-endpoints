@@ -4,6 +4,5 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Configuration
     {
         public const string ScopeClaimType = "http://schemas.microsoft.com/identity/claims/scope";
         public const string ObjectIdClaimType = "http://schemas.microsoft.com/identity/claims/objectidentifier";
-        public const string RequestedByMemberIdHeader = "X-RequestedByMemberId";
     }
 }

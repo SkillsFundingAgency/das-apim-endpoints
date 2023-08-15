@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.SharedOuterApi.Common
+﻿namespace SFA.DAS.EmployerAan.Common
 {
     public enum EventFormat
     {
