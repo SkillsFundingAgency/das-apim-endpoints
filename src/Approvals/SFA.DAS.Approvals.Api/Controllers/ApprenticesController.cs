@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -24,11 +26,13 @@ namespace SFA.DAS.Approvals.Api.Controllers
     {
         private readonly ILogger<ApprenticesController> _logger;
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public ApprenticesController(ILogger<ApprenticesController> logger, IMediator mediator)
+        public ApprenticesController(ILogger<ApprenticesController> logger, IMediator mediator, IMapper mapper)
         {
             _logger = logger;
             _mediator = mediator;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -301,7 +305,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     return NotFound();
                 }
 
-                return Ok(result);
+                var response = _mapper.Map<GetManageApprenticeshipDetailsResponse>(result);
+                return Ok(response);
             }
             catch (UnauthorizedAccessException ue)
             {
