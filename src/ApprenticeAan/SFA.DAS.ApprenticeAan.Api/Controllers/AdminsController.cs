@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.Admins.Commands.Create;
 using SFA.DAS.ApprenticeAan.Application.Admins.Queries.Lookup;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
@@ -26,6 +27,6 @@ public class AdminsController : ControllerBase
 
         var createAdminResult = await _mediator.Send(new CreateAdminMemberCommand { Email = request.Email, FirstName = request.FirstName, LastName = request.LastName }, cancellationToken);
 
-        return Ok(new LookupAdminMemberResult { MemberId = createAdminResult.MemberId, Status = "Live" });
+        return Ok(new LookupAdminMemberResult { MemberId = createAdminResult.MemberId, Status = Constants.Status.Live });
     }
 }

@@ -5,4 +5,9 @@ public static class Constants
     {
         public const string RequestedByMemberIdHeader = "X-RequestedByMemberId";
     }
+
+    public static class Status
+    {
+        public const string Live = "Live";
+    }
 }
