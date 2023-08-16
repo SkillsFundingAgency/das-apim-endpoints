@@ -74,7 +74,6 @@ public class LookupAdminMemberHandlerTests
         apiClient.Setup(x => x.GetMemberByEmail(email, cancellationToken))
             .ReturnsAsync(response);
 
-
         var actual = await sut.Handle(query, cancellationToken);
 
         actual.Should().BeNull();
