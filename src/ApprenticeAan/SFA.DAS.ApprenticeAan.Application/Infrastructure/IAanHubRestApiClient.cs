@@ -1,6 +1,6 @@
 ﻿using RestEase;
 using SFA.DAS.ApprenticeAan.Application.Admins.Commands.Create;
-using SFA.DAS.ApprenticeAan.Application.Admins.Commands.Lookup;
+using SFA.DAS.ApprenticeAan.Application.Admins.Queries.Lookup;
 using SFA.DAS.ApprenticeAan.Application.Apprentices.Commands.CreateApprenticeMember;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Entities;

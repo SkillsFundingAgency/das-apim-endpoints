@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.ApprenticeAan.Application.Admins.Commands.Lookup;
+﻿namespace SFA.DAS.ApprenticeAan.Application.Admins.Queries.Lookup;
 public class GetMemberResult
 {
     public Guid MemberId { get; set; }
