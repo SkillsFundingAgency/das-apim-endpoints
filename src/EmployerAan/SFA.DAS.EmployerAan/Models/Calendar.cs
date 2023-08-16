@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.EmployerAan.Entities;
+﻿namespace SFA.DAS.EmployerAan.Models;
 public class Calendar
 {
     public int Id { get; set; }

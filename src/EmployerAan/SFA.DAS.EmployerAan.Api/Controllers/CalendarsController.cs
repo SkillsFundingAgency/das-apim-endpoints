@@ -7,7 +7,7 @@ namespace SFA.DAS.EmployerAan.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CalendarsController : Controller
+public class CalendarsController : ControllerBase
 {
     private readonly IMediator _mediator;
 

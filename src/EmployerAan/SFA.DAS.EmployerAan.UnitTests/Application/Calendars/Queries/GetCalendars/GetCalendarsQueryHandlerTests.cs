@@ -2,8 +2,8 @@
 using FluentAssertions;
 using Moq;
 using SFA.DAS.EmployerAan.Application.Calendars.Queries.GetCalendars;
-using SFA.DAS.EmployerAan.Entities;
 using SFA.DAS.EmployerAan.Infrastructure;
+using SFA.DAS.EmployerAan.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAan.UnitTests.Application.Calendars.Queries.GetCalendars;

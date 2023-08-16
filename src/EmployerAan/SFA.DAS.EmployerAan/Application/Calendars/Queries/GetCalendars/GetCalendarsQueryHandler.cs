@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using SFA.DAS.EmployerAan.Entities;
 using SFA.DAS.EmployerAan.Infrastructure;
+using SFA.DAS.EmployerAan.Models;
 
 namespace SFA.DAS.EmployerAan.Application.Calendars.Queries.GetCalendars;
 public class GetCalendarsQueryHandler : IRequestHandler<GetCalendarsQuery, IEnumerable<Calendar>>
