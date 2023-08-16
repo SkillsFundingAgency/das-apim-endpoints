@@ -32,6 +32,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         private GetDataLocksResponse _dataLockStatusResponse;
         private GetChangeOfPartyRequestsResponse _changeOfPartyRequestsResponse;
         private GetChangeOfProviderChainResponse _changeOfProviderChainResponse;
+        private GetChangeOfEmployerChainResponse _changeOfEmployerChainResponse;
         private GetOverlappingTrainingDateResponse _overlappingTrainingDateResponse;
 
         
@@ -51,6 +52,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _dataLockStatusResponse = fixture.Create<GetDataLocksResponse>();
             _changeOfPartyRequestsResponse = fixture.Create<GetChangeOfPartyRequestsResponse>();
             _changeOfProviderChainResponse = fixture.Create<GetChangeOfProviderChainResponse>();
+            _changeOfEmployerChainResponse = fixture.Create<GetChangeOfEmployerChainResponse>();
             _overlappingTrainingDateResponse = fixture.Create<GetOverlappingTrainingDateResponse>();
 
             _deliveryModels = fixture.Create<List<string>>();
@@ -75,6 +77,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _apiClient.Setup(x =>
                     x.GetWithResponseCode<GetChangeOfProviderChainResponse>(It.Is<GetChangeOfProviderChainRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
                 .ReturnsAsync(new ApiResponse<GetChangeOfProviderChainResponse>(_changeOfProviderChainResponse, HttpStatusCode.OK, string.Empty));
+            _apiClient.Setup(x =>
+                    x.GetWithResponseCode<GetChangeOfEmployerChainResponse>(It.Is<GetChangeOfEmployerChainRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
+                .ReturnsAsync(new ApiResponse<GetChangeOfEmployerChainResponse>(_changeOfEmployerChainResponse, HttpStatusCode.OK, string.Empty));
             _apiClient.Setup(x =>
                     x.GetWithResponseCode<GetOverlappingTrainingDateResponse>(It.Is<GetOverlappingTrainingDateRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
                 .ReturnsAsync(new ApiResponse<GetOverlappingTrainingDateResponse>(_overlappingTrainingDateResponse, HttpStatusCode.OK, string.Empty));
@@ -114,6 +119,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             Assert.AreEqual(_apprenticeshipUpdatesResponse.ApprenticeshipUpdates, result.ApprenticeshipUpdates);
             Assert.AreEqual(_changeOfPartyRequestsResponse.ChangeOfPartyRequests, result.ChangeOfPartyRequests);
             Assert.AreEqual(_changeOfProviderChainResponse.ChangeOfProviderChain, result.ChangeOfProviderChain);
+            Assert.AreEqual(_changeOfEmployerChainResponse.ChangeOfEmployerChain, result.ChangeOfEmployerChain);
             Assert.AreEqual(_overlappingTrainingDateResponse.OverlappingTrainingDateRequest, result.OverlappingTrainingDateRequest);
         }
 

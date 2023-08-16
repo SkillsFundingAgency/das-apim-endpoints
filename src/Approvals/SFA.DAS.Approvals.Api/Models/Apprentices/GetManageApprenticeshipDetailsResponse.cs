@@ -13,6 +13,7 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
         public IReadOnlyCollection<DataLock> DataLocks { get; set; }
         public IReadOnlyCollection<ChangeOfPartyRequest> ChangeOfPartyRequests { get; set; }
         public IReadOnlyCollection<ChangeOfProviderLink> ChangeOfProviderChain { get; set; }
+        public IReadOnlyCollection<ChangeOfEmployerLink> ChangeOfEmployerChain { get; set; }
         public IReadOnlyCollection<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequest { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
 
@@ -130,6 +131,16 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
         {
             public long ApprenticeshipId { get; set; }
             public string ProviderName { get; set; }
+            public DateTime? StartDate { get; set; }
+            public DateTime? EndDate { get; set; }
+            public DateTime? StopDate { get; set; }
+            public DateTime? CreatedOn { get; set; }
+        }
+
+        public class ChangeOfEmployerLink
+        {
+            public long ApprenticeshipId { get; set; }
+            public string EmployerName { get; set; }
             public DateTime? StartDate { get; set; }
             public DateTime? EndDate { get; set; }
             public DateTime? StopDate { get; set; }

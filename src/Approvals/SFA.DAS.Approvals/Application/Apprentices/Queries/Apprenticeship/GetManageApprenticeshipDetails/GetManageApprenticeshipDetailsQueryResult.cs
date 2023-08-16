@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetApprenticeshipUpdatesResponse;
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetChangeOfPartyRequestsResponse;
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetChangeOfProviderChainResponse;
+using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetChangeOfEmployerChainResponse;
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetOverlappingTrainingDateResponse;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails
@@ -16,6 +17,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
         public IReadOnlyCollection<GetDataLocksResponse.DataLock> DataLocks { get; set; }
         public IReadOnlyCollection<ChangeOfPartyRequest> ChangeOfPartyRequests { get; set; }
         public IReadOnlyCollection<ChangeOfProviderLink> ChangeOfProviderChain { get; set; }
+        public IReadOnlyCollection<ChangeOfEmployerLink> ChangeOfEmployerChain { get; set; }
         public IReadOnlyCollection<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequest { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
     }
