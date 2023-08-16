@@ -29,7 +29,6 @@ public class AdminsControllerTests
         response.As<OkObjectResult>().Value.Should().Be(expected);
     }
 
-
     [Test, MoqAutoData]
     public async Task LookupMemberWithDetailAbsent_InvokesCreateAdminMember(
         [Frozen] Mock<IMediator> mediatorMock,
@@ -38,13 +37,6 @@ public class AdminsControllerTests
         CreateAdminMemberCommandResult createAdminMemberCommandResult,
         CancellationToken cancellationToken)
     {
-        var createAdminMemberCommand = new CreateAdminMemberCommand
-        {
-            Email = lookupRequest.Email,
-            FirstName = lookupRequest.FirstName,
-            LastName = lookupRequest.LastName
-        };
-
         mediatorMock.Setup(m => m.Send(lookupRequest, cancellationToken)).ReturnsAsync((LookupAdminMemberResult?)null);
         mediatorMock.Setup(m => m.Send(It.Is<CreateAdminMemberCommand>(
             r => r.Email == lookupRequest.Email
