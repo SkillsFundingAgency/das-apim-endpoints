@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.WebUtilities;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching
 {
     public class GetApplicationsRequest : IGetApiRequest
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications
 {
@@ -45,9 +45,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppli
                     Status = source.Status,
                 };
             }
-
-
         }
-
     }
 }
