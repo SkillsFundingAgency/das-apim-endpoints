@@ -5,6 +5,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications
 {
@@ -22,7 +23,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectAppl
             var applicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest 
             {
                 PledgeId = request.PledgeId,
-                ApplicationStatusFilter = PledgeStatus.Pending 
+                ApplicationStatusFilter = ApplicationStatus.Pending 
             });
 
             return new GetRejectApplicationsQueryResult
