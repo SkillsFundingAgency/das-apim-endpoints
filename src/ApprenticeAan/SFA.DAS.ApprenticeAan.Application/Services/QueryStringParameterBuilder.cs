@@ -11,7 +11,7 @@ public static class QueryStringParameterBuilder
         if (!string.IsNullOrWhiteSpace(request.Keyword)) parameters.Add("keyword", new[] { request.Keyword });
         if (request.FromDate == null || request.FromDate == DateTime.Today.ToString("yyyy-MM-dd"))
         {
-            var fromDate = DateTime.Now.ToUniversalTime();
+            var fromDate = DateTime.UtcNow;
             parameters.Add("fromDate", new[] { fromDate.ToString("yyyy-MM-ddTHH:mm:ss") });
         }
         else
