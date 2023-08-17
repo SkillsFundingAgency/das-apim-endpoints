@@ -13,14 +13,13 @@ public class CalendarsControllerTests
 {
     [Test]
     [MoqAutoData]
-    public async Task And_MediatorCommandSuccessful_Then_ReturnOk(
+    public async Task GeCalendars_MediatorCommandSuccessful_ReturnOk(
         List<Calendar> response,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] CalendarsController sut,
         CancellationToken cancellationToken)
     {
         mockMediator.Setup(m => m.Send(It.IsAny<GetCalendarsQuery>(), cancellationToken)).ReturnsAsync(response);
-        //var controller = new CalendarsController(mockMediator.Object);
 
         var result = await sut.GeCalendars(cancellationToken);
 
