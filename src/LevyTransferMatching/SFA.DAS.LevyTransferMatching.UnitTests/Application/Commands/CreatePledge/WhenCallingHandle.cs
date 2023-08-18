@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
+using SFA.DAS.LevyTransferMatching.Models.Constants;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreatePledge
 {
@@ -63,6 +64,32 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreatePled
             mockLevyTransferMatchingService.Verify(x => x.CreateAccount(It.Is<CreateAccountRequest>(r =>
                 ((CreateAccountRequest.CreateAccountRequestData)r.Data).AccountId == createPledgeCommand.AccountId
                 && ((CreateAccountRequest.CreateAccountRequestData)r.Data).AccountName == createPledgeCommand.DasAccountName)));
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_AutomaticApprovalOption_Is_Not_Specified_Then_Default_Option_Is_Submitted(
+            CreatePledgeCommand createPledgeCommand,
+            long accountId,
+            CreatePledgeResponse response,
+            [Frozen] Mock<ILevyTransferMatchingService> mockLevyTransferMatchingService,
+            CreatePledgeHandler createPledgeHandler)
+        {
+            mockLevyTransferMatchingService
+                .Setup(x => x.GetAccount(It.Is<GetAccountRequest>(r => r.AccountId == accountId)))
+                .ReturnsAsync(() => new GetAccountResponse());
+
+            mockLevyTransferMatchingService
+                .Setup(x => x.CreatePledge(It.IsAny<CreatePledgeRequest>()))
+                .ReturnsAsync(response);
+
+            createPledgeCommand.AccountId = accountId;
+            createPledgeCommand.AutomaticApprovalOption = string.Empty;
+
+            await createPledgeHandler.Handle(createPledgeCommand, CancellationToken.None);
+
+            mockLevyTransferMatchingService.Verify(x => x.CreatePledge(It.Is<CreatePledgeRequest>(r =>
+                ((CreatePledgeRequest.CreatePledgeRequestData)r.Data).AutomaticApprovalOption ==
+                AutomaticApprovalOption.Default)));
         }
     }
 }

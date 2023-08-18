@@ -8,7 +8,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
-using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 {

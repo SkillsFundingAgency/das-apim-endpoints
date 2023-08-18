@@ -6,7 +6,7 @@ using AutoFixture;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
