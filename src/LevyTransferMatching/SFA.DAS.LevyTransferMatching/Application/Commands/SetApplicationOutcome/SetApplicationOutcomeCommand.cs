@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.LevyTransferMatching.Types;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication
+namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome
 {
     public class SetApplicationOutcomeCommand : IRequest
     {
