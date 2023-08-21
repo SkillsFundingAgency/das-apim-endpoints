@@ -7,6 +7,7 @@ using SFA.DAS.ApprenticeAan.Api.Controllers;
 using SFA.DAS.ApprenticeAan.Application.Admins.Commands.Create;
 using SFA.DAS.ApprenticeAan.Application.Admins.Queries.Lookup;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers;
@@ -14,7 +15,7 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers;
 public class AdminsControllerTests
 {
     [Test, MoqAutoData]
-    public async Task LookupMemberWithDetailPresent_InvokesRequest(
+    public async Task LookupMember_MemberExists_InvokesRequest(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] AdminsController sut,
         LookupAdminMemberRequest request,
@@ -30,7 +31,7 @@ public class AdminsControllerTests
     }
 
     [Test, MoqAutoData]
-    public async Task LookupMemberWithDetailAbsent_InvokesCreateAdminMember(
+    public async Task LookupMember_MemberDoesNotExist_InvokesCreateAdminMember(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] AdminsController sut,
         LookupAdminMemberRequest lookupRequest,
@@ -50,7 +51,7 @@ public class AdminsControllerTests
         var expected = new LookupAdminMemberResult
         {
             MemberId = createAdminMemberCommandResult.MemberId,
-            Status = Constants.Status.Live
+            Status = Constants.Status.Live.GetDescription()
         };
 
         response.As<OkObjectResult>().Value.Should().BeEquivalentTo(expected);

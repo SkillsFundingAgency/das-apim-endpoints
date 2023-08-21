@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
+﻿using System.ComponentModel;
+
+namespace SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 public static class Constants
 {
     public static class ApiHeaders
@@ -6,8 +8,9 @@ public static class Constants
         public const string RequestedByMemberIdHeader = "X-RequestedByMemberId";
     }
 
-    public static class Status
+    public enum Status
     {
-        public const string Live = "Live";
+        [Description("Live")]
+        Live
     }
 }

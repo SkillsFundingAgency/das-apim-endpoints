@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.Admins.Commands.Create;
 using SFA.DAS.ApprenticeAan.Application.Admins.Queries.Lookup;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
@@ -20,13 +21,12 @@ public class AdminsController : ControllerBase
     [ProducesResponseType(typeof(LookupAdminMemberResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> Lookup([FromBody] LookupAdminMemberRequest request, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(request, cancellationToken);
+        var result = await _mediator.Send((LookupAdminMemberRequestModel)request, cancellationToken);
 
-        if (result != null)
-            return Ok(result);
+        if (result != null) return Ok(result);
 
-        var createAdminResult = await _mediator.Send(new CreateAdminMemberCommand { Email = request.Email, FirstName = request.FirstName, LastName = request.LastName }, cancellationToken);
+        var createAdminResult = await _mediator.Send((CreateAdminMemberCommand)request, cancellationToken);
 
-        return Ok(new LookupAdminMemberResult { MemberId = createAdminResult.MemberId, Status = Constants.Status.Live });
+        return Ok(new LookupAdminMemberResult { MemberId = createAdminResult.MemberId, Status = Constants.Status.Live.GetDescription() });
     }
 }
