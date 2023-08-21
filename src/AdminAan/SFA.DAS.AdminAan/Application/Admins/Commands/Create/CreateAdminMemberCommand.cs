@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using SFA.DAS.ApprenticeAan.Application.Admins.Queries.Lookup;
+using SFA.DAS.AdminAan.Application.Admins.Queries.Lookup;
 
-namespace SFA.DAS.ApprenticeAan.Application.Admins.Commands.Create;
+namespace SFA.DAS.AdminAan.Application.Admins.Commands.Create;
 public class CreateAdminMemberCommand : IRequest<CreateAdminMemberCommandResult>
 {
     public string Email { get; set; } = null!;

@@ -1,12 +1,11 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
-using SFA.DAS.ApprenticeAan.Application.Admins.Commands.Create;
-using SFA.DAS.ApprenticeAan.Application.Infrastructure;
+using SFA.DAS.AdminAan.Application.Admins.Commands.Create;
+using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Admins.Command.CreateAdminMember;
-
+namespace SFA.DAS.AdminAan.UnitTests.Application.Admins.Commands.CreateAdminMember;
 public class CreateAdminCommandHandlerTests
 {
     [Test, MoqAutoData]
@@ -25,4 +24,3 @@ public class CreateAdminCommandHandlerTests
         actual.Should().Be(expected);
     }
 }
-

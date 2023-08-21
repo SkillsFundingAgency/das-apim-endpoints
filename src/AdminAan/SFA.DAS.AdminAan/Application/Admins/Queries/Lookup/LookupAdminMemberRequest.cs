@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.ApprenticeAan.Application.Admins.Queries.Lookup;
+﻿namespace SFA.DAS.AdminAan.Application.Admins.Queries.Lookup;
 public class LookupAdminMemberRequest
 {
     public string Email { get; set; } = null!;

@@ -3,15 +3,14 @@ using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using SFA.DAS.ApprenticeAan.Api.Controllers;
-using SFA.DAS.ApprenticeAan.Application.Admins.Commands.Create;
-using SFA.DAS.ApprenticeAan.Application.Admins.Queries.Lookup;
-using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
+using SFA.DAS.AdminAan.Api.Controllers;
+using SFA.DAS.AdminAan.Application.Admins.Commands.Create;
+using SFA.DAS.AdminAan.Application.Admins.Queries.Lookup;
+using SFA.DAS.AdminAan.Infrastructure.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers;
-
+namespace SFA.DAS.AdminAan.Api.UnitTests.Controllers;
 public class AdminsControllerTests
 {
     [Test, MoqAutoData]
@@ -40,9 +39,9 @@ public class AdminsControllerTests
     {
         mediatorMock.Setup(m => m.Send(lookupRequest, cancellationToken)).ReturnsAsync((LookupAdminMemberResult?)null);
         mediatorMock.Setup(m => m.Send(It.Is<CreateAdminMemberCommand>(
-            r => r.Email == lookupRequest.Email
-                                        && r.FirstName == lookupRequest.FirstName
-                                        && r.LastName == lookupRequest.LastName),
+                r => r.Email == lookupRequest.Email
+                     && r.FirstName == lookupRequest.FirstName
+                     && r.LastName == lookupRequest.LastName),
             cancellationToken)).ReturnsAsync(createAdminMemberCommandResult);
 
         var response = await sut.Lookup(lookupRequest, cancellationToken);

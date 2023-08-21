@@ -1,6 +1,4 @@
 ﻿using RestEase;
-using SFA.DAS.ApprenticeAan.Application.Admins.Commands.Create;
-using SFA.DAS.ApprenticeAan.Application.Admins.Queries.Lookup;
 using SFA.DAS.ApprenticeAan.Application.Apprentices.Commands.CreateApprenticeMember;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Entities;
@@ -48,12 +46,4 @@ public interface IAanHubRestApiClient
         string FromDate,
         string ToDate,
         CancellationToken cancellationToken);
-
-    [Get("/members/{email}")]
-    [AllowAnyStatusCode]
-    Task<Response<GetMemberResult>> GetMemberByEmail([Path] string email, CancellationToken cancellationToken);
-
-    [Post("/admins")]
-    [AllowAnyStatusCode]
-    Task<CreateAdminMemberCommandResult> CreateAdminMember([Body] CreateAdminMemberCommand command, CancellationToken cancellationToken);
 }

@@ -1,11 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ApprenticeAan.Application.Admins.Commands.Create;
-using SFA.DAS.ApprenticeAan.Application.Admins.Queries.Lookup;
-using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
+using SFA.DAS.AdminAan.Application.Admins.Commands.Create;
+using SFA.DAS.AdminAan.Application.Admins.Queries.Lookup;
+using SFA.DAS.AdminAan.Infrastructure.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 
-namespace SFA.DAS.ApprenticeAan.Api.Controllers;
+namespace SFA.DAS.AdminAan.Api.Controllers;
 
 [Route("[controller]")]
 public class AdminsController : ControllerBase

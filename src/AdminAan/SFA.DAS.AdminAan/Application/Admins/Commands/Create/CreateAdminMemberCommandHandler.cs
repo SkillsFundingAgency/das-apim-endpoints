@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using SFA.DAS.ApprenticeAan.Application.Infrastructure;
+using SFA.DAS.AdminAan.Infrastructure;
 
-namespace SFA.DAS.ApprenticeAan.Application.Admins.Commands.Create;
+namespace SFA.DAS.AdminAan.Application.Admins.Commands.Create;
 public class CreateAdminMemberCommandHandler : IRequestHandler<CreateAdminMemberCommand, CreateAdminMemberCommandResult>
 {
     private readonly IAanHubRestApiClient _apiClient;

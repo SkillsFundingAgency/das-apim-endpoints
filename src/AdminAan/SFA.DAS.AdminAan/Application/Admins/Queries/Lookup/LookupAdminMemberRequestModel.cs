@@ -1,7 +1,6 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.ApprenticeAan.Application.Admins.Queries.Lookup;
-
+namespace SFA.DAS.AdminAan.Application.Admins.Queries.Lookup;
 public class LookupAdminMemberRequestModel : IRequest<LookupAdminMemberResult?>
 {
     public string Email { get; set; } = null!;

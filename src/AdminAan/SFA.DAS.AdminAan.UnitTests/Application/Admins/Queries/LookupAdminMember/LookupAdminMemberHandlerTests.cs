@@ -2,11 +2,11 @@
 using FluentAssertions;
 using Moq;
 using RestEase;
-using SFA.DAS.ApprenticeAan.Application.Admins.Queries.Lookup;
-using SFA.DAS.ApprenticeAan.Application.Infrastructure;
+using SFA.DAS.AdminAan.Application.Admins.Queries.Lookup;
+using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Admins.Queries.LookupAdminMember;
+namespace SFA.DAS.AdminAan.UnitTests.Application.Admins.Queries.LookupAdminMember;
 public class LookupAdminMemberHandlerTests
 {
     [Test, MoqAutoData]

@@ -1,8 +1,7 @@
 ﻿using MediatR;
-using SFA.DAS.ApprenticeAan.Application.Infrastructure;
+using SFA.DAS.AdminAan.Infrastructure;
 
-namespace SFA.DAS.ApprenticeAan.Application.Admins.Queries.Lookup;
-
+namespace SFA.DAS.AdminAan.Application.Admins.Queries.Lookup;
 public class LookupAdminMemberHandler : IRequestHandler<LookupAdminMemberRequestModel, LookupAdminMemberResult?>
 {
     private readonly IAanHubRestApiClient _apiClient;
