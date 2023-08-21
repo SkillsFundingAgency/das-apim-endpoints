@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
 {
@@ -39,6 +41,9 @@ namespace SFA.DAS.LevyTransferMatching.InnerApi.Responses
         public bool MatchLevel { get; set; }
         public bool MatchLocation { get; set; }
         public int MatchPercentage { get; set; }
+        public int PledgeRemainingAmount { get; set; }
+        public AutomaticApprovalOption AutomaticApprovalOption { get; set; }
+
         public class ApplicationLocation
         {
             public int Id { get; set; }
