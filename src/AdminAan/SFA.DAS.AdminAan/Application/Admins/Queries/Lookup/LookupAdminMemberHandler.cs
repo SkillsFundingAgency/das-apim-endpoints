@@ -2,7 +2,7 @@
 using SFA.DAS.AdminAan.Infrastructure;
 
 namespace SFA.DAS.AdminAan.Application.Admins.Queries.Lookup;
-public class LookupAdminMemberHandler : IRequestHandler<LookupAdminMemberRequestModel, LookupAdminMemberResult?>
+public class LookupAdminMemberHandler : IRequestHandler<LookupAdminMemberRequest, LookupAdminMemberResult?>
 {
     private readonly IAanHubRestApiClient _apiClient;
 
@@ -11,13 +11,13 @@ public class LookupAdminMemberHandler : IRequestHandler<LookupAdminMemberRequest
         _apiClient = apiClient;
     }
 
-    public async Task<LookupAdminMemberResult?> Handle(LookupAdminMemberRequestModel request,
+    public async Task<LookupAdminMemberResult?> Handle(LookupAdminMemberRequest request,
         CancellationToken cancellationToken)
     {
         var result = await _apiClient.GetMemberByEmail(request.Email, cancellationToken);
 
         return result.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK
-            ? new LookupAdminMemberResult { MemberId = result.GetContent().MemberId, Status = result.GetContent().Status }
+            ? result.GetContent()
             : null;
     }
 }

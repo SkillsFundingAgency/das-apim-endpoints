@@ -14,11 +14,9 @@ public class LookupAdminMemberHandlerTests
       [Frozen] Mock<IAanHubRestApiClient> apiClient,
       LookupAdminMemberHandler sut,
       string email,
-      string firstName,
-      string lastName,
       CancellationToken cancellationToken)
     {
-        var query = new LookupAdminMemberRequest { Email = email, FirstName = firstName, LastName = lastName };
+        var query = new LookupAdminMemberRequest { Email = email };
         await sut.Handle(query, cancellationToken);
         apiClient.Verify(a => a.GetMemberByEmail(email, cancellationToken), Times.Once);
     }
@@ -27,17 +25,17 @@ public class LookupAdminMemberHandlerTests
     public async Task Handle_ApiClientReturnsResult(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         LookupAdminMemberHandler sut,
-        GetMemberResult getMemberResult,
+        LookupAdminMemberResult getMemberResult,
         string email,
         string firstName,
         string lastName,
         CancellationToken cancellationToken)
     {
-        var response = new Response<GetMemberResult>(
+        var response = new Response<LookupAdminMemberResult>(
             "not used",
             new HttpResponseMessage(System.Net.HttpStatusCode.OK),
             () => getMemberResult);
-        var query = new LookupAdminMemberRequest { Email = email, FirstName = firstName, LastName = lastName };
+        var query = new LookupAdminMemberRequest { Email = email };
 
         apiClient.Setup(x => x.GetMemberByEmail(email, cancellationToken))
                  .ReturnsAsync(response);
@@ -57,19 +55,19 @@ public class LookupAdminMemberHandlerTests
     public async Task Handle_ApiClientReturnsNotFound_ReturnsNull(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         LookupAdminMemberHandler sut,
-        GetMemberResult getMemberResult,
+        LookupAdminMemberResult getMemberResult,
         Guid calendarEventId,
         string email,
         string firstName,
         string lastName,
         CancellationToken cancellationToken)
     {
-        var response = new Response<GetMemberResult>(
+        var response = new Response<LookupAdminMemberResult>(
             "not used",
             new HttpResponseMessage(System.Net.HttpStatusCode.NotFound),
             () => getMemberResult);
 
-        var query = new LookupAdminMemberRequest { Email = email, FirstName = firstName, LastName = lastName };
+        var query = new LookupAdminMemberRequest { Email = email };
 
         apiClient.Setup(x => x.GetMemberByEmail(email, cancellationToken))
             .ReturnsAsync(response);

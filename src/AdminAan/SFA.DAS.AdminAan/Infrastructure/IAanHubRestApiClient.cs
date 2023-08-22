@@ -23,7 +23,7 @@ public interface IAanHubRestApiClient
 
     [Get("/members/{email}")]
     [AllowAnyStatusCode]
-    Task<Response<GetMemberResult>> GetMemberByEmail([Path] string email, CancellationToken cancellationToken);
+    Task<Response<LookupAdminMemberResult>> GetMemberByEmail([Path] string email, CancellationToken cancellationToken);
 
     [Post("/admins")]
     [AllowAnyStatusCode]
