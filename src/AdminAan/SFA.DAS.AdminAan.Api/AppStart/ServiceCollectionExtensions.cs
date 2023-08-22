@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using RestEase.HttpClientFactory;
 using SFA.DAS.AdminAan.Api.Configuration;
 using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
+using SFA.DAS.AdminAan.Configuration;
 using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
@@ -45,6 +46,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
+        services.AddTransient<IReferenceDataApiClient<ReferenceDataApiConfiguration>, ReferenceDataApiClient>();
 
         services.AddMediatR(typeof(GetRegionsQuery).Assembly);
 
@@ -52,6 +54,8 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
+
+
 
     private static void AddAanHubApiClient(IServiceCollection services, IConfiguration configuration)
     {
