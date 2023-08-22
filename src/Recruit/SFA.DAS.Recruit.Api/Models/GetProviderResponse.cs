@@ -10,6 +10,7 @@ namespace SFA.DAS.Recruit.Api.Models
         public string Email { get; set; }
         public string Phone { get; set; }
         public int ProviderTypeId { get; set; }
+        public int StatusId { get; set; }
         public GetProviderAddress Address { get; set; }
         
         public static implicit operator GetProviderResponse(GetProvidersListItem source)
@@ -22,6 +23,7 @@ namespace SFA.DAS.Recruit.Api.Models
                 Phone = source.Phone,
                 ContactUrl = source.ContactUrl,
                 ProviderTypeId = source.ProviderTypeId,
+                StatusId = source.StatusId,
                 Address = source.Address
             };
         }
