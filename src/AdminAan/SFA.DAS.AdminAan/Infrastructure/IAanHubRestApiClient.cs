@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RestEase;
+﻿using RestEase;
 using SFA.DAS.AdminAan.Application.Admins.Commands.Create;
 using SFA.DAS.AdminAan.Application.Admins.Queries.Lookup;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.AdminAan.Application.Entities;
 using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
-using SFA.DAS.AdminAan.Application.Schools.Queries;
 using SFA.DAS.AdminAan.Infrastructure.Configuration;
 
 namespace SFA.DAS.AdminAan.Infrastructure;
@@ -31,11 +29,3 @@ public interface IAanHubRestApiClient
     [AllowAnyStatusCode]
     Task<CreateAdminMemberCommandResult> CreateAdminMember([Body] CreateAdminMemberCommand command, CancellationToken cancellationToken);
 }
-
-public interface IReferenceDataApiClient<T>
-{
-    [Get]
-    [Route("/schools/find/{searchTerm}")]
-    Task<GetSchoolsQueryResult> GetSchools(string searchTerm, CancellationToken cancellationToken);
-}
-

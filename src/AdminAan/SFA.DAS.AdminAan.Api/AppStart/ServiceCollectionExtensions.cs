@@ -46,15 +46,27 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
-        services.AddTransient<IReferenceDataApiClient<ReferenceDataApiConfiguration>, ReferenceDataApiClient>();
 
         services.AddMediatR(typeof(GetRegionsQuery).Assembly);
 
         AddAanHubApiClient(services, configuration);
-
+        AddReferenceDataApiClient(services, configuration);
         return services;
     }
 
+    private static void AddReferenceDataApiClient(IServiceCollection services, IConfigurationRoot configuration)
+    {
+        var apiConfig = configuration
+            .GetSection(nameof(ReferenceDataApi))
+            .Get<ReferenceDataApi>();
+
+        services.AddSingleton(apiConfig);
+
+        services.AddScoped<ReferenceDataApiAuthenticationHeaderHandler>();
+
+        services.AddRestEaseClient<IReferenceDataApiClient>(apiConfig.ApiBaseUrl)
+            .AddHttpMessageHandler<ReferenceDataApiAuthenticationHeaderHandler>();
+    }
 
 
     private static void AddAanHubApiClient(IServiceCollection services, IConfiguration configuration)
