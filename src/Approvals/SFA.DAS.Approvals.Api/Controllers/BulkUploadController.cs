@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.BulkUpload.Commands;
+using SFA.DAS.NServiceBus;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -66,6 +67,27 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     ProviderId = request.ProviderId,
                     BulkUploadAddDraftApprenticeships = request.BulkUploadDraftApprenticeships?.ToList(),
                     UserInfo = request.UserInfo
+                });
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("AddLog")]
+        public async Task<IActionResult> AddLog(BulkUploadAddLogRequest request)
+        {
+            var result = await _mediator.Send(
+                new BulkUploadAddLogCommand
+                {
+                    ProviderId = request.ProviderId,
+                    FileName = request.FileName,
+                    RplCount = request.RplCount,
+                    RowCount = request.RowCount,
+                    FileContent = request.FileContent
                 });
 
             if (result == null)
