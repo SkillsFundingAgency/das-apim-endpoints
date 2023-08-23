@@ -55,10 +55,14 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
             var deliveryModelTask = _deliveryModelService.GetDeliveryModels(apprenticeship.ProviderId,
                 apprenticeship.CourseCode, apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
 
-            Task.WaitAll(priceEpisodesResponseTask, apprenticeshipUpdatesResponseTask,
+            Task.WaitAll(priceEpisodesResponseTask, 
+                apprenticeshipUpdatesResponseTask,
                 apprenticeshipDataLockStatusResponseTask,
-                changeOfPartyRequestsResponseTask, changeOfProviderChainResponseTask,
-                changeOfEmployerChainResponseTask, overlappingTrainingDateResponseTask, deliveryModelTask);
+                changeOfPartyRequestsResponseTask, 
+                changeOfProviderChainResponseTask,
+                changeOfEmployerChainResponseTask, 
+                overlappingTrainingDateResponseTask, 
+                deliveryModelTask);
 
             var priceEpisodesResponse = await priceEpisodesResponseTask;
             var apprenticeshipUpdatesResponse = await apprenticeshipUpdatesResponseTask;
