@@ -7,5 +7,5 @@ public interface IReferenceDataApiClient
 {
     [Get("api/organisations/educational")]
     [AllowAnyStatusCode]
-    Task<Response<GetSchoolsQueryResult>> GetSchools(string searchTerm, int pageSize = 100, int pageNumber = 1);
+    Task<Response<GetSchoolsQueryApiResult>> GetSchools(string searchTerm, int pageSize = 100, int pageNumber = 1);
 }

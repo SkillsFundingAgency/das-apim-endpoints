@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using RestEase;
 using SFA.DAS.AdminAan.Infrastructure;
 
 namespace SFA.DAS.AdminAan.Application.Schools.Queries;
-public class GetSchoolsQueryHandler : IRequestHandler<GetSchoolsQuery, Response<GetSchoolsQueryResult>>
+public class GetSchoolsQueryHandler : IRequestHandler<GetSchoolsQuery, GetSchoolsQueryApiResult>
 {
     private readonly IReferenceDataApiClient _apiClient;
 
@@ -12,8 +11,12 @@ public class GetSchoolsQueryHandler : IRequestHandler<GetSchoolsQuery, Response<
         _apiClient = apiClient;
     }
 
-    public async Task<Response<GetSchoolsQueryResult>> Handle(GetSchoolsQuery request, CancellationToken cancellationToken)
+    public async Task<GetSchoolsQueryApiResult> Handle(GetSchoolsQuery request, CancellationToken cancellationToken)
     {
-        return await _apiClient.GetSchools(request.SearchTerm);
+        var result = await _apiClient.GetSchools(request.SearchTerm);
+
+        return result.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK
+            ? result.GetContent()
+            : new GetSchoolsQueryApiResult(new List<School>());
     }
 }

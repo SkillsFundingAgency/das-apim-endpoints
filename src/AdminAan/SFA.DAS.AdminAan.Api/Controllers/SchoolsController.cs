@@ -22,7 +22,6 @@ public class SchoolsController : ControllerBase
     {
 
         var response = await _mediator.Send(new GetSchoolsQuery { SearchTerm = searchTerm });
-
-        return Ok(new List<School>());
+        return Ok(new GetSchoolsQueryResult(((GetSchoolsQueryApiResult)response!).Data));
     }
 }
