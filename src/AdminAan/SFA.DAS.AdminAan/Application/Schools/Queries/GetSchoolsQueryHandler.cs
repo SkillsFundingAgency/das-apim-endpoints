@@ -6,6 +6,8 @@ public class GetSchoolsQueryHandler : IRequestHandler<GetSchoolsQuery, GetSchool
 {
     private readonly IReferenceDataApiClient _apiClient;
 
+    public const int PageSize = 100;
+    public const int PageNumber = 1;
     public GetSchoolsQueryHandler(IReferenceDataApiClient apiClient)
     {
         _apiClient = apiClient;
@@ -13,7 +15,7 @@ public class GetSchoolsQueryHandler : IRequestHandler<GetSchoolsQuery, GetSchool
 
     public async Task<GetSchoolsQueryApiResult> Handle(GetSchoolsQuery request, CancellationToken cancellationToken)
     {
-        var result = await _apiClient.GetSchools(request.SearchTerm);
+        var result = await _apiClient.GetSchools(request.SearchTerm, PageSize, PageNumber);
 
         return result.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK
             ? result.GetContent()
