@@ -34,7 +34,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
         }
 
         [Test]
-        public async Task Handle_Cohort_Created()
+        public async Task Handle_Bulk_Log_Created()
         {
             var expectedResponse = _fixture.Create<GetBulkUploadAddLogResponse>();
             _commitmentsApiClient.Setup(x => x.PostWithResponseCode<GetBulkUploadAddLogResponse>(
