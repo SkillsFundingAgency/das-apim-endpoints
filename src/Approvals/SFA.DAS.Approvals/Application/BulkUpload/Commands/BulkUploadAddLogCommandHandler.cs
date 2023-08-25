@@ -12,12 +12,10 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
     public class BulkUploadAddLogCommandHandler : IRequestHandler<BulkUploadAddLogCommand, BulkUploadAddLogResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        private readonly IMediator _mediator;
 
-        public BulkUploadAddLogCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, IMediator mediator)
+        public BulkUploadAddLogCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
-            _mediator = mediator;
         }
 
         public async Task<BulkUploadAddLogResult> Handle(BulkUploadAddLogCommand command, CancellationToken cancellationToken)
