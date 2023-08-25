@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Reservations
         [Test]
         [MoqAutoData]
         public async Task Then_Gets_Reservations_From_Mediator(
-            string accountId,
+            long accountId,
             GetReservationsQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ReservationController controller)
@@ -43,7 +43,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Reservations
         [Test]
         [MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
-            string accountId,
+            long accountId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ReservationController controller)
         {
