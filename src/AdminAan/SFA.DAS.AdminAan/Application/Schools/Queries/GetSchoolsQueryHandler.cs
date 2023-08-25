@@ -15,7 +15,7 @@ public class GetSchoolsQueryHandler : IRequestHandler<GetSchoolsQuery, GetSchool
 
     public async Task<GetSchoolsQueryApiResult> Handle(GetSchoolsQuery request, CancellationToken cancellationToken)
     {
-        var result = await _apiClient.GetSchools(request.SearchTerm, PageSize, PageNumber);
+        var result = await _apiClient.GetSchools(request.SearchTerm, PageSize, PageNumber, cancellationToken);
 
         return result.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK
             ? result.GetContent()

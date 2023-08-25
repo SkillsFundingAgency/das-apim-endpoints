@@ -19,7 +19,7 @@ public class SchoolsControllerTests
         mockMediator.Setup(m => m.Send(It.Is<GetSchoolsQuery>(x => x.SearchTerm == searchTerm), It.IsAny<CancellationToken>())).ReturnsAsync(response);
         var controller = new SchoolsController(mockMediator.Object);
 
-        var getSchoolResponse = await controller.GetSchools(searchTerm);
+        var getSchoolResponse = await controller.GetSchools(searchTerm, new CancellationToken());
 
         (((GetSchoolsQueryResult)getSchoolResponse.As<OkObjectResult>().Value!)!).Schools.Should()
                 .BeEquivalentTo(response.Data);
