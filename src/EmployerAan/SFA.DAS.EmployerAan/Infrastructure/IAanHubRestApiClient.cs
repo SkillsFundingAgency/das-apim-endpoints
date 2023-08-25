@@ -5,6 +5,7 @@ using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
 using SFA.DAS.EmployerAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.EmployerAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.EmployerAan.InnerApi.Attendances;
+using SFA.DAS.EmployerAan.InnerApi.Notifications;
 using SFA.DAS.EmployerAan.Models;
 
 namespace SFA.DAS.EmployerAan.Infrastructure;
@@ -37,6 +38,10 @@ public interface IAanHubRestApiClient
         [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
         string FromDate,
         string ToDate,
+        CancellationToken cancellationToken);
+
+    [Get("/notifications/{id}")]
+    Task<Response<GetNotificationResponse?>> GetNotification([Path] Guid id, [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
         CancellationToken cancellationToken);
 
     [Get("calendarEvents/{calendarEventId}")]

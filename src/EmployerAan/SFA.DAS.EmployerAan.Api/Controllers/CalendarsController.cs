@@ -16,7 +16,7 @@ public class CalendarsController : ControllerBase
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(typeof(IEnumerable<Calendar>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GeCalendars(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetCalendars(CancellationToken cancellationToken)
     {
         return Ok(await _mediator.Send(new GetCalendarsQuery(), cancellationToken));
     }

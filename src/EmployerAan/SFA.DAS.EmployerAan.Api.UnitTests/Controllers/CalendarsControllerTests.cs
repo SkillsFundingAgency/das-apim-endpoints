@@ -13,7 +13,7 @@ public class CalendarsControllerTests
 {
     [Test]
     [MoqAutoData]
-    public async Task GeCalendars_MediatorCommandSuccessful_ReturnOk(
+    public async Task GetCalendars_MediatorCommandSuccessful_ReturnOk(
         List<Calendar> response,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] CalendarsController sut,
@@ -21,7 +21,7 @@ public class CalendarsControllerTests
     {
         mockMediator.Setup(m => m.Send(It.IsAny<GetCalendarsQuery>(), cancellationToken)).ReturnsAsync(response);
 
-        var result = await sut.GeCalendars(cancellationToken);
+        var result = await sut.GetCalendars(cancellationToken);
 
         result.As<OkObjectResult>().Value.Should().BeEquivalentTo(response);
     }

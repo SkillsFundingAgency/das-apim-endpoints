@@ -20,7 +20,7 @@ public class GetEmployerMemberQueryHandler : IRequestHandler<GetEmployerMemberQu
         {
             HttpStatusCode.OK => response.GetContent(),
             HttpStatusCode.NotFound => null,
-            _ => throw new InvalidOperationException($"Get employer member didn't some back with successful response")
+            _ => throw new InvalidOperationException($"Get employer member didn't come back with successful response")
         };
         return result;
     }
