@@ -1,12 +1,11 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
-using SFA.DAS.ApprenticeAan.Api.Models;
-using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
-using SFA.DAS.ApprenticeAan.Application.Common;
-using SFA.DAS.ApprenticeAan.Application.Services;
+using SFA.DAS.EmployerAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+using SFA.DAS.EmployerAan.Application.Models;
+using SFA.DAS.EmployerAan.Application.Services;
+using SFA.DAS.EmployerAan.Common;
 
-namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Services;
-
+namespace SFA.DAS.EmployerAan.UnitTests.Application.Services;
 public class QueryStringParameterBuilderTests
 {
 
@@ -62,8 +61,9 @@ public class QueryStringParameterBuilderTests
         isActiveResult![0].Should().Be("true");
     }
 
-    [TestCase("2030-06-01", "2030-06-01")]
-    public void Builder_ConstructParameters_FromDateNotToday(DateTime? fromDate, string expectedFromDate)
+    [TestCase(null)]
+    [TestCase("2030-06-01")]
+    public void Builder_ConstructParameters_FromDate(DateTime? fromDate)
     {
         var model = new GetCalendarEventsRequestModel
         {
@@ -73,34 +73,15 @@ public class QueryStringParameterBuilderTests
         var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model);
 
         parameters.TryGetValue("fromDate", out var fromDateResult);
-
-        fromDateResult![0].Should().Be(expectedFromDate);
-    }
-
-    [TestCase("null")]
-    [TestCase("today")]
-    public void Builder_ConstructParameters_FromDateToday(string fromDateSelector)
-    {
-        DateTime? fromDate = null;
-
-        if (fromDateSelector == "today") fromDate = DateTime.Today;
-
-        var model = new GetCalendarEventsRequestModel
+        if (fromDate != null)
         {
-            RequestedByMemberId = Guid.NewGuid(),
-            FromDate = fromDate
-        };
-        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model);
-
-        parameters.TryGetValue("fromDate", out var fromDateResult);
-
-        if (!DateTime.TryParse(fromDateResult![0], out var fromDateResultValue)) return;
-
-        fromDateResultValue.Date.Should().Be(DateTime.Today);
-        fromDateResultValue.ToLocalTime().Should().BeOnOrBefore(DateTime.Now);
-        fromDateResultValue.ToLocalTime().Should().BeAfter(DateTime.Now.AddSeconds(-1));
+            fromDateResult![0].Should().Be(fromDate?.ToString("yyyy-MM-dd"));
+        }
+        else
+        {
+            fromDateResult.Should().BeNull();
+        }
     }
-
 
     [TestCase(null)]
     [TestCase("2030-06-01")]

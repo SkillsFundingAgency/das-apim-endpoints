@@ -9,7 +9,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.InnerApi.Requests
     {
         [Test]
         [AutoData]
-        public void Then_The_Url_Is_Correctly_Build(string id)
+        public void Then_The_Url_Is_Correctly_Build(long id)
         {
             //Arrange
             var actual = new GetReservationsRequest(id);

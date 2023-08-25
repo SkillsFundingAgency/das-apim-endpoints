@@ -1,7 +1,6 @@
-﻿using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+﻿using SFA.DAS.EmployerAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 
-namespace SFA.DAS.ApprenticeAan.Application.Services;
-
+namespace SFA.DAS.EmployerAan.Application.Services;
 public static class QueryStringParameterBuilder
 {
 
@@ -9,16 +8,7 @@ public static class QueryStringParameterBuilder
     {
         var parameters = new Dictionary<string, string[]>();
         if (!string.IsNullOrWhiteSpace(request.Keyword)) parameters.Add("keyword", new[] { request.Keyword });
-        if (request.FromDate == null || request.FromDate == DateTime.Today.ToString("yyyy-MM-dd"))
-        {
-            var fromDate = DateTime.UtcNow;
-            parameters.Add("fromDate", new[] { fromDate.ToString("yyyy-MM-ddTHH:mm:ss") });
-        }
-        else
-        {
-            parameters.Add("fromDate", new[] { request.FromDate });
-        }
-
+        if (request.FromDate != null) parameters.Add("fromDate", new[] { request.FromDate });
         if (request.ToDate != null) parameters.Add("toDate", new[] { request.ToDate });
         if (request.EventFormat != null && request.EventFormat.Any())
         {

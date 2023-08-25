@@ -9,7 +9,11 @@ public static class QueryStringParameterBuilder
     {
         var parameters = new Dictionary<string, string[]>();
         if (request.IsActive.HasValue) parameters.Add("IsActive", new[] { request.IsActive.ToString() }!);
-        if (request.FromDate != null) parameters.Add("fromDate", new[] { request.FromDate });
+        parameters.Add("fromDate",
+            request.FromDate == null
+                ? new[] { DateTime.Today.ToString("yyyy-MM-dd") }
+                : new[] { request.FromDate });
+
         if (request.ToDate != null) parameters.Add("toDate", new[] { request.ToDate });
 
         if (request.CalendarIds != null && request.CalendarIds.Any())
