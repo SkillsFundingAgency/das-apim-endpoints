@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
+﻿using SFA.DAS.Approvals.InnerApi.Responses;
+
+namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 {
     public class BulkUploadAddLogResult
     {
@@ -8,7 +10,7 @@
 
         public static implicit operator BulkUploadAddLogResult(InnerApi.Responses.BulkUploadAddLogResponse response)
         {
-            return new BulkUploadAddLogResult
+            return new BulkUploadAddLogResponse
             {
                 LogId = response.LogId
             };
