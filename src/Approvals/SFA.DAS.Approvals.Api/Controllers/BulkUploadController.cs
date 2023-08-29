@@ -92,10 +92,6 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     FileContent = request.FileContent
                 });
 
-            if (result == null)
-            {
-                return NotFound();
-            }
             return Ok(result);
         }
     }
