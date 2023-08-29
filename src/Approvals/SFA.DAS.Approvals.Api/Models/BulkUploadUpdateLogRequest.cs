@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Approvals.Api.Models
 {
-    public class BulkUploadAddLogRequest
+    public class BulkUploadUpdateLogRequest
     {
         public long ProviderId { get; set; }
         public string FileName { get; set; }

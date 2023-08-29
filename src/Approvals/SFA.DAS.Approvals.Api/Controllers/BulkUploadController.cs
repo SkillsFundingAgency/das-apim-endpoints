@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.BulkUpload.Commands;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraftApprenticeship;
 using SFA.DAS.NServiceBus;
 using System.Linq;
 using System.Threading.Tasks;
@@ -94,5 +95,26 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
             return Ok(result);
         }
+
+
+        [HttpPut]
+        [Route("UpdateLog")]
+        public async Task<IActionResult> UpdateLog(long logId, [FromBody] BulkUploadUpdateLogRequest request)
+        {
+            var command = new BulkUploadUpdateLogCommand
+            {
+                ActualStartDate = request.ActualStartDate,
+                StartDate = request.StartDate,
+                Cost = request.Cost,
+                CourseCode = request.CourseCode,
+                DateOfBirth = request.DateOfBirth,
+                DeliveryModel = request.DeliveryModel
+            };
+
+            await _mediator.Send(command);
+
+            return Ok();
+        }
+
     }
 }
