@@ -1,51 +1,40 @@
 ﻿using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
+using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 {
-    public class BulkUploadUpdateLogCommandHandler : IRequestHandler<BulkUploadUpdateLogCommand>
+    public class BulkUploadUpdateLogCommandHandler : IRequestHandler<BulkUploadUpdateLogCommand, BulkUploadUpdateLogResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        
+
         public BulkUploadUpdateLogCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
 
-        public async Task<Unit> Handle(BulkUploadUpdateLogCommand request, CancellationToken cancellationToken)
+        public async Task<BulkUploadUpdateLogResult> Handle(BulkUploadUpdateLogCommand command, CancellationToken cancellationToken)
         {
-            var updateDraftApprenticeshipRequest = new UpdateDraftApprenticeshipRequest
+            var dataToSend = new BulkUploadUpdateLogRequest
             {
-                ActualStartDate = request.ActualStartDate,
-                Cost = request.Cost,
-                CourseCode = request.CourseCode,
-                DateOfBirth = request.DateOfBirth,
-                DeliveryModel = request.DeliveryModel,
-                Email = request.Email,
-                EmploymentEndDate = request.EmploymentEndDate,
-                EmploymentPrice = request.EmploymentPrice,
-                EndDate = request.EndDate,
-                FirstName = request.FirstName,
-                IgnoreStartDateOverlap = request.IgnoreStartDateOverlap,
-                IsOnFlexiPaymentPilot = request.IsOnFlexiPaymentPilot,
-                LastName = request.LastName,
-                ReservationId = request.ReservationId,
-                StartDate = request.StartDate,
-                Uln = request.Uln,
-                UserInfo = request.UserInfo,
-                CourseOption = request.CourseOption,
-                Reference = request.Reference,
-                RequestingParty = request.RequestingParty
+                ProviderId = command.ProviderId,
+                LogId = command.LogId
             };
-            
-            await _apiClient.PutWithResponseCode<NullResponse>(new PutUpdateDraftApprenticeshipRequest(request.CohortId, request.ApprenticeshipId, updateDraftApprenticeshipRequest));
 
-            return Unit.Value;
+            var result = await _apiClient.PostWithResponseCode<GetBulkUploadUpdateLogResponse>(
+                new PostBulkUploadUpdateLogRequest(command.ProviderId, dataToSend));
+
+            result.EnsureSuccessStatusCode();
+
+            return new BulkUploadUpdateLogResult
+            {
+                LogId = result.Body.LogId
+            };
         }
     }
 }
