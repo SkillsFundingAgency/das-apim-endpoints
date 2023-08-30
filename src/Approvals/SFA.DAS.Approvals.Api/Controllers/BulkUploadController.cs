@@ -96,25 +96,21 @@ namespace SFA.DAS.Approvals.Api.Controllers
             return Ok(result);
         }
 
-
-        [HttpPut]
+        [HttpPost]
         [Route("UpdateLog")]
-        public async Task<IActionResult> UpdateLog(long logId, [FromBody] BulkUploadUpdateLogRequest request)
+        public async Task<IActionResult> UpdateLog(BulkUploadUpdateLogRequest request)
         {
-            var command = new BulkUploadUpdateLogCommand
+            var result = await _mediator.Send(
+                new BulkUploadUpdateLogCommand
+                {
+                    LogId = request.LogId
+                });
+
+            if (result == null)
             {
-                ActualStartDate = request.ActualStartDate,
-                StartDate = request.StartDate,
-                Cost = request.Cost,
-                CourseCode = request.CourseCode,
-                DateOfBirth = request.DateOfBirth,
-                DeliveryModel = request.DeliveryModel
-            };
-
-            await _mediator.Send(command);
-
-            return Ok();
+                return NotFound();
+            }
+            return Ok(result);
         }
-
     }
 }
