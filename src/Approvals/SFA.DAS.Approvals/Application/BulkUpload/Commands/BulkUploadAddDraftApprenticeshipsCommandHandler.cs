@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.CookiePolicy;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -38,7 +37,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
             {
                 BulkUploadDraftApprenticeships = command.BulkUploadAddDraftApprenticeships,
                 ProviderId = command.ProviderId,
-                FileUploadLogId = command.FileUploadLogId,
+                LogId = command.FileUploadLogId,
                 UserInfo = command.UserInfo
             };
 
@@ -59,7 +58,6 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
             {
                 CsvRecords = command.BulkUploadAddDraftApprenticeships?.ToList(),
                 ProviderId = command.ProviderId,
-                FileUploadLogId = command.FileUploadLogId,
                 RplDataExtended = command.RplDataExtended,
                 UserInfo = command.UserInfo
             };
