@@ -7,6 +7,7 @@ namespace SFA.DAS.Approvals.Api.Models
     {
         public long ProviderId { get; set; }
         public bool RplDataExtended { get; set; }
+        public long? FileUploadLogId { get; set; }
         public IEnumerable<BulkUploadAddDraftApprenticeshipRequest> CsvRecords { get; set; }
         public UserInfo UserInfo { get; set; }
     }
