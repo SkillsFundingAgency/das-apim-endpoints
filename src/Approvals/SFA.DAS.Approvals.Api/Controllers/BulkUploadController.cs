@@ -48,6 +48,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 new BulkUploadAddAndApproveDraftApprenticeshipsCommand
                 {
                     ProviderId = request.ProviderId,
+                    FileUploadLogId = request.FileUploadLogId,
                     BulkUploadAddAndApproveDraftApprenticeships = request.BulkUploadAddAndApproveDraftApprenticeships?.ToList(),
                     UserInfo = request.UserInfo
                 });
@@ -67,6 +68,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 new BulkUploadAddDraftApprenticeshipsCommand
                 {
                     ProviderId = request.ProviderId,
+                    FileUploadLogId = request.FileUploadLogId,
                     RplDataExtended = request.RplDataExtended,
                     BulkUploadAddDraftApprenticeships = request.BulkUploadDraftApprenticeships?.ToList(),
                     UserInfo = request.UserInfo
