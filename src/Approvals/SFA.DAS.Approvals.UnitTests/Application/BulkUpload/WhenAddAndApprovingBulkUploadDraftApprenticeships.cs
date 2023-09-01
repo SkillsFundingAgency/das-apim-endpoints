@@ -31,8 +31,10 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
 
             apiClient.Setup(x => x.PostWithResponseCode<BulkUploadAddAndApproveDraftApprenticeshipsResponse>
                 (It.Is<PostAddAndApproveDraftApprenticeshipsRequest>(
-                    x => x.ProviderId == command.ProviderId && (x.Data as BulkUploadAddAndApproveDraftApprenticeshipsRequest).BulkUploadAddAndApproveDraftApprenticeships == command.BulkUploadAddAndApproveDraftApprenticeships
-                ), true)).ReturnsAsync(apiResponse);
+                    x => x.ProviderId == command.ProviderId &&
+                    (x.Data as BulkUploadAddAndApproveDraftApprenticeshipsRequest).BulkUploadAddAndApproveDraftApprenticeships == command.BulkUploadAddAndApproveDraftApprenticeships &&
+                    (x.Data as BulkUploadAddAndApproveDraftApprenticeshipsRequest).LogId == command.FileUploadLogId)
+                , true)).ReturnsAsync(apiResponse);
 
             var result = new BulkCreateReservationsWithNonLevyResult();
             foreach (var draftApprenticeship in command.BulkUploadAddAndApproveDraftApprenticeships)
