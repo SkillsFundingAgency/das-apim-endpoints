@@ -6,6 +6,7 @@ using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Notifications;
 using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.MemberProfiles;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMember;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMembers;
 using SFA.DAS.ApprenticeAan.Application.Profiles.Queries.GetProfilesByUserType;
@@ -49,6 +50,13 @@ public interface IAanHubRestApiClient
         [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
         string FromDate,
         string ToDate,
+        CancellationToken cancellationToken);
+
+    [Put("members/{memberId}/profile")]
+    Task PutMemberProfile(
+        [Path] Guid memberId,
+        [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+        [Body] UpdateMemberProfileModel putMemberProfileRequest,
         CancellationToken cancellationToken);
 
     [Get("members")]
