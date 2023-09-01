@@ -27,6 +27,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.BulkUpload
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<BulkUploadAddDraftApprenticeshipsCommand>(x => x.ProviderId == request.ProviderId 
+                                                                         && x.FileUploadLogId == request.FileUploadLogId
                                                                          && x.RplDataExtended == request.RplDataExtended 
                                                                          && x.UserInfo == request.UserInfo),
                     It.IsAny<CancellationToken>())).ReturnsAsync(response);
