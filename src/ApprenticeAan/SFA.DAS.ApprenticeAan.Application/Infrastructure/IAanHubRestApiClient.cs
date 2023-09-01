@@ -4,6 +4,7 @@ using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents
 using SFA.DAS.ApprenticeAan.Application.Entities;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.MemberProfiles;
 using SFA.DAS.ApprenticeAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
 
@@ -45,5 +46,12 @@ public interface IAanHubRestApiClient
         [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
         string FromDate,
         string ToDate,
+        CancellationToken cancellationToken);
+
+    [Put("members/{memberId}/profile")]
+    Task PutMemberProfile(
+        [Path] Guid memberId,
+        [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+        [Body] UpdateMemberProfileModel putMemberProfileRequest,
         CancellationToken cancellationToken);
 }
