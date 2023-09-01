@@ -4,6 +4,8 @@ using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.ApprenticeAan.Application.Model;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.MemberProfiles;
+using SFA.DAS.ApprenticeAan.Application.MemberProfiles;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
@@ -13,10 +15,7 @@ public class MemberProfilesController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public MemberProfilesController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
+    public MemberProfilesController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet("{memberId}/profile")]
     [ProducesResponseType(typeof(GetMemberProfileWithPreferencesModel), StatusCodes.Status200OK)]
@@ -33,5 +32,17 @@ public class MemberProfilesController : ControllerBase
         var myApprenticeship = (@public && !isApprenticeSectionShareAllowed) ? null : await _mediator.Send(new GetMyApprenticeshipQuery { ApprenticeId = memberProfileWithPreferences.ApprenticeId }, cancellationToken);
 
         return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, myApprenticeship, @public));
+    }
+    
+    [HttpPut("{memberId}/profile")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> PutMemberProfile(
+        [FromRoute] Guid memberId,
+        [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+        [FromBody] UpdateMemberProfileModel request, CancellationToken cancellationToken)
+    {
+        UpdateMemberProfilesCommand command = new(memberId, requestedByMemberId, request);
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
     }
 }
