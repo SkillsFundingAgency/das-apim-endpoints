@@ -201,6 +201,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 ActualStartDate = request.ActualStartDate,
                 StartDate = request.StartDate,
                 Cost = request.Cost,
+                TrainingPrice = request.TrainingPrice,
+                EndPointAssessmentPrice = request.EndPointAssessmentPrice,
                 CourseCode = request.CourseCode,
                 DateOfBirth = request.DateOfBirth,
                 DeliveryModel = request.DeliveryModel,
@@ -219,7 +221,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 UserInfo = request.UserInfo,
                 UserId = request.UserId,
                 CohortId = cohortId,
-                RequestingParty = request.RequestingParty
+                RequestingParty = request.RequestingParty,
             };
 
             var result = await _mediator.Send(command);
@@ -259,7 +261,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 Reference = request.Reference,
                 CohortId = cohortId,
                 ApprenticeshipId = apprenticeshipId,
-                RequestingParty = request.RequestingParty
+                RequestingParty = request.RequestingParty,
             };
 
             await _mediator.Send(command);
