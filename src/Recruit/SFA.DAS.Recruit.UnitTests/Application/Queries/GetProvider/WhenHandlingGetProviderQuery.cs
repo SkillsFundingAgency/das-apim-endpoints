@@ -1,18 +1,15 @@
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Recruit.Application.Queries.GetAccount;
 using SFA.DAS.Recruit.Application.Queries.GetProvider;
-using SFA.DAS.Recruit.Application.Queries.GetProviders;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetProvider
 {
@@ -47,7 +44,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetProvider
             //Arrange
             apiClient
                 .Setup(x => x.Get<GetProvidersListItem>(
-                    It.IsAny<GetProviderRequest>())).ReturnsAsync((GetProvidersListItem)null);
+                    It.IsAny<GetProviderRequest>()))!.ReturnsAsync((GetProvidersListItem)null);
 
             //Act
             var actual = await handler.Handle(query, CancellationToken.None);

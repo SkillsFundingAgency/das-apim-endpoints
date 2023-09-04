@@ -13,7 +13,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetAccount
 {
-    public class WhenHandlingGetProviderQuery
+    public class WhenHandlingGetAccountQuery
     {
         [Test, MoqAutoData]
         public async Task Then_The_Query_Is_Handled_And_Data_Returned(
