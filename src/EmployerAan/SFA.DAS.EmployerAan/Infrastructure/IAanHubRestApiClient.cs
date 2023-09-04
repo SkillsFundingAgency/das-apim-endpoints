@@ -42,4 +42,19 @@ public interface IAanHubRestApiClient
 
     [Get("members")]
     Task<GetMembersQueryResult> GetMembers([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
+
+    [Get("calendarEvents/{calendarEventId}")]
+    [AllowAnyStatusCode]
+    Task<Response<CalendarEvent>> GetCalendarEventById(
+    [Path] Guid calendarEventId,
+    [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+    CancellationToken cancellationToken);
+
+    [Put("/CalendarEvents/{calendarEventId}/attendance")]
+    Task PutAttendance(
+    [Path] Guid calendarEventId,
+    [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+    [Body] AttendanceStatus putAttendanceRequest,
+    CancellationToken cancellationToken);
+
 }
