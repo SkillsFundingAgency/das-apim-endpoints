@@ -22,7 +22,7 @@ public class GetSchoolsQueryHandler : IRequestHandler<GetSchoolsQuery, GetSchool
 
         if (result.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK) return result.GetContent();
 
-        _logger.LogInformation("Call to ReferenceData Api was no successful. There has been status returned of StatusCode {StatusCode}", result.ResponseMessage.StatusCode);
+        _logger.LogInformation("Call to ReferenceData Api was not successful. There has been status returned of StatusCode {StatusCode}", result.ResponseMessage.StatusCode);
 
         return new GetSchoolsQueryApiResult(new List<School>());
     }
