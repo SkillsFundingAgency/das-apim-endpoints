@@ -23,5 +23,4 @@ public class MembersController : ControllerBase
         var response = await _mediator.Send((GetMembersQuery)requestModel, cancellationToken);
         return Ok(response);
     }
-
 }
