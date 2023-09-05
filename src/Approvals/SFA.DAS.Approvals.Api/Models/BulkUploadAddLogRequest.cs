@@ -2,9 +2,6 @@
 {
     public class BulkUploadAddLogRequest
     {
-        public BulkUploadAddLogRequest()
-        {
-        }
         public long ProviderId { get; set; }
         public string FileName { get; set; }
         public int? RplCount { get; set; }
