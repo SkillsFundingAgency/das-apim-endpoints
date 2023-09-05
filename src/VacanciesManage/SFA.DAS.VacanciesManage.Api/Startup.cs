@@ -69,7 +69,8 @@ namespace SFA.DAS.VacanciesManage.Api
             if (configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check");
+                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
+                    .AddCheck<RoatpCourseManagementApiHealthCheck>("RoATP Course Management API health check");
             }
             
             if (configuration.IsLocalOrDev())

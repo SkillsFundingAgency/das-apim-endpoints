@@ -1,9 +1,3 @@
-using System;
-using System.Linq;
-using System.Net;
-using System.Security;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
@@ -17,8 +11,16 @@ using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy;
 using SFA.DAS.VacanciesManage.Configuration;
+using SFA.DAS.VacanciesManage.Enums;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
+using SFA.DAS.VacanciesManage.InnerApi.Responses;
 using SFA.DAS.VacanciesManage.Interfaces;
+using System;
+using System.Linq;
+using System.Net;
+using System.Security;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
 {
@@ -29,14 +31,18 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             long responseValue,
             CreateVacancyCommand command,
             AccountLegalEntityItem accountLegalEntityItem,
+            GetProvidersListItem providersListItem,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
             CreateVacancyCommandHandler handler)
         {
             //Arrange
             command.AccountIdentifier = new AccountIdentifier("Employer-ABC123-Product");
             command.PostVacancyRequestData.OwnerType = OwnerType.Employer;
             command.IsSandbox = false;
+            providersListItem.ProviderTypeId = (short) ProviderTypeIdentifier.MainProvider;
+            providersListItem.StatusId = (short)ProviderStatusType.Active;
             var apiResponse = new ApiResponse<long?>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient.Setup(x =>
                 x.PostWithResponseCode<long?>(
@@ -47,6 +53,8 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                         && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(command.PostVacancyRequestData.EmployerAccountId)
                         ),true))
                 .ReturnsAsync(apiResponse);
+            mockRoatpCourseManagementApiClient.Setup(x => x.Get<GetProvidersListItem>(It.IsAny<GetProviderRequest>()))
+                .ReturnsAsync(providersListItem);
             accountLegalEntityPermissionService
                 .Setup(x => x.GetAccountLegalEntity(It.Is<AccountIdentifier>(c => c.Equals(command.AccountIdentifier)),
                     command.PostVacancyRequestData.AccountLegalEntityPublicHashedId))
@@ -64,15 +72,19 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
         public async Task Then_The_Command_Is_Handled_With_Account_Info_looked_Up_For_Provider_And_Api_Called_With_Response(
             int accountIdentifierId,
             long responseValue,
+            GetProvidersListItem providersListItem,
             CreateVacancyCommand command,
             AccountLegalEntityItem accountLegalEntityItem,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
             CreateVacancyCommandHandler handler)
         {
             //Arrange
             command.AccountIdentifier = new AccountIdentifier($"Provider-{accountIdentifierId}-Product");
             command.IsSandbox = false;
+            providersListItem.ProviderTypeId = (short)ProviderTypeIdentifier.MainProvider;
+            providersListItem.StatusId = (short)ProviderStatusType.Active;
             var apiResponse = new ApiResponse<long?>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient.Setup(x =>
                 x.PostWithResponseCode<long?>(
@@ -83,6 +95,8 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                         && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(accountLegalEntityItem.AccountHashedId)
                         ),true))
                 .ReturnsAsync(apiResponse);
+            mockRoatpCourseManagementApiClient.Setup(x => x.Get<GetProvidersListItem>(It.IsAny<GetProviderRequest>()))
+                .ReturnsAsync(providersListItem);
             accountLegalEntityPermissionService
                 .Setup(x => x.GetAccountLegalEntity(It.Is<AccountIdentifier>(c => c.Equals(command.AccountIdentifier)),
                     command.PostVacancyRequestData.AccountLegalEntityPublicHashedId))
@@ -101,16 +115,20 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
         public async Task Then_If_The_Request_Is_To_Set_The_EmployerNameOption_As_RegisteredAddress_Then_Employer_Name_Is_Set(
             int accountIdentifierId,
             long responseValue,
+            GetProvidersListItem providersListItem,
             CreateVacancyCommand command,
             AccountLegalEntityItem accountLegalEntityItem,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
             CreateVacancyCommandHandler handler)
         {
             //Arrange
             command.PostVacancyRequestData.EmployerNameOption = EmployerNameOption.RegisteredName;
             command.AccountIdentifier = new AccountIdentifier($"Provider-{accountIdentifierId}-Product");
             command.IsSandbox = false;
+            providersListItem.ProviderTypeId = (short)ProviderTypeIdentifier.MainProvider;
+            providersListItem.StatusId = (short)ProviderStatusType.Active;
             var apiResponse = new ApiResponse<long?>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient.Setup(x =>
                     x.PostWithResponseCode<long?>(
@@ -122,6 +140,8 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                             && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(accountLegalEntityItem.AccountHashedId)
                         ),true))
                 .ReturnsAsync(apiResponse);
+            mockRoatpCourseManagementApiClient.Setup(x => x.Get<GetProvidersListItem>(It.IsAny<GetProviderRequest>()))
+                .ReturnsAsync(providersListItem);
             accountLegalEntityPermissionService
                 .Setup(x => x.GetAccountLegalEntity(It.Is<AccountIdentifier>(c => c.Equals(command.AccountIdentifier)),
                     command.PostVacancyRequestData.AccountLegalEntityPublicHashedId))
@@ -138,11 +158,15 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
         public async Task And_IsSandbox_Then_Api_Called_To_Validate_Request(
             long responseValue,
             CreateVacancyCommand command,
+            GetProvidersListItem providersListItem,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
             CreateVacancyCommandHandler handler)
         {
             //Arrange
             command.IsSandbox = true;
+            providersListItem.ProviderTypeId = (short)ProviderTypeIdentifier.MainProvider;
+            providersListItem.StatusId = (short)ProviderStatusType.Active;
             var apiResponse = new ApiResponse<long?>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient
                 .Setup(x =>
@@ -153,6 +177,8 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                             && ((PostVacancyRequestData)c.Data).AccountType.Equals(command.PostVacancyRequestData.AccountType)
                         ),true))
                 .ReturnsAsync(apiResponse);
+            mockRoatpCourseManagementApiClient.Setup(x => x.Get<GetProvidersListItem>(It.IsAny<GetProviderRequest>()))
+                .ReturnsAsync(providersListItem);
 
             //Act
             var result = await handler.Handle(command, CancellationToken.None);
@@ -190,19 +216,25 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
         public void Then_If_There_Is_A_Bad_Request_Error_From_The_Api_A_Exception_Is_Returned(
             string errorContent,
             CreateVacancyCommand command,
+            GetProvidersListItem providersListItem,
             GetProviderAccountLegalEntitiesResponse response,
             [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipsApiClient,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
             CreateVacancyCommandHandler handler)
         {
             //Arrange
             command.PostVacancyRequestData.OwnerType = OwnerType.Provider;
             response.AccountProviderLegalEntities.First().AccountLegalEntityPublicHashedId = command.PostVacancyRequestData.AccountLegalEntityPublicHashedId;
             command.IsSandbox = false;
+            providersListItem.ProviderTypeId = (short)ProviderTypeIdentifier.MainProvider;
+            providersListItem.StatusId = (short)ProviderStatusType.Active;
             var apiResponse = new ApiResponse<long?>(null, HttpStatusCode.BadRequest, errorContent);
             recruitApiClient
                 .Setup(client => client.PostWithResponseCode<long?>(It.IsAny<PostVacancyRequest>(),true))
                 .ReturnsAsync(apiResponse);
+            mockRoatpCourseManagementApiClient.Setup(x => x.Get<GetProvidersListItem>(It.IsAny<GetProviderRequest>()))
+                .ReturnsAsync(providersListItem);
             providerRelationshipsApiClient.Setup(x =>
                 x.Get<GetProviderAccountLegalEntitiesResponse>(It.IsAny<GetProviderAccountLegalEntitiesRequest>())).ReturnsAsync(response);
             
@@ -240,6 +272,74 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             //Assert
             act.Should().ThrowAsync<Exception>()
                 .WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.InternalServerError} ({HttpStatusCode.InternalServerError})");
+        }
+
+        [Test, MoqAutoData]
+        public void Then_If_There_Is_A_Invalid_UkPrn_With_SupportingProvider_From_The_Api_A_Exception_Is_Returned(
+            CreateVacancyCommand command,
+            GetProvidersListItem providersListItem,
+            GetProviderAccountLegalEntitiesResponse response,
+            [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipsApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
+            CreateVacancyCommandHandler handler)
+        {
+            //Arrange
+            var errorContent = $"Enter a UKPRN of a training provider who is registered to deliver apprenticeship training: UkPrn:{command.AccountIdentifier.Ukprn}";
+            command.PostVacancyRequestData.OwnerType = OwnerType.Provider;
+            response.AccountProviderLegalEntities.First().AccountLegalEntityPublicHashedId = command.PostVacancyRequestData.AccountLegalEntityPublicHashedId;
+            command.IsSandbox = false;
+            providersListItem.ProviderTypeId = (short)ProviderTypeIdentifier.SupportingProvider;
+            providersListItem.StatusId = (short)ProviderStatusType.Active;
+            var apiResponse = new ApiResponse<long?>(null, HttpStatusCode.BadRequest, errorContent);
+            recruitApiClient
+                .Setup(client => client.PostWithResponseCode<long?>(It.IsAny<PostVacancyRequest>(), true))
+                .ReturnsAsync(apiResponse);
+            mockRoatpCourseManagementApiClient.Setup(x => x.Get<GetProvidersListItem>(It.IsAny<GetProviderRequest>()))
+                .ReturnsAsync(providersListItem);
+            providerRelationshipsApiClient.Setup(x =>
+                x.Get<GetProviderAccountLegalEntitiesResponse>(It.IsAny<GetProviderAccountLegalEntitiesRequest>())).ReturnsAsync(response);
+
+            //Act
+            Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
+
+            //Assert
+            act.Should().ThrowAsync<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})")
+                .Result.Which.ErrorContent.Should().Be(errorContent);
+        }
+
+        [Test, MoqAutoData]
+        public void Then_If_There_Is_A_Invalid_UkPrn_With_Status_InActive_From_The_Api_A_Exception_Is_Returned(
+            CreateVacancyCommand command,
+            GetProvidersListItem providersListItem,
+            GetProviderAccountLegalEntitiesResponse response,
+            [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipsApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
+            CreateVacancyCommandHandler handler)
+        {
+            //Arrange
+            var errorContent = $"Enter a UKPRN of a training provider who is registered to deliver apprenticeship training: UkPrn:{command.AccountIdentifier.Ukprn}";
+            command.PostVacancyRequestData.OwnerType = OwnerType.Provider;
+            response.AccountProviderLegalEntities.First().AccountLegalEntityPublicHashedId = command.PostVacancyRequestData.AccountLegalEntityPublicHashedId;
+            command.IsSandbox = false;
+            providersListItem.ProviderTypeId = (short)ProviderTypeIdentifier.MainProvider;
+            providersListItem.StatusId = (short)ProviderStatusType.ActiveButNotTakingOnApprentices;
+            var apiResponse = new ApiResponse<long?>(null, HttpStatusCode.BadRequest, errorContent);
+            recruitApiClient
+                .Setup(client => client.PostWithResponseCode<long?>(It.IsAny<PostVacancyRequest>(), true))
+                .ReturnsAsync(apiResponse);
+            mockRoatpCourseManagementApiClient.Setup(x => x.Get<GetProvidersListItem>(It.IsAny<GetProviderRequest>()))
+                .ReturnsAsync(providersListItem);
+            providerRelationshipsApiClient.Setup(x =>
+                x.Get<GetProviderAccountLegalEntitiesResponse>(It.IsAny<GetProviderAccountLegalEntitiesRequest>())).ReturnsAsync(response);
+
+            //Act
+            Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
+
+            //Assert
+            act.Should().ThrowAsync<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})")
+                .Result.Which.ErrorContent.Should().Be(errorContent);
         }
     }
 }
