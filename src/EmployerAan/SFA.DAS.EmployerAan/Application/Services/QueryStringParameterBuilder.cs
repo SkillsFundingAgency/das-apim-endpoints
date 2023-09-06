@@ -50,7 +50,7 @@ public static class QueryStringParameterBuilder
         {
             parameters.Add("status", request.Status.Select(status => status.ToString()).ToArray());
         }
-        if (request.IsRegionalChair != null) parameters.Add("isRegionalChair", new[] { request.IsRegionalChair?.ToString() }!);
+        if (request.IsRegionalChair != null) parameters.Add("isRegionalChair", new[] { request.IsRegionalChair.ToString() }!);
         return parameters;
     }
 }
