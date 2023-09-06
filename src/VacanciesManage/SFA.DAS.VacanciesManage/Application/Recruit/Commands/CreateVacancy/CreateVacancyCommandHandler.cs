@@ -43,12 +43,13 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
             
             if(request.AccountIdentifier.AccountType == AccountType.Provider)
             {
-                if (request.AccountIdentifier.Ukprn.HasValue && !await IsTrainingProviderMainOrEmployerProfile(Convert.ToInt32(request.AccountIdentifier.Ukprn.Value)))
+                // Condition to find if the provided UKPRN is a valid Training Provider.
+                if (!await IsTrainingProviderMainOrEmployerProfile(request.PostVacancyRequestData.User.Ukprn))
                 {
                     throw new HttpRequestContentException(
                         $"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})",
                         HttpStatusCode.BadRequest,
-                        $"Enter a UKPRN of a training provider who is registered to deliver apprenticeship training: UkPrn:{ request.AccountIdentifier.Ukprn }");
+                        $"Enter a UKPRN of a training provider who is registered to deliver apprenticeship training: UkPrn:{request.PostVacancyRequestData.User.Ukprn}");
                 }
                 request.PostVacancyRequestData.EmployerAccountId = accountLegalEntity.AccountHashedId;
             }
