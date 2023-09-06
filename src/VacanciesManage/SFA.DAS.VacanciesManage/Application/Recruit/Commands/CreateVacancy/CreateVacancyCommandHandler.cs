@@ -49,7 +49,9 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
             
             if(request.AccountIdentifier.AccountType == AccountType.Provider)
             {
-                _logger.LogTrace($"Sending details from Command Handler: UKPRN:{request.PostVacancyRequestData.User.Ukprn}");
+                _logger.LogDebug($"Sending details from Command Handler: UKPRN:{request.PostVacancyRequestData.User.Ukprn}");
+                _logger.LogCritical($"Sending details from Command Handler: UKPRN:{request.PostVacancyRequestData.User.Ukprn}");
+                _logger.LogError($"Sending details from Command Handler: UKPRN:{request.PostVacancyRequestData.User.Ukprn}");
                 // Condition to find if the provided UKPRN is a valid Training Provider.
                 if (!await IsTrainingProviderMainOrEmployerProfile(request.PostVacancyRequestData.User.Ukprn))
                 {
@@ -105,7 +107,9 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
         {
             var provider = await _roatpCourseManagementApiClient.Get<GetProvidersListItem>(new GetProviderRequest(ukprn));
 
-            _logger.LogTrace($"Response from Outer API: Provider:{JsonConvert.SerializeObject(provider)}");
+            _logger.LogDebug($"Response from Outer API: Provider:{JsonConvert.SerializeObject(provider)}");
+            _logger.LogCritical($"Response from Outer API: Provider:{JsonConvert.SerializeObject(provider)}");
+            _logger.LogError($"Response from Outer API: Provider:{JsonConvert.SerializeObject(provider)}");
 
             // logic to filter only Training provider with Main & Employer Profiles and Status Id not equal to "Not Currently Starting New Apprentices"
             return provider != null &&
