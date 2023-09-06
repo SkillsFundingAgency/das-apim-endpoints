@@ -85,6 +85,8 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
                         break;
                 }
 
+                _logger.LogTrace($"Sending details to Command Handler: UKPRN:{postVacancyRequestData.User.Ukprn}");
+
                 var response = await _mediator.Send(new CreateVacancyCommand
                 {
                     Id = id,

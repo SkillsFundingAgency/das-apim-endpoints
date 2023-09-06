@@ -1,4 +1,7 @@
+
+using Azure.Core;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -13,6 +16,7 @@ using System.Net;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
 {
@@ -21,12 +25,14 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
         private readonly IRecruitApiClient<RecruitApiConfiguration> _recruitApiClient;
         private readonly IAccountLegalEntityPermissionService _accountLegalEntityPermissionService;
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient;
+        private readonly ILogger<CreateVacancyCommandHandler> _logger;
 
-        public CreateVacancyCommandHandler (IRecruitApiClient<RecruitApiConfiguration> recruitApiClient, IAccountLegalEntityPermissionService accountLegalEntityPermissionService, IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient)
+        public CreateVacancyCommandHandler (IRecruitApiClient<RecruitApiConfiguration> recruitApiClient, IAccountLegalEntityPermissionService accountLegalEntityPermissionService, IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient, ILogger<CreateVacancyCommandHandler> logger)
         {
             _recruitApiClient = recruitApiClient;
             _accountLegalEntityPermissionService = accountLegalEntityPermissionService;
             _roatpCourseManagementApiClient = roatpCourseManagementApiClient;
+            _logger = logger;
         }
         
         public async Task<CreateVacancyCommandResponse> Handle(CreateVacancyCommand request, CancellationToken cancellationToken)
@@ -43,6 +49,7 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
             
             if(request.AccountIdentifier.AccountType == AccountType.Provider)
             {
+                _logger.LogTrace($"Sending details from Command Handler: UKPRN:{request.PostVacancyRequestData.User.Ukprn}");
                 // Condition to find if the provided UKPRN is a valid Training Provider.
                 if (!await IsTrainingProviderMainOrEmployerProfile(request.PostVacancyRequestData.User.Ukprn))
                 {
@@ -97,6 +104,8 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
         private async Task<bool> IsTrainingProviderMainOrEmployerProfile(int ukprn)
         {
             var provider = await _roatpCourseManagementApiClient.Get<GetProvidersListItem>(new GetProviderRequest(ukprn));
+
+            _logger.LogTrace($"Response from Outer API: Provider:{JsonConvert.SerializeObject(provider)}");
 
             // logic to filter only Training provider with Main & Employer Profiles and Status Id not equal to "Not Currently Starting New Apprentices"
             return provider != null &&
