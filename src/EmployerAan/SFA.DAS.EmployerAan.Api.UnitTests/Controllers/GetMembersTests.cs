@@ -24,6 +24,7 @@ public class GetMembersTests
             RequestedByMemberId = requestedByMemberId,
             Keyword = null,
             UserType = new List<MemberUserType>(),
+            Status = new List<MembershipStatusType>(),
             IsRegionalChair = null,
             RegionId = new List<int>()
         };
@@ -41,6 +42,7 @@ public class GetMembersTests
         [Greedy] MembersController sut,
         Guid requestedByMemberId,
         List<MemberUserType> userType,
+        List<MembershipStatusType> status,
         bool? isRegionalChair,
         List<int> regionIds,
         string keyword,
@@ -57,6 +59,7 @@ public class GetMembersTests
             RequestedByMemberId = requestedByMemberId,
             Keyword = keyword,
             UserType = userType,
+            Status = status,
             IsRegionalChair = isRegionalChair,
             RegionId = regionIds,
             Page = page,

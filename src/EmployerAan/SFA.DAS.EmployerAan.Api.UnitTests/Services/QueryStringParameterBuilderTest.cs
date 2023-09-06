@@ -9,13 +9,14 @@ namespace SFA.DAS.EmployerAan.Api.UnitTests.Models;
 public class QueryStringParameterBuilderTests
 {
     [Test, AutoData]
-    public void Members_PopulatesModelFromParameters(Guid memberId, string keyword, List<MemberUserType> userType, bool isRegionalChair, List<int> regionIds, int? page, int? pageSize)
+    public void Members_PopulatesModelFromParameters(Guid memberId, string keyword, List<MemberUserType> userType, List<MembershipStatusType> status, bool isRegionalChair, List<int> regionIds, int? page, int? pageSize)
     {
         var sut = new GetMembersRequestModel
         {
             RequestedByMemberId = memberId,
             Keyword = keyword,
             UserType = userType,
+            Status = status,
             IsRegionalChair = isRegionalChair,
             RegionId = regionIds,
             Page = page,
@@ -32,6 +33,10 @@ public class QueryStringParameterBuilderTests
         parameters.TryGetValue("userType", out var userTypeResult);
         userTypeResult!.Length.Should().Be(userType.Count);
         userType.Select(x => x.ToString()).Should().BeEquivalentTo(userTypeResult.ToList());
+
+        parameters.TryGetValue("status", out var statusResult);
+        statusResult!.Length.Should().Be(status.Count);
+        status.Select(x => x.ToString()).Should().BeEquivalentTo(statusResult.ToList());
 
         parameters.TryGetValue("isRegionalChair", out string[]? isRegionalChairResult);
         isRegionalChairResult![0].Should().Be(isRegionalChair.ToString());
@@ -72,6 +77,33 @@ public class QueryStringParameterBuilderTests
     {
       null,
       new object[] {new List<MemberUserType> { MemberUserType.Apprentice} }
+    };
+
+    [Test, TestCaseSource(nameof(_StatusData))]
+    public void Members_ConstructParameters_Status(List<MembershipStatusType> status)
+    {
+        var model = new GetMembersRequestModel
+        {
+            RequestedByMemberId = Guid.NewGuid(),
+            Status = status
+        };
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model);
+
+        parameters.TryGetValue("status", out var statusResult);
+        if (statusResult != null)
+        {
+            statusResult![0].Should().Be(status[0].ToString());
+        }
+        else
+        {
+            statusResult.Should().BeNull();
+        }
+    }
+
+    private static readonly object?[] _StatusData =
+    {
+      null,
+      new object[] {new List<MembershipStatusType> { MembershipStatusType.Live} }
     };
 
     [TestCase(null)]

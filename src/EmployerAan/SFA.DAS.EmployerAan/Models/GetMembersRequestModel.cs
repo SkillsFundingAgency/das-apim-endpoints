@@ -20,6 +20,9 @@ namespace SFA.DAS.EmployerAan.Application.Models
         public List<MemberUserType> UserType { get; set; } = new List<MemberUserType>();
 
         [FromQuery]
+        public List<MembershipStatusType> Status { get; set; } = new List<MembershipStatusType>();
+
+        [FromQuery]
         public bool? IsRegionalChair { get; set; }
 
         [FromQuery]
@@ -34,6 +37,7 @@ namespace SFA.DAS.EmployerAan.Application.Models
             Keyword = model.Keyword,
             RegionIds = model.RegionId,
             UserType = model.UserType,
+            Status = model.Status,
             IsRegionalChair = model.IsRegionalChair,
             Page = model.Page,
             PageSize = model.PageSize

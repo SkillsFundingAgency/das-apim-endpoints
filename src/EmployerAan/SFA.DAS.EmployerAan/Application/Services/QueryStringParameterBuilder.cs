@@ -46,6 +46,10 @@ public static class QueryStringParameterBuilder
         {
             parameters.Add("userType", request.UserType.Select(userType => userType.ToString()).ToArray());
         }
+        if (request.Status != null && request.Status.Any())
+        {
+            parameters.Add("status", request.Status.Select(status => status.ToString()).ToArray());
+        }
         if (request.IsRegionalChair != null) parameters.Add("isRegionalChair", new[] { request.IsRegionalChair?.ToString() }!);
         return parameters;
     }
