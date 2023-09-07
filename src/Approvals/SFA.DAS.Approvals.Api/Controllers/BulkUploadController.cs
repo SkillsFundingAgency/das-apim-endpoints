@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.BulkUpload.Commands;
-using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraftApprenticeship;
-using SFA.DAS.NServiceBus;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -93,6 +91,22 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     RplCount = request.RplCount,
                     RowCount = request.RowCount,
                     FileContent = request.FileContent
+                });
+
+            return Ok(result);
+        }
+
+        [HttpPut]
+        [Route("logs/{logId}/error")]
+        public async Task<IActionResult> AddLog(long logId, BulkUploadLogUpdateWithErrorContentRequest request)
+        {
+            var result = await _mediator.Send(
+                new BulkUploadLogUpdateWithErrorContentCommand
+                {
+                    LogId = logId,
+                    ProviderId = request.ProviderId,
+                    ErrorContent = request.ErrorContent,
+                    UserInfo = request.UserInfo
                 });
 
             return Ok(result);
