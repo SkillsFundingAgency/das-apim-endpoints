@@ -98,9 +98,9 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
         [HttpPut]
         [Route("logs/{logId}/error")]
-        public async Task<IActionResult> AddLog(long logId, BulkUploadLogUpdateWithErrorContentRequest request)
+        public async Task<IActionResult> UpdateLogWithErrorContent(long logId, BulkUploadLogUpdateWithErrorContentRequest request)
         {
-            var result = await _mediator.Send(
+            await _mediator.Send(
                 new BulkUploadLogUpdateWithErrorContentCommand
                 {
                     LogId = logId,
@@ -109,7 +109,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     UserInfo = request.UserInfo
                 });
 
-            return Ok(result);
+            return Ok();
         }
     }
 }
