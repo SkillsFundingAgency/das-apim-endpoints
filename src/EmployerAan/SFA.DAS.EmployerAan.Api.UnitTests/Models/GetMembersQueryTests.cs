@@ -12,7 +12,6 @@ public class GetMembersRequestModelTests
     {
         var query = (GetMembersQuery)model;
 
-        query.RequestedByMemberId.Should().Be(model.RequestedByMemberId);
         query.Keyword.Should().Be(model.Keyword);
         query.IsRegionalChair.Should().Be(model.IsRegionalChair);
         query.Page.Should().Be(model.Page);
@@ -22,14 +21,10 @@ public class GetMembersRequestModelTests
     [Test, AutoData]
     public void Operator_PopulatesQueryFromModelWithNulls(Guid memberId)
     {
-        var model = new GetMembersRequestModel
-        {
-            RequestedByMemberId = memberId,
-        };
+        var model = new GetMembersRequestModel();
 
         var query = (GetMembersQuery)model;
 
-        query.RequestedByMemberId.Should().Be(memberId);
         query.Keyword.Should().BeNull();
         query.IsRegionalChair.Should().BeNull();
         query.Page.Should().BeNull();

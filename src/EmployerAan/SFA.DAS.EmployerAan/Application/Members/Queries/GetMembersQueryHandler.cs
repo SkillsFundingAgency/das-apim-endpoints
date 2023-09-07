@@ -16,6 +16,6 @@ public class GetMembersQueryHandler : IRequestHandler<GetMembersQuery, GetMember
         CancellationToken cancellationToken)
     {
         var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(request);
-        return await _apiClient.GetMembers(request.RequestedByMemberId!, parameters, cancellationToken);
+        return await _apiClient.GetMembers(parameters, cancellationToken);
     }
 }

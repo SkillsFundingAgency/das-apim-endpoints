@@ -14,10 +14,7 @@ public class GetMembersQueryHandlerTests
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         GetMembersQueryHandler handler,
         GetMembersQueryResult expected,
-        Guid requestedByMemberId,
-        GetMembersQueryResult queryResult,
         List<MemberUserType> userType,
-        List<MembershipStatusType> status,
         bool? isRegionalChair,
         List<int> regionIds,
         string keyword,
@@ -27,17 +24,15 @@ public class GetMembersQueryHandlerTests
     {
         var query = new GetMembersQuery
         {
-            RequestedByMemberId = requestedByMemberId,
             Keyword = keyword,
             UserType = userType,
-            Status = status,
             IsRegionalChair = isRegionalChair,
             RegionIds = regionIds,
             Page = page,
             PageSize = pageSize
         };
 
-        apiClient.Setup(x => x.GetMembers(requestedByMemberId, It.IsAny<Dictionary<string, string[]>>(), cancellationToken)).ReturnsAsync(expected);
+        apiClient.Setup(x => x.GetMembers(It.IsAny<Dictionary<string, string[]>>(), cancellationToken)).ReturnsAsync(expected);
         var actual = await handler.Handle(query, cancellationToken);
         actual.Should().Be(expected);
     }

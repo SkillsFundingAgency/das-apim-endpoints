@@ -41,7 +41,7 @@ public interface IAanHubRestApiClient
         CancellationToken cancellationToken);
 
     [Get("members")]
-    Task<GetMembersQueryResult> GetMembers([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
+    Task<GetMembersQueryResult> GetMembers([QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
 
     [Get("calendarEvents/{calendarEventId}")]
     [AllowAnyStatusCode]

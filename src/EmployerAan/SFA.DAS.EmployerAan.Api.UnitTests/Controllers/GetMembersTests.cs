@@ -16,15 +16,12 @@ public class GetMembersTests
     public async Task Get_InvokesQueryHandler(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] MembersController sut,
-        Guid requestedByMemberId,
         CancellationToken cancellationToken)
     {
         var model = new GetMembersRequestModel
         {
-            RequestedByMemberId = requestedByMemberId,
             Keyword = null,
             UserType = new List<MemberUserType>(),
-            Status = new List<MembershipStatusType>(),
             IsRegionalChair = null,
             RegionId = new List<int>()
         };
@@ -32,7 +29,7 @@ public class GetMembersTests
         await sut.GetMembers(model, cancellationToken);
 
         mediatorMock.Verify(
-            m => m.Send(It.Is<GetMembersQuery>(q => q.RequestedByMemberId == requestedByMemberId),
+            m => m.Send(It.Is<GetMembersQuery>(q => q.Keyword == null),
                 It.IsAny<CancellationToken>()));
     }
 
@@ -51,15 +48,13 @@ public class GetMembersTests
         GetMembersQueryResult queryResult,
         CancellationToken cancellationToken)
     {
-        mediatorMock.Setup(m => m.Send(It.Is<GetMembersQuery>(q => q.RequestedByMemberId == requestedByMemberId), It.IsAny<CancellationToken>()))
+        mediatorMock.Setup(m => m.Send(It.Is<GetMembersQuery>(q => q.Keyword == keyword), It.IsAny<CancellationToken>()))
             .ReturnsAsync(queryResult);
 
         var model = new GetMembersRequestModel
         {
-            RequestedByMemberId = requestedByMemberId,
             Keyword = keyword,
             UserType = userType,
-            Status = status,
             IsRegionalChair = isRegionalChair,
             RegionId = regionIds,
             Page = page,
