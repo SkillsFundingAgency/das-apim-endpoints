@@ -42,7 +42,7 @@ public static class Startup
         }
 
         services.AddMediatR(typeof(GetTrainingProgrammesQuery).Assembly);
-        services.AddServiceRegistration(configuration);
+        services.AddServiceRegistration();
 
         services.Configure<RouteOptions>(options =>
             {

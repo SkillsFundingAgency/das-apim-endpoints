@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -13,7 +11,7 @@ namespace SFA.DAS.Recruit.Api.AppStart
 {
     public static class AddServiceRegistrationExtension
     {
-        public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
+        public static void AddServiceRegistration(this IServiceCollection services)
         {
             services.AddHttpClient();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
@@ -28,9 +26,6 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
-            services.AddTransient<ITrainingProviderService, TrainingProviderService>();
-            services.Configure<TrainingProviderConfiguration>(configuration.GetSection("TrainingProviderApi"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<TrainingProviderConfiguration>>().Value);
         }
     }
 }
