@@ -25,8 +25,8 @@ namespace SFA.DAS.VacanciesManage.Api
     public static class Startup
     {
         public static void ConfigureServices(
-            IServiceCollection services, 
-            IWebHostEnvironment environment, 
+            IServiceCollection services,
+            IWebHostEnvironment environment,
             IConfigurationRoot configuration)
         {
             services.AddSingleton(environment);
@@ -48,18 +48,18 @@ namespace SFA.DAS.VacanciesManage.Api
 
             services.AddMediatR(typeof(GetQualificationsQuery).Assembly);
             services.AddServiceRegistration();
-            
+
             services.Configure<RouteOptions>(options =>
+            {
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = true;
+            }).AddMvc(o =>
+            {
+                if (!configuration.IsLocalOrDev())
                 {
-                    options.LowercaseUrls = true;
-                    options.LowercaseQueryStrings = true;
-                }).AddMvc(o =>
-                {
-                    if (!configuration.IsLocalOrDev())
-                    {
-                        o.Filters.Add(new AuthorizeFilter("default"));
-                    }
-                })
+                    o.Filters.Add(new AuthorizeFilter("default"));
+                }
+            })
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
@@ -69,10 +69,9 @@ namespace SFA.DAS.VacanciesManage.Api
             if (configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<RoatpCourseManagementApiHealthCheck>("RoATP Course Management API health check");
+                    .AddCheck<CoursesApiHealthCheck>("Courses API health check");
             }
-            
+
             if (configuration.IsLocalOrDev())
             {
                 services.AddDistributedMemoryCache();
@@ -88,19 +87,19 @@ namespace SFA.DAS.VacanciesManage.Api
                     options.Configuration = vacanciesManageConfiguration.ApimEndpointsRedisConnectionString;
                 });
             }
-            
+
             //todo obsolete, should use connectionstring instead https://github.com/microsoft/ApplicationInsights-dotnet/issues/2560
             //services.AddApplicationInsightsTelemetry(options => options.ConnectionString = configuration.GetConnectionString("ApplicationInsights"));
             services.AddApplicationInsightsTelemetry();
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Recruitment API", Version = "v1", Description = "Create an advert on Find an apprenticeship using your existing systems."});
-                var filePath = Path.Combine(AppContext.BaseDirectory,  $"{typeof(Startup).Namespace}.xml");
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Recruitment API", Version = "v1", Description = "Create an advert on Find an apprenticeship using your existing systems." });
+                var filePath = Path.Combine(AppContext.BaseDirectory, $"{typeof(Startup).Namespace}.xml");
                 c.IncludeXmlComments(filePath);
             });
         }
-        
+
         public static void ConfigureApp(IApplicationBuilder app, IConfigurationRoot configuration)
         {
             app.UseAuthentication();
@@ -109,7 +108,7 @@ namespace SFA.DAS.VacanciesManage.Api
             {
                 app.UseHealthChecks();
             }
-            
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
@@ -117,7 +116,7 @@ namespace SFA.DAS.VacanciesManage.Api
                     name: "default",
                     pattern: "api/{controller=vacancy}/{action=index}/{id?}");
             });
-        
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
