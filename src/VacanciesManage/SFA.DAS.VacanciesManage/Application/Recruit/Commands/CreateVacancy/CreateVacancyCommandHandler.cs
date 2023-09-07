@@ -18,12 +18,12 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
         private readonly IRecruitApiClient<RecruitApiConfiguration> _recruitApiClient;
         private readonly IAccountLegalEntityPermissionService _accountLegalEntityPermissionService;
 
-        public CreateVacancyCommandHandler(IRecruitApiClient<RecruitApiConfiguration> recruitApiClient, IAccountLegalEntityPermissionService accountLegalEntityPermissionService)
+        public CreateVacancyCommandHandler (IRecruitApiClient<RecruitApiConfiguration> recruitApiClient, IAccountLegalEntityPermissionService accountLegalEntityPermissionService)
         {
             _recruitApiClient = recruitApiClient;
             _accountLegalEntityPermissionService = accountLegalEntityPermissionService;
         }
-
+        
         public async Task<CreateVacancyCommandResponse> Handle(CreateVacancyCommand request, CancellationToken cancellationToken)
         {
             var accountLegalEntity = await _accountLegalEntityPermissionService.GetAccountLegalEntity(
@@ -33,10 +33,10 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
             {
                 throw new SecurityException();
             }
-
+            
             request.PostVacancyRequestData.LegalEntityName = accountLegalEntity.Name;
-
-            if (request.AccountIdentifier.AccountType == AccountType.Provider)
+            
+            if(request.AccountIdentifier.AccountType == AccountType.Provider)
             {
                 request.PostVacancyRequestData.EmployerAccountId = accountLegalEntity.AccountHashedId;
             }
@@ -45,7 +45,7 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
             {
                 request.PostVacancyRequestData.EmployerName = accountLegalEntity.Name;
             }
-
+            
             IPostApiRequest apiRequest;
             if (request.IsSandbox)
             {
@@ -59,17 +59,17 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
 
             var result = await _recruitApiClient.PostWithResponseCode<long?>(apiRequest);
 
-            if (!((int)result.StatusCode >= 200 && (int)result.StatusCode <= 299))
+            if(!((int)result.StatusCode >= 200 && (int)result.StatusCode <= 299))
             {
                 if (result.StatusCode.Equals(HttpStatusCode.BadRequest))
                 {
-                    throw new HttpRequestContentException($"Response status code does not indicate success: {(int)result.StatusCode} ({result.StatusCode})", result.StatusCode, result.ErrorContent);
+                    throw new HttpRequestContentException($"Response status code does not indicate success: {(int)result.StatusCode} ({result.StatusCode})", result.StatusCode, result.ErrorContent);    
                 }
 
                 throw new Exception(
-                    $"Response status code does not indicate success: {(int)result.StatusCode} ({result.StatusCode})");
+                    $"Response status code does not indicate success: {(int) result.StatusCode} ({result.StatusCode})");
             }
-
+            
             return new CreateVacancyCommandResponse
             {
                 VacancyReference = result.Body.ToString()
