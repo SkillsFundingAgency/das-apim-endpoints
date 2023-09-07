@@ -18,7 +18,7 @@ namespace SFA.DAS.Recruit.Application.Queries.GetProvider
         }
         public async Task<GetProviderQueryResult> Handle(GetProviderQuery request, CancellationToken cancellationToken)
         {
-            var response = await _roatpCourseManagementApiClient.Get<GetProvidersListItem>(new GetProviderRequest(request.UKPrn));
+            var response = await _roatpCourseManagementApiClient.Get<GetProvidersListItem>(new GetProviderRequest(request.UKprn));
 
             if (response == null)
                 return new GetProviderQueryResult();

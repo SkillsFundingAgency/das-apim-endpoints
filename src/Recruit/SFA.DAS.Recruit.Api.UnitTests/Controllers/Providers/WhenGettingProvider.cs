@@ -19,7 +19,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Provider_From_Mediator(
-            long ukprn,
+            int ukprn,
             GetProviderQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ProvidersController controller)
@@ -51,7 +51,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
-            long ukprn,
+            int ukprn,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ProvidersController controller)
         {
@@ -68,7 +68,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
 
         [Test, MoqAutoData]
         public async Task And_NotFound_Then_Returns_Not_Request(
-            long ukprn,
+            int ukprn,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ProvidersController controller)
         {

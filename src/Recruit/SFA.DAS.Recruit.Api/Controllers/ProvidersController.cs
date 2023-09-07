@@ -46,11 +46,11 @@ namespace SFA.DAS.Recruit.Api.Controllers
 
         [HttpGet]
         [Route("{ukprn}")]
-        public async Task<IActionResult> GetProvider(long ukprn)
+        public async Task<IActionResult> GetProvider(int ukprn)
         {
             try
             {
-                var response = await _mediator.Send(new GetProviderQuery { UKPrn = ukprn });
+                var response = await _mediator.Send(new GetProviderQuery { UKprn = ukprn });
 
                 if (response?.Provider == null)
                     return NotFound();

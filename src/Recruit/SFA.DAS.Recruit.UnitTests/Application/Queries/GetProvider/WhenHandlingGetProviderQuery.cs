@@ -23,7 +23,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetProvider
             GetProviderQueryHandler handler)
         {
             //Arrange
-            var expectedGetUrl = new GetProviderRequest(query.UKPrn);
+            var expectedGetUrl = new GetProviderRequest(query.UKprn);
             apiClient
                 .Setup(x => x.Get<GetProvidersListItem>(
                     It.Is<GetProviderRequest>(c => c.GetUrl.Equals(expectedGetUrl.GetUrl)))).ReturnsAsync(apiResponse);
