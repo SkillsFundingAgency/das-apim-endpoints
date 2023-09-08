@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.BulkUpload.Commands;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraftApprenticeship;
 using SFA.DAS.NServiceBus;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,6 +48,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 new BulkUploadAddAndApproveDraftApprenticeshipsCommand
                 {
                     ProviderId = request.ProviderId,
+                    FileUploadLogId = request.FileUploadLogId,
                     BulkUploadAddAndApproveDraftApprenticeships = request.BulkUploadAddAndApproveDraftApprenticeships?.ToList(),
                     UserInfo = request.UserInfo
                 });
@@ -66,6 +68,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 new BulkUploadAddDraftApprenticeshipsCommand
                 {
                     ProviderId = request.ProviderId,
+                    FileUploadLogId = request.FileUploadLogId,
                     RplDataExtended = request.RplDataExtended,
                     BulkUploadAddDraftApprenticeships = request.BulkUploadDraftApprenticeships?.ToList(),
                     UserInfo = request.UserInfo
