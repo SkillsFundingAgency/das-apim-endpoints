@@ -52,6 +52,10 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public bool RecognisingPriorLearningExtendedStillNeedsToBeConsidered { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
+        public int? TrainingTotalHours { get; set; }
+        public int? DurationReducedByHours { get; set; }
+        public bool? IsDurationReducedByRpl { get; set; }
+
 
         public static implicit operator GetEditDraftApprenticeshipResponse(GetEditDraftApprenticeshipQueryResult source)
         {
@@ -92,7 +96,10 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 RecognisingPriorLearningStillNeedsToBeConsidered = source.RecognisingPriorLearningStillNeedsToBeConsidered,
                 RecognisingPriorLearningExtendedStillNeedsToBeConsidered = source.RecognisingPriorLearningExtendedStillNeedsToBeConsidered,
                 IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot,
-                EmailAddressConfirmed = source.EmailAddressConfirmed
+                EmailAddressConfirmed = source.EmailAddressConfirmed,
+                TrainingTotalHours = source.TrainingTotalHours,
+                DurationReducedByHours = source.DurationReducedByHours,
+                IsDurationReducedByRpl = source.IsDurationReducedByRpl
             };
         }
     }
