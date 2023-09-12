@@ -93,7 +93,10 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 RecognisingPriorLearningStillNeedsToBeConsidered = apprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered,
                 RecognisingPriorLearningExtendedStillNeedsToBeConsidered = apprenticeship.RecognisingPriorLearningExtendedStillNeedsToBeConsidered,
                 IsOnFlexiPaymentPilot = apprenticeship.IsOnFlexiPaymentPilot,
-                EmailAddressConfirmed = apprenticeship.EmailAddressConfirmed
+                EmailAddressConfirmed = apprenticeship.EmailAddressConfirmed,
+                TrainingTotalHours = apprenticeship.TrainingTotalHours,
+                DurationReducedByHours = apprenticeship.DurationReducedByHours,
+                IsDurationReducedByRpl = apprenticeship.IsDurationReducedByRpl
             };
         }
     }

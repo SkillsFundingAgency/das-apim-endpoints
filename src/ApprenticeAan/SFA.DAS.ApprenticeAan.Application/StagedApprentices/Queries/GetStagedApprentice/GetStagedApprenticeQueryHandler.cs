@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Web;
 using MediatR;
 using SFA.DAS.ApprenticeAan.Api.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.StagedApprentices;
@@ -17,7 +18,7 @@ public class GetStagedApprenticeQueryHandler : IRequestHandler<GetStagedApprenti
 
     public async Task<GetStagedApprenticeQueryResult?> Handle(GetStagedApprenticeQuery request, CancellationToken cancellationToken)
     {
-        var result = await _apiClient.GetWithResponseCode<GetStagedApprenticeQueryResult?>(new GetStagedApprenticeRequest(request.LastName, request.DateOfBirth, request.Email));
+        var result = await _apiClient.GetWithResponseCode<GetStagedApprenticeQueryResult?>(new GetStagedApprenticeRequest(request.LastName, request.DateOfBirth, HttpUtility.UrlEncode(request.Email)));
 
         return (result.StatusCode) switch
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application;
@@ -10,6 +11,7 @@ using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Requests;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
+using SFA.DAS.Approvals.Services;
 using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
@@ -134,7 +136,8 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
                 _providerStandardsService = new Approvals.Services.ProviderStandardsService(_serviceParameters, _trainingProviderService.Object,
                     _managingStandardsApiClient.Object,
                     _commitmentsV2ApiClient.Object,
-                    _cacheStorageService.Object);
+                _cacheStorageService.Object,
+                    Mock.Of<ILogger<ProviderStandardsService>>());
             }
 
             public ProviderCoursesServiceTestFixture WithProviderType(TrainingProviderResponse.ProviderTypeIdentifier providerType)
@@ -150,7 +153,8 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
                 _providerStandardsService = new Approvals.Services.ProviderStandardsService(_serviceParameters, _trainingProviderService.Object,
                     _managingStandardsApiClient.Object,
                     _commitmentsV2ApiClient.Object,
-                    _cacheStorageService.Object);
+                    _cacheStorageService.Object,
+                    Mock.Of<ILogger<ProviderStandardsService>>());
 
                 return this;
             }

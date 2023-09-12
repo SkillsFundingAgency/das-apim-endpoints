@@ -17,7 +17,7 @@ public class GetAddressesQueryHandlerTests
     public async Task Handle_ReturnAddressesBasedOnQuery(
         GetAddressesQuery query,
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
-        [Frozen(Matching.ImplementedInterfaces)] GetAddressesQueryHandler handler,
+        [Frozen] GetAddressesQueryHandler handler,
         GetAddressesListResponse apiResponse)
     {
         apiClient
@@ -34,15 +34,31 @@ public class GetAddressesQueryHandlerTests
     public async Task Handle_AddressesNotFound_ReturnsEmptyResult(
         GetAddressesQuery query,
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
-        [Frozen(Matching.ImplementedInterfaces)] GetAddressesQueryHandler handler)
+        [Frozen] GetAddressesQueryHandler handler)
     {
-        var apiResponse = new GetAddressesListResponse { Addresses = Enumerable.Empty<GetAddressesListItem>() };
         apiClient
             .Setup(x => x.Get<GetAddressesListResponse>(It.IsAny<GetAddressesQueryRequest>()))
-            .ReturnsAsync(apiResponse);
+            .ReturnsAsync(new GetAddressesListResponse());
 
         var result = await handler.Handle(query, CancellationToken.None);
 
         result.Addresses.Count().Should().Be(0);
+    }
+
+    [Test]
+    [MoqInlineAutoData("mk4", GetAddressesQueryHandler.MinimumMatch)]
+    [MoqInlineAutoData("mk44et", GetAddressesQueryHandler.MaximumMatch)]
+    public async Task Handle_ChangesMinMatchForFullPostcode(
+        string searchTerm,
+        double expectedMinMatch,
+        [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
+        [Frozen] GetAddressesQueryHandler handler)
+    {
+        GetAddressesQuery query = new(searchTerm);
+        apiClient.Setup(x => x.Get<GetAddressesListResponse>(It.IsAny<GetAddressesQueryRequest>())).ReturnsAsync(new GetAddressesListResponse());
+
+        await handler.Handle(query, new());
+
+        apiClient.Verify(x => x.Get<GetAddressesListResponse>(It.Is<GetAddressesQueryRequest>(q => q.MinMatch == expectedMinMatch)));
     }
 }

@@ -45,7 +45,6 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 DurationReducedByHours = response.Body.DurationReducedByHours,
                 IsDurationReducedByRpl = isDurationReducedByRpl,
                 DurationReducedBy = reducedDuration,
-                CostBeforeRpl = response.Body.CostBeforeRpl,
                 PriceReduced = response.Body.PriceReducedBy
             };
         }

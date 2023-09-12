@@ -1,9 +1,10 @@
-﻿
-using RestEase;
+﻿using RestEase;
 using SFA.DAS.ApprenticeAan.Application.Apprentices.Commands.CreateApprenticeMember;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+using SFA.DAS.ApprenticeAan.Application.Entities;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Notifications;
 using SFA.DAS.ApprenticeAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
 
@@ -13,6 +14,9 @@ public interface IAanHubRestApiClient
 {
     [Get("/regions")]
     Task<GetRegionsQueryResult> GetRegions(CancellationToken cancellationToken);
+
+    [Get("/calendars")]
+    Task<List<Calendar>> GetCalendars(CancellationToken cancellationToken);
 
     [Get("/profiles/{userType}")]
     Task<GetProfilesByUserTypeQueryResult> GetProfiles([Path] string userType, CancellationToken cancellationToken);
@@ -28,5 +32,23 @@ public interface IAanHubRestApiClient
         CancellationToken cancellationToken);
 
     [Get("calendarEvents")]
-    Task<GetCalendarEventsQueryResult> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] string requestedByMemberId, CancellationToken cancellationToken);
+    Task<GetCalendarEventsQueryResult> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
+
+    [Get("calendarEvents/{calendarEventId}")]
+    [AllowAnyStatusCode]
+    Task<Response<CalendarEvent>> GetCalendarEventById(
+        [Path] Guid calendarEventId,
+        [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+        CancellationToken cancellationToken);
+
+    [Get("attendances")]
+    Task<GetAttendancesResponse> GetAttendances(
+        [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+        string FromDate,
+        string ToDate,
+        CancellationToken cancellationToken);
+
+    [Get("/notifications/{id}")]
+    Task<Response<GetNotificationResponse?>> GetNotification([Path] Guid id, [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+    CancellationToken cancellationToken);
 }

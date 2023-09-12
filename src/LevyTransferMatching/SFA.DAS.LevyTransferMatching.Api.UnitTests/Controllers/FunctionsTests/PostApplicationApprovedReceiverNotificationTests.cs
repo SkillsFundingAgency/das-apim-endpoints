@@ -6,7 +6,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
-using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
 {

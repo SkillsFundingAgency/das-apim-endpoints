@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Web;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
@@ -27,6 +28,25 @@ public class GetStagedApprenticeQueryHandlerTests
 
         apiClientMock.Verify(c => c.GetWithResponseCode<GetStagedApprenticeQueryResult?>(It.Is<GetStagedApprenticeRequest>(r => r.LastName == query.LastName && r.DateOfBirth == query.DateOfBirth && r.Email == query.Email)));
     }
+
+    [Test, MoqAutoData]
+    public async Task Handle_InvokesApiClientWithEncodedEmail(
+    [Frozen] Mock<IAanHubApiClient<AanHubApiConfiguration>> apiClientMock,
+    GetStagedApprenticeQueryHandler sut,
+    GetStagedApprenticeQueryResult result)
+    {
+        var email = "john_s.smith+esfa@g-mail.com";
+        var expectedEmail = HttpUtility.UrlEncode(email);
+        GetStagedApprenticeQuery query = new(Guid.NewGuid().ToString(), DateTime.Now, email);
+
+        ApiResponse<GetStagedApprenticeQueryResult?> apiResponse = new(result, HttpStatusCode.OK, null);
+        apiClientMock.Setup(c => c.GetWithResponseCode<GetStagedApprenticeQueryResult?>(It.Is<GetStagedApprenticeRequest>(r => r.LastName == query.LastName && r.DateOfBirth == query.DateOfBirth && r.Email == expectedEmail))).ReturnsAsync(apiResponse);
+
+        await sut.Handle(query, new CancellationToken());
+
+        apiClientMock.Verify(c => c.GetWithResponseCode<GetStagedApprenticeQueryResult?>(It.Is<GetStagedApprenticeRequest>(r => r.Email == expectedEmail)));
+    }
+
 
     [Test, MoqAutoData]
     public async Task Handle_OnOkApiResponse_ReturnsData(

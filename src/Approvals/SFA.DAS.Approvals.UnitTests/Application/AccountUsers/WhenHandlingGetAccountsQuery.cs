@@ -40,10 +40,10 @@ namespace SFA.DAS.Approvals.UnitTests.Application.AccountUsers
                     .Excluding(x => x.IsSuspended)
                     .Excluding(x => x.DisplayName)
             );
-            actual.FirstName.Equals(teamResponse.FirstOrDefault().FirstName);
-            actual.LastName.Equals(teamResponse.FirstOrDefault().LastName);
-            actual.EmployerUserId.Equals(teamResponse.FirstOrDefault().UserId);
-            actual.IsSuspended.Equals(teamResponse.FirstOrDefault().IsSuspended);
+            actual.FirstName.Should().Be(teamResponse.FirstOrDefault().FirstName);
+            actual.LastName.Should().Be(teamResponse.FirstOrDefault().LastName);
+            actual.EmployerUserId.Should().Be(teamResponse.FirstOrDefault().UserId);
+            actual.IsSuspended.Should().Be(teamResponse.FirstOrDefault().IsSuspended);
         }
     }
 }

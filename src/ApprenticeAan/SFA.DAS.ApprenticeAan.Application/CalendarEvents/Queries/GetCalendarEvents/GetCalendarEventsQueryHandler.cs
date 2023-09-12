@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
+using SFA.DAS.ApprenticeAan.Application.Services;
 
 namespace SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+
 public class GetCalendarEventsQueryHandler : IRequestHandler<GetCalendarEventsQuery, GetCalendarEventsQueryResult?>
 {
     private readonly IAanHubRestApiClient _apiClient;
@@ -14,6 +16,8 @@ public class GetCalendarEventsQueryHandler : IRequestHandler<GetCalendarEventsQu
     public async Task<GetCalendarEventsQueryResult?> Handle(GetCalendarEventsQuery request,
         CancellationToken cancellationToken)
     {
-        return await _apiClient.GetCalendarEvents(request.RequestedByMemberId.ToString(), cancellationToken);
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(request);
+        return await _apiClient.GetCalendarEvents(request.RequestedByMemberId!, parameters, cancellationToken);
     }
+
 }
