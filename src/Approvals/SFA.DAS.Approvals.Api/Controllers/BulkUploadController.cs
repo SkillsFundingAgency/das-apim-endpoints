@@ -80,7 +80,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpPost]
-        [Route("AddLog")]
+        [Route("logs")]
         public async Task<IActionResult> AddLog(BulkUploadAddLogRequest request)
         {
             var result = await _mediator.Send(

@@ -6,7 +6,7 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
     {
         public long ProviderId { get; }
         public object Data { get; set; }
-        public string PostUrl => $"api/{ProviderId}/bulkupload/add-log";
+        public string PostUrl => $"api/{ProviderId}/bulkupload/logs";
 
         public PostBulkUploadAddLogRequest(long providerId, BulkUploadAddLogRequest data)
         {
