@@ -9,6 +9,7 @@ using SFA.DAS.EmployerAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.EmployerAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.EmployerAan.InnerApi.Attendances;
 using SFA.DAS.EmployerAan.InnerApi.Notifications;
+using SFA.DAS.EmployerAan.InnerApi.MemberProfiles;
 using SFA.DAS.EmployerAan.Models;
 
 namespace SFA.DAS.EmployerAan.Infrastructure;
@@ -67,6 +68,15 @@ public interface IAanHubRestApiClient
     [Body] AttendanceStatus putAttendanceRequest,
     CancellationToken cancellationToken);
 
+    
     [Get("/members/{memberId}/profile")]
     Task<GetMemberProfileWithPreferencesQueryResult> GetMemberProfileWithPreferences([Path] Guid memberId, [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, bool @public, CancellationToken cancellationToken);
+
+    
+    [Put("members/{memberId}/profile")]
+    Task PutMemberProfile(
+       [Path] Guid memberId,
+       [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+       [Body] UpdateMemberProfileModel updateMemberProfileRequest,
+       CancellationToken cancellationToken);
 }
