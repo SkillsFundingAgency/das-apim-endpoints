@@ -3,6 +3,7 @@ using SFA.DAS.EmployerAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.EmployerAan.Application.Employer.Commands.CreateEmployerMember;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
 using SFA.DAS.EmployerAan.Application.Members.Queries.GetMembers;
+using SFA.DAS.EmployerAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.EmployerAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.EmployerAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.EmployerAan.InnerApi.Attendances;
@@ -57,4 +58,6 @@ public interface IAanHubRestApiClient
     [Body] AttendanceStatus putAttendanceRequest,
     CancellationToken cancellationToken);
 
+    [Get("/members/{memberId}/profile")]
+    Task<GetMemberProfileWithPreferencesQueryResult> GetMemberProfileWithPreferences([Path] Guid memberId, bool @public, CancellationToken cancellationToken);
 }
