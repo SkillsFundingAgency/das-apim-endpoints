@@ -26,6 +26,5 @@ public class SchoolsControllerTests
 
         mockMediator.Verify(m =>
             m.Send(It.Is<GetSchoolsQuery>(q => q.SearchTerm == searchTerm), It.IsAny<CancellationToken>()));
-
     }
 }

@@ -5,6 +5,5 @@ namespace SFA.DAS.AdminAan.Application.Schools.Queries;
 
 public class GetSchoolsQuery : IRequest<GetSchoolsQueryApiResult>, IRequest<Response<GetSchoolsQueryResult>>
 {
-    public string SearchTerm { get; set; }
-
+    public string SearchTerm { get; set; } = null!;
 }

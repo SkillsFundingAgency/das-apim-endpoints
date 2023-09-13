@@ -20,7 +20,6 @@ public class SchoolsController : ControllerBase
     [ProducesResponseType(typeof(List<School>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetSchools(string searchTerm)
     {
-
         var response = await _mediator.Send(new GetSchoolsQuery { SearchTerm = searchTerm });
         return Ok(new GetSchoolsQueryResult(((GetSchoolsQueryApiResult)response!).Data));
     }

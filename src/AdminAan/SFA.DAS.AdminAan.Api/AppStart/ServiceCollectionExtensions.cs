@@ -68,7 +68,6 @@ public static class ServiceCollectionExtensions
             .AddHttpMessageHandler<ReferenceDataApiAuthenticationHeaderHandler>();
     }
 
-
     private static void AddAanHubApiClient(IServiceCollection services, IConfiguration configuration)
     {
         var apiConfig = configuration
