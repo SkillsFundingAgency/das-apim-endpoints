@@ -8,7 +8,7 @@ public class GetSchoolsQueryHandler : IRequestHandler<GetSchoolsQuery, GetSchool
     private readonly IReferenceDataApiClient _apiClient;
     private readonly ILogger<GetSchoolsQueryHandler> _logger;
 
-    public const int PageSize = 100;
+    public const int PageSize = 20;
     public const int PageNumber = 1;
     public GetSchoolsQueryHandler(IReferenceDataApiClient apiClient, ILogger<GetSchoolsQueryHandler> logger)
     {

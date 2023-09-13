@@ -23,7 +23,7 @@ public class GetSchoolsQueryHandlerTests
         new HttpResponseMessage(System.Net.HttpStatusCode.OK),
         () => apiResult);
 
-        apiClient.Setup(x => x.GetSchools(searchTerm, 100, 1, It.IsAny<CancellationToken>())).ReturnsAsync(expected);
+        apiClient.Setup(x => x.GetSchools(searchTerm, 20, 1, It.IsAny<CancellationToken>())).ReturnsAsync(expected);
 
         var actual = await sut.Handle(query, It.IsAny<CancellationToken>());
 
