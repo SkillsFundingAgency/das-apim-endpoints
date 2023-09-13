@@ -20,7 +20,6 @@ public interface IAanHubRestApiClient
 
     [Get("calendarEvents")]
     Task<GetCalendarEventsQueryResult> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
-<<<<<<< HEAD
 
     [Get("/members/{email}")]
     [AllowAnyStatusCode]
@@ -30,6 +29,4 @@ public interface IAanHubRestApiClient
     [AllowAnyStatusCode]
     Task<CreateAdminMemberCommandResult> CreateAdminMember([Body] CreateAdminMemberCommand command, CancellationToken cancellationToken);
 }
-=======
-}
->>>>>>> CSP-961 fixed code smell and minor snagging
+
