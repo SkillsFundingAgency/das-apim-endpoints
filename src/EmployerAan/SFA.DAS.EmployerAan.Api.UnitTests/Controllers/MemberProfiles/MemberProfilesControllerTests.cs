@@ -10,13 +10,15 @@ using SFA.DAS.Testing.AutoFixture;
 namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.MemberProfiles;
 public class MemberProfilesControllerTests
 {
-    [Test, MoqAutoData]
-    public async Task And_MediatorCommandSuccessful_Then_ReturnOk(
-     GetMemberProfileWithPreferencesQueryResult response,
-     [Frozen] Mock<IMediator> mockMediator,
-     Guid memberId,
-     bool isPublicView,
-     CancellationToken cancellationToken)
+    [Test]
+    [MoqInlineAutoData(false)]
+    [MoqInlineAutoData(true)]
+    public async Task When_MediatorCommandSuccessful_Then_ReturnOk(
+        bool isPublicView,
+        GetMemberProfileWithPreferencesQueryResult response,
+        [Frozen] Mock<IMediator> mockMediator,
+        Guid memberId,
+        CancellationToken cancellationToken)
     {
         mockMediator.Setup(m => m.Send(It.IsAny<GetMemberProfileWithPreferencesQuery>(), cancellationToken)).ReturnsAsync(response);
         var controller = new MemberProfilesController(mockMediator.Object);
