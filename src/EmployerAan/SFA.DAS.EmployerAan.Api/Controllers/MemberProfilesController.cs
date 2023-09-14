@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 
 namespace SFA.DAS.EmployerAan.Api.Controllers;
+
+[Route("Members")]
 public class MemberProfilesController : ControllerBase
 {
     private readonly IMediator _mediator;
