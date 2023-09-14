@@ -4,7 +4,7 @@ using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileW
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
-[Route("[controller]")]
+[Route("Members")]
 public class MemberProfilesController : ControllerBase
 {
     private readonly IMediator _mediator;
