@@ -15,6 +15,7 @@ namespace SFA.DAS.Assessors.Api.Models
         public string Status { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
+        public bool CoronationEmblem { get; set; }
         public string Version { get; set; }
         public string OverviewOfRole { get; set; }
         public string Keywords { get; set; }
@@ -62,6 +63,7 @@ namespace SFA.DAS.Assessors.Api.Models
                 Status = source.Status,
                 Title = source.Title,
                 Level = source.Level,
+                CoronationEmblem = source.CoronationEmblem,
                 Version = source.Version,
                 OverviewOfRole = source.OverviewOfRole,
                 Keywords = source.Keywords,
