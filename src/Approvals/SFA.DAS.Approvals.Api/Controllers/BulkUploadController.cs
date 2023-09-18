@@ -30,6 +30,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 new ValidateBulkUploadRecordsCommand
                 {
                     ProviderId = request.ProviderId,
+                    RplDataExtended = request.RplDataExtended,
                     CsvRecords = request.CsvRecords?.ToList(),
                     UserInfo = request.UserInfo
                 });
@@ -64,6 +65,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 new BulkUploadAddDraftApprenticeshipsCommand
                 {
                     ProviderId = request.ProviderId,
+                    RplDataExtended = request.RplDataExtended,
                     BulkUploadAddDraftApprenticeships = request.BulkUploadDraftApprenticeships?.ToList(),
                     UserInfo = request.UserInfo
                 });

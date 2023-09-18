@@ -4,6 +4,7 @@ using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents
 using SFA.DAS.ApprenticeAan.Application.Entities;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Notifications;
 using SFA.DAS.ApprenticeAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
 
@@ -46,4 +47,8 @@ public interface IAanHubRestApiClient
         string FromDate,
         string ToDate,
         CancellationToken cancellationToken);
+
+    [Get("/notifications/{id}")]
+    Task<Response<GetNotificationResponse?>> GetNotification([Path] Guid id, [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+    CancellationToken cancellationToken);
 }
