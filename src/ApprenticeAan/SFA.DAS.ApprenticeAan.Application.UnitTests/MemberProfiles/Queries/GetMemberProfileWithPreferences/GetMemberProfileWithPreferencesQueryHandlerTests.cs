@@ -17,7 +17,7 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
         GetMemberProfileWithPreferencesQueryResult expected,
         CancellationToken cancellationToken)
     {
-        apiClient.Setup(x => x.GetMemberProfileWithPreferences(It.IsAny<Guid>(), It.IsAny<bool>(), cancellationToken)).ReturnsAsync(expected);
+        apiClient.Setup(x => x.GetMemberProfileWithPreferences(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<bool>(), cancellationToken)).ReturnsAsync(expected);
 
         var actual = await handler.Handle(query, cancellationToken);
 

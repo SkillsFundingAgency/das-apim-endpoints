@@ -2,5 +2,5 @@
 public class MemberPreference
 {
     public int PreferenceId { get; set; }
-    public string Value { get; set; } = string.Empty;
+    public bool Value { get; set; }
 }
