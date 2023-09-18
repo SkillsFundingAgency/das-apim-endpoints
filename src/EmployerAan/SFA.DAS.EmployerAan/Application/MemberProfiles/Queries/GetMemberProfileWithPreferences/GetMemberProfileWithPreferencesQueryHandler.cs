@@ -13,6 +13,6 @@ public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMe
 
     public async Task<GetMemberProfileWithPreferencesQueryResult?> Handle(GetMemberProfileWithPreferencesQuery request, CancellationToken cancellationToken)
     {
-        return await _apiClient.GetMemberProfileWithPreferences(request.MemberId, request.IsPublicView, cancellationToken);
+        return await _apiClient.GetMemberProfileWithPreferences(request.MemberId, request.RequestedByMemberId, request.IsPublicView, cancellationToken);
     }
 }

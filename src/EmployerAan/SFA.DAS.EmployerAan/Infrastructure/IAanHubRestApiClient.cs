@@ -59,5 +59,5 @@ public interface IAanHubRestApiClient
     CancellationToken cancellationToken);
 
     [Get("/members/{memberId}/profile")]
-    Task<GetMemberProfileWithPreferencesQueryResult> GetMemberProfileWithPreferences([Path] Guid memberId, bool @public, CancellationToken cancellationToken);
+    Task<GetMemberProfileWithPreferencesQueryResult> GetMemberProfileWithPreferences([Path] Guid memberId, [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, bool @public, CancellationToken cancellationToken);
 }
