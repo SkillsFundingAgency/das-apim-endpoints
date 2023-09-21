@@ -84,6 +84,29 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             }
         }
 
+        [Route("application-created-receiver-notification")]
+        [HttpPost]
+        public async Task<IActionResult> ApplicationCreatedReceiverNotification(ApplicationCreatedReceiverNotificationRequest request)
+        {
+            try
+            {
+                await _mediator.Send(new ApplicationCreatedEmailCommand
+                {
+                    PledgeId = request.PledgeId,
+                    ApplicationId = request.ApplicationId,
+                    ReceiverId = request.ReceiverId,
+                    EncodedApplicationId = request.EncodedApplicationId
+                });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to send receiver notification email");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
         [Route("pledge-debit-failed")]
         [HttpPost]
         public async Task<IActionResult> PledgeDebitFailed(PledgeDebitFailedRequest request)
