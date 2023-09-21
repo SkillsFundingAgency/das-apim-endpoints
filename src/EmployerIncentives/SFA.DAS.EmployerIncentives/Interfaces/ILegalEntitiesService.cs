@@ -12,9 +12,12 @@ namespace SFA.DAS.EmployerIncentives.Interfaces
         Task<AccountLegalEntity> GetLegalEntity(long accountId, long accountLegalEntityId);
         Task DeleteAccountLegalEntity(long accountId, long accountLegalEntityId);
         Task CreateLegalEntity(AccountLegalEntityCreateRequest accountLegalEntity);
-        Task RefreshLegalEntities(IEnumerable<InnerApi.Responses.Accounts.AccountLegalEntity> accountLegalEntities, int pageNumber, int pageSize, int totalPages);
+
+        Task RefreshLegalEntities(IEnumerable<InnerApi.Responses.Accounts.AccountLegalEntity> accountLegalEntities,
+            int pageNumber, int pageSize, int totalPages);
+
         Task SignAgreement(SignAgreementRequest request);
 
-        Task BlockAccountLegalEntitiesForPayments(BlockAccountLegalEntityForPaymentsRequest blockRequest);
+        Task BlockAccountLegalEntitiesForPayments(List<BlockAccountLegalEntityForPaymentsRequest> blockRequest);
     }
 }

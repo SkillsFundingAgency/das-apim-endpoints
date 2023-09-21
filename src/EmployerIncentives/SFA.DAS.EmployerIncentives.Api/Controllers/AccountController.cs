@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerIncentives.Api.Models;
@@ -5,14 +8,12 @@ using SFA.DAS.EmployerIncentives.Application.Commands.AddLegalEntity;
 using SFA.DAS.EmployerIncentives.Application.Commands.RemoveLegalEntity;
 using SFA.DAS.EmployerIncentives.Application.Commands.SignAgreement;
 using SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus;
+using SFA.DAS.EmployerIncentives.Application.Commands.VendorBlock;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplications;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntity;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorBlock;
-using System.Linq;
-using System.Threading.Tasks;
-using SFA.DAS.EmployerIncentives.Application.Commands.VendorBlock;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {
@@ -83,7 +84,8 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         }
 
         [HttpPatch("/accounts/{accountId}/legalentities/{accountLegalEntityId}")]
-        public async Task<IActionResult> SignAgreement(long accountId, long accountLegalEntityId, SignAgreementRequest request)
+        public async Task<IActionResult> SignAgreement(long accountId, long accountLegalEntityId,
+            SignAgreementRequest request)
         {
             await _mediator.Send(new SignAgreementCommand
             {
@@ -100,7 +102,8 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
         [HttpGet("/accounts/{accountId}/legalentity/{accountLegalEntityId}/applications")]
         public async Task<IActionResult> GetApplications(long accountId, long accountLegalEntityId)
         {
-            var queryResult = await _mediator.Send(new GetApplicationsQuery { AccountId = accountId, AccountLegalEntityId = accountLegalEntityId });
+            var queryResult = await _mediator.Send(new GetApplicationsQuery
+                { AccountId = accountId, AccountLegalEntityId = accountLegalEntityId });
 
             if (queryResult?.ApprenticeApplications == null)
             {
@@ -109,17 +112,20 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
 
             return Ok(queryResult);
         }
-        
+
         [HttpPut("/accounts/{accountId}/legalentity/{accountLegalEntityId}/vrfcasestatus")]
-        public async Task<IActionResult> UpdateVrfCaseStatus(long accountId, long accountLegalEntityId, string vrfCaseStatus)
+        public async Task<IActionResult> UpdateVrfCaseStatus(long accountId, long accountLegalEntityId,
+            string vrfCaseStatus)
         {
-            await _mediator.Send(new UpdateVendorRegistrationCaseStatusCommand(accountId, accountLegalEntityId, vrfCaseStatus));
+            await _mediator.Send(
+                new UpdateVendorRegistrationCaseStatusCommand(accountId, accountLegalEntityId, vrfCaseStatus));
 
             return NoContent();
         }
 
         [HttpPatch("/blockedpayments")]
-        public async Task<IActionResult> BlockAccountLegalEntityForPayments(BlockAccountLegalEntityForPaymentsRequest request)
+        public async Task<IActionResult> BlockAccountLegalEntityForPayments(
+            List<BlockAccountLegalEntityForPaymentsRequest> request)
         {
             await _mediator.Send(new BlockAccountLegalEntityForPaymentsCommand(request));
 
