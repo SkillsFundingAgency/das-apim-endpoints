@@ -27,14 +27,16 @@ namespace SFA.DAS.SharedOuterApi.Services
                     var providerResponse =
                         await _providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
                             new GetProviderAccountLegalEntitiesRequest(accountIdentifier.Ukprn));
+                    
                     if (providerResponse == null)
                     {
                         return null;
-                        
                     }
+                    
                     var legalEntityItem = providerResponse.AccountProviderLegalEntities
                         .FirstOrDefault(c => c.AccountLegalEntityPublicHashedId.Equals(
                             accountLegalEntityPublicHashedId, StringComparison.CurrentCultureIgnoreCase));
+                    
                     if (legalEntityItem != null)
                     {
                         return new AccountLegalEntityItem
