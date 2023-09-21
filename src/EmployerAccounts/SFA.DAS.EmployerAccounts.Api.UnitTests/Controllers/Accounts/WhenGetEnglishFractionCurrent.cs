@@ -6,7 +6,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Api.Models;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent;
-using SFA.DAS.EmployerFinance.Api.Controllers;
+using SFA.DAS.EmployerAccounts.Api.Controllers;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
