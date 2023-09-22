@@ -204,6 +204,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             Assert.AreEqual(_draftApprenticeship.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
         }
 
+        [Test]
+        public async Task Handle_EmployerHasEditedCost_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(_draftApprenticeship.EmployerHasEditedCost, result.EmployerHasEditedCost);
+        }
+
         [TestCase(0, false)]
         [TestCase(1, false)]
         [TestCase(2, true)]
