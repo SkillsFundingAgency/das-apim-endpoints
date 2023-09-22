@@ -9,7 +9,7 @@ public class GetMemberProfileWithPreferencesQueryResult
     public int? RegionId { get; set; }
     public string RegionName { get; set; } = string.Empty;
     public MemberUserType UserType { get; set; }
-    public bool IsRegionalChair { get; set; }
+    public bool? IsRegionalChair { get; set; }
     public Apprenticeship Apprenticeship { get; set; } = null!;
     public IEnumerable<MemberProfile> Profiles { get; set; } = Enumerable.Empty<MemberProfile>();
     public IEnumerable<MemberPreference> Preferences { get; set; } = Enumerable.Empty<MemberPreference>();
