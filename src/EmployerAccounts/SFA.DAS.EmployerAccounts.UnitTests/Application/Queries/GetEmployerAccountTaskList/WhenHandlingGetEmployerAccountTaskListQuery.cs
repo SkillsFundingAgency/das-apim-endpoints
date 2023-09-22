@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -28,12 +29,27 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.AccountUsers
                     x.Get<GetProviderAccountLegalEntitiesResponse>(It.Is<GetEmployerAccountProviderPermissionsRequest>(
                         c =>
                             c.GetUrl.Equals(
-                                "accountproviderlegalentities?accountHashedId={_hashedAccountId}&operations=1&operations=2"))))
+                                $"accountproviderlegalentities?accountHashedId={query.HashedAccountId}&operations=1&operations=2"))))
                 .ReturnsAsync(providerRelationshipResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.EmployerAccountLegalEntityPermissions.Should().BeEquivalentTo(providerRelationshipResponse);
+            actual.EmployerAccountLegalEntityPermissions
+                .Should()
+                .BeEquivalentTo(
+                    providerRelationshipResponse.AccountProviderLegalEntities, 
+                    opts 
+                        => opts
+                            .Excluding(x => x.AccountId)
+                            .Excluding(x => x.AccountPublicHashedId)
+                            .Excluding(x => x.AccountProviderId)
+                            .Excluding(x => x.AccountLegalEntityId)
+                            .Excluding(x => x.AccountLegalEntityName)
+                            .Excluding(x => x.AccountName)
+                        );
+
+            actual.EmployerAccountLegalEntityPermissions.First().Name.Should()
+                .Be(providerRelationshipResponse.AccountProviderLegalEntities.First().AccountLegalEntityName);
         }
     }
 }

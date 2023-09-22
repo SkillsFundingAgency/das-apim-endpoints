@@ -80,7 +80,7 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{accountId}/account-task-list")]
+        [Route("{hashedAccountId}/account-task-list")]
         public async Task<IActionResult> GetEmployerAccountTaskList(string hashedAccountId)
         {
             try
