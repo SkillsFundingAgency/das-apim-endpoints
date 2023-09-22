@@ -90,7 +90,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     FileName = request.FileName,
                     RplCount = request.RplCount,
                     RowCount = request.RowCount,
-                    FileContent = request.FileContent
+                    FileContent = request.FileContent,
+                    UserInfo = request.UserInfo
                 });
 
             return Ok(result);
