@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMembers;
 
 namespace SFA.DAS.ApprenticeAan.Application.Services;
 
@@ -9,7 +10,16 @@ public static class QueryStringParameterBuilder
     {
         var parameters = new Dictionary<string, string[]>();
         if (!string.IsNullOrWhiteSpace(request.Keyword)) parameters.Add("keyword", new[] { request.Keyword });
-        if (request.FromDate != null) parameters.Add("fromDate", new[] { request.FromDate });
+        if (request.FromDate == null || request.FromDate == DateTime.Today.ToString("yyyy-MM-dd"))
+        {
+            var fromDate = DateTime.UtcNow;
+            parameters.Add("fromDate", new[] { fromDate.ToString("yyyy-MM-ddTHH:mm:ss") });
+        }
+        else
+        {
+            parameters.Add("fromDate", new[] { request.FromDate });
+        }
+
         if (request.ToDate != null) parameters.Add("toDate", new[] { request.ToDate });
         if (request.EventFormat != null && request.EventFormat.Any())
         {
@@ -29,6 +39,28 @@ public static class QueryStringParameterBuilder
         if (request.Page != null) parameters.Add("page", new[] { request.Page?.ToString() }!);
         if (request.PageSize != null) parameters.Add("pageSize", new[] { request.PageSize?.ToString() }!);
         parameters.Add("isActive", new[] { "true" });
+        return parameters;
+    }
+
+    public static Dictionary<string, string[]> BuildQueryStringParameters(GetMembersQuery request)
+    {
+        var parameters = new Dictionary<string, string[]>();
+        if (!string.IsNullOrWhiteSpace(request.Keyword)) parameters.Add("keyword", new[] { request.Keyword });
+        if (request.RegionIds != null && request.RegionIds.Any())
+        {
+            parameters.Add("regionId", request.RegionIds.Select(region => region.ToString()).ToArray());
+        }
+
+        if (request.Page != null) parameters.Add("page", new[] { request.Page.ToString() }!);
+        if (request.PageSize != null) parameters.Add("pageSize", new[] { request.PageSize.ToString() }!);
+
+        if (request.UserType != null && request.UserType.Any())
+        {
+            parameters.Add("userType", request.UserType.Select(userType => userType.ToString()).ToArray());
+        }
+
+        if (request.IsRegionalChair != null) parameters.Add("isRegionalChair", new[] { request.IsRegionalChair.ToString() }!);
+
         return parameters;
     }
 }

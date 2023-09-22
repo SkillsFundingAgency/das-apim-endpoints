@@ -28,9 +28,6 @@ public class GetEmployerMemberSummaryQueryHandler : IRequestHandler<GetEmployerM
 
         var outputEmployerSummary = responseEmployerSummaryTask.Result!;
 
-        if (outputEmployerSummary.StartDates.Any())
-            result.StartDate = outputEmployerSummary.StartDates.Min(x => x.Date);
-
         if (outputEmployerSummary.Sectors.Any())
             result.Sectors = outputEmployerSummary.Sectors;
 
