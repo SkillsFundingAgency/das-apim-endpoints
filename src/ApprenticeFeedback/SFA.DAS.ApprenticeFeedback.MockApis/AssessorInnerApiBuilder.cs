@@ -28,7 +28,7 @@ namespace SFA.DAS.ApprenticeFeedback.MockApis
 
         public static AssessorInnerApiBuilder Create(int port)
         {
-            return new AssessorInnerApiBuilder(port, false);
+            return new AssessorInnerApiBuilder(port, true);
         }
 
         public WireMockServer Build()
