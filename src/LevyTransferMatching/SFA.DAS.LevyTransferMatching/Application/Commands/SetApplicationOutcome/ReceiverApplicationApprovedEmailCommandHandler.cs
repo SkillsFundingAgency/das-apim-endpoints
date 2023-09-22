@@ -30,17 +30,13 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcom
         {
             _logger.LogInformation($"Sending email for application {request.ApplicationId} approved to receiver {request.ReceiverId} for Pledge {request.PledgeId}");
 
-            var getApplicationTask = _levyTransferMatchingService.GetApplication(new GetApplicationRequest(request.ApplicationId));
-            var getAccountUsersTask = _accountsService.GetAccountUsers(request.ReceiverId);
+            var getAccountUsersTask = await _accountsService.GetAccountUsers(request.ReceiverId);
 
-            await Task.WhenAll(getApplicationTask, getAccountUsersTask);
-
-            var application = getApplicationTask.Result;
-            var users = getAccountUsersTask.Result.Where(x => (x.Role == "Owner" || x.Role == "Transactor") && x.CanReceiveNotifications).ToList();
+            var users = getAccountUsersTask.Where(x => (x.Role == "Owner" || x.Role == "Transactor") && x.CanReceiveNotifications).ToList();
 
             foreach (var user in users)
             {
-                var email = new ReceiverApplicationApprovedEmail(user.Email, application.EmployerAccountName, application.SenderEmployerAccountName, request.BaseUrl, request.ReceiverEncodedAccountId);
+                var email = new ReceiverApplicationApprovedEmail(user.Email, user.Name, request.EncodedApplicationId);
 
                 var command = new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens);
 

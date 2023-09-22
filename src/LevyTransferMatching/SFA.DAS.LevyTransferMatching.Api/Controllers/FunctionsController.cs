@@ -71,8 +71,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     PledgeId = request.PledgeId,
                     ApplicationId = request.ApplicationId,
                     ReceiverId = request.ReceiverId,
-                    BaseUrl = request.BaseUrl,
-                    ReceiverEncodedAccountId = request.ReceiverEncodedAccountId
+                    EncodedApplicationId = request.EncodedApplicationId
                 });
 
                 return Ok();
