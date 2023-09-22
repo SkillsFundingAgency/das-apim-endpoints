@@ -9,16 +9,16 @@ using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome
+namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
 {
     public class ApplicationCreatedEmailCommandHandler : IRequestHandler<ApplicationCreatedEmailCommand>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly IAccountsService _accountsService;
-        private readonly ILogger<SetApplicationOutcomeCommandHandler> _logger;
+        private readonly ILogger<ApplicationCreatedEmailCommandHandler> _logger;
         private readonly INotificationService _notificationService;
 
-        public ApplicationCreatedEmailCommandHandler(ILevyTransferMatchingService levyTransferMatchingService, ILogger<SetApplicationOutcomeCommandHandler> logger, 
+        public ApplicationCreatedEmailCommandHandler(ILevyTransferMatchingService levyTransferMatchingService, ILogger<ApplicationCreatedEmailCommandHandler> logger, 
             INotificationService notificationService, IAccountsService accountsService)
         {
             _levyTransferMatchingService = levyTransferMatchingService;

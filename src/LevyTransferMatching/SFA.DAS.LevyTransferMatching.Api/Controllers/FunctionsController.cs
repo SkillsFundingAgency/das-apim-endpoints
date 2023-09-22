@@ -9,10 +9,12 @@ using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationCreatedForImmediateAutoApproval;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationWithdrawnAfterAcceptance;
 using SFA.DAS.LevyTransferMatching.Application.Commands.AutoApproveApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RecalculateApplicationCostProjections;
+using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SendEmails;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Functions;
@@ -94,6 +96,30 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     PledgeId = request.PledgeId,
                     ApplicationId = request.ApplicationId,
                     ReceiverId = request.ReceiverId,
+                    EncodedApplicationId = request.EncodedApplicationId
+                });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to send receiver notification email");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [Route("application-rejected-receiver-notification")]
+        [HttpPost]
+        public async Task<IActionResult> ApplicationRejectedReceiverNotification(ApplicationRejectedReceiverNotificationRequest request)
+        {
+            try
+            {
+                await _mediator.Send(new ApplicationRejectedEmailCommand
+                {
+                    PledgeId = request.PledgeId,
+                    ApplicationId = request.ApplicationId,
+                    ReceiverId = request.ReceiverId,
+                    BaseUrl = request.BaseUrl,
                     EncodedApplicationId = request.EncodedApplicationId
                 });
 
