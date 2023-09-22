@@ -6,7 +6,7 @@ namespace SFA.DAS.ApprenticeFeedback.MockApis
 {
     public class Program
     {
-        private const int PortAssessorApi = 59022;
+        private const int PortAssessorApi = 59023;
         
         private static WireMockServer _fakeAssessorApi;
         
