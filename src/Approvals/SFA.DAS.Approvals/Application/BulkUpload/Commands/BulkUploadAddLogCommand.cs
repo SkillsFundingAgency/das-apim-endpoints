@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 {
