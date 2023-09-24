@@ -25,6 +25,11 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskLis
                 await _providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
                     new GetEmployerAccountProviderPermissionsRequest(request.HashedAccountId));
 
+            if (providerRelationshipResponse == null)
+            {
+                return new GetEmployerAccountTaskListQueryResult();
+            }
+            
             var employerAlePermissions = providerRelationshipResponse.AccountProviderLegalEntities.Select(aple => new AccountLegalEntityItem
             {
                 Name = aple.AccountLegalEntityName,

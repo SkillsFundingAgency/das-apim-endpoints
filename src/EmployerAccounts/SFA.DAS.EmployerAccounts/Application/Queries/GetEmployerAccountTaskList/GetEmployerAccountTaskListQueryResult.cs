@@ -5,6 +5,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskLis
 {
     public class GetEmployerAccountTaskListQueryResult
     {
-        public IEnumerable<AccountLegalEntityItem> EmployerAccountLegalEntityPermissions { get; set; }
+        public IEnumerable<AccountLegalEntityItem> EmployerAccountLegalEntityPermissions { get; set; } =
+            new List<AccountLegalEntityItem>();
     }
 }

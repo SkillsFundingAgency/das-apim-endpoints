@@ -51,5 +51,27 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.AccountUsers
             actual.EmployerAccountLegalEntityPermissions.First().Name.Should()
                 .Be(providerRelationshipResponse.AccountProviderLegalEntities.First().AccountLegalEntityName);
         }
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_Query_Is_ReturnsEmptyResponse_WhenProviderResponse_Is_Null(
+            GetEmployerAccountTaskListQuery query,
+            GetProviderAccountLegalEntitiesResponse providerRelationshipResponse,
+            [Frozen]
+            Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipApiClient,
+            GetEmployerAccountTaskListQueryHandler handler)
+        {
+            providerRelationshipResponse = null;
+            providerRelationshipApiClient
+                .Setup(x =>
+                    x.Get<GetProviderAccountLegalEntitiesResponse>(It.Is<GetEmployerAccountProviderPermissionsRequest>(
+                        c =>
+                            c.GetUrl.Equals(
+                                $"accountproviderlegalentities?accountHashedId={query.HashedAccountId}&operations=1&operations=2"))))
+                .ReturnsAsync(providerRelationshipResponse);
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.EmployerAccountLegalEntityPermissions.Should().BeEmpty();
+        }
     }
 }
