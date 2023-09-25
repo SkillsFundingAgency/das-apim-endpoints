@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Moq;
@@ -13,7 +14,8 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
     [TestFixture]
     public class WhenHandlingBlockAccountLegalEntitiesForPaymentCommand
     {
-        [Test, MoqAutoData]
+        [Test]
+        [MoqAutoData]
         public async Task Then_the_vendor_block_request_is_sent_via_the_service(
             [Frozen] Mock<ILegalEntitiesService> legalEntitiesService,
             [Frozen] BlockAccountLegalEntityForPaymentsCommandHandler handler,
@@ -24,9 +26,10 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             await handler.Handle(command, CancellationToken.None);
 
-            legalEntitiesService.Verify(x => x.BlockAccountLegalEntitiesForPayments(It.Is<BlockAccountLegalEntityForPaymentsRequest>(
-                r => r.VendorBlocks == command.VendorBlockRequest.VendorBlocks
-                && r.ServiceRequest == command.VendorBlockRequest.ServiceRequest)), Times.Once);
+            legalEntitiesService.Verify(x => x.BlockAccountLegalEntitiesForPayments(
+                It.Is<List<BlockAccountLegalEntityForPaymentsRequest>>(
+                    r => r[0].VendorBlocks == command.VendorBlockRequest[0].VendorBlocks
+                         && r[0].ServiceRequest == command.VendorBlockRequest[0].ServiceRequest)), Times.Once);
         }
     }
 }
