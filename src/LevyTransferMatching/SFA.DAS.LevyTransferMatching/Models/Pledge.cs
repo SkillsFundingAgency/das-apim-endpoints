@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
+using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Models
@@ -17,5 +18,6 @@ namespace SFA.DAS.LevyTransferMatching.Models
         public List<LocationDataItem> Locations { get; set; }
         public string Status { get; set; }
         public int ApplicationCount { get; set; }
+        public AutomaticApprovalOption AutomaticApprovalOption { get; set; }
     }
 }
