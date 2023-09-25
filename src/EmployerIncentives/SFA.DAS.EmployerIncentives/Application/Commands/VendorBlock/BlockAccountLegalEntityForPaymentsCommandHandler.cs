@@ -5,7 +5,8 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.VendorBlock
 {
-    public class BlockAccountLegalEntityForPaymentsCommandHandler : IRequestHandler<BlockAccountLegalEntityForPaymentsCommand>
+    public class
+        BlockAccountLegalEntityForPaymentsCommandHandler : IRequestHandler<BlockAccountLegalEntityForPaymentsCommand>
     {
         private readonly ILegalEntitiesService _legalEntitiesService;
 
@@ -14,7 +15,8 @@ namespace SFA.DAS.EmployerIncentives.Application.Commands.VendorBlock
             _legalEntitiesService = legalEntitiesService;
         }
 
-        public async Task<Unit> Handle(BlockAccountLegalEntityForPaymentsCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(BlockAccountLegalEntityForPaymentsCommand request,
+            CancellationToken cancellationToken)
         {
             await _legalEntitiesService.BlockAccountLegalEntitiesForPayments(request.VendorBlockRequest);
 
