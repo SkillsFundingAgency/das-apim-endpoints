@@ -1,7 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Net.Http.Headers;
-using SFA.DAS.AdminAan.Api.Configuration;
+﻿using SFA.DAS.AdminAan.Api.Configuration;
 using SFA.DAS.Api.Common.Interfaces;
+using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
 
 namespace SFA.DAS.AdminAan.Infrastructure;
 

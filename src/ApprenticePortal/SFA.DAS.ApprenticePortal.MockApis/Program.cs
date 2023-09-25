@@ -10,7 +10,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis
         private const int PortCommitmentsV2InnerApi = 5011;
         private const int PortAccountsApi = 5801;
         private const int PortProviderInnerApi = 37951;
-        private const int PortCoursesInnerApi = 5001;
+        private const int PortCoursesInnerApi = 5022;
 
 
         private static ApprenticeCommitmentsInnerApiMock _fakeApprenticeCommitmentsApi;
