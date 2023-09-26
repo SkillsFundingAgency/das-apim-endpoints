@@ -1,7 +1,9 @@
 ﻿using System.Net;
-using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Moq;
+using SFA.DAS.ApprenticeAan.Application.Common;
+using SFA.DAS.ApprenticeAan.Application.Entities;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.MyApprenticeships;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Requests;
@@ -12,63 +14,166 @@ using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 
 public class GetMemberProfileWithPreferencesQueryHandlerTests
 {
-    [Test, MoqAutoData]
-    public async Task Handle_ReturnAllProfiles(
-        [Frozen] Mock<IAanHubRestApiClient> apiClient,
-        [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apprenticeAccountsApiClientMock,
-        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClientMock,
-        GetMemberProfileWithPreferencesQueryHandler handler,
-        GetMemberProfileWithPreferencesQuery query,
-        GetMemberProfileWithPreferencesQueryResult expected,
-        GetMemberQueryResult memberResult,
-        GetRegionsQueryResult regionsResult,
-        MyApprenticeshipResponse response,
-        GetMyApprenticeshipQuery request,
-        CancellationToken cancellationToken)
+    readonly Guid memberId = Guid.NewGuid();
+    readonly Guid apprenticeId = Guid.NewGuid();
+
+    readonly string fullName = "Full Name";
+    readonly string email = "My_Email@domain.com";
+    readonly int regionId = 1;
+    readonly string regionName = "London";
+    readonly MemberUserType userType = MemberUserType.Apprentice;
+    readonly bool isRegionalChair = true;
+
+    readonly string standardUid = "ST0418_1.0";
+    readonly string standardRoute = "route of standard";
+    readonly string title = "Title";
+    readonly int level = 3;
+
+    Mock<IAanHubRestApiClient> aanHubRestApiClientMock;
+    Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apprenticeAccountsApiClientMock;
+    Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClientMock;
+
+    GetMyApprenticeshipQuery myApprenticeshipQuery = null!;
+    MyApprenticeshipResponse myApprenticeshipResponse = null!;
+    GetStandardResponse standardResponse = null!;
+
+    GetMemberProfileWithPreferencesQueryHandler sut = null!;
+    GetMemberProfileWithPreferencesQuery getMemberProfileWithPreferencesQuery = null!;
+
+    GetMemberProfileWithPreferencesQueryResult expectedResult;
+    GetMemberProfileWithPreferencesQueryResult actualResult = null!;
+
+    GetMemberQueryResult memberResult = null!;
+    GetRegionsQueryResult regionsResult = null!;
+
+    CancellationToken cancellationToken = new CancellationToken();
+
+    [SetUp]
+    public async Task InitAsync()
     {
+        getMemberProfileWithPreferencesQuery = new(memberId, memberId, true);
 
-        memberResult.UserType = Common.MemberUserType.Apprentice.ToString();
-        memberResult.ApprenticeId = request.ApprenticeId;
-        regionsResult.Regions.Add(new Entities.Region { Id = (int)memberResult.RegionId!, Area = Guid.NewGuid().ToString(), Ordering = int.MinValue });
+        aanHubRestApiClientMock = new();
+        apprenticeAccountsApiClientMock = new();
+        coursesApiClientMock = new();
 
-        apiClient.Setup(x => x.GetMember(query.MemberId, cancellationToken)).ReturnsAsync(memberResult);
-        apiClient.Setup(x => x.GetRegions(cancellationToken)).ReturnsAsync(regionsResult);
+        regionsResult = new() { Regions = new List<Region> { new Region { Id = regionId, Area = regionName, Ordering = 1 } } };
+        memberResult = new() { MemberId = memberId, ApprenticeId = apprenticeId, Email = email, FullName = fullName, IsRegionalChair = isRegionalChair, UserType = userType.ToString(), RegionId = regionId };
 
-        apiClient.Setup(x => x.GetMemberProfileWithPreferences(query.MemberId, query.MemberId, It.IsAny<bool>(), cancellationToken)).ReturnsAsync(expected);
-
-        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)))!.ReturnsAsync(new ApiResponse<MyApprenticeshipResponse>(response, HttpStatusCode.OK, null));
-
-        const string StandardUid = "ST0418_1.0";
-        const string TrainingCode = null!;
-        const string StandardRoute = "route of standard";
-        const int Duration = 36;
-        const string Title = "Title";
-        const int Level = 3;
-        response.StandardUId = StandardUid;
-        response.TrainingCode = TrainingCode;
-
-        var standardResponse = new GetStandardResponse
+        expectedResult = new()
         {
-            Title = Title,
-            Level = Level,
-            Route = StandardRoute,
-            VersionDetail = new StandardVersionDetail { ProposedTypicalDuration = Duration }
+            FullName = fullName,
+            Email = email,
+            RegionId = regionId,
+            RegionName = regionName,
+            UserType = userType,
+            IsRegionalChair = isRegionalChair,
+            Apprenticeship = new Apprenticeship { Level = level.ToString(), Programmes = title, Sector = standardRoute }
         };
 
-        coursesApiClientMock.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardQueryRequest>()))
-            .ReturnsAsync(standardResponse);
+        expectedResult.Profiles = new[] {
+                                            new MemberProfile { ProfileId=1,Value = Guid.NewGuid().ToString(), PreferenceId=1 },
+                                            new MemberProfile { ProfileId=2,Value = Guid.NewGuid().ToString(), PreferenceId=2 }
+                                        };
 
-        coursesApiClientMock.Setup(c => c.Get<GetFrameworkResponse>(It.IsAny<GetFrameworkQueryRequest>()))
-            .ReturnsAsync(new GetFrameworkResponse());
+        expectedResult.Preferences = new[] {
+                                                new MemberPreference { PreferenceId=1, Value = true    },
+                                                new MemberPreference { PreferenceId=2, Value = false   }
+                                            };
 
-        var actual = await handler.Handle(query, cancellationToken);
+        aanHubRestApiClientMock.Setup(x => x.GetMemberProfileWithPreferences(getMemberProfileWithPreferencesQuery.MemberId, getMemberProfileWithPreferencesQuery.MemberId, It.IsAny<bool>(), cancellationToken)).ReturnsAsync(expectedResult);
+        aanHubRestApiClientMock.Setup(x => x.GetMember(memberId, cancellationToken)).ReturnsAsync(memberResult);
+        aanHubRestApiClientMock.Setup(x => x.GetRegions(cancellationToken)).ReturnsAsync(regionsResult);
 
-        actual.Should().Be(expected);
+        myApprenticeshipQuery = new GetMyApprenticeshipQuery { ApprenticeId = apprenticeId };
+        myApprenticeshipResponse = new MyApprenticeshipResponse { StandardUId = standardUid };
+        standardResponse = new GetStandardResponse { Title = title, Level = level, Route = standardRoute };
+
+        coursesApiClientMock.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardQueryRequest>())).ReturnsAsync(standardResponse);
+        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == myApprenticeshipQuery.ApprenticeId)))
+            .ReturnsAsync(new ApiResponse<MyApprenticeshipResponse>(myApprenticeshipResponse, HttpStatusCode.OK, null));
+
+        sut = new GetMemberProfileWithPreferencesQueryHandler(aanHubRestApiClientMock.Object, coursesApiClientMock.Object, apprenticeAccountsApiClientMock.Object);
+
+        await InvokeHandler();
+    }
+
+    private async Task InvokeHandler()
+    {
+        actualResult = await sut.Handle(getMemberProfileWithPreferencesQuery, cancellationToken);
+    }
+
+    [Test]
+    public void Handle_InvokesGetMemberProfileWithPreferencesAPI()
+    {
+        using (new AssertionScope("Invokes GetMemberProfileWithPreferencesAPI & validates the Profile and Preferences"))
+        {
+            actualResult.Profiles.Should().BeEquivalentTo(expectedResult.Profiles);
+            actualResult.Preferences.Should().BeEquivalentTo(expectedResult.Preferences);
+        }
+    }
+
+    [Test]
+    public void Handle_InvokesGetMemberAPI()
+    {
+        using (new AssertionScope("Invokes GetMemberAPI & validates the Member properties"))
+        {
+            aanHubRestApiClientMock.Verify(x => x.GetMember(memberId, cancellationToken), Times.Once());
+            actualResult.FullName.Should().Be(expectedResult.FullName);
+            actualResult.Email.Should().Be(expectedResult.Email);
+            actualResult.IsRegionalChair.Should().Be(expectedResult.IsRegionalChair);
+            actualResult.UserType.Should().Be(expectedResult.UserType);
+            actualResult.RegionId.Should().Be(expectedResult.RegionId);
+        }
+    }
+
+    [Test]
+    public void Handle_InvokesGetRegionsAPI()
+    {
+        using (new AssertionScope("Invokes GetRegionsAPI & validates the RegionName property"))
+        {
+            aanHubRestApiClientMock.Verify(x => x.GetRegions(cancellationToken), Times.Once());
+            actualResult.RegionName.Should().Be(expectedResult.RegionName);
+        }
+    }
+
+    [Test]
+    public void Handle_InvokesGetMyApprenticeshipQueryHandler()
+    {
+        using (new AssertionScope("Invokes GetMyApprenticeshipQueryHandler & validates the Apprenticeship properties"))
+        {
+            coursesApiClientMock.Verify(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardQueryRequest>()), Times.Once);
+            apprenticeAccountsApiClientMock.Verify(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == apprenticeId)), Times.Once);
+
+            actualResult.Apprenticeship.Level.Should().Be(expectedResult.Apprenticeship.Level);
+            actualResult.Apprenticeship.Sector.Should().Be(expectedResult.Apprenticeship.Sector);
+            actualResult.Apprenticeship.Programmes.Should().Be(expectedResult.Apprenticeship.Programmes);
+        }
+    }
+
+    [TearDown]
+    public void Dispose()
+    {
+        aanHubRestApiClientMock = null!;
+        apprenticeAccountsApiClientMock = null!;
+        coursesApiClientMock = null!; ;
+
+        myApprenticeshipQuery = null!;
+        myApprenticeshipResponse = null!;
+        standardResponse = null!;
+
+        sut = null!;
+        getMemberProfileWithPreferencesQuery = null!;
+
+        expectedResult = null!;
+        actualResult = null!;
+
+        memberResult = null!;
+        regionsResult = null!;
     }
 }
