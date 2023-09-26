@@ -15,8 +15,7 @@ public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMe
     public GetMemberProfileWithPreferencesQueryHandler(
         IAanHubRestApiClient apiClient,
         ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-        IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> apprenticeAccountsApiClient
-        )
+        IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> apprenticeAccountsApiClient)
     {
         _apiClient = apiClient;
         _coursesApiClient = coursesApiClient;
