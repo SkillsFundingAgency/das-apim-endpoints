@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
@@ -27,7 +28,7 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
         {
             _context = context;
             _apprentice = _fixture.Create<Apprentice>();
-            _apprenticeshipDetails = _fixture.Create<ApprenticeshipDetailsResponse>();
+            _apprenticeshipDetails = _fixture.Build<ApprenticeshipDetailsResponse>().With(x=>x.Uln, "10000001").Create();
             _trainingProviderResponse = _fixture.Create<TrainingProviderResponse>();
             _confirmRequest = _fixture.Build<MyApprenticeshipConfirmedRequest>()
                 .With(x => x.CommitmentsApprenticeshipId, _apprenticeshipDetails.Id).Create();
@@ -101,7 +102,7 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
         public void ThenItContainsAllTheInformation()
         {
             _postedData.ApprenticeshipId.Should().Be(_apprenticeshipDetails.Id);
-            _postedData.Uln.Should().Be(_apprenticeshipDetails.Uln);
+            _postedData.Uln.Should().Be(Convert.ToInt64(_apprenticeshipDetails.Uln));
             _postedData.EmployerName.Should().Be(_apprenticeshipDetails.EmployerName);
             _postedData.StartDate.Should().Be(_apprenticeshipDetails.StartDate);
             _postedData.EndDate.Should().Be(_apprenticeshipDetails.EndDate);
