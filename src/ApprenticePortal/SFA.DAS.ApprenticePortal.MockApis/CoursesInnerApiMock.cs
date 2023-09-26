@@ -64,5 +64,24 @@ namespace SFA.DAS.ApprenticePortal.MockApis
 
             return this;
         }
+
+        public CoursesInnerApiMock WithAnyStandardCourse(StandardApiResponse response)
+        {
+            MockServer
+                .Given(
+                    Request.Create()
+                        .WithPath($"/api/courses/standards/*")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithBodyAsJson(response)
+                );
+
+            return this;
+        }
+
+
     }
 }
