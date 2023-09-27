@@ -6,7 +6,8 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
-public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMemberProfileWithPreferencesQuery, GetMemberProfileWithPreferencesQueryResult?>
+
+public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMemberProfileWithPreferencesQuery, GetMemberProfileWithPreferencesQueryResult>
 {
     private readonly IAanHubRestApiClient _apiClient;
     private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
@@ -22,7 +23,7 @@ public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMe
         _apprenticeAccountsApiClient = apprenticeAccountsApiClient;
     }
 
-    public async Task<GetMemberProfileWithPreferencesQueryResult?> Handle(GetMemberProfileWithPreferencesQuery request, CancellationToken cancellationToken)
+    public async Task<GetMemberProfileWithPreferencesQueryResult> Handle(GetMemberProfileWithPreferencesQuery request, CancellationToken cancellationToken)
     {
         var responseMemberProfileWithPreferenceTask = _apiClient.GetMemberProfileWithPreferences(request.MemberId, request.RequestedByMemberId, request.IsPublicView, cancellationToken);
         var responseMemberTask = _apiClient.GetMember(request.MemberId, cancellationToken);

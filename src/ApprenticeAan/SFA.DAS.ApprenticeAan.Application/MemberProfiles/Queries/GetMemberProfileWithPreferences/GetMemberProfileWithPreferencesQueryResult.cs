@@ -2,6 +2,7 @@
 using SFA.DAS.ApprenticeAan.Application.Entities;
 
 namespace SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
+
 public class GetMemberProfileWithPreferencesQueryResult
 {
     public string FullName { get; set; } = string.Empty;
