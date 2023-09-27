@@ -6,6 +6,9 @@ public class GetMemberProfileWithPreferencesQueryResult
 {
     public string FullName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string? OrganisationName { get; set; }
     public int? RegionId { get; set; }
     public string RegionName { get; set; } = string.Empty;
     public MemberUserType UserType { get; set; }
