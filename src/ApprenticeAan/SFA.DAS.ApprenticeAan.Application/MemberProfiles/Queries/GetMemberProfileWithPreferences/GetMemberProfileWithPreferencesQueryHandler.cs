@@ -43,6 +43,9 @@ public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMe
         var outputMember = responseMemberTask.Result;
 
         result.FullName = outputMember.FullName;
+        result.FirstName = outputMember.FirstName;
+        result.LastName = outputMember.LastName;
+        result.OrganisationName = outputMember.OrganisationName;
         result.Email = outputMember.Email;
         result.RegionId = outputMember.RegionId;
         result.UserType = Enum.Parse<MemberUserType>(outputMember.UserType);

@@ -22,6 +22,9 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
     readonly Guid memberId = Guid.NewGuid();
     readonly Guid apprenticeId = Guid.NewGuid();
 
+    readonly string firstName = "Last";
+    readonly string lastName = "First";
+    readonly string organisationName = "organisation";
     readonly string fullName = "Full Name";
     readonly string email = "My_Email@domain.com";
     readonly int regionId = 1;
@@ -63,11 +66,26 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
         coursesApiClientMock = new();
 
         regionsResult = new() { Regions = new List<Region> { new Region { Id = regionId, Area = regionName, Ordering = 1 } } };
-        memberResult = new() { MemberId = memberId, ApprenticeId = apprenticeId, Email = email, FullName = fullName, IsRegionalChair = isRegionalChair, UserType = userType.ToString(), RegionId = regionId };
+        memberResult = new()
+        {
+            MemberId = memberId,
+            ApprenticeId = apprenticeId,
+            Email = email,
+            FullName = fullName,
+            FirstName = firstName,
+            LastName = lastName,
+            OrganisationName = organisationName,
+            IsRegionalChair = isRegionalChair,
+            UserType = userType.ToString(),
+            RegionId = regionId
+        };
 
         expectedResult = new()
         {
             FullName = fullName,
+            FirstName = firstName,
+            LastName = lastName,
+            OrganisationName = organisationName,
             Email = email,
             RegionId = regionId,
             RegionName = regionName,
@@ -126,6 +144,9 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
         {
             aanHubRestApiClientMock.Verify(x => x.GetMember(memberId, cancellationToken), Times.Once());
             actualResult.FullName.Should().Be(expectedResult.FullName);
+            actualResult.FirstName.Should().Be(expectedResult.FirstName);
+            actualResult.LastName.Should().Be(expectedResult.LastName);
+            actualResult.OrganisationName.Should().Be(expectedResult.OrganisationName);
             actualResult.Email.Should().Be(expectedResult.Email);
             actualResult.IsRegionalChair.Should().Be(expectedResult.IsRegionalChair);
             actualResult.UserType.Should().Be(expectedResult.UserType);
