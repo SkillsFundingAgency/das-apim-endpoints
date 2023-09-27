@@ -1,10 +1,11 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
+﻿using Microsoft.Azure.Amqp.Framing;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 {
-    public class ApplicationsWithAutomaticApprovalQueryResult
+    public class GetApplicationsForAutomaticRejectionQueryResult
     {
         public IEnumerable<Application> Applications { get; set; }
 
@@ -19,25 +20,26 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
             public DateTime CreatedOn { get; set; }
             public string Status { get; set; }
 
-            public static implicit operator Application(GetApplicationsResponse.Application source)
+            public static  Application BuildApplication(GetApplicationsResponse.Application application)
             {
-                if (source == null)
+                if (application == null)
                 {
                     return null;
                 }
 
                 return new Application
                 {
-                    Id = source.Id,
-                    EmployerAccountId = source.EmployerAccountId,
-                    PledgeId = source.PledgeId,
-                    MatchPercentage = source.MatchPercentage,
-                    PledgeAutomaticApprovalOption = source.PledgeAutomaticApprovalOption,
-                    Amount = source.Amount,
-                    CreatedOn = source.CreatedOn,
-                    Status = source.Status
+                    Id = application.Id,
+                    EmployerAccountId = application.EmployerAccountId,
+                    PledgeId = application.PledgeId,
+                    MatchPercentage = application.MatchPercentage,
+                    PledgeAutomaticApprovalOption = application.PledgeAutomaticApprovalOption,
+                    Amount = application.Amount,
+                    CreatedOn = application.CreatedOn,
+                    Status = application.Status
                 };
             }
+         
         }        
     }
 }

@@ -13,6 +13,7 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RecalculateApplicationCostProjections;
+using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SendEmails;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Functions;
@@ -256,5 +257,28 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
             return Ok();
         }
+
+        [Route("applications-for-auto-rejection")]
+        [HttpGet]
+        public async Task<IActionResult> ApplicationsForAutomaticRejection()
+        {
+            var result = await _mediator.Send(new GetApplicationsForAutomaticRejectionQuery{ });
+
+            return Ok((GetApplicationsForAutomaticRejectionResponse)result);
+        }
+
+        [Route("reject-application")]
+        [HttpPost]
+        public async Task<IActionResult> RejectApplication(RejectApplicationRequest request)
+        {
+            await _mediator.Send(new RejectApplicationCommand
+            {
+                ApplicationId = request.ApplicationId,
+                PledgeId = request.PledgeId
+            });
+
+            return Ok();
+        }
+
     }
 }

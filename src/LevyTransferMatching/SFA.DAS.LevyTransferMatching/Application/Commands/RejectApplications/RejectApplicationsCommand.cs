@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using System.Collections.Generic;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication
+namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplications
 {
     public class RejectApplicationsCommand : IRequest
     { 
