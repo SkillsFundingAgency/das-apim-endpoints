@@ -4,53 +4,51 @@ using AutoFixture;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.LevyTransferMatching.Application.Commands.AutoApproveApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 
-namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.ApproveAutomaticApplication
+namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.RejectApplication
 {
     [TestFixture]
     public class WhenCallingHandle
     {
-        private AutoApproveApplicationCommandHandler _handler;
+        private RejectApplicationCommandHandler _handler;
         private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
         private readonly Fixture _fixture = new Fixture();
 
-        private AutoApproveApplicationCommand _command;
-        private ApproveApplicationRequest _approveApplicationRequest;
+        private RejectApplicationCommand _command;
+        private RejectApplicationRequest _rejectApplicationRequest;
      
 
         [SetUp]
         public void Setup()
         {
-            _command = _fixture.Create<AutoApproveApplicationCommand>();
+            _command = _fixture.Create<RejectApplicationCommand>();
 
             _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
-            _levyTransferMatchingService.Setup(x => x.ApproveApplication(It.IsAny<ApproveApplicationRequest>()))
-                .Callback<ApproveApplicationRequest>(request => _approveApplicationRequest = request)
+            _levyTransferMatchingService.Setup(x => x.RejectApplication(It.IsAny<RejectApplicationRequest>()))
+                .Callback<RejectApplicationRequest>(request => _rejectApplicationRequest = request)
                 .Returns(Task.CompletedTask);          
 
-            _handler = new AutoApproveApplicationCommandHandler(_levyTransferMatchingService.Object, Mock.Of<ILogger<AutoApproveApplicationCommandHandler>>());
+            _handler = new RejectApplicationCommandHandler(_levyTransferMatchingService.Object, Mock.Of<ILogger<RejectApplicationCommandHandler>>());
         }
 
 
         [Test]
-        public async Task Application_Is_Approved()
+        public async Task Application_Is_Rejected()
         {
             await _handler.Handle(_command, CancellationToken.None);
 
-            var requestData = (ApproveApplicationRequestData) _approveApplicationRequest.Data;
+            var requestData = (RejectApplicationRequestData) _rejectApplicationRequest.Data;
 
             _levyTransferMatchingService.Verify(
-                x => x.ApproveApplication(It.Is<ApproveApplicationRequest>(r =>
+                x => x.RejectApplication(It.Is<RejectApplicationRequest>(r =>
                     r.PledgeId == _command.PledgeId &&
                     r.ApplicationId == _command.ApplicationId
                      && r.Data == requestData
                  )),
                 Times.Once);
         }
-
-      
     }
 }

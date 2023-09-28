@@ -14,7 +14,7 @@ using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
 {
     [TestFixture]
-    public class ApplicationsWithAutomaticApprovalTests
+    public class ApplicationsForAutomaticRejectionTests
     {
         private FunctionsController _controller;
         private Mock<IMediator> _mediator;
@@ -31,32 +31,32 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
         {
             // Arrange
             var fixture = new Fixture();
-            var expectedResult = fixture.Create<ApplicationsWithAutomaticApprovalQueryResult>();
-            _mediator.Setup(x => x.Send(It.IsAny<ApplicationsWithAutomaticApprovalQuery>(), default))
+            var expectedResult = fixture.Create<GetApplicationsForAutomaticRejectionQueryResult>();
+            _mediator.Setup(x => x.Send(It.IsAny<GetApplicationsForAutomaticRejectionQuery>(), default))
                 .ReturnsAsync(expectedResult);
 
-            var result = await _controller.ApplicationsForAutomaticApproval();
+            await _controller.ApplicationsForAutomaticRejection();
 
             _mediator.Verify(x =>
-                x.Send(It.IsAny<ApplicationsWithAutomaticApprovalQuery>(), It.IsAny<CancellationToken>()));
+                x.Send(It.IsAny<GetApplicationsForAutomaticRejectionQuery>(), It.IsAny<CancellationToken>()));
         }
 
         [Test]
-        public async Task ApplicationsWithAutomaticApproval_WhenQuerySucceeds_ReturnsOkResultWithData()
+        public async Task ApplicationsForAutomaticRejection_WhenQuerySucceeds_ReturnsOkResultWithData()
         {
             // Arrange
             var fixture = new Fixture();
-            var expectedResult = fixture.Create<ApplicationsWithAutomaticApprovalQueryResult>();
-            _mediator.Setup(x => x.Send(It.IsAny<ApplicationsWithAutomaticApprovalQuery>(), default))
+            var expectedResult = fixture.Create<GetApplicationsForAutomaticRejectionQueryResult>();
+            _mediator.Setup(x => x.Send(It.IsAny<GetApplicationsForAutomaticRejectionQuery>(), default))
                 .ReturnsAsync(expectedResult);
 
             // Act
-            var result = await _controller.ApplicationsForAutomaticApproval();
+            var result = await _controller.ApplicationsForAutomaticRejection();
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okResult = (OkObjectResult)result;
-            var response = okResult.Value as GetApplicationsForAutomaticApprovalResponse;
+            var response = okResult.Value as GetApplicationsForAutomaticRejectionResponse;
             Assert.IsNotNull(response);
 
             Assert.AreEqual(expectedResult.Applications.Count(), response.Applications.Count());
