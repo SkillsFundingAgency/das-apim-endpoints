@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using FluentAssertions.Execution;
 using Moq;
-using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMemberSummary;
 using SFA.DAS.EmployerAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.EmployerAan.Application.Members.Queries.GetMember;
 using SFA.DAS.EmployerAan.Application.Regions.Queries.GetRegions;
@@ -26,12 +25,8 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
     readonly bool isRegionalChair = true;
 
     readonly int accountId = 1;
-    readonly int activeApprenticesCount = 10;
-    readonly List<DateTime> startDates = new() { DateTime.Now, DateTime.Now.AddDays(-1) };
-    readonly List<string> sectors = new List<string>() { Guid.NewGuid().ToString(), Guid.NewGuid().ToString() };
 
     Mock<IAanHubRestApiClient> aanHubRestApiClientMock;
-    Mock<ICommitmentsV2ApiClient> commitmentsV2ApiClientMock;
 
     GetMemberProfileWithPreferencesQueryHandler sut = null!;
     GetMemberProfileWithPreferencesQuery getMemberProfileWithPreferencesQuery = null!;
@@ -50,7 +45,6 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
         getMemberProfileWithPreferencesQuery = new(memberId, memberId, true);
 
         aanHubRestApiClientMock = new();
-        commitmentsV2ApiClientMock = new();
 
         regionsResult = new(new List<Region> { new Region(regionId, regionName, 1) });
 
@@ -78,8 +72,7 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
             RegionId = regionId,
             RegionName = regionName,
             UserType = userType,
-            IsRegionalChair = isRegionalChair,
-            Apprenticeship = new Apprenticeship { ActiveApprenticesCount = activeApprenticesCount, Sectors = sectors }
+            IsRegionalChair = isRegionalChair
         };
 
         expectedResult.Profiles = new[] {
@@ -88,28 +81,15 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
                                         };
 
         expectedResult.Preferences = new[] {
-                                                new MemberPreference { PreferenceId=1, Value = true    },
-                                                new MemberPreference { PreferenceId=2, Value = false   }
+                                                new MemberPreference { PreferenceId = 1, Value = true    },
+                                                new MemberPreference { PreferenceId = 2, Value = false   }
                                             };
 
         aanHubRestApiClientMock.Setup(x => x.GetMemberProfileWithPreferences(getMemberProfileWithPreferencesQuery.MemberId, getMemberProfileWithPreferencesQuery.MemberId, It.IsAny<bool>(), cancellationToken)).ReturnsAsync(expectedResult);
         aanHubRestApiClientMock.Setup(x => x.GetMember(memberId, cancellationToken)).ReturnsAsync(memberResult);
         aanHubRestApiClientMock.Setup(x => x.GetRegions(cancellationToken)).ReturnsAsync(regionsResult);
 
-        List<ApprenticeshipStatusSummaryResponse> apprenticeshipStatusSummaryResponse = new() { new ApprenticeshipStatusSummaryResponse { ActiveCount = activeApprenticesCount } };
-        AccountsSummary accountsSummary = new AccountsSummary() { ApprenticeshipStatusSummaryResponse = apprenticeshipStatusSummaryResponse };
-
-        ApprenticeshipsFilterValues expectedApprenticeshipsFilterValues = new()
-        {
-            StartDates = startDates,
-            Sectors = sectors
-        };
-
-        commitmentsV2ApiClientMock.Setup(c => c.GetEmployerAccountSummary(memberResult.Employer.AccountId, cancellationToken)).ReturnsAsync(accountsSummary);
-        commitmentsV2ApiClientMock.Setup(x => x.GetApprenticeshipsSummaryForEmployer(memberResult.Employer.AccountId, cancellationToken)).ReturnsAsync(expectedApprenticeshipsFilterValues);
-
-
-        sut = new GetMemberProfileWithPreferencesQueryHandler(aanHubRestApiClientMock.Object, commitmentsV2ApiClientMock.Object);
+        sut = new GetMemberProfileWithPreferencesQueryHandler(aanHubRestApiClientMock.Object);
 
         await InvokeHandler();
     }
@@ -157,25 +137,10 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
         }
     }
 
-    [Test]
-    public void Handle_InvokesGetEmployerMemberSummaryQueryHandler()
-    {
-        using (new AssertionScope("Invokes GetMyApprenticeshipQueryHandler & validates the Apprenticeship properties"))
-        {
-            commitmentsV2ApiClientMock.Verify(c => c.GetEmployerAccountSummary(memberResult!.Employer!.AccountId, cancellationToken), Times.Once);
-            commitmentsV2ApiClientMock.Verify(c => c.GetApprenticeshipsSummaryForEmployer(memberResult!.Employer!.AccountId, cancellationToken), Times.Once);
-
-            actualResult.Apprenticeship.ActiveApprenticesCount.Should().Be(expectedResult.Apprenticeship.ActiveApprenticesCount);
-            actualResult.Apprenticeship.Sectors.Should().BeEquivalentTo(expectedResult.Apprenticeship.Sectors);
-
-        }
-    }
-
     [TearDown]
     public void Dispose()
     {
         aanHubRestApiClientMock = null!;
-        commitmentsV2ApiClientMock = null!;
 
         sut = null!;
         getMemberProfileWithPreferencesQuery = null!;

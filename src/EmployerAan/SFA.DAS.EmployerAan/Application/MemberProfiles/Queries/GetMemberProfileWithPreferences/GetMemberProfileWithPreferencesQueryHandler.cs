@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMemberSummary;
 using SFA.DAS.EmployerAan.Common;
 using SFA.DAS.EmployerAan.Infrastructure;
 
@@ -8,12 +7,10 @@ namespace SFA.DAS.EmployerAan.Application.MemberProfiles.Queries.GetMemberProfil
 public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMemberProfileWithPreferencesQuery, GetMemberProfileWithPreferencesQueryResult>
 {
     private readonly IAanHubRestApiClient _apiClient;
-    private readonly ICommitmentsV2ApiClient _commitmentsV2ApiClient;
 
-    public GetMemberProfileWithPreferencesQueryHandler(IAanHubRestApiClient apiClient, ICommitmentsV2ApiClient commitmentsV2ApiClient)
+    public GetMemberProfileWithPreferencesQueryHandler(IAanHubRestApiClient apiClient)
     {
         _apiClient = apiClient;
-        _commitmentsV2ApiClient = commitmentsV2ApiClient;
     }
 
     public async Task<GetMemberProfileWithPreferencesQueryResult> Handle(GetMemberProfileWithPreferencesQuery request, CancellationToken cancellationToken)
@@ -49,16 +46,7 @@ public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMe
         var outputRegions = responseRegionsTask.Result;
         if (outputRegions.Regions.Any()) result.RegionName = outputRegions.Regions.Find(x => x.Id == result.RegionId)!.Area!;
 
-        result.Apprenticeship = new();
-
-        GetEmployerMemberSummaryQueryHandler handler = new(_commitmentsV2ApiClient);
-        var responseMyApprenticeship = await handler.Handle(new GetEmployerMemberSummaryQuery(outputMember.Employer!.AccountId), cancellationToken);
-
-        if (responseMyApprenticeship != null)
-        {
-            result.Apprenticeship.ActiveApprenticesCount = responseMyApprenticeship.ActiveCount;
-            result.Apprenticeship.Sectors = responseMyApprenticeship.Sectors;
-        }
+        result.AccountId = outputMember.Employer!.AccountId;
 
         return result;
     }

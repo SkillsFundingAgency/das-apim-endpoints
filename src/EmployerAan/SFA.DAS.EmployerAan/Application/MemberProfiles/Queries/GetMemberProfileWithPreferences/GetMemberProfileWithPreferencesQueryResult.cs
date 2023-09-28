@@ -5,6 +5,7 @@ namespace SFA.DAS.EmployerAan.Application.MemberProfiles.Queries.GetMemberProfil
 
 public class GetMemberProfileWithPreferencesQueryResult
 {
+    public long AccountId { get; set; }
     public string FullName { get; set; } = null!;
     public string Email { get; set; } = null!;
     public string FirstName { get; set; } = null!;
@@ -14,7 +15,6 @@ public class GetMemberProfileWithPreferencesQueryResult
     public string RegionName { get; set; } = null!;
     public MemberUserType UserType { get; set; }
     public bool IsRegionalChair { get; set; }
-    public Apprenticeship Apprenticeship { get; set; } = null!;
     public IEnumerable<MemberProfile> Profiles { get; set; } = Enumerable.Empty<MemberProfile>();
     public IEnumerable<MemberPreference> Preferences { get; set; } = Enumerable.Empty<MemberPreference>();
 }
