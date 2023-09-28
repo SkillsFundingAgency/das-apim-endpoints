@@ -19,8 +19,16 @@ namespace SFA.DAS.AparRegister.Api.Controllers
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Gets list of providers
+        /// </summary>
+        /// <remarks>
+        /// Returns full list of providers of all statuses
+        /// </remarks>
+        /// <returns></returns>
         [HttpGet]
         [Route("")]
+        [ProducesResponseType(typeof(ProvidersApiResponse), (int) HttpStatusCode.OK)]
         public async Task<IActionResult> GetProviders()
         {
             try
