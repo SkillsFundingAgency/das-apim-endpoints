@@ -27,5 +27,10 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi
         public bool HasHadDataLockSuccess { get; set; }
         public DateTime? OriginalStartDate { get; set; }
         public long ProviderId { get; set; }
+        public bool? RecognisePriorLearning { get; set; }
+        public int? TrainingTotalHours { get; set; }
+        public int? DurationReducedByHours { get; set; }
+        public int? DurationReducedBy { get; set; }
+        public int? PriceReducedBy { get; set; }
     }
 }
