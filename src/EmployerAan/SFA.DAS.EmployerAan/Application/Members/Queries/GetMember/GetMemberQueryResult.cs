@@ -6,7 +6,6 @@ public class GetMemberQueryResult
     public string Email { get; set; } = null!;
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
-    public string Status { get; set; } = null!;
     public string? OrganisationName { get; set; }
     public int? RegionId { get; set; }
     public string UserType { get; set; } = null!;
@@ -17,5 +16,3 @@ public class GetMemberQueryResult
 }
 
 public record EmployerModel(long AccountId, Guid UserRef);
-
-public record ApprenticeModel(Guid ApprenticeId);

@@ -2,4 +2,4 @@
 
 namespace SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMemberSummary;
 
-public record GetEmployerMemberSummaryQuery(long EmployerAccountId) : IRequest<GetEmployerMemberSummaryQueryResult?>;
+public record GetEmployerMemberSummaryQuery(long EmployerAccountId) : IRequest<GetEmployerMemberSummaryQueryResult>;
