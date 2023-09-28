@@ -10,7 +10,6 @@
     <PackageReference Include="MediatR" />
     <PackageReference Include="RestEase" />
     <PackageReference Include="RestEase.HttpClientFactory" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
   </ItemGroup>
 
   <ItemGroup>

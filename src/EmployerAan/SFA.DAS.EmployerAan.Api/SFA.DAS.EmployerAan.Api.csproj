@@ -12,7 +12,6 @@
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
   </ItemGroup>
 
   <ItemGroup>
