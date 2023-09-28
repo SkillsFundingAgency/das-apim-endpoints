@@ -16,11 +16,9 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.RejectAppl
         private RejectApplicationCommandHandler _handler;
         private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
         private readonly Fixture _fixture = new Fixture();
-
         private RejectApplicationCommand _command;
         private RejectApplicationRequest _rejectApplicationRequest;
      
-
         [SetUp]
         public void Setup()
         {
@@ -33,7 +31,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.RejectAppl
 
             _handler = new RejectApplicationCommandHandler(_levyTransferMatchingService.Object, Mock.Of<ILogger<RejectApplicationCommandHandler>>());
         }
-
 
         [Test]
         public async Task Application_Is_Rejected()

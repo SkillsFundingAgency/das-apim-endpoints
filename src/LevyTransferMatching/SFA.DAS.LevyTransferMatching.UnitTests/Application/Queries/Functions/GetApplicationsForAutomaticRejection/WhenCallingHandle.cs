@@ -47,7 +47,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.G
             _levyTransferMatchingServiceMock.Setup(x => x.GetApplications(It.IsAny<GetApplicationsRequest>()))
                 .ReturnsAsync(new GetApplicationsResponse { Applications = applications });
 
-
             // Act
             var result = await _handler.Handle(request, CancellationToken.None);
 
@@ -55,7 +54,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.G
             Assert.IsNotNull(result);
             Assert.That(result.Applications.Any(), Is.True);
             Assert.That(result.Applications.Count() == 2);
-
         }
 
         [Test]
@@ -73,7 +71,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.G
             _levyTransferMatchingServiceMock.Setup(x => x.GetApplications(It.IsAny<GetApplicationsRequest>()))
                 .ReturnsAsync(new GetApplicationsResponse { Applications = applications });
 
-
             // Act
             var result = await _handler.Handle(request, CancellationToken.None);
 
@@ -81,8 +78,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.G
             Assert.IsNotNull(result);
             Assert.That(result.Applications.Any(), Is.True);
             Assert.That(result.Applications.Count() == 1);
-
         }
-
     }
 }
