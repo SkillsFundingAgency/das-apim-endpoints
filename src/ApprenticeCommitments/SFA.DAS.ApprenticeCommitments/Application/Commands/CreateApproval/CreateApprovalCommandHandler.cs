@@ -71,6 +71,9 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
                 PlannedEndDate = apprentice.EndDate,
                 EmploymentEndDate = apprentice.EmploymentEndDate,
                 CommitmentsApprovedOn = command.CommitmentsApprovedOn,
+                RecognisePriorLearning = apprentice.RecognisePriorLearning,
+                DurationReducedByHours = apprentice.DurationReducedByHours,
+                DurationReducedBy = apprentice.DurationReducedBy
             });
 
             var res = new CreateApprovalResponse
@@ -107,7 +110,6 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
 
             var provider = _trainingProviderService.GetTrainingProviderDetails(
                 command.TrainingProviderId);
-
 
             return (apprenticeship, await provider, await course);
         }
