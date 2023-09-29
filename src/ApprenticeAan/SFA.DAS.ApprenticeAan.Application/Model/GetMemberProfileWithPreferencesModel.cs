@@ -43,7 +43,7 @@ public class GetMemberProfileWithPreferencesModel
 }
 public class Apprenticeship
 {
-    public string Sector { get; set; } = string.Empty;
-    public string Programme { get; set; } = string.Empty;
-    public string Level { get; set; } = string.Empty;
+    public string Sector { get; set; } = null!;
+    public string Programme { get; set; } = null!;
+    public string Level { get; set; } = null!;
 }
