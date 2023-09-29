@@ -1,4 +1,5 @@
-﻿namespace SFA.DAS.ApprenticeAan.Application.Entities;
+﻿namespace SFA.DAS.ApprenticeAan.Application.Model;
+
 public class MemberPreference
 {
     public int PreferenceId { get; set; }
