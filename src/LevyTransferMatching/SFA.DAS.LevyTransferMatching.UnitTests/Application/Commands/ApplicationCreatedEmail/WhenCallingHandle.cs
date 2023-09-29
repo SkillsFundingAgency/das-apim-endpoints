@@ -47,7 +47,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.Applicatio
             _accountUsers[0].Role = "Owner";
             _accountUsers[0].CanReceiveNotifications = true;
 
-
             _levyTransferMatchingService
                 .Setup(x => x.GetApplication(It.IsAny<GetApplicationRequest>()))
                 .ReturnsAsync(_application);
@@ -55,7 +54,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.Applicatio
             _accountsService
                 .Setup(x => x.GetAccountUsers(It.IsAny<long>()))
                 .ReturnsAsync(_accountUsers);
-
 
             _handler = new ApplicationCreatedEmailCommandHandler(
                 _levyTransferMatchingService.Object,
@@ -92,7 +90,6 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.Applicatio
             {
                 _notificationService.Verify(x => x.Send(It.Is<SendEmailCommand>(cmd =>
                          cmd.TemplateId == "PartialMatchApplicationCreated")), Times.Once);
-
             }
         }
 
@@ -110,7 +107,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.Applicatio
             foreach (var user in _accountUsers)
             {
                 _notificationService.Verify(x => x.Send(It.Is<SendEmailCommand>(cmd =>
-                        cmd.TemplateId == "DelayedApplicationCreated")), Times.Once);
+                        cmd.TemplateId == "ApplicationCreatedForDelayedPledge")), Times.Once);
             }
         }
     }

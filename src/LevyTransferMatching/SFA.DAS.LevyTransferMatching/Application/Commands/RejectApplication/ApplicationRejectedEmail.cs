@@ -11,7 +11,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication
             string reference,
             string baseUrl)
         {
-            TemplateId = "ReceiverApplicationRejected";
+            TemplateId = "TransferPledgeApplicationRejected";
             RecipientAddress = recipientEmail;
             Tokens = new Dictionary<string, string>
             {

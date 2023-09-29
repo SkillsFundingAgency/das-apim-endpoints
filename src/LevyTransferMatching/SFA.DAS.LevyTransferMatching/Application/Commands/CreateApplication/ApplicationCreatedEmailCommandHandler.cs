@@ -34,7 +34,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
             var getApplicationTask = _levyTransferMatchingService.GetApplication(new GetApplicationRequest(request.ApplicationId));
             var getAccountUsersTask = _accountsService.GetAccountUsers(request.ReceiverId);
 
-
             await Task.WhenAll(getApplicationTask, getAccountUsersTask);
 
             var application = getApplicationTask.Result;
@@ -49,7 +48,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
                 }
                 else if (application.MatchPercentage == 100 && application.AutomaticApprovalOption == AutomaticApprovalOption.DelayedAutoApproval)
                 {
-                    templateID = "DelayedApplicationCreated";
+                    templateID = "ApplicationCreatedForDelayedPledge";
                 }
 
                 var email = new ApplicationCreatedEmail(user.Email, user.Name, request.EncodedApplicationId, templateID);
