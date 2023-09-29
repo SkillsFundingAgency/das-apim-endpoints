@@ -18,7 +18,9 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
         {
             _fixture = new Fixture();
             _server = WireMockServer.StartWithAdminInterface(port, true);
-            _apprentice = _fixture.Create<Apprentice>();
+            _apprentice = _fixture.Build<Apprentice>()
+                .With(x=>x.TermsOfUseAccepted, true)
+                .Create();
         }
 
         public ApprenticeAccountsApiBuilder WithAnyApprentice()
