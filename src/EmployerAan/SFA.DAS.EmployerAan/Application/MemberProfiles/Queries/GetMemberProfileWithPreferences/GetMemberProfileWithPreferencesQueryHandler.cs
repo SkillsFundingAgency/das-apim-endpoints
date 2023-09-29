@@ -15,15 +15,15 @@ public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMe
 
     public async Task<GetMemberProfileWithPreferencesQueryResult> Handle(GetMemberProfileWithPreferencesQuery request, CancellationToken cancellationToken)
     {
-        var responseMemberProfileWithPreferenceTask = _apiClient.GetMemberProfileWithPreferences(request.MemberId, request.RequestedByMemberId, request.IsPublicView, cancellationToken);
-        var responseMemberTask = _apiClient.GetMember(request.MemberId, cancellationToken);
-        var responseRegionsTask = _apiClient.GetRegions(cancellationToken);
+        var memberProfileWithPreferenceResponse = _apiClient.GetMemberProfileWithPreferences(request.MemberId, request.RequestedByMemberId, request.IsPublicView, cancellationToken);
+        var memberResponse = _apiClient.GetMember(request.MemberId, cancellationToken);
+        var regionsResponse = _apiClient.GetRegions(cancellationToken);
 
-        await Task.WhenAll(responseMemberProfileWithPreferenceTask, responseMemberTask, responseRegionsTask);
+        await Task.WhenAll(memberProfileWithPreferenceResponse, memberResponse, regionsResponse);
 
         GetMemberProfileWithPreferencesQueryResult result = new();
 
-        var outputMemberProfileWithPreferenceTask = responseMemberProfileWithPreferenceTask.Result;
+        var outputMemberProfileWithPreferenceTask = memberProfileWithPreferenceResponse.Result;
 
         if (outputMemberProfileWithPreferenceTask.Profiles.Any())
             result.Profiles = outputMemberProfileWithPreferenceTask.Profiles;
@@ -31,7 +31,7 @@ public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMe
         if (outputMemberProfileWithPreferenceTask.Preferences.Any())
             result.Preferences = outputMemberProfileWithPreferenceTask.Preferences;
 
-        var outputMember = responseMemberTask.Result;
+        var outputMember = memberResponse.Result;
 
         result.FullName = outputMember.FullName;
         result.FirstName = outputMember.FirstName;
@@ -41,9 +41,9 @@ public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMe
         result.RegionId = (int)outputMember.RegionId!;
         result.UserType = Enum.Parse<MemberUserType>(outputMember.UserType);
 
-        result.IsRegionalChair = outputMember.IsRegionalChair;
+        result.IsRegionalChair = (bool)outputMember.IsRegionalChair!;
 
-        var outputRegions = responseRegionsTask.Result;
+        var outputRegions = regionsResponse.Result;
         if (outputRegions.Regions.Any()) result.RegionName = outputRegions.Regions.Find(x => x.Id == result.RegionId)!.Area!;
 
         result.AccountId = outputMember.Employer!.AccountId;

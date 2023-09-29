@@ -7,7 +7,8 @@ using SFA.DAS.EmployerAan.Models;
 
 namespace SFA.DAS.EmployerAan.Api.Controllers;
 
-[Route("Members")]
+[ApiController]
+[Route("members")]
 public class MemberProfilesController : ControllerBase
 {
     private readonly IMediator _mediator;

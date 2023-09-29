@@ -33,8 +33,8 @@ public class MemberProfilesControllerTests
         mockMediator.Setup(m => m.Send(It.IsAny<GetMemberProfileWithPreferencesQuery>(), cancellationToken)).ReturnsAsync(memberProfileWithPreferencesQueryResult);
         mockMediator.Setup(m => m.Send(employerMemberSummaryQuery, cancellationToken)).ReturnsAsync(employerMemberSummaryQueryResult);
 
-        var controller = new MemberProfilesController(mockMediator.Object);
-        var result = await controller.GetMemberProfileWithPreferences(memberId, requestedByMemberId, cancellationToken, isPublicView);
+        var sut = new MemberProfilesController(mockMediator.Object);
+        var result = await sut.GetMemberProfileWithPreferences(memberId, requestedByMemberId, cancellationToken, isPublicView);
 
         result.As<OkObjectResult>().Value.Should().BeEquivalentTo(response);
     }
