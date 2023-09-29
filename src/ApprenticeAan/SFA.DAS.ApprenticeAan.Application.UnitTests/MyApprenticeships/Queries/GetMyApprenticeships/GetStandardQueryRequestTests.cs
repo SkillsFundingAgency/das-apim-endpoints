@@ -5,8 +5,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MyApprenticeships.Queries.
 
 public class GetStandardQueryRequestTests
 {
-    [Test]
-    [AutoData]
+    [Test, AutoData]
     public void Constructor_BuildsRequest(string standardUid)
     {
         var request = new GetStandardQueryRequest(standardUid);

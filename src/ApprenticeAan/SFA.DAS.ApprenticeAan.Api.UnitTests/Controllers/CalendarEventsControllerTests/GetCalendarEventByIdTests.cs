@@ -8,41 +8,40 @@ using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEventB
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.CalendarEventsControllerTests
+namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.CalendarEventsControllerTests;
+
+public class GetCalendarEventByIdTests
 {
-    public class GetCalendarEventByIdTests
+    [Test, RecursiveMoqAutoData]
+    public async Task GetCalendarEventById_OkResponse_ReturnsOkWithEvent(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Frozen] GetCalendarEventByIdQuery query,
+        CalendarEvent calendarEvent,
+        CancellationToken cancellationToken)
     {
-        [Test, RecursiveMoqAutoData]
-        public async Task GetCalendarEventById_OkResponse_ReturnsOkWithEvent(
-            [Frozen] Mock<IMediator> mediatorMock,
-            [Frozen] GetCalendarEventByIdQuery query,
-            CalendarEvent calendarEvent,
-            CancellationToken cancellationToken)
-        {
-            mediatorMock.Setup(m => m.Send(It.IsAny<GetCalendarEventByIdQuery>(), cancellationToken))
-                        .ReturnsAsync(calendarEvent);
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetCalendarEventByIdQuery>(), cancellationToken))
+                    .ReturnsAsync(calendarEvent);
 
-            var sut = new CalendarEventsController(mediatorMock.Object);
+        var sut = new CalendarEventsController(mediatorMock.Object);
 
-            var result = await sut.GetCalendarEventById(query.CalendarEventId, query.RequestedByMemberId, cancellationToken);
+        var result = await sut.GetCalendarEventById(query.CalendarEventId, query.RequestedByMemberId, cancellationToken);
 
-            result.As<OkObjectResult>().Value.Should().Be(calendarEvent);
-        }
+        result.As<OkObjectResult>().Value.Should().Be(calendarEvent);
+    }
 
-        [Test, RecursiveMoqAutoData]
-        public async Task GetCalendarEventById_NullResponse_ReturnsNotFound(
-            [Frozen] Mock<IMediator> mediatorMock,
-            [Frozen] GetCalendarEventByIdQuery query,
-            CancellationToken cancellationToken)
-        {
-            mediatorMock.Setup(m => m.Send(It.IsAny<GetCalendarEventByIdQuery>(), cancellationToken))
-                        .ReturnsAsync(() => null!);
+    [Test, RecursiveMoqAutoData]
+    public async Task GetCalendarEventById_NullResponse_ReturnsNotFound(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Frozen] GetCalendarEventByIdQuery query,
+        CancellationToken cancellationToken)
+    {
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetCalendarEventByIdQuery>(), cancellationToken))
+                    .ReturnsAsync(() => null!);
 
-            var sut = new CalendarEventsController(mediatorMock.Object);
+        var sut = new CalendarEventsController(mediatorMock.Object);
 
-            var result = await sut.GetCalendarEventById(query.CalendarEventId, query.RequestedByMemberId, cancellationToken);
+        var result = await sut.GetCalendarEventById(query.CalendarEventId, query.RequestedByMemberId, cancellationToken);
 
-            result.Should().BeOfType<NotFoundResult>();
-        }
+        result.Should().BeOfType<NotFoundResult>();
     }
 }

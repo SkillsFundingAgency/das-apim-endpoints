@@ -5,7 +5,6 @@ namespace SFA.DAS.ApprenticeAan.Application.Services;
 
 public static class QueryStringParameterBuilder
 {
-
     public static Dictionary<string, string[]> BuildQueryStringParameters(GetCalendarEventsQuery request)
     {
         var parameters = new Dictionary<string, string[]>();

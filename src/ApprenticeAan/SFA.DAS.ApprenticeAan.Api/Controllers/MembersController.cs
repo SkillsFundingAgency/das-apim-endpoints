@@ -5,6 +5,7 @@ using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMembers;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
+[ApiController]
 [Route("[controller]")]
 public class MembersController : ControllerBase
 {

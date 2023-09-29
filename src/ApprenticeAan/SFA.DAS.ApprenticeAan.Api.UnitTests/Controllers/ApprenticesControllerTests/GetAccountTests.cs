@@ -11,8 +11,7 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.ApprenticesControllerT
 
 public class GetAccountTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task GetAccount_InvokesMediator(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ApprenticesController sut,
@@ -24,8 +23,7 @@ public class GetAccountTests
         mediatorMock.Verify(m => m.Send(It.Is<GetApprenticeAccountQuery>(q => q.ApprenticeId == apprenticeId), cancellationToken));
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task GetAccount_ApprenticeFound_ReturnsOkResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ApprenticesController sut,
@@ -41,8 +39,7 @@ public class GetAccountTests
         response.As<OkObjectResult>().Value.Should().Be(getApprenticeAccountQueryResult);
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task GetAccount_ApprenticeNotFound_ReturnsNotFoundResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ApprenticesController sut,

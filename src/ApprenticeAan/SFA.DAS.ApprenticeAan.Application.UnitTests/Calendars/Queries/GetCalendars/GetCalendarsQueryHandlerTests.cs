@@ -2,16 +2,15 @@
 using FluentAssertions;
 using Moq;
 using SFA.DAS.ApprenticeAan.Application.Calendars.Queries.GetCalendars;
-using SFA.DAS.ApprenticeAan.Application.Entities;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
+using SFA.DAS.ApprenticeAan.Application.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Calendars.Queries.GetCalendars;
 
 public class GeCalendarsQueryHandlerTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_ReturnAllCalendars(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         GetCalendarsQueryHandler handler,

@@ -1,4 +1,5 @@
 ﻿namespace SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMembers;
+
 public class GetMembersQueryResult
 {
     public int Page { get; set; }

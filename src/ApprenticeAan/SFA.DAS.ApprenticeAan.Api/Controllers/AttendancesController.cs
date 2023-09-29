@@ -4,8 +4,9 @@ using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
+[ApiController]
 [Route("[controller]")]
-public class AttendancesController
+public class AttendancesController : ControllerBase
 {
     private readonly IAanHubRestApiClient _outerApiClient;
 

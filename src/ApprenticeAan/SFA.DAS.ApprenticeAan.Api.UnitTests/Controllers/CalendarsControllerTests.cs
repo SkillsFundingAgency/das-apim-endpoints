@@ -5,15 +5,14 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.ApprenticeAan.Api.Controllers;
 using SFA.DAS.ApprenticeAan.Application.Calendars.Queries.GetCalendars;
-using SFA.DAS.ApprenticeAan.Application.Entities;
+using SFA.DAS.ApprenticeAan.Application.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers;
 
 public class CalendarsControllerTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task And_MediatorCommandSuccessful_Then_ReturnOk(
         List<Calendar> response,
         [Frozen] Mock<IMediator> mockMediator,

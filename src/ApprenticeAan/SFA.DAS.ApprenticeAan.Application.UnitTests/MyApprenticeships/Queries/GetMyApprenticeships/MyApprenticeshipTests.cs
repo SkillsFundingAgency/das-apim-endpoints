@@ -5,8 +5,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MyApprenticeships.Queries.
 
 public class MyApprenticeshipTests
 {
-    [Test]
-    [AutoData]
+    [Test, AutoData]
     public void Operator_ConvertsFrom_MyApprenticeshipResponse(MyApprenticeshipResponse source)
     {
         MyApprenticeship sut = source;

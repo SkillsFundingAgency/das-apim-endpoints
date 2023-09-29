@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Notifications;
-using System.Net;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class NotificationsController : Controller
+public class NotificationsController : ControllerBase
 {
     private readonly IAanHubRestApiClient _outerApiClient;
 

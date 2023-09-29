@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.ApprenticeAan.Application.Entities;
+﻿namespace SFA.DAS.ApprenticeAan.Application.Models;
 
 public class Calendar
 {

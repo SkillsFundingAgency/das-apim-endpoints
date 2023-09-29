@@ -4,8 +4,9 @@ using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
+[ApiController]
 [Route("[controller]")]
-public class RegionsController : Controller
+public class RegionsController : ControllerBase
 {
     private readonly IMediator _mediator;
 

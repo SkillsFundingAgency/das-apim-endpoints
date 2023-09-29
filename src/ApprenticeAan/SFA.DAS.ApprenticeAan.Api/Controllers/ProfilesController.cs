@@ -4,6 +4,7 @@ using SFA.DAS.ApprenticeAan.Application.Profiles.Queries.GetProfilesByUserType;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
+[ApiController]
 [Route("[controller]")]
 public class ProfilesController : ControllerBase
 {

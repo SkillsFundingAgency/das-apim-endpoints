@@ -9,8 +9,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Profiles.Queries.GetProfil
 
 public class GetProfilesByUserTypeQueryHandlerTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_ReturnAllProfiles(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         GetProfilesByUserTypeQueryHandler handler,

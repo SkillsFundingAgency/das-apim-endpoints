@@ -5,6 +5,7 @@ using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprentic
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
+[ApiController]
 [Route("[controller]")]
 public class MyApprenticeshipController : ControllerBase
 {

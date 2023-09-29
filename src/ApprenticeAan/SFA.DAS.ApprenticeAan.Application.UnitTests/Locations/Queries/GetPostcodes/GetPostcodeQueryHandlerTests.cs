@@ -12,8 +12,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Locations.Queries.GetPostc
 
 public class GetPostcodeQueryHandlerTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_ReturnsCoordinatesFromTheFirstAddress(
         GetPostcodeQuery query,
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
@@ -31,8 +30,7 @@ public class GetPostcodeQueryHandlerTests
 
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_PostcodesNotFound_ReturnsEmptyResult(
         GetPostcodeQuery query,
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
@@ -48,8 +46,7 @@ public class GetPostcodeQueryHandlerTests
         result.Should().BeNull();
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_PostcodesFoundWithLatitudeNull_ReturnsEmptyResult(
         GetPostcodeQuery query,
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
@@ -68,8 +65,7 @@ public class GetPostcodeQueryHandlerTests
         result.Should().BeNull();
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_PostcodesFoundWithLongitudeNull_ReturnsEmptyResult(
         GetPostcodeQuery query,
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,

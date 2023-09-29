@@ -13,8 +13,7 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.CalendarEventsControll
 
 public class GetCalendarEventsTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Get_InvokesQueryHandler(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] CalendarEventsController sut,

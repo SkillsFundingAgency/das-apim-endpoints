@@ -12,8 +12,7 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers;
 
 public class MyApprenticeshipControllerTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task GetMyApprenticeship_ApprenticeFound_ReturnsOkResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] MyApprenticeshipController sut,
@@ -30,8 +29,7 @@ public class MyApprenticeshipControllerTests
         mediatorMock.Verify(m => m.Send(It.Is<GetMyApprenticeshipQuery>(q => q.ApprenticeId == apprenticeId), cancellationToken));
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task GetMyApprenticeship_MyApprenticeshipNotFound_ReturnsNotFound(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] MyApprenticeshipController sut,

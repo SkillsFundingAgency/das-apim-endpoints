@@ -1,13 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.Calendars.Queries.GetCalendars;
-using SFA.DAS.ApprenticeAan.Application.Entities;
+using SFA.DAS.ApprenticeAan.Application.Models;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CalendarsController : Controller
+public class CalendarsController : ControllerBase
 {
     private readonly IMediator _mediator;
 

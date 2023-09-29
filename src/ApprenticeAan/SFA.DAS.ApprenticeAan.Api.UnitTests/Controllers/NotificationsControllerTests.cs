@@ -1,16 +1,17 @@
 ﻿using System.Net;
 using AutoFixture.NUnit3;
-using FluentAssertions.Execution;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using RestEase;
 using SFA.DAS.ApprenticeAan.Api.Controllers;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Notifications;
 using SFA.DAS.Testing.AutoFixture;
-using RestEase;
 
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers;
+
 public class NotificationsControllerTests
 {
     [Test, MoqAutoData]

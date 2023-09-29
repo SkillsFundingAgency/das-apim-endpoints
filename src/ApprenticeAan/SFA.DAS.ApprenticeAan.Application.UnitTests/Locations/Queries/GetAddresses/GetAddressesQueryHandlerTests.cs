@@ -12,8 +12,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Locations.Queries.GetAddre
 
 public class GetAddressesQueryHandlerTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_ReturnAddressesBasedOnQuery(
         GetAddressesQuery query,
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
@@ -29,8 +28,7 @@ public class GetAddressesQueryHandlerTests
         result.Addresses.Count().Should().Be(apiResponse.Addresses.Count());
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_AddressesNotFound_ReturnsEmptyResult(
         GetAddressesQuery query,
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,

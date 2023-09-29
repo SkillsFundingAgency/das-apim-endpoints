@@ -4,9 +4,9 @@ using SFA.DAS.ApprenticeAan.Api.Models;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Models;
+
 public class GetCalendarEventsRequestModelTests
 {
-
     [Test, AutoData]
     public void Operator_PopulatesQueryFromModel(GetCalendarEventsRequestModel model)
     {

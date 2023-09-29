@@ -1,9 +1,8 @@
-﻿using SFA.DAS.ApprenticeAan.Application.Entities;
+﻿using SFA.DAS.ApprenticeAan.Application.Models;
 
-namespace SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions
+namespace SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
+
+public class GetRegionsQueryResult
 {
-    public class GetRegionsQueryResult
-    {
-        public List<Region> Regions { get; set; } = new();
-    }
+    public List<Region> Regions { get; set; } = new();
 }

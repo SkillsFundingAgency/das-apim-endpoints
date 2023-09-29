@@ -5,8 +5,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MyApprenticeships.Queries.
 
 public class GetFrameworkQueryRequestTests
 {
-    [Test]
-    [AutoData]
+    [Test, AutoData]
     public void Constructor_BuildsRequest(string trainingCode)
     {
         var request = new GetFrameworkQueryRequest(trainingCode);

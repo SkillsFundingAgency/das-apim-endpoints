@@ -9,6 +9,7 @@ using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
+[ApiController]
 [Route("[controller]")]
 public class CalendarEventsController : ControllerBase
 {

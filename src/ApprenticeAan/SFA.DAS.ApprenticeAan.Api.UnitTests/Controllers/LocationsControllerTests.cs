@@ -12,8 +12,7 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers;
 
 public class LocationsControllerTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task GetAddress_InvokesMediator(
         GetAddressesQueryResult response,
         [Frozen] Mock<IMediator> mockMediator,
@@ -30,8 +29,7 @@ public class LocationsControllerTests
             .Verify(m => m.Send(It.Is<GetAddressesQuery>(q => q.Query == query), It.IsAny<CancellationToken>()));
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task GetAddresses_ReturnsAddresses(
         GetAddressesQueryResult response,
         [Frozen] Mock<IMediator> mockMediator,
@@ -48,8 +46,7 @@ public class LocationsControllerTests
         result.As<OkObjectResult>().Value.Should().BeEquivalentTo(response);
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task GetAddresses_NoMatch_ReturnOkWithEmptyArray(
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] LocationsController sut)
@@ -65,8 +62,7 @@ public class LocationsControllerTests
         result.As<OkObjectResult>().Value.As<GetAddressesQueryResult>().Addresses.Should().BeEmpty();
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task GetCoordinates_InvokesMediator(
         GetPostcodeQueryResult response,
         [Frozen] Mock<IMediator> mockMediator,
@@ -80,8 +76,7 @@ public class LocationsControllerTests
         mockMediator.Verify(m => m.Send(It.Is<GetPostcodeQuery>(q => q.PostCode == postCode), It.IsAny<CancellationToken>()));
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task GetCoordinates_ReturnsCoordinates(
         GetPostcodeQueryResult response,
         [Frozen] Mock<IMediator> mockMediator,
@@ -98,8 +93,7 @@ public class LocationsControllerTests
         result.As<OkObjectResult>().Value.Should().BeEquivalentTo(response);
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task GetCoordinates_NoPostcodeMatch_ReturnNotFoundResponse(
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] LocationsController sut)
@@ -112,5 +106,4 @@ public class LocationsControllerTests
 
         result.As<NotFoundResult>().Should().NotBeNull();
     }
-
 }

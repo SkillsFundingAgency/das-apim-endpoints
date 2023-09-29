@@ -1,8 +1,7 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions
+namespace SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
+
+public class GetRegionsQuery : IRequest<GetRegionsQueryResult>
 {
-    public class GetRegionsQuery : IRequest<GetRegionsQueryResult>
-    {
-    }
 }

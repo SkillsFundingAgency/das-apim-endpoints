@@ -5,8 +5,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MyApprenticeships.Queries.
 
 public class GetMyApprenticeshipRequestTests
 {
-    [Test]
-    [AutoData]
+    [Test, AutoData]
     public void Constructor_BuildsRequest(Guid id)
     {
         var request = new GetMyApprenticeshipRequest(id);

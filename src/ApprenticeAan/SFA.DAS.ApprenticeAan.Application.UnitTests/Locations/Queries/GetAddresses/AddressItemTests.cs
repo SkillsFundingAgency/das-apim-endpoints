@@ -6,8 +6,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Locations.Queries.GetAddre
 
 public class AddressItemTests
 {
-    [Test]
-    [AutoData]
+    [Test, AutoData]
     public void Operator_ConvertsFrom_GetAddressesListItem(GetAddressesListItem source)
     {
         AddressItem sut = source;

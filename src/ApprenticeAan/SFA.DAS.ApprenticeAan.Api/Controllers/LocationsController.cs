@@ -5,6 +5,7 @@ using SFA.DAS.ApprenticeAan.Application.Locations.Queries.GetPostcodes;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
+[ApiController]
 [Route("[controller]")]
 public class LocationsController : ControllerBase
 {

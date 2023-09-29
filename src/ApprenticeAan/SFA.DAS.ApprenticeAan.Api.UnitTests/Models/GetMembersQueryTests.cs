@@ -4,6 +4,7 @@ using SFA.DAS.ApprenticeAan.Api.Models;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMembers;
 
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Models;
+
 public class GetMembersRequestModelTests
 {
     [Test, AutoData]
