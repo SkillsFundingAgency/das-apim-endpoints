@@ -61,21 +61,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.Applicatio
                 _notificationService.Object,
                 _accountsService.Object);
         }
-
-        [Test]
-        public async Task Handle_SendsEmail_WhenApplicationCreated()
-        {
-            await _handler.Handle(_command, CancellationToken.None);
-
-            _levyTransferMatchingService.Verify(x => x.GetApplication(It.IsAny<GetApplicationRequest>()), Times.Once);
-            _accountsService.Verify(x => x.GetAccountUsers(It.IsAny<long>()), Times.Once);
-
-            foreach (var user in _accountUsers)
-            {
-                _notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Once);
-            }
-        }
-
+       
         [Test]
         public async Task Handle_SendsEmailWithCorrectTemplate_Match_Percentage_Less_than_100()
         {

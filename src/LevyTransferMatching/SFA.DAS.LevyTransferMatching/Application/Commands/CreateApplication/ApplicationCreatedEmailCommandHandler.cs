@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.Notifications.Messages.Commands;
@@ -50,10 +51,12 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
                 {
                     templateID = "ApplicationCreatedForDelayedPledge";
                 }
-
-                var email = new ApplicationCreatedEmail(user.Email, user.Name, request.EncodedApplicationId, templateID);
-                var command = new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens);
-                await _notificationService.Send(command);
+                if (!string.IsNullOrEmpty(templateID))
+                {
+                    var email = new ApplicationCreatedEmail(user.Email, user.Name, request.EncodedApplicationId, templateID);
+                    var command = new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens);
+                    await _notificationService.Send(command);
+                }               
             }
 
             return Unit.Value;
