@@ -9,12 +9,14 @@ using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationCreatedForImmediateAutoApproval;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationWithdrawnAfterAcceptance;
 using SFA.DAS.LevyTransferMatching.Application.Commands.AutoApproveApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.AutoClosePledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RecalculateApplicationCostProjections;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.RejectPledgeApplications;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SendEmails;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Functions;
@@ -299,6 +301,35 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             await _mediator.Send(new ApplicationCreatedForImmediateAutoApprovalCommand
             {
                 ApplicationId = request.ApplicationId,
+                PledgeId = request.PledgeId
+            });
+
+            return Ok();
+        }
+        
+        [Route("close-pledge")]
+        [HttpPost]
+        public async Task<IActionResult> AutoClosePledge(AutoClosePledgeRequest request)
+        {
+            var result  = await _mediator.Send(new AutoClosePledgeCommand
+            {
+                PledgeId = request.PledgeId,
+                ApplicationId = request.ApplicationId
+            });
+
+            if (result.IsSuccess())
+            {
+                return Ok();
+            }
+            return NotFound();
+        }
+
+        [Route("reject-pledge-applications")]
+        [HttpPost]
+        public async Task<IActionResult> RejectPledgeApplications(RejectPledgeApplicationsRequest request)
+        {
+            await _mediator.Send(new RejectPledgeApplicationsCommand
+            {
                 PledgeId = request.PledgeId
             });
 
