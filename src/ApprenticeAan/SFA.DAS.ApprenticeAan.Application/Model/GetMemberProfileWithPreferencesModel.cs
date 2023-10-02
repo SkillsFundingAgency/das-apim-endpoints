@@ -35,9 +35,12 @@ public class GetMemberProfileWithPreferencesModel
 
         if (myApprenticeship.TrainingCourse != null)
         {
-            Apprenticeship.Level = myApprenticeship.TrainingCourse.Level.ToString();
-            Apprenticeship.Sector = myApprenticeship.TrainingCourse.Sector!;
-            Apprenticeship.Programme = myApprenticeship.TrainingCourse.Name!;
+            Apprenticeship = new Apprenticeship
+            {
+                Level = myApprenticeship.TrainingCourse.Level.ToString(),
+                Sector = myApprenticeship.TrainingCourse.Sector!,
+                Programme = myApprenticeship.TrainingCourse.Name!
+            };
         }
     }
 }

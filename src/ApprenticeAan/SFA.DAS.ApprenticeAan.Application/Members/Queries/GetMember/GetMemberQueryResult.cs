@@ -11,7 +11,7 @@ public class GetMemberQueryResult
     public string UserType { get; set; } = null!;
     public bool? IsRegionalChair { get; set; }
     public string FullName { get; set; } = null!;
-    public ApprenticeModel Apprentice { get; set; }
+    public ApprenticeModel Apprentice { get; set; } = null!;
 }
 
 public record ApprenticeModel(Guid ApprenticeId);
