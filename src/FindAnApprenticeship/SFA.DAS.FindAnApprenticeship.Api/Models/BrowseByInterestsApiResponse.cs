@@ -14,14 +14,16 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
             {
                 Routes = source.Routes.Select(r => new RouteViewModel
                 {
-                    Route = r.Route
+                    Name = r.Name,
+                    Id = r.Id
                 }).ToList()
             };
         }
 
         public class RouteViewModel
         {
-             public string Route { get; set; }
+             public string Name { get; set; }
+             public int Id { get; set; }
         }
 
     }
