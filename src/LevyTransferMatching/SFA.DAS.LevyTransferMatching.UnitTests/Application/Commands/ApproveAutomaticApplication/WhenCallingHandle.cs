@@ -19,8 +19,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.ApproveAut
 
         private AutoApproveApplicationCommand _command;
         private ApproveApplicationRequest _approveApplicationRequest;
-     
-
+        
         [SetUp]
         public void Setup()
         {
@@ -33,8 +32,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.ApproveAut
 
             _handler = new AutoApproveApplicationCommandHandler(_levyTransferMatchingService.Object, Mock.Of<ILogger<AutoApproveApplicationCommandHandler>>());
         }
-
-
+        
         [Test]
         public async Task Application_Is_Approved()
         {
@@ -49,7 +47,5 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.ApproveAut
                  )),
                 Times.Once);
         }
-
-      
     }
 }

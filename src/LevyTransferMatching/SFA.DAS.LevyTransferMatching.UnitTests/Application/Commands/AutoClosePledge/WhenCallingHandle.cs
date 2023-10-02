@@ -20,19 +20,18 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.AutoCloseP
     {
         private AutoClosePledgeCommandHandler _handler;
         private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
-        private Fixture _fixture = new Fixture();
         private Mock<ILogger<AutoClosePledgeCommandHandler>> _loggerMock;
         private AutoClosePledgeCommand _command;
         private ApiResponse<ClosePledgeRequest> _closePledgeResponse;
-        
+        private readonly Fixture _fixture = new Fixture();
+
         [SetUp]
         public void Setup()
         {
             _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
             _loggerMock = new Mock<ILogger<AutoClosePledgeCommandHandler>>();
             _handler = new AutoClosePledgeCommandHandler(_levyTransferMatchingService.Object, _loggerMock.Object);
-            _fixture = new Fixture();
-            _command = new AutoClosePledgeCommand();
+            _command = _fixture.Create<AutoClosePledgeCommand>();
         }
         
         [Test]

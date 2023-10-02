@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using System.Threading.Tasks;
@@ -12,8 +12,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectPledgeApplicat
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly ILogger<RejectPledgeApplicationsCommandHandler> _logger;
-
-
+        
         public RejectPledgeApplicationsCommandHandler(ILevyTransferMatchingService levyTransferMatchingService, ILogger<RejectPledgeApplicationsCommandHandler> logger)
         {
             _logger = logger;
