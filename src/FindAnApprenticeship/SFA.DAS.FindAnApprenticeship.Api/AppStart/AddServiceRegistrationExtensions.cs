@@ -14,11 +14,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
         {
             services.AddHttpClient();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
-
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
             services.AddTransient<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>, FindApprenticeshipApiClient>();
-            services.AddTransient(typeof(ICoursesApiClient<CoursesApiConfiguration>), typeof(CourseApiClient));
+            services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
         }
     }
