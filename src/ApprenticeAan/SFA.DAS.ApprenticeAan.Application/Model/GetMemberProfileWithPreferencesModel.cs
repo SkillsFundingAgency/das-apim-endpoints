@@ -15,7 +15,7 @@ public class GetMemberProfileWithPreferencesModel
     public string RegionName { get; set; }
     public MemberUserType UserType { get; set; }
     public bool IsRegionalChair { get; set; }
-    public Apprenticeship Apprenticeship { get; set; } = new();
+    public Apprenticeship? Apprenticeship { get; set; }
     public IEnumerable<MemberProfile> Profiles { get; set; }
     public IEnumerable<MemberPreference> Preferences { get; set; }
 
