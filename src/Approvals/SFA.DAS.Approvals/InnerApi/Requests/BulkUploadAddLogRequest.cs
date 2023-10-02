@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Approvals.InnerApi.Requests
 {
-    public class BulkUploadAddLogRequest
+    public class BulkUploadAddLogRequest : SaveDataRequest
     {
         public long ProviderId { get; set; }
         public string FileName { get; set; }

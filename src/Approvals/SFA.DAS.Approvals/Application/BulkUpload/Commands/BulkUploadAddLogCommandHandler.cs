@@ -26,7 +26,8 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
                 FileName = command.FileName,
                 RplCount = command.RplCount,
                 RowCount = command.RowCount,
-                FileContent = command.FileContent
+                FileContent = command.FileContent,
+                UserInfo = command.UserInfo
             };
 
             var result = await _apiClient.PostWithResponseCode<GetBulkUploadAddLogResponse>(
