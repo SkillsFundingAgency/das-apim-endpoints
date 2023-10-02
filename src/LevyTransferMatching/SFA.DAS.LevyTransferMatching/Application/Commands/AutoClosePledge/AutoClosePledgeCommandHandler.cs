@@ -33,7 +33,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.AutoClosePledge
             var application = getApplicationTask.Result;
             var pledge = getPledgeTask.Result;
 
-            if (!CheckRemainingPledgeBalancePostApproval(pledge.RemainingAmount, application.Amount))
+            if (!IsPledgeToBeClosedAfterApproval(pledge.RemainingAmount, application.Amount))
             {
                 return HttpStatusCode.NotFound;
             }
@@ -48,7 +48,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.AutoClosePledge
             return closePledgeResponse.StatusCode;
         }
         
-        private bool CheckRemainingPledgeBalancePostApproval(int remainingPledgeBalance, int cost)
+        private bool IsPledgeToBeClosedAfterApproval(int remainingPledgeBalance, int cost)
         {
             var pledgeBalancePostApproval = remainingPledgeBalance - cost;
             return pledgeBalancePostApproval >= 0 && pledgeBalancePostApproval < 2000;
