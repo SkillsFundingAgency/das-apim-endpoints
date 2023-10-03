@@ -3,6 +3,7 @@ using SFA.DAS.EmployerAan.Application.Services;
 using SFA.DAS.EmployerAan.Infrastructure;
 
 namespace SFA.DAS.EmployerAan.Application.Members.Queries.GetMembers;
+
 public class GetMembersQueryHandler : IRequestHandler<GetMembersQuery, GetMembersQueryResult?>
 {
     private readonly IAanHubRestApiClient _apiClient;

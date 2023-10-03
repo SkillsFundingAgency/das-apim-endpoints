@@ -2,11 +2,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Forecasting.Application.Pledges.Constants;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using ApplicationStatus = SFA.DAS.Forecasting.Application.Pledges.Constants.ApplicationStatus;
 
 namespace SFA.DAS.Forecasting.Application.Pledges.Queries.GetApplications
 {
