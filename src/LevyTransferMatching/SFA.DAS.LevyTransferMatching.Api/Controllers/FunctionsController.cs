@@ -307,7 +307,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             return Ok();
         }
         
-        [Route("close-pledge")]
+        [Route("auto-close-pledge")]
         [HttpPost]
         public async Task<IActionResult> AutoClosePledge(AutoClosePledgeRequest request)
         {
