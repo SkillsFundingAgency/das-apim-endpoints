@@ -19,6 +19,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_EmployerAccountTaskList_From_Mediator(
+            long accountId,
             string hashedAccountId,
             GetEmployerAccountTaskListQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -30,7 +31,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetEmployerAccountTaskList(hashedAccountId) as ObjectResult;
+            var controllerResult = await controller.GetEmployerAccountTaskList(accountId, hashedAccountId) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -41,17 +42,19 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
 
         [Test, MoqAutoData]
         public async Task And_Then_No_EmployerAccountTaskList_Are_Returned_From_Mediator(
+            long accountId,
             string hashedAccountId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] AccountsController controller)
         {
-            var controllerResult = await controller.GetEmployerAccountTaskList(hashedAccountId) as NotFoundResult;
+            var controllerResult = await controller.GetEmployerAccountTaskList(accountId, hashedAccountId) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
+            long accountId,
             string hashedAccountId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] AccountsController controller)
@@ -62,7 +65,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetEmployerAccountTaskList(hashedAccountId) as BadRequestResult;
+            var controllerResult = await controller.GetEmployerAccountTaskList(accountId, hashedAccountId) as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }

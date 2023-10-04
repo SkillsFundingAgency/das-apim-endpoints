@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,13 +18,21 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.AccountUsers
     public class WhenHandlingGetEmployerAccountTaskListQuery
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Query_Is_Handled_And_Data_Returned(
+        public async Task When_HasProviders_And_Permissions_ThenReturned(
             GetEmployerAccountTaskListQuery query,
             GetProviderAccountLegalEntitiesResponse providerRelationshipResponse,
-            [Frozen]
-            Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipApiClient,
+            GetAccountProvidersResponse accountProvidersResponse,
+            [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipApiClient,
             GetEmployerAccountTaskListQueryHandler handler)
         {
+            providerRelationshipApiClient
+                .Setup(x =>
+                    x.Get<GetAccountProvidersResponse>(It.Is<GetAccountProvidersRequest>(
+                        c =>
+                            c.GetUrl.Equals(
+                                $"accounts/{query.AccountId}/providers"))))
+                .ReturnsAsync(accountProvidersResponse);
+            
             providerRelationshipApiClient
                 .Setup(x =>
                     x.Get<GetProviderAccountLegalEntitiesResponse>(It.Is<GetEmployerAccountProviderPermissionsRequest>(
@@ -34,33 +43,27 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.AccountUsers
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.EmployerAccountLegalEntityPermissions
-                .Should()
-                .BeEquivalentTo(
-                    providerRelationshipResponse.AccountProviderLegalEntities, 
-                    opts 
-                        => opts
-                            .Excluding(x => x.AccountId)
-                            .Excluding(x => x.AccountPublicHashedId)
-                            .Excluding(x => x.AccountProviderId)
-                            .Excluding(x => x.AccountLegalEntityId)
-                            .Excluding(x => x.AccountLegalEntityName)
-                            .Excluding(x => x.AccountName)
-                        );
-
-            actual.EmployerAccountLegalEntityPermissions.First().Name.Should()
-                .Be(providerRelationshipResponse.AccountProviderLegalEntities.First().AccountLegalEntityName);
+            actual.HasPermissions.Should().BeTrue();
         }
         
         [Test, MoqAutoData]
-        public async Task Then_The_Query_Is_ReturnsEmptyResponse_WhenProviderResponse_Is_Null(
+        public async Task When_HasProviders_And_NoPermissions_ThenReturned(
             GetEmployerAccountTaskListQuery query,
+            GetAccountProvidersResponse accountProvidersResponse,
             GetProviderAccountLegalEntitiesResponse providerRelationshipResponse,
-            [Frozen]
-            Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipApiClient,
+            [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipApiClient,
             GetEmployerAccountTaskListQueryHandler handler)
         {
-            providerRelationshipResponse = null;
+            providerRelationshipResponse.AccountProviderLegalEntities = Array.Empty<GetProviderAccountLegalEntityItem>().ToList();
+            
+            providerRelationshipApiClient
+                .Setup(x =>
+                    x.Get<GetAccountProvidersResponse>(It.Is<GetAccountProvidersRequest>(
+                        c =>
+                            c.GetUrl.Equals(
+                                $"accounts/{query.AccountId}/providers"))))
+                .ReturnsAsync(accountProvidersResponse);
+            
             providerRelationshipApiClient
                 .Setup(x =>
                     x.Get<GetProviderAccountLegalEntitiesResponse>(It.Is<GetEmployerAccountProviderPermissionsRequest>(
@@ -71,7 +74,41 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.AccountUsers
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.EmployerAccountLegalEntityPermissions.Should().BeEmpty();
+            actual.HasProviders.Should().BeTrue();
+            actual.HasPermissions.Should().BeFalse();
+        }
+        
+        [Test, MoqAutoData]
+        public async Task When_HasNoProviders_And_NoPermissions_ThenReturned(
+            GetEmployerAccountTaskListQuery query,
+            GetAccountProvidersResponse accountProvidersResponse,
+            GetProviderAccountLegalEntitiesResponse providerRelationshipResponse,
+            [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipApiClient,
+            GetEmployerAccountTaskListQueryHandler handler)
+        {
+            providerRelationshipResponse.AccountProviderLegalEntities = Array.Empty<GetProviderAccountLegalEntityItem>().ToList();
+            accountProvidersResponse.AccountProviders = Array.Empty<AccountProviderResponse>().ToList();
+            
+            providerRelationshipApiClient
+                .Setup(x =>
+                    x.Get<GetAccountProvidersResponse>(It.Is<GetAccountProvidersRequest>(
+                        c =>
+                            c.GetUrl.Equals(
+                                $"accounts/{query.AccountId}/providers"))))
+                .ReturnsAsync(accountProvidersResponse);
+            
+            providerRelationshipApiClient
+                .Setup(x =>
+                    x.Get<GetProviderAccountLegalEntitiesResponse>(It.Is<GetEmployerAccountProviderPermissionsRequest>(
+                        c =>
+                            c.GetUrl.Equals(
+                                $"accountproviderlegalentities?accountHashedId={query.HashedAccountId}&operations=1&operations=2"))))
+                .ReturnsAsync(providerRelationshipResponse);
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.HasProviders.Should().BeFalse();
+            actual.HasPermissions.Should().BeFalse();
         }
     }
 }

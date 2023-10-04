@@ -21,14 +21,18 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskLis
 
         public async Task<GetEmployerAccountTaskListQueryResult> Handle(GetEmployerAccountTaskListQuery request, CancellationToken cancellationToken)
         {
-            var providerRelationshipResponse =
-                await _providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
-                    new GetEmployerAccountProviderPermissionsRequest(request.HashedAccountId));
+            var accountProvidersResponse =
+                await _providerRelationshipsApiClient.Get<GetAccountProvidersResponse>(
+                    new GetAccountProvidersRequest(request.AccountId));
 
-            if (providerRelationshipResponse == null)
+            if (!accountProvidersResponse.AccountProviders.Any())
             {
                 return new GetEmployerAccountTaskListQueryResult();
             }
+            
+            var providerRelationshipResponse =
+                await _providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
+                    new GetEmployerAccountProviderPermissionsRequest(request.HashedAccountId));
             
             var employerAlePermissions = providerRelationshipResponse.AccountProviderLegalEntities.Select(aple => new AccountLegalEntityItem
             {
@@ -39,7 +43,8 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskLis
 
             return new GetEmployerAccountTaskListQueryResult
             {
-                EmployerAccountLegalEntityPermissions = employerAlePermissions
+                HasProviders = true,
+                HasPermissions = employerAlePermissions.Any()
             };
         }
     }

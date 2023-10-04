@@ -5,5 +5,6 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskLis
     public class GetEmployerAccountTaskListQuery : IRequest<GetEmployerAccountTaskListQueryResult>
     {
         public string HashedAccountId { get; set; }
+        public long AccountId { get; set; }
     }
 }

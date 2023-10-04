@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Models;
-
-namespace SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskList
+﻿namespace SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskList
 {
     public class GetEmployerAccountTaskListQueryResult
     {
-        public IEnumerable<AccountLegalEntityItem> EmployerAccountLegalEntityPermissions { get; set; } =
-            new List<AccountLegalEntityItem>();
+        public bool HasProviders { get; set; }
+        public bool HasPermissions { get; set; }
     }
 }

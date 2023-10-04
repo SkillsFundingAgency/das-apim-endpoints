@@ -80,13 +80,14 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{hashedAccountId}/account-task-list")]
-        public async Task<IActionResult> GetEmployerAccountTaskList(string hashedAccountId)
+        [Route("{accountId}/account-task-list")]
+        public async Task<IActionResult> GetEmployerAccountTaskList([FromRoute] long accountId, [FromQuery] string hashedAccountId)
         {
             try
             {
-                var result = await _mediator.Send(new GetEmployerAccountTaskListQuery()
+                var result = await _mediator.Send(new GetEmployerAccountTaskListQuery
                 {
+                    AccountId = accountId,
                     HashedAccountId = hashedAccountId
                 });
 
