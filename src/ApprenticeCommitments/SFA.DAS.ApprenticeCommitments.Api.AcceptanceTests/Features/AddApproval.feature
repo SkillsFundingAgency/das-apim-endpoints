@@ -6,12 +6,12 @@ Feature: AddApproval
 
 Background:
 	Given the following apprenticeships have been approved
-	| Id | First Name | Last Name | Date Of Birth | Course Name             | Course Code | StandardUId | Email             | Delivery Model   | Employment End Date | Option        |
-	| 1  | Alexa      | Armstrong | 2001-01-01    | Artificial Intelligence | 9001        |             | alexa@example.org | Regular          |                     | DataLearning  |
-	| 3  | Iris       | Ignored   | 2000-09-27    | Not Whitelisted         | 9003        |             |                   | Regular          |                     |               |
-	| 4  | Simon      | Standard  | 1990-12-29    | Sociology               |             | SOC191_1.0  | simon@example.org | Regular          |                     | Preindustrial |
-	| 2  | Zachary    | Zimmerman | 1991-02-09    | Zoology                 | 9002        |             | zach@example.org  | PortableFlexiJob | 2022-05-01          | Primates      |
-	| 5  | Freddy     | Flintsone | 2004-04-19    | Framework Course        | 11-22-33    |             | d@d               | Regular          |                     |               |
+	| Id | First Name | Last Name | Date Of Birth | Course Name             | Course Code | StandardUId | Email             | Delivery Model   | Employment End Date | Option        | RecognisePriorLearning | DurationReducedByHours | DurationReducedBy |
+	| 1  | Alexa      | Armstrong | 2001-01-01    | Artificial Intelligence | 9001        |             | alexa@example.org | Regular          |                     | DataLearning  | false                  |                        |                   |
+	| 3  | Iris       | Ignored   | 2000-09-27    | Not Whitelisted         | 9003        |             |                   | Regular          |                     |               | false                  |                        |                   |
+	| 4  | Simon      | Standard  | 1990-12-29    | Sociology               |             | SOC191_1.0  | simon@example.org | Regular          |                     | Preindustrial | false                  |                        |                   |
+	| 2  | Zachary    | Zimmerman | 1991-02-09    | Zoology                 | 9002        |             | zach@example.org  | PortableFlexiJob | 2022-05-01          | Primates      | true                   | 100                    | 10                |
+	| 5  | Freddy     | Flintsone | 2004-04-19    | Framework Course        | 11-22-33    |             | d@d               | Regular          |                     |               | false                  |                        |                   |
 
 	Given the following training providers exist
 	| Ukprn | Legal Name   | Trading Name    |
@@ -75,3 +75,17 @@ Scenario: Old apprenticeship has normal delivery model
 	| 4                            | 123                              | 1002                 |
 	Then the inner API has received the posted values
 	And the delivery model should be "Regular"
+
+Scenario: New apprenticeship is recieved and it has RPL values
+	When the following apprenticeship is posted
+	| Commitments ApprenticeshipId | Employer Name | Employer Account Legal Entity Id | Training Provider Id | Commitments Approved On |
+	| 2                            | Apple         | 123                              | 1002                 | 2023-03-31              |
+	Then the inner API has received the posted values
+	And recognise prior learning should be true with total hours reduction as 100 and weeks reduction 10
+
+Scenario: New apprenticeship is recieved and it has no RPL values
+	When the following apprenticeship is posted
+	| Commitments ApprenticeshipId | Employer Account Legal Entity Id | Training Provider Id |
+	| 4                            | 123                              | 1002                 |
+	Then the inner API has received the posted values
+	And there is no recognised prior learning values

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using RestEase.HttpClientFactory;
 using SFA.DAS.AdminAan.Api.Configuration;
 using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
+using SFA.DAS.AdminAan.Configuration;
 using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
@@ -49,8 +50,22 @@ public static class ServiceCollectionExtensions
         services.AddMediatR(typeof(GetRegionsQuery).Assembly);
 
         AddAanHubApiClient(services, configuration);
-
+        AddReferenceDataApiClient(services, configuration);
         return services;
+    }
+
+    private static void AddReferenceDataApiClient(IServiceCollection services, IConfigurationRoot configuration)
+    {
+        var apiConfig = configuration
+            .GetSection(nameof(ReferenceDataApi))
+            .Get<ReferenceDataApi>();
+
+        services.AddSingleton(apiConfig);
+
+        services.AddScoped<ReferenceDataApiAuthenticationHeaderHandler>();
+
+        services.AddRestEaseClient<IReferenceDataApiClient>(apiConfig.ApiBaseUrl)
+            .AddHttpMessageHandler<ReferenceDataApiAuthenticationHeaderHandler>();
     }
 
     private static void AddAanHubApiClient(IServiceCollection services, IConfiguration configuration)

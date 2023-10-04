@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 using SFA.DAS.ApprenticeAan.Api.HealthCheck;
-using SFA.DAS.ApprenticeAan.Application.Entities;
+using SFA.DAS.ApprenticeAan.Application.Model;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 

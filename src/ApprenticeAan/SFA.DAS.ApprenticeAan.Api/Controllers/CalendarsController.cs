@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.Calendars.Queries.GetCalendars;
-using SFA.DAS.ApprenticeAan.Application.Entities;
+using SFA.DAS.ApprenticeAan.Application.Model;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 

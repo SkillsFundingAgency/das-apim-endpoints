@@ -9,5 +9,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.ApprenticeAccountsApi
         public string LastName { get; set; }
         public string Email { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public bool TermsOfUseAccepted { get; set; }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -17,10 +18,11 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Account
     [TestFixture]
     public class WhenBlockingPaymentsForAccountLegalEntity
     {
-        [Test, MoqAutoData]
+        [Test]
+        [MoqAutoData]
         public async Task Then_Sends_Block_Request_To_Mediator(
             long accountId,
-            BlockAccountLegalEntityForPaymentsRequest request,
+            List<BlockAccountLegalEntityForPaymentsRequest> request,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] AccountController controller)
         {

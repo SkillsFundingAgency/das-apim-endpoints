@@ -1,15 +1,16 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorBlock
 {
-    public class PatchVendorBlockRequest : IPatchApiRequest<BlockAccountLegalEntityForPaymentsRequest>
+    public class PatchVendorBlockRequest : IPatchApiRequest<List<BlockAccountLegalEntityForPaymentsRequest>>
     {
-        public PatchVendorBlockRequest(BlockAccountLegalEntityForPaymentsRequest request)
+        public PatchVendorBlockRequest(List<BlockAccountLegalEntityForPaymentsRequest> request)
         {
             Data = request;
         }
 
         public string PatchUrl => "/blockedpayments";
-        public BlockAccountLegalEntityForPaymentsRequest Data { get; set; }
+        public List<BlockAccountLegalEntityForPaymentsRequest> Data { get; set; }
     }
 }

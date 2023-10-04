@@ -44,6 +44,32 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.CommitmentPayment
         }
 
         [Test, MoqAutoData]
+        public async Task Then_Get_TotalNumberOfItems_From_Mediator(
+            long sinceEventId,
+            DateTime? sinceTime,
+            string employerAccountId,
+            long ukprn,
+            int page,
+            GetDataLockStatusesQueryResult mediatorResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] DataLockController controller)
+        {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<GetDataLockStatuesQuery>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mediatorResult);
+
+            var controllerResult = await controller.GetDataLockStatuses(sinceEventId, sinceTime, employerAccountId, ukprn, page) as ObjectResult;
+
+            Assert.IsNotNull(controllerResult);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            var model = controllerResult.Value as GetDataLockStatusListResponse;
+            Assert.IsNotNull(model);
+            model.TotalNumberOfPages.Should().Be(mediatorResult.PagedDataLockEvent.TotalNumberOfPages);
+        }
+
+        [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             long sinceEventId,
             DateTime? sinceTime,

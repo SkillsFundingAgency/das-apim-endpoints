@@ -40,6 +40,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
                 var model = new GetDataLockStatusListResponse
                 {
+                    TotalNumberOfPages = response?.PagedDataLockEvent.TotalNumberOfPages ?? 0,
                     DataLockStatuses = response?.PagedDataLockEvent?.Items?.Select(c => (GetDataLockStatusResponse)c)
                 };
                 return Ok(model);

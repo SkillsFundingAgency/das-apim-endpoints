@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Moq;
@@ -15,22 +16,23 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
     [TestFixture]
     public class WhenCallingBlockAccountLegalEntitiesForPayments
     {
-        [Test, MoqAutoData]
+        [Test]
+        [MoqAutoData]
         public async Task Then_The_Api_Is_Called_With_The_Vendor_Block_Request(
-            BlockAccountLegalEntityForPaymentsRequest request,
+            List<BlockAccountLegalEntityForPaymentsRequest> request,
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
             LegalEntitiesService service
         )
         {
             client.Setup(x => x.PatchWithResponseCode(It.Is<PatchVendorBlockRequest>(
-                    c => c.PatchUrl.Contains("blockedpayments")
-                ))).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.NoContent, ""));
+                c => c.PatchUrl.Contains("blockedpayments")
+            ))).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.NoContent, ""));
 
             await service.BlockAccountLegalEntitiesForPayments(request);
 
             client.Verify(x => x.PatchWithResponseCode(It.Is<PatchVendorBlockRequest>(
-                    c => c.PatchUrl.Contains("blockedpayments")
-                )), Times.Once);
+                c => c.PatchUrl.Contains("blockedpayments")
+            )), Times.AtLeastOnce);
         }
     }
 }

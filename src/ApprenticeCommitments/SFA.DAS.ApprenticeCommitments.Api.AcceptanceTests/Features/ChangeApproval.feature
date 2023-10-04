@@ -6,12 +6,12 @@ Feature: ChangeApproval
 
 Background:
 	Given the following apprenticeships have been approved
-	| Id | First Name | Last Name | Date Of Birth | Course Name             | Course Code | ProviderId | AccountLegalEntityId | Employer Name | Email | Delivery Model   | Employment End Date | Option          |
-	| 1  | Alexa      | Armstrong | 2000-01-01    | Artificial Intelligence | 9001        | 1001       | 8001                 | Apple         | a@a   | Regular          |                     | MachineLearning |
-	| 2  | Zachary    | Zimmerman | 2000-12-28    | Zoology                 | 9002        | 1002       | 8002                 | Google        | b@b   | PortableFlexiJob | 2022-02-09          | Primates        |
-	| 3  | Gary       | Oldman    | 2000-12-28    | Zoology                 | 9002        | 1002       | 8002                 | Google        | b@b   | Regular          |                     | Insects         |
-	| 4  | Zachary    | Zimmerman | 2004-04-19    | Zoology                 | 9002        | 1002       | 8002                 | Google        |       | Regular          |                     |                 |
-	| 5  | Freddy     | Flintsone | 2004-04-19    | Framework Course        | 11-22-33    | 1002       | 8002                 | Google        | d@d   | Regular          |                     |                 |
+	| Id | First Name | Last Name | Date Of Birth | Course Name             | Course Code | ProviderId | AccountLegalEntityId | Employer Name | Email | Delivery Model   | Employment End Date | Option          | RecognisePriorLearning | DurationReducedByHours | DurationReducedBy |
+	| 1  | Alexa      | Armstrong | 2000-01-01    | Artificial Intelligence | 9001        | 1001       | 8001                 | Apple         | a@a   | Regular          |                     | MachineLearning | true                   | 100                    | 10                |
+	| 2  | Zachary    | Zimmerman | 2000-12-28    | Zoology                 | 9002        | 1002       | 8002                 | Google        | b@b   | PortableFlexiJob | 2022-02-09          | Primates        | false                  |                        |                   |
+	| 3  | Gary       | Oldman    | 2000-12-28    | Zoology                 | 9002        | 1002       | 8002                 | Google        | b@b   | Regular          |                     | Insects         | false                  |                        |                   |
+	| 4  | Zachary    | Zimmerman | 2004-04-19    | Zoology                 | 9002        | 1002       | 8002                 | Google        |       | Regular          |                     |                 | false                  |                        |                   |
+	| 5  | Freddy     | Flintsone | 2004-04-19    | Framework Course        | 11-22-33    | 1002       | 8002                 | Google        | d@d   | Regular          |                     |                 | false                  |                        |                   |
 
 	Given the following training providers exist
 	| Ukprn | Legal Name   | Trading Name    |
@@ -77,3 +77,18 @@ Scenario: Framework apprenticeship update is received
 	| 5                            | 2015-04-20              |
 	Then the response should be OK
 	And the inner API will not receive any values
+
+Scenario: Apprenticeship update is recieved and is valid with Rpl values
+	When the following apprenticeship update is posted
+	| Commitments ApprenticeshipId | Commitments Approved On |
+	| 1                            | 2015-04-20              |
+	Then the response should be OK
+	And the inner API has received the posted values
+	And recognise prior learning should be true with total hours reduction as 100 and weeks reduction 10
+
+Scenario: Framework apprenticeship update is received but with no RPL values
+	When the following apprenticeship update is posted
+	| Commitments ApprenticeshipId | Commitments Approved On |
+	| 3                            | 2015-04-20              |
+	Then the response should be OK
+	And there is no recognised prior learning values

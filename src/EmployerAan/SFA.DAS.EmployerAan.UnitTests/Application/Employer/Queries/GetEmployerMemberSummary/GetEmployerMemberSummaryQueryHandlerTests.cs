@@ -28,7 +28,6 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Employer.Queries.GetEmployer
                 new GetEmployerMemberSummaryQueryResult()
                 {
                     ActiveCount = expectedAccountsSummary.ApprenticeshipStatusSummaryResponse!.FirstOrDefault()!.ActiveCount,
-                    StartDate = expectedApprenticeshipsFilterValues.StartDates!.Min(x => x.Date),
                     Sectors = expectedApprenticeshipsFilterValues.Sectors!
                 };
 
@@ -58,7 +57,6 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Employer.Queries.GetEmployer
                 new GetEmployerMemberSummaryQueryResult()
                 {
                     ActiveCount = 0,
-                    StartDate = null,
                     Sectors = Enumerable.Empty<string>()
                 };
 
