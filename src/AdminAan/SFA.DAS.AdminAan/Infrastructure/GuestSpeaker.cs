@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.AdminAan.Api.Models;
+﻿namespace SFA.DAS.AdminAan.Infrastructure;
 
 public class GuestSpeaker
 {

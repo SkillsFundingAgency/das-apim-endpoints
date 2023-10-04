@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.AdminAan.Api.Models;
 using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.AdminAan.Infrastructure.Configuration;
 
