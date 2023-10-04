@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using SFA.DAS.ApprenticeAan.Application.Entities;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
+using SFA.DAS.ApprenticeAan.Application.Model;
 
 namespace SFA.DAS.ApprenticeAan.Application.Calendars.Queries.GetCalendars;
 

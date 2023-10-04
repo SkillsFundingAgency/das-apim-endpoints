@@ -2,6 +2,7 @@
 using SFA.DAS.EmployerAan.Common;
 
 namespace SFA.DAS.EmployerAan.Application.Members.Queries.GetMembers;
+
 public class GetMembersQuery : IRequest<GetMembersQueryResult>
 {
     public List<MemberUserType>? UserType { get; set; }
