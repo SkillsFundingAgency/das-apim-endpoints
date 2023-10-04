@@ -3,10 +3,10 @@ using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Reservations.Api.Models;
-using SFA.DAS.Reservations.Application.ProviderAccounts.Queries;
+using SFA.DAS.Approvals.Api.Models;
+using SFA.DAS.Approvals.Application.ProviderAccounts.Queries;
 
-namespace SFA.DAS.Reservations.Api.Controllers
+namespace SFA.DAS.Approvals.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]

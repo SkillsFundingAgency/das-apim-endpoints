@@ -1,4 +1,4 @@
-namespace SFA.DAS.Reservations.Api.Models
+namespace SFA.DAS.Approvals.Api.Models
 {
     public class ProviderAccountResponse
     {

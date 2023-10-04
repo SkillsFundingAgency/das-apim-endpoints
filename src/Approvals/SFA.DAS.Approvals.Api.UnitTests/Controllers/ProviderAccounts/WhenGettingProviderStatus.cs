@@ -8,12 +8,12 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Reservations.Api.Controllers;
-using SFA.DAS.Reservations.Api.Models;
-using SFA.DAS.Reservations.Application.ProviderAccounts.Queries;
+using SFA.DAS.Approvals.Api.Controllers;
+using SFA.DAS.Approvals.Api.Models;
+using SFA.DAS.Approvals.Application.ProviderAccounts.Queries;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Reservations.Api.UnitTests.Controllers
+namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.ProviderAccounts
 {
     public class WhenGettingProviderStatus
     {
