@@ -9,6 +9,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Services;
 using static System.String;
 using ApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi.ApprenticeshipResponse;
+using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeAccountsApi;
 
 #nullable enable
 
@@ -64,7 +65,10 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
                 PlannedStartDate = apprenticeship.StartDate,
                 PlannedEndDate = apprenticeship.EndDate,
                 CommitmentsApprovedOn = command.CommitmentsApprovedOn,
-                EmploymentEndDate = apprenticeship.EmploymentEndDate
+                EmploymentEndDate = apprenticeship.EmploymentEndDate,
+                RecognisePriorLearning = apprenticeship.RecognisePriorLearning,
+                DurationReducedByHours = apprenticeship.DurationReducedByHours,
+                DurationReducedBy = apprenticeship.DurationReducedBy
             });
 
             return default;

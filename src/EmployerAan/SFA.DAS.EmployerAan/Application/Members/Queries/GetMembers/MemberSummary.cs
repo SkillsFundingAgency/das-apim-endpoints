@@ -1,4 +1,5 @@
 ﻿namespace SFA.DAS.EmployerAan.Application.Members.Queries.GetMembers;
+
 public class MemberSummary
 {
     public Guid MemberId { get; set; }
