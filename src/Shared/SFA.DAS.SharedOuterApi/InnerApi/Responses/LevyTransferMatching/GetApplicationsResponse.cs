@@ -18,7 +18,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching
             public long EmployerAccountId { get; set; }
             public string DasAccountName { get; set; }
             public int PledgeId { get; set; }
-            public DateTime PledgeCreatedOn { get; set; }
             public string Details { get; set; }
             public string StandardId { get; set; }
             public string StandardTitle { get; set; }

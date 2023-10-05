@@ -14,8 +14,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
     public  class GetApplicationsForAutomaticRejectionQueryHandler : IRequestHandler<GetApplicationsForAutomaticRejectionQuery, GetApplicationsForAutomaticRejectionQueryResult>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
-        private static readonly DateTime _threeMonthsAgo = DateTime.UtcNow.AddMonths(-3);
-        private static readonly DateTime _autoApprovalGoLiveDate = new DateTime(2023, 8, 24);
+        private static readonly DateTime ThreeMonthsAgo = DateTime.UtcNow.AddMonths(-3);
 
         public GetApplicationsForAutomaticRejectionQueryHandler(ILevyTransferMatchingService levyTransferMatchingService)
         {
@@ -49,9 +48,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
           
             return getApplicationsResponse.Applications
                 .Where(x =>
-                    (x.PledgeCreatedOn < _autoApprovalGoLiveDate && x.CreatedOn < _threeMonthsAgo)
+                    (x.PledgeAutomaticApprovalOption == AutomaticApprovalOption.NotApplicable && x.CreatedOn < ThreeMonthsAgo)
                     ||
-                    (x.PledgeCreatedOn >= _autoApprovalGoLiveDate && x.MatchPercentage < 100 && x.CreatedOn < _threeMonthsAgo)
+                    (x.PledgeAutomaticApprovalOption != AutomaticApprovalOption.NotApplicable && x.MatchPercentage < 100 && x.CreatedOn < ThreeMonthsAgo)
                 )
                 .ToList();
         }

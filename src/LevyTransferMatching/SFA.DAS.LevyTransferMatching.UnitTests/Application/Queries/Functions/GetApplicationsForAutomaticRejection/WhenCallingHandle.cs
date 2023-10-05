@@ -16,10 +16,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.G
     [TestFixture]
     public class WhenCallingHandle
     {
-
-        private static readonly DateTime _threeMonthsAgo = DateTime.UtcNow.AddMonths(-3);
-        private static readonly DateTime _autoApprovalGoLiveDate = new DateTime(2023, 8, 24);
-
+        private static readonly DateTime ThreeMonthsAgo = DateTime.UtcNow.AddMonths(-3);
         private Mock<ILevyTransferMatchingService> _levyTransferMatchingServiceMock;
         private GetApplicationsForAutomaticRejectionQueryHandler _handler;
         private Fixture _fixture;
@@ -39,9 +36,9 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.G
             var request = _fixture.Create<GetApplicationsForAutomaticRejectionQuery>();
             var applications = new List<GetApplicationsResponse.Application>
             {
-                new GetApplicationsResponse.Application { Id = 1, PledgeId = 1, PledgeCreatedOn = _autoApprovalGoLiveDate.AddMonths(-12), MatchPercentage = 100, CreatedOn = _threeMonthsAgo.AddMonths(-1) },
-                new GetApplicationsResponse.Application { Id = 2, PledgeId = 2, PledgeCreatedOn = _autoApprovalGoLiveDate.AddMonths(1),  MatchPercentage = 100, CreatedOn = _threeMonthsAgo.AddMonths(1) },
-                new GetApplicationsResponse.Application { Id = 3, PledgeId = 3, PledgeCreatedOn = _autoApprovalGoLiveDate.AddMonths(-12), MatchPercentage = 100, CreatedOn = _threeMonthsAgo.AddMonths(-6) }
+                new GetApplicationsResponse.Application { Id = 1, PledgeId = 1, PledgeAutomaticApprovalOption = AutomaticApprovalOption.NotApplicable, MatchPercentage = 100, CreatedOn = ThreeMonthsAgo.AddMonths(-1) },
+                new GetApplicationsResponse.Application { Id = 2, PledgeId = 2, PledgeAutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval,  MatchPercentage = 100, CreatedOn = ThreeMonthsAgo.AddMonths(1) },
+                new GetApplicationsResponse.Application { Id = 3, PledgeId = 3, PledgeAutomaticApprovalOption = AutomaticApprovalOption.NotApplicable, MatchPercentage = 100, CreatedOn = ThreeMonthsAgo.AddMonths(-6) }
             };
 
             _levyTransferMatchingServiceMock.Setup(x => x.GetApplications(It.IsAny<GetApplicationsRequest>()))
@@ -63,9 +60,9 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.G
             var request = _fixture.Create<GetApplicationsForAutomaticRejectionQuery>();
             var applications = new List<GetApplicationsResponse.Application>
             {
-                new GetApplicationsResponse.Application { Id = 1, PledgeId = 1, PledgeCreatedOn = _autoApprovalGoLiveDate.AddMonths(1), MatchPercentage = 50, CreatedOn = _threeMonthsAgo.AddMonths(-1) },
-                new GetApplicationsResponse.Application { Id = 2, PledgeId = 2, PledgeCreatedOn = _autoApprovalGoLiveDate.AddMonths(1),  MatchPercentage = 50, CreatedOn = _threeMonthsAgo.AddMonths(1) },
-                new GetApplicationsResponse.Application { Id = 3, PledgeId = 3, PledgeCreatedOn = _autoApprovalGoLiveDate.AddMonths(1), MatchPercentage = 100, CreatedOn = _threeMonthsAgo.AddMonths(1) }
+                new GetApplicationsResponse.Application { Id = 1, PledgeId = 1, PledgeAutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, MatchPercentage = 50, CreatedOn = ThreeMonthsAgo.AddMonths(-1) },
+                new GetApplicationsResponse.Application { Id = 2, PledgeId = 2, PledgeAutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval,  MatchPercentage = 50, CreatedOn = ThreeMonthsAgo.AddMonths(1) },
+                new GetApplicationsResponse.Application { Id = 3, PledgeId = 3, PledgeAutomaticApprovalOption = AutomaticApprovalOption.DelayedAutoApproval, MatchPercentage = 100, CreatedOn = ThreeMonthsAgo.AddMonths(1) }
             };
 
             _levyTransferMatchingServiceMock.Setup(x => x.GetApplications(It.IsAny<GetApplicationsRequest>()))
