@@ -1,14 +1,10 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AdminAan.Infrastructure;
-using SFA.DAS.AdminAan.Infrastructure.Configuration;
 
 namespace SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Create;
 public class CreateEventCommand : IRequest<CreateEventCommandResult>
 {
-    [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)]
     public Guid RequestedByMemberId { get; set; }
-
     public int? CalendarTypeId { get; set; }
     public EventFormat? EventFormat { get; set; }
     public DateTime? StartDate { get; set; }

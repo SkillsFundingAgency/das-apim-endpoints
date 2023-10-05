@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AdminAan.Api.Models;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Create;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+using SFA.DAS.AdminAan.Infrastructure.Configuration;
 
 namespace SFA.DAS.AdminAan.Api.Controllers;
 
@@ -27,8 +28,9 @@ public class CalendarEventsController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(typeof(CreateEventCommandResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> PostCalendarEvent([FromBody] CreateEventCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> PostCalendarEvent([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [FromBody] CreateEventCommand command, CancellationToken cancellationToken)
     {
+        command.RequestedByMemberId = requestedByMemberId;
         var response = await _mediator.Send(command, cancellationToken);
         return Ok(response);
     }
