@@ -1,5 +1,5 @@
 ﻿namespace SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Create;
-public class CreateEventCommandResult
+public class CreateEventRequestResult
 {
     public Guid CalendarEventId { get; set; }
 }

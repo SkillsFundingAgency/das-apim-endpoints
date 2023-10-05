@@ -2,10 +2,9 @@
 using SFA.DAS.AdminAan.Infrastructure;
 
 namespace SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Create;
-public class CreateEventCommand : IRequest<CreateEventCommandResult>
+public class CreateEventRequest : IRequest<CreateEventRequestResult>
 {
-    public Guid RequestedByMemberId { get; set; }
-    public int? CalendarTypeId { get; set; }
+    public int? CalendarId { get; set; }
     public EventFormat? EventFormat { get; set; }
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
@@ -23,5 +22,4 @@ public class CreateEventCommand : IRequest<CreateEventCommandResult>
     public string? ContactEmail { get; set; }
     public int? PlannedAttendees { get; set; }
     public List<GuestSpeaker> Guests { get; set; } = new List<GuestSpeaker>();
-
 }
