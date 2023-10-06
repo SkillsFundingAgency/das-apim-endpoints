@@ -16,8 +16,8 @@ public class PostCalendarEventsControllerTests
         [Greedy] CalendarEventsController sut,
         CreateEventRequestModel requestModel,
         PostEventCommandResult expected,
-        CancellationToken cancellationToken,
-        Guid requestedByMemberId)
+        Guid requestedByMemberId,
+        CancellationToken cancellationToken)
     {
         mediatorMock.Setup(m => m.Send(It.Is<PostEventCommand>(
             x => x.RequestedByMemberId == requestedByMemberId
