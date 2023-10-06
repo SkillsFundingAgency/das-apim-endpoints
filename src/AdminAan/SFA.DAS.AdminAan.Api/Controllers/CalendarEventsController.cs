@@ -33,7 +33,7 @@ public class CalendarEventsController : ControllerBase
         var command = (PostEventCommand)request;
         command.RequestedByMemberId = requestedByMemberId;
         var response = await _mediator.Send(command, cancellationToken);
-        if (response == null) return BadRequest();
+
         return Ok(response);
     }
 }

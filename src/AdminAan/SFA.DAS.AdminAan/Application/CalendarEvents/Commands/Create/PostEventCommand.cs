@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Create;
 
-public class PostEventCommand : IRequest<PostEventCommandResult?>
+public class PostEventCommand : IRequest<PostEventCommandResult>
 {
     public Guid RequestedByMemberId { get; set; }
     public int? CalendarId { get; set; }
