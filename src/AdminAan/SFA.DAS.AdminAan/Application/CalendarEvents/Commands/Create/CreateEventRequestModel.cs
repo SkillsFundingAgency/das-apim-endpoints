@@ -2,7 +2,7 @@
 using SFA.DAS.AdminAan.Infrastructure;
 
 namespace SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Create;
-public class CreateEventRequest : IRequest<CreateEventRequestResult>
+public class CreateEventRequestModel : IRequest<PostEventCommandResult>
 {
     public int? CalendarId { get; set; }
     public EventFormat? EventFormat { get; set; }

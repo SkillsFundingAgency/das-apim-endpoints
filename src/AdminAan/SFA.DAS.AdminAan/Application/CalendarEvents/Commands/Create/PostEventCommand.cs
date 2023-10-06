@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SFA.DAS.AdminAan.Infrastructure;
-using System.Text.Json.Serialization;
 
 namespace SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Create;
 
@@ -24,11 +23,11 @@ public class PostEventCommand : IRequest<PostEventCommandResult>
     public string? ContactName { get; set; }
     public string? ContactEmail { get; set; }
     public int? PlannedAttendees { get; set; }
-    [JsonInclude]
+
     public List<GuestSpeaker> Guests { get; set; } = new List<GuestSpeaker>();
 
 
-    public static implicit operator PostEventCommand(CreateEventRequest source) =>
+    public static implicit operator PostEventCommand(CreateEventRequestModel source) =>
         new()
         {
             CalendarId = source.CalendarId,

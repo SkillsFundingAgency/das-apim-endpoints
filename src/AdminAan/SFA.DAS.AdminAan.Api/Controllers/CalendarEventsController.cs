@@ -27,10 +27,10 @@ public class CalendarEventsController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(CreateEventRequestResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> PostCalendarEvent([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [FromBody] CreateEventRequest request, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(PostEventCommandResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> PostCalendarEvent([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [FromBody] CreateEventRequestModel requestModel, CancellationToken cancellationToken)
     {
-        var command = (PostEventCommand)request;
+        var command = (PostEventCommand)requestModel;
         command.RequestedByMemberId = requestedByMemberId;
         var response = await _mediator.Send(command, cancellationToken);
 
