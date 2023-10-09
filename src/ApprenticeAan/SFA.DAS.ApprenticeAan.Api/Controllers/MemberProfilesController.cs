@@ -28,7 +28,8 @@ public class MemberProfilesController : ControllerBase
     {
         int apprenticeshipPreferenceId = Constants.Preferences.Apprenticeship;
         var memberProfileWithPreferences = await _mediator.Send(new GetMemberProfileWithPreferencesQuery(memberId, requestedByMemberId, @public), cancellationToken);
-        var isApprenticeSectionShareAllowed = (memberProfileWithPreferences.Preferences.Any(x => x.PreferenceId == apprenticeshipPreferenceId)) ? memberProfileWithPreferences.Preferences.FirstOrDefault(x => x.PreferenceId == apprenticeshipPreferenceId)!.Value : false;
+        var isApprenticeSectionShareAllowedExist = memberProfileWithPreferences.Preferences.Any(x => x.PreferenceId == apprenticeshipPreferenceId);
+        var isApprenticeSectionShareAllowed = isApprenticeSectionShareAllowedExist ? memberProfileWithPreferences.Preferences.FirstOrDefault(x => x.PreferenceId == apprenticeshipPreferenceId)!.Value : isApprenticeSectionShareAllowedExist;
         var myApprenticeship = (@public && !isApprenticeSectionShareAllowed) ? null : await _mediator.Send(new GetMyApprenticeshipQuery { ApprenticeId = memberProfileWithPreferences.ApprenticeId }, cancellationToken);
 
         return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, myApprenticeship, @public));
