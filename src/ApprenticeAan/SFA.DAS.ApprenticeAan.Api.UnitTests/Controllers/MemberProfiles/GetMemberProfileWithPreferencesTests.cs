@@ -19,9 +19,13 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.MemberProfiles;
 public class GetMemberProfileWithPreferencesTests
 {
     [Test]
-    [MoqInlineAutoData(true)]
+    [MoqInlineAutoData(true, true)]
+    [MoqInlineAutoData(true, false)]
+    [MoqInlineAutoData(false, true)]
+    [MoqInlineAutoData(false, false)]
     public async Task When_MediatorCommandSuccessful_Then_ReturnOk(
         bool isPublicView,
+        bool isApprenticeshipSectionShow,
         GetMemberProfileWithPreferencesQueryResult memberProfileWithPreferencesQueryResult,
         MyApprenticeship? myApprenticeship,
         [Frozen] Mock<IMediator> mediatorMock,
@@ -34,6 +38,11 @@ public class GetMemberProfileWithPreferencesTests
     {
         memberProfileWithPreferencesQueryResult.ApprenticeId = appreticeId;
         GetMyApprenticeshipQuery myApprenticeshipQuery = new() { ApprenticeId = appreticeId };
+
+        if (isApprenticeshipSectionShow)
+        {
+            memberProfileWithPreferencesQueryResult.Preferences.ToList().Add(new MemberPreference() { PreferenceId = 3, Value = true });
+        }
 
         int apprenticeshipPreferenceId = 3;
         var isApprenticeSectionShareAllowed = (memberProfileWithPreferencesQueryResult.Preferences.Any(x => x.PreferenceId == apprenticeshipPreferenceId)) ? memberProfileWithPreferencesQueryResult.Preferences.FirstOrDefault(x => x.PreferenceId == apprenticeshipPreferenceId)!.Value : false;
