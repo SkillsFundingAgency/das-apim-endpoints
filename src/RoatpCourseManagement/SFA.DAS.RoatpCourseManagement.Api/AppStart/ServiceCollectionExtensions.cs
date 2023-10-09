@@ -32,6 +32,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
             services.AddTransient<INationalAchievementRatesPageParser, NationalAchievementRatesPageParser>();
             services.AddTransient<IZipArchiveHelper, ZipArchiveHelper>();
             services.AddTransient<IUkrlpSoapSerializer, UkrlpSoapSerializer>();
+            services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         }
 
         public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
