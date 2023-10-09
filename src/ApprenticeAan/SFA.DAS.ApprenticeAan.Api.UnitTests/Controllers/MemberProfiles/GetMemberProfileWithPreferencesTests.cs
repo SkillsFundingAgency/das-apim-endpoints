@@ -23,7 +23,7 @@ public class GetMemberProfileWithPreferencesTests
     public async Task When_MediatorCommandSuccessful_Then_ReturnOk(
         bool isPublicView,
         GetMemberProfileWithPreferencesQueryResult memberProfileWithPreferencesQueryResult,
-        MyApprenticeship myApprenticeship,
+        MyApprenticeship? myApprenticeship,
         [Frozen] Mock<IMediator> mediatorMock,
         Guid appreticeId,
         Guid memberId,
@@ -34,6 +34,13 @@ public class GetMemberProfileWithPreferencesTests
     {
         memberProfileWithPreferencesQueryResult.ApprenticeId = appreticeId;
         GetMyApprenticeshipQuery myApprenticeshipQuery = new() { ApprenticeId = appreticeId };
+
+        int apprenticeshipPreferenceId = 3;
+        var isApprenticeSectionShareAllowed = (memberProfileWithPreferencesQueryResult.Preferences.Any(x => x.PreferenceId == apprenticeshipPreferenceId)) ? memberProfileWithPreferencesQueryResult.Preferences.FirstOrDefault(x => x.PreferenceId == apprenticeshipPreferenceId)!.Value : false;
+        if (!isApprenticeSectionShareAllowed)
+        {
+            myApprenticeship = null;
+        }
 
         GetMemberProfileWithPreferencesModel response = new(memberProfileWithPreferencesQueryResult, myApprenticeship, isPublicView);
 
