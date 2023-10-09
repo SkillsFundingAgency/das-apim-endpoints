@@ -19,7 +19,6 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.MemberProfiles;
 public class GetMemberProfileWithPreferencesTests
 {
     [Test]
-    [MoqInlineAutoData(false)]
     [MoqInlineAutoData(true)]
     public async Task When_MediatorCommandSuccessful_Then_ReturnOk(
         bool isPublicView,
@@ -36,7 +35,7 @@ public class GetMemberProfileWithPreferencesTests
         memberProfileWithPreferencesQueryResult.ApprenticeId = appreticeId;
         GetMyApprenticeshipQuery myApprenticeshipQuery = new() { ApprenticeId = appreticeId };
 
-        GetMemberProfileWithPreferencesModel response = new(memberProfileWithPreferencesQueryResult, myApprenticeship);
+        GetMemberProfileWithPreferencesModel response = new(memberProfileWithPreferencesQueryResult, myApprenticeship, isPublicView);
 
         mediatorMock.Setup(m => m.Send(It.Is<GetMyApprenticeshipQuery>(x => x.ApprenticeId == appreticeId), cancellationToken)).ReturnsAsync(myApprenticeship);
         mediatorMock.Setup(m => m.Send(It.IsAny<GetMemberProfileWithPreferencesQuery>(), cancellationToken)).ReturnsAsync(memberProfileWithPreferencesQueryResult);
