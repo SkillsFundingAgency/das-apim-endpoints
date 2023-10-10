@@ -18,6 +18,13 @@ using SFA.DAS.Testing.AutoFixture;
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.MemberProfiles;
 public class GetMemberProfileWithPreferencesTests
 {
+    static readonly List<MemberPreference> memberPreferences = new()
+        {
+            new MemberPreference{ PreferenceId = 1, Value =  true },
+            new MemberPreference{ PreferenceId = 2, Value =  true },
+            new MemberPreference{ PreferenceId = 4, Value =  false },
+        };
+
     [Test]
     [MoqInlineAutoData(true, true)]
     [MoqInlineAutoData(true, false)]
@@ -26,7 +33,6 @@ public class GetMemberProfileWithPreferencesTests
     public async Task When_MediatorCommandSuccessful_Then_ReturnOk(
         bool isPublicView,
         bool isApprenticeshipSectionShow,
-        GetMemberProfileWithPreferencesQueryResult memberProfileWithPreferencesQueryResult,
         MyApprenticeship? myApprenticeship,
         [Frozen] Mock<IMediator> mediatorMock,
         Guid appreticeId,
@@ -36,17 +42,19 @@ public class GetMemberProfileWithPreferencesTests
         string standardUid,
         CancellationToken cancellationToken)
     {
+        GetMemberProfileWithPreferencesQueryResult memberProfileWithPreferencesQueryResult = new GetMemberProfileWithPreferencesQueryResult();
         memberProfileWithPreferencesQueryResult.ApprenticeId = appreticeId;
         GetMyApprenticeshipQuery myApprenticeshipQuery = new() { ApprenticeId = appreticeId };
-
+        List<MemberPreference> memberPreference = new List<MemberPreference>();
+        memberPreference.AddRange(memberPreferences);
         if (isApprenticeshipSectionShow)
         {
-            memberProfileWithPreferencesQueryResult.Preferences.ToList().Add(new MemberPreference() { PreferenceId = 3, Value = true });
+            memberPreference.Add(new MemberPreference() { PreferenceId = 3, Value = true });
         }
-
+        memberProfileWithPreferencesQueryResult.Preferences = memberPreference;
         int apprenticeshipPreferenceId = 3;
         var isApprenticeSectionShareAllowed = (memberProfileWithPreferencesQueryResult.Preferences.Any(x => x.PreferenceId == apprenticeshipPreferenceId)) ? memberProfileWithPreferencesQueryResult.Preferences.FirstOrDefault(x => x.PreferenceId == apprenticeshipPreferenceId)!.Value : false;
-        if (!isApprenticeSectionShareAllowed)
+        if (isPublicView && !isApprenticeSectionShareAllowed)
         {
             myApprenticeship = null;
         }
