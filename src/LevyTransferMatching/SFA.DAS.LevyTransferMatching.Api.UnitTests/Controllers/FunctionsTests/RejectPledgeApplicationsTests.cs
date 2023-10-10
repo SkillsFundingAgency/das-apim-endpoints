@@ -1,42 +1,35 @@
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
+using AutoFixture.NUnit3;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectPledgeApplications;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
 {
-    [TestFixture]
     public class RejectPledgeApplicationsTests
     {
-        private FunctionsController _controller;
-        private Mock<IMediator> _mediator;
-        private RejectPledgeApplicationsRequest _request;
-        private readonly Fixture _fixture = new Fixture();
-
-        [SetUp]
-        public void Setup()
-        {
-            _mediator = new Mock<IMediator>();
-
-            _request = _fixture.Create<RejectPledgeApplicationsRequest>();
-
-            _controller = new FunctionsController(_mediator.Object, Mock.Of<ILogger<FunctionsController>>());
-        }
-
         [Test]
-        public async Task Action_Calls_Handler()
+        [MoqAutoData]
+        public async Task Action_Calls_Handler(            
+            [Frozen] Mock<IMediator> mediator,
+            RejectPledgeApplicationsRequest request,
+            [NoAutoProperties] FunctionsController controller)
         {
-            var result = await _controller.RejectPledgeApplications(_request);
+            mediator.Setup(x => x.Send(It.Is<RejectPledgeApplicationsCommand>(x =>
+                   x.PledgeId.Equals(request.PledgeId)
+                   ), It.IsAny<CancellationToken>()))
+                   .ReturnsAsync(() => new Unit());
 
-            _mediator.Verify(x =>
+            await controller.RejectPledgeApplications(request);
+
+            mediator.Verify(x =>
                 x.Send(It.Is<RejectPledgeApplicationsCommand>(c =>
-                        c.PledgeId == _request.PledgeId),
+                        c.PledgeId == request.PledgeId),
                     It.IsAny<CancellationToken>()));
         }
     }

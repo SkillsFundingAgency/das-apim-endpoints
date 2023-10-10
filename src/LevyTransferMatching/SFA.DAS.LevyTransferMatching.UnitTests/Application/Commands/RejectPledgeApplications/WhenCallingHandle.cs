@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.NUnit3;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -11,45 +12,27 @@ using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.RejectPledgeApplications
 {
-    [TestFixture]
     public class WhenCallingHandle
-    {
-        private RejectPledgeApplicationsCommandHandler _handler;
-        private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
-        private Mock<ILogger<RejectPledgeApplicationsCommandHandler>> _loggerMock;
-        private RejectPledgeApplicationsCommand _command;
-        private readonly Fixture _fixture = new Fixture();
-
-        [SetUp]
-        public void Setup()
-        {
-            _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
-            _loggerMock = new Mock<ILogger<RejectPledgeApplicationsCommandHandler>>();
-            _handler = new RejectPledgeApplicationsCommandHandler(_levyTransferMatchingService.Object, _loggerMock.Object);
-            _command = _fixture.Create<RejectPledgeApplicationsCommand>();
-        }
-        
+    {      
         [Test]
-        public async Task Handle_RejectsApplications()
-        {
-            // Arrange
-            var applicationsResponse = new GetApplicationsResponse
-            {
-                Applications = new List<GetApplicationsResponse.Application> 
-                {
-                    new GetApplicationsResponse.Application { Id = 1 },
-                    new GetApplicationsResponse.Application { Id = 2 }
-                }
-            };
-
+        [MoqAutoData]
+        public async Task Handle_RejectsApplications(
+            [Frozen] Mock<ILevyTransferMatchingService> _levyTransferMatchingService,
+            RejectPledgeApplicationsCommand _command,
+            GetApplicationsResponse applicationsResponse,
+            RejectPledgeApplicationsCommandHandler _handler
+            )
+        {  
             _levyTransferMatchingService.Setup(x => 
-                    x.GetApplications(It.IsAny<GetApplicationsRequest>()))
+                    x.GetApplications(It.Is<GetApplicationsRequest>(request => 
+                    request.PledgeId == _command.PledgeId)))
                 .ReturnsAsync(applicationsResponse);
 
-            _levyTransferMatchingService.Setup(x => 
+            _levyTransferMatchingService.Setup(x =>
                     x.RejectApplication(It.IsAny<RejectApplicationRequest>()))
                 .Returns(Task.CompletedTask); 
 
@@ -61,7 +44,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.RejectPled
 
             foreach (var application in applicationsResponse.Applications)
             {
-                _levyTransferMatchingService.Verify(x => x.RejectApplication(It.IsAny<RejectApplicationRequest>()));
+                _levyTransferMatchingService.Verify(x => x.RejectApplication(It.Is<RejectApplicationRequest>(
+                    request => request.ApplicationId == application.Id)));
             }
 
             Assert.AreEqual(Unit.Value, result);
