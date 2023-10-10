@@ -24,10 +24,12 @@ namespace SFA.DAS.ApimDeveloper.Api.AppStart
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
             services.AddTransient<IApimDeveloperApiClient<ApimDeveloperApiConfiguration>, ApimDeveloperApiClient>();
             services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
+            services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<IApimApiService, ApimApiService>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
+            services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         }
     }
 }

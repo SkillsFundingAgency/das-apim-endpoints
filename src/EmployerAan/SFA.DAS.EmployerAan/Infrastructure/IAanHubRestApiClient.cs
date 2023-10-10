@@ -2,6 +2,8 @@
 using SFA.DAS.EmployerAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.EmployerAan.Application.Employer.Commands.CreateEmployerMember;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
+using SFA.DAS.EmployerAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
+using SFA.DAS.EmployerAan.Application.Members.Queries.GetMember;
 using SFA.DAS.EmployerAan.Application.Members.Queries.GetMembers;
 using SFA.DAS.EmployerAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.EmployerAan.Application.Regions.Queries.GetRegions;
@@ -43,6 +45,9 @@ public interface IAanHubRestApiClient
     [Get("members")]
     Task<GetMembersQueryResult> GetMembers([QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
 
+    [Get("members/{memberId}")]
+    Task<GetMemberQueryResult> GetMember([Path] Guid memberId, CancellationToken cancellationToken);
+
     [Get("calendarEvents/{calendarEventId}")]
     [AllowAnyStatusCode]
     Task<Response<CalendarEvent>> GetCalendarEventById(
@@ -57,4 +62,6 @@ public interface IAanHubRestApiClient
     [Body] AttendanceStatus putAttendanceRequest,
     CancellationToken cancellationToken);
 
+    [Get("/members/{memberId}/profile")]
+    Task<GetMemberProfileWithPreferencesQueryResult> GetMemberProfileWithPreferences([Path] Guid memberId, [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, bool @public, CancellationToken cancellationToken);
 }
