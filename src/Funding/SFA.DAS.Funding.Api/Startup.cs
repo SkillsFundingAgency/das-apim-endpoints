@@ -18,6 +18,7 @@ using SFA.DAS.Funding.Application.Queries.GetProviderEarningsSummary;
 using SFA.DAS.Funding.Configuration;
 using SFA.DAS.Funding.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.Funding.Api
@@ -40,8 +41,10 @@ namespace SFA.DAS.Funding.Api
             services.AddSingleton(_env);
             services.Configure<FundingApprenticeshipEarningsConfiguration>(_configuration.GetSection("FundingApprenticeshipEarningsInnerApi"));
             services.Configure<ApprenticeshipsConfiguration>(_configuration.GetSection("ApprenticeshipsInnerApi"));
+            services.Configure<RoatpV2ApiConfiguration>(_configuration.GetSection(nameof(RoatpV2ApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FundingApprenticeshipEarningsConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeshipsConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
 
             if (!_configuration.IsLocalOrDev())
             {
