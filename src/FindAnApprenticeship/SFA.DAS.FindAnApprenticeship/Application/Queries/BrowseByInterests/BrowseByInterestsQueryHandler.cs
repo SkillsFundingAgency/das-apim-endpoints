@@ -14,18 +14,17 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.BrowseByInterests
 {
     public class BrowseByInterestsQueryHandler : IRequestHandler<BrowseByInterestsQuery, BrowseByInterestsResult>
     {
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
+        private readonly ICourseService _courseService;
 
         public BrowseByInterestsQueryHandler(
-            ICoursesApiClient<CoursesApiConfiguration> apiClient)
-
+            ICourseService courseService)
         {
-            _apiClient = apiClient;
+            _courseService = courseService;
         }
 
         public async Task<BrowseByInterestsResult> Handle(BrowseByInterestsQuery request, CancellationToken cancellationToken)
         {
-            var result = await _apiClient.Get<GetRoutesListResponse>(new GetRoutesListRequest());
+            var result = await _courseService.GetRoutes();
 
             return new BrowseByInterestsResult
             {

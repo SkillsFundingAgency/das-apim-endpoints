@@ -40,7 +40,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("")]
+        [Route("browsebyinterests")]
         public async Task<IActionResult> BrowseByInterests()
         {
             try

@@ -20,6 +20,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.AppStart
         [TestCase(typeof(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>))]
         [TestCase(typeof(ILocationApiClient<LocationApiConfiguration>))]
         [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
+        [TestCase(typeof(ICourseService))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();
