@@ -35,7 +35,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.AutoCloseP
         }
         
         [Test]
-        public async Task Handle_ReturnsOK_WhenPledgeBalance_Under_2000()
+        public async Task Handle_ClosePledge_WhenPledgeBalance_Under_2000()
         {
             // Arrange
             var applicationResponse = new GetApplicationResponse { Amount = 1000 };
@@ -55,11 +55,11 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.AutoCloseP
             var result = await _handler.Handle(_command, CancellationToken.None);
 
             // Assert
-            Assert.AreEqual(HttpStatusCode.OK, result);
+            Assert.AreEqual(true, result.PledgeClosed);
         }
 
         [Test]
-        public async Task Handle_Returns_NotFound__WhenPledgeBalance_Over_2000()
+        public async Task Handle_Returns_NotClosed__WhenPledgeBalance_Over_2000()
         {
             // Arrange
             var applicationResponse = new GetApplicationResponse { Amount = 1000 }; 
@@ -75,7 +75,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.AutoCloseP
             var result = await _handler.Handle(_command, CancellationToken.None);
 
             // Assert
-            Assert.AreEqual(HttpStatusCode.NotFound, result);
+            Assert.AreEqual(false, result.PledgeClosed);
         }
         
     }

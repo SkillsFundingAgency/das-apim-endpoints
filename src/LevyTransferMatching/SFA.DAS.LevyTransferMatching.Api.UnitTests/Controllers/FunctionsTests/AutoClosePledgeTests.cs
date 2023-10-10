@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
 using SFA.DAS.LevyTransferMatching.Application.Commands.AutoClosePledge;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Functions;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
 {
@@ -19,45 +20,30 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
         private FunctionsController _controller;
         private Mock<IMediator> _mediator;
         private Fixture _fixture;
+        private AutoClosePledgeCommandResult _result;
         
         [SetUp]
         public void SetUp()
         {
             _mediator = new Mock<IMediator>();
             _controller = new FunctionsController(_mediator.Object, Mock.Of<ILogger<FunctionsController>>());
-            _fixture = new Fixture();   
-        }
-        
-        [Test]
-        public async Task AutoClosePledge_ReturnsOk_WhenCommandIsSuccessful()
-        {
-            // Arrange
-            var request = _fixture.Create<AutoClosePledgeRequest>();
-
-            _mediator.Setup(x => x.Send(It.IsAny<AutoClosePledgeCommand>(), CancellationToken.None))
-                .ReturnsAsync(HttpStatusCode.OK);
-
-            // Act
-            var result = await _controller.AutoClosePledge(request);
-
-            // Assert
-            Assert.IsInstanceOf<OkResult>(result);
+            _fixture = new Fixture();
+            _result = _fixture.Create<AutoClosePledgeCommandResult>();
         }
 
         [Test]
-        public async Task AutoClosePledge_ReturnsNotFound_WhenCommandIsNotSuccessful()
+        public async Task AutoClosePledge_Returns_Response()
         {
-            // Arrange
             var request = _fixture.Create<AutoClosePledgeRequest>();
 
             _mediator.Setup(x => x.Send(It.IsAny<AutoClosePledgeCommand>(), CancellationToken.None))
-                .ReturnsAsync(HttpStatusCode.NotFound);
+                .ReturnsAsync(_result);
 
-            // Act
-            var result = await _controller.AutoClosePledge(request);
+            await _controller.AutoClosePledge(request);
 
-            // Assert
-            Assert.IsInstanceOf<NotFoundResult>(result);
+            _mediator.Verify(x =>
+                x.Send(It.IsAny<AutoClosePledgeCommand>(),
+                    It.IsAny<CancellationToken>()));
         }
     }
 }

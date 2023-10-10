@@ -317,11 +317,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 ApplicationId = request.ApplicationId
             });
 
-            if (result.IsSuccess())
-            {
-                return Ok();
-            }
-            return NotFound();
+            return Ok(result);
         }
 
         [Route("reject-pledge-applications")]
