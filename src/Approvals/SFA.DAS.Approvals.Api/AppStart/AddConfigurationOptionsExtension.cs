@@ -43,6 +43,8 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
             services.Configure<TrainingProviderConfiguration>(configuration.GetSection("TrainingProviderApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<TrainingProviderConfiguration>>().Value);
+            services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection("ProviderCoursesApiConfiguration"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
         }
     }
 }
