@@ -9,7 +9,6 @@ using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationCreatedForImmediateAutoApproval;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationWithdrawnAfterAcceptance;
 using SFA.DAS.LevyTransferMatching.Application.Commands.AutoApproveApplication;
-using SFA.DAS.LevyTransferMatching.Application.Commands.AutoClosePledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
@@ -305,19 +304,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             });
 
             return Ok();
-        }
-        
-        [Route("auto-close-pledge")]
-        [HttpPost]
-        public async Task<IActionResult> AutoClosePledge(AutoClosePledgeRequest request)
-        {
-            var result  = await _mediator.Send(new AutoClosePledgeCommand
-            {
-                PledgeId = request.PledgeId,
-                ApplicationId = request.ApplicationId
-            });
-
-            return Ok(result);
         }
 
         [Route("reject-pledge-applications")]
