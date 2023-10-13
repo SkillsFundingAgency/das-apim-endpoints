@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 {
-    public abstract class GetAccountProvidersResponse
+    public class GetAccountProvidersResponse
     {
         [JsonPropertyName("AccountId")]
         public long AccountId { get; set; }
