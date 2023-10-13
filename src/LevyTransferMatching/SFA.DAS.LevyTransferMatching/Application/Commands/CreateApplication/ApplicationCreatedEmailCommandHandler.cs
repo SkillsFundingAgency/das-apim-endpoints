@@ -55,6 +55,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
                 {
                     var email = new ApplicationCreatedEmail(user.Email, user.Name, request.EncodedApplicationId, templateID);
                     var command = new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens);
+
+                    _logger.LogInformation($"Sending {templateID} email for application {request.ApplicationId}");
                     await _notificationService.Send(command);
                 }               
             }
