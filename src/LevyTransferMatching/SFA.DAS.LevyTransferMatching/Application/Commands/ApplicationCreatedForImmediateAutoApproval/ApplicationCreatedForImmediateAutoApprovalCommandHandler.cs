@@ -28,6 +28,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationCreatedFo
                 && getApplicationResponse.AutomaticApprovalOption == AutomaticApprovalOption.ImmediateAutoApproval
                 && getApplicationResponse.MatchPercentage == 100)
             {
+                _logger.LogInformation($"Immediately automatically approving application {request.ApplicationId} for Pledge {request.PledgeId}");
+
                 var apiRequestData = new ApproveApplicationRequestData
                 {
                     UserId = string.Empty,
