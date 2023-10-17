@@ -21,7 +21,7 @@ public class GetMemberProfileWithPreferencesModel
 
     public GetMemberProfileWithPreferencesModel(
         GetMemberProfileWithPreferencesQueryResult memberProfileWithPreferences,
-        GetEmployerMemberSummaryQueryResult employerMemberSummaryResult)
+        GetEmployerMemberSummaryQueryResult? employerMemberSummaryResult)
     {
         FullName = memberProfileWithPreferences.FullName;
         Email = memberProfileWithPreferences.Email;
@@ -34,7 +34,10 @@ public class GetMemberProfileWithPreferencesModel
         IsRegionalChair = memberProfileWithPreferences.IsRegionalChair;
         Profiles = memberProfileWithPreferences.Profiles;
         Preferences = memberProfileWithPreferences.Preferences;
-        Apprenticeship.ActiveApprenticesCount = employerMemberSummaryResult.ActiveCount;
-        Apprenticeship.Sectors = employerMemberSummaryResult.Sectors;
+        if (employerMemberSummaryResult != null)
+        {
+            Apprenticeship.ActiveApprenticesCount = employerMemberSummaryResult.ActiveCount;
+            Apprenticeship.Sectors = employerMemberSummaryResult.Sectors;
+        }
     }
 }
