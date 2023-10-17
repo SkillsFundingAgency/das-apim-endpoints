@@ -26,8 +26,11 @@ public class MemberProfilesController : ControllerBase
         CancellationToken cancellationToken,
         bool @public = true)
     {
+        int apprenticeshipPreferenceId = Constants.Preferences.Apprenticeship;
         var memberProfileWithPreferences = await _mediator.Send(new GetMemberProfileWithPreferencesQuery(memberId, requestedByMemberId, @public), cancellationToken);
-        var employerMemberSummary = await _mediator.Send(new GetEmployerMemberSummaryQuery(memberProfileWithPreferences.AccountId), cancellationToken);
+        var isApprenticeSectionShareAllowedExist = memberProfileWithPreferences.Preferences.Any(x => x.PreferenceId == apprenticeshipPreferenceId);
+        var isApprenticeSectionShareAllowed = isApprenticeSectionShareAllowedExist ? memberProfileWithPreferences.Preferences.FirstOrDefault(x => x.PreferenceId == apprenticeshipPreferenceId)!.Value : isApprenticeSectionShareAllowedExist;
+        var employerMemberSummary = (@public && !isApprenticeSectionShareAllowed) ? null : await _mediator.Send(new GetEmployerMemberSummaryQuery(memberProfileWithPreferences.AccountId), cancellationToken);
 
         return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, employerMemberSummary));
     }
