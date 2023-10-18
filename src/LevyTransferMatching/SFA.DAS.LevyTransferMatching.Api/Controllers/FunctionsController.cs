@@ -15,7 +15,6 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RecalculateApplicationCostProjections;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
-using SFA.DAS.LevyTransferMatching.Application.Commands.RejectPledgeApplications;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SendEmails;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Functions;
@@ -300,18 +299,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             await _mediator.Send(new ApplicationCreatedForImmediateAutoApprovalCommand
             {
                 ApplicationId = request.ApplicationId,
-                PledgeId = request.PledgeId
-            });
-
-            return Ok();
-        }
-
-        [Route("reject-pledge-applications")]
-        [HttpPost]
-        public async Task<IActionResult> RejectPledgeApplications(RejectPledgeApplicationsRequest request)
-        {
-            await _mediator.Send(new RejectPledgeApplicationsCommand
-            {
                 PledgeId = request.PledgeId
             });
 
