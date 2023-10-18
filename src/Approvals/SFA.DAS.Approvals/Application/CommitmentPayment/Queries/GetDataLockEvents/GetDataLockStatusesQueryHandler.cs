@@ -5,6 +5,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Responses.ProviderEvent;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.CommitmentPayment.Queries.GetDataLockEvents
@@ -20,7 +21,7 @@ namespace SFA.DAS.Approvals.Application.CommitmentPayment.Queries.GetDataLockEve
 
         public async Task<GetDataLockStatusesQueryResult> Handle(GetDataLockStatuesQuery query, CancellationToken cancellationToken)
         {
-            var response = await _providerPaymentEventsApiClient.Get<PageOfResults<DataLockStatusEvent>>(new GetDataLockEventsRequest
+            var response = await _providerPaymentEventsApiClient.GetWithResponseCode<PageOfResults<DataLockStatusEvent>>(new GetDataLockEventsRequest
             {
                 SinceEventId = query.SinceEventId,
                 SinceTime = query.SinceTime,
@@ -28,10 +29,12 @@ namespace SFA.DAS.Approvals.Application.CommitmentPayment.Queries.GetDataLockEve
                 Ukprn = query.Ukprn,
                 PageNumber = query.PageNumber
             });
+            
+            response.EnsureSuccessStatusCode();
 
             return new GetDataLockStatusesQueryResult()
             {
-                PagedDataLockEvent = response ?? new PageOfResults<DataLockStatusEvent>()
+                PagedDataLockEvent = response.Body ?? new PageOfResults<DataLockStatusEvent>()
             };
         }
     }
