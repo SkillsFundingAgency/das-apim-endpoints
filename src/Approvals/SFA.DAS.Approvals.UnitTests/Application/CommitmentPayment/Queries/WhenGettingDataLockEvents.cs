@@ -35,7 +35,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.CommitmentPayment.Queries
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.PagedDataLockEvent.Should().BeEquivalentTo(apiResponse);
+            actual.PagedDataLockEvent.Should().BeEquivalentTo(apiResponse.Body);
         }
     }
 }

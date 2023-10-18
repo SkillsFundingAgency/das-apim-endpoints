@@ -29,7 +29,7 @@ namespace SFA.DAS.Approvals.Application.CommitmentPayment.Queries.GetDataLockEve
                 Ukprn = query.Ukprn,
                 PageNumber = query.PageNumber
             });
-
+            
             response.EnsureSuccessStatusCode();
 
             return new GetDataLockStatusesQueryResult()
