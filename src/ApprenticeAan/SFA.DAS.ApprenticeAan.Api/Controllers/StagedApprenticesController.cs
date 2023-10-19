@@ -15,13 +15,12 @@ public class StagedApprenticesController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet]
+    [HttpPost]
     [ProducesResponseType(typeof(GetApprenticeAccountQueryResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-    public async Task<IActionResult> GetStagedApprentice([FromQuery] string lastName, [FromQuery] DateTime dateOfBirth, [FromQuery] string email, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetStagedApprentice(GetStagedApprenticeQuery query, CancellationToken cancellationToken)
     {
-        GetStagedApprenticeQuery query = new(lastName, dateOfBirth, email);
         var result = await _mediator.Send(query, cancellationToken);
         return result == null ? NotFound() : Ok(result);
     }

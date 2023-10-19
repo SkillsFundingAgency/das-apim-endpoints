@@ -1,5 +1,4 @@
-﻿using System.Net.Mail;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,16 +16,14 @@ public class StagedApprenticesControllerTests
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] StagedApprenticesController sut,
         GetStagedApprenticeQueryResult result,
-        string lastName,
-        DateTime dateOfBirth,
-        MailAddress email,
+        GetStagedApprenticeQuery query,
         CancellationToken cancellationToken)
     {
-        mediatorMock.Setup(s => s.Send(It.Is<GetStagedApprenticeQuery>(q => q.LastName == lastName && q.DateOfBirth == dateOfBirth && q.Email == email.Address), cancellationToken)).ReturnsAsync(result);
+        mediatorMock.Setup(s => s.Send(query, cancellationToken)).ReturnsAsync(result);
 
-        await sut.GetStagedApprentice(lastName, dateOfBirth, email.Address, cancellationToken);
+        await sut.GetStagedApprentice(query, cancellationToken);
 
-        mediatorMock.Verify(s => s.Send(It.Is<GetStagedApprenticeQuery>(q => q.LastName == lastName && q.DateOfBirth == dateOfBirth && q.Email == email.Address), cancellationToken));
+        mediatorMock.Verify(s => s.Send(query, cancellationToken));
     }
 
     [Test, MoqAutoData]
@@ -34,13 +31,12 @@ public class StagedApprenticesControllerTests
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] StagedApprenticesController sut,
         GetStagedApprenticeQueryResult result,
-        string lastName,
-        DateTime dateOfBirth,
-        MailAddress email)
+        GetStagedApprenticeQuery query,
+        CancellationToken cancellationToken)
     {
         mediatorMock.Setup(s => s.Send(It.IsAny<GetStagedApprenticeQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(result);
 
-        var actualResult = await sut.GetStagedApprentice(lastName, dateOfBirth, email.Address, new CancellationToken());
+        var actualResult = await sut.GetStagedApprentice(query, cancellationToken);
 
         actualResult.As<OkObjectResult>().Value.As<GetStagedApprenticeQueryResult>().Should().Be(result);
     }
@@ -49,13 +45,12 @@ public class StagedApprenticesControllerTests
     public async Task GetStagedApprentice_DataNotFound_ReturnsNotFoundResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] StagedApprenticesController sut,
-        string lastName,
-        DateTime dateOfBirth,
-        MailAddress email)
+        GetStagedApprenticeQuery query,
+        CancellationToken cancellationToken)
     {
         mediatorMock.Setup(s => s.Send(It.IsAny<GetStagedApprenticeQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => null!);
 
-        var actualResult = await sut.GetStagedApprentice(lastName, dateOfBirth, email.Address, new CancellationToken());
+        var actualResult = await sut.GetStagedApprentice(query, cancellationToken);
 
         actualResult.As<NotFoundResult>().Should().NotBeNull();
     }

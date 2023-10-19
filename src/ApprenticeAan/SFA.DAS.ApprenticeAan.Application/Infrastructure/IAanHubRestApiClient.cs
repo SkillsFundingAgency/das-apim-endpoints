@@ -1,15 +1,16 @@
 ﻿using RestEase;
 using SFA.DAS.ApprenticeAan.Application.Apprentices.Commands.CreateApprenticeMember;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
-using SFA.DAS.ApprenticeAan.Application.Model;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Notifications;
 using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMember;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMembers;
+using SFA.DAS.ApprenticeAan.Application.Model;
 using SFA.DAS.ApprenticeAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
+using SFA.DAS.ApprenticeAan.Application.StagedApprentices.Queries.GetStagedApprentice;
 
 namespace SFA.DAS.ApprenticeAan.Application.Infrastructure;
 
@@ -26,6 +27,10 @@ public interface IAanHubRestApiClient
 
     [Post("/apprentices")]
     Task<CreateApprenticeMemberCommandResult> PostApprenticeMember([Body] CreateApprenticeMemberCommand command, CancellationToken cancellationToken);
+
+    [Post("/stagedApprentices")]
+    [AllowAnyStatusCode]
+    Task<Response<GetStagedApprenticeQueryResult?>> GetStagedApprentice([Body] GetStagedApprenticeQuery query, CancellationToken cancellationToken);
 
     [Put("/CalendarEvents/{calendarEventId}/attendance")]
     Task PutAttendance(
