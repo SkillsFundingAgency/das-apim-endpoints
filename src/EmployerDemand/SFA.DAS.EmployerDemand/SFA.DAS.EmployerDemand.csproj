@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR"  />
+    <PackageReference Include="MediatR" />
     <PackageReference Include="SFA.DAS.Notifications.Messages" />
     <PackageReference Include="SFA.DAS.NServiceBus" />
     <PackageReference Include="Newtonsoft.Json" />

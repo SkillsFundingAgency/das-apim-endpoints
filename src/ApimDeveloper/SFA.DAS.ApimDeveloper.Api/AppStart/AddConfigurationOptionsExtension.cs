@@ -24,6 +24,8 @@ namespace SFA.DAS.ApimDeveloper.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApimDeveloperMessagingConfiguration>>().Value);
             services.Configure<NServiceBusConfiguration>(configuration.GetSection(nameof(NServiceBusConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<NServiceBusConfiguration>>().Value);
+            services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection(nameof(RoatpV2ApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
         }
     }
 }
