@@ -62,5 +62,22 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<IActionResult> Locations([FromQuery] string searchTerm)
+        {
+            var result = await _mediator.Send(new GetLocationsQuery
+            {
+                SearchTerm = searchTerm
+            });
+
+            var model = new LocationsViewModel
+            {
+                Locations = result.LocationItems.Select(c => (LocationViewModel)c).ToList()
+            };
+
+            return new JsonResult(model);
+        }
     }
 }
