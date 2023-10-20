@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetAddresses;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetGeoPoint;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetLocationsBySearch;
 using System;
 using System.Linq;
 using System.Net;
@@ -17,7 +19,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         private readonly ILogger<LocationsController> _logger;
         private readonly IMediator _mediator;
 
-        public LocationsController (ILogger<LocationsController> logger, IMediator mediator)
+        public LocationsController(ILogger<LocationsController> logger, IMediator mediator)
         {
             _logger = logger;
             _mediator = mediator;
@@ -64,20 +66,25 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("")]
-        public async Task<IActionResult> Locations([FromQuery] string searchTerm)
+        [Route("searchbylocation")]
+        public async Task<IActionResult> SearchByLocation([FromQuery] string searchTerm)
         {
-            var result = await _mediator.Send(new GetLocationsQuery
+            try
             {
-                SearchTerm = searchTerm
-            });
+                var queryResult = await _mediator.Send(new GetLocationsBySearchQuery { SearchTerm = searchTerm });
 
-            var model = new LocationsViewModel
+                var response = new GetLocationBySearchResponse
+                {
+                    Locations = queryResult.Locations
+                        .Select(c => (GetLocationSearchResponseItem)c),
+                };
+                return Ok(response);
+            }
+            catch (Exception e)
             {
-                Locations = result.LocationItems.Select(c => (LocationViewModel)c).ToList()
-            };
-
-            return new JsonResult(model);
+                _logger.LogError(e, $"Error attempting to get list of locations, search term:{searchTerm}");
+                return BadRequest();
+            }
         }
     }
 }
