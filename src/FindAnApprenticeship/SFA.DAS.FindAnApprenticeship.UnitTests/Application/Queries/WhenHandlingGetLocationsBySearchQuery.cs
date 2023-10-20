@@ -13,7 +13,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.GetLocationsBySearch;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 {
-    public class WhenHandlingGetLocationsQuery
+    public class WhenHandlingGetLocationsBySearchQuery
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Locations_From_Location_Api(
