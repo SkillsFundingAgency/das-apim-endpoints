@@ -1,14 +1,11 @@
 ﻿using MediatR;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.LevyTransferMatching.Models;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication
+namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplications
 {
     public class RejectApplicationsCommandHandler : IRequestHandler<RejectApplicationsCommand>
     {

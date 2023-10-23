@@ -22,7 +22,7 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprovalOp
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApprovalOptions;
 using System.Net;
 using System.Threading.Tasks;
-using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplications;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetOrganisationName;
