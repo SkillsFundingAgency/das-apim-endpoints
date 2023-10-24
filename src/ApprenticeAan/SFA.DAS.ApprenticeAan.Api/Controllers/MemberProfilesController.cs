@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.Common;
 using SFA.DAS.ApprenticeAan.Application.Employer.Queries.GetEmployerMemberSummary;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.MemberProfiles;
+using SFA.DAS.ApprenticeAan.Application.MemberProfiles;
 using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.ApprenticeAan.Application.Model;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
-using SFA.DAS.ApprenticeAan.Application.InnerApi.MemberProfiles;
-using SFA.DAS.ApprenticeAan.Application.MemberProfiles;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
@@ -50,8 +50,8 @@ public class MemberProfilesController : ControllerBase
             return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, null, apprenticeship, @public));
         }
     }
-    
-    [HttpPut("{memberId}/profile")]
+
+    [HttpPost("{memberId}/profile")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PutMemberProfile(
         [FromRoute] Guid memberId,
