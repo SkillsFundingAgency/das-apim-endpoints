@@ -15,7 +15,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.ApproveAut
     {
         private AutoApproveApplicationCommandHandler _handler;
         private Mock<ILevyTransferMatchingService> _levyTransferMatchingService;
-        private Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new Fixture();
 
         private AutoApproveApplicationCommand _command;
         private ApproveApplicationRequest _approveApplicationRequest;
@@ -46,6 +46,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.ApproveAut
                 x => x.ApproveApplication(It.Is<ApproveApplicationRequest>(r =>
                     r.PledgeId == _command.PledgeId &&
                     r.ApplicationId == _command.ApplicationId
+                     && r.Data == requestData
                  )),
                 Times.Once);
         }

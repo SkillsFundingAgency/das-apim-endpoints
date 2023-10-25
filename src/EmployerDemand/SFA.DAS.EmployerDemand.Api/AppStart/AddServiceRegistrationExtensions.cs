@@ -24,6 +24,7 @@ namespace SFA.DAS.EmployerDemand.Api.AppStart
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
+            services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         }
     }
 }

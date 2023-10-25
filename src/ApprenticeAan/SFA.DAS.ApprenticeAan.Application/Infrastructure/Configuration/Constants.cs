@@ -5,4 +5,8 @@ public static class Constants
     {
         public const string RequestedByMemberIdHeader = "X-RequestedByMemberId";
     }
+    public static class Preferences
+    {
+        public const int Apprenticeship = 3;
+    }
 }
