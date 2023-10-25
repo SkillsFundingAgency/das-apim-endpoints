@@ -1,13 +1,12 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome
+namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
 {
-    public class ReceiverApplicationApprovedEmailCommand : IRequest
+    public class ApplicationCreatedEmailCommand : IRequest
     { 
         public int PledgeId { get; set; }
         public int ApplicationId { get; set; }
         public long ReceiverId { get; set; }
         public string EncodedApplicationId { get; set; }
-
     }
 }

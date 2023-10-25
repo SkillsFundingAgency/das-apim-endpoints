@@ -6,20 +6,17 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcom
     public class ReceiverApplicationApprovedEmail : EmailTemplateArguments
     {
         public ReceiverApplicationApprovedEmail(
-            string recipientEmail, 
-            string receiverName,
-            string senderName,
-            string baseUrl,
-            string encodedAccountId)
+             string recipientEmail,
+            string userName,
+            string reference
+            )
         {
             TemplateId = "ReceiverApplicationApproved";
             RecipientAddress = recipientEmail;
             Tokens = new Dictionary<string, string>
             {
-                {"ReceiverName", receiverName },
-                {"SenderName", senderName },
-                {"BaseUrl", baseUrl },
-                {"EncodedAccountId", encodedAccountId }
+                {"user_name", userName },
+                {"reference", reference }
             };
         }
     }
