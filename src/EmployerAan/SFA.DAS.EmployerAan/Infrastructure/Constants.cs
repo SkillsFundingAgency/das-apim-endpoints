@@ -6,7 +6,7 @@ public static class Constants
     {
         public const string RequestedByMemberIdHeader = "X-RequestedByMemberId";
     }
-    public static class Preferences
+    public static class PreferenceIds
     {
         public const int Apprenticeship = 3;
     }

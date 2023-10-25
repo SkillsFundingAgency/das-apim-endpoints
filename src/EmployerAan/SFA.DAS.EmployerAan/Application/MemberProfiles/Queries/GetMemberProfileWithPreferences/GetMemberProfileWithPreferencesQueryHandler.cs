@@ -46,7 +46,14 @@ public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMe
         var outputRegions = regionsResponse.Result;
         if (outputRegions.Regions.Any()) result.RegionName = outputRegions.Regions.Find(x => x.Id == result.RegionId)!.Area!;
 
-        result.AccountId = outputMember.Employer!.AccountId;
+        if (result.UserType == MemberUserType.Apprentice)
+        {
+            result.ApprenticeId = outputMember.Apprentice!.ApprenticeId;
+        }
+        if (result.UserType == MemberUserType.Employer)
+        {
+            result.AccountId = outputMember.Employer!.AccountId;
+        }
 
         return result;
     }
