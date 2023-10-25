@@ -1,11 +1,8 @@
-﻿
-using System;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-
+﻿using System;
 
 namespace SFA.DAS.SharedOuterApi.Models
 {
-    public class ApprenticeFeedbackTransaction
+    public class FeedbackTransaction
     {
         public long ApprenticeFeedbackTransactionId { get; set; }
         public Guid ApprenticeId { get; set; }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.GenerateEmailTransaction;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.PatchApprenticeFeedbackTarget;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.ProcessEmailTransaction;
+using SFA.DAS.ApprenticeFeedback.Application.Commands.TrackEmailTransactionClick;
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetFeedbackTransactionsToEmail;
 using SFA.DAS.ApprenticeFeedback.Models;
@@ -32,8 +33,8 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
         public async Task<ActionResult<GenerateEmailTransactionResponse>> GenerateEmailTransaction()
             => await _mediator.Send(new GenerateEmailTransactionCommand());
 
-        [HttpPost("{apprenticeFeedbackTransactionId}")]
-        public async Task<ActionResult> ProcessEmailTransaction([FromRoute] long apprenticeFeedbackTransactionId, [FromBody] ApprenticeFeedbackTransaction feedbackTransaction)
+        [HttpPost("{feedbackTransactionId}")]
+        public async Task<ActionResult> ProcessEmailTransaction([FromRoute] long feedbackTransactionId, [FromBody] FeedbackTransaction feedbackTransaction)
         {
             GetApprenticeResult apprentice = null;
             try
@@ -48,19 +49,19 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
                 // Returning success as no email sent and it didn't fail we've just closed it off.
                 return Ok(new ProcessEmailTransactionResult()
                 {
-                    FeedbackTransactionId = apprenticeFeedbackTransactionId,
+                    FeedbackTransactionId = feedbackTransactionId,
                     EmailStatus = EmailStatus.Successful
                 });
             }
             catch(Exception e)
             {
-                _logger.LogError(e,$"Processing of email transaction failed for id {apprenticeFeedbackTransactionId}");
+                _logger.LogError(e,$"Processing of email transaction failed for id {feedbackTransactionId}");
                 return StatusCode((int)HttpStatusCode.InternalServerError, EmailStatus.Failed);
             }
 
             ProcessEmailTransactionResponse response = await _mediator.Send(new ProcessEmailTransactionCommand()
             {
-                FeedbackTransactionId = apprenticeFeedbackTransactionId,
+                FeedbackTransactionId = feedbackTransactionId,
                 ApprenticeName = apprentice.FirstName,
                 ApprenticeEmailAddress = apprentice.Email,
                 // If the preference is null, it's not set and we default to true until told otherwise for sending feedback emails.
@@ -69,8 +70,27 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
 
             return Ok(new ProcessEmailTransactionResult()
             {
-                FeedbackTransactionId = apprenticeFeedbackTransactionId,
+                FeedbackTransactionId = feedbackTransactionId,
                 EmailStatus = response.Status
+            });
+        }
+
+        [HttpPost("{feedbackTransactionId}/track-click")]
+        public async Task<ActionResult> TrackClick([FromRoute] long feedbackTransactionId, [FromBody] FeedbackTransactionClick feedbackTransactionClick)
+        {
+            TrackEmailTransactionClickResponse response = await _mediator.Send(new TrackEmailTransactionClickCommand()
+            {
+                FeedbackTransactionId = feedbackTransactionId,
+                ApprenticeFeedbackTargetId = feedbackTransactionClick.ApprenticeFeedbackTargetId,
+                LinkName = feedbackTransactionClick.LinkName,
+                LinkUrl = feedbackTransactionClick.LinkUrl,
+                ClickedOn = feedbackTransactionClick.ClickedOn
+            });
+
+            return Ok(new TrackEmailTransactionClickResult()
+            {
+                FeedbackTransactionId = feedbackTransactionId,
+                ClickStatus = response.Status
             });
         }
 
