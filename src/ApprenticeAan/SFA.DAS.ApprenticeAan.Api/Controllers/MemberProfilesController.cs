@@ -54,7 +54,7 @@ public class MemberProfilesController : ControllerBase
     [HttpPut("{memberId}/profile")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PutMemberProfile(
-        [FromRoute] Guid memberId,
+        Guid memberId,
         [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
         [FromBody] UpdateMemberProfileModel request, CancellationToken cancellationToken)
     {
