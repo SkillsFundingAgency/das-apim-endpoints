@@ -51,7 +51,7 @@ public class MemberProfilesController : ControllerBase
         }
     }
 
-    [HttpPost("{memberId}/profile")]
+    [HttpPut("{memberId}/profile")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PutMemberProfile(
         [FromRoute] Guid memberId,
