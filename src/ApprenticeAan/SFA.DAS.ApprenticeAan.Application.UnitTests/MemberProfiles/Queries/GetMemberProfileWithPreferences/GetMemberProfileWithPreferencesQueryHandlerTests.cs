@@ -99,7 +99,7 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
     [Test]
     public void Handle_InvokesGetMemberProfileWithPreferencesAPI()
     {
-        using (new AssertionScope("Invokes GetMemberProfileWithPreferencesAPI & validates the Profile and Preferences"))
+        using (new AssertionScope("Invokes GetMemberProfileWithPreferencesAPI & validates the Profile and PreferenceIds"))
         {
             aanHubRestApiClientMock.Verify(x => x.GetMemberProfileWithPreferences(memberId, memberId, true, cancellationToken), Times.Once());
             actualResult.Profiles.Should().BeEquivalentTo(expectedResult.Profiles);

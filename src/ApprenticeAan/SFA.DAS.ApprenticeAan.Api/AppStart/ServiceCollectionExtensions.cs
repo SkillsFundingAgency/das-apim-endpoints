@@ -7,6 +7,7 @@ using SFA.DAS.ApprenticeAan.Api.Configuration;
 using SFA.DAS.ApprenticeAan.Application.Extensions;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.Services;
+using SFA.DAS.ApprenticeAan.Infrastructure;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -29,6 +30,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         services.AddApplicationRegistrations();
         AddAanHubApiClient(services, configuration);
+        AddCommitmentsV2ApiClient(services, configuration);
         return services;
     }
 
@@ -44,6 +46,19 @@ public static class ServiceCollectionExtensions
             .AddHttpMessageHandler<InnerApiAuthenticationHeaderHandler>();
     }
 
+    private static void AddCommitmentsV2ApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = configuration
+                .GetSection(nameof(SFA.DAS.ApprenticeAan.Configuration.CommitmentsV2ApiConfiguration))
+                .Get<SFA.DAS.ApprenticeAan.Configuration.CommitmentsV2ApiConfiguration>();
+
+        services.AddSingleton(apiConfig);
+
+        services.AddScoped<CommitmentsV2ApiHttpMessageHandler>();
+
+        services.AddRestEaseClient<ICommitmentsV2InnerApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler<CommitmentsV2ApiHttpMessageHandler>();
+    }
 
     private static void AddConfigurationOptions(IServiceCollection services, IConfiguration configuration)
     {
