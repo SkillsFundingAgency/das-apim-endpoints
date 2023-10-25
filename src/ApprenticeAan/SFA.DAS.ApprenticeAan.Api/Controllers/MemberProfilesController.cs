@@ -34,7 +34,7 @@ public class MemberProfilesController : ControllerBase
         return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, myApprenticeship, @public));
     }
 
-    [HttpPost("{memberId}/profile")]
+    [HttpPut("{memberId}/profile")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PutMemberProfile(
         [FromRoute] Guid memberId,
