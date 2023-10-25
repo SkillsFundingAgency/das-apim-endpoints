@@ -1,6 +1,6 @@
-﻿namespace SFA.DAS.ApprenticeAan.Application.Apprentices.Queries.GetApprentice;
+﻿namespace SFA.DAS.ApprenticeAan.Application.InnerApi.Apprentices;
 
-public class GetApprenticeQueryResult
+public class GetApprenticeResult
 {
     public Guid MemberId { get; set; }
     public string FirstName { get; set; } = null!;
@@ -10,4 +10,3 @@ public class GetApprenticeQueryResult
     public string Status { get; set; } = null!;
     public int RegionId { get; set; }
 }
-
