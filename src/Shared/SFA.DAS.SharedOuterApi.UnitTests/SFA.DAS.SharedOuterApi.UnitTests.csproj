@@ -28,4 +28,8 @@
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageVersion Update="nunit" Version="3.13.3" />
+    </ItemGroup>
+
 </Project>

@@ -23,4 +23,8 @@
     <ProjectReference Include="..\SFA.DAS.LevyTransferMatching\SFA.DAS.LevyTransferMatching.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageVersion Update="nunit" Version="3.13.3" />
+  </ItemGroup>
+
 </Project>
