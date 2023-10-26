@@ -18,7 +18,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprov
             _levyTransferMatchingService = levyTransferMatchingService;
         }
 
-        public async Task<Unit> Handle(SetApplicationApprovalOptionsCommand request, CancellationToken cancellationToken)
+        public async Task Handle(SetApplicationApprovalOptionsCommand request, CancellationToken cancellationToken)
         {
             var apiRequestData = new ApproveApplicationRequestData
             {
@@ -30,8 +30,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprov
             var apiRequest = new ApproveApplicationRequest(request.PledgeId, request.ApplicationId, apiRequestData);
 
             await _levyTransferMatchingService.ApproveApplication(apiRequest);
-
-            return Unit.Value;
         }
     }
 }

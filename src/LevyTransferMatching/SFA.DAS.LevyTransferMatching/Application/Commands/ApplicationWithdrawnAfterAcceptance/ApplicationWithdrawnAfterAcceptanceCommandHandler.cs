@@ -15,7 +15,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationWithdrawn
             _levyTransferMatchingService = levyTransferMatchingService;
         }
 
-        public async Task<Unit> Handle(ApplicationWithdrawnAfterAcceptanceCommand request, CancellationToken cancellationToken)
+        public async Task Handle(ApplicationWithdrawnAfterAcceptanceCommand request, CancellationToken cancellationToken)
         {
             var apiRequest = new CreditPledgeRequest(request.PledgeId, new CreditPledgeRequest.CreditPledgeRequestData
             {
@@ -24,8 +24,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationWithdrawn
             });
 
             await _levyTransferMatchingService.CreditPledge(apiRequest);
-
-            return Unit.Value;
         }
     }
 }

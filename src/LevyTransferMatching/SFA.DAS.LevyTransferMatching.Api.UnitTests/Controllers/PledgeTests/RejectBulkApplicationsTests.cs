@@ -26,12 +26,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
           [Frozen] Mock<IMediator> mockMediator,
           [Greedy] PledgeController pledgeController)
         {
-            mockMediator
-                .Setup(x => x.Send(
-                    It.Is<RejectApplicationsCommand>((x) => (x.PledgeId == pledgeId) && (x.AccountId == accountId)),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Unit.Value);
-
             applicationRejectRequest.ApplicationsToReject = new List<int> {5};
 
             var controllerResponse = await pledgeController.RejectApplications(accountId, pledgeId, applicationRejectRequest);

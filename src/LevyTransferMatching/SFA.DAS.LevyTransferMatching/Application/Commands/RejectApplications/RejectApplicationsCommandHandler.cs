@@ -18,7 +18,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplications
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(RejectApplicationsCommand request, CancellationToken cancellationToken)
+        public async Task Handle(RejectApplicationsCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Rejecting Application(s) { string.Join(", ", request.ApplicationsToReject) } for Pledge {request.PledgeId}");
 
@@ -33,7 +33,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplications
                 var apiRequest = new RejectApplicationRequest(request.PledgeId, applicationId, apiRequestData);
                 await _levyTransferMatchingService.RejectApplication(apiRequest);
             }
-            return Unit.Value;
         }
     }
 }

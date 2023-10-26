@@ -20,7 +20,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationCreatedFo
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(ApplicationCreatedForImmediateAutoApprovalCommand request, CancellationToken cancellationToken)
+        public async Task Handle(ApplicationCreatedForImmediateAutoApprovalCommand request, CancellationToken cancellationToken)
         {
             var getApplicationResponse = await _levyTransferMatchingService.GetApplication(new GetApplicationRequest(request.PledgeId, request.ApplicationId));
           
@@ -41,8 +41,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationCreatedFo
 
                 await _levyTransferMatchingService.ApproveApplication(apiRequest);
             }
-
-            return Unit.Value;
         }
     }
 }

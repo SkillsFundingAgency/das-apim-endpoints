@@ -23,7 +23,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcom
             _notificationService = notificationService;
         }
 
-        public async Task<Unit> Handle(ReceiverApplicationApprovedEmailCommand request, CancellationToken cancellationToken)
+        public async Task Handle(ReceiverApplicationApprovedEmailCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Sending email for application {request.ApplicationId} approved to receiver {request.ReceiverId} for Pledge {request.PledgeId}");
 
@@ -39,8 +39,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcom
 
                 await _notificationService.Send(command);
             }
-
-            return Unit.Value;
         }
     }
 }

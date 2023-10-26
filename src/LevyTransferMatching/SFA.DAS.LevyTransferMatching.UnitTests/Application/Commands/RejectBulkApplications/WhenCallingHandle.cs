@@ -44,7 +44,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.RejectBulk
         [Test]
         public async Task Bulk_Applications_Rejected_Successfully()
         {
-            var response = await _handler.Handle(_command, CancellationToken.None);
+            await _handler.Handle(_command, CancellationToken.None);
 
             var data = (RejectApplicationRequestData)_request.Data;
             var applicationID = _command.ApplicationsToReject[0];

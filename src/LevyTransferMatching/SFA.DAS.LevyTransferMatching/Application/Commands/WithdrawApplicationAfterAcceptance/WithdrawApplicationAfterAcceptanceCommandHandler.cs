@@ -15,7 +15,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.WithdrawApplicationA
             _levyTransferMatchingService = levyTransferMatchingService;
         }
 
-        public async Task<Unit> Handle(WithdrawApplicationAfterAcceptanceCommand request, CancellationToken cancellationToken)
+        public async Task Handle(WithdrawApplicationAfterAcceptanceCommand request, CancellationToken cancellationToken)
         {
             var apiRequest = new WithdrawApplicationRequest(request.ApplicationId, request.AccountId, new WithdrawApplicationRequestData
             {
@@ -26,8 +26,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.WithdrawApplicationA
             });
 
             await _levyTransferMatchingService.WithdrawApplication(apiRequest, cancellationToken);
-
-            return Unit.Value;
         }
     }
 }

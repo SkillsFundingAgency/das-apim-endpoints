@@ -19,7 +19,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcom
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(SetApplicationOutcomeCommand request, CancellationToken cancellationToken)
+        public async Task Handle(SetApplicationOutcomeCommand request, CancellationToken cancellationToken)
         {
             if (request.Outcome == ApplicationOutcome.Approve)
             {
@@ -49,8 +49,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcom
 
                 await _levyTransferMatchingService.RejectApplication(apiRequest);
             }
-
-            return Unit.Value;
         }
     }
 }

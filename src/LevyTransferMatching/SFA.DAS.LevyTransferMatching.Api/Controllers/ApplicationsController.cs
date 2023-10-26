@@ -218,7 +218,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new WithdrawApplicationAfterAcceptanceCommand
+                await _mediator.Send(new WithdrawApplicationAfterAcceptanceCommand
                 {
                     AccountId = accountId,
                     ApplicationId = applicationId,

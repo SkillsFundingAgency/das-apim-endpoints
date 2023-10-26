@@ -18,7 +18,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(RejectApplicationCommand request, CancellationToken cancellationToken)
+        public async Task Handle(RejectApplicationCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Auto Rejecting Application over 3 months old {request.ApplicationId} for Pledge {request.PledgeId}");
 
@@ -31,8 +31,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication
             var apiRequest = new RejectApplicationRequest(request.PledgeId, request.ApplicationId, apiRequestData);
 
             await _levyTransferMatchingService.RejectApplication(apiRequest);
-
-            return Unit.Value;
         }
     }
 }

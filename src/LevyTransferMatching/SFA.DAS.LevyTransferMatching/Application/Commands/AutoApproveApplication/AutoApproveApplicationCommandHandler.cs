@@ -18,7 +18,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.AutoApproveApplicati
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(AutoApproveApplicationCommand request, CancellationToken cancellationToken)
+        public async Task Handle(AutoApproveApplicationCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Auto Approving Application {request.ApplicationId} for Pledge {request.PledgeId}");
 
@@ -32,8 +32,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.AutoApproveApplicati
             var apiRequest = new ApproveApplicationRequest(request.PledgeId, request.ApplicationId, apiRequestData);
 
             await _levyTransferMatchingService.ApproveApplication(apiRequest);
-
-            return Unit.Value;
         }
     }
 }

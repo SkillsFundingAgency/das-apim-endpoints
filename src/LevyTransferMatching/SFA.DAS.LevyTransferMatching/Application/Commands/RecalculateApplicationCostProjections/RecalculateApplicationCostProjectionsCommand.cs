@@ -25,7 +25,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.RecalculateApplicati
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(RecalculateApplicationCostProjectionsCommand request, CancellationToken cancellationToken)
+        public async Task Handle(RecalculateApplicationCostProjectionsCommand request, CancellationToken cancellationToken)
         {
             var getApplicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest());
 
@@ -41,8 +41,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.RecalculateApplicati
                     _logger.LogError($"Error recalculating cost projection for application {applicationId}");
                 }
             }
-
-            return Unit.Value;
         }
     }
 }

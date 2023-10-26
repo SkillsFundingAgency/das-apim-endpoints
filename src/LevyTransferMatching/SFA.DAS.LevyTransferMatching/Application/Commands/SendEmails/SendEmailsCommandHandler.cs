@@ -18,17 +18,16 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.SendEmails
             _notificationsService = notificationsService;
         }
 
-        public async Task<Unit> Handle(SendEmailsCommand request, CancellationToken cancellationToken)
+        public async Task Handle(SendEmailsCommand request, CancellationToken cancellationToken)
         {
             var emailTasks = new List<Task>();
+            
             foreach(var emailData in request.EmailDataList)
             {
                 emailTasks.Add(_notificationsService.Send(new SendEmailCommand(emailData.TemplateName, emailData.RecipientEmailAddress, emailData.Tokens)));
             }
 
             await Task.WhenAll(emailTasks);
-
-            return Unit.Value;
         }
     }
 }

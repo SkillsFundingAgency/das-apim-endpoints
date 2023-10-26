@@ -28,7 +28,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
             _notificationService = notificationService;
         }
 
-        public async Task<Unit> Handle(ApplicationCreatedEmailCommand request, CancellationToken cancellationToken)
+        public async Task Handle(ApplicationCreatedEmailCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Sending email for application {request.ApplicationId} created to receiver {request.ReceiverId} for Pledge {request.PledgeId}");
 
@@ -60,8 +60,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
                     await _notificationService.Send(command);
                 }               
             }
-
-            return Unit.Value;
         }
     }
 }

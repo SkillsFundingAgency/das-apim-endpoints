@@ -23,7 +23,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication
             _notificationService = notificationService;
         }
 
-        public async Task<Unit> Handle(ApplicationRejectedEmailCommand request, CancellationToken cancellationToken)
+        public async Task Handle(ApplicationRejectedEmailCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Sending email for application {request.ApplicationId} Rejected to receiver {request.ReceiverId} for Pledge {request.PledgeId}");
 
@@ -37,8 +37,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication
                 var command = new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens);
                 await _notificationService.Send(command);
             }
-
-            return Unit.Value;
         }
     }
 }

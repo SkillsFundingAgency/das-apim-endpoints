@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
     <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
