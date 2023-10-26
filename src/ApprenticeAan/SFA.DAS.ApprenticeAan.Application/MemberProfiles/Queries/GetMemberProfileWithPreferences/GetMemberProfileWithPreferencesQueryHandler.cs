@@ -44,11 +44,11 @@ public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMe
         result.IsRegionalChair = (bool)outputMember.IsRegionalChair!;
         if (result.UserType == MemberUserType.Apprentice)
         {
-            result.ApprenticeId = (outputMember.Apprentice != null) ? outputMember.Apprentice!.ApprenticeId : Guid.Empty;
+            result.ApprenticeId = outputMember.Apprentice!.ApprenticeId;
         }
         if (result.UserType == MemberUserType.Employer)
         {
-            result.AccountId = (outputMember.Employer != null) ? outputMember.Employer!.AccountId : 0;
+            result.AccountId = outputMember.Employer!.AccountId;
         }
 
         var outputRegions = regionsResponse.Result;
