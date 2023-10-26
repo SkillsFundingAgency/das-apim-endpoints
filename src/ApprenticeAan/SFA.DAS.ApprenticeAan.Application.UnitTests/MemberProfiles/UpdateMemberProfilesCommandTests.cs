@@ -16,7 +16,7 @@ public class UpdateMemberProfilesCommandTests
         {
             sut.MemberId.Should().Be(memberId);
             sut.RequestedByMemberId.Should().Be(requestedByMemberId);
-            sut.MemberProfile.Should().Be(memberProfile);
+            sut.MemberProfile.Should().BeEquivalentTo((UpdateMemberProfileCommand)memberProfile);
         }
     }
 }
