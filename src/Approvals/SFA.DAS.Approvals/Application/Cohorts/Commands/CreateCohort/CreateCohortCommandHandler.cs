@@ -26,6 +26,8 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
                 AccountLegalEntityId = request.AccountLegalEntityId,
                 ActualStartDate = request.ActualStartDate,
                 Cost = request.Cost,
+                TrainingPrice = request.TrainingPrice,
+                EndPointAssessmentPrice = request.EndPointAssessmentPrice,
                 CourseCode = request.CourseCode,
                 DateOfBirth = request.DateOfBirth,
                 DeliveryModel = request.DeliveryModel,

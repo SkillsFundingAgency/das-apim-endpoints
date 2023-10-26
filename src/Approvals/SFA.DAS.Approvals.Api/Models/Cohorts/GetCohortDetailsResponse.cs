@@ -102,6 +102,8 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
         public string Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public int? Cost { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? ActualStartDate { get; set; }
         public DateTime? EndDate { get; set; }
@@ -135,6 +137,8 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
                 Email = source.Email,
                 DateOfBirth = source.DateOfBirth,
                 Cost = source.Cost,
+                TrainingPrice = source.TrainingPrice,
+                EndPointAssessmentPrice = source.EndPointAssessmentPrice,
                 StartDate = source.StartDate,
                 ActualStartDate = source.ActualStartDate,
                 EndDate = source.EndDate,
