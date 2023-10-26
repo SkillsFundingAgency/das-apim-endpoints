@@ -208,6 +208,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 AccountId = request.AccountId,
                 AccountLegalEntityId = request.AccountLegalEntityId,
                 Cost = request.Cost,
+                TrainingPrice = request.TrainingPrice,
+                EndPointAssessmentPrice = request.EndPointAssessmentPrice,
                 CourseCode = request.CourseCode,
                 DateOfBirth = request.DateOfBirth,
                 DeliveryModel = request.DeliveryModel,
