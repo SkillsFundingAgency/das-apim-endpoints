@@ -14,7 +14,7 @@ public class TrainingCourse
             Name = standard.Title,
             Level = standard.Level,
             Sector = standard.Route,
-            Duration = standard?.VersionDetail?.ProposedTypicalDuration
+            Duration = standard.VersionDetail?.ProposedTypicalDuration
         };
     }
 

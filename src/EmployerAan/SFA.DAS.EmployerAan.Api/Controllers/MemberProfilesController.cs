@@ -28,10 +28,7 @@ public class MemberProfilesController : ControllerBase
         CancellationToken cancellationToken,
         bool @public = true)
     {
-        int apprenticeshipPreferenceId = Constants.PreferenceIds.Apprenticeship;
         var memberProfileWithPreferences = await _mediator.Send(new GetMemberProfileWithPreferencesQuery(memberId, requestedByMemberId, @public), cancellationToken);
-        var isApprenticeSectionShareAllowedExist = memberProfileWithPreferences.Preferences.Any(x => x.PreferenceId == apprenticeshipPreferenceId);
-        var isApprenticeSectionShareAllowed = isApprenticeSectionShareAllowedExist ? memberProfileWithPreferences.Preferences.FirstOrDefault(x => x.PreferenceId == apprenticeshipPreferenceId)!.Value : isApprenticeSectionShareAllowedExist;
 
         var isApprenticeshipSectionShared = memberProfileWithPreferences.Preferences.Single(x => x.PreferenceId == Constants.PreferenceIds.Apprenticeship).Value;
 
@@ -48,9 +45,6 @@ public class MemberProfilesController : ControllerBase
         else
         {
             var employerMemberSummary = await _mediator.Send(new GetEmployerMemberSummaryQuery(memberProfileWithPreferences.AccountId), cancellationToken);
-
-            Apprenticeship apprenticeship = new() { Sectors = employerMemberSummary.Sectors, ActiveApprenticesCount = employerMemberSummary.ActiveCount };
-
             return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, null, employerMemberSummary));
         }
     }
