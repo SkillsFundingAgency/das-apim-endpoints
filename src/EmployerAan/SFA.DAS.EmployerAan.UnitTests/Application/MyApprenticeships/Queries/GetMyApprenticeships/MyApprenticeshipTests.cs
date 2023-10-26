@@ -1,5 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using SFA.DAS.EmployerAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
+using SFA.DAS.EmployerAan.InnerApi.MyApprenticeships;
 
 namespace SFA.DAS.EmployerAan.Application.UnitTests.MyApprenticeships.Queries.GetMyApprenticeships;
 
@@ -7,9 +8,9 @@ public class MyApprenticeshipTests
 {
     [Test]
     [AutoData]
-    public void Operator_ConvertsFrom_MyApprenticeshipResponse(MyApprenticeshipResponse source)
+    public void Operator_ConvertsFrom_MyApprenticeshipResponse(GetMyApprenticeshipResponse source)
     {
-        MyApprenticeship sut = source;
+        GetMyApprenticeshipQueryResult sut = source;
 
         Assert.Multiple(() =>
         {

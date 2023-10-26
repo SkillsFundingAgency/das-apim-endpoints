@@ -22,7 +22,7 @@ public class GetMemberProfileWithPreferencesModel
 
     public GetMemberProfileWithPreferencesModel(
         GetMemberProfileWithPreferencesQueryResult memberProfileWithPreferences,
-        MyApprenticeship? myApprenticeship,
+        GetMyApprenticeshipQueryResult? myApprenticeship,
         GetEmployerMemberSummaryQueryResult? employerMemberSummaryResult)
     {
         FullName = memberProfileWithPreferences.FullName;

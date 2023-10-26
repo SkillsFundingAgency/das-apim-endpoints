@@ -11,6 +11,7 @@ using SFA.DAS.EmployerAan.Application.InnerApi.Standards.Requests;
 using SFA.DAS.EmployerAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.EmployerAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 using SFA.DAS.EmployerAan.Common;
+using SFA.DAS.EmployerAan.InnerApi.MyApprenticeships;
 using SFA.DAS.EmployerAan.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -34,7 +35,7 @@ public class MemberProfilesControllerTests
         bool isPublicView,
         bool isApprenticeshipSectionShow,
         MemberUserType userType,
-        MyApprenticeship? myApprenticeship,
+        GetMyApprenticeshipQueryResult? myApprenticeship,
         GetEmployerMemberSummaryQueryResult? employerMemberSummaryQueryResult,
         [Frozen] Mock<IMediator> mockMediator,
         Guid appreticeId,
@@ -91,10 +92,10 @@ public class MemberProfilesControllerTests
 
         Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apprenticeAccountsApiClientMock = new();
 
-        MyApprenticeshipResponse myApprenticeshipResponse = new() { StandardUId = standardUid };
+        GetMyApprenticeshipResponse myApprenticeshipResponse = new() { StandardUId = standardUid };
 
-        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == myApprenticeshipQuery.ApprenticeId)))
-            .ReturnsAsync(new ApiResponse<MyApprenticeshipResponse>(myApprenticeshipResponse, HttpStatusCode.OK, null));
+        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<GetMyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == myApprenticeshipQuery.ApprenticeId)))
+            .ReturnsAsync(new ApiResponse<GetMyApprenticeshipResponse>(myApprenticeshipResponse, HttpStatusCode.OK, null));
 
         Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClientMock = new();
         coursesApiClientMock.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardQueryRequest>())).ReturnsAsync(standardResponse);

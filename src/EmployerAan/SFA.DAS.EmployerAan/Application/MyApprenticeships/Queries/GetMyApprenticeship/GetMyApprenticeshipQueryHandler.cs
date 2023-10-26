@@ -2,12 +2,13 @@
 using MediatR;
 using SFA.DAS.EmployerAan.Application.InnerApi.MyApprenticeships;
 using SFA.DAS.EmployerAan.Application.InnerApi.Standards.Requests;
+using SFA.DAS.EmployerAan.InnerApi.MyApprenticeships;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 
-public class GetMyApprenticeshipQueryHandler : IRequestHandler<GetMyApprenticeshipQuery, MyApprenticeship?>
+public class GetMyApprenticeshipQueryHandler : IRequestHandler<GetMyApprenticeshipQuery, GetMyApprenticeshipQueryResult?>
 {
     private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _apprenticeAccountsApiClient;
     private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
@@ -18,10 +19,10 @@ public class GetMyApprenticeshipQueryHandler : IRequestHandler<GetMyApprenticesh
         _coursesApiClient = coursesApiClient;
     }
 
-    public async Task<MyApprenticeship?> Handle(GetMyApprenticeshipQuery request, CancellationToken cancellationToken)
+    public async Task<GetMyApprenticeshipQueryResult?> Handle(GetMyApprenticeshipQuery request, CancellationToken cancellationToken)
     {
         var response =
-            await _apprenticeAccountsApiClient.GetWithResponseCode<MyApprenticeshipResponse>(new GetMyApprenticeshipRequest(request.ApprenticeId));
+            await _apprenticeAccountsApiClient.GetWithResponseCode<GetMyApprenticeshipResponse>(new GetMyApprenticeshipRequest(request.ApprenticeId));
 
 
         if (response.StatusCode == HttpStatusCode.OK)
@@ -36,9 +37,9 @@ public class GetMyApprenticeshipQueryHandler : IRequestHandler<GetMyApprenticesh
             $"Unexpected response received from apprentice accounts api when getting MyApprenticeship for apprenticeId: {request.ApprenticeId}");
     }
 
-    private async Task<MyApprenticeship?> ConvertResponseToResultWithTrainingCourse(MyApprenticeshipResponse myApprenticeshipsResponse)
+    private async Task<GetMyApprenticeshipQueryResult?> ConvertResponseToResultWithTrainingCourse(GetMyApprenticeshipResponse myApprenticeshipsResponse)
     {
-        var result = (MyApprenticeship)myApprenticeshipsResponse;
+        var result = (GetMyApprenticeshipQueryResult)myApprenticeshipsResponse;
 
         if (myApprenticeshipsResponse.StandardUId != null)
         {
