@@ -16,12 +16,16 @@ public class MemberProfilesControllerTests
         [Frozen] Mock<IMediator> mediatorMock,
         Guid memberId,
         Guid requestedByMemberId,
-        UpdateMemberProfileModel request,
+        ProfilesAndPreferencesModel request,
         CancellationToken cancellationToken)
     {
         var sut = new MemberProfilesController(mediatorMock.Object);
 
-        await sut.PutMemberProfile(memberId, requestedByMemberId, request, cancellationToken);
+        var model = new UpdateMemberProfileModel
+        {
+            Model = request
+        };
+        await sut.PutMemberProfile(memberId, requestedByMemberId, model, cancellationToken);
 
         mediatorMock.Verify(m => m.Send(
             It.Is<UpdateMemberProfilesCommand>(
@@ -36,12 +40,16 @@ public class MemberProfilesControllerTests
     [Frozen] Mock<IMediator> mediatorMock,
     Guid memberId,
     Guid requestedByMemberId,
-    UpdateMemberProfileModel request,
+    ProfilesAndPreferencesModel request,
     CancellationToken cancellationToken)
     {
+        var model = new UpdateMemberProfileModel
+        {
+            Model = request
+        };
         var sut = new MemberProfilesController(mediatorMock.Object);
 
-        var result = await sut.PutMemberProfile(memberId, requestedByMemberId, request, cancellationToken);
+        var result = await sut.PutMemberProfile(memberId, requestedByMemberId, model, cancellationToken);
 
         result.Should().BeOfType<NoContentResult>();
     }

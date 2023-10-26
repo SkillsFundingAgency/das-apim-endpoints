@@ -6,9 +6,9 @@ public class UpdateMemberProfilesCommand : IRequest<Unit>
 {
     public Guid MemberId { get; set; }
     public Guid RequestedByMemberId { get; set; }
-    public UpdateMemberProfileModel MemberProfile { get; set; }
+    public ProfilesAndPreferencesModel MemberProfile { get; set; }
 
-    public UpdateMemberProfilesCommand(Guid memberId, Guid requestedByMemberId, UpdateMemberProfileModel memberProfile)
+    public UpdateMemberProfilesCommand(Guid memberId, Guid requestedByMemberId, ProfilesAndPreferencesModel memberProfile)
     {
         MemberId = memberId;
         RequestedByMemberId = requestedByMemberId;
