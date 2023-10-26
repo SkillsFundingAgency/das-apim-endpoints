@@ -8,7 +8,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MemberProfiles;
 public class UpdateMemberProfilesCommandTests
 {
     [Test, MoqAutoData]
-    public void Constructor_InitialisesAllProperties(Guid memberId, Guid requestedByMemberId, ProfilesAndPreferencesModel memberProfile)
+    public void Constructor_InitialisesAllProperties(Guid memberId, Guid requestedByMemberId, UpdateMemberProfileModel memberProfile)
     {
         var sut = new UpdateMemberProfilesCommand(memberId, requestedByMemberId, memberProfile);
 

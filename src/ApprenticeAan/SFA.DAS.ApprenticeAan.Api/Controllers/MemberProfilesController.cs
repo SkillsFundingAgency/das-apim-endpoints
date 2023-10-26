@@ -58,11 +58,7 @@ public class MemberProfilesController : ControllerBase
         [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
         [FromBody] UpdateMemberProfileModel request, CancellationToken cancellationToken)
     {
-
-        var profiles = new List<UpdateProfileModel> { new UpdateProfileModel { ProfileId = 1, Value = "test this" } };
-        request.Model.Profiles = profiles;
-
-        UpdateMemberProfilesCommand command = new(memberId, requestedByMemberId, request.Model);
+        UpdateMemberProfilesCommand command = new(memberId, requestedByMemberId, request);
         await _mediator.Send(command, cancellationToken);
         return NoContent();
     }

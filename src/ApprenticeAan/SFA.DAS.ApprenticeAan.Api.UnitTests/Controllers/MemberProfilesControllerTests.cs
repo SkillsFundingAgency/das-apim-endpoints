@@ -16,7 +16,7 @@ public class MemberProfilesControllerTests
         [Frozen] Mock<IMediator> mediatorMock,
         Guid memberId,
         Guid requestedByMemberId,
-        ProfilesAndPreferencesModel request,
+        UpdateMemberProfileModel request,
         CancellationToken cancellationToken)
     {
         var sut = new MemberProfilesController(mediatorMock.Object);
@@ -40,7 +40,7 @@ public class MemberProfilesControllerTests
     [Frozen] Mock<IMediator> mediatorMock,
     Guid memberId,
     Guid requestedByMemberId,
-    ProfilesAndPreferencesModel request,
+    UpdateMemberProfileModel request,
     CancellationToken cancellationToken)
     {
         var model = new UpdateMemberProfileModel
