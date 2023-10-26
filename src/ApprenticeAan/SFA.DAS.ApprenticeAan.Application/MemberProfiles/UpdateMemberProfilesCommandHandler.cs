@@ -11,7 +11,6 @@ public class UpdateMemberProfilesCommandHandler : IRequestHandler<UpdateMemberPr
         _aanHubRestApiClient = aanHubRestApiClient;
     }
 
-
     public async Task<Unit> Handle(UpdateMemberProfilesCommand request, CancellationToken cancellationToken)
     {
         await _aanHubRestApiClient.PutMemberProfile(request.MemberId, request.RequestedByMemberId, request.MemberProfile, cancellationToken);

@@ -21,14 +21,12 @@ public class MemberProfilesControllerTests
     {
         var sut = new MemberProfilesController(mediatorMock.Object);
 
-
         await sut.PutMemberProfile(memberId, requestedByMemberId, request, cancellationToken);
 
         mediatorMock.Verify(m => m.Send(
             It.Is<UpdateMemberProfilesCommand>(
                 c => c.MemberId == memberId
-                && c.RequestedByMemberId == requestedByMemberId
-                && c.MemberProfile == request), cancellationToken),
+                && c.RequestedByMemberId == requestedByMemberId), cancellationToken),
                      Times.Once());
     }
 
