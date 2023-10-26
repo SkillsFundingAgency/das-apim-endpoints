@@ -10,7 +10,10 @@
     <PackageVersion Include="AutoFixture.NUnit3" Version="4.18.0" />
     <PackageVersion Include="CompareNETObjects" Version="4.77.0" />
     <PackageVersion Include="coverlet.collector" Version="3.1.2" />
-    <PackageVersion Include="coverlet.msbuild" Version="3.1.2" />
+    <PackageVersion Include="coverlet.msbuild" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageVersion>
     <PackageVersion Include="CsvHelper" Version="28.0.1" />
     <PackageVersion Include="Faker.Net" Version="2.0.154" />
     <PackageVersion Include="FluentValidation" Version="10.0.4" />
@@ -29,8 +32,8 @@
     <PackageVersion Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.2" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="2.2.0" />
     <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="2.2.0" />
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.0" />
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="2.2.0" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="3.1.32" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="3.1.32" />
     <PackageVersion Include="Moq" Version="4.7.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageVersion Include="NLog.Web.AspNetCore" Version="4.8.0" />
@@ -82,12 +85,12 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
     <PackageVersion Include="FluentAssertions" Version="5.10.3" />
     <PackageVersion Include="FluentAssertions.Web" Version="1.0.138" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.20" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.32" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.20" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.20" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="3.1.20" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="3.1.20" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="3.1.20" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="3.1.32" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="3.1.32" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageVersion Include="SFA.DAS.NServiceBus" Version="17.0.6" />
     <PackageVersion Include="System.Text.Encodings.Web" Version="4.7.2" />
