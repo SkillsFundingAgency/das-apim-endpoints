@@ -41,7 +41,7 @@ public class GetMemberProfileWithPreferencesModel
             Apprenticeship.ActiveApprenticesCount = employerMemberSummaryResult.ActiveCount;
             Apprenticeship.Sectors = employerMemberSummaryResult.Sectors;
         }
-        if (myApprenticeship != null && myApprenticeship.TrainingCourse != null)
+        if (memberProfileWithPreferences.UserType == MemberUserType.Apprentice && myApprenticeship != null && myApprenticeship.TrainingCourse != null)
         {
             Apprenticeship = new Apprenticeship
             {

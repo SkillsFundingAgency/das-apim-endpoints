@@ -42,10 +42,8 @@ public class MemberProfilesController : ControllerBase
             var myApprenticeship = await _mediator.Send(new GetMyApprenticeshipQuery(memberProfileWithPreferences.ApprenticeId), cancellationToken);
             return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, myApprenticeship, null));
         }
-        else
-        {
-            var employerMemberSummary = await _mediator.Send(new GetEmployerMemberSummaryQuery(memberProfileWithPreferences.AccountId), cancellationToken);
-            return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, null, employerMemberSummary));
-        }
+
+        var employerMemberSummary = await _mediator.Send(new GetEmployerMemberSummaryQuery(memberProfileWithPreferences.AccountId), cancellationToken);
+        return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, null, employerMemberSummary));
     }
 }
