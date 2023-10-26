@@ -20,6 +20,7 @@ using SFA.DAS.Testing.AutoFixture;
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.MemberProfiles;
 public class GetMemberProfileWithPreferencesTests
 {
+    [Test]
     [MoqInlineAutoData(true, true, MemberUserType.Apprentice)]
     [MoqInlineAutoData(true, false, MemberUserType.Apprentice)]
     [MoqInlineAutoData(false, true, MemberUserType.Apprentice)]
