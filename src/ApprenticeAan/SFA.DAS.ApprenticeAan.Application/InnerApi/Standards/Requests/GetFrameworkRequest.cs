@@ -2,11 +2,11 @@
 
 namespace SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Requests;
 
-public class GetFrameworkQueryRequest : IGetApiRequest
+public class GetFrameworkRequest : IGetApiRequest
 {
     public string TrainingCode { get; }
 
-    public GetFrameworkQueryRequest(string trainingCode)
+    public GetFrameworkRequest(string trainingCode)
     {
         TrainingCode = trainingCode;
     }

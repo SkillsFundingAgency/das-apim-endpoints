@@ -2,11 +2,11 @@
 
 namespace SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Requests;
 
-public class GetStandardQueryRequest:IGetApiRequest
+public class GetStandardRequest : IGetApiRequest
 {
     public string StandardUid { get; }
 
-    public GetStandardQueryRequest(string standardUid)
+    public GetStandardRequest(string standardUid)
     {
         StandardUid = standardUid;
     }

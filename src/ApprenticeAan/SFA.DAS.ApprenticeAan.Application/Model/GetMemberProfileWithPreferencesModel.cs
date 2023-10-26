@@ -19,7 +19,7 @@ public class GetMemberProfileWithPreferencesModel
     public IEnumerable<MemberProfile> Profiles { get; set; }
     public IEnumerable<MemberPreference> Preferences { get; set; }
 
-    public GetMemberProfileWithPreferencesModel(GetMemberProfileWithPreferencesQueryResult memberProfileWithPreferences, MyApprenticeship? myApprenticeship, Apprenticeship? apprenticeShip, bool isPublic)
+    public GetMemberProfileWithPreferencesModel(GetMemberProfileWithPreferencesQueryResult memberProfileWithPreferences, GetMyApprenticeshipQueryResult? myApprenticeship, Apprenticeship? apprenticeShip, bool isPublic)
     {
         FullName = memberProfileWithPreferences.FullName;
         Email = memberProfileWithPreferences.Email;

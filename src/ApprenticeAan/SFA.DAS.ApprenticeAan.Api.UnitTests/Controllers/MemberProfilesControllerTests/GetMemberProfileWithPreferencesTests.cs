@@ -9,6 +9,7 @@ using SFA.DAS.ApprenticeAan.Application.Common;
 using SFA.DAS.ApprenticeAan.Application.Employer.Queries.GetEmployerMemberSummary;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.MyApprenticeships;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Requests;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Responses;
 using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.ApprenticeAan.Application.Model;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
@@ -33,7 +34,7 @@ public class GetMemberProfileWithPreferencesTests
         bool isPublicView,
         bool isApprenticeshipSectionShow,
         MemberUserType userType,
-        MyApprenticeship? myApprenticeship,
+        GetMyApprenticeshipQueryResult? myApprenticeship,
         Apprenticeship? apprenticeship,
         [Frozen] Mock<IMediator> mediatorMock,
         Guid appreticeId,
@@ -94,13 +95,13 @@ public class GetMemberProfileWithPreferencesTests
 
         Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apprenticeAccountsApiClientMock = new();
 
-        MyApprenticeshipResponse myApprenticeshipResponse = new() { StandardUId = standardUid };
+        GetMyApprenticeshipResponse myApprenticeshipResponse = new() { StandardUId = standardUid };
 
-        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == myApprenticeshipQuery.ApprenticeId)))
-            .ReturnsAsync(new ApiResponse<MyApprenticeshipResponse>(myApprenticeshipResponse, HttpStatusCode.OK, null));
+        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<GetMyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == myApprenticeshipQuery.ApprenticeId)))
+            .ReturnsAsync(new ApiResponse<GetMyApprenticeshipResponse>(myApprenticeshipResponse, HttpStatusCode.OK, null));
 
         Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClientMock = new();
-        coursesApiClientMock.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardQueryRequest>())).ReturnsAsync(standardResponse);
+        coursesApiClientMock.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardRequest>())).ReturnsAsync(standardResponse);
 
 
         var sut = new MemberProfilesController(mediatorMock.Object);
