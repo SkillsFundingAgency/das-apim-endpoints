@@ -1,14 +1,14 @@
 ﻿using RestEase;
 using SFA.DAS.ApprenticeAan.Application.Apprentices.Commands.CreateApprenticeMember;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
-using SFA.DAS.ApprenticeAan.Application.Model;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.MemberProfiles;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Notifications;
 using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
-using SFA.DAS.ApprenticeAan.Application.InnerApi.MemberProfiles;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMember;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMembers;
+using SFA.DAS.ApprenticeAan.Application.Model;
 using SFA.DAS.ApprenticeAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
 
@@ -56,7 +56,7 @@ public interface IAanHubRestApiClient
     Task PutMemberProfile(
         [Path] Guid memberId,
         [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
-        [Body] UpdateMemberProfileModel putMemberProfileRequest,
+        [Body] ProfilesAndPreferencesModel putMemberProfileRequest,
         CancellationToken cancellationToken);
 
     [Get("members")]
