@@ -44,7 +44,7 @@ public class MemberProfilesController : ControllerBase
         var employerMemberSummary = await _mediator.Send(new GetEmployerMemberSummaryQuery(memberProfileWithPreferences.AccountId), cancellationToken);
         return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, null, employerMemberSummary));
     }
-    
+
         [HttpPut("{memberId}/profile")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PutMemberProfile(
