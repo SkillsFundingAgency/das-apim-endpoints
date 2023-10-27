@@ -1,5 +1,4 @@
-﻿
-using MediatR;
+﻿using MediatR;
 using System;
 
 namespace SFA.DAS.ApprenticeFeedback.Application.Commands.TrackEmailTransactionClick

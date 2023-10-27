@@ -1,6 +1,4 @@
-﻿
-using SFA.DAS.ApprenticeFeedback.Models;
-
+﻿using SFA.DAS.ApprenticeFeedback.Models;
 
 namespace SFA.DAS.ApprenticeFeedback.Application.Commands.TrackEmailTransactionClick
 {
