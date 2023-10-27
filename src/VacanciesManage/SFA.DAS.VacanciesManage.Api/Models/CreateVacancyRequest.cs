@@ -415,7 +415,8 @@ namespace SFA.DAS.VacanciesManage.Api.Models
     {
         FixedWage,
         NationalMinimumWageForApprentices,
-        NationalMinimumWage
+        NationalMinimumWage,
+        CompetitiveSalary
     }
     
     /// <summary>
