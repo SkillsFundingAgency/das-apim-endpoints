@@ -5,6 +5,7 @@ namespace SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProf
 
 public class GetMemberProfileWithPreferencesQueryResult
 {
+    public long AccountId { get; set; }
     public Guid ApprenticeId { get; set; }
     public string FullName { get; set; } = null!;
     public string Email { get; set; } = null!;

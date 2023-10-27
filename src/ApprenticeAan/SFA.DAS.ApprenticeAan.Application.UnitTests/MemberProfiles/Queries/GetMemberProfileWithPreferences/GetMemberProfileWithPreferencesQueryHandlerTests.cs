@@ -38,7 +38,7 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
     CancellationToken cancellationToken = new CancellationToken();
 
     [SetUp]
-    public async Task InitAsync()
+    public void InitAsync()
     {
         getMemberProfileWithPreferencesQuery = new(memberId, memberId, true);
 
@@ -57,6 +57,7 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
             UserType = userType.ToString(),
             RegionId = regionId,
             Apprentice = new ApprenticeModel(Guid.NewGuid()),
+            Employer = new EmployerModel(0, Guid.NewGuid()),
         };
 
         expectedResult = new()
@@ -81,14 +82,9 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
                                                 new MemberPreference { PreferenceId=1, Value = true    },
                                                 new MemberPreference { PreferenceId=2, Value = false   }
                                             };
-
-        aanHubRestApiClientMock.Setup(x => x.GetMemberProfileWithPreferences(getMemberProfileWithPreferencesQuery.MemberId, getMemberProfileWithPreferencesQuery.MemberId, It.IsAny<bool>(), cancellationToken)).ReturnsAsync(expectedResult);
         aanHubRestApiClientMock.Setup(x => x.GetMember(memberId, cancellationToken)).ReturnsAsync(memberResult);
+        aanHubRestApiClientMock.Setup(x => x.GetMemberProfileWithPreferences(getMemberProfileWithPreferencesQuery.MemberId, getMemberProfileWithPreferencesQuery.MemberId, It.IsAny<bool>(), cancellationToken)).ReturnsAsync(expectedResult);
         aanHubRestApiClientMock.Setup(x => x.GetRegions(cancellationToken)).ReturnsAsync(regionsResult);
-
-        sut = new GetMemberProfileWithPreferencesQueryHandler(aanHubRestApiClientMock.Object);
-
-        await InvokeHandler();
     }
 
     private async Task InvokeHandler()
@@ -96,10 +92,20 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
         actualResult = await sut.Handle(getMemberProfileWithPreferencesQuery, cancellationToken);
     }
 
-    [Test]
-    public void Handle_InvokesGetMemberProfileWithPreferencesAPI()
+    [TestCase(MemberUserType.Apprentice)]
+    [TestCase(MemberUserType.Employer)]
+    public async Task Handle_InvokesGetMemberProfileWithPreferencesAPI(MemberUserType memberUserType)
     {
-        using (new AssertionScope("Invokes GetMemberProfileWithPreferencesAPI & validates the Profile and Preferences"))
+        //Arrange
+        memberResult.UserType = memberUserType.ToString();
+        aanHubRestApiClientMock.Setup(x => x.GetMember(memberId, cancellationToken)).ReturnsAsync(memberResult);
+
+        //Act
+        sut = new GetMemberProfileWithPreferencesQueryHandler(aanHubRestApiClientMock.Object);
+        await InvokeHandler();
+
+        //Assert
+        using (new AssertionScope("Invokes GetMemberProfileWithPreferencesAPI & validates the Profile and PreferenceIds"))
         {
             aanHubRestApiClientMock.Verify(x => x.GetMemberProfileWithPreferences(memberId, memberId, true, cancellationToken), Times.Once());
             actualResult.Profiles.Should().BeEquivalentTo(expectedResult.Profiles);
@@ -107,9 +113,21 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
         }
     }
 
-    [Test]
-    public void Handle_InvokesGetMemberAPI()
+    [TestCase(MemberUserType.Apprentice)]
+    [TestCase(MemberUserType.Employer)]
+    public async Task Handle_InvokesGetMemberAPI(MemberUserType memberUserType)
     {
+        //Arrange
+        memberResult.UserType = memberUserType.ToString();
+        expectedResult.UserType = memberUserType;
+        aanHubRestApiClientMock.Setup(x => x.GetMember(memberId, cancellationToken)).ReturnsAsync(memberResult);
+        aanHubRestApiClientMock.Setup(x => x.GetMemberProfileWithPreferences(getMemberProfileWithPreferencesQuery.MemberId, getMemberProfileWithPreferencesQuery.MemberId, It.IsAny<bool>(), cancellationToken)).ReturnsAsync(expectedResult);
+
+        //Act
+        sut = new GetMemberProfileWithPreferencesQueryHandler(aanHubRestApiClientMock.Object);
+        await InvokeHandler();
+
+        //Assert
         using (new AssertionScope("Invokes GetMemberAPI & validates the Member properties"))
         {
             aanHubRestApiClientMock.Verify(x => x.GetMember(memberId, cancellationToken), Times.Once());
@@ -124,9 +142,19 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
         }
     }
 
-    [Test]
-    public void Handle_InvokesGetRegionsAPI()
+    [TestCase(MemberUserType.Apprentice)]
+    [TestCase(MemberUserType.Employer)]
+    public async Task Handle_InvokesGetRegionsAPI(MemberUserType memberUserType)
     {
+        //Arrange
+        memberResult.UserType = memberUserType.ToString();
+        aanHubRestApiClientMock.Setup(x => x.GetMember(memberId, cancellationToken)).ReturnsAsync(memberResult);
+
+        //Act
+        sut = new GetMemberProfileWithPreferencesQueryHandler(aanHubRestApiClientMock.Object);
+        await InvokeHandler();
+
+        //Assert
         using (new AssertionScope("Invokes GetRegionsAPI & validates the RegionName property"))
         {
             aanHubRestApiClientMock.Verify(x => x.GetRegions(cancellationToken), Times.Once());

@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
+﻿namespace SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Responses;
 
 public class GetFrameworkResponse
 {

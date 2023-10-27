@@ -1,8 +1,8 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Requests;
+namespace SFA.DAS.EmployerAan.Application.InnerApi.Standards.Requests;
 
-public class GetStandardQueryRequest:IGetApiRequest
+public class GetStandardQueryRequest : IGetApiRequest
 {
     public string StandardUid { get; }
 

@@ -1,6 +1,8 @@
-﻿namespace SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
+﻿using SFA.DAS.EmployerAan.InnerApi.MyApprenticeships;
 
-public class MyApprenticeship
+namespace SFA.DAS.EmployerAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
+
+public class GetMyApprenticeshipQueryResult
 {
     public long? Uln { get; set; }
     public long? ApprenticeshipId { get; set; }
@@ -12,9 +14,9 @@ public class MyApprenticeship
 
     public TrainingCourse? TrainingCourse { get; set; }
 
-    public static implicit operator MyApprenticeship(MyApprenticeshipResponse myApprenticeshipResponse)
+    public static implicit operator GetMyApprenticeshipQueryResult(GetMyApprenticeshipResponse myApprenticeshipResponse)
     {
-        return new MyApprenticeship
+        return new GetMyApprenticeshipQueryResult
         {
             Uln = myApprenticeshipResponse.Uln,
             ApprenticeshipId = myApprenticeshipResponse.ApprenticeshipId,
