@@ -77,6 +77,6 @@ public interface IAanHubRestApiClient
     Task PutMemberProfile(
        [Path] Guid memberId,
        [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
-       [Body] UpdateMemberProfileModel updateMemberProfileRequest,
+       [Body] UpdateMemberProfileCommand updateMemberProfileRequest,
        CancellationToken cancellationToken);
 }

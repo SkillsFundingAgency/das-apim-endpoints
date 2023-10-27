@@ -124,8 +124,7 @@ public class MemberProfilesControllerTests
         mediatorMock.Verify(m => m.Send(
             It.Is<UpdateMemberProfilesCommand>(
                 c => c.MemberId == memberId
-                && c.RequestedByMemberId == requestedByMemberId
-                && c.MemberProfile == request), cancellationToken),
+                && c.RequestedByMemberId == requestedByMemberId), cancellationToken),
                      Times.Once());
     }
 

@@ -1,17 +1,45 @@
 ﻿namespace SFA.DAS.EmployerAan.InnerApi.MemberProfiles;
+
 public class UpdateMemberProfileModel
 {
-    public IEnumerable<UpdateProfileModel> Profiles { get; set; } = Enumerable.Empty<UpdateProfileModel>();
-    public IEnumerable<UpdatePreferenceModel> Preferences { get; set; } = Enumerable.Empty<UpdatePreferenceModel>();
+    public List<UpdateProfileModel> Profiles { get; set; } = new List<UpdateProfileModel>();
+    public List<UpdatePreferenceModel> Preferences { get; set; } = new List<UpdatePreferenceModel>();
 }
+
 
 public class UpdateProfileModel
 {
-    public int ProfileId { get; set; }
-    public string? Value { get; set; } = null!;
+    public int MemberProfileId { get; set; }
+    public string? Value { get; set; }
 }
 public class UpdatePreferenceModel
 {
     public int PreferenceId { get; set; }
     public bool Value { get; set; }
+}
+
+public class UpdateMemberProfileCommand
+{
+    public List<UpdateProfileMappedModel> Profiles { get; set; } = new List<UpdateProfileMappedModel>();
+    public List<UpdatePreferenceModel> Preferences { get; set; } = new List<UpdatePreferenceModel>();
+
+    public static implicit operator UpdateMemberProfileCommand(UpdateMemberProfileModel source) =>
+        new()
+        {
+            Preferences = source.Preferences,
+            Profiles = source.Profiles.Select(x => (UpdateProfileMappedModel)x).ToList()
+        };
+}
+
+public class UpdateProfileMappedModel
+{
+    public int ProfileId { get; set; }
+    public string? Value { get; set; }
+
+    public static implicit operator UpdateProfileMappedModel(UpdateProfileModel source) =>
+        new()
+        {
+            ProfileId = source.MemberProfileId,
+            Value = source.Value
+        };
 }
