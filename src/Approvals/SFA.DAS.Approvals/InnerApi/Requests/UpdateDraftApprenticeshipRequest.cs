@@ -17,6 +17,8 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
         public DeliveryModel DeliveryModel { get; set; }
         public int? EmploymentPrice { get; set; }
         public int? Cost { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? ActualStartDate { get; set; }
         public DateTime? EmploymentEndDate { get; set; }

@@ -9,7 +9,6 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Functions;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
-using Microsoft.VisualBasic;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
