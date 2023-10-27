@@ -17,7 +17,7 @@ public class MyApprenticeshipController : ControllerBase
 
     [HttpGet]
     [Route("{apprenticeId}")]
-    [ProducesResponseType(typeof(MyApprenticeship), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetMyApprenticeshipQueryResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetMyApprenticeship(Guid apprenticeId, CancellationToken cancellationToken)
     {

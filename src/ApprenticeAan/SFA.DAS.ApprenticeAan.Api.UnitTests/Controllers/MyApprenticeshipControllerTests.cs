@@ -17,7 +17,7 @@ public class MyApprenticeshipControllerTests
     public async Task GetMyApprenticeship_ApprenticeFound_ReturnsOkResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] MyApprenticeshipController sut,
-        MyApprenticeship result,
+        GetMyApprenticeshipQueryResult result,
         Guid apprenticeId,
         CancellationToken cancellationToken)
     {
@@ -38,7 +38,7 @@ public class MyApprenticeshipControllerTests
         Guid apprenticeId,
         CancellationToken cancellationToken)
     {
-        mediatorMock.Setup(m => m.Send(It.Is<GetMyApprenticeshipQuery>(q => q.ApprenticeId == apprenticeId), It.IsAny<CancellationToken>())).ReturnsAsync((MyApprenticeship)null!);
+        mediatorMock.Setup(m => m.Send(It.Is<GetMyApprenticeshipQuery>(q => q.ApprenticeId == apprenticeId), It.IsAny<CancellationToken>())).ReturnsAsync((GetMyApprenticeshipQueryResult)null!);
         var response = await sut.GetMyApprenticeship(apprenticeId, cancellationToken);
         response.As<NotFoundResult>().Should().NotBeNull();
         mediatorMock.Verify(m => m.Send(It.Is<GetMyApprenticeshipQuery>(q => q.ApprenticeId == apprenticeId), cancellationToken));
