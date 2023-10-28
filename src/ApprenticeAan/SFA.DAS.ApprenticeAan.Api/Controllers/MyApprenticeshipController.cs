@@ -1,7 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.ApprenticeAan.Api.Models;
+using SFA.DAS.ApprenticeAan.Application.Commitments.GetRecentCommitment;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Commands.CreateMyApprenticeship;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
+using SFA.DAS.ApprenticeAan.Application.StagedApprentices.Queries.GetStagedApprentice;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
@@ -30,9 +33,32 @@ public class MyApprenticeshipController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> CreateMyApprenticeship([FromBody] CreateMyApprenticeshipCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> TryCreateMyApprenticeship([FromBody] TryCreateMyApprenticeshipRequestModel model, CancellationToken cancellationToken)
     {
-        await _mediator.Send(command, cancellationToken);
-        return Ok();
+        var myApprenticeship = await _mediator.Send(new GetMyApprenticeshipQuery { ApprenticeId = model.ApprenticeId }, cancellationToken);
+
+        if (myApprenticeship != null) return NoContent();
+
+        var commitment = await _mediator.Send(new GetRecentCommitmentQuery(model.FirstName, model.LastName, model.DateOfBirth), cancellationToken);
+
+        CreateMyApprenticeshipCommand? command = null;
+
+        if (commitment != null)
+        {
+            command = commitment;
+        }
+        else
+        {
+            var stagedApprentice = await _mediator.Send(new GetStagedApprenticeQuery(model.LastName, model.DateOfBirth, model.Email), cancellationToken);
+            if (stagedApprentice != null) command = stagedApprentice;
+        }
+
+        if (command != null)
+        {
+            command.ApprenticeId = model.ApprenticeId;
+            await _mediator.Send(command, cancellationToken);
+            return NoContent();
+        }
+        return NotFound();
     }
 }
