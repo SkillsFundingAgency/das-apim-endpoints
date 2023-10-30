@@ -2,7 +2,6 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RestEase;
@@ -110,8 +109,8 @@ public class NotificationsControllerTests
     }
 
     [Test, MoqAutoData]
-    public void CreateNotification_InvalidCommand_ThrowsInvalidOperationException(
-    [Frozen] Mock<IMediator> mediatorMock,
+    public void CreateNotification_HttpStatusCodeInternalServerError_ThrowsInvalidOperationException(
+    [Frozen] Mock<IAanHubRestApiClient> apiClientMock,
     [Greedy] NotificationsController sut,
     CreateNotificationModel model,
     Guid requestedByMemberId,
@@ -119,11 +118,31 @@ public class NotificationsControllerTests
     CancellationToken cancellationToken)
     {
         //Arrange
-        expected.ResponseMessage.StatusCode = HttpStatusCode.NotFound;
-        mediatorMock.Setup(m => m.Send(It.IsAny<PostNotificationRequest>(), cancellationToken)).ReturnsAsync(expected.GetContent());
+        Response<GetNotificationResponse> notificationsResponse = new Response<GetNotificationResponse>(string.Empty, new(HttpStatusCode.InternalServerError), () => null!);
+        apiClientMock.Setup(a => a.PostNotification(requestedByMemberId, It.IsAny<PostNotificationRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(notificationsResponse);
 
         //Act
         Assert.That(() => sut.CreateNotification(requestedByMemberId, model, cancellationToken), Throws.InvalidOperationException);
+    }
+
+    [Test, MoqAutoData]
+    public async Task CreateNotification_HttpStatusCodeNotFound_ReturnsNull(
+        [Frozen] Mock<IAanHubRestApiClient> apiClientMock,
+        [Greedy] NotificationsController sut,
+        CreateNotificationModel model,
+        Guid requestedByMemberId,
+        Response<GetNotificationResponse> expected,
+        CancellationToken cancellationToken)
+    {
+        //Arrange
+        Response<GetNotificationResponse> notificationsResponse = new Response<GetNotificationResponse>(string.Empty, new(HttpStatusCode.NotFound), () => null!);
+        apiClientMock.Setup(a => a.PostNotification(requestedByMemberId, It.IsAny<PostNotificationRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(notificationsResponse);
+
+        //Act
+        OkObjectResult result = (OkObjectResult)await sut.CreateNotification(requestedByMemberId, model, cancellationToken);
+
+        //Assert
+        Assert.That(result.Value, Is.Null);
     }
 
     [Test, MoqAutoData]
