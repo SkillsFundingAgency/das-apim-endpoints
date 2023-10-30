@@ -11,7 +11,6 @@ public class GetMyApprenticeshipQueryResult
     public DateTime? EndDate { get; set; }
     public long? TrainingProviderId { get; set; }
     public string? TrainingProviderName { get; set; }
-
     public TrainingCourse? TrainingCourse { get; set; }
 
     public static implicit operator GetMyApprenticeshipQueryResult(GetMyApprenticeshipResponse myApprenticeshipResponse)

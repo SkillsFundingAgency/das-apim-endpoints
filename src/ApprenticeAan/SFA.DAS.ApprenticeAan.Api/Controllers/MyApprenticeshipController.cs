@@ -32,12 +32,13 @@ public class MyApprenticeshipController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetMyApprenticeshipQueryResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> TryCreateMyApprenticeship([FromBody] TryCreateMyApprenticeshipRequestModel model, CancellationToken cancellationToken)
     {
         var myApprenticeship = await _mediator.Send(new GetMyApprenticeshipQuery { ApprenticeId = model.ApprenticeId }, cancellationToken);
 
-        if (myApprenticeship != null) return NoContent();
+        if (myApprenticeship != null) return Ok(myApprenticeship);
 
         var commitment = await _mediator.Send(new GetRecentCommitmentQuery(model.FirstName, model.LastName, model.DateOfBirth), cancellationToken);
 
@@ -57,7 +58,9 @@ public class MyApprenticeshipController : ControllerBase
         {
             command.ApprenticeId = model.ApprenticeId;
             await _mediator.Send(command, cancellationToken);
-            return NoContent();
+
+            myApprenticeship = await _mediator.Send(new GetMyApprenticeshipQuery { ApprenticeId = model.ApprenticeId }, cancellationToken);
+            return Ok(myApprenticeship);
         }
         return NotFound();
     }
