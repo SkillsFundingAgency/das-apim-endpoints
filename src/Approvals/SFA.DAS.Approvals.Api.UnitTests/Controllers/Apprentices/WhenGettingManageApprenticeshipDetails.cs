@@ -8,18 +8,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Approvals.Api.AppStart;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
-using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
 {
     [TestFixture]
-    public class WhenGettingEditApprenticeshipDeliveryModel
+    public class WhenGettingManageApprenticeshipDetails
     {
         private ApprenticesController _controller;
         private Mock<IMediator> _mediator;
-        private GetEditApprenticeshipDeliveryModelQueryResult _queryResult;
+        private GetManageApprenticeshipDetailsQueryResult _queryResult;
 
         private long _apprenticeshipId;
 
@@ -27,28 +28,34 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
         public void Setup()
         {
             var fixture = new Fixture();
-            _queryResult = fixture.Create<GetEditApprenticeshipDeliveryModelQueryResult>();
+            _queryResult = fixture.Create<GetManageApprenticeshipDetailsQueryResult>();
 
             _apprenticeshipId = fixture.Create<long>();
 
             _mediator = new Mock<IMediator>();
-            _mediator.Setup(x => x.Send(It.Is<GetEditApprenticeshipDeliveryModelQuery>(q =>
+            _mediator.Setup(x => x.Send(It.Is<GetManageApprenticeshipDetailsQuery>(q =>
                         q.ApprenticeshipId == _apprenticeshipId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_queryResult);
 
-            _controller = new ApprenticesController(Mock.Of<ILogger<ApprenticesController>>(), _mediator.Object, Mock.Of<IMapper>());
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+            var mapper = mappingConfig.CreateMapper();
+
+            _controller = new ApprenticesController(Mock.Of<ILogger<ApprenticesController>>(), _mediator.Object, mapper);
         }
 
         [Test]
-        public async Task GetEditApprenticeshipDeliveryModelResponseIsReturned()
+        public async Task GetManageApprenticeshipDetailsResponseIsReturned()
         {
-            var result = await _controller.EditApprenticeshipDeliveryModel( _apprenticeshipId);
+            var result = await _controller.ManageApprenticeshipDetails( _apprenticeshipId);
 
             Assert.IsInstanceOf<OkObjectResult>(result);
             var okObjectResult = (OkObjectResult)result;
-            Assert.IsInstanceOf<GetEditApprenticeshipDeliveryModelResponse>(okObjectResult.Value);
-            var objectResult = (GetEditApprenticeshipDeliveryModelResponse)okObjectResult.Value;
+            Assert.IsInstanceOf<GetManageApprenticeshipDetailsResponse>(okObjectResult.Value);
+            var objectResult = (GetManageApprenticeshipDetailsResponse)okObjectResult.Value;
 
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
 

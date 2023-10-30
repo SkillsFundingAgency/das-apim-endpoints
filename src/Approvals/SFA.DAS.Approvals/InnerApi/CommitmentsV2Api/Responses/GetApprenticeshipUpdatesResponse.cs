@@ -11,6 +11,7 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses
         {
             public long Id { get; set; }
             public long ApprenticeshipId { get; set; }
+            public short OriginatingParty { get; set; }
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public string Email { get; set; }
