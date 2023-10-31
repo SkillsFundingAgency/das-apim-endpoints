@@ -1,9 +1,9 @@
 ﻿using System.Net;
-using System.Web;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using RestEase;
+using SFA.DAS.ApprenticeAan.Application.Extensions;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.StagedApprentices;
 using SFA.DAS.ApprenticeAan.Application.StagedApprentices.Queries.GetStagedApprentice;
@@ -22,32 +22,12 @@ public class GetStagedApprenticeQueryHandlerTests
         CancellationToken cancellationToken)
     {
         Response<GetStagedApprenticeResponse?> apiResponse = new(string.Empty, new(HttpStatusCode.OK), () => result);
-        apiClientMock.Setup(c => c.GetStagedApprentice(query.LastName, query.DateOfBirth, query.Email, cancellationToken)).ReturnsAsync(apiResponse);
+        apiClientMock.Setup(c => c.GetStagedApprentice(query.LastName, query.DateOfBirth.ToApiString(), query.Email, cancellationToken)).ReturnsAsync(apiResponse);
 
         await sut.Handle(query, cancellationToken);
 
-        apiClientMock.Verify(c => c.GetStagedApprentice(query.LastName, query.DateOfBirth, query.Email, cancellationToken));
+        apiClientMock.Verify(c => c.GetStagedApprentice(query.LastName, query.DateOfBirth.ToApiString(), query.Email, cancellationToken));
     }
-
-    [Test, MoqAutoData]
-    public async Task Handle_InvokesApiClientWithEncodedEmail(
-        [Frozen] Mock<IAanHubRestApiClient> apiClientMock,
-        GetStagedApprenticeQueryHandler sut,
-        GetStagedApprenticeResponse result,
-        CancellationToken cancellationToken)
-    {
-        var email = "john_s.smith+esfa@g-mail.com";
-        var expectedEmail = HttpUtility.UrlEncode(email);
-        GetStagedApprenticeQuery query = new(Guid.NewGuid().ToString(), DateTime.Now, email);
-
-        Response<GetStagedApprenticeResponse?> apiResponse = new(string.Empty, new(HttpStatusCode.OK), () => result);
-        apiClientMock.Setup(c => c.GetStagedApprentice(query.LastName, query.DateOfBirth, expectedEmail, cancellationToken)).ReturnsAsync(apiResponse);
-
-        await sut.Handle(query, cancellationToken);
-
-        apiClientMock.Verify((c => c.GetStagedApprentice(query.LastName, query.DateOfBirth, expectedEmail, cancellationToken)));
-    }
-
 
     [Test, MoqAutoData]
     public async Task Handle_OnOkApiResponse_ReturnsData(
@@ -58,7 +38,7 @@ public class GetStagedApprenticeQueryHandlerTests
         CancellationToken cancellationToken)
     {
         Response<GetStagedApprenticeResponse?> apiResponse = new(string.Empty, new(HttpStatusCode.OK), () => result);
-        apiClientMock.Setup(c => c.GetStagedApprentice(query.LastName, query.DateOfBirth, query.Email, cancellationToken)).ReturnsAsync(apiResponse);
+        apiClientMock.Setup(c => c.GetStagedApprentice(query.LastName, query.DateOfBirth.ToApiString(), query.Email, cancellationToken)).ReturnsAsync(apiResponse);
 
         var actual = await sut.Handle(query, cancellationToken);
 
@@ -73,7 +53,7 @@ public class GetStagedApprenticeQueryHandlerTests
         CancellationToken cancellationToken)
     {
         Response<GetStagedApprenticeResponse?> apiResponse = new(string.Empty, new(HttpStatusCode.NotFound), () => null);
-        apiClientMock.Setup(c => c.GetStagedApprentice(query.LastName, query.DateOfBirth, query.Email, cancellationToken)).ReturnsAsync(apiResponse);
+        apiClientMock.Setup(c => c.GetStagedApprentice(query.LastName, query.DateOfBirth.ToApiString(), query.Email, cancellationToken)).ReturnsAsync(apiResponse);
 
         var actual = await sut.Handle(query, cancellationToken);
 
@@ -88,7 +68,7 @@ public class GetStagedApprenticeQueryHandlerTests
         CancellationToken cancellationToken)
     {
         Response<GetStagedApprenticeResponse?> apiResponse = new(string.Empty, new(HttpStatusCode.BadRequest), () => null);
-        apiClientMock.Setup(c => c.GetStagedApprentice(query.LastName, query.DateOfBirth, query.Email, cancellationToken)).ReturnsAsync(apiResponse);
+        apiClientMock.Setup(c => c.GetStagedApprentice(query.LastName, query.DateOfBirth.ToApiString(), query.Email, cancellationToken)).ReturnsAsync(apiResponse);
 
         Func<Task> action = () => sut.Handle(query, cancellationToken);
 

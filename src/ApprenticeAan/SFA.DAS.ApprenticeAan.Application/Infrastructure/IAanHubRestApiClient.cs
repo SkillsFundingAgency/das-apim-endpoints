@@ -73,5 +73,5 @@ public interface IAanHubRestApiClient
 
     [Get("/stagedApprentices")]
     [AllowAnyStatusCode]
-    Task<Response<GetStagedApprenticeResponse?>> GetStagedApprentice([FromQuery] string lastName, [FromQuery] DateTime dateOfBirth, [FromQuery] string email, CancellationToken cancellationToken);
+    Task<Response<GetStagedApprenticeResponse?>> GetStagedApprentice([FromQuery] string lastName, [FromQuery] string dateOfBirth, [FromQuery] string email, CancellationToken cancellationToken);
 }

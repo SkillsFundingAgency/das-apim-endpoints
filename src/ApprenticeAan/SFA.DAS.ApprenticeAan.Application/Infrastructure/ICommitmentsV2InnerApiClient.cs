@@ -13,5 +13,5 @@ public interface ICommitmentsV2InnerApiClient
     Task<ApprenticeshipsFilterValues?> GetApprenticeshipsSummaryForEmployer([Query] long employerAccountId, CancellationToken cancellationToken);
 
     [Get("/api/apprenticeships/validate")]
-    Task<GetApprenticeshipsValidateResponse> GetApprenticeshipsValidate([Query] string firstName, [Query] string lastName, [Query] DateTime dateOfBirth, CancellationToken cancellationToken);
+    Task<GetApprenticeshipsValidateResponse> GetApprenticeshipsValidate([Query] string firstName, [Query] string lastName, [Query] string dateOfBirth, CancellationToken cancellationToken);
 }

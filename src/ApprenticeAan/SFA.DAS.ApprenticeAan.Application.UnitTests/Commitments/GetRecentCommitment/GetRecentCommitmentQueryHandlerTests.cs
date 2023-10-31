@@ -3,6 +3,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using SFA.DAS.ApprenticeAan.Application.Commitments.GetRecentCommitment;
+using SFA.DAS.ApprenticeAan.Application.Extensions;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.ApprenticeshipsValidate;
 using SFA.DAS.ApprenticeAan.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
@@ -12,6 +13,7 @@ namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Commitments.GetRecentCommi
 public class GetRecentCommitmentQueryHandlerTests
 {
     private readonly Fixture _fixture = new();
+    private static readonly string Uln = Guid.NewGuid().ToString();
 
     [Test, MoqAutoData]
     public async Task Handle_CommitmentNotFound_ReturnsNull(
@@ -20,7 +22,7 @@ public class GetRecentCommitmentQueryHandlerTests
         GetRecentCommitmentQuery query,
         CancellationToken cancellationToken)
     {
-        clientMock.Setup(c => c.GetApprenticeshipsValidate(query.FirstName, query.LastName, query.DateOfBirth, cancellationToken)).ReturnsAsync(new GetApprenticeshipsValidateResponse());
+        clientMock.Setup(c => c.GetApprenticeshipsValidate(query.FirstName, query.LastName, query.DateOfBirth.ToApiString(), cancellationToken)).ReturnsAsync(new GetApprenticeshipsValidateResponse());
 
         var actual = await sut.Handle(query, cancellationToken);
 
@@ -36,7 +38,7 @@ public class GetRecentCommitmentQueryHandlerTests
         CancellationToken cancellationToken)
     {
         var apiResponse = new GetApprenticeshipsValidateResponse() { Apprenticeships = new[] { expected } };
-        clientMock.Setup(c => c.GetApprenticeshipsValidate(query.FirstName, query.LastName, query.DateOfBirth, cancellationToken)).ReturnsAsync(apiResponse);
+        clientMock.Setup(c => c.GetApprenticeshipsValidate(query.FirstName, query.LastName, query.DateOfBirth.ToApiString(), cancellationToken)).ReturnsAsync(apiResponse);
 
         var actual = await sut.Handle(query, cancellationToken);
 
@@ -58,7 +60,7 @@ public class GetRecentCommitmentQueryHandlerTests
             GetActiveCommitment(_fixture.Create<DateTime>()),
             GetActiveCommitment(_fixture.Create<DateTime>())
         };
-        clientMock.Setup(c => c.GetApprenticeshipsValidate(query.FirstName, query.LastName, query.DateOfBirth, cancellationToken)).ReturnsAsync(apiResponse);
+        clientMock.Setup(c => c.GetApprenticeshipsValidate(query.FirstName, query.LastName, query.DateOfBirth.ToApiString(), cancellationToken)).ReturnsAsync(apiResponse);
         var expected = apiResponse.Apprenticeships.OrderByDescending(a => a.StartDate).First();
 
         var actual = await sut.Handle(query, cancellationToken);
@@ -84,7 +86,7 @@ public class GetRecentCommitmentQueryHandlerTests
             GetActiveCommitment(startDate.AddMonths(-1))
         };
 
-        clientMock.Setup(c => c.GetApprenticeshipsValidate(query.FirstName, query.LastName, query.DateOfBirth, cancellationToken)).ReturnsAsync(apiResponse);
+        clientMock.Setup(c => c.GetApprenticeshipsValidate(query.FirstName, query.LastName, query.DateOfBirth.ToApiString(), cancellationToken)).ReturnsAsync(apiResponse);
 
         var actual = await sut.Handle(query, cancellationToken);
 
@@ -93,10 +95,10 @@ public class GetRecentCommitmentQueryHandlerTests
 
     [Test, MoqAutoData]
     public async Task Handle_FoundMultipleCommitmentsWithAllCancelled_ReturnsMostRecent(
-    [Frozen] Mock<ICommitmentsV2InnerApiClient> clientMock,
-    GetRecentCommitmentQueryHandler sut,
-    GetRecentCommitmentQuery query,
-    CancellationToken cancellationToken)
+        [Frozen] Mock<ICommitmentsV2InnerApiClient> clientMock,
+        GetRecentCommitmentQueryHandler sut,
+        GetRecentCommitmentQuery query,
+        CancellationToken cancellationToken)
     {
         GetApprenticeshipsValidateResponse apiResponse = new();
         apiResponse.Apprenticeships = new[]
@@ -104,7 +106,7 @@ public class GetRecentCommitmentQueryHandlerTests
             GetCancelledCommitment(_fixture.Create<DateTime>()),
             GetStoppedCommitment(_fixture.Create<DateTime>())
         };
-        clientMock.Setup(c => c.GetApprenticeshipsValidate(query.FirstName, query.LastName, query.DateOfBirth, cancellationToken)).ReturnsAsync(apiResponse);
+        clientMock.Setup(c => c.GetApprenticeshipsValidate(query.FirstName, query.LastName, query.DateOfBirth.ToApiString(), cancellationToken)).ReturnsAsync(apiResponse);
         var expected = apiResponse.Apprenticeships.OrderByDescending(a => a.StartDate).First();
 
         var actual = await sut.Handle(query, cancellationToken);
@@ -112,9 +114,31 @@ public class GetRecentCommitmentQueryHandlerTests
         actual.Should().Be(expected);
     }
 
-    private GetRecentCommitmentQueryResult GetStoppedCommitment(DateTime startDate) => _fixture.Build<GetRecentCommitmentQueryResult>().With(c => c.PaymentStatus, 3).With(c => c.StartDate, startDate).Create();
+    [Test, MoqAutoData]
+    public async Task Handle_FoundMultipleCommitmentsWithDifferentUln_ReturnsNull(
+        [Frozen] Mock<ICommitmentsV2InnerApiClient> clientMock,
+        GetRecentCommitmentQueryHandler sut,
+        GetRecentCommitmentQuery query,
+        CancellationToken cancellationToken)
+    {
+        GetApprenticeshipsValidateResponse apiResponse = new();
+        var activeCommitment = GetActiveCommitment(_fixture.Create<DateTime>());
+        activeCommitment.Uln = _fixture.Create<string>();
+        apiResponse.Apprenticeships = new[]
+        {
+            activeCommitment,
+            GetStoppedCommitment(_fixture.Create<DateTime>())
+        };
+        clientMock.Setup(c => c.GetApprenticeshipsValidate(query.FirstName, query.LastName, query.DateOfBirth.ToApiString(), cancellationToken)).ReturnsAsync(apiResponse);
 
-    private GetRecentCommitmentQueryResult GetCancelledCommitment(DateTime startDate) => _fixture.Build<GetRecentCommitmentQueryResult>().With(c => c.StopDate, startDate).With(c => c.StartDate, startDate).Create();
+        var actual = await sut.Handle(query, cancellationToken);
 
-    private GetRecentCommitmentQueryResult GetActiveCommitment(DateTime startDate) => _fixture.Build<GetRecentCommitmentQueryResult>().With(c => c.PaymentStatus, 1).With(c => c.StartDate, startDate).Create();
+        actual.Should().BeNull();
+    }
+
+    private GetRecentCommitmentQueryResult GetStoppedCommitment(DateTime startDate) => _fixture.Build<GetRecentCommitmentQueryResult>().With(c => c.PaymentStatus, 3).With(c => c.StartDate, startDate).With(c => c.Uln, Uln).Create();
+
+    private GetRecentCommitmentQueryResult GetCancelledCommitment(DateTime startDate) => _fixture.Build<GetRecentCommitmentQueryResult>().With(c => c.StopDate, startDate).With(c => c.StartDate, startDate).With(c => c.Uln, Uln).Create();
+
+    private GetRecentCommitmentQueryResult GetActiveCommitment(DateTime startDate) => _fixture.Build<GetRecentCommitmentQueryResult>().With(c => c.PaymentStatus, 1).With(c => c.StartDate, startDate).With(c => c.Uln, Uln).Create();
 }
