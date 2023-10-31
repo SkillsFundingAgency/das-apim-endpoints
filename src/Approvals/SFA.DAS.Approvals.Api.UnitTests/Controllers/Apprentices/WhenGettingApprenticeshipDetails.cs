@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoMapper;
 using KellermanSoftware.CompareNetObjects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +37,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_queryResult);
 
-            _controller = new ApprenticesController(Mock.Of<ILogger<ApprenticesController>>(), _mediator.Object);
+            _controller = new ApprenticesController(Mock.Of<ILogger<ApprenticesController>>(), _mediator.Object, Mock.Of<IMapper>());
         }
 
         [Test]
