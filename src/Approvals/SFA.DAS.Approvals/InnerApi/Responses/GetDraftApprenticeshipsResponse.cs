@@ -16,6 +16,8 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         public string Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public int? Cost { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? ActualStartDate { get; set; }
         public DateTime? EndDate { get; set; }

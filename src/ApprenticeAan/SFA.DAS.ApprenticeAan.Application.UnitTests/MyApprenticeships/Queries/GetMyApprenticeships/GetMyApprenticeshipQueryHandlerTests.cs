@@ -4,6 +4,7 @@ using FluentAssertions;
 using Moq;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.MyApprenticeships;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Requests;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Responses;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -21,7 +22,7 @@ public class GetMyApprenticeshipQueryHandlerTests
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClientMock,
         GetMyApprenticeshipQueryHandler sut,
         GetMyApprenticeshipQuery request,
-        MyApprenticeshipResponse response,
+        GetMyApprenticeshipResponse response,
         CancellationToken cancellationToken)
     {
         const string StandardUid = "ST0418_1.0";
@@ -33,7 +34,7 @@ public class GetMyApprenticeshipQueryHandlerTests
         response.StandardUId = StandardUid;
         response.TrainingCode = TrainingCode;
 
-        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)))!.ReturnsAsync(new ApiResponse<MyApprenticeshipResponse>(response, HttpStatusCode.OK, null));
+        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<GetMyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)))!.ReturnsAsync(new ApiResponse<GetMyApprenticeshipResponse>(response, HttpStatusCode.OK, null));
 
         var standardResponse = new GetStandardResponse
         {
@@ -43,17 +44,17 @@ public class GetMyApprenticeshipQueryHandlerTests
             VersionDetail = new StandardVersionDetail { ProposedTypicalDuration = Duration }
         };
 
-        coursesApiClientMock.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardQueryRequest>()))
+        coursesApiClientMock.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardRequest>()))
             .ReturnsAsync(standardResponse);
 
-        coursesApiClientMock.Setup(c => c.Get<GetFrameworkResponse>(It.IsAny<GetFrameworkQueryRequest>()))
+        coursesApiClientMock.Setup(c => c.Get<GetFrameworkResponse>(It.IsAny<GetFrameworkRequest>()))
             .ReturnsAsync(new GetFrameworkResponse());
 
         var actualResult = await sut.Handle(request, cancellationToken);
 
-        apprenticeAccountsApiClientMock.Verify(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)));
-        coursesApiClientMock.Verify(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardQueryRequest>()), Times.Once);
-        coursesApiClientMock.Verify(c => c.Get<GetFrameworkResponse>(It.IsAny<GetFrameworkQueryRequest>()), Times.Never);
+        apprenticeAccountsApiClientMock.Verify(c => c.GetWithResponseCode<GetMyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)));
+        coursesApiClientMock.Verify(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardRequest>()), Times.Once);
+        coursesApiClientMock.Verify(c => c.Get<GetFrameworkResponse>(It.IsAny<GetFrameworkRequest>()), Times.Never);
         actualResult?.Should().NotBeNull();
         actualResult!.TrainingCourse.Should().BeEquivalentTo((TrainingCourse)standardResponse);
     }
@@ -65,7 +66,7 @@ public class GetMyApprenticeshipQueryHandlerTests
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClientMock,
         GetMyApprenticeshipQueryHandler sut,
         GetMyApprenticeshipQuery request,
-        MyApprenticeshipResponse response,
+        GetMyApprenticeshipResponse response,
         CancellationToken cancellationToken)
     {
         const string StandardUid = null!;
@@ -77,7 +78,7 @@ public class GetMyApprenticeshipQueryHandlerTests
         response.StandardUId = StandardUid;
         response.TrainingCode = TrainingCode;
 
-        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)))!.ReturnsAsync(new ApiResponse<MyApprenticeshipResponse>(response, HttpStatusCode.OK, null));
+        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<GetMyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)))!.ReturnsAsync(new ApiResponse<GetMyApprenticeshipResponse>(response, HttpStatusCode.OK, null));
 
         var frameworkResponse = new GetFrameworkResponse()
         {
@@ -87,16 +88,16 @@ public class GetMyApprenticeshipQueryHandlerTests
             Duration = Duration
         };
 
-        coursesApiClientMock.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardQueryRequest>()))
+        coursesApiClientMock.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardRequest>()))
             .ReturnsAsync(new GetStandardResponse());
-        coursesApiClientMock.Setup(c => c.Get<GetFrameworkResponse>(It.IsAny<GetFrameworkQueryRequest>()))
+        coursesApiClientMock.Setup(c => c.Get<GetFrameworkResponse>(It.IsAny<GetFrameworkRequest>()))
             .ReturnsAsync(frameworkResponse);
 
         var actualResult = await sut.Handle(request, cancellationToken);
 
-        apprenticeAccountsApiClientMock.Verify(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)));
-        coursesApiClientMock.Verify(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardQueryRequest>()), Times.Never);
-        coursesApiClientMock.Verify(c => c.Get<GetFrameworkResponse>(It.IsAny<GetFrameworkQueryRequest>()), Times.Once);
+        apprenticeAccountsApiClientMock.Verify(c => c.GetWithResponseCode<GetMyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)));
+        coursesApiClientMock.Verify(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardRequest>()), Times.Never);
+        coursesApiClientMock.Verify(c => c.Get<GetFrameworkResponse>(It.IsAny<GetFrameworkRequest>()), Times.Once);
         actualResult?.Should().NotBeNull();
         actualResult!.TrainingCourse.Should().BeEquivalentTo((TrainingCourse)frameworkResponse);
     }
@@ -108,16 +109,16 @@ public class GetMyApprenticeshipQueryHandlerTests
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClientMock,
         GetMyApprenticeshipQueryHandler sut,
         GetMyApprenticeshipQuery request,
-        MyApprenticeshipResponse response,
+        GetMyApprenticeshipResponse response,
         CancellationToken cancellationToken)
     {
 
-        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)))!.ReturnsAsync(new ApiResponse<MyApprenticeshipResponse>(response, HttpStatusCode.NotFound, null));
+        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<GetMyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)))!.ReturnsAsync(new ApiResponse<GetMyApprenticeshipResponse>(response, HttpStatusCode.NotFound, null));
         var actualResult = await sut.Handle(request, cancellationToken);
 
-        apprenticeAccountsApiClientMock.Verify(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)));
-        coursesApiClientMock.Verify(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardQueryRequest>()), Times.Never);
-        coursesApiClientMock.Verify(c => c.Get<GetFrameworkResponse>(It.IsAny<GetFrameworkQueryRequest>()), Times.Never);
+        apprenticeAccountsApiClientMock.Verify(c => c.GetWithResponseCode<GetMyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)));
+        coursesApiClientMock.Verify(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardRequest>()), Times.Never);
+        coursesApiClientMock.Verify(c => c.Get<GetFrameworkResponse>(It.IsAny<GetFrameworkRequest>()), Times.Never);
         actualResult.Should().BeNull();
     }
 
@@ -130,14 +131,14 @@ public class GetMyApprenticeshipQueryHandlerTests
         GetMyApprenticeshipQuery request,
         CancellationToken cancellationToken)
     {
-        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)))!.ReturnsAsync(new ApiResponse<MyApprenticeshipResponse>(null!, HttpStatusCode.BadRequest, null));
+        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<GetMyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)))!.ReturnsAsync(new ApiResponse<GetMyApprenticeshipResponse>(null!, HttpStatusCode.BadRequest, null));
 
         Func<Task> act = () => sut.Handle(request, cancellationToken);
 
         await act.Should().ThrowAsync<InvalidOperationException>();
-        apprenticeAccountsApiClientMock.Verify(c => c.GetWithResponseCode<MyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)));
-        coursesApiClientMock.Verify(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardQueryRequest>()), Times.Never);
-        coursesApiClientMock.Verify(c => c.Get<GetFrameworkResponse>(It.IsAny<GetFrameworkQueryRequest>()), Times.Never);
+        apprenticeAccountsApiClientMock.Verify(c => c.GetWithResponseCode<GetMyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == request.ApprenticeId)));
+        coursesApiClientMock.Verify(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardRequest>()), Times.Never);
+        coursesApiClientMock.Verify(c => c.Get<GetFrameworkResponse>(It.IsAny<GetFrameworkRequest>()), Times.Never);
 
     }
 }

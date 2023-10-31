@@ -42,7 +42,14 @@ public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMe
         result.UserType = Enum.Parse<MemberUserType>(outputMember.UserType);
 
         result.IsRegionalChair = (bool)outputMember.IsRegionalChair!;
-        result.ApprenticeId = outputMember.Apprentice!.ApprenticeId;
+        if (result.UserType == MemberUserType.Apprentice)
+        {
+            result.ApprenticeId = outputMember.Apprentice!.ApprenticeId;
+        }
+        if (result.UserType == MemberUserType.Employer)
+        {
+            result.AccountId = outputMember.Employer!.AccountId;
+        }
 
         var outputRegions = regionsResponse.Result;
         if (outputRegions.Regions.Any()) result.RegionName = outputRegions.Regions.Find(x => x.Id == result.RegionId)!.Area!;

@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Requests;
+namespace SFA.DAS.EmployerAan.Application.InnerApi.Standards.Requests;
 
 public class GetFrameworkQueryRequest : IGetApiRequest
 {
