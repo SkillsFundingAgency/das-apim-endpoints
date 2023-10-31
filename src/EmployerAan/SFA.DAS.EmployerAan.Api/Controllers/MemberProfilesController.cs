@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMemberSummary;
-using SFA.DAS.EmployerAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.EmployerAan.Application.MemberProfiles.Commands.PutMemberProfile;
+using SFA.DAS.EmployerAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.EmployerAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 using SFA.DAS.EmployerAan.Common;
 using SFA.DAS.EmployerAan.Infrastructure;
@@ -45,7 +45,7 @@ public class MemberProfilesController : ControllerBase
         return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, null, employerMemberSummary));
     }
 
-        [HttpPut("{memberId}/profile")]
+    [HttpPut("{memberId}/profile")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PutMemberProfile(
         [FromRoute] Guid memberId,
