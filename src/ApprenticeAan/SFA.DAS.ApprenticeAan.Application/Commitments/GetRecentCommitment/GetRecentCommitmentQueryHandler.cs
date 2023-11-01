@@ -27,7 +27,7 @@ public class GetRecentCommitmentQueryHandler : IRequestHandler<GetRecentCommitme
         return result;
     }
 
-    private GetRecentCommitmentQueryResult? GetRecentCommitment(IEnumerable<GetRecentCommitmentQueryResult> commitments)
+    private static GetRecentCommitmentQueryResult? GetRecentCommitment(IEnumerable<GetRecentCommitmentQueryResult> commitments)
     {
         if (commitments.Select(c => c.Uln).Distinct().Count() > 1) return null;
         var orderedList = commitments.OrderByDescending(c => c.StartDate);

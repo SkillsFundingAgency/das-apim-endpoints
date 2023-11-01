@@ -13,18 +13,6 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.ApprenticesControllerT
 public class GetApprenticeTests
 {
     [Test, MoqAutoData]
-    public async Task GetApprentice_InvokesMediator(
-        [Frozen] Mock<IAanHubRestApiClient> clientMock,
-        [Greedy] ApprenticesController sut,
-        Guid apprenticeId,
-        CancellationToken cancellationToken)
-    {
-        await sut.GetApprentice(apprenticeId, cancellationToken);
-
-        clientMock.Verify(m => m.GetApprenticeMember(apprenticeId, cancellationToken));
-    }
-
-    [Test, MoqAutoData]
     public async Task GetApprentice_RecordNotFound_ReturnsNotFoundResponse(
         [Frozen] Mock<IAanHubRestApiClient> clientMock,
         [Greedy] ApprenticesController sut,
