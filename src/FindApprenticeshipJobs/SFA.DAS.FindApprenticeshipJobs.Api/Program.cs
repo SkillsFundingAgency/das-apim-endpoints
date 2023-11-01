@@ -1,7 +1,9 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.FindApprenticeshipJobs.Api.AppStart;
+using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;
 
@@ -33,6 +35,9 @@ builder.Services
      });
 
 builder.Services.AddAuthentication();
+builder.Services.AddConfigurationOptions(configuration);
+builder.Services.AddHealthChecks();
+builder.Services.AddMediatR(typeof(GetLiveVacanciesQuery).Assembly);
 
 var app = builder.Build();
 
