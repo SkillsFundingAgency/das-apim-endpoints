@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.ApprenticeAan.Api.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.Telemetry.Startup;
 
 [assembly: ApiController]
 
@@ -17,6 +18,7 @@ var configuration = builder.Configuration.BuildSharedConfiguration();
 builder.Services
     .AddLogging()
     .AddApplicationInsightsTelemetry()
+    .AddTelemetryUriRedaction("firstName,lastName,dateOfBirth")
     .AddServiceRegistration(configuration)
     .AddServiceHealthChecks()
     .AddAuthentication(configuration)
@@ -39,6 +41,7 @@ builder.Services
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
+
 
 var app = builder.Build();
 

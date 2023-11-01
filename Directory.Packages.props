@@ -47,6 +47,7 @@
     <PackageVersion Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
     <PackageVersion Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
     <PackageVersion Include="SFA.DAS.Notifications.Messages" Version="3.0.0" />
+    <PackageVersion Include="SFA.DAS.Telemetry" Version="17.1.69" />
     <PackageVersion Include="SFA.DAS.Testing" Version="3.0.106" />
     <PackageVersion Include="SFA.DAS.Testing.AutoFixture" Version="3.0.106" />
     <PackageVersion Include="SpecFlow" Version="3.5.14" />
