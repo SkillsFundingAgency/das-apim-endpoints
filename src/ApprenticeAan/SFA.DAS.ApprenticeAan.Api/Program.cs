@@ -18,7 +18,7 @@ var configuration = builder.Configuration.BuildSharedConfiguration();
 builder.Services
     .AddLogging()
     .AddApplicationInsightsTelemetry()
-    .AddTelemetryUriRedaction("firstName,lastName,dateOfBirth")
+    .AddTelemetryUriRedaction("firstName,lastName,dateOfBirth,email")
     .AddServiceRegistration(configuration)
     .AddServiceHealthChecks()
     .AddAuthentication(configuration)
