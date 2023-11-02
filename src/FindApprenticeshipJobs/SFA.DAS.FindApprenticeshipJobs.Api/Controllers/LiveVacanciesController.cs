@@ -1,5 +1,7 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.FindApprenticeshipJobs.Api.Models;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers;
@@ -18,13 +20,16 @@ public class LiveVacanciesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] uint pageSize, [FromQuery] uint pageNo, CancellationToken cancellationToken)
     {
-        var liveVacancies = await _mediator.Send(new GetLiveVacanciesQuery { PageNumber = (int)pageNo, PageSize = (int) pageSize }, cancellationToken);
-
-        if (liveVacancies == null)
+        try
         {
-            return NotFound();
+            var result = await _mediator.Send(new GetLiveVacanciesQuery { PageNumber = (int)pageNo, PageSize = (int)pageSize }, cancellationToken);
+            var viewModel = (GetLiveVacanciesApiResponse)result;
+            return Ok(viewModel);
         }
-
-        return Ok(liveVacancies);
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
     }
 }
