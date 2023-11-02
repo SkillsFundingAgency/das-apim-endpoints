@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Api.Controllers;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetGeoPoint;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
@@ -12,7 +11,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers
+namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.LocationsController
 {
     public class WhenGettingGeoPoint
     {
@@ -20,7 +19,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers
         public async Task Then_Gets_GeoPoint_From_Mediator(
             GetGeoPointQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] LocationsController controller)
+            [Greedy] Api.Controllers.LocationsController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
