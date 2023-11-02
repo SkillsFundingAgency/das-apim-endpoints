@@ -4,6 +4,6 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.TrackEmailTransactionC
 {
     public class TrackEmailTransactionClickResponse
     {
-        public Enums.ClickStatus Status { get; set; }
+        public Enums.ClickStatus ClickStatus { get; set; }
     }
 }

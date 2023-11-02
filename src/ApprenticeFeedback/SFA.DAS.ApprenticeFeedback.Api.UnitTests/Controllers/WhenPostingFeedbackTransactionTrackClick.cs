@@ -42,7 +42,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
             
             var expectedResponse = new TrackEmailTransactionClickResponse
             {
-                Status = ClickStatus.Valid
+                ClickStatus = ClickStatus.Valid
             };
 
             _mockMediator.Setup(m => m.Send(It.IsAny<TrackEmailTransactionClickCommand>(), It.IsAny<CancellationToken>()))

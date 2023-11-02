@@ -31,7 +31,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
         public async Task Then_PostToTrackEmailTransactionClick(TrackEmailTransactionClickCommand command)
         {
             // Arrange
-            var expectedResponse = new TrackEmailTransactionClickResponse { Status = ClickStatus.Valid};
+            var expectedResponse = new TrackEmailTransactionClickResponse { ClickStatus = ClickStatus.Valid};
 
             _mockFeedbackApiClient
                 .Setup(x => x.PostWithResponseCode<TrackEmailTransactionClickResponse>(It.IsAny<TrackEmailTransactionClickRequest>(), true))

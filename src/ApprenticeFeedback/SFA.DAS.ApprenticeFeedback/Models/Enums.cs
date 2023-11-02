@@ -47,8 +47,8 @@ namespace SFA.DAS.ApprenticeFeedback.Models
 
         public enum ClickStatus
         {
-            Valid,
-            Invalid
+            Invalid,
+            Valid
         }
     }
 }

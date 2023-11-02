@@ -90,7 +90,8 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             return Ok(new TrackEmailTransactionClickResult()
             {
                 FeedbackTransactionId = feedbackTransactionId,
-                ClickStatus = response.Status
+                ApprenticeFeedbackTargetId = feedbackTransactionClick.ApprenticeFeedbackTargetId,
+                ClickStatus = response.ClickStatus.ToString()
             });
         }
 
