@@ -24,19 +24,19 @@ public class WhenGettingLiveVacancies
         mockMediator.Setup(x => x.Send(It.IsAny<GetLiveVacanciesQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
         var sut = new LiveVacanciesController(mockMediator.Object);
 
-        var actual = await sut.Get(mockPageSize, mockPageNo, It.IsAny<CancellationToken>());
-        var actualValue = (actual as ObjectResult)!.Value;
+        var actual = await sut.Get(mockPageSize, mockPageNo, It.IsAny<CancellationToken>()) as ObjectResult;
+        var actualValue = actual!.Value as GetLiveVacanciesApiResponse;
 
         using (new AssertionScope())
         {
-            actual.As<ObjectResult>().StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actualValue.Should().BeOfType<GetLiveVacanciesApiResponse>();
-            actualValue.As<GetLiveVacanciesApiResponse>().Vacancies.Should().BeEquivalentTo(mockQueryResult.Vacancies);
-            actualValue.As<GetLiveVacanciesApiResponse>().PageSize.Should().Be(mockQueryResult.PageSize);
-            actualValue.As<GetLiveVacanciesApiResponse>().PageNo.Should().Be(mockQueryResult.PageNo);
-            actualValue.As<GetLiveVacanciesApiResponse>().TotalLiveVacanciesReturned.Should().Be(mockQueryResult.TotalLiveVacanciesReturned);
-            actualValue.As<GetLiveVacanciesApiResponse>().TotalLiveVacancies.Should().Be(mockQueryResult.TotalLiveVacancies);
-            actualValue.As<GetLiveVacanciesApiResponse>().TotalPages.Should().Be(mockQueryResult.TotalPages);
+            actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            actual.Value.Should().BeOfType<GetLiveVacanciesApiResponse>();
+            actualValue!.Vacancies.Should().BeEquivalentTo(mockQueryResult.Vacancies);
+            actualValue.PageSize.Should().Be(mockQueryResult.PageSize);
+            actualValue.PageNo.Should().Be(mockQueryResult.PageNo);
+            actualValue.TotalLiveVacanciesReturned.Should().Be(mockQueryResult.TotalLiveVacanciesReturned);
+            actualValue.TotalLiveVacancies.Should().Be(mockQueryResult.TotalLiveVacancies);
+            actualValue.TotalPages.Should().Be(mockQueryResult.TotalPages);
         }
     }
 
