@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.BrowseByInterests;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchResults;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -33,9 +35,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return new  StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
-            
+
         }
 
         [HttpGet]
@@ -54,7 +56,23 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
-    }
 
-    
+        [HttpGet]
+        [Route("searchresults")]
+        public async Task<IActionResult> SearchResults([FromQuery] List<string> routeIds, [FromQuery] string location, [FromQuery] string searchTerm)
+        // [FromQuery] string latitude, [FromQuery] string longitude
+        {
+            try
+            {
+                var result = await _mediator.Send(new SearchResultsQuery());
+                var viewModel = (SearchResultsApiResponse)result;
+                return Ok(viewModel);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+    }
 }
