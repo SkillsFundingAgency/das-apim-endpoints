@@ -1,10 +1,11 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Net;
+using AutoFixture.NUnit3;
 using FluentAssertions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.ApprenticeAan.Api.Controllers;
-using SFA.DAS.ApprenticeAan.Application.Apprentices.Queries.GetApprentice;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Apprentices;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.ApprenticesControllerTests;
@@ -12,25 +13,13 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.ApprenticesControllerT
 public class GetApprenticeTests
 {
     [Test, MoqAutoData]
-    public async Task GetApprentice_InvokesMediator(
-        [Frozen] Mock<IMediator> mediatorMock,
-        [Greedy] ApprenticesController sut,
-        Guid apprenticeId,
-        CancellationToken cancellationToken)
-    {
-        await sut.GetApprentice(apprenticeId, cancellationToken);
-
-        mediatorMock.Verify(m => m.Send(It.Is<GetApprenticeQuery>(q => q.ApprenticeId == apprenticeId), cancellationToken));
-    }
-
-    [Test, MoqAutoData]
     public async Task GetApprentice_RecordNotFound_ReturnsNotFoundResponse(
-        [Frozen] Mock<IMediator> mediatorMock,
+        [Frozen] Mock<IAanHubRestApiClient> clientMock,
         [Greedy] ApprenticesController sut,
         Guid apprenticeId,
         CancellationToken cancellationToken)
     {
-        mediatorMock.Setup(m => m.Send(It.Is<GetApprenticeQuery>(q => q.ApprenticeId == apprenticeId), cancellationToken)).ReturnsAsync(() => null);
+        clientMock.Setup(m => m.GetApprenticeMember(apprenticeId, cancellationToken)).ReturnsAsync(new RestEase.Response<GetApprenticeResult>(null, new HttpResponseMessage(HttpStatusCode.NotFound), () => new GetApprenticeResult()));
 
         var result = await sut.GetApprentice(apprenticeId, cancellationToken);
 
@@ -39,17 +28,17 @@ public class GetApprenticeTests
 
     [Test, MoqAutoData]
     public async Task GetApprentice_RecordFound_ReturnsOkResponse(
-        [Frozen] Mock<IMediator> mediatorMock,
+        [Frozen] Mock<IAanHubRestApiClient> clientMock,
         [Greedy] ApprenticesController sut,
-        GetApprenticeQueryResult expectedResult,
+        GetApprenticeResult expectedResult,
         Guid apprenticeId,
         CancellationToken cancellationToken)
     {
-        mediatorMock.Setup(m => m.Send(It.Is<GetApprenticeQuery>(q => q.ApprenticeId == apprenticeId), cancellationToken)).ReturnsAsync(expectedResult);
+        clientMock.Setup(m => m.GetApprenticeMember(apprenticeId, cancellationToken)).ReturnsAsync(new RestEase.Response<GetApprenticeResult>(null, new HttpResponseMessage(HttpStatusCode.OK), () => expectedResult));
 
         var result = await sut.GetApprentice(apprenticeId, cancellationToken);
 
         result.As<OkObjectResult>().Should().NotBeNull();
-        result.As<OkObjectResult>().Value.As<GetApprenticeQueryResult?>().Should().Be(expectedResult);
+        result.As<OkObjectResult>().Value.As<GetApprenticeResult?>().Should().BeEquivalentTo(expectedResult);
     }
 }

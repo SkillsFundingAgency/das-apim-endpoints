@@ -1,6 +1,6 @@
-﻿namespace SFA.DAS.ApprenticeAan.Application.StagedApprentices.Queries.GetStagedApprentice;
+﻿namespace SFA.DAS.ApprenticeAan.Application.InnerApi.StagedApprentices;
 
-public class GetStagedApprenticeQueryResult
+public class GetStagedApprenticeResponse
 {
     public long? Uln { get; set; }
     public long? ApprenticeshipId { get; set; }
