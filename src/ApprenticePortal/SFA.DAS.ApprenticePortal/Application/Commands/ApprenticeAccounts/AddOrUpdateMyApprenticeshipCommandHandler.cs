@@ -71,7 +71,7 @@ namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeAccounts
             return new MyApprenticeshipData
             {
                 ApprenticeshipId = commitmentsApprenticeship.Id,
-                Uln = !string.IsNullOrEmpty(commitmentsApprenticeship?.Uln) ? Convert.ToInt64(commitmentsApprenticeship.Uln) : null,
+                Uln = Convert.ToInt64(commitmentsApprenticeship?.Uln),
                 EmployerName = commitmentsApprenticeship.EmployerName,
                 StartDate = commitmentsApprenticeship.StartDate,
                 EndDate = commitmentsApprenticeship.EndDate,
