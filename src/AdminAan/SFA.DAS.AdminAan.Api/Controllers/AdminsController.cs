@@ -22,10 +22,6 @@ public class AdminsController : ControllerBase
     [ProducesResponseType(typeof(LookupAdminMemberResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> Lookup([FromBody] LookupAdminMemberRequestModel requestModel, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send((LookupAdminMemberRequest)requestModel, cancellationToken);
-
-        if (result != null) return Ok(result);
-
         var createAdminResult = await _mediator.Send((CreateAdminMemberCommand)requestModel, cancellationToken);
 
         return Ok(new LookupAdminMemberResult { MemberId = createAdminResult.MemberId, Status = Constants.Status.Live.GetDescription() });
