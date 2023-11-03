@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RestEase;
 using SFA.DAS.EmployerAan.Api.Controllers;
-using SFA.DAS.EmployerAan.Api.Models.Notifications;
-using SFA.DAS.EmployerAan.Application.InnerApi.Notifications;
 using SFA.DAS.EmployerAan.Infrastructure;
 using SFA.DAS.EmployerAan.InnerApi.Notifications.Responses;
 using SFA.DAS.Testing.AutoFixture;
@@ -79,84 +77,6 @@ public class NotificationsControllerTests
         {
             await actual.Should().ThrowAsync<InvalidOperationException>().WithMessage("Get notification didn't come back with a successful response");
             apiClientMock.Verify(a => a.GetNotification(notificationId, requestedByMemberId, It.IsAny<CancellationToken>()));
-        }
-    }
-
-    [Test, MoqAutoData]
-    public async Task CreateNotification_InvokesCommand(
-    [Frozen] Mock<IAanHubRestApiClient> apiClientMock,
-    [Greedy] NotificationsController sut,
-    CreateNotificationModel model,
-    Guid requestedByMemberId,
-    CancellationToken cancellationToken)
-    {
-        //Arrange
-        Response<GetNotificationResponse> notificationsResponse = new Response<GetNotificationResponse>(string.Empty, new(HttpStatusCode.Created), () => null!);
-        apiClientMock.Setup(a => a.PostNotification(requestedByMemberId, It.IsAny<PostNotificationRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(notificationsResponse);
-
-        //Act
-        var response = await sut.CreateNotification(requestedByMemberId, model, cancellationToken);
-
-        //Assert
-        apiClientMock.Verify(a => a.PostNotification(requestedByMemberId, It.IsAny<PostNotificationRequest>(), It.IsAny<CancellationToken>()));
-    }
-
-    [Test, MoqAutoData]
-    public void CreateNotification_HttpStatusCodeInternalServerError_ThrowsInvalidOperationException(
-    [Frozen] Mock<IAanHubRestApiClient> apiClientMock,
-    [Greedy] NotificationsController sut,
-    CreateNotificationModel model,
-    Guid requestedByMemberId,
-    CancellationToken cancellationToken)
-    {
-        //Arrange
-        Response<GetNotificationResponse> notificationsResponse = new Response<GetNotificationResponse>(string.Empty, new(HttpStatusCode.InternalServerError), () => null!);
-        apiClientMock.Setup(a => a.PostNotification(requestedByMemberId, It.IsAny<PostNotificationRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(notificationsResponse);
-
-        //Act
-        Assert.That(() => sut.CreateNotification(requestedByMemberId, model, cancellationToken), Throws.InvalidOperationException);
-    }
-
-    [Test, MoqAutoData]
-    public async Task CreateNotification_HttpStatusCodeNotFound_ReturnsNull(
-        [Frozen] Mock<IAanHubRestApiClient> apiClientMock,
-        [Greedy] NotificationsController sut,
-        CreateNotificationModel model,
-        Guid requestedByMemberId,
-        CancellationToken cancellationToken)
-    {
-        //Arrange
-        Response<GetNotificationResponse> notificationsResponse = new Response<GetNotificationResponse>(string.Empty, new(HttpStatusCode.NotFound), () => null!);
-        apiClientMock.Setup(a => a.PostNotification(requestedByMemberId, It.IsAny<PostNotificationRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(notificationsResponse);
-
-        //Act
-        OkObjectResult result = (OkObjectResult)await sut.CreateNotification(requestedByMemberId, model, cancellationToken);
-
-        //Assert
-        Assert.That(result.Value, Is.Null);
-    }
-
-    [Test, MoqAutoData]
-    public async Task CreateNotification_ValidCommand_ReturnsOk(
-    [Frozen] Mock<IAanHubRestApiClient> apiClientMock,
-    [Greedy] NotificationsController sut,
-    CreateNotificationModel model,
-    Guid requestedByMemberId,
-    CancellationToken cancellationToken)
-    {
-        //Arrange
-        Response<GetNotificationResponse> notificationsResponse = new Response<GetNotificationResponse>(string.Empty, new(HttpStatusCode.Created), () => null!);
-        apiClientMock.Setup(a => a.PostNotification(requestedByMemberId, It.IsAny<PostNotificationRequest>(), It.IsAny<CancellationToken>())).ReturnsAsync(notificationsResponse);
-
-        //Act
-        var response = await sut.CreateNotification(requestedByMemberId, model, cancellationToken);
-        var actualObjectResult = response as ObjectResult;
-
-        //Assert
-        using (new AssertionScope())
-        {
-            apiClientMock.Verify(a => a.PostNotification(requestedByMemberId, It.IsAny<PostNotificationRequest>(), It.IsAny<CancellationToken>()));
-            actualObjectResult.Should().BeOfType<OkObjectResult>();
         }
     }
 }

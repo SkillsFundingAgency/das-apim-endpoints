@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.EmployerAan.Api.Models.Notifications;
 using SFA.DAS.EmployerAan.Application.InnerApi.Notifications;
 using SFA.DAS.EmployerAan.Infrastructure;
 using SFA.DAS.EmployerAan.InnerApi.Notifications.Responses;
@@ -34,9 +33,9 @@ public class NotificationsController : ControllerBase
 
     [HttpPost]
     [ProducesResponseType(typeof(GetNotificationResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> CreateNotification([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [FromBody] CreateNotificationModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> CreateNotification([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [FromBody] PostNotificationRequest postNotificationRequest, CancellationToken cancellationToken)
     {
-        var response = await _client.PostNotification(requestedByMemberId, new PostNotificationRequest() { RequestedByMemberId = requestedByMemberId, MemberId = model.MemberId, NotificationTemplateId = model.NotificationTemplateId }, cancellationToken);
+        var response = await _client.PostNotification(requestedByMemberId, postNotificationRequest, cancellationToken);
         var result = response.ResponseMessage.StatusCode switch
         {
             HttpStatusCode.Created => response.GetContent(),
