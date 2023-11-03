@@ -19,6 +19,8 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+        services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
+        services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
     }
 }
 
