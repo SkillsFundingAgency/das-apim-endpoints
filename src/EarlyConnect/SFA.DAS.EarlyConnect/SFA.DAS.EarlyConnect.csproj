@@ -11,7 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="InnerApi\" />
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="InnerApi\Responses\" />
   </ItemGroup>
 
 </Project>
