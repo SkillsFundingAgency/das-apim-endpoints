@@ -1,11 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.Configuration;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.AppStart;
 
-[ExcludeFromCodeCoverage]
 public static class AddConfigurationOptionsExtension
 {
     public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)

@@ -7,6 +7,7 @@ using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application;
@@ -14,29 +15,31 @@ public class WhenHandlingGetLiveVacancies
 {
     [Test, MoqAutoData]
     public async Task Then_Gets_Live_Vacancies(
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockApiClient,
         GetLiveVacanciesQuery mockQuery,
-        GetLiveVacanciesApiResponse mockApiResponse)
+        ApiResponse<GetLiveVacanciesApiResponse> mockApiResponse,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockApiClient,
+        GetLiveVacanciesQueryHandler sut)
     {
-        mockApiClient.Setup(client => client.Get<GetLiveVacanciesApiResponse>(It.IsAny<GetLiveVacanciesApiRequest>())).ReturnsAsync(mockApiResponse);
-        var sut = new GetLiveVacanciesQueryHandler(mockApiClient.Object);
+        mockApiClient.Setup(client => client.GetWithResponseCode<GetLiveVacanciesApiResponse>(It.IsAny<GetLiveVacanciesApiRequest>())).ReturnsAsync(mockApiResponse);
 
         var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
 
-        AssertResponse(actual, mockApiResponse);
+        AssertResponse(actual, mockApiResponse.Body);
     }
 
     [Test, MoqAutoData]
     public async Task And_Api_Client_Returns_Null(
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockApiClient, GetLiveVacanciesQuery mockQuery)
+        GetLiveVacanciesQuery mockQuery,
+        ApiResponse<GetLiveVacanciesApiResponse> mockApiResponse,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockApiClient,
+        GetLiveVacanciesQueryHandler sut)
     {
-        var mockApiResponse = new GetLiveVacanciesApiResponse() { Vacancies = Enumerable.Empty<LiveVacancy>() };
-        mockApiClient.Setup(client => client.Get<GetLiveVacanciesApiResponse>(It.IsAny<GetLiveVacanciesApiRequest>())).ReturnsAsync(mockApiResponse);
-        var sut = new GetLiveVacanciesQueryHandler(mockApiClient.Object);
+        mockApiResponse.Body.Vacancies = Enumerable.Empty<LiveVacancy>();
+        mockApiClient.Setup(client => client.GetWithResponseCode<GetLiveVacanciesApiResponse>(It.IsAny<GetLiveVacanciesApiRequest>())).ReturnsAsync(mockApiResponse);
 
         var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
 
-        AssertResponse(actual, mockApiResponse);
+        AssertResponse(actual, mockApiResponse.Body);
     }
 
     private static void AssertResponse(GetLiveVacanciesQueryResult actual, GetLiveVacanciesApiResponse mockApiResponse)

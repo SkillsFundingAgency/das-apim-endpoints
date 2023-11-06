@@ -16,16 +16,16 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
 
     public async Task<GetLiveVacanciesQueryResult> Handle(GetLiveVacanciesQuery request, CancellationToken cancellationToken)
     {
-        var response = await _recruitApiClient.Get<GetLiveVacanciesApiResponse>(new GetLiveVacanciesApiRequest(request.PageNumber, request.PageSize));
+        var response = await _recruitApiClient.GetWithResponseCode<GetLiveVacanciesApiResponse>(new GetLiveVacanciesApiRequest(request.PageNumber, request.PageSize));
 
         return new GetLiveVacanciesQueryResult()
         {
-            Vacancies = response.Vacancies,
-            PageSize = response.PageSize,
-            PageNo = response.PageNo,
-            TotalLiveVacanciesReturned = response.TotalLiveVacanciesReturned,
-            TotalLiveVacancies = response.TotalLiveVacancies,
-            TotalPages = response.TotalPages
+            Vacancies = response.Body.Vacancies,
+            PageSize = response.Body.PageSize,
+            PageNo = response.Body.PageNo,
+            TotalLiveVacanciesReturned = response.Body.TotalLiveVacanciesReturned,
+            TotalLiveVacancies = response.Body.TotalLiveVacancies,
+            TotalPages = response.Body.TotalPages
         };
     }
 }
