@@ -17,30 +17,30 @@ public class LiveVacancy
     public DateTime ApprovedDate { get; set; }
     public DateTime ClosedDate { get; set; }
     public DateTime ClosingDate { get; set; }
-    public string? ClosureReason { get; set; } // not in recruit - always null in response
-    public User? CreatedByUser { get; set; } // not in recruit - always null in response
+    public string? ClosureReason { get; set; }
+    public User? CreatedByUser { get; set; }
     public DateTime CreatedDate { get; set; }
-    public User? DeletedByUser { get; set; } // not in recruit - always null in response
+    public User? DeletedByUser { get; set; }
     public DateTime DeletedDate { get; set; }
     public string? Description { get; set; }
     public DisabilityConfident DisabilityConfident { get; set; }
-    public string? EmployerAccountId { get; set; } // not in recruit - always null in response
+    public string? EmployerAccountId { get; set; }
     public EmployerContact? EmployerContact { get; set; }
     public string? EmployerDescription { get; set; }
     public Address? EmployerLocation { get; set; }
     public string? EmployerName { get; set; }
-    public string? EmployerNameOption { get; set; } // not in recruit - always null in response
+    public string? EmployerNameOption { get; set; }
     public string? EmployerWebsiteUrl { get; set; }
     public bool IsAnonymous { get; set; } 
-    public string? GeoCodeMethod { get; set; } // not in recruit - always null in response
+    public string? GeoCodeMethod { get; set; }
     public bool? IsDeleted { get; set; }
-    public User? LastUpdatedByUser { get; set; } // not in recruit - always null in response
+    public User? LastUpdatedByUser { get; set; }
     public DateTime LastUpdatedDate { get; set; }
-    public string? LegalEntityName { get; set; } // not in recruit - always null in response
+    public string? LegalEntityName { get; set; }
     public DateTime LiveDate { get; set; }
     public int NumberOfPositions { get; set; }
     public string? OutcomeDescription { get; set; }
-    public string? OwnerType { get; set; } // not in recruit - always null in response
+    public string? OwnerType { get; set; }
     public string? ProgrammeId { get; set; }
     public string? ProgrammeLevel { get; set; }
     public string? ProgrammeType { get; set; }
@@ -48,8 +48,8 @@ public class LiveVacancy
     public string? ShortDescription { get; set; }
     public IEnumerable<string>? Skills { get; set; }
     public DateTime StartDate { get; set; }
-    public string? Status { get; set; } // not in recruit - always null in response
-    public User? SubmittedByUser { get; set; } // not in recruit - always null in response
+    public string? Status { get; set; }
+    public User? SubmittedByUser { get; set; }
     public DateTime SubmittedDate { get; set; }
     public string? ThingsToConsider { get; set; }
     public string? Title { get; set; }
@@ -60,8 +60,8 @@ public class LiveVacancy
     public int? EducationLevelNumber { get; set; }
     public string? AccountPublicHashedId { get; set; }
     public string? AccountLegalEntityPublicHashedId { get; set; }
-    public int? RouteId { get; set; } // in recruit and NOT in db - always null in response
-    public string? WorkExperience { get; set; } // in recruit and NOT in db - always null in response
+    public int? RouteId { get; set; }
+    public string? WorkExperience { get; set; }
     public VacancyType? VacancyType { get; set; }
     public string? AdditionalQuestion1 { get; set; }
     public string? AdditionalQuestion2 { get; set; }
