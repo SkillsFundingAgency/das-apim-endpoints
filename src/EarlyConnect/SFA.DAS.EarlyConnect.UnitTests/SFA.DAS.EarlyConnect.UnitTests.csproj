@@ -21,4 +21,8 @@
     <ProjectReference Include="..\SFA.DAS.EarlyConnect\SFA.DAS.EarlyConnect.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Application\StudentData\" />
+  </ItemGroup>
+
 </Project>

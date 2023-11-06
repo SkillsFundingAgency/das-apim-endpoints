@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EarlyConnect.Api.Mappers;
 using SFA.DAS.EarlyConnect.Api.Models;
 using SFA.DAS.EarlyConnect.Application.Commands.StudentData;
+using System.Net;
 
 namespace SFA.DAS.EarlyConnect.Api.Controllers
 {
@@ -21,6 +22,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         [Route("")]
         public async Task<IActionResult> Post(CreateStudentDataPostRequest request)
         {
