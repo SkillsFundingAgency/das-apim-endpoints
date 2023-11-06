@@ -11,6 +11,6 @@ namespace SFA.DAS.EarlyConnect.InnerApi.Requests
             Data = metricDataList;
         }
 
-        public string PostUrl => "api/metric-data";
+        public string PostUrl => "api/metrics-data";
     }
 }
