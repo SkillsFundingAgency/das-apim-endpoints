@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.EmployerAan.InnerApi.Notifications;
+﻿namespace SFA.DAS.EmployerAan.InnerApi.Notifications.Responses;
 
 public class GetNotificationResponse
 {
