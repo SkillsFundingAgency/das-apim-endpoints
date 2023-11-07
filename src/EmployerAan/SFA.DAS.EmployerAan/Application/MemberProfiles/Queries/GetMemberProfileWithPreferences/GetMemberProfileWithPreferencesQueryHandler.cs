@@ -6,6 +6,7 @@ namespace SFA.DAS.EmployerAan.Application.MemberProfiles.Queries.GetMemberProfil
 
 public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMemberProfileWithPreferencesQuery, GetMemberProfileWithPreferencesQueryResult>
 {
+    private const string MultiRegionalText = "Multi-regional";
     private readonly IAanHubRestApiClient _apiClient;
 
     public GetMemberProfileWithPreferencesQueryHandler(IAanHubRestApiClient apiClient)
@@ -38,21 +39,21 @@ public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMe
         result.LastName = outputMember.LastName;
         result.OrganisationName = outputMember.OrganisationName;
         result.Email = outputMember.Email;
-        result.RegionId = (int)outputMember.RegionId!;
+        result.RegionId = outputMember.RegionId;
         result.UserType = Enum.Parse<MemberUserType>(outputMember.UserType);
-
-        result.IsRegionalChair = (bool)outputMember.IsRegionalChair!;
+        result.IsRegionalChair = outputMember.IsRegionalChair.GetValueOrDefault();
 
         var outputRegions = regionsResponse.Result;
-        if (outputRegions.Regions.Any()) result.RegionName = outputRegions.Regions.Find(x => x.Id == result.RegionId)!.Area!;
 
         if (result.UserType == MemberUserType.Apprentice)
         {
             result.ApprenticeId = outputMember.Apprentice!.ApprenticeId;
+            result.RegionName = outputRegions.Regions.Find(x => x.Id == result.RegionId)!.Area!;
         }
         if (result.UserType == MemberUserType.Employer)
         {
             result.AccountId = outputMember.Employer!.AccountId;
+            result.RegionName = result.RegionId.HasValue ? outputRegions.Regions.Find(x => x.Id == result.RegionId)?.Area! : MultiRegionalText;
         }
 
         return result;
