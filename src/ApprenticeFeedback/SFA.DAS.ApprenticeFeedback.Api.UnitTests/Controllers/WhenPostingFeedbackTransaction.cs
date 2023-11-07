@@ -39,7 +39,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public async Task And_ProcessCommandIsProcessedSuccessfully_Then_ReturnResults(
-            long apprenticeFeedbackTransactionId,
+            long feedbackTransactionId,
             FeedbackTransaction feedbackTransaction,
             GetApprenticeResult mediatorApprenticeResult,
             ProcessEmailTransactionResponse mediatorCommandResponse,
@@ -56,7 +56,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
 
             mediatorMock.Setup(mediator =>
                 mediator.Send(
-                    It.Is<ProcessEmailTransactionCommand>(x => x.FeedbackTransactionId == apprenticeFeedbackTransactionId 
+                    It.Is<ProcessEmailTransactionCommand>(x => x.FeedbackTransactionId == feedbackTransactionId
                     && x.ApprenticeName == mediatorApprenticeResult.FirstName 
                     && x.ApprenticeEmailAddress == mediatorApprenticeResult.Email
                     && x.IsFeedbackEmailContactAllowed == true
@@ -64,7 +64,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorCommandResponse);
 
-            ObjectResult objectResult = await controller.ProcessEmailTransaction(apprenticeFeedbackTransactionId, feedbackTransaction) as ObjectResult;
+            ObjectResult objectResult = await controller.ProcessEmailTransaction(feedbackTransactionId, feedbackTransaction) as ObjectResult;
             Assert.IsNotNull(objectResult);
             objectResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
 
