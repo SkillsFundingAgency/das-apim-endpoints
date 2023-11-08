@@ -38,9 +38,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error calling Browse By Interests Index");
-                return new  StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
-            
+
         }
 
         [HttpGet]
@@ -62,7 +62,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 
         [HttpGet]
         [Route("browsebyinterestslocation")]
-        public async Task<IActionResult> BrowseByInterestsLocation([FromQuery]string locationSearchTerm)
+        public async Task<IActionResult> BrowseByInterestsLocation([FromQuery] string locationSearchTerm)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
 
             }
-    }
+        }
 
-    
+    }
 }
