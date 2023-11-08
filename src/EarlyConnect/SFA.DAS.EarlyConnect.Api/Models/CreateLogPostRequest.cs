@@ -10,4 +10,11 @@
         public string Status { get; set; }
         public string Error { get; set; }
     }
+
+    public enum StudentDataUploadStatus
+    {
+        InProgress = 0,
+        Completed = 1,
+        Error = 2,
+    }
 }

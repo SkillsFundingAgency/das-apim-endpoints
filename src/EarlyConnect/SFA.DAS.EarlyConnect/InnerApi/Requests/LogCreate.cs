@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.EarlyConnect.InnerApi.Requests
 {
-    public class CreateLog 
+    public class LogCreate 
     {
         public string RequestType { get; set; }
         public string RequestSource { get; set; }

@@ -6,7 +6,7 @@ namespace SFA.DAS.EarlyConnect.InnerApi.Requests
     {
         public object Data { get; set; }
 
-        public UpdateLogRequest(UpdateLog createLog)
+        public UpdateLogRequest(LogUpdate createLog)
         {
             Data = createLog;
         }

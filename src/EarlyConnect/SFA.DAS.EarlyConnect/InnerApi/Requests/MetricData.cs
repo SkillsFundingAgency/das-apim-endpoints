@@ -2,7 +2,7 @@
 {
     public class MetricDataList
     {
-        public IEnumerable<MetricData> ListOfMetricData { get; set; }
+        public IEnumerable<MetricData> MetricsData { get; set; }
     }
     public class MetricData
     {
@@ -16,6 +16,6 @@
     }
     public class MetricFlagRequestModel
     {
-        public IList<string> MetricFlags { get; set; }
+        public IList<string> MetricsFlags { get; set; }
     }
 }

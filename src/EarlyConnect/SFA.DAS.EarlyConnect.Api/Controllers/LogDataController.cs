@@ -3,20 +3,20 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EarlyConnect.Api.Mappers;
 using SFA.DAS.EarlyConnect.Api.Models;
 using System.Net;
-using SFA.DAS.EarlyConnect.Application.Commands.CreateLog;
-using SFA.DAS.EarlyConnect.Application.Commands.UpdateLog;
+using SFA.DAS.EarlyConnect.Application.Commands.CreateLogData;
+using SFA.DAS.EarlyConnect.Application.Commands.UpdateLogData;
 
 namespace SFA.DAS.EarlyConnect.Api.Controllers
 {
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("/api/log/")]
-    public class LogController : ControllerBase
+    [Route("/early-connect/api-log/")]
+    public class LogDataController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<LogController> _logger;
+        private readonly ILogger<LogDataController> _logger;
 
-        public LogController(IMediator mediator, ILogger<LogController> logger)
+        public LogDataController(IMediator mediator, ILogger<LogDataController> logger)
         {
             _mediator = mediator;
             _logger = logger;
@@ -29,10 +29,15 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
         {
             try
             {
-                await _mediator.Send(new CreateLogCommand
+                var response = await _mediator.Send(new CreateLogDataCommand
                 {
                     Log = request.MapFromLogCreateRequest()
                 });
+
+                var model = new CreateLogPostResponse()
+                {
+                    LogId = response.LogId
+                };
 
                 return Ok();
             }
@@ -42,6 +47,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                 return BadRequest();
             }
         }
+
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [Route("update")]
@@ -49,7 +55,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
         {
             try
             {
-                await _mediator.Send(new UpdateLogCommand
+                await _mediator.Send(new UpdateLogDataCommand
                 {
                     Log = request.MapFromLogUpdateRequest()
                 });
@@ -58,7 +64,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error posting student data");
+                _logger.LogError(e, "Error posting log data");
                 return BadRequest();
             }
         }

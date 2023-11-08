@@ -13,5 +13,6 @@
         public string Postcode { get; set; }
         public string Industry { get; set; }
         public DateTime DateOfInterest { get; set; }
+        public int LogId { get; set; }
     }
 }

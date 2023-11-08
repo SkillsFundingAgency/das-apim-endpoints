@@ -9,7 +9,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EarlyConnect.Api.Controllers;
 using SFA.DAS.EarlyConnect.Api.Models;
-using SFA.DAS.EarlyConnect.Application.Commands.MetricData;
+using SFA.DAS.EarlyConnect.Application.Commands.CreateMetricData;
 
 namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
@@ -39,7 +39,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             _mediatorMock.Setup(x => x.Send(It.IsAny<CreateMetricDataCommand>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(Unit.Value));
 
-            var result = await _controller.Post(request);
+            var result = await _controller.CreateMetricsData(request);
 
             Assert.IsInstanceOf<OkResult>(result);
         }
@@ -54,7 +54,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             _mediatorMock.Setup(x => x.Send(It.IsAny<CreateMetricDataCommand>(), It.IsAny<CancellationToken>())).Throws(new Exception());
 
-            var result = await _controller.Post(request);
+            var result = await _controller.CreateMetricsData(request);
 
             Assert.IsInstanceOf<BadRequestResult>(result);
         }

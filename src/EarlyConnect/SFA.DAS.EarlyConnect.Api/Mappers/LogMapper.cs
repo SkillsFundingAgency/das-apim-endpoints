@@ -3,11 +3,11 @@ using SFA.DAS.EarlyConnect.InnerApi.Requests;
 
 namespace SFA.DAS.EarlyConnect.Api.Mappers
 {
-    public static class LogDataMapper
+    public static class LogMapper
     {
-        public static CreateLog MapFromLogCreateRequest(this CreateLogPostRequest request)
+        public static LogCreate MapFromLogCreateRequest(this CreateLogPostRequest request)
         {
-            var log = new CreateLog
+            var log = new LogCreate
             {
                 RequestSource = request.RequestSource,
                 RequestType = request.RequestType,
@@ -20,9 +20,9 @@ namespace SFA.DAS.EarlyConnect.Api.Mappers
 
             return log;
         }
-        public static UpdateLog MapFromLogUpdateRequest(this UpdateLogPostRequest request)
+        public static LogUpdate MapFromLogUpdateRequest(this UpdateLogPostRequest request)
         {
-            var log = new UpdateLog
+            var log = new LogUpdate
             {
                 LogId = request.LogId,
                 Error = request.Error,

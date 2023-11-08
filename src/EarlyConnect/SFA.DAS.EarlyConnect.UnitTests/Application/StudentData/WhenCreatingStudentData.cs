@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EarlyConnect.Application.Commands.StudentData;
+using SFA.DAS.EarlyConnect.Application.Commands.CreateStudentData;
 using SFA.DAS.EarlyConnect.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Models;
@@ -25,17 +25,15 @@ public class WhenCreatingStudentData
             StudentDataList = new StudentDataList()
         };
 
-        var expectedResponse = new Mock<EarlyConnect.InnerApi.Requests.StudentData>();
 
         var cancellationToken = new CancellationToken();
 
-        var response = new ApiResponse<EarlyConnect.InnerApi.Requests.StudentData>(expectedResponse.Object, HttpStatusCode.OK, string.Empty);
 
-        earlyConnectApiClientMock.Setup(c => c.PostWithResponseCode<EarlyConnect.InnerApi.Requests.StudentData>(It.IsAny<CreateStudentDataRequest>(), false)).ReturnsAsync(response);
+        earlyConnectApiClientMock.Setup(c => c.PostWithResponseCode<object>(It.IsAny<CreateStudentDataRequest>(), false)).ReturnsAsync(new ApiResponse<object>(new object(), HttpStatusCode.OK, string.Empty));
 
         var result = await handler.Handle(command, cancellationToken);
 
-        earlyConnectApiClientMock.Verify(x => x.PostWithResponseCode<EarlyConnect.InnerApi.Requests.StudentData>(It.IsAny<CreateStudentDataRequest>(), It.IsAny<bool>()), Times.Once);
+        earlyConnectApiClientMock.Verify(x => x.PostWithResponseCode<object>(It.IsAny<CreateStudentDataRequest>(), It.IsAny<bool>()), Times.Once);
         Assert.AreEqual(Unit.Value, result);
     }
 }

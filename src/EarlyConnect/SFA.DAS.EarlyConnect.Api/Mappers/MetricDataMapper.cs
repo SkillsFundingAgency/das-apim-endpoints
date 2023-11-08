@@ -18,13 +18,20 @@ namespace SFA.DAS.EarlyConnect.Api.Mappers
                     MaxTravelInMiles = model.MaxTravelInMiles,
                     WillingnessToRelocate = model.WillingnessToRelocate,
                     NoOfGCSCs = model.NoOfGCSCs,
-                    NoOfStudents = model.NoOfStudents
+                    NoOfStudents = model.NoOfStudents,
+                    MetricFlagRequestModel = model.MetricFlagRequestModel != null
+                        ? new InnerApi.Requests.MetricFlagRequestModel
+                        {
+                            MetricsFlags = model.MetricFlagRequestModel.MetricFlags
+                        }
+                        : null
+
                 };
 
                 metricDataList.Add(metricData);
             }
 
-            return new MetricDataList { ListOfMetricData = metricDataList };
+            return new MetricDataList { MetricsData = metricDataList };
         }
     }
 }

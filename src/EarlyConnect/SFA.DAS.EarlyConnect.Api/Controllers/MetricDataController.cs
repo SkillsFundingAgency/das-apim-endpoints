@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EarlyConnect.Api.Mappers;
 using System.Net;
-using SFA.DAS.EarlyConnect.Application.Commands.MetricData;
 using SFA.DAS.EarlyConnect.Api.Models;
+using SFA.DAS.EarlyConnect.Application.Commands.CreateMetricData;
 
 namespace SFA.DAS.EarlyConnect.Api.Controllers
 {
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("/api/metrics-data/")]
+    [Route("/early-connect/metrics-data")]
     public class MetricDataController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -24,19 +24,19 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [Route("")]
-        public async Task<IActionResult> Post([FromBody] CreateMetricDataPostRequest request)
+        [Route("add")]
+        public async Task<IActionResult> CreateMetricsData([FromBody] CreateMetricDataPostRequest request)
         {
             try
             {
                 await _mediator.Send(new CreateMetricDataCommand
                 {
-                    MetricDataList = request.MapFromMetricDataPostRequest()
+                    metricsData = request.MapFromMetricDataPostRequest()
                 });
 
                 return Ok();
 
-           }
+            }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error posting Metrics data");

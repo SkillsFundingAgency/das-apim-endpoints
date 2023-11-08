@@ -5,14 +5,14 @@ using SFA.DAS.EarlyConnect.InnerApi.Requests;
 
 namespace SFA.DAS.EarlyConnect.UnitTests.InnerApi.Requests
 {
-    public class WhenBuildingTheUpdateLogRequest
+    public class WhenBuildingTheCreateLogDataRequest
     {
         [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Constructed(UpdateLog log)
+        public void Then_The_Url_Is_Correctly_Constructed(LogCreate log)
         {
-            var actual = new UpdateLogRequest(log);
+            var actual = new CreateLogDataRequest(log);
 
-            actual.PostUrl.Should().Be("api/log/update");
+            actual.PostUrl.Should().Be("api/log/add");
         }
     }
 }

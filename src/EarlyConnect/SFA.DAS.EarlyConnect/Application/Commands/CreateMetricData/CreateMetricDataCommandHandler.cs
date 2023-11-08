@@ -4,7 +4,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.EarlyConnect.Application.Commands.MetricData
+namespace SFA.DAS.EarlyConnect.Application.Commands.CreateMetricData
 {
     public class CreateMetricDataCommandHandler : IRequestHandler<CreateMetricDataCommand, Unit>
     {
@@ -18,7 +18,7 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.MetricData
 
         public async Task<Unit> Handle(CreateMetricDataCommand request, CancellationToken cancellationToken)
         {
-            var response = await _apiClient.PostWithResponseCode<InnerApi.Requests.MetricData>(new CreateMetricDataRequest(request.MetricDataList), false);
+            var response = await _apiClient.PostWithResponseCode<object>(new CreateMetricDataRequest(request.metricsData), false);
 
             response.EnsureSuccessStatusCode();
 

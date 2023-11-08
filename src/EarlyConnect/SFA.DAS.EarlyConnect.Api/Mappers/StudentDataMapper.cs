@@ -5,7 +5,7 @@ namespace SFA.DAS.EarlyConnect.Api.Mappers
 {
     public static class StudentDataMapper
     {
-        public static StudentDataList MapFromCreateStudentDataRequest(this CreateStudentDataPostRequest request)
+        public static StudentDataList MapFromCreateStudentDataRequest(this CreateStudentDataPostRequest request, int LogId)
         {
             var studentDataList = new List<StudentData>();
 
@@ -19,7 +19,8 @@ namespace SFA.DAS.EarlyConnect.Api.Mappers
                     Email = dto.Email,
                     Postcode = dto.Postcode,
                     Industry = dto.Industry,
-                    DateOfInterest = dto.DateOfInterest
+                    DateOfInterest = dto.DateOfInterest,
+                    LogId = LogId
                 };
 
                 studentDataList.Add(studentData);
