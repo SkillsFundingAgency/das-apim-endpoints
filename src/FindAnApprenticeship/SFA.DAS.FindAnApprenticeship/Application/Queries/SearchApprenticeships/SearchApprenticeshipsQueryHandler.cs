@@ -11,14 +11,18 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
     public class SearchApprenticeshipsQueryHandler : IRequestHandler<SearchApprenticeshipsQuery, SearchApprenticeshipsResult>
     {
         private readonly IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> _findApprenticeshipApiClient;
+        private readonly ILocationLookupService _locationLookupService;
 
-        public SearchApprenticeshipsQueryHandler(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient)
+        public SearchApprenticeshipsQueryHandler(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient, ILocationLookupService locationLookupService)
         {
             _findApprenticeshipApiClient = findApprenticeshipApiClient;
+            _locationLookupService = locationLookupService;
         }
-        
+
         public async Task<SearchApprenticeshipsResult> Handle(SearchApprenticeshipsQuery request, CancellationToken cancellationToken)
         {
+            var latLonResult = _locationLookupService.GetLocationInformation(request.Location, 0, 0, false);
+
             var result = await _findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
                     new GetApprenticeshipCountRequest());
 

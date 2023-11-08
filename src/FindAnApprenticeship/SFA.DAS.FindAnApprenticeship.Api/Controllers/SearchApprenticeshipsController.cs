@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
@@ -75,6 +76,25 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+
+        [HttpGet]
+        [Route("searchResults")]
+        public async Task<IActionResult> SearchResults([FromQuery] List<string>? routeIds, [FromQuery] string? location,
+            [FromQuery] int? distance)
+        {
+            try
+            {
+                var result = await _mediator.Send(new SearchApprenticeshipsQuery
+                    { Location = location, Distance = distance, SelectedRouteIds = routeIds });
+                return Ok((SearchApprenticeshipsApiResponse)result);
+            }
+
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting search results");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+
+            }
     }
 
     
