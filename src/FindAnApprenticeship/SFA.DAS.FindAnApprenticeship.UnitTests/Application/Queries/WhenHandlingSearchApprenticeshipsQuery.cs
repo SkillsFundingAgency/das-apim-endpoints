@@ -9,6 +9,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Assessors.UnitTests.Application.Queries
@@ -29,5 +30,45 @@ namespace SFA.DAS.Assessors.UnitTests.Application.Queries
 
             actual.TotalApprenticeshipCount.Should().Be(response.TotalVacancies);
         }
+
+        [Test, MoqAutoData]
+        public async Task And_when_There_Is_Filter_Data_Then_The_Api_Called_And_Count_Returned(
+            [Frozen] Mock<ILocationLookupService> locationLookupService,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            SearchApprenticeshipsQueryHandler handler,
+            SearchApprenticeshipsQuery query,
+            LocationItem locationInfo,
+            GetApprenticeshipCountResponse apiResponse)
+        {
+            // Arrange
+            locationLookupService
+                .Setup(service => service.GetLocationInformation(
+                    query.Location, default, default, false))
+                .ReturnsAsync(locationInfo);
+
+            // Pass locationInfo to the request
+            var expectedRequest = new GetApprenticeshipCountRequest(
+                locationInfo.GeoPoint?.FirstOrDefault(),
+                locationInfo.GeoPoint?.LastOrDefault(),
+                query.SelectedRouteIds,
+                query.Distance
+            );
+
+            apiClient
+                .Setup(client => client.Get<GetApprenticeshipCountResponse>(expectedRequest))
+                .ReturnsAsync(apiResponse);
+
+            // Act
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.AreEqual(apiResponse.TotalVacancies, result.TotalApprenticeshipCount);
+
+            // Verify that the request is constructed with locationInfo
+            apiClient.Verify(client => client.Get<GetApprenticeshipCountResponse>(
+                expectedRequest), Times.Once);
+        }
     }
+
 }
