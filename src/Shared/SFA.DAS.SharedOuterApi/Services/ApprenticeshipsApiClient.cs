@@ -18,7 +18,7 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            throw new System.NotImplementedException();
+            return await _apiClient.Get<TResponse>(request);
         }
 
         public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
