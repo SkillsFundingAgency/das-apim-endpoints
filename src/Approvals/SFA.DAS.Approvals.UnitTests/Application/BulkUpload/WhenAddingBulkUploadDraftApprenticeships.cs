@@ -31,6 +31,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
             apiClient.Setup(x => x.PostWithResponseCode<GetBulkUploadAddDraftApprenticeshipsResponse>
                 (It.Is<PostAddDraftApprenticeshipsRequest>(
                     x => x.ProviderId == command.ProviderId && (x.Data as BulkUploadAddDraftApprenticeshipsRequest).BulkUploadDraftApprenticeships == command.BulkUploadAddDraftApprenticeships
+                                                            && (x.Data as BulkUploadAddDraftApprenticeshipsRequest).LogId == command.FileUploadLogId
                 ), true)).ReturnsAsync(apiResponse);
 
 

@@ -1,30 +1,29 @@
 ﻿using System.Net;
-using System.Web;
 using MediatR;
-using SFA.DAS.ApprenticeAan.Api.Configuration;
+using SFA.DAS.ApprenticeAan.Application.Extensions;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.StagedApprentices;
-using SFA.DAS.ApprenticeAan.Application.Services;
 
 namespace SFA.DAS.ApprenticeAan.Application.StagedApprentices.Queries.GetStagedApprentice;
 
-public class GetStagedApprenticeQueryHandler : IRequestHandler<GetStagedApprenticeQuery, GetStagedApprenticeQueryResult?>
+public class GetStagedApprenticeQueryHandler : IRequestHandler<GetStagedApprenticeQuery, GetStagedApprenticeResponse?>
 {
-    private readonly IAanHubApiClient<AanHubApiConfiguration> _apiClient;
+    private readonly IAanHubRestApiClient _apiClient;
 
-    public GetStagedApprenticeQueryHandler(IAanHubApiClient<AanHubApiConfiguration> apiClient)
+    public GetStagedApprenticeQueryHandler(IAanHubRestApiClient apiClient)
     {
         _apiClient = apiClient;
     }
 
-    public async Task<GetStagedApprenticeQueryResult?> Handle(GetStagedApprenticeQuery request, CancellationToken cancellationToken)
+    public async Task<GetStagedApprenticeResponse?> Handle(GetStagedApprenticeQuery request, CancellationToken cancellationToken)
     {
-        var result = await _apiClient.GetWithResponseCode<GetStagedApprenticeQueryResult?>(new GetStagedApprenticeRequest(request.LastName, request.DateOfBirth, HttpUtility.UrlEncode(request.Email)));
+        var result = await _apiClient.GetStagedApprentice(request.LastName, request.DateOfBirth.ToApiString(), request.Email, cancellationToken);
 
-        return (result.StatusCode) switch
+        return (result.ResponseMessage.StatusCode) switch
         {
-            HttpStatusCode.OK => result.Body,
+            HttpStatusCode.OK => result.GetContent(),
             HttpStatusCode.NotFound => null,
-            _ => throw new InvalidOperationException($"GetStagedApprentice inner api call did not come back with success statusCode: {result.StatusCode}")
+            _ => throw new InvalidOperationException($"GetStagedApprentice inner api call did not come back with success statusCode: {result.ResponseMessage.StatusCode}")
         };
     }
 }

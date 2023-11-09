@@ -7,7 +7,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcom
         public int PledgeId { get; set; }
         public int ApplicationId { get; set; }
         public long ReceiverId { get; set; }
-        public string BaseUrl { get; set; }
-        public string ReceiverEncodedAccountId { get; set; }
+        public string EncodedApplicationId { get; set; }
+
     }
 }

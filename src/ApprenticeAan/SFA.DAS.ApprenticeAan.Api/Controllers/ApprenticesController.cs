@@ -1,8 +1,10 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.ApprenticeAccount.Queries.GetApprenticeAccount;
 using SFA.DAS.ApprenticeAan.Application.Apprentices.Commands.CreateApprenticeMember;
-using SFA.DAS.ApprenticeAan.Application.Apprentices.Queries.GetApprentice;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Apprentices;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
@@ -10,10 +12,12 @@ namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 public class ApprenticesController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private readonly IAanHubRestApiClient _apiClient;
 
-    public ApprenticesController(IMediator mediator)
+    public ApprenticesController(IMediator mediator, IAanHubRestApiClient apiClient)
     {
         _mediator = mediator;
+        _apiClient = apiClient;
     }
 
     [HttpGet]
@@ -29,15 +33,15 @@ public class ApprenticesController : ControllerBase
 
     [HttpGet]
     [Route("{apprenticeId}")]
-    [ProducesResponseType(typeof(GetApprenticeQueryResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetApprenticeResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetApprentice(Guid apprenticeId, CancellationToken cancellationToken)
     {
-        var apprentice = await _mediator.Send(new GetApprenticeQuery(apprenticeId), cancellationToken);
+        var response = await _apiClient.GetApprenticeMember(apprenticeId, cancellationToken);
 
-        if (apprentice == null) return NotFound();
+        if (response.ResponseMessage.StatusCode == HttpStatusCode.NotFound) return NotFound();
 
-        return Ok(apprentice);
+        return Ok(response.GetContent());
     }
 
     [HttpPost]

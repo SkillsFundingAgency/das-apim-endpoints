@@ -33,7 +33,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
         [Test]
         public async Task Action_Calls_Handler()
         {
-            var result = await _controller.ApproveApplication(_request);
+            await _controller.ApproveApplication(_request);
 
             _mediator.Verify(x =>
                 x.Send(It.Is<AutoApproveApplicationCommand>(c => c.ApplicationId == _request.ApplicationId &&
