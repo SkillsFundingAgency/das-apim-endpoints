@@ -7,10 +7,10 @@ using Moq;
 using RestEase;
 using SFA.DAS.EmployerAan.Api.Controllers;
 using SFA.DAS.EmployerAan.Infrastructure;
-using SFA.DAS.EmployerAan.InnerApi.Notifications;
+using SFA.DAS.EmployerAan.InnerApi.Notifications.Responses;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers;
+namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.NotificationsControllerTests;
 
 public class NotificationsControllerTests
 {
