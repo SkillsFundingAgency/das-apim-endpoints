@@ -7,6 +7,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
+using SFA.DAS.EmployerAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 using SFA.DAS.EmployerAan.Configuration;
 using SFA.DAS.EmployerAan.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
@@ -35,13 +36,15 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServiceRegistration(this IServiceCollection services, IConfigurationRoot configuration)
     {
         services.AddHttpClient();
+        services.AddMediatR(typeof(GetMyApprenticeshipQuery).Assembly);
         services.AddMediatR(typeof(GetEmployerMemberQuery).Assembly);
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
-
         services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
+        services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
+        services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
 
         AddAanHubApiClient(services, configuration);
         AddCommitmentsV2ApiClient(services, configuration);
@@ -70,6 +73,12 @@ public static class ServiceCollectionExtensions
         var apiConfig = configuration
                 .GetSection(nameof(AanHubApiConfiguration))
                 .Get<AanHubApiConfiguration>();
+
+        services.Configure<ApprenticeAccountsApiConfiguration>(configuration.GetSection(nameof(ApprenticeAccountsApiConfiguration)));
+        services.AddSingleton(c => c.GetService<IOptions<ApprenticeAccountsApiConfiguration>>()!.Value);
+
+        services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
+        services.AddSingleton(c => c.GetService<IOptions<CoursesApiConfiguration>>()!.Value);
 
         services.AddSingleton(apiConfig);
 

@@ -43,6 +43,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
                             ((CreateCohortRequest)r.Data).AccountLegalEntityId == _request.AccountLegalEntityId &&
                             ((CreateCohortRequest)r.Data).ActualStartDate == _request.ActualStartDate &&
                             ((CreateCohortRequest)r.Data).Cost == _request.Cost &&
+                            ((CreateCohortRequest)r.Data).TrainingPrice == _request.TrainingPrice &&
+                            ((CreateCohortRequest)r.Data).EndPointAssessmentPrice == _request.EndPointAssessmentPrice &&
                             ((CreateCohortRequest)r.Data).CourseCode == _request.CourseCode &&
                             ((CreateCohortRequest)r.Data).DateOfBirth == _request.DateOfBirth &&
                             ((CreateCohortRequest)r.Data).DeliveryModel == _request.DeliveryModel &&

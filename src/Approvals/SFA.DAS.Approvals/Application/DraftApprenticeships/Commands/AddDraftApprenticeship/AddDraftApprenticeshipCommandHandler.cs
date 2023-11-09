@@ -23,6 +23,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
             {
                 ActualStartDate = request.ActualStartDate,
                 Cost = request.Cost,
+                TrainingPrice = request.TrainingPrice,
+                EndPointAssessmentPrice = request.EndPointAssessmentPrice,
                 CourseCode = request.CourseCode,
                 DateOfBirth = request.DateOfBirth,
                 DeliveryModel = request.DeliveryModel,

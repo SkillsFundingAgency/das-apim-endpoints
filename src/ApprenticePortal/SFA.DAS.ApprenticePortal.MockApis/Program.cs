@@ -80,7 +80,8 @@ namespace SFA.DAS.ApprenticePortal.MockApis
                 {
                     _fakeCoursesInnerApi = new CoursesInnerApiMock(PortCoursesInnerApi, true)
                         .WithPing()
-                        .WithStandardCourse(myApprenticeship.StandardUId, Fake.StandardApiResponse);
+                        .WithStandardCourse(myApprenticeship.StandardUId, Fake.StandardApiResponse)
+                        .WithAnyStandardCourse(Fake.StandardApiResponse); 
                 }
 
                 Console.WriteLine($"Apprentice Id {apprentice.ApprenticeId}");

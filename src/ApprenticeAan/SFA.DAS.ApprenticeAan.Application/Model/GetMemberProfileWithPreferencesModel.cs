@@ -11,7 +11,7 @@ public class GetMemberProfileWithPreferencesModel
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string? OrganisationName { get; set; }
-    public int RegionId { get; set; }
+    public int? RegionId { get; set; }
     public string RegionName { get; set; }
     public MemberUserType UserType { get; set; }
     public bool IsRegionalChair { get; set; }
@@ -19,7 +19,7 @@ public class GetMemberProfileWithPreferencesModel
     public IEnumerable<MemberProfile> Profiles { get; set; }
     public IEnumerable<MemberPreference> Preferences { get; set; }
 
-    public GetMemberProfileWithPreferencesModel(GetMemberProfileWithPreferencesQueryResult memberProfileWithPreferences, MyApprenticeship? myApprenticeship, bool isPublic)
+    public GetMemberProfileWithPreferencesModel(GetMemberProfileWithPreferencesQueryResult memberProfileWithPreferences, GetMyApprenticeshipQueryResult? myApprenticeship, Apprenticeship? apprenticeShip, bool isPublic)
     {
         FullName = memberProfileWithPreferences.FullName;
         Email = memberProfileWithPreferences.Email;
@@ -33,13 +33,21 @@ public class GetMemberProfileWithPreferencesModel
         Profiles = memberProfileWithPreferences.Profiles;
         Preferences = (isPublic) ? Enumerable.Empty<MemberPreference>() : memberProfileWithPreferences.Preferences;
 
-        if (myApprenticeship != null && myApprenticeship.TrainingCourse != null)
+        if (memberProfileWithPreferences.UserType == MemberUserType.Apprentice && myApprenticeship != null && myApprenticeship.TrainingCourse != null)
         {
             Apprenticeship = new Apprenticeship
             {
                 Level = myApprenticeship.TrainingCourse.Level.ToString(),
                 Sector = myApprenticeship.TrainingCourse.Sector!,
                 Programme = myApprenticeship.TrainingCourse.Name!
+            };
+        }
+        else if (memberProfileWithPreferences.UserType == MemberUserType.Employer && apprenticeShip != null)
+        {
+            Apprenticeship = new Apprenticeship
+            {
+                ActiveApprenticesCount = apprenticeShip.ActiveApprenticesCount,
+                Sectors = apprenticeShip.Sectors
             };
         }
     }
@@ -49,4 +57,6 @@ public class Apprenticeship
     public string Sector { get; set; } = null!;
     public string Programme { get; set; } = null!;
     public string Level { get; set; } = null!;
+    public int ActiveApprenticesCount { get; set; }
+    public IEnumerable<string> Sectors { get; set; } = Enumerable.Empty<string>();
 }

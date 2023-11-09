@@ -1,8 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using System;
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
-using static SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching.GetApplicationsResponse;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 {

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -14,13 +13,10 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Approvals.Api.AppStart;
-using SFA.DAS.Approvals.Api.Clients;
 using SFA.DAS.Approvals.Application.TrainingCourses.Queries;
 using SFA.DAS.Approvals.ErrorHandling;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Api
 {
@@ -56,6 +52,7 @@ namespace SFA.DAS.Approvals.Api
 
             services.AddMediatR(typeof(GetStandardsQuery).Assembly);
             services.AddServiceRegistration(_configuration);
+            services.AddAutoMapper(typeof(Startup));
 
             services
                 .AddMvc(o =>

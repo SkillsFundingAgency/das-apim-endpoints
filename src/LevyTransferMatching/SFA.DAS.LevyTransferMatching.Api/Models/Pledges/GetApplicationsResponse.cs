@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
@@ -13,6 +14,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public string PledgeStatus { get; set; }
         public int PledgeRemainingAmount { get; set; }
         public int PledgeTotalAmount { get; set; }
+        public AutomaticApprovalOption AutomaticApprovalOption { get; set; }
 
         public class Application
         {
@@ -58,6 +60,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 PledgeStatus = v.PledgeStatus,
                 PledgeRemainingAmount = v.RemainingAmount,
                 PledgeTotalAmount = v.TotalAmount,
+                AutomaticApprovalOption = v.AutomaticApprovalOption,
                 Applications = v.Applications.Select(application => new Application
                 {
                     Id = application.Id,
