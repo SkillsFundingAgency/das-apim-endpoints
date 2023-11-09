@@ -79,6 +79,10 @@ public interface IAanHubRestApiClient
     [Get("/members/{memberId}/profile")]
     Task<GetMemberProfileWithPreferencesQueryResult> GetMemberProfileWithPreferences([Path] Guid memberId, [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, bool @public, CancellationToken cancellationToken);
 
+    [Post("/notifications")]
+    [AllowAnyStatusCode]
+    Task<Response<GetNotificationResponse>> PostNotification([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [Body] PostNotificationRequest command, CancellationToken cancellationToken);
+
     [Get("/stagedApprentices")]
     [AllowAnyStatusCode]
     Task<Response<GetStagedApprenticeResponse?>> GetStagedApprentice([FromQuery] string lastName, [FromQuery] string dateOfBirth, [FromQuery] string email, CancellationToken cancellationToken);
