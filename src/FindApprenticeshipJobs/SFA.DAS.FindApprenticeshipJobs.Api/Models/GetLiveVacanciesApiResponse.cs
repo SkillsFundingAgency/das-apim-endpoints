@@ -39,6 +39,7 @@ public class GetLiveVacanciesApiResponse
                 Description = source.Description,
                 EmployerLocation = source.EmployerLocation == null? null : (Address) source.EmployerLocation,
                 LiveDate = source.LiveDate,
+                ClosingDate = source.ClosingDate,
                 StartDate = source.StartDate,
                 EmployerName = source.EmployerName,
                 ProviderId = source.ProviderId,
@@ -59,6 +60,7 @@ public class GetLiveVacanciesApiResponse
         public string? ProgrammeId { get; set; }
         public string? ProgrammeType { get; set; }
         public DateTime StartDate { get; set; }
+        public DateTime ClosingDate { get; set; }
         public int? RouteId { get; set; }
     }
 

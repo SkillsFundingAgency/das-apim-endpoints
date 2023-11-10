@@ -24,6 +24,7 @@ public class GetLiveVacanciesQueryResult
         public string? ProgrammeId { get; set; }
         public string? ProgrammeType { get; set; }
         public DateTime StartDate { get; set; }
+        public DateTime ClosingDate { get; set; }
         public int? RouteId { get; set; }
     }
 

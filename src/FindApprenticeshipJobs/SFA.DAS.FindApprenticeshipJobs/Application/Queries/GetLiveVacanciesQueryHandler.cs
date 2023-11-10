@@ -35,6 +35,7 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
                 ProviderName = x.TrainingProvider.Name,
                 ProviderId = x.TrainingProvider.Ukprn,
                 LiveDate = x.LiveDate,
+                ClosingDate = x.ClosingDate,
                 ProgrammeId = x.ProgrammeId,
                 ProgrammeType = x.ProgrammeType,
                 StartDate = x.StartDate,
