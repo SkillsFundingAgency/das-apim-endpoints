@@ -49,6 +49,16 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
                     Postcode = x.EmployerLocation?.Postcode,
                     Latitude = x.EmployerLocation?.Latitude ?? 0,
                     Longitude = x.EmployerLocation?.Longitude ?? 0,
+                },
+                Wage = x.Wage == null ? null : new GetLiveVacanciesQueryResult.Wage
+                {
+                    Duration = x.Wage.Duration,
+                    DurationUnit = x.Wage.DurationUnit,
+                    FixedWageYearlyAmount = x.Wage.FixedWageYearlyAmount,
+                    WageAdditionalInformation = x.Wage.WageAdditionalInformation,
+                    WageType = x.Wage.WageType,
+                    WeeklyHours = x.Wage.WeeklyHours,
+                    WorkingWeekDescription = x.Wage.WorkingWeekDescription
                 }
             }),
         };

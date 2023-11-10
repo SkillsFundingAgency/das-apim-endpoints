@@ -43,7 +43,8 @@ public class GetLiveVacanciesApiResponse
                 StartDate = source.StartDate,
                 EmployerName = source.EmployerName,
                 ProviderId = source.ProviderId,
-                ProviderName = source.ProviderName
+                ProviderName = source.ProviderName,
+                Wage = source.Wage == null? null : (Wage) source.Wage,
             };
         }
 
@@ -62,6 +63,7 @@ public class GetLiveVacanciesApiResponse
         public DateTime StartDate { get; set; }
         public DateTime ClosingDate { get; set; }
         public int? RouteId { get; set; }
+        public Wage? Wage { get; set; }
     }
 
     public class Address
@@ -87,5 +89,30 @@ public class GetLiveVacanciesApiResponse
         public string? Postcode { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+    }
+
+    public class Wage
+    {
+        public int Duration { get; set; }
+        public string? DurationUnit { get; set; }
+        public decimal? FixedWageYearlyAmount { get; set; }
+        public string? WageAdditionalInformation { get; set; }
+        public string? WageType { get; set; }
+        public decimal WeeklyHours { get; set; }
+        public string? WorkingWeekDescription { get; set; }
+
+        public static implicit operator Wage(GetLiveVacanciesQueryResult.Wage source)
+        {
+            return new Wage
+            {
+                Duration = source.Duration,
+                DurationUnit = source.DurationUnit,
+                FixedWageYearlyAmount = source.FixedWageYearlyAmount,
+                WageAdditionalInformation = source.WageAdditionalInformation,
+                WageType = source.WageType,
+                WeeklyHours = source.WeeklyHours,
+                WorkingWeekDescription = source.WorkingWeekDescription
+            };
+        }
     }
 }
