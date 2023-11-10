@@ -41,6 +41,8 @@ public class GetLiveVacanciesApiResponse
                 LiveDate = source.LiveDate,
                 StartDate = source.StartDate,
                 EmployerName = source.EmployerName,
+                ProviderId = source.ProviderId,
+                ProviderName = source.ProviderName
             };
         }
 
@@ -50,6 +52,9 @@ public class GetLiveVacanciesApiResponse
         public string? Description { get; set; }
         public Address? EmployerLocation { get; set; }
         public string? EmployerName { get; set; }
+        public long? ProviderId { get; set; }
+        public string? ProviderName { get; set; }
+
         public DateTime LiveDate { get; set; }
         public string? ProgrammeId { get; set; }
         public string? ProgrammeType { get; set; }

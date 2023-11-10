@@ -32,6 +32,8 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
                 ApprenticeshipTitle = x.Title, //todo: source from courses service
                 Description = x.Description,
                 EmployerName = x.EmployerName,
+                ProviderName = x.TrainingProvider.Name,
+                ProviderId = x.TrainingProvider.Ukprn,
                 LiveDate = x.LiveDate,
                 ProgrammeId = x.ProgrammeId,
                 ProgrammeType = x.ProgrammeType,
