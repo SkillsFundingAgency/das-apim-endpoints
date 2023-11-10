@@ -44,12 +44,36 @@ public class WhenHandlingGetLiveVacancies
 
     private static void AssertResponse(GetLiveVacanciesQueryResult actual, GetLiveVacanciesApiResponse mockApiResponse)
     {
+        var expectedVacancies = mockApiResponse.Vacancies.Select(x => new
+        {
+            x.VacancyId,
+            VacancyTitle = x.Title,
+            ApprenticeshipTitle = x.Title, //todo: to change
+            x.Description,
+            x.EmployerName,
+            x.LiveDate,
+            x.ProgrammeId,
+            x.ProgrammeType,
+            x.StartDate,
+            x.RouteId, //todo: to change
+            EmployerLocation = new GetLiveVacanciesQueryResult.Address
+            {
+                AddressLine1 = x.EmployerLocation?.AddressLine1,
+                AddressLine2 = x.EmployerLocation?.AddressLine2,
+                AddressLine3 = x.EmployerLocation?.AddressLine3,
+                AddressLine4 = x.EmployerLocation?.AddressLine4,
+                Postcode = x.EmployerLocation?.Postcode,
+                Latitude = x.EmployerLocation?.Latitude ?? 0,
+                Longitude = x.EmployerLocation?.Longitude ?? 0,
+            }
+        });
+
         actual.Should().BeOfType<GetLiveVacanciesQueryResult>();
-        actual.Vacancies.Should().BeEquivalentTo(mockApiResponse.Vacancies);
         actual.PageSize.Should().Be(mockApiResponse.PageSize);
         actual.PageNo.Should().Be(mockApiResponse.PageNo);
         actual.TotalLiveVacanciesReturned.Should().Be(mockApiResponse.TotalLiveVacanciesReturned);
         actual.TotalLiveVacancies.Should().Be(mockApiResponse.TotalLiveVacancies);
         actual.TotalPages.Should().Be(mockApiResponse.TotalPages);
+        actual.Vacancies.Should().BeEquivalentTo(expectedVacancies);
     }
 }
