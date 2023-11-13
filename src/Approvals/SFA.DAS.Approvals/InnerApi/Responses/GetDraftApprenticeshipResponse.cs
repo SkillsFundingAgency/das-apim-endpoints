@@ -29,6 +29,8 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         public string StandardUId { get; set; }
 
         public int? Cost { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
 
         public DateTime? StartDate { get; set; }
 
@@ -61,6 +63,7 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
         public bool RecognisingPriorLearningExtendedStillNeedsToBeConsidered { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
+        public bool? EmployerHasEditedCost { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
         public int? TrainingTotalHours { get; set; }
         public int? DurationReducedByHours { get; set; }

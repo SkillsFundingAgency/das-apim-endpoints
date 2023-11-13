@@ -9,7 +9,7 @@ public class GetStandardQueryRequestTests
     [AutoData]
     public void Constructor_BuildsRequest(string standardUid)
     {
-        var request = new GetStandardQueryRequest(standardUid);
+        var request = new GetStandardRequest(standardUid);
 
         Assert.Multiple(() =>
         {

@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,7 +10,6 @@ using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEmployer;
-using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Inform;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
 {
@@ -36,7 +36,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
             _mediator = new Mock<IMediator>();
             _mediator.Setup(x => x.Send(It.Is<GetConfirmEmployerQuery>(q => q.ProviderId == _providerId && q.ApprenticeshipId == _apprenticeshipId && q.AccountLegalEntityId == _accountLegalEntityId), It.IsAny<CancellationToken>())).ReturnsAsync(_queryResult);
 
-            _controller = new ApprenticesController(Mock.Of<ILogger<ApprenticesController>>(), _mediator.Object);
+            _controller = new ApprenticesController(Mock.Of<ILogger<ApprenticesController>>(), _mediator.Object, Mock.Of<IMapper>());
         }
 
         [Test]

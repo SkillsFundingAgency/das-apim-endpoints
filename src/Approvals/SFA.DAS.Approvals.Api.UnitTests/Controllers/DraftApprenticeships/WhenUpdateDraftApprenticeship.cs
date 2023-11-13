@@ -44,6 +44,8 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
                 y.ActualStartDate == _request.ActualStartDate &&
                 y.StartDate == _request.StartDate &&
                 y.Cost == _request.Cost &&
+                y.TrainingPrice == _request.TrainingPrice &&
+                y.EndPointAssessmentPrice == _request.EndPointAssessmentPrice &&
                 y.CourseCode == _request.CourseCode &&
                 y.DateOfBirth == _request.DateOfBirth &&
                 y.DeliveryModel == _request.DeliveryModel &&
@@ -60,7 +62,9 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
                 y.CourseOption == _request.CourseOption &&
                 y.Uln == _request.Uln &&
                 y.UserInfo == _request.UserInfo &&
-                y.RequestingParty == _request.RequestingParty
+                y.RequestingParty == _request.RequestingParty &&
+                y.TrainingPrice == _request.TrainingPrice &&
+                y.EndPointAssessmentPrice == _request.EndPointAssessmentPrice
             ), It.IsAny<CancellationToken>()), Times.Once);
 
             Assert.IsInstanceOf<OkResult>(result);

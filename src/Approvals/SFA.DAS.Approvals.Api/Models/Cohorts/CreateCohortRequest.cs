@@ -20,6 +20,8 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
         public string CourseCode { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
         public int? Cost { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? ActualStartDate { get; set; }
         public DateTime? EndDate { get; set; }

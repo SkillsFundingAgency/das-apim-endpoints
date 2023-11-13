@@ -14,6 +14,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
         public string PledgeStatus { get; set; }
         public int RemainingAmount { get; set; }
         public int TotalAmount { get; set; }
+        public AutomaticApprovalOption AutomaticApprovalOption { get; set; }
 
         public class Application
         {
