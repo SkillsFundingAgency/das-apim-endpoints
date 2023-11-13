@@ -38,7 +38,7 @@ builder.Services
          options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
      });
 
-builder.Services.AddAuthentication();
+builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
 builder.Services.AddMediatR(typeof(GetLiveVacanciesQuery).Assembly);
