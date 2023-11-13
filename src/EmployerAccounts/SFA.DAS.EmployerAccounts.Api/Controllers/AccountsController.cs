@@ -7,7 +7,7 @@ using SFA.DAS.EmployerAccounts.Api.Models;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionHistory;
 
-namespace SFA.DAS.EmployerFinance.Api.Controllers
+namespace SFA.DAS.EmployerAccounts.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
