@@ -4,6 +4,8 @@ using SFA.DAS.AdminAan.Infrastructure;
 namespace SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvent;
 public class GetCalendarEventQueryHandler : IRequestHandler<GetCalendarEventQuery, GetCalendarEventQueryResult>
 {
+    private const int OrganisationTypeEducational = 4;
+
     private readonly IAanHubRestApiClient _apiClient;
     private readonly IReferenceDataApiClient _apiReferenceDataApiClient;
     public GetCalendarEventQueryHandler(IAanHubRestApiClient apiClient, IReferenceDataApiClient apiReferenceDataApiClient)
@@ -24,10 +26,8 @@ public class GetCalendarEventQueryHandler : IRequestHandler<GetCalendarEventQuer
 
         if (string.IsNullOrEmpty(result.Urn.ToString())) return result;
 
-        var organisationTypeEducational = 4;
-
         var response = await _apiReferenceDataApiClient.GetSchoolFromUrn(result.Urn.ToString()!,
-            organisationTypeEducational, cancellationToken);
+            OrganisationTypeEducational, cancellationToken);
 
         if (response.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
         {
