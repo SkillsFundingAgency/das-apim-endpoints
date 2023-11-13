@@ -5,6 +5,7 @@ using SFA.DAS.FindApprenticeshipJobs.Api.AppStart;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using SFA.DAS.FindApprenticeshipJobs.Configuration;
 
 [assembly: ApiController]
@@ -27,7 +28,10 @@ builder.Services
                 Version = "v1"
             });
     })
-    .AddControllers()
+    .AddControllers(o =>
+    {
+        if (!configuration.IsLocalOrDev()) o.Filters.Add(new AuthorizeFilter("default"));
+    })
     .AddJsonOptions(options =>
      {
          options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
