@@ -19,7 +19,7 @@ public class GetCalendarEventQueryHandler : IRequestHandler<GetCalendarEventQuer
         if (result?.RegionId != null)
         {
             var regionsResult = await _apiClient.GetRegions(cancellationToken);
-            result.RegionName = regionsResult.Regions.FirstOrDefault(x => x.Id == result.RegionId)?.Area;
+            result.RegionName = regionsResult.Regions.First(x => x.Id == result.RegionId)?.Area;
         }
 
         if (string.IsNullOrEmpty(result?.Urn.ToString())) return result;
