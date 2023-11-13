@@ -5,10 +5,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
-using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectPledgeApplications;
@@ -20,7 +16,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
         private FunctionsController _controller;
         private Mock<IMediator> _mediator;
         private readonly Fixture _fixture = new Fixture();
-
         private RejectPledgeApplicationsRequest _request;
 
         [SetUp]

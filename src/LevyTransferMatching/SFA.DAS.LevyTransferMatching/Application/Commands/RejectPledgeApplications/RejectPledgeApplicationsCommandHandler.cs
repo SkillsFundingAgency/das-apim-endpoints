@@ -48,8 +48,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectPledgeApplicat
                 }                
             }
 
-            return Unit.Value;
-            
+            return Unit.Value;            
         }
     }
 }
