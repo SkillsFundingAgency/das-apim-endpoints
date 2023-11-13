@@ -14,11 +14,12 @@ public class GetCalendarEventQueryHandlerTests
     private const long Urn = 123456;
     private const string SchoolName = "School name";
 
-    [TestCase(null, null, null, null)]
-    [TestCase(RegionId, RegionName, null, null)]
-    [TestCase(null, null, Urn, SchoolName)]
-    [TestCase(RegionId, RegionName, Urn, SchoolName)]
-    public async Task Handle_ReturnCalendarEvents(int? regionId, string? regionName, long? urn, string? schoolName)
+    [TestCase(null, null, null, null, false)]
+    [TestCase(RegionId, RegionName, null, null, false)]
+    [TestCase(null, null, Urn, SchoolName, false)]
+    [TestCase(RegionId, RegionName, Urn, SchoolName, false)]
+    [TestCase(RegionId, RegionName, Urn, null, true)]
+    public async Task Handle_ReturnCalendarEvents(int? regionId, string? regionName, long? urn, string? schoolName, bool schoolApiReturnsBadRequest)
     {
         var cancellationToken = new CancellationToken();
         var aanHubRestApiClientMock = new Mock<IAanHubRestApiClient>();
@@ -44,9 +45,15 @@ public class GetCalendarEventQueryHandlerTests
         {
             var schoolResult = new GetSchoolApiResult(schoolName!);
 
+            var status = System.Net.HttpStatusCode.OK;
+            if (schoolApiReturnsBadRequest)
+            {
+                status = System.Net.HttpStatusCode.BadRequest;
+            }
+
             var response = new Response<GetSchoolApiResult>(
                 "not used",
-                new HttpResponseMessage(System.Net.HttpStatusCode.OK),
+                new HttpResponseMessage(status),
                 () => schoolResult);
 
             referenceDataApiClient.Setup(x => x.GetSchoolFromUrn(urn.Value.ToString(), 4, cancellationToken)).ReturnsAsync(response);

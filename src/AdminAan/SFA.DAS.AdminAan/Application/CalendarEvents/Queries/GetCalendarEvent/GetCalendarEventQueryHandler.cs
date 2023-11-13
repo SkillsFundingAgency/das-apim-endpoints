@@ -22,11 +22,23 @@ public class GetCalendarEventQueryHandler : IRequestHandler<GetCalendarEventQuer
             result.RegionName = regionsResult.Regions.FirstOrDefault(x => x.Id == result.RegionId)?.Area;
         }
 
-        if (!string.IsNullOrEmpty(result?.Urn.ToString()))
+        if (string.IsNullOrEmpty(result?.Urn.ToString())) return result;
+
+        try
         {
             var organisationTypeEducational = 4;
-            var school = await _apiReferenceDataApiClient.GetSchoolFromUrn(result.Urn.ToString()!, organisationTypeEducational, cancellationToken);
-            result.SchoolName = school.GetContent()?.Name;
+
+            using var response = await _apiReferenceDataApiClient.GetSchoolFromUrn(result.Urn.ToString()!,
+                organisationTypeEducational, cancellationToken);
+
+            if (response.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                result.SchoolName = response.GetContent()?.Name;
+            }
+        }
+        catch
+        {
+            return result;
         }
 
         return result;
