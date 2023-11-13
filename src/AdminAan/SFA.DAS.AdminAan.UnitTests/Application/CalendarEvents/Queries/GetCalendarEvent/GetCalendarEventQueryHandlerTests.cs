@@ -94,7 +94,7 @@ public class GetCalendarEventQueryHandlerTests
     }
 
     [Test]
-    public async Task Handle_ReturnCalendarEventsX()
+    public async Task Handle_ReturnCalendarEventSchoolApiThrowsException()
     {
         var regionId = 1;
         var urn = 123;
@@ -116,7 +116,7 @@ public class GetCalendarEventQueryHandlerTests
         expected.Urn = urn;
 
         aanHubRestApiClientMock.Setup(x => x.GetRegions(cancellationToken)).ReturnsAsync(regionsResult);
-        aanHubRestApiClientMock.Setup(x => x.GetCalendarEvent(requestedByMemberId, calendarEventId, cancellationToken))
+        aanHubRestApiClientMock.Setup(x => x.GetCalendarEvent(requestedByMemberId, calendarEventId, cancellationToken)).ReturnsAsync(expected);
 
         referenceDataApiClient.Setup(x => x.GetSchoolFromUrn(urn.ToString(), 4, cancellationToken))
             .ThrowsAsync(new SystemException());
@@ -128,5 +128,8 @@ public class GetCalendarEventQueryHandlerTests
         actual.Should().Be(expected);
         actual?.RegionName.Should().Be(RegionName);
         actual?.SchoolName.Should().BeNull();
+        referenceDataApiClient.Verify(
+            r => r.GetSchoolFromUrn(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
+
     }
 }
