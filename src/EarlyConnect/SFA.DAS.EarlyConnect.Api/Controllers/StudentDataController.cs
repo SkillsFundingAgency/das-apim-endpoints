@@ -12,7 +12,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
 {
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("/early-connect/student-data")]
+    [Route("/early-connect/student-data/")]
     public class StudentDataController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -29,45 +29,20 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
         [Route("add")]
         public async Task<IActionResult> CreateStudentData(CreateStudentDataPostRequest request)
         {
-            int LogId = 0;
+            int logId = 0;
 
             try
             {
-                var actionName = ControllerContext.ActionDescriptor.ActionName;
-                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-                var jsonPayload = JsonConvert.SerializeObject(request);
+                var ipAddress = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault() ?? HttpContext.Connection.RemoteIpAddress?.ToString();
 
-                CreateLogPostRequest createLogPostRequest = new CreateLogPostRequest
-                {
-                    RequestType = actionName,
-                    RequestSource = "UCAS",
-                    RequestIP = ipAddress,
-                    Payload = jsonPayload,
-                    Status = StudentDataUploadStatus.InProgress.ToString()
-                };
-
-                var response = await _mediator.Send(new CreateLogDataCommand
-                {
-                    Log = LogMapper.MapFromLogCreateRequest(createLogPostRequest)
-                });
-
-                LogId = response.LogId;
+                logId = await CreateLog(StudentDataUploadStatus.InProgress, request, ipAddress);
 
                 await _mediator.Send(new CreateStudentDataCommand
                 {
-                    StudentDataList = request.MapFromCreateStudentDataRequest(LogId),
+                    StudentDataList = request.MapFromCreateStudentDataRequest(logId),
                 });
 
-                UpdateLogPostRequest updateLog = new UpdateLogPostRequest
-                {
-                    LogId = LogId,
-                    Status = StudentDataUploadStatus.Completed.ToString()
-                };
-
-                await _mediator.Send(new UpdateLogDataCommand
-                {
-                    Log = LogMapper.MapFromLogUpdateRequest(updateLog)
-                });
+                await UpdateLog(logId, StudentDataUploadStatus.Completed);
 
                 return Ok();
             }
@@ -75,48 +50,45 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             {
                 _logger.LogError(e, "Error posting student data");
 
-                UpdateLogPostRequest updateLog = new UpdateLogPostRequest
-                {
-                    LogId = LogId,
-                    Status = StudentDataUploadStatus.Error.ToString(),
-                    Error = e.Message
-                };
-
-                await _mediator.Send(new UpdateLogDataCommand
-                {
-                    Log = LogMapper.MapFromLogUpdateRequest(updateLog)
-                });
+                if (logId > 0) await UpdateLog(logId, StudentDataUploadStatus.Error, $"{e.Message} - {e.StackTrace}");
 
                 return BadRequest();
             }
         }
-        //[HttpPost]
-        //[ProducesResponseType((int)HttpStatusCode.OK)]
-        //[Route("")]
-        //public async Task<IActionResult> Post(CreateStudentDataPostRequest request)
-        //{
-        //    try
-        //    {
-        //        var actionName = ControllerContext.ActionDescriptor.DisplayName;
-        //        var ipAddress = HttpContext.Connection.RemoteIpAddress.ToString();
-        //        var jsonPayload = JsonConvert.SerializeObject(request);
 
-        //        await _mediator.Send(new CreateStudentDataCommand
-        //        {
-        //            StudentDataList = request.MapFromCreateStudentDataRequest(),
-        //            RequestIP = ipAddress,
-        //            Payload = jsonPayload,
-        //            RequestType = actionName,
-        //            RequestSource = "UCAS"
-        //        });
+        private async Task<int> CreateLog(StudentDataUploadStatus status, CreateStudentDataPostRequest request, string ipAddress)
+        {
+            var actionName = ControllerContext.ActionDescriptor.ActionName;
+            var createLogRequest = new CreateLogPostRequest
+            {
+                RequestType = actionName,
+                RequestSource = "UCAS",
+                RequestIP = ipAddress,
+                Payload = JsonConvert.SerializeObject(request),
+                Status = status.ToString()
+            };
 
-        //        return Ok();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        _logger.LogError(e, "Error posting student data");
-        //        return BadRequest();
-        //    }
-        //}
+            var response = await _mediator.Send(new CreateLogDataCommand
+            {
+                Log = LogMapper.MapFromLogCreateRequest(createLogRequest)
+            });
+
+            return response.LogId;
+        }
+
+        private async Task UpdateLog(int logId, StudentDataUploadStatus status, string error = null)
+        {
+            var updateLog = new UpdateLogPostRequest
+            {
+                LogId = logId,
+                Status = status.ToString(),
+                Error = error
+            };
+
+            await _mediator.Send(new UpdateLogDataCommand
+            {
+                Log = LogMapper.MapFromLogUpdateRequest(updateLog)
+            });
+        }
     }
 }

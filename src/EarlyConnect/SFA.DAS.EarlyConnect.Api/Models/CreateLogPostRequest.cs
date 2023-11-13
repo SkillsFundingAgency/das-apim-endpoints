@@ -8,7 +8,6 @@
         public string Payload { get; set; }
         public string FileName { get; set; }
         public string Status { get; set; }
-        public string Error { get; set; }
     }
 
     public enum StudentDataUploadStatus

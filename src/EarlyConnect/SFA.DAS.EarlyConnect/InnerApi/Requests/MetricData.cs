@@ -12,10 +12,7 @@
         public bool WillingnessToRelocate { get; set; }
         public int NoOfGCSCs { get; set; }
         public int NoOfStudents { get; set; }
-        public MetricFlagRequestModel MetricFlagRequestModel { get; set; }
-    }
-    public class MetricFlagRequestModel
-    {
-        public IList<string> MetricsFlags { get; set; }
+        public int LogId { get; set; }
+        public IList<string> MetricFlags { get; set; }
     }
 }

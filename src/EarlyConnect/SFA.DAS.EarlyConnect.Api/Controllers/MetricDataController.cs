@@ -9,7 +9,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
 {
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("/early-connect/metrics-data")]
+    [Route("/early-connect/metrics-data/")]
     public class MetricDataController : ControllerBase
     {
         private readonly IMediator _mediator;

@@ -39,7 +39,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                     LogId = response.LogId
                 };
 
-                return Ok();
+                return Ok(model);
             }
             catch (Exception e)
             {

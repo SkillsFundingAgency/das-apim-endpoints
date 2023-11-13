@@ -3,6 +3,6 @@ namespace SFA.DAS.EarlyConnect.Api.Models
 {
     public class CreateMetricDataPostRequest
     {
-        public IEnumerable<MetricRequestModel> MetricData { get; set; }
+        public IEnumerable<MetricRequestModel> MetricsData { get; set; }
     }
 }

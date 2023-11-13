@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -39,7 +40,11 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.CreateLog(request);
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            var okResult = (OkObjectResult)result;
+            Assert.AreEqual((int)HttpStatusCode.OK, okResult.StatusCode);
+            var model = (CreateLogPostResponse)okResult.Value;
+            Assert.AreEqual(response.LogId, model.LogId);
         }
 
         [Test]

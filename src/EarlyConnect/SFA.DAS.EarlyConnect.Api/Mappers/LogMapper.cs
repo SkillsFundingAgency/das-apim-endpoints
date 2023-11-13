@@ -15,7 +15,6 @@ namespace SFA.DAS.EarlyConnect.Api.Mappers
                 FileName = request.FileName,
                 Payload = request.Payload,
                 Status = request.Status,
-                Error = request.Error
             };
 
             return log;

@@ -34,7 +34,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
         {
             var request = new CreateMetricDataPostRequest
             {
-                MetricData = new List<MetricRequestModel>()
+                MetricsData = new List<MetricRequestModel>()
             };
 
             _mediatorMock.Setup(x => x.Send(It.IsAny<CreateMetricDataCommand>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(Unit.Value));
@@ -49,7 +49,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
         {
             var request = new CreateMetricDataPostRequest
             {
-                MetricData = new List<MetricRequestModel>()
+                MetricsData = new List<MetricRequestModel>()
             };
 
             _mediatorMock.Setup(x => x.Send(It.IsAny<CreateMetricDataCommand>(), It.IsAny<CancellationToken>())).Throws(new Exception());

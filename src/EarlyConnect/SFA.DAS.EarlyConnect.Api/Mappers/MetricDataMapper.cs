@@ -9,7 +9,7 @@ namespace SFA.DAS.EarlyConnect.Api.Mappers
         {
             var metricDataList = new List<MetricData>();
 
-            foreach (MetricRequestModel model in request.MetricData)
+            foreach (MetricRequestModel model in request.MetricsData)
             {
                 var metricData = new MetricData
                 {
@@ -19,13 +19,10 @@ namespace SFA.DAS.EarlyConnect.Api.Mappers
                     WillingnessToRelocate = model.WillingnessToRelocate,
                     NoOfGCSCs = model.NoOfGCSCs,
                     NoOfStudents = model.NoOfStudents,
-                    MetricFlagRequestModel = model.MetricFlagRequestModel != null
-                        ? new InnerApi.Requests.MetricFlagRequestModel
-                        {
-                            MetricsFlags = model.MetricFlagRequestModel.MetricFlags
-                        }
+                    LogId = model.LogId,
+                    MetricFlags = model.MetricFlags != null
+                        ? model.MetricFlags.ToList()
                         : null
-
                 };
 
                 metricDataList.Add(metricData);
