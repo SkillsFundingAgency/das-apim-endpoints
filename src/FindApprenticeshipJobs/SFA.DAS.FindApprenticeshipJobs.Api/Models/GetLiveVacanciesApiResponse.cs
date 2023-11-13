@@ -35,7 +35,7 @@ public class GetLiveVacanciesApiResponse
                 ApprenticeshipTitle = source.ApprenticeshipTitle,
                 ProgrammeId = source.ProgrammeId,
                 ProgrammeType = source.ProgrammeType,
-                RouteId = source.RouteId,
+                Route = source.Route,
                 Description = source.Description,
                 EmployerLocation = source.EmployerLocation == null? null : (Address) source.EmployerLocation,
                 LiveDate = source.LiveDate,
@@ -63,7 +63,7 @@ public class GetLiveVacanciesApiResponse
         public string? ProgrammeType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime ClosingDate { get; set; }
-        public int? RouteId { get; set; }
+        public string Route { get; set; }
         public int Level { get; set; }
         public Wage? Wage { get; set; }
     }

@@ -70,7 +70,7 @@ public class WhenHandlingGetLiveVacancies
             x.ProgrammeId,
             x.ProgrammeType,
             x.StartDate,
-            x.RouteId, //todo: to change
+            Route = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == x.ProgrammeId).Route,
             EmployerLocation = new GetLiveVacanciesQueryResult.Address
             {
                 AddressLine1 = x.EmployerLocation?.AddressLine1,
@@ -121,7 +121,8 @@ public class WhenHandlingGetLiveVacancies
                 {
                     LarsCode = larsCode,
                     Level = fixture.Create<int>(),
-                    Title = fixture.Create<string>()
+                    Title = fixture.Create<string>(),
+                    Route = fixture.Create<string>()
                 });
             }
         }

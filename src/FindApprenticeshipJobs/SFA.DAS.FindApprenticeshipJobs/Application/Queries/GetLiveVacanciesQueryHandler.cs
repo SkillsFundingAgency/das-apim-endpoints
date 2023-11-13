@@ -22,8 +22,6 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
         var response = await _recruitApiClient.GetWithResponseCode<GetLiveVacanciesApiResponse>(new GetLiveVacanciesApiRequest(request.PageNumber, request.PageSize));
         var standards = await _courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
 
-        //todo: add level to result also
-
         return new GetLiveVacanciesQueryResult
         {
             PageSize = response.Body.PageSize,
@@ -46,7 +44,7 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
                 ProgrammeId = x.ProgrammeId,
                 ProgrammeType = x.ProgrammeType,
                 StartDate = x.StartDate,
-                RouteId = x.RouteId, //todo: get from courses service probably
+                Route = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == x.ProgrammeId) ?.Route ?? string.Empty,
                 EmployerLocation = new GetLiveVacanciesQueryResult.Address
                 {
                     AddressLine1 = x.EmployerLocation?.AddressLine1,
