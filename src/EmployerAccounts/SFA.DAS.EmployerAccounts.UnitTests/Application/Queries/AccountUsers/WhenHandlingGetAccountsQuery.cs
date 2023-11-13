@@ -40,10 +40,10 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.AccountUsers
                     .Excluding(c => c.IsSuspended)
                     .Excluding(c => c.DisplayName)
             );
-            actual.FirstName.Should().Be(teamResponse.FirstOrDefault().FirstName);
-            actual.LastName.Should().Be(teamResponse.FirstOrDefault().LastName);
-            actual.EmployerUserId.Should().Be(teamResponse.FirstOrDefault().UserId);
-            actual.IsSuspended.Should().Be(teamResponse.FirstOrDefault().IsSuspended);
+            actual.FirstName.Should().Be(teamResponse.FirstOrDefault()?.FirstName);
+            actual.LastName.Should().Be(teamResponse.FirstOrDefault()?.LastName);
+            actual.EmployerUserId.Should().Be(teamResponse.FirstOrDefault()?.UserId);
+            actual.IsSuspended.Should().Be(teamResponse.FirstOrDefault()!.IsSuspended);
         }
     }
 }
