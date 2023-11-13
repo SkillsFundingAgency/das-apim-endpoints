@@ -1,11 +1,11 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.FindApprenticeshipJobs.Api.AppStart;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;
+using SFA.DAS.FindApprenticeshipJobs.Configuration;
 
 [assembly: ApiController]
 
@@ -38,6 +38,21 @@ builder.Services.AddAuthentication();
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
 builder.Services.AddMediatR(typeof(GetLiveVacanciesQuery).Assembly);
+
+if (configuration.IsLocalOrDev())
+{
+    builder.Services.AddDistributedMemoryCache();
+}
+else
+{
+    var sp = builder.Services.BuildServiceProvider();
+    var config = sp.GetService<FindApprenticeshipJobsConfiguration>();
+
+    builder.Services.AddStackExchangeRedisCache((options) =>
+    {
+        options.Configuration = config.ApimEndpointsRedisConnectionString;
+    });
+}
 
 var app = builder.Build();
 

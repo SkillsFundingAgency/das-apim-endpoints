@@ -3,8 +3,11 @@ using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.FindApprenticeshipJobs.Services;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.AppStart;
 
@@ -16,6 +19,9 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
+        services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+        services.AddTransient<ICourseService, CourseService>();
+        services.AddTransient<ICacheStorageService, CacheStorageService>();
         return services;
     }
 }

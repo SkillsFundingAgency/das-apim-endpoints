@@ -3,20 +3,26 @@ using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuery, GetLiveVacanciesQueryResult>
 {
     private readonly IRecruitApiClient<RecruitApiConfiguration> _recruitApiClient;
+    private readonly ICourseService _courseService;
 
-    public GetLiveVacanciesQueryHandler(IRecruitApiClient<RecruitApiConfiguration> recruitApiClient)
+    public GetLiveVacanciesQueryHandler(IRecruitApiClient<RecruitApiConfiguration> recruitApiClient, ICourseService courseService)
     {
         _recruitApiClient = recruitApiClient;
+        _courseService = courseService;
     }
 
     public async Task<GetLiveVacanciesQueryResult> Handle(GetLiveVacanciesQuery request, CancellationToken cancellationToken)
     {
         var response = await _recruitApiClient.GetWithResponseCode<GetLiveVacanciesApiResponse>(new GetLiveVacanciesApiRequest(request.PageNumber, request.PageSize));
+        var standards = await _courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
+
+        //todo: add level to result also
 
         return new GetLiveVacanciesQueryResult()
         {
@@ -29,7 +35,7 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
             {
                 VacancyId = x.VacancyId,
                 VacancyTitle = x.Title,
-                ApprenticeshipTitle = x.Title, //todo: source from courses service
+                ApprenticeshipTitle = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == x.ProgrammeId).Title ?? string.Empty,
                 Description = x.Description,
                 EmployerName = x.EmployerName,
                 ProviderName = x.TrainingProvider.Name,
