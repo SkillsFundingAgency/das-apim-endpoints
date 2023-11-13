@@ -24,7 +24,7 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
 
         //todo: add level to result also
 
-        return new GetLiveVacanciesQueryResult()
+        return new GetLiveVacanciesQueryResult
         {
             PageSize = response.Body.PageSize,
             PageNo = response.Body.PageNo,
@@ -35,7 +35,8 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
             {
                 VacancyId = x.VacancyId,
                 VacancyTitle = x.Title,
-                ApprenticeshipTitle = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == x.ProgrammeId).Title ?? string.Empty,
+                ApprenticeshipTitle = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == x.ProgrammeId)?.Title ?? string.Empty,
+                Level = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == x.ProgrammeId)?.Level ?? 0,
                 Description = x.Description,
                 EmployerName = x.EmployerName,
                 ProviderName = x.TrainingProvider.Name,

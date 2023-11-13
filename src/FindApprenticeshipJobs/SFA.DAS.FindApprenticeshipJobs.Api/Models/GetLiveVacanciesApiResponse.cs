@@ -44,6 +44,7 @@ public class GetLiveVacanciesApiResponse
                 EmployerName = source.EmployerName,
                 ProviderId = source.ProviderId,
                 ProviderName = source.ProviderName,
+                Level = source.Level,
                 Wage = source.Wage == null? null : (Wage) source.Wage,
             };
         }
@@ -63,6 +64,7 @@ public class GetLiveVacanciesApiResponse
         public DateTime StartDate { get; set; }
         public DateTime ClosingDate { get; set; }
         public int? RouteId { get; set; }
+        public int Level { get; set; }
         public Wage? Wage { get; set; }
     }
 

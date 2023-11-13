@@ -63,6 +63,7 @@ public class WhenHandlingGetLiveVacancies
             x.VacancyId,
             VacancyTitle = x.Title,
             ApprenticeshipTitle = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == x.ProgrammeId).Title,
+            Level = standardsListResponse.Standards.Single(s=> s.LarsCode.ToString() == x.ProgrammeId).Level,
             x.Description,
             x.EmployerName,
             x.LiveDate,
