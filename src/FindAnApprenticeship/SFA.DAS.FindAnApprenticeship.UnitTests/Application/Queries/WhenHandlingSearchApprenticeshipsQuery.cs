@@ -54,8 +54,20 @@ namespace SFA.DAS.Assessors.UnitTests.Application.Queries
                 query.Distance
             );
 
+            //original (object equality issue)
+            //apiClient
+            //.Setup(client => client.Get<GetApprenticeshipCountResponse>(expectedRequest))
+            //.ReturnsAsync(apiResponse);
+
+            //fix 1 - care less about the call in setup and care more in verify step (see below)
+            //apiClient
+                //.Setup(client => client.Get<GetApprenticeshipCountResponse>(It.IsAny<GetApprenticeshipCountRequest>()))
+                //.ReturnsAsync(apiResponse);
+
+            //fix 2 - care about the call more in setup and forget it in verify (not required)
+            //small downside is that a failing handler will generate a NRE rather than a failed assertion
             apiClient
-                .Setup(client => client.Get<GetApprenticeshipCountResponse>(expectedRequest))
+                .Setup(client => client.Get<GetApprenticeshipCountResponse>(It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
                 .ReturnsAsync(apiResponse);
 
             // Act
@@ -66,8 +78,15 @@ namespace SFA.DAS.Assessors.UnitTests.Application.Queries
             Assert.AreEqual(apiResponse.TotalVacancies, result.TotalApprenticeshipCount);
 
             // Verify that the request is constructed with locationInfo
-            apiClient.Verify(client => client.Get<GetApprenticeshipCountResponse>(
-                expectedRequest), Times.Once);
+
+            //original - won't work due to object equality issue
+            //apiClient.Verify(client => client.Get<GetApprenticeshipCountResponse>(
+            //expectedRequest), Times.Once);
+            
+            //fix 1 - verify the call was made with correct properties
+            //not required in fix 2, since the "match" is specified in the setup instead
+            //apiClient.Verify(client => client.Get<GetApprenticeshipCountResponse>(It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == expectedRequest.GetUrl)
+            //), Times.Once);
         }
     }
 
