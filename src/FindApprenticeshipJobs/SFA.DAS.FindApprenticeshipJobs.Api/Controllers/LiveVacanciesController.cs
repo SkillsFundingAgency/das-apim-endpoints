@@ -11,15 +11,19 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers;
 public class LiveVacanciesController : ControllerBase
 {
     private readonly IMediator _mediator;
+    private ILogger<LiveVacanciesController> _logger;
 
-    public LiveVacanciesController(IMediator mediator)
+    public LiveVacanciesController(IMediator mediator, ILogger<LiveVacanciesController> logger)
     {
         _mediator = mediator;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] uint pageSize, [FromQuery] uint pageNo, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Get Live Vacancies invoked");
+
         try
         {
             var result = await _mediator.Send(new GetLiveVacanciesQuery { PageNumber = (int)pageNo, PageSize = (int)pageSize }, cancellationToken);
