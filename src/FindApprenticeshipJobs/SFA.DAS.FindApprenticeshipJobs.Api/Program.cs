@@ -6,7 +6,6 @@ using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 
 [assembly: ApiController]
