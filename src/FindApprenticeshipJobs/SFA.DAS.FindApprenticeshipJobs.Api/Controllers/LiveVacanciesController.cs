@@ -11,7 +11,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers;
 public class LiveVacanciesController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private ILogger<LiveVacanciesController> _logger;
+    private readonly ILogger<LiveVacanciesController> _logger;
 
     public LiveVacanciesController(IMediator mediator, ILogger<LiveVacanciesController> logger)
     {

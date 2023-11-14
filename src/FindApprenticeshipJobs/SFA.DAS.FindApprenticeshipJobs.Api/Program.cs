@@ -7,6 +7,7 @@ using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using SFA.DAS.FindApprenticeshipJobs.Configuration;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 
 [assembly: ApiController]
 
@@ -37,6 +38,10 @@ builder.Services
          options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
          options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
      });
+
+builder.Logging.AddApplicationInsights();
+builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("SFA.DAS", LogLevel.Information);
+builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Warning);
 
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
