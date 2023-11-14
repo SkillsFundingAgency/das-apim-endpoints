@@ -42,21 +42,7 @@ builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
 builder.Services.AddMediatR(typeof(GetLiveVacanciesQuery).Assembly);
-
-if (configuration.IsLocalOrDev())
-{
-    builder.Services.AddDistributedMemoryCache();
-}
-else
-{
-    var sp = builder.Services.BuildServiceProvider();
-    var config = sp.GetService<FindApprenticeshipJobsConfiguration>();
-
-    builder.Services.AddStackExchangeRedisCache((options) =>
-    {
-        options.Configuration = config.ApimEndpointsRedisConnectionString;
-    });
-}
+builder.Services.AddCache(configuration);
 
 var app = builder.Build();
 
