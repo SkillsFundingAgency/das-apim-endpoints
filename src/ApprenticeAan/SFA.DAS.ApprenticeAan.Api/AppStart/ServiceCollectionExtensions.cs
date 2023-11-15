@@ -1,15 +1,18 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using RestEase.HttpClientFactory;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.ApprenticeAan.Api.Configuration;
+using SFA.DAS.ApprenticeAan.Api.HealthCheck;
 using SFA.DAS.ApprenticeAan.Application.Extensions;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.Services;
 using SFA.DAS.ApprenticeAan.Infrastructure;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 
@@ -18,6 +21,21 @@ namespace SFA.DAS.ApprenticeAan.Api.AppStart;
 [ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtensions
 {
+    public static IServiceCollection AddServiceHealthChecks(this IServiceCollection services)
+    {
+        services.AddHealthChecks()
+            .AddCheck<ApprenticeAanInnerApiHealthCheck>(ApprenticeAanInnerApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { "ready" })
+            .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { "ready" })
+            .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { "ready" });
+        return services;
+    }
+
     public static IServiceCollection AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
     {
         AddConfigurationOptions(services, configuration);
@@ -49,8 +67,8 @@ public static class ServiceCollectionExtensions
     private static void AddCommitmentsV2ApiClient(IServiceCollection services, IConfiguration configuration)
     {
         var apiConfig = configuration
-                .GetSection(nameof(SFA.DAS.ApprenticeAan.Configuration.CommitmentsV2ApiConfiguration))
-                .Get<SFA.DAS.ApprenticeAan.Configuration.CommitmentsV2ApiConfiguration>();
+                .GetSection(nameof(ApprenticeAan.Configuration.CommitmentsV2ApiConfiguration))
+                .Get<ApprenticeAan.Configuration.CommitmentsV2ApiConfiguration>();
 
         services.AddSingleton(apiConfig);
 

@@ -54,6 +54,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
             {
                 CsvRecords = command.CsvRecords,
                 ProviderId = command.ProviderId,
+                LogId = command.FileUploadLogId,
                 RplDataExtended = command.RplDataExtended,
                 UserInfo = command.UserInfo,
                 BulkReservationValidationResults = reservationValidationResult.Body,
