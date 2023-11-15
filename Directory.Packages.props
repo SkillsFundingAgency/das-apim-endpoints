@@ -31,9 +31,6 @@
     <PackageVersion Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.2" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="2.2.0" />
     <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="2.2.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions">
-      <Version>7.0.0</Version>
-    </PackageVersion>
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="2.2.0" />
     <PackageVersion Include="Moq" Version="4.7.0" />
