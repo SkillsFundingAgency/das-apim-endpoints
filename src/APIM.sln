@@ -303,43 +303,43 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Funding.UnitTests",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublicSectorReporting", "PublicSectorReporting", "{58FCDBD9-68B4-438C-919A-44397BA80E7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.PublicSectorReporting", "PublicSectorReporting\SFA.DAS.PublicSectorReporting\SFA.DAS.PublicSectorReporting.csproj", "{D5769325-0F46-4731-9F94-29745A6F8D79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.PublicSectorReporting", "PublicSectorReporting\SFA.DAS.PublicSectorReporting\SFA.DAS.PublicSectorReporting.csproj", "{D5769325-0F46-4731-9F94-29745A6F8D79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.PublicSectorReporting.UnitTests", "PublicSectorReporting\SFA.DAS.PublicSectorReporting.UnitTests\SFA.DAS.PublicSectorReporting.UnitTests.csproj", "{ADA49D2B-EC89-4707-8415-BD5B57B73520}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.PublicSectorReporting.UnitTests", "PublicSectorReporting\SFA.DAS.PublicSectorReporting.UnitTests\SFA.DAS.PublicSectorReporting.UnitTests.csproj", "{ADA49D2B-EC89-4707-8415-BD5B57B73520}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.PublicSectorReporting.Api", "PublicSectorReporting\SFA.DAS.PublicSectorReporting.Api\SFA.DAS.PublicSectorReporting.Api.csproj", "{ECD8C27D-33FC-4BDD-A82F-A605765D2680}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.PublicSectorReporting.Api", "PublicSectorReporting\SFA.DAS.PublicSectorReporting.Api\SFA.DAS.PublicSectorReporting.Api.csproj", "{ECD8C27D-33FC-4BDD-A82F-A605765D2680}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.PublicSectorReporting.Api.UnitTests", "PublicSectorReporting\SFA.DAS.PublicSectorReporting.Api.UnitTests\SFA.DAS.PublicSectorReporting.Api.UnitTests.csproj", "{75D9AE34-1364-4039-AA32-805C1A95377B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.PublicSectorReporting.Api.UnitTests", "PublicSectorReporting\SFA.DAS.PublicSectorReporting.Api.UnitTests\SFA.DAS.PublicSectorReporting.Api.UnitTests.csproj", "{75D9AE34-1364-4039-AA32-805C1A95377B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmployerFeedback", "EmployerFeedback", "{43B8FF7D-2F04-4185-BB2F-F2BDEFB42E16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback", "EmployerFeedback\SFA.DAS.EmployerFeedback\SFA.DAS.EmployerFeedback.csproj", "{B5DFCFB0-C3CD-4BD5-8DA2-22E3A0762C82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerFeedback", "EmployerFeedback\SFA.DAS.EmployerFeedback\SFA.DAS.EmployerFeedback.csproj", "{B5DFCFB0-C3CD-4BD5-8DA2-22E3A0762C82}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback.Api", "EmployerFeedback\SFA.DAS.EmployerFeedback.Api\SFA.DAS.EmployerFeedback.Api.csproj", "{25E57A14-3240-47EF-817C-0D87303B2206}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerFeedback.Api", "EmployerFeedback\SFA.DAS.EmployerFeedback.Api\SFA.DAS.EmployerFeedback.Api.csproj", "{25E57A14-3240-47EF-817C-0D87303B2206}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback.UnitTests", "EmployerFeedback\SFA.DAS.EmployerFeedback.UnitTests\SFA.DAS.EmployerFeedback.UnitTests.csproj", "{34B290AD-28AB-4A81-A118-87FE86180105}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerFeedback.UnitTests", "EmployerFeedback\SFA.DAS.EmployerFeedback.UnitTests\SFA.DAS.EmployerFeedback.UnitTests.csproj", "{34B290AD-28AB-4A81-A118-87FE86180105}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback.Api.UnitTests", "EmployerFeedback\SFA.DAS.EmployerFeedback.Api.UnitTests\SFA.DAS.EmployerFeedback.Api.UnitTests.csproj", "{1374D61E-A576-4D41-BFE1-61141339D2F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerFeedback.Api.UnitTests", "EmployerFeedback\SFA.DAS.EmployerFeedback.Api.UnitTests\SFA.DAS.EmployerFeedback.Api.UnitTests.csproj", "{1374D61E-A576-4D41-BFE1-61141339D2F6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmployerProfiles", "EmployerProfiles", "{D04C7B3A-05DB-4EF8-AB28-F31BBCCE0D15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerProfiles", "EmployerProfiles\SFA.DAS.EmployerProfiles\SFA.DAS.EmployerProfiles.csproj", "{F675CE3C-74D6-43E8-9554-E72D8D0AFB8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerProfiles", "EmployerProfiles\SFA.DAS.EmployerProfiles\SFA.DAS.EmployerProfiles.csproj", "{F675CE3C-74D6-43E8-9554-E72D8D0AFB8F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerProfiles.Api", "EmployerProfiles\SFA.DAS.EmployerProfiles.Api\SFA.DAS.EmployerProfiles.Api.csproj", "{F4EAB551-492D-4CAF-B65C-2216373024A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerProfiles.Api", "EmployerProfiles\SFA.DAS.EmployerProfiles.Api\SFA.DAS.EmployerProfiles.Api.csproj", "{F4EAB551-492D-4CAF-B65C-2216373024A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerProfiles.UnitTests", "EmployerProfiles\SFA.DAS.EmployerProfiles.UnitTests\SFA.DAS.EmployerProfiles.UnitTests.csproj", "{F2253126-F987-4841-AF71-EEC8534163C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerProfiles.UnitTests", "EmployerProfiles\SFA.DAS.EmployerProfiles.UnitTests\SFA.DAS.EmployerProfiles.UnitTests.csproj", "{F2253126-F987-4841-AF71-EEC8534163C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerProfiles.Api.UnitTests", "EmployerProfiles\SFA.DAS.EmployerProfiles.Api.UnitTests\SFA.DAS.EmployerProfiles.Api.UnitTests.csproj", "{52B2F547-3052-4323-BAD6-3604FF4CBC0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerProfiles.Api.UnitTests", "EmployerProfiles\SFA.DAS.EmployerProfiles.Api.UnitTests\SFA.DAS.EmployerProfiles.Api.UnitTests.csproj", "{52B2F547-3052-4323-BAD6-3604FF4CBC0E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProviderRelationships", "ProviderRelationships", "{3C28AC17-604C-491B-89B0-A2630EC920DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ProviderRelationships.Api", "ProviderRelationships\SFA.DAS.ProviderRelationships.Api\SFA.DAS.ProviderRelationships.Api.csproj", "{26DD03FD-07C8-43BA-9394-94E7AB479C94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderRelationships.Api", "ProviderRelationships\SFA.DAS.ProviderRelationships.Api\SFA.DAS.ProviderRelationships.Api.csproj", "{26DD03FD-07C8-43BA-9394-94E7AB479C94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ProviderRelationships.Api.UnitTests", "ProviderRelationships\SFA.DAS.ProviderRelationships.Api.UnitTests\SFA.DAS.ProviderRelationships.Api.UnitTests.csproj", "{90E7E686-D107-4E1A-B180-53779134D95B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderRelationships.Api.UnitTests", "ProviderRelationships\SFA.DAS.ProviderRelationships.Api.UnitTests\SFA.DAS.ProviderRelationships.Api.UnitTests.csproj", "{90E7E686-D107-4E1A-B180-53779134D95B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ProviderRelationships", "ProviderRelationships\SFA.DAS.ProviderRelationships\SFA.DAS.ProviderRelationships.csproj", "{4CF054B3-8EB3-4235-BBC7-5BD91C274ECD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderRelationships", "ProviderRelationships\SFA.DAS.ProviderRelationships\SFA.DAS.ProviderRelationships.csproj", "{4CF054B3-8EB3-4235-BBC7-5BD91C274ECD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ProviderRelationships.UnitTests", "ProviderRelationships\SFA.DAS.ProviderRelationships.UnitTests\SFA.DAS.ProviderRelationships.UnitTests.csproj", "{16959FE8-E5C8-47FF-A10D-0EF0B09BA398}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderRelationships.UnitTests", "ProviderRelationships\SFA.DAS.ProviderRelationships.UnitTests\SFA.DAS.ProviderRelationships.UnitTests.csproj", "{16959FE8-E5C8-47FF-A10D-0EF0B09BA398}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AparRegister", "AparRegister", "{CA230D4E-569F-403E-8B8F-B4258E87D67C}"
 EndProject
@@ -353,13 +353,23 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.AparRegister.Api.Un
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmployerAAN", "EmployerAAN", "{5BCC00DE-B42B-423E-A02D-9D8F6E3E6D09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerAan", "EmployerAan\SFA.DAS.EmployerAan\SFA.DAS.EmployerAan.csproj", "{62651CD3-778B-4762-B695-451545654EDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerAan", "EmployerAan\SFA.DAS.EmployerAan\SFA.DAS.EmployerAan.csproj", "{62651CD3-778B-4762-B695-451545654EDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerAan.Api", "EmployerAan\SFA.DAS.EmployerAan.Api\SFA.DAS.EmployerAan.Api.csproj", "{053E754C-E58A-41BD-972B-60E0069968D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerAan.Api", "EmployerAan\SFA.DAS.EmployerAan.Api\SFA.DAS.EmployerAan.Api.csproj", "{053E754C-E58A-41BD-972B-60E0069968D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerAan.Api.UnitTests", "EmployerAan\SFA.DAS.EmployerAan.Api.UnitTests\SFA.DAS.EmployerAan.Api.UnitTests.csproj", "{7D0C3D6A-EC3A-4ED6-AC72-898F6D276C31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerAan.Api.UnitTests", "EmployerAan\SFA.DAS.EmployerAan.Api.UnitTests\SFA.DAS.EmployerAan.Api.UnitTests.csproj", "{7D0C3D6A-EC3A-4ED6-AC72-898F6D276C31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerAan.UnitTests", "EmployerAan\SFA.DAS.EmployerAan.UnitTests\SFA.DAS.EmployerAan.UnitTests.csproj", "{A772C3EE-3717-499B-B9EF-4A2C1140AE9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerAan.UnitTests", "EmployerAan\SFA.DAS.EmployerAan.UnitTests\SFA.DAS.EmployerAan.UnitTests.csproj", "{A772C3EE-3717-499B-B9EF-4A2C1140AE9D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EarlyConnect", "EarlyConnect", "{AE50EE79-8B0F-4DB9-A37F-6CA20DE51A89}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EarlyConnect", "EarlyConnect\SFA.DAS.EarlyConnect\SFA.DAS.EarlyConnect.csproj", "{163C05F7-F394-420D-8DBD-8B7972AC3352}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EarlyConnect.Api", "EarlyConnect\SFA.DAS.EarlyConnect.Api\SFA.DAS.EarlyConnect.Api.csproj", "{F88F5F20-3A5E-4995-9B61-A34769055B72}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EarlyConnect.Api.UnitTests", "EarlyConnect\SFA.DAS.EarlyConnect.Api.UnitTests\SFA.DAS.EarlyConnect.Api.UnitTests.csproj", "{ACECC07D-E565-4719-BBA8-810754151A8D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EarlyConnect.UnitTests", "EarlyConnect\SFA.DAS.EarlyConnect.UnitTests\SFA.DAS.EarlyConnect.UnitTests.csproj", "{BF98E4F1-BA07-4C0F-BDB7-CB8A1088A51C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -927,6 +937,24 @@ Global
 		{A772C3EE-3717-499B-B9EF-4A2C1140AE9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A772C3EE-3717-499B-B9EF-4A2C1140AE9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A772C3EE-3717-499B-B9EF-4A2C1140AE9D}.Release|Any CPU.Build.0 = Release|Any CPU
+
+		{163C05F7-F394-420D-8DBD-8B7972AC3352}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{163C05F7-F394-420D-8DBD-8B7972AC3352}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{163C05F7-F394-420D-8DBD-8B7972AC3352}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{163C05F7-F394-420D-8DBD-8B7972AC3352}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F88F5F20-3A5E-4995-9B61-A34769055B72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F88F5F20-3A5E-4995-9B61-A34769055B72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F88F5F20-3A5E-4995-9B61-A34769055B72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F88F5F20-3A5E-4995-9B61-A34769055B72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACECC07D-E565-4719-BBA8-810754151A8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACECC07D-E565-4719-BBA8-810754151A8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACECC07D-E565-4719-BBA8-810754151A8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACECC07D-E565-4719-BBA8-810754151A8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF98E4F1-BA07-4C0F-BDB7-CB8A1088A51C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF98E4F1-BA07-4C0F-BDB7-CB8A1088A51C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF98E4F1-BA07-4C0F-BDB7-CB8A1088A51C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF98E4F1-BA07-4C0F-BDB7-CB8A1088A51C}.Release|Any CPU.Build.0 = Release|Any CPU
+
 		{FB7BB7F3-4A4B-424D-8450-46A78B3404C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FB7BB7F3-4A4B-424D-8450-46A78B3404C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB7BB7F3-4A4B-424D-8450-46A78B3404C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -943,6 +971,7 @@ Global
 		{E317597B-A914-4CE6-8796-E135DABFE7C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E317597B-A914-4CE6-8796-E135DABFE7C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E317597B-A914-4CE6-8796-E135DABFE7C1}.Release|Any CPU.Build.0 = Release|Any CPU
+
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1088,10 +1117,17 @@ Global
 		{053E754C-E58A-41BD-972B-60E0069968D9} = {5BCC00DE-B42B-423E-A02D-9D8F6E3E6D09}
 		{7D0C3D6A-EC3A-4ED6-AC72-898F6D276C31} = {5BCC00DE-B42B-423E-A02D-9D8F6E3E6D09}
 		{A772C3EE-3717-499B-B9EF-4A2C1140AE9D} = {5BCC00DE-B42B-423E-A02D-9D8F6E3E6D09}
+
+		{163C05F7-F394-420D-8DBD-8B7972AC3352} = {AE50EE79-8B0F-4DB9-A37F-6CA20DE51A89}
+		{F88F5F20-3A5E-4995-9B61-A34769055B72} = {AE50EE79-8B0F-4DB9-A37F-6CA20DE51A89}
+		{ACECC07D-E565-4719-BBA8-810754151A8D} = {AE50EE79-8B0F-4DB9-A37F-6CA20DE51A89}
+		{BF98E4F1-BA07-4C0F-BDB7-CB8A1088A51C} = {AE50EE79-8B0F-4DB9-A37F-6CA20DE51A89}
+
 		{FB7BB7F3-4A4B-424D-8450-46A78B3404C4} = {CA230D4E-569F-403E-8B8F-B4258E87D67C}
 		{5778C580-6E3F-4D52-AEB6-00B50AE85111} = {CA230D4E-569F-403E-8B8F-B4258E87D67C}
 		{D7F29DD2-D841-4280-B507-E1BAE17C841D} = {CA230D4E-569F-403E-8B8F-B4258E87D67C}
 		{E317597B-A914-4CE6-8796-E135DABFE7C1} = {CA230D4E-569F-403E-8B8F-B4258E87D67C}
+
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2353A4D0-2859-4472-B2D4-BBD8087B4E22}
