@@ -48,9 +48,9 @@ public class CalendarEventsController : ControllerBase
         command.RequestedByMemberId = requestedByMemberId;
         command.CalendarEventId = calendarEventId;
 
-        var response = await _mediator.Send(command, cancellationToken);
+        await _mediator.Send(command, cancellationToken);
 
-        return Ok(response);
+        return NoContent();
     }
 
     [HttpDelete("{calendarEventId}")]
