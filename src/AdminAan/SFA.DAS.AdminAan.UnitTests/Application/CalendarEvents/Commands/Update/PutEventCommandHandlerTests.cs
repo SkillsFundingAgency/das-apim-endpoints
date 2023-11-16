@@ -75,31 +75,4 @@ public class PutEventCommandHandlerTests
         apiClientMock.Verify(c => c.PutGuestSpeakers(calendarEventId, memberId, putEventGuestModel, cancellationToken), Times.Once);
         actual.Should().Be(expected);
     }
-
-    [Test, MoqAutoData]
-    public async Task Handle_InvokesApiClient_BadRequest(
-        [Frozen] Mock<IAanHubRestApiClient> apiClientMock,
-        PutEventCommandHandler sut,
-        PutEventCommand command,
-        Guid memberId,
-        Guid calendarEventId,
-        CancellationToken cancellationToken)
-    {
-        var expected = new Unit();
-
-        var response = new Response<Unit>(
-            "not used",
-            new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest),
-        () => expected);
-
-
-        command.CalendarEventId = calendarEventId;
-        command.RequestedByMemberId = memberId;
-
-        apiClientMock.Setup(c => c.PutCalendarEvent(memberId, calendarEventId, command, cancellationToken)).ReturnsAsync(response);
-
-        Func<Task> act = () => sut.Handle(command, cancellationToken);
-
-        await act.Should().ThrowAsync<InvalidOperationException>();
-    }
 }

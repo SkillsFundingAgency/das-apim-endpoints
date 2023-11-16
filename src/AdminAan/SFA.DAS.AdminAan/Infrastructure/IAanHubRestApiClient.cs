@@ -30,7 +30,6 @@ public interface IAanHubRestApiClient
     Task<Response<PostEventCommandResult>> PostCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [Body] PostEventCommand command, CancellationToken cancellationToken);
 
     [Put("calendarEvents/{calendarEventId}")]
-    [AllowAnyStatusCode]
     Task<Response<Unit>> PutCalendarEvent([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [Path] Guid calendarEventId, [Body] PutEventCommand command, CancellationToken cancellationToken);
 
 

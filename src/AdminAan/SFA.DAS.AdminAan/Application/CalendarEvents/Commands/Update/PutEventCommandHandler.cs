@@ -15,19 +15,16 @@ public class PutEventCommandHandler : IRequestHandler<PutEventCommand, Unit>
 
     public async Task<Unit> Handle(PutEventCommand command, CancellationToken cancellationToken)
     {
-        var response = await _apiClient.PutCalendarEvent(command.RequestedByMemberId!, command.CalendarEventId!, command, cancellationToken);
+        var response = await _apiClient.PutCalendarEvent(command.RequestedByMemberId!, command.CalendarEventId!,
+            command, cancellationToken);
 
-        if (response.ResponseMessage.StatusCode == System.Net.HttpStatusCode.NoContent)
+        if (response.ResponseMessage.StatusCode == System.Net.HttpStatusCode.NoContent && command.Guests.Any())
         {
-            if (command.Guests.Any())
-            {
-                var guestsList = new PutEventGuestsModel(command.Guests);
-                await _apiClient.PutGuestSpeakers(command.CalendarEventId, command.RequestedByMemberId!, guestsList, cancellationToken);
-            }
-
-            return Unit.Value;
+            var guestsList = new PutEventGuestsModel(command.Guests);
+            await _apiClient.PutGuestSpeakers(command.CalendarEventId, command.RequestedByMemberId!, guestsList,
+                cancellationToken);
         }
 
-        throw new InvalidOperationException($"An attempt to update a calendarEvent id: {command.CalendarEventId} by member id {command.RequestedByMemberId}, came back with unsuccessful response status: {response.ResponseMessage.StatusCode} with message: {response.StringContent}");
+        return Unit.Value;
     }
 }
