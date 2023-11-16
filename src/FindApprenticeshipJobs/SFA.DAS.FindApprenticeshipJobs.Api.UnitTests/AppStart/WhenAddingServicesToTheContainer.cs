@@ -8,6 +8,8 @@ using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using FluentAssertions;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.AppStart;
 public class WhenAddingServicesToTheContainer
@@ -15,6 +17,8 @@ public class WhenAddingServicesToTheContainer
 
     [TestCase(typeof(IAzureClientCredentialHelper))]
     [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
+    [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
+    [TestCase(typeof(ICourseService))]
     public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
     {
         var hostEnvironment = new Mock<IWebHostEnvironment>();
@@ -39,7 +43,8 @@ public class WhenAddingServicesToTheContainer
         {
             InitialData = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<string, string>("RecruitApiConfiguration:url", "http://localhost:1"),
+                    new("RecruitApiConfiguration:url", "http://localhost:1"),
+                    new("CoursesApiConfiguration:url", "http://localhost:2"),
                 }
         };
 
