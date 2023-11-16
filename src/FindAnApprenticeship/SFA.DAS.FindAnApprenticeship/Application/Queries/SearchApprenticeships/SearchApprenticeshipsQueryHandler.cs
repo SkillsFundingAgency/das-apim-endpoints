@@ -22,12 +22,12 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 
         public async Task<SearchApprenticeshipsResult> Handle(SearchApprenticeshipsQuery request, CancellationToken cancellationToken)
         {
-            var locationTask = _locationLookupService.GetLocationInformation(request.Location, default, default, false);
+            var locationTask = await _locationLookupService.GetLocationInformation(request.Location, default, default, false);
 
             var result = await _findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
                     new GetApprenticeshipCountRequest(
-                        locationTask.Result?.GeoPoint?.FirstOrDefault(),
-                        locationTask.Result?.GeoPoint?.LastOrDefault(),
+                        locationTask.GeoPoint?.FirstOrDefault(),
+                        locationTask.GeoPoint?.LastOrDefault(),
                         request.SelectedRouteIds,
                         request.Distance
                         ));

@@ -33,12 +33,12 @@ namespace SFA.DAS.Assessors.UnitTests.Application.Queries
 
         [Test, MoqAutoData]
         public async Task And_when_There_Is_Filter_Data_Then_The_Api_Called_And_Count_Returned(
-            [Frozen] Mock<ILocationLookupService> locationLookupService,
-            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
-            SearchApprenticeshipsQueryHandler handler,
             SearchApprenticeshipsQuery query,
             LocationItem locationInfo,
-            GetApprenticeshipCountResponse apiResponse)
+            GetApprenticeshipCountResponse apiResponse,
+            [Frozen] Mock<ILocationLookupService> locationLookupService,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            SearchApprenticeshipsQueryHandler handler)
         {
             // Arrange
             locationLookupService
