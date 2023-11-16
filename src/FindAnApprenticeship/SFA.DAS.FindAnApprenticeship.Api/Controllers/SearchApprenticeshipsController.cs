@@ -9,6 +9,7 @@ using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.BrowseByInterests;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.BrowseByInterestsLocation;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndex;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -31,8 +32,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new SearchApprenticeshipsQuery());
-                var viewModel = (SearchApprenticeshipsApiResponse)result;
+                var result = await _mediator.Send(new SearchIndexQuery());
+                var viewModel = (SearchIndexApiResponse)result;
                 return Ok(viewModel);
             }
             catch (Exception e)

@@ -26,8 +26,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 
             var result = await _findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
                     new GetApprenticeshipCountRequest(
-                        locationTask.GeoPoint?.FirstOrDefault(),
-                        locationTask.GeoPoint?.LastOrDefault(),
+                        locationTask?.GeoPoint?.FirstOrDefault(),
+                        locationTask?.GeoPoint?.LastOrDefault(),
                         request.SelectedRouteIds,
                         request.Distance
                         ));
