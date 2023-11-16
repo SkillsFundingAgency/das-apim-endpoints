@@ -536,3 +536,19 @@ Data:
 ```
 
 * Start the API project `SFA.DAS.Assessors.Api`. Starting the API will load up a Swagger definition with all of the available operations. This sevice allows `das-assessor-service` to have a standards cache locally and for it to be able to populate the approvals extract table from the Commitments API.
+
+### FindApprenticeshipJobs
+
+The Find Apprenticeship Jobs outer api relies on the following inner apis:
+
+* [das-recruit](https://github.com/SkillsFundingAgency/das-recruit)
+* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api/)
+
+You are able to run the API by doing the following:
+
+* In your Azure Storage Account, create a table called Configuration and add the appropriate configuration for `SFA.DAS.FindApprenticeshipJobs.OuterApi`. Note that the identifier is not required for local dev.
+
+* Start the api project ```SFA.DAS.FindApprenticeshipJobs.Api```
+
+Starting the API will then show the swagger definition with the available operations. This outer API is used to provide data for the FindApprenticeshipJobs functions app:
+[das-findapprenticeship-jobs](https://github.com/SkillsFundingAgency/das-findapprenticeship-jobs)

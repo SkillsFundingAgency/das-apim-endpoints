@@ -20,4 +20,13 @@ public class GetCalendarEventQueryResult
     public DateTime? LastUpdatedDate { get; set; }
     public IEnumerable<AttendeeModel> Attendees { get; set; } = null!;
     public IEnumerable<EventGuestModel> EventGuests { get; set; } = null!;
+
+    public int PlannedAttendees { get; set; }
+    public DateTime? CreatedDate { get; set; }
+
+    public long? Urn { get; set; }
+    public string? SchoolName { get; set; }
+
+    public int? RegionId { get; set; }
+    public string? RegionName { get; set; }
 }
