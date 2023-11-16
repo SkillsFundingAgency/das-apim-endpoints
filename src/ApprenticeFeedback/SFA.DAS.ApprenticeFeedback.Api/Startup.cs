@@ -91,11 +91,24 @@ namespace SFA.DAS.ApprenticeFeedback.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
             app.UseHealthChecks();
             app.UseAuthentication();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApprenticeFeedbackOuterApi");
+                c.RoutePrefix = string.Empty;
+            });
+
             app.UseRouting();
+            app.UseMiddleware<SecurityHeadersMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
@@ -104,12 +117,6 @@ namespace SFA.DAS.ApprenticeFeedback.Api
                     pattern: "api/{controller=Account}/{action=index}/{id?}");
             });
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApprenticeFeedbackOuterApi");
-                c.RoutePrefix = string.Empty;
-            });
         }
     }
 }
