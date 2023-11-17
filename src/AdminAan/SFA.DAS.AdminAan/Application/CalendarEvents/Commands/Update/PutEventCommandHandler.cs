@@ -15,10 +15,10 @@ public class PutEventCommandHandler : IRequestHandler<PutEventCommand, Unit>
 
     public async Task<Unit> Handle(PutEventCommand command, CancellationToken cancellationToken)
     {
-        var response = await _apiClient.PutCalendarEvent(command.RequestedByMemberId!, command.CalendarEventId!,
+        await _apiClient.PutCalendarEvent(command.RequestedByMemberId!, command.CalendarEventId!,
             command, cancellationToken);
 
-        if (response.ResponseMessage.StatusCode == System.Net.HttpStatusCode.NoContent && command.Guests.Any())
+        if (command.Guests.Any())
         {
             var guestsList = new PutEventGuestsModel(command.Guests);
             await _apiClient.PutGuestSpeakers(command.CalendarEventId, command.RequestedByMemberId!, guestsList,
