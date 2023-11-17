@@ -1,5 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
@@ -8,34 +6,22 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Assessors.UnitTests.Application.Queries
+namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 {
     public class WhenHandlingSearchApprenticeshipsQuery
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Api_Called_And_Count_Returned(
-            GetApprenticeshipCountResponse response,
-            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
-            SearchApprenticeshipsQueryHandler handler)
-        {
-            findApprenticeshipApiClient
-                .Setup(x => x.Get<GetApprenticeshipCountResponse>(It.IsAny<GetApprenticeshipCountRequest>()))
-                .ReturnsAsync(response);
-
-            var actual = await handler.Handle(new SearchApprenticeshipsQuery(), CancellationToken.None);
-
-            actual.TotalApprenticeshipCount.Should().Be(response.TotalVacancies);
-        }
-
-        [Test, MoqAutoData]
-        public async Task And_when_There_Is_Filter_Data_Then_The_Api_Called_And_Count_Returned(
+        public async Task Then_The_Services_Are_Called_And_Data_Returned_Based_On_Request(
             SearchApprenticeshipsQuery query,
             LocationItem locationInfo,
             GetApprenticeshipCountResponse apiResponse,
+            GetRoutesListResponse routesResponse,
+            [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<ILocationLookupService> locationLookupService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             SearchApprenticeshipsQueryHandler handler)
@@ -45,6 +31,7 @@ namespace SFA.DAS.Assessors.UnitTests.Application.Queries
                 .Setup(service => service.GetLocationInformation(
                     query.Location, default, default, false))
                 .ReturnsAsync(locationInfo);
+            courseService.Setup(x => x.GetRoutes()).ReturnsAsync(routesResponse);
 
             // Pass locationInfo to the request
             var expectedRequest = new GetApprenticeshipCountRequest(
@@ -63,7 +50,9 @@ namespace SFA.DAS.Assessors.UnitTests.Application.Queries
 
             // Assert
             Assert.NotNull(result);
-            Assert.AreEqual(apiResponse.TotalVacancies, result.TotalApprenticeshipCount);
+            result.TotalApprenticeshipCount.Should().Be(apiResponse.TotalVacancies);
+            result.LocationItem.Should().BeEquivalentTo(locationInfo);
+            result.Routes.Should().BeEquivalentTo(routesResponse.Routes);
 
         }
     }
