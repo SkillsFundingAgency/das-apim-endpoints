@@ -25,7 +25,7 @@ namespace SFA.DAS.Funding.Api.AppStart
             services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
             services.AddTransient<IFundingApprenticeshipEarningsService, FundingApprenticeshipEarningsService>();
             services.AddTransient<IFundingProviderEarningsService, FundingProviderEarningsService>();
-            services.AddTransient<IApprenticeshipsApiClient<ApprenticeshipsConfiguration>, ApprenticeshipsApiClient>();
+            services.AddTransient<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>, ApprenticeshipsApiClient>();
             services.AddTransient<IApprenticeshipsService, ApprenticeshipsService>();
             services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         }
