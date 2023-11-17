@@ -1,11 +1,10 @@
-using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.BrowseByInterestsLocation;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models
 {
     public class BrowseByInterestsLocationApiResponse
     {
-        public SearchLocationResponseItem Location { get; set; }
+        public SearchLocationApiResponse LocationApi { get; set; }
 
         public static implicit operator BrowseByInterestsLocationApiResponse(BrowseByInterestsLocationQueryResult source)
         {
@@ -13,25 +12,13 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
             {
                 return new BrowseByInterestsLocationApiResponse
                 {
-                    Location = null
+                    LocationApi = null
                 };
             }
             return new BrowseByInterestsLocationApiResponse
             {
-                Location = new SearchLocationResponseItem
-                {
-                    Lat = source.LocationItem.GeoPoint.First(),
-                    Lon = source.LocationItem.GeoPoint.Last(),
-                    LocationName = source.LocationItem.Name
-                }
+                LocationApi = source.LocationItem
             };
         }
-    }
-
-    public class SearchLocationResponseItem
-    {
-        public double Lat { get; set; }
-        public double Lon { get; set; }
-        public string LocationName { get; set; }
     }
 }

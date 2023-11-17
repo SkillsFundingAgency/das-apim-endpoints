@@ -14,9 +14,9 @@ public class WhenMappingFromMediatorResultToBrowseByInterestsLocationApiResponse
     {
         var actual = (BrowseByInterestsLocationApiResponse)source;
 
-        actual.Location.LocationName.Should().Be(source.LocationItem.Name);
-        actual.Location.Lat.Should().Be(source.LocationItem.GeoPoint.First());
-        actual.Location.Lon.Should().Be(source.LocationItem.GeoPoint.Last());
+        actual.LocationApi.LocationName.Should().Be(source.LocationItem.Name);
+        actual.LocationApi.Lat.Should().Be(source.LocationItem.GeoPoint.First());
+        actual.LocationApi.Lon.Should().Be(source.LocationItem.GeoPoint.Last());
     }
 
     [Test]
@@ -24,6 +24,6 @@ public class WhenMappingFromMediatorResultToBrowseByInterestsLocationApiResponse
     {
         var actual = (BrowseByInterestsLocationApiResponse)new BrowseByInterestsLocationQueryResult{LocationItem = null};
 
-        actual.Location.Should().BeNull();
+        actual.LocationApi.Should().BeNull();
     }
 }

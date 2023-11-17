@@ -7,24 +7,16 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
 {
     public class BrowseByInterestsApiResponse
     {
-        public List<RouteViewModel> Routes { get; set; }
+        public List<RouteApiResponse> Routes { get; set; }
         public static implicit operator BrowseByInterestsApiResponse(BrowseByInterestsResult source)
         {
             return new BrowseByInterestsApiResponse
             {
-                Routes = source.Routes.Select(r => new RouteViewModel
-                {
-                    Name = r.Name,
-                    Id = r.Id
-                }).ToList()
+                Routes = source.Routes.Select(r =>(RouteApiResponse)r).ToList()
             };
         }
 
-        public class RouteViewModel
-        {
-             public string Name { get; set; }
-             public int Id { get; set; }
-        }
+        
 
     }
 }
