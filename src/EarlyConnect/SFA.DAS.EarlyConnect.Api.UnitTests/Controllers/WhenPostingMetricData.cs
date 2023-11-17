@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -47,16 +48,19 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
         [Test]
         public async Task Post_ExceptionThrown_ReturnsBadRequestResult()
         {
+
             var request = new CreateMetricDataPostRequest
             {
                 MetricsData = new List<MetricRequestModel>()
             };
 
-            _mediatorMock.Setup(x => x.Send(It.IsAny<CreateMetricDataCommand>(), It.IsAny<CancellationToken>())).Throws(new Exception());
+            _mediatorMock.Setup(m => m.Send(It.IsAny<CreateMetricDataCommand>(), default))
+                .ThrowsAsync(new Exception("Simulated error"));
 
-            var result = await _controller.CreateMetricsData(request);
+            var result = await _controller.CreateMetricsData(request) as ObjectResult;
 
-            Assert.IsInstanceOf<BadRequestResult>(result);
+            Assert.NotNull(result);
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
         }
     }
 }
