@@ -35,7 +35,7 @@ public class NotificationsController : Controller
     [ProducesResponseType(typeof(GetNotificationResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> CreateNotification([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [FromBody] CreateNotificationModel model, CancellationToken cancellationToken)
     {
-        var response = await _outerApiClient.PostNotification(requestedByMemberId, new PostNotificationRequest() { RequestedByMemberId = requestedByMemberId, MemberId = model.MemberId, NotificationTemplateId = model.NotificationTemplateId }, cancellationToken);
+        var response = await _outerApiClient.PostNotification(requestedByMemberId, new PostNotificationRequest() { MemberId = model.MemberId, NotificationTemplateId = model.NotificationTemplateId }, cancellationToken);
         var result = response.ResponseMessage.StatusCode switch
         {
             HttpStatusCode.Created => response.GetContent(),
