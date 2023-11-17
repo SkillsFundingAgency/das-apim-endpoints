@@ -42,16 +42,14 @@ namespace SFA.DAS.SharedOuterApi.Services
             return await _apiClient.GetPaged<TResponse>(request);
         }
 
-        [Obsolete("Use PostWithResponseCode")]
         public async Task<TResponse> Post<TResponse>(IPostApiRequest request)
         {
             return (await _apiClient.PostWithResponseCode<TResponse>(request, true)).Body;
         }
 
-        [Obsolete("Use PostWithResponseCode")]
         public Task Post<TData>(IPostApiRequest<TData> request)
         {
-            return _apiClient.Post(request);
+            throw new NotImplementedException();
         }
 
         public async Task Delete(IDeleteApiRequest request)
