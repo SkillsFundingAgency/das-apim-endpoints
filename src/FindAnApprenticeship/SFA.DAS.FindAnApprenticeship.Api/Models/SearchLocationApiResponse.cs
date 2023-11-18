@@ -7,6 +7,10 @@ public class SearchLocationApiResponse
 {
     public static implicit operator SearchLocationApiResponse(LocationItem source)
     {
+        if (source == null)
+        {
+            return null;
+        }
         return new SearchLocationApiResponse
         {
             Lat = source.GeoPoint.First(),
