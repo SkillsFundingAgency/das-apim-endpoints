@@ -156,7 +156,8 @@ namespace SFA.DAS.VacanciesManage.InnerApi.Requests
     {
         FixedWage,
         NationalMinimumWageForApprentices,
-        NationalMinimumWage,        
+        NationalMinimumWage,
+        CompetitiveSalary,
         Unspecified
     }
     
