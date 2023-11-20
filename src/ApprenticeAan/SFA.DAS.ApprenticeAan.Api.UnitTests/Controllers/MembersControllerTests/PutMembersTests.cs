@@ -6,6 +6,7 @@ using Moq;
 using SFA.DAS.ApprenticeAan.Api.Controllers;
 using SFA.DAS.ApprenticeAan.Api.Models;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.MemberProfiles;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Members;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -38,13 +39,28 @@ public class PutMembersTests
         aanHubRestApiClientMock.Verify(x => x.PutMemberProfile(memberId, request.updateMemberProfileRequest, cancellationToken), Times.Once());
     }
 
-    [Test, RecursiveMoqAutoData]
+    [Test]
+    [MoqInlineAutoData(true, true)]
+    [MoqInlineAutoData(true, false)]
+    [MoqInlineAutoData(false, true)]
+    [MoqInlineAutoData(false, false)]
     public async Task UpdateMemberProfileAndPreferences_ReturnsNoContent(
+    bool isMemberProfileAvailable,
+    bool isMemberPreferenceAvailable,
     [Greedy] MembersController sut,
     Guid memberId,
     UpdateMemberProfileModel request,
     CancellationToken cancellationToken)
     {
+        if (!isMemberProfileAvailable)
+        {
+            request.updateMemberProfileRequest.Profiles = Enumerable.Empty<UpdateProfileModel>();
+        }
+        if (!isMemberPreferenceAvailable)
+        {
+            request.updateMemberProfileRequest.Preferences = Enumerable.Empty<UpdatePreferenceModel>();
+        }
+
         var result = await sut.UpdateMemberProfileAndPreferences(memberId, request, cancellationToken);
 
         result.Should().BeOfType<NoContentResult>();
