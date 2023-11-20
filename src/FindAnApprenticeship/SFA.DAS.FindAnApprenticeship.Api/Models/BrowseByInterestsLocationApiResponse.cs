@@ -1,10 +1,13 @@
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.BrowseByInterestsLocation;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models
 {
     public class BrowseByInterestsLocationApiResponse
     {
-        public SearchLocationApiResponse LocationApi { get; set; }
+        [JsonPropertyName("location")]
+        public SearchLocationApiResponse Location { get; set; }
 
         public static implicit operator BrowseByInterestsLocationApiResponse(BrowseByInterestsLocationQueryResult source)
         {
@@ -12,12 +15,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
             {
                 return new BrowseByInterestsLocationApiResponse
                 {
-                    LocationApi = null
+                    Location = null
                 };
             }
             return new BrowseByInterestsLocationApiResponse
             {
-                LocationApi = source.LocationItem
+                Location = source.LocationItem
             };
         }
     }
