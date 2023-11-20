@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -8,6 +9,7 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
+    [ExcludeFromCodeCoverage]
     public class ApprenticeshipsApiClient : IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>
     {
         private readonly IInternalApiClient<ApprenticeshipsApiConfiguration> _apiClient;
