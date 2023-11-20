@@ -33,7 +33,12 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
 
             try
             {
-                var ipAddress = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault() ?? HttpContext.Connection.RemoteIpAddress?.ToString();
+                var ipAddress = (HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault() ?? HttpContext.Connection.RemoteIpAddress?.ToString());
+
+                if (!string.IsNullOrEmpty(ipAddress) && ipAddress.Length > 15)
+                {
+                    ipAddress = ipAddress.Substring(0, 15);
+                }
 
                 logId = await CreateLog(StudentDataUploadStatus.InProgress, request, ipAddress);
 
