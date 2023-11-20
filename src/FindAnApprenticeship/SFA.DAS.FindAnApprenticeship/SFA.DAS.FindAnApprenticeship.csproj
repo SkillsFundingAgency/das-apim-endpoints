@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    <ProjectReference Include="..\..\Vacancies\SFA.DAS.Vacancies.Api\SFA.DAS.Vacancies.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>

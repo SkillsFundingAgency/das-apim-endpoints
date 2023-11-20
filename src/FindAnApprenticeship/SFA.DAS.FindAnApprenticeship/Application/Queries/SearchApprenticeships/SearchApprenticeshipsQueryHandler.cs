@@ -40,11 +40,20 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                         request.Distance
                         ));
 
+            var vacancyResult = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(
+                new GetVacanciesRequest(
+                    location?.GeoPoint?.FirstOrDefault(),
+                    location?.GeoPoint?.LastOrDefault(),
+                    request.SelectedRouteIds,
+                    request.Distance
+                ));
+
             return new SearchApprenticeshipsResult
             {
                 TotalApprenticeshipCount = result.TotalVacancies,
                 LocationItem = location,
-                Routes = routes.Routes.ToList()
+                Routes = routes.Routes.ToList(),
+                Vacancies = vacancyResult.Vacancies.ToList()
             };
         }
     }
