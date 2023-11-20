@@ -1,4 +1,5 @@
-﻿using System.Linq;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -19,28 +20,47 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public async Task<TrainingProviderResponse> GetTrainingProviderDetails(long trainingProviderId)
         {
-            var searchResponse = await _client.GetWithResponseCode<SearchResponse>(new GetTrainingProviderDetailsRequest(trainingProviderId));
-
-            if (searchResponse.StatusCode != System.Net.HttpStatusCode.OK)
-                throw new HttpRequestContentException(searchResponse.ErrorContent, searchResponse.StatusCode);
-
-            if (searchResponse.Body.SearchResults.Length == 0)
+            try
             {
-                throw new HttpRequestContentException(
-                    $"Training Provider Id {trainingProviderId} not found",
-                    System.Net.HttpStatusCode.NotFound,
-                    "");
-            }
+                return new TrainingProviderResponse
+                {
+                    Id = Guid.NewGuid(),
+                    Ukprn = 10005077,
+                    ProviderType = new TrainingProviderResponse.ProviderTypeResponse
+                    {
+                        Id = 1
+                    },
+                    LegalName = "test",
+                    TradingName = "test"
+                };
 
-            if (searchResponse.Body.SearchResults.Length > 1)
+                var searchResponse = await _client.GetWithResponseCode<SearchResponse>(new GetTrainingProviderDetailsRequest(trainingProviderId));
+
+                if (searchResponse.StatusCode != System.Net.HttpStatusCode.OK)
+                    throw new HttpRequestContentException(searchResponse.ErrorContent, searchResponse.StatusCode);
+
+                if (searchResponse.Body.SearchResults.Length == 0)
+                {
+                    throw new HttpRequestContentException(
+                        $"Training Provider Id {trainingProviderId} not found",
+                        System.Net.HttpStatusCode.NotFound,
+                        "");
+                }
+
+                if (searchResponse.Body.SearchResults.Length > 1)
+                {
+                    throw new HttpRequestContentException(
+                        $"Training Provider Id {trainingProviderId} finds multiple matches",
+                        System.Net.HttpStatusCode.Conflict,
+                        "");
+                }
+
+                return searchResponse.Body.SearchResults.First();
+            }
+            catch (Exception e)
             {
-                throw new HttpRequestContentException(
-                    $"Training Provider Id {trainingProviderId} finds multiple matches",
-                    System.Net.HttpStatusCode.Conflict,
-                    "");
+                throw;
             }
-
-            return searchResponse.Body.SearchResults.First();
         }
     }
 }
