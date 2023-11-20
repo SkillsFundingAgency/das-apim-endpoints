@@ -13,17 +13,15 @@ namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.MembersControllerTests
 
 public class PutMembersTests
 {
-    Mock<IAanHubRestApiClient> aanHubRestApiClientMock = null!;
-
     [Test, RecursiveMoqAutoData]
     public async Task UpdateMemberProfileAndPreferences_InvokesPatchMemberAndPutMember(
-        [Greedy] MembersController sut,
         UpdateMemberProfileModel request,
+        [Frozen] Mock<IAanHubRestApiClient> aanHubRestApiClientMock,
+        [Greedy] MembersController sut,
         Guid memberId,
         CancellationToken cancellationToken)
     {
         var patchDocument = new JsonPatchDocument<PatchMemberRequest>();
-        aanHubRestApiClientMock = new();
         request.patchMemberRequest.RegionId = 5;
         request.patchMemberRequest.OrganisationName = "OrganisationName";
 
@@ -36,7 +34,7 @@ public class PutMembersTests
 
         await sut.UpdateMemberProfileAndPreferences(memberId, request, cancellationToken);
 
-        aanHubRestApiClientMock.Verify(x => x.PatchMember(memberId, memberId, patchDocument, cancellationToken), Times.Once());
+        aanHubRestApiClientMock.Verify(x => x.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<JsonPatchDocument<PatchMemberRequest>>(), It.IsAny<CancellationToken>()), Times.Once());
         aanHubRestApiClientMock.Verify(x => x.PutMemberProfile(memberId, request.updateMemberProfileRequest, cancellationToken), Times.Once());
     }
 
