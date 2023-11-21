@@ -9,7 +9,5 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships
         public decimal TrainingPrice { get; set; }
         public decimal AssessmentPrice { get; set; }
         public DateTime EarliestEffectiveDate { get; set; }
-        public DateTime? ApprenticeshipActualStartDate { get; set; }
-        public DateTime? ApprenticeshipPlannedEndDate { get; set; }
     }
 }
