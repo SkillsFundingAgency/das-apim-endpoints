@@ -17,7 +17,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
+namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Commands
 {
     public class WhenHandlingUpdateApprenticeFeedbackTarget
     {
@@ -72,7 +72,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
             _mockFeedbackApiClient
                 .Setup(c => c.GetAll<ApprenticeFeedbackTarget>(It.Is<GetAllApprenticeFeedbackTargetsRequest>(x => x.ApprenticeId == command.ApprenticeId)))
                 .ReturnsAsync(feedbackApiResponse);
-            
+
             // Don't care about responses here, just to pass the test.
             _mockApprenticeshipDetailsService
                 .Setup(a => a.Get(It.IsAny<Guid>(), It.IsAny<long>()))

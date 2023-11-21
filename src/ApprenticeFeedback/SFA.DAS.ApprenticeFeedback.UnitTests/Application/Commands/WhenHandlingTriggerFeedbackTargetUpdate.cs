@@ -14,7 +14,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
+namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Commands
 {
     public class WhenHandlingTriggerFeedbackTargetUpdate
     {
@@ -49,6 +49,6 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
 
             // Assert
             _mockFeedbackApiClient.Verify(c => c.PostWithResponseCode<UpdateApprenticeFeedbackTargetRequestData, ApprenticeFeedbackTarget>(It.Is<UpdateApprenticeFeedbackTargetRequest>(x => x.PostUrl == "api/apprenticefeedbacktarget/update"), true), Times.Once);
-        }        
+        }
     }
 }
