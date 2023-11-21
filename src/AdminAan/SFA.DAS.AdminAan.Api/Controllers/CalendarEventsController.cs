@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AdminAan.Api.Models;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Create;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Delete;
+using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Update;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvent;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.AdminAan.Infrastructure.Configuration;
@@ -37,6 +38,19 @@ public class CalendarEventsController : ControllerBase
         var response = await _mediator.Send(command, cancellationToken);
 
         return Ok(response);
+    }
+
+    [HttpPut("{calendarEventId}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> PutCalendarEvent(Guid calendarEventId, [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [FromBody] PutEventRequestModel requestModel, CancellationToken cancellationToken)
+    {
+        var command = (PutEventCommand)requestModel;
+        command.RequestedByMemberId = requestedByMemberId;
+        command.CalendarEventId = calendarEventId;
+
+        await _mediator.Send(command, cancellationToken);
+
+        return NoContent();
     }
 
     [HttpDelete("{calendarEventId}")]
