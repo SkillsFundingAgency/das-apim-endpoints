@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships
 {
+    [ExcludeFromCodeCoverage]
     public class ApprenticeshipPrice
     {
         public Guid ApprenticeshipKey { get; set; }
