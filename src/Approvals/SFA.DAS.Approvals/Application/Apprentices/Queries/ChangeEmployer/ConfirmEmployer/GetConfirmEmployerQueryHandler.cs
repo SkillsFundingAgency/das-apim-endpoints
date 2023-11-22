@@ -32,7 +32,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Confi
             var apprenticeship = apprenticeshipTask.Result;
             var accountLegalEntity = accountLegalEntityTask.Result;
 
-            var isFlexiJobAgency = await _fjaaService.IsAccountLegalEntityOnFjaaRegister(request.AccountLegalEntityId);
+            //var isFlexiJobAgency = await _fjaaService.IsAccountLegalEntityOnFjaaRegister(request.AccountLegalEntityId);
 
             if (apprenticeship == null || apprenticeship.ProviderId != request.ProviderId)
             {
@@ -44,7 +44,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Confi
                 AccountLegalEntityName = accountLegalEntity.LegalEntityName,
                 AccountName = accountLegalEntity.AccountName,
                 LegalEntityName = apprenticeship.EmployerName,
-                IsFlexiJobAgency = isFlexiJobAgency,
+                IsFlexiJobAgency = false,
                 DeliveryModel = apprenticeship.DeliveryModel
             };
         }

@@ -49,13 +49,13 @@ namespace SFA.DAS.Approvals.Services
         {
             var isOnPortableFlexiJobTask = IsApprenticeshipOnPortableFlexiJob(continuationOfId);
             var courseDeliveryModelsTask = GetCourseDeliveryModels(providerId, trainingCode);
-            var isOnRegisterTask = _fjaaService.IsAccountLegalEntityOnFjaaRegister(accountLegalEntityId);
+           // var isOnRegisterTask = _fjaaService.IsAccountLegalEntityOnFjaaRegister(accountLegalEntityId);
 
-            await Task.WhenAll(courseDeliveryModelsTask, isOnRegisterTask, isOnPortableFlexiJobTask);
+            await Task.WhenAll(courseDeliveryModelsTask, isOnPortableFlexiJobTask);
 
             var isOnPortableFlexiJob = isOnPortableFlexiJobTask.Result;
             var courseDeliveryModels = courseDeliveryModelsTask.Result;
-            var isOnRegister = isOnRegisterTask.Result;
+            var isOnRegister = false;
 
             if (isOnPortableFlexiJob)
             {
@@ -67,10 +67,10 @@ namespace SFA.DAS.Approvals.Services
                 courseDeliveryModels.Remove(DeliveryModelStringTypes.PortableFlexiJob);
             }
 
-            if (isOnRegister)
-            {
-                courseDeliveryModels.Add(DeliveryModelStringTypes.FlexiJobAgency);
-            }
+            //if (isOnRegister)
+            //{
+            //    courseDeliveryModels.Add(DeliveryModelStringTypes.FlexiJobAgency);
+            //}
 
             return courseDeliveryModels;
         }

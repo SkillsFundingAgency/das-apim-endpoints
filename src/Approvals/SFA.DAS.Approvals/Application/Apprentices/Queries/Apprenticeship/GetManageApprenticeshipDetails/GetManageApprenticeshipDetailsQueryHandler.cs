@@ -52,8 +52,8 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
             var changeOfProviderChainResponseTask = _apiClient.GetWithResponseCode<GetChangeOfProviderChainResponse>(new GetChangeOfProviderChainRequest(apprenticeship.Id));
             var changeOfEmployerChainResponseTask = _apiClient.GetWithResponseCode<GetChangeOfEmployerChainResponse>(new GetChangeOfEmployerChainRequest(apprenticeship.Id));
             var overlappingTrainingDateResponseTask = _apiClient.GetWithResponseCode<GetOverlappingTrainingDateResponse>(new GetOverlappingTrainingDateRequest(apprenticeship.Id));
-            var deliveryModelTask = _deliveryModelService.GetDeliveryModels(apprenticeship.ProviderId,
-                apprenticeship.CourseCode, apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
+            //var deliveryModelTask = _deliveryModelService.GetDeliveryModels(apprenticeship.ProviderId,
+            //    apprenticeship.CourseCode, apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
 
             Task.WaitAll(priceEpisodesResponseTask, 
                 apprenticeshipUpdatesResponseTask,
@@ -61,8 +61,9 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                 changeOfPartyRequestsResponseTask, 
                 changeOfProviderChainResponseTask,
                 changeOfEmployerChainResponseTask, 
-                overlappingTrainingDateResponseTask, 
-                deliveryModelTask);
+                overlappingTrainingDateResponseTask 
+                //deliveryModelTask
+                );
 
             var priceEpisodesResponse = await priceEpisodesResponseTask;
             var apprenticeshipUpdatesResponse = await apprenticeshipUpdatesResponseTask;
@@ -71,7 +72,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
             var changeOfProviderChainResponse = await changeOfProviderChainResponseTask;
             var changeOfEmployerChainResponse = await changeOfEmployerChainResponseTask;
             var overlappingTrainingDateResponse = await overlappingTrainingDateResponseTask;
-            var deliveryModel = await deliveryModelTask;
+           // var deliveryModel = await deliveryModelTask;
 
             return new GetManageApprenticeshipDetailsQueryResult
             {
@@ -83,7 +84,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                 ChangeOfProviderChain = changeOfProviderChainResponse.Body.ChangeOfProviderChain,
                 ChangeOfEmployerChain = changeOfEmployerChainResponse.Body.ChangeOfEmployerChain,
                 OverlappingTrainingDateRequest = overlappingTrainingDateResponse.Body.OverlappingTrainingDateRequest,
-                HasMultipleDeliveryModelOptions = deliveryModel.Count > 1
+                HasMultipleDeliveryModelOptions = true
             };
         }
     }
