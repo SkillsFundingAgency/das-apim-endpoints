@@ -66,7 +66,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             result.TotalApprenticeshipCount.Should().Be(apiResponse.TotalVacancies);
             result.LocationItem.Should().BeEquivalentTo(locationInfo);
             result.Routes.Should().BeEquivalentTo(routesResponse.Routes);
-            result.Vacancies.Should().BeEquivalentTo(vacanciesResponse);
+            result.Vacancies.Should().BeEquivalentTo(vacanciesResponse.Vacancies);
 
         }
     }
