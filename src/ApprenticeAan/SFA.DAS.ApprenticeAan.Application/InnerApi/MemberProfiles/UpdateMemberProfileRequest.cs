@@ -2,12 +2,12 @@
 
 public class UpdateProfileModel
 {
-    public int Id { get; set; }
+    public int MemberProfileId { get; set; }
     public string? Value { get; set; }
 }
 public class UpdatePreferenceModel
 {
-    public int Id { get; set; }
+    public int PreferenceId { get; set; }
     public bool Value { get; set; }
 }
 
