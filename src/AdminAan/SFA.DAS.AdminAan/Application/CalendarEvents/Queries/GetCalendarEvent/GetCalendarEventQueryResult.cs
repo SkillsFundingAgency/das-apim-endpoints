@@ -3,6 +3,7 @@ public class GetCalendarEventQueryResult
 {
     public Guid CalendarEventId { get; set; }
     public string? CalendarName { get; set; } = null!;
+    public int? CalendarId { get; set; } = null!;
     public string EventFormat { get; set; } = string.Empty;
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
