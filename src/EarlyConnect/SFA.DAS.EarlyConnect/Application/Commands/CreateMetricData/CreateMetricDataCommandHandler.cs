@@ -1,12 +1,16 @@
 ﻿using MediatR;
+using SFA.DAS.EarlyConnect.Application.Commands.CreateLogData;
 using SFA.DAS.EarlyConnect.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
+using System.Net;
 
 namespace SFA.DAS.EarlyConnect.Application.Commands.CreateMetricData
 {
-    public class CreateMetricDataCommandHandler : IRequestHandler<CreateMetricDataCommand, Unit>
+    public class CreateMetricDataCommandHandler : IRequestHandler<CreateMetricDataCommand, CreateMetricsDataCommandResult>
     {
 
         private readonly IEarlyConnectApiClient<EarlyConnectApiConfiguration> _apiClient;
@@ -16,13 +20,15 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.CreateMetricData
             _apiClient = apiClient;
         }
 
-        public async Task<Unit> Handle(CreateMetricDataCommand request, CancellationToken cancellationToken)
+        public async Task<CreateMetricsDataCommandResult> Handle(CreateMetricDataCommand request, CancellationToken cancellationToken)
         {
-            var response = await _apiClient.PostWithResponseCode<object>(new CreateMetricDataRequest(request.metricsData), false);
+            var response = await _apiClient.PostWithResponseCode<CreateMetricsDataCommandResult>(new CreateMetricDataRequest(request.metricsData), true);
 
-            response.EnsureSuccessStatusCode();
-
-            return Unit.Value;
+            return new CreateMetricsDataCommandResult
+            {
+                StatusCode = response.StatusCode,
+                ErrorMessage = response.ErrorContent
+            };
         }
     }
 }
