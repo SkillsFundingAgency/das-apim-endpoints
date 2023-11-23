@@ -3,14 +3,14 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
 {
-    public class GetApprenticeshipCountRequest : IGetApiRequest
+    public class GetVacanciesRequest : IGetApiRequest
     {
         private readonly double? _lat;
         private readonly double? _lon;
         private readonly List<string>? _routes;
         private readonly int? _distance;
 
-        public GetApprenticeshipCountRequest(double? lat, double? lon, List<string>? routes, int? distance)
+        public GetVacanciesRequest(double? lat, double? lon, List<string>? routes, int? distance)
         {
             _lat = lat;
             _lon = lon;

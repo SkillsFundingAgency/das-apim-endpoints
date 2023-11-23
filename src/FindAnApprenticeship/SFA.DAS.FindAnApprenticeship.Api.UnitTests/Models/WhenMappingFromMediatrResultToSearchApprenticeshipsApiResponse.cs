@@ -28,9 +28,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
                 .Excluding(c => c.IsEmployerAnonymous)
                 .Excluding(c => c.EmployerName));
 
-            actual.Vacancies.FirstOrDefault().WageAmount.Should().Be(source.Vacancies.FirstOrDefault().Wage.wageAmount);
-            actual.Vacancies.FirstOrDefault().WageType.Should().Be(source.Vacancies.FirstOrDefault().Wage.wageType);
-            actual.Vacancies.FirstOrDefault().CourseTitle.Should().Be(source.Vacancies.FirstOrDefault().Course.title);
+            actual.Vacancies.FirstOrDefault().WageAmount.Should().Be(source.Vacancies.FirstOrDefault().Wage.WageAmount);
+            actual.Vacancies.FirstOrDefault().WageType.Should().Be(source.Vacancies.FirstOrDefault().Wage.WageType);
+            actual.Vacancies.FirstOrDefault().CourseTitle.Should().Be(source.Vacancies.FirstOrDefault().Course.Title);
+            actual.Vacancies.FirstOrDefault().CourseLevel.Should().Be(source.Vacancies.FirstOrDefault().Course.Level);
+            actual.Vacancies.FirstOrDefault().Route.Should().Be(source.Vacancies.FirstOrDefault().Course.Route);
             actual.Vacancies.FirstOrDefault().AddressLine1.Should().Be(source.Vacancies.FirstOrDefault().Address.AddressLine1);
             actual.Vacancies.FirstOrDefault().AddressLine2.Should().Be(source.Vacancies.FirstOrDefault().Address.AddressLine2);
             actual.Vacancies.FirstOrDefault().AddressLine3.Should().Be(source.Vacancies.FirstOrDefault().Address.AddressLine3);

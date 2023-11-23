@@ -74,18 +74,16 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
     }
     public class Course
     {
-        public int larsCode { get; set; }
-        public string title { get; set; }
-        public int level { get; set; }
-        public string route { get; set; }
+        public string Title { get; set; }
+        public int Level { get; set; }
+        public string Route { get; set; }
     }
 
     public class Wage
     {
-        public double? wageAmount { get; set; }
-        public string wageAdditionalInformation { get; set; }
-        public string wageType { get; set; }
-        public string workingWeekDescription { get; set; }
-        public string wageUnit { get; set; }
+        public double? WageAmount { get; set; }
+
+        public string WageType { get; set; }
+
     }
 }
