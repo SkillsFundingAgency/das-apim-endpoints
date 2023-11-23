@@ -53,7 +53,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 TotalApprenticeshipCount = result.TotalVacancies,
                 LocationItem = location,
                 Routes = routes.Routes.ToList(),
-                Vacancies = vacancyResult.Vacancies.ToList()
+                Vacancies = vacancyResult.ApprenticeshipVacancies.ToList()
             };
         }
     }
