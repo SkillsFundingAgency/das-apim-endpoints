@@ -13,6 +13,6 @@ public class UpdatePreferenceModel
 
 public class UpdateMemberProfileRequest
 {
-    public IEnumerable<UpdateProfileModel> Profiles { get; set; } = Enumerable.Empty<UpdateProfileModel>();
-    public IEnumerable<UpdatePreferenceModel> Preferences { get; set; } = Enumerable.Empty<UpdatePreferenceModel>();
+    public List<UpdateProfileModel> Profiles { get; set; } = new List<UpdateProfileModel>();
+    public List<UpdatePreferenceModel> Preferences { get; set; } = new List<UpdatePreferenceModel>();
 }

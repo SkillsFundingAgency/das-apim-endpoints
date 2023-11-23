@@ -54,11 +54,11 @@ public class PutMembersTests
     {
         if (!isMemberProfileAvailable)
         {
-            request.updateMemberProfileRequest.Profiles = Enumerable.Empty<UpdateProfileModel>();
+            request.updateMemberProfileRequest.Profiles = new List<UpdateProfileModel>();
         }
         if (!isMemberPreferenceAvailable)
         {
-            request.updateMemberProfileRequest.Preferences = Enumerable.Empty<UpdatePreferenceModel>();
+            request.updateMemberProfileRequest.Preferences = new List<UpdatePreferenceModel>();
         }
 
         var result = await sut.UpdateMemberProfileAndPreferences(memberId, request, cancellationToken);
