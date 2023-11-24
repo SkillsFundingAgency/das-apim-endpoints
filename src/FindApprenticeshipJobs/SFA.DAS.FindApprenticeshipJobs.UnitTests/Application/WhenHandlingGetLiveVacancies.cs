@@ -37,6 +37,28 @@ public class WhenHandlingGetLiveVacancies
     }
 
     [Test, MoqAutoData]
+    public async Task Then_Traineeships_Are_Removed(
+        GetLiveVacanciesQuery mockQuery,
+        ApiResponse<GetLiveVacanciesApiResponse> mockApiResponse,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockApiClient,
+        [Frozen] Mock<ICourseService> mockCourseService,
+        GetLiveVacanciesQueryHandler sut)
+    {
+        var vacancyId = mockApiResponse.Body.Vacancies.First().VacancyId;
+        mockApiResponse.Body.Vacancies.First().VacancyType = VacancyType.Traineeship;
+        mockApiClient.Setup(client => client.GetWithResponseCode<GetLiveVacanciesApiResponse>(It.IsAny<GetLiveVacanciesApiRequest>())).ReturnsAsync(mockApiResponse);
+
+        var mockStandardsListResponse = SetupCoursesApiResponse(mockApiResponse.Body);
+        mockCourseService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(It.IsAny<string>()))
+            .ReturnsAsync(mockStandardsListResponse.Body);
+
+        var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
+        var actualTraineeship = actual.Vacancies.Select(x => x).Where(x => x.VacancyId == vacancyId);
+
+        actualTraineeship.Should().BeNullOrEmpty();
+    }
+
+    [Test, MoqAutoData]
     public async Task And_Api_Client_Returns_Null(
         GetLiveVacanciesQuery mockQuery,
         ApiResponse<GetLiveVacanciesApiResponse> mockApiResponse,
