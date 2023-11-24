@@ -53,9 +53,10 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             }
             catch (Exception e)
             {
+                var errorMessage = (e as SharedOuterApi.Exceptions.ApiResponseException)?.Error;
                 _logger.LogError(e, "Error posting student data");
 
-                if (logId > 0) await UpdateLog(logId, StudentDataUploadStatus.Error, $"{e.Message} - {e.StackTrace}");
+                if (logId > 0) await UpdateLog(logId, StudentDataUploadStatus.Error, $"Error posting student data. {(errorMessage != null ? $"\nErrorInfo: {errorMessage}" : "")}\nMessage: {e.Message}\nStackTrace: {e.StackTrace}");
 
                 return BadRequest();
             }
