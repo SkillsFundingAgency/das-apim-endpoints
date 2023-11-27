@@ -11,5 +11,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships
         public DateTime EarliestEffectiveDate { get; set; }
         public DateTime? ApprenticeshipActualStartDate { get; set; }
         public DateTime? ApprenticeshipPlannedEndDate { get; set; }
+        public long? AccountLegalEntityId { get; set; }
     }
 }
