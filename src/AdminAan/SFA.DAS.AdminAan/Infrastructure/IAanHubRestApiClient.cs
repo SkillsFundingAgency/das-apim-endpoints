@@ -3,6 +3,7 @@ using RestEase;
 using SFA.DAS.AdminAan.Application.Admins.Commands.Create;
 using SFA.DAS.AdminAan.Application.Admins.Queries.Lookup;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Create;
+using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Update;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvent;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.AdminAan.Application.Entities;
@@ -27,6 +28,10 @@ public interface IAanHubRestApiClient
     [Post("calendarEvents")]
     [AllowAnyStatusCode]
     Task<Response<PostEventCommandResult>> PostCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [Body] PostEventCommand command, CancellationToken cancellationToken);
+
+    [Put("calendarEvents/{calendarEventId}")]
+    Task PutCalendarEvent([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [Path] Guid calendarEventId, [Body] PutEventCommand command, CancellationToken cancellationToken);
+
 
     [Get("calendarEvents/{calendarEventId}")]
     [AllowAnyStatusCode]

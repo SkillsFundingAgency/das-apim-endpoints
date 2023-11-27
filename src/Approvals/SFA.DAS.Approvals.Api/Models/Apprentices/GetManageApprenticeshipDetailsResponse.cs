@@ -68,9 +68,6 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
             public long? TransferSenderId { get; set; }
             public bool? IsOnFlexiPaymentPilot { get; set; }
             public int? DurationReducedByHours { get; set; }
-            public int? WeightageReducedBy { get; set; }
-            public string QualificationsForRplReduction { get; set; }
-            public string ReasonForRplReduction { get; set; }
             public int? TrainingTotalHours { get; set; }
             public bool? IsDurationReducedByRpl { get; set; }
         }
@@ -80,6 +77,8 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
             public long Id { get; set; }
             public long ApprenticeshipId { get; set; }
             public decimal Cost { get; set; }
+            public decimal? TrainingPrice { get; set; }
+            public decimal? EndPointAssessmentPrice { get; set; }
             public DateTime FromDate { get; set; }
             public DateTime? ToDate { get; set; }
         }
