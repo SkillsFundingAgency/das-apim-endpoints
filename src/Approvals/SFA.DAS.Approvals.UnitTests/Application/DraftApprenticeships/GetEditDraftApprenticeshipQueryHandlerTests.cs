@@ -135,6 +135,20 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         }
 
         [Test]
+        public async Task Handle_TrainingPrice_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(_draftApprenticeship.TrainingPrice, result.TrainingPrice);
+        }
+
+        [Test]
+        public async Task Handle_EndPointAssessmentPrice_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(_draftApprenticeship.EndPointAssessmentPrice, result.EndPointAssessmentPrice);
+        }
+
+        [Test]
         public async Task HandleEmploymentPrice_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
@@ -188,6 +202,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.AreEqual(_draftApprenticeship.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
+        }
+
+        [Test]
+        public async Task Handle_EmployerHasEditedCost_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.AreEqual(_draftApprenticeship.EmployerHasEditedCost, result.EmployerHasEditedCost);
         }
 
         [TestCase(0, false)]

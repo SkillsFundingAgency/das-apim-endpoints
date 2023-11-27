@@ -30,6 +30,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 new ValidateBulkUploadRecordsCommand
                 {
                     ProviderId = request.ProviderId,
+                    RplDataExtended = request.RplDataExtended,
                     CsvRecords = request.CsvRecords?.ToList(),
                     UserInfo = request.UserInfo
                 });
@@ -45,6 +46,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 new BulkUploadAddAndApproveDraftApprenticeshipsCommand
                 {
                     ProviderId = request.ProviderId,
+                    FileUploadLogId = request.FileUploadLogId,
                     BulkUploadAddAndApproveDraftApprenticeships = request.BulkUploadAddAndApproveDraftApprenticeships?.ToList(),
                     UserInfo = request.UserInfo
                 });
@@ -64,6 +66,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 new BulkUploadAddDraftApprenticeshipsCommand
                 {
                     ProviderId = request.ProviderId,
+                    FileUploadLogId = request.FileUploadLogId,
+                    RplDataExtended = request.RplDataExtended,
                     BulkUploadAddDraftApprenticeships = request.BulkUploadDraftApprenticeships?.ToList(),
                     UserInfo = request.UserInfo
                 });
@@ -73,6 +77,40 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 return NotFound();
             }
             return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("logs")]
+        public async Task<IActionResult> AddLog(BulkUploadAddLogRequest request)
+        {
+            var result = await _mediator.Send(
+                new BulkUploadAddLogCommand
+                {
+                    ProviderId = request.ProviderId,
+                    FileName = request.FileName,
+                    RplCount = request.RplCount,
+                    RowCount = request.RowCount,
+                    FileContent = request.FileContent,
+                    UserInfo = request.UserInfo
+                });
+
+            return Ok(result);
+        }
+
+        [HttpPut]
+        [Route("logs/{logId}/error")]
+        public async Task<IActionResult> UpdateLogWithErrorContent(long logId, BulkUploadLogUpdateWithErrorContentRequest request)
+        {
+            await _mediator.Send(
+                new BulkUploadLogUpdateWithErrorContentCommand
+                {
+                    LogId = logId,
+                    ProviderId = request.ProviderId,
+                    ErrorContent = request.ErrorContent,
+                    UserInfo = request.UserInfo
+                });
+
+            return Ok();
         }
     }
 }

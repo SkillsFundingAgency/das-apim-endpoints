@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
 
         [HttpGet]
         [Route("{accountId}")]
-        public async Task<IActionResult> GetReservations(string accountId)
+        public async Task<IActionResult> GetReservations(long accountId)
         {
             try
             {

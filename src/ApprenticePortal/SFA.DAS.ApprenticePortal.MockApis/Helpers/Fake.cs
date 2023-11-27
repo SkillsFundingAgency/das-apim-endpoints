@@ -44,7 +44,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis.Helpers
         public static MyApprenticeshipData MyApprenticeship => new()
         {
             ApprenticeshipId = Faker.RandomNumber.Next(),
-            Uln = Faker.RandomNumber.Next(10000000).ToString(),
+            Uln = Faker.RandomNumber.Next(10000000),
             EmployerName = Faker.Company.Name(),
             StartDate = DateTime.Today,
             EndDate = DateTime.Today.AddYears(1),

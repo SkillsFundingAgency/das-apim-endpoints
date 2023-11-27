@@ -14,6 +14,8 @@ namespace SFA.DAS.Assessors.InnerApi.Responses
         public string Status { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
+        public bool CoronationEmblem { get; set; }
+        public bool EpaoMustBeApprovedByRegulatorBody { get; set; }
         public string Version { get; set; }
         public string OverviewOfRole { get; set; }
         public string Keywords { get; set; }

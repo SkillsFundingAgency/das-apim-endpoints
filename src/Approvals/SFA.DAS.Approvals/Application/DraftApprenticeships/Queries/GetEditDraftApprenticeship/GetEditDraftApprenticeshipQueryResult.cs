@@ -25,6 +25,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
         public DateTime? EndDate { get; set; }
 
         public int? Cost { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
 
         public int? EmploymentPrice { get; set; }
 
@@ -46,6 +48,10 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
         public bool RecognisingPriorLearningExtendedStillNeedsToBeConsidered { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
+        public bool? EmployerHasEditedCost { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
+        public int? TrainingTotalHours { get; set; }
+        public int? DurationReducedByHours { get; set; }
+        public bool? IsDurationReducedByRpl { get; set; }
     }
 }

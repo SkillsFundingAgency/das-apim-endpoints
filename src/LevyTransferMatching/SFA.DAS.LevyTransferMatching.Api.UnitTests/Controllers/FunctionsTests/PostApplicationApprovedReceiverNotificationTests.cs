@@ -6,7 +6,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
-using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
 {
@@ -34,8 +34,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
             await _controller.ApplicationApprovedReceiverNotification(_request);
 
             _mediator.Verify(x =>
-                x.Send(It.Is<ReceiverApplicationApprovedEmailCommand>(c => c.PledgeId == _request.PledgeId && c.ApplicationId == _request.ApplicationId && c.BaseUrl == _request.BaseUrl &&
-                                                                           c.ReceiverEncodedAccountId == _request.ReceiverEncodedAccountId && c.ReceiverId == _request.ReceiverId),
+                x.Send(It.Is<ReceiverApplicationApprovedEmailCommand>(c => c.PledgeId == _request.PledgeId && c.ApplicationId == _request.ApplicationId &&
+                                                                           c.EncodedApplicationId == _request.EncodedApplicationId && c.ReceiverId == _request.ReceiverId),
                     It.IsAny<CancellationToken>()));
         }
     }

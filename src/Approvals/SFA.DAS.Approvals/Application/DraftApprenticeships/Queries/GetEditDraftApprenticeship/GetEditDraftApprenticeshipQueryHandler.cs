@@ -76,6 +76,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 ActualStartDate =  apprenticeship.ActualStartDate,
                 EndDate = apprenticeship.EndDate,
                 Cost = apprenticeship.Cost,
+                TrainingPrice = apprenticeship.TrainingPrice,
+                EndPointAssessmentPrice = apprenticeship.EndPointAssessmentPrice,
                 EmploymentPrice = apprenticeship.EmploymentPrice,
                 EmploymentEndDate = apprenticeship.EmploymentEndDate,
                 EmployerReference = apprenticeship.EmployerReference,
@@ -93,7 +95,11 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 RecognisingPriorLearningStillNeedsToBeConsidered = apprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered,
                 RecognisingPriorLearningExtendedStillNeedsToBeConsidered = apprenticeship.RecognisingPriorLearningExtendedStillNeedsToBeConsidered,
                 IsOnFlexiPaymentPilot = apprenticeship.IsOnFlexiPaymentPilot,
-                EmailAddressConfirmed = apprenticeship.EmailAddressConfirmed
+                EmployerHasEditedCost = apprenticeship.EmployerHasEditedCost,
+                EmailAddressConfirmed = apprenticeship.EmailAddressConfirmed,
+                TrainingTotalHours = apprenticeship.TrainingTotalHours,
+                DurationReducedByHours = apprenticeship.DurationReducedByHours,
+                IsDurationReducedByRpl = apprenticeship.IsDurationReducedByRpl
             };
         }
     }

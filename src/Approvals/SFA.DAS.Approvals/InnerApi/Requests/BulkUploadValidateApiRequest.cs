@@ -7,6 +7,8 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
     public class BulkUploadValidateApiRequest : SaveDataRequest
     {
         public long ProviderId { get; set; }
+        public bool RplDataExtended { get; set; }
+        public long? LogId { get; set; }
         public IEnumerable<BulkUploadAddDraftApprenticeshipRequest> CsvRecords { get; set; }
         public BulkReservationValidationResults BulkReservationValidationResults { get; set; }
         public ProviderStandardsData ProviderStandardsData { get; set; }

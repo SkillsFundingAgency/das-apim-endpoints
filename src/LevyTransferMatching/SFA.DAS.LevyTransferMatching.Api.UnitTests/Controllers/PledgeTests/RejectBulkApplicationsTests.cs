@@ -5,7 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models;
-using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplications;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;

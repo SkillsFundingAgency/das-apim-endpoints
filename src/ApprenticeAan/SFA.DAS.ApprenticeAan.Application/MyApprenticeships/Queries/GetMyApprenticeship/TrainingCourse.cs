@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
+﻿using SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Responses;
+
+namespace SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 
 public class TrainingCourse
 {

@@ -26,6 +26,9 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
         public long? LegalEntityId { get; set; }
         public long? TransferSenderId { get; set; }
         public string RecognisePriorLearningAsString { get; set; }
+        public string TrainingTotalHoursAsString { get; set; }
+        public string TrainingHoursReductionAsString { get; set; }
+        public string IsDurationReducedByRPLAsString { get; set; }
         public string DurationReducedByAsString { get; set; }
         public string PriceReducedByAsString { get; set; }
 

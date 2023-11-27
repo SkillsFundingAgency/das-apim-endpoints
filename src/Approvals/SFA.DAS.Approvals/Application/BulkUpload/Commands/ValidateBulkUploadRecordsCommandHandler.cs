@@ -42,8 +42,9 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
                 };
 
             }).ToList();
-
-            var reservationValidationResult = await _reservationApiClient.PostWithResponseCode<BulkReservationValidationResults>(new PostValidateReservationRequest(command.ProviderId, reservationRequests));
+            var reservationValidationResult =
+                await _reservationApiClient.PostWithResponseCode<BulkReservationValidationResults>(
+                    new PostValidateReservationRequest(command.ProviderId, reservationRequests));
 
             var providerStandardResults = await _providerStandardsService.GetStandardsData(command.ProviderId);
 
@@ -53,14 +54,20 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
             {
                 CsvRecords = command.CsvRecords,
                 ProviderId = command.ProviderId,
+                LogId = command.FileUploadLogId,
+                RplDataExtended = command.RplDataExtended,
                 UserInfo = command.UserInfo,
                 BulkReservationValidationResults = reservationValidationResult.Body,
                 ProviderStandardsData = providerStandardResults
             };
 
-            if (!bulkUploadValidateApiRequest.ProviderStandardsData.IsMainProvider) { bulkUploadValidateApiRequest.ProviderStandardsData.Standards = null; }
+            if (!bulkUploadValidateApiRequest.ProviderStandardsData.IsMainProvider)
+            {
+                bulkUploadValidateApiRequest.ProviderStandardsData.Standards = null;
+            }
 
-            await _apiClient.PostWithResponseCode<object>(new PostValidateBulkUploadRequest(command.ProviderId, bulkUploadValidateApiRequest));
+            await _apiClient.PostWithResponseCode<object>(
+                new PostValidateBulkUploadRequest(command.ProviderId, bulkUploadValidateApiRequest));
             return Unit.Value;
         }
 

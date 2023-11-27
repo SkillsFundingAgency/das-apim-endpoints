@@ -21,6 +21,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.AppStart
         [TestCase(typeof(IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>))]
         [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
         [TestCase(typeof(IEmployerAccountsService))]
+        [TestCase(typeof(IRoatpV2TrainingProviderService))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();
@@ -49,6 +50,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.AppStart
                     new KeyValuePair<string, string>("ApimDeveloperApiConfiguration:url", "http://localhost:2"),
                     new KeyValuePair<string, string>("EmployerProfilesApiConfiguration:url", "http://localhost:3"),
                     new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:4"),
+                    new KeyValuePair<string, string>("RoatpConfiguration:url", "http://localhost:4")
                 }
             };
 

@@ -41,6 +41,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
                             r.ApprenticeshipId == _request.ApprenticeshipId &&
                             ((UpdateDraftApprenticeshipRequest)r.Data).ActualStartDate == _request.ActualStartDate &&
                             ((UpdateDraftApprenticeshipRequest)r.Data).Cost == _request.Cost &&
+                            ((UpdateDraftApprenticeshipRequest)r.Data).TrainingPrice == _request.TrainingPrice &&
+                            ((UpdateDraftApprenticeshipRequest)r.Data).EndPointAssessmentPrice == _request.EndPointAssessmentPrice &&
                             ((UpdateDraftApprenticeshipRequest)r.Data).CourseCode == _request.CourseCode &&
                             ((UpdateDraftApprenticeshipRequest)r.Data).DateOfBirth == _request.DateOfBirth &&
                             ((UpdateDraftApprenticeshipRequest)r.Data).DeliveryModel == _request.DeliveryModel &&

@@ -37,6 +37,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
             {
                 BulkUploadDraftApprenticeships = command.BulkUploadAddDraftApprenticeships,
                 ProviderId = command.ProviderId,
+                LogId = command.FileUploadLogId,
                 UserInfo = command.UserInfo
             };
 
@@ -57,6 +58,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
             {
                 CsvRecords = command.BulkUploadAddDraftApprenticeships?.ToList(),
                 ProviderId = command.ProviderId,
+                RplDataExtended = command.RplDataExtended,
                 UserInfo = command.UserInfo
             };
 

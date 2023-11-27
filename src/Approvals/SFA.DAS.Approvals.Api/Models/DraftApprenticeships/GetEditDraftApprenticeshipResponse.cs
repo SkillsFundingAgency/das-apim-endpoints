@@ -28,6 +28,8 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public DateTime? EndDate { get; set; }
 
         public int? Cost { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
 
         public int? EmploymentPrice { get; set; }
 
@@ -49,7 +51,12 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public bool RecognisingPriorLearningStillNeedsToBeConsidered { get; set; }
         public bool RecognisingPriorLearningExtendedStillNeedsToBeConsidered { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
+        public bool? EmployerHasEditedCost { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
+        public int? TrainingTotalHours { get; set; }
+        public int? DurationReducedByHours { get; set; }
+        public bool? IsDurationReducedByRpl { get; set; }
+
 
         public static implicit operator GetEditDraftApprenticeshipResponse(GetEditDraftApprenticeshipQueryResult source)
         {
@@ -71,6 +78,8 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 ActualStartDate = source.ActualStartDate,
                 EndDate = source.EndDate,
                 Cost = source.Cost,
+                TrainingPrice = source.TrainingPrice,
+                EndPointAssessmentPrice = source.EndPointAssessmentPrice,
                 EmploymentPrice = source.EmploymentPrice,
                 EmploymentEndDate = source.EmploymentEndDate,
                 EmployerReference = source.EmployerReference,
@@ -88,7 +97,11 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 RecognisingPriorLearningStillNeedsToBeConsidered = source.RecognisingPriorLearningStillNeedsToBeConsidered,
                 RecognisingPriorLearningExtendedStillNeedsToBeConsidered = source.RecognisingPriorLearningExtendedStillNeedsToBeConsidered,
                 IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot,
-                EmailAddressConfirmed = source.EmailAddressConfirmed
+                EmployerHasEditedCost = source.EmployerHasEditedCost,
+                EmailAddressConfirmed = source.EmailAddressConfirmed,
+                TrainingTotalHours = source.TrainingTotalHours,
+                DurationReducedByHours = source.DurationReducedByHours,
+                IsDurationReducedByRpl = source.IsDurationReducedByRpl
             };
         }
     }
