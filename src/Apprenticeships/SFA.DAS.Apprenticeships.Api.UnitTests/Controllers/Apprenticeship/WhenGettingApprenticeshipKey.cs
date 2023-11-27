@@ -17,12 +17,13 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
         [Test, MoqAutoData]
         public async Task Then_Gets_ApprenticeshipKey_From_ApiClient(
             Guid expectedResponse,
-            Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient)
+            Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient,
+            Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsV2ApiApiClient)
         {
             //  Arrange
             mockApprenticeshipsApiClient.Setup(x => x.Get<Guid>(It.IsAny<GetApprenticeshipKeyRequest>()))
                 .ReturnsAsync(expectedResponse);
-            var controller = new ApprenticeshipController(mockApprenticeshipsApiClient.Object);
+            var controller = new ApprenticeshipController(mockApprenticeshipsApiClient.Object, mockCommitmentsV2ApiApiClient.Object);
 
             //  Act
             var result = await controller.GetApprenticeshipKey("anyApprenticeshipHashedId");
