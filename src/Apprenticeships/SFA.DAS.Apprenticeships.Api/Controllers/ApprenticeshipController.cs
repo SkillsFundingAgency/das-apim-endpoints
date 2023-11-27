@@ -27,6 +27,11 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         {
             var apprenticePriceInnerModel = await _apiClient.Get<GetApprenticeshipPriceResponse>(new GetApprenticeshipPriceRequest { ApprenticeshipKey = apprenticeshipKey });
             
+            if(apprenticePriceInnerModel == null)
+            {
+                return NotFound();
+            }
+
             string? employerName = null;
             if(apprenticePriceInnerModel != null && apprenticePriceInnerModel.AccountLegalEntityId.HasValue)
             {
@@ -36,7 +41,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
             
             var apprenticeshipPriceOuterModel = new ApprenticeshipPriceResponse
             {
-                ApprenticeshipKey = apprenticePriceInnerModel.ApprenticeshipKey,
+                ApprenticeshipKey = apprenticePriceInnerModel!.ApprenticeshipKey,
                 ApprenticeshipActualStartDate = apprenticePriceInnerModel.ApprenticeshipActualStartDate,
                 ApprenticeshipPlannedEndDate = apprenticePriceInnerModel.ApprenticeshipPlannedEndDate,
                 AssessmentPrice = apprenticePriceInnerModel.AssessmentPrice,
