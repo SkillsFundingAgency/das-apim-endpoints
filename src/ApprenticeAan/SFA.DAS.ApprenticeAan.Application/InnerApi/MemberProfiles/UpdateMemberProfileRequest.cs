@@ -13,6 +13,6 @@ public class UpdatePreferenceModel
 
 public class UpdateMemberProfileRequest
 {
-    public List<UpdateProfileModel> Profiles { get; set; } = new List<UpdateProfileModel>();
-    public List<UpdatePreferenceModel> Preferences { get; set; } = new List<UpdatePreferenceModel>();
+    public List<UpdateProfileModel> MemberProfiles { get; set; } = new List<UpdateProfileModel>();
+    public List<UpdatePreferenceModel> MemberPreferences { get; set; } = new List<UpdatePreferenceModel>();
 }

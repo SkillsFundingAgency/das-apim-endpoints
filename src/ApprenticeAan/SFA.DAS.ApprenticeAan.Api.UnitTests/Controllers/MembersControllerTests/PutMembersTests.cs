@@ -54,11 +54,11 @@ public class PutMembersTests
     {
         if (!isMemberProfileAvailable)
         {
-            request.updateMemberProfileRequest.Profiles = new List<UpdateProfileModel>();
+            request.updateMemberProfileRequest.MemberProfiles = new List<UpdateProfileModel>();
         }
         if (!isMemberPreferenceAvailable)
         {
-            request.updateMemberProfileRequest.Preferences = new List<UpdatePreferenceModel>();
+            request.updateMemberProfileRequest.MemberPreferences = new List<UpdatePreferenceModel>();
         }
 
         var result = await sut.UpdateMemberProfileAndPreferences(memberId, request, cancellationToken);

@@ -47,7 +47,7 @@ public class MembersController : ControllerBase
         jsonPatchDocument.ApplyTo(patchMemberRequest);
         await _apiClient.PatchMember(memberId, memberId, jsonPatchDocument, cancellationToken);
 
-        if (request.updateMemberProfileRequest.Profiles.Any() || request.updateMemberProfileRequest.Preferences.Any())
+        if (request.updateMemberProfileRequest.MemberProfiles.Any() || request.updateMemberProfileRequest.MemberPreferences.Any())
         {
             await _apiClient.PutMemberProfile(memberId, request.updateMemberProfileRequest, cancellationToken);
         }
