@@ -40,17 +40,18 @@ public class PutMembersTests
     }
 
     [Test]
-    [MoqInlineAutoData(true, true)]
-    [MoqInlineAutoData(true, false)]
-    [MoqInlineAutoData(false, true)]
-    [MoqInlineAutoData(false, false)]
+    [MoqInlineAutoData(true, true, 1)]
+    [MoqInlineAutoData(true, false, 5)]
+    [MoqInlineAutoData(false, true, 1)]
+    [MoqInlineAutoData(false, false, 0)]
     public async Task UpdateMemberProfileAndPreferences_ReturnsNoContent(
-    bool isMemberProfileAvailable,
-    bool isMemberPreferenceAvailable,
-    [Greedy] MembersController sut,
-    Guid memberId,
-    UpdateMemberProfileModel request,
-    CancellationToken cancellationToken)
+        bool isMemberProfileAvailable,
+        bool isMemberPreferenceAvailable,
+        int regionId,
+        [Greedy] MembersController sut,
+        Guid memberId,
+        UpdateMemberProfileModel request,
+        CancellationToken cancellationToken)
     {
         if (!isMemberProfileAvailable)
         {
@@ -60,7 +61,7 @@ public class PutMembersTests
         {
             request.updateMemberProfileRequest.MemberPreferences = new List<UpdatePreferenceModel>();
         }
-
+        request.patchMemberRequest.RegionId = regionId;
         var result = await sut.UpdateMemberProfileAndPreferences(memberId, request, cancellationToken);
 
         result.Should().BeOfType<NoContentResult>();
