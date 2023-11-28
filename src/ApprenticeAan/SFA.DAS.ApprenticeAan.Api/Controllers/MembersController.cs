@@ -36,16 +36,21 @@ public class MembersController : ControllerBase
         [FromBody] UpdateMemberProfileModel request,
         CancellationToken cancellationToken)
     {
-        PatchMemberRequest patchMemberRequest = request.patchMemberRequest;
-
-        JsonPatchDocument<PatchMemberRequest> jsonPatchDocument = new JsonPatchDocument<PatchMemberRequest>();
-        if (patchMemberRequest.RegionId > 0)
+        if (request.patchMemberRequest.RegionId > 0 || !string.IsNullOrEmpty(request.patchMemberRequest.OrganisationName))
         {
-            jsonPatchDocument.Replace(x => x.RegionId, patchMemberRequest.RegionId);
+            PatchMemberRequest patchMemberRequest = request.patchMemberRequest;
+            JsonPatchDocument<PatchMemberRequest> jsonPatchDocument = new JsonPatchDocument<PatchMemberRequest>();
+            if (patchMemberRequest.RegionId > 0)
+            {
+                jsonPatchDocument.Replace(x => x.RegionId, patchMemberRequest.RegionId);
+            }
+            if (!string.IsNullOrEmpty(patchMemberRequest.OrganisationName))
+            {
+                jsonPatchDocument.Replace(x => x.OrganisationName, patchMemberRequest.OrganisationName);
+            }
+            jsonPatchDocument.ApplyTo(patchMemberRequest);
+            await _apiClient.PatchMember(memberId, memberId, jsonPatchDocument, cancellationToken);
         }
-        jsonPatchDocument.Replace(x => x.OrganisationName, patchMemberRequest.OrganisationName);
-        jsonPatchDocument.ApplyTo(patchMemberRequest);
-        await _apiClient.PatchMember(memberId, memberId, jsonPatchDocument, cancellationToken);
 
         if (request.updateMemberProfileRequest.MemberProfiles.Any() || request.updateMemberProfileRequest.MemberPreferences.Any())
         {
