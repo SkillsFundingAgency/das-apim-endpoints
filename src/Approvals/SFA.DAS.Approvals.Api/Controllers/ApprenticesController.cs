@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,6 +15,7 @@ using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Inform;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprenticeshipUpdates;
 
 namespace SFA.DAS.Approvals.Api.Controllers
@@ -23,11 +26,13 @@ namespace SFA.DAS.Approvals.Api.Controllers
     {
         private readonly ILogger<ApprenticesController> _logger;
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public ApprenticesController(ILogger<ApprenticesController> logger, IMediator mediator)
+        public ApprenticesController(ILogger<ApprenticesController> logger, IMediator mediator, IMapper mapper)
         {
             _logger = logger;
             _mediator = mediator;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -284,5 +289,36 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet]
+        [Route("/provider/{providerId}/apprenticeships/{apprenticeshipId}/details")]
+        [Route("/employer/{accountId}/apprenticeships/{apprenticeshipId}/details")]
+        public async Task<IActionResult> ManageApprenticeshipDetails(long apprenticeshipId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetManageApprenticeshipDetailsQuery
+                    {ApprenticeshipId = apprenticeshipId});
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                var response = _mapper.Map<GetManageApprenticeshipDetailsResponse>(result);
+                return Ok(response);
+            }
+            catch (UnauthorizedAccessException ue)
+            {
+                _logger.LogError(ue, $"Permission denied when accessing Apprenticeship {apprenticeshipId}");
+                return Unauthorized();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in GetManageApprenticeship {apprenticeshipId}");
+                return BadRequest();
+            }
+        }
+
     }
 }

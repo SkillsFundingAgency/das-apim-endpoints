@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using SFA.DAS.EmployerAccounts.FakeApis;
 using WireMock.Server;
 
-namespace SFA.DAS.Approvals.FakeApis
+namespace SFA.DAS.EmployerAccounts.FakeApis
 {
     [ExcludeFromCodeCoverage]
     public static class Program

@@ -1,11 +1,17 @@
-﻿using RestEase;
+﻿using Microsoft.AspNetCore.Mvc;
+using RestEase;
 using SFA.DAS.ApprenticeAan.Application.Apprentices.Commands.CreateApprenticeMember;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
-using SFA.DAS.ApprenticeAan.Application.Entities;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Apprentices;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.MemberProfiles;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Notifications;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.StagedApprentices;
+using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
+using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMember;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMembers;
+using SFA.DAS.ApprenticeAan.Application.Model;
 using SFA.DAS.ApprenticeAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
 
@@ -21,6 +27,10 @@ public interface IAanHubRestApiClient
 
     [Get("/profiles/{userType}")]
     Task<GetProfilesByUserTypeQueryResult> GetProfiles([Path] string userType, CancellationToken cancellationToken);
+
+    [Get("apprentices/{ApprenticeId}")]
+    [AllowAnyStatusCode]
+    Task<Response<GetApprenticeResult>> GetApprenticeMember([Path] Guid ApprenticeId, CancellationToken cancellation);
 
     [Post("/apprentices")]
     Task<CreateApprenticeMemberCommandResult> PostApprenticeMember([Body] CreateApprenticeMemberCommand command, CancellationToken cancellationToken);
@@ -49,10 +59,31 @@ public interface IAanHubRestApiClient
         string ToDate,
         CancellationToken cancellationToken);
 
+    [Put("members/{memberId}/profile")]
+    Task PutMemberProfile(
+        [Path] Guid memberId,
+        [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+        [Body] UpdateMemberProfileCommand putMemberProfileRequest,
+        CancellationToken cancellationToken);
+
     [Get("members")]
     Task<GetMembersQueryResult> GetMembers([QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
+
+    [Get("members/{memberId}")]
+    Task<GetMemberQueryResult> GetMember([Path] Guid memberId, CancellationToken cancellationToken);
 
     [Get("/notifications/{id}")]
     Task<Response<GetNotificationResponse?>> GetNotification([Path] Guid id, [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
     CancellationToken cancellationToken);
+
+    [Get("/members/{memberId}/profile")]
+    Task<GetMemberProfileWithPreferencesQueryResult> GetMemberProfileWithPreferences([Path] Guid memberId, [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, bool @public, CancellationToken cancellationToken);
+
+    [Post("/notifications")]
+    [AllowAnyStatusCode]
+    Task<Response<GetNotificationResponse>> PostNotification([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [Body] PostNotificationRequest command, CancellationToken cancellationToken);
+
+    [Get("/stagedApprentices")]
+    [AllowAnyStatusCode]
+    Task<Response<GetStagedApprenticeResponse?>> GetStagedApprentice([FromQuery] string lastName, [FromQuery] string dateOfBirth, [FromQuery] string email, CancellationToken cancellationToken);
 }

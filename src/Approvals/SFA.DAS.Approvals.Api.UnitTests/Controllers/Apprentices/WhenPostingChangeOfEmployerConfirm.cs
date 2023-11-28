@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -37,7 +38,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => new Unit());
 
-            _controller = new ApprenticesController(Mock.Of<ILogger<ApprenticesController>>(), _mediator.Object);
+            _controller = new ApprenticesController(Mock.Of<ILogger<ApprenticesController>>(), _mediator.Object, Mock.Of<IMapper>());
         }
 
         [Test]

@@ -16,6 +16,8 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         public string Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public int? Cost { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? ActualStartDate { get; set; }
         public DateTime? EndDate { get; set; }
@@ -34,8 +36,5 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         public bool? IsOnFlexiPaymentPilot { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
         public int? DurationReducedByHours { get; set; }
-        public int? WeightageReducedBy { get; set; }
-        public string QualificationsForRplReduction { get; set; }
-        public string ReasonForRplReduction { get; set; }
     }
 }

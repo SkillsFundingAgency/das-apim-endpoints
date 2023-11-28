@@ -1,12 +1,10 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.ApprenticeAan.Api.AppStart;
-using SFA.DAS.ApprenticeAan.Api.HealthCheck;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
-using System.Text.Json.Serialization;
+using SFA.DAS.Telemetry.Startup;
 
 [assembly: ApiController]
 
@@ -20,7 +18,9 @@ var configuration = builder.Configuration.BuildSharedConfiguration();
 builder.Services
     .AddLogging()
     .AddApplicationInsightsTelemetry()
+    .AddTelemetryUriRedaction("firstName,lastName,dateOfBirth,email")
     .AddServiceRegistration(configuration)
+    .AddServiceHealthChecks()
     .AddAuthentication(configuration)
     .AddEndpointsApiExplorer()
     .AddSwaggerGen(c =>
@@ -42,16 +42,6 @@ builder.Services
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
-builder.Services.AddHealthChecks()
-    .AddCheck<ApprenticeAanInnerApiHealthCheck>(ApprenticeAanInnerApiHealthCheck.HealthCheckResultDescription,
-    failureStatus: HealthStatus.Unhealthy,
-    tags: new[] { "ready" })
-    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription,
-        failureStatus: HealthStatus.Unhealthy,
-        tags: new[] { "ready" })
-    .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription,
-        failureStatus: HealthStatus.Unhealthy,
-        tags: new[] { "ready" }); ;
 
 var app = builder.Build();
 

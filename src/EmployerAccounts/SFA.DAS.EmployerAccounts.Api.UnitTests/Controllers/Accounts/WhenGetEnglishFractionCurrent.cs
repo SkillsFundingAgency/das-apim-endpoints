@@ -1,17 +1,17 @@
-﻿using AutoFixture.NUnit3;
+﻿using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.EmployerAccounts.Api.Controllers;
 using SFA.DAS.EmployerAccounts.Api.Models;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent;
-using SFA.DAS.EmployerAccounts.Api.Controllers;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
 {

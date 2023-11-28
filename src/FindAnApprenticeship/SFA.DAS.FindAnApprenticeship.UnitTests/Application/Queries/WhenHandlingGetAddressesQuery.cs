@@ -8,10 +8,8 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.Assessors.UnitTests.Application.Queries
+namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 {
     public class WhenHandlingGetAddressesQuery
     {

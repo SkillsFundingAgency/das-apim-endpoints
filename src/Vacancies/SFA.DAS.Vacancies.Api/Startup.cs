@@ -56,7 +56,11 @@ public static class Startup
             {
                 o.Filters.Add(new AuthorizeFilter("default"));
             }
-        }).AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
+        }).AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+        });
 
         if (configuration["Environment"] != "DEV")
         {
@@ -95,6 +99,8 @@ public static class Startup
             var filePath = Path.Combine(AppContext.BaseDirectory, $"{typeof(Startup).Namespace}.xml");
             c.IncludeXmlComments(filePath);
         });
+
+
     }
 
     public static void ConfigureApp(
@@ -122,5 +128,7 @@ public static class Startup
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "VacanciesOuterApi");
             c.RoutePrefix = string.Empty;
         });
+
+
     }
 }

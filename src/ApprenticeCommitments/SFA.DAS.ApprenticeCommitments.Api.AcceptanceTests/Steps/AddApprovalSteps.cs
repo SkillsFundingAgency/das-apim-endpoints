@@ -204,6 +204,34 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             innerApiRequest.TrainingProviderName.Should().Be(trainingProviderName);
         }
 
+        [Then("recognise prior learning should be (.*) with total hours reduction as (.*) and weeks reduction (.*)")]
+        public void ThenTheCourseLevelDurationShouldBe(bool rplApplies, int? hours, int? weeks)
+        {
+            var logs = _context.InnerApi.MockServer.LogEntries;
+            logs.Should().HaveCount(1);
+
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
+                logs.First().RequestMessage.Body);
+
+            innerApiRequest.RecognisePriorLearning.Should().Be(rplApplies);
+            innerApiRequest.DurationReducedByHours.Should().Be(hours);
+            innerApiRequest.DurationReducedBy.Should().Be(weeks);
+        }
+
+        [Then(@"there is no recognised prior learning values")]
+        public void ThenThereIsNoRecognisedPriorLearningValues()
+        {
+            var logs = _context.InnerApi.MockServer.LogEntries;
+            logs.Should().HaveCount(1);
+
+            var innerApiRequest = JsonConvert.DeserializeObject<ApprovalCreatedRequestData>(
+                logs.First().RequestMessage.Body);
+
+            innerApiRequest.RecognisePriorLearning.Should().BeFalse();
+            innerApiRequest.DurationReducedByHours.Should().BeNull();
+            innerApiRequest.DurationReducedBy.Should().BeNull();
+        }
+
         [Then("the course should be `(.*)` level (.*) courseDuration (.*)")]
         public void ThenTheCourseLevelDurationShouldBe(string name, int level, int courseDuration)
         {
