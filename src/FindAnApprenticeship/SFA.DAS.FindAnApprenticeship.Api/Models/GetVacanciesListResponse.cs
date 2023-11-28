@@ -23,21 +23,21 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
     {
         public long Id { get; set; }
         public DateTime ClosingDate { get; set; }
-       public string EmployerName { get; set; }
-       public DateTime PostedDate { get; set; }
-       public string Title { get; set; }
-       public string VacancyReference { get; set; }
-       public string CourseTitle { get; set; }
-       public double? WageAmount { get; set; }
-       public string WageType { get;  set; }
-       public string AddressLine1 { get; private set; }
-       public string? AddressLine2 { get; private set; }
-       public string AddressLine3 { get; private set; }
-       public string? AddressLine4 { get; private set; }
-       public string PostCode { get; private set; }
-       public decimal? Distance { get ; set ; }
-       public int CourseLevel { get; set; }
-       public string Route { get; set; }
+        public string EmployerName { get; set; }
+        public DateTime PostedDate { get; set; }
+        public string Title { get; set; }
+        public string VacancyReference { get; set; }
+        public string CourseTitle { get; set; }
+        public double? WageAmount { get; set; }
+        public string WageType { get; set; }
+        public string AddressLine1 { get; private set; }
+        public string? AddressLine2 { get; private set; }
+        public string AddressLine3 { get; private set; }
+        public string? AddressLine4 { get; private set; }
+        public string PostCode { get; private set; }
+        public decimal? Distance { get; set; }
+        public int CourseLevel { get; set; }
+        public string Route { get; set; }
 
        public string ApprenticeshipLevel { get ; set ; }
 

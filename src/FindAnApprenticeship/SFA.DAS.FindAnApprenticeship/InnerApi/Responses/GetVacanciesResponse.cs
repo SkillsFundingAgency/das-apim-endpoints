@@ -74,15 +74,19 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
     }
     public class Course
     {
+        [JsonPropertyName("title")]
         public string Title { get; set; }
+        [JsonPropertyName("level")]
         public int Level { get; set; }
+        [JsonPropertyName("route")]
         public string Route { get; set; }
     }
 
     public class Wage
     {
+        [JsonPropertyName("wageAmount")]
         public double? WageAmount { get; set; }
-
+        [JsonPropertyName("wageType")]
         public string WageType { get; set; }
 
     }

@@ -40,7 +40,6 @@
 
 
     <ItemGroup>
-      <ProjectReference Include="..\..\VacanciesManage\SFA.DAS.VacanciesManage.Api\SFA.DAS.VacanciesManage.Api.csproj" />
       <ProjectReference Include="..\SFA.DAS.FindAnApprenticeship\SFA.DAS.FindAnApprenticeship.csproj" />
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>

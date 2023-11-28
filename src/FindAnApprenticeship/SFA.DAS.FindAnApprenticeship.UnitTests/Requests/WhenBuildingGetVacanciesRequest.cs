@@ -8,10 +8,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Requests;
 public class WhenBuildingGetVacanciesRequest
 {
     [Test, AutoData]
-        public void Then_The_Request_Url_Is_Correctly_Built(double lat, double lon, List<string> routes, int distance)
-        {
-            var actual = new GetVacanciesRequest(lat, lon, routes, distance);
+    public void Then_The_Request_Url_Is_Correctly_Built(double lat, double lon, List<string> routes, int distance)
+    {
+        var actual = new GetVacanciesRequest(lat, lon, routes, distance);
 
-            actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&routes={routes}&distance={distance}");
-        }
+        actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&routes={string.Join("&routes=", routes)}&distance={distance}");
+    }
 }

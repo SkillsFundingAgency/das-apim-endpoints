@@ -7,14 +7,14 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
     {
         private readonly double? _lat;
         private readonly double? _lon;
-        private readonly List<string>? _routes;
+        private readonly string _routes;
         private readonly int? _distance;
 
         public GetVacanciesRequest(double? lat, double? lon, List<string>? routes, int? distance)
         {
             _lat = lat;
             _lon = lon;
-            _routes = routes;
+            _routes = routes != null ? string.Join("&routes=", routes) : "";
             _distance = distance;
         }
 
