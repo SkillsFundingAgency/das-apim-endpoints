@@ -28,8 +28,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string Title { get; set; }
         public string VacancyReference { get; set; }
         public string CourseTitle { get; set; }
-        public double? WageAmount { get; set; }
-        public string WageType { get; set; }
+        public string WageAmount { get; set; }
+        public int WageType { get; set; }
         public string AddressLine1 { get; private set; }
         public string? AddressLine2 { get; private set; }
         public string AddressLine3 { get; private set; }
@@ -37,7 +37,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string PostCode { get; private set; }
         public decimal? Distance { get; set; }
         public int CourseLevel { get; set; }
-        public string Route { get; set; }
+        public int CourseId { get; set; }
 
        public string ApprenticeshipLevel { get ; set ; }
 
@@ -52,12 +52,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                Title = source.Title,
                VacancyReference = source.VacancyReference,
                Distance = source.Distance,
-               ApprenticeshipLevel = source.ApprenticeshipLevel,
-               CourseTitle = source.Course.Title,
-               CourseLevel = source.Course.Level,
-               Route = source.Course.Route,
-               WageType = source.Wage.WageType,
-               WageAmount = source.Wage.WageAmount,
+               ApprenticeshipLevel = "1",
+               CourseTitle = source.CourseTitle,
+               CourseId = source.CourseId,
+               WageType = source.WageType,
+               WageAmount = source.WageAmount,
                AddressLine1 = source.Address.AddressLine1,
                AddressLine2 = source.Address.AddressLine2,
                AddressLine3 = source.Address.AddressLine3,
