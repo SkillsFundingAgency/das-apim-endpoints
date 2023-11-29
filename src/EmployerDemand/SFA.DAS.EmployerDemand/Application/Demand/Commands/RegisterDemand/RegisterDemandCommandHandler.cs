@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerDemand.Domain.Models;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
 using SFA.DAS.Notifications.Messages.Commands;
@@ -19,13 +20,17 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
     {
         private readonly IEmployerDemandApiClient<EmployerDemandApiConfiguration> _apiClient;
         private readonly INotificationService _notificationService;
+        private readonly ILogger<RegisterDemandCommandHandler> _logger;
 
         public RegisterDemandCommandHandler (
             IEmployerDemandApiClient<EmployerDemandApiConfiguration> apiClient,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            ILogger<RegisterDemandCommandHandler> logger)
         {
             _apiClient = apiClient;
             _notificationService = notificationService;
+            _logger = logger;
+
         }
 
         public async Task<Guid?> Handle(RegisterDemandCommand request, CancellationToken cancellationToken)
@@ -65,8 +70,12 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
                     request.CourseTitle,
                     request.CourseLevel,
                     request.ConfirmationLink);
-            
-            
+
+#if DEBUG
+                // log email link for testing
+                _logger.LogInformation($"email link to confirm {request.ConfirmationLink}");
+#endif
+                
                 await _notificationService.Send(new SendEmailCommand(emailModel.TemplateId,emailModel.RecipientAddress, emailModel.Tokens));                
             }
 
