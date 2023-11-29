@@ -30,5 +30,29 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         {
             return Ok(await _apiClient.Get<Guid>(new GetApprenticeshipKeyRequest { ApprenticeshipHashedId = apprenticeshipHashedId }));
         }
+        
+        [HttpPost]
+        [Route("{apprenticeshipKey}/priceHistory")]
+        public async Task<ActionResult> CreateApprenticeshipPriceChange(
+            long? providerId,
+            long? employerId,
+            Guid apprenticeshipKey,
+            string userId,
+            decimal? trainingPrice,
+            decimal? assessmentPrice,
+            decimal? totalPrice,
+            string reason)
+        {
+            return Ok(await _apiClient.PostWithResponseCode<object>(new CreateApprenticeshipPriceChangeRequest{ ApprenticeshipKey = apprenticeshipKey, Data = new CreateApprenticeshipPriceChangeRequestData
+            {
+                Ukprn = providerId,
+                EmployerId = employerId,
+                UserId = userId,
+                TrainingPrice = trainingPrice,
+                AssessmentPrice = assessmentPrice,
+                TotalPrice = totalPrice,
+                Reason = reason
+            } }));
+        }
     }
 }
