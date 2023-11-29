@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
@@ -10,6 +7,10 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.BrowseByInterests;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.BrowseByInterestsLocation;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndex;
+using System;
+using System.Net;
+using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -80,23 +81,31 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 
         [HttpGet]
         [Route("searchResults")]
-        public async Task<IActionResult> SearchResults([FromQuery] List<string>? routeIds, [FromQuery] string? location,
-            [FromQuery] int? distance)
+        [ProducesResponseType(typeof(SearchApprenticeshipsApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SearchResults(
+            [FromQuery] GetSearchApprenticeshipsModel model)
         {
             try
             {
-                var result = await _mediator.Send(new SearchApprenticeshipsQuery
-                    { Location = location, Distance = distance, SelectedRouteIds = routeIds });
+                if (model.PageNumber <= 0)
+                {
+                    model.PageNumber = 1;
+                }
+                if (model.PageSize <= 0)
+                {
+                    model.PageSize = Constants.SearchApprenticeships.PageSize;
+                }
+
+                var result = await _mediator.Send((SearchApprenticeshipsQuery)model);
+
                 return Ok((SearchApprenticeshipsApiResponse)result);
             }
-
             catch (Exception e)
             {
                 _logger.LogError(e, "Error getting search results");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-
             }
         }
-
     }
 }

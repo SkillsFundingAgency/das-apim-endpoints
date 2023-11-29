@@ -9,15 +9,25 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
         private readonly double? _lon;
         private readonly string _routes;
         private readonly int? _distance;
+        private readonly int? _pageNumber;
+        private readonly int? _pageSize;
 
-        public GetVacanciesRequest(double? lat, double? lon, List<string>? routes, int? distance)
+        public GetVacanciesRequest(
+            double? lat,
+            double? lon,
+            List<string>? routes,
+            int? distance,
+            int? pageNumber,
+            int? pageSize)
         {
             _lat = lat;
             _lon = lon;
             _routes = routes != null ? string.Join("&routes=", routes) : "";
             _distance = distance;
+            _pageNumber = pageNumber;
+            _pageSize = pageSize;
         }
 
-        public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&routes={_routes}&distance={_distance}";
+        public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&routes={_routes}&distance={_distance}&pageNumber={_pageNumber}&pageSize={_pageSize}";
     }
 }
