@@ -12,6 +12,6 @@ public class WhenBuildingGetVacanciesRequest
     {
         var actual = new GetVacanciesRequest(lat, lon, routes, distance);
 
-        actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&routes={string.Join("&routes=", routes)}&distance={distance}");
+        actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&routes={string.Join("&routes=", routes)}&distanceInMiles={distance}");
     }
 }

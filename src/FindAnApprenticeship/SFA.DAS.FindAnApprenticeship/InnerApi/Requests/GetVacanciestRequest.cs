@@ -18,6 +18,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
             _distance = distance;
         }
 
-        public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&routes={_routes}&distance={_distance}";
+        public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&routes={_routes}&distanceInMiles{_distance}";
     }
 }
