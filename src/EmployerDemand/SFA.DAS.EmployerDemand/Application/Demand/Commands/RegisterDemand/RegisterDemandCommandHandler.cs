@@ -72,7 +72,7 @@ namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.RegisterDemand
                     request.ConfirmationLink);
 
 #if DEBUG
-                // log email link for testing
+                // log email link for testing only
                 _logger.LogInformation($"email link to confirm {request.ConfirmationLink}");
 #endif
                 
