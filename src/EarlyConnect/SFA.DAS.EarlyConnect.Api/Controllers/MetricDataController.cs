@@ -56,14 +56,12 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
         {
             try
             {
-
                 var result = await _mediator.Send(new GetMetricsDataByLepsCodeQuery
                 {
                     LepsCode = lepsCode
                 });
 
                 return Ok((GetMetricsDataListByLepsCodeResponse)result);
-
             }
             catch (Exception e)
             {

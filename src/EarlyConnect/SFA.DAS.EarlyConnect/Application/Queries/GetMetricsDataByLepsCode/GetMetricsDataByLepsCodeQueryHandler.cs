@@ -9,7 +9,6 @@ namespace SFA.DAS.EarlyConnect.Application.Queries.GetMetricsDataByLepsCode
 {
     public class GetMetricsDataByLepsCodeQueryHandler : IRequestHandler<GetMetricsDataByLepsCodeQuery, GetMetricsDataByLepsCodeResult>
     {
-
         private readonly IEarlyConnectApiClient<EarlyConnectApiConfiguration> _apiClient;
 
         public GetMetricsDataByLepsCodeQueryHandler(IEarlyConnectApiClient<EarlyConnectApiConfiguration> apiClient)
@@ -19,7 +18,6 @@ namespace SFA.DAS.EarlyConnect.Application.Queries.GetMetricsDataByLepsCode
 
         public async Task<GetMetricsDataByLepsCodeResult> Handle(GetMetricsDataByLepsCodeQuery request, CancellationToken cancellationToken)
         {
-
             var result = await _apiClient.GetWithResponseCode<GetMetricsDataByLepsCodeResponse>(new GetMetricsDataByLepsCodeRequest(request.LepsCode));
 
             result.EnsureSuccessStatusCode();
