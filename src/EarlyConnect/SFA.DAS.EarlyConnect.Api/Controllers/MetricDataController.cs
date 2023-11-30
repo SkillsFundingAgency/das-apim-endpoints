@@ -69,7 +69,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
 
                 _logger.LogError(e, "Error getting Metrics data ");
 
-                return BadRequest($"Error getting Metrics data. {(errorMessage != null ? $"\nErrorInfo: {errorMessage}" : "")}\nMessage: {e.Message}\nStackTrace: {e.StackTrace}");
+                return BadRequest($"Error getting Metrics data. {(errorMessage != null ? $"\nErrorInfo: {errorMessage}" : "")}");
             }
         }
     }
