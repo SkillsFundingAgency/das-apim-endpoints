@@ -11,6 +11,7 @@ public class GetLiveVacanciesQueryResult
     public class LiveVacancy
     {
         public Guid VacancyId { get; set; }
+        public long VacancyReference { get; set; }
         public string VacancyTitle { get; set; }
         public int NumberOfPositions { get; set; }
         public string ApprenticeshipTitle { get; set; }
