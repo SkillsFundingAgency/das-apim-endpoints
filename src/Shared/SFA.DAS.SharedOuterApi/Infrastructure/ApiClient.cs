@@ -22,16 +22,16 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         public async Task<TResponse> Post<TResponse>(IPostApiRequest request)
         {
             var result = await PostWithResponseCode<TResponse>(request);
-            
-            if(IsNot200RangeResponseCode(result.StatusCode))
+
+            if (IsNot200RangeResponseCode(result.StatusCode))
             {
                 throw new HttpRequestContentException($"Response status code does not indicate success: {(int)result.StatusCode} ({result.StatusCode})", result.StatusCode, result.ErrorContent);
             }
-            
+
             return result.Body;
         }
 
-      
+
         public async Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
         {
             var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
@@ -40,20 +40,20 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
             await AddAuthenticationHeader(requestMessage);
-            
+
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            
+
             var errorContent = "";
             var responseBody = (TResponse)default;
-            
-            if(IsNot200RangeResponseCode(response.StatusCode))
+
+            if (IsNot200RangeResponseCode(response.StatusCode))
             {
                 errorContent = json;
                 HandleException(response, json);
             }
-            else if(includeResponse)
+            else if (includeResponse)
             {
                 var options = new JsonSerializerOptions
                 {
@@ -64,7 +64,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             }
 
             var postWithResponseCode = new ApiResponse<TResponse>(responseBody, response.StatusCode, errorContent);
-            
+
             return postWithResponseCode;
         }
 
@@ -77,12 +77,12 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         public async Task Post<TData>(IPostApiRequest<TData> request)
         {
             var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
-            
+
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl);
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
             await AddAuthenticationHeader(requestMessage);
-            
+
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             await response.EnsureSuccessStatusCodeIncludeContentInException();
@@ -93,9 +93,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var requestMessage = new HttpRequestMessage(HttpMethod.Delete, request.DeleteUrl);
             requestMessage.AddVersion(request.Version);
             await AddAuthenticationHeader(requestMessage);
-            
+
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
-            
+
             await response.EnsureSuccessStatusCodeIncludeContentInException();
         }
 
@@ -107,9 +107,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
             await AddAuthenticationHeader(requestMessage);
-            
+
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
-            
+
             await response.EnsureSuccessStatusCodeIncludeContentInException();
         }
 
@@ -146,11 +146,11 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
             await AddAuthenticationHeader(requestMessage);
-            
+
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
             await response.EnsureSuccessStatusCodeIncludeContentInException();
         }
-        
+
         public async Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
         {
             var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
@@ -159,15 +159,15 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
             await AddAuthenticationHeader(requestMessage);
-            
+
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            
+
             var errorContent = "";
             var responseBody = (TResponse)default;
-            
-            if(IsNot200RangeResponseCode(response.StatusCode))
+
+            if (IsNot200RangeResponseCode(response.StatusCode))
             {
                 errorContent = json;
                 HandleException(response, json);
@@ -183,7 +183,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             }
 
             var apiResponse = new ApiResponse<TResponse>(responseBody, response.StatusCode, errorContent);
-            
+
             return apiResponse;
         }
 
@@ -192,7 +192,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetAllUrl);
             requestMessage.AddVersion(request.Version);
             await AddAuthenticationHeader(requestMessage);
-            
+
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
@@ -209,9 +209,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
             requestMessage.AddVersion(request.Version);
             await AddAuthenticationHeader(requestMessage);
-            
+
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
-            
+
             return response.StatusCode;
         }
 
@@ -220,7 +220,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetPagedUrl);
             requestMessage.AddVersion(request.Version);
             await AddAuthenticationHeader(requestMessage);
-            
+
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)

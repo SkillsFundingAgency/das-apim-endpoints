@@ -20,6 +20,7 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
     public async Task<GetLiveVacanciesQueryResult> Handle(GetLiveVacanciesQuery request, CancellationToken cancellationToken)
     {
         var response = await _recruitApiClient.GetWithResponseCode<GetLiveVacanciesApiResponse>(new GetLiveVacanciesApiRequest(request.PageNumber, request.PageSize));
+        response.Body.Vacancies = RemoveTraineeships(response.Body);
         var standards = await _courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
 
         return new GetLiveVacanciesQueryResult
@@ -33,6 +34,7 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
             {
                 VacancyId = x.VacancyId,
                 VacancyTitle = x.Title,
+                NumberOfPositions = x.NumberOfPositions,
                 ApprenticeshipTitle = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == x.ProgrammeId)?.Title ?? string.Empty,
                 Level = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == x.ProgrammeId)?.Level ?? 0,
                 Description = x.Description,
@@ -67,5 +69,12 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
                 }
             }),
         };
+    }
+
+    private static List<LiveVacancy> RemoveTraineeships(GetLiveVacanciesApiResponse response)
+    {
+        return response.Vacancies.Select(x => x)
+            .Where(x => x.VacancyType == VacancyType.Apprenticeship)
+            .ToList();
     }
 }

@@ -1,6 +1,4 @@
-﻿using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
-
-namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries;
+﻿namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 public class GetLiveVacanciesQueryResult
 {
     public IEnumerable<LiveVacancy> Vacancies { get; set; } = null!;
@@ -14,6 +12,7 @@ public class GetLiveVacanciesQueryResult
     {
         public Guid VacancyId { get; set; }
         public string VacancyTitle { get; set; }
+        public int NumberOfPositions { get; set; }
         public string ApprenticeshipTitle { get; set; }
         public string? Description { get; set; }
         public Address? EmployerLocation { get; set; }
