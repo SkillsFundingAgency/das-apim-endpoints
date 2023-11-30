@@ -97,23 +97,30 @@ namespace SFA.DAS.Campaign.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
             app.UseAuthentication();
-            
-            app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "api/{controller=Sectors}/{action=GetSectors}/{id?}");
-            });
-        
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "CampaignOuterApi");
                 c.RoutePrefix = string.Empty;
             });
+
+            app.UseRouting();
+            app.UseMiddleware<SecurityHeadersMiddleware>();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "api/{controller=Sectors}/{action=GetSectors}/{id?}");
+            });
+       
         }
     }
 }

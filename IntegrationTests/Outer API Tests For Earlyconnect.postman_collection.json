@@ -1,0 +1,231 @@
+{
+	"info": {
+		"_postman_id": "801dff5e-8b38-4a19-899e-1400e24a9454",
+		"name": "EarlyConnect-OuterApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21174429"
+	},
+	"item": [
+		{
+			"name": "Create Student Data",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"listOfStudentData\": [\r\n    {\r\n      \"firstName\": \"Ratheesh\",\r\n      \"lastName\": \"RI\",\r\n      \"dateOfBirth\": \"1984-05-29\",\r\n      \"email\": \"ratheesh@education.co.uk\",\r\n      \"postcode\": \"NG82QA\",\r\n      \"industry\": \"Software\",\r\n      \"dateOfInterest\": \"2023-11-17\"\r\n    },\r\n    {\r\n      \"firstName\": \"David\",\r\n      \"lastName\": \"Rimar\",\r\n      \"dateOfBirth\": \"1984-05-29\",\r\n      \"email\": \"David@education.co.uk\",\r\n      \"postcode\": \"NG52QA\",\r\n      \"industry\": \"Software\",\r\n      \"dateOfInterest\": \"2023-11-17\"\r\n    }\r\n  ]\r\n}"
+				},
+				"url": {
+					"raw": "https://test-apim-erlycon-api.apprenticeships.education.gov.uk/early-connect/student-data/add",
+					"protocol": "https",
+					"host": [
+						"test-apim-erlycon-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"early-connect",
+						"student-data",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Log",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"requestType\": \"StrdentData\",\r\n  \"requestSource\": \"UCAS\",\r\n  \"requestIP\": \"82.10.212.131\",\r\n  \"payload\": \"{Json}\",\r\n  \"fileName\": \"\",\r\n  \"status\": \"InProgress\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://test-apim-erlycon-api.apprenticeships.education.gov.uk/early-connect/api-log/add",
+					"protocol": "https",
+					"host": [
+						"test-apim-erlycon-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"early-connect",
+						"api-log",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Metric Data",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Cache-Control",
+						"value": "no-cache",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"metricsData\": [\r\n    {\r\n      \"region\": \"Lancashire\",\r\n      \"intendedStartYear\": 2024,\r\n      \"maxTravelInMiles\": 20,\r\n      \"willingnessToRelocate\": true,\r\n      \"noOfGCSCs\": 3,\r\n      \"noOfStudents\": 4,\r\n      \"logId\": 1,\r\n      \"metricFlags\": [\r\n        \"gcse_grade4_english_flag\",\r\n        \"interested_in_hr_flag\"\r\n      ]\r\n    },\r\n    {\r\n      \"region\": \"North East\",\r\n      \"intendedStartYear\": 2024,\r\n      \"maxTravelInMiles\": 20,\r\n      \"willingnessToRelocate\": true,\r\n      \"noOfGCSCs\": 3,\r\n      \"noOfStudents\": 4,\r\n      \"logId\": 1,\r\n      \"metricFlags\": [\r\n        \"gcse_grade4_english_flag\",\r\n        \"interested_in_retail_flag\"\r\n      ]\r\n    }\r\n  ]\r\n}"
+				},
+				"url": {
+					"raw": "https://test-apim-erlycon-api.apprenticeships.education.gov.uk/early-connect/metrics-data/add",
+					"protocol": "https",
+					"host": [
+						"test-apim-erlycon-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"early-connect",
+						"metrics-data",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Log",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"logId\":1,\r\n  \"status\": \"string\",\r\n  \"error\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://test-apim-erlycon-api.apprenticeships.education.gov.uk/early-connect/api-log/update",
+					"protocol": "https",
+					"host": [
+						"test-apim-erlycon-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"early-connect",
+						"api-log",
+						"update"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
