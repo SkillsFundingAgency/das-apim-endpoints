@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "801dff5e-8b38-4a19-899e-1400e24a9454",
+		"_postman_id": "3687ac1d-782a-494c-9952-e61f9b8c2eed",
 		"name": "EarlyConnect-OuterApi",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "21174429"
@@ -109,6 +109,66 @@
 						"early-connect",
 						"api-log",
 						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Metrics Data",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"requestType\": \"StrdentData\",\r\n  \"requestSource\": \"UCAS\",\r\n  \"requestIP\": \"82.10.212.131\",\r\n  \"payload\": \"{Json}\",\r\n  \"fileName\": \"\",\r\n  \"status\": \"InProgress\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://test-apim-erlycon-api.apprenticeships.education.gov.uk/early-connect/metrics-data/E37000025",
+					"protocol": "https",
+					"host": [
+						"test-apim-erlycon-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"early-connect",
+						"metrics-data",
+						"E37000025"
 					]
 				}
 			},
