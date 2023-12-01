@@ -39,8 +39,11 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error posting Metrics data");
-                return BadRequest($"Error posting Metrics data. {e.Message} {e.StackTrace}");
+                var errorMessage = (e as SharedOuterApi.Exceptions.ApiResponseException)?.Error;
+
+                _logger.LogError(e, "Error posting Metrics data ");
+
+                return BadRequest($"Error posting Metrics data. {(errorMessage != null ? $"\nErrorInfo: {errorMessage}" : "")}\nMessage: {e.Message}\nStackTrace: {e.StackTrace}");
             }
         }
     }
