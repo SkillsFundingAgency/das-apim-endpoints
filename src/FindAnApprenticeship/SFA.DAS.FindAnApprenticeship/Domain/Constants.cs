@@ -7,7 +7,8 @@ namespace SFA.DAS.FindAnApprenticeship.Domain
     {
         public static class SearchApprenticeships
         {
-            public static readonly int PageSize = 10;
+            public static readonly int DefaultPageNumber = 1;
+            public static readonly int DefaultPageSize = 10;
         }
     }
 }

@@ -88,15 +88,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                if (model.PageNumber <= 0)
-                {
-                    model.PageNumber = 1;
-                }
-                if (model.PageSize <= 0)
-                {
-                    model.PageSize = Constants.SearchApprenticeships.PageSize;
-                }
-
                 var result = await _mediator.Send((SearchApprenticeshipsQuery)model);
 
                 return Ok((SearchApprenticeshipsApiResponse)result);
