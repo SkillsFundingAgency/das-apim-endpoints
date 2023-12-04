@@ -13,21 +13,34 @@ public class GetSchoolsQueryHandlerTests
     public async Task Handle_ReturnsSchools(
         [Frozen] Mock<IReferenceDataApiClient> apiClient,
         GetSchoolsQueryHandler sut,
-        GetSchoolsQueryApiResult apiResult,
         GetSchoolsQuery query)
     {
-        var searchTerm = query.SearchTerm;
+        var searchTerm = "dee";
+        query.SearchTerm = searchTerm;
 
-        var expected = new Response<GetSchoolsQueryApiResult>(
+        var schools = new List<School>
+        {
+            new() { Name = "Deeside school", Urn = "123456" },
+            new() { Name = "Deer school", Urn = "123457" },
+            new() { Name = "Dee school child centre", Urn = "12345" },
+            new() { Name = "Deering school", Urn = "123458" }
+        };
+
+        var schoolsExpected = schools.Where(s => s.Urn.Length == 6).ToList();
+
+        var apiResult = new GetSchoolsQueryApiResult(schools);
+
+        var returned = new Response<GetSchoolsQueryApiResult>(
         "not used",
         new HttpResponseMessage(System.Net.HttpStatusCode.OK),
         () => apiResult);
 
-        apiClient.Setup(x => x.GetSchools(searchTerm, 20, 1, It.IsAny<CancellationToken>())).ReturnsAsync(expected);
+        apiClient.Setup(x => x.GetSchools(searchTerm, 100, 1, It.IsAny<CancellationToken>())).ReturnsAsync(returned);
 
         var actual = await sut.Handle(query, It.IsAny<CancellationToken>());
 
-        actual.Should().BeEquivalentTo(expected.GetContent());
+        actual.Data.Count.Should().Be(3);
+        actual.Should().BeEquivalentTo(new GetSchoolsQueryApiResult(schoolsExpected));
     }
 
     [Test, MoqAutoData]

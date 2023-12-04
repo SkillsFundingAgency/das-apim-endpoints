@@ -8,7 +8,7 @@ public class GetSchoolsQueryHandler : IRequestHandler<GetSchoolsQuery, GetSchool
     private readonly IReferenceDataApiClient _apiClient;
     private readonly ILogger<GetSchoolsQueryHandler> _logger;
 
-    public const int PageSize = 20;
+    public const int PageSize = 100;
     public const int PageNumber = 1;
     public GetSchoolsQueryHandler(IReferenceDataApiClient apiClient, ILogger<GetSchoolsQueryHandler> logger)
     {
@@ -20,7 +20,12 @@ public class GetSchoolsQueryHandler : IRequestHandler<GetSchoolsQuery, GetSchool
     {
         var result = await _apiClient.GetSchools(request.SearchTerm, PageSize, PageNumber, cancellationToken);
 
-        if (result.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK) return result.GetContent();
+        if (result.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+        {
+            var response = result.GetContent();
+            var schools = response.Data;
+            return new GetSchoolsQueryApiResult(schools.Where(s => s.Urn.Length == 6).ToList());
+        }
 
         _logger.LogInformation("Call to ReferenceData Api was not successful. There has been status returned of StatusCode {StatusCode}", result.ResponseMessage.StatusCode);
 
