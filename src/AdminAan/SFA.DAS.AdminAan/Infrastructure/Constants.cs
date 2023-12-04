@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.AdminAan.Infrastructure.Configuration;
+﻿namespace SFA.DAS.AdminAan.Infrastructure;
 public static class Constants
 {
     public static class ApiHeaders
