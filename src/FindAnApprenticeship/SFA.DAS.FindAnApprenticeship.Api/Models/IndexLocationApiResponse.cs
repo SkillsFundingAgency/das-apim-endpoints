@@ -8,7 +8,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         [JsonPropertyName("location")]
         public SearchLocationApiResponse Location { get; set; }
 
-        public static implicit operator IndexLocationApiResponse(IndexLocationResult source)
+        public static implicit operator IndexLocationApiResponse(IndexLocationQueryResult source)
         {
             if (source.LocationItem == null)
             {

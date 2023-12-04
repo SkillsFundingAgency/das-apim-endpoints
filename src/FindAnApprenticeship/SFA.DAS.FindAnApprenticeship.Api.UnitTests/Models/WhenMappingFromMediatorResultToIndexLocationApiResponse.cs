@@ -11,7 +11,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models;
 public class WhenMappingFromMediatorResultToIndexLocationApiResponse
 {
     [Test, AutoData]
-    public void Then_The_Response_Is_Mapped(IndexLocationResult source)
+    public void Then_The_Response_Is_Mapped(IndexLocationQueryResult source)
     {
         var actual = (IndexLocationApiResponse)source;
 
@@ -23,7 +23,7 @@ public class WhenMappingFromMediatorResultToIndexLocationApiResponse
     [Test]
     public void Then_If_Null_Then_Null_Returned()
     {
-        var actual = (IndexLocationApiResponse)new IndexLocationResult{LocationItem = null};
+        var actual = (IndexLocationApiResponse)new IndexLocationQueryResult{LocationItem = null};
 
         actual.Location.Should().BeNull();
     }

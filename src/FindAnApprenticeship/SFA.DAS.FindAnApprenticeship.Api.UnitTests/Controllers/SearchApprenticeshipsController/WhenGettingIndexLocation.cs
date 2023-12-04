@@ -19,7 +19,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprentic
         [Test, MoqAutoData]
         public async Task Then_The_Query_Response_Is_Returned(
             string searchTerm,
-            IndexLocationResult mediatorResult,
+            IndexLocationQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.SearchApprenticeshipsController controller)
         {
@@ -39,7 +39,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprentic
         [Test, MoqAutoData]
         public async Task Then_If_An_Exception_Is_Thrown_Then_Internal_Server_Error_Response_Returned(
             string searchTerm,
-            IndexLocationResult mediatorResult,
+            IndexLocationQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.SearchApprenticeshipsController controller)
         {

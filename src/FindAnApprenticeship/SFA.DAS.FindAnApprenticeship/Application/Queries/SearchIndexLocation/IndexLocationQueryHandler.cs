@@ -5,7 +5,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndexLocation
 {
-    public class IndexLocationQueryHandler : IRequestHandler<IndexLocationQuery, IndexLocationResult>
+    public class IndexLocationQueryHandler : IRequestHandler<IndexLocationQuery, IndexLocationQueryResult>
     {
         private readonly ILocationLookupService _locationLookupService;
 
@@ -13,11 +13,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndexLocation
         {
             _locationLookupService = locationLookupService;
         }
-        public async Task<IndexLocationResult> Handle(IndexLocationQuery request, CancellationToken cancellationToken)
+        public async Task<IndexLocationQueryResult> Handle(IndexLocationQuery request, CancellationToken cancellationToken)
         {
             var result = await _locationLookupService.GetLocationInformation(request.LocationSearchTerm, 0, 0, false);
 
-            return new IndexLocationResult()
+            return new IndexLocationQueryResult()
             {
                 LocationItem = result
             };
