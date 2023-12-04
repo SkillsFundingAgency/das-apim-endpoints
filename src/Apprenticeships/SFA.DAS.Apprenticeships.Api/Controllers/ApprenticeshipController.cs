@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using CreateApprenticeshipPriceChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipPriceChangeRequest;
 
 namespace SFA.DAS.Apprenticeships.Api.Controllers
 {
@@ -33,26 +35,21 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         
         [HttpPost]
         [Route("{apprenticeshipKey}/priceHistory")]
-        public async Task<ActionResult> CreateApprenticeshipPriceChange(
-            long? providerId,
-            long? employerId,
-            Guid apprenticeshipKey,
-            string userId,
-            decimal? trainingPrice,
-            decimal? assessmentPrice,
-            decimal? totalPrice,
-            string reason)
+        public async Task<ActionResult> CreateApprenticeshipPriceChange(Guid apprenticeshipKey,
+            [FromBody] CreateApprenticeshipPriceChangeRequest request)
         {
-            return Ok(await _apiClient.PostWithResponseCode<object>(new CreateApprenticeshipPriceChangeRequest{ ApprenticeshipKey = apprenticeshipKey, Data = new CreateApprenticeshipPriceChangeRequestData
-            {
-                Ukprn = providerId,
-                EmployerId = employerId,
-                UserId = userId,
-                TrainingPrice = trainingPrice,
-                AssessmentPrice = assessmentPrice,
-                TotalPrice = totalPrice,
-                Reason = reason
-            } }));
+            await _apiClient.PostWithResponseCode<object>(new PostCreateApprenticeshipPriceChangeRequest(
+                apprenticeshipKey,
+                request.ProviderId,
+                request.EmployerId,
+                request.UserId,
+                request.TrainingPrice,
+                request.AssessmentPrice,
+                request.TotalPrice,
+                request.Reason,
+                request.EffectiveFromDate
+            ), false);
+            return Ok();
         }
     }
 }

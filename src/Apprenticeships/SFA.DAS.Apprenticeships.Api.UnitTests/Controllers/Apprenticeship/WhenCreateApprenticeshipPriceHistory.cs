@@ -21,43 +21,44 @@ public class WhenCreateApprenticeshipPriceHistory
             
         // Arrange
         var apprenticeshipKey = Guid.NewGuid();
-        var request = new CreateApprenticeshipPriceChangeRequest
-        {
-            ApprenticeshipKey = apprenticeshipKey,
-            Data = new CreateApprenticeshipPriceChangeRequestData
-            {
-                Ukprn = 123,
-                EmployerId = 456,
-                UserId = "testUser",
-                TrainingPrice = 1000,
-                AssessmentPrice = 500,
-                TotalPrice = 1500,
-                Reason = "Test Reason"
-            }
-        };
+        var request = new PostCreateApprenticeshipPriceChangeRequest(
+            apprenticeshipKey: apprenticeshipKey,
+            providerId: 123,
+            employerId: 456,
+            userId: "testUser",
+            trainingPrice: 1000,
+            assessmentPrice: 500,
+            totalPrice: 1500,
+            reason: "Test Reason",
+            effectiveFromDate: new DateTime(2023, 04, 04));
             
         apiClient.Setup(x => x.PostWithResponseCode<object>(request, It.IsAny<bool>())).ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.OK, ""));
 
         // Act
         await sut.CreateApprenticeshipPriceChange(
-            ((CreateApprenticeshipPriceChangeRequestData)request.Data).Ukprn,
-            ((CreateApprenticeshipPriceChangeRequestData)request.Data).EmployerId,
             request.ApprenticeshipKey,
-            ((CreateApprenticeshipPriceChangeRequestData)request.Data).UserId,
-            ((CreateApprenticeshipPriceChangeRequestData)request.Data).TrainingPrice,
-            ((CreateApprenticeshipPriceChangeRequestData)request.Data).AssessmentPrice,
-            ((CreateApprenticeshipPriceChangeRequestData)request.Data).TotalPrice,
-            ((CreateApprenticeshipPriceChangeRequestData)request.Data).Reason);
+            new Models.CreateApprenticeshipPriceChangeRequest
+            {
+                ProviderId = ((CreateApprenticeshipPriceChangeRequest)request.Data).ProviderId,
+                EmployerId = ((CreateApprenticeshipPriceChangeRequest)request.Data).EmployerId,
+                UserId = ((CreateApprenticeshipPriceChangeRequest)request.Data).UserId,
+                TrainingPrice = ((CreateApprenticeshipPriceChangeRequest)request.Data).TrainingPrice,
+                AssessmentPrice = ((CreateApprenticeshipPriceChangeRequest)request.Data).AssessmentPrice,
+                TotalPrice = ((CreateApprenticeshipPriceChangeRequest)request.Data).TotalPrice,
+                Reason = ((CreateApprenticeshipPriceChangeRequest)request.Data).Reason,
+                EffectiveFromDate = ((CreateApprenticeshipPriceChangeRequest)request.Data).EffectiveFromDate
+            });
 
         // Assert
-        apiClient.Verify(x => x.PostWithResponseCode<object>(It.Is<CreateApprenticeshipPriceChangeRequest>(r =>
-            ((CreateApprenticeshipPriceChangeRequestData)r.Data).Ukprn == ((CreateApprenticeshipPriceChangeRequestData)request.Data).Ukprn &&
-            ((CreateApprenticeshipPriceChangeRequestData)r.Data).EmployerId == ((CreateApprenticeshipPriceChangeRequestData)request.Data).EmployerId &&
-            ((CreateApprenticeshipPriceChangeRequestData)r.Data).UserId == ((CreateApprenticeshipPriceChangeRequestData)request.Data).UserId &&
-            ((CreateApprenticeshipPriceChangeRequestData)r.Data).TrainingPrice == ((CreateApprenticeshipPriceChangeRequestData)request.Data).TrainingPrice &&
-            ((CreateApprenticeshipPriceChangeRequestData)r.Data).AssessmentPrice == ((CreateApprenticeshipPriceChangeRequestData)request.Data).AssessmentPrice &&
-            ((CreateApprenticeshipPriceChangeRequestData)r.Data).TotalPrice == ((CreateApprenticeshipPriceChangeRequestData)request.Data).TotalPrice &&
-            ((CreateApprenticeshipPriceChangeRequestData)r.Data).Reason == ((CreateApprenticeshipPriceChangeRequestData)request.Data).Reason &&
+        apiClient.Verify(x => x.PostWithResponseCode<object>(It.Is<PostCreateApprenticeshipPriceChangeRequest>(r =>
+            ((CreateApprenticeshipPriceChangeRequest)r.Data).ProviderId == ((CreateApprenticeshipPriceChangeRequest)request.Data).ProviderId &&
+            ((CreateApprenticeshipPriceChangeRequest)r.Data).EmployerId == ((CreateApprenticeshipPriceChangeRequest)request.Data).EmployerId &&
+            ((CreateApprenticeshipPriceChangeRequest)r.Data).UserId == ((CreateApprenticeshipPriceChangeRequest)request.Data).UserId &&
+            ((CreateApprenticeshipPriceChangeRequest)r.Data).TrainingPrice == ((CreateApprenticeshipPriceChangeRequest)request.Data).TrainingPrice &&
+            ((CreateApprenticeshipPriceChangeRequest)r.Data).AssessmentPrice == ((CreateApprenticeshipPriceChangeRequest)request.Data).AssessmentPrice &&
+            ((CreateApprenticeshipPriceChangeRequest)r.Data).TotalPrice == ((CreateApprenticeshipPriceChangeRequest)request.Data).TotalPrice &&
+            ((CreateApprenticeshipPriceChangeRequest)r.Data).Reason == ((CreateApprenticeshipPriceChangeRequest)request.Data).Reason &&
+            ((CreateApprenticeshipPriceChangeRequest)r.Data).EffectiveFromDate == ((CreateApprenticeshipPriceChangeRequest)request.Data).EffectiveFromDate &&
             r.ApprenticeshipKey == request.ApprenticeshipKey), It.IsAny<bool>()), Times.Once);
     }
 }
