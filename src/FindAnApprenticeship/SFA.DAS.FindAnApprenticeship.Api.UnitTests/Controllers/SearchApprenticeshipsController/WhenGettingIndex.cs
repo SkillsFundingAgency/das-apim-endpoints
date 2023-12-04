@@ -10,6 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndex;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprenticeshipsController
@@ -18,13 +19,13 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprentic
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Apprenticeships_From_Mediator(
-            SearchApprenticeshipsResult mediatorResult,
+            SearchIndexQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] Api.Controllers.SearchApprenticeshipsController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<SearchApprenticeshipsQuery>(),
+                    It.IsAny<SearchIndexQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
@@ -32,9 +33,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprentic
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as SearchApprenticeshipsApiResponse;
+            var model = controllerResult.Value as SearchIndexApiResponse;
             Assert.IsNotNull(model);
-            model.Should().BeEquivalentTo((SearchApprenticeshipsApiResponse)mediatorResult);
+            model.Should().BeEquivalentTo((SearchIndexApiResponse)mediatorResult);
         }
 
         [Test, MoqAutoData]

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
@@ -8,6 +9,7 @@ using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.BrowseByInterests;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.BrowseByInterestsLocation;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndex;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -30,16 +32,16 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new SearchApprenticeshipsQuery());
-                var viewModel = (SearchApprenticeshipsApiResponse)result;
+                var result = await _mediator.Send(new SearchIndexQuery());
+                var viewModel = (SearchIndexApiResponse)result;
                 return Ok(viewModel);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error calling Browse By Interests Index");
-                return new  StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
-            
+
         }
 
         [HttpGet]
@@ -61,7 +63,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 
         [HttpGet]
         [Route("browsebyinterestslocation")]
-        public async Task<IActionResult> BrowseByInterestsLocation([FromQuery]string locationSearchTerm)
+        public async Task<IActionResult> BrowseByInterestsLocation([FromQuery] string locationSearchTerm)
         {
             try
             {
@@ -75,7 +77,26 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
-    }
 
-    
+        [HttpGet]
+        [Route("searchResults")]
+        public async Task<IActionResult> SearchResults([FromQuery] List<string>? routeIds, [FromQuery] string? location,
+            [FromQuery] int? distance)
+        {
+            try
+            {
+                var result = await _mediator.Send(new SearchApprenticeshipsQuery
+                    { Location = location, Distance = distance, SelectedRouteIds = routeIds });
+                return Ok((SearchApprenticeshipsApiResponse)result);
+            }
+
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting search results");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+
+            }
+        }
+
+    }
 }

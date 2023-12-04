@@ -8,10 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Moq" />
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.EarlyConnect\SFA.DAS.EarlyConnect.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\StudentData\" />
   </ItemGroup>
 
 </Project>

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 
@@ -9,11 +11,18 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         {
             return new SearchApprenticeshipsApiResponse
             {
-                TotalApprenticeshipCount = source.TotalApprenticeshipCount
+                TotalApprenticeshipCount = source.TotalApprenticeshipCount,
+                Location = source.LocationItem,
+                Routes = source.Routes.Select(c=>(RouteApiResponse)c).ToList()
             };
         }
         
         [JsonPropertyName("totalApprenticeshipCount")]
         public long TotalApprenticeshipCount { get; set; }
+        
+        [JsonPropertyName("location")]
+        public SearchLocationApiResponse Location { get; set; }
+        
+        public List<RouteApiResponse> Routes { get; set; }
     }
 }
