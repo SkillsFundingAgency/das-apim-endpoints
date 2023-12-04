@@ -34,6 +34,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             {
                 source.VacancyId,
                 VacancyTitle = source.Title,
+                VacancyReference = source.VacancyReference,
                 ApprenticeshipTitle = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Title,
                 Level = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Level,
                 source.Description,

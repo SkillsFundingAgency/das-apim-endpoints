@@ -20,6 +20,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
             return new Application.Shared.LiveVacancy
             {
                 VacancyId = source.VacancyId,
+                VacancyReference = source.VacancyReference,
                 VacancyTitle = source.Title,
                 NumberOfPositions = source.NumberOfPositions,
                 ApprenticeshipTitle = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == source.ProgrammeId)?.Title ?? string.Empty,
