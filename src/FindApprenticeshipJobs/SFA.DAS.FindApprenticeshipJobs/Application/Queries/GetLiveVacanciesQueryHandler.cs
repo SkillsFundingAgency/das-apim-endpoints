@@ -33,6 +33,7 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
             Vacancies = response.Body.Vacancies.Select(x => new GetLiveVacanciesQueryResult.LiveVacancy
             {
                 VacancyId = x.VacancyId,
+                VacancyReference = x.VacancyReference,
                 VacancyTitle = x.Title,
                 NumberOfPositions = x.NumberOfPositions,
                 ApprenticeshipTitle = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == x.ProgrammeId)?.Title ?? string.Empty,
