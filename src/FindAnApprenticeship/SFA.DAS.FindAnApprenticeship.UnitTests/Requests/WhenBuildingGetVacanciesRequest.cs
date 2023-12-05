@@ -14,10 +14,11 @@ public class WhenBuildingGetVacanciesRequest
         List<string> routes,
         int distance,
         int pageNumber,
-        int pageSize)
+        int pageSize,
+        string sort)
     {
-        var actual = new GetVacanciesRequest(lat, lon, routes, distance, pageNumber, pageSize);
+        var actual = new GetVacanciesRequest(lat, lon, routes, distance, sort, pageNumber, pageSize);
 
-        actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&routes={string.Join("&routes=", routes)}&distance={distance}&pageNumber={pageNumber}&pageSize={pageSize}");
+        actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&routes={string.Join("&routes=", routes)}&distanceInMiles={distance}&sort={sort}&pageNumber={pageNumber}&pageSize={pageSize}");
     }
 }

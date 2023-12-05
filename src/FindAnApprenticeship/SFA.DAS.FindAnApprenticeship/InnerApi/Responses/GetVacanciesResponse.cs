@@ -60,6 +60,12 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 
         [JsonPropertyName("distance")] 
         public decimal? Distance { get; set; }
+
+        [JsonPropertyName("courseRoute")]
+        public string CourseRoute { get; set; }
+
+        [JsonPropertyName("courseLevel")]
+        public string CourseLevel { get; set; }
     }
 
     public class Address

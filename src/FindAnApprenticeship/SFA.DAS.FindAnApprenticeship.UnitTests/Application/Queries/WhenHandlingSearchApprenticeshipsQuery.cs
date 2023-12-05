@@ -48,6 +48,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 locationInfo.GeoPoint?.LastOrDefault(),
                 query.SelectedRouteIds,
                 query.Distance,
+                query.Sort,
                 query.PageNumber,
                 query.PageSize);
 

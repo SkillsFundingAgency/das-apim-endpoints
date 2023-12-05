@@ -26,11 +26,12 @@ public class GetLiveVacanciesApiResponse
 
     public class LiveVacancy
     {
-        public static implicit operator LiveVacancy(GetLiveVacanciesQueryResult.LiveVacancy source)
+        public static implicit operator LiveVacancy(Application.Shared.LiveVacancy source)
         {
             return new LiveVacancy
             {
                 VacancyId = source.VacancyId,
+                VacancyReference = source.VacancyReference,
                 VacancyTitle = source.VacancyTitle,
                 NumberOfPositions = source.NumberOfPositions,
                 ApprenticeshipTitle = source.ApprenticeshipTitle,
@@ -51,6 +52,7 @@ public class GetLiveVacanciesApiResponse
         }
 
         public Guid VacancyId { get; set; }
+        public long VacancyReference { get; set; }
         public string VacancyTitle { get; set; }
         public int NumberOfPositions { get; set; }
         public string ApprenticeshipTitle { get; set; }
@@ -72,7 +74,7 @@ public class GetLiveVacanciesApiResponse
 
     public class Address
     {
-        public static implicit operator Address(GetLiveVacanciesQueryResult.Address source)
+        public static implicit operator Address(Application.Shared.Address source)
         {
             return new Address
             {
@@ -105,7 +107,7 @@ public class GetLiveVacanciesApiResponse
         public decimal WeeklyHours { get; set; }
         public string? WorkingWeekDescription { get; set; }
 
-        public static implicit operator Wage(GetLiveVacanciesQueryResult.Wage source)
+        public static implicit operator Wage(Application.Shared.Wage source)
         {
             return new Wage
             {

@@ -36,8 +36,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string? AddressLine4 { get; private set; }
         public string PostCode { get; private set; }
         public decimal? Distance { get; set; }
-        public int CourseLevel { get; set; }
+        public string CourseLevel { get; set; }
         public int CourseId { get; set; }
+        public string CourseRoute { get; set; }
 
        public string ApprenticeshipLevel { get ; set ; }
 
@@ -61,7 +62,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                AddressLine2 = source.Address.AddressLine2,
                AddressLine3 = source.Address.AddressLine3,
                AddressLine4 = source.Address.AddressLine4,
-               PostCode = source.Address.Postcode
+               PostCode = source.Address.Postcode,
+               CourseRoute = source.CourseRoute,
+               CourseLevel = source.CourseLevel
            };
        }
     }

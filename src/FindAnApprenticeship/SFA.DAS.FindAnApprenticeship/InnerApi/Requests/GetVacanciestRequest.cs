@@ -11,12 +11,14 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
         private readonly int? _distance;
         private readonly int? _pageNumber;
         private readonly int? _pageSize;
+        private readonly string _sort;
 
         public GetVacanciesRequest(
             double? lat,
             double? lon,
             List<string>? routes,
             int? distance,
+            string sort,
             int? pageNumber,
             int? pageSize)
         {
@@ -24,6 +26,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
             _lon = lon;
             _routes = routes != null ? string.Join("&routes=", routes) : "";
             _distance = distance;
+            _sort = sort;
             _pageNumber = pageNumber;
             _pageSize = pageSize;
         }
