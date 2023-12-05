@@ -23,7 +23,7 @@ public class GetAddressesQueryHandlerTests
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Addresses.Count().Should().Be(apiResponse.Addresses.Count());
+        result.Addresses.Count().Should().Be(apiResponse.Addresses.Count);
     }
 
     [Test]
