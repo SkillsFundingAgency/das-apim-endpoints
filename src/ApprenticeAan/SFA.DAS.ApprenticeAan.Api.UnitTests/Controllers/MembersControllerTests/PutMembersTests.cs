@@ -268,4 +268,24 @@ public class PutMembersTests
         aanHubRestApiClientMock.Verify(a => a.PutMemberProfile(It.IsAny<Guid>(), It.Is<UpdateMemberProfileRequest>(j => j.MemberProfiles.Count == 1 && j.MemberProfiles.FirstOrDefault()!.Value == profileValue!.Trim()), It.IsAny<CancellationToken>()), Times.Once);
     }
 
+    [Test, MoqAutoData]
+    public async Task UpdateMemberProfileAndPreferences_MemberProfileValueIsNull_ShouldTrimmedMemberProfileValue(
+        [Frozen] Mock<IAanHubRestApiClient> aanHubRestApiClientMock,
+        [Greedy] MembersController sut,
+        Guid memberId,
+        UpdateMemberProfileModel request,
+        CancellationToken cancellationToken
+    )
+    {
+        // Arrange
+        string? profileValue = null;
+        request.updateMemberProfileRequest.MemberProfiles = new List<UpdateProfileModel>() { new() { MemberProfileId = 1, Value = profileValue } };
+
+        // Act
+        var result = await sut.UpdateMemberProfileAndPreferences(memberId, request, cancellationToken);
+
+        // Assert
+        aanHubRestApiClientMock.Verify(a => a.PutMemberProfile(It.IsAny<Guid>(), It.Is<UpdateMemberProfileRequest>(j => j.MemberProfiles.Count == 1 && j.MemberProfiles.FirstOrDefault()!.Value == null), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
 }
