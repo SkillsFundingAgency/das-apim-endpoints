@@ -4,7 +4,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests
 {
     public class GetLiveVacancyApiRequest : IGetApiRequest
     {
-        private long _vacancyReference;
+        private readonly long _vacancyReference;
 
         public GetLiveVacancyApiRequest(long vacancyReference)
         {

@@ -67,7 +67,7 @@ public class WhenHandlingGetLiveVacancies
         AssertResponse(actual, Enumerable.Empty<FindApprenticeshipJobs.Application.Shared.LiveVacancy>().ToList());
     }
 
-    private List<FindApprenticeshipJobs.Application.Shared.LiveVacancy> SetupVacancyMapper(Mock<ILiveVacancyMapper> mapper, IEnumerable<LiveVacancy> vacancies)
+    private static List<FindApprenticeshipJobs.Application.Shared.LiveVacancy> SetupVacancyMapper(Mock<ILiveVacancyMapper> mapper, IEnumerable<LiveVacancy> vacancies)
     {
         var fixture = new Fixture();
 
@@ -88,7 +88,7 @@ public class WhenHandlingGetLiveVacancies
         return result;
     }
 
-    private void AssertResponse(GetLiveVacanciesQueryResult actual, List<FindApprenticeshipJobs.Application.Shared.LiveVacancy> mockedVacancies)
+    private static void AssertResponse(GetLiveVacanciesQueryResult actual, List<FindApprenticeshipJobs.Application.Shared.LiveVacancy> mockedVacancies)
     {
         foreach (var actualVacancy in actual.Vacancies)
         {

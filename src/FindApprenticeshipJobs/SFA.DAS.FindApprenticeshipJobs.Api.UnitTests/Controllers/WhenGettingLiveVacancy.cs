@@ -26,7 +26,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers
                 .ReturnsAsync(mockQueryResult);
 
             var actual = await sut.GetLiveVacancy(vacancyReference, It.IsAny<CancellationToken>()) as ObjectResult;
-            var actualValue = actual!.Value as GetLiveVacanciesApiResponse.LiveVacancy;
 
             using (new AssertionScope())
             {

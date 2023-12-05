@@ -34,16 +34,16 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             {
                 source.VacancyId,
                 VacancyTitle = source.Title,
-                VacancyReference = source.VacancyReference,
+                source.VacancyReference,
                 ApprenticeshipTitle = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Title,
-                Level = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Level,
+                standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Level,
                 source.Description,
                 source.EmployerName,
                 source.LiveDate,
                 source.ProgrammeId,
                 source.ProgrammeType,
                 source.StartDate,
-                Route = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Route,
+                standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Route,
                 EmployerLocation = new FindApprenticeshipJobs.Application.Shared.Address
                 {
                     AddressLine1 = source.EmployerLocation?.AddressLine1,
@@ -70,7 +70,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
         }
 
 
-        private ApiResponse<GetStandardsListResponse> SetupCoursesApiResponse(LiveVacancy vacancy, Mock<ICourseService> courseService)
+        private static ApiResponse<GetStandardsListResponse> SetupCoursesApiResponse(LiveVacancy vacancy, Mock<ICourseService> courseService)
         {
             var fixture = new Fixture();
 
