@@ -54,6 +54,7 @@ public class MembersController : ControllerBase
 
         if (request.updateMemberProfileRequest.MemberProfiles.Any() || request.updateMemberProfileRequest.MemberPreferences.Any())
         {
+            request.updateMemberProfileRequest.MemberProfiles.ForEach(obj => obj.Value = obj.Value?.Trim());
             await _apiClient.PutMemberProfile(memberId, request.updateMemberProfileRequest, cancellationToken);
         }
 
