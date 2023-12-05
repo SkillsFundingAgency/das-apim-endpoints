@@ -13,9 +13,9 @@ public class WhenBuildingGetVacanciesRequest
         double lon,
         List<string> routes,
         int distance,
+        string sort,
         int pageNumber,
-        int pageSize,
-        string sort)
+        int pageSize)
     {
         var actual = new GetVacanciesRequest(lat, lon, routes, distance, sort, pageNumber, pageSize);
 
