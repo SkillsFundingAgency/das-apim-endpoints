@@ -4,10 +4,6 @@ using Moq;
 using SFA.DAS.AdminAan.Application.Locations.Queries.GetAddresses;
 using SFA.DAS.AdminAan.Domain.Location;
 using SFA.DAS.AdminAan.Infrastructure;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminAan.UnitTests.Application.Locations.Queries.GetAddresses;
@@ -17,12 +13,12 @@ public class GetAddressesQueryHandlerTests
     [MoqAutoData]
     public async Task Handle_ReturnAddressesBasedOnQuery(
         GetAddressesQuery query,
-        [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
+        [Frozen] Mock<ILocationApiClient> apiClient,
         [Frozen] GetAddressesQueryHandler handler,
-        GetAddressesListResponse apiResponse)
+        GetAddressesResponse apiResponse)
     {
         apiClient
-            .Setup(x => x.Get<GetAddressesListResponse>(It.IsAny<GetAddressesQueryRequest>()))
+            .Setup(x => x.GetAddresses(query.Query, It.IsAny<double>()))
             .ReturnsAsync(apiResponse);
 
         var result = await handler.Handle(query, CancellationToken.None);
