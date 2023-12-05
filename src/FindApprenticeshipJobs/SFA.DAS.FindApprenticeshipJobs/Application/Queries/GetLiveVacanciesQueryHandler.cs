@@ -29,41 +29,6 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
             TotalLiveVacancies = response.Body.TotalLiveVacancies,
             TotalPages = response.Body.TotalPages,
             Vacancies = await Task.WhenAll(response.Body.Vacancies.Select(x => _liveVacancyMapper.Map(x)))
-                Route = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == x.ProgrammeId) ?.Route ?? string.Empty,
-                },
-                OutcomeDescription = x.OutcomeDescription,
-                //LongDescription =
-                TrainingDescription = x.TrainingDescription,
-                Skills = x.Skills,
-                Qualifications = x.Qualifications.Select(q => new GetLiveVacanciesQueryResult.Qualification()
-                {
-                    QualificationType = q.QualificationType,
-                    Subject = q.Subject,
-                    Grade = q.Grade,
-                    Weighting = q.Weighting
-                }).ToList(),
-                ThingsToConsider = x.ThingsToConsider,
-                Id = x.Id,
-                IsDisabilityConfident = (GetLiveVacanciesQueryResult.DisabilityConfident)x.DisabilityConfident,
-                IsEmployerAnonymous = x.IsAnonymous,
-                EmployerDescription = x.EmployerDescription,
-                EmployerWebsiteUrl = x.EmployerWebsiteUrl,
-                IsRecruitVacancy = true,
-                //AnonymousEmployerName = 
-                //Category = 
-                //CategoryCode = 
-                //IsPositiveAboutDisability = 
-                //SubCategory = 
-                //SubCategoryCode = 
-                //VacancyLocationType =
-                //WageAmountLowerBand =
-                //WageAmountUpperBand = 
-                //ExpectedDuration = 
-                //Distance = 
-                //Score = 
-                EmployerContactName = x.EmployerContact == null ? null : x.EmployerContact.EmployerContactName,
-                EmployerContactEmail = x.EmployerContact == null ? null : x.EmployerContact.EmployerContactEmail,
-                EmployerContactPhone = x.EmployerContact == null ? null : x.EmployerContact.EmployerContactPhone
         };
     }
 

@@ -39,7 +39,7 @@ public class GetLiveVacanciesApiResponse
                 ProgrammeType = source.ProgrammeType,
                 Route = source.Route,
                 Description = source.Description,
-                EmployerLocation = source.EmployerLocation == null? null : (Address) source.EmployerLocation,
+                EmployerLocation = source.EmployerLocation == null ? null : (Address)source.EmployerLocation,
                 LiveDate = source.LiveDate,
                 ClosingDate = source.ClosingDate,
                 StartDate = source.StartDate,
@@ -47,7 +47,7 @@ public class GetLiveVacanciesApiResponse
                 ProviderId = source.ProviderId,
                 ProviderName = source.ProviderName,
                 Level = source.Level,
-                Wage = source.Wage == null? null : (Wage) source.Wage,
+                Wage = source.Wage == null ? null : (Wage)source.Wage,
                 OutcomeDescription = source.OutcomeDescription,
                 LongDescription = source.LongDescription,
                 TrainingDescription = source.TrainingDescription,
@@ -57,7 +57,7 @@ public class GetLiveVacanciesApiResponse
                     QualificationType = q.QualificationType,
                     Subject = q.Subject,
                     Grade = q.Grade,
-                    Weighting = q.Weighting
+                    Weighting = (QualificationWeighting)q.Weighting
                 }).ToList(),
                 ThingsToConsider = source.ThingsToConsider,
                 Id = source.Id,
@@ -76,7 +76,7 @@ public class GetLiveVacanciesApiResponse
                 WageAmountLowerBand = source.WageAmountLowerBand,
                 WageAmountUpperBand = source.WageAmountUpperBand,
                 ExpectedDuration = source.ExpectedDuration,
-                Distance =  source.Distance,
+                Distance = source.Distance,
                 Score = source.Score,
                 EmployerContactName = source.EmployerContactName,
                 EmployerContactEmail = source.EmployerContactEmail,
@@ -187,7 +187,13 @@ public class GetLiveVacanciesApiResponse
         public string? QualificationType { get; set; }
         public string? Subject { get; set; }
         public string? Grade { get; set; }
-        public string? Weighting { get; set; }
+        public QualificationWeighting? Weighting { get; set; }
+    }
+
+    public enum QualificationWeighting
+    {
+        Essential,
+        Desired
     }
 
     public enum DisabilityConfident

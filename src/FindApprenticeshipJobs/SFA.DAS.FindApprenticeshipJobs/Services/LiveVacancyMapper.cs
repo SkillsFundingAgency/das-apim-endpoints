@@ -54,7 +54,40 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     WageType = source.Wage.WageType,
                     WeeklyHours = source.Wage.WeeklyHours,
                     WorkingWeekDescription = source.Wage.WorkingWeekDescription
-                }
+                },
+                OutcomeDescription = source.OutcomeDescription,
+                //LongDescription =
+                TrainingDescription = source.TrainingDescription,
+                Skills = source.Skills,
+                Qualifications = source.Qualifications.Select(q => new Application.Shared.Qualification
+                {
+                    QualificationType = q.QualificationType,
+                    Subject = q.Subject,
+                    Grade = q.Grade,
+                    Weighting = (Application.Shared.QualificationWeighting)q.Weighting
+                }),
+                ThingsToConsider = source.ThingsToConsider,
+                Id = source.Id,
+                IsDisabilityConfident = (Application.Shared.DisabilityConfident)source.DisabilityConfident,
+                IsEmployerAnonymous = source.IsAnonymous,
+                EmployerDescription = source.EmployerDescription,
+                EmployerWebsiteUrl = source.EmployerWebsiteUrl,
+                IsRecruitVacancy = true,
+                //AnonymousEmployerName = 
+                //Category = 
+                //CategoryCode = 
+                //IsPositiveAboutDisability = 
+                //SubCategory = 
+                //SubCategoryCode = 
+                //VacancyLocationType =
+                //WageAmountLowerBand =
+                //WageAmountUpperBand = 
+                //ExpectedDuration = 
+                //Distance = 
+                //Score = 
+                EmployerContactName = source.EmployerContact == null ? null : source.EmployerContact.EmployerContactName,
+                EmployerContactEmail = source.EmployerContact == null ? null : source.EmployerContact.EmployerContactEmail,
+                EmployerContactPhone = source.EmployerContact == null ? null : source.EmployerContact.EmployerContactPhone
             };
         }
     }
