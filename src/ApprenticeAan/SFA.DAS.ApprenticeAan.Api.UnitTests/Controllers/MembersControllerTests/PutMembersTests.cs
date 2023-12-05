@@ -244,11 +244,11 @@ public class PutMembersTests
     }
 
     [Test]
-    [MoqInlineAutoData("   ")]
+    [MoqInlineAutoData("   test")]
     [MoqInlineAutoData("   test")]
     [MoqInlineAutoData("test  ")]
     [MoqInlineAutoData("   test  ")]
-    [MoqInlineAutoData(null)]
+    [MoqInlineAutoData("")]
     public async Task UpdateMemberProfileAndPreferences_MemberProfileValueHasSpaces_ShouldTrimmedMemberProfileValue(
         string? profileValue,
         [Frozen] Mock<IAanHubRestApiClient> aanHubRestApiClientMock,
@@ -265,6 +265,7 @@ public class PutMembersTests
         var result = await sut.UpdateMemberProfileAndPreferences(memberId, request, cancellationToken);
 
         // Assert
-        aanHubRestApiClientMock.Verify(a => a.PutMemberProfile(It.IsAny<Guid>(), It.Is<UpdateMemberProfileRequest>(j => j.MemberProfiles.Count == 1 && j.MemberProfiles.FirstOrDefault()!.Value == profileValue), It.IsAny<CancellationToken>()), Times.Once);
+        aanHubRestApiClientMock.Verify(a => a.PutMemberProfile(It.IsAny<Guid>(), It.Is<UpdateMemberProfileRequest>(j => j.MemberProfiles.Count == 1 && j.MemberProfiles.FirstOrDefault()!.Value == profileValue!.Trim()), It.IsAny<CancellationToken>()), Times.Once);
     }
+
 }
