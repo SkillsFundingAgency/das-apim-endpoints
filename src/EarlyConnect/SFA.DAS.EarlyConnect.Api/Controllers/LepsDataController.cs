@@ -8,7 +8,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
 {
     [ApiVersion("1.0")]
     [ApiController]
-    [Route("/api/leps-data/")]
+    [Route("/early-connect/leps-data/")]
     public class LepsDataController : ControllerBase
     {
         private readonly IMediator _mediator;

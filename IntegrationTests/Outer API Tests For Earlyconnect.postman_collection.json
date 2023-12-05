@@ -175,6 +175,65 @@
 			"response": []
 		},
 		{
+			"name": "Get LEPS Data",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"requestType\": \"StrdentData\",\r\n  \"requestSource\": \"UCAS\",\r\n  \"requestIP\": \"82.10.212.131\",\r\n  \"payload\": \"{Json}\",\r\n  \"fileName\": \"\",\r\n  \"status\": \"InProgress\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://test-apim-erlycon-api.apprenticeships.education.gov.uk/early-connect/leps-data",
+					"protocol": "https",
+					"host": [
+						"test-apim-erlycon-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"early-connect",
+						"leps-data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Metric Data",
 			"request": {
 				"auth": {

@@ -11,7 +11,7 @@ namespace SFA.DAS.EarlyConnect.Api.Models
         public string EntityEmail { get; set; }
         public string Postcode { get; set; }
         public DateTime DateAdded { get; set; }
-        public ICollection<LEPSUserResponse>? LEPSUsers { get; set; }
+        public ICollection<LEPSUserResponse>? Users { get; set; }
         public static implicit operator GetLEPSDataWithUsersResponse(LEPSData source)
         {
             return new GetLEPSDataWithUsersResponse
@@ -23,7 +23,7 @@ namespace SFA.DAS.EarlyConnect.Api.Models
                 EntityEmail = source.EntityEmail,
                 Postcode = source.Postcode,
                 DateAdded = source.DateAdded,
-                LEPSUsers = source.LEPSUsers.Select(c => (LEPSUserResponse)c).ToList()
+                Users = source.LEPSUsers.Select(c => (LEPSUserResponse)c).ToList()
             };
         }
     }
