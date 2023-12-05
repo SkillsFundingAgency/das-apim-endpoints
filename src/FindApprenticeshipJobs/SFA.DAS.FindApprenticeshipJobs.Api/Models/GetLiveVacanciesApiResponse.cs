@@ -48,6 +48,39 @@ public class GetLiveVacanciesApiResponse
                 ProviderName = source.ProviderName,
                 Level = source.Level,
                 Wage = source.Wage == null? null : (Wage) source.Wage,
+                OutcomeDescription = source.OutcomeDescription,
+                LongDescription = source.LongDescription,
+                TrainingDescription = source.TrainingDescription,
+                Skills = source.Skills,
+                Qualifications = source.Qualifications.Select(q => new Qualification()
+                {
+                    QualificationType = q.QualificationType,
+                    Subject = q.Subject,
+                    Grade = q.Grade,
+                    Weighting = q.Weighting
+                }).ToList(),
+                ThingsToConsider = source.ThingsToConsider,
+                Id = source.Id,
+                IsDisabilityConfident = (DisabilityConfident)source.IsDisabilityConfident,
+                IsEmployerAnonymous = source.IsEmployerAnonymous,
+                EmployerDescription = source.EmployerDescription,
+                EmployerWebsiteUrl = source.EmployerWebsiteUrl,
+                IsRecruitVacancy = true,
+                AnonymousEmployerName = source.AnonymousEmployerName,
+                Category = source.Category,
+                CategoryCode = source.CategoryCode,
+                IsPositiveAboutDisability = source.IsPositiveAboutDisability,
+                SubCategory = source.SubCategory,
+                SubCategoryCode = source.SubCategoryCode,
+                VacancyLocationType = source.VacancyLocationType,
+                WageAmountLowerBand = source.WageAmountLowerBand,
+                WageAmountUpperBand = source.WageAmountUpperBand,
+                ExpectedDuration = source.ExpectedDuration,
+                Distance =  source.Distance,
+                Score = source.Score,
+                EmployerContactName = source.EmployerContactName,
+                EmployerContactEmail = source.EmployerContactEmail,
+                EmployerContactPhone = source.EmployerContactPhone
             };
         }
 
@@ -70,6 +103,33 @@ public class GetLiveVacanciesApiResponse
         public string Route { get; set; }
         public int Level { get; set; }
         public Wage? Wage { get; set; }
+        public string LongDescription { get; set; }
+        public string OutcomeDescription { get; set; }
+        public string TrainingDescription { get; set; }
+        public IEnumerable<string> Skills { get; set; }
+        public IEnumerable<Qualification> Qualifications { get; set; }
+        public string ThingsToConsider { get; set; }
+        public string Id { get; set; }
+        public string AnonymousEmployerName { get; set; }
+        public string Category { get; set; }
+        public string CategoryCode { get; set; }
+        public DisabilityConfident IsDisabilityConfident { get; set; }
+        public bool IsEmployerAnonymous { get; set; }
+        public bool IsPositiveAboutDisability { get; set; }
+        public bool IsRecruitVacancy { get; set; }
+        public string SubCategory { get; set; }
+        public string SubCategoryCode { get; set; }
+        public string VacancyLocationType { get; set; }
+        public long WageAmountLowerBand { get; set; }
+        public long WageAmountUpperBand { get; set; }
+        public int ExpectedDuration { get; set; }
+        public int Distance { get; set; }
+        public int Score { get; set; }
+        public string EmployerDescription { get; set; }
+        public string EmployerWebsiteUrl { get; set; }
+        public string EmployerContactPhone { get; set; }
+        public string EmployerContactEmail { get; set; }
+        public string EmployerContactName { get; set; }
     }
 
     public class Address
@@ -120,5 +180,19 @@ public class GetLiveVacanciesApiResponse
                 WorkingWeekDescription = source.WorkingWeekDescription
             };
         }
+    }
+
+    public class Qualification
+    {
+        public string? QualificationType { get; set; }
+        public string? Subject { get; set; }
+        public string? Grade { get; set; }
+        public string? Weighting { get; set; }
+    }
+
+    public enum DisabilityConfident
+    {
+        No = 0,
+        Yes
     }
 }
