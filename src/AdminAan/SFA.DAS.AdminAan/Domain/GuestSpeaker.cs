@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.AdminAan.Infrastructure;
+﻿namespace SFA.DAS.AdminAan.Domain;
 
 public class GuestSpeaker
 {
