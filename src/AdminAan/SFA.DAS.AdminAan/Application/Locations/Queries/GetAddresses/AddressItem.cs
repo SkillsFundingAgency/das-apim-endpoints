@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+﻿using SFA.DAS.AdminAan.Domain.Location;
 
 namespace SFA.DAS.AdminAan.Application.Locations.Queries.GetAddresses;
 
@@ -14,7 +14,7 @@ public class AddressItem
     public double? Longitude { get; set; }
     public double? Latitude { get; set; }
 
-    public static implicit operator AddressItem(GetAddressesListItem source) =>
+    public static implicit operator AddressItem(AddressListItem source) =>
         new()
         {
             Uprn = source.Uprn,

@@ -9,7 +9,6 @@ using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.AdminAan.Application.Entities;
 using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.AdminAan.Domain;
-using SFA.DAS.AdminAan.Infrastructure.Configuration;
 
 namespace SFA.DAS.AdminAan.Infrastructure;
 

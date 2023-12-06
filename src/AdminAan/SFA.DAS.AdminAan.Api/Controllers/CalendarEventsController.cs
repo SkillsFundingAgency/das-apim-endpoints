@@ -6,7 +6,7 @@ using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Delete;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Update;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvent;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
-using SFA.DAS.AdminAan.Infrastructure.Configuration;
+using SFA.DAS.AdminAan.Infrastructure;
 
 namespace SFA.DAS.AdminAan.Api.Controllers;
 

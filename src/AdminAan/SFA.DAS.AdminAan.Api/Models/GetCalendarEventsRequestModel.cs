@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
-using SFA.DAS.AdminAan.Infrastructure.Configuration;
+using SFA.DAS.AdminAan.Infrastructure;
 
 namespace SFA.DAS.AdminAan.Api.Models;
 
