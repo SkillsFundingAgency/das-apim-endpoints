@@ -20,7 +20,6 @@
 		<PackageReference Include="NUnit3TestAdapter" />
 		<PackageReference Include="NUnit.Analyzers" />
 		<PackageReference Include="coverlet.collector" />
-		<PackageReference Include="RestEase" />
 		<PackageReference Include="SFA.DAS.Testing.AutoFixture" />
 	</ItemGroup>
 	
