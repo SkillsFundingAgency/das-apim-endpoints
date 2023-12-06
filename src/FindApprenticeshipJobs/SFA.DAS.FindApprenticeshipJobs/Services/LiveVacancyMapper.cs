@@ -6,26 +6,19 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
 {
     public class LiveVacancyMapper : ILiveVacancyMapper
     {
-        private readonly ICourseService _courseService;
-
-        public LiveVacancyMapper(ICourseService courseService)
+        public Application.Shared.LiveVacancy Map(LiveVacancy source, GetStandardsListResponse standards)
         {
-            _courseService = courseService;
-        }
-
-        public async Task<Application.Shared.LiveVacancy> Map(LiveVacancy source)
-        {
-            var standards = await _courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
-
+            var getStandardsListItem = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == source.ProgrammeId);
             return new Application.Shared.LiveVacancy
             {
                 VacancyId = source.VacancyId,
                 VacancyReference = source.VacancyReference,
                 VacancyTitle = source.Title,
                 NumberOfPositions = source.NumberOfPositions,
-                ApprenticeshipTitle = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == source.ProgrammeId)?.Title ?? string.Empty,
-                Level = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == source.ProgrammeId)?.Level ?? 0,
-                Description = source.Description,
+                ApprenticeshipTitle = getStandardsListItem?.Title ?? string.Empty,
+                Level = getStandardsListItem?.Level ?? 0,
+                Description = source.ShortDescription,
+                LongDescription = source.Description,
                 EmployerName = source.EmployerName,
                 ProviderName = source.TrainingProvider.Name,
                 ProviderId = source.TrainingProvider.Ukprn,
@@ -34,7 +27,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 ProgrammeId = source.ProgrammeId,
                 ProgrammeType = source.ProgrammeType,
                 StartDate = source.StartDate,
-                Route = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == source.ProgrammeId)?.Route ?? string.Empty,
+                //RouteId = TODO  
+                Route = getStandardsListItem?.Route ?? string.Empty,
                 EmployerLocation = new Application.Shared.Address
                 {
                     AddressLine1 = source.EmployerLocation?.AddressLine1,
@@ -53,10 +47,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     WageAdditionalInformation = source.Wage.WageAdditionalInformation,
                     WageType = source.Wage.WageType,
                     WeeklyHours = source.Wage.WeeklyHours,
-                    WorkingWeekDescription = source.Wage.WorkingWeekDescription
+                    WorkingWeekDescription = source.Wage.WorkingWeekDescription,
                 },
                 OutcomeDescription = source.OutcomeDescription,
-                //LongDescription =
+                
                 TrainingDescription = source.TrainingDescription,
                 Skills = source.Skills,
                 Qualifications = source.Qualifications.Select(q => new Application.Shared.Qualification
@@ -73,18 +67,16 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
                 IsRecruitVacancy = true,
-                //AnonymousEmployerName = 
-                //Category = 
-                //CategoryCode = 
-                //IsPositiveAboutDisability = 
+                IsPositiveAboutDisability = source.DisabilityConfident == DisabilityConfident.Yes,
+                AnonymousEmployerName = source.IsAnonymous ? source.EmployerName:"",//TOD check
+                
                 //SubCategory = 
                 //SubCategoryCode = 
                 //VacancyLocationType =
                 //WageAmountLowerBand =
                 //WageAmountUpperBand = 
                 //ExpectedDuration = 
-                //Distance = 
-                //Score = 
+                
                 EmployerContactName = source.EmployerContact == null ? null : source.EmployerContact.EmployerContactName,
                 EmployerContactEmail = source.EmployerContact == null ? null : source.EmployerContact.EmployerContactEmail,
                 EmployerContactPhone = source.EmployerContact == null ? null : source.EmployerContact.EmployerContactPhone

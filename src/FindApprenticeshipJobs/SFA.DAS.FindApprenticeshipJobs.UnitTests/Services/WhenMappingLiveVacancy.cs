@@ -16,16 +16,16 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
     public class WhenMappingLiveVacancy
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Vacancy_Is_Mapped(
+        public void Then_The_Vacancy_Is_Mapped(
             LiveVacancy source,
             [Frozen] Mock<ICourseService> courseService,
             LiveVacancyMapper sut)
         {
-            var mockStandardsListResponse =  SetupCoursesApiResponse(source, courseService);
+            var mockStandardsListResponse =  SetupCoursesApiResponse(source);
 
-            var result = await sut.Map(source);
+            var result = sut.Map(source, mockStandardsListResponse);
 
-            AssertResponse(result, source, mockStandardsListResponse.Body);
+            AssertResponse(result, source, mockStandardsListResponse);
         }
 
         private static void AssertResponse(FindApprenticeshipJobs.Application.Shared.LiveVacancy actual, LiveVacancy source, GetStandardsListResponse standardsListResponse)
@@ -37,12 +37,14 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 source.VacancyReference,
                 ApprenticeshipTitle = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Title,
                 standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Level,
-                source.Description,
+                Description = source.ShortDescription,
+                LongDescription = source.Description,
                 source.EmployerName,
                 source.LiveDate,
                 source.ProgrammeId,
                 source.ProgrammeType,
                 source.StartDate,
+                IsPositiveAboutDisability = source.DisabilityConfident == DisabilityConfident.Yes,
                 standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Route,
                 EmployerLocation = new FindApprenticeshipJobs.Application.Shared.Address
                 {
@@ -70,7 +72,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
         }
 
 
-        private static ApiResponse<GetStandardsListResponse> SetupCoursesApiResponse(LiveVacancy vacancy, Mock<ICourseService> courseService)
+        private static GetStandardsListResponse SetupCoursesApiResponse(LiveVacancy vacancy)
         {
             var fixture = new Fixture();
 
@@ -92,10 +94,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             var result = new ApiResponse<GetStandardsListResponse>(new GetStandardsListResponse
             { Standards = standards, Total = standards.Count, TotalFiltered = standards.Count }, HttpStatusCode.OK, string.Empty);
 
-            courseService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(It.IsAny<string>()))
-                .ReturnsAsync(result.Body);
-
-            return result;
+            
+            return result.Body;
         }
     }
 }
