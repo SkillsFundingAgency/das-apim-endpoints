@@ -1,5 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -22,7 +23,7 @@ public class MembersControllerGetMembersTests
         apiClientMock.Setup(m => m.GetMembers(queryString, cancellationToken)).ReturnsAsync(expected);
         var httpContext = new DefaultHttpContext();
         httpContext.Request.QueryString = new(queryString);
-        MembersController sut = new(apiClientMock.Object)
+        MembersController sut = new(apiClientMock.Object, Mock.Of<IMediator>())
         {
             ControllerContext = new ControllerContext() { HttpContext = httpContext }
         };
