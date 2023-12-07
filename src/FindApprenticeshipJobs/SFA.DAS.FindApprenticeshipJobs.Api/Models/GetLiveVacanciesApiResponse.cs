@@ -31,7 +31,9 @@ public class GetLiveVacanciesApiResponse
             return new LiveVacancy
             {
                 VacancyId = source.VacancyId,
+                VacancyReference = source.VacancyReference,
                 VacancyTitle = source.VacancyTitle,
+                NumberOfPositions = source.NumberOfPositions,
                 ApprenticeshipTitle = source.ApprenticeshipTitle,
                 ProgrammeId = source.ProgrammeId,
                 ProgrammeType = source.ProgrammeType,
@@ -50,7 +52,9 @@ public class GetLiveVacanciesApiResponse
         }
 
         public Guid VacancyId { get; set; }
+        public long VacancyReference { get; set; }
         public string VacancyTitle { get; set; }
+        public int NumberOfPositions { get; set; }
         public string ApprenticeshipTitle { get; set; }
         public string? Description { get; set; }
         public Address? EmployerLocation { get; set; }
