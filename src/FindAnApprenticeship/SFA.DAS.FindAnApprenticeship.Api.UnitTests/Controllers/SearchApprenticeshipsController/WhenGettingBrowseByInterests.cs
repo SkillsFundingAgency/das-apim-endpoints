@@ -47,7 +47,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprentic
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new InvalidOperationException());
 
-            var controllerResult = await controller.Index() as StatusCodeResult;
+            var controllerResult = await controller.BrowseByInterests() as StatusCodeResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }

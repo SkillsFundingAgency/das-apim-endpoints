@@ -29,11 +29,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] string locationSearchTerm = null)
         {
             try
             {
-                var result = await _mediator.Send(new SearchIndexQuery());
+                var result = await _mediator.Send(new SearchIndexQuery
+                {
+                    LocationSearchTerm = locationSearchTerm
+                });
                 var viewModel = (SearchIndexApiResponse)result;
                 return Ok(viewModel);
             }
@@ -43,23 +46,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
 
-        }
-
-        [HttpGet]
-        [Route("indexlocation")]
-        public async Task<IActionResult> IndexLocation([FromQuery] string locationSearchTerm)
-        {
-            try
-            {
-                var result = await _mediator.Send(new IndexLocationQuery()
-                    { LocationSearchTerm = locationSearchTerm });
-                return Ok((IndexLocationApiResponse)result);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error calling Index Location");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
         }
 
         [HttpGet]
