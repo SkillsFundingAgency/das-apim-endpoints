@@ -9,7 +9,6 @@ using SFA.DAS.EarlyConnect.Application.Commands.UpdateLogData;
 namespace SFA.DAS.EarlyConnect.Api.Controllers
 {
     [ApiVersion("1.0")]
-    [ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
     [Route("/early-connect/api-log/")]
     public class LogDataController : ControllerBase
