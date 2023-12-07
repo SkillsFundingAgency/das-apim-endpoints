@@ -7,9 +7,9 @@ using SFA.DAS.AdminAan.Api.Controllers;
 using SFA.DAS.AdminAan.Domain;
 using SFA.DAS.AdminAan.Infrastructure;
 
-namespace SFA.DAS.AdminAan.Api.UnitTests.Controllers;
+namespace SFA.DAS.AdminAan.Api.UnitTests.Controllers.MembersControllerTests;
 
-public class MembersControllerTests
+public class MembersControllerGetMembersTests
 {
     [Test, AutoData]
     public async Task GetMembers_ForwardsRequestToInnerApi(
