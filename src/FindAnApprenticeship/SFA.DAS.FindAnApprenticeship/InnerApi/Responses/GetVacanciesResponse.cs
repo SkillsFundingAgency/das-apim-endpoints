@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -46,11 +45,11 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonPropertyName("vacancyReference")]
         public string VacancyReference { get; set; }
 
-        [JsonPropertyName("subCategory")]
+        [JsonPropertyName("courseTitle")]
         public string CourseTitle { get; set; }
-        [JsonPropertyName("standardLarsCode")]
+        [JsonPropertyName("courseId")]
         public int CourseId { get; set; }
-        [JsonPropertyName("wageText")]
+        [JsonPropertyName("wageAmount")]
         public string WageAmount { get; set; }
         [JsonPropertyName("wageType")]
         public int WageType { get; set; }
