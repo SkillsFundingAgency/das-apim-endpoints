@@ -48,6 +48,11 @@ namespace SFA.DAS.SharedOuterApi.Services
             return _apiClient.PostWithResponseCode<TResponse>(request, includeResponse);
         }
 
+        public Task<ApiResponse<TResponse>> PostWithResponseCode<TData, TResponse>(IPostApiRequest<TData> request, bool includeResponse = true)
+        {
+            return _apiClient.PostWithResponseCode<TData, TResponse>(request, includeResponse);
+        }
+
         public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
         {
             return _apiClient.PatchWithResponseCode(request);

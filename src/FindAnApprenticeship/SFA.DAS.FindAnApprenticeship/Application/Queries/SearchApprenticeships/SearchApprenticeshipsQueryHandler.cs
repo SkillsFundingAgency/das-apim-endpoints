@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.WebUtilities;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -40,11 +41,21 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                         request.Distance
                         ));
 
+            var vacancyResult = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(
+                new GetVacanciesRequest(
+                    location?.GeoPoint?.FirstOrDefault(),
+                    location?.GeoPoint?.LastOrDefault(),
+                    request.SelectedRouteIds,
+                    request.Distance,
+                    request.Sort
+                ));
+
             return new SearchApprenticeshipsResult
             {
                 TotalApprenticeshipCount = result.TotalVacancies,
                 LocationItem = location,
-                Routes = routes.Routes.ToList()
+                Routes = routes.Routes.ToList(),
+                Vacancies = vacancyResult.ApprenticeshipVacancies.ToList()
             };
         }
     }
