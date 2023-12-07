@@ -1,5 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -37,8 +38,11 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Services
             var result = await sut.Get(Guid.NewGuid(), 1);
 
             // Assert
-            result.LearnerData.Should().NotBeNull();
-            result.MyApprenticeshipData.Should().BeNull();
+            using (new AssertionScope())
+            {
+                result.LearnerData.Should().NotBeNull();
+                result.MyApprenticeshipData.Should().BeNull();
+            }
         }
 
         [Test, MoqAutoData]
@@ -56,8 +60,11 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Services
             var result = await sut.Get(Guid.NewGuid(), 1);
 
             // Assert
-            result.LearnerData.Should().BeNull();
-            result.MyApprenticeshipData.Should().BeNull();
+            using (new AssertionScope())
+            {
+                result.LearnerData.Should().BeNull();
+                result.MyApprenticeshipData.Should().BeNull();
+            }
         }
 
         [Test, MoqAutoData]
@@ -82,8 +89,11 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Services
             var result = await sut.Get(Guid.NewGuid(), 1);
 
             // Assert
-            result.LearnerData.Should().BeNull();
-            result.MyApprenticeshipData.Should().NotBeNull();
+            using (new AssertionScope())
+            {
+                result.LearnerData.Should().BeNull();
+                result.MyApprenticeshipData.Should().NotBeNull();
+            }
         }
 
         [Test, MoqAutoData]
@@ -108,8 +118,11 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Services
             var result = await sut.Get(Guid.NewGuid(), 1);
 
             // Assert
-            result.LearnerData.Should().BeNull();
-            result.MyApprenticeshipData.Should().BeNull();
+            using (new AssertionScope())
+            {
+                result.LearnerData.Should().BeNull();
+                result.MyApprenticeshipData.Should().BeNull();
+            }
         }
 
         [Test, MoqAutoData]
