@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Assessor
 {
     public class GetApprenticeLearnerRequest : IGetApiRequest
     {

@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
+namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Queries
 {
     public class WhenHandlingGetProviderAttributesQuery
     {

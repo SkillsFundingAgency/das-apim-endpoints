@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace SFA.DAS.AdminAan.Infrastructure;
+namespace SFA.DAS.AdminAan.Domain;
 public enum EventFormat
 {
     [Description("In person")]

@@ -3,9 +3,8 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Responses;
 using SFA.DAS.ApprenticeFeedback.Models;
+using SFA.DAS.ApprenticeFeedback.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,15 +16,16 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
     public class UpdateApprenticeFeedbackTargetCommandHandler : IRequestHandler<UpdateApprenticeFeedbackTargetCommand, UpdateApprenticeFeedbackTargetResponse>
     {
         private readonly IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient;
-        private readonly IAssessorsApiClient<AssessorsApiConfiguration> _assessorsApiClient;
+        private readonly IApprenticeshipDetailsService _apprenticeshipDetailsService;
         private readonly ILogger<UpdateApprenticeFeedbackTargetCommandHandler> _logger;
 
-        public UpdateApprenticeFeedbackTargetCommandHandler(IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> apprenticeFeedbackApiClient,
-            IAssessorsApiClient<AssessorsApiConfiguration> assessorsApiClient,
+        public UpdateApprenticeFeedbackTargetCommandHandler(
+            IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> apprenticeFeedbackApiClient,
+            IApprenticeshipDetailsService apprenticeshipDetailsService,
             ILogger<UpdateApprenticeFeedbackTargetCommandHandler> logger)
         {
             _apprenticeFeedbackApiClient = apprenticeFeedbackApiClient;
-            _assessorsApiClient = assessorsApiClient;
+            _apprenticeshipDetailsService = apprenticeshipDetailsService;
             _logger = logger;
         }
 
@@ -33,12 +33,9 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
         {
             _logger.LogDebug($"Begin GetApprenticeshipTrainingProviderQueryHandler for ApprenticeId: {command.ApprenticeId}");
 
-            // 1. Get all apprentice feedback targets for the given signed in apprentice.
             var apprenticeFeedbackTargets = await _apprenticeFeedbackApiClient.
                 GetAll<ApprenticeFeedbackTarget>(new GetAllApprenticeFeedbackTargetsRequest { ApprenticeId = command.ApprenticeId });
 
-
-            // 1.a If none, we do nothing, but potential for in future to make it smarter.
             if (apprenticeFeedbackTargets == null || apprenticeFeedbackTargets.Any() == false)
             {
                 var responseMessage = $"No ApprenticeFeedbackTargets found for ApprenticeId: {command.ApprenticeId}";
@@ -52,51 +49,36 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedba
                 return new UpdateApprenticeFeedbackTargetResponse { };
             }
 
-            // 2. Setup Learner aggregate object holder to contain information from external systems to supply to Inner Api.
-            var learnerAggregate = new List<ApprenticeLearnerAggregate>();
-
-            // 3. Get corresponding Learner Record for apprentice feedback target record and update aggregate if found.
+            var updateApprenticeFeedbackTargetRequests = new List<UpdateApprenticeFeedbackTargetRequest>();
+            
             _logger.LogDebug($"Processing feedback targets for: {command.ApprenticeId}");
             foreach (var feedbackTarget in apprenticeFeedbackTargets)
             {
-                _logger.LogDebug($"Retrieving learner record with apprentice commitments Id: {feedbackTarget.ApprenticeshipId}");
-                var learnerResponse = await _assessorsApiClient.GetWithResponseCode<GetApprenticeLearnerResponse>(new GetApprenticeLearnerRequest(feedbackTarget.ApprenticeshipId));
+                var apprenticeshipDetails = await _apprenticeshipDetailsService.Get(feedbackTarget.ApprenticeId, feedbackTarget.ApprenticeshipId);
 
-                if (learnerResponse.StatusCode != System.Net.HttpStatusCode.OK && learnerResponse.StatusCode != System.Net.HttpStatusCode.NoContent)
+                if (apprenticeshipDetails.LearnerData == null && apprenticeshipDetails.MyApprenticeshipData == null)
                 {
-                    var errorMsg = $"Error retrieving learner record with apprentice commitments Id: {feedbackTarget.ApprenticeshipId}";
-                    if (!string.IsNullOrWhiteSpace(learnerResponse.ErrorContent))
-                    {
-                        errorMsg += $", Content: {learnerResponse.ErrorContent}";
-                    }
-                    _logger.LogError(errorMsg);
                     return new UpdateApprenticeFeedbackTargetResponse();
                 }
 
-                learnerAggregate.Add(new ApprenticeLearnerAggregate
-                {
-                    ApprenticeFeedbackTargetId = feedbackTarget.Id,
-                    Learner = learnerResponse.Body
-                });
-            }
-
-            // 4. Send Update Call to Inner Api with latest information to process and update the feedback target.
-            _logger.LogDebug($"Processing aggregated learners to update the feedback targets for ApprenticeId: {command.ApprenticeId}");
-            foreach (var aggregate in learnerAggregate)
-            {
-                _logger.LogDebug($"Updating Feedback Target with Id: {aggregate.ApprenticeFeedbackTargetId} for ApprenticeId: {command.ApprenticeId}");
-                var updateApprenticeFeedbackTargetRequest = new UpdateApprenticeFeedbackTargetRequest(
+                updateApprenticeFeedbackTargetRequests.Add(new UpdateApprenticeFeedbackTargetRequest(
                     new UpdateApprenticeFeedbackTargetRequestData
                     {
-                        ApprenticeFeedbackTargetId = aggregate.ApprenticeFeedbackTargetId,
-                        Learner = (LearnerData)aggregate.Learner,
-                    });
+                        ApprenticeFeedbackTargetId = feedbackTarget.Id,
+                        Learner = apprenticeshipDetails.LearnerData,
+                        MyApprenticeship = apprenticeshipDetails.MyApprenticeshipData
+                    }));
+            }
 
-                var response = await _apprenticeFeedbackApiClient.PostWithResponseCode<ApprenticeFeedbackTarget>(updateApprenticeFeedbackTargetRequest);
+            _logger.LogDebug($"Processing aggregated learners to update the feedback targets for ApprenticeId: {command.ApprenticeId}");
+            foreach (var updateRequest in updateApprenticeFeedbackTargetRequests)
+            {
+                _logger.LogDebug($"Updating Feedback Target with Id: {updateRequest.Data.ApprenticeFeedbackTargetId} for ApprenticeId: {command.ApprenticeId}");
+                var response = await _apprenticeFeedbackApiClient.PostWithResponseCode<UpdateApprenticeFeedbackTargetRequestData, ApprenticeFeedbackTarget>(updateRequest);
 
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    _logger.LogError($"Error Updating the apprentice feedback target with Id: {aggregate.ApprenticeFeedbackTargetId} for apprenticeId: {command.ApprenticeId}, Content: {response.ErrorContent}");
+                    _logger.LogError($"Error Updating the apprentice feedback target with Id: {updateRequest.Data.ApprenticeFeedbackTargetId} for apprenticeId: {command.ApprenticeId}, Content: {response.ErrorContent}");
                 }
             }
 
