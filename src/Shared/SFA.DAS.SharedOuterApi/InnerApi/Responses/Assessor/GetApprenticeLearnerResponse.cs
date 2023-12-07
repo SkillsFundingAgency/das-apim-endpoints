@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
+namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Assessor
 {
-    public  class GetApprenticeLearnerResponse
+    public class GetApprenticeLearnerResponse
     {
         public long ApprenticeshipId { get; set; }
         public long Ukprn { get; set; }

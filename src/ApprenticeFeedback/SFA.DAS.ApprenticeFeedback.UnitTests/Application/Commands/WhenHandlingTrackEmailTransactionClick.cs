@@ -11,7 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static SFA.DAS.ApprenticeFeedback.Models.Enums;
 
-namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
+namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Commands
 {
     public class WhenHandlingTrackEmailTransactionClick
     {
@@ -31,7 +31,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
         public async Task Then_PostToTrackEmailTransactionClick(TrackEmailTransactionClickCommand command)
         {
             // Arrange
-            var expectedResponse = new TrackEmailTransactionClickResponse { ClickStatus = ClickStatus.Valid};
+            var expectedResponse = new TrackEmailTransactionClickResponse { ClickStatus = ClickStatus.Valid };
 
             _mockFeedbackApiClient
                 .Setup(x => x.PostWithResponseCode<TrackEmailTransactionClickResponse>(It.IsAny<TrackEmailTransactionClickRequest>(), true))
