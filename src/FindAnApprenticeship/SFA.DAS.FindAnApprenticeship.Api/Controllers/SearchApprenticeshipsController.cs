@@ -10,7 +10,6 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.BrowseByInterests;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.BrowseByInterestsLocation;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndex;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndexLocation;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
