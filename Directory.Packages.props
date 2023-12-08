@@ -63,7 +63,6 @@
       <Version>4.3.4</Version>
     </PackageVersion>
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="4.7.1" />
-    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
     <PackageVersion Include="System.Net.Security" Version="4.3.1" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageVersion Include="WireMock.Net" Version="1.5.6" />
@@ -72,7 +71,6 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
     <PackageVersion Include="FluentAssertions" Version="6.7.0" />
     <PackageVersion Include="FluentAssertions.Web" Version="1.2.1" />
-    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
@@ -82,6 +80,7 @@
     <PackageVersion Include="SFA.DAS.NServiceBus" Version="17.0.49" />
     <PackageVersion Include="System.Text.Encodings.Web" Version="8.0.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="8.0.0" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <PackageVersion Include="FluentAssertions" Version="6.7.0" />
@@ -95,6 +94,7 @@
     <PackageVersion Include="SFA.DAS.NServiceBus" Version="17.0.49" />
     <PackageVersion Include="System.Text.Encodings.Web" Version="6.0.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="6.0.0" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
     <PackageVersion Include="FluentAssertions" Version="5.10.3" />
@@ -111,5 +111,6 @@
     <PackageVersion Include="System.Net.Http.Json" Version="3.2.1" />
     <PackageVersion Include="System.Drawing.Common" Version="4.7.3" />
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
   </ItemGroup>
  </Project>
