@@ -36,8 +36,5 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         public bool? IsOnFlexiPaymentPilot { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
         public int? DurationReducedByHours { get; set; }
-        public int? WeightageReducedBy { get; set; }
-        public string QualificationsForRplReduction { get; set; }
-        public string ReasonForRplReduction { get; set; }
     }
 }

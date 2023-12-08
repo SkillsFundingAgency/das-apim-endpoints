@@ -64,8 +64,9 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
                 FeedbackTransactionId = feedbackTransactionId,
                 ApprenticeName = apprentice.FirstName,
                 ApprenticeEmailAddress = apprentice.Email,
-                // If the preference is null, it's not set and we default to true until told otherwise for sending feedback emails.
-                IsEmailContactAllowed = apprentice.ApprenticePreferences.Find(x => x.PreferenceId == 1)?.Status ?? true
+                // If either preference is null, it's not set and we default to true until told otherwise for sending emails.
+                IsFeedbackEmailContactAllowed = apprentice.ApprenticePreferences.Find(x => x.PreferenceId == 1)?.Status ?? true,
+                IsEngagementEmailContactAllowed = apprentice.ApprenticePreferences.Find(x => x.PreferenceId == 2)?.Status ?? true
             });
 
             return Ok(new ProcessEmailTransactionResult()

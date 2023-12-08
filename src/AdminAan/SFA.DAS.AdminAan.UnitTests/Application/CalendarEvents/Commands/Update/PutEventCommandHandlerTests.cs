@@ -4,6 +4,7 @@ using MediatR;
 using Moq;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Create;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Update;
+using SFA.DAS.AdminAan.Domain;
 using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 

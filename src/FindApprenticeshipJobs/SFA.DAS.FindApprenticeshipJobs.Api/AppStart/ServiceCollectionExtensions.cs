@@ -22,6 +22,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
+        services.AddTransient<ILiveVacancyMapper, LiveVacancyMapper>();
         return services;
     }
 }
