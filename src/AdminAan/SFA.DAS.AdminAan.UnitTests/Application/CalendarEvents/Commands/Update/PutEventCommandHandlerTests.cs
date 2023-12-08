@@ -28,7 +28,7 @@ public class PutEventCommandHandlerTests
 
         var actual = await sut.Handle(command, cancellationToken);
         apiClientMock.Verify(c => c.PutCalendarEvent(memberId, calendarEventId, command, cancellationToken), Times.Once);
-        apiClientMock.Verify(c => c.PutGuestSpeakers(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<PutEventGuestsModel>(), It.IsAny<CancellationToken>()), Times.Never);
+        apiClientMock.Verify(c => c.PutGuestSpeakers(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<PutEventGuestsModel>(), It.IsAny<CancellationToken>()), Times.Once);
         actual.Should().Be(expected);
     }
 
