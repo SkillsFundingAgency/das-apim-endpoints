@@ -32,30 +32,22 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
         {
             var expectedResult = new
             {
-                source.VacancyId,
-                VacancyTitle = source.Title,
+                Id = source.VacancyReference.ToString(),
                 source.VacancyReference,
-                ApprenticeshipTitle = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Title,
-                standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Level,
-                Description = source.ShortDescription,
-                LongDescription = source.Description,
-                source.EmployerName,
-                source.LiveDate,
-                source.ProgrammeId,
-                source.ProgrammeType,
+                source.VacancyId,
+                source.Title,
+                PostedDate = source.LiveDate,
                 source.StartDate,
-                IsPositiveAboutDisability = source.DisabilityConfident == DisabilityConfident.Yes,
-                standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Route,
-                EmployerLocation = new FindApprenticeshipJobs.Application.Shared.Address
-                {
-                    AddressLine1 = source.EmployerLocation?.AddressLine1,
-                    AddressLine2 = source.EmployerLocation?.AddressLine2,
-                    AddressLine3 = source.EmployerLocation?.AddressLine3,
-                    AddressLine4 = source.EmployerLocation?.AddressLine4,
-                    Postcode = source.EmployerLocation?.Postcode,
-                    Latitude = source.EmployerLocation?.Latitude ?? 0,
-                    Longitude = source.EmployerLocation?.Longitude ?? 0,
-                },
+                source.ClosingDate,
+                Description = source.ShortDescription,
+                source.NumberOfPositions,
+                source.EmployerName,
+                ProviderName = source.TrainingProvider.Name,
+                source.TrainingProvider.Ukprn,
+                IsPositiveAboutDisability = false,
+                IsEmployerAnonymous = source.IsAnonymous,
+                VacancyLocationType = "NonNational",
+                ApprenticeshipLevel = "Higher",
                 Wage = source.Wage == null ? null : new FindApprenticeshipJobs.Application.Shared.Wage
                 {
                     Duration = source.Wage.Duration,
@@ -65,7 +57,42 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                     WageType = source.Wage.WageType,
                     WeeklyHours = source.Wage.WeeklyHours,
                     WorkingWeekDescription = source.Wage.WorkingWeekDescription
-                }
+                },
+                CategoryCode = "SSAT1.UNKNOWN",
+                AnonymousEmployerName = source.IsAnonymous ? source.EmployerName: null,
+                IsDisabilityConfident = source.DisabilityConfident == DisabilityConfident.Yes,
+                source.AccountPublicHashedId,
+                source.AccountLegalEntityPublicHashedId,
+                LongDescription = source.Description,
+                source.TrainingDescription,
+                source.Skills,
+                Qualifications = source.Qualifications.Select(q => new Qualification
+                {
+                    QualificationType = q.QualificationType,
+                    Subject = q.Subject,
+                    Grade = q.Grade,
+                    Weighting = (QualificationWeighting)q.Weighting
+                }),
+                source.OutcomeDescription,
+                Category = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Title,
+                ApprenticeshipTitle = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Title,
+                standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Level,
+                StandardLarsCode = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).LarsCode,
+                
+                
+                standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Route,
+                standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).RouteCode,
+                Address = new FindApprenticeshipJobs.Application.Shared.Address
+                {
+                    AddressLine1 = source.EmployerLocation?.AddressLine1,
+                    AddressLine2 = source.EmployerLocation?.AddressLine2,
+                    AddressLine3 = source.EmployerLocation?.AddressLine3,
+                    AddressLine4 = source.EmployerLocation?.AddressLine4,
+                    Postcode = source.EmployerLocation?.Postcode,
+                    Latitude = source.EmployerLocation?.Latitude ?? 0,
+                    Longitude = source.EmployerLocation?.Longitude ?? 0,
+                },
+                
             };
 
             actual.Should().BeEquivalentTo(expectedResult);
@@ -85,7 +112,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 new GetStandardsListResponse.GetStandardsListItem
                 {
                     LarsCode = larsCode,
-                    Level = fixture.Create<int>(),
+                    Level = 4,
                     Title = fixture.Create<string>(),
                     Route = fixture.Create<string>()
                 }

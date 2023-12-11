@@ -4,16 +4,16 @@
     {
         public Guid VacancyId { get; set; }
         public long VacancyReference { get; set; }
-        public string VacancyTitle { get; set; }
+        public string Title { get; set; }
         public int NumberOfPositions { get; set; }
         public string ApprenticeshipTitle { get; set; }
         public string? Description { get; set; }
-        public Address? EmployerLocation { get; set; }
+        public Address? Address { get; set; }
         public string? EmployerName { get; set; }
         public string? ProviderName { get; set; }
-        public long? ProviderId { get; set; }
+        public long Ukprn { get; set; }
         public DateTime LiveDate { get; set; }
-        public string? ProgrammeId { get; set; }
+        public int StandardLarsCode { get; set; }
         public string? ProgrammeType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime ClosingDate { get; set; }
@@ -30,7 +30,7 @@
         public string AnonymousEmployerName { get; set; }
         public string Category { get; set; }
         public string CategoryCode { get; set; }
-        public DisabilityConfident IsDisabilityConfident { get; set; }
+        public bool IsDisabilityConfident { get; set; }
         public bool IsEmployerAnonymous { get; set; }
         public bool IsPositiveAboutDisability { get; set; }
         public bool IsRecruitVacancy { get; set; }
@@ -47,5 +47,12 @@
         public string EmployerContactPhone { get; set; }
         public string EmployerContactEmail { get; set; }
         public string EmployerContactName { get; set; }
+        public DateTime PostedDate { get; set; }
+        public string ApprenticeshipLevel { get; set; }
+        public int Duration { get; set; }
+        public string? DurationUnit { get; set; }
+        public int RouteCode { get; set; }
+        public string? AccountPublicHashedId { get; set; }
+        public string? AccountLegalEntityPublicHashedId { get; set; }
     }
 }

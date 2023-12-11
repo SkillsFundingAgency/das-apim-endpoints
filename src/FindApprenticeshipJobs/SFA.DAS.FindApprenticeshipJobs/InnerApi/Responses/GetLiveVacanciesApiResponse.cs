@@ -54,7 +54,7 @@ public class LiveVacancy
     public string? ThingsToConsider { get; set; }
     public string? Title { get; set; }
     public string? TrainingDescription { get; set; }
-    public TrainingProvider? TrainingProvider { get; set; }
+    public TrainingProvider TrainingProvider { get; set; }
     public long VacancyReference { get; set; }
     public Wage? Wage { get; set; }
     public int? EducationLevelNumber { get; set; }

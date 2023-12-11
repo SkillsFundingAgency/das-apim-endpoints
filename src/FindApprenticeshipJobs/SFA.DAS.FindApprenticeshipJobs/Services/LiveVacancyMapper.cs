@@ -11,34 +11,23 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
             var getStandardsListItem = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == source.ProgrammeId);
             return new Application.Shared.LiveVacancy
             {
-                VacancyId = source.VacancyId,
+                Id = source.VacancyReference.ToString(),
                 VacancyReference = source.VacancyReference,
-                VacancyTitle = source.Title,
-                NumberOfPositions = source.NumberOfPositions,
-                ApprenticeshipTitle = getStandardsListItem?.Title ?? string.Empty,
-                Level = getStandardsListItem?.Level ?? 0,
+                VacancyId = source.VacancyId,
+                Title = source.Title,
+                PostedDate = source.LiveDate,
+                StartDate = source.StartDate,
+                ClosingDate = source.ClosingDate,
                 Description = source.ShortDescription,
-                LongDescription = source.Description,
+                NumberOfPositions = source.NumberOfPositions,
                 EmployerName = source.EmployerName,
                 ProviderName = source.TrainingProvider.Name,
-                ProviderId = source.TrainingProvider.Ukprn,
-                LiveDate = source.LiveDate,
-                ClosingDate = source.ClosingDate,
-                ProgrammeId = source.ProgrammeId,
-                ProgrammeType = source.ProgrammeType,
-                StartDate = source.StartDate,
-                //RouteId = TODO  
-                Route = getStandardsListItem?.Route ?? string.Empty,
-                EmployerLocation = new Application.Shared.Address
-                {
-                    AddressLine1 = source.EmployerLocation?.AddressLine1,
-                    AddressLine2 = source.EmployerLocation?.AddressLine2,
-                    AddressLine3 = source.EmployerLocation?.AddressLine3,
-                    AddressLine4 = source.EmployerLocation?.AddressLine4,
-                    Postcode = source.EmployerLocation?.Postcode,
-                    Latitude = source.EmployerLocation?.Latitude ?? 0,
-                    Longitude = source.EmployerLocation?.Longitude ?? 0,
-                },
+                Ukprn = source.TrainingProvider.Ukprn,
+                IsPositiveAboutDisability = false,
+                
+                IsEmployerAnonymous = source.IsAnonymous,
+                VacancyLocationType = "NonNational",
+                ApprenticeshipLevel = GetApprenticeshipLevel(getStandardsListItem.Level),
                 Wage = source.Wage == null ? null : new FindApprenticeshipJobs.Application.Shared.Wage
                 {
                     Duration = source.Wage.Duration,
@@ -49,8 +38,13 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     WeeklyHours = source.Wage.WeeklyHours,
                     WorkingWeekDescription = source.Wage.WorkingWeekDescription,
                 },
-                OutcomeDescription = source.OutcomeDescription,
-                
+                CategoryCode = "SSAT1.UNKNOWN",
+                Category = getStandardsListItem.Title,
+                AnonymousEmployerName = source.IsAnonymous ? source.EmployerName: null,
+                IsDisabilityConfident = source.DisabilityConfident == DisabilityConfident.Yes,
+                AccountPublicHashedId = source.AccountPublicHashedId,
+                AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
+                LongDescription = source.Description,
                 TrainingDescription = source.TrainingDescription,
                 Skills = source.Skills,
                 Qualifications = source.Qualifications.Select(q => new Application.Shared.Qualification
@@ -60,26 +54,49 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Grade = q.Grade,
                     Weighting = (Application.Shared.QualificationWeighting)q.Weighting
                 }),
-                ThingsToConsider = source.ThingsToConsider,
-                Id = source.Id,
-                IsDisabilityConfident = (Application.Shared.DisabilityConfident)source.DisabilityConfident,
-                IsEmployerAnonymous = source.IsAnonymous,
-                EmployerDescription = source.EmployerDescription,
-                EmployerWebsiteUrl = source.EmployerWebsiteUrl,
-                IsRecruitVacancy = true,
-                IsPositiveAboutDisability = source.DisabilityConfident == DisabilityConfident.Yes,
-                AnonymousEmployerName = source.IsAnonymous ? source.EmployerName:"",//TOD check
-                
-                //SubCategory = 
-                //SubCategoryCode = 
-                //VacancyLocationType =
-                //WageAmountLowerBand =
-                //WageAmountUpperBand = 
-                //ExpectedDuration = 
-                
+                OutcomeDescription = source.OutcomeDescription,
                 EmployerContactName = source.EmployerContact == null ? null : source.EmployerContact.EmployerContactName,
                 EmployerContactEmail = source.EmployerContact == null ? null : source.EmployerContact.EmployerContactEmail,
-                EmployerContactPhone = source.EmployerContact == null ? null : source.EmployerContact.EmployerContactPhone
+                EmployerContactPhone = source.EmployerContact == null ? null : source.EmployerContact.EmployerContactPhone,
+                EmployerDescription = source.EmployerDescription,
+                EmployerWebsiteUrl = source.EmployerWebsiteUrl,
+                Address = new Application.Shared.Address
+                {
+                    AddressLine1 = source.EmployerLocation?.AddressLine1,
+                    AddressLine2 = source.EmployerLocation?.AddressLine2,
+                    AddressLine3 = source.EmployerLocation?.AddressLine3,
+                    AddressLine4 = source.EmployerLocation?.AddressLine4,
+                    Postcode = source.EmployerLocation?.Postcode,
+                    Latitude = source.EmployerLocation?.Latitude ?? 0,
+                    Longitude = source.EmployerLocation?.Longitude ?? 0,
+                },
+                Duration = source.Wage.Duration,
+                DurationUnit = source.Wage.DurationUnit,
+                ThingsToConsider = source.ThingsToConsider,
+                ApprenticeshipTitle = getStandardsListItem?.Title ?? string.Empty,
+                Level = getStandardsListItem?.Level ?? 0,
+                
+                StandardLarsCode = getStandardsListItem.LarsCode,
+                
+                RouteCode = getStandardsListItem.RouteCode,  
+                Route = getStandardsListItem?.Route ?? string.Empty,
+
+                IsRecruitVacancy = true
+            };
+        }
+
+        private string GetApprenticeshipLevel(int level)
+        {
+            return level switch
+            {
+                0 => "Unknown",
+                2 => "Intermediate",
+                3 => "Advanced",
+                4 => "Higher",
+                5 => "Higher",
+                6 => "Degree",
+                7 => "Degree",
+                _ => ""
             };
         }
     }

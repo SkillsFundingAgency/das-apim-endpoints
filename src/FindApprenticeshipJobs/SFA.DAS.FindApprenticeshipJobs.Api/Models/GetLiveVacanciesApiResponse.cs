@@ -32,19 +32,19 @@ public class GetLiveVacanciesApiResponse
             {
                 VacancyId = source.VacancyId,
                 VacancyReference = source.VacancyReference,
-                VacancyTitle = source.VacancyTitle,
+                Title = source.Title,
                 NumberOfPositions = source.NumberOfPositions,
                 ApprenticeshipTitle = source.ApprenticeshipTitle,
-                ProgrammeId = source.ProgrammeId,
+                StandardLarsCode = source.StandardLarsCode,
                 ProgrammeType = source.ProgrammeType,
                 Route = source.Route,
                 Description = source.Description,
-                EmployerLocation = source.EmployerLocation == null ? null : (Address)source.EmployerLocation,
+                Address = source.Address == null ? null : (Address)source.Address,
                 LiveDate = source.LiveDate,
                 ClosingDate = source.ClosingDate,
                 StartDate = source.StartDate,
                 EmployerName = source.EmployerName,
-                ProviderId = source.ProviderId,
+                Ukprn = source.Ukprn,
                 ProviderName = source.ProviderName,
                 Level = source.Level,
                 Wage = source.Wage == null ? null : (Wage)source.Wage,
@@ -61,7 +61,7 @@ public class GetLiveVacanciesApiResponse
                 }).ToList(),
                 ThingsToConsider = source.ThingsToConsider,
                 Id = source.Id,
-                IsDisabilityConfident = (DisabilityConfident)source.IsDisabilityConfident,
+                IsDisabilityConfident = source.IsDisabilityConfident,
                 IsEmployerAnonymous = source.IsEmployerAnonymous,
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
@@ -80,23 +80,45 @@ public class GetLiveVacanciesApiResponse
                 Score = source.Score,
                 EmployerContactName = source.EmployerContactName,
                 EmployerContactEmail = source.EmployerContactEmail,
-                EmployerContactPhone = source.EmployerContactPhone
+                EmployerContactPhone = source.EmployerContactPhone,
+                PostedDate = source.PostedDate,
+                ApprenticeshipLevel = source.ApprenticeshipLevel,
+                Duration = source.Duration,
+                DurationUnit = source.DurationUnit,
+                RouteCode = source.RouteCode,
+                AccountPublicHashedId = source.AccountPublicHashedId,
+                AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
+                
             };
         }
 
+        public int RouteCode { get; set; }
+
+        public string? DurationUnit { get; set; }
+
+        public int Duration { get; set; }
+
+        public string? AccountLegalEntityPublicHashedId { get; set; }
+
+        public string? AccountPublicHashedId { get; set; }
+
+        public string ApprenticeshipLevel { get; set; }
+
+        public DateTime PostedDate { get; set; }
+
         public Guid VacancyId { get; set; }
         public long VacancyReference { get; set; }
-        public string VacancyTitle { get; set; }
+        public string Title { get; set; }
         public int NumberOfPositions { get; set; }
         public string ApprenticeshipTitle { get; set; }
         public string? Description { get; set; }
-        public Address? EmployerLocation { get; set; }
+        public Address? Address { get; set; }
         public string? EmployerName { get; set; }
-        public long? ProviderId { get; set; }
+        public long? Ukprn { get; set; }
         public string? ProviderName { get; set; }
 
         public DateTime LiveDate { get; set; }
-        public string? ProgrammeId { get; set; }
+        public int? StandardLarsCode { get; set; }
         public string? ProgrammeType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime ClosingDate { get; set; }
@@ -113,7 +135,7 @@ public class GetLiveVacanciesApiResponse
         public string AnonymousEmployerName { get; set; }
         public string Category { get; set; }
         public string CategoryCode { get; set; }
-        public DisabilityConfident IsDisabilityConfident { get; set; }
+        public bool IsDisabilityConfident { get; set; }
         public bool IsEmployerAnonymous { get; set; }
         public bool IsPositiveAboutDisability { get; set; }
         public bool IsRecruitVacancy { get; set; }

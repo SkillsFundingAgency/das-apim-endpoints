@@ -13,6 +13,7 @@
             public string Title { get; set; }
             public int Level { get; set; }
             public string Route { get; set; }
+            public int RouteCode { get; set; }
         }
     }
 }
