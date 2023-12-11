@@ -1,22 +1,18 @@
-﻿using Castle.Core.Logging;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApprenticeFeedback.Application.Commands.CreateApprenticeFeedbackTarget;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.PatchApprenticeFeedbackTarget;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
-using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
+namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Commands
 {
     public class WhenHandlingPatchApprenticeFeedbackTarget
     {

@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprenticeFeedbackTargets;
+using SFA.DAS.ApprenticeFeedback.Application.Queries.GetFeedbackTargetsForUpdate;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -12,24 +12,24 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Queries
+namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Queries
 {
-    public class WhenHandlingGetApprenticeFeedbackTargets
+    public class WhenHandlingGetApprenticeFeedbackTargetsForUpdate
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_ApprenticeFeedbackTargets_From_The_Api(
            List<ApprenticeFeedbackTarget> feedbackTargets,
-           GetApprenticeFeedbackTargetsQuery query,
+           GetFeedbackTargetsForUpdateQuery query,
            [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
-           GetApprenticeFeedbackTargetsQueryHandler handler)
+           GetFeedbackTargetsForUpdateQueryHandler handler)
         {
             mockApprenticeFeedbackApiClient
                 .Setup(client => client.GetAll<ApprenticeFeedbackTarget>(
-                It.IsAny<GetAllApprenticeFeedbackTargetsRequest>()))
+                It.IsAny<GetApprenticeFeedbackTargetsForUpdateRequest>()))
                 .ReturnsAsync(feedbackTargets);
 
             var actual = await handler.Handle(query, CancellationToken.None);
-            actual.FeedbackTargets.Should().BeEquivalentTo(feedbackTargets, options => options.ExcludingMissingMembers());
+            actual.FeedbackTargetsForUpdate.Should().BeEquivalentTo(feedbackTargets, options => options.ExcludingMissingMembers());
         }
     }
 }

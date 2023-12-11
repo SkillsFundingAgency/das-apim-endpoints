@@ -34,6 +34,11 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
         {
+            return await PostWithResponseCode<object, TResponse>(request, includeResponse);
+        }
+
+        public async Task<ApiResponse<TResponse>> PostWithResponseCode<TData, TResponse>(IPostApiRequest<TData> request, bool includeResponse = true)
+        {
             var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
 
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl);

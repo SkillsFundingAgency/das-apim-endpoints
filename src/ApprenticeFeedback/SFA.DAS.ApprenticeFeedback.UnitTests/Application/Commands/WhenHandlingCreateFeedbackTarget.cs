@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using AutoFixture.NUnit3;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.CreateApprenticeFeedbackTarget;
@@ -8,13 +9,11 @@ using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
-using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
 
-namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Apprentices.Commands
+namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Commands
 {
     public class WhenHandlingCreateApprenticeFeedbackTarget
     {
