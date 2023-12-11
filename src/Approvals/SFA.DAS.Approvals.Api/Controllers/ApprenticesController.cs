@@ -132,6 +132,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     EmploymentEndDate = request.EmploymentEndDate,
                     EmploymentPrice = request.EmploymentPrice,
                     DeliveryModel = request.DeliveryModel,
+                    HasOLTD = request.HasOLTD,
                     UserInfo = request.UserInfo
                 });
 

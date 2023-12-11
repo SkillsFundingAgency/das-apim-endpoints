@@ -45,6 +45,18 @@ namespace SFA.DAS.Approvals.Api.Controllers
             return Ok(result);
         }
 
+        [HttpPost]
+        [Route("validateChangeOfEmployerOverlap")]
+        public async Task<IActionResult> ValidateChangeOfEmployerOverlap([FromBody] ValidateChangeOfEmployerOverlapRequest request)
+        {
+            var result = await _mediator.Send(new ValidateChangeOfEmployerOverlapCommand
+            {
+                ValidateChangeOfEmployerOverlapRequest = request
+            });
+
+            return Ok(result);
+        }
+
         [HttpGet]
         [Route("{providerId}/validateUlnOverlap")]
         public async Task<IActionResult> ValidateUlnOverlapOnStartDate(long providerId, string uln, string startDate, string endDate)

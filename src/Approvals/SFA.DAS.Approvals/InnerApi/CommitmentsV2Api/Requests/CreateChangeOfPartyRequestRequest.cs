@@ -28,6 +28,7 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests
             public DateTime? NewEmploymentEndDate { get; set; }
             public int? NewEmploymentPrice { get; set; }
             public DeliveryModel? DeliveryModel { get; set; }
+            public bool HasOLTD { get; set; }
             public UserInfo UserInfo { get; set; }
         }
     }
