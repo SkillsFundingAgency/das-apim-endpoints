@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.Enums;
 using SFA.DAS.Approvals.Extensions;
+using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.Services;
@@ -19,12 +20,14 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly IDeliveryModelService _deliveryModelService;
         private readonly ServiceParameters _serviceParameters;
+        private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apprenticeshipsApiClient;
 
-        public GetManageApprenticeshipDetailsQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, IDeliveryModelService deliveryModelService, ServiceParameters serviceParameters)
+        public GetManageApprenticeshipDetailsQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, IDeliveryModelService deliveryModelService, ServiceParameters serviceParameters, IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient)
         {
             _apiClient = apiClient;
             _deliveryModelService = deliveryModelService;
             _serviceParameters = serviceParameters;
+            _apprenticeshipsApiClient = apprenticeshipsApiClient;
         }
 
         public async Task<GetManageApprenticeshipDetailsQueryResult> Handle(GetManageApprenticeshipDetailsQuery request, CancellationToken cancellationToken)
@@ -54,24 +57,27 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
             var overlappingTrainingDateResponseTask = _apiClient.GetWithResponseCode<GetOverlappingTrainingDateResponse>(new GetOverlappingTrainingDateRequest(apprenticeship.Id));
             var deliveryModelTask = _deliveryModelService.GetDeliveryModels(apprenticeship.ProviderId,
                 apprenticeship.CourseCode, apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
+            var pendingPriceChangeTask = _apprenticeshipsApiClient.GetWithResponseCode<GetPendingPriceChangeResponse>(new GetPendingPriceChangeRequest(apprenticeship.Id));
 
-            Task.WaitAll(priceEpisodesResponseTask, 
+            await Task.WhenAll(priceEpisodesResponseTask, 
                 apprenticeshipUpdatesResponseTask,
                 apprenticeshipDataLockStatusResponseTask,
                 changeOfPartyRequestsResponseTask, 
                 changeOfProviderChainResponseTask,
                 changeOfEmployerChainResponseTask, 
                 overlappingTrainingDateResponseTask, 
-                deliveryModelTask);
+                deliveryModelTask,
+                pendingPriceChangeTask);
 
-            var priceEpisodesResponse = await priceEpisodesResponseTask;
-            var apprenticeshipUpdatesResponse = await apprenticeshipUpdatesResponseTask;
-            var apprenticeshipDataLockStatusResponse = await apprenticeshipDataLockStatusResponseTask; 
-            var changeOfPartyRequestsResponse = await changeOfPartyRequestsResponseTask;
-            var changeOfProviderChainResponse = await changeOfProviderChainResponseTask;
-            var changeOfEmployerChainResponse = await changeOfEmployerChainResponseTask;
-            var overlappingTrainingDateResponse = await overlappingTrainingDateResponseTask;
-            var deliveryModel = await deliveryModelTask;
+            var priceEpisodesResponse = priceEpisodesResponseTask.Result;
+            var apprenticeshipUpdatesResponse = apprenticeshipUpdatesResponseTask.Result;
+            var apprenticeshipDataLockStatusResponse = apprenticeshipDataLockStatusResponseTask.Result; 
+            var changeOfPartyRequestsResponse = changeOfPartyRequestsResponseTask.Result;
+            var changeOfProviderChainResponse = changeOfProviderChainResponseTask.Result;
+            var changeOfEmployerChainResponse = changeOfEmployerChainResponseTask.Result;
+            var overlappingTrainingDateResponse = overlappingTrainingDateResponseTask.Result;
+            var deliveryModel = deliveryModelTask.Result;
+            var pendingPriceChangeResponse = pendingPriceChangeTask.Result;
 
             return new GetManageApprenticeshipDetailsQueryResult
             {
@@ -83,7 +89,20 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                 ChangeOfProviderChain = changeOfProviderChainResponse.Body.ChangeOfProviderChain,
                 ChangeOfEmployerChain = changeOfEmployerChainResponse.Body.ChangeOfEmployerChain,
                 OverlappingTrainingDateRequest = overlappingTrainingDateResponse.Body.OverlappingTrainingDateRequest,
-                HasMultipleDeliveryModelOptions = deliveryModel.Count > 1
+                HasMultipleDeliveryModelOptions = deliveryModel.Count > 1,
+                PendingPriceChange = ToResponse(pendingPriceChangeResponse.Body)
+            };
+        }
+
+        private PendingPriceChange ToResponse(GetPendingPriceChangeResponse pendingPriceChangeResponse)
+        {
+            if(!pendingPriceChangeResponse.HasPendingPriceChange) return null;
+
+            return new PendingPriceChange
+            {
+                Cost = pendingPriceChangeResponse.PendingPriceChange.Cost,
+                EndPointAssessmentPrice = pendingPriceChangeResponse.PendingPriceChange.EndPointAssessmentPrice,
+                TrainingPrice = pendingPriceChangeResponse.PendingPriceChange.TrainingPrice
             };
         }
     }
