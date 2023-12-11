@@ -8,6 +8,7 @@ using SFA.DAS.ApprenticeFeedback.Application.Commands.TrackEmailTransactionClick
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetFeedbackTransactionsToEmail;
 using SFA.DAS.ApprenticeFeedback.Models;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Net;
@@ -30,7 +31,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<GenerateEmailTransactionResponse>> GenerateEmailTransaction()
+        public async Task<ActionResult<NullResponse>> GenerateEmailTransaction()
             => await _mediator.Send(new GenerateEmailTransactionCommand());
 
         [HttpPost("{feedbackTransactionId}")]
