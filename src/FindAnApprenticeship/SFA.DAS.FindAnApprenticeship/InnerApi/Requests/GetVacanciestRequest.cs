@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SFA.DAS.FindAnApprenticeship.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
@@ -11,14 +12,14 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
         private readonly int? _distance;
         private readonly int? _pageNumber;
         private readonly int? _pageSize;
-        private readonly string _sort;
+        private readonly VacancySort _sort;
 
         public GetVacanciesRequest(
             double? lat,
             double? lon,
             List<string>? routes,
             int? distance,
-            string sort,
+            VacancySort sort,
             int? pageNumber,
             int? pageSize)
         {

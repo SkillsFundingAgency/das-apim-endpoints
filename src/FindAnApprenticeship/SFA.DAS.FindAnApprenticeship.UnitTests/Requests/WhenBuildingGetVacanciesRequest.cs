@@ -2,6 +2,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
+using SFA.DAS.FindAnApprenticeship.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Requests;
 
@@ -13,7 +14,7 @@ public class WhenBuildingGetVacanciesRequest
         double lon,
         List<string> routes,
         int distance,
-        string sort,
+        VacancySort sort,
         int pageNumber,
         int pageSize)
     {
