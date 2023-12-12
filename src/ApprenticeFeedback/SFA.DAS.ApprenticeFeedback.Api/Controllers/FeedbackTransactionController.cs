@@ -40,7 +40,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error generating email transactions summaries.");
+                _logger.LogError(e, "Error generating email transactions");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
