@@ -22,6 +22,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             _logger = logger;
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [Route("add")]
@@ -48,6 +49,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             }
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [Route("update")]
