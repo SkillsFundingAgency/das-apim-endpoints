@@ -1,6 +1,5 @@
 ﻿using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Services
 {
@@ -15,7 +14,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 VacancyReference = source.VacancyReference,
                 VacancyId = source.VacancyId,
                 Title = source.Title,
-                PostedDate = source.LiveDate,
+                LiveDate = source.PostedDate,
                 StartDate = source.StartDate,
                 ClosingDate = source.ClosingDate,
                 Description = source.ShortDescription,
@@ -38,8 +37,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     WeeklyHours = source.Wage.WeeklyHours,
                     WorkingWeekDescription = source.Wage.WorkingWeekDescription,
                 },
-                CategoryCode = "SSAT1.UNKNOWN",
-                Category = getStandardsListItem.Title,
                 AnonymousEmployerName = source.IsAnonymous ? source.EmployerName: null,
                 IsDisabilityConfident = source.DisabilityConfident == DisabilityConfident.Yes,
                 AccountPublicHashedId = source.AccountPublicHashedId,

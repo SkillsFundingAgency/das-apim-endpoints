@@ -36,13 +36,12 @@ public class GetLiveVacanciesApiResponse
                 NumberOfPositions = source.NumberOfPositions,
                 ApprenticeshipTitle = source.ApprenticeshipTitle,
                 StandardLarsCode = source.StandardLarsCode,
-                ProgrammeType = source.ProgrammeType,
                 Route = source.Route,
                 Description = source.Description,
                 Address = source.Address == null ? null : (Address)source.Address,
-                LiveDate = source.LiveDate,
                 ClosingDate = source.ClosingDate,
                 StartDate = source.StartDate,
+                LiveDate = source.LiveDate,
                 EmployerName = source.EmployerName,
                 Ukprn = source.Ukprn,
                 ProviderName = source.ProviderName,
@@ -67,21 +66,11 @@ public class GetLiveVacanciesApiResponse
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
                 IsRecruitVacancy = true,
                 AnonymousEmployerName = source.AnonymousEmployerName,
-                Category = source.Category,
-                CategoryCode = source.CategoryCode,
                 IsPositiveAboutDisability = source.IsPositiveAboutDisability,
-                SubCategory = source.SubCategory,
-                SubCategoryCode = source.SubCategoryCode,
                 VacancyLocationType = source.VacancyLocationType,
-                WageAmountLowerBand = source.WageAmountLowerBand,
-                WageAmountUpperBand = source.WageAmountUpperBand,
-                ExpectedDuration = source.ExpectedDuration,
-                Distance = source.Distance,
-                Score = source.Score,
                 EmployerContactName = source.EmployerContactName,
                 EmployerContactEmail = source.EmployerContactEmail,
                 EmployerContactPhone = source.EmployerContactPhone,
-                PostedDate = source.PostedDate,
                 ApprenticeshipLevel = source.ApprenticeshipLevel,
                 Duration = source.Duration,
                 DurationUnit = source.DurationUnit,
@@ -93,19 +82,11 @@ public class GetLiveVacanciesApiResponse
         }
 
         public int RouteCode { get; set; }
-
         public string? DurationUnit { get; set; }
-
         public int Duration { get; set; }
-
         public string? AccountLegalEntityPublicHashedId { get; set; }
-
         public string? AccountPublicHashedId { get; set; }
-
         public string ApprenticeshipLevel { get; set; }
-
-        public DateTime PostedDate { get; set; }
-
         public Guid VacancyId { get; set; }
         public long VacancyReference { get; set; }
         public string Title { get; set; }
@@ -119,7 +100,6 @@ public class GetLiveVacanciesApiResponse
 
         public DateTime LiveDate { get; set; }
         public int? StandardLarsCode { get; set; }
-        public string? ProgrammeType { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime ClosingDate { get; set; }
         public string Route { get; set; }
@@ -132,21 +112,12 @@ public class GetLiveVacanciesApiResponse
         public IEnumerable<Qualification> Qualifications { get; set; }
         public string ThingsToConsider { get; set; }
         public string Id { get; set; }
-        public string AnonymousEmployerName { get; set; }
-        public string Category { get; set; }
-        public string CategoryCode { get; set; }
-        public bool IsDisabilityConfident { get; set; }
         public bool IsEmployerAnonymous { get; set; }
+        public string AnonymousEmployerName { get; set; }
+        public bool IsDisabilityConfident { get; set; }
         public bool IsPositiveAboutDisability { get; set; }
         public bool IsRecruitVacancy { get; set; }
-        public string SubCategory { get; set; }
-        public string SubCategoryCode { get; set; }
         public string VacancyLocationType { get; set; }
-        public long WageAmountLowerBand { get; set; }
-        public long WageAmountUpperBand { get; set; }
-        public int ExpectedDuration { get; set; }
-        public int Distance { get; set; }
-        public int Score { get; set; }
         public string EmployerDescription { get; set; }
         public string EmployerWebsiteUrl { get; set; }
         public string EmployerContactPhone { get; set; }

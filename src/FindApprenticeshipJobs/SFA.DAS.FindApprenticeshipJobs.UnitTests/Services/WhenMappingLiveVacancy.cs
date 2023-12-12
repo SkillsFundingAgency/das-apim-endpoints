@@ -36,7 +36,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 source.VacancyReference,
                 source.VacancyId,
                 source.Title,
-                PostedDate = source.LiveDate,
+                LiveDate = source.PostedDate,
                 source.StartDate,
                 source.ClosingDate,
                 Description = source.ShortDescription,
@@ -58,7 +58,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                     WeeklyHours = source.Wage.WeeklyHours,
                     WorkingWeekDescription = source.Wage.WorkingWeekDescription
                 },
-                CategoryCode = "SSAT1.UNKNOWN",
                 AnonymousEmployerName = source.IsAnonymous ? source.EmployerName: null,
                 IsDisabilityConfident = source.DisabilityConfident == DisabilityConfident.Yes,
                 source.AccountPublicHashedId,
@@ -74,11 +73,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                     Weighting = (QualificationWeighting)q.Weighting
                 }),
                 source.OutcomeDescription,
-                Category = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Title,
                 ApprenticeshipTitle = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Title,
                 standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Level,
                 StandardLarsCode = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).LarsCode,
-                
                 
                 standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Route,
                 standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).RouteCode,
@@ -105,7 +102,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
 
             var larsCode = fixture.Create<int>();
             vacancy.ProgrammeId = larsCode.ToString();
-            vacancy.ProgrammeType = "Standard";
 
             var standards = new List<GetStandardsListResponse.GetStandardsListItem>
             {
@@ -120,7 +116,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
 
             var result = new ApiResponse<GetStandardsListResponse>(new GetStandardsListResponse
             { Standards = standards, Total = standards.Count, TotalFiltered = standards.Count }, HttpStatusCode.OK, string.Empty);
-
             
             return result.Body;
         }
