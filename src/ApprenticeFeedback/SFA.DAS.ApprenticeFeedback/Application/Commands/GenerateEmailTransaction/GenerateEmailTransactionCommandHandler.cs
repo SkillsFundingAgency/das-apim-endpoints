@@ -20,9 +20,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.GenerateEmailTransacti
 
         public async Task<NullResponse> Handle(GenerateEmailTransactionCommand command, CancellationToken cancellationToken)
         {
-            var request = new GenerateEmailTransactionRequest(new GenerateEmailTransactionData());
-
-            var response = await _feedbackApiClient.PostWithResponseCode<NullResponse>(request, false);
+            var response = await _feedbackApiClient.PostWithResponseCode<NullResponse>(new GenerateEmailTransactionRequest(), false);
 
             response.EnsureSuccessStatusCode();
             return response.Body;

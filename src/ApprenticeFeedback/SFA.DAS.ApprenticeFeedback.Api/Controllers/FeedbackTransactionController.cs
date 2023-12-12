@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.GenerateEmailTransaction;
+using SFA.DAS.ApprenticeFeedback.Application.Commands.GenerateFeedbackSummaries;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.PatchApprenticeFeedbackTarget;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.ProcessEmailTransaction;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.TrackEmailTransactionClick;
@@ -30,9 +31,19 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<NullResponse>> GenerateEmailTransaction()
-            => await _mediator.Send(new GenerateEmailTransactionCommand());
+        [HttpPost("generate-email-transactions")]
+        public async Task<ActionResult<NullResponse>> GenerateEmailTransactions()
+        {
+            try
+            {
+                return await _mediator.Send(new GenerateEmailTransactionCommand());
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error generating email transactions summaries.");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
 
         [HttpPost("{feedbackTransactionId}")]
         public async Task<ActionResult> ProcessEmailTransaction([FromRoute] long feedbackTransactionId, [FromBody] FeedbackTransaction feedbackTransaction)
