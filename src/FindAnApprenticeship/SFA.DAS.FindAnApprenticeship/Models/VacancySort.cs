@@ -3,10 +3,9 @@
     public enum VacancySort
     {
         AgeDesc,
-        AgeAsc,
-        DistanceDesc,
         DistanceAsc,
-        ExpectedStartDateDesc,
-        ExpectedStartDateAsc
+        SalaryDesc,
+        SalaryAsc,
+        ClosingDesc
     }
 }
