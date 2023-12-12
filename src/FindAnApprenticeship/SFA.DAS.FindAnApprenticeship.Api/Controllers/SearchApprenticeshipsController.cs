@@ -85,7 +85,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new SearchApprenticeshipsQuery
-                    { Location = location, Distance = distance, SelectedRouteIds = routeIds });
+                    { Location = location, Distance = distance, SelectedRouteIds = routeIds, WhatSearchTerm = whatSearchTerm});
                 return Ok((SearchApprenticeshipsApiResponse)result);
             }
 
