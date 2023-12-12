@@ -5,11 +5,11 @@ namespace SFA.DAS.AdminAan.Infrastructure;
 
 public interface ICoursesApiClient
 {
-    [Get("api/courses/Standards/{StandardUId}")]
+    [Get("api/courses/Standards/{standardUId}")]
     [AllowAnyStatusCode]
     Task<Response<GetStandardResponse>> GetStandard([Path] string standardUId, CancellationToken cancellationToken);
 
-    [Get("api/courses/Frameworks/{TrainingCode}")]
+    [Get("api/courses/Frameworks/{trainingCode}")]
     [AllowAnyStatusCode]
     Task<Response<GetFrameworkResponse>> GetFramework([Path] string trainingCode, CancellationToken cancellationToken);
 }
