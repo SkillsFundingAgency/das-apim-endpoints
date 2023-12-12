@@ -80,8 +80,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 
         [HttpGet]
         [Route("searchResults")]
-        public async Task<IActionResult> SearchResults([FromQuery] List<string>? routeIds, [FromQuery] string? location,
-            [FromQuery] int? distance)
+        public async Task<IActionResult> SearchResults([FromQuery] List<string>? routeIds, [FromQuery] string? location, [FromQuery] int? distance, [FromQuery]string? whatSearchTerm)
         {
             try
             {

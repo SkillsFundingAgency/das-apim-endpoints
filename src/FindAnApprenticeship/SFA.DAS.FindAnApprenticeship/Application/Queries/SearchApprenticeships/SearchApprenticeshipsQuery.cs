@@ -10,5 +10,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
         public List<string>? SelectedRouteIds { get; set; }
         public int? Distance { get; set; }
         public string Sort = "DistanceAsc";
+        public string? WhatSearchTerm { get; set; }
     }
 }

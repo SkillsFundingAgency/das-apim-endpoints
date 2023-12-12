@@ -38,7 +38,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                         location?.GeoPoint?.FirstOrDefault(),
                         location?.GeoPoint?.LastOrDefault(),
                         request.SelectedRouteIds,
-                        request.Distance
+                        request.Distance,
+                        request.WhatSearchTerm
                         ));
 
             var vacancyResult = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(
@@ -47,7 +48,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     location?.GeoPoint?.LastOrDefault(),
                     request.SelectedRouteIds,
                     request.Distance,
-                    request.Sort
+                    request.Sort,
+                    request.WhatSearchTerm
                 ));
 
             return new SearchApprenticeshipsResult

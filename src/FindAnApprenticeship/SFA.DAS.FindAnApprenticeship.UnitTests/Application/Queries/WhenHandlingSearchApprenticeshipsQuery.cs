@@ -2,6 +2,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.Extensions.Azure;
 using Moq;
+using NServiceBus.Timeout.Core;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
@@ -40,7 +41,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 locationInfo.GeoPoint?.FirstOrDefault(),
                 locationInfo.GeoPoint?.LastOrDefault(),
                 query.SelectedRouteIds,
-                query.Distance
+                query.Distance,
+                query.WhatSearchTerm
             );
 
             var vacancyRequest = new GetVacanciesRequest(
@@ -48,7 +50,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 locationInfo.GeoPoint?.LastOrDefault(),
                 query.SelectedRouteIds,
                 query.Distance,
-                query.Sort);
+                query.Sort,
+                query.WhatSearchTerm);
 
             apiClient
                 .Setup(client => client.Get<GetApprenticeshipCountResponse>(It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
