@@ -52,6 +52,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Commands
             Assert.AreEqual(_request.EndDate, requestBody.NewEndDate);
             Assert.AreEqual(_request.Price, requestBody.NewPrice);
             Assert.AreEqual(_request.StartDate, requestBody.NewStartDate);
+            Assert.AreEqual(_request.HasOLTD, requestBody.HasOLTD);
             Assert.AreEqual(_request.UserInfo, requestBody.UserInfo);
             Assert.AreEqual(_request.AccountLegalEntityId, requestBody.NewPartyId);
         }
