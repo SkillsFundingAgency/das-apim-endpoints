@@ -36,7 +36,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 source.VacancyReference,
                 source.VacancyId,
                 source.Title,
-                LiveDate = source.PostedDate,
+                PostedDate = source.LiveDate,
                 source.StartDate,
                 source.ClosingDate,
                 Description = source.ShortDescription,

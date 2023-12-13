@@ -37,7 +37,7 @@ public class LiveVacancy
     public User? LastUpdatedByUser { get; set; }
     public DateTime LastUpdatedDate { get; set; }
     public string? LegalEntityName { get; set; }
-    public DateTime PostedDate { get; set; }
+    public DateTime LiveDate { get; set; }
     public int NumberOfPositions { get; set; }
     public string? OutcomeDescription { get; set; }
     public string? OwnerType { get; set; }

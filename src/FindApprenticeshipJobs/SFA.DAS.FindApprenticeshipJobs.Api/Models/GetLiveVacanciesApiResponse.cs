@@ -41,7 +41,7 @@ public class GetLiveVacanciesApiResponse
                 Address = source.Address == null ? null : (Address)source.Address,
                 ClosingDate = source.ClosingDate,
                 StartDate = source.StartDate,
-                LiveDate = source.LiveDate,
+                PostedDate = source.PostedDate,
                 EmployerName = source.EmployerName,
                 Ukprn = source.Ukprn,
                 ProviderName = source.ProviderName,
@@ -98,7 +98,7 @@ public class GetLiveVacanciesApiResponse
         public long? Ukprn { get; set; }
         public string? ProviderName { get; set; }
 
-        public DateTime LiveDate { get; set; }
+        public DateTime PostedDate { get; set; }
         public int? StandardLarsCode { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime ClosingDate { get; set; }

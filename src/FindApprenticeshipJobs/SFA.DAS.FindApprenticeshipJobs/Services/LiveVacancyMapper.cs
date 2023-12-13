@@ -14,7 +14,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 VacancyReference = source.VacancyReference,
                 VacancyId = source.VacancyId,
                 Title = source.Title,
-                LiveDate = source.PostedDate,
+                PostedDate = source.LiveDate,
                 StartDate = source.StartDate,
                 ClosingDate = source.ClosingDate,
                 Description = source.ShortDescription,
