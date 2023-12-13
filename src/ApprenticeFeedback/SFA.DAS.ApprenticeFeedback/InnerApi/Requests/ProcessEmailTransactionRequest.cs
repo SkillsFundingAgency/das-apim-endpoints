@@ -1,6 +1,4 @@
-﻿
-using SFA.DAS.SharedOuterApi.Interfaces;
-
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
 {
@@ -22,14 +20,16 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
         public long FeedbackTransactionId { get; set; }
         public string ApprenticeName { get; set; }
         public string ApprenticeEmailAddress { get; set; }
-        public bool IsEmailContactAllowed { get; set; }
+        public bool IsFeedbackEmailContactAllowed { get; set; }
+        public bool IsEngagementEmailContactAllowed { get; set; }
 
-        public ProcessEmailTransactionData(long feedbackTransactionId, string apprenticeName, string apprenticeEmailAddress, bool isEmailContactAllowed)
+        public ProcessEmailTransactionData(long feedbackTransactionId, string apprenticeName, string apprenticeEmailAddress, bool isFeedbackEmailContactAllowed, bool isEngagementEmailContactAllowed)
         {
             FeedbackTransactionId = feedbackTransactionId;
             ApprenticeName = apprenticeName;
             ApprenticeEmailAddress = apprenticeEmailAddress;
-            IsEmailContactAllowed = isEmailContactAllowed;
+            IsFeedbackEmailContactAllowed = isFeedbackEmailContactAllowed;
+            IsEngagementEmailContactAllowed = isEngagementEmailContactAllowed;
         }
     }
 }

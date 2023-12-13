@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SFA.DAS.AdminAan.Infrastructure;
+using SFA.DAS.AdminAan.Domain;
 
 namespace SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Update;
 public class PutEventCommand : IRequest<Unit>

@@ -1,12 +1,12 @@
 ﻿using AutoFixture.NUnit3;
 using SFA.DAS.AdminAan.Application.Locations.Queries.GetAddresses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.AdminAan.Domain.Location;
 
 namespace SFA.DAS.AdminAan.UnitTests.Application.Locations.Queries.GetAddresses;
 public class AddressItemTests
 {
     [Test, AutoData]
-    public void Operator_ConvertsFrom_GetAddressesListItem(GetAddressesListItem source)
+    public void Operator_ConvertsFrom_GetAddressesListItem(AddressListItem source)
     {
         AddressItem sut = source;
 

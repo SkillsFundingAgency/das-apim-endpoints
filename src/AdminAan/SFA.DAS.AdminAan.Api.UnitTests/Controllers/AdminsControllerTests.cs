@@ -7,8 +7,6 @@ using SFA.DAS.AdminAan.Api.Controllers;
 using SFA.DAS.AdminAan.Api.Models.Admins;
 using SFA.DAS.AdminAan.Application.Admins.Commands.Create;
 using SFA.DAS.AdminAan.Application.Admins.Queries.Lookup;
-using SFA.DAS.AdminAan.Infrastructure.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminAan.Api.UnitTests.Controllers;
@@ -52,7 +50,7 @@ public class AdminsControllerTests
         var expected = new LookupAdminMemberResult
         {
             MemberId = createAdminMemberCommandResult.MemberId,
-            Status = Constants.Status.Live.GetDescription()
+            Status = AdminsController.LiveStatus
         };
 
         response.As<OkObjectResult>().Value.Should().BeEquivalentTo(expected);

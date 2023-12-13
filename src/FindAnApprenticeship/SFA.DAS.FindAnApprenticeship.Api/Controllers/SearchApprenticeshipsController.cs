@@ -29,11 +29,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] string locationSearchTerm = null)
         {
             try
             {
-                var result = await _mediator.Send(new SearchIndexQuery());
+                var result = await _mediator.Send(new SearchIndexQuery
+                {
+                    LocationSearchTerm = locationSearchTerm
+                });
                 var viewModel = (SearchIndexApiResponse)result;
                 return Ok(viewModel);
             }
