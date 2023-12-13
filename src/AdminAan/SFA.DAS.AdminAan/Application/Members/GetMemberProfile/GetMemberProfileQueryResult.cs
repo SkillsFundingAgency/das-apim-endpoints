@@ -13,7 +13,7 @@ public class GetMemberProfileQueryResult
     public string RegionName { get; set; } = null!;
     public MemberUserType UserType { get; set; }
     public bool IsRegionalChair { get; set; }
-    public Apprenticeship? Apprenticeship { get; set; }
+    public Apprenticeship Apprenticeship { get; set; } = new();
     public IEnumerable<MemberProfile> Profiles { get; set; } = Enumerable.Empty<MemberProfile>();
     public IEnumerable<MemberPreference> Preferences { get; set; } = Enumerable.Empty<MemberPreference>();
 }

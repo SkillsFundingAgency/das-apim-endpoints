@@ -73,17 +73,12 @@ public class GetMemberProfileQueryHandler : IRequestHandler<GetMemberProfileQuer
 
         await Task.WhenAll(accountSummaryTask, apprenticeshipSummaryTask);
 
-        result.Apprenticeship = new()
-        {
-            Sectors = apprenticeshipSummaryTask.Result.Sectors,
-            ActiveApprenticesCount = accountSummaryTask.Result.ApprenticeshipStatusSummaryResponse.FirstOrDefault()?.ActiveCount
-        };
+        result.Apprenticeship.Sectors = apprenticeshipSummaryTask.Result.Sectors;
+        result.Apprenticeship.ActiveApprenticesCount = accountSummaryTask.Result.ApprenticeshipStatusSummaryResponse.FirstOrDefault()?.ActiveCount;
     }
 
     private async Task UpdateResultWithApprenticeshipDetailsForApprentice(GetMemberProfileQueryResult result, Guid apprenticeId, CancellationToken cancellationToken)
     {
-        result.Apprenticeship = new();
-
         var myApprenticeshipResponse = await _apprenticeAccountsApiClient.GetMyApprenticeship(apprenticeId, cancellationToken);
         if (myApprenticeshipResponse.ResponseMessage.StatusCode == HttpStatusCode.NotFound) return;
 

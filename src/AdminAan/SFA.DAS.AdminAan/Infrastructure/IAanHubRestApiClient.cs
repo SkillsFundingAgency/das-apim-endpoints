@@ -63,4 +63,7 @@ public interface IAanHubRestApiClient
     [Post("/admins")]
     [AllowAnyStatusCode]
     Task<CreateAdminMemberCommandResult> CreateAdminMember([Body] CreateAdminMemberCommand command, CancellationToken cancellationToken);
+
+    [Get("/profiles/{userType}")]
+    Task<GetProfilesResponse> GetProfiles([Path] string userType, CancellationToken cancellationToken);
 }
