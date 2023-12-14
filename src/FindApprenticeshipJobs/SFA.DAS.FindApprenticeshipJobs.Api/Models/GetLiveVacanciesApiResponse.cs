@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
-
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Models;
 
 public class GetLiveVacanciesApiResponse
@@ -51,12 +50,12 @@ public class GetLiveVacanciesApiResponse
                 LongDescription = source.LongDescription,
                 TrainingDescription = source.TrainingDescription,
                 Skills = source.Skills,
-                Qualifications = source.Qualifications.Select(q => new Qualification()
+                Qualifications = source.Qualifications.Select(q => new Qualification
                 {
                     QualificationType = q.QualificationType,
                     Subject = q.Subject,
                     Grade = q.Grade,
-                    Weighting = (QualificationWeighting)q.Weighting
+                    Weighting = q.Weighting
                 }).ToList(),
                 ThingsToConsider = source.ThingsToConsider,
                 Id = source.Id,
@@ -77,7 +76,6 @@ public class GetLiveVacanciesApiResponse
                 RouteCode = source.RouteCode,
                 AccountPublicHashedId = source.AccountPublicHashedId,
                 AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
-                
             };
         }
 
@@ -108,21 +106,21 @@ public class GetLiveVacanciesApiResponse
         public string LongDescription { get; set; }
         public string OutcomeDescription { get; set; }
         public string TrainingDescription { get; set; }
-        public IEnumerable<string> Skills { get; set; }
-        public IEnumerable<Qualification> Qualifications { get; set; }
-        public string ThingsToConsider { get; set; }
+        public IEnumerable<string> Skills { get; set; } = null!;
+        public IEnumerable<Qualification> Qualifications { get; set; } = null!;
+        public string? ThingsToConsider { get; set; }
         public string Id { get; set; }
         public bool IsEmployerAnonymous { get; set; }
-        public string AnonymousEmployerName { get; set; }
+        public string? AnonymousEmployerName { get; set; }
         public bool IsDisabilityConfident { get; set; }
         public bool IsPositiveAboutDisability { get; set; }
         public bool IsRecruitVacancy { get; set; }
         public string VacancyLocationType { get; set; }
-        public string EmployerDescription { get; set; }
-        public string EmployerWebsiteUrl { get; set; }
-        public string EmployerContactPhone { get; set; }
-        public string EmployerContactEmail { get; set; }
-        public string EmployerContactName { get; set; }
+        public string? EmployerDescription { get; set; }
+        public string? EmployerWebsiteUrl { get; set; }
+        public string? EmployerContactPhone { get; set; }
+        public string? EmployerContactEmail { get; set; }
+        public string? EmployerContactName { get; set; }
     }
 
     public class Address
@@ -180,18 +178,6 @@ public class GetLiveVacanciesApiResponse
         public string? QualificationType { get; set; }
         public string? Subject { get; set; }
         public string? Grade { get; set; }
-        public QualificationWeighting? Weighting { get; set; }
-    }
-
-    public enum QualificationWeighting
-    {
-        Essential,
-        Desired
-    }
-
-    public enum DisabilityConfident
-    {
-        No = 0,
-        Yes
+        public string? Weighting { get; set; }
     }
 }

@@ -28,7 +28,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 IsEmployerAnonymous = source.IsAnonymous,
                 VacancyLocationType = "NonNational",
                 ApprenticeshipLevel = GetApprenticeshipLevel(getStandardsListItem.Level),
-                Wage = source.Wage == null ? null : new FindApprenticeshipJobs.Application.Shared.Wage
+                Wage = new Application.Shared.Wage
                 {
                     Duration = source.Wage.Duration,
                     DurationUnit = source.Wage.DurationUnit,
@@ -50,12 +50,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     QualificationType = q.QualificationType,
                     Subject = q.Subject,
                     Grade = q.Grade,
-                    Weighting = (Application.Shared.QualificationWeighting)q.Weighting
+                    Weighting = q.Weighting
                 }),
                 OutcomeDescription = source.OutcomeDescription,
-                EmployerContactName = source.EmployerContact == null ? null : source.EmployerContact.EmployerContactName,
-                EmployerContactEmail = source.EmployerContact == null ? null : source.EmployerContact.EmployerContactEmail,
-                EmployerContactPhone = source.EmployerContact == null ? null : source.EmployerContact.EmployerContactPhone,
+                EmployerContactName = source.EmployerContact?.EmployerContactName,
+                EmployerContactEmail = source.EmployerContact?.EmployerContactEmail,
+                EmployerContactPhone = source.EmployerContact?.EmployerContactPhone,
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
                 Address = new Application.Shared.Address
