@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.GenerateEmailTransaction;
+using SFA.DAS.ApprenticeFeedback.Application.Commands.GenerateFeedbackSummaries;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.PatchApprenticeFeedbackTarget;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.ProcessEmailTransaction;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.TrackEmailTransactionClick;
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetFeedbackTransactionsToEmail;
 using SFA.DAS.ApprenticeFeedback.Models;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Net;
@@ -29,9 +31,19 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<GenerateEmailTransactionResponse>> GenerateEmailTransaction()
-            => await _mediator.Send(new GenerateEmailTransactionCommand());
+        [HttpPost("generate-email-transactions")]
+        public async Task<ActionResult<NullResponse>> GenerateEmailTransactions()
+        {
+            try
+            {
+                return await _mediator.Send(new GenerateEmailTransactionCommand());
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error generating email transactions");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
 
         [HttpPost("{feedbackTransactionId}")]
         public async Task<ActionResult> ProcessEmailTransaction([FromRoute] long feedbackTransactionId, [FromBody] FeedbackTransaction feedbackTransaction)
@@ -64,8 +76,9 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
                 FeedbackTransactionId = feedbackTransactionId,
                 ApprenticeName = apprentice.FirstName,
                 ApprenticeEmailAddress = apprentice.Email,
-                // If the preference is null, it's not set and we default to true until told otherwise for sending feedback emails.
-                IsEmailContactAllowed = apprentice.ApprenticePreferences.Find(x => x.PreferenceId == 1)?.Status ?? true
+                // If either preference is null, it's not set and we default to true until told otherwise for sending emails.
+                IsFeedbackEmailContactAllowed = apprentice.ApprenticePreferences.Find(x => x.PreferenceId == 1)?.Status ?? true,
+                IsEngagementEmailContactAllowed = apprentice.ApprenticePreferences.Find(x => x.PreferenceId == 2)?.Status ?? true
             });
 
             return Ok(new ProcessEmailTransactionResult()
