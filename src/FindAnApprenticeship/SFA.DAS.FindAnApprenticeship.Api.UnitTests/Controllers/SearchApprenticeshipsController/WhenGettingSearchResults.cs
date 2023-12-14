@@ -1,5 +1,4 @@
-﻿
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +24,7 @@ public class WhenGettingSearchResults
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.SearchApprenticeshipsController controller)
     {
-        model.Sort = VacancySort.DistanceAsc.ToString();
+        model.Sort = VacancySort.DistanceAsc;
         mediator.Setup(x => x.Send(It.Is<SearchApprenticeshipsQuery>(c =>
             c.SelectedRouteIds.Equals(model.RouteIds) &&
             c.Location.Equals(model.Location) &&
@@ -54,7 +53,7 @@ public class WhenGettingSearchResults
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.SearchApprenticeshipsController controller)
     {
-        model.Sort = VacancySort.DistanceAsc.ToString();
+        model.Sort = VacancySort.DistanceAsc;
         mediator.Setup(x => x.Send(It.Is<SearchApprenticeshipsQuery>(c =>
                 c.SelectedRouteIds.Equals(model.RouteIds) &&
                 c.Location.Equals(model.Location) &&

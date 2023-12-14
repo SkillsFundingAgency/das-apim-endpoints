@@ -69,22 +69,5 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
 
             actual.Sort.Should().Be(Domain.Constants.SearchApprenticeships.DefaultSortOrder);
         }
-
-        [Test, AutoData]
-        public void Then_The_Fields_Are_Mapped_Returned_When_Sort_Is_Empty(GetSearchApprenticeshipsModel source)
-        {
-            source.PageSize = null;
-            source.PageNumber = null;
-            source.Sort = "";
-            var actual = (SearchApprenticeshipsQuery)source;
-
-            actual.Should().BeEquivalentTo(source, options => options
-                .Excluding(c => c.RouteIds)
-                .Excluding(c => c.PageNumber)
-                .Excluding(c => c.PageSize)
-                .Excluding(c => c.Sort));
-
-            actual.Sort.Should().Be(Domain.Constants.SearchApprenticeships.DefaultSortOrder);
-        }
     }
 }
