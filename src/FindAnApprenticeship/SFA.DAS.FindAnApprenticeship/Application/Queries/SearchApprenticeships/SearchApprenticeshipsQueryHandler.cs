@@ -50,7 +50,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     request.SelectedRouteIds,
                     request.Distance,
                     request.Sort,
-                    request.WhatSearchTerm
+                    request.WhatSearchTerm,
                     request.PageNumber,
                     request.PageSize));
 

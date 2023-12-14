@@ -14,12 +14,13 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
         private readonly string _sort;
         private readonly string? _whatSearchTerm;
 
-        public GetVacanciesRequest(double? lat, double? lon, List<string>? routes, int? distance, string sort, string whatSearchTerm)
+        public GetVacanciesRequest(
             double? lat,
             double? lon,
             List<string>? routes,
             int? distance,
             string sort,
+            string? whatSearchTerm,
             int? pageNumber,
             int? pageSize)
         {
