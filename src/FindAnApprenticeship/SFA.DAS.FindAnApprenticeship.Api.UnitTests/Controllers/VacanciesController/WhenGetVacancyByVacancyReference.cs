@@ -13,7 +13,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprenticeshipsController
+namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesController
 {
     public class WhenGetVacancyByVacancyReference
     {
@@ -22,7 +22,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprentic
         string vacancyReference,
         GetApprenticeshipVacancyQueryResult result,
         [Frozen] Mock<IMediator> mediator,
-        [Greedy] Api.Controllers.SearchApprenticeshipsController controller)
+        [Greedy] Api.Controllers.VacanciesController controller)
         {
             mediator.Setup(x => x.Send(It.Is<GetApprenticeshipVacancyQuery>(c =>
                 c.VacancyReference.Equals(vacancyReference)),
@@ -44,9 +44,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprentic
         [Test, MoqAutoData]
         public async Task Then_If_An_Exception_Is_Thrown_Then_Internal_Server_Error_Response_Returned(
             string vacancyReference,
-            [Frozen] Mock<ILogger<Api.Controllers.SearchApprenticeshipsController>> logger,
+            [Frozen] Mock<ILogger<Api.Controllers.VacanciesController>> logger,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] Api.Controllers.SearchApprenticeshipsController controller)
+            [Greedy] Api.Controllers.VacanciesController controller)
         {
             mediator.Setup(x => x.Send(It.Is<GetApprenticeshipVacancyQuery>(c =>
                         c.VacancyReference.Equals(vacancyReference)),
@@ -76,7 +76,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprentic
         public async Task Then_If_An_Null_Is_Returned_Then_Not_Found_Response_Returned(
             string vacancyReference,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] Api.Controllers.SearchApprenticeshipsController controller)
+            [Greedy] Api.Controllers.VacanciesController controller)
         {
             mediator.Setup(x => x.Send(It.Is<GetApprenticeshipVacancyQuery>(c =>
                         c.VacancyReference.Equals(vacancyReference)),
