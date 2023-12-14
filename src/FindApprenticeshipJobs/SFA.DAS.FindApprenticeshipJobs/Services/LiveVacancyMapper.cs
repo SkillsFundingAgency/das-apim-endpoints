@@ -7,7 +7,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
     {
         public Application.Shared.LiveVacancy Map(LiveVacancy source, GetStandardsListResponse standards)
         {
-            var getStandardsListItem = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == source.ProgrammeId);
+            var getStandardsListItem = standards.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId);
+
             return new Application.Shared.LiveVacancy
             {
                 Id = source.VacancyReference.ToString(),
@@ -70,8 +71,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 Duration = source.Wage.Duration,
                 DurationUnit = source.Wage.DurationUnit,
                 ThingsToConsider = source.ThingsToConsider,
-                ApprenticeshipTitle = getStandardsListItem?.Title ?? string.Empty,
-                Level = getStandardsListItem?.Level ?? 0,
+                ApprenticeshipTitle = getStandardsListItem.Title,
+                Level = getStandardsListItem.Level,
                 
                 StandardLarsCode = getStandardsListItem.LarsCode,
                 
