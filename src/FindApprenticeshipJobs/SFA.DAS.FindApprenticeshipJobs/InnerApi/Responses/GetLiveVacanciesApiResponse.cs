@@ -10,77 +10,40 @@ public class GetLiveVacanciesApiResponse
 }
 public class LiveVacancy
 {
-    public string? Id { get; set; }
+    public string Id { get; set; } = null!;
     public Guid VacancyId { get; set; }
     public DateTime ClosingDate { get; set; }
     public string? Description { get; set; }
     public DisabilityConfident DisabilityConfident { get; set; }
-    public string? EmployerAccountId { get; set; }
     public EmployerContact? EmployerContact { get; set; }
     public string? EmployerDescription { get; set; }
     public Address? EmployerLocation { get; set; }
     public string? EmployerName { get; set; }
-    public string? EmployerNameOption { get; set; }
     public string? EmployerWebsiteUrl { get; set; }
     public bool IsAnonymous { get; set; } 
     public DateTime LiveDate { get; set; }
     public int NumberOfPositions { get; set; }
     public string? OutcomeDescription { get; set; }
-    public string? OwnerType { get; set; }
     public string? ProgrammeId { get; set; }
-    public string? ProgrammeLevel { get; set; }
     public IEnumerable<Qualification> Qualifications { get; set; } = null!;
     public string? ShortDescription { get; set; }
     public IEnumerable<string> Skills { get; set; } = null!;
     public DateTime StartDate { get; set; }
     public string? Status { get; set; }
     public string? ThingsToConsider { get; set; }
-    public string? Title { get; set; }
+    public string Title { get; set; } = null!;
     public string? TrainingDescription { get; set; }
     public TrainingProvider TrainingProvider { get; set; } = null!;
     public long VacancyReference { get; set; }
     public Wage Wage { get; set; } = null!;
     public string AccountPublicHashedId { get; set; } = null!;
     public string AccountLegalEntityPublicHashedId { get; set; } = null!;
-    public int? RouteId { get; set; }
-    public string? WorkExperience { get; set; }
     public VacancyType? VacancyType { get; set; }
-    public string? AdditionalQuestion1 { get; set; }
-    public string? AdditionalQuestion2 { get; set; }
-    
-    public string? ViewType { get; set; }
-    public DateTime? LastUpdated { get; set; }
-    public string? GeoCodeMethod { get; set; }
-    public bool? IsDeleted { get; set; }
-    public User? LastUpdatedByUser { get; set; }
-    public DateTime LastUpdatedDate { get; set; }
-    public string? LegalEntityName { get; set; }
-    public User? SubmittedByUser { get; set; }
-    public DateTime SubmittedDate { get; set; }
-    public string? ClosureReason { get; set; }
-    public User? CreatedByUser { get; set; }
-    public DateTime CreatedDate { get; set; }
-    public User? DeletedByUser { get; set; }
-    public DateTime DeletedDate { get; set; }
-    public string? ApplicationInstructions { get; set; }
-    public string? ApplicationMethod { get; set; }
-    public string? ApplicationUrl { get; set; }
-    public DateTime ApprovedDate { get; set; }
-    public DateTime ClosedDate { get; set; }
-    public int? EducationLevelNumber { get; set; }
-}
-
-public class User
-{
-    public string? Email { get; set; }
-    public string? Name { get; set; }
-    public Guid UserId { get; set; }
-
 }
 
 public class TrainingProvider
 {
-    public string? Name { get; set; }
+    public string Name { get; set; } = null!;
     public long Ukprn { get; set; }
 }
 
@@ -93,7 +56,6 @@ public class Address
     public string? Postcode { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
-
 }
 
 public class Wage
@@ -121,4 +83,3 @@ public class EmployerContact
     public string? EmployerContactName { get; set; }
     public string? EmployerContactPhone { get; set; }
 }
-

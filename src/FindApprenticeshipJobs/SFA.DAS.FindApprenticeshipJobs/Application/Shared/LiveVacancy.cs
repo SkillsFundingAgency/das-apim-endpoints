@@ -5,13 +5,13 @@
         public string Id { get; set; } = null!;
         public Guid VacancyId { get; set; }
         public long VacancyReference { get; set; }
-        public string? Title { get; set; }
+        public string Title { get; set; } = null!;
         public int NumberOfPositions { get; set; }
         public string? ApprenticeshipTitle { get; set; }
         public string? Description { get; set; }
         public Address? Address { get; set; }
         public string? EmployerName { get; set; }
-        public string? ProviderName { get; set; }
+        public string ProviderName { get; set; } = null!;
         public long Ukprn { get; set; }
         public DateTime PostedDate { get; set; }
         public int StandardLarsCode { get; set; }
