@@ -20,7 +20,6 @@ public class WhenGettingSearchResults
     [Test, MoqAutoData]
     public async Task Then_The_Query_Response_Is_Returned(
         GetSearchApprenticeshipsModel model,
-        string whatSearchTerm,
         SearchApprenticeshipsResult result,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.SearchApprenticeshipsController controller)
@@ -28,8 +27,8 @@ public class WhenGettingSearchResults
         mediator.Setup(x => x.Send(It.Is<SearchApprenticeshipsQuery>(c =>
             c.SelectedRouteIds.Equals(model.RouteIds) &&
             c.Location.Equals(model.Location) &&
-            c.Distance == distance &&
-            c.WhatSearchTerm == whatSearchTerm),
+            c.Distance == model.Distance &&
+            c.WhatSearchTerm == model.WhatSearchTerm),
                 CancellationToken.None))
             .ReturnsAsync(result);
 
@@ -57,10 +56,11 @@ public class WhenGettingSearchResults
         mediator.Setup(x => x.Send(It.Is<SearchApprenticeshipsQuery>(c =>
                 c.SelectedRouteIds.Equals(model.RouteIds) &&
                 c.Location.Equals(model.Location) &&
-                c.Distance == model.Distance),
+                c.Distance == model.Distance &&
                 c.WhatSearchTerm == whatSearchTerm),
             CancellationToken.None)).ThrowsAsync(new Exception());
-       
+
+
         var actual = await controller.SearchResults(model) as StatusCodeResult;
 
         Assert.IsNotNull(actual);

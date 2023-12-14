@@ -51,7 +51,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.SelectedRouteIds,
                 query.Distance,
                 query.Sort,
-                query.WhatSearchTerm);
+                query.WhatSearchTerm,
                 query.PageNumber,
                 query.PageSize);
 
