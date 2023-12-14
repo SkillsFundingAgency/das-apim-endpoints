@@ -59,7 +59,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
                    c.UserInfo.UserDisplayName == _request.UserInfo.UserDisplayName &&
                    c.UserInfo.UserEmail == _request.UserInfo.UserEmail &&
                    c.ApprenticeshipId == _apprenticeshipId &&
-                   c.HasOLTD == _request.HasOLTD &&
+                   c.HasOverlappingTrainingDates == _request.HasOverlappingTrainingDates &&
                    c.ProviderId == _providerId), It.IsAny<CancellationToken>()), Times.Once);
         }
 

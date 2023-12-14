@@ -31,7 +31,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Conf
                 NewEmploymentEndDate  = request.EmploymentEndDate,
                 NewEmploymentPrice  = request.EmploymentPrice,
                 DeliveryModel = request.DeliveryModel,
-                HasOLTD = request.HasOLTD,
+                HasOverlappingTrainingDates = request.HasOverlappingTrainingDates,
                 UserInfo = request.UserInfo
             };
 

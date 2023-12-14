@@ -13,7 +13,7 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer
         public DateTime? EmploymentEndDate { get; set; }
         public int? EmploymentPrice { get; set; }
         public DeliveryModel? DeliveryModel { get; set; }
-        public bool HasOLTD { get; set; }
+        public bool HasOverlappingTrainingDates { get; set; }
         public UserInfo UserInfo { get; set; }
     }
 }

@@ -132,7 +132,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     EmploymentEndDate = request.EmploymentEndDate,
                     EmploymentPrice = request.EmploymentPrice,
                     DeliveryModel = request.DeliveryModel,
-                    HasOLTD = request.HasOLTD,
+                    HasOverlappingTrainingDates = request.HasOverlappingTrainingDates,
                     UserInfo = request.UserInfo
                 });
 
