@@ -4,6 +4,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Interfaces
 {
     public interface ILiveVacancyMapper
     {
-        Task<Application.Shared.LiveVacancy> Map(LiveVacancy source);
+        Application.Shared.LiveVacancy Map(LiveVacancy source, GetStandardsListResponse standards);
     }
 }

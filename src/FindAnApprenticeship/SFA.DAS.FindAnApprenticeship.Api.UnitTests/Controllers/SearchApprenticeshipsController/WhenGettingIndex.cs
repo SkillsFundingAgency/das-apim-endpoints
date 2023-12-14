@@ -19,17 +19,18 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprentic
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Apprenticeships_From_Mediator(
+            string locationSearchTerm,
             SearchIndexQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] Api.Controllers.SearchApprenticeshipsController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<SearchIndexQuery>(),
+                    It.Is<SearchIndexQuery>(c=>c.LocationSearchTerm.Equals(locationSearchTerm)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.Index() as ObjectResult;
+            var controllerResult = await controller.Index(locationSearchTerm) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);

@@ -23,6 +23,56 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Services
     public class WhenGetCalledApprenticeshipDetailsService
     {
         [Test, MoqAutoData]
+        public async Task Then_ShouldGetLearnerData(
+            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssesorsApiClient,
+            ApprenticeshipDetailsService sut)
+        {
+            // Act
+            var result = await sut.Get(Guid.NewGuid(), 1);
+
+            // Assert
+            mockAssesorsApiClient.Verify(p => p.GetWithResponseCode<GetApprenticeLearnerResponse>(It.IsAny<GetApprenticeLearnerRequest>()), Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_ShouldNotGetMyApprenticeshipData_WhenLearnerDataIsAvailable(
+            [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> mockApprenticeAccountsApiClient,
+            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssesorsApiClient,
+            ApprenticeshipDetailsService sut)
+        {
+            // Arrange
+            var learnerResponse = new ApiResponse<GetApprenticeLearnerResponse>(new GetApprenticeLearnerResponse(), HttpStatusCode.OK, string.Empty);
+
+            mockAssesorsApiClient
+                .Setup(x => x.GetWithResponseCode<GetApprenticeLearnerResponse>(It.IsAny<GetApprenticeLearnerRequest>()))
+                .ReturnsAsync(learnerResponse);
+
+            // Act
+            var result = await sut.Get(Guid.NewGuid(), 1);
+
+            // Assert
+            mockApprenticeAccountsApiClient.Verify(p => p.GetWithResponseCode<GetMyApprenticeshipResponse>(It.IsAny<GetMyApprenticeshipRequest>()), Times.Never);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_ShouldGetMyApprenticeshipData_WhenLearnerDataIsNotAvailable(
+            [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> mockApprenticeAccountsApiClient,
+            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssesorsApiClient,
+            ApprenticeshipDetailsService sut)
+        {
+            // Arrange
+            mockAssesorsApiClient
+                .Setup(x => x.GetWithResponseCode<GetApprenticeLearnerResponse>(It.IsAny<GetApprenticeLearnerRequest>()))
+                .ReturnsAsync(new ApiResponse<GetApprenticeLearnerResponse>(null, HttpStatusCode.OK, string.Empty));
+
+            // Act
+            var result = await sut.Get(Guid.NewGuid(), 1);
+
+            // Assert
+            mockApprenticeAccountsApiClient.Verify(p => p.GetWithResponseCode<GetMyApprenticeshipResponse>(It.IsAny<GetMyApprenticeshipRequest>()), Times.Once);
+        }
+
+        [Test, MoqAutoData]
         public async Task Then_ShouldReturnLearnerData_WhenApiResponseIsSuccessful(
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssesorsApiClient,
             ApprenticeshipDetailsService sut)
@@ -96,15 +146,18 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Services
             }
         }
 
-        [Test, MoqAutoData]
+        [Test]
+        [MoqInlineAutoData(HttpStatusCode.BadRequest, "Error")]
+        [MoqInlineAutoData(HttpStatusCode.NotFound, "")]
         public async Task Then_ShouldHandleNonOkStatus_WhenRetrievingMyApprenticeshipData(
+            HttpStatusCode httpStatusCode, string errorContent,
             [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> mockApprenticeAccountsApiClient,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssesorsApiClient,
             ApprenticeshipDetailsService sut)
         {
             // Arrange
             var learnerResponse = new ApiResponse<GetApprenticeLearnerResponse>(null, HttpStatusCode.NoContent, string.Empty);
-            var myApprenticeshipResponse = new ApiResponse<GetMyApprenticeshipResponse>(null, HttpStatusCode.BadRequest, "Error");
+            var myApprenticeshipResponse = new ApiResponse<GetMyApprenticeshipResponse>(null, httpStatusCode, errorContent);
 
             mockAssesorsApiClient
                 .Setup(x => x.GetWithResponseCode<GetApprenticeLearnerResponse>(It.IsAny<GetApprenticeLearnerRequest>()))
@@ -159,6 +212,32 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Services
 
             // Assert
             VerifyErrorLog(mockLogger, LogLevel.Error, Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_ShouldNotLogError_WhenMyApprenticeshipDataIsNotFound(
+            [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> mockApprenticeAccountsApiClient,
+            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssesorsApiClient,
+            [Frozen] Mock<ILogger<UpdateApprenticeFeedbackTargetCommandHandler>> mockLogger,
+            ApprenticeshipDetailsService sut)
+        {
+            // Arrange
+            var learnerResponse = new ApiResponse<GetApprenticeLearnerResponse>(null, HttpStatusCode.NoContent, string.Empty);
+            var myApprenticeshipResponse = new ApiResponse<GetMyApprenticeshipResponse>(null, HttpStatusCode.NotFound, string.Empty);
+
+            mockAssesorsApiClient
+                .Setup(x => x.GetWithResponseCode<GetApprenticeLearnerResponse>(It.IsAny<GetApprenticeLearnerRequest>()))
+                .ReturnsAsync(learnerResponse);
+
+            mockApprenticeAccountsApiClient
+                .Setup(x => x.GetWithResponseCode<GetMyApprenticeshipResponse>(It.IsAny<GetMyApprenticeshipRequest>()))
+                .ReturnsAsync(myApprenticeshipResponse);
+
+            // Act
+            await sut.Get(Guid.NewGuid(), 1);
+
+            // Assert
+            VerifyErrorLog(mockLogger, LogLevel.Error, Times.Never);
         }
 
         private void VerifyErrorLog<T>(Mock<ILogger<T>> mockLogger, LogLevel level, Func<Times> times)
