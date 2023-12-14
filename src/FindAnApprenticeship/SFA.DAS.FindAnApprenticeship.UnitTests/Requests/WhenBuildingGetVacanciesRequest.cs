@@ -20,6 +20,6 @@ public class WhenBuildingGetVacanciesRequest
     {
         var actual = new GetVacanciesRequest(lat, lon, routes, distance, sort, pageNumber, pageSize);
 
-        actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&routes={string.Join("&routes=", routes)}&distanceInMiles={distance}&sort={sort}&searchTerm={whereSearchTerm}&pageNumber={pageNumber}&pageSize={pageSize}");
+        actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&routes={string.Join("&routes=", routes)}&distanceInMiles={distance}&sort={sort}&searchTerm={whatSearchTerm}&pageNumber={pageNumber}&pageSize={pageSize}");
     }
 }
