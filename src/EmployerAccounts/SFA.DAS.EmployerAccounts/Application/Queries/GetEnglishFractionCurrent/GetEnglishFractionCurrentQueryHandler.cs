@@ -10,7 +10,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent
 {
     public class GetEnglishFractionCurrentQueryHandler : IRequestHandler<GetEnglishFractionCurrentQuery, GetEnglishFractionCurrentQueryResult>
     {
-        public readonly IFinanceApiClient<FinanceApiConfiguration> _financeApiClient;
+        private readonly IFinanceApiClient<FinanceApiConfiguration> _financeApiClient;
 
         public GetEnglishFractionCurrentQueryHandler(IFinanceApiClient<FinanceApiConfiguration> financeApiClient)
         {

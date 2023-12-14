@@ -5,8 +5,6 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
-using System.Threading.Tasks;
-using System.Threading;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using FluentAssertions;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetLocationsBySearch;

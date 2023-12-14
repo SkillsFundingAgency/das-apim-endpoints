@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries
         [MoqAutoData]
         public async Task Then_The_Api_Is_Called_With_The_Request_And_Reservations_Returned(
             GetReservationsQuery query,
-            IEnumerable<GetReservationsResponseListItem> apiResponse,
+            IList<GetReservationsResponseListItem> apiResponse,
             [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> apiClient,
             GetReservationsQueryHandler handler
         )

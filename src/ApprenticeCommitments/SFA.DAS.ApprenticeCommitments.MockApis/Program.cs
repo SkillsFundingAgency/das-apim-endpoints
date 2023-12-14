@@ -1,6 +1,15 @@
-﻿using System;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Assessor;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using WireMock.ResponseProviders;
+using WireMock;
 using WireMock.Server;
+using WireMock.Settings;
+using WireMock.Types;
+using WireMock.Util;
 
 namespace SFA.DAS.ApprenticeCommitments.MockApis
 {
@@ -76,7 +85,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                     _fakeCommitmentsV2Api = CommitmentsV2ApiBuilder.Create(PortCommitmentsApi)
                         .WithPing()
                         .WithAValidApprentice(EmployerAccountId, ApprenticeshipId, CourseId)
-                        //.WithAnyApprenticeship()
+                        .WithAnyApprenticeship()
                         .Build();
                 }
 
@@ -92,7 +101,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                 {
                     _fakeTrainingProviderApi = TrainingProviderApiBuilder.Create(PortRoatpApi)
                         .WithPing()
-                        .WithValidSearch(TrainingProviderId)
+                        .WithAnySearch()
                         .Build();
                 }
 

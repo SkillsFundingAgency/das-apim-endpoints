@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using RestEase;
 using SFA.DAS.ApprenticeAan.Application.Apprentices.Commands.CreateApprenticeMember;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
@@ -6,6 +7,7 @@ using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Apprentices;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.MemberProfiles;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Members;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Notifications;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.StagedApprentices;
 using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
@@ -62,8 +64,7 @@ public interface IAanHubRestApiClient
     [Put("members/{memberId}/profile")]
     Task PutMemberProfile(
         [Path] Guid memberId,
-        [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
-        [Body] UpdateMemberProfileCommand putMemberProfileRequest,
+        [Body] UpdateMemberProfileRequest putMemberProfileRequest,
         CancellationToken cancellationToken);
 
     [Get("members")]
@@ -86,4 +87,11 @@ public interface IAanHubRestApiClient
     [Get("/stagedApprentices")]
     [AllowAnyStatusCode]
     Task<Response<GetStagedApprenticeResponse?>> GetStagedApprentice([FromQuery] string lastName, [FromQuery] string dateOfBirth, [FromQuery] string email, CancellationToken cancellationToken);
+
+    [Patch("members/{memberId}")]
+    Task PatchMember(
+        [Path] Guid memberId,
+        [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+        [Body] JsonPatchDocument<PatchMemberRequest> patchMemberRequest,
+        CancellationToken cancellationToken);
 }

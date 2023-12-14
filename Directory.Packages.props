@@ -23,7 +23,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
     <PackageVersion Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.JsonPatch" Version="8.0.0-preview.2.23153.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.JsonPatch" Version="8.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageVersion Include="Microsoft.AspNetCore.Server.Kestrel.Core" Version="2.1.7" />
     <PackageVersion Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
@@ -34,7 +34,7 @@
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="2.2.0" />
     <PackageVersion Include="Moq" Version="4.7.0" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="NLog.Web.AspNetCore" Version="4.8.0" />
     <PackageVersion Include="NUnit" Version="3.12.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="3.15.1" />
@@ -63,11 +63,24 @@
       <Version>4.3.4</Version>
     </PackageVersion>
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="4.7.1" />
-    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
     <PackageVersion Include="System.Net.Security" Version="4.3.1" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageVersion Include="WireMock.Net" Version="1.5.6" />
     <PackageVersion Include="WireMock.Net.FluentAssertions" Version="1.5.6" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+    <PackageVersion Include="FluentAssertions" Version="6.7.0" />
+    <PackageVersion Include="FluentAssertions.Web" Version="1.2.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
+    <PackageVersion Include="SFA.DAS.NServiceBus" Version="17.0.49" />
+    <PackageVersion Include="System.Text.Encodings.Web" Version="8.0.0" />
+    <PackageVersion Include="System.Net.Http.Json" Version="8.0.0" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <PackageVersion Include="FluentAssertions" Version="6.7.0" />
@@ -81,6 +94,7 @@
     <PackageVersion Include="SFA.DAS.NServiceBus" Version="17.0.49" />
     <PackageVersion Include="System.Text.Encodings.Web" Version="6.0.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="6.0.0" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
     <PackageVersion Include="FluentAssertions" Version="5.10.3" />
@@ -97,5 +111,6 @@
     <PackageVersion Include="System.Net.Http.Json" Version="3.2.1" />
     <PackageVersion Include="System.Drawing.Common" Version="4.7.3" />
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
   </ItemGroup>
-</Project>
+ </Project>

@@ -2,6 +2,7 @@
 using SFA.DAS.SharedOuterApi.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NServiceBus.Timeout.Core;
 
 namespace SFA.DAS.SharedOuterApi.Interfaces
 {
@@ -18,6 +19,10 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
         Task Put(IPutApiRequest request);
         Task Put<TData>(IPutApiRequest<TData> request);
         Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true);
+        Task<ApiResponse<TResponse>> PostWithResponseCode<TData, TResponse>(IPostApiRequest<TData> request, bool includeResponse = true)
+        {
+            throw new System.NotImplementedException();
+        }
         Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request);
         /// <summary>
         /// Sends a PUT request to an API endpoint and returns a response code.
