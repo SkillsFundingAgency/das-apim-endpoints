@@ -70,7 +70,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                     QualificationType = q.QualificationType,
                     Subject = q.Subject,
                     Grade = q.Grade,
-                    Weighting = (QualificationWeighting)q.Weighting
+                    Weighting = q.Weighting
                 }),
                 source.OutcomeDescription,
                 ApprenticeshipTitle = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Title,
