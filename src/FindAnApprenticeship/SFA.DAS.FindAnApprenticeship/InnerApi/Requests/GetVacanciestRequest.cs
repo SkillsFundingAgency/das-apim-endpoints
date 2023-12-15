@@ -5,6 +5,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
 {
     public class GetVacanciesRequest : IGetApiRequest
     {
+        public string Version => "2.0";
+
         private readonly double? _lat;
         private readonly double? _lon;
         private readonly string _routes;
