@@ -60,7 +60,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.CreateStudentData(request);
 
-            Assert.That(result, Is.InstanceOf<OkResult>());
+            Assert.That(result, Is.InstanceOf<CreatedAtActionResult>());
         }
 
         [Test]

@@ -25,7 +25,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
         [Route("add")]
         public async Task<IActionResult> CreateStudentData(CreateStudentDataPostRequest request)
         {
@@ -49,7 +49,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
 
                 await UpdateLog(logId, StudentDataUploadStatus.Completed);
 
-                return Ok();
+                return CreatedAtAction(nameof(CreateStudentData), null);
             }
             catch (Exception e)
             {

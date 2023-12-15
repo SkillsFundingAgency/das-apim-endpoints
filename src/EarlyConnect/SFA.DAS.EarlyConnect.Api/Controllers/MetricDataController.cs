@@ -23,7 +23,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [Route("add")]
         public async Task<IActionResult> CreateMetricsData([FromBody] CreateMetricDataPostRequest request)
@@ -35,7 +35,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                     metricsData = request.MapFromMetricDataPostRequest()
                 });
 
-                return Ok();
+                return CreatedAtAction(nameof(CreateMetricsData), null);
 
             }
             catch (Exception e)
