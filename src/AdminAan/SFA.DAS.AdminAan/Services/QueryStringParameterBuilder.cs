@@ -28,6 +28,8 @@ public static class QueryStringParameterBuilder
 
         if (request.Page != null) parameters.Add("page", new[] { request.Page?.ToString() }!);
         if (request.PageSize != null) parameters.Add("pageSize", new[] { request.PageSize?.ToString() }!);
+
+        parameters.Add("ShowUserEventsOnly", new[] { request.ShowUserEventsOnly.ToString() });
         return parameters;
     }
 }
