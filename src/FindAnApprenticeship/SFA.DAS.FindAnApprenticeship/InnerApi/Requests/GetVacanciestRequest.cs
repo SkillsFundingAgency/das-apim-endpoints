@@ -19,9 +19,9 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
             double? lon,
             List<string>? routes,
             int? distance,
-            VacancySort sort,
             int? pageNumber,
-            int? pageSize)
+            int? pageSize,
+            VacancySort sort)
         {
             _lat = lat;
             _lon = lon;
@@ -32,6 +32,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
             _pageSize = pageSize;
         }
 
-        public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&routes={_routes}&distanceInMiles={_distance}&sort={_sort}&pageNumber={_pageNumber}&pageSize={_pageSize}";
+        public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&routes={_routes}&distanceInMiles={_distance}&pageNumber={_pageNumber}&pageSize={_pageSize}&sort={_sort}";
+
+        public string Version => "2.0";
     }
 }

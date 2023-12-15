@@ -48,9 +48,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     location?.GeoPoint?.LastOrDefault(),
                     request.SelectedRouteIds,
                     request.Distance,
-                    request.Sort,
                     request.PageNumber,
-                    request.PageSize));
+                    request.PageSize, 
+                    request.Sort));
 
             await Task.WhenAll(resultCountTask, vacancyResultTask);
 

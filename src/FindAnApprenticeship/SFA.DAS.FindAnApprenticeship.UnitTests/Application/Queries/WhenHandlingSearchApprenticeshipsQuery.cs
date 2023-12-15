@@ -48,9 +48,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 locationInfo.GeoPoint?.LastOrDefault(),
                 query.SelectedRouteIds,
                 query.Distance,
-                query.Sort,
                 query.PageNumber,
-                query.PageSize);
+                query.PageSize,
+                query.Sort);
 
             apiClient
                 .Setup(client => client.Get<GetApprenticeshipCountResponse>(It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
