@@ -21,5 +21,7 @@ public class WhenBuildingGetVacanciesRequest
         var actual = new GetVacanciesRequest(lat, lon, routes, distance, sort, whatSearchTerm, pageNumber, pageSize);
 
         actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&routes={string.Join("&routes=", routes)}&distanceInMiles={distance}&sort={sort}&searchTerm={whatSearchTerm}&pageNumber={pageNumber}&pageSize={pageSize}");
+
+        actual.Version.Should().Be("2.0");
     }
 }
