@@ -10,16 +10,16 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm
 {
-    public class ConfirmCommandHandler : IRequestHandler<ConfirmCommand>
+    public class CreateChangeOfEmployerCommandHandler : IRequestHandler<CreateChangeOfEmployerCommand>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsApiClient;
 
-        public ConfirmCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsApiClient)
+        public CreateChangeOfEmployerCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsApiClient)
         {
             _commitmentsApiClient = commitmentsApiClient;
         }
 
-        public async Task<Unit> Handle(ConfirmCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateChangeOfEmployerCommand request, CancellationToken cancellationToken)
         {
             var body = new CreateChangeOfPartyRequestRequest.Body
             {

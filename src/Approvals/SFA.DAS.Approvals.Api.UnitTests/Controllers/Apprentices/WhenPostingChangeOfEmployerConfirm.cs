@@ -20,7 +20,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
         private ApprenticesController _controller;
         private Mock<IMediator> _mediator;
         private readonly Fixture _fixture = new Fixture();
-        private ConfirmRequest _request;
+        private CreateChangeOfEmployerRequest _request;
         private long _providerId;
         private long _apprenticeshipId;
 
@@ -30,11 +30,11 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
             _providerId = _fixture.Create<long>();
             _apprenticeshipId = _fixture.Create<long>();
 
-            _request = _fixture.Create<ConfirmRequest>();
+            _request = _fixture.Create<CreateChangeOfEmployerRequest>();
 
             _mediator = new Mock<IMediator>();
             _mediator.Setup(x =>
-                    x.Send(It.IsAny<ConfirmCommand>(),
+                    x.Send(It.IsAny<CreateChangeOfEmployerCommand>(),
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => new Unit());
 
@@ -47,7 +47,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
             await _controller.ChangeEmployerConfirm(_providerId, _apprenticeshipId, _request);
 
            _mediator.Verify(x =>
-               x.Send(It.Is<ConfirmCommand>(c =>
+               x.Send(It.Is<CreateChangeOfEmployerCommand>(c =>
                    c.AccountLegalEntityId == _request.AccountLegalEntityId &&
                    c.DeliveryModel == _request.DeliveryModel &&
                    c.EmploymentEndDate == _request.EmploymentEndDate &&
@@ -73,7 +73,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
         [Test]
         public async Task Then_BadRequest_Result_Is_Returned_If_Apprenticeship_Is_Not_Found()
         {
-            _mediator.Setup(x => x.Send(It.IsAny<ConfirmCommand>(), It.IsAny<CancellationToken>())).Throws<InvalidOperationException>();
+            _mediator.Setup(x => x.Send(It.IsAny<CreateChangeOfEmployerCommand>(), It.IsAny<CancellationToken>())).Throws<InvalidOperationException>();
             var result = await _controller.ChangeEmployerConfirm(_providerId, _apprenticeshipId+1, _request);
             Assert.IsInstanceOf<BadRequestResult>(result);
         }

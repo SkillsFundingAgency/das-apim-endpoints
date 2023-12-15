@@ -4,7 +4,7 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer
 {
-    public class ConfirmRequest
+    public class CreateChangeOfEmployerRequest
     {
         public long AccountLegalEntityId { get; set; }
         public int? Price { get; set; }

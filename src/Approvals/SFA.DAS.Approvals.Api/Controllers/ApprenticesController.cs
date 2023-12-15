@@ -117,11 +117,11 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
         [HttpPost]
         [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/change-employer/confirm")]
-        public async Task<IActionResult> ChangeEmployerConfirm(long providerId, long apprenticeshipId, [FromBody] ConfirmRequest request)
+        public async Task<IActionResult> ChangeEmployerConfirm(long providerId, long apprenticeshipId, [FromBody] CreateChangeOfEmployerRequest request)
         {
             try
             {
-                await _mediator.Send(new ConfirmCommand
+                await _mediator.Send(new CreateChangeOfEmployerCommand
                 {
                     ApprenticeshipId = apprenticeshipId,
                     ProviderId = providerId,

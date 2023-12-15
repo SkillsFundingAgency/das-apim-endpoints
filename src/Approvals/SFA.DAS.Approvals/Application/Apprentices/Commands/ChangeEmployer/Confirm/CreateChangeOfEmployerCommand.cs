@@ -5,7 +5,7 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm
 {
-    public class ConfirmCommand : IRequest
+    public class CreateChangeOfEmployerCommand : IRequest
     {
         public long ProviderId { get; set; }
         public long ApprenticeshipId { get; set; }

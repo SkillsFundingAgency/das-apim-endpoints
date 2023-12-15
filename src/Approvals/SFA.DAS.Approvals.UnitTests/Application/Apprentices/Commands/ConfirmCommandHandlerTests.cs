@@ -17,8 +17,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Commands
     [TestFixture]
     public class ConfirmCommandHandlerTests
     {
-        private ConfirmCommandHandler _handler;
-        private ConfirmCommand _request;
+        private CreateChangeOfEmployerCommandHandler _handler;
+        private CreateChangeOfEmployerCommand _request;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
         private CreateChangeOfPartyRequestRequest _apiRequest;
 
@@ -26,7 +26,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Commands
         public void Setup()
         {
             var fixture = new Fixture();
-            _request = fixture.Create<ConfirmCommand>();
+            _request = fixture.Create<CreateChangeOfEmployerCommand>();
 
             _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
 
@@ -34,7 +34,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Commands
                 .Callback((IPostApiRequest request, bool includeResponse) => _apiRequest = request as CreateChangeOfPartyRequestRequest)
                 .ReturnsAsync(new ApiResponse<CreateChangeOfPartyRequestResponse>(null, HttpStatusCode.OK, string.Empty));
 
-            _handler = new ConfirmCommandHandler(_commitmentsApiClient.Object);
+            _handler = new CreateChangeOfEmployerCommandHandler(_commitmentsApiClient.Object);
         }
 
         [Test]
