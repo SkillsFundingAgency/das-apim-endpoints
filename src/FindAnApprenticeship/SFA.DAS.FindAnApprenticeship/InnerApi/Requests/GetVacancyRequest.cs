@@ -12,4 +12,5 @@ public class GetVacancyRequest : IGetApiRequest
     }
 
     public string GetUrl => $"/api/vacancies/{_vacancyReference}";
+    public string Version => "2.0";
 }

@@ -94,7 +94,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             {
                 _logger.LogError(e, "Error getting search results");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-
             }
         }
     }
