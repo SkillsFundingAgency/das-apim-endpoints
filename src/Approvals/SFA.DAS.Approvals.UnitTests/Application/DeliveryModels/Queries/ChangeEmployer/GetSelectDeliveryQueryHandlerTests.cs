@@ -63,6 +63,14 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         }
 
         [Test]
+        public async Task Handle_Returns_Status_For_Apprenticeship()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            Assert.AreEqual((Enums.ApprenticeshipStatus)_apprenticeshipResponse.Status, result.Status);
+        }
+
+        [Test]
         public async Task Handle_Returns_Null_If_Apprentice_Is_Not_Found()
         {
             _commitmentsApiClient.Setup(x =>

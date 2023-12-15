@@ -35,7 +35,8 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Selec
             {
                 ApprenticeshipId = request.ApprenticeshipId,
                 LegalEntityName = apprenticeship.EmployerName,
-                DeliveryModels = deliveryModels
+                DeliveryModels = deliveryModels,
+                Status = (Enums.ApprenticeshipStatus)apprenticeship.Status
             };
         }
     }
