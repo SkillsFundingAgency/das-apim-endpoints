@@ -37,7 +37,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.OverlappingTrainingDateRequest
         {
             var response = new ApiResponse<object>(null, System.Net.HttpStatusCode.InternalServerError, string.Empty);
             apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostValidateChangeOfEmployerOverlapRequest>(), false)).ReturnsAsync(response);
-            Assert.CatchAsync<ApiResponseException>(async () =>   await handler.Handle(query, CancellationToken.None));
+            Assert.CatchAsync<ApiResponseException>(async () => await handler.Handle(query, CancellationToken.None));
         }
     }
 }

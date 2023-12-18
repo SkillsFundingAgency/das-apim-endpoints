@@ -28,8 +28,8 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Conf
                 NewPrice = request.Price,
                 NewStartDate = request.StartDate,
                 NewEndDate = request.EndDate,
-                NewEmploymentEndDate  = request.EmploymentEndDate,
-                NewEmploymentPrice  = request.EmploymentPrice,
+                NewEmploymentEndDate = request.EmploymentEndDate,
+                NewEmploymentPrice = request.EmploymentPrice,
                 DeliveryModel = request.DeliveryModel,
                 HasOverlappingTrainingDates = request.HasOverlappingTrainingDates,
                 UserInfo = request.UserInfo

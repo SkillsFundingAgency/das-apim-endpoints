@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
@@ -6,9 +9,6 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ApprenticeData
 {
