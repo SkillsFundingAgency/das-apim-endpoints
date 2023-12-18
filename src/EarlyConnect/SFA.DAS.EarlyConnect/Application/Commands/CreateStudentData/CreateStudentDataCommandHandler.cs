@@ -1,12 +1,13 @@
 ﻿using MediatR;
 using SFA.DAS.EarlyConnect.InnerApi.Requests;
+using SFA.DAS.EarlyConnect.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EarlyConnect.Application.Commands.CreateStudentData
 {
-    public class CreateStudentDataCommandHandler : IRequestHandler<CreateStudentDataCommand, Unit>
+    public class CreateStudentDataCommandHandler : IRequestHandler<CreateStudentDataCommand, CreateStudentDataCommandResult>
     {
 
         private readonly IEarlyConnectApiClient<EarlyConnectApiConfiguration> _apiClient;
@@ -16,14 +17,17 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.CreateStudentData
             _apiClient = apiClient;
         }
 
-        public async Task<Unit> Handle(CreateStudentDataCommand request, CancellationToken cancellationToken)
+        public async Task<CreateStudentDataCommandResult> Handle(CreateStudentDataCommand request, CancellationToken cancellationToken)
         {
 
-           var response = await _apiClient.PostWithResponseCode<object>(new CreateStudentDataRequest(request.StudentDataList), false);
+           var response = await _apiClient.PostWithResponseCode<CreateStudentDataResponse>(new CreateStudentDataRequest(request.StudentDataList),true);
 
             response.EnsureSuccessStatusCode();
 
-            return Unit.Value;
+            return new CreateStudentDataCommandResult
+            {
+                Message = response.Body.Message
+            };
         }
     }
 }
