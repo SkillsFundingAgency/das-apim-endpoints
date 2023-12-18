@@ -72,11 +72,11 @@ public class GetMemberProfileWithPreferencesTests
 
         if (isPublicView && !isApprenticeSectionShareAllowed)
         {
-            response = new(memberProfileWithPreferencesQueryResult, null, null, isPublicView);
+            response = new(memberProfileWithPreferencesQueryResult, null, null);
         }
         else if (memberProfileWithPreferencesQueryResult.UserType == MemberUserType.Apprentice && myApprenticeship != null)
         {
-            response = new(memberProfileWithPreferencesQueryResult, myApprenticeship, null, isPublicView);
+            response = new(memberProfileWithPreferencesQueryResult, myApprenticeship, null);
         }
         else
         {
@@ -85,7 +85,7 @@ public class GetMemberProfileWithPreferencesTests
                 getEmployerMemberSummaryQueryResult!.ActiveCount = apprenticeship.ActiveApprenticesCount;
                 getEmployerMemberSummaryQueryResult!.Sectors = apprenticeship.Sectors;
             }
-            response = new(memberProfileWithPreferencesQueryResult, null, apprenticeship, isPublicView);
+            response = new(memberProfileWithPreferencesQueryResult, null, apprenticeship);
             mediatorMock.Setup(m => m.Send(It.Is<GetEmployerMemberSummaryQuery>(x => x.EmployerAccountId == accountId), cancellationToken)).ReturnsAsync(getEmployerMemberSummaryQueryResult!);
         }
 
