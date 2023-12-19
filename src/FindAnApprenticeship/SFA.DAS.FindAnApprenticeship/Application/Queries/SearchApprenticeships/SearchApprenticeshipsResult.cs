@@ -6,14 +6,15 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 {
-    public class SearchApprenticeshipsResult
+    public record SearchApprenticeshipsResult
     {
-        public long TotalApprenticeshipCount { get; set; }
+        public long TotalApprenticeshipCount { get; init; }
         public LocationItem LocationItem { get; set; }
-        public List<GetRoutesListItem> Routes { get; set; }
-        public IEnumerable<GetVacanciesListItem> Vacancies { get; set; }
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
-        public int TotalPages { get; set; }
+        public List<GetRoutesListItem> Routes { get; init; }
+        public IEnumerable<GetVacanciesListItem> Vacancies { get; init; }
+        public int PageNumber { get; init; }
+        public int PageSize { get; init; }
+        public int TotalPages { get; init; }
+        public List<string> Categories { get; init; }
     }
 }

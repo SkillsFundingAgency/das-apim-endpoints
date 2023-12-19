@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.WebUtilities;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -30,17 +29,17 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var routesTask = _courseService.GetRoutes();
 
             await Task.WhenAll(locationTask, routesTask);
-            
+
             var location = locationTask.Result;
             var routes = routesTask.Result;
-            
+
             var resultCountTask = _findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
-                    new GetApprenticeshipCountRequest(
-                        location?.GeoPoint?.FirstOrDefault(),
-                        location?.GeoPoint?.LastOrDefault(),
-                        request.SelectedRouteIds,
-                        request.Distance
-                        ));
+                new GetApprenticeshipCountRequest(
+                    location?.GeoPoint?.FirstOrDefault(),
+                    location?.GeoPoint?.LastOrDefault(),
+                    request.SelectedRouteIds,
+                    request.Distance
+                ));
 
             var vacancyResultTask = _findApprenticeshipApiClient.Get<GetVacanciesResponse>(
                 new GetVacanciesRequest(
@@ -50,7 +49,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     request.Distance,
                     request.Sort,
                     request.PageNumber,
-                    request.PageSize));
+                    request.PageSize,
+                    request.Categories));
 
             await Task.WhenAll(resultCountTask, vacancyResultTask);
 
@@ -67,7 +67,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 Vacancies = vacancyResult.ApprenticeshipVacancies.ToList(),
                 PageNumber = request.PageNumber,
                 PageSize = request.PageSize,
-                TotalPages = totalPages
+                TotalPages = totalPages,
+                Categories = request.Categories
             };
         }
     }

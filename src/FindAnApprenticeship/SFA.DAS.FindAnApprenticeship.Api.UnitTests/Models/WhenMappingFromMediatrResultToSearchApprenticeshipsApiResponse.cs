@@ -1,7 +1,6 @@
 using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
@@ -17,6 +16,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
 
             actual.TotalApprenticeshipCount.Should().Be(source.TotalApprenticeshipCount);
             actual.Routes.Should().BeEquivalentTo(source.Routes);
+            actual.Categories.Should().BeEquivalentTo(source.Categories);
             actual.Location.LocationName.Should().Be(source.LocationItem.Name);
             actual.Location.Lat.Should().Be(source.LocationItem.GeoPoint.First());
             actual.Location.Lon.Should().Be(source.LocationItem.GeoPoint.Last());

@@ -50,7 +50,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.Distance,
                 query.Sort,
                 query.PageNumber,
-                query.PageSize);
+                query.PageSize,
+                query.Categories);
 
             apiClient
                 .Setup(client => client.Get<GetApprenticeshipCountResponse>(It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
@@ -76,6 +77,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 result.PageNumber.Should().Be(query.PageNumber);
                 result.PageSize.Should().Be(query.PageSize);
                 result.TotalPages.Should().Be(totalPages);
+                result.Categories.Should().BeEquivalentTo(query.Categories);
             }
         }
     }
