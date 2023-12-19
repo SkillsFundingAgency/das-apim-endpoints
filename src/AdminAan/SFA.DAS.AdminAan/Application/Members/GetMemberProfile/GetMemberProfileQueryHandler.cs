@@ -74,7 +74,7 @@ public class GetMemberProfileQueryHandler : IRequestHandler<GetMemberProfileQuer
         await Task.WhenAll(accountSummaryTask, apprenticeshipSummaryTask);
 
         result.Apprenticeship.Sectors = apprenticeshipSummaryTask.Result.Sectors;
-        result.Apprenticeship.ActiveApprenticesCount = accountSummaryTask.Result.ApprenticeshipStatusSummaryResponse.FirstOrDefault()?.ActiveCount;
+        result.Apprenticeship.ActiveApprenticesCount = accountSummaryTask.Result.ApprenticeshipStatusSummaryResponse.FirstOrDefault()?.ActiveCount ?? 0;
     }
 
     private async Task UpdateResultWithApprenticeshipDetailsForApprentice(GetMemberProfileQueryResult result, Guid apprenticeId, CancellationToken cancellationToken)
