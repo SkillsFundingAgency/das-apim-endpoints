@@ -54,6 +54,7 @@ public class GetMemberProfileQueryHandler : IRequestHandler<GetMemberProfileQuer
         result.Email = memberResponse.Email;
         result.RegionId = memberResponse.RegionId;
         result.UserType = memberResponse.UserType;
+        result.JoinedDate = memberResponse.JoinedDate;
         result.IsRegionalChair = memberResponse.IsRegionalChair.GetValueOrDefault();
         result.Profiles = profilesAndPreferencesResponse.Profiles;
         result.Preferences = profilesAndPreferencesResponse.Preferences;
