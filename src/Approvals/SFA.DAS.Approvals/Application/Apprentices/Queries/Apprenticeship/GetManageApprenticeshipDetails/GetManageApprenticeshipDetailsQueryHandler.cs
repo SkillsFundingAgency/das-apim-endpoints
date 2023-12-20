@@ -100,9 +100,9 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
 
             return new PendingPriceChange
             {
-                Cost = pendingPriceChangeResponse.PendingPriceChange.Cost,
-                EndPointAssessmentPrice = pendingPriceChangeResponse.PendingPriceChange.EndPointAssessmentPrice,
-                TrainingPrice = pendingPriceChangeResponse.PendingPriceChange.TrainingPrice
+                Cost = pendingPriceChangeResponse.PendingPriceChange.PendingTotalPrice,
+                EndPointAssessmentPrice = pendingPriceChangeResponse.PendingPriceChange.PendingAssessmentPrice,
+                TrainingPrice = pendingPriceChangeResponse.PendingPriceChange.PendingTrainingPrice
             };
         }
     }
