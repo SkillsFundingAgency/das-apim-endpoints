@@ -158,7 +158,7 @@ public class GetMemberProfileQueryHandlerTests
             actual.Apprenticeship!.Level.Should().Be(expectedStandard!.Level.ToString());
             actual.Apprenticeship!.Sector.Should().Be(expectedStandard!.Route);
             actual.Apprenticeship!.Sectors.Should().BeEmpty();
-            actual.Apprenticeship!.ActiveApprenticesCount.Should().BeNull();
+            actual.Apprenticeship!.ActiveApprenticesCount.Should().Be(0);
             coursesApiClientMock.Verify(a => a.GetFramework(It.IsAny<string>(), _cancellationToken), Times.Never);
             commitmentsV2ApiClientMock.Verify(c => c.GetEmployerAccountSummary(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Never);
             commitmentsV2ApiClientMock.Verify(c => c.GetEmployerApprenticeshipsSummary(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -187,7 +187,7 @@ public class GetMemberProfileQueryHandlerTests
             actual.Apprenticeship!.Level.Should().Be(expectedFramework!.Level.ToString());
             actual.Apprenticeship!.Sector.Should().Be(expectedFramework!.FrameworkName);
             actual.Apprenticeship!.Sectors.Should().BeEmpty();
-            actual.Apprenticeship!.ActiveApprenticesCount.Should().BeNull();
+            actual.Apprenticeship!.ActiveApprenticesCount.Should().Be(0);
             coursesApiClientMock.Verify(a => a.GetStandard(It.IsAny<string>(), _cancellationToken), Times.Never);
             commitmentsV2ApiClientMock.Verify(c => c.GetEmployerAccountSummary(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Never);
             commitmentsV2ApiClientMock.Verify(c => c.GetEmployerApprenticeshipsSummary(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Never);
