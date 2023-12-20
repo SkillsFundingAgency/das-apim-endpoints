@@ -18,6 +18,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 PageNumber = source.PageNumber,
                 PageSize = source.PageSize,
                 TotalPages = source.TotalPages,
+                VacancyReference = source.VacancyReference
             };
         }
         
@@ -32,5 +33,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public int TotalPages { get; set; }
+        public string? VacancyReference { get; set; }
     }
 }

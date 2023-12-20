@@ -15,6 +15,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public int TotalPages { get; set; }
-        public string VacancyReference { get; set; }
+        public string? VacancyReference { get; set; }
     }
 }
