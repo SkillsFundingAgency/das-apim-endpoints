@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -26,6 +28,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 
         public async Task<SearchApprenticeshipsResult> Handle(SearchApprenticeshipsQuery request, CancellationToken cancellationToken)
         {
+
             var locationTask = _locationLookupService.GetLocationInformation(request.Location, default, default, false);
             var routesTask = _courseService.GetRoutes();
 
@@ -34,6 +37,26 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var location = locationTask.Result;
             var routes = routesTask.Result;
             
+            if (Regex.IsMatch(request.WhatSearchTerm, @"^VAC\d{10}$"))
+            {
+                var vacancyReferenceResult = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(request.WhatSearchTerm));
+
+                if (vacancyReferenceResult != null)
+                {
+                    return new SearchApprenticeshipsResult
+                    {
+                        TotalApprenticeshipCount = 1,
+                        LocationItem = location,
+                        Routes = routes.Routes.ToList(),
+                        Vacancies = new List<GetVacanciesListItem>(),
+                        PageNumber = request.PageNumber,
+                        PageSize = request.PageSize,
+                        TotalPages = 1,
+                        VacancyReference = request.WhatSearchTerm
+                    };
+                }
+            }
+
             var resultCountTask = _findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
                     new GetApprenticeshipCountRequest(
                         location?.GeoPoint?.FirstOrDefault(),
