@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications
 {
@@ -40,7 +40,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
                 Applications = result,
                 PledgeStatus = pledgeTask.Result.Status,
                 TotalAmount = pledgeTask.Result.Amount,
-                RemainingAmount = pledgeTask.Result.RemainingAmount
+                RemainingAmount = pledgeTask.Result.RemainingAmount,
+                AutomaticApprovalOption = pledgeTask.Result.AutomaticApprovalOption
             };
         }
 

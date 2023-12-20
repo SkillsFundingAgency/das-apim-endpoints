@@ -42,6 +42,8 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
                         y.AccountId == _request.AccountId &&
                         y.AccountLegalEntityId == _request.AccountLegalEntityId &&
                         y.Cost == _request.Cost &&
+                        y.TrainingPrice == _request.TrainingPrice &&
+                        y.EndPointAssessmentPrice == _request.EndPointAssessmentPrice &&
                         y.CourseCode == _request.CourseCode &&
                         y.DateOfBirth == _request.DateOfBirth &&
                         y.DeliveryModel == _request.DeliveryModel &&

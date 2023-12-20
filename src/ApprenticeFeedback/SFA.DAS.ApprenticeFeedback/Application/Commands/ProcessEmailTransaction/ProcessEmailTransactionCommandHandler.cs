@@ -1,5 +1,4 @@
-﻿
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
@@ -25,7 +24,8 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.ProcessEmailTransactio
                 command.FeedbackTransactionId,
                 command.ApprenticeName,
                 command.ApprenticeEmailAddress,
-                command.IsEmailContactAllowed
+                command.IsFeedbackEmailContactAllowed,
+                command.IsEngagementEmailContactAllowed
             ));
 
             var response = await _apiClient.PostWithResponseCode<ProcessEmailTransactionResponse>(request);

@@ -7,7 +7,7 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
     {
         public readonly long ProviderId;
         public object Data { get; set; }
-        public string PostUrl => $"/api/Reservations/accounts/bulk-validate";
+        public string PostUrl => "api/Reservations/accounts/bulk-validate";
 
         public PostValidateReservationRequest(long providerId, List<ReservationRequest> data)
         {

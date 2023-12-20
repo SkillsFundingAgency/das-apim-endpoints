@@ -3,6 +3,7 @@ using FluentAssertions;
 using SFA.DAS.ApprenticeAan.Api.Models;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Common;
+using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMembers;
 using SFA.DAS.ApprenticeAan.Application.Services;
 
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Services;
@@ -62,9 +63,8 @@ public class QueryStringParameterBuilderTests
         isActiveResult![0].Should().Be("true");
     }
 
-    [TestCase(null)]
-    [TestCase("2030-06-01")]
-    public void Builder_ConstructParameters_FromDate(DateTime? fromDate)
+    [TestCase("2030-06-01", "2030-06-01")]
+    public void Builder_ConstructParameters_FromDateNotToday(DateTime? fromDate, string expectedFromDate)
     {
         var model = new GetCalendarEventsRequestModel
         {
@@ -74,15 +74,34 @@ public class QueryStringParameterBuilderTests
         var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model);
 
         parameters.TryGetValue("fromDate", out var fromDateResult);
-        if (fromDate != null)
-        {
-            fromDateResult![0].Should().Be(fromDate?.ToString("yyyy-MM-dd"));
-        }
-        else
-        {
-            fromDateResult.Should().BeNull();
-        }
+
+        fromDateResult![0].Should().Be(expectedFromDate);
     }
+
+    [TestCase("null")]
+    [TestCase("today")]
+    public void Builder_ConstructParameters_FromDateToday(string fromDateSelector)
+    {
+        DateTime? fromDate = null;
+
+        if (fromDateSelector == "today") fromDate = DateTime.Today;
+
+        var model = new GetCalendarEventsRequestModel
+        {
+            RequestedByMemberId = Guid.NewGuid(),
+            FromDate = fromDate
+        };
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model);
+
+        parameters.TryGetValue("fromDate", out var fromDateResult);
+
+        if (!DateTime.TryParse(fromDateResult![0], out var fromDateResultValue)) return;
+
+        fromDateResultValue.Date.Should().Be(DateTime.Today);
+        fromDateResultValue.ToLocalTime().Should().BeOnOrBefore(DateTime.Now);
+        fromDateResultValue.ToLocalTime().Should().BeAfter(DateTime.Now.AddSeconds(-1));
+    }
+
 
     [TestCase(null)]
     [TestCase("2030-06-01")]
@@ -217,6 +236,159 @@ public class QueryStringParameterBuilderTests
         var model = new GetCalendarEventsRequestModel
         {
             RequestedByMemberId = Guid.NewGuid(),
+            PageSize = pageSize
+        };
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model);
+
+        parameters.TryGetValue("pageSize", out var pageResult);
+        if (pageResult != null)
+        {
+            pageResult![0].Should().Be(pageSize?.ToString());
+        }
+        else
+        {
+            pageResult.Should().BeNull();
+        }
+    }
+
+    [Test, AutoData]
+    public void Members_PopulatesModelFromParameters(string keyword, List<MemberUserType> userType, List<MembershipStatusType> status, bool isRegionalChair, List<int> regionIds, int? page, int? pageSize)
+    {
+        var sut = new GetMembersRequestModel
+        {
+            Keyword = keyword,
+            UserType = userType,
+            IsRegionalChair = isRegionalChair,
+            RegionId = regionIds,
+            Page = page,
+            PageSize = pageSize
+        };
+
+        var query = (GetMembersQuery)sut;
+
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(query);
+
+        parameters.TryGetValue("keyword", out string[]? keywordResult);
+        keywordResult![0].Should().Be(keyword);
+
+        parameters.TryGetValue("userType", out string[]? userTypeResult);
+        userTypeResult!.Length.Should().Be(userType.Count);
+        userType.Select(x => x.ToString()).Should().BeEquivalentTo(userTypeResult.ToList());
+
+        parameters.TryGetValue("isRegionalChair", out string[]? isRegionalChairResult);
+        isRegionalChairResult![0].Should().Be(isRegionalChair.ToString());
+
+        parameters.TryGetValue("regionId", out var regionIdsResult);
+        regionIdsResult!.Length.Should().Be(regionIds.Count);
+        regionIds.Select(x => x.ToString()).Should().BeEquivalentTo(regionIdsResult.ToList());
+
+        parameters.TryGetValue("page", out string[]? pageResult);
+        pageResult![0].Should().Be(page?.ToString());
+
+        parameters.TryGetValue("pageSize", out string[]? pageSizeResult);
+        pageSizeResult![0].Should().Be(pageSize?.ToString());
+    }
+
+    [Test, TestCaseSource(nameof(_Data))]
+    public void Members_ConstructParameters_UserType(List<MemberUserType> userType)
+    {
+        var model = new GetMembersRequestModel
+        {
+            UserType = userType
+        };
+
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model);
+
+        parameters.TryGetValue("userType", out var userTypeResult);
+        if (userTypeResult != null)
+        {
+            userTypeResult![0].Should().Be(userType?[0].ToString());
+        }
+        else
+        {
+            userTypeResult.Should().BeNull();
+        }
+    }
+
+    private static readonly object?[] _Data =
+    {
+      null,
+      new object[] {new List<MemberUserType> { MemberUserType.Apprentice} }
+    };
+
+    [TestCase(null)]
+    [TestCase(true)]
+    [TestCase(false)]
+    public void Members_ConstructParameters_IsRegionalChair(bool? isRegionalChair)
+    {
+        var model = new GetMembersRequestModel
+        {
+            IsRegionalChair = isRegionalChair
+        };
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model);
+
+        parameters.TryGetValue("isRegionalChair", out var isRegionalChairResult);
+        if (isRegionalChairResult != null)
+        {
+            isRegionalChairResult![0].Should().Be(isRegionalChair?.ToString());
+        }
+        else
+        {
+            isRegionalChairResult.Should().BeNull();
+        }
+    }
+
+    [TestCase(null)]
+    [TestCase(1)]
+    public void Members_ConstructParameters_RegionIds(int? regionId)
+    {
+        var model = new GetMembersRequestModel();
+
+        if (regionId != null)
+        {
+            model.RegionId = new List<int> { regionId.Value };
+        }
+
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model);
+
+        parameters.TryGetValue("regionId", out var regionIdResult);
+        if (regionIdResult != null)
+        {
+            regionIdResult![0].Should().BeEquivalentTo(model.RegionId[0].ToString());
+        }
+        else
+        {
+            regionIdResult.Should().BeNull();
+        }
+    }
+
+    [TestCase(null)]
+    [TestCase(3)]
+    public void Members_ConstructParameters_ToPage(int? page)
+    {
+        var model = new GetMembersRequestModel
+        {
+            Page = page
+        };
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model);
+
+        parameters.TryGetValue("page", out var pageResult);
+        if (pageResult != null)
+        {
+            pageResult![0].Should().Be(page?.ToString());
+        }
+        else
+        {
+            pageResult.Should().BeNull();
+        }
+    }
+
+    [TestCase(null)]
+    [TestCase(6)]
+    public void Members_ConstructParameters_ToPageSize(int? pageSize)
+    {
+        var model = new GetMembersRequestModel
+        {
             PageSize = pageSize
         };
         var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model);

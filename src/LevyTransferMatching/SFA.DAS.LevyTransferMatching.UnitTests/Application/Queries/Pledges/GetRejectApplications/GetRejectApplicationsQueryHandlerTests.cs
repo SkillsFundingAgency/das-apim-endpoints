@@ -5,13 +5,15 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplicat
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models.Constants;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.GetRejectApplications
 {
@@ -28,7 +30,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
             _query = _fixture.Create<GetRejectApplicationsQuery>();
             _service = new Mock<ILevyTransferMatchingService>();
             _service.Setup(x => x.GetApplications(It.Is<GetApplicationsRequest>(p => p.PledgeId == _query.PledgeId 
-                                && p.ApplicationStatusFilter == PledgeStatus.Pending)))
+                                && p.ApplicationStatusFilter == ApplicationStatus.Pending)))
                 .ReturnsAsync(new GetApplicationsResponse()
                 {
                     Applications = new List<GetApplicationsResponse.Application>

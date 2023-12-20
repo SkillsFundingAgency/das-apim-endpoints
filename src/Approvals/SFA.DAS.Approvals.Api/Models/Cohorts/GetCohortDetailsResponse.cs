@@ -102,6 +102,8 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
         public string Email { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public int? Cost { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? ActualStartDate { get; set; }
         public DateTime? EndDate { get; set; }
@@ -120,9 +122,6 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
         public bool? IsOnFlexiPaymentPilot { get; set; }
         public bool? EmailAddressConfirmed { get; set; }
         public int? DurationReducedByHours { get; set; }
-        public int? WeightageReducedBy { get; set; }
-        public string QualificationsForRplReduction { get; set; }
-        public string ReasonForRplReduction { get; set; }
 
         public static implicit operator DraftApprenticeship(
             InnerApi.Responses.DraftApprenticeship source)
@@ -135,6 +134,8 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
                 Email = source.Email,
                 DateOfBirth = source.DateOfBirth,
                 Cost = source.Cost,
+                TrainingPrice = source.TrainingPrice,
+                EndPointAssessmentPrice = source.EndPointAssessmentPrice,
                 StartDate = source.StartDate,
                 ActualStartDate = source.ActualStartDate,
                 EndDate = source.EndDate,
@@ -153,9 +154,6 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
                 IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot,
                 EmailAddressConfirmed = source.EmailAddressConfirmed,
                 DurationReducedByHours = source.DurationReducedByHours,
-                WeightageReducedBy = source.WeightageReducedBy,
-                QualificationsForRplReduction = source.QualificationsForRplReduction,
-                ReasonForRplReduction = source.ReasonForRplReduction
             };
         }
     }

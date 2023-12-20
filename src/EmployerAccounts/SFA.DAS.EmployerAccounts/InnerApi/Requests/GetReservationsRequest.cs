@@ -4,12 +4,10 @@ namespace SFA.DAS.EmployerAccounts.InnerApi.Requests
 {
     public class GetReservationsRequest : IGetAllApiRequest
     {
-        private readonly string _accountId;
+        private readonly long _accountId;
 
-        public GetReservationsRequest(string accountId)
-        {
-            _accountId = accountId;
-        }
+        public GetReservationsRequest(long accountId) => _accountId = accountId;
+        
         public string GetAllUrl => $"/api/accounts/{_accountId}/reservations";
     }
 }

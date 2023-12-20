@@ -4,10 +4,11 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerAccounts.Api.Models;
+using SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskList;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionHistory;
 
-namespace SFA.DAS.EmployerFinance.Api.Controllers
+namespace SFA.DAS.EmployerAccounts.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
@@ -74,6 +75,34 @@ namespace SFA.DAS.EmployerFinance.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error getting english fraction current");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("{accountId}/account-task-list")]
+        public async Task<IActionResult> GetEmployerAccountTaskList([FromRoute] long accountId, [FromQuery] string hashedAccountId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetEmployerAccountTaskListQuery
+                {
+                    AccountId = accountId,
+                    HashedAccountId = hashedAccountId
+                });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                var model = (GetEmployerAccountTaskListResponse)result;
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting account task list");
                 return BadRequest();
             }
         }

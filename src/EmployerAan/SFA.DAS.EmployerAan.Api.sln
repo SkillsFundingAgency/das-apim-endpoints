@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.Unit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerAan", "SFA.DAS.EmployerAan\SFA.DAS.EmployerAan.csproj", "{E4F955F7-3F49-4367-A548-C9734DFD704C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerAan.UnitTests", "SFA.DAS.EmployerAan.UnitTests\SFA.DAS.EmployerAan.UnitTests.csproj", "{A46DF58F-898C-410C-A2D3-F654688A498F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerAan.UnitTests", "SFA.DAS.EmployerAan.UnitTests\SFA.DAS.EmployerAan.UnitTests.csproj", "{A46DF58F-898C-410C-A2D3-F654688A498F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerAan.Api.UnitTests", "SFA.DAS.EmployerAan.Api.UnitTests\SFA.DAS.EmployerAan.Api.UnitTests.csproj", "{A2AC248D-0CCC-4B28-9366-C7EE449EE5A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerAan.Api.UnitTests", "SFA.DAS.EmployerAan.Api.UnitTests\SFA.DAS.EmployerAan.Api.UnitTests.csproj", "{A2AC248D-0CCC-4B28-9366-C7EE449EE5A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

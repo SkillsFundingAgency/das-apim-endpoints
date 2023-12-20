@@ -11,6 +11,7 @@ namespace SFA.DAS.Approvals.Api.Models
         }
 
         public long ProviderId { get; set; }
+        public long? FileUploadLogId { get; set; }
         public UserInfo UserInfo { get; set; }
         public IEnumerable<BulkUploadAddDraftApprenticeshipRequest> BulkUploadAddAndApproveDraftApprenticeships { get; set; }
     }

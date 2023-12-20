@@ -10,7 +10,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionHistory
 {
     public class GetEnglishFractionHistoryQueryHandler : IRequestHandler<GetEnglishFractionHistoryQuery, GetEnglishFractionHistoryQueryResult>
     {
-        public readonly IFinanceApiClient<FinanceApiConfiguration> _financeApiClient;
+        private readonly IFinanceApiClient<FinanceApiConfiguration> _financeApiClient;
 
         public GetEnglishFractionHistoryQueryHandler(IFinanceApiClient<FinanceApiConfiguration> financeApiClient)
         {

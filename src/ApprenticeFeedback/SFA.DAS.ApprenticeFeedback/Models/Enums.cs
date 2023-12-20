@@ -44,5 +44,11 @@ namespace SFA.DAS.ApprenticeFeedback.Models
             NotAllowed,
             Failed
         }
+
+        public enum ClickStatus
+        {
+            Invalid,
+            Valid
+        }
     }
 }

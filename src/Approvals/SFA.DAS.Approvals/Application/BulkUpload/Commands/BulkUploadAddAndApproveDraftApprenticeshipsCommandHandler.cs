@@ -35,6 +35,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
             {
                 BulkUploadAddAndApproveDraftApprenticeships = command.BulkUploadAddAndApproveDraftApprenticeships,
                 ProviderId = command.ProviderId,
+                LogId = command.FileUploadLogId,
                 UserInfo = command.UserInfo
             };
 

@@ -102,7 +102,8 @@ namespace SFA.DAS.Vacancies.Api.Models
     {
         ApprenticeshipMinimum = 2,
         NationalMinimum = 3,
-        Custom = 4
+        Custom = 4,
+        CompetitiveSalary = 6
     }
     public enum WageUnit
     {

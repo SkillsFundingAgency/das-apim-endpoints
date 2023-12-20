@@ -9,7 +9,7 @@ public class GetFrameworkQueryRequestTests
     [AutoData]
     public void Constructor_BuildsRequest(string trainingCode)
     {
-        var request = new GetFrameworkQueryRequest(trainingCode);
+        var request = new GetFrameworkRequest(trainingCode);
 
         Assert.Multiple(() =>
         {

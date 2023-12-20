@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Api.Authentication;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
-using SFA.DAS.LevyTransferMatching.Application.Commands.ApproveApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ClosePledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
@@ -23,7 +22,8 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprovalOp
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApprovalOptions;
 using System.Net;
 using System.Threading.Tasks;
-using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
+using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplications;
+using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetOrganisationName;
 
@@ -96,20 +96,21 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpPost]
         [Route("accounts/{accountId}/pledges/create")]
-        public async Task<IActionResult> CreatePledge(long accountId, [FromBody]CreatePledgeRequest createPledgeRequest)
+        public async Task<IActionResult> CreatePledge(long accountId, [FromBody]CreatePledgeRequest request)
         {
             var commandResult = await _mediator.Send(new CreatePledgeCommand
             {
                 AccountId = accountId,
-                Amount = createPledgeRequest.Amount,
-                IsNamePublic = createPledgeRequest.IsNamePublic,
-                DasAccountName = createPledgeRequest.DasAccountName,
-                JobRoles = createPledgeRequest.JobRoles,
-                Levels = createPledgeRequest.Levels,
-                Sectors = createPledgeRequest.Sectors,
-                Locations = createPledgeRequest.Locations,
-                UserId = createPledgeRequest.UserId,
-                UserDisplayName = createPledgeRequest.UserDisplayName
+                Amount = request.Amount,
+                IsNamePublic = request.IsNamePublic,
+                DasAccountName = request.DasAccountName,
+                JobRoles = request.JobRoles,
+                Levels = request.Levels,
+                Sectors = request.Sectors,
+                Locations = request.Locations,
+                AutomaticApprovalOption = request.AutomaticApprovalOption,
+                UserId = request.UserId,
+                UserDisplayName = request.UserDisplayName
             });
 
             return new CreatedResult(
