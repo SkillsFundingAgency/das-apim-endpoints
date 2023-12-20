@@ -33,6 +33,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public int PageNumber { get; init; }
         public int PageSize { get; init; }
         public int TotalPages { get; init; }
-        public List<string> Categories { get; init; }
+        public IReadOnlyCollection<string> Categories { get; private init; }
     }
 }

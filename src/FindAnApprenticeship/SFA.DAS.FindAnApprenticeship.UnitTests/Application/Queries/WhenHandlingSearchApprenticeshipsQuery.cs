@@ -40,7 +40,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 locationInfo.GeoPoint?.FirstOrDefault(),
                 locationInfo.GeoPoint?.LastOrDefault(),
                 query.SelectedRouteIds,
-                query.Distance
+                query.Distance,
+                query.Categories
             );
 
             var vacancyRequest = new GetVacanciesRequest(
