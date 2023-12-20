@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
-using SFA.DAS.AdminAan.Infrastructure.Configuration;
+using SFA.DAS.AdminAan.Infrastructure;
 
 namespace SFA.DAS.AdminAan.Api.Models;
 
@@ -32,6 +32,9 @@ public class GetCalendarEventsRequestModel
     [FromQuery]
     public int? PageSize { get; set; }
 
+    [FromQuery]
+    public bool ShowUserEventsOnly { get; set; }
+
     public static implicit operator GetCalendarEventsQuery(GetCalendarEventsRequestModel requestModel) => new()
     {
         RequestedByMemberId = requestModel.RequestedByMemberId,
@@ -41,6 +44,7 @@ public class GetCalendarEventsRequestModel
         RegionIds = requestModel.RegionId,
         CalendarIds = requestModel.CalendarId,
         Page = requestModel.Page,
-        PageSize = requestModel.PageSize
+        PageSize = requestModel.PageSize,
+        ShowUserEventsOnly = requestModel.ShowUserEventsOnly
     };
 }

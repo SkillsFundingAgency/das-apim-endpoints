@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerAccounts.Api.Models;
 using SFA.DAS.EmployerAccounts.Application.Queries.AccountUsers.Queries;
 
-
 namespace SFA.DAS.EmployerAccounts.Api.Controllers
 {
     [ApiController]
@@ -15,10 +14,7 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
     {
         private readonly IMediator _mediator;
 
-        public AccountUsersController (IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        public AccountUsersController (IMediator mediator) => _mediator = mediator;
         
         [HttpGet]
         [Route("{userId}/accounts")]

@@ -1,33 +1,82 @@
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Assessors.UnitTests.Application.Queries
+namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 {
     public class WhenHandlingSearchApprenticeshipsQuery
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Api_Called_And_Count_Returned(
-            GetApprenticeshipCountResponse response,
-            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
+        public async Task Then_The_Services_Are_Called_And_Data_Returned_Based_On_Request(
+            SearchApprenticeshipsQuery query,
+            LocationItem locationInfo,
+            GetApprenticeshipCountResponse apiResponse,
+            GetVacanciesResponse vacanciesResponse,
+            GetRoutesListResponse routesResponse,
+            [Frozen] Mock<ICourseService> courseService,
+            [Frozen] Mock<ILocationLookupService> locationLookupService,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             SearchApprenticeshipsQueryHandler handler)
         {
-            findApprenticeshipApiClient
-                .Setup(x => x.Get<GetApprenticeshipCountResponse>(It.IsAny<GetApprenticeshipCountRequest>()))
-                .ReturnsAsync(response);
+            // Arrange
+            locationLookupService
+                .Setup(service => service.GetLocationInformation(
+                    query.Location, default, default, false))
+                .ReturnsAsync(locationInfo);
+            courseService.Setup(x => x.GetRoutes()).ReturnsAsync(routesResponse);
 
-            var actual = await handler.Handle(new SearchApprenticeshipsQuery(), CancellationToken.None);
+            // Pass locationInfo to the request
+            var expectedRequest = new GetApprenticeshipCountRequest(
+                locationInfo.GeoPoint?.FirstOrDefault(),
+                locationInfo.GeoPoint?.LastOrDefault(),
+                query.SelectedRouteIds,
+                query.Distance
+            );
 
-            actual.TotalApprenticeshipCount.Should().Be(response.TotalVacancies);
+            var vacancyRequest = new GetVacanciesRequest(
+                locationInfo.GeoPoint?.FirstOrDefault(),
+                locationInfo.GeoPoint?.LastOrDefault(),
+                query.SelectedRouteIds,
+                query.Distance,
+                query.Sort,
+                query.PageNumber,
+                query.PageSize);
+
+            apiClient
+                .Setup(client => client.Get<GetApprenticeshipCountResponse>(It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
+                .ReturnsAsync(apiResponse);
+
+            apiClient
+                .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
+                .ReturnsAsync(vacanciesResponse);
+
+            var totalPages = (int)Math.Ceiling((double)apiResponse.TotalVacancies / query.PageSize);
+
+            // Act
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                Assert.NotNull(result);
+                result.TotalApprenticeshipCount.Should().Be(apiResponse.TotalVacancies);
+                result.LocationItem.Should().BeEquivalentTo(locationInfo);
+                result.Routes.Should().BeEquivalentTo(routesResponse.Routes);
+                result.Vacancies.Should().BeEquivalentTo(vacanciesResponse.ApprenticeshipVacancies);
+                result.PageNumber.Should().Be(query.PageNumber);
+                result.PageSize.Should().Be(query.PageSize);
+                result.TotalPages.Should().Be(totalPages);
+            }
         }
     }
 }

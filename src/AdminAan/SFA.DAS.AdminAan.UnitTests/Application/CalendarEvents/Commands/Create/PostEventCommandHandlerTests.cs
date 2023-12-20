@@ -1,8 +1,8 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
-using RestEase;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Create;
+using SFA.DAS.AdminAan.Domain;
 using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -18,13 +18,8 @@ public class PostEventCommandHandlerTests
         Guid requestedByMemberId,
         CancellationToken cancellationToken)
     {
-        var response = new Response<PostEventCommandResult>(
-            "not used",
-            new HttpResponseMessage(System.Net.HttpStatusCode.Created),
-            () => expected);
-
         command.RequestedByMemberId = requestedByMemberId;
-        apiClientMock.Setup(c => c.PostCalendarEvents(requestedByMemberId, command, cancellationToken)).ReturnsAsync(response);
+        apiClientMock.Setup(c => c.PostCalendarEvents(requestedByMemberId, command, cancellationToken)).ReturnsAsync(expected);
 
         var actual = await sut.Handle(command, cancellationToken);
 
@@ -33,30 +28,6 @@ public class PostEventCommandHandlerTests
         actual.Should().Be(expected);
     }
 
-    [Test, MoqAutoData]
-    public async Task Handle_CreatedNotReturned_DoesNotInvokePutGuestSpeakersApiClient(
-        [Frozen] Mock<IAanHubRestApiClient> apiClientMock,
-        PostEventCommandHandler sut,
-        PostEventCommand command,
-        PostEventCommandResult expected,
-        Guid requestedByMemberId,
-        CancellationToken cancellationToken)
-    {
-        var response = new Response<PostEventCommandResult>(
-            "not used",
-            new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest),
-            () => expected);
-
-        command.RequestedByMemberId = requestedByMemberId;
-        apiClientMock.Setup(c => c.PostCalendarEvents(requestedByMemberId, command, cancellationToken)).ReturnsAsync(response);
-
-        var actual = await sut.Handle(command, cancellationToken);
-
-        apiClientMock.Verify(c => c.PostCalendarEvents(requestedByMemberId, command, cancellationToken));
-        apiClientMock.Verify(c => c.PutGuestSpeakers(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<PutEventGuestsModel>(), cancellationToken), Times.Never);
-
-        actual.Should().Be(expected);
-    }
 
     [Test, MoqAutoData]
     public async Task Handle_NoGuestSpeakers_DoesNotInvokePutGuestSpeakersApiClient(
@@ -68,19 +39,14 @@ public class PostEventCommandHandlerTests
         CancellationToken cancellationToken)
     {
         command.Guests = new List<GuestSpeaker>();
-        var response = new Response<PostEventCommandResult>(
-            "not used",
-            new HttpResponseMessage(System.Net.HttpStatusCode.Created),
-            () => expected);
 
         command.RequestedByMemberId = requestedByMemberId;
-        apiClientMock.Setup(c => c.PostCalendarEvents(requestedByMemberId, command, cancellationToken)).ReturnsAsync(response);
+        apiClientMock.Setup(c => c.PostCalendarEvents(requestedByMemberId, command, cancellationToken)).ReturnsAsync(expected);
 
         var actual = await sut.Handle(command, cancellationToken);
 
         apiClientMock.Verify(c => c.PostCalendarEvents(requestedByMemberId, command, cancellationToken));
         apiClientMock.Verify(c => c.PutGuestSpeakers(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<PutEventGuestsModel>(), cancellationToken), Times.Never);
-
         actual.Should().Be(expected);
     }
 }
