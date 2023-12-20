@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.Enums;
 using SFA.DAS.Approvals.Extensions;
+using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetApprenticeshipKey;
 using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
@@ -48,7 +49,9 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                     $"You do not permissions to access apprenticeship {request.ApprenticeshipId}");
             }
 
-            var priceEpisodesResponseTask = _apiClient.GetWithResponseCode<GetPriceEpisodesResponse>(new GetPriceEpisodesRequest(apprenticeship.Id) );
+            var apprenticeshipKey = await _apprenticeshipsApiClient.GetWithResponseCode<Guid>(new GetApprenticeshipKeyRequest(request.ApprenticeshipId));
+
+			var priceEpisodesResponseTask = _apiClient.GetWithResponseCode<GetPriceEpisodesResponse>(new GetPriceEpisodesRequest(apprenticeship.Id) );
             var apprenticeshipUpdatesResponseTask = _apiClient.GetWithResponseCode<GetApprenticeshipUpdatesResponse>(new GetApprenticeshipUpdatesRequest(apprenticeship.Id, ApprenticeshipUpdateStatus.Pending));
             var apprenticeshipDataLockStatusResponseTask = _apiClient.GetWithResponseCode<GetDataLocksResponse>(new GetDataLocksRequest(apprenticeship.Id));
             var changeOfPartyRequestsResponseTask = _apiClient.GetWithResponseCode<GetChangeOfPartyRequestsResponse>(new GetChangeOfPartyRequestsRequest(apprenticeship.Id));
@@ -57,7 +60,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
             var overlappingTrainingDateResponseTask = _apiClient.GetWithResponseCode<GetOverlappingTrainingDateResponse>(new GetOverlappingTrainingDateRequest(apprenticeship.Id));
             var deliveryModelTask = _deliveryModelService.GetDeliveryModels(apprenticeship.ProviderId,
                 apprenticeship.CourseCode, apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
-            var pendingPriceChangeTask = _apprenticeshipsApiClient.GetWithResponseCode<GetPendingPriceChangeResponse>(new GetPendingPriceChangeRequest(apprenticeship.Id));
+            var pendingPriceChangeTask = _apprenticeshipsApiClient.GetWithResponseCode<GetPendingPriceChangeResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey.Body));
 
             await Task.WhenAll(priceEpisodesResponseTask, 
                 apprenticeshipUpdatesResponseTask,
