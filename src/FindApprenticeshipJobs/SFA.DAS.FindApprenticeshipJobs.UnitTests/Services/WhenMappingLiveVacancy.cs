@@ -48,7 +48,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 IsEmployerAnonymous = source.IsAnonymous,
                 VacancyLocationType = "NonNational",
                 ApprenticeshipLevel = "Higher",
-                Wage = source.Wage == null ? null : new FindApprenticeshipJobs.Application.Shared.Wage
+                Wage = new FindApprenticeshipJobs.Application.Shared.Wage
                 {
                     Duration = source.Wage.Duration,
                     DurationUnit = source.Wage.DurationUnit,
@@ -56,7 +56,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                     WageAdditionalInformation = source.Wage.WageAdditionalInformation,
                     WageType = source.Wage.WageType,
                     WeeklyHours = source.Wage.WeeklyHours,
-                    WorkingWeekDescription = source.Wage.WorkingWeekDescription
+                    WorkingWeekDescription = source.Wage.WorkingWeekDescription,
+                    ApprenticeMinimumWage = source.Wage.ApprenticeMinimumWage,
+                    Under18NationalMinimumWage = source.Wage.Under18NationalMinimumWage,
+                    Between18AndUnder21NationalMinimumWage = source.Wage.Between18AndUnder21NationalMinimumWage,
+                    Between21AndUnder25NationalMinimumWage = source.Wage.Between21AndUnder25NationalMinimumWage,
+                    Over25NationalMinimumWage = source.Wage.Over25NationalMinimumWage
                 },
                 AnonymousEmployerName = source.IsAnonymous ? source.EmployerName: null,
                 IsDisabilityConfident = source.DisabilityConfident == DisabilityConfident.Yes,
