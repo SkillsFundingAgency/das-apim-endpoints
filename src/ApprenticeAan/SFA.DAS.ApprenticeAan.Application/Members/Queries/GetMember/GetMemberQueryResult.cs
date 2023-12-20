@@ -11,6 +11,7 @@ public class GetMemberQueryResult
     public string UserType { get; set; } = null!;
     public bool? IsRegionalChair { get; set; }
     public string FullName { get; set; } = null!;
+    public DateTime JoinedDate { get; set; }
     public ApprenticeModel Apprentice { get; set; } = null!;
     public EmployerModel? Employer { get; set; }
 }
