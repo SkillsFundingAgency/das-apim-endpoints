@@ -48,7 +48,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 IsEmployerAnonymous = source.IsAnonymous,
                 VacancyLocationType = "NonNational",
                 ApprenticeshipLevel = "Higher",
-                Wage = source.Wage == null ? null : new FindApprenticeshipJobs.Application.Shared.Wage
+                Wage = new FindApprenticeshipJobs.Application.Shared.Wage
                 {
                     Duration = source.Wage.Duration,
                     DurationUnit = source.Wage.DurationUnit,
