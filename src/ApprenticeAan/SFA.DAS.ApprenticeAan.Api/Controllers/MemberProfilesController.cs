@@ -31,13 +31,13 @@ public class MemberProfilesController : ControllerBase
 
         if (@public && !isApprenticeshipSectionShared)
         {
-            return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, null, null, @public));
+            return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, null, null));
         }
 
         if (memberProfileWithPreferences.UserType == MemberUserType.Apprentice)
         {
             var myApprenticeship = await _mediator.Send(new GetMyApprenticeshipQuery { ApprenticeId = memberProfileWithPreferences.ApprenticeId }, cancellationToken);
-            return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, myApprenticeship, null, @public));
+            return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, myApprenticeship, null));
         }
         else
         {
@@ -45,7 +45,7 @@ public class MemberProfilesController : ControllerBase
 
             Apprenticeship apprenticeship = new() { Sectors = employerMemberSummary.Sectors, ActiveApprenticesCount = employerMemberSummary.ActiveCount };
 
-            return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, null, apprenticeship, @public));
+            return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, null, apprenticeship));
         }
     }
 

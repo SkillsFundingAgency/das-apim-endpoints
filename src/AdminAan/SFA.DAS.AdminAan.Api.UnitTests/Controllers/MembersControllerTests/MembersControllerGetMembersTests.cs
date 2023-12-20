@@ -1,5 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -7,9 +8,9 @@ using SFA.DAS.AdminAan.Api.Controllers;
 using SFA.DAS.AdminAan.Domain;
 using SFA.DAS.AdminAan.Infrastructure;
 
-namespace SFA.DAS.AdminAan.Api.UnitTests.Controllers;
+namespace SFA.DAS.AdminAan.Api.UnitTests.Controllers.MembersControllerTests;
 
-public class MembersControllerTests
+public class MembersControllerGetMembersTests
 {
     [Test, AutoData]
     public async Task GetMembers_ForwardsRequestToInnerApi(
@@ -22,7 +23,7 @@ public class MembersControllerTests
         apiClientMock.Setup(m => m.GetMembers(queryString, cancellationToken)).ReturnsAsync(expected);
         var httpContext = new DefaultHttpContext();
         httpContext.Request.QueryString = new(queryString);
-        MembersController sut = new(apiClientMock.Object)
+        MembersController sut = new(apiClientMock.Object, Mock.Of<IMediator>())
         {
             ControllerContext = new ControllerContext() { HttpContext = httpContext }
         };
