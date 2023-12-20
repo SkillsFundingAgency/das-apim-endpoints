@@ -21,6 +21,7 @@ public class GetCalendarEventsQueryHandlerTests
         List<int> regionIds,
         int? page,
         int? pageSize,
+        bool showUserEventsOnly,
         CancellationToken cancellationToken)
     {
         var query = new GetCalendarEventsQuery
@@ -32,8 +33,8 @@ public class GetCalendarEventsQueryHandlerTests
             CalendarIds = calendarIds,
             RegionIds = regionIds,
             Page = page,
-            PageSize = pageSize
-
+            PageSize = pageSize,
+            ShowUserEventsOnly = showUserEventsOnly
         };
 
         apiClient.Setup(x => x.GetCalendarEvents(requestedByMemberId, It.IsAny<Dictionary<string, string[]>>(), cancellationToken)).ReturnsAsync(expected);
