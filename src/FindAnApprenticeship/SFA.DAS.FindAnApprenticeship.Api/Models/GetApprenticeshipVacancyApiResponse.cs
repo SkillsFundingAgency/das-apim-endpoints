@@ -9,7 +9,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
 {
     public class GetApprenticeshipVacancyApiResponse
     {
-        public long Id { get; init; }
+        public string Id { get; init; }
         public string Title { get; init; }
         public string VacancyReference { get; init; }
         public string LongDescription { get; init; }

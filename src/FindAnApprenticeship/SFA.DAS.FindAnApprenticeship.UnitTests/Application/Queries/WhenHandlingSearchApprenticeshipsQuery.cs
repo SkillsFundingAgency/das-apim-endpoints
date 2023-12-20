@@ -81,5 +81,28 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 result.TotalPages.Should().Be(totalPages);
             }
         }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Search_Term_Is_A_Vacancy_Reference_And_Vacancy_Reference_Is_Returned(
+            SearchApprenticeshipsQuery query, 
+            GetApprenticeshipVacancyItemResponse apiResponse,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            SearchApprenticeshipsQueryHandler handler
+            )
+        {
+            query.WhatSearchTerm = "VAC1098765465";
+
+            var expectedRequest = new GetVacancyRequest(query.WhatSearchTerm);
+
+            apiClient
+                .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(It.Is<GetVacancyRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
+                .ReturnsAsync(apiResponse);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            Assert.NotNull(result);
+            result.VacancyReference.Should().Be(query.WhatSearchTerm);
+
+        }
     }
 }

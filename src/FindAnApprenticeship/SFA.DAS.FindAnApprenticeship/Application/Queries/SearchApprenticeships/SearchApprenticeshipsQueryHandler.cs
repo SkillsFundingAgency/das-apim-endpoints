@@ -37,7 +37,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var location = locationTask.Result;
             var routes = routesTask.Result;
             
-            if (Regex.IsMatch(request.WhatSearchTerm, @"^VAC\d{10}$"))
+            if (request.WhatSearchTerm != null && Regex.IsMatch(request.WhatSearchTerm, @"^VAC\d{10}$"))
             {
                 var vacancyReferenceResult = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(request.WhatSearchTerm));
 
