@@ -17,8 +17,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 Vacancies = source.Vacancies.Select(c => (GetVacanciesListResponseItem)c).ToList(),
                 PageNumber = source.PageNumber,
                 PageSize = source.PageSize,
-                TotalPages = source.TotalPages,
-                Categories = source.Categories
+                TotalPages = source.TotalPages
             };
         }
         
@@ -33,6 +32,5 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public int PageNumber { get; init; }
         public int PageSize { get; init; }
         public int TotalPages { get; init; }
-        public IReadOnlyCollection<string> Categories { get; private init; }
     }
 }

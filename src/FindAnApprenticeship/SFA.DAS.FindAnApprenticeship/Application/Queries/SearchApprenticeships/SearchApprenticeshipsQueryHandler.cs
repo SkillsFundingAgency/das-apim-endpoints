@@ -33,25 +33,26 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var location = locationTask.Result;
             var routes = routesTask.Result;
 
+            var categories = routes.Routes.Where(route => request.SelectedRouteIds != null && request.SelectedRouteIds.Contains(route.Id.ToString()))
+                .Select(route => route.Name).ToList();
+
             var resultCountTask = _findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
-                new GetApprenticeshipCountRequest(
-                    location?.GeoPoint?.FirstOrDefault(),
-                    location?.GeoPoint?.LastOrDefault(),
-                    request.SelectedRouteIds,
-                    request.Distance,
-                    request.Categories
-                ));
+               new GetApprenticeshipCountRequest(
+                   location?.GeoPoint?.FirstOrDefault(),
+                   location?.GeoPoint?.LastOrDefault(),
+                   request.Distance,
+                   categories
+               ));
 
             var vacancyResultTask = _findApprenticeshipApiClient.Get<GetVacanciesResponse>(
                 new GetVacanciesRequest(
                     location?.GeoPoint?.FirstOrDefault(),
                     location?.GeoPoint?.LastOrDefault(),
-                    request.SelectedRouteIds,
                     request.Distance,
                     request.Sort,
                     request.PageNumber,
                     request.PageSize,
-                    request.Categories));
+                    categories));
 
             await Task.WhenAll(resultCountTask, vacancyResultTask);
 
@@ -68,8 +69,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 Vacancies = vacancyResult.ApprenticeshipVacancies.ToList(),
                 PageNumber = request.PageNumber,
                 PageSize = request.PageSize,
-                TotalPages = totalPages,
-                Categories = request.Categories
+                TotalPages = totalPages
             };
         }
     }

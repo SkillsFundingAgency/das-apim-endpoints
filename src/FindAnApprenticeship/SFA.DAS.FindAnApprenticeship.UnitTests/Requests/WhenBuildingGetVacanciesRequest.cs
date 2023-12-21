@@ -11,15 +11,14 @@ public class WhenBuildingGetVacanciesRequest
     public void Then_The_Request_Url_Is_Correctly_Built(
         double lat,
         double lon,
-        List<string> routes,
         int distance,
         string sort,
         int pageNumber,
         int pageSize,
         List<string> categories)
     {
-        var actual = new GetVacanciesRequest(lat, lon, routes, distance, sort, pageNumber, pageSize, categories);
+        var actual = new GetVacanciesRequest(lat, lon, distance, sort, pageNumber, pageSize, categories);
 
-        actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&routes={string.Join("&routes=", routes)}&distanceInMiles={distance}&sort={sort}&pageNumber={pageNumber}&pageSize={pageSize}&categories={string.Join("&categories=", categories)}");
+        actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&distanceInMiles={distance}&sort={sort}&pageNumber={pageNumber}&pageSize={pageSize}&categories={string.Join("&categories=", categories)}");
     }
 }

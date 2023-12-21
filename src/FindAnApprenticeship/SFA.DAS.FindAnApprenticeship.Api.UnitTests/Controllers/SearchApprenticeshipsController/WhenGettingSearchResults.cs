@@ -26,8 +26,7 @@ public class WhenGettingSearchResults
         mediator.Setup(x => x.Send(It.Is<SearchApprenticeshipsQuery>(c =>
             c.SelectedRouteIds.Equals(model.RouteIds) &&
             c.Location.Equals(model.Location) &&
-            c.Distance == model.Distance &&
-            c.Categories == model.Categories),
+            c.Distance == model.Distance),
                 CancellationToken.None))
             .ReturnsAsync(result);
 
@@ -41,8 +40,7 @@ public class WhenGettingSearchResults
         mediator.Verify(m => m.Send(It.Is<SearchApprenticeshipsQuery>(c =>
                 c.SelectedRouteIds.Equals(model.RouteIds) &&
                 c.Location.Equals(model.Location) &&
-                c.Distance == model.Distance &&
-                c.Categories == model.Categories),
+                c.Distance == model.Distance),
             CancellationToken.None));
     }
 
@@ -55,8 +53,7 @@ public class WhenGettingSearchResults
         mediator.Setup(x => x.Send(It.Is<SearchApprenticeshipsQuery>(c =>
                 c.SelectedRouteIds.Equals(model.RouteIds) &&
                 c.Location.Equals(model.Location) &&
-                c.Distance == model.Distance &&
-                c.Categories == model.Categories),
+                c.Distance == model.Distance),
             CancellationToken.None)).ThrowsAsync(new Exception());
        
         var actual = await controller.SearchResults(model) as StatusCodeResult;
@@ -67,8 +64,7 @@ public class WhenGettingSearchResults
         mediator.Verify(m => m.Send(It.Is<SearchApprenticeshipsQuery>(c =>
                 c.SelectedRouteIds.Equals(model.RouteIds) &&
                 c.Location.Equals(model.Location) &&
-                c.Distance == model.Distance &&
-                c.Categories == model.Categories),
+                c.Distance == model.Distance),
             CancellationToken.None));
     }
 }

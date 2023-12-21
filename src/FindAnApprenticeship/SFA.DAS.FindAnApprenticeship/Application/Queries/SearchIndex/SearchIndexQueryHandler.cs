@@ -26,7 +26,6 @@ public class SearchIndexQueryHandler : IRequestHandler<SearchIndexQuery, SearchI
                 null,
                 null,
                 null,
-                null,
                 null
             ));
 

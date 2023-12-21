@@ -28,7 +28,6 @@ public class WhenHandlingSearchIndexQuery
             null,
             null,
             null,
-            null, 
             null
         );
         apiClient

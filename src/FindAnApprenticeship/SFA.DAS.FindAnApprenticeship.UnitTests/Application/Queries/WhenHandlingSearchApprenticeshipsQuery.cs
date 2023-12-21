@@ -1,4 +1,5 @@
 using AutoFixture.NUnit3;
+using Azure.Core;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Moq;
@@ -35,24 +36,25 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 .ReturnsAsync(locationInfo);
             courseService.Setup(x => x.GetRoutes()).ReturnsAsync(routesResponse);
 
+            var categories = routesResponse.Routes.Where(route => query.SelectedRouteIds != null && query.SelectedRouteIds.Contains(route.Id.ToString()))
+                .Select(route => route.Name).ToList();
+
             // Pass locationInfo to the request
             var expectedRequest = new GetApprenticeshipCountRequest(
                 locationInfo.GeoPoint?.FirstOrDefault(),
                 locationInfo.GeoPoint?.LastOrDefault(),
-                query.SelectedRouteIds,
                 query.Distance,
-                query.Categories
+                categories
             );
 
             var vacancyRequest = new GetVacanciesRequest(
                 locationInfo.GeoPoint?.FirstOrDefault(),
                 locationInfo.GeoPoint?.LastOrDefault(),
-                query.SelectedRouteIds,
                 query.Distance,
                 query.Sort,
                 query.PageNumber,
                 query.PageSize,
-                query.Categories);
+                categories);
 
             apiClient
                 .Setup(client => client.Get<GetApprenticeshipCountResponse>(It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
@@ -78,7 +80,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 result.PageNumber.Should().Be(query.PageNumber);
                 result.PageSize.Should().Be(query.PageSize);
                 result.TotalPages.Should().Be(totalPages);
-                result.Categories.Should().BeEquivalentTo(query.Categories);
             }
         }
     }

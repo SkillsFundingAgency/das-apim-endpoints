@@ -11,6 +11,5 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
         public string Sort = "DistanceAsc";
         public int PageNumber { get; init; }
         public int PageSize { get; init; }
-        public IReadOnlyCollection<string> Categories { get; init; }
     }
 }
