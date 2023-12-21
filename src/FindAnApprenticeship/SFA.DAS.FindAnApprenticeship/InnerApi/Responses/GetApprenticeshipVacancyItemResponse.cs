@@ -45,7 +45,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonProperty("subCategoryCode")]
         public string SubCategoryCode { get; init; }
         [JsonProperty("ukprn")]
-        public long Ukprn { get; init; }
+        public string Ukprn { get; init; }
         [JsonProperty("wageAmountLowerBound")]
         public decimal? WageAmountLowerBound { get; init; }
         [JsonProperty("wageAmountUpperBound")]

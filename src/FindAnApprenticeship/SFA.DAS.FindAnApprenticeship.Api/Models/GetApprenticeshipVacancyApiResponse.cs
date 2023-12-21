@@ -61,7 +61,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string ExpectedDuration { get; init; }
         public double Score { get; init; }
 
-        public long Ukprn { get; init; }
+        public string Ukprn { get; init; }
         public string EmployerName { get; init; }
         public string EmployerDescription { get; init; }
         public string EmployerWebsiteUrl { get; init; }
