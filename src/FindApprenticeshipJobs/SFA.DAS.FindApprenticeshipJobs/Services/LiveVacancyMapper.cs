@@ -47,6 +47,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 IsDisabilityConfident = source.DisabilityConfident == DisabilityConfident.Yes,
                 AccountPublicHashedId = source.AccountPublicHashedId,
                 AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
+                ApplicationMethod = source.ApplicationMethod,
                 LongDescription = source.Description,
                 TrainingDescription = source.TrainingDescription,
                 Skills = source.Skills,

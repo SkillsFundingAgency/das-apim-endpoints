@@ -42,6 +42,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 Description = source.ShortDescription,
                 source.NumberOfPositions,
                 source.EmployerName,
+                source.ApplicationMethod,
                 ProviderName = source.TrainingProvider.Name,
                 source.TrainingProvider.Ukprn,
                 IsPositiveAboutDisability = false,

@@ -39,6 +39,7 @@ public class LiveVacancy
     public string AccountPublicHashedId { get; set; } = null!;
     public string AccountLegalEntityPublicHashedId { get; set; } = null!;
     public VacancyType? VacancyType { get; set; }
+    public string ApplicationMethod { get; set; } = null!;
 }
 
 public class TrainingProvider
