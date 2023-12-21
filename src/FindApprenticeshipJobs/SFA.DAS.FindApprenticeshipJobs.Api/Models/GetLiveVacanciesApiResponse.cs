@@ -76,7 +76,8 @@ public class GetLiveVacanciesApiResponse
                 RouteCode = source.RouteCode,
                 AccountPublicHashedId = source.AccountPublicHashedId,
                 AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
-                ApplicationMethod = source.ApplicationMethod
+                ApplicationMethod = source.ApplicationMethod,
+                ApplicationUrl = source.ApplicationUrl
             };
         }
 
@@ -123,6 +124,7 @@ public class GetLiveVacanciesApiResponse
         public string? EmployerContactEmail { get; set; }
         public string? EmployerContactName { get; set; }
         public string ApplicationMethod { get; set; }
+        public string? ApplicationUrl { get; set; }
     }
 
     public class Address

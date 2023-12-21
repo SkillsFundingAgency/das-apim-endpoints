@@ -44,5 +44,6 @@
         public string AccountPublicHashedId { get; set; } = null!;
         public string AccountLegalEntityPublicHashedId { get; set; } = null!;
         public string ApplicationMethod { get; set; } = null!;
+        public string? ApplicationUrl { get; set; }
     }
 }

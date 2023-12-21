@@ -43,6 +43,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 source.NumberOfPositions,
                 source.EmployerName,
                 source.ApplicationMethod,
+                source.ApplicationUrl,
                 ProviderName = source.TrainingProvider.Name,
                 source.TrainingProvider.Ukprn,
                 IsPositiveAboutDisability = false,
