@@ -157,6 +157,11 @@ public class GetLiveVacanciesApiResponse
         public string? WageType { get; set; }
         public decimal WeeklyHours { get; set; }
         public string? WorkingWeekDescription { get; set; }
+        public decimal? ApprenticeMinimumWage { get; set; }
+        public decimal? Under18NationalMinimumWage { get; set; }
+        public decimal? Between18AndUnder21NationalMinimumWage { get; set; }
+        public decimal? Between21AndUnder25NationalMinimumWage { get; set; }
+        public decimal? Over25NationalMinimumWage { get; set; }
 
         public static implicit operator Wage(Application.Shared.Wage source)
         {
@@ -168,7 +173,12 @@ public class GetLiveVacanciesApiResponse
                 WageAdditionalInformation = source.WageAdditionalInformation,
                 WageType = source.WageType,
                 WeeklyHours = source.WeeklyHours,
-                WorkingWeekDescription = source.WorkingWeekDescription
+                WorkingWeekDescription = source.WorkingWeekDescription,
+                ApprenticeMinimumWage = source.ApprenticeMinimumWage,
+                Under18NationalMinimumWage = source.Under18NationalMinimumWage,
+                Between18AndUnder21NationalMinimumWage = source.Between18AndUnder21NationalMinimumWage,
+                Between21AndUnder25NationalMinimumWage = source.Between21AndUnder25NationalMinimumWage,
+                Over25NationalMinimumWage = source.Over25NationalMinimumWage
             };
         }
     }

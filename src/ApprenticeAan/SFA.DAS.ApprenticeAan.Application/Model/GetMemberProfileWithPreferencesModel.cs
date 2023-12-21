@@ -19,7 +19,7 @@ public class GetMemberProfileWithPreferencesModel
     public IEnumerable<MemberProfile> Profiles { get; set; }
     public IEnumerable<MemberPreference> Preferences { get; set; }
 
-    public GetMemberProfileWithPreferencesModel(GetMemberProfileWithPreferencesQueryResult memberProfileWithPreferences, GetMyApprenticeshipQueryResult? myApprenticeship, Apprenticeship? apprenticeShip, bool isPublic)
+    public GetMemberProfileWithPreferencesModel(GetMemberProfileWithPreferencesQueryResult memberProfileWithPreferences, GetMyApprenticeshipQueryResult? myApprenticeship, Apprenticeship? apprenticeShip)
     {
         FullName = memberProfileWithPreferences.FullName;
         Email = memberProfileWithPreferences.Email;
@@ -31,7 +31,7 @@ public class GetMemberProfileWithPreferencesModel
         UserType = memberProfileWithPreferences.UserType;
         IsRegionalChair = memberProfileWithPreferences.IsRegionalChair;
         Profiles = memberProfileWithPreferences.Profiles;
-        Preferences = (isPublic) ? Enumerable.Empty<MemberPreference>() : memberProfileWithPreferences.Preferences;
+        Preferences = memberProfileWithPreferences.Preferences;
 
         if (memberProfileWithPreferences.UserType == MemberUserType.Apprentice && myApprenticeship != null && myApprenticeship.TrainingCourse != null)
         {
