@@ -18,19 +18,21 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 PageNumber = source.PageNumber,
                 PageSize = source.PageSize,
                 TotalPages = source.TotalPages,
+                VacancyReference = source.VacancyReference
             };
         }
         
         [JsonPropertyName("totalApprenticeshipCount")]
-        public long TotalApprenticeshipCount { get; set; }
+        public long TotalApprenticeshipCount { get; init; }
         
         [JsonPropertyName("location")]
-        public SearchLocationApiResponse Location { get; set; }
+        public SearchLocationApiResponse Location { get; init; }
         
         public List<RouteApiResponse> Routes { get; set; }
         public List<GetVacanciesListResponseItem> Vacancies { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public int TotalPages { get; set; }
+        public string? VacancyReference { get; set; }
     }
 }

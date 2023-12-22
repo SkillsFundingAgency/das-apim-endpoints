@@ -1,7 +1,6 @@
 using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
@@ -20,6 +19,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
             actual.Location.LocationName.Should().Be(source.LocationItem.Name);
             actual.Location.Lat.Should().Be(source.LocationItem.GeoPoint.First());
             actual.Location.Lon.Should().Be(source.LocationItem.GeoPoint.Last());
+            actual.VacancyReference.Should().Be(source.VacancyReference);
             actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options => options
                 .Excluding(c => c.Address)
                 .Excluding(c => c.AnonymousEmployerName)

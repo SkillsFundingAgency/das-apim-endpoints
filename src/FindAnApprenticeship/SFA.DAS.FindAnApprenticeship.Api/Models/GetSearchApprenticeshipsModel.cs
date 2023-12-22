@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.Domain;
@@ -12,6 +12,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         [FromQuery] public int? Distance { get; set; }
         [FromQuery] public int? PageNumber { get; set; }
         [FromQuery] public int? PageSize { get; set; }
+        [FromQuery] public string? WhatSearchTerm { get; set; }
 
         public static implicit operator SearchApprenticeshipsQuery(GetSearchApprenticeshipsModel model) => new()
         {
@@ -19,7 +20,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
             Location = model.Location,
             Distance = model.Distance,
             PageNumber = model.PageNumber is null or <= 0 ? Constants.SearchApprenticeships.DefaultPageNumber : (int)model.PageNumber,
-            PageSize = model.PageSize is null or <= 0 ? Constants.SearchApprenticeships.DefaultPageSize : (int)model.PageSize
+            PageSize = model.PageSize is null or <= 0 ? Constants.SearchApprenticeships.DefaultPageSize : (int)model.PageSize,
+            WhatSearchTerm = model.WhatSearchTerm
         };
     }
 }

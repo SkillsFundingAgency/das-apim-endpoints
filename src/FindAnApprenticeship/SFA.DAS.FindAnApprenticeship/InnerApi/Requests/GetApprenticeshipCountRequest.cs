@@ -7,17 +7,26 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
     {
         private readonly double? _lat;
         private readonly double? _lon;
-        private readonly List<string>? _routes;
         private readonly int? _distance;
+        private readonly string? _whatSearchTerm;
+        private readonly string _categories;
 
-        public GetApprenticeshipCountRequest(double? lat, double? lon, List<string>? routes, int? distance)
+        public GetApprenticeshipCountRequest(
+            double? lat,
+            double? lon,
+            int? distance,
+            IReadOnlyCollection<string> categories,
+            string whatSearchTerm)
         {
             _lat = lat;
             _lon = lon;
-            _routes = routes;
             _distance = distance;
+            _whatSearchTerm = whatSearchTerm;
+            _categories = categories != null ? string.Join("&categories=", categories) : string.Empty;
         }
 
-        public string GetUrl => $"/api/vacancies/count?lat={_lat}&lon={_lon}&routes={_routes}&distance={_distance}";
+        public string GetUrl => $"/api/vacancies/count?lat={_lat}&lon={_lon}&distance={_distance}&categories={_categories}&searchTerm={_whatSearchTerm}";
+
+        public string Version => "2.0";
     }
 }

@@ -1,5 +1,4 @@
-﻿
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +26,8 @@ public class WhenGettingSearchResults
         mediator.Setup(x => x.Send(It.Is<SearchApprenticeshipsQuery>(c =>
             c.SelectedRouteIds.Equals(model.RouteIds) &&
             c.Location.Equals(model.Location) &&
-            c.Distance == model.Distance),
+            c.Distance == model.Distance &&
+            c.WhatSearchTerm == model.WhatSearchTerm),
                 CancellationToken.None))
             .ReturnsAsync(result);
 
@@ -48,15 +48,18 @@ public class WhenGettingSearchResults
     [Test, MoqAutoData]
     public async Task Then_If_An_Exception_Is_Thrown_Then_Internal_Server_Error_Response_Returned(
         GetSearchApprenticeshipsModel model,
+        string whatSearchTerm,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.SearchApprenticeshipsController controller)
     {
         mediator.Setup(x => x.Send(It.Is<SearchApprenticeshipsQuery>(c =>
                 c.SelectedRouteIds.Equals(model.RouteIds) &&
                 c.Location.Equals(model.Location) &&
-                c.Distance == model.Distance),
+                c.Distance == model.Distance &&
+                c.WhatSearchTerm == whatSearchTerm),
             CancellationToken.None)).ThrowsAsync(new Exception());
-       
+
+
         var actual = await controller.SearchResults(model) as StatusCodeResult;
 
         Assert.IsNotNull(actual);

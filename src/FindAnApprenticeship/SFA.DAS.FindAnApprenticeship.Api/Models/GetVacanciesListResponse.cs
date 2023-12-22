@@ -21,7 +21,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
     }
     public class GetVacanciesListResponseItem
     {
-        public long Id { get; set; }
+        public string Id { get; set; }
         public DateTime ClosingDate { get; set; }
         public string EmployerName { get; set; }
         public DateTime PostedDate { get; set; }
