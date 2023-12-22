@@ -18,7 +18,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.MemberProfilesControllerTests;
+namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers;
 public class MemberProfilesControllerTests
 {
     [Test]
@@ -61,7 +61,7 @@ public class MemberProfilesControllerTests
         };
         memberProfileWithPreferencesQueryResult.Preferences = memberPreferences;
         int apprenticeshipPreferenceId = 3;
-        var isApprenticeSectionShareAllowed = (memberProfileWithPreferencesQueryResult.Preferences.Any(x => x.PreferenceId == apprenticeshipPreferenceId)) ? memberProfileWithPreferencesQueryResult.Preferences.FirstOrDefault(x => x.PreferenceId == apprenticeshipPreferenceId)!.Value : false;
+        var isApprenticeSectionShareAllowed = memberProfileWithPreferencesQueryResult.Preferences.Any(x => x.PreferenceId == apprenticeshipPreferenceId) ? memberProfileWithPreferencesQueryResult.Preferences.FirstOrDefault(x => x.PreferenceId == apprenticeshipPreferenceId)!.Value : false;
 
 
         GetEmployerMemberSummaryQueryResult? getEmployerMemberSummaryQueryResult = new GetEmployerMemberSummaryQueryResult();
@@ -99,10 +99,9 @@ public class MemberProfilesControllerTests
 
         Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClientMock = new();
         coursesApiClientMock.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardQueryRequest>())).ReturnsAsync(standardResponse);
-
-        // Act
         var sut = new MemberProfilesController(mockMediator.Object);
 
+        // Act
         var result = await sut.GetMemberProfileWithPreferences(memberId, requestedByMemberId, cancellationToken, isPublicView);
 
         // Assert
