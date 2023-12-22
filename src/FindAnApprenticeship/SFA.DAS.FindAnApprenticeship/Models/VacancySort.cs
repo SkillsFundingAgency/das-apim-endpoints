@@ -6,6 +6,7 @@
         DistanceAsc,
         SalaryDesc,
         SalaryAsc,
-        ClosingDesc
+        ClosingDesc,
+        ClosingAsc
     }
 }
