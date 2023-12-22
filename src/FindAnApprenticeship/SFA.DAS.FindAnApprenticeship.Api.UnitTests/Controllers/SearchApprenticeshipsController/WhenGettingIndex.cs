@@ -52,7 +52,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprentic
 
             var controllerResult = await controller.Index() as StatusCodeResult;
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+            controllerResult?.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }
 }
