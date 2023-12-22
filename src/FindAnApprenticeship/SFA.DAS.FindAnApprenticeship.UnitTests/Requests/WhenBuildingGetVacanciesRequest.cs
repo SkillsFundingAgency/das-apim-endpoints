@@ -11,17 +11,16 @@ public class WhenBuildingGetVacanciesRequest
     public void Then_The_Request_Url_Is_Correctly_Built(
         double lat,
         double lon,
-        List<string> routes,
         int distance,
         string whatSearchTerm,
         string sort,
         int pageNumber,
-        int pageSize)
+        int pageSize,
+        List<string> categories)
     {
-        var actual = new GetVacanciesRequest(lat, lon, routes, distance, sort, whatSearchTerm, pageNumber, pageSize);
+        var actual = new GetVacanciesRequest(lat, lon, distance, sort, whatSearchTerm, pageNumber, pageSize, categories);
 
-        actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&routes={string.Join("&routes=", routes)}&distanceInMiles={distance}&sort={sort}&searchTerm={whatSearchTerm}&pageNumber={pageNumber}&pageSize={pageSize}");
-
+        actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&distanceInMiles={distance}&sort={sort}&pageNumber={pageNumber}&pageSize={pageSize}&categories={string.Join("&categories=", categories)}&searchTerm={whatSearchTerm}");
         actual.Version.Should().Be("2.0");
     }
 }

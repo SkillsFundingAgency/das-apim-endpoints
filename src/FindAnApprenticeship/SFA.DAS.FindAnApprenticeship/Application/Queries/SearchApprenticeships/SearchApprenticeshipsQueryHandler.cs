@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.WebUtilities;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -33,7 +32,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var routesTask = _courseService.GetRoutes();
 
             await Task.WhenAll(locationTask, routesTask);
-            
+
             var location = locationTask.Result;
             var routes = routesTask.Result;
             
@@ -57,25 +56,29 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 }
             }
 
+
+            var categories = routes.Routes.Where(route => request.SelectedRouteIds != null && request.SelectedRouteIds.Contains(route.Id.ToString()))
+                .Select(route => route.Name).ToList();
+
             var resultCountTask = _findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
-                    new GetApprenticeshipCountRequest(
-                        location?.GeoPoint?.FirstOrDefault(),
-                        location?.GeoPoint?.LastOrDefault(),
-                        request.SelectedRouteIds,
-                        request.Distance,
-                        request.WhatSearchTerm
-                        ));
+               new GetApprenticeshipCountRequest(
+                   location?.GeoPoint?.FirstOrDefault(),
+                   location?.GeoPoint?.LastOrDefault(),
+                   request.Distance,
+                   categories,
+                   request.WhatSearchTerm
+               ));
 
             var vacancyResultTask = _findApprenticeshipApiClient.Get<GetVacanciesResponse>(
                 new GetVacanciesRequest(
                     location?.GeoPoint?.FirstOrDefault(),
                     location?.GeoPoint?.LastOrDefault(),
-                    request.SelectedRouteIds,
                     request.Distance,
                     request.Sort,
                     request.WhatSearchTerm,
                     request.PageNumber,
-                    request.PageSize));
+                    request.PageSize,
+                    categories));
 
             await Task.WhenAll(resultCountTask, vacancyResultTask);
 

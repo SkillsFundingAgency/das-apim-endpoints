@@ -1,11 +1,10 @@
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndex;
 

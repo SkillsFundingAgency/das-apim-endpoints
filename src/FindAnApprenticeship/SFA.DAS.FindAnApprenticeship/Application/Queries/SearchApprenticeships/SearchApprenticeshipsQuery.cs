@@ -3,11 +3,11 @@ using MediatR;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 {
-    public class SearchApprenticeshipsQuery : IRequest<SearchApprenticeshipsResult>
+    public record SearchApprenticeshipsQuery : IRequest<SearchApprenticeshipsResult>
     {
-        public string? Location { get; set; }
-        public List<string>? SelectedRouteIds { get; set; }
-        public int? Distance { get; set; }
+        public string? Location { get; init; }
+        public IReadOnlyCollection<string>? SelectedRouteIds { get; init; }
+        public int? Distance { get; init; }
         public string Sort = "DistanceAsc";
         public string? WhatSearchTerm { get; set; }
         public int PageNumber { get; set; }
