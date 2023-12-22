@@ -41,7 +41,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Under18NationalMinimumWage = source.Wage.Under18NationalMinimumWage,
                     Between18AndUnder21NationalMinimumWage = source.Wage.Between18AndUnder21NationalMinimumWage,
                     Between21AndUnder25NationalMinimumWage = source.Wage.Between21AndUnder25NationalMinimumWage,
-                    Over25NationalMinimumWage = source.Wage.Over25NationalMinimumWage
+                    Over25NationalMinimumWage = source.Wage.Over25NationalMinimumWage,
+                    WageText = source.Wage.WageText
                 },
                 AnonymousEmployerName = source.IsAnonymous ? source.EmployerName: null,
                 IsDisabilityConfident = source.DisabilityConfident == DisabilityConfident.Yes,

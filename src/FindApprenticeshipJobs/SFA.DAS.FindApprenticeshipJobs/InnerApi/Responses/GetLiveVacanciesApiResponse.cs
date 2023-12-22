@@ -74,6 +74,7 @@ public class Wage
     public decimal? Between18AndUnder21NationalMinimumWage { get; set; }
     public decimal? Between21AndUnder25NationalMinimumWage { get; set; }
     public decimal? Over25NationalMinimumWage { get; set; }
+    public string WageText { get; set; } = null!;
 }
 
 public class Qualification
