@@ -11,6 +11,7 @@ using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprenticeshipsController;
 
@@ -23,6 +24,7 @@ public class WhenGettingSearchResults
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.SearchApprenticeshipsController controller)
     {
+        model.Sort = VacancySort.DistanceAsc;
         mediator.Setup(x => x.Send(It.Is<SearchApprenticeshipsQuery>(c =>
             c.SelectedRouteIds.Equals(model.RouteIds) &&
             c.Location.Equals(model.Location) &&
@@ -41,7 +43,8 @@ public class WhenGettingSearchResults
         mediator.Verify(m => m.Send(It.Is<SearchApprenticeshipsQuery>(c =>
                 c.SelectedRouteIds.Equals(model.RouteIds) &&
                 c.Location.Equals(model.Location) &&
-                c.Distance == model.Distance),
+                c.Distance == model.Distance &&
+                c.Sort == VacancySort.DistanceAsc),
             CancellationToken.None));
     }
 
@@ -52,6 +55,7 @@ public class WhenGettingSearchResults
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.SearchApprenticeshipsController controller)
     {
+        model.Sort = VacancySort.DistanceAsc;
         mediator.Setup(x => x.Send(It.Is<SearchApprenticeshipsQuery>(c =>
                 c.SelectedRouteIds.Equals(model.RouteIds) &&
                 c.Location.Equals(model.Location) &&
@@ -68,7 +72,8 @@ public class WhenGettingSearchResults
         mediator.Verify(m => m.Send(It.Is<SearchApprenticeshipsQuery>(c =>
                 c.SelectedRouteIds.Equals(model.RouteIds) &&
                 c.Location.Equals(model.Location) &&
-                c.Distance == model.Distance),
+                c.Distance == model.Distance && 
+                c.Sort == VacancySort.DistanceAsc),
             CancellationToken.None));
     }
 }

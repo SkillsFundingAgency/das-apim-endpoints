@@ -74,11 +74,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     location?.GeoPoint?.FirstOrDefault(),
                     location?.GeoPoint?.LastOrDefault(),
                     request.Distance,
-                    request.Sort,
                     request.WhatSearchTerm,
                     request.PageNumber,
                     request.PageSize,
-                    categories));
+                    categories,
+                    request.Sort));
 
             await Task.WhenAll(resultCountTask, vacancyResultTask);
 

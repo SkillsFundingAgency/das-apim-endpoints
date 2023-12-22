@@ -46,7 +46,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprentic
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<SearchApprenticeshipsQuery>(),
+                    It.IsAny<SearchIndexQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new InvalidOperationException());
 

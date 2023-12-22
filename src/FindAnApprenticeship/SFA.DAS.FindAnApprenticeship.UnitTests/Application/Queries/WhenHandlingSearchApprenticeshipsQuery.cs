@@ -53,11 +53,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 locationInfo.GeoPoint?.FirstOrDefault(),
                 locationInfo.GeoPoint?.LastOrDefault(),
                 query.Distance,
-                query.Sort,
                 query.WhatSearchTerm,
                 query.PageNumber,
                 query.PageSize,
-                categories);
+                categories,
+                query.Sort);
 
             apiClient
                 .Setup(client => client.Get<GetApprenticeshipCountResponse>(It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == expectedRequest.GetUrl)))

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SFA.DAS.FindAnApprenticeship.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
@@ -10,19 +11,19 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
         private readonly int? _distance;
         private readonly int? _pageNumber;
         private readonly int? _pageSize;
-        private readonly string _sort;
         private readonly string _categories;
         private readonly string? _whatSearchTerm;
+        private readonly VacancySort _sort;
 
         public GetVacanciesRequest(
             double? lat,
             double? lon,
             int? distance,
-            string sort,
             string? whatSearchTerm,
             int? pageNumber,
             int? pageSize,
-            IReadOnlyCollection<string> categories)
+            IReadOnlyCollection<string> categories,
+            VacancySort sort)
         {
             _lat = lat;
             _lon = lon;
@@ -33,6 +34,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
             _categories = categories != null ? string.Join("&categories=", categories) : string.Empty;
             _whatSearchTerm = whatSearchTerm;
         }
+
 
         public string Version => "2.0";
         public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&distanceInMiles={_distance}&sort={_sort}&pageNumber={_pageNumber}&pageSize={_pageSize}&categories={_categories}&searchTerm={_whatSearchTerm}";
