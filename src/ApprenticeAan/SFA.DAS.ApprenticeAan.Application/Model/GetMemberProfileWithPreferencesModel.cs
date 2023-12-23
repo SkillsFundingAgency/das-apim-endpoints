@@ -13,6 +13,7 @@ public class GetMemberProfileWithPreferencesModel
     public string? OrganisationName { get; set; }
     public int? RegionId { get; set; }
     public string RegionName { get; set; }
+    public DateTime JoinedDate { get; set; }
     public MemberUserType UserType { get; set; }
     public bool IsRegionalChair { get; set; }
     public Apprenticeship? Apprenticeship { get; set; }
@@ -27,6 +28,7 @@ public class GetMemberProfileWithPreferencesModel
         LastName = memberProfileWithPreferences.LastName;
         OrganisationName = memberProfileWithPreferences.OrganisationName;
         RegionId = memberProfileWithPreferences.RegionId;
+        JoinedDate = memberProfileWithPreferences.JoinedDate;
         RegionName = memberProfileWithPreferences.RegionName;
         UserType = memberProfileWithPreferences.UserType;
         IsRegionalChair = memberProfileWithPreferences.IsRegionalChair;

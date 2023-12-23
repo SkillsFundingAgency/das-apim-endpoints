@@ -14,7 +14,6 @@ public class MembersControllerGetMembersTests
 {
     [Test, AutoData]
     public async Task GetMembers_ForwardsRequestToInnerApi(
-        GetMembersRequest request,
         GetMembersResponse expected,
         CancellationToken cancellationToken)
     {
@@ -28,7 +27,7 @@ public class MembersControllerGetMembersTests
             ControllerContext = new ControllerContext() { HttpContext = httpContext }
         };
 
-        var actual = await sut.GetMembers(request, cancellationToken);
+        var actual = await sut.GetMembers(cancellationToken);
 
         apiClientMock.Verify(m => m.GetMembers(queryString, cancellationToken));
         actual.As<OkObjectResult>().Value.Should().BeEquivalentTo(expected);

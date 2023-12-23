@@ -21,7 +21,7 @@ public class MembersController : ControllerBase
 
     [HttpGet]
     [ProducesResponseType(typeof(GetMembersResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetMembers([FromQuery] GetMembersRequest requestModel, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetMembers(CancellationToken cancellationToken)
     {
         var response = await _apiClient.GetMembers(Request.QueryString.ToString(), cancellationToken);
         return Ok(response);
