@@ -42,6 +42,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 Description = source.ShortDescription,
                 source.NumberOfPositions,
                 source.EmployerName,
+                source.ApplicationMethod,
+                source.ApplicationUrl,
                 ProviderName = source.TrainingProvider.Name,
                 source.TrainingProvider.Ukprn,
                 IsPositiveAboutDisability = false,
@@ -61,7 +63,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                     Under18NationalMinimumWage = source.Wage.Under18NationalMinimumWage,
                     Between18AndUnder21NationalMinimumWage = source.Wage.Between18AndUnder21NationalMinimumWage,
                     Between21AndUnder25NationalMinimumWage = source.Wage.Between21AndUnder25NationalMinimumWage,
-                    Over25NationalMinimumWage = source.Wage.Over25NationalMinimumWage
+                    Over25NationalMinimumWage = source.Wage.Over25NationalMinimumWage,
+                    WageText = source.Wage.WageText
                 },
                 AnonymousEmployerName = source.IsAnonymous ? source.EmployerName: null,
                 IsDisabilityConfident = source.DisabilityConfident == DisabilityConfident.Yes,
