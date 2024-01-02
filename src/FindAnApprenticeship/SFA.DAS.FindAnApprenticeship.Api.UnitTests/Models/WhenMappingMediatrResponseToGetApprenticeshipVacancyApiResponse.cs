@@ -32,6 +32,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
                 result.Location.Should().BeEquivalentTo(source.ApprenticeshipVacancy.Location);
                 result.NumberOfPositions.Should().Be(source.ApprenticeshipVacancy.NumberOfPositions);
                 result.ProviderName.Should().Be(source.ApprenticeshipVacancy.ProviderName);
+                result.StandardLarsCode.Should().Be(source.ApprenticeshipVacancy.CourseId);
                 result.StartDate.Should().Be(source.ApprenticeshipVacancy.StartDate);
                 result.SubCategory.Should().Be(source.ApprenticeshipVacancy.SubCategory);
                 result.SubCategoryCode.Should().Be(source.ApprenticeshipVacancy.SubCategoryCode);

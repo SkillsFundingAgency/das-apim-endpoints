@@ -24,4 +24,20 @@ public class WhenBuildingGetVacanciesRequest
         actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&distanceInMiles={distance}&sort={sort}&pageNumber={pageNumber}&pageSize={pageSize}&categories={string.Join("&categories=", categories)}&searchTerm={whatSearchTerm}");
         actual.Version.Should().Be("2.0");
     }
+
+    [Test, AutoData]
+    public void When_Categories_Are_Null_Then_The_Request_Url_Is_Correctly_Built(
+        double lat,
+        double lon,
+        int distance,
+        VacancySort sort,
+        string whatSearchTerm,
+        int pageNumber,
+        int pageSize)
+    {
+        var actual = new GetVacanciesRequest(lat, lon, distance, whatSearchTerm, pageNumber, pageSize, null, sort);
+
+        actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&distanceInMiles={distance}&sort={sort}&pageNumber={pageNumber}&pageSize={pageSize}&searchTerm={whatSearchTerm}");
+        actual.Version.Should().Be("2.0");
+    }
 }

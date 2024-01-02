@@ -34,7 +34,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
             actual.Vacancies.FirstOrDefault().PostCode.Should().Be(source.Vacancies.FirstOrDefault().Address.Postcode);
             actual.Vacancies.FirstOrDefault().EmployerName.Should().Be(
                 source.Vacancies.FirstOrDefault().IsEmployerAnonymous ? source.Vacancies.FirstOrDefault().AnonymousEmployerName :source.Vacancies.FirstOrDefault().EmployerName);
-            actual.Vacancies.FirstOrDefault().ApprenticeshipLevel.Should().Be("1");
+            actual.Vacancies.FirstOrDefault().ApprenticeshipLevel.Should().Be(source.Vacancies.FirstOrDefault().ApprenticeshipLevel);
         }
         
         [Test, AutoData]

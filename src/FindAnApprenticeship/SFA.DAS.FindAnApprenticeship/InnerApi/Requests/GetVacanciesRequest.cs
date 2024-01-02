@@ -31,12 +31,14 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
             _sort = sort;
             _pageNumber = pageNumber;
             _pageSize = pageSize;
-            _categories = categories != null ? string.Join("&categories=", categories) : string.Empty;
+            _categories = categories is {Count: > 0} ? string.Join("&categories=", categories) : string.Empty;
             _whatSearchTerm = whatSearchTerm;
         }
 
 
         public string Version => "2.0";
-        public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&distanceInMiles={_distance}&sort={_sort}&pageNumber={_pageNumber}&pageSize={_pageSize}&categories={_categories}&searchTerm={_whatSearchTerm}";
+        public string GetUrl => string.IsNullOrEmpty(_categories) 
+            ? $"/api/vacancies?lat={_lat}&lon={_lon}&distanceInMiles={_distance}&sort={_sort}&pageNumber={_pageNumber}&pageSize={_pageSize}&searchTerm={_whatSearchTerm}" 
+            : $"/api/vacancies?lat={_lat}&lon={_lon}&distanceInMiles={_distance}&sort={_sort}&pageNumber={_pageNumber}&pageSize={_pageSize}&categories={_categories}&searchTerm={_whatSearchTerm}";
     }
 }

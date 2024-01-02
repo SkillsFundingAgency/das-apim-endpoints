@@ -51,6 +51,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                 result.ApprenticeshipVacancy.Location.Should().Be(apiResponse.Location);
                 result.ApprenticeshipVacancy.NumberOfPositions.Should().Be(apiResponse.NumberOfPositions);
                 result.ApprenticeshipVacancy.ProviderName.Should().Be(apiResponse.ProviderName); 
+                result.ApprenticeshipVacancy.CourseId.Should().Be(apiResponse.CourseId);
                 result.ApprenticeshipVacancy.StartDate.Should().Be(apiResponse.StartDate);
                 result.ApprenticeshipVacancy.SubCategory.Should().Be(apiResponse.SubCategory);
                 result.ApprenticeshipVacancy.SubCategoryCode.Should().Be(apiResponse.SubCategoryCode);
