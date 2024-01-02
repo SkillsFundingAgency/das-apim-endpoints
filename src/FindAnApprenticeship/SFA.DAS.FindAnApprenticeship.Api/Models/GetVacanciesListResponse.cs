@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
@@ -36,11 +36,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string? AddressLine4 { get; private set; }
         public string PostCode { get; private set; }
         public decimal? Distance { get; set; }
-        public string CourseLevel { get; set; }
+        public int CourseLevel { get; set; }
         public int CourseId { get; set; }
         public string CourseRoute { get; set; }
 
        public string ApprenticeshipLevel { get ; set ; }
+       public string WageText { get; set; }
 
        public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
        {
@@ -53,11 +54,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                Title = source.Title,
                VacancyReference = source.VacancyReference,
                Distance = source.Distance,
-               ApprenticeshipLevel = "1",
+               ApprenticeshipLevel = source.ApprenticeshipLevel,
                CourseTitle = source.CourseTitle,
                CourseId = source.CourseId,
                WageType = source.WageType,
                WageAmount = source.WageAmount,
+               WageText = source.WageText,
                AddressLine1 = source.Address.AddressLine1,
                AddressLine2 = source.Address.AddressLine2,
                AddressLine3 = source.Address.AddressLine3,

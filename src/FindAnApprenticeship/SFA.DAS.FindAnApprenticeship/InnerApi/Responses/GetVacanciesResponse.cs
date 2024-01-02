@@ -45,15 +45,16 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonPropertyName("vacancyReference")]
         public string VacancyReference { get; set; }
 
-        [JsonPropertyName("courseTitle")]
+        [JsonPropertyName("standardTitle")]
         public string CourseTitle { get; set; }
-        [JsonPropertyName("courseId")]
+        [JsonPropertyName("standardLarsCode")]
         public int CourseId { get; set; }
         [JsonPropertyName("wageAmount")]
         public string WageAmount { get; set; }
         [JsonPropertyName("wageType")]
         public int WageType { get; set; }
-
+        [JsonPropertyName("wageText")]
+        public string WageText { get; set; }
         [JsonPropertyName("address")] 
         public Address Address { get; set; }
 
@@ -63,8 +64,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonPropertyName("courseRoute")]
         public string CourseRoute { get; set; }
 
-        [JsonPropertyName("courseLevel")]
-        public string CourseLevel { get; set; }
+        [JsonPropertyName("standardLevel")]
+        public int CourseLevel { get; set; }
     }
 
     public class Address

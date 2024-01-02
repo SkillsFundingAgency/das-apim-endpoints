@@ -36,8 +36,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public int NumberOfPositions { get; init; }
         [JsonProperty("providerName")]
         public string ProviderName { get; init; }
-        [JsonProperty("standardLarsCode")]
-        public int? StandardLarsCode { get; init; }
         [JsonProperty("startDate")]
         public DateTime StartDate { get; init; }
         [JsonProperty("subCategory")]

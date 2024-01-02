@@ -33,7 +33,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public decimal? Distance { get; init; }
 
         public string CourseTitle { get; init; }
-        public string CourseLevel { get; init; }
+        public int CourseLevel { get; init; }
         public int CourseId { get; init; }
         public string CourseRoute { get; init; }
         public string ApprenticeshipLevel { get; init; }
@@ -111,7 +111,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 Location = source.ApprenticeshipVacancy.Location,
                 NumberOfPositions = source.ApprenticeshipVacancy.NumberOfPositions,
                 ProviderName = source.ApprenticeshipVacancy.ProviderName,
-                StandardLarsCode = source.ApprenticeshipVacancy.StandardLarsCode,
+                StandardLarsCode = source.ApprenticeshipVacancy.CourseId,
                 StartDate = source.ApprenticeshipVacancy.StartDate,
                 SubCategory = source.ApprenticeshipVacancy.SubCategory,
                 SubCategoryCode = source.ApprenticeshipVacancy.SubCategoryCode,
