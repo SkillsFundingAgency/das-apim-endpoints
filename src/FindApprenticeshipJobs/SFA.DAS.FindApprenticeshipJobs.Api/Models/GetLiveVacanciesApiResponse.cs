@@ -76,6 +76,8 @@ public class GetLiveVacanciesApiResponse
                 RouteCode = source.RouteCode,
                 AccountPublicHashedId = source.AccountPublicHashedId,
                 AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
+                ApplicationMethod = source.ApplicationMethod,
+                ApplicationUrl = source.ApplicationUrl
             };
         }
 
@@ -121,6 +123,8 @@ public class GetLiveVacanciesApiResponse
         public string? EmployerContactPhone { get; set; }
         public string? EmployerContactEmail { get; set; }
         public string? EmployerContactName { get; set; }
+        public string ApplicationMethod { get; set; }
+        public string? ApplicationUrl { get; set; }
     }
 
     public class Address
@@ -162,6 +166,7 @@ public class GetLiveVacanciesApiResponse
         public decimal? Between18AndUnder21NationalMinimumWage { get; set; }
         public decimal? Between21AndUnder25NationalMinimumWage { get; set; }
         public decimal? Over25NationalMinimumWage { get; set; }
+        public string WageText { get; set; } = null!;
 
         public static implicit operator Wage(Application.Shared.Wage source)
         {
@@ -178,7 +183,8 @@ public class GetLiveVacanciesApiResponse
                 Under18NationalMinimumWage = source.Under18NationalMinimumWage,
                 Between18AndUnder21NationalMinimumWage = source.Between18AndUnder21NationalMinimumWage,
                 Between21AndUnder25NationalMinimumWage = source.Between21AndUnder25NationalMinimumWage,
-                Over25NationalMinimumWage = source.Over25NationalMinimumWage
+                Over25NationalMinimumWage = source.Over25NationalMinimumWage,
+                WageText = source.WageText
             };
         }
     }

@@ -39,6 +39,8 @@ public class LiveVacancy
     public string AccountPublicHashedId { get; set; } = null!;
     public string AccountLegalEntityPublicHashedId { get; set; } = null!;
     public VacancyType? VacancyType { get; set; }
+    public string ApplicationMethod { get; set; } = null!;
+    public string? ApplicationUrl { get; set; }
 }
 
 public class TrainingProvider
@@ -72,6 +74,7 @@ public class Wage
     public decimal? Between18AndUnder21NationalMinimumWage { get; set; }
     public decimal? Between21AndUnder25NationalMinimumWage { get; set; }
     public decimal? Over25NationalMinimumWage { get; set; }
+    public string WageText { get; set; } = null!;
 }
 
 public class Qualification
