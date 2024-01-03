@@ -29,7 +29,7 @@ public class WhenGettingSearchResults
             c.SelectedRouteIds.Equals(model.RouteIds) &&
             c.Location.Equals(model.Location) &&
             c.Distance == model.Distance &&
-            c.WhatSearchTerm == model.WhatSearchTerm),
+            c.SearchTerm == model.SearchTerm),
                 CancellationToken.None))
             .ReturnsAsync(result);
 
@@ -60,7 +60,7 @@ public class WhenGettingSearchResults
                 c.SelectedRouteIds.Equals(model.RouteIds) &&
                 c.Location.Equals(model.Location) &&
                 c.Distance == model.Distance &&
-                c.WhatSearchTerm == whatSearchTerm),
+                c.SearchTerm == whatSearchTerm),
             CancellationToken.None)).ThrowsAsync(new Exception());
 
 

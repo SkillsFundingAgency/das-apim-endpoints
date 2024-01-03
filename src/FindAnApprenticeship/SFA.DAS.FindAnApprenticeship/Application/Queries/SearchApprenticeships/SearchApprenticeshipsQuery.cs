@@ -9,7 +9,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
         public string? Location { get; init; }
         public IReadOnlyCollection<string>? SelectedRouteIds { get; init; }
         public int? Distance { get; init; }
-        public string? WhatSearchTerm { get; set; }
+        public string? SearchTerm { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public VacancySort Sort { get; set; } = VacancySort.DistanceAsc;
