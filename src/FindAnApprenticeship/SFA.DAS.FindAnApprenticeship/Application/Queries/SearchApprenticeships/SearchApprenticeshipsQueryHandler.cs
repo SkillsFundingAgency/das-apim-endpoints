@@ -35,9 +35,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var location = locationTask.Result;
             var routes = routesTask.Result;
             
-            if (request.WhatSearchTerm != null && Regex.IsMatch(request.WhatSearchTerm, @"^VAC\d{10}$"))
+            if (request.SearchTerm != null && Regex.IsMatch(request.SearchTerm, @"^VAC\d{10}$"))
             {
-                var vacancyReferenceResult = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(request.WhatSearchTerm));
+                var vacancyReferenceResult = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(request.SearchTerm));
 
                 if (vacancyReferenceResult != null)
                 {
@@ -50,7 +50,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                         PageNumber = request.PageNumber,
                         PageSize = request.PageSize,
                         TotalPages = 1,
-                        VacancyReference = request.WhatSearchTerm
+                        VacancyReference = request.SearchTerm
                     };
                 }
             }
@@ -65,7 +65,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                    location?.GeoPoint?.LastOrDefault(),
                    request.Distance,
                    categories,
-                   request.WhatSearchTerm
+                   request.SearchTerm
                ));
 
             var vacancyResultTask = _findApprenticeshipApiClient.Get<GetVacanciesResponse>(
@@ -73,7 +73,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     location?.GeoPoint?.FirstOrDefault(),
                     location?.GeoPoint?.LastOrDefault(),
                     request.Distance,
-                    request.WhatSearchTerm,
+                    request.SearchTerm,
                     request.PageNumber,
                     request.PageSize,
                     categories,

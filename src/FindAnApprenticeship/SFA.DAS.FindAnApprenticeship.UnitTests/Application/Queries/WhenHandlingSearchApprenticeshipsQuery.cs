@@ -46,14 +46,14 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 locationInfo.GeoPoint?.LastOrDefault(),
                 query.Distance,
                 categories,
-                query.WhatSearchTerm
+                query.SearchTerm
             );
 
             var vacancyRequest = new GetVacanciesRequest(
                 locationInfo.GeoPoint?.FirstOrDefault(),
                 locationInfo.GeoPoint?.LastOrDefault(),
                 query.Distance,
-                query.WhatSearchTerm,
+                query.SearchTerm,
                 query.PageNumber,
                 query.PageSize,
                 categories,
@@ -94,9 +94,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             SearchApprenticeshipsQueryHandler handler
             )
         {
-            query.WhatSearchTerm = "VAC1098765465";
+            query.SearchTerm = "VAC1098765465";
 
-            var expectedRequest = new GetVacancyRequest(query.WhatSearchTerm);
+            var expectedRequest = new GetVacancyRequest(query.SearchTerm);
 
             apiClient
                 .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(It.Is<GetVacancyRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
@@ -105,7 +105,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             var result = await handler.Handle(query, CancellationToken.None);
 
             Assert.NotNull(result);
-            result.VacancyReference.Should().Be(query.WhatSearchTerm);
+            result.VacancyReference.Should().Be(query.SearchTerm);
 
         }
     }
