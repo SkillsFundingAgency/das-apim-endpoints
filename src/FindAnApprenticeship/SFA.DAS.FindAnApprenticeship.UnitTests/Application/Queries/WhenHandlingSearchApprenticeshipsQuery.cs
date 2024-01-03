@@ -67,7 +67,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
                 .ReturnsAsync(vacanciesResponse);
 
-            var totalPages = (int)Math.Ceiling((double)apiResponse.TotalVacancies / query.PageSize);
+            var totalPages = (int)Math.Ceiling((double)vacanciesResponse.TotalFound / query.PageSize);
 
             // Act
             var result = await handler.Handle(query, CancellationToken.None);

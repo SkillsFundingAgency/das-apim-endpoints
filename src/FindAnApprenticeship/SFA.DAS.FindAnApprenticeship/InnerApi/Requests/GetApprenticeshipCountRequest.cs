@@ -25,7 +25,9 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
             _categories = categories != null ? string.Join("&categories=", categories) : string.Empty;
         }
 
-        public string GetUrl => $"/api/vacancies/count?lat={_lat}&lon={_lon}&distance={_distance}&categories={_categories}&searchTerm={_whatSearchTerm}";
+        public string GetUrl => string.IsNullOrEmpty(_categories)
+            ? $"/api/vacancies/count?lat={_lat}&lon={_lon}&distance={_distance}&searchTerm={_whatSearchTerm}"
+            : $"/api/vacancies/count?lat={_lat}&lon={_lon}&distance={_distance}&categories={_categories}&searchTerm={_whatSearchTerm}";
 
         public string Version => "2.0";
     }

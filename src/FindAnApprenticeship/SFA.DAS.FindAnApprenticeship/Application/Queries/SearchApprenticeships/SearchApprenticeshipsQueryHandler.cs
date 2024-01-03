@@ -27,7 +27,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 
         public async Task<SearchApprenticeshipsResult> Handle(SearchApprenticeshipsQuery request, CancellationToken cancellationToken)
         {
-
             var locationTask = _locationLookupService.GetLocationInformation(request.Location, default, default, false);
             var routesTask = _courseService.GetRoutes();
 
@@ -85,7 +84,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var result = resultCountTask.Result;
             var vacancyResult = vacancyResultTask.Result;
 
-            var totalPages = (int)Math.Ceiling((double)result.TotalVacancies / request.PageSize);
+            var totalPages = (int)Math.Ceiling((double)vacancyResult.TotalFound / request.PageSize);
 
             return new SearchApprenticeshipsResult
             {
