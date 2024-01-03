@@ -10,6 +10,7 @@ using SFA.DAS.ApprenticeAan.Application.InnerApi.MemberProfiles;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Members;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Notifications;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.StagedApprentices;
+using SFA.DAS.ApprenticeAan.Application.LeavingReasons.Queries.GetLeavingReasons;
 using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMember;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMembers;
@@ -94,4 +95,7 @@ public interface IAanHubRestApiClient
         [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
         [Body] JsonPatchDocument<PatchMemberRequest> patchMemberRequest,
         CancellationToken cancellationToken);
+
+    [Get("/leavingReasons")]
+    Task<GetLeavingReasonsQueryResult> GetLeavingReasons(CancellationToken cancellationToken);
 }
