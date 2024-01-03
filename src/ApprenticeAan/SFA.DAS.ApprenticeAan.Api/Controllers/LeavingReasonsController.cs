@@ -1,6 +1,5 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ApprenticeAan.Application.LeavingReasons.Queries.GetLeavingReasons;
+﻿using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.Model;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
@@ -8,9 +7,12 @@ namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 [Route("[controller]")]
 public class LeavingReasonsController : Controller
 {
-    private readonly IMediator _mediator;
+    private readonly IAanHubRestApiClient _apiClient;
 
-    public LeavingReasonsController(IMediator mediator) => _mediator = mediator;
+    public LeavingReasonsController(IAanHubRestApiClient apiClient)
+    {
+        _apiClient = apiClient;
+    }
 
     /// <summary>
     ///     Get list of leaving reasons
@@ -21,6 +23,7 @@ public class LeavingReasonsController : Controller
     [ProducesResponseType(typeof(List<LeavingCategory>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetLeavingReasons(CancellationToken cancellationToken)
     {
-        return Ok(await _mediator.Send(new GetLeavingReasonsQuery(), cancellationToken));
+        var response = await _apiClient.GetLeavingReasons(cancellationToken);
+        return Ok(response.LeavingCategories);
     }
 }

@@ -1,9 +1,9 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.ApprenticeAan.Api.Controllers;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.LeavingReasons.Queries.GetLeavingReasons;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -15,11 +15,11 @@ public class LeavingReasonsControllerTests
     [MoqAutoData]
     public async Task And_MediatorCommandSuccessful_Then_ReturnOk(
         GetLeavingReasonsQueryResult response,
-        [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] Mock<IAanHubRestApiClient> apiClient,
         CancellationToken cancellationToken)
     {
-        mockMediator.Setup(m => m.Send(It.IsAny<GetLeavingReasonsQuery>(), cancellationToken)).ReturnsAsync(response.LeavingCategories);
-        var controller = new LeavingReasonsController(mockMediator.Object);
+        apiClient.Setup(x => x.GetLeavingReasons(cancellationToken)).ReturnsAsync(response);
+        var controller = new LeavingReasonsController(apiClient.Object);
 
         var result = await controller.GetLeavingReasons(cancellationToken);
 
