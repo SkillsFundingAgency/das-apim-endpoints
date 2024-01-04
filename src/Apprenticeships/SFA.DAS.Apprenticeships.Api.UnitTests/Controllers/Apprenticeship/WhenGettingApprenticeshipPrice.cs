@@ -21,7 +21,8 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
         public async Task Then_Gets_ApprenticeshipPrice_From_ApiClient(
             ApprenticeshipPriceResponse expectedResponse,
             Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient,
-            Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsV2ApiApiClient)
+            Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsV2ApiApiClient,
+			Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> mockCollectionCalendarApiClient)
         {
             //  Arrange
             mockApprenticeshipsApiClient.Setup(x=>x.Get<GetApprenticeshipPriceResponse>(It.IsAny<GetApprenticeshipPriceRequest>()))
@@ -43,7 +44,12 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
                     LegalEntityName = expectedResponse.EmployerName!
                 });
 
-            var controller = new ApprenticeshipController(mockApprenticeshipsApiClient.Object, mockCommitmentsV2ApiApiClient.Object);
+			mockCollectionCalendarApiClient.Setup(x => x.Get<GetAcademicYearsResponse>(It.IsAny<GetAcademicYearsRequest>())).ReturnsAsync(new GetAcademicYearsResponse
+            {
+				HardCloseDate = expectedResponse.HardCloseDate!.Value
+			});
+
+			var controller = new ApprenticeshipController(mockApprenticeshipsApiClient.Object, mockCommitmentsV2ApiApiClient.Object, mockCollectionCalendarApiClient.Object);
 
             //  Act
             var result = await controller.GetApprenticeshipPrice(Guid.NewGuid());

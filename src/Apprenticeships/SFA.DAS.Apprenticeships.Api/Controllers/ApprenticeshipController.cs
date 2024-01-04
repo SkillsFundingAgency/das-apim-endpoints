@@ -15,12 +15,18 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
     {
         private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apiClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
+        private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
 
-        public ApprenticeshipController(IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apiClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient)
+        public ApprenticeshipController(
+            IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apiClient, 
+            ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient,
+            ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
         {
             _apiClient = apiClient;
             _apiCommitmentsClient = apiCommitmentsClient;
-        }
+            _collectionCalendarApiClient = collectionCalendarApiClient;
+
+		}
 
         [HttpGet]
         [Route("{apprenticeshipKey}/price")]
@@ -39,13 +45,16 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
                 var employer = await _apiCommitmentsClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(apprenticePriceInnerModel.AccountLegalEntityId.Value));
                 employerName = employer?.LegalEntityName;
             }
-            
-            var apprenticeshipPriceOuterModel = new ApprenticeshipPriceResponse
+
+            var calendarRange = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now));
+
+			var apprenticeshipPriceOuterModel = new ApprenticeshipPriceResponse
             {
                 ApprenticeshipKey = apprenticePriceInnerModel!.ApprenticeshipKey,
                 ApprenticeshipActualStartDate = apprenticePriceInnerModel.ApprenticeshipActualStartDate,
                 ApprenticeshipPlannedEndDate = apprenticePriceInnerModel.ApprenticeshipPlannedEndDate,
-                AssessmentPrice = apprenticePriceInnerModel.AssessmentPrice,
+				HardCloseDate = calendarRange.HardCloseDate,
+				AssessmentPrice = apprenticePriceInnerModel.AssessmentPrice,
                 EarliestEffectiveDate = apprenticePriceInnerModel.EarliestEffectiveDate,
                 FundingBandMaximum = apprenticePriceInnerModel.FundingBandMaximum,
                 TrainingPrice = apprenticePriceInnerModel.TrainingPrice,
