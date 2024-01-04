@@ -22,7 +22,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
         public async Task Then_The_Services_Are_Called_And_Data_Returned_Based_On_Request(
             SearchApprenticeshipsQuery query,
             LocationItem locationInfo,
-            GetApprenticeshipCountResponse apiResponse,
             GetVacanciesResponse vacanciesResponse,
             GetRoutesListResponse routesResponse,
             [Frozen] Mock<ICourseService> courseService,
@@ -41,14 +40,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 .Select(route => route.Name).ToList();
 
             // Pass locationInfo to the request
-            var expectedRequest = new GetApprenticeshipCountRequest(
-                locationInfo.GeoPoint?.FirstOrDefault(),
-                locationInfo.GeoPoint?.LastOrDefault(),
-                query.Distance,
-                categories,
-                query.SearchTerm
-            );
-
             var vacancyRequest = new GetVacanciesRequest(
                 locationInfo.GeoPoint?.FirstOrDefault(),
                 locationInfo.GeoPoint?.LastOrDefault(),
@@ -58,10 +49,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageSize,
                 categories,
                 query.Sort);
-
-            apiClient
-                .Setup(client => client.Get<GetApprenticeshipCountResponse>(It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
-                .ReturnsAsync(apiResponse);
 
             apiClient
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
@@ -76,7 +63,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             using (new AssertionScope())
             {
                 Assert.NotNull(result);
-                result.TotalApprenticeshipCount.Should().Be(apiResponse.TotalVacancies);
+                result.TotalApprenticeshipCount.Should().Be(vacanciesResponse.Total);
+                result.TotalFound.Should().Be(vacanciesResponse.TotalFound);
                 result.LocationItem.Should().BeEquivalentTo(locationInfo);
                 result.Routes.Should().BeEquivalentTo(routesResponse.Routes);
                 result.Vacancies.Should().BeEquivalentTo(vacanciesResponse.ApprenticeshipVacancies);

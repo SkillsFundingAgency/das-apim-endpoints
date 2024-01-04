@@ -15,6 +15,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
             var actual = (SearchApprenticeshipsApiResponse)source;
 
             actual.TotalApprenticeshipCount.Should().Be(source.TotalApprenticeshipCount);
+            actual.TotalFound.Should().Be(source.TotalFound);
             actual.Routes.Should().BeEquivalentTo(source.Routes);
             actual.Location.LocationName.Should().Be(source.LocationItem.Name);
             actual.Location.Lat.Should().Be(source.LocationItem.GeoPoint.First());
