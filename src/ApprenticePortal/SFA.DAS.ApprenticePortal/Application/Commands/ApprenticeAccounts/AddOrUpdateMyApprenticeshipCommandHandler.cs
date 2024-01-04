@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -71,7 +71,7 @@ namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeAccounts
             return new MyApprenticeshipData
             {
                 ApprenticeshipId = commitmentsApprenticeship.Id,
-                Uln = Convert.ToInt64(commitmentsApprenticeship.Uln),
+               	Uln = !string.IsNullOrEmpty(commitmentsApprenticeship?.Uln) ? long.Parse(commitmentsApprenticeship.Uln) : null,
                 EmployerName = commitmentsApprenticeship.EmployerName,
                 StartDate = commitmentsApprenticeship.StartDate,
                 EndDate = commitmentsApprenticeship.EndDate,
