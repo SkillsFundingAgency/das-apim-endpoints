@@ -55,7 +55,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 }
             }
 
-
             var categories = routes.Routes.Where(route => request.SelectedRouteIds != null && request.SelectedRouteIds.Contains(route.Id.ToString()))
                 .Select(route => route.Name).ToList();
 
@@ -77,6 +76,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     request.PageNumber,
                     request.PageSize,
                     categories,
+                    request.SelectedLevelIds,
                     request.Sort));
 
             await Task.WhenAll(resultCountTask, vacancyResultTask);

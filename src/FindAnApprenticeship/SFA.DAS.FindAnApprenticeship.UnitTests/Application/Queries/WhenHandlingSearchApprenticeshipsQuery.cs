@@ -57,6 +57,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageNumber,
                 query.PageSize,
                 categories,
+                query.SelectedLevelIds,
                 query.Sort);
 
             apiClient
