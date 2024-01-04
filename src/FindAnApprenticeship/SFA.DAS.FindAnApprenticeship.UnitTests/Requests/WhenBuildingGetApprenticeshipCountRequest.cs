@@ -14,5 +14,13 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Requests
 
             actual.GetUrl.Should().Be($"/api/vacancies/count?lat={lat}&lon={lon}&distance={distance}&categories={string.Join("&categories=",categories)}&searchTerm={whatSearchTerm}");
         }
+
+        [Test, AutoData]
+        public void When_Categories_Are_Null_Or_Empty_Then_The_Request_Url_Is_Correctly_Built(double lat, double lon, int distance, string whatSearchTerm)
+        {
+            var actual = new GetApprenticeshipCountRequest(lat, lon, distance, null, whatSearchTerm);
+
+            actual.GetUrl.Should().Be($"/api/vacancies/count?lat={lat}&lon={lon}&distance={distance}&searchTerm={whatSearchTerm}");
+        }
     }
 }

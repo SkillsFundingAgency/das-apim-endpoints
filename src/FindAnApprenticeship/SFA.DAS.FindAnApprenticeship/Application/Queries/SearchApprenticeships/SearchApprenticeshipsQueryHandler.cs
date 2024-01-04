@@ -27,7 +27,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 
         public async Task<SearchApprenticeshipsResult> Handle(SearchApprenticeshipsQuery request, CancellationToken cancellationToken)
         {
-
             var locationTask = _locationLookupService.GetLocationInformation(request.Location, default, default, false);
             var routesTask = _courseService.GetRoutes();
 
@@ -36,7 +35,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var location = locationTask.Result;
             var routes = routesTask.Result;
             
-            if (request.SearchTerm != null && Regex.IsMatch(request.SearchTerm, @"^VAC\d{10}$"))
+            if (request.SearchTerm != null && Regex.IsMatch(request.SearchTerm, @"^VAC\d{10}$", RegexOptions.None, TimeSpan.FromSeconds(3)))
             {
                 var vacancyReferenceResult = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(request.SearchTerm));
 
@@ -85,7 +84,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var result = resultCountTask.Result;
             var vacancyResult = vacancyResultTask.Result;
 
-            var totalPages = (int)Math.Ceiling((double)result.TotalVacancies / request.PageSize);
+            var totalPages = (int)Math.Ceiling((double)vacancyResult.TotalFound / request.PageSize);
 
             return new SearchApprenticeshipsResult
             {
