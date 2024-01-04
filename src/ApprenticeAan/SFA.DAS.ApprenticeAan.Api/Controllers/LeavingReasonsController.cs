@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
-using SFA.DAS.ApprenticeAan.Application.Model;
+using SFA.DAS.ApprenticeAan.Application.Models;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 

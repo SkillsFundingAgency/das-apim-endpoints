@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerAan.Infrastructure;
-using SFA.DAS.EmployerAan.Models;
+using SFA.DAS.EmployerAan.InnerApi.LeavingReasons;
 
 namespace SFA.DAS.EmployerAan.Api.Controllers;
 

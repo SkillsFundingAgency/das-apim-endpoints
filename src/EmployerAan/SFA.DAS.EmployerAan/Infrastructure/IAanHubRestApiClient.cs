@@ -9,6 +9,7 @@ using SFA.DAS.EmployerAan.Application.Members.Queries.GetMembers;
 using SFA.DAS.EmployerAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.EmployerAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.EmployerAan.InnerApi.Attendances;
+using SFA.DAS.EmployerAan.InnerApi.LeavingReasons;
 using SFA.DAS.EmployerAan.InnerApi.MemberProfiles;
 using SFA.DAS.EmployerAan.InnerApi.Notifications.Responses;
 using SFA.DAS.EmployerAan.Models;

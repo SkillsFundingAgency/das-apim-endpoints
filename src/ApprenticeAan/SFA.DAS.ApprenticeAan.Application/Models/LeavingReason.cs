@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.EmployerAan.Models;
+﻿namespace SFA.DAS.ApprenticeAan.Application.Models;
 
 public class LeavingReason
 {

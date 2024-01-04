@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.EmployerAan.Api.Controllers;
 using SFA.DAS.EmployerAan.Infrastructure;
-using SFA.DAS.EmployerAan.Models;
+using SFA.DAS.EmployerAan.InnerApi.LeavingReasons;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.LeavingReasonsControllerTests;

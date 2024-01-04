@@ -2,7 +2,7 @@
 using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 
-namespace SFA.DAS.ApprenticeAan.Application.Model;
+namespace SFA.DAS.ApprenticeAan.Application.Models;
 
 public class GetMemberProfileWithPreferencesModel
 {

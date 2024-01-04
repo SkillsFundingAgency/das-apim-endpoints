@@ -1,5 +1,4 @@
-﻿namespace SFA.DAS.ApprenticeAan.Application.Model;
-
+﻿namespace SFA.DAS.EmployerAan.InnerApi.LeavingReasons;
 public class LeavingCategory
 {
     public string Category { get; set; } = null!;

@@ -1,4 +1,5 @@
-﻿namespace SFA.DAS.EmployerAan.Models;
+﻿namespace SFA.DAS.ApprenticeAan.Application.Models;
+
 public class LeavingCategory
 {
     public string Category { get; set; } = null!;

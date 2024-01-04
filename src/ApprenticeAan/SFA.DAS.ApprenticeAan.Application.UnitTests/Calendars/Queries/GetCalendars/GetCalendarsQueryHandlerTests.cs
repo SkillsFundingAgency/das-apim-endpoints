@@ -2,8 +2,8 @@
 using FluentAssertions;
 using Moq;
 using SFA.DAS.ApprenticeAan.Application.Calendars.Queries.GetCalendars;
-using SFA.DAS.ApprenticeAan.Application.Model;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
+using SFA.DAS.ApprenticeAan.Application.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Calendars.Queries.GetCalendars;
