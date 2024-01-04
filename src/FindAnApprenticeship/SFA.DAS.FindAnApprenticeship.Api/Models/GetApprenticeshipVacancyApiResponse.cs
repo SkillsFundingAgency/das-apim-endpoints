@@ -33,7 +33,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public decimal? Distance { get; init; }
 
         public string CourseTitle { get; init; }
-        public int CourseLevel { get; init; }
+        public string CourseLevel { get; init; }
         public int CourseId { get; init; }
         public string CourseRoute { get; init; }
         public string ApprenticeshipLevel { get; init; }
@@ -75,6 +75,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         [JsonProperty("VacancyQualification")]
         public IEnumerable<VacancyQualificationApiResponse> Qualifications { get; init; }
         public AddressApiResponse Address { get; init; }
+        public List<string> CourseSkills { get; set; }
+        public List<string> CourseCoreDuties { get; set; }
+        public string CourseOverviewOfRole { get; set; }
+        public string StandardPageUrl { get; set; }
 
         public static implicit operator GetApprenticeshipVacancyApiResponse(GetApprenticeshipVacancyQueryResult source)
         {
@@ -133,7 +137,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 IsEmployerAnonymous = source.ApprenticeshipVacancy.IsEmployerAnonymous,
 
                 Address = source.ApprenticeshipVacancy.Address,
-                Qualifications = source.ApprenticeshipVacancy.Qualifications.Select(l => (VacancyQualificationApiResponse)l).ToList()
+                Qualifications = source.ApprenticeshipVacancy.Qualifications.Select(l => (VacancyQualificationApiResponse)l).ToList(),
+                CourseOverviewOfRole = source.CourseDetail.OverviewOfRole,
+                StandardPageUrl = source.CourseDetail.StandardPageUrl,
+                CourseCoreDuties = source.CourseDetail.CoreDuties,
+                CourseSkills = source.CourseDetail.Skills
             };
         }
     }

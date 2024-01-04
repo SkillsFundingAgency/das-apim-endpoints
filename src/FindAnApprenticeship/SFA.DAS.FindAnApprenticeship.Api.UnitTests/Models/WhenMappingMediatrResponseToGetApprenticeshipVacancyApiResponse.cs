@@ -73,6 +73,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
                 result.Distance.Should().Be(source.ApprenticeshipVacancy.Distance);
                 result.CourseRoute.Should().Be(source.ApprenticeshipVacancy.CourseRoute);
                 result.CourseLevel.Should().Be(source.ApprenticeshipVacancy.CourseLevel);
+                result.CourseSkills.Should().BeEquivalentTo(source.CourseDetail.Skills);
+                result.CourseCoreDuties.Should().BeEquivalentTo(source.CourseDetail.CoreDuties);
+                result.CourseOverviewOfRole.Should().Be(source.CourseDetail.OverviewOfRole);
+                result.StandardPageUrl.Should().Be(source.CourseDetail.StandardPageUrl);
             }
         }
     }

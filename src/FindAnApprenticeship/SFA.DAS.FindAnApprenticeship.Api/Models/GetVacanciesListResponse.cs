@@ -36,7 +36,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string? AddressLine4 { get; private set; }
         public string PostCode { get; private set; }
         public decimal? Distance { get; set; }
-        public int CourseLevel { get; set; }
+        public string CourseLevel { get; set; }
         public int CourseId { get; set; }
         public string CourseRoute { get; set; }
 
