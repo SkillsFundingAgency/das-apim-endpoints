@@ -24,6 +24,6 @@ public class LeavingReasonsController : Controller
     public async Task<IActionResult> GetLeavingReasons(CancellationToken cancellationToken)
     {
         var response = await _apiClient.GetLeavingReasons(cancellationToken);
-        return Ok(response.LeavingCategories);
+        return Ok(response);
     }
 }

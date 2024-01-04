@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.ApprenticeAan.Api.Controllers;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
-using SFA.DAS.ApprenticeAan.Application.LeavingReasons.Queries.GetLeavingReasons;
+using SFA.DAS.ApprenticeAan.Application.Model;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers;
@@ -13,8 +13,8 @@ public class LeavingReasonsControllerTests
 {
     [Test]
     [MoqAutoData]
-    public async Task And_MediatorCommandSuccessful_Then_ReturnOk(
-        GetLeavingReasonsQueryResult response,
+    public async Task And_ApiClientCommandSuccessful_Then_ReturnOk(
+        List<LeavingCategory> response,
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         CancellationToken cancellationToken)
     {
@@ -23,6 +23,6 @@ public class LeavingReasonsControllerTests
 
         var result = await controller.GetLeavingReasons(cancellationToken);
 
-        result.As<OkObjectResult>().Value.Should().BeEquivalentTo(response.LeavingCategories);
+        result.As<OkObjectResult>().Value.Should().BeEquivalentTo(response);
     }
 }
