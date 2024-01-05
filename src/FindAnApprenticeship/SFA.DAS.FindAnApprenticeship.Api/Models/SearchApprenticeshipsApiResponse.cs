@@ -19,10 +19,13 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 PageSize = source.PageSize,
                 TotalPages = source.TotalPages,
                 VacancyReference = source.VacancyReference,
-                Levels = source.Levels.Select(l => (LevelApiResponse)l).ToList()
+                Levels = source.Levels.Select(l => (LevelApiResponse)l).ToList(),
+                TotalFound = source.TotalFound
             };
         }
-        
+        [JsonPropertyName("totalFound")]
+        public long TotalFound { get; set; }
+
         [JsonPropertyName("totalApprenticeshipCount")]
         public long TotalApprenticeshipCount { get; init; }
         [JsonPropertyName("location")]

@@ -61,16 +61,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var categories = routes.Routes.Where(route => request.SelectedRouteIds != null && request.SelectedRouteIds.Contains(route.Id.ToString()))
                 .Select(route => route.Name).ToList();
 
-            var resultCountTask = _findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
-               new GetApprenticeshipCountRequest(
-                   location?.GeoPoint?.FirstOrDefault(),
-                   location?.GeoPoint?.LastOrDefault(),
-                   request.Distance,
-                   categories,
-                   request.SearchTerm
-               ));
-
-            var vacancyResultTask = _findApprenticeshipApiClient.Get<GetVacanciesResponse>(
+            var vacancyResult = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(
                 new GetVacanciesRequest(
                     location?.GeoPoint?.FirstOrDefault(),
                     location?.GeoPoint?.LastOrDefault(),
@@ -82,16 +73,12 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     request.SelectedLevelIds,
                     request.Sort));
 
-            await Task.WhenAll(resultCountTask, vacancyResultTask);
-
-            var result = resultCountTask.Result;
-            var vacancyResult = vacancyResultTask.Result;
-
             var totalPages = (int)Math.Ceiling((double)vacancyResult.TotalFound / request.PageSize);
 
             return new SearchApprenticeshipsResult
             {
-                TotalApprenticeshipCount = result.TotalVacancies,
+                TotalApprenticeshipCount = vacancyResult.Total,
+                TotalFound = vacancyResult.TotalFound,
                 LocationItem = location,
                 Routes = routes.Routes.ToList(),
                 Vacancies = vacancyResult.ApprenticeshipVacancies.ToList(),
