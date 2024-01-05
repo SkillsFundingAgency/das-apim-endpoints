@@ -1,11 +1,11 @@
+using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models
 {
-    public class SearchApprenticeshipsApiResponse
+    public record SearchApprenticeshipsApiResponse
     {
         public static implicit operator SearchApprenticeshipsApiResponse(SearchApprenticeshipsResult source)
         {
@@ -19,6 +19,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 PageSize = source.PageSize,
                 TotalPages = source.TotalPages,
                 VacancyReference = source.VacancyReference,
+                Levels = source.Levels.Select(l => (LevelApiResponse)l).ToList(),
                 TotalFound = source.TotalFound
             };
         }
@@ -27,15 +28,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
 
         [JsonPropertyName("totalApprenticeshipCount")]
         public long TotalApprenticeshipCount { get; init; }
-        
         [JsonPropertyName("location")]
         public SearchLocationApiResponse Location { get; init; }
-        
-        public List<RouteApiResponse> Routes { get; set; }
-        public List<GetVacanciesListResponseItem> Vacancies { get; set; }
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
-        public int TotalPages { get; set; }
-        public string? VacancyReference { get; set; }
+        public List<RouteApiResponse> Routes { get; init; }
+        public List<LevelApiResponse> Levels { get; init; }
+        public int PageNumber { get; init; }
+        public int PageSize { get; init; }
+        public int TotalPages { get; init; }
+        public string? VacancyReference { get; init; }
+        public List<GetVacanciesListResponseItem> Vacancies { get; init; }
     }
 }

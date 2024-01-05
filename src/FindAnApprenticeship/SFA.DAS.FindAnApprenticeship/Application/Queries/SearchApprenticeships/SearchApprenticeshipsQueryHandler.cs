@@ -29,11 +29,13 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
         {
             var locationTask = _locationLookupService.GetLocationInformation(request.Location, default, default, false);
             var routesTask = _courseService.GetRoutes();
+            var courseLevelsTask = _courseService.GetLevels();
 
-            await Task.WhenAll(locationTask, routesTask);
+            await Task.WhenAll(locationTask, routesTask, courseLevelsTask);
 
             var location = locationTask.Result;
             var routes = routesTask.Result;
+            var courseLevels = courseLevelsTask.Result;
             
             if (request.SearchTerm != null && Regex.IsMatch(request.SearchTerm, @"^VAC\d{10}$", RegexOptions.None, TimeSpan.FromSeconds(3)))
             {
@@ -50,11 +52,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                         PageNumber = request.PageNumber,
                         PageSize = request.PageSize,
                         TotalPages = 1,
-                        VacancyReference = request.SearchTerm
+                        VacancyReference = request.SearchTerm,
+                        Levels = courseLevels.Levels.ToList()
                     };
                 }
             }
-
 
             var categories = routes.Routes.Where(route => request.SelectedRouteIds != null && request.SelectedRouteIds.Contains(route.Id.ToString()))
                 .Select(route => route.Name).ToList();
@@ -68,6 +70,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     request.PageNumber,
                     request.PageSize,
                     categories,
+                    request.SelectedLevelIds,
                     request.Sort));
 
             var totalPages = (int)Math.Ceiling((double)vacancyResult.TotalFound / request.PageSize);
@@ -81,7 +84,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 Vacancies = vacancyResult.ApprenticeshipVacancies.ToList(),
                 PageNumber = request.PageNumber,
                 PageSize = request.PageSize,
-                TotalPages = totalPages
+                TotalPages = totalPages,
+                Levels = courseLevels.Levels.ToList()
             };
         }
     }

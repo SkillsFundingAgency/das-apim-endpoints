@@ -16,6 +16,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
 
             actual.Should().BeEquivalentTo(source, options => options
                 .Excluding(c => c.RouteIds)
+                .Excluding(c => c.LevelIds)
                 .Excluding(c => c.Sort));
         }
 
@@ -29,6 +30,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
 
             actual.Should().BeEquivalentTo(source, options => options
                 .Excluding(c => c.RouteIds)
+                .Excluding(c => c.LevelIds)
                 .Excluding(c => c.PageNumber)
                 .Excluding(c => c.PageSize)
                 .Excluding(c => c.Sort));
@@ -46,6 +48,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
 
             actual.Should().BeEquivalentTo(source, options => options
                 .Excluding(c => c.RouteIds)
+                .Excluding(c => c.LevelIds)
                 .Excluding(c => c.PageNumber)
                 .Excluding(c => c.PageSize)
                 .Excluding(c => c.Sort));
@@ -63,6 +66,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
 
             actual.Should().BeEquivalentTo(source, options => options
                 .Excluding(c => c.RouteIds)
+                .Excluding(c => c.LevelIds)
                 .Excluding(c => c.PageNumber)
                 .Excluding(c => c.PageSize)
                 .Excluding(c => c.Sort));
