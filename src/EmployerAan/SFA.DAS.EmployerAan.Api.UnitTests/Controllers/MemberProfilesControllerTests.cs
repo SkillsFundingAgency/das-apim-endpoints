@@ -5,8 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.EmployerAan.Api.Controllers;
-using SFA.DAS.EmployerAan.Application.MemberProfiles.Commands.PutMemberProfile;
-using SFA.DAS.EmployerAan.InnerApi.MemberProfiles;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMemberSummary;
 using SFA.DAS.EmployerAan.Application.InnerApi.MyApprenticeships;
 using SFA.DAS.EmployerAan.Application.InnerApi.Standards.Requests;
@@ -20,7 +18,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.MemberProfilesControllerTests;
+namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers;
 public class MemberProfilesControllerTests
 {
     [Test]
@@ -47,6 +45,7 @@ public class MemberProfilesControllerTests
         string standardUid,
         CancellationToken cancellationToken)
     {
+        // Arrange
         GetMemberProfileWithPreferencesQueryResult memberProfileWithPreferencesQueryResult = new GetMemberProfileWithPreferencesQueryResult();
         memberProfileWithPreferencesQueryResult.ApprenticeId = appreticeId;
         memberProfileWithPreferencesQueryResult.AccountId = accountId;
@@ -62,7 +61,7 @@ public class MemberProfilesControllerTests
         };
         memberProfileWithPreferencesQueryResult.Preferences = memberPreferences;
         int apprenticeshipPreferenceId = 3;
-        var isApprenticeSectionShareAllowed = (memberProfileWithPreferencesQueryResult.Preferences.Any(x => x.PreferenceId == apprenticeshipPreferenceId)) ? memberProfileWithPreferencesQueryResult.Preferences.FirstOrDefault(x => x.PreferenceId == apprenticeshipPreferenceId)!.Value : false;
+        var isApprenticeSectionShareAllowed = memberProfileWithPreferencesQueryResult.Preferences.Any(x => x.PreferenceId == apprenticeshipPreferenceId) ? memberProfileWithPreferencesQueryResult.Preferences.FirstOrDefault(x => x.PreferenceId == apprenticeshipPreferenceId)!.Value : false;
 
 
         GetEmployerMemberSummaryQueryResult? getEmployerMemberSummaryQueryResult = new GetEmployerMemberSummaryQueryResult();
@@ -100,46 +99,12 @@ public class MemberProfilesControllerTests
 
         Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClientMock = new();
         coursesApiClientMock.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardQueryRequest>())).ReturnsAsync(standardResponse);
-
-
         var sut = new MemberProfilesController(mockMediator.Object);
 
+        // Act
         var result = await sut.GetMemberProfileWithPreferences(memberId, requestedByMemberId, cancellationToken, isPublicView);
 
+        // Assert
         result.As<OkObjectResult>().Value.Should().BeEquivalentTo(response);
-    }
-    
-    [Test, MoqAutoData]
-    public async Task PutMemberProfile_InvokesSendWithCommandProperties(
-        [Frozen] Mock<IMediator> mediatorMock,
-        Guid memberId,
-        Guid requestedByMemberId,
-        UpdateMemberProfileModel request,
-        CancellationToken cancellationToken)
-    {
-        var sut = new MemberProfilesController(mediatorMock.Object);
-
-        await sut.PutMemberProfile(memberId, requestedByMemberId, request, cancellationToken);
-
-        mediatorMock.Verify(m => m.Send(
-            It.Is<UpdateMemberProfilesCommand>(
-                c => c.MemberId == memberId
-                && c.RequestedByMemberId == requestedByMemberId), cancellationToken),
-                     Times.Once());
-    }
-
-    [Test, MoqAutoData]
-    public async Task PutMemberProfile_ReturnsNoContent(
-    [Frozen] Mock<IMediator> mediatorMock,
-    Guid memberId,
-    Guid requestedByMemberId,
-    UpdateMemberProfileModel request,
-    CancellationToken cancellationToken)
-    {
-        var sut = new MemberProfilesController(mediatorMock.Object);
-
-        var result = await sut.PutMemberProfile(memberId, requestedByMemberId, request, cancellationToken);
-
-        result.Should().BeOfType<NoContentResult>();
     }
 }

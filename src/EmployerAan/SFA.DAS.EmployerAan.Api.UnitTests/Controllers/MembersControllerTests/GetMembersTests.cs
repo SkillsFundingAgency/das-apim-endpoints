@@ -18,6 +18,7 @@ public class GetMembersTests
         [Greedy] MembersController sut,
         CancellationToken cancellationToken)
     {
+        // Arrange
         var model = new GetMembersRequestModel
         {
             Keyword = null,
@@ -26,8 +27,10 @@ public class GetMembersTests
             RegionId = new List<int>()
         };
 
+        // Act
         await sut.GetMembers(model, cancellationToken);
 
+        // Assert
         mediatorMock.Verify(
             m => m.Send(It.Is<GetMembersQuery>(q => q.Keyword == null),
                 It.IsAny<CancellationToken>()));
@@ -35,17 +38,15 @@ public class GetMembersTests
 
     [Test, MoqAutoData]
     public async Task Get_HandlerReturnsData_ReturnsOkResponse(
-        [Frozen] Mock<IMediator> mediatorMock,
-        [Greedy] MembersController sut,
-        Guid requestedByMemberId,
         List<MemberUserType> userType,
-        List<MembershipStatusType> status,
         bool? isRegionalChair,
         List<int> regionIds,
         string keyword,
         int? page,
         int? pageSize,
         GetMembersQueryResult queryResult,
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] MembersController sut,
         CancellationToken cancellationToken)
     {
         mediatorMock.Setup(m => m.Send(It.Is<GetMembersQuery>(q => q.Keyword == keyword), It.IsAny<CancellationToken>()))
