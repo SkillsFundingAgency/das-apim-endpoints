@@ -45,6 +45,5 @@
         public string AccountLegalEntityPublicHashedId { get; set; } = null!;
         public string ApplicationMethod { get; set; } = null!;
         public string? ApplicationUrl { get; set; }
-        public string VacancyType { get; set; }
     }
 }

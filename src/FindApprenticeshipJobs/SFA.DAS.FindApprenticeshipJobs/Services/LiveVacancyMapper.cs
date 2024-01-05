@@ -87,8 +87,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 RouteCode = getStandardsListItem.RouteCode,  
                 Route = getStandardsListItem?.Route ?? string.Empty,
 
-                IsRecruitVacancy = true,
-                VacancyType = source.VacancyType.HasValue ? source.VacancyType.Value.ToString() : ""
+                IsRecruitVacancy = true
             };
         }
 

@@ -4,5 +4,5 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 
 public class GetLiveVacancyQueryResult
 {
-    public LiveVacancy LiveVacancy { get; set; }
+    public LiveVacancy? LiveVacancy { get; set; }
 }
