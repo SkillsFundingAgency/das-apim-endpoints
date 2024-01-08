@@ -71,7 +71,7 @@ public class MembersController : ControllerBase
     {
         var response = await _apiClient.PostMembersLeaving(memberId, model, cancellationToken);
 
-        return response.ResponseMessage.StatusCode switch
+        return response.StatusCode switch
         {
             HttpStatusCode.NoContent => NoContent(),
             HttpStatusCode.NotFound => NotFound(),

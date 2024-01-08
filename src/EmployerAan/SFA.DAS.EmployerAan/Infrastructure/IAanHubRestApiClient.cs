@@ -96,7 +96,7 @@ public interface IAanHubRestApiClient
 
     [Post("members/{memberId}/Leaving")]
     [AllowAnyStatusCode]
-    Task<Response<PostMemberLeavingResponse>> PostMembersLeaving([Path] Guid memberId, [Body] PostMemberLeavingModel model, CancellationToken cancellationToken);
+    Task<HttpResponseMessage> PostMembersLeaving([Path] Guid memberId, [Body] PostMemberLeavingModel model, CancellationToken cancellationToken);
 
     [Get("/leavingReasons")]
     Task<List<LeavingCategory>> GetLeavingReasons(CancellationToken cancellationToken);

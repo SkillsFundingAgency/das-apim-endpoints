@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Api.Models;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Members;
-using SFA.DAS.ApprenticeAan.Application.InnerApi.Members.PostMemberLeaving;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMembers;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
@@ -70,7 +69,7 @@ public class MembersController : ControllerBase
     {
         var response = await _apiClient.PostMembersLeaving(memberId, model, cancellationToken);
 
-        return response.ResponseMessage.StatusCode switch
+        return response.StatusCode switch
         {
             HttpStatusCode.NoContent => NoContent(),
             HttpStatusCode.NotFound => NotFound(),

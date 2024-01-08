@@ -20,7 +20,7 @@ public class PostMembersLeavingControllerTests
         CancellationToken cancellationToken)
     {
         aanHubRestApiClientMock.Setup(x => x.PostMembersLeaving(memberId, request, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new RestEase.Response<PostMemberLeavingResponse>(null, new HttpResponseMessage(HttpStatusCode.NoContent), () => new PostMemberLeavingResponse()));
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
 
         var result = await sut.PostMemberLeavingReasons(memberId, request, cancellationToken);
         aanHubRestApiClientMock.Verify(x => x.PostMembersLeaving(memberId, request, It.IsAny<CancellationToken>()), Times.Once());
@@ -37,7 +37,7 @@ public class PostMembersLeavingControllerTests
         CancellationToken cancellationToken)
     {
         aanHubRestApiClientMock.Setup(x => x.PostMembersLeaving(memberId, request, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new RestEase.Response<PostMemberLeavingResponse>(null, new HttpResponseMessage(HttpStatusCode.NotFound), () => new PostMemberLeavingResponse()));
+            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NotFound));
 
         var result = await sut.PostMemberLeavingReasons(memberId, request, cancellationToken);
         aanHubRestApiClientMock.Verify(x => x.PostMembersLeaving(memberId, request, It.IsAny<CancellationToken>()), Times.Once());
@@ -53,7 +53,7 @@ public class PostMembersLeavingControllerTests
         Guid memberId,
         CancellationToken cancellationToken)
     {
-        RestEase.Response<PostMemberLeavingResponse> response = new(null, new HttpResponseMessage(HttpStatusCode.BadRequest), () => new PostMemberLeavingResponse());
+        var response = new HttpResponseMessage(HttpStatusCode.BadRequest);
 
         aanHubRestApiClientMock.Setup(x => x.PostMembersLeaving(memberId, request, It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);

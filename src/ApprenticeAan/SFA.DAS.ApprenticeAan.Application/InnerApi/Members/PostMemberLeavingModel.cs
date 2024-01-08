@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.ApprenticeAan.Application.InnerApi.Members.PostMemberLeaving;
+﻿namespace SFA.DAS.ApprenticeAan.Application.InnerApi.Members;
 
 public class PostMemberLeavingModel
 {
