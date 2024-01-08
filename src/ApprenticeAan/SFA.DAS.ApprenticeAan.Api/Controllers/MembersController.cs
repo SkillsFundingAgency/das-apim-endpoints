@@ -1,9 +1,11 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Api.Models;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Members;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Members.PostMemberLeaving;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMembers;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
@@ -58,5 +60,21 @@ public class MembersController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpPost("{memberId}/Leaving")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(NoContentResult), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> PostMemberLeavingReasons([FromRoute] Guid memberId, [FromBody] PostMemberLeavingModel model, CancellationToken cancellationToken)
+    {
+        var response = await _apiClient.PostMembersLeaving(memberId, model, cancellationToken);
+
+        return response.ResponseMessage.StatusCode switch
+        {
+            HttpStatusCode.NoContent => NoContent(),
+            HttpStatusCode.NotFound => NotFound(),
+            _ => throw new InvalidOperationException("Post member leaving didn't come back with a successful response")
+        };
     }
 }
