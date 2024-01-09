@@ -40,6 +40,7 @@ public class GetMemberProfileWithPreferencesQueryHandler : IRequestHandler<GetMe
         result.OrganisationName = outputMember.OrganisationName;
         result.Email = outputMember.Email;
         result.RegionId = outputMember.RegionId;
+        result.JoinedDate = outputMember.JoinedDate;
         result.UserType = Enum.Parse<MemberUserType>(outputMember.UserType);
         result.IsRegionalChair = outputMember.IsRegionalChair.GetValueOrDefault();
 

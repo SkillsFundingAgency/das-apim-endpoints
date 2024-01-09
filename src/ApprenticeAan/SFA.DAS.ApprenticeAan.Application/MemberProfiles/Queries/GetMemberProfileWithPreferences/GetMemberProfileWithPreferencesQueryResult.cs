@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.ApprenticeAan.Application.Common;
-using SFA.DAS.ApprenticeAan.Application.Model;
+using SFA.DAS.ApprenticeAan.Application.Models;
 
 namespace SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 
@@ -12,6 +12,7 @@ public class GetMemberProfileWithPreferencesQueryResult
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
     public string? OrganisationName { get; set; }
+    public DateTime JoinedDate { get; set; }
     public int? RegionId { get; set; }
     public string RegionName { get; set; } = null!;
     public MemberUserType UserType { get; set; }

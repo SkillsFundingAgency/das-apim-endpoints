@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
-
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Models;
 
 public class GetLiveVacanciesApiResponse
@@ -32,44 +31,100 @@ public class GetLiveVacanciesApiResponse
             {
                 VacancyId = source.VacancyId,
                 VacancyReference = source.VacancyReference,
-                VacancyTitle = source.VacancyTitle,
+                Title = source.Title,
                 NumberOfPositions = source.NumberOfPositions,
                 ApprenticeshipTitle = source.ApprenticeshipTitle,
-                ProgrammeId = source.ProgrammeId,
-                ProgrammeType = source.ProgrammeType,
+                StandardLarsCode = source.StandardLarsCode,
                 Route = source.Route,
                 Description = source.Description,
-                EmployerLocation = source.EmployerLocation == null? null : (Address) source.EmployerLocation,
-                LiveDate = source.LiveDate,
+                Address = source.Address == null ? null : (Address)source.Address,
                 ClosingDate = source.ClosingDate,
                 StartDate = source.StartDate,
+                PostedDate = source.PostedDate,
                 EmployerName = source.EmployerName,
-                ProviderId = source.ProviderId,
+                Ukprn = source.Ukprn,
                 ProviderName = source.ProviderName,
                 Level = source.Level,
-                Wage = source.Wage == null? null : (Wage) source.Wage,
+                Wage = source.Wage == null ? null : (Wage)source.Wage,
+                OutcomeDescription = source.OutcomeDescription,
+                LongDescription = source.LongDescription,
+                TrainingDescription = source.TrainingDescription,
+                Skills = source.Skills,
+                Qualifications = source.Qualifications.Select(q => new Qualification
+                {
+                    QualificationType = q.QualificationType,
+                    Subject = q.Subject,
+                    Grade = q.Grade,
+                    Weighting = q.Weighting
+                }).ToList(),
+                ThingsToConsider = source.ThingsToConsider,
+                Id = source.Id,
+                IsDisabilityConfident = source.IsDisabilityConfident,
+                IsEmployerAnonymous = source.IsEmployerAnonymous,
+                EmployerDescription = source.EmployerDescription,
+                EmployerWebsiteUrl = source.EmployerWebsiteUrl,
+                IsRecruitVacancy = true,
+                AnonymousEmployerName = source.AnonymousEmployerName,
+                IsPositiveAboutDisability = source.IsPositiveAboutDisability,
+                VacancyLocationType = source.VacancyLocationType,
+                EmployerContactName = source.EmployerContactName,
+                EmployerContactEmail = source.EmployerContactEmail,
+                EmployerContactPhone = source.EmployerContactPhone,
+                ApprenticeshipLevel = source.ApprenticeshipLevel,
+                Duration = source.Duration,
+                DurationUnit = source.DurationUnit,
+                RouteCode = source.RouteCode,
+                AccountPublicHashedId = source.AccountPublicHashedId,
+                AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
+                ApplicationMethod = source.ApplicationMethod,
+                ApplicationUrl = source.ApplicationUrl
             };
         }
 
+        public int RouteCode { get; set; }
+        public string? DurationUnit { get; set; }
+        public int Duration { get; set; }
+        public string? AccountLegalEntityPublicHashedId { get; set; }
+        public string? AccountPublicHashedId { get; set; }
+        public string ApprenticeshipLevel { get; set; }
         public Guid VacancyId { get; set; }
         public long VacancyReference { get; set; }
-        public string VacancyTitle { get; set; }
+        public string Title { get; set; }
         public int NumberOfPositions { get; set; }
         public string ApprenticeshipTitle { get; set; }
         public string? Description { get; set; }
-        public Address? EmployerLocation { get; set; }
+        public Address? Address { get; set; }
         public string? EmployerName { get; set; }
-        public long? ProviderId { get; set; }
+        public long? Ukprn { get; set; }
         public string? ProviderName { get; set; }
 
-        public DateTime LiveDate { get; set; }
-        public string? ProgrammeId { get; set; }
-        public string? ProgrammeType { get; set; }
+        public DateTime PostedDate { get; set; }
+        public int? StandardLarsCode { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime ClosingDate { get; set; }
         public string Route { get; set; }
         public int Level { get; set; }
         public Wage? Wage { get; set; }
+        public string LongDescription { get; set; }
+        public string OutcomeDescription { get; set; }
+        public string TrainingDescription { get; set; }
+        public IEnumerable<string> Skills { get; set; } = null!;
+        public IEnumerable<Qualification> Qualifications { get; set; } = null!;
+        public string? ThingsToConsider { get; set; }
+        public string Id { get; set; }
+        public bool IsEmployerAnonymous { get; set; }
+        public string? AnonymousEmployerName { get; set; }
+        public bool IsDisabilityConfident { get; set; }
+        public bool IsPositiveAboutDisability { get; set; }
+        public bool IsRecruitVacancy { get; set; }
+        public string VacancyLocationType { get; set; }
+        public string? EmployerDescription { get; set; }
+        public string? EmployerWebsiteUrl { get; set; }
+        public string? EmployerContactPhone { get; set; }
+        public string? EmployerContactEmail { get; set; }
+        public string? EmployerContactName { get; set; }
+        public string ApplicationMethod { get; set; }
+        public string? ApplicationUrl { get; set; }
     }
 
     public class Address
@@ -106,6 +161,12 @@ public class GetLiveVacanciesApiResponse
         public string? WageType { get; set; }
         public decimal WeeklyHours { get; set; }
         public string? WorkingWeekDescription { get; set; }
+        public decimal? ApprenticeMinimumWage { get; set; }
+        public decimal? Under18NationalMinimumWage { get; set; }
+        public decimal? Between18AndUnder21NationalMinimumWage { get; set; }
+        public decimal? Between21AndUnder25NationalMinimumWage { get; set; }
+        public decimal? Over25NationalMinimumWage { get; set; }
+        public string WageText { get; set; } = null!;
 
         public static implicit operator Wage(Application.Shared.Wage source)
         {
@@ -117,8 +178,22 @@ public class GetLiveVacanciesApiResponse
                 WageAdditionalInformation = source.WageAdditionalInformation,
                 WageType = source.WageType,
                 WeeklyHours = source.WeeklyHours,
-                WorkingWeekDescription = source.WorkingWeekDescription
+                WorkingWeekDescription = source.WorkingWeekDescription,
+                ApprenticeMinimumWage = source.ApprenticeMinimumWage,
+                Under18NationalMinimumWage = source.Under18NationalMinimumWage,
+                Between18AndUnder21NationalMinimumWage = source.Between18AndUnder21NationalMinimumWage,
+                Between21AndUnder25NationalMinimumWage = source.Between21AndUnder25NationalMinimumWage,
+                Over25NationalMinimumWage = source.Over25NationalMinimumWage,
+                WageText = source.WageText
             };
         }
+    }
+
+    public class Qualification
+    {
+        public string? QualificationType { get; set; }
+        public string? Subject { get; set; }
+        public string? Grade { get; set; }
+        public string? Weighting { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using SFA.DAS.ApprenticeAan.Application.Model;
+﻿using SFA.DAS.ApprenticeAan.Application.Models;
 
 namespace SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 

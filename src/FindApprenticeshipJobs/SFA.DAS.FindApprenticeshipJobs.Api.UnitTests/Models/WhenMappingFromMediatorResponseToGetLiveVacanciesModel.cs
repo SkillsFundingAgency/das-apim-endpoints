@@ -11,6 +11,7 @@ public class WhenMappingFromMediatorResponseToGetLiveVacanciesModel
     [Test, MoqAutoData]
     public void Then_The_Fields_Are_Correctly_Mapped(GetLiveVacanciesQueryResult source)
     {
+        source.Vacancies.ToList().ForEach(x => x.IsRecruitVacancy = true);
         var actual = (GetLiveVacanciesApiResponse)source;
 
         using (new AssertionScope())
