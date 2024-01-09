@@ -37,5 +37,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public int TotalPages { get; init; }
         public string? VacancyReference { get; init; }
         public List<GetVacanciesListResponseItem> Vacancies { get; init; }
+        public bool DisabilityConfident { get; set; }
     }
 }
