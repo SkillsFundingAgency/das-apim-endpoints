@@ -58,7 +58,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
 
                 if (logId > 0) await UpdateLog(logId, StudentDataUploadStatus.Error, $"Error posting student data. {(errorMessage != null ? $"\nErrorInfo: {errorMessage}" : "")}\nMessage: {e.Message}\nStackTrace: {e.StackTrace}");
 
-                return BadRequest();
+                return BadRequest(errorMessage);
             }
         }
 
