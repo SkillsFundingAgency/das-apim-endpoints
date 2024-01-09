@@ -14,5 +14,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public VacancySort Sort { get; set; } = VacancySort.DistanceAsc;
+        public bool DisabilityConfident { get; set; }
     }
 }
