@@ -11,12 +11,14 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading.Tasks;
 using AutoFixture;
+using SFA.DAS.Apprenticeships.InnerApi;
 
 namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
 {
     public class WhenGettingPendingPriceChange
     {
 	    private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _mockApprenticeshipsApiClient;
+        private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _mockCommitmentsApiClient;
 	    private ApprenticeshipController _sut;
         private Fixture _fixture;
 
@@ -26,7 +28,8 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
             _fixture = new Fixture();
 
 		    _mockApprenticeshipsApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
-            _sut = new ApprenticeshipController(_mockApprenticeshipsApiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>());
+            _mockCommitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
+            _sut = new ApprenticeshipController(_mockApprenticeshipsApiClient.Object, _mockCommitmentsApiClient.Object);
 	    }
 
         [Test]
@@ -37,6 +40,8 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
             var apiResponse = _fixture.Create<GetPendingPriceChangeApiResponse>();
             _mockApprenticeshipsApiClient.Setup(x=>x.Get<GetPendingPriceChangeApiResponse>(It.Is<GetPendingPriceChangeRequest>(r => r.ApprenticeshipKey == apprenticeshipKey)))
                 .ReturnsAsync(apiResponse);
+            _mockCommitmentsApiClient.Setup(x => x.Get<GetProviderResponse>(It.IsAny<GetProviderRequest>()))
+                .ReturnsAsync(new GetProviderResponse { Name = _fixture.Create<string>() });
 
             //  Act
             var result = await _sut.GetPendingPriceChange(apprenticeshipKey);
@@ -45,6 +50,27 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
             var okObjectResult = result.ShouldBeOfType<OkObjectResult>();
             var actualResponse = okObjectResult.Value.ShouldBeOfType<GetPendingPriceChangeResponse>();
             actualResponse.Should().BeEquivalentTo(apiResponse);
+        }
+
+        [Test]
+        public async Task Then_Gets_ProviderName_From_ApiClient()
+        {
+            //  Arrange
+            var apprenticeshipKey = _fixture.Create<Guid>();
+            var apiResponse = _fixture.Create<GetPendingPriceChangeApiResponse>();
+            var providerName = _fixture.Create<string>();
+            _mockApprenticeshipsApiClient.Setup(x => x.Get<GetPendingPriceChangeApiResponse>(It.Is<GetPendingPriceChangeRequest>(r => r.ApprenticeshipKey == apprenticeshipKey)))
+                .ReturnsAsync(apiResponse);
+            _mockCommitmentsApiClient.Setup(x => x.Get<GetProviderResponse>(It.IsAny<GetProviderRequest>()))
+                .ReturnsAsync(new GetProviderResponse { Name = providerName });
+
+            //  Act
+            var result = await _sut.GetPendingPriceChange(apprenticeshipKey);
+
+            //  Assert
+            var okObjectResult = result.ShouldBeOfType<OkObjectResult>();
+            var actualResponse = okObjectResult.Value.ShouldBeOfType<GetPendingPriceChangeResponse>();
+            actualResponse.ProviderName.Should().BeEquivalentTo(providerName);
         }
     }
 }

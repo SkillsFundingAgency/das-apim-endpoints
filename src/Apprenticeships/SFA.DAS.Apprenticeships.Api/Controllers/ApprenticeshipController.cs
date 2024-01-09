@@ -86,7 +86,9 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         public async Task<ActionResult> GetPendingPriceChange(Guid apprenticeshipKey)
         {
 	        var response = await _apiClient.Get<GetPendingPriceChangeApiResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey));
-	        return Ok(new GetPendingPriceChangeResponse(response));
+            var providerResponse = await _apiCommitmentsClient.Get<GetProviderResponse>(new GetProviderRequest(response.PendingPriceChange.Ukprn.GetValueOrDefault()));
+
+	        return Ok(new GetPendingPriceChangeResponse(response, providerResponse.Name));
         }
 	}
 }
