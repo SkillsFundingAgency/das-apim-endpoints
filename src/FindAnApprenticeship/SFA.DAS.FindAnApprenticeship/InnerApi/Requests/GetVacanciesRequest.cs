@@ -44,6 +44,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
 
 
         public string Version => "2.0";
-        public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&distanceInMiles={_distance}&sort={_sort}&pageNumber={_pageNumber}&pageSize={_pageSize}&categories={_categories}&levels={_levels}&searchTerm={_searchTerm}&disabilityConfident{_disabilityConfident}";
+        public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&distanceInMiles={_distance}&sort={_sort}&pageNumber={_pageNumber}&pageSize={_pageSize}&categories={_categories}&levels={_levels}&searchTerm={_searchTerm}&disabilityConfident={_disabilityConfident}";
     }
 }
