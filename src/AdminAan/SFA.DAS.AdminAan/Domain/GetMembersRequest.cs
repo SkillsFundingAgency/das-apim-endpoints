@@ -13,4 +13,5 @@ public class GetMembersRequest
     public int? Page { get; set; }
 
     public int? PageSize { get; set; }
+    public bool? IsNew { get; set; }
 }

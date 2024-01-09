@@ -33,7 +33,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task And_GenerateCommandIsProcessedSuccessfully_Then_ReturnResults()
         {
-            var result = await _controller.GenerateEmailTransaction();
+            var result = await _controller.GenerateEmailTransactions();
             result.Should().NotBeNull();
         }
 

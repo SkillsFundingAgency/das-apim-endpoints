@@ -6,6 +6,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries;
@@ -17,6 +18,8 @@ public class WhenHandlingSearchIndexQuery
     public async Task Then_The_Query_Is_Handled_And_Data_Returned(
         SearchIndexQuery query,
         GetApprenticeshipCountResponse apiResponse,
+        LocationItem locationItem,
+        [Frozen] Mock<ILocationLookupService> locationService,
         [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
         SearchIndexQueryHandler handler)
     {
@@ -27,10 +30,10 @@ public class WhenHandlingSearchIndexQuery
             null,
             null
         );
-
         apiClient
             .Setup(client => client.Get<GetApprenticeshipCountResponse>(It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
             .ReturnsAsync(apiResponse);
+        locationService.Setup(x => x.GetLocationInformation(query.LocationSearchTerm,0,0,false)).ReturnsAsync(locationItem);
 
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
@@ -38,6 +41,8 @@ public class WhenHandlingSearchIndexQuery
         // Assert
         Assert.NotNull(result);
         Assert.AreEqual(apiResponse.TotalVacancies, result.TotalApprenticeshipCount);
+        Assert.IsTrue(result.LocationSearched);
+        Assert.AreEqual(locationItem, result.LocationItem);
 
     }
 }

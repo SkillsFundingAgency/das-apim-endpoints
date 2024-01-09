@@ -8,6 +8,7 @@ using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -18,13 +19,17 @@ public class WhenHandlingGetLiveVacancies
     public async Task Then_Gets_Live_Vacancies(
         GetLiveVacanciesQuery mockQuery,
         ApiResponse<GetLiveVacanciesApiResponse> mockApiResponse,
+        GetStandardsListResponse getStandardsListResponse,
+        [Frozen] Mock<ICourseService> courseService,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockApiClient,
         [Frozen] Mock<ILiveVacancyMapper> mockLiveVacancyMapper,
         GetLiveVacanciesQueryHandler sut)
     {
         mockApiClient.Setup(client => client.GetWithResponseCode<GetLiveVacanciesApiResponse>(It.IsAny<GetLiveVacanciesApiRequest>())).ReturnsAsync(mockApiResponse);
+        courseService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+            .ReturnsAsync(getStandardsListResponse);
 
-        var mappedVacancies = SetupVacancyMapper(mockLiveVacancyMapper, mockApiResponse.Body.Vacancies);
+        var mappedVacancies = SetupVacancyMapper(mockLiveVacancyMapper, mockApiResponse.Body.Vacancies,getStandardsListResponse);
 
         var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
 
@@ -36,6 +41,8 @@ public class WhenHandlingGetLiveVacancies
     public async Task Then_Traineeships_Are_Removed(
         GetLiveVacanciesQuery mockQuery,
         ApiResponse<GetLiveVacanciesApiResponse> mockApiResponse,
+        GetStandardsListResponse getStandardsListResponse,
+        [Frozen] Mock<ICourseService> courseService,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockApiClient,
         [Frozen] Mock<ILiveVacancyMapper> mockLiveVacancyMapper,
         GetLiveVacanciesQueryHandler sut)
@@ -43,8 +50,10 @@ public class WhenHandlingGetLiveVacancies
         var vacancyId = mockApiResponse.Body.Vacancies.First().VacancyId;
         mockApiResponse.Body.Vacancies.First().VacancyType = VacancyType.Traineeship;
         mockApiClient.Setup(client => client.GetWithResponseCode<GetLiveVacanciesApiResponse>(It.IsAny<GetLiveVacanciesApiRequest>())).ReturnsAsync(mockApiResponse);
+        courseService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+            .ReturnsAsync(getStandardsListResponse);
 
-        SetupVacancyMapper(mockLiveVacancyMapper, mockApiResponse.Body.Vacancies);
+        SetupVacancyMapper(mockLiveVacancyMapper, mockApiResponse.Body.Vacancies,getStandardsListResponse);
 
         var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
 
@@ -67,7 +76,7 @@ public class WhenHandlingGetLiveVacancies
         AssertResponse(actual, Enumerable.Empty<FindApprenticeshipJobs.Application.Shared.LiveVacancy>().ToList());
     }
 
-    private static List<FindApprenticeshipJobs.Application.Shared.LiveVacancy> SetupVacancyMapper(Mock<ILiveVacancyMapper> mapper, IEnumerable<LiveVacancy> vacancies)
+    private static List<FindApprenticeshipJobs.Application.Shared.LiveVacancy> SetupVacancyMapper(Mock<ILiveVacancyMapper> mapper, IEnumerable<LiveVacancy> vacancies, GetStandardsListResponse standards)
     {
         var fixture = new Fixture();
 
@@ -81,8 +90,8 @@ public class WhenHandlingGetLiveVacancies
 
             result.Add(mappedVacancy);
 
-            mapper.Setup(x => x.Map(It.Is<LiveVacancy>(v => v == vacancy)))
-                .ReturnsAsync(mappedVacancy);
+            mapper.Setup(x => x.Map(It.Is<LiveVacancy>(v => v == vacancy),standards))
+                .Returns(mappedVacancy);
         }
 
         return result;

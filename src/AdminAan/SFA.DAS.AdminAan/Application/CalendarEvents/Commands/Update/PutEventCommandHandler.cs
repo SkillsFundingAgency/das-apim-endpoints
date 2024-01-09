@@ -18,12 +18,10 @@ public class PutEventCommandHandler : IRequestHandler<PutEventCommand, Unit>
         await _apiClient.PutCalendarEvent(command.RequestedByMemberId!, command.CalendarEventId!,
             command, cancellationToken);
 
-        if (command.Guests.Any())
-        {
-            var guestsList = new PutEventGuestsModel(command.Guests);
-            await _apiClient.PutGuestSpeakers(command.CalendarEventId, command.RequestedByMemberId!, guestsList,
+
+        var guestsList = new PutEventGuestsModel(command.Guests);
+        await _apiClient.PutGuestSpeakers(command.CalendarEventId, command.RequestedByMemberId!, guestsList,
                 cancellationToken);
-        }
 
         return Unit.Value;
     }
