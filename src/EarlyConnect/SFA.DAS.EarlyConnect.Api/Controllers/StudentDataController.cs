@@ -26,6 +26,8 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         [Route("add")]
         public async Task<IActionResult> CreateStudentData(CreateStudentDataPostRequest request)
         {
@@ -53,11 +55,18 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             }
             catch (Exception e)
             {
-                var errorMessage = (e as SharedOuterApi.Exceptions.ApiResponseException)?.Error;
+                var apiException = (e as SharedOuterApi.Exceptions.ApiResponseException);
+                var status = apiException?.Status;
+                var errorMessage = apiException?.Error;
                 _logger.LogError(e, "Error posting student data");
 
                 if (logId > 0) await UpdateLog(logId, StudentDataUploadStatus.Error, $"Error posting student data. {(errorMessage != null ? $"\nErrorInfo: {errorMessage}" : "")}\nMessage: {e.Message}\nStackTrace: {e.StackTrace}");
 
+                if (status.Equals(HttpStatusCode.InternalServerError)) 
+                {
+                    return Problem();
+                }
+               
                 return BadRequest(errorMessage);
             }
         }
