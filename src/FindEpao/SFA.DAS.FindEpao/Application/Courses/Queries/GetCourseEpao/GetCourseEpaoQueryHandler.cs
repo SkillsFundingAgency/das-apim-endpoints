@@ -88,7 +88,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao
             var standardVers = epaoCoursesTask.Result.SelectMany(x => x.StandardVersions);
             foreach (var course in allCourses)
                 course.StandardVersions = standardVers
-                    .Where(c => _courseEpaoIsValidFilterService.ValidateVersionDates(c.DateVersionApproved, c.EffectiveFrom, c.EffectiveTo))
+                    .Where(c => _courseEpaoIsValidFilterService.ValidateVersionDates(c.EffectiveFrom, c.EffectiveTo))
                     .Where(x => x.LarsCode == course.LarsCode).Select(x => x.Version).ToArray();
 
             return new GetCourseEpaoResult
