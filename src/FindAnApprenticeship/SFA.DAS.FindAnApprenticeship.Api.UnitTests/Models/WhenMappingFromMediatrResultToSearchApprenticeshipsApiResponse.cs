@@ -45,7 +45,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
             var actual = (SearchApprenticeshipsApiResponse)source;
             
             actual.Should().BeEquivalentTo(source, options => options.Excluding(c=>c.LocationItem)
-                .Excluding(c =>c.Vacancies));
+                .Excluding(c =>c.Vacancies)
+                .Excluding(c => c.PageSize)
+                .Excluding(c => c.PageNumber)
+                .Excluding(c => c.TotalPages)
+            );
             actual.Location.Should().BeNull();
         }
     }

@@ -11,7 +11,7 @@ using SFA.DAS.ApprenticeAan.Application.InnerApi.MyApprenticeships;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Requests;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Responses;
 using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
-using SFA.DAS.ApprenticeAan.Application.Model;
+using SFA.DAS.ApprenticeAan.Application.Models;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -72,11 +72,11 @@ public class GetMemberProfileWithPreferencesTests
 
         if (isPublicView && !isApprenticeSectionShareAllowed)
         {
-            response = new(memberProfileWithPreferencesQueryResult, null, null, isPublicView);
+            response = new(memberProfileWithPreferencesQueryResult, null, null);
         }
         else if (memberProfileWithPreferencesQueryResult.UserType == MemberUserType.Apprentice && myApprenticeship != null)
         {
-            response = new(memberProfileWithPreferencesQueryResult, myApprenticeship, null, isPublicView);
+            response = new(memberProfileWithPreferencesQueryResult, myApprenticeship, null);
         }
         else
         {
@@ -85,7 +85,7 @@ public class GetMemberProfileWithPreferencesTests
                 getEmployerMemberSummaryQueryResult!.ActiveCount = apprenticeship.ActiveApprenticesCount;
                 getEmployerMemberSummaryQueryResult!.Sectors = apprenticeship.Sectors;
             }
-            response = new(memberProfileWithPreferencesQueryResult, null, apprenticeship, isPublicView);
+            response = new(memberProfileWithPreferencesQueryResult, null, apprenticeship);
             mediatorMock.Setup(m => m.Send(It.Is<GetEmployerMemberSummaryQuery>(x => x.EmployerAccountId == accountId), cancellationToken)).ReturnsAsync(getEmployerMemberSummaryQueryResult!);
         }
 

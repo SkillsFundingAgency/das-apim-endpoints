@@ -13,4 +13,5 @@ public class GetCalendarEventsQuery : IRequest<GetCalendarEventsQueryResult>
     public List<int>? RegionIds { get; set; }
     public int? Page { get; set; }
     public int? PageSize { get; set; }
+    public bool ShowUserEventsOnly { get; set; }
 }

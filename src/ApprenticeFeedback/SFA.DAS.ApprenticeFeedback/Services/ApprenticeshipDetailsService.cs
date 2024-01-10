@@ -54,7 +54,7 @@ namespace SFA.DAS.ApprenticeFeedback.Services
                 {
                     _logger.LogDebug($"Retrieving my apprenticeship record with apprentice Id: {apprenticeId}");
                     var myApprenticeshipResponse = await _apprenticeAccountsApiClient.GetWithResponseCode<GetMyApprenticeshipResponse>(new GetMyApprenticeshipRequest(apprenticeId));
-                    if (myApprenticeshipResponse.StatusCode != System.Net.HttpStatusCode.OK && myApprenticeshipResponse.StatusCode != System.Net.HttpStatusCode.NoContent)
+                    if (myApprenticeshipResponse.StatusCode != System.Net.HttpStatusCode.OK && myApprenticeshipResponse.StatusCode != System.Net.HttpStatusCode.NotFound)
                     {
                         var errorMsg = $"Error retrieving my apprenticeship record with apprentice Id: {apprenticeId}";
                         if (!string.IsNullOrWhiteSpace(myApprenticeshipResponse.ErrorContent))

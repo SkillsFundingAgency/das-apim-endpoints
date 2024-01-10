@@ -4,7 +4,7 @@ using SFA.DAS.ApprenticeAan.Application.Common;
 using SFA.DAS.ApprenticeAan.Application.Employer.Queries.GetEmployerMemberSummary;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
-using SFA.DAS.ApprenticeAan.Application.Model;
+using SFA.DAS.ApprenticeAan.Application.Models;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
@@ -31,13 +31,13 @@ public class MemberProfilesController : ControllerBase
 
         if (@public && !isApprenticeshipSectionShared)
         {
-            return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, null, null, @public));
+            return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, null, null));
         }
 
         if (memberProfileWithPreferences.UserType == MemberUserType.Apprentice)
         {
             var myApprenticeship = await _mediator.Send(new GetMyApprenticeshipQuery { ApprenticeId = memberProfileWithPreferences.ApprenticeId }, cancellationToken);
-            return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, myApprenticeship, null, @public));
+            return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, myApprenticeship, null));
         }
         else
         {
@@ -45,7 +45,7 @@ public class MemberProfilesController : ControllerBase
 
             Apprenticeship apprenticeship = new() { Sectors = employerMemberSummary.Sectors, ActiveApprenticesCount = employerMemberSummary.ActiveCount };
 
-            return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, null, apprenticeship, @public));
+            return Ok(new GetMemberProfileWithPreferencesModel(memberProfileWithPreferences, null, apprenticeship));
         }
     }
 

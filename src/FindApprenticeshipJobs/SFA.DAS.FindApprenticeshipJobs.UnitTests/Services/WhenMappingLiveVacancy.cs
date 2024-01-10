@@ -16,35 +16,78 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
     public class WhenMappingLiveVacancy
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Vacancy_Is_Mapped(
+        public void Then_The_Vacancy_Is_Mapped(
             LiveVacancy source,
             [Frozen] Mock<ICourseService> courseService,
             LiveVacancyMapper sut)
         {
-            var mockStandardsListResponse =  SetupCoursesApiResponse(source, courseService);
+            var mockStandardsListResponse =  SetupCoursesApiResponse(source);
 
-            var result = await sut.Map(source);
+            var result = sut.Map(source, mockStandardsListResponse);
 
-            AssertResponse(result, source, mockStandardsListResponse.Body);
+            AssertResponse(result, source, mockStandardsListResponse);
         }
 
         private static void AssertResponse(FindApprenticeshipJobs.Application.Shared.LiveVacancy actual, LiveVacancy source, GetStandardsListResponse standardsListResponse)
         {
             var expectedResult = new
             {
-                source.VacancyId,
-                VacancyTitle = source.Title,
+                Id = source.VacancyReference.ToString(),
                 source.VacancyReference,
+                source.VacancyId,
+                source.Title,
+                PostedDate = source.LiveDate,
+                source.StartDate,
+                source.ClosingDate,
+                Description = source.ShortDescription,
+                source.NumberOfPositions,
+                source.EmployerName,
+                source.ApplicationMethod,
+                source.ApplicationUrl,
+                ProviderName = source.TrainingProvider.Name,
+                source.TrainingProvider.Ukprn,
+                IsPositiveAboutDisability = false,
+                IsEmployerAnonymous = source.IsAnonymous,
+                VacancyLocationType = "NonNational",
+                ApprenticeshipLevel = "Higher",
+                Wage = new FindApprenticeshipJobs.Application.Shared.Wage
+                {
+                    Duration = source.Wage.Duration,
+                    DurationUnit = source.Wage.DurationUnit,
+                    FixedWageYearlyAmount = source.Wage.FixedWageYearlyAmount,
+                    WageAdditionalInformation = source.Wage.WageAdditionalInformation,
+                    WageType = source.Wage.WageType,
+                    WeeklyHours = source.Wage.WeeklyHours,
+                    WorkingWeekDescription = source.Wage.WorkingWeekDescription,
+                    ApprenticeMinimumWage = source.Wage.ApprenticeMinimumWage,
+                    Under18NationalMinimumWage = source.Wage.Under18NationalMinimumWage,
+                    Between18AndUnder21NationalMinimumWage = source.Wage.Between18AndUnder21NationalMinimumWage,
+                    Between21AndUnder25NationalMinimumWage = source.Wage.Between21AndUnder25NationalMinimumWage,
+                    Over25NationalMinimumWage = source.Wage.Over25NationalMinimumWage,
+                    WageText = source.Wage.WageText
+                },
+                AnonymousEmployerName = source.IsAnonymous ? source.EmployerName: null,
+                IsDisabilityConfident = source.DisabilityConfident == DisabilityConfident.Yes,
+                source.AccountPublicHashedId,
+                source.AccountLegalEntityPublicHashedId,
+                LongDescription = source.Description,
+                source.TrainingDescription,
+                source.Skills,
+                Qualifications = source.Qualifications.Select(q => new Qualification
+                {
+                    QualificationType = q.QualificationType,
+                    Subject = q.Subject,
+                    Grade = q.Grade,
+                    Weighting = q.Weighting
+                }),
+                source.OutcomeDescription,
                 ApprenticeshipTitle = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Title,
                 standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Level,
-                source.Description,
-                source.EmployerName,
-                source.LiveDate,
-                source.ProgrammeId,
-                source.ProgrammeType,
-                source.StartDate,
+                StandardLarsCode = standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).LarsCode,
+                
                 standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Route,
-                EmployerLocation = new FindApprenticeshipJobs.Application.Shared.Address
+                standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).RouteCode,
+                Address = new FindApprenticeshipJobs.Application.Shared.Address
                 {
                     AddressLine1 = source.EmployerLocation?.AddressLine1,
                     AddressLine2 = source.EmployerLocation?.AddressLine2,
@@ -54,36 +97,26 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                     Latitude = source.EmployerLocation?.Latitude ?? 0,
                     Longitude = source.EmployerLocation?.Longitude ?? 0,
                 },
-                Wage = source.Wage == null ? null : new FindApprenticeshipJobs.Application.Shared.Wage
-                {
-                    Duration = source.Wage.Duration,
-                    DurationUnit = source.Wage.DurationUnit,
-                    FixedWageYearlyAmount = source.Wage.FixedWageYearlyAmount,
-                    WageAdditionalInformation = source.Wage.WageAdditionalInformation,
-                    WageType = source.Wage.WageType,
-                    WeeklyHours = source.Wage.WeeklyHours,
-                    WorkingWeekDescription = source.Wage.WorkingWeekDescription
-                }
+                
             };
 
             actual.Should().BeEquivalentTo(expectedResult);
         }
 
 
-        private static ApiResponse<GetStandardsListResponse> SetupCoursesApiResponse(LiveVacancy vacancy, Mock<ICourseService> courseService)
+        private static GetStandardsListResponse SetupCoursesApiResponse(LiveVacancy vacancy)
         {
             var fixture = new Fixture();
 
             var larsCode = fixture.Create<int>();
             vacancy.ProgrammeId = larsCode.ToString();
-            vacancy.ProgrammeType = "Standard";
 
             var standards = new List<GetStandardsListResponse.GetStandardsListItem>
             {
                 new GetStandardsListResponse.GetStandardsListItem
                 {
                     LarsCode = larsCode,
-                    Level = fixture.Create<int>(),
+                    Level = 4,
                     Title = fixture.Create<string>(),
                     Route = fixture.Create<string>()
                 }
@@ -91,11 +124,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
 
             var result = new ApiResponse<GetStandardsListResponse>(new GetStandardsListResponse
             { Standards = standards, Total = standards.Count, TotalFiltered = standards.Count }, HttpStatusCode.OK, string.Empty);
-
-            courseService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(It.IsAny<string>()))
-                .ReturnsAsync(result.Body);
-
-            return result;
+            
+            return result.Body;
         }
     }
 }
