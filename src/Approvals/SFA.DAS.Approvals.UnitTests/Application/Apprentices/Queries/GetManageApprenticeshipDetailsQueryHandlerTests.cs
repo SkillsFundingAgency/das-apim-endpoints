@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
+using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetApprenticeshipKey;
 using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
@@ -100,7 +102,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _serviceParameters = new ServiceParameters(Approvals.Application.Shared.Enums.Party.Employer, 123);
 
             _apprenticeshipsApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
-            _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(It.Is<GetPendingPriceChangeRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
+            var apprenticeshipKey = Guid.NewGuid();
+            _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<Guid>(It.Is<GetApprenticeshipKeyRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId))).ReturnsAsync(new ApiResponse<Guid>(apprenticeshipKey, HttpStatusCode.OK, string.Empty));
+            _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(It.Is<GetPendingPriceChangeRequest>(r => r.ApprenticeshipKey == apprenticeshipKey)))
                 .ReturnsAsync(new ApiResponse<GetPendingPriceChangeResponse>(_pendingPriceChangeResponse, HttpStatusCode.OK, string.Empty));
 
             _handler = new GetManageApprenticeshipDetailsQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters, _apprenticeshipsApiClient.Object);
@@ -137,7 +141,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         {
             _pendingPriceChangeResponse.HasPendingPriceChange = true;
             var result = await _handler.Handle(_query, CancellationToken.None);
-            result.PendingPriceChange.Should().BeEquivalentTo(_pendingPriceChangeResponse.PendingPriceChange);
+            result.PendingPriceChange.Cost.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.PendingTotalPrice);
+            result.PendingPriceChange.TrainingPrice.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.PendingTrainingPrice);
+            result.PendingPriceChange.EndPointAssessmentPrice.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.PendingAssessmentPrice);
         }
 
         [Test]
