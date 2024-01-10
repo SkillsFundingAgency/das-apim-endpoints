@@ -43,7 +43,6 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
         {
             var request = new CreateOtherStudentTriageDataPostRequest();
 
-
             var createOtherStudentTriageDataCommandResult = new CreateOtherStudentTriageDataCommandResult { StudentSurveyId = "Test", AuthCode = "Test", ExpiryDate = DateTime.Now };
 
             _mediatorMock.Setup(x => x.Send(It.IsAny<CreateOtherStudentTriageDataCommand>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(createOtherStudentTriageDataCommandResult));

@@ -19,8 +19,7 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.CreateOtherStudentTriageData
 
         public async Task<CreateOtherStudentTriageDataCommandResult> Handle(CreateOtherStudentTriageDataCommand request, CancellationToken cancellationToken)
         {
-
-           var response = await _apiClient.PostWithResponseCode<CreateOtherStudentTriageDataResponse>(new CreateOtherStudentTriageDataRequest(request.StudentTriageData),true);
+            var response = await _apiClient.PostWithResponseCode<CreateOtherStudentTriageDataResponse>(new CreateOtherStudentTriageDataRequest(request.StudentTriageData), true);
 
             response.EnsureSuccessStatusCode();
 

@@ -24,8 +24,7 @@ public class WhenCreatingOtherStudentTriageData
         {
             StudentTriageData = new EarlyConnect.InnerApi.Requests.OtherStudentTriageData()
         };
-
-
+        
         var expectedResponse = new Mock<CreateOtherStudentTriageDataResponse>();
 
         var cancellationToken = new CancellationToken();
