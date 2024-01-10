@@ -96,5 +96,13 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
             await _apiClient.Delete(new CancelPendingPriceChangeRequest(apprenticeshipKey));
             return Ok();
         }
+
+        [HttpPatch]
+        [Route("{apprenticeshipKey}/priceHistory/pending/reject")]
+        public async Task<ActionResult> RejectPendingPriceChange(Guid apprenticeshipKey, [FromBody] RejectPriceChangeRequest request)
+        {
+            await _apiClient.Patch(new PatchRejectApprenticeshipPriceChangeRequest(apprenticeshipKey, request.Reason));
+            return Ok();
+        }
     }
 }
