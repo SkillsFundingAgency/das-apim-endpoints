@@ -36,4 +36,23 @@ public class LiveVacanciesController : ControllerBase
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
+
+    [HttpGet]
+    [Route("{vacancyReference}")]
+    public async Task<IActionResult> GetLiveVacancy([FromRoute] long vacancyReference, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation($"Get Live Vacancy invoked - vacancy reference: {vacancyReference}");
+
+        try
+        {
+            var result = await _mediator.Send(new GetLiveVacancyQuery { VacancyReference = vacancyReference }, cancellationToken);
+            var viewModel = (GetLiveVacanciesApiResponse.LiveVacancy)result.LiveVacancy;
+            return Ok(viewModel);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
 }

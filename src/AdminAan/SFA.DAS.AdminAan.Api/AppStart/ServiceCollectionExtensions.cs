@@ -1,20 +1,12 @@
-﻿using MediatR;
-using Microsoft.Extensions.Options;
+﻿using System.Diagnostics.CodeAnalysis;
+using MediatR;
 using RestEase.HttpClientFactory;
-using SFA.DAS.AdminAan.Api.Configuration;
+using SFA.DAS.AdminAan.Api.Extensions;
 using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
-using SFA.DAS.AdminAan.Configuration;
 using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
-using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.AdminAan.Api.AppStart;
 
@@ -40,52 +32,67 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddServiceRegistration(this IServiceCollection services, IConfigurationRoot configuration)
     {
-        AddConfigurationOptions(services, configuration);
-        services.AddHttpClient();
-
-        services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
-        services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
-        services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
-
         services.AddMediatR(typeof(GetRegionsQuery).Assembly);
 
+        services.AddHttpClient();
         AddAanHubApiClient(services, configuration);
         AddReferenceDataApiClient(services, configuration);
+        AddLocationApiClient(services, configuration);
+        AddCommitmentsV2ApiClient(services, configuration);
+        AddCoursesApiClient(services, configuration);
+        AddApprenticeAccountsApiClient(services, configuration);
+
         return services;
-    }
-
-    private static void AddReferenceDataApiClient(IServiceCollection services, IConfigurationRoot configuration)
-    {
-        var apiConfig = configuration
-            .GetSection(nameof(ReferenceDataApi))
-            .Get<ReferenceDataApi>();
-
-        services.AddSingleton(apiConfig);
-
-        services.AddScoped<ReferenceDataApiAuthenticationHeaderHandler>();
-
-        services.AddRestEaseClient<IReferenceDataApiClient>(apiConfig.ApiBaseUrl)
-            .AddHttpMessageHandler<ReferenceDataApiAuthenticationHeaderHandler>();
     }
 
     private static void AddAanHubApiClient(IServiceCollection services, IConfiguration configuration)
     {
-        var apiConfig = configuration
-                .GetSection(nameof(AanHubApiConfiguration))
-                .Get<AanHubApiConfiguration>();
-
-        services.AddSingleton(apiConfig);
-
-        services.AddScoped<InnerApiAuthenticationHeaderHandler>();
+        var apiConfig = GetApiConfiguration(configuration, "AanHubApiConfiguration");
 
         services.AddRestEaseClient<IAanHubRestApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler<InnerApiAuthenticationHeaderHandler>();
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+    }
+    private static void AddReferenceDataApiClient(IServiceCollection services, IConfigurationRoot configuration)
+    {
+        var apiConfig = GetApiConfiguration(configuration, "ReferenceDataApiConfiguration");
+
+        services
+            .AddRestEaseClient<IReferenceDataApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
     }
 
-    private static void AddConfigurationOptions(IServiceCollection services, IConfigurationRoot configuration)
+    private static void AddLocationApiClient(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddOptions();
-        services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
-        services.AddSingleton(c => c.GetService<IOptions<LocationApiConfiguration>>()!.Value);
+        var apiConfig = GetApiConfiguration(configuration, "LocationApiConfiguration");
+
+        services.AddRestEaseClient<ILocationApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
     }
+
+    private static void AddCommitmentsV2ApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = GetApiConfiguration(configuration, "CommitmentsV2ApiConfiguration");
+
+        services.AddRestEaseClient<ICommitmentsV2ApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+    }
+
+    private static void AddCoursesApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = GetApiConfiguration(configuration, "CoursesApiConfiguration");
+
+        services.AddRestEaseClient<ICoursesApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+    }
+
+    private static void AddApprenticeAccountsApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = GetApiConfiguration(configuration, "ApprenticeAccountsApiConfiguration");
+
+        services.AddRestEaseClient<IApprenticeAccountsApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+    }
+
+    private static InnerApiConfiguration GetApiConfiguration(IConfiguration configuration, string configurationName)
+        => configuration.GetSection(configurationName).Get<InnerApiConfiguration>();
 }

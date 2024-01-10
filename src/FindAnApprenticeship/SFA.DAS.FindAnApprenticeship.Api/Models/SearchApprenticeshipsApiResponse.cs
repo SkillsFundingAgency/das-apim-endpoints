@@ -13,7 +13,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
             {
                 TotalApprenticeshipCount = source.TotalApprenticeshipCount,
                 Location = source.LocationItem,
-                Routes = source.Routes.Select(c=>(RouteApiResponse)c).ToList()
+                Routes = source.Routes.Select(c=>(RouteApiResponse)c).ToList(),
+                Vacancies = source.Vacancies.Select(c => (GetVacanciesListResponseItem)c).ToList(),
+                PageNumber = source.PageNumber,
+                PageSize = source.PageSize,
+                TotalPages = source.TotalPages,
             };
         }
         
@@ -24,5 +28,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public SearchLocationApiResponse Location { get; set; }
         
         public List<RouteApiResponse> Routes { get; set; }
+        public List<GetVacanciesListResponseItem> Vacancies { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public int TotalPages { get; set; }
     }
 }

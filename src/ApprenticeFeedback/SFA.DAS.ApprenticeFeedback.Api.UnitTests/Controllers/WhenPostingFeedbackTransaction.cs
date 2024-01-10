@@ -1,21 +1,18 @@
-﻿
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeFeedback.Api.Controllers;
-using SFA.DAS.ApprenticeFeedback.Application.Commands.GenerateEmailTransaction;
-using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.SharedOuterApi.Models;
-using System.Threading;
-using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.ProcessEmailTransaction;
-using System.Linq;
+using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
+using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Testing.AutoFixture;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
 {
@@ -36,7 +33,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task And_GenerateCommandIsProcessedSuccessfully_Then_ReturnResults()
         {
-            var result = await _controller.GenerateEmailTransaction();
+            var result = await _controller.GenerateEmailTransactions();
             result.Should().NotBeNull();
         }
 
@@ -59,9 +56,11 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
 
             mediatorMock.Setup(mediator =>
                 mediator.Send(
-                    It.Is<ProcessEmailTransactionCommand>(x => x.FeedbackTransactionId == feedbackTransactionId 
-                    && x.ApprenticeName == mediatorApprenticeResult.FirstName && x.ApprenticeEmailAddress == mediatorApprenticeResult.Email
-                    && x.IsEmailContactAllowed == true),
+                    It.Is<ProcessEmailTransactionCommand>(x => x.FeedbackTransactionId == feedbackTransactionId
+                    && x.ApprenticeName == mediatorApprenticeResult.FirstName 
+                    && x.ApprenticeEmailAddress == mediatorApprenticeResult.Email
+                    && x.IsFeedbackEmailContactAllowed == true
+                    && x.IsEngagementEmailContactAllowed == true),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorCommandResponse);
 

@@ -18,7 +18,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.AppStart
                 services.AddStackExchangeRedisCache((options) =>
                 {
                     var azureAdConfiguration = configuration
-                        .GetSection("FindApprenticeshipJobsConfiguration")
+                        .GetSection(nameof(FindApprenticeshipJobsConfiguration))
                         .Get<FindApprenticeshipJobsConfiguration>();
 
                     options.Configuration = azureAdConfiguration.ApimEndpointsRedisConnectionString;
