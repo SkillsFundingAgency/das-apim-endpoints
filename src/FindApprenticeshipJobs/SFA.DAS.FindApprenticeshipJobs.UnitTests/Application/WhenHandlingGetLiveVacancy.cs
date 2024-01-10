@@ -7,6 +7,7 @@ using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -19,6 +20,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application
         public async Task Then_Vacancy_Is_Returned(
             GetLiveVacancyQuery query,
             ApiResponse<GetLiveVacancyApiResponse> apiResponse,
+            GetStandardsListResponse standards,
+            [Frozen] Mock<ICourseService> mockCourseService,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockApiClient,
             [Frozen] Mock<ILiveVacancyMapper> mockVacancyMapper,
             FindApprenticeshipJobs.Application.Shared.LiveVacancy mapperResult,
@@ -29,9 +32,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application
                         It.Is<GetLiveVacancyApiRequest>(r =>
                             r.GetUrl == $"api/livevacancies/{query.VacancyReference}")))
                 .ReturnsAsync(apiResponse);
+            mockCourseService
+                .Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+                .ReturnsAsync(standards);
 
-            mockVacancyMapper.Setup(x => x.Map(It.Is<LiveVacancy>(v => v == apiResponse.Body)))
-                .ReturnsAsync(mapperResult);
+            mockVacancyMapper.Setup(x => x.Map(It.Is<LiveVacancy>(v => v == apiResponse.Body), standards))
+                .Returns(mapperResult);
 
             var result = await sut.Handle(query, CancellationToken.None);
 

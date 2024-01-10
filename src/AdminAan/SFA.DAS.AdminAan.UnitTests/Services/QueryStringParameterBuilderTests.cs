@@ -175,4 +175,19 @@ public class QueryStringParameterBuilderTests
             pageResult.Should().BeNull();
         }
     }
+
+    [TestCase(true)]
+    [TestCase(false)]
+    public void Builder_ConstructParameters_ToShowUserEventsOnly(bool showUserEventsOnly)
+    {
+        var model = new GetCalendarEventsQuery
+        {
+            RequestedByMemberId = Guid.NewGuid(),
+            ShowUserEventsOnly = showUserEventsOnly
+        };
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model);
+
+        parameters.TryGetValue("ShowUserEventsOnly", out var pageResult);
+        pageResult![0].Should().Be(showUserEventsOnly.ToString());
+    }
 }

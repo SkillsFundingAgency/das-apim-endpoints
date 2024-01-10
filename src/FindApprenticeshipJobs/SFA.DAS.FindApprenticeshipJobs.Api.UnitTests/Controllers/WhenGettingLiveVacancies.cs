@@ -22,6 +22,7 @@ public class WhenGettingLiveVacancies
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] LiveVacanciesController sut)
     {
+        mockQueryResult.Vacancies.ToList().ForEach(x => x.IsRecruitVacancy = true);
         mockMediator.Setup(x => x.Send(It.IsAny<GetLiveVacanciesQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
 
         var actual = await sut.Get(mockPageSize, mockPageNo, It.IsAny<CancellationToken>()) as ObjectResult;
