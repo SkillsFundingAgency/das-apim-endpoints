@@ -44,12 +44,12 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
 
                 logId = await CreateLog(StudentDataUploadStatus.InProgress, request, ipAddress);
 
-                await _mediator.Send(new CreateStudentDataCommand
+                var response=await _mediator.Send(new CreateStudentDataCommand
                 {
                     StudentDataList = request.MapFromCreateStudentDataRequest(logId),
                 });
 
-                await UpdateLog(logId, StudentDataUploadStatus.Completed);
+                await UpdateLog(logId, StudentDataUploadStatus.Completed, response.Message);
 
                 return CreatedAtAction(nameof(CreateStudentData), null);
             }
@@ -91,13 +91,13 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             return response.LogId;
         }
 
-        private async Task UpdateLog(int logId, StudentDataUploadStatus status, string error = null)
+        private async Task UpdateLog(int logId, StudentDataUploadStatus status, string message = null)
         {
             var updateLog = new UpdateLogPostRequest
             {
                 LogId = logId,
                 Status = status.ToString(),
-                Error = error
+                Error = message
             };
 
             await _mediator.Send(new UpdateLogDataCommand
