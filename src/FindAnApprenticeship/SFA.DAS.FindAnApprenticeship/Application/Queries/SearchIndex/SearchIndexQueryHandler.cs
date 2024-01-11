@@ -22,13 +22,7 @@ public class SearchIndexQueryHandler : IRequestHandler<SearchIndexQuery, SearchI
     public async Task<SearchIndexQueryResult> Handle(SearchIndexQuery request, CancellationToken cancellationToken)
     {
         var resultTask = _findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
-            new GetApprenticeshipCountRequest(
-                null,
-                null,
-                null,
-                null,
-                null
-            ));
+            new GetApprenticeshipCountRequest());
 
         var locationTask = _locationLookupService.GetLocationInformation(request.LocationSearchTerm, 0, 0, false);
 
