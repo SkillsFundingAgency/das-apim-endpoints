@@ -17,6 +17,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly ILogger<StudentDataController> _logger;
+        private readonly string DataSource="UCAS";
 
         public StudentDataController(IMediator mediator, ILogger<StudentDataController> logger)
         {
@@ -46,7 +47,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
 
                 var response=await _mediator.Send(new CreateStudentDataCommand
                 {
-                    StudentDataList = request.MapFromCreateStudentDataRequest(logId),
+                    StudentDataList = request.MapFromCreateStudentDataRequest(logId, DataSource),
                 });
 
                 await UpdateLog(logId, StudentDataUploadStatus.Completed, response.Message);
@@ -77,7 +78,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             var createLogRequest = new CreateLogPostRequest
             {
                 RequestType = actionName,
-                RequestSource = "UCAS",
+                RequestSource = DataSource,
                 RequestIP = ipAddress,
                 Payload = JsonConvert.SerializeObject(request),
                 Status = status.ToString()
