@@ -13,10 +13,10 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
     public class StudentTriageDataController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<StudentDataController> _logger;
+        private readonly ILogger<StudentTriageDataController> _logger;
         private readonly string DataSource = "UCAS";
 
-        public StudentTriageDataController(IMediator mediator, ILogger<StudentDataController> logger)
+        public StudentTriageDataController(IMediator mediator, ILogger<StudentTriageDataController> logger)
         {
             _mediator = mediator;
             _logger = logger;

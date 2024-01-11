@@ -20,13 +20,13 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
     {
         private StudentTriageDataController _controller;
         private Mock<IMediator> _mediatorMock;
-        private Mock<ILogger<StudentDataController>> _loggerMock;
+        private Mock<ILogger<StudentTriageDataController>> _loggerMock;
 
         [SetUp]
         public void Setup()
         {
             _mediatorMock = new Mock<IMediator>();
-            _loggerMock = new Mock<ILogger<StudentDataController>>();
+            _loggerMock = new Mock<ILogger<StudentTriageDataController>>();
 
             _controller = new StudentTriageDataController(_mediatorMock.Object, _loggerMock.Object)
             {
