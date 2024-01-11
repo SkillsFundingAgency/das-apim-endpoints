@@ -45,5 +45,6 @@
         public string AccountLegalEntityPublicHashedId { get; set; } = null!;
         public string ApplicationMethod { get; set; } = null!;
         public string? ApplicationUrl { get; set; }
+        public IEnumerable<string> TypicalJobTitles { get; set; } = Enumerable.Empty<string>();
     }
 }

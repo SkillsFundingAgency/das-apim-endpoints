@@ -14,6 +14,7 @@
             public int Level { get; set; }
             public string Route { get; set; } = null!;
             public int RouteCode { get; set; }
+            public string TypicalJobTitles { get; set; }
         }
     }
 }
