@@ -58,6 +58,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
 
             Assert.AreEqual(_queryResult.DeliveryModels, response.DeliveryModels);
             Assert.AreEqual(_queryResult.LegalEntityName, response.LegalEntityName);
+            Assert.AreEqual(_queryResult.Status, response.Status);
         }
 
         [Test]
