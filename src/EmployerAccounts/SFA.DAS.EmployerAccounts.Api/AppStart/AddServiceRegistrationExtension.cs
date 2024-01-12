@@ -26,6 +26,7 @@ namespace SFA.DAS.EmployerAccounts.Api.AppStart
                     ProviderRelationshipsApiClient>();
             services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
+            services.AddTransient<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>, LevyTransferMatchingApiClient>();
         }
     }
 }
