@@ -15,7 +15,7 @@ namespace SFA.DAS.FindAnApprenticeship.Domain
 
         public static class SectionStatus
         {
-            public static readonly string NotYetStarted = "NotYetStarted";
+            public static readonly string NotStarted = "NotStarted";
         }
     }
 }
