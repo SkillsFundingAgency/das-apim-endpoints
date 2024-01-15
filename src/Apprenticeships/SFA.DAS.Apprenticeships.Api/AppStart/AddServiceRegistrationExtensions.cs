@@ -21,6 +21,9 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         services.AddTransient<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>, ApprenticeshipsApiClient>();
         services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
+        services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
+        services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
+        services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
     }
 }
 
@@ -42,5 +45,11 @@ public static class AddConfigurationOptionsExtension
 
         services.Configure<CommitmentsV2ApiConfiguration>(configuration.GetSection(nameof(CommitmentsV2ApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>()!.Value);
+
+        services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>()!.Value);
+
+        services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection(nameof(EmployerProfilesApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>()!.Value);
     }
 }

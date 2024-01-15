@@ -17,7 +17,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships
         }
         
         public Guid ApprenticeshipKey { get; set; }
-        public string PatchUrl => $"{ApprenticeshipKey}/priceHistory";
+        public string PatchUrl => $"{ApprenticeshipKey}/priceHistory/pending/reject";
         public RejectApprenticeshipPriceChangeRequest Data { get; set; }
     }
 
