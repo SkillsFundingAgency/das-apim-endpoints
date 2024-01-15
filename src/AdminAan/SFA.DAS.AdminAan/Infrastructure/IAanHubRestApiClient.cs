@@ -54,8 +54,16 @@ public interface IAanHubRestApiClient
     [AllowAnyStatusCode]
     Task<Response<LookupAdminMemberResult>> GetMemberByEmail([Path] string email, CancellationToken cancellationToken);
 
+    [Get("members/{memberId}")]
+    Task<GetMemberResponse> GetMember([Path] Guid memberId, CancellationToken cancellationToken);
+
+    [Get("/members/{memberId}/profile?public=false")]
+    Task<GetMemberProfilesAndPreferencesResponse> GetMemberProfileWithPreferences([Path] Guid memberId, [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, CancellationToken cancellationToken);
+
     [Post("/admins")]
     [AllowAnyStatusCode]
     Task<CreateAdminMemberCommandResult> CreateAdminMember([Body] CreateAdminMemberCommand command, CancellationToken cancellationToken);
-}
 
+    [Get("/profiles/{userType}")]
+    Task<GetProfilesResponse> GetProfiles([Path] string userType, CancellationToken cancellationToken);
+}

@@ -38,6 +38,9 @@ public static class ServiceCollectionExtensions
         AddAanHubApiClient(services, configuration);
         AddReferenceDataApiClient(services, configuration);
         AddLocationApiClient(services, configuration);
+        AddCommitmentsV2ApiClient(services, configuration);
+        AddCoursesApiClient(services, configuration);
+        AddApprenticeAccountsApiClient(services, configuration);
 
         return services;
     }
@@ -63,6 +66,30 @@ public static class ServiceCollectionExtensions
         var apiConfig = GetApiConfiguration(configuration, "LocationApiConfiguration");
 
         services.AddRestEaseClient<ILocationApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+    }
+
+    private static void AddCommitmentsV2ApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = GetApiConfiguration(configuration, "CommitmentsV2ApiConfiguration");
+
+        services.AddRestEaseClient<ICommitmentsV2ApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+    }
+
+    private static void AddCoursesApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = GetApiConfiguration(configuration, "CoursesApiConfiguration");
+
+        services.AddRestEaseClient<ICoursesApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+    }
+
+    private static void AddApprenticeAccountsApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = GetApiConfiguration(configuration, "ApprenticeAccountsApiConfiguration");
+
+        services.AddRestEaseClient<IApprenticeAccountsApiClient>(apiConfig.Url)
             .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
     }
 
