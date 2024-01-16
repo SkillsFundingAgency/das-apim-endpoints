@@ -78,7 +78,9 @@ public class GetLiveVacanciesApiResponse
                 AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
                 ApplicationMethod = source.ApplicationMethod,
                 ApplicationUrl = source.ApplicationUrl,
-                TypicalJobTitles = source.TypicalJobTitles
+                TypicalJobTitles = source.TypicalJobTitles,
+                AdditionalQuestion1 = source.AdditionalQuestion1,
+                AdditionalQuestion2 = source.AdditionalQuestion2,
             };
         }
 
@@ -127,6 +129,8 @@ public class GetLiveVacanciesApiResponse
         public string ApplicationMethod { get; set; }
         public string? ApplicationUrl { get; set; }
         public string TypicalJobTitles { get; set; }
+        public string AdditionalQuestion1 { get; set; } = null!;
+        public string AdditionalQuestion2 { get; set; } = null!;
 
     }
 
