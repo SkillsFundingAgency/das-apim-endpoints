@@ -71,7 +71,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
                 Location = locationTask.Result,
                 Routes = routesTask.Result.Routes,
                 TotalFound = apprenticeshipVacancies.Count,
-                Vacancies = apprenticeshipVacancies.OrderBy(c=>c.Distance).Take(20)
+                Vacancies = apprenticeshipVacancies
             };
         }
     }

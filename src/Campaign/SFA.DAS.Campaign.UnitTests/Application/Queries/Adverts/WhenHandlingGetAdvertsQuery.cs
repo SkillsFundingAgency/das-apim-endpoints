@@ -9,9 +9,9 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Campaign.Application.Queries.Adverts;
 using SFA.DAS.Campaign.Configuration;
+using SFA.DAS.Campaign.InnerApi.Requests;
 using SFA.DAS.Campaign.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -29,7 +29,6 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Adverts
             LocationItem locationItem,
             GetVacanciesResponse vacanciesResponse,
             GetRoutesListResponse getRoutesListResponse,
-            GetStandardsListResponse standards,
             [Frozen] Mock<IOptions<CampaignConfiguration>> configuration,
             [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<ILocationLookupService> locationLookupService,
@@ -37,17 +36,15 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Adverts
             GetAdvertsQueryHandler handler)
         {
             //Arrange
-            query.Route = standards.Standards.First().Route.ToLower();
             configuration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl;
-            var expectedAdvertUrl = new GetVacanciesRequest(0, 20, null, null, null, new List<int>{ standards.Standards.First().LarsCode}, null,
-                locationItem.GeoPoint.First(), locationItem.GeoPoint.Last(), query.Distance, null, null, "DistanceAsc");
+            var expectedAdvertUrl = new GetVacanciesRequest(locationItem.GeoPoint.First(), locationItem.GeoPoint.Last(), query.Distance, 0, 20, query.Route);
+
             locationLookupService.Setup(x => x.GetLocationInformation(query.Postcode, 0, 0, false))
                 .ReturnsAsync(locationItem);
             faaApiClient
                 .Setup(x => x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
                     c.GetUrl.Equals(expectedAdvertUrl.GetUrl)))).ReturnsAsync(vacanciesResponse);
             courseService.Setup(x => x.GetRoutes()).ReturnsAsync(getRoutesListResponse);
-            courseService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse))).ReturnsAsync(standards);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
