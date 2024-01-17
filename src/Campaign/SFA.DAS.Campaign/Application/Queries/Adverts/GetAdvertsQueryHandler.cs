@@ -49,25 +49,24 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
             }
 
             
-            var vacancyResult = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(
-                new GetVacanciesRequest(
+            var advertRequest = new GetVacanciesRequest(
                     locationTask.Result.GeoPoint.FirstOrDefault(),
                     locationTask.Result.GeoPoint.LastOrDefault(),
                     request.Distance,
                     0,
                     20,
-                    request.Route));
+                    request.Route);
 
+            var adverts = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(advertRequest);
+            var apprenticeshipVacancies = new List<GetVacanciesListItem>();
+            apprenticeshipVacancies.AddRange(adverts.ApprenticeshipVacancies.ToList());
 
-            var apprenticeshipVacancies = vacancyResult.ApprenticeshipVacancies.Select(advert => new GetVacanciesListItem
+            foreach (var advert in apprenticeshipVacancies)
             {
-                VacancyReference = advert.VacancyReference,
-                Distance = advert.Distance,
-                VacancyUrl = $"{_configuration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{advert.VacancyReference}"
-            }).ToList();
+                advert.VacancyUrl = $"{_configuration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{advert.VacancyReference}";
+            }
 
-            
-            return new GetAdvertsQueryResult
+                return new GetAdvertsQueryResult
             {
                 Location = locationTask.Result,
                 Routes = routesTask.Result.Routes,
