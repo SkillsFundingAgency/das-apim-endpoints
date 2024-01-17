@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
     {
         private GetTasksQueryHandler _handler;
         private GetTasksQuery _request;
-        private GetApplicationsResponse _ltmApplicationsResponse;
+        private GetNumberTransferPledgeApplicationsToReviewResponse _ltmApplicationsResponse;
         private Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> _ltmApiClient;
         private Mock<ILogger<GetTasksQueryHandler>> _loggerMock;
 
@@ -30,12 +30,12 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
             var fixture = new Fixture();
             _request = fixture.Create<GetTasksQuery>();
 
-            _ltmApplicationsResponse = fixture.Create<GetApplicationsResponse>();
+            _ltmApplicationsResponse = fixture.Create<GetNumberTransferPledgeApplicationsToReviewResponse>();
 
             _ltmApiClient = new Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>>();
 
             _ltmApiClient.Setup(x =>
-                    x.Get<GetApplicationsResponse>(It.IsAny<GetApplicationsRequest>()))
+                    x.Get<GetNumberTransferPledgeApplicationsToReviewResponse>(It.IsAny<GetNumberTransferPledgeApplicationsToReviewRequest>()))
                 .ReturnsAsync(_ltmApplicationsResponse);
             
             _handler = new GetTasksQueryHandler(_loggerMock.Object, _ltmApiClient.Object);
@@ -48,7 +48,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
 
             result.Should().BeEquivalentTo(new GetTasksQueryResult
             {
-                NumberTransferPledgeApplicationsToReview = _ltmApplicationsResponse.TotalItems
+                NumberTransferPledgeApplicationsToReview = _ltmApplicationsResponse.NumberTransferPledgeApplicationsToReview
             });
         }
     }

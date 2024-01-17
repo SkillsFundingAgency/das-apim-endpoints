@@ -24,18 +24,16 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
         {
             _logger.LogInformation($"Getting Tasks for account {request.AccountId}");
 
-            var pledgeApplicationsToReviewTask = _ltmApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
-            {
-                AccountId = request.AccountId,
-                ApplicationStatusFilter = ApplicationStatus.Pending
-            });
+            var pledgeApplicationsToReviewTask = _ltmApiClient.Get<GetNumberTransferPledgeApplicationsToReviewResponse>(
+                new GetNumberTransferPledgeApplicationsToReviewRequest(request.AccountId)
+            );
 
             await Task.WhenAll(pledgeApplicationsToReviewTask);
             var pledgeApplicationsToReview = await pledgeApplicationsToReviewTask;
 
             return new GetTasksQueryResult()
             {
-                NumberTransferPledgeApplicationsToReview = pledgeApplicationsToReview?.TotalItems ?? 0
+                NumberTransferPledgeApplicationsToReview = pledgeApplicationsToReview?.NumberTransferPledgeApplicationsToReview ?? 0
             };
         }
     }
