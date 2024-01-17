@@ -48,8 +48,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
                 };
             }
 
-            var apprenticeshipVacancies = new List<GetVacanciesListItem>();
-
+            
             var vacancyResult = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(
                 new GetVacanciesRequest(
                     locationTask.Result.GeoPoint.FirstOrDefault(),
@@ -60,10 +59,13 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
                     request.Route));
 
 
-            foreach (var advert in apprenticeshipVacancies)
+            var apprenticeshipVacancies = vacancyResult.ApprenticeshipVacancies.Select(advert => new GetVacanciesListItem
             {
-                advert.VacancyUrl = $"{_configuration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{advert.VacancyReference}";
-            }
+                VacancyReference = advert.VacancyReference,
+                Distance = advert.Distance,
+                VacancyUrl = $"{_configuration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{advert.VacancyReference}"
+            }).ToList();
+
             
             return new GetAdvertsQueryResult
             {
