@@ -46,7 +46,7 @@
         public string ApplicationMethod { get; set; } = null!;
         public string? ApplicationUrl { get; set; }
         public string TypicalJobTitles { get; set; } = null!;
-        public string AdditionalQuestion1 { get; set; } = null!;
-        public string AdditionalQuestion2 { get; set; } = null!;
+        public string? AdditionalQuestion1 { get; set; }
+        public string? AdditionalQuestion2 { get; set; }
     }
 }

@@ -76,6 +76,13 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public IEnumerable<string> Skills { get; init; }
         [JsonProperty("qualifications")]
         public IEnumerable<VacancyQualification> Qualifications { get; init; }
+
+        [JsonProperty("additionalQuestion1")]
+        public string AdditionalQuestion1 { get; init; }
+
+        [JsonProperty("additionalQuestion2")]
+        public string AdditionalQuestion2 { get; init; }
+    
     }
 
     public class VacancyQualification

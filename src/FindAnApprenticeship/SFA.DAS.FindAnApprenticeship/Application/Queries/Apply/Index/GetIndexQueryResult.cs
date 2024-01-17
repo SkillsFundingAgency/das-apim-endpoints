@@ -30,7 +30,10 @@ public class GetIndexQueryResult
     {
         public string SkillsAndStrengths { get; set; }
         public string WhatInterestsYou { get; set; }
-        public string Travel { get; set; }
+        public string AdditionalQuestion1 { get; set; }
+        public string AdditionalQuestion2 { get; set; }
+        public string AdditionalQuestion1Label { get; set; }
+        public string AdditionalQuestion2Label { get; set; }
     }
 
     public class InterviewAdjustmentsSection

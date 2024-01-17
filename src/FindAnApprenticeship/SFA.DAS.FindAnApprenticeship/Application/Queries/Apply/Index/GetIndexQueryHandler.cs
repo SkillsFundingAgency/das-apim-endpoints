@@ -44,7 +44,10 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
             {
                 SkillsAndStrengths = Constants.SectionStatus.NotStarted,
                 WhatInterestsYou = Constants.SectionStatus.NotStarted,
-                Travel = Constants.SectionStatus.NotStarted
+                AdditionalQuestion1 = Constants.SectionStatus.NotStarted,
+                AdditionalQuestion1Label = result.AdditionalQuestion1,
+                AdditionalQuestion2 = Constants.SectionStatus.NotStarted,
+                AdditionalQuestion2Label = result.AdditionalQuestion2
             },
             InterviewAdjustments = new GetIndexQueryResult.InterviewAdjustmentsSection
             {

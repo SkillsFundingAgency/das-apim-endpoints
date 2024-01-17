@@ -129,8 +129,8 @@ public class GetLiveVacanciesApiResponse
         public string ApplicationMethod { get; set; }
         public string? ApplicationUrl { get; set; }
         public string TypicalJobTitles { get; set; }
-        public string AdditionalQuestion1 { get; set; } = null!;
-        public string AdditionalQuestion2 { get; set; } = null!;
+        public string? AdditionalQuestion1 { get; set; }
+        public string? AdditionalQuestion2 { get; set; }
 
     }
 
