@@ -9,8 +9,6 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
 {
     public class ManageStudentTriageDataCommandHandler : IRequestHandler<ManageStudentTriageDataCommand, ManageStudentTriageDataCommandResult>
     {
-
-
         private readonly IEarlyConnectApiClient<EarlyConnectApiConfiguration> _apiClient;
 
         public ManageStudentTriageDataCommandHandler(IEarlyConnectApiClient<EarlyConnectApiConfiguration> apiClient)
