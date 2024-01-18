@@ -5,7 +5,7 @@ using SFA.DAS.ApprenticeAan.Application.Common;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMember;
-using SFA.DAS.ApprenticeAan.Application.Model;
+using SFA.DAS.ApprenticeAan.Application.Models;
 using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
 
 namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MemberProfiles.Queries.GetMemberProfileWithPreferences;

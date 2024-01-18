@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.ApprenticeAan.Application.Common;
-using SFA.DAS.ApprenticeAan.Application.Model;
+using SFA.DAS.ApprenticeAan.Application.Models;
 
 namespace SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 
