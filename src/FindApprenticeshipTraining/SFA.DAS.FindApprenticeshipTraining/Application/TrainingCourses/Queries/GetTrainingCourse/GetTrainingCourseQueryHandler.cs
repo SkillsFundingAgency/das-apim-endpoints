@@ -48,7 +48,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
 
             var levelsTask = _cacheHelper.GetRequest<GetLevelsListResponse>(_apiClient,
-                new GetLevelsListRequest(), nameof(GetLevelsListResponse), out _);
+                new InnerApi.Requests.GetLevelsListRequest(), nameof(GetLevelsListResponse), out _);
 
             var shortlistTask =  request.ShortlistUserId.HasValue
                 ? _shortlistApiClient.Get<int>(new GetShortlistUserItemCountRequest(request.ShortlistUserId.Value))
