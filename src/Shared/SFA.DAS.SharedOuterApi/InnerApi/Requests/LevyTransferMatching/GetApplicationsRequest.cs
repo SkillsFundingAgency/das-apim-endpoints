@@ -8,6 +8,8 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching
     {
         public int? PledgeId { get; set; }
         public long? AccountId { get; set; }
+        public long? SenderAccountId { get; set; }
+
         public string ApplicationStatusFilter { get; set; }
 
         public string SortOrder { get; set; }
