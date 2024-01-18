@@ -17,6 +17,8 @@ namespace SFA.DAS.EarlyConnect.Api.Mappers
                     LastName = dto.LastName,
                     DateOfBirth = dto.DateOfBirth,
                     Email = dto.Email,
+                    Telephone = (dto.Telephone != null) ? dto.Telephone : "",
+                    SchoolName = (dto.SchoolName != null) ? dto.SchoolName : "",
                     Postcode = dto.Postcode,
                     Industry = dto.Industry,
                     DateOfInterest = dto.DateOfInterest,
