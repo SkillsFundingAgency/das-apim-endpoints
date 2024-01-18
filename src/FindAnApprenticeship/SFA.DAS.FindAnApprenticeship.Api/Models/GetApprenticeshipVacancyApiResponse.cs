@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models
 {
@@ -21,7 +22,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public DateTime StartDate { get; init; }
         public DateTime ClosingDate { get; init; }
         public DateTime PostedDate { get; init; }
-        
+
 
         public string WageAmount { get; init; }
         public int WageType { get; init; }
@@ -53,10 +54,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public int NumberOfPositions { get; init; }
         public string ProviderName { get; init; }
         public int? StandardLarsCode { get; init; }
-        
-        
+
+
         public VacancyLocationType VacancyLocationType { get; init; }
-        
+
         public string WorkingWeek { get; init; }
         public string ExpectedDuration { get; init; }
         public double Score { get; init; }
@@ -74,11 +75,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
 
         [JsonProperty("VacancyQualification")]
         public IEnumerable<VacancyQualificationApiResponse> Qualifications { get; init; }
+
         public AddressApiResponse Address { get; init; }
         public List<string> CourseSkills { get; set; }
         public List<string> CourseCoreDuties { get; set; }
         public string CourseOverviewOfRole { get; set; }
         public string StandardPageUrl { get; set; }
+        [JsonProperty("levels")] public List<GetLevelsListItem> Levels { get; set; }
+
 
         public static implicit operator GetApprenticeshipVacancyApiResponse(GetApprenticeshipVacancyQueryResult source)
         {
@@ -137,11 +141,13 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 IsEmployerAnonymous = source.ApprenticeshipVacancy.IsEmployerAnonymous,
 
                 Address = source.ApprenticeshipVacancy.Address,
-                Qualifications = source.ApprenticeshipVacancy.Qualifications.Select(l => (VacancyQualificationApiResponse)l).ToList(),
+                Qualifications = source.ApprenticeshipVacancy.Qualifications
+                    .Select(l => (VacancyQualificationApiResponse) l).ToList(),
                 CourseOverviewOfRole = source.CourseDetail.OverviewOfRole,
                 StandardPageUrl = source.CourseDetail.StandardPageUrl,
                 CourseCoreDuties = source.CourseDetail.CoreDuties,
-                CourseSkills = source.CourseDetail.Skills
+                CourseSkills = source.CourseDetail.Skills,
+                Levels = source.Levels
             };
         }
     }
