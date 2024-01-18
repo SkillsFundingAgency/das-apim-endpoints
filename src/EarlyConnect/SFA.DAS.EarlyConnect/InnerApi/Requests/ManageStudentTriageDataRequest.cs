@@ -5,10 +5,10 @@ namespace SFA.DAS.EarlyConnect.InnerApi.Requests
 {
     public class ManageStudentTriageDataRequest : IPostApiRequest
     {
-        public string SurveyGuid { get; set; }
+        public Guid SurveyGuid { get; set; }
         public object Data { get; set; }
 
-        public ManageStudentTriageDataRequest(StudentTriageData studentTriageData, string surveyGuid)
+        public ManageStudentTriageDataRequest(StudentTriageData studentTriageData, Guid surveyGuid)
         {
             Data = studentTriageData;
             SurveyGuid = surveyGuid;

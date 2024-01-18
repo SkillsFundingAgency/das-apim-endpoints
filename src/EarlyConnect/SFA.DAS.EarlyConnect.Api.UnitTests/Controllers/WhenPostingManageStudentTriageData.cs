@@ -51,7 +51,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             _mediatorMock.Setup(x => x.Send(It.IsAny<ManageStudentTriageDataCommand>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(manageStudentTriageDataCommandResult));
 
-            var result = await _controller.ManageStudentTriageData(request, "surveyGuid");
+            var result = await _controller.ManageStudentTriageData(request, new Guid());
 
             Assert.IsInstanceOf<CreatedAtActionResult>(result);
             var okResult = (CreatedAtActionResult)result;
@@ -69,7 +69,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             _mediatorMock.Setup(x => x.Send(It.IsAny<ManageStudentTriageDataCommand>(), It.IsAny<CancellationToken>())).Throws(new Exception());
 
-            var result = await _controller.ManageStudentTriageData(request, "surveyGuid");
+            var result = await _controller.ManageStudentTriageData(request, new Guid());
 
             Assert.IsInstanceOf<BadRequestResult>(result);
         }

@@ -56,7 +56,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [Route("{surveyGuid}")]
-        public async Task<IActionResult> ManageStudentTriageData(ManageStudentTriageDataPostRequest request,[FromRoute] string surveyGuid)
+        public async Task<IActionResult> ManageStudentTriageData(ManageStudentTriageDataPostRequest request,[FromRoute] Guid surveyGuid)
         {
             try
             {

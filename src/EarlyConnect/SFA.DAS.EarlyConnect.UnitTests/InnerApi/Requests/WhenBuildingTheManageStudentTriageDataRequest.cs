@@ -1,3 +1,4 @@
+using System;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
@@ -9,8 +10,10 @@ namespace SFA.DAS.EarlyConnect.UnitTests.InnerApi.Requests
     public class WhenBuildingTheManageStudentTriageDataRequest
     {
         [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Constructed(StudentTriageData studentTriageData, string surveyGuid)
+        public void Then_The_Url_Is_Correctly_Constructed(StudentTriageData studentTriageData)
         {
+            Guid surveyGuid = new Guid();
+
             var actual = new ManageStudentTriageDataRequest(studentTriageData, surveyGuid);
 
             actual.PostUrl.Should().Be($"/api/student-triage-data/{surveyGuid}");
