@@ -2,10 +2,10 @@ namespace SFA.DAS.Apprenticeships.Application.AccountUsers.Queries
 {
     public class GetAccountsQueryResult
     {
-        public IEnumerable<AccountUser> UserAccountResponse { get ; set ; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string EmployerUserId { get; set; }
+        public IEnumerable<AccountUser> UserAccountResponse { get; set; } = null!;
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public string EmployerUserId { get; set; } = null!;
         public bool IsSuspended { get; set; }
     }
 }

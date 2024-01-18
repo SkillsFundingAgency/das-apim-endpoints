@@ -11,10 +11,12 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
     public class AccountUsersController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<TrainingCoursesController> _logger;
 
-        public AccountUsersController(IMediator mediator)
+        public AccountUsersController(IMediator mediator, ILogger<TrainingCoursesController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -33,7 +35,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e, "Error attempting to get user accounts");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
