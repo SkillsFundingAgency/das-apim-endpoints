@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId;
-using SFA.DAS.EarlyConnect.InnerApi.Responses;
+using SFA.DAS.EarlyConnect.Models;
 
 namespace SFA.DAS.EarlyConnect.Api.Models
 {
@@ -129,7 +129,7 @@ namespace SFA.DAS.EarlyConnect.Api.Models
         {
             return new ResponseAnswers
             {
-                Id = source.Id,
+                Id = source.Id.Value,
                 StudentSurveyId = source.StudentSurveyId,
                 QuestionId = source.QuestionId,
                 AnswerId = source.AnswerId,

@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EarlyConnect.Api.Models;
 using System.Net;
+using SFA.DAS.EarlyConnect.Api.Mappers;
 using SFA.DAS.EarlyConnect.Application.Commands.CreateOtherStudentTriageData;
 using SFA.DAS.EarlyConnect.InnerApi.Requests;
 using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId;
+using SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData;
 
 namespace SFA.DAS.EarlyConnect.Api.Controllers
 {
@@ -50,6 +52,30 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             }
         }
 
+        [HttpPost]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [Route("{surveyGuid}")]
+        public async Task<IActionResult> ManageStudentTriageData(ManageStudentTriageDataPostRequest request,[FromRoute] string surveyGuid)
+        {
+            try
+            {
+                var response = await _mediator.Send(new ManageStudentTriageDataCommand
+                {
+                    StudentTriageData = request.MapFromManageStudentTriageDataRequest(),
+                    SurveyGuid= surveyGuid
+                });
+
+                return CreatedAtAction(nameof(ManageStudentTriageData), (ManageStudentTriageDataPostResponse)response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error posting manage student triage data");
+
+                return BadRequest();
+            }
+        }
+
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -60,7 +86,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             {
                 var result = await _mediator.Send(new GetStudentTriageDataBySurveyIdQuery { SurveyGuid = surveyGuid });
 
-                return Ok((GetStudentTriageDataBySurveyIdResponse)result);
+                return Ok((Models.GetStudentTriageDataBySurveyIdResponse)result);
             }
             catch (Exception e)
             {

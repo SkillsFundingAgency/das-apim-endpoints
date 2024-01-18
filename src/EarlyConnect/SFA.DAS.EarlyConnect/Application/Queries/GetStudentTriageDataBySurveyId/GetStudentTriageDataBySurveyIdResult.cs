@@ -1,4 +1,4 @@
-﻿using SFA.DAS.EarlyConnect.InnerApi.Responses;
+﻿using SFA.DAS.EarlyConnect.Models;
 
 namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId
 {
