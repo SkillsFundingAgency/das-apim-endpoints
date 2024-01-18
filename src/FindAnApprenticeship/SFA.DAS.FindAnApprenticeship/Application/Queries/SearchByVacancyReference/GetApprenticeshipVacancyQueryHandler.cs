@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference
 {
-    public class GetApprenticeshipVacancyQueryHandler : IRequestHandler<GetApprenticeshipVacancyQuery,
-        GetApprenticeshipVacancyQueryResult>
+    public class GetApprenticeshipVacancyQueryHandler : IRequestHandler<GetApprenticeshipVacancyQuery, GetApprenticeshipVacancyQueryResult>
     {
         private readonly IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> _findApprenticeshipApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
@@ -26,17 +25,13 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             _courseService = courseService;
         }
 
-        public async Task<GetApprenticeshipVacancyQueryResult> Handle(GetApprenticeshipVacancyQuery request,
-            CancellationToken cancellationToken)
+        public async Task<GetApprenticeshipVacancyQueryResult> Handle(GetApprenticeshipVacancyQuery request, CancellationToken cancellationToken)
         {
-            var result =
-                await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(
-                    new GetVacancyRequest(request.VacancyReference));
+            var result = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(request.VacancyReference));
 
             if (result is null) return null;
 
-            var courseResult =
-                await _coursesApiClient.Get<GetStandardsListItemResponse>(new GetStandardRequest(result.CourseId));
+            var courseResult = await _coursesApiClient.Get<GetStandardsListItemResponse>(new GetStandardRequest(result.CourseId));
             var courseLevels = await _courseService.GetLevels();
 
             return new GetApprenticeshipVacancyQueryResult

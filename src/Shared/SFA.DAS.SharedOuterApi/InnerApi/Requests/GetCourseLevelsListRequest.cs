@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
-    public class GetLevelsListRequest : IGetApiRequest
+    public class GetCourseLevelsListRequest : IGetApiRequest
     {
         public string GetUrl => "api/courses/levels";
     }

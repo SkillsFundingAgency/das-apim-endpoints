@@ -8,6 +8,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
     {
         public GetApprenticeshipVacancyItemResponse ApprenticeshipVacancy { get; init; }
         public GetStandardsListItemResponse CourseDetail { get; init; }
-        public List<GetLevelsListItem> Levels { get; set; }
+        public List<GetCourseLevelsListItem> Levels { get; init; }
     }
 }

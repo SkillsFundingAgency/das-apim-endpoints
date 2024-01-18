@@ -20,7 +20,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             GetApprenticeshipVacancyQuery query,
             GetApprenticeshipVacancyItemResponse apiResponse,
             GetStandardsListItemResponse courseResponse,
-            GetLevelsListResponse courseLevelsResponse,
+            GetCourseLevelsListResponse courseLevelsResponse,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> courseApiClient,
             [Frozen] Mock<ICourseService> courseService,

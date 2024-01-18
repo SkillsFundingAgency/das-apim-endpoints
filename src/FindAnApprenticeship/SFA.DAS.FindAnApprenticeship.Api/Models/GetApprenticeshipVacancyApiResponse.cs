@@ -81,7 +81,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public List<string> CourseCoreDuties { get; set; }
         public string CourseOverviewOfRole { get; set; }
         public string StandardPageUrl { get; set; }
-        [JsonProperty("levels")] public List<GetLevelsListItem> Levels { get; set; }
+        [JsonProperty("levels")] public List<GetCourseLevelsListItem> Levels { get; set; }
 
 
         public static implicit operator GetApprenticeshipVacancyApiResponse(GetApprenticeshipVacancyQueryResult source)
