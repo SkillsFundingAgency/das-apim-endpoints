@@ -25,16 +25,16 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
         {
             _logger.LogInformation($"Getting Tasks for account {request.AccountId}");
 
-            var pendingCohortsTask = _commitmentsV2ApiClient.Get<GetEmployerCohortsReadyForApprovalResponse>(new GetEmployerCohortsReadyForApprovalRequest(request.AccountId));
+            var cohortsToReviewTask = _commitmentsV2ApiClient.Get<GetCohortsResponse>(new GetCohortsRequest { AccountId = request.AccountId});
 
-            await Task.WhenAll(pendingCohortsTask);
-            var cohortsReadyForApproval = await pendingCohortsTask;
+            await Task.WhenAll(cohortsToReviewTask);
+            var cohortsForThisAccount = await cohortsToReviewTask;
 
-            var cohortsReadyForApprovalCount = cohortsReadyForApproval?.EmployerCohortsReadyForApprovalResponse?.Count() ?? 0;
+            var cohortsToReview = cohortsForThisAccount.Cohorts.Where(x => !x.IsDraft && x.WithParty == Party.Employer);
 
             return new GetTasksQueryResult()
             {
-                NumberOfCohortsForApproval = cohortsReadyForApprovalCount
+                NumberOfCohortsReadyToReview = cohortsToReview.Count()
             };
         }
     }
