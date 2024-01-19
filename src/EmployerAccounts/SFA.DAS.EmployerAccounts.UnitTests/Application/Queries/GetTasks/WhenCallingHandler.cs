@@ -19,24 +19,31 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
     {
         private GetTasksQueryHandler _handler;
         private GetTasksQuery _request;
-        private GetEmployerCohortsReadyForApprovalResponse _cohortsForReviewResponse;
+        private GetCohortsResponse _cohortsForReviewResponse;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _comtApiClient;
         private Mock<ILogger<GetTasksQueryHandler>> _loggerMock;
+        private Fixture _fixture;
 
         [SetUp]
         public void Setup()
         {
             _loggerMock = new Mock<ILogger<GetTasksQueryHandler>>();
 
-            var fixture = new Fixture();
-            _request = fixture.Create<GetTasksQuery>();
+            _fixture = new Fixture();
+            _request = _fixture.Create<GetTasksQuery>();
 
-            _cohortsForReviewResponse = fixture.Create<GetEmployerCohortsReadyForApprovalResponse>();
+            _cohortsForReviewResponse = _fixture.Build<GetCohortsResponse>()
+            .With(x => x.Cohorts, _fixture.Build<GetCohortsResponse.CohortSummary>()
+            .With(summary => summary.IsDraft, false)
+            .With(summary => summary.WithParty, Party.Employer)
+            .CreateMany()
+            .ToArray())
+            .Create();
 
             _comtApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
 
             _comtApiClient.Setup(x =>
-                    x.Get<GetEmployerCohortsReadyForApprovalResponse>(It.IsAny<GetEmployerCohortsReadyForApprovalRequest>()))
+                    x.Get<GetCohortsResponse>(It.IsAny<GetCohortsRequest>()))
                 .ReturnsAsync(_cohortsForReviewResponse);
 
             _handler = new GetTasksQueryHandler(_loggerMock.Object, _comtApiClient.Object);
@@ -49,7 +56,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
 
             result.Should().BeEquivalentTo(new GetTasksQueryResult
             {
-                NumberOfCohortsForApproval = _cohortsForReviewResponse.EmployerCohortsReadyForApprovalResponse.Count()
+                NumberOfCohortsReadyToReview = _cohortsForReviewResponse.Cohorts.Count(x => !x.IsDraft && x.WithParty == Party.Employer)
             });
         }
     }
