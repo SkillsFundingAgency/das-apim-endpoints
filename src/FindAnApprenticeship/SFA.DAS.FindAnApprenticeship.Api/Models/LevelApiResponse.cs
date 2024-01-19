@@ -4,7 +4,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models;
 
 public class LevelApiResponse
 {
-    public static implicit operator LevelApiResponse(GetLevelsListItem source)
+    public static implicit operator LevelApiResponse(GetCourseLevelsListItem source)
     {
         return new LevelApiResponse
         {

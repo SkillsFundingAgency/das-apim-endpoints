@@ -97,7 +97,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                     Latitude = source.EmployerLocation?.Latitude ?? 0,
                     Longitude = source.EmployerLocation?.Longitude ?? 0,
                 },
-                
+                source.AdditionalQuestion1,
+                source.AdditionalQuestion2
             };
 
             actual.Should().BeEquivalentTo(expectedResult);

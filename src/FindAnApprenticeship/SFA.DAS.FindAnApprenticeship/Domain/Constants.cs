@@ -12,5 +12,10 @@ namespace SFA.DAS.FindAnApprenticeship.Domain
             public static readonly int DefaultPageSize = 10;
             public static readonly VacancySort DefaultSortOrder = VacancySort.DistanceAsc;
         }
+
+        public static class SectionStatus
+        {
+            public static readonly string NotStarted = "NotStarted";
+        }
     }
 }

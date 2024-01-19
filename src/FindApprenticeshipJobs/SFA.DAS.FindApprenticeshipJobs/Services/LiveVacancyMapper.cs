@@ -88,7 +88,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 Route = getStandardsListItem?.Route ?? string.Empty,
 
                 IsRecruitVacancy = true,
-                TypicalJobTitles = getStandardsListItem.TypicalJobTitles == null ? "" : SortTypicalJobTitles(getStandardsListItem.TypicalJobTitles)
+                TypicalJobTitles = getStandardsListItem.TypicalJobTitles == null ? "" : SortTypicalJobTitles(getStandardsListItem.TypicalJobTitles),
+                AdditionalQuestion1 = source.AdditionalQuestion1,
+                AdditionalQuestion2 = source.AdditionalQuestion2
             };
         }
 
