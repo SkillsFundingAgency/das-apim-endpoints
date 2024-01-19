@@ -49,7 +49,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageSize,
                 categories,
                 query.SelectedLevelIds,
-                query.Sort);
+                query.Sort,
+                query.DisabilityConfident);
 
             apiClient
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
@@ -72,6 +73,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 result.PageNumber.Should().Be(query.PageNumber);
                 result.PageSize.Should().Be(query.PageSize);
                 result.TotalPages.Should().Be(totalPages);
+                result.DisabilityConfident.Should().Be(query.DisabilityConfident);
             }
         }
 
