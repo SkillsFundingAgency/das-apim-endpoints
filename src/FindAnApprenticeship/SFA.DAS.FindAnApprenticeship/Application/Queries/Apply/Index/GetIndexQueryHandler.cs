@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
@@ -30,7 +31,8 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
         {
             Email = request.ApplicantEmailAddress
         };
-        var putRequest = new PutApplicationApiRequest(request.VacancyReference, putData);
+        var vacancyReference = request.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
+        var putRequest = new PutApplicationApiRequest(vacancyReference, putData);
 
         var applicationResult = await _candidateApiClient.PutWithResponseCode<PutApplicationApiResponse>(putRequest);
 

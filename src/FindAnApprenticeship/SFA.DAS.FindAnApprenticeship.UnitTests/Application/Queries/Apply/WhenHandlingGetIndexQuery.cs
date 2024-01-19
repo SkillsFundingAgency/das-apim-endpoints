@@ -30,7 +30,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
         {
             var expectedPutData = new PutApplicationApiRequest.PutApplicationApiRequestData
                 { Email = query.ApplicantEmailAddress };
-            var expectedRequest = new PutApplicationApiRequest(query.VacancyReference, expectedPutData);
+            var expectedPutRequest = new PutApplicationApiRequest(query.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase), expectedPutData);
 
             var expectedGetRequest = new GetVacancyRequest(query.VacancyReference);
 
@@ -40,7 +40,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
 
             candidateApiClient
                 .Setup(client => client.PutWithResponseCode<PutApplicationApiResponse>(
-                    It.Is<PutApplicationApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
+                    It.Is<PutApplicationApiRequest>(r => r.PutUrl == expectedPutRequest.PutUrl)))
                 .ReturnsAsync(new ApiResponse<PutApplicationApiResponse>(candidateApiResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
