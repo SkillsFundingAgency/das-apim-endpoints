@@ -61,9 +61,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Weighting = q.Weighting
                 }),
                 OutcomeDescription = source.OutcomeDescription,
-                EmployerContactName = source.EmployerContact?.EmployerContactName,
-                EmployerContactEmail = source.EmployerContact?.EmployerContactEmail,
-                EmployerContactPhone = source.EmployerContact?.EmployerContactPhone,
+                EmployerContactName = source.EmployerContactName,
+                EmployerContactEmail = source.EmployerContactEmail,
+                EmployerContactPhone = source.EmployerContactPhone,
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
                 Address = new Application.Shared.Address
