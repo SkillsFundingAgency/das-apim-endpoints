@@ -12,8 +12,4 @@
     <PackageReference Include="MediatR" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="InnerApi\CandidateApi\Responses\" />
-  </ItemGroup>
-
 </Project>
