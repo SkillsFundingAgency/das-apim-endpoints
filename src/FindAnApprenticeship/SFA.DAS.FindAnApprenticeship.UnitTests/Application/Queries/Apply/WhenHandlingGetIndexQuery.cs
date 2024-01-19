@@ -28,9 +28,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             GetIndexQueryHandler handler)
         {
-            var expectedPutData = new PutApplicationApiRequest.PutApplicationApiRequestData
+            var expectedPutData = new PatchApplicationApiRequest.PutApplicationApiRequestData
                 { Email = query.ApplicantEmailAddress };
-            var expectedRequest = new PutApplicationApiRequest(query.VacancyReference, expectedPutData);
+            var expectedRequest = new PatchApplicationApiRequest(query.VacancyReference, expectedPutData);
 
             var expectedGetRequest = new GetVacancyRequest(query.VacancyReference);
 
@@ -40,7 +40,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
 
             candidateApiClient
                 .Setup(client => client.PutWithResponseCode<PutApplicationApiResponse>(
-                    It.Is<PutApplicationApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
+                    It.Is<PatchApplicationApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
                 .ReturnsAsync(new ApiResponse<PutApplicationApiResponse>(candidateApiResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
