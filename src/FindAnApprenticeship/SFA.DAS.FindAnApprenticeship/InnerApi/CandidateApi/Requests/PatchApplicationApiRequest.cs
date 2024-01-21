@@ -1,23 +1,26 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using SFA.DAS.FindAnApprenticeship.Models;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
 {
-    public class PatchApplicationApiRequest : IPatchApiRequest<>
+    public class PatchApplicationApiRequest : IPatchApiRequest<List<PatchApplicationRequest>>
     {
-        private readonly string _vacancyReference;
-        public object Data { get; set; }
+        private readonly Guid _applicationId;
+        private readonly Guid _candidateId;
+        public List<PatchApplicationRequest> Data { get; set; }
 
-        public PatchApplicationApiRequest(string vacancyReference, PutApplicationApiRequestData data)
+        public PatchApplicationApiRequest(
+            Guid applicationId,
+            Guid candidateId,
+            List<PatchApplicationRequest> data)
         {
-            _vacancyReference = vacancyReference;
+            _applicationId = applicationId;
+            _candidateId = candidateId;
             Data = data;
         }
 
-        public string PutUrl => $"api/applications/{_vacancyReference}";
-        
-        public class PutApplicationApiRequestData
-        {
-            public string Email { get; init; }
-        }
+        public string PatchUrl => $"api/Candidates/{_candidateId}/applications/{_applicationId}";
     }
 }
