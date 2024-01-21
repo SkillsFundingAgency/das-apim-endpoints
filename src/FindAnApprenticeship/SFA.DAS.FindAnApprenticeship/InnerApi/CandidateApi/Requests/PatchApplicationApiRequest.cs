@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using SFA.DAS.FindAnApprenticeship.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
 {
-    public class PatchApplicationApiRequest : IPatchApiRequest<List<PatchApplicationRequest>>
+    public class PatchApplicationApiRequest : IPatchApiRequest<JsonPatchDocument<Models.Application>>
     {
         private readonly Guid _applicationId;
         private readonly Guid _candidateId;
-        public List<PatchApplicationRequest> Data { get; set; }
+        public JsonPatchDocument<Models.Application> Data { get; set; }
 
         public PatchApplicationApiRequest(
             Guid applicationId,
             Guid candidateId,
-            List<PatchApplicationRequest> data)
+            JsonPatchDocument<Models.Application> data)
         {
             _applicationId = applicationId;
             _candidateId = candidateId;

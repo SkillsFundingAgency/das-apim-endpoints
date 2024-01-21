@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
   </ItemGroup>
 
 </Project>

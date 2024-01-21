@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplication
+﻿namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplication
 {
-    internal class PatchApplicationCommandResponse
+    public class PatchApplicationCommandResponse
     {
+        public Models.Application Application { get; set; }
     }
 }
