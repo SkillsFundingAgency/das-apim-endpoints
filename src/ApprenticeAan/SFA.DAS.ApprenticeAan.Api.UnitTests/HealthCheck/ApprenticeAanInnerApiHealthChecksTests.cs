@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 using SFA.DAS.ApprenticeAan.Api.HealthCheck;
-using SFA.DAS.ApprenticeAan.Application.Model;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
+using SFA.DAS.ApprenticeAan.Application.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.HealthCheck;

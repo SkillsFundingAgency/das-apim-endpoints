@@ -71,7 +71,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     request.PageSize,
                     categories,
                     request.SelectedLevelIds,
-                    request.Sort));
+                    request.Sort,
+                    request.DisabilityConfident));
 
             var totalPages = (int)Math.Ceiling((double)vacancyResult.TotalFound / request.PageSize);
 
@@ -85,7 +86,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 PageNumber = request.PageNumber,
                 PageSize = request.PageSize,
                 TotalPages = totalPages,
-                Levels = courseLevels.Levels.ToList()
+                Levels = courseLevels.Levels.ToList(),
+                DisabilityConfident = request.DisabilityConfident
             };
         }
     }

@@ -66,6 +66,9 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 
         [JsonPropertyName("standardLevel")]
         public string CourseLevel { get; set; }
+
+        [JsonPropertyName("isDisabilityConfident")]
+        public bool IsDisabilityConfident { get; set; }
     }
 
     public class Address
