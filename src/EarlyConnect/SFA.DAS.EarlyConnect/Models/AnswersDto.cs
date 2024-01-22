@@ -7,7 +7,7 @@
         public string AnswerText { get; set; }
         public string ShortDescription { get; set; }
         public int GroupNumber { get; set; }
-        public int GroupLabel { get; set; }
+        public string GroupLabel { get; set; }
         public int SortOrder { get; set; }
     }
 }
