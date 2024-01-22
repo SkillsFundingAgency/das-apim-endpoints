@@ -1,8 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
+using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetTasks;
@@ -10,46 +8,28 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
 {
     [TestFixture]
     public class WhenCallingHandler
     {
-        private GetTasksQueryHandler _handler;
-        private GetTasksQuery _request;
-        private GetApprenticeshipUpdatesResponse _pendingApprenticeshipChanges;
-        private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _comtApiClient;
-        private Mock<ILogger<GetTasksQueryHandler>> _loggerMock;
-
-        [SetUp]
-        public void Setup()
+        [Test, MoqAutoData]
+        public async Task Then_Gets_Tasks_Returns_GetTasksQueryResult(
+          [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+          GetApprenticeshipUpdatesResponse cohortsResponse,
+          GetTasksQuery request,
+          GetTasksQueryHandler handler)
         {
-            _loggerMock = new Mock<ILogger<GetTasksQueryHandler>>();
+            mockCommitmentsApi
+                .Setup(m => m.Get<GetApprenticeshipUpdatesResponse>(It.Is<GetPendingApprenticeChangesRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(cohortsResponse);
 
-            var fixture = new Fixture();
-            _request = fixture.Create<GetTasksQuery>();
+            // Act
+            var result = await handler.Handle(request, CancellationToken.None);
 
-            _pendingApprenticeshipChanges = fixture.Create<GetApprenticeshipUpdatesResponse>();
-
-            _comtApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
-
-            _comtApiClient.Setup(x =>
-                    x.Get<GetApprenticeshipUpdatesResponse>(It.IsAny<GetPendingApprenticeChangesRequest>()))
-                .ReturnsAsync(_pendingApprenticeshipChanges);
-
-            _handler = new GetTasksQueryHandler(_loggerMock.Object, _comtApiClient.Object);
-        }
-
-        [Test]
-        public async Task Then_Gets_Tasks_Returns_GetTasksQueryResult()
-        {
-            var result = await _handler.Handle(_request, CancellationToken.None);
-
-            result.Should().BeEquivalentTo(new GetTasksQueryResult
-            {
-                NumberOfApprenticesToReview = _pendingApprenticeshipChanges.ApprenticeshipUpdates.Count
-            });
+            Assert.AreEqual(3, result.NumberOfApprenticesToReview);
         }
     }
 }
