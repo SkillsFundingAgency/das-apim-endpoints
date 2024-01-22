@@ -8,14 +8,14 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
     {
         public static IServiceCollection AddDateTimeServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var cloudCurrentTime = configuration.GetValue<string>("CurrentTime");
+            var cloudCurrentTime = configuration.GetValue<string>("CurrentDateTime");
 
-            if (!DateTime.TryParse(cloudCurrentTime, out var currentTime))
+            if (!DateTime.TryParse(cloudCurrentTime, out var currentDateTime))
             {
-                currentTime = DateTime.Now;
+                currentDateTime = DateTime.Now;
             }
 
-            services.AddSingleton<ICurrentDateTime>(_ => new CurrentDateTime(currentTime));
+            services.AddSingleton<ICurrentDateTime>(_ => new CurrentDateTime(currentDateTime));
 
             return services;
         }
