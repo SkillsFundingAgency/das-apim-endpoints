@@ -3,13 +3,12 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using SFA.DAS.ApprenticeAan.Api.Controllers;
-using SFA.DAS.ApprenticeAan.Application.Infrastructure;
+using SFA.DAS.EmployerAan.Api.Controllers;
+using SFA.DAS.EmployerAan.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.MembersControllerTests;
-
-public class PostMembersReinstateControllerTests
+namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.MembersControllerTests;
+public class PostMembersReinstateTests
 {
     [Test, RecursiveMoqAutoData]
     public async Task PostMemberReinstate_InvokesPostMemberReinstate_NoContent(
