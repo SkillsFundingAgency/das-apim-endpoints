@@ -81,7 +81,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.TrainingCourses
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetSectorsQuery>(),
+                    It.IsAny<GetStandardsQuery>(),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
