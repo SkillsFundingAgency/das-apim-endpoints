@@ -30,11 +30,11 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
             await Task.WhenAll(cohortsToReviewTask);
             var cohortsForThisAccount = await cohortsToReviewTask;
 
-            var cohortsToReview = cohortsForThisAccount.Cohorts.Where(x => !x.IsDraft && x.WithParty == Party.Employer);
+            var cohortsToReview = cohortsForThisAccount.Cohorts?.Where(x => !x.IsDraft && x.WithParty == Party.Employer);
 
             return new GetTasksQueryResult()
             {
-                NumberOfCohortsReadyToReview = cohortsToReview.Count()
+                NumberOfCohortsReadyToReview = cohortsToReview?.Count() ?? 0
             };
         }
     }

@@ -1,9 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
+using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetTasks;
@@ -11,53 +9,76 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
 {
     [TestFixture]
     public class WhenCallingHandler
     {
-        private GetTasksQueryHandler _handler;
-        private GetTasksQuery _request;
-        private GetCohortsResponse _cohortsForReviewResponse;
-        private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _comtApiClient;
-        private Mock<ILogger<GetTasksQueryHandler>> _loggerMock;
-        private Fixture _fixture;
-
-        [SetUp]
-        public void Setup()
+        [Test, MoqAutoData]
+        public async Task Then_Gets_Tasks_Returns_GetTasksQueryResult(
+          [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+          GetCohortsResponse cohortsResponse,
+          GetTasksQuery request,
+          GetTasksQueryHandler handler)
         {
-            _loggerMock = new Mock<ILogger<GetTasksQueryHandler>>();
+            // Arrange
+            foreach (var cohort in cohortsResponse.Cohorts)
+            {
+                cohort.WithParty = Party.Employer;
+                cohort.IsDraft = false;
+            }
 
-            _fixture = new Fixture();
-            _request = _fixture.Create<GetTasksQuery>();
+            mockCommitmentsApi
+                .Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(cohortsResponse);
 
-            _cohortsForReviewResponse = _fixture.Build<GetCohortsResponse>()
-            .With(x => x.Cohorts, _fixture.Build<GetCohortsResponse.CohortSummary>()
-            .With(summary => summary.IsDraft, false)
-            .With(summary => summary.WithParty, Party.Employer)
-            .CreateMany()
-            .ToArray())
-            .Create();
+            // Act
+            var result = await handler.Handle(request, CancellationToken.None);
 
-            _comtApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
-
-            _comtApiClient.Setup(x =>
-                    x.Get<GetCohortsResponse>(It.IsAny<GetCohortsRequest>()))
-                .ReturnsAsync(_cohortsForReviewResponse);
-
-            _handler = new GetTasksQueryHandler(_loggerMock.Object, _comtApiClient.Object);
+            Assert.AreEqual(3, result.NumberOfCohortsReadyToReview);
         }
 
-        [Test]
-        public async Task Then_Gets_Tasks_Returns_GetTasksQueryResult()
-        {
-            var result = await _handler.Handle(_request, CancellationToken.None);
 
-            result.Should().BeEquivalentTo(new GetTasksQueryResult
+        [Test, MoqAutoData]
+        public async Task Then_Only_Returns_Pending_Employer_Cohorts(
+          [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+          GetCohortsResponse cohortsResponse,
+          GetTasksQuery request,
+          GetTasksQueryHandler handler)
+        {
+            cohortsResponse.Cohorts.Select((cohort, index) =>
             {
-                NumberOfCohortsReadyToReview = _cohortsForReviewResponse.Cohorts.Count(x => !x.IsDraft && x.WithParty == Party.Employer)
-            });
+                cohort.WithParty = index == 0 ? Party.Provider : Party.Employer;
+                cohort.IsDraft = index == 0;
+                return cohort;
+            }).ToArray();
+
+            mockCommitmentsApi
+                .Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(cohortsResponse);
+
+            // Act
+            var result = await handler.Handle(request, CancellationToken.None);
+            Assert.AreEqual(2, result.NumberOfCohortsReadyToReview);
+        }
+
+
+        [Test, MoqAutoData]
+        public async Task When_Cohorts_Are_Null_Return_Zero(
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+        GetTasksQuery request,
+        GetTasksQueryHandler handler)
+        {
+            mockCommitmentsApi
+                .Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(new GetCohortsResponse());
+
+            // Act
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            Assert.AreEqual(0, result.NumberTransferPledgeApplicationsToReview);
         }
     }
 }
