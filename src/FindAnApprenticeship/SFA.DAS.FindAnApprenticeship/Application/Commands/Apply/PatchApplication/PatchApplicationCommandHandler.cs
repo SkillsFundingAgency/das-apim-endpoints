@@ -29,22 +29,22 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicati
 
             if (request.WorkExperienceStatus > 0)
             {
-                jsonPatchDocument.Replace(x => x.WorkHistorySectionStatus, request.WorkExperienceStatus);
+                jsonPatchDocument.Replace(x => x.WorkExperienceStatus, request.WorkExperienceStatus);
+                jsonPatchDocument.Replace(x => x.JobsStatus, request.WorkExperienceStatus);
             }
 
             var patchRequest = new PatchApplicationApiRequest(request.ApplicationId, request.CandidateId, jsonPatchDocument);
 
             var response = await _candidateApiClient.PatchWithResponseCode(patchRequest);
 
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                _logger.LogError($"Unable to patch application for candidate Id {request.CandidateId}");
-            }
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                return new PatchApplicationCommandResponse
+                {
+                    Application = JsonConvert.DeserializeObject<Models.Application>(response.Body)
+                };
 
-            return new PatchApplicationCommandResponse
-            {
-                Application = JsonConvert.DeserializeObject<Models.Application>(response.Body)
-            };
+            _logger.LogError($"Unable to patch application for candidate Id {request.CandidateId}");
+            return new PatchApplicationCommandResponse();
         }
     }
 }
