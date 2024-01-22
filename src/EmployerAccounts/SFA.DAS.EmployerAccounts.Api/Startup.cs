@@ -20,6 +20,7 @@ using SFA.DAS.EmployerAccounts.Api.AppStart;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 
 namespace SFA.DAS.EmployerAccounts.Api
 {
@@ -42,11 +43,11 @@ namespace SFA.DAS.EmployerAccounts.Api
                 builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
                 builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
             });
-            
+
             services.AddSingleton(_env);
-            
+
             services.AddConfigurationOptions(_configuration);
-            
+
             if (!_configuration.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration
@@ -56,7 +57,7 @@ namespace SFA.DAS.EmployerAccounts.Api
                 {
                     {"default", "APIM"}
                 };
-               
+
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
@@ -85,6 +86,8 @@ namespace SFA.DAS.EmployerAccounts.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerAccountsOuterApi", Version = "v1" });
             });
+
+            services.AddDateTimeServices(_configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
