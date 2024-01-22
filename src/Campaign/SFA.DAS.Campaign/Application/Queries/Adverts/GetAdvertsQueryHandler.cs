@@ -53,7 +53,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
                     locationTask.Result.GeoPoint.FirstOrDefault(),
                     locationTask.Result.GeoPoint.LastOrDefault(),
                     request.Distance,
-                    0,
+                    1,
                     20,
                     request.Route);
 
