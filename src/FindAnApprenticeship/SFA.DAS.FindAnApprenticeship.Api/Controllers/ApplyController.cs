@@ -33,9 +33,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             return Ok((GetIndexApiResponse) result);
         }
 
-        [HttpPatch("Candidates/{candidateId}/[controller]s/{applicationId}")]
+        [HttpPatch("{applicationId}/{candidateId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> UpdateApplication(
+            [FromRoute] string vacancyReference,
             [FromRoute] Guid applicationId,
             [FromRoute] Guid candidateId,
             [FromBody] UpdateApplicationModel request,
@@ -45,6 +46,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             {
                 ApplicationId = applicationId,
                 CandidateId = candidateId,
+                VacancyReference = vacancyReference,
                 WorkExperienceStatus = request.WorkHistorySectionStatus
             }, cancellationToken);
 

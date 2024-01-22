@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using Microsoft.AspNetCore.JsonPatch;
+using SFA.DAS.FindAnApprenticeship.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
 {

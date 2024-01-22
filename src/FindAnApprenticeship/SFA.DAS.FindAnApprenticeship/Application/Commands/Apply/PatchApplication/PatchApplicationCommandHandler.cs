@@ -1,12 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplication
 {
@@ -29,7 +29,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicati
 
             if (request.WorkExperienceStatus > 0)
             {
-                jsonPatchDocument.Replace(x => x.WorkExperienceStatus, request.WorkExperienceStatus);
+                jsonPatchDocument.Replace(x => x.WorkHistorySectionStatus, request.WorkExperienceStatus);
             }
 
             var patchRequest = new PatchApplicationApiRequest(request.ApplicationId, request.CandidateId, jsonPatchDocument);

@@ -8,6 +8,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicati
     {
         public Guid ApplicationId { set; get; }
         public Guid CandidateId { set; get; }
+        public string VacancyReference { get; set; }
         public SectionStatus WorkExperienceStatus { get; set; }
     }
 }
