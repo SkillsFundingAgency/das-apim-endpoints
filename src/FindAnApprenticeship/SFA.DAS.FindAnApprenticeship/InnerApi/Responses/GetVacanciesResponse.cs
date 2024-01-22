@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -20,7 +19,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
     public class GetVacanciesListItem
     {
         [JsonPropertyName("id")] 
-        public long Id { get; set; }
+        public string Id { get; set; }
 
         [JsonPropertyName("anonymousEmployerName")]
         public string AnonymousEmployerName { get; set; }
@@ -46,15 +45,16 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonPropertyName("vacancyReference")]
         public string VacancyReference { get; set; }
 
-        [JsonPropertyName("subCategory")]
+        [JsonPropertyName("standardTitle")]
         public string CourseTitle { get; set; }
         [JsonPropertyName("standardLarsCode")]
         public int CourseId { get; set; }
-        [JsonPropertyName("wageText")]
+        [JsonPropertyName("wageAmount")]
         public string WageAmount { get; set; }
         [JsonPropertyName("wageType")]
         public int WageType { get; set; }
-
+        [JsonPropertyName("wageText")]
+        public string WageText { get; set; }
         [JsonPropertyName("address")] 
         public Address Address { get; set; }
 
@@ -64,8 +64,11 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonPropertyName("courseRoute")]
         public string CourseRoute { get; set; }
 
-        [JsonPropertyName("courseLevel")]
+        [JsonPropertyName("standardLevel")]
         public string CourseLevel { get; set; }
+
+        [JsonPropertyName("isDisabilityConfident")]
+        public bool IsDisabilityConfident { get; set; }
     }
 
     public class Address

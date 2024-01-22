@@ -138,7 +138,7 @@ namespace SFA.DAS.SharedOuterApi.Services
             if (employerUserResponse?.Body != null)
             {
                 // external api call to update the employer_account repo with latest information.
-                var response = await _accountsApiClient.PutWithResponseCode<NullResponse>(new PutAccountUserRequest(
+                await _accountsApiClient.PutWithResponseCode<NullResponse>(new PutAccountUserRequest(
                     employerProfile.UserId,
                     employerProfile.Email,
                     employerProfile.FirstName,
