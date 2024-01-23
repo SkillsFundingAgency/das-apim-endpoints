@@ -11,6 +11,7 @@ namespace SFA.DAS.EarlyConnect.Api.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime? DateOfBirth { get; set; }
+        public string SchoolName { get; set; }
         public string Telephone { get; set; }
         public string Email { get; set; }
         public string Postcode { get; set; }
@@ -29,6 +30,7 @@ namespace SFA.DAS.EarlyConnect.Api.Models
                 FirstName = source.FirstName,
                 LastName = source.LastName,
                 DateOfBirth = source.DateOfBirth,
+                SchoolName= source.SchoolName,
                 Email = source.Email,
                 Telephone = source.Telephone,
                 Postcode = source.Postcode,
