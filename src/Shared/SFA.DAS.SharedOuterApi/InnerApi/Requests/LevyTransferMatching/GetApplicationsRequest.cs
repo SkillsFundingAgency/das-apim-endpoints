@@ -34,6 +34,11 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching
                     queryParameters.Add("accountId", AccountId.Value.ToString());
                 }
 
+                 if (SenderAccountId.HasValue)
+                {
+                    queryParameters.Add("senderAccountId", SenderAccountId.Value.ToString());
+                }
+
                 if (ApplicationStatusFilter != null)
                 {
                     queryParameters.Add("applicationStatusFilter", ApplicationStatusFilter);
