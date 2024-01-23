@@ -49,17 +49,17 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
             IsDisabilityConfident = result.IsDisabilityConfident,
             EducationHistory = new GetIndexQueryResult.EducationHistorySection
             {
-                Qualifications = applicationResult.Body.QualificationStatus,
-                TrainingCourses = applicationResult.Body.TrainingCourseStatus,
+                Qualifications = applicationResult.Body.QualificationsStatus,
+                TrainingCourses = applicationResult.Body.TrainingCoursesStatus,
             },
             WorkHistory = new GetIndexQueryResult.WorkHistorySection
             {
-                Jobs = applicationResult.Body.JobStatus,
+                Jobs = applicationResult.Body.JobsStatus,
                 VolunteeringAndWorkExperience = applicationResult.Body.WorkExperienceStatus,
             },
             ApplicationQuestions = new GetIndexQueryResult.ApplicationQuestionsSection
             {
-                SkillsAndStrengths = applicationResult.Body.SkillsAndStrengthsStatus,
+                SkillsAndStrengths = applicationResult.Body.SkillsAndStrengthStatus,
                 WhatInterestsYou = applicationResult.Body.InterestsStatus,
                 AdditionalQuestion1 = applicationResult.Body.AdditionalQuestion1Status,
                 AdditionalQuestion1Label = result.AdditionalQuestion1,

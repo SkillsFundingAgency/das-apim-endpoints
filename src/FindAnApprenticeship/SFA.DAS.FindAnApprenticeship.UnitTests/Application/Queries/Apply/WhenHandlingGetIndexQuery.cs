@@ -53,10 +53,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             result.ApplicationQuestions.AdditionalQuestion1Label.Should().Be(faaApiResponse.AdditionalQuestion1);
             result.ApplicationQuestions.AdditionalQuestion2Label.Should().Be(faaApiResponse.AdditionalQuestion2);
 
-            result.EducationHistory.Qualifications.Should().Be(candidateApiResponse.QualificationStatus);
-            result.EducationHistory.TrainingCourses.Should().Be(candidateApiResponse.TrainingCourseStatus);
+            result.EducationHistory.Qualifications.Should().Be(candidateApiResponse.QualificationsStatus);
+            result.EducationHistory.TrainingCourses.Should().Be(candidateApiResponse.TrainingCoursesStatus);
             result.WorkHistory.VolunteeringAndWorkExperience.Should().Be(candidateApiResponse.WorkExperienceStatus);
-            result.WorkHistory.Jobs.Should().Be(candidateApiResponse.JobStatus);
+            result.WorkHistory.Jobs.Should().Be(candidateApiResponse.JobsStatus);
             result.ApplicationQuestions.AdditionalQuestion1.Should().Be(candidateApiResponse.AdditionalQuestion1Status);
             result.ApplicationQuestions.AdditionalQuestion2.Should().Be(candidateApiResponse.AdditionalQuestion2Status);
             result.InterviewAdjustments.RequestAdjustments.Should().Be(candidateApiResponse.InterviewAdjustmentsStatus);
