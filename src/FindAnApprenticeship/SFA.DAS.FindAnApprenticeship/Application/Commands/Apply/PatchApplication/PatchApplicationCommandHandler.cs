@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,7 +27,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicati
         public async Task<PatchApplicationCommandResponse> Handle(PatchApplicationCommand request, CancellationToken cancellationToken)
         {
             var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
-
             if (request.WorkExperienceStatus > 0)
             {
                 jsonPatchDocument.Replace(x => x.WorkExperienceStatus, request.WorkExperienceStatus);
@@ -34,9 +34,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicati
             }
 
             var patchRequest = new PatchApplicationApiRequest(request.ApplicationId, request.CandidateId, jsonPatchDocument);
-
             var response = await _candidateApiClient.PatchWithResponseCode(patchRequest);
-
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 return new PatchApplicationCommandResponse
                 {
@@ -44,7 +42,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicati
                 };
 
             _logger.LogError($"Unable to patch application for candidate Id {request.CandidateId}");
-            return new PatchApplicationCommandResponse();
+            throw new HttpRequestContentException($"Unable to patch application for candidate Id {request.CandidateId}", response.StatusCode, response.ErrorContent);
         }
     }
 }

@@ -33,8 +33,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             return Ok((GetIndexApiResponse) result);
         }
 
-        [HttpPatch("{applicationId}/{candidateId}")]
+        [HttpPost("{applicationId}/{candidateId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateApplication(
             [FromRoute] string vacancyReference,
             [FromRoute] Guid applicationId,

@@ -2,12 +2,14 @@
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplication;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -42,6 +44,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
         public async Task Then_The_Api_Response_NotFound_CommandResult_Is_Returned_As_Expected(
             PatchApplicationCommand command,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            [Frozen] Mock<ILogger<PatchApplicationCommandHandler>> loggerMock,
             PatchApplicationCommandHandler handler)
         {
             var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
@@ -50,10 +53,17 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
                 .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
                 .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.BadRequest, string.Empty));
 
-            var result = await handler.Handle(command, CancellationToken.None);
+            Func<Task> act = async () => { await handler.Handle(command, CancellationToken.None); };
+            await act.Should().ThrowAsync<HttpRequestContentException>();
 
-            using var scope = new AssertionScope();
-            result.Application.Should().BeNull();
+            loggerMock.Verify(l =>
+                l.Log(
+                    LogLevel.Error,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((state, type) => state.ToString()!.Contains("Unable to patch application for candidate Id")),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()!
+                ), Times.Once);
         }
     }
 }
