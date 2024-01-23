@@ -11,6 +11,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts
             AccountId = accountId;
         }
 
-        public string GetUrl => $"api/accounts/{AccountId}/account-by-id";
+        public string GetUrl => $"api/accounts/{AccountId}";
     }
 }
