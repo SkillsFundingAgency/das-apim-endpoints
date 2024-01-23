@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.EmployerAccounts.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Interfaces;

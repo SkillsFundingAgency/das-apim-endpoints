@@ -2,13 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
+namespace SFA.DAS.EmployerAccounts.Services
 {
     public static class DateTimeService
     {
         public static IServiceCollection AddDateTimeServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var cloudCurrentTime = configuration.GetValue<string>("CurrentDateTimeOverrideValue");
+            var cloudCurrentTime = configuration.GetValue<string>("EmployerAccountsOuterOverrideDatetime");
 
             if (!DateTime.TryParse(cloudCurrentTime, out var currentDateTime))
             {

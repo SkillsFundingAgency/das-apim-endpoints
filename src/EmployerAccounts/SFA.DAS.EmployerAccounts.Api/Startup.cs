@@ -18,9 +18,9 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.EmployerAccounts.Api.AppStart;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent;
+using SFA.DAS.EmployerAccounts.Services;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
-using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 
 namespace SFA.DAS.EmployerAccounts.Api
 {
