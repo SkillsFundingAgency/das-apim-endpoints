@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerFinance
+namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance
 {
     public class GetTransferConnectionsResponse
     {

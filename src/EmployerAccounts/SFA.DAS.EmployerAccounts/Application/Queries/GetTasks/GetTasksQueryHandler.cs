@@ -27,7 +27,11 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
             _logger.LogInformation($"Getting Tasks for account {request.AccountId}");
 
             var pendingTransferConnectionsTask = _financeApiClient.Get<List<GetTransferConnectionsResponse.TransferConnection>>(
-             new GetTransferConnectionsRequest(request.AccountId, TransferConnectionInvitationStatus.Pending));
+             new GetTransferConnectionsRequest
+             {
+                 AccountId = request.AccountId,
+                 Status = TransferConnectionInvitationStatus.Pending
+             });
 
             await Task.WhenAll(pendingTransferConnectionsTask);
             var pendingTransferConnections = await pendingTransferConnectionsTask;

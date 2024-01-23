@@ -1,8 +1,15 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetTasks;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerFinance;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
@@ -12,12 +19,22 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Tasks_Returns_GetTasksQueryResult(
-            GetTasksQuery query,
-            GetTasksQueryHandler handler)
+         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> _financeApiClient,
+         List<GetTransferConnectionsResponse.TransferConnection> transferConnectionsResponse,
+         GetTasksQuery request,
+         GetTasksQueryHandler handler)
         {
-            var result = await handler.Handle(query, CancellationToken.None);
+            _financeApiClient
+                .Setup(m => m.Get<List<GetTransferConnectionsResponse.TransferConnection>>(
+                    It.Is<GetTransferConnectionsRequest>(
+                        r => r.AccountId == request.AccountId && r.Status == TransferConnectionInvitationStatus.Pending
+                        )))
+                .ReturnsAsync(transferConnectionsResponse);
 
-            result.Should().BeEquivalentTo(new GetTasksQueryResult());
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            result.Should().NotBeNull();
+            result.NumberOfPendingTransferConnections.Should().Be(transferConnectionsResponse.Count);
         }
     }
 }
