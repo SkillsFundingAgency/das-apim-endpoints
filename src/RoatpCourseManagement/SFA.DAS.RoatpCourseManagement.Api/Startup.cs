@@ -1,10 +1,14 @@
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using MediatR;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
@@ -13,10 +17,6 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.RoatpCourseManagement.Api.AppStart;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses;
 using SFA.DAS.SharedOuterApi.AppStart;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.RoatpCourseManagement.Api
@@ -64,21 +64,20 @@ namespace SFA.DAS.RoatpCourseManagement.Api
             services.AddServiceRegistration(_configuration);
 
             services
-                .AddMvc(o =>
+                .AddControllers(o =>
                 {
                     if (!_configuration.IsLocalOrDev())
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            services.AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions { ConnectionString = _configuration["APPINSIGHTS_INSTRUMENTATIONKEY"] });
 
             services.AddSwaggerGen(c =>
             {
