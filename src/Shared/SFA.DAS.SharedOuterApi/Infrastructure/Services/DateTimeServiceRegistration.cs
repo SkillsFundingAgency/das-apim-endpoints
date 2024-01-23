@@ -8,7 +8,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
     {
         public static IServiceCollection AddDateTimeServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var cloudCurrentTime = configuration.GetValue<string>("CurrentDateTime");
+            var cloudCurrentTime = configuration.GetValue<string>("CurrentDateTimeOverrideValue");
 
             if (!DateTime.TryParse(cloudCurrentTime, out var currentDateTime))
             {
