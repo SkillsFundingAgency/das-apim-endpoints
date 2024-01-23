@@ -163,19 +163,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
              //Assert
              Assert.IsNull(actualResult);
          }
-        
-        private class GetTestRequest : IGetApiRequest
-        {
-            private readonly int _id;
-
-            public string Version => "2.0";
-
-            public GetTestRequest (int id)
-            {
-                _id = id;
-            }
-            public string GetUrl => $"test-url/get{_id}";
-        }
+         
         private class GetTestRequestNoVersion : IGetApiRequest
         {
             private readonly int _id;
@@ -186,7 +174,18 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             }
             public string GetUrl => $"test-url/get{_id}";
         }
+    }
 
+    internal class GetTestRequest : IGetApiRequest
+    {
+        private readonly int _id;
 
+        public string Version => "2.0";
+
+        public GetTestRequest(int id)
+        {
+            _id = id;
+        }
+        public string GetUrl => $"test-url/get{_id}";
     }
 }

@@ -12,9 +12,9 @@ namespace SFA.DAS.SharedOuterApi.Services
     [ExcludeFromCodeCoverage]
     public class ApprenticeshipsApiClient : IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>
     {
-        private readonly IInternalApiClient<ApprenticeshipsApiConfiguration> _apiClient;
+        private readonly ITokenPassThroughInternalApiClient<ApprenticeshipsApiConfiguration> _apiClient;
 
-        public ApprenticeshipsApiClient(IInternalApiClient<ApprenticeshipsApiConfiguration> apiClient)
+        public ApprenticeshipsApiClient(ITokenPassThroughInternalApiClient<ApprenticeshipsApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
