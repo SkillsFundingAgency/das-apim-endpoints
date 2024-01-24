@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplication;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
@@ -22,15 +21,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             _mediator = mediator;
             _logger = logger;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Index(string vacancyReference, [FromQuery] string applicantEmailAddress)
-        {
-            var result = await _mediator.Send(new GetIndexQuery
-                { ApplicantEmailAddress = applicantEmailAddress, VacancyReference = vacancyReference });
-
-            return Ok((GetIndexApiResponse) result);
         }
 
         [HttpPost("{applicationId}/{candidateId}")]
