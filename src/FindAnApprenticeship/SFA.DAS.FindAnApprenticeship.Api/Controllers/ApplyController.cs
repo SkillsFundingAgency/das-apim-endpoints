@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -21,10 +22,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(string vacancyReference, [FromQuery] string applicantEmailAddress)
+        public async Task<IActionResult> Index(string vacancyReference, [FromQuery] Guid candidateId)
         {
             var result = await _mediator.Send(new GetIndexQuery
-                { ApplicantEmailAddress = applicantEmailAddress, VacancyReference = vacancyReference });
+                { CandidateId = candidateId, VacancyReference = vacancyReference });
 
             return Ok((GetIndexApiResponse) result);
         }

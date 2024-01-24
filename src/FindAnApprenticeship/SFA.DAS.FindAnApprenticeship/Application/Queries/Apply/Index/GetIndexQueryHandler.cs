@@ -27,9 +27,10 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
     {
         var result = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(request.VacancyReference));
 
+        //todo: change this to a GET for application from PUT
         var putData = new PutApplicationApiRequest.PutApplicationApiRequestData
         {
-            Email = request.ApplicantEmailAddress
+            CandidateId = request.CandidateId
         };
         var vacancyReference = request.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
         var putRequest = new PutApplicationApiRequest(vacancyReference, putData);

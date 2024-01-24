@@ -1,11 +1,11 @@
-﻿using MediatR;
-using Microsoft.Extensions.Logging;
+﻿using System;
+using MediatR;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index
 {
     public class GetIndexQuery : IRequest<GetIndexQueryResult>
     {
-        public string ApplicantEmailAddress { get; set; }
+        public Guid CandidateId { get; set; }
         public string VacancyReference { get; set; }
     }
 }

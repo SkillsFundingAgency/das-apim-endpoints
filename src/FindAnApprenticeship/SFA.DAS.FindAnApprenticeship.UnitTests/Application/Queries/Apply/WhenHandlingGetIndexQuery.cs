@@ -29,7 +29,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             GetIndexQueryHandler handler)
         {
             var expectedPutData = new PutApplicationApiRequest.PutApplicationApiRequestData
-                { Email = query.ApplicantEmailAddress };
+                { CandidateId = query.CandidateId };
             var expectedPutRequest = new PutApplicationApiRequest(query.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase), expectedPutData);
 
             var expectedGetRequest = new GetVacancyRequest(query.VacancyReference);
