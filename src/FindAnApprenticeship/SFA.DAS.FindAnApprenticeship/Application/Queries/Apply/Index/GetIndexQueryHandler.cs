@@ -31,6 +31,7 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
 
         return new GetIndexQueryResult
         {
+            VacancyReference = vacancy.VacancyReference,
             VacancyTitle = vacancy.Title,
             EmployerName = vacancy.EmployerName,
             ClosingDate = vacancy.ClosingDate,
