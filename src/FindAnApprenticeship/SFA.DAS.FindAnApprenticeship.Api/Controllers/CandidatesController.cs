@@ -23,20 +23,17 @@ public class CandidatesController : ControllerBase
     }
 
     [HttpPut]
-    [Route("{id}")]
+    [Route("{govIdentifier}")]
     public async Task<IActionResult> Index(
-        [FromRoute] Guid id, 
+        [FromRoute] string govIdentifier, 
         [FromBody] CandidatesModel request)
     {
         try
         {
             var queryResponse = await _mediator.Send(new PutCandidateCommand
             {
-                Id = id,
-                GovUkIdentifier = request.GovUkIdentifier,
-                Email = request.Email,
-                FirstName = request.GovUkIdentifier,
-                LastName = request.LastName
+                GovUkIdentifier = govIdentifier,
+                Email = request.Email
             });
 
             return Ok(queryResponse);

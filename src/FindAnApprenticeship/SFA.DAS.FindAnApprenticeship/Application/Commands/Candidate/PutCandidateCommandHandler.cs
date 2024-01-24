@@ -20,12 +20,9 @@ public class PutCandidateCommandHandler : IRequestHandler<PutCandidateCommand, P
     {
         var putData = new PutCandidateApiRequest.PutCandidateApiRequestData
         {
-            Email = request.Email,
-            GovUkIdentifier = request.GovUkIdentifier,
-            FirstName = request.FirstName,
-            LastName = request.LastName
+            Email = request.Email
         };
-        var putRequest = new PutCandidateApiRequest(request.Id, putData);
+        var putRequest = new PutCandidateApiRequest(request.GovUkIdentifier, putData);
 
         var candidateResult = await _candidateApiClient.PutWithResponseCode<PutCandidateApiResponse>(putRequest);
 

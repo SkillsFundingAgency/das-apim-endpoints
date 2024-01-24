@@ -24,12 +24,9 @@ public class WhenHandlingPutCandidateCommand
     {
         var expectedPutData = new PutCandidateApiRequest.PutCandidateApiRequestData
         {
-            GovUkIdentifier = command.GovUkIdentifier,
-            Email = command.Email,
-            FirstName = command.FirstName,
-            LastName = command.LastName
+            Email = command.Email
         };
-        var expectedRequest = new PutCandidateApiRequest(command.Id, expectedPutData);
+        var expectedRequest = new PutCandidateApiRequest(command.GovUkIdentifier, expectedPutData);
 
         mockApiClient
                 .Setup(client => client.PutWithResponseCode<PutCandidateApiResponse>(
@@ -55,12 +52,9 @@ public class WhenHandlingPutCandidateCommand
     {
         var expectedPutData = new PutCandidateApiRequest.PutCandidateApiRequestData
         {
-            GovUkIdentifier = command.GovUkIdentifier,
-            Email = command.Email,
-            FirstName = command.FirstName,
-            LastName = command.LastName
+            Email = command.Email
         };
-        var expectedRequest = new PutCandidateApiRequest(command.Id, expectedPutData);
+        var expectedRequest = new PutCandidateApiRequest(command.GovUkIdentifier, expectedPutData);
 
         mockApiClient
                 .Setup(client => client.PutWithResponseCode<PutCandidateApiResponse>(

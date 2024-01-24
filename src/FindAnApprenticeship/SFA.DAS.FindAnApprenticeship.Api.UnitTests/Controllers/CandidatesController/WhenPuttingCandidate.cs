@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -8,7 +7,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Api.Controllers;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
 using SFA.DAS.Testing.AutoFixture;
@@ -18,17 +16,17 @@ public class WhenPuttingCandidate
 {
     [Test, MoqAutoData]
     public async Task Then_Returns_Put_Response(
-        Guid id,
+        string govIdentifier,
         CandidatesModel model,
         PutCandidateCommandResult result,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.CandidatesController controller)
     {
-        mediator.Setup(x => x.Send(It.Is<PutCandidateCommand>(x => (x.Id == id) && (x.Email == model.Email)),
+        mediator.Setup(x => x.Send(It.Is<PutCandidateCommand>(x => (x.GovUkIdentifier == govIdentifier) && (x.Email == model.Email)),
         It.IsAny<CancellationToken>()))
         .ReturnsAsync(result);
 
-        var actual = await controller.Index(id, model);
+        var actual = await controller.Index(govIdentifier, model);
 
         using (new AssertionScope())
         {
