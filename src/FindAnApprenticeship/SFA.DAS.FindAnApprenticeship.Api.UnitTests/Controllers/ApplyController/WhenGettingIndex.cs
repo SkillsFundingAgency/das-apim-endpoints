@@ -20,16 +20,17 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplyController
         public async Task Then_The_Query_Response_Is_Returned(
             string vacancyReference,
             Guid candidateId,
+            Guid applicationId,
             GetIndexQueryResult queryResult,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] Api.Controllers.ApplyController controller)
+            [Greedy] Api.Controllers.ApplicationController controller)
         {
             mediator.Setup(x => x.Send(It.Is<GetIndexQuery>(q =>
-                        q.CandidateId == candidateId && q.VacancyReference == vacancyReference),
+                        q.CandidateId == candidateId && q.ApplicationId == applicationId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(queryResult);
 
-            var actual = await controller.Index(vacancyReference, candidateId);
+            var actual = await controller.Index(applicationId, candidateId);
 
             actual.Should().BeOfType<OkObjectResult>();
             var actualObject = ((OkObjectResult)actual).Value as GetIndexApiResponse;
