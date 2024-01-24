@@ -54,7 +54,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
                     locationTask.Result.GeoPoint.LastOrDefault(),
                     request.Distance,
                     1,
-                    20,
+                    10,
                     request.Route);
 
             var adverts = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(advertRequest);
@@ -66,7 +66,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
                 advert.VacancyUrl = $"{_configuration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{advert.VacancyReference}";
             }
 
-                return new GetAdvertsQueryResult
+            return new GetAdvertsQueryResult
             {
                 Location = locationTask.Result,
                 Routes = routesTask.Result.Routes,

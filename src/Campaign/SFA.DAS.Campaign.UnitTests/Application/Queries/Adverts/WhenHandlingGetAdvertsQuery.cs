@@ -37,7 +37,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Adverts
         {
             //Arrange
             configuration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl;
-            var expectedAdvertUrl = new GetVacanciesRequest(locationItem.GeoPoint.First(), locationItem.GeoPoint.Last(), query.Distance, 1, 20, query.Route);
+            var expectedAdvertUrl = new GetVacanciesRequest(locationItem.GeoPoint.First(), locationItem.GeoPoint.Last(), query.Distance, 1, 10, query.Route);
 
             locationLookupService.Setup(x => x.GetLocationInformation(query.Postcode, 0, 0, false))
                 .ReturnsAsync(locationItem);
