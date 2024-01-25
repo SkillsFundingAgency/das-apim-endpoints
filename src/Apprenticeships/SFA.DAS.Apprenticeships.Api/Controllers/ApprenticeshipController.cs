@@ -1,7 +1,5 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Apprenticeships.Api.Models;
-using SFA.DAS.Apprenticeships.Application.Apprenticeship;
 using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
@@ -16,39 +14,45 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
     public class ApprenticeshipController : ControllerBase
     {
         private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apiClient;
-		private readonly IMediator _mediator;
-        private readonly ILogger<ApprenticeshipController> _logger;
+        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
 
-		public ApprenticeshipController(
-			ILogger<ApprenticeshipController> logger,
-			IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apiClient,
-			IMediator mediator)
+        public ApprenticeshipController(IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apiClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient)
         {
-            _logger = logger;
             _apiClient = apiClient;
-            _mediator = mediator;
-		}
+            _apiCommitmentsClient = apiCommitmentsClient;
+        }
 
         [HttpGet]
         [Route("{apprenticeshipKey}/price")]
         public async Task<ActionResult> GetApprenticeshipPrice(Guid apprenticeshipKey)
         {
-			try
-			{
-				var apprenticeshipPriceResponse = await _mediator.Send(new GetApprenticeshipPriceQuery(apprenticeshipKey));
+            var apprenticePriceInnerModel = await _apiClient.Get<GetApprenticeshipPriceResponse>(new GetApprenticeshipPriceRequest { ApprenticeshipKey = apprenticeshipKey });
+            
+            if(apprenticePriceInnerModel == null)
+            {
+                return NotFound();
+            }
 
-				if (apprenticeshipPriceResponse == null)
-				{
-					return NotFound();
-				}
+            string? employerName = null;
+            if(apprenticePriceInnerModel != null && apprenticePriceInnerModel.AccountLegalEntityId.HasValue)
+            {
+                var employer = await _apiCommitmentsClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(apprenticePriceInnerModel.AccountLegalEntityId.Value));
+                employerName = employer?.LegalEntityName;
+            }
+            
+            var apprenticeshipPriceOuterModel = new ApprenticeshipPriceResponse
+            {
+                ApprenticeshipKey = apprenticePriceInnerModel!.ApprenticeshipKey,
+                ApprenticeshipActualStartDate = apprenticePriceInnerModel.ApprenticeshipActualStartDate,
+                ApprenticeshipPlannedEndDate = apprenticePriceInnerModel.ApprenticeshipPlannedEndDate,
+                AssessmentPrice = apprenticePriceInnerModel.AssessmentPrice,
+                EarliestEffectiveDate = apprenticePriceInnerModel.EarliestEffectiveDate,
+                FundingBandMaximum = apprenticePriceInnerModel.FundingBandMaximum,
+                TrainingPrice = apprenticePriceInnerModel.TrainingPrice,
+                EmployerName = employerName
+            };
 
-				return Ok(apprenticeshipPriceResponse);
-			}
-			catch (Exception e)
-			{
-				_logger.LogError(e, "Error attempting to get ApprenticeshipPrice");
-				return BadRequest();
-			}
+            return Ok(apprenticeshipPriceOuterModel);
         }
 
         [HttpGet]

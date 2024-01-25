@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using Castle.Core.Logging;
-using MediatR;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Api.Controllers;
@@ -20,7 +17,7 @@ public class WhenCreateApprenticeshipPriceHistory
     public async Task ThenCreatesApprenticeshipPriceHistoryUsingApiClient()
     {
         var apiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
-        var sut = new ApprenticeshipController(Mock.Of<ILogger<ApprenticeshipController>>(), apiClient.Object, Mock.Of<IMediator>());
+        var sut = new ApprenticeshipController(apiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>());
             
         // Arrange
         var apprenticeshipKey = Guid.NewGuid();

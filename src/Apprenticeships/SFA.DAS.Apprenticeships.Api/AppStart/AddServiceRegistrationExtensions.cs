@@ -21,8 +21,7 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         services.AddTransient<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>, ApprenticeshipsApiClient>();
         services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
-		services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
-	}
+    }
 }
 
 [ExcludeFromCodeCoverage]
@@ -43,8 +42,5 @@ public static class AddConfigurationOptionsExtension
 
         services.Configure<CommitmentsV2ApiConfiguration>(configuration.GetSection(nameof(CommitmentsV2ApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>()!.Value);
-
-		services.Configure<CollectionCalendarApiConfiguration>(configuration.GetSection(nameof(CollectionCalendarApiConfiguration)));
-		services.AddSingleton(cfg => cfg.GetService<IOptions<CollectionCalendarApiConfiguration>>()!.Value);
-	}
+    }
 }
