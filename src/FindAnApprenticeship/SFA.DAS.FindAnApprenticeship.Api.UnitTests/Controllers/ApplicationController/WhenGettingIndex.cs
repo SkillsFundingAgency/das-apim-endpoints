@@ -11,7 +11,7 @@ using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplyController
+namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplicationController
 {
     [TestFixture]
     public class WhenGettingIndex
