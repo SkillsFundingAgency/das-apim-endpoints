@@ -20,7 +20,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 TotalPages = source.TotalPages,
                 VacancyReference = source.VacancyReference,
                 Levels = source.Levels.Select(l => (LevelApiResponse)l).ToList(),
-                TotalFound = source.TotalFound
+                TotalFound = source.TotalFound,
+                DisabilityConfident = source.DisabilityConfident
             };
         }
         [JsonPropertyName("totalFound")]
@@ -37,5 +38,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public int TotalPages { get; init; }
         public string? VacancyReference { get; init; }
         public List<GetVacanciesListResponseItem> Vacancies { get; init; }
+        public bool DisabilityConfident { get; set; }
     }
 }

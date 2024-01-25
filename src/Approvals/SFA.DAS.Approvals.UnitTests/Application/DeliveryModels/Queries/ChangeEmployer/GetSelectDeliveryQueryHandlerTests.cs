@@ -38,7 +38,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
             _deliveryModelService.Setup(x =>
                     x.GetDeliveryModels(It.Is<long>(p => p == _apprenticeshipResponse.ProviderId),
                         It.Is<string>(c => c == _apprenticeshipResponse.CourseCode),
-                        It.Is<long>(ale => ale == _query.AccountLegalEntityId), 
+                        It.Is<long>(ale => ale == _query.AccountLegalEntityId),
                         It.Is<long>(a => a == _query.ApprenticeshipId)))
                 .ReturnsAsync(_deliveryModels);
 
@@ -60,6 +60,14 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
             var result = await _handler.Handle(_query, CancellationToken.None);
 
             Assert.AreEqual(_apprenticeshipResponse.EmployerName, result.LegalEntityName);
+        }
+
+        [Test]
+        public async Task Handle_Returns_Status_For_Apprenticeship()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            Assert.AreEqual((Enums.ApprenticeshipStatus)_apprenticeshipResponse.Status, result.Status);
         }
 
         [Test]

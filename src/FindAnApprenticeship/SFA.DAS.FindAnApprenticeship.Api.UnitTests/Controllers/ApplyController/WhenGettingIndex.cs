@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -18,17 +19,18 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplyController
         [Test, MoqAutoData]
         public async Task Then_The_Query_Response_Is_Returned(
             string vacancyReference,
-            string applicantEmailAddress,
+            Guid candidateId,
+            Guid applicationId,
             GetIndexQueryResult queryResult,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] Api.Controllers.ApplyController controller)
+            [Greedy] Api.Controllers.ApplicationController controller)
         {
             mediator.Setup(x => x.Send(It.Is<GetIndexQuery>(q =>
-                        q.ApplicantEmailAddress == applicantEmailAddress && q.VacancyReference == vacancyReference),
+                        q.CandidateId == candidateId && q.ApplicationId == applicationId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(queryResult);
 
-            var actual = await controller.Index(vacancyReference, applicantEmailAddress);
+            var actual = await controller.Index(applicationId, candidateId);
 
             actual.Should().BeOfType<OkObjectResult>();
             var actualObject = ((OkObjectResult)actual).Value as GetIndexApiResponse;

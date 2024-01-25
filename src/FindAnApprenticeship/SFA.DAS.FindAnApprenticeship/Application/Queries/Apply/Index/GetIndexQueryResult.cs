@@ -4,6 +4,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
 
 public class GetIndexQueryResult
 {
+    public string VacancyReference { get; set; }
     public string VacancyTitle { get; set; }
     public string EmployerName { get; set; }
     public DateTime ClosingDate { get; set; }

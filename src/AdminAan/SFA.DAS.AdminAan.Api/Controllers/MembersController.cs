@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AdminAan.Application.Members.GetMemberProfile;
 using SFA.DAS.AdminAan.Domain;
+using SFA.DAS.AdminAan.Domain.LeavingReasons;
 using SFA.DAS.AdminAan.Infrastructure;
 
 namespace SFA.DAS.AdminAan.Api.Controllers;
@@ -37,5 +38,14 @@ public class MembersController : ControllerBase
         GetMemberProfileQuery query = new(memberId, requestedByMemberId);
         var result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
+    }
+
+    [HttpPost("{memberId}/leaving")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    public async Task<ActionResult> PostMemberLeaving([FromRoute] Guid memberId,
+        [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [FromBody] PostMemberStatusModel postMemberStatusModel, CancellationToken cancellationToken)
+    {
+        var response = await _apiClient.PostMemberLeaving(requestedByMemberId, memberId, postMemberStatusModel, cancellationToken);
+        return Ok(response);
     }
 }
