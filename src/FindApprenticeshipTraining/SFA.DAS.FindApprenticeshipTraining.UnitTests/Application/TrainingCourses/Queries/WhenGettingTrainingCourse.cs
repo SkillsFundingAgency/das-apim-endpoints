@@ -15,6 +15,7 @@ using SFA.DAS.Testing.AutoFixture;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using GetLevelsListRequest = SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests.GetLevelsListRequest;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCourses.Queries
 {
@@ -56,7 +57,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                             c.GetUrl.Equals(url)))))
                 .ReturnsAsync(providersCountResponse);
             mockCoursesApiClient
-                .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
+                .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<FindApprenticeshipTraining.InnerApi.Requests.GetLevelsListRequest>()))
                 .ReturnsAsync(levelsApiResponse);
 
             //Act
