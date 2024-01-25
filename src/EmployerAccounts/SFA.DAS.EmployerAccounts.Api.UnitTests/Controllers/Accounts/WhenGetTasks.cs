@@ -45,6 +45,12 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] AccountsController controller)
         {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetTasksQuery>(p => p.AccountId == accountId),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => null);
+
             var controllerResult = await controller.GetTasks(accountId) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
