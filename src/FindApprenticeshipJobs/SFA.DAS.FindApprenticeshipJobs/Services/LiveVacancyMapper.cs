@@ -87,7 +87,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 RouteCode = getStandardsListItem.RouteCode,  
                 Route = getStandardsListItem?.Route ?? string.Empty,
 
-                IsRecruitVacancy = true
+                IsRecruitVacancy = true,
+                TypicalJobTitles = getStandardsListItem.TypicalJobTitles == null ? "" : SortTypicalJobTitles(getStandardsListItem.TypicalJobTitles),
+                AdditionalQuestion1 = source.AdditionalQuestion1,
+                AdditionalQuestion2 = source.AdditionalQuestion2
             };
         }
 
@@ -104,6 +107,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 7 => "Degree",
                 _ => ""
             };
+        }
+
+        private string SortTypicalJobTitles(string typicalJobTitles)
+        {
+            var orderedJobTitles = typicalJobTitles.Split("|").OrderBy(s => s);
+            return string.Join("|", orderedJobTitles);
         }
     }
 }
