@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+﻿using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries
 {
@@ -13,7 +13,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
 
-        public static implicit operator AddressItem(GetAddressesListItem source) => 
+        public static implicit operator AddressItem(GetAddressesListItem source) =>
             new AddressItem
             {
                 Uprn = source.Uprn,

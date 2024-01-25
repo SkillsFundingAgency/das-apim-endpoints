@@ -2,7 +2,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.AddressLookup
 {

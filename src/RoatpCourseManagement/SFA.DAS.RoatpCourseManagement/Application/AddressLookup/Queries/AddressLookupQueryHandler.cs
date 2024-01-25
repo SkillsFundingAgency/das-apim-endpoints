@@ -1,18 +1,18 @@
-﻿using MediatR;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.RoatpCourseManagement.Infrastructure;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries
 {
     public class AddressLookupQueryHandler : IRequestHandler<AddresssLookupQuery, AddresssLookupQueryResult>
     {
-        private readonly ILocationLookupService _locationLookupService;
+        private readonly ILocationApiClient _locationLookupService;
         private readonly ILogger<AddressLookupQueryHandler> _logger;
 
-        public AddressLookupQueryHandler(ILocationLookupService locationLookupService, ILogger<AddressLookupQueryHandler> logger)
+        public AddressLookupQueryHandler(ILocationApiClient locationLookupService, ILogger<AddressLookupQueryHandler> logger)
         {
             _locationLookupService = locationLookupService;
             _logger = logger;
