@@ -76,5 +76,21 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
             ), false);
             return Ok();
         }
+
+        [HttpGet]
+        [Route("{apprenticeshipKey}/priceHistory/pending")]
+        public async Task<ActionResult> GetPendingPriceChange(Guid apprenticeshipKey)
+        {
+	        var response = await _apiClient.Get<GetPendingPriceChangeApiResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey));
+	        return Ok(new GetPendingPriceChangeResponse(response));
+        }
+
+        [HttpDelete]
+        [Route("{apprenticeshipKey}/priceHistory/pending")]
+        public async Task<ActionResult> CancelPendingPriceChange(Guid apprenticeshipKey)
+        {
+            await _apiClient.Delete(new CancelPendingPriceChangeRequest(apprenticeshipKey));
+            return Ok();
+        }
     }
 }

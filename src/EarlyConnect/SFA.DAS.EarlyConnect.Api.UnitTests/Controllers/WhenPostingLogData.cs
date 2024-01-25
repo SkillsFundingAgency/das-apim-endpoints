@@ -40,9 +40,10 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.CreateLog(request);
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
-            var okResult = (OkObjectResult)result;
-            Assert.AreEqual((int)HttpStatusCode.OK, okResult.StatusCode);
+            Assert.IsInstanceOf<CreatedAtActionResult>(result);
+            var okResult = (CreatedAtActionResult)result;
+
+            Assert.AreEqual((int)HttpStatusCode.Created, okResult.StatusCode);
             var model = (CreateLogPostResponse)okResult.Value;
             Assert.AreEqual(response.LogId, model.LogId);
         }
