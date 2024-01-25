@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using System;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 public class PutCandidateApiRequest : IPutApiRequest
@@ -17,5 +18,6 @@ public class PutCandidateApiRequest : IPutApiRequest
     public class PutCandidateApiRequestData
     {
         public string Email { get; set; }
+        public DateTime DateOfBirth => DateTime.UtcNow; // TODO 
     }
 }
