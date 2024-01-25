@@ -11,30 +11,28 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplyController
+namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplicationController
 {
     [TestFixture]
     public class WhenUpdatingApplication
     {
         [Test, MoqAutoData]
         public async Task Then_The_Command_Response_Is_Returned(
-            string vacancyReference,
             Guid applicationId,
             Guid candidateId,
             UpdateApplicationModel model,
             PatchApplicationCommandResponse result,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] Api.Controllers.ApplyController controller)
+            [Greedy] Api.Controllers.ApplicationController controller)
         {
             mediator.Setup(x => x.Send(It.Is<PatchApplicationCommand>(c =>
                         c.CandidateId == candidateId && 
                         c.ApplicationId == applicationId &&
-                        c.WorkExperienceStatus == model.WorkHistorySectionStatus &&
-                        c.VacancyReference == vacancyReference),
+                        c.WorkExperienceStatus == model.WorkHistorySectionStatus),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(result);
 
-            var actual = await controller.UpdateApplication(vacancyReference, applicationId, candidateId, model, CancellationToken.None);
+            var actual = await controller.UpdateApplication(applicationId, candidateId, model, CancellationToken.None);
 
             actual.Should().BeOfType<OkObjectResult>();
             var actualObject = ((OkObjectResult)actual).Value as FindAnApprenticeship.Models.Application;
