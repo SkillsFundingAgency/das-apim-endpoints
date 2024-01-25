@@ -48,7 +48,17 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             {
                 _logger.LogError(e, "Error posting student triage data");
 
-                return BadRequest();
+                var apiException = (e as SharedOuterApi.Exceptions.ApiResponseException);
+                var status = apiException?.Status;
+                var errorMessage = apiException?.Error;
+
+                if (status.Equals(HttpStatusCode.InternalServerError))
+                {
+                    return Problem();
+                }
+
+                return BadRequest(errorMessage);
+
             }
         }
 
