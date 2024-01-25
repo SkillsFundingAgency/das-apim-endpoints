@@ -38,7 +38,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateApplication(
-            [FromRoute] string vacancyReference,
             [FromRoute] Guid applicationId,
             [FromRoute] Guid candidateId,
             [FromBody] UpdateApplicationModel request,
@@ -48,7 +47,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             {
                 ApplicationId = applicationId,
                 CandidateId = candidateId,
-                VacancyReference = vacancyReference,
                 WorkExperienceStatus = request.WorkHistorySectionStatus
             }, cancellationToken);
 

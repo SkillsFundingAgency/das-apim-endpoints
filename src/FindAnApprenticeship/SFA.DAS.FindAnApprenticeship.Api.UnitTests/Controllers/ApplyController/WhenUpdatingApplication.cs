@@ -29,12 +29,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplyController
             mediator.Setup(x => x.Send(It.Is<PatchApplicationCommand>(c =>
                         c.CandidateId == candidateId && 
                         c.ApplicationId == applicationId &&
-                        c.WorkExperienceStatus == model.WorkHistorySectionStatus &&
-                        c.VacancyReference == vacancyReference),
+                        c.WorkExperienceStatus == model.WorkHistorySectionStatus),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(result);
 
-            var actual = await controller.UpdateApplication(vacancyReference, applicationId, candidateId, model, CancellationToken.None);
+            var actual = await controller.UpdateApplication(applicationId, candidateId, model, CancellationToken.None);
 
             actual.Should().BeOfType<OkObjectResult>();
             var actualObject = ((OkObjectResult)actual).Value as FindAnApprenticeship.Models.Application;
