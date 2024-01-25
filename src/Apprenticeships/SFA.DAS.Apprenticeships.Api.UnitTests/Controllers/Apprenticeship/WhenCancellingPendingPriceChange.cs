@@ -8,6 +8,8 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading.Tasks;
 using AutoFixture;
+using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
 {
@@ -23,7 +25,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
             _fixture = new Fixture();
 
 		    _mockApprenticeshipsApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
-            _sut = new ApprenticeshipController(_mockApprenticeshipsApiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>());
+            _sut = new ApprenticeshipController(Mock.Of<ILogger<ApprenticeshipController>>(), _mockApprenticeshipsApiClient.Object, Mock.Of<IMediator>());
 	    }
 
         [Test]
