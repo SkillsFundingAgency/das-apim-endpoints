@@ -2,12 +2,15 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetTasks;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -17,11 +20,31 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
     public class WhenCallingHandler
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Tasks_Returns_GetTasksQueryResult(
-          [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
-          GetCohortsResponse cohortsResponse,
-          GetTasksQuery request,
-          GetTasksQueryHandler handler)
+        public async Task Then_NumberTransferPledgeApplicationsToReview_Should_Match_Api_Response(
+        [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
+        GetApplicationsResponse ltmApplicationsResponse,
+        GetTasksQuery request,
+        GetTasksQueryHandler handler)
+        {
+
+            mockLTMApi
+                .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
+                    r.SenderAccountId == request.AccountId
+                    && r.ApplicationStatusFilter == ApplicationStatus.Pending)))
+                .ReturnsAsync(ltmApplicationsResponse);
+
+            // Act
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            result.NumberTransferPledgeApplicationsToReview.Should().Be(ltmApplicationsResponse.TotalItems);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Gets_Tasks_Returns_NumberOfCohortsReadyToReview_Where_Valid(
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+            GetCohortsResponse cohortsResponse,
+            GetTasksQuery request,
+            GetTasksQueryHandler handler)
         {
             // Arrange
             foreach (var cohort in cohortsResponse.Cohorts)
@@ -36,8 +59,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
-
-            Assert.AreEqual(3, result.NumberOfCohortsReadyToReview);
+            result.NumberOfCohortsReadyToReview.Should().Be(3);
         }
 
 
@@ -61,7 +83,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
-            Assert.AreEqual(2, result.NumberOfCohortsReadyToReview);
+            result.NumberOfCohortsReadyToReview.Should().Be(2);
         }
 
 
@@ -78,7 +100,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
-            Assert.AreEqual(0, result.NumberTransferPledgeApplicationsToReview);
+            result.NumberOfCohortsReadyToReview.Should().Be(0);
         }
     }
 }
