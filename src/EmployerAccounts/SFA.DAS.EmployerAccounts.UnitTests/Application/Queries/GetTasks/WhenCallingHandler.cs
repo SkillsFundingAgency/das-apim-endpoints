@@ -40,7 +40,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Gets_Tasks_Returns_GetTasksQueryResult(
+        public async Task Then_Gets_Tasks_Returns_NumberOfPendingTransferConnections(
           [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> _financeApiClient,
           List<GetTransferConnectionsResponse.TransferConnection> transferConnectionsResponse,
           GetTasksQuery request,
