@@ -53,7 +53,6 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
                    It.IsAny<CancellationToken>()))
                .ReturnsAsync(() => null);
 
-
             var controllerResult = await controller.GetEnglishFractionHistory(hashedAccountId, empRef) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
