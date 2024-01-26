@@ -31,8 +31,8 @@ public class WhenPuttingCandidate
         using (new AssertionScope())
         {
             actual.Should().BeOfType<OkObjectResult>();
-            actual.As<OkObjectResult>().Value.Should().BeOfType<PutCandidateCommandResult>();
-            actual.As<OkObjectResult>().Value.As<PutCandidateCommandResult>().Should().BeEquivalentTo(result);
+            actual.As<OkObjectResult>().Value.Should().BeOfType<CandidateResponse>();
+            actual.As<OkObjectResult>().Value.As<CandidateResponse>().Should().BeEquivalentTo(result);
         }
     }
 }

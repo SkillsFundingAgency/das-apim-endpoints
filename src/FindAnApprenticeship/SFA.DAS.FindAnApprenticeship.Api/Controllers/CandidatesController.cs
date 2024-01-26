@@ -36,7 +36,7 @@ public class CandidatesController : ControllerBase
                 Email = request.Email
             });
 
-            return Ok(queryResponse);
+            return Ok((CandidateResponse)queryResponse);
         }
         catch (Exception e)
         {

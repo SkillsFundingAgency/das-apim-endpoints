@@ -32,7 +32,7 @@ public class PutCandidateCommandHandler : IRequestHandler<PutCandidateCommand, P
 
         return new PutCandidateCommandResult()
         {
-            CandidateId = candidateResult.Body.Id,
+            Id = candidateResult.Body.Id,
             GovUkIdentifier = candidateResult.Body.GovUkIdentifier,
             Email = candidateResult.Body.Email,
             FirstName = candidateResult.Body.FirstName,
