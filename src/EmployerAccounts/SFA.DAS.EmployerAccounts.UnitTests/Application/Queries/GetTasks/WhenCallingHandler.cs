@@ -8,7 +8,9 @@ using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetTasks;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -18,11 +20,31 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
     public class WhenCallingHandler
     {
         [Test, MoqAutoData]
-        public async Task Then_Gets_Tasks_Returns_GetTasksQueryResult(
-          [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
-          GetTransferRequestSummaryResponse transferRequestResponse,
-          GetTasksQuery request,
-          GetTasksQueryHandler handler)
+        public async Task Then_NumberTransferPledgeApplicationsToReview_Should_Match_Api_Response(
+        [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
+        GetApplicationsResponse ltmApplicationsResponse,
+        GetTasksQuery request,
+        GetTasksQueryHandler handler)
+        {
+
+            mockLTMApi
+                .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
+                    r.SenderAccountId == request.AccountId
+                    && r.ApplicationStatusFilter == ApplicationStatus.Pending)))
+                .ReturnsAsync(ltmApplicationsResponse);
+
+            // Act
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            result.NumberTransferPledgeApplicationsToReview.Should().Be(ltmApplicationsResponse.TotalItems);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Gets_Tasks_Returns_NumberOfTransferRequestToReview_When_Valid(
+           [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+           GetTransferRequestSummaryResponse transferRequestResponse,
+           GetTasksQuery request,
+           GetTasksQueryHandler handler)
         {
             // Arrange
             foreach (var tr in transferRequestResponse.TransferRequestSummaryResponse)
@@ -42,10 +64,10 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
 
         [Test, MoqAutoData]
         public async Task Then_Only_Returns_Pending_TransferRequests(
-        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
-        GetTransferRequestSummaryResponse transferRequestResponse,
-        GetTasksQuery request,
-        GetTasksQueryHandler handler)
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+            GetTransferRequestSummaryResponse transferRequestResponse,
+            GetTasksQuery request,
+            GetTasksQueryHandler handler)
         {
             transferRequestResponse.TransferRequestSummaryResponse.Select((cohort, index) =>
             {
@@ -65,9 +87,9 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
 
         [Test, MoqAutoData]
         public async Task When_TransferRequests_Are_Null_Return_Zero(
-        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
-        GetTasksQuery request,
-        GetTasksQueryHandler handler)
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+            GetTasksQuery request,
+            GetTasksQueryHandler handler)
         {
             mockCommitmentsApi
                 .Setup(m => m.Get<GetTransferRequestSummaryResponse>(It.Is<GetTransferRequestsRequest>(r => r.AccountId == request.AccountId)))
