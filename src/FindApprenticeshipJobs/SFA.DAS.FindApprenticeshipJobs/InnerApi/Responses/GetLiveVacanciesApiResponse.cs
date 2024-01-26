@@ -43,6 +43,8 @@ public class LiveVacancy
     public VacancyType? VacancyType { get; set; }
     public string ApplicationMethod { get; set; } = null!;
     public string? ApplicationUrl { get; set; }
+    public string? AdditionalQuestion1 { get; set; }
+    public string? AdditionalQuestion2 { get; set; }
 }
 
 public class TrainingProvider

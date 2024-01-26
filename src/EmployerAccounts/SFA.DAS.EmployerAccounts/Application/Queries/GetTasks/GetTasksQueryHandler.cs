@@ -4,7 +4,9 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
@@ -13,10 +15,12 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
     {
         private readonly ILogger<GetTasksQueryHandler> _logger;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
+        private readonly ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> _ltmApiClient;
 
-        public GetTasksQueryHandler(ILogger<GetTasksQueryHandler> logger, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient)
+        public GetTasksQueryHandler(ILogger<GetTasksQueryHandler> logger, ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> ltmApiClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient)
         {
             _logger = logger;
+            _ltmApiClient = ltmApiClient;
             _commitmentsV2ApiClient = commitmentsV2ApiClient;
         }
 
@@ -24,15 +28,24 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
         {
             _logger.LogInformation($"Getting Tasks for account {request.AccountId}");
 
+            var pledgeApplicationsToReviewTask = _ltmApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
+            {
+                SenderAccountId = request.AccountId,
+                ApplicationStatusFilter = ApplicationStatus.Pending
+            });
+
             var apprenticeChangesTask = _commitmentsV2ApiClient.Get<GetApprenticeshipUpdatesResponse>(new GetPendingApprenticeChangesRequest(request.AccountId));
 
-            await Task.WhenAll(apprenticeChangesTask);
-            var apprenticeChanges = await apprenticeChangesTask;
+            await Task.WhenAll(apprenticeChangesTask, pledgeApplicationsToReviewTask);
 
+            var apprenticeChanges = await apprenticeChangesTask;
             var apprenticeChangesCount = apprenticeChanges?.ApprenticeshipUpdates?.Count ?? 0;
+
+            var pledgeApplicationsToReview = await pledgeApplicationsToReviewTask;
 
             return new GetTasksQueryResult()
             {
+                NumberTransferPledgeApplicationsToReview = pledgeApplicationsToReview?.TotalItems ?? 0,
                 NumberOfApprenticesToReview = apprenticeChangesCount
             };
         }

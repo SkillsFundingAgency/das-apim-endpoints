@@ -1,7 +1,6 @@
 using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
@@ -16,10 +15,13 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
             var actual = (SearchApprenticeshipsApiResponse)source;
 
             actual.TotalApprenticeshipCount.Should().Be(source.TotalApprenticeshipCount);
+            actual.TotalFound.Should().Be(source.TotalFound);
             actual.Routes.Should().BeEquivalentTo(source.Routes);
+            actual.Levels.Should().BeEquivalentTo(source.Levels, options => options.Excluding(c => c.Code));
             actual.Location.LocationName.Should().Be(source.LocationItem.Name);
             actual.Location.Lat.Should().Be(source.LocationItem.GeoPoint.First());
             actual.Location.Lon.Should().Be(source.LocationItem.GeoPoint.Last());
+            actual.VacancyReference.Should().Be(source.VacancyReference);
             actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options => options
                 .Excluding(c => c.Address)
                 .Excluding(c => c.AnonymousEmployerName)
@@ -34,7 +36,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
             actual.Vacancies.FirstOrDefault().PostCode.Should().Be(source.Vacancies.FirstOrDefault().Address.Postcode);
             actual.Vacancies.FirstOrDefault().EmployerName.Should().Be(
                 source.Vacancies.FirstOrDefault().IsEmployerAnonymous ? source.Vacancies.FirstOrDefault().AnonymousEmployerName :source.Vacancies.FirstOrDefault().EmployerName);
-            actual.Vacancies.FirstOrDefault().ApprenticeshipLevel.Should().Be("1");
+            actual.Vacancies.FirstOrDefault().ApprenticeshipLevel.Should().Be(source.Vacancies.FirstOrDefault().ApprenticeshipLevel);
         }
         
         [Test, AutoData]
@@ -46,6 +48,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
             
             actual.Should().BeEquivalentTo(source, options => options.Excluding(c=>c.LocationItem)
                 .Excluding(c =>c.Vacancies)
+                .Excluding(c => c.Levels)
                 .Excluding(c => c.PageSize)
                 .Excluding(c => c.PageNumber)
                 .Excluding(c => c.TotalPages)
