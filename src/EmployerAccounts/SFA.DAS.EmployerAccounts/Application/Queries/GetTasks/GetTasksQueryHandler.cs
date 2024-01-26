@@ -38,6 +38,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
                 ApplicationStatusFilter = ApplicationStatus.Pending
             });
 
+            _logger.LogInformation($"_currentDateTime now set to {_currentDateTime.Now}");
             int dayOfMonth = _currentDateTime.Now.Day;
             var isInDateRange = dayOfMonth >= 16 && dayOfMonth < 20;
 
