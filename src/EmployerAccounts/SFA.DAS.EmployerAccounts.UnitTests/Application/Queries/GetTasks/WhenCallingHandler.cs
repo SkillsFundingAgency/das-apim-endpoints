@@ -51,7 +51,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
-            Assert.AreEqual(3, result.NumberOfApprenticesToReview);
+            result.NumberOfApprenticesToReview.Should().Be(3);
         }
     }
 }
