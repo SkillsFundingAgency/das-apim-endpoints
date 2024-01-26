@@ -3,12 +3,15 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NLog;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplication;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -39,8 +42,26 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             {
                 _logger.LogError(e, $"Error getting application index {applicationId}", applicationId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }  
+        }
+
+        [HttpGet("{candidateId}/work-history")]
+        public async Task<IActionResult> GetWorkHistories([FromRoute] Guid applicationId, [FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetApplicationWorkHistoriesQuery
+                {
+                    CandidateId = candidateId,
+                    ApplicationId = applicationId,
+                });
+                return Ok(result.WorkHistories);
             }
-  
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Get Job Histories : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpPost("{candidateId}")]
