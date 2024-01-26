@@ -80,7 +80,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [Route("{surveyGuid}")]
-        public async Task<IActionResult> GetStudentTriageData([FromRoute] string surveyGuid)
+        public async Task<IActionResult> GetStudentTriageData([FromRoute] Guid surveyGuid)
         {
             try
             {

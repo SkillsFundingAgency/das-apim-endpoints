@@ -4,6 +4,6 @@ namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyI
 {
     public class GetStudentTriageDataBySurveyIdQuery : IRequest<GetStudentTriageDataBySurveyIdResult>
     {
-        public string SurveyGuid { get; set; }
+        public Guid SurveyGuid { get; set; }
     }
 }

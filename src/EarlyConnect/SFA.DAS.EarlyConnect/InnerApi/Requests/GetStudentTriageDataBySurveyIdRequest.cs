@@ -4,8 +4,8 @@ namespace SFA.DAS.EarlyConnect.InnerApi.Requests
 {
     public class GetStudentTriageDataBySurveyIdRequest : IGetApiRequest
     {
-        public string SurveyGuid { get; set; }
-        public GetStudentTriageDataBySurveyIdRequest(string surveyGuid)
+        public Guid SurveyGuid { get; set; }
+        public GetStudentTriageDataBySurveyIdRequest(Guid surveyGuid)
         {
             SurveyGuid = surveyGuid;
         }

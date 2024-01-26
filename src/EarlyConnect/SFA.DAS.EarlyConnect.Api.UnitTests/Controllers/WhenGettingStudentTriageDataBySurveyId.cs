@@ -33,7 +33,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task GetStudentTriageData_ValidRequest_ReturnsOk(
             GetStudentTriageDataBySurveyIdResult mediatorResult,
-            string surveyGuid
+            Guid surveyGuid
         )
         {
             _mediatorMock
@@ -51,10 +51,11 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
         [Test]
         public async Task GetStudentTriageData_InvalidRequest_ReturnsBadRequest()
         {
+            Guid surveyId = Guid.NewGuid();
             var exception = new Exception("Simulated error");
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetStudentTriageDataBySurveyIdQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(exception);
 
-            var result = await _controller.GetStudentTriageData("Test");
+            var result = await _controller.GetStudentTriageData(surveyId);
 
             Assert.IsInstanceOf<BadRequestObjectResult>(result);
             var badRequestResult = (BadRequestObjectResult)result;
