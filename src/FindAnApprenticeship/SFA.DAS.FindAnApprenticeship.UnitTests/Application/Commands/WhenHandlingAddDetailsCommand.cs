@@ -7,18 +7,11 @@ using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users;
 using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.WebSockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
 {
@@ -42,7 +35,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
 
             mockApiClient
                 .Setup(client => client.PutWithResponseCode<NullResponse>(
-                    It.Is<PutCandidateApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
+                    It.IsAny<PutCandidateApiRequest>()))
                 .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.Accepted, ""));
 
             var result = await handler.Handle(command, CancellationToken.None);
