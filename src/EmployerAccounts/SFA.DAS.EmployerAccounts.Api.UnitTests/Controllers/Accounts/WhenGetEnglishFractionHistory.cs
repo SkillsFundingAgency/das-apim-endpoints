@@ -47,6 +47,12 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] AccountsController controller)
         {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetEnglishFractionHistoryQuery>(p => p.HashedAccountId == hashedAccountId && p.EmpRef == empRef),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => null);
+
             var controllerResult = await controller.GetEnglishFractionHistory(hashedAccountId, empRef) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
