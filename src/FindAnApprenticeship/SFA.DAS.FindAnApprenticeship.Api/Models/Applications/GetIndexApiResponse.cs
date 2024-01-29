@@ -5,6 +5,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
 {
     public class GetIndexApiResponse
     {
+        public string VacancyReference { get; set; }
         public string VacancyTitle { get; set; }
         public string EmployerName { get; set; }
         public DateTime ClosingDate { get; set; }
@@ -98,6 +99,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
         {
             return new GetIndexApiResponse
             {
+                VacancyReference = source.VacancyReference,
                 VacancyTitle = source.VacancyTitle,
                 EmployerName = source.EmployerName,
                 ClosingDate = source.ClosingDate,

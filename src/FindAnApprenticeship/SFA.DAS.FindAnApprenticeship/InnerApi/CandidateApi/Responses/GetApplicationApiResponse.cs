@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
 {
-    public class PutApplicationApiResponse
+    public class GetApplicationApiResponse
     {
         public Guid Id { get; set; }
         public Guid CandidateId { get; set; }
