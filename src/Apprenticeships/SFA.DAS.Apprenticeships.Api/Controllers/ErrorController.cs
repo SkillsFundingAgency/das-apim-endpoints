@@ -15,6 +15,6 @@ public class ErrorController : ControllerBase
         if (HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error is ApiUnauthorizedException)
             return Unauthorized();
 
-        throw HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error ?? new Exception("An exception has occurred."); //this is a terrible error message, but it should never be thrown as .Error should never be null
+        throw HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error ?? new Exception("An exception has occurred."); //this basic error message is very unlikely to be thrown as .Error should never be null
     }
 }
