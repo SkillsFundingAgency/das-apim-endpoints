@@ -26,7 +26,9 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            return await _apiClient.Get<TResponse>(request);
+            var result = await _apiClient.GetWithResponseCode<TResponse>(request);
+            if (result.StatusCode == HttpStatusCode.Unauthorized) throw new ApiUnauthorizedException();
+            return result.Body;
         }
 
         public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
@@ -89,4 +91,6 @@ namespace SFA.DAS.SharedOuterApi.Services
             return await _apiClient.PutWithResponseCode<TResponse>(request);
         }
     }
+
+    public class ApiUnauthorizedException : Exception { }
 }
