@@ -1,8 +1,10 @@
-﻿using MediatR;
+﻿using Azure.Core;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplication;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -25,9 +27,16 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users
 
         public async Task<Unit> Handle (AddDetailsCommand command, CancellationToken cancellationToken)
         {
-            var putRequest = new PutUserDetailsRequest(command.FirstName, command.LastName, command.CandidateId);
+            var putData = new PutCandidateApiRequest.PutCandidateApiRequestData
+            {
+                FirstName = command.FirstName,
+                LastName = command.LastName,
+                Email = command.Email
+            };
 
-            var response = await _candidateApiClient.PutWithResponseCode<Nullable>(putRequest);
+            var putRequest = new PutCandidateApiRequest(command.GovUkIdentifier, putData);
+
+            var response = await _candidateApiClient.PutWithResponseCode<NullResponse>(putRequest);
 
             if ((int)response.StatusCode > 300)
             {

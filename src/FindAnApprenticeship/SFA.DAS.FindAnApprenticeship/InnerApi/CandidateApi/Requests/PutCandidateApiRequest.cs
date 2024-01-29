@@ -19,5 +19,7 @@ public class PutCandidateApiRequest : IPutApiRequest
     {
         public string Email { get; set; }
         public DateTime DateOfBirth => DateTime.UtcNow; // TODO 
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     }
 }
