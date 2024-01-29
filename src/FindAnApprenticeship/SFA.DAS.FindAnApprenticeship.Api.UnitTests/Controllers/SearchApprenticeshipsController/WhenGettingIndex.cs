@@ -46,13 +46,13 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprentic
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<SearchApprenticeshipsQuery>(),
+                    It.IsAny<SearchIndexQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new InvalidOperationException());
 
             var controllerResult = await controller.Index() as StatusCodeResult;
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+            controllerResult?.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }
 }

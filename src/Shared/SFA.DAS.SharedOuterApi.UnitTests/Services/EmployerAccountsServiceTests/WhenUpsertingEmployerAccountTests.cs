@@ -30,7 +30,10 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             EmployerAccountsService handler)
         {
             employerProfile.UserId = Guid.NewGuid().ToString();
-            
+
+            accountsApiClient
+                .Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<PutAccountUserRequest>()))
+                .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.Created, ""));
             employerProfilesApiClient.Setup(x => x.PutWithResponseCode<EmployerProfileUsersApiResponse>(
                 It.Is<PutUpsertEmployerUserAccountRequest>(c =>
                     c.PutUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}") 

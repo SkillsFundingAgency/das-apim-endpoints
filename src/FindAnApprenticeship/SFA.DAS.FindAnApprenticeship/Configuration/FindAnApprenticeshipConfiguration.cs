@@ -1,3 +1,5 @@
+using SFA.DAS.SharedOuterApi.Interfaces;
+
 namespace SFA.DAS.FindAnApprenticeship.Configuration
 {
     public class FindAnApprenticeshipConfiguration

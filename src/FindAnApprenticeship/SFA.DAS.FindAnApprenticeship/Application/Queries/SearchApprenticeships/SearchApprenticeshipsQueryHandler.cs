@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.WebUtilities;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -28,46 +29,65 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
         {
             var locationTask = _locationLookupService.GetLocationInformation(request.Location, default, default, false);
             var routesTask = _courseService.GetRoutes();
+            var courseLevelsTask = _courseService.GetLevels();
 
-            await Task.WhenAll(locationTask, routesTask);
-            
+            await Task.WhenAll(locationTask, routesTask, courseLevelsTask);
+
             var location = locationTask.Result;
             var routes = routesTask.Result;
+            var courseLevels = courseLevelsTask.Result;
             
-            var resultCountTask = _findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
-                    new GetApprenticeshipCountRequest(
-                        location?.GeoPoint?.FirstOrDefault(),
-                        location?.GeoPoint?.LastOrDefault(),
-                        request.SelectedRouteIds,
-                        request.Distance
-                        ));
+            if (request.SearchTerm != null && Regex.IsMatch(request.SearchTerm, @"^VAC\d{10}$", RegexOptions.None, TimeSpan.FromSeconds(3)))
+            {
+                var vacancyReferenceResult = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(request.SearchTerm));
 
-            var vacancyResultTask = _findApprenticeshipApiClient.Get<GetVacanciesResponse>(
+                if (vacancyReferenceResult != null)
+                {
+                    return new SearchApprenticeshipsResult
+                    {
+                        TotalApprenticeshipCount = 1,
+                        LocationItem = location,
+                        Routes = routes.Routes.ToList(),
+                        Vacancies = new List<GetVacanciesListItem>(),
+                        PageNumber = request.PageNumber,
+                        PageSize = request.PageSize,
+                        TotalPages = 1,
+                        VacancyReference = request.SearchTerm,
+                        Levels = courseLevels.Levels.ToList()
+                    };
+                }
+            }
+
+            var categories = routes.Routes.Where(route => request.SelectedRouteIds != null && request.SelectedRouteIds.Contains(route.Id.ToString()))
+                .Select(route => route.Name).ToList();
+
+            var vacancyResult = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(
                 new GetVacanciesRequest(
                     location?.GeoPoint?.FirstOrDefault(),
                     location?.GeoPoint?.LastOrDefault(),
-                    request.SelectedRouteIds,
                     request.Distance,
-                    request.Sort,
+                    request.SearchTerm,
                     request.PageNumber,
-                    request.PageSize));
+                    request.PageSize,
+                    categories,
+                    request.SelectedLevelIds,
+                    request.Sort,
+                    request.DisabilityConfident));
 
-            await Task.WhenAll(resultCountTask, vacancyResultTask);
-
-            var result = resultCountTask.Result;
-            var vacancyResult = vacancyResultTask.Result;
-
-            var totalPages = (int)Math.Ceiling((double)result.TotalVacancies / request.PageSize);
+            var totalPages = (int)Math.Ceiling((double)vacancyResult.TotalFound / request.PageSize);
 
             return new SearchApprenticeshipsResult
             {
-                TotalApprenticeshipCount = result.TotalVacancies,
+                TotalApprenticeshipCount = vacancyResult.Total,
+                TotalFound = vacancyResult.TotalFound,
                 LocationItem = location,
                 Routes = routes.Routes.ToList(),
                 Vacancies = vacancyResult.ApprenticeshipVacancies.ToList(),
                 PageNumber = request.PageNumber,
                 PageSize = request.PageSize,
-                TotalPages = totalPages
+                TotalPages = totalPages,
+                Levels = courseLevels.Levels.ToList(),
+                DisabilityConfident = request.DisabilityConfident
             };
         }
     }

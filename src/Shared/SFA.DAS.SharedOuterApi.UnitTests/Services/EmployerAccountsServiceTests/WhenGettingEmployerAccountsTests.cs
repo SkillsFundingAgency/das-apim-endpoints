@@ -9,6 +9,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -109,7 +110,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             EmployerProfileUsersApiResponse profileUserResponse,
             [Frozen] Mock<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>> employerProfilesApiClient,
             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
-            EmployerAccountsService handler)
+            EmployerAccountsService service)
         {
             profileUserResponse.Id = userId.ToString();
             accountsApiClient
@@ -120,21 +121,23 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
                 .Setup(x => x.GetAll<GetAccountTeamMembersResponse>(
                     It.IsAny<GetAccountTeamMembersRequest>()))
                 .ReturnsAsync(new List<GetAccountTeamMembersResponse>());
+            accountsApiClient
+                .Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<PutAccountUserRequest>()))
+                .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.Created, ""));
             employerProfilesApiClient.Setup(x => x.GetWithResponseCode<EmployerProfileUsersApiResponse>(
                     It.Is<GetEmployerUserAccountRequest>(c =>
                         c.GetUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}"))))
                 .ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(profileUserResponse, HttpStatusCode.OK, ""));
             employerProfilesApiClient.Setup(x => x.PutWithResponseCode<EmployerProfileUsersApiResponse>(
                     It.Is<PutUpsertEmployerUserAccountRequest>(c =>
-                        c.PutUrl.Contains($"api/users/{userId}")
-                        && c.Data.GetType().GetProperty("GovIdentifier").GetValue(c.Data, null).ToString() == employerProfile.GovIdentifier
-                        && c.Data.GetType().GetProperty("FirstName").GetValue(c.Data, null).ToString() == employerProfile.FirstName
-                        && c.Data.GetType().GetProperty("LastName").GetValue(c.Data, null).ToString() == employerProfile.LastName
-                        && c.Data.GetType().GetProperty("Email").GetValue(c.Data, null).ToString() == profileUserResponse.Email
+                        c.PutUrl.Contains($"{userId}")
+                          && c.Data.GetType().GetProperty("GovIdentifier").GetValue(c.Data, null).ToString() == profileUserResponse.GovUkIdentifier
+                          && c.Data.GetType().GetProperty("FirstName").GetValue(c.Data, null).ToString() == profileUserResponse.FirstName
+                          && c.Data.GetType().GetProperty("LastName").GetValue(c.Data, null).ToString() == profileUserResponse.LastName
                         )))
                 .ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(profileUserResponse, HttpStatusCode.Created, ""));
 
-            var actual = (await handler.GetEmployerAccounts(employerProfile)).ToList();
+            var actual = (await service.GetEmployerAccounts(employerProfile)).ToList();
 
             actual.Count.Should().Be(1);
             var actualRecord = actual.First();
