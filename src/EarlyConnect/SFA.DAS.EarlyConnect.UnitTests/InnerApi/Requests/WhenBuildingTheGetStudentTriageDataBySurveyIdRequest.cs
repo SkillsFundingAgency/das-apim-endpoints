@@ -1,3 +1,4 @@
+using System;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
@@ -8,7 +9,7 @@ namespace SFA.DAS.EarlyConnect.UnitTests.InnerApi.Requests
     public class WhenBuildingTheGetStudentTriageDataBySurveyIdRequest
     {
         [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Constructed(string SurveyGuid)
+        public void Then_The_Url_Is_Correctly_Constructed(Guid SurveyGuid)
         {
             var actual = new GetStudentTriageDataBySurveyIdRequest(SurveyGuid);
 
