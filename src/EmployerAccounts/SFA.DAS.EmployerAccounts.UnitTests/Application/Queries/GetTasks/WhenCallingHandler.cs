@@ -7,8 +7,10 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetTasks;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerFinance;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -26,7 +28,6 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
         GetTasksQuery request,
         GetTasksQueryHandler handler)
         {
-
             mockLTMApi
                 .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
                     r.SenderAccountId == request.AccountId
@@ -40,11 +41,28 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Gets_Tasks_Returns_NumberOfPendingTransferConnections(
-          [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> _financeApiClient,
-          List<GetTransferConnectionsResponse.TransferConnection> transferConnectionsResponse,
+        public async Task Then_NumberOfApprenticesToReview_Is_Returned(
+          [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+          GetApprenticeshipUpdatesResponse cohortsResponse,
           GetTasksQuery request,
           GetTasksQueryHandler handler)
+        {
+            mockCommitmentsApi
+                .Setup(m => m.Get<GetApprenticeshipUpdatesResponse>(It.Is<GetPendingApprenticeChangesRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(cohortsResponse);
+
+            // Act
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            result.NumberOfApprenticesToReview.Should().Be(3);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Gets_Tasks_Returns_NumberOfPendingTransferConnections(
+         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> _financeApiClient,
+         List<GetTransferConnectionsResponse.TransferConnection> transferConnectionsResponse,
+         GetTasksQuery request,
+         GetTasksQueryHandler handler)
         {
             _financeApiClient
                 .Setup(m => m.Get<List<GetTransferConnectionsResponse.TransferConnection>>(
