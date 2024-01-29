@@ -15,8 +15,8 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
     public class GetTasksQueryHandler : IRequestHandler<GetTasksQuery, GetTasksQueryResult>
     {
         private readonly ILogger<GetTasksQueryHandler> _logger;
-        private readonly ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> _ltmApiClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
+        private readonly ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> _ltmApiClient;
 
         public GetTasksQueryHandler(ILogger<GetTasksQueryHandler> logger, ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> ltmApiClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient)
         {
@@ -35,11 +35,16 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
                 ApplicationStatusFilter = ApplicationStatus.Pending
             });
 
+            var apprenticeChangesTask = _commitmentsV2ApiClient.Get<GetApprenticeshipUpdatesResponse>(new GetPendingApprenticeChangesRequest(request.AccountId));
+
             var transferRequestsTask = _commitmentsV2ApiClient.Get<GetTransferRequestSummaryResponse>(new GetTransferRequestsRequest(request.AccountId));
 
-            await Task.WhenAll(pledgeApplicationsToReviewTask, transferRequestsTask);
+            await Task.WhenAll(pledgeApplicationsToReviewTask, transferRequestsTask, apprenticeChangesTask);
 
             var pledgeApplicationsToReview = await pledgeApplicationsToReviewTask;
+
+            var apprenticeChanges = await apprenticeChangesTask;
+            var apprenticeChangesCount = apprenticeChanges?.ApprenticeshipUpdates?.Count ?? 0;
 
             var transferRequests = await transferRequestsTask;
 
@@ -48,7 +53,8 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
             return new GetTasksQueryResult()
             {
                 NumberTransferPledgeApplicationsToReview = pledgeApplicationsToReview?.TotalItems ?? 0,
-                NumberOfTransferRequestToReview = pendingTransfertransferRequestsRequestsToReview?.Count() ?? 0
+                NumberOfTransferRequestToReview = pendingTransfertransferRequestsRequestsToReview?.Count() ?? 0,
+                NumberOfApprenticesToReview = apprenticeChangesCount
             };
         }
     }
