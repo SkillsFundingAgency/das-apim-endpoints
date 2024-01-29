@@ -21,11 +21,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 
         [HttpPut]
         [Route ("add-details")]
-        public async Task <IActionResult> AddDetails ([FromQuery] string FirstName, [FromQuery] string LastName, [FromQuery] string GovUkIdentifier)
+        public async Task <IActionResult> AddDetails ([FromQuery] string FirstName, [FromQuery] string LastName, [FromQuery] string GovUkIdentifier, [FromQuery]string email)
         {
             try
             {
-                var result = await _mediator.Send(new AddDetailsCommand { FirstName = FirstName, LastName = LastName, GovUkIdentifier = GovUkIdentifier });
+                var result = await _mediator.Send(new AddDetailsCommand { FirstName = FirstName, LastName = LastName, GovUkIdentifier = GovUkIdentifier, Email = email });
 
                 return Ok(result);
             }
