@@ -8,8 +8,10 @@ using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetTasks;
 using SFA.DAS.EmployerAccounts.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -23,13 +25,10 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
         [Test, MoqAutoData]
         public async Task Then_NumberTransferPledgeApplicationsToReview_Should_Match_Api_Response(
         [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
-        [Frozen] Mock<ICurrentDateTime> mockCurrentDateTime,
         GetApplicationsResponse ltmApplicationsResponse,
         GetTasksQuery request,
         GetTasksQueryHandler handler)
         {
-            mockCurrentDateTime.Setup(m => m.Now).Returns(new DateTime(2024, 01, 18));
-
             mockLTMApi
                 .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
                     r.SenderAccountId == request.AccountId
@@ -40,6 +39,23 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
             var result = await handler.Handle(request, CancellationToken.None);
 
             result.NumberTransferPledgeApplicationsToReview.Should().Be(ltmApplicationsResponse.TotalItems);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_NumberOfApprenticesToReview_Is_Returned(
+          [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+          GetApprenticeshipUpdatesResponse cohortsResponse,
+          GetTasksQuery request,
+          GetTasksQueryHandler handler)
+        {
+            mockCommitmentsApi
+                .Setup(m => m.Get<GetApprenticeshipUpdatesResponse>(It.Is<GetPendingApprenticeChangesRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(cohortsResponse);
+
+            // Act
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            result.NumberOfApprenticesToReview.Should().Be(3);
         }
 
         [Test, MoqAutoData]
