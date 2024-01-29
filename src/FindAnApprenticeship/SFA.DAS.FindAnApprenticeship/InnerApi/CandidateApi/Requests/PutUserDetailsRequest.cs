@@ -19,7 +19,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
         }
 
         public object Data { get; set; }
-        public string PutUrl => $"api/Candidates/{_candidateId}/add-details";
+        public string PutUrl => $"api/Candidates/PutCandidates/{_candidateId}";
 
     }
 }
