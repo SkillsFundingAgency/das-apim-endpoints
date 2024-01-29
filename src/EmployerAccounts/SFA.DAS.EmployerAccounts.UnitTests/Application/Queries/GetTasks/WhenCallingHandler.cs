@@ -26,7 +26,6 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
         GetTasksQuery request,
         GetTasksQueryHandler handler)
         {
-
             mockLTMApi
                 .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
                     r.SenderAccountId == request.AccountId
@@ -40,11 +39,28 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
         }
 
         [Test, MoqAutoData]
+        public async Task Then_NumberOfApprenticesToReview_Is_Returned(
+          [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+          GetApprenticeshipUpdatesResponse cohortsResponse,
+          GetTasksQuery request,
+          GetTasksQueryHandler handler)
+        {
+            mockCommitmentsApi
+                .Setup(m => m.Get<GetApprenticeshipUpdatesResponse>(It.Is<GetPendingApprenticeChangesRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(cohortsResponse);
+
+            // Act
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            result.NumberOfApprenticesToReview.Should().Be(3);
+        }
+
+        [Test, MoqAutoData]
         public async Task Then_Gets_Tasks_Returns_NumberOfCohortsReadyToReview_Where_Valid(
-            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
-            GetCohortsResponse cohortsResponse,
-            GetTasksQuery request,
-            GetTasksQueryHandler handler)
+           [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+           GetCohortsResponse cohortsResponse,
+           GetTasksQuery request,
+           GetTasksQueryHandler handler)
         {
             // Arrange
             foreach (var cohort in cohortsResponse.Cohorts)

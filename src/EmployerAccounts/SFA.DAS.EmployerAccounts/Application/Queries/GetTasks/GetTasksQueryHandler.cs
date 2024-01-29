@@ -15,8 +15,8 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
     public class GetTasksQueryHandler : IRequestHandler<GetTasksQuery, GetTasksQueryResult>
     {
         private readonly ILogger<GetTasksQueryHandler> _logger;
-        private readonly ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> _ltmApiClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
+        private readonly ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> _ltmApiClient;
 
         public GetTasksQueryHandler(ILogger<GetTasksQueryHandler> logger, ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> ltmApiClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient)
         {
@@ -35,19 +35,25 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
                 ApplicationStatusFilter = ApplicationStatus.Pending
             });
 
+            var apprenticeChangesTask = _commitmentsV2ApiClient.Get<GetApprenticeshipUpdatesResponse>(new GetPendingApprenticeChangesRequest(request.AccountId));
+
             var cohortsToReviewTask = _commitmentsV2ApiClient.Get<GetCohortsResponse>(new GetCohortsRequest { AccountId = request.AccountId });
 
-            await Task.WhenAll(pledgeApplicationsToReviewTask, cohortsToReviewTask);
+            await Task.WhenAll(pledgeApplicationsToReviewTask, cohortsToReviewTask, apprenticeChangesTask);
 
             var pledgeApplicationsToReview = await pledgeApplicationsToReviewTask;
 
             var cohortsForThisAccount = await cohortsToReviewTask;
             var cohortsToReview = cohortsForThisAccount.Cohorts?.Where(x => !x.IsDraft && x.WithParty == Party.Employer);
 
+            var apprenticeChanges = await apprenticeChangesTask;
+            var apprenticeChangesCount = apprenticeChanges?.ApprenticeshipUpdates?.Count ?? 0;
+
             return new GetTasksQueryResult()
             {
                 NumberOfCohortsReadyToReview = cohortsToReview?.Count() ?? 0,
-                NumberTransferPledgeApplicationsToReview = pledgeApplicationsToReview?.TotalItems ?? 0
+                NumberTransferPledgeApplicationsToReview = pledgeApplicationsToReview?.TotalItems ?? 0,
+                NumberOfApprenticesToReview = apprenticeChangesCount
             };
         }
     }
