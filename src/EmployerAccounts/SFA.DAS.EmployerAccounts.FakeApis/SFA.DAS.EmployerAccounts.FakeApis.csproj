@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoFixture" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     <PackageReference Include="WireMock.Net" />
   </ItemGroup>
 
