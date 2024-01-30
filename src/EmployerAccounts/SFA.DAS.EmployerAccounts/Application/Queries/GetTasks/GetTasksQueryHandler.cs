@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,12 +7,12 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerAccounts.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerFinance;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerFinance;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -28,8 +27,13 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
         private readonly ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> _ltmApiClient;
         private readonly IFinanceApiClient<FinanceApiConfiguration> _financeApiClient;
 
-        public GetTasksQueryHandler(ILogger<GetTasksQueryHandler> logger, ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> ltmApiClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, IFinanceApiClient<FinanceApiConfiguration> financeApiClient)
-        public GetTasksQueryHandler(ILogger<GetTasksQueryHandler> logger, ICurrentDateTime currentDateTime, ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> ltmApiClient, ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, IAccountsApiClient<AccountsConfiguration> accountsApi)
+        public GetTasksQueryHandler(
+            ILogger<GetTasksQueryHandler> logger, 
+            ICurrentDateTime currentDateTime, 
+            ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> ltmApiClient, 
+            ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient, 
+            IAccountsApiClient<AccountsConfiguration> accountsApi,
+            IFinanceApiClient<FinanceApiConfiguration> financeApiClient)
         {
             _logger = logger;
             _financeApiClient = financeApiClient;
@@ -60,13 +64,10 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
              });
             var cohortsToReviewTask = _commitmentsV2ApiClient.Get<GetCohortsResponse>(new GetCohortsRequest { AccountId = request.AccountId });
 
-            await Task.WhenAll(pledgeApplicationsToReviewTask, cohortsToReviewTask, apprenticeChangesTask, accountTask);
+            await Task.WhenAll(pledgeApplicationsToReviewTask, cohortsToReviewTask, apprenticeChangesTask, accountTask, pendingTransferConnectionsTask);
 
             var cohortsForThisAccount = await cohortsToReviewTask;
             var cohortsToReview = cohortsForThisAccount.Cohorts?.Where(x => !x.IsDraft && x.WithParty == Party.Employer);
-
-            await Task.WhenAll(pledgeApplicationsToReviewTask, pendingTransferConnectionsTask, apprenticeChangesTask);
-            var pledgeApplicationsToReview = await pledgeApplicationsToReviewTask;
             var apprenticeChanges = await apprenticeChangesTask;
             var apprenticeChangesCount = apprenticeChanges?.ApprenticeshipUpdates?.Count ?? 0;
             var pendingTransferConnections = await pendingTransferConnectionsTask;
@@ -79,7 +80,6 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
                 NumberOfCohortsReadyToReview = cohortsToReview?.Count() ?? 0,
                 NumberTransferPledgeApplicationsToReview = pledgeApplicationsToReview?.TotalItems ?? 0,
                 NumberOfPendingTransferConnections = pendingTransferConnections?.Count() ?? 0,
-                NumberOfApprenticesToReview = apprenticeChangesCount
                 NumberOfApprenticesToReview = apprenticeChangesCount,
                 ShowLevyDeclarationTask = account?.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy && IsInDateRange()
             };
