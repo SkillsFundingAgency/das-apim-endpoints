@@ -5,9 +5,12 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Users;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Api.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
+    [Route("[controller]")]
+    [ApiController]
     public class UsersController : Controller
     {
         private readonly ILogger<LocationsController> _logger;
@@ -20,12 +23,18 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPut]
-        [Route ("add-details")]
-        public async Task <IActionResult> AddDetails ([FromQuery] string FirstName, [FromQuery] string LastName, [FromQuery] string GovUkIdentifier, [FromQuery]string email)
+        [Route ("/{govUkIdentifier}/add-details")]
+        public async Task <IActionResult> AddDetails ([FromRoute] string govUkIdentifier,[FromBody] CandidatesNameModel model)
         {
             try
             {
-                var result = await _mediator.Send(new AddDetailsCommand { FirstName = FirstName, LastName = LastName, GovUkIdentifier = GovUkIdentifier, Email = email });
+                var result = await _mediator.Send(new AddDetailsCommand
+                {
+                    FirstName = model.FirstName, 
+                    LastName = model.LastName, 
+                    GovUkIdentifier = govUkIdentifier, 
+                    Email = model.Email
+                });
 
                 return Ok(result);
             }

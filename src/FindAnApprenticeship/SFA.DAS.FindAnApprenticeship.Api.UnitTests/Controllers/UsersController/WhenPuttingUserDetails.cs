@@ -26,20 +26,26 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController
         [Test, MoqAutoData]
         public async Task Then_Returns_Put_Response(
             string govIdentifier,
-            string firstName,
-            string lastName,
-            string email,
+            CandidatesNameModel model,
+            [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.UsersController controller)
         {
-            var actual = await controller.AddDetails(govIdentifier, firstName, lastName, email) as OkObjectResult;
+            var actual = await controller.AddDetails(govIdentifier, model) as OkObjectResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            mediator.Verify(x => x.Send(It.Is<AddDetailsCommand>(
+                c=>c.GovUkIdentifier.Equals(govIdentifier)
+                && c.FirstName.Equals(model.FirstName)
+                && c.LastName.Equals(model.LastName)
+                && c.Email.Equals(model.Email)
+                ), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_Throws_Exception(
-            AddDetailsCommand command,
+            string govUkIdentifier,
+            CandidatesNameModel model,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.UsersController controller
             )
@@ -47,7 +53,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController
             mediator.Setup(x => x.Send(It.IsAny<AddDetailsCommand>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new InvalidOperationException());
 
-            var actual = await controller.AddDetails(command.GovUkIdentifier, command.FirstName, command.LastName, command.Email) as StatusCodeResult;
+            var actual = await controller.AddDetails(govUkIdentifier, model) as StatusCodeResult;
 
             Assert.NotNull(actual);
             Assert.AreEqual((int)HttpStatusCode.InternalServerError, actual.StatusCode);
