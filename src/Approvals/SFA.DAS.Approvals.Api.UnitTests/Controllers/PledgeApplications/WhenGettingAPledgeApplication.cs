@@ -45,6 +45,12 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.PledgeApplications
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] PledgeApplicationsController controller)
         {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<GetPledgeApplicationQuery>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => null);
+
             var controllerResult = await controller.Get(pledgeApplicationId) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
