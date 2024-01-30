@@ -31,7 +31,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
 
 		    _mockApprenticeshipsApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
             _mockCommitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
-            _sut = new ApprenticeshipController(_mockApprenticeshipsApiClient.Object, _mockCommitmentsApiClient.Object, Mock.Of<IMediator>());
+            _sut = new ApprenticeshipController(Mock.Of<ILogger<ApprenticeshipController>>(), _mockApprenticeshipsApiClient.Object, _mockCommitmentsApiClient.Object, Mock.Of<IMediator>());
         }
 
         [Test]
