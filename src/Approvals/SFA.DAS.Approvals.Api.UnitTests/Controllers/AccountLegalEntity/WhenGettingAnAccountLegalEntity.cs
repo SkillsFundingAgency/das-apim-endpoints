@@ -41,8 +41,15 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.AccountLegalEntity
         [Test, MoqAutoData]
         public async Task And_Then_No_AccountLegalEntity_Is_Returned_From_Mediator(
             long accountLegalEntityId,
+            [Frozen] Mock<IMediator> mockMediator,
             [Greedy] AccountLegalEntityController controller)
         {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<GetAccountLegalEntityQuery>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => null);
+
             var controllerResult = await controller.Get(accountLegalEntityId) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
