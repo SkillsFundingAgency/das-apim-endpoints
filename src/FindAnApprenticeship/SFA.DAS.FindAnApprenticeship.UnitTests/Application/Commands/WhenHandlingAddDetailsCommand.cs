@@ -5,13 +5,13 @@ using MediatR;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users;
-using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
 {
@@ -24,7 +24,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
             AddDetailsCommandHandler handler
             )
         {
-            var expectedPutData = new PutCandidateApiRequest.PutCandidateApiRequestData
+            var expectedPutData = new PutCandidateApiRequestData
             {
                 Email = command.Email,
                 FirstName = command.FirstName,
@@ -35,8 +35,13 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
 
             mockApiClient
                 .Setup(client => client.PutWithResponseCode<NullResponse>(
-                    It.IsAny<PutCandidateApiRequest>()))
-                .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.Accepted, ""));
+                    It.Is<PutCandidateApiRequest>(c=>
+                        c.PutUrl == expectedRequest.PutUrl
+                        && ((PutCandidateApiRequestData)c.Data).FirstName == command.FirstName
+                        && ((PutCandidateApiRequestData)c.Data).LastName == command.LastName
+                        && ((PutCandidateApiRequestData)c.Data).Email == command.Email
+                        )))
+                .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(command, CancellationToken.None);
 
