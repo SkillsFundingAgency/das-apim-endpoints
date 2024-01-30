@@ -44,6 +44,12 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Accounts
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] AccountsController controller)
         {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<GetAccountUsersQuery>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => null);
+
             var controllerResult = await controller.GetUsers(hashedAccountId) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int) HttpStatusCode.NotFound);

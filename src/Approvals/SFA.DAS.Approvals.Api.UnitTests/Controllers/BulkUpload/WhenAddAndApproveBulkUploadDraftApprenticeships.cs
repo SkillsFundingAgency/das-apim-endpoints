@@ -37,8 +37,14 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.BulkUpload
         [Test, MoqAutoData]
         public async Task And_Then_No_Result_Is_Returned_From_Mediator(
              BulkUploadAddAndApproveDraftApprenticeshipsRequest request,
+             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] BulkUploadController controller)
         {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<BulkUploadAddAndApproveDraftApprenticeshipsCommand>(),
+                    It.IsAny<CancellationToken>())).ReturnsAsync(()=> null);
+
             var controllerResult = await controller.AddAndApprove(request) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
