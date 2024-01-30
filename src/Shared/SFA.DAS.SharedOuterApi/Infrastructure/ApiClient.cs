@@ -6,7 +6,9 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using SFA.DAS.SharedOuterApi.Models;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
@@ -120,7 +122,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         public async Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
         {
-            var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
+            var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
             var requestMessage = new HttpRequestMessage(HttpMethod.Patch, request.PatchUrl);
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
