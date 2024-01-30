@@ -76,4 +76,22 @@ public class MembersController : ControllerBase
             _ => throw new InvalidOperationException("Post member leaving didn't come back with a successful response")
         };
     }
+
+    [HttpPost("{memberId}/reinstate")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(NoContentResult), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> PostMemberReinstate([FromRoute] Guid memberId, CancellationToken cancellationToken)
+    {
+        var response = await _apiClient.PostMembersReinstate(memberId, cancellationToken);
+
+        return response.StatusCode switch
+        {
+            HttpStatusCode.NoContent => NoContent(),
+            HttpStatusCode.NotFound => NotFound(),
+            HttpStatusCode.BadRequest => BadRequest(),
+            _ => throw new InvalidOperationException("Post member leaving didn't come back with a successful response")
+        };
+    }
 }

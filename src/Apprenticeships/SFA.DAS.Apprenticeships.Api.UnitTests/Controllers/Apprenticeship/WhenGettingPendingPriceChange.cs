@@ -12,6 +12,8 @@ using System;
 using System.Threading.Tasks;
 using AutoFixture;
 using SFA.DAS.Apprenticeships.InnerApi;
+using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
 {
@@ -29,8 +31,8 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
 
 		    _mockApprenticeshipsApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
             _mockCommitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
-            _sut = new ApprenticeshipController(_mockApprenticeshipsApiClient.Object, _mockCommitmentsApiClient.Object);
-	    }
+            _sut = new ApprenticeshipController(_mockApprenticeshipsApiClient.Object, _mockCommitmentsApiClient.Object, Mock.Of<IMediator>());
+        }
 
         [Test]
         public async Task Then_Gets_PendingPriceChangePrice_From_ApiClient()
