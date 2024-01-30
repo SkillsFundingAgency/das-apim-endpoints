@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -41,13 +42,15 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
                 SenderAccountId = request.AccountId,
                 ApplicationStatusFilter = ApplicationStatus.Pending
             });
-
-            int dayOfMonth = _currentDateTime.Now.Day;
-            var isInDateRange = dayOfMonth >= 16 && dayOfMonth < 20;
-
+            
             var apprenticeChangesTask = _commitmentsV2ApiClient.Get<GetApprenticeshipUpdatesResponse>(new GetPendingApprenticeChangesRequest(request.AccountId));
 
-            await Task.WhenAll(apprenticeChangesTask, pledgeApplicationsToReviewTask, accountTask);
+            var cohortsToReviewTask = _commitmentsV2ApiClient.Get<GetCohortsResponse>(new GetCohortsRequest { AccountId = request.AccountId });
+
+            await Task.WhenAll(pledgeApplicationsToReviewTask, cohortsToReviewTask, apprenticeChangesTask, accountTask);
+
+            var cohortsForThisAccount = await cohortsToReviewTask;
+            var cohortsToReview = cohortsForThisAccount.Cohorts?.Where(x => !x.IsDraft && x.WithParty == Party.Employer);
 
             var apprenticeChanges = await apprenticeChangesTask;
             var apprenticeChangesCount = apprenticeChanges?.ApprenticeshipUpdates?.Count ?? 0;
@@ -57,10 +60,18 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
 
             return new GetTasksQueryResult()
             {
+                NumberOfCohortsReadyToReview = cohortsToReview?.Count() ?? 0,
                 NumberTransferPledgeApplicationsToReview = pledgeApplicationsToReview?.TotalItems ?? 0,
                 NumberOfApprenticesToReview = apprenticeChangesCount,
-                ShowLevyDeclarationTask = account?.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy && isInDateRange
+                ShowLevyDeclarationTask = account?.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy && IsInDateRange()
             };
+        }
+
+        private bool IsInDateRange()
+        {
+            int dayOfMonth = _currentDateTime.Now.Day;
+            var isInDateRange = dayOfMonth >= 16 && dayOfMonth < 20;
+            return isInDateRange;
         }
     }
 }
