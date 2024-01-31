@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeAan.Api.Models;
@@ -58,5 +59,39 @@ public class MembersController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpPost("{memberId}/Leaving")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(NoContentResult), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> PostMemberLeavingReasons([FromRoute] Guid memberId, [FromBody] PostMemberLeavingModel model, CancellationToken cancellationToken)
+    {
+        var response = await _apiClient.PostMembersLeaving(memberId, model, cancellationToken);
+
+        return response.StatusCode switch
+        {
+            HttpStatusCode.NoContent => NoContent(),
+            HttpStatusCode.NotFound => NotFound(),
+            _ => throw new InvalidOperationException("Post member leaving didn't come back with a successful response")
+        };
+    }
+
+    [HttpPost("{memberId}/reinstate")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(NoContentResult), StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(BadRequestResult), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> PostMemberReinstate([FromRoute] Guid memberId, CancellationToken cancellationToken)
+    {
+        var response = await _apiClient.PostMembersReinstate(memberId, cancellationToken);
+
+        return response.StatusCode switch
+        {
+            HttpStatusCode.NoContent => NoContent(),
+            HttpStatusCode.NotFound => NotFound(),
+            HttpStatusCode.BadRequest => BadRequest(),
+            _ => throw new InvalidOperationException("Post member leaving didn't come back with a successful response")
+        };
     }
 }

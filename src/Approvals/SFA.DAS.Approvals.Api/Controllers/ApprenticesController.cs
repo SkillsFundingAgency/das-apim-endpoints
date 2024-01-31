@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
@@ -9,13 +8,14 @@ using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm;
 using SFA.DAS.Approvals.Application.Apprentices.Queries;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ApprenticeData;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Inform;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel;
-using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
-using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse;
-using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprenticeshipUpdates;
 
 namespace SFA.DAS.Approvals.Api.Controllers
@@ -115,13 +115,36 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/change-employer/confirm")]
-        public async Task<IActionResult> ChangeEmployerConfirm(long providerId, long apprenticeshipId, [FromBody] ConfirmRequest request)
+        [HttpGet]
+        [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/change-employer/apprenticeship-data")]
+        public async Task<IActionResult> GetChangeEmployerApprenticeshipData(long providerId, long apprenticeshipId, [FromQuery] long accountLegalEntityId)
         {
             try
             {
-                await _mediator.Send(new ConfirmCommand
+                var result = await _mediator.Send(new GetChangeOfEmployerApprenticeDataQuery
+                { ApprenticeshipId = apprenticeshipId, AccountLegalEntityId = accountLegalEntityId });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting change employer - apprentice data , apprenticeship {id}", apprenticeshipId);
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/change-employer/confirm")]
+        public async Task<IActionResult> ChangeEmployerConfirm(long providerId, long apprenticeshipId, [FromBody] CreateChangeOfEmployerRequest request)
+        {
+            try
+            {
+                await _mediator.Send(new CreateChangeOfEmployerCommand
                 {
                     ApprenticeshipId = apprenticeshipId,
                     ProviderId = providerId,
@@ -132,6 +155,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     EmploymentEndDate = request.EmploymentEndDate,
                     EmploymentPrice = request.EmploymentPrice,
                     DeliveryModel = request.DeliveryModel,
+                    HasOverlappingTrainingDates = request.HasOverlappingTrainingDates,
                     UserInfo = request.UserInfo
                 });
 
@@ -161,7 +185,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 var response = new GetSelectDeliveryModelResponse
                 {
                     LegalEntityName = result.LegalEntityName,
-                    DeliveryModels = result.DeliveryModels
+                    DeliveryModels = result.DeliveryModels,
+                    Status = result.Status
                 };
 
                 return Ok(response);
@@ -219,7 +244,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
         }
 
-        
+
         [HttpGet]
         [Route("/employer/{providerId}/apprentices/{apprenticeshipId}/edit/select-course")]
         [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/edit/select-course")]
@@ -242,8 +267,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 return BadRequest();
             }
         }
-		
-		[HttpGet]
+
+        [HttpGet]
         [Route("/employer/{providerId}/apprentices/{apprenticeshipId}/changes/review")]
         [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/changes/review")]
         public async Task<IActionResult> GetReviewApprenticeshipUpdates(long apprenticeshipId)
@@ -298,7 +323,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetManageApprenticeshipDetailsQuery
-                    {ApprenticeshipId = apprenticeshipId});
+                { ApprenticeshipId = apprenticeshipId });
 
                 if (result == null)
                 {

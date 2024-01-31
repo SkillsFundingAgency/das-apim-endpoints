@@ -95,6 +95,14 @@ public interface IAanHubRestApiClient
         [Body] JsonPatchDocument<PatchMemberRequest> patchMemberRequest,
         CancellationToken cancellationToken);
 
+    [Post("members/{memberId}/Leaving")]
+    [AllowAnyStatusCode]
+    Task<HttpResponseMessage> PostMembersLeaving([Path] Guid memberId, [Body] PostMemberLeavingModel model, CancellationToken cancellationToken);
+
+    [Post("members/{memberId}/reinstate")]
+    [AllowAnyStatusCode]
+    Task<HttpResponseMessage> PostMembersReinstate([Path] Guid memberId, CancellationToken cancellationToken);
+
     [Get("/leavingReasons")]
     Task<List<LeavingCategory>> GetLeavingReasons(CancellationToken cancellationToken);
 }

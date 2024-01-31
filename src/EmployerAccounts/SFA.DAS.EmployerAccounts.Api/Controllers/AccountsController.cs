@@ -7,6 +7,7 @@ using SFA.DAS.EmployerAccounts.Api.Models;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskList;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionHistory;
+using SFA.DAS.EmployerAccounts.Application.Queries.GetTasks;
 
 namespace SFA.DAS.EmployerAccounts.Api.Controllers
 {
@@ -103,6 +104,33 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error getting account task list");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("{accountId}/get-tasks")]
+        public async Task<IActionResult> GetTasks([FromRoute] long accountId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetTasksQuery()
+                {
+                    AccountId = accountId
+                });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                var model = (GetTasksResponse)result;
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting tasks for account {accountId}");
                 return BadRequest();
             }
         }
