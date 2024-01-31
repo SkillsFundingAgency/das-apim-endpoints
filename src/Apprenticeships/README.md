@@ -43,6 +43,8 @@ Additionally, the following settings can be changed should you rather use stub i
 | AccountsInnerApi:Identifier                 | Empty string                                 |
 | EmployerProfilesApiConfiguration:Url        | http://localhost:3999/employer-profiles-api/ |
 | EmployerProfilesApiConfiguration:Identifier | Empty string                                 |
+| CommitmentsV2ApiConfiguration:Url           | http://localhost:3999/commitments-v2-api/    |
+| CommitmentsV2ApiConfiguration:Identifier    | Empty string                                 |
 
 ## 🔗 External Dependencies
 
