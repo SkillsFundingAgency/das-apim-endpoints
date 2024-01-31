@@ -34,11 +34,13 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
             }
 
             string? employerName = null;
-            if(apprenticePriceInnerModel != null && apprenticePriceInnerModel.AccountLegalEntityId.HasValue)
+            if(apprenticePriceInnerModel.AccountLegalEntityId.HasValue)
             {
                 var employer = await _apiCommitmentsClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(apprenticePriceInnerModel.AccountLegalEntityId.Value));
                 employerName = employer?.LegalEntityName;
             }
+
+            var provider = await _apiCommitmentsClient.Get<GetProviderResponse>(new GetProviderRequest(apprenticePriceInnerModel.UKPRN));
             
             var apprenticeshipPriceOuterModel = new ApprenticeshipPriceResponse
             {
@@ -49,7 +51,8 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
                 EarliestEffectiveDate = apprenticePriceInnerModel.EarliestEffectiveDate,
                 FundingBandMaximum = apprenticePriceInnerModel.FundingBandMaximum,
                 TrainingPrice = apprenticePriceInnerModel.TrainingPrice,
-                EmployerName = employerName
+                EmployerName = employerName,
+                ProviderName = provider.Name
             };
 
             return Ok(apprenticeshipPriceOuterModel);

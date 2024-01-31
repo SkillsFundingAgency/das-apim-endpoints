@@ -43,6 +43,12 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
                     LegalEntityName = expectedResponse.EmployerName!
                 });
 
+            mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetProviderResponse>(It.IsAny<GetProviderRequest>()))
+                .ReturnsAsync(new GetProviderResponse
+                {
+                    Name = expectedResponse.ProviderName
+                });
+
             var controller = new ApprenticeshipController(mockApprenticeshipsApiClient.Object, mockCommitmentsV2ApiApiClient.Object);
 
             //  Act
