@@ -16,16 +16,19 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
     public class ApprenticeshipController : ControllerBase
     {
         private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apiClient;
-		private readonly IMediator _mediator;
+        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
+        private readonly IMediator _mediator;
         private readonly ILogger<ApprenticeshipController> _logger;
 
 		public ApprenticeshipController(
 			ILogger<ApprenticeshipController> logger,
 			IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apiClient,
-			IMediator mediator)
+            ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient,
+            IMediator mediator)
         {
             _logger = logger;
             _apiClient = apiClient;
+            _apiCommitmentsClient = apiCommitmentsClient;
             _mediator = mediator;
 		}
 
@@ -82,7 +85,9 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         public async Task<ActionResult> GetPendingPriceChange(Guid apprenticeshipKey)
         {
 	        var response = await _apiClient.Get<GetPendingPriceChangeApiResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey));
-	        return Ok(new GetPendingPriceChangeResponse(response));
+            var providerResponse = await _apiCommitmentsClient.Get<GetProviderResponse>(new GetProviderRequest(response.PendingPriceChange.Ukprn.GetValueOrDefault()));
+
+	        return Ok(new GetPendingPriceChangeResponse(response, providerResponse.Name));
         }
 
         [HttpDelete]

@@ -20,7 +20,7 @@ public class WhenCreateApprenticeshipPriceHistory
     public async Task ThenCreatesApprenticeshipPriceHistoryUsingApiClient()
     {
         var apiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
-        var sut = new ApprenticeshipController(Mock.Of<ILogger<ApprenticeshipController>>(), apiClient.Object, Mock.Of<IMediator>());
+        var sut = new ApprenticeshipController(Mock.Of<ILogger<ApprenticeshipController>>(), apiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), Mock.Of<IMediator>());
             
         // Arrange
         var apprenticeshipKey = Guid.NewGuid();
