@@ -29,7 +29,6 @@ namespace SFA.DAS.EarlyConnect.Api.Mappers
             manageStudentTriageData.StudentSurvey.Id = request.StudentSurvey.Id;
             manageStudentTriageData.StudentSurvey.StudentId = request.StudentSurvey.StudentId;
             manageStudentTriageData.StudentSurvey.SurveyId = request.StudentSurvey.SurveyId;
-            manageStudentTriageData.StudentSurvey.LastUpdated = request.StudentSurvey.LastUpdated;
             manageStudentTriageData.StudentSurvey.DateCompleted = request.StudentSurvey.DateCompleted;
             manageStudentTriageData.StudentSurvey.DateEmailSent = request.StudentSurvey.DateEmailSent;
             manageStudentTriageData.StudentSurvey.DateAdded = request.StudentSurvey.DateAdded;
