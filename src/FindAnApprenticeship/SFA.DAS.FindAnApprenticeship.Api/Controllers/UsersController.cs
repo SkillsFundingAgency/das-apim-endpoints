@@ -9,7 +9,7 @@ using SFA.DAS.FindAnApprenticeship.Api.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
-    [Route("[controller]")]
+    [Route("[controller]/")]
     [ApiController]
     public class UsersController : Controller
     {
@@ -23,7 +23,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPut]
-        [Route ("/{govUkIdentifier}/add-details")]
+        [Route ("{govUkIdentifier}/add-details")]
         public async Task <IActionResult> AddDetails ([FromRoute] string govUkIdentifier,[FromBody] CandidatesNameModel model)
         {
             try
