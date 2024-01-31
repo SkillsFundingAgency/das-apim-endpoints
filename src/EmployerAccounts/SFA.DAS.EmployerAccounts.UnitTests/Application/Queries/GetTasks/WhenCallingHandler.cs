@@ -19,6 +19,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
@@ -76,7 +77,8 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
             }
 
             mockCommitmentsApi
-                .Setup(m => m.Get<GetTransferRequestSummaryResponse>(It.Is<GetTransferRequestsRequest>(r => r.AccountId == request.AccountId)))
+                .Setup(m => m.Get<GetTransferRequestSummaryResponse>(It.Is<GetTransferRequestsRequest>(r =>
+                    r.AccountId == request.AccountId && r.Originator == TransferType.AsSender)))
                 .ReturnsAsync(transferRequestResponse);
 
             // Act
@@ -99,7 +101,8 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
             }).ToArray();
 
             mockCommitmentsApi
-                .Setup(m => m.Get<GetTransferRequestSummaryResponse>(It.Is<GetTransferRequestsRequest>(r => r.AccountId == request.AccountId)))
+                .Setup(m => m.Get<GetTransferRequestSummaryResponse>(It.Is<GetTransferRequestsRequest>(r =>
+                    r.AccountId == request.AccountId && r.Originator == TransferType.AsSender)))
                 .ReturnsAsync(transferRequestResponse);
 
             // Act
@@ -115,7 +118,8 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
             GetTasksQueryHandler handler)
         {
             mockCommitmentsApi
-                .Setup(m => m.Get<GetTransferRequestSummaryResponse>(It.Is<GetTransferRequestsRequest>(r => r.AccountId == request.AccountId)))
+                .Setup(m => m.Get<GetTransferRequestSummaryResponse>(It.Is<GetTransferRequestsRequest>(r =>
+                    r.AccountId == request.AccountId && r.Originator == TransferType.AsSender)))
                 .ReturnsAsync(new GetTransferRequestSummaryResponse());
 
             // Act

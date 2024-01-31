@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments
 {
@@ -29,11 +30,5 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments
         Pending = 0,
         Approved = 1,
         Rejected = 2
-    }
-
-    public enum TransferType
-    {
-        AsSender,
-        AsReceiver
     }
 }

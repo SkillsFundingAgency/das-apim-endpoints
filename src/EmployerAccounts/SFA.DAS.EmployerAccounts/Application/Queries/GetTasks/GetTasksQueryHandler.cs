@@ -15,6 +15,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
 {
@@ -56,7 +57,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
             
             var apprenticeChangesTask = _commitmentsV2ApiClient.Get<GetApprenticeshipUpdatesResponse>(new GetPendingApprenticeChangesRequest(request.AccountId));
 
-            var transferRequestsTask = _commitmentsV2ApiClient.Get<GetTransferRequestSummaryResponse>(new GetTransferRequestsRequest(request.AccountId));
+            var transferRequestsTask = _commitmentsV2ApiClient.Get<GetTransferRequestSummaryResponse>(new GetTransferRequestsRequest(request.AccountId, TransferType.AsSender));
             
             var pendingTransferConnectionsTask = _financeApiClient.Get<List<GetTransferConnectionsResponse.TransferConnection>>(
              new GetTransferConnectionsRequest
