@@ -11,20 +11,20 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplication
 {
-    public class PatchApplicationCommandHandler :IRequestHandler<PatchApplicationCommand, PatchApplicationCommandResponse>
+    public class PatchApplicationWorkHistoryCommandHandler :IRequestHandler<PatchApplicationWorkHistoryCommand, PatchApplicationWorkHistoryCommandResponse>
     {
         private readonly ICandidateApiClient<CandidateApiConfiguration> _candidateApiClient;
-        private readonly ILogger<PatchApplicationCommandHandler> _logger;
+        private readonly ILogger<PatchApplicationWorkHistoryCommandHandler> _logger;
 
-        public PatchApplicationCommandHandler(
+        public PatchApplicationWorkHistoryCommandHandler(
             ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
-            ILogger<PatchApplicationCommandHandler> logger)
+            ILogger<PatchApplicationWorkHistoryCommandHandler> logger)
         {
             _candidateApiClient = candidateApiClient;
             _logger = logger;
         }
 
-        public async Task<PatchApplicationCommandResponse> Handle(PatchApplicationCommand request, CancellationToken cancellationToken)
+        public async Task<PatchApplicationWorkHistoryCommandResponse> Handle(PatchApplicationWorkHistoryCommand request, CancellationToken cancellationToken)
         {
             var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
             if (request.WorkExperienceStatus > 0)
@@ -36,7 +36,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicati
             var patchRequest = new PatchApplicationApiRequest(request.ApplicationId, request.CandidateId, jsonPatchDocument);
             var response = await _candidateApiClient.PatchWithResponseCode(patchRequest);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                return new PatchApplicationCommandResponse
+                return new PatchApplicationWorkHistoryCommandResponse
                 {
                     Application = JsonConvert.DeserializeObject<Models.Application>(response.Body)
                 };

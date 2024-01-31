@@ -18,14 +18,14 @@ using System.Net;
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
 {
     [TestFixture]
-    public class WhenHandingPatchApplicationCommand
+    public class WhenHandingPatchApplicationWorkHistoryCommand
     {
         [Test, MoqAutoData]
         public async Task Then_The_CommandResult_Is_Returned_As_Expected(
-            PatchApplicationCommand command,
+            PatchApplicationWorkHistoryCommand command,
             Models.Application candidateApiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-            PatchApplicationCommandHandler handler)
+            PatchApplicationWorkHistoryCommandHandler handler)
         {
             var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
 
@@ -42,10 +42,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
 
         [Test, MoqAutoData]
         public async Task Then_The_Api_Response_NotFound_CommandResult_Is_Returned_As_Expected(
-            PatchApplicationCommand command,
+            PatchApplicationWorkHistoryCommand command,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-            [Frozen] Mock<ILogger<PatchApplicationCommandHandler>> loggerMock,
-            PatchApplicationCommandHandler handler)
+            [Frozen] Mock<ILogger<PatchApplicationWorkHistoryCommandHandler>> loggerMock,
+            PatchApplicationWorkHistoryCommandHandler handler)
         {
             var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
 
