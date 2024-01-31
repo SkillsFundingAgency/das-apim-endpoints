@@ -8,7 +8,11 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.Providers.Queries;
 using SFA.DAS.Approvals.Application.DeliveryModels.Queries;
+using SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Command;
+using SFA.DAS.Approvals.Application.ProviderUsers.Commands;
 using SFA.DAS.Approvals.Application.ProviderUsers.Queries;
+using Newtonsoft.Json.Linq;
+using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -103,6 +107,27 @@ namespace SFA.DAS.Approvals.Api.Controllers
             {
                 _logger.LogError(e, "Error getting Provider Courses Delivery Models for Provider {providerId} and course {trainingCode}", providerId, trainingCode);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("{ukprn}/emails")]
+        public async Task<IActionResult> EmailUsers(long ukprn, [FromBody] ProviderEmailRequest request)
+        {
+            try
+            {
+                var response = await _mediator.Send(new ProviderEmailCommand
+                {
+                    ProviderId = ukprn,
+                    ProviderEmailRequest = request
+                });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error sending provider emails");
+                return BadRequest();
             }
         }
     }
