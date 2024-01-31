@@ -16,7 +16,7 @@ public class SectorSubjectAreaController : ControllerBase
         _mediator = mediator;
     }
 
-    [Route("lookups/SectorSubjectAreaTier1")]
+    [Route("lookup/sector-subject-area-tier1")]
     [HttpGet]
     public async Task<IActionResult> GetAllSectorSubjectAreaTier1()
     {
