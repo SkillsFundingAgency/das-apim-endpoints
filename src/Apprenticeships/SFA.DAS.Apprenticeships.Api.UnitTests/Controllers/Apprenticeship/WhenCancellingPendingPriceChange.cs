@@ -15,9 +15,11 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
 {
     public class WhenCancellingPendingPriceChange
     {
-        private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _mockApprenticeshipsApiClient = null!;
+
+	    private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _mockApprenticeshipsApiClient = null!;
+      private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _mockApprenticeshipsApiClient = null!;
 	    private ApprenticeshipController _sut = null!;
-        private Fixture _fixture = null!;
+      private Fixture _fixture = null!;
 
 		[SetUp]
 	    public void SetUp()
