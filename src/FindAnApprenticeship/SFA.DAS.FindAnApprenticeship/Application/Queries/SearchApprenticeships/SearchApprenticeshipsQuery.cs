@@ -1,15 +1,19 @@
 using System.Collections.Generic;
 using MediatR;
+using SFA.DAS.FindAnApprenticeship.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 {
-    public class SearchApprenticeshipsQuery : IRequest<SearchApprenticeshipsResult>
+    public record SearchApprenticeshipsQuery : IRequest<SearchApprenticeshipsResult>
     {
-        public string? Location { get; set; }
-        public List<string>? SelectedRouteIds { get; set; }
-        public int? Distance { get; set; }
-        public string Sort = "DistanceAsc";
+        public string? Location { get; init; }
+        public IReadOnlyCollection<string>? SelectedRouteIds { get; init; }
+        public IReadOnlyCollection<string>? SelectedLevelIds { get; init; }
+        public int? Distance { get; init; }
+        public string? SearchTerm { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public VacancySort Sort { get; set; } = VacancySort.DistanceAsc;
+        public bool DisabilityConfident { get; set; }
     }
 }

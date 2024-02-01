@@ -13,7 +13,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries;
 
 public class WhenHandlingSearchIndexQuery
 {
-    
     [Test, MoqAutoData]
     public async Task Then_The_Query_Is_Handled_And_Data_Returned(
         SearchIndexQuery query,
@@ -24,12 +23,7 @@ public class WhenHandlingSearchIndexQuery
         SearchIndexQueryHandler handler)
     {
         // Arrange
-        var expectedRequest = new GetApprenticeshipCountRequest(
-            null,
-            null,
-            null,
-            null
-        );
+        var expectedRequest = new GetApprenticeshipCountRequest();
         apiClient
             .Setup(client => client.Get<GetApprenticeshipCountResponse>(It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
             .ReturnsAsync(apiResponse);
@@ -43,6 +37,5 @@ public class WhenHandlingSearchIndexQuery
         Assert.AreEqual(apiResponse.TotalVacancies, result.TotalApprenticeshipCount);
         Assert.IsTrue(result.LocationSearched);
         Assert.AreEqual(locationItem, result.LocationItem);
-
     }
 }

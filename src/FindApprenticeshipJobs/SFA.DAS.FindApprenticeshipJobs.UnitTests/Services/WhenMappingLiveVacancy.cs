@@ -47,6 +47,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 ProviderName = source.TrainingProvider.Name,
                 source.TrainingProvider.Ukprn,
                 IsPositiveAboutDisability = false,
+                source.EmployerContactName,
+                source.EmployerContactEmail,
+                source.EmployerContactPhone,
                 IsEmployerAnonymous = source.IsAnonymous,
                 VacancyLocationType = "NonNational",
                 ApprenticeshipLevel = "Higher",
@@ -97,7 +100,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                     Latitude = source.EmployerLocation?.Latitude ?? 0,
                     Longitude = source.EmployerLocation?.Longitude ?? 0,
                 },
-                
+                source.AdditionalQuestion1,
+                source.AdditionalQuestion2
             };
 
             actual.Should().BeEquivalentTo(expectedResult);
