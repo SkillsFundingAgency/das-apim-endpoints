@@ -15,7 +15,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
 {
-    public class WhenGetTasks
+    public class WhenGetTeams
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Tasks_From_Mediator(
@@ -30,7 +30,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetTasks(accountId) as ObjectResult;
+            var controllerResult = await controller.GetTeams(accountId) as ObjectResult;
 
             Assert.IsNotNull(controllerResult);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -51,7 +51,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => null);
 
-            var controllerResult = await controller.GetTasks(accountId) as NotFoundResult;
+            var controllerResult = await controller.GetTeams(accountId) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
@@ -68,7 +68,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetTasks(accountId) as BadRequestResult;
+            var controllerResult = await controller.GetTeams(accountId) as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }

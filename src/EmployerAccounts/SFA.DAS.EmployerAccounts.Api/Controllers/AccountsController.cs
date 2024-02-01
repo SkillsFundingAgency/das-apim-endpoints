@@ -110,7 +110,7 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
 
         [HttpGet]
         [Route("{accountId}/teams")]
-        public async Task<IActionResult> GetTasks([FromRoute] long accountId)
+        public async Task<IActionResult> GetTeams([FromRoute] long accountId)
         {
             try
             {
