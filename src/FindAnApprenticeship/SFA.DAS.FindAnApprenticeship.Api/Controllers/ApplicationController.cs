@@ -45,25 +45,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }  
         }
 
-        [HttpGet("{candidateId}/work-history")]
-        public async Task<IActionResult> GetWorkHistories([FromRoute] Guid applicationId, [FromRoute] Guid candidateId)
-        {
-            try
-            {
-                var result = await _mediator.Send(new GetApplicationWorkHistoriesQuery
-                {
-                    CandidateId = candidateId,
-                    ApplicationId = applicationId,
-                });
-                return Ok(result.WorkHistories);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Get Job Histories : An error occurred");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
-        }
-
         [HttpPost("{candidateId}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateJob;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -20,6 +21,25 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             _mediator = mediator;
             _logger = logger;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetJobs([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetJobsQuery
+                {
+                    CandidateId = candidateId,
+                    ApplicationId = applicationId,
+                });
+                return Ok((GetJobsApiResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Get Job Histories : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpPost]

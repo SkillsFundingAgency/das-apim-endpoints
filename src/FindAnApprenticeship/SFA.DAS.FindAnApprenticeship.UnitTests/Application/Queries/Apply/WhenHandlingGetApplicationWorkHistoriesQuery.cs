@@ -17,10 +17,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
     {
         [Test, MoqAutoData]
         public async Task Then_The_QueryResult_Is_Returned_As_Expected(
-            GetApplicationWorkHistoriesQuery query,
+            GetJobsQuery query,
             List<GetWorkHistoriesApiResponse> workHistoriesApiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-            GetApplicationWorkHistoriesQueryHandler handler)
+            GetJobsQueryHandler handler)
         {
             var expectedGetWorkHistoriesRequest = new GetWorkHistoriesApiRequest(query.CandidateId, query.ApplicationId);
             candidateApiClient
@@ -31,7 +31,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             var result = await handler.Handle(query, CancellationToken.None);
 
             using var scope = new AssertionScope();
-            result?.WorkHistories.Should().BeEquivalentTo(workHistoriesApiResponse);
+            result?.Jobs.Should().BeEquivalentTo(workHistoriesApiResponse);
         }
     }
 }
