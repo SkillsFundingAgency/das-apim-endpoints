@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.EmployerAccounts.Api.Models;
 using SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations;
 
 namespace SFA.DAS.EmployerAccounts.Api.Controllers
@@ -21,15 +22,15 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{searchTerm}/levy/english-fraction-history")]
-        public async Task<IActionResult> SearchOrganisations(string searchTerm, [FromQuery] int maximumResults = 500)
+        [Route("")]
+        public async Task<IActionResult> SearchOrganisations([FromQuery] string searchTerm, [FromQuery] int maximumResults = 500)
         {
             try
             {
                 var result = await _mediator.Send(new SearchOrganisationsQuery()
                 {
-                   SearchTerm = searchTerm,
-                   MaximumResults = maximumResults
+                    SearchTerm = searchTerm,
+                    MaximumResults = maximumResults
                 });
 
                 if (result == null)
@@ -37,16 +38,15 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
                     return NotFound();
                 }
 
-                var model = (GetEnglishFractionResponse)result;
+                var model = (SearchOrganisationsResponse)result;
 
-                return Ok();
+                return Ok(model);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error getting english fraction history");
+                _logger.LogError(e, "Error Searching for Organisations");
                 return BadRequest();
             }
         }
-
     }
 }
