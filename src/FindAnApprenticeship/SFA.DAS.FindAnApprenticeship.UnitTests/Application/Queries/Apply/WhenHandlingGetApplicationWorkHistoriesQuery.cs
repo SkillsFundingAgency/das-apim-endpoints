@@ -18,13 +18,13 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
         [Test, MoqAutoData]
         public async Task Then_The_QueryResult_Is_Returned_As_Expected(
             GetJobsQuery query,
-            List<GetWorkHistoriesApiResponse> workHistoriesApiResponse,
+            GetWorkHistoriesApiResponse workHistoriesApiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             GetJobsQueryHandler handler)
         {
-            var expectedGetWorkHistoriesRequest = new GetWorkHistoriesApiRequest(query.CandidateId, query.ApplicationId);
+            var expectedGetWorkHistoriesRequest = new GetWorkHistoriesApiRequest(query.CandidateId, query.ApplicationId, Models.WorkHistoryType.Job);
             candidateApiClient
-                .Setup(client => client.Get<List<GetWorkHistoriesApiResponse>>(
+                .Setup(client => client.Get<GetWorkHistoriesApiResponse>(
                     It.Is<GetWorkHistoriesApiRequest>(r => r.GetUrl == expectedGetWorkHistoriesRequest.GetUrl)))
                 .ReturnsAsync(workHistoriesApiResponse);
 
