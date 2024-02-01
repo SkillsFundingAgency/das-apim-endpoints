@@ -36,6 +36,18 @@ namespace SFA.DAS.SharedOuterApi.Services
             return response;
         }
 
+        public async Task<GetCourseLevelsListResponse> GetLevels()
+        {
+            var response = await _cacheStorageService.RetrieveFromCache<GetCourseLevelsListResponse>(nameof(GetCourseLevelsListResponse));
+            if (response == null)
+            {
+                response = await _coursesApiClient.Get<GetCourseLevelsListResponse>(new GetCourseLevelsListRequest());
+
+                await _cacheStorageService.SaveToCache(nameof(GetCourseLevelsListResponse), response, 23);
+            }
+            return response;
+        }
+
         public async Task<T> GetActiveStandards<T>(string cacheItemName)
         {
             var cachedCourses =

@@ -5,7 +5,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests
 {
-    public class CreateChangeOfPartyRequestRequest: IPostApiRequest
+    public class CreateChangeOfPartyRequestRequest : IPostApiRequest
     {
         public long ApprenticeshipId { get; }
 
@@ -14,7 +14,7 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests
             ApprenticeshipId = apprenticeshipId;
             Data = body;
         }
-        
+
         public string PostUrl => $"api/apprenticeships/{ApprenticeshipId}/change-of-party-requests";
         public object Data { get; set; }
 
@@ -28,6 +28,7 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests
             public DateTime? NewEmploymentEndDate { get; set; }
             public int? NewEmploymentPrice { get; set; }
             public DeliveryModel? DeliveryModel { get; set; }
+            public bool HasOverlappingTrainingDates { get; set; }
             public UserInfo UserInfo { get; set; }
         }
     }

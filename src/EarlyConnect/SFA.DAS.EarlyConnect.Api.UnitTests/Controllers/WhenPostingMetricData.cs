@@ -42,7 +42,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.CreateMetricsData(request);
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.IsInstanceOf<CreatedAtActionResult>(result);
         }
 
         [Test]
