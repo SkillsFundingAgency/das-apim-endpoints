@@ -31,7 +31,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             var result = await handler.Handle(query, CancellationToken.None);
 
             using var scope = new AssertionScope();
-            result?.Jobs.Should().BeEquivalentTo(workHistoriesApiResponse);
+            result.Should().BeEquivalentTo(workHistoriesApiResponse);
         }
     }
 }
