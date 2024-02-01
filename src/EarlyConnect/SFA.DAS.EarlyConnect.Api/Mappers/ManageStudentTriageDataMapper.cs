@@ -17,6 +17,7 @@ namespace SFA.DAS.EarlyConnect.Api.Mappers
             manageStudentTriageData.FirstName = request.FirstName;
             manageStudentTriageData.LastName = request.LastName;
             manageStudentTriageData.DateOfBirth = request.DateOfBirth;
+            manageStudentTriageData.SchoolName = request.SchoolName;
             manageStudentTriageData.Telephone = request.Telephone;
             manageStudentTriageData.Email = request.Email;
             manageStudentTriageData.Postcode = request.Postcode;
