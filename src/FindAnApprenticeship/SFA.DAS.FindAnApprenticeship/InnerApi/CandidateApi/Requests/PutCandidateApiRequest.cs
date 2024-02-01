@@ -15,9 +15,12 @@ public class PutCandidateApiRequest : IPutApiRequest
 
     public string PutUrl => $"/api/candidates/{_govIdentifier}";
 
-    public class PutCandidateApiRequestData
-    {
-        public string Email { get; set; }
-        public DateTime DateOfBirth => DateTime.UtcNow; // TODO 
-    }
+    
+}
+public class PutCandidateApiRequestData
+{
+    public string Email { get; set; }
+    public DateTime DateOfBirth => DateTime.UtcNow; // TODO 
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
 }

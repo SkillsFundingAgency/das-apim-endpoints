@@ -22,7 +22,7 @@ public class WhenHandlingPutCandidateCommand
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         PutCandidateCommandHandler handler)
     {
-        var expectedPutData = new PutCandidateApiRequest.PutCandidateApiRequestData
+        var expectedPutData = new PutCandidateApiRequestData
         {
             Email = command.Email
         };
@@ -50,7 +50,7 @@ public class WhenHandlingPutCandidateCommand
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         PutCandidateCommandHandler handler)
     {
-        var expectedPutData = new PutCandidateApiRequest.PutCandidateApiRequestData
+        var expectedPutData = new PutCandidateApiRequestData
         {
             Email = command.Email
         };

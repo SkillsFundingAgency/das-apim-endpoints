@@ -18,7 +18,7 @@ public class PutCandidateCommandHandler : IRequestHandler<PutCandidateCommand, P
     }
     public async Task<PutCandidateCommandResult> Handle(PutCandidateCommand request, CancellationToken cancellationToken)
     {
-        var putData = new PutCandidateApiRequest.PutCandidateApiRequestData
+        var putData = new PutCandidateApiRequestData
         {
             Email = request.Email
         };
