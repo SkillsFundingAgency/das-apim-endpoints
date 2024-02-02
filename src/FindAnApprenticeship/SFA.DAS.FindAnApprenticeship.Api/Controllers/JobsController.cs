@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateJob;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetJob;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
@@ -69,6 +70,27 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error posting job for application {applicationId}", applicationId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("{jobId}")]
+        public async Task<IActionResult> GetJob([FromRoute] Guid applicationId, [FromRoute] Guid jobId, [FromQuery] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetJobQuery
+                {
+                    CandidateId = candidateId,
+                    ApplicationId = applicationId,
+                    JobId = jobId
+                });
+                return Ok((GetJobApiResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Get Job : An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
