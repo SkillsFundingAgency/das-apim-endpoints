@@ -29,7 +29,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicati
             var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
             if (request.WorkExperienceStatus > 0)
             {
-                jsonPatchDocument.Replace(x => x.WorkExperienceStatus, request.WorkExperienceStatus);
+                //jsonPatchDocument.Replace(x => x.WorkExperienceStatus, request.WorkExperienceStatus);
                 jsonPatchDocument.Replace(x => x.JobsStatus, request.WorkExperienceStatus);
             }
 

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +15,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
 {
@@ -56,6 +57,8 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
             
             var apprenticeChangesTask = _commitmentsV2ApiClient.Get<GetApprenticeshipUpdatesResponse>(new GetPendingApprenticeChangesRequest(request.AccountId));
 
+            var transferRequestsTask = _commitmentsV2ApiClient.Get<GetTransferRequestSummaryResponse>(new GetTransferRequestsRequest(request.AccountId, TransferType.AsSender));
+            
             var pendingTransferConnectionsTask = _financeApiClient.Get<List<GetTransferConnectionsResponse.TransferConnection>>(
              new GetTransferConnectionsRequest
              {
@@ -64,7 +67,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
              });
             var cohortsToReviewTask = _commitmentsV2ApiClient.Get<GetCohortsResponse>(new GetCohortsRequest { AccountId = request.AccountId });
 
-            await Task.WhenAll(pledgeApplicationsToReviewTask, cohortsToReviewTask, apprenticeChangesTask, accountTask, pendingTransferConnectionsTask);
+            await Task.WhenAll(accountTask, pledgeApplicationsToReviewTask, apprenticeChangesTask, transferRequestsTask, pendingTransferConnectionsTask, cohortsToReviewTask);
 
             var cohortsForThisAccount = await cohortsToReviewTask;
             var cohortsToReview = cohortsForThisAccount.Cohorts?.Where(x => !x.IsDraft && x.WithParty == Party.Employer);
@@ -74,14 +77,18 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
 
             var pledgeApplicationsToReview = await pledgeApplicationsToReviewTask;
             var account = await accountTask;
+            var transferRequests = await transferRequestsTask;
+
+            var pendingTransferRequestsRequestsToReview = transferRequests?.TransferRequestSummaryResponse?.Where(x => x.Status == TransferApprovalStatus.Pending);
 
             return new GetTasksQueryResult()
             {
                 NumberOfCohortsReadyToReview = cohortsToReview?.Count() ?? 0,
                 NumberTransferPledgeApplicationsToReview = pledgeApplicationsToReview?.TotalItems ?? 0,
                 NumberOfPendingTransferConnections = pendingTransferConnections?.Count() ?? 0,
-                NumberOfApprenticesToReview = apprenticeChangesCount,
-                ShowLevyDeclarationTask = account?.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy && IsInDateRange()
+                ShowLevyDeclarationTask = account?.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy && IsInDateRange(),
+                NumberOfTransferRequestToReview = pendingTransferRequestsRequestsToReview?.Count() ?? 0,
+                NumberOfApprenticesToReview = apprenticeChangesCount
             };
         }
 

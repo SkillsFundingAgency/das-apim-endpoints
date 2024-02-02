@@ -15,13 +15,13 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
 
     public class PostJobApiResponse
     {
-        public Guid WorkHistoryId { get; set; }
+        public Guid Id { get; set; }
 
         public static implicit operator PostJobApiResponse(CreateJobCommandResponse source)
         {
             return new PostJobApiResponse
             {
-                WorkHistoryId = source.WorkHistoryId
+                Id = source.Id
             };
         }
     }
