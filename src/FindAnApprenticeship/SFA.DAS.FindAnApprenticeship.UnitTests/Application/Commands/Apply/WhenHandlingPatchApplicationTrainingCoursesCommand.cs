@@ -15,7 +15,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
-namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply;
+namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply;
 public class WhenHandlingPatchApplicationTrainingCoursesCommand
 {
     [Test, MoqAutoData]

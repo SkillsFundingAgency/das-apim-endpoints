@@ -15,7 +15,7 @@ using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 
-namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
+namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
 {
     [TestFixture]
     public class WhenHandingPatchApplicationWorkHistoryCommand
