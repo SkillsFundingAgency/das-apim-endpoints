@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.SearchOrganisat
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Organisations.Should().BeEquivalentTo(apiResponse.Organisations);
+            result.Organisations.Should().BeEquivalentTo(apiResponse);
         }
     }
 }

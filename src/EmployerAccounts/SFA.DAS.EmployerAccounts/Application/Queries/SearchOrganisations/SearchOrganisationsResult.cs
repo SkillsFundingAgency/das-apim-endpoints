@@ -13,7 +13,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
         {
             return new SearchOrganisationsResult
             {
-                Organisations = organisations.Organisations.Select(x => (Organisation)x)
+                Organisations = organisations.Select(x => (Organisation)x)
             };
         }
         public class Organisation

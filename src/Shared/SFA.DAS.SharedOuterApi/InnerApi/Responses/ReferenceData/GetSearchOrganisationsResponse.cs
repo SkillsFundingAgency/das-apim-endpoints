@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using static SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData.GetSearchOrganisationsResponse;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData
 {
-    public class GetSearchOrganisationsResponse
+    public class GetSearchOrganisationsResponse : List<Organisation>
     {
-        public IEnumerable<Organisation> Organisations { get; set; }
-
         public class Organisation
         {
             public string Name { get; set; }
