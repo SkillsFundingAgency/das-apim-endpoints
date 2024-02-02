@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
         {
             _logger.LogInformation($"Searching for Organisation with searchTerm: {request.SearchTerm}");
 
-            var organisations = await _refDataApi.Get<SearchOrganisationsResponse>(new SearchOrganisationsRequest(request.SearchTerm, request.MaximumResults));
+            var organisations = await _refDataApi.Get<GetSearchOrganisationsResponse>(new GetSearchOrganisationsRequest(request.SearchTerm, request.MaximumResults));
 
             return organisations;
         }

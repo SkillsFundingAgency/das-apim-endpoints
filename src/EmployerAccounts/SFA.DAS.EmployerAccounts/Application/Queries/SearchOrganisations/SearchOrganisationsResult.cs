@@ -9,7 +9,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
     {
         public IEnumerable<Organisation> Organisations { get; set; }
 
-        public static implicit operator SearchOrganisationsResult(SearchOrganisationsResponse organisations)
+        public static implicit operator SearchOrganisationsResult(GetSearchOrganisationsResponse organisations)
         {
             return new SearchOrganisationsResult
             {
@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
             public string Sector { get; set; }
             public OrganisationStatus OrganisationStatus { get; set; }
 
-            public static implicit operator Organisation(SearchOrganisationsResponse.Organisation source)
+            public static implicit operator Organisation(GetSearchOrganisationsResponse.Organisation source)
             {
                 if (source == null)
                 {

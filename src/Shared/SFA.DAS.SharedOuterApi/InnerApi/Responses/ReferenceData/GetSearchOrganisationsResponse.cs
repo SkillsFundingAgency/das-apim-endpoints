@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData
 {
-    public class SearchOrganisationsResponse
+    public class GetSearchOrganisationsResponse
     {
         public IEnumerable<Organisation> Organisations { get; set; }
 
