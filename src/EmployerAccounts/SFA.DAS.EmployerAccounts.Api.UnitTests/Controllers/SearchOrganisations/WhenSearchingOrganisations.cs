@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -58,7 +56,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.SearchOrganisations
 
             controllerResult.Should().NotBeNull();
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);      
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
 
         [Test, MoqAutoData]
@@ -76,7 +74,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.SearchOrganisations
 
             controllerResult.Should().NotBeNull();
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);         
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
     }
 }
