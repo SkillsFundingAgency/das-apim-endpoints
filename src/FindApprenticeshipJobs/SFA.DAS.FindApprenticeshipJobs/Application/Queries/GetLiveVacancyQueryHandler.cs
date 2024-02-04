@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
@@ -29,7 +30,15 @@ public class GetLiveVacancyQueryHandler : IRequestHandler<GetLiveVacancyQuery, G
 
         var response = responseTask.Result;
         var standards = standardsTask.Result;
-        
+
+        if (response.StatusCode == HttpStatusCode.NotFound || response.Body.VacancyType == VacancyType.Traineeship)
+        {
+            return new GetLiveVacancyQueryResult
+            {
+                LiveVacancy = null
+            };
+        }
+
         var result = _liveVacancyMapper.Map(response.Body, standards);
 
         return new GetLiveVacancyQueryResult

@@ -46,6 +46,12 @@ public class LiveVacanciesController : ControllerBase
         try
         {
             var result = await _mediator.Send(new GetLiveVacancyQuery { VacancyReference = vacancyReference }, cancellationToken);
+
+            if (result.LiveVacancy == null)
+            {
+                return NotFound();
+            }
+
             var viewModel = (GetLiveVacanciesApiResponse.LiveVacancy)result.LiveVacancy;
             return Ok(viewModel);
         }
