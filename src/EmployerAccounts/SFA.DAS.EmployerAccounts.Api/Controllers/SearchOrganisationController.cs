@@ -51,39 +51,19 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
             }
         }
 
-
         [HttpGet]
         [Route("Get")]
         public async Task<IActionResult> GetLatestDetails([FromQuery] string identifier, [FromQuery] OrganisationType organisationType)
         {
-            try
+            var result = await _mediator.Send(new GetLatestDetailsQuery()
             {
-                var result = await _mediator.Send(new GetLatestDetailsQuery()
-                {
-                    Identifier = identifier,
-                    OrganisationType = organisationType
-                });
+                Identifier = identifier,
+                OrganisationType = organisationType
+            });
 
-                if (result == null)
-                {
-                    return NotFound();
-                }
+            var model = (GetLatestDetailsResponse)result;
 
-                //switch (response.StatusCode)
-                //{
-                //    case HttpStatusCode.NotFound: throw new OrganisationNotFoundException(response.ReasonPhrase);
-                //    case HttpStatusCode.BadRequest: throw new InvalidGetOrganisationRequest(response.ReasonPhrase);
-                //}
-
-                var model = (GetLatestDetailsResponse)result;
-
-                return Ok(model.Organisation);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error Searching for Organisations");
-                return BadRequest();
-            }
+            return Ok(model.Organisation);
         }
     }
 }

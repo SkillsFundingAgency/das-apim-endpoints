@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.SearchOrganisat
     public class WhenCallingHandler
     {
         [Test, MoqAutoData]
-        public async Task Then_SearchOrganisation_from_Reference_Apid(
+        public async Task Then_SearchOrganisation_from_Reference_Api(
             SearchOrganisationsQuery query,
             GetSearchOrganisationsResponse apiResponse,
             [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockApiClient,

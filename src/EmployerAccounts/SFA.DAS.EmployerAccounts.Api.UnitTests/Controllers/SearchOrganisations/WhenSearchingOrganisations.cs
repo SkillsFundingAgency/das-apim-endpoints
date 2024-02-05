@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,11 +35,11 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.SearchOrganisations
             controllerResult.Should().NotBeNull();
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as SearchOrganisationsResponse;
+            var model = controllerResult.Value as IEnumerable<SearchOrganisationsResponse.Organisation>;
 
             model.Should().NotBeNull();
 
-            model.Organisations.Should().BeEquivalentTo(mediatorResult.Organisations);
+            model.Should().BeEquivalentTo(mediatorResult.Organisations);
         }
 
         [Test, MoqAutoData]
