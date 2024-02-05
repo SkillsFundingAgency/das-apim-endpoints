@@ -1,21 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 
-namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
+namespace SFA.DAS.EmployerAccounts.Application.Queries.GetLatestDetails
 {
-    public class SearchOrganisationsResult
+    public class GetLatestDetailsResult
     {
-        public IEnumerable<Organisation> Organisations { get; set; }
+        public Organisation OrganisationDetail { get; set; }
 
-        public static implicit operator SearchOrganisationsResult(GetSearchOrganisationsResponse organisations)
-        {
-            return new SearchOrganisationsResult
-            {
-                Organisations = organisations.Select(x => (Organisation)x)
-            };
-        }
         public class Organisation
         {
             public string Name { get; set; }
@@ -27,7 +18,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
             public string Sector { get; set; }
             public OrganisationStatus OrganisationStatus { get; set; }
 
-            public static implicit operator Organisation(SharedOuterApi.InnerApi.Responses.ReferenceData.Organisation source)
+            public static implicit operator Organisation(GetLatestDetailsApiResponse source)
             {
                 if (source == null)
                 {
@@ -48,4 +39,5 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
             }
         }
     }
+
 }
