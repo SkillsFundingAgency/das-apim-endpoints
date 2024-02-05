@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerAccounts.Api.Models;
+using SFA.DAS.EmployerAccounts.Application.Queries.GetCharity;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetLatestDetails;
 using SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
@@ -64,6 +65,20 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
             var model = (GetLatestDetailsResponse)result;
 
             return Ok(model.Organisation);
+        }
+
+        [HttpGet]
+        [Route("charities/{registrationNumber}", Name = "Charity")]
+        public async Task<IActionResult> GetCharity(int registrationNumber)
+        {
+            var result = await _mediator.Send(new GetCharityQuery()
+            {
+                RegistrationNumber = registrationNumber
+            });
+
+            var model = (GetCharityResponse)result;
+
+            return Ok(model);
         }
     }
 }
