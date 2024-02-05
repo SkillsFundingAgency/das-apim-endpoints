@@ -43,7 +43,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     return NotFound();
                 }
 
-                return Created(result.WorkHistoryId.ToString(), (PostJobApiResponse)result);
+                return Created(result.Id.ToString(), (PostJobApiResponse)result);
 
             }
             catch (Exception ex)
