@@ -27,7 +27,7 @@ public class WhenUpdatingApplicationVolunteeringAndWorkExperience
         mediator.Setup(x => x.Send(It.Is<PatchApplicationVolunteeringAndWorkExperienceCommand>(c =>
                     c.CandidateId == candidateId &&
                     c.ApplicationId == applicationId &&
-                    c.VolunteeringAndWorkExperienceStatus == model.VolunteeringAndWorkExperienceStatus),
+                    c.VolunteeringAndWorkExperienceStatus == model.VolunteeringAndWorkExperienceSectionStatus),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(result);
 

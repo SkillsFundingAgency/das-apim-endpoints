@@ -4,5 +4,5 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
 public class UpdateVolunteeringAndWorkExperienceModel
 {
-    public SectionStatus VolunteeringAndWorkExperienceStatus { get; set; }
+    public SectionStatus VolunteeringAndWorkExperienceSectionStatus { get; set; }
 }

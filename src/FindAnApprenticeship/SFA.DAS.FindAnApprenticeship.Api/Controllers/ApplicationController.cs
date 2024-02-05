@@ -108,7 +108,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             {
                 ApplicationId = applicationId,
                 CandidateId = candidateId,
-                VolunteeringAndWorkExperienceStatus = request.VolunteeringAndWorkExperienceStatus
+                VolunteeringAndWorkExperienceStatus = request.VolunteeringAndWorkExperienceSectionStatus
             }, cancellationToken);
 
             if (result.Application == null)
