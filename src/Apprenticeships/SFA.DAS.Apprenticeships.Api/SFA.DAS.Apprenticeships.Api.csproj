@@ -12,6 +12,7 @@
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
     <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
     <PackageReference Include="NLog.Web.AspNetCore" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
