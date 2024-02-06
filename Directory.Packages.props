@@ -9,6 +9,7 @@
     <PackageVersion Include="AutoFixture.AutoMoq" Version="4.15.0" />
     <PackageVersion Include="AutoFixture.NUnit3" Version="4.8.0" />
     <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageVersion Include="Azure.Identity" Version="1.10.4" />
     <PackageVersion Include="CompareNETObjects" Version="4.77.0" />
     <PackageVersion Include="coverlet.collector" Version="3.1.2" />
     <PackageVersion Include="coverlet.msbuild" Version="3.1.2" />
