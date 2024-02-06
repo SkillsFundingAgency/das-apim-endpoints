@@ -13,4 +13,8 @@
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="InnerApi\LegacyApi\Responses\Enums\" />
+  </ItemGroup>
+
 </Project>
