@@ -6,6 +6,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Api.Controllers;
@@ -40,12 +41,18 @@ public class WhenGettingAStandard
         model.Should().BeEquivalentTo((GetStandardResponse)mediatorResult);
     }
 
-    [Test, MoqAutoData]
-    public async Task And_Then_No_Standard_Is_Returned_From_Mediator(
-        string courseCode,
-        [Greedy] TrainingCoursesController controller)
+    [Test]
+    public async Task No_Standard_Is_Returned_From_Mediator_Then_Should_Return_NotFound()
     {
-        var controllerResult = await controller.GetStandard(courseCode) as NotFoundResult;
+        var mockMediator = new Mock<IMediator>();
+        var controller = new TrainingCoursesController(Mock.Of<ILogger<TrainingCoursesController>>(), mockMediator.Object);
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.IsAny<GetStandardQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((GetStandardsListItem)null);
+
+        var controllerResult = await controller.GetStandard("courseCode") as NotFoundResult;
 
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
     }
