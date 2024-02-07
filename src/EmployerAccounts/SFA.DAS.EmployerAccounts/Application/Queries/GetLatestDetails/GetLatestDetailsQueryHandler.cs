@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetLatestDetails
 
         public async Task<GetLatestDetailsResult> Handle(GetLatestDetailsQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Searching for Organisation with Identifier: {request.Identifier}");
+            _logger.LogInformation($"Getting Latest Details for Organisation with identifier: {request.Identifier}");
 
             var response = await _refDataApi.GetWithResponseCode<GetLatestDetailsApiResponse>(new GetLatestDetailsRequest(request.Identifier, request.OrganisationType));
 
