@@ -9,6 +9,7 @@ namespace SFA.DAS.EmployerAccounts.Api.Models
         public List<PublicSectorOrganisation> Data { get; set; }
         public int PageNumber { get; set; }
         public int TotalPages { get; set; }
+        public int TotalResults { get; set; }
 
         public class PublicSectorOrganisation
         {
