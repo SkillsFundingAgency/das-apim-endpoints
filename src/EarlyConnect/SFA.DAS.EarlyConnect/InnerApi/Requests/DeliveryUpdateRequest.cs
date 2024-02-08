@@ -11,6 +11,6 @@ namespace SFA.DAS.EarlyConnect.InnerApi.Requests
             Data = deliveryUpdate;
         }
 
-        public string PostUrl => "api/delivery-update/";
+        public string PostUrl => "api/delivery-update";
     }
 }

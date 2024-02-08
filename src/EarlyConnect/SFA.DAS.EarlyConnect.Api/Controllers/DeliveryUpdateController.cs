@@ -56,42 +56,5 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                 return BadRequest(errorMessage);
             }
         }
-
-
-        private async Task<int> CreateLog(RequestStatus status, DeliveryUpdatePostRequest request, string ipAddress)
-        {
-            var actionName = ControllerContext.ActionDescriptor.ActionName;
-            var createLogRequest = new CreateLogPostRequest
-            {
-                RequestType = actionName,
-                RequestSource = DataSource,
-                RequestIP = ipAddress,
-                Payload = JsonConvert.SerializeObject(request),
-                Status = status.ToString()
-            };
-
-            var response = await _mediator.Send(new CreateLogDataCommand
-            {
-                Log = LogMapper.MapFromLogCreateRequest(createLogRequest)
-            });
-
-            return response.LogId;
-        }
-
-        private async Task UpdateLog(int logId, RequestStatus status, string message = null)
-        {
-            var updateLog = new UpdateLogPostRequest
-            {
-                LogId = logId,
-                Status = status.ToString(),
-                Error = message
-            };
-
-            await _mediator.Send(new UpdateLogDataCommand
-            {
-                Log = LogMapper.MapFromLogUpdateRequest(updateLog)
-            });
-        }
-
     }
 }
