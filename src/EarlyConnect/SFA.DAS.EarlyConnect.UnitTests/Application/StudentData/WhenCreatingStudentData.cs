@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EarlyConnect.Application.Commands.CreateStudentData;
@@ -9,13 +8,14 @@ using SFA.DAS.EarlyConnect.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.EarlyConnect.InnerApi.Responses;
 
 namespace SFA.DAS.EarlyConnect.UnitTests.Application.StudentData;
 
 public class WhenCreatingStudentData
 {
     [Test]
-    public async Task Handle_ValidRequest_ReturnsUnit()
+    public async Task Handle_ValidRequest_ReturnsResult()
     {
         var earlyConnectApiClientMock = new Mock<IEarlyConnectApiClient<EarlyConnectApiConfiguration>>();
         var handler = new CreateStudentDataCommandHandler(earlyConnectApiClientMock.Object);
@@ -26,14 +26,16 @@ public class WhenCreatingStudentData
         };
 
 
+        var expectedResponse = new Mock<CreateStudentDataResponse>();
+
         var cancellationToken = new CancellationToken();
 
+        var response = new ApiResponse<CreateStudentDataResponse>(expectedResponse.Object, HttpStatusCode.OK, string.Empty);
 
-        earlyConnectApiClientMock.Setup(c => c.PostWithResponseCode<object>(It.IsAny<CreateStudentDataRequest>(), false)).ReturnsAsync(new ApiResponse<object>(new object(), HttpStatusCode.OK, string.Empty));
-
+        earlyConnectApiClientMock.Setup(c => c.PostWithResponseCode<CreateStudentDataResponse>(It.IsAny<CreateStudentDataRequest>(), true)).ReturnsAsync(response);
         var result = await handler.Handle(command, cancellationToken);
 
-        earlyConnectApiClientMock.Verify(x => x.PostWithResponseCode<object>(It.IsAny<CreateStudentDataRequest>(), It.IsAny<bool>()), Times.Once);
-        Assert.AreEqual(Unit.Value, result);
+        earlyConnectApiClientMock.Verify(x => x.PostWithResponseCode<CreateStudentDataResponse>(It.IsAny<CreateStudentDataRequest>(), It.IsAny<bool>()), Times.Once);
+        Assert.AreEqual(expectedResponse.Object.Message, result.Message);
     }
 }

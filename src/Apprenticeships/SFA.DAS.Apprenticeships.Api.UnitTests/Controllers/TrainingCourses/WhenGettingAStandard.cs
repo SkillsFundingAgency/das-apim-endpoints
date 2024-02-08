@@ -46,7 +46,11 @@ public class WhenGettingAStandard
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] TrainingCoursesController controller)
     {
-        mockMediator.Setup(x => x.Send(It.IsAny<GetStandardQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(() => null);
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.Is<GetStandardQuery>(x => x.CourseCode == courseCode),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((GetStandardsListItem?)null);
 
         var controllerResult = await controller.GetStandard(courseCode) as NotFoundResult;
 
