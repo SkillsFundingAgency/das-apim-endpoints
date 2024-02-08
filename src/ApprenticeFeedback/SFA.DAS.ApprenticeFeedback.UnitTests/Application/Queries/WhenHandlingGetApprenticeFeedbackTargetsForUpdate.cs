@@ -18,13 +18,13 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Queries
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_ApprenticeFeedbackTargets_From_The_Api(
-           List<ApprenticeFeedbackTarget> feedbackTargets,
+           List<ApprenticeFeedbackTargetForUpdate> feedbackTargets,
            GetFeedbackTargetsForUpdateQuery query,
            [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> mockApprenticeFeedbackApiClient,
            GetFeedbackTargetsForUpdateQueryHandler handler)
         {
             mockApprenticeFeedbackApiClient
-                .Setup(client => client.GetAll<ApprenticeFeedbackTarget>(
+                .Setup(client => client.GetAll<ApprenticeFeedbackTargetForUpdate>(
                 It.IsAny<GetApprenticeFeedbackTargetsForUpdateRequest>()))
                 .ReturnsAsync(feedbackTargets);
 
