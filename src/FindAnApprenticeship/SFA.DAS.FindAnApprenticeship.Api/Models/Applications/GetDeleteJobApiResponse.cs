@@ -15,7 +15,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
 
         public static implicit operator GetDeleteJobApiResponse(GetDeleteJobQueryResult source)
         {
-            return new GetDeleteJobQueryResult
+            return new GetDeleteJobApiResponse
             {
                 ApplicationId = source.ApplicationId,
                 Description = source.Description,
