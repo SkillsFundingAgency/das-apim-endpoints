@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetLatestDetails
             public string Sector { get; set; }
             public OrganisationStatus OrganisationStatus { get; set; }
 
-            public static implicit operator Organisation(GetLatestDetailsApiResponse source)
+            public static implicit operator Organisation(SharedOuterApi.InnerApi.Responses.ReferenceData.Organisation source)
             {
                 if (source == null)
                 {

@@ -40,12 +40,12 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public Task<TResponse> Post<TResponse>(IPostApiRequest request)
         {
-            return _client.Post<TResponse>(request);
+            throw new System.NotImplementedException();
         }
 
         public Task Post<TData>(IPostApiRequest<TData> request)
         {
-            return _client.Post(request);
+            throw new System.NotImplementedException();
         }
 
         public Task Delete(IDeleteApiRequest request)

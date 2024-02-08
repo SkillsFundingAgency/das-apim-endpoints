@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetLatestDetails
         {
             _logger.LogInformation($"Getting Latest Details for Organisation with identifier: {request.Identifier}");
 
-            var response = await _refDataApi.GetWithResponseCode<GetLatestDetailsApiResponse>(new GetLatestDetailsRequest(request.Identifier, request.OrganisationType));
+            var response = await _refDataApi.GetWithResponseCode<Organisation>(new GetLatestDetailsRequest(request.Identifier, request.OrganisationType));
 
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetLatestDetails
             }
             else if (response.StatusCode == HttpStatusCode.BadRequest)
             {
-                throw new InvalidGetOrganisationRequest(response.ErrorContent);
+                throw new InvalidGetOrganisationException(response.ErrorContent);
             }
 
             return new GetLatestDetailsResult

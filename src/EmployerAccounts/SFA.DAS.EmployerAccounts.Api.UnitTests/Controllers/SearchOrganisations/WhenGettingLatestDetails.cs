@@ -78,13 +78,13 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.SearchOrganisations
                .Setup(mediator => mediator.Send(
                    It.IsAny<GetLatestDetailsQuery>(),
                    It.IsAny<CancellationToken>()))
-                   .Throws(new InvalidGetOrganisationRequest(errorMessage));
+                   .Throws(new InvalidGetOrganisationException(errorMessage));
 
             // Act
             Func<Task> act = async () => await controller.GetLatestDetails(identifier, organisationType);
 
             // Assert
-            await act.Should().ThrowAsync<InvalidGetOrganisationRequest>()
+            await act.Should().ThrowAsync<InvalidGetOrganisationException>()
                 .WithMessage(errorMessage);
         }
 

@@ -22,12 +22,12 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetLatestDetail
         [Test, MoqAutoData]
         public async Task Then_GetLatestDetails_from_Reference_Api(
           GetLatestDetailsQuery query,
-          ApiResponse<GetLatestDetailsApiResponse> apiResponse,
+          ApiResponse<Organisation> apiResponse,
           [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockApiClient,
           GetLatestDetailsQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.GetWithResponseCode<GetLatestDetailsApiResponse>(It.IsAny<GetLatestDetailsRequest>()))
+                .Setup(client => client.GetWithResponseCode<Organisation>(It.IsAny<GetLatestDetailsRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -43,10 +43,10 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetLatestDetail
         [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockApiClient,
         GetLatestDetailsQueryHandler handler)
         {
-            var notFoundResponse = new ApiResponse<GetLatestDetailsApiResponse>(null, HttpStatusCode.NotFound, errorMessage);
+            var notFoundResponse = new ApiResponse<Organisation>(null, HttpStatusCode.NotFound, errorMessage);
 
             mockApiClient
-                .Setup(client => client.GetWithResponseCode<GetLatestDetailsApiResponse>(It.IsAny<GetLatestDetailsRequest>()))
+                .Setup(client => client.GetWithResponseCode<Organisation>(It.IsAny<GetLatestDetailsRequest>()))
                 .ReturnsAsync(notFoundResponse);
 
             Func<Task> action = async () => await handler.Handle(query, CancellationToken.None);
@@ -62,15 +62,15 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetLatestDetail
         [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockApiClient,
         GetLatestDetailsQueryHandler handler)
         {
-            var badRequestResponse = new ApiResponse<GetLatestDetailsApiResponse>(null, HttpStatusCode.BadRequest, errorMessage);
+            var badRequestResponse = new ApiResponse<Organisation>(null, HttpStatusCode.BadRequest, errorMessage);
 
             mockApiClient
-                .Setup(client => client.GetWithResponseCode<GetLatestDetailsApiResponse>(It.IsAny<GetLatestDetailsRequest>()))
+                .Setup(client => client.GetWithResponseCode<Organisation>(It.IsAny<GetLatestDetailsRequest>()))
                 .ReturnsAsync(badRequestResponse);
 
             Func<Task> action = async () => await handler.Handle(query, CancellationToken.None);
 
-            action.Should().Throw<InvalidGetOrganisationRequest>()
+            action.Should().Throw<InvalidGetOrganisationException>()
                 .WithMessage(errorMessage);
         }
     }
