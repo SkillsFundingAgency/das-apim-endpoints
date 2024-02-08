@@ -12,7 +12,6 @@ namespace SFA.DAS.EmployerAccounts.Api.Models
             return new GetLatestDetailsResponse
             {
                 Organisation = (Organisation)source.OrganisationDetail
-
             };
         }
     }

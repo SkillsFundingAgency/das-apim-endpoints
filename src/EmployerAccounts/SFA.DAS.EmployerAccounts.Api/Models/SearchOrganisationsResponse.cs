@@ -15,7 +15,6 @@ namespace SFA.DAS.EmployerAccounts.Api.Models
             return new SearchOrganisationsResponse
             {
                 Organisations = source.Organisations.Select(x => (Organisation)x)
-
             };
         }
 
