@@ -15,6 +15,7 @@ public class GetMemberProfileQueryResult
     public bool IsRegionalChair { get; set; }
     public DateTime JoinedDate { get; set; }
     public Apprenticeship Apprenticeship { get; set; } = new();
+    public GetMemberActivitiesResponse Activities { get; set; } = null!;
     public IEnumerable<MemberProfile> Profiles { get; set; } = Enumerable.Empty<MemberProfile>();
     public IEnumerable<MemberPreference> Preferences { get; set; } = Enumerable.Empty<MemberPreference>();
 }
