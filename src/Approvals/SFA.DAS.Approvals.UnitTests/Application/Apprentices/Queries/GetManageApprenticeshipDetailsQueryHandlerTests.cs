@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
+using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetApprenticeshipKey;
+using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.Services;
@@ -23,6 +27,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _apiClient;
         private Mock<IDeliveryModelService> _deliveryModelService;
         private ServiceParameters _serviceParameters;
+        private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _apprenticeshipsApiClient;
 
         private GetApprenticeshipResponse _apprenticeship;
         private GetManageApprenticeshipDetailsQuery _query;
@@ -34,6 +39,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         private GetChangeOfProviderChainResponse _changeOfProviderChainResponse;
         private GetChangeOfEmployerChainResponse _changeOfEmployerChainResponse;
         private GetOverlappingTrainingDateResponse _overlappingTrainingDateResponse;
+        private GetPendingPriceChangeResponse _pendingPriceChangeResponse;
 
         
         [SetUp]
@@ -54,6 +60,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _changeOfProviderChainResponse = fixture.Create<GetChangeOfProviderChainResponse>();
             _changeOfEmployerChainResponse = fixture.Create<GetChangeOfEmployerChainResponse>();
             _overlappingTrainingDateResponse = fixture.Create<GetOverlappingTrainingDateResponse>();
+            _pendingPriceChangeResponse = fixture.Create<GetPendingPriceChangeResponse>();
 
             _deliveryModels = fixture.Create<List<string>>();
 
@@ -94,7 +101,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 
             _serviceParameters = new ServiceParameters(Approvals.Application.Shared.Enums.Party.Employer, 123);
 
-            _handler = new GetManageApprenticeshipDetailsQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters);
+            _apprenticeshipsApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+            var apprenticeshipKey = Guid.NewGuid();
+            _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<Guid>(It.Is<GetApprenticeshipKeyRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId))).ReturnsAsync(new ApiResponse<Guid>(apprenticeshipKey, HttpStatusCode.OK, string.Empty));
+            _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(It.Is<GetPendingPriceChangeRequest>(r => r.ApprenticeshipKey == apprenticeshipKey)))
+                .ReturnsAsync(new ApiResponse<GetPendingPriceChangeResponse>(_pendingPriceChangeResponse, HttpStatusCode.OK, string.Empty));
+
+            _handler = new GetManageApprenticeshipDetailsQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters, _apprenticeshipsApiClient.Object);
         }
 
         [TestCase(0, false)]
@@ -121,6 +134,24 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             Assert.AreEqual(_changeOfProviderChainResponse.ChangeOfProviderChain, result.ChangeOfProviderChain);
             Assert.AreEqual(_changeOfEmployerChainResponse.ChangeOfEmployerChain, result.ChangeOfEmployerChain);
             Assert.AreEqual(_overlappingTrainingDateResponse.OverlappingTrainingDateRequest, result.OverlappingTrainingDateRequest);
+        }
+
+        [Test]
+        public async Task When_apprenticeship_has_pending_price_change_then_details_returned()
+        {
+            _pendingPriceChangeResponse.HasPendingPriceChange = true;
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            result.PendingPriceChange.Cost.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.PendingTotalPrice);
+            result.PendingPriceChange.TrainingPrice.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.PendingTrainingPrice);
+            result.PendingPriceChange.EndPointAssessmentPrice.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.PendingAssessmentPrice);
+        }
+
+        [Test]
+        public async Task When_apprenticeship_has_no_pending_price_change_then_details_not_returned()
+        {
+            _pendingPriceChangeResponse.HasPendingPriceChange = false;
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            result.PendingPriceChange.Should().BeNull();
         }
 
         [Test]

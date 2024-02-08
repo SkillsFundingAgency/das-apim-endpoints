@@ -5,10 +5,10 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Funding.Application.Services;
-using SFA.DAS.Funding.Configuration;
 using SFA.DAS.Funding.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.Funding.InnerApi.Responses;
-using SFA.DAS.Funding.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Funding.UnitTests.Application.Services.ApprenticeshipsServiceTests
@@ -19,7 +19,7 @@ namespace SFA.DAS.Funding.UnitTests.Application.Services.ApprenticeshipsServiceT
         public async Task Then_The_Api_Is_Called_Returning_The_Apprenticeships(
             long ukprn,
             IEnumerable<ApprenticeshipDto> apiResponse,
-            [Frozen] Mock<IApprenticeshipsApiClient<ApprenticeshipsConfiguration>> client,
+            [Frozen] Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> client,
             ApprenticeshipsService service
         )
         {
