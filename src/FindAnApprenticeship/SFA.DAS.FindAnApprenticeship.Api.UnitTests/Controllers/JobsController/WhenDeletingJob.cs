@@ -32,7 +32,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.JobsController
                     && c.JobId == jobId),
                 CancellationToken.None));
 
-            var actual = await controller.PostDeleteWorkHistory(applicationId, jobId, request);
+            var actual = await controller.PostDeleteJob(applicationId, jobId, request);
 
             actual.Should().BeOfType<OkObjectResult>();
         }
@@ -49,7 +49,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.JobsController
                     CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
-            var actual = await controller.PostDeleteWorkHistory(applicationId, jobId, request) as StatusCodeResult;
+            var actual = await controller.PostDeleteJob(applicationId, jobId, request) as StatusCodeResult;
 
             Assert.IsNotNull(actual);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

@@ -12,6 +12,8 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteJob;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateJob;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetJob;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory.DeleteJob;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -125,8 +127,30 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 
+        [HttpGet("{jobId}/delete")]
+        public async Task<IActionResult> GetDeleteJob([FromRoute] Guid applicationId, [FromRoute] Guid candidateId, [FromRoute] Guid jobId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetDeleteJobQuery
+                {
+                    CandidateId = candidateId,
+                    ApplicationId = applicationId,
+                    JobId = jobId
+                });
+                return Ok((Models.Applications.GetDeleteJobApiResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Get Job : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+
+
         [HttpPost("{jobId}/delete")]
-        public async Task<IActionResult> PostDeleteWorkHistory([FromRoute] Guid applicationId, Guid workHistoryId, PostDeleteJobRequest request)
+        public async Task<IActionResult> PostDeleteJob([FromRoute] Guid applicationId, [FromRoute]Guid workHistoryId, [FromBody]PostDeleteJobRequest request)
         {
             try
             {
