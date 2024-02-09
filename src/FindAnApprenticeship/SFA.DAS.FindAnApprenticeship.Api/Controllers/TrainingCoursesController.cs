@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateTrainingCourse;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateTrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourses;
 
@@ -88,6 +89,28 @@ public class TrainingCoursesController : Controller
         catch (Exception e)
         {
             _logger.LogError(e, "Get Training Course : An error occurred");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpPost("{trainingCourseId}")]
+    public async Task<IActionResult> PostUpdateTrainingCourse([FromRoute] Guid applicationId, [FromRoute] Guid trainingCourseId, [FromBody] PostUpdateTrainingCourseApiRequest request)
+    {
+        try
+        {
+            var result = await _mediator.Send(new UpdateTrainingCourseCommand
+            {
+                ApplicationId = applicationId,
+                CandidateId = request.CandidateId,
+                TrainingCourseId = trainingCourseId,
+                CourseName = request.CourseName,
+                YearAchieved = request.YearAchieved
+            });
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Update Training Course : An error occurred");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
