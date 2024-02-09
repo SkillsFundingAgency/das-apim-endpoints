@@ -9,8 +9,8 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplication;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationTrainingCourses;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationVolunteeringAndWorkHistory;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -84,6 +84,31 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 ApplicationId = applicationId,
                 CandidateId = candidateId,
                 TrainingCoursesStatus = request.TrainingCoursesSectionStatus
+            }, cancellationToken);
+
+            if (result.Application == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result.Application);
+        }
+
+        [HttpPost("{candidateId}/volunteering-and-work-experience")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateVolunteeringAndWorkExperience(
+            [FromRoute] Guid applicationId,
+            [FromRoute] Guid candidateId,
+            [FromBody] UpdateVolunteeringAndWorkExperienceModel request,
+            CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new PatchApplicationVolunteeringAndWorkExperienceCommand
+            {
+                ApplicationId = applicationId,
+                CandidateId = candidateId,
+                VolunteeringAndWorkExperienceStatus = request.VolunteeringAndWorkExperienceSectionStatus
             }, cancellationToken);
 
             if (result.Application == null)
