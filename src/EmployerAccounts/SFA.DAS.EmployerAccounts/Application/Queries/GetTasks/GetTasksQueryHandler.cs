@@ -70,7 +70,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
             await Task.WhenAll(accountTask, pledgeApplicationsToReviewTask, apprenticeChangesTask, transferRequestsTask, pendingTransferConnectionsTask, cohortsToReviewTask);
 
             var cohortsForThisAccount = await cohortsToReviewTask;
-            var cohortsToReview = cohortsForThisAccount.Cohorts?.Where(x => !x.IsDraft && x.WithParty == Party.Employer);
+            var cohortsToReview = cohortsForThisAccount?.Cohorts?.Where(x => !x.IsDraft && x.WithParty == Party.Employer);
             var apprenticeChanges = await apprenticeChangesTask;
             var apprenticeChangesCount = apprenticeChanges?.ApprenticeshipUpdates?.Count ?? 0;
             var pendingTransferConnections = await pendingTransferConnectionsTask;
