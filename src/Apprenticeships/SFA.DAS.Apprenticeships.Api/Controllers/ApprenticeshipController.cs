@@ -67,7 +67,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         public async Task<ActionResult> CreateApprenticeshipPriceChange(Guid apprenticeshipKey,
             [FromBody] CreateApprenticeshipPriceChangeRequest request)
         {
-            await _apiClient.PostWithResponseCode<object>(new PostCreateApprenticeshipPriceChangeRequest(
+            var response = await _apiClient.PostWithResponseCode<object>(new PostCreateApprenticeshipPriceChangeRequest(
                 apprenticeshipKey,
                 request.ProviderId,
                 request.EmployerId,
@@ -78,6 +78,11 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
                 request.Reason,
                 request.EffectiveFromDate
             ), false);
+
+            if (!string.IsNullOrEmpty(response.ErrorContent))
+            {
+				return BadRequest();
+			}
             return Ok();
         }
 
