@@ -10,6 +10,7 @@ using System;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
 using System.Threading;
 using FluentAssertions;
+using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.TrainingCoursesController;
 public class WhenGettingTrainingCourse
@@ -24,9 +25,9 @@ public class WhenGettingTrainingCourse
            [Greedy] Api.Controllers.TrainingCoursesController controller)
     {
         mediator.Setup(x => x.Send(It.Is<GetTrainingCourseQuery>(q =>
-                    q.CandidateId == candidateId 
-                    && q.ApplicationId == applicationId),
-                    && q.TrainingCourseId == trainingCourseId,
+                    q.CandidateId == candidateId
+                    && q.ApplicationId == applicationId
+                    && q.TrainingCourseId == trainingCourseId),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(queryResult);
 

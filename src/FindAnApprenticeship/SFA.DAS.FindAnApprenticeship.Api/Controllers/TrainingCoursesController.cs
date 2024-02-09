@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateTrainingCourse;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourses;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
@@ -52,7 +53,7 @@ public class TrainingCoursesController : Controller
         }
     }
 
-    [HttpGet("{candidateId}")]
+    [HttpGet]
     public async Task<IActionResult> GetTrainingCourses([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
     {
         try
@@ -71,9 +72,23 @@ public class TrainingCoursesController : Controller
         }
     }
 
-    [HttpGet("")]
+    [HttpGet("{trainingCourseId}")]
     public async Task<IActionResult> GetTrainingCourse([FromRoute] Guid applicationId, [FromRoute] Guid trainingCourseId, [FromQuery] Guid candidateId)
     {
-
+        try
+        {
+            var result = await _mediator.Send(new GetTrainingCourseQuery
+            {
+                CandidateId = candidateId,
+                ApplicationId = applicationId,
+                TrainingCourseId = trainingCourseId
+            });
+            return Ok((GetTrainingCourseApiResponse)result);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Get Training Course : An error occurred");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
     }
 }
