@@ -52,7 +52,7 @@ public class TrainingCoursesController : Controller
         }
     }
 
-    [HttpGet]
+    [HttpGet("{candidateId}")]
     public async Task<IActionResult> GetTrainingCourses([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
     {
         try
@@ -69,5 +69,11 @@ public class TrainingCoursesController : Controller
             _logger.LogError(e, "Get Training Courses : An error occurred");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
+    }
+
+    [HttpGet("")]
+    public async Task<IActionResult> GetTrainingCourse([FromRoute] Guid applicationId, [FromRoute] Guid trainingCourseId, [FromQuery] Guid candidateId)
+    {
+
     }
 }
