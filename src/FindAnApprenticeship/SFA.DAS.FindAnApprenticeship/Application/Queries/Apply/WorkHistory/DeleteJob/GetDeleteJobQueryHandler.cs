@@ -18,7 +18,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory.Del
     {
         public async Task<GetDeleteJobQueryResult> Handle(GetDeleteJobQuery request, CancellationToken cancellationToken)
         {
-            return await candidateApiClient.Get<GetDeleteJobApiResponse>(new GetDeleteJobApiRequest(request.ApplicationId, request.CandidateId, request.JobId));
+            return await candidateApiClient.Get<GetDeleteJobApiResponse>(new GetDeleteJobApiRequest(request.ApplicationId, request.CandidateId, request.JobId, WorkHistoryType.Job));
         }
     }
 }
