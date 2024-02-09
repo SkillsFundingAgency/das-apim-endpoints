@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
         }
 
         [HttpGet]
-        [Route("", Name = "Search")]
+        [Route("organisations/search/results")]
         public async Task<IActionResult> SearchOrganisations([FromQuery] string searchTerm, [FromQuery] int maximumResults = 500)
         {
             try
@@ -57,7 +57,7 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
         }
 
         [HttpGet]
-        [Route("Get")]
+        [Route("review")]
         public async Task<IActionResult> GetLatestDetails([FromQuery] string identifier, [FromQuery] OrganisationType organisationType)
         {
             var result = await _mediator.Send(new GetLatestDetailsQuery()
@@ -72,7 +72,7 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
         }
 
         [HttpGet]
-        [Route("charities/{registrationNumber}", Name = "Charity")]
+        [Route("charities/{registrationNumber}")]
         public async Task<IActionResult> GetCharity(int registrationNumber)
         {
             try
@@ -99,7 +99,7 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
         }
 
         [HttpGet]
-        [Route("publicsectorbodies", Name = "Public Sector")]
+        [Route("publicsectorbodies")]
         public async Task<IActionResult> GetPublicSectorOrganisations([FromQuery] string searchTerm, [FromQuery] int pageSize = 1000, [FromQuery] int pageNumber = 1)
         {
             try
