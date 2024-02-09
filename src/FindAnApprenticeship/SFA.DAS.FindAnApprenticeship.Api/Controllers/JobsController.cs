@@ -107,7 +107,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new UpdateJobCommand
+                await _mediator.Send(new UpdateJobCommand
                 {
                     ApplicationId = applicationId,
                     JobId = jobId,
