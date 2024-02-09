@@ -55,14 +55,5 @@ public class WhenHandlingPatchApplicationVolunteeringAndWorkExperienceCommand
 
         Func<Task> act = async () => { await handler.Handle(command, CancellationToken.None); };
         await act.Should().ThrowAsync<HttpRequestContentException>();
-
-        // loggerMock.Verify(l =>
-        //     l.Log(
-        //         LogLevel.Error,
-        //         It.IsAny<EventId>(),
-        //         It.Is<It.IsAnyType>((state, type) => state.ToString()!.Contains("Unable to patch application for candidate Id")),
-        //         It.IsAny<Exception>(),
-        //         It.IsAny<Func<It.IsAnyType, Exception, string>>()!
-        //     ), Times.Once);
     }
 }
