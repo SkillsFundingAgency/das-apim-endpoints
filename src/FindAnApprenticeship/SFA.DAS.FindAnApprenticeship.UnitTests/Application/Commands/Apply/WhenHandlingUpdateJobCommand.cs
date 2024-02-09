@@ -1,4 +1,5 @@
 ﻿using AutoFixture.NUnit3;
+using MediatR;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateJob;
@@ -22,7 +23,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
 
             candidateApiClient
                 .Setup(client => client.Put(
-                    It.Is<PutUpdateWorkHistoryApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)));
+                    It.Is<PutUpdateWorkHistoryApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
+                .Returns(Task.FromResult(Unit.Value));
 
             await handler.Handle(command, CancellationToken.None);
 
