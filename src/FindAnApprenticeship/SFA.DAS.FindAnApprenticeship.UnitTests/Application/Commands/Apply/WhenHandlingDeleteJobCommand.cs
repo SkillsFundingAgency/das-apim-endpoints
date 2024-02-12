@@ -31,12 +31,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
         {
             var expectedRequest = new DeleteJobRequest(command.ApplicationId, command.CandidateId, command.JobId);
 
-            candidateApiClient
-                .Setup(client => client.Delete(It.Is<DeleteJobRequest>(r => r.DeleteUrl == expectedRequest.DeleteUrl)));
-
             var result = await handler.Handle(command, CancellationToken.None);
 
             result.Should().Be(Unit.Value);
+            candidateApiClient
+                .Verify(client => client.Delete(It.Is<DeleteJobRequest>(r => r.DeleteUrl == expectedRequest.DeleteUrl)), Times.Once);
         }
     }
 }

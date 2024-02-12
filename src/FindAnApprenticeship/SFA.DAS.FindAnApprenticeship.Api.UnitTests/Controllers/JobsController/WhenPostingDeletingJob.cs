@@ -30,7 +30,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.JobsController
                     c.CandidateId == request.CandidateId
                     && c.ApplicationId == applicationId
                     && c.JobId == jobId),
-                CancellationToken.None));
+                CancellationToken.None)).ReturnsAsync(new Unit());
 
             var actual = await controller.PostDeleteJob(applicationId, jobId, request);
 
