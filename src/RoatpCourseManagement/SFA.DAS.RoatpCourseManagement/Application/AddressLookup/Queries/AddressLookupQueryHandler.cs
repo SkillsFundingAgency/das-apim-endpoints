@@ -11,6 +11,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries
     {
         private readonly ILocationApiClient _locationLookupService;
         private readonly ILogger<AddressLookupQueryHandler> _logger;
+        public const double minMatch = 1;
 
         public AddressLookupQueryHandler(ILocationApiClient locationLookupService, ILogger<AddressLookupQueryHandler> logger)
         {
@@ -20,7 +21,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries
 
         public async Task<AddresssLookupQueryResult> Handle(AddresssLookupQuery request, CancellationToken cancellationToken)
         {
-            var result = await _locationLookupService.GetExactMatchAddresses(request.Postcode);
+            var result = await _locationLookupService.GetExactMatchAddresses(request.Postcode, minMatch);
             if (result == null)
             {
                 _logger.LogWarning($"Invalid postcode: {request.Postcode}.");

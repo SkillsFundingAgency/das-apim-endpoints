@@ -6,5 +6,5 @@ namespace SFA.DAS.RoatpCourseManagement.Infrastructure;
 public interface ILocationApiClient
 {
     [Get("api/addresses")]
-    Task<GetAddressesListResponse> GetExactMatchAddresses(string fullPostcode);
+    Task<GetAddressesListResponse> GetExactMatchAddresses([Query] string query, [Query] double minMatch);
 }
