@@ -128,7 +128,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet("{jobId}/delete")]
-        public async Task<IActionResult> GetDeleteJob([FromRoute] Guid applicationId, [FromRoute] Guid candidateId, [FromRoute] Guid jobId)
+        public async Task<IActionResult> GetDeleteJob([FromRoute] Guid applicationId, [FromQuery] Guid candidateId, [FromRoute] Guid jobId)
         {
             try
             {

@@ -13,7 +13,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.SharedOuterApi.Infrastructure;
-using static SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests.PostDeleteJobRequest;
+using static SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests.DeleteJobRequest;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
 using MediatR;
@@ -35,7 +35,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
             });
 
             candidateApiClient
-                .Setup(client => client.PostWithResponseCode<NullResponse>(It.Is<PostDeleteJobRequest>(r => r.PostUrl == expectedRequest.PostUrl), true))
+                .Setup(client => client.Delete(It.Is<DeleteJobRequest>(r => r.DeleteUrl == expectedRequest.DeleteUrl)));
                 .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(command, CancellationToken.None);
