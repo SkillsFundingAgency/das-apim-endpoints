@@ -29,14 +29,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             PostDeleteJobCommandHandler handler)
         {
-            var expectedRequest = new PostDeleteJobRequest(command.ApplicationId, command.CandidateId, new PostDeleteJobRequestData
-            {
-                JobId = command.JobId,
-            });
+            var expectedRequest = new DeleteJobRequest(command.ApplicationId, command.CandidateId, command.JobId);
 
             candidateApiClient
                 .Setup(client => client.Delete(It.Is<DeleteJobRequest>(r => r.DeleteUrl == expectedRequest.DeleteUrl)));
-                .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(command, CancellationToken.None);
 
