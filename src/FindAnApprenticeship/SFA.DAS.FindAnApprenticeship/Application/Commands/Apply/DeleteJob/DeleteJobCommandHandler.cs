@@ -1,27 +1,33 @@
 ﻿using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
+using static SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests.PostDeleteJobRequest;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteJob
 {
-    public class DeleteJobCommandHandler : IRequestHandler<DeleteJobCommand, Unit>
+    public class PostDeleteJobCommandHandler : IRequestHandler<PostDeleteJobCommand, Unit>
     {
         private readonly ICandidateApiClient<CandidateApiConfiguration> _apiClient;
 
-        public DeleteJobCommandHandler(ICandidateApiClient<CandidateApiConfiguration> apiClient)
+        public PostDeleteJobCommandHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
         {
-            _apiClient = apiClient;
+            _apiClient = candidateApiClient;
         }
 
-        public async Task<Unit> Handle(DeleteJobCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(PostDeleteJobCommand command, CancellationToken cancellationToken)
         {
-            var request = new DeleteJobRequest(command.ApplicationId, command.CandidateId, command.JobId);
+            var request = new PostDeleteJobRequest(command.ApplicationId, command.CandidateId, new PostDeleteJobRequestData
+            {
+                JobId = command.JobId,
+            });
 
-            await _apiClient.Delete(request);
+            await _apiClient.PostWithResponseCode<NullResponse>(request);
             return Unit.Value;
         }
     }
+
 }

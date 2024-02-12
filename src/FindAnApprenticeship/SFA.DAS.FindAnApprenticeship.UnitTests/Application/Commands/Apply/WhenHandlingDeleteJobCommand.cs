@@ -11,25 +11,36 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteJob;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-
+using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using static SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests.PostDeleteJobRequest;
+using SFA.DAS.SharedOuterApi.Models;
+using System.Net;
+using MediatR;
+using FluentAssertions;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
 {
-    public class WhenHandlingDeleteCommand
+    public class WhenHandlingDeleteJobCommand
     {
         [Test, MoqAutoData]
         public async Task Then_The_Job_Is_Deleted(
-            DeleteJobCommand command,
+            PostDeleteJobCommand command,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-            DeleteJobCommandHandler handler)
+            PostDeleteJobCommandHandler handler)
         {
-            var expectedRequest = new DeleteJobRequest(command.ApplicationId, command.CandidateId, command.JobId);
+            var expectedRequest = new PostDeleteJobRequest(command.ApplicationId, command.CandidateId, new PostDeleteJobRequestData
+            {
+                JobId = command.JobId,
+            });
 
-            candidateApiClient.Setup(client => client.Delete(It.Is<DeleteJobRequest>(r => r.DeleteUrl == expectedRequest.DeleteUrl)));
+            candidateApiClient
+                .Setup(client => client.PostWithResponseCode<NullResponse>(It.Is<PostDeleteJobRequest>(r => r.PostUrl == expectedRequest.PostUrl), true))
+                .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.OK, string.Empty));
 
-            await handler.Handle(command, CancellationToken.None);
+            var result = await handler.Handle(command, CancellationToken.None);
 
-            candidateApiClient.Verify(x => x.Delete(It.IsAny<DeleteJobRequest>()), Times.Once);
+            result.Should().Be(Unit.Value);
         }
     }
 }

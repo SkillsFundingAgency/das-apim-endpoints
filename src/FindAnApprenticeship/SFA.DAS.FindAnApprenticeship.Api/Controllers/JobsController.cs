@@ -149,19 +149,19 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 
 
 
-        [HttpDelete("{jobId}/delete")]
-        public async Task<IActionResult> DeleteJob([FromRoute] Guid applicationId, [FromRoute]Guid workHistoryId, [FromBody]PostDeleteJobRequest request)
+        [HttpPost("{jobId}/delete")]
+        public async Task<IActionResult> PostDeleteJob([FromRoute] Guid applicationId, [FromRoute]Guid workHistoryId, [FromBody]PostDeleteJobRequest request)
         {
             try
             {
-                var result = await _mediator.Send(new DeleteJobCommand
+                var result = await _mediator.Send(new PostDeleteJobCommand
                 {
                     ApplicationId = applicationId,
                     JobId = workHistoryId,
                     CandidateId = request.CandidateId
                 });
 
-                return NoContent();
+                return Ok(result);
             }
             catch (Exception e)
             {
