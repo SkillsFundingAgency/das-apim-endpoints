@@ -2,7 +2,6 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-using static SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests.PostDeleteJobRequest;
 
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.InnerApi.CandidateApi.Requests
