@@ -24,7 +24,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             GetDeleteJobQueryHandler handler)
         {
-            var expectedGetDeleteJobRequest = new GetDeleteJobApiRequest(query.ApplicationId, query.CandidateId, query.JobId);
+            var expectedGetDeleteJobRequest = new GetDeleteJobApiRequest(query.ApplicationId, query.CandidateId, query.JobId, WorkHistoryType.Job);
             candidateApiClient
                 .Setup(client => client.Get<GetDeleteJobApiResponse>(
                     It.Is<GetDeleteJobApiRequest>(r => r.GetUrl == expectedGetDeleteJobRequest.GetUrl)))

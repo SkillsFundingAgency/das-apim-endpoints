@@ -26,15 +26,15 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.JobsController
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.JobsController controller)
         {
-            mediator.Setup(x => x.Send(It.Is<PostDeleteJobCommand>(c =>
+            mediator.Setup(x => x.Send(It.Is<DeleteJobCommand>(c =>
                     c.CandidateId == request.CandidateId
                     && c.ApplicationId == applicationId
                     && c.JobId == jobId),
                 CancellationToken.None));
 
-            var actual = await controller.PostDeleteJob(applicationId, jobId, request);
+            var actual = await controller.DeleteJob(applicationId, jobId, request);
 
-            actual.Should().BeOfType<OkObjectResult>();
+            actual.Should().Be(HttpStatusCode.OK);
         }
 
         [Test, MoqAutoData]
@@ -45,11 +45,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.JobsController
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.JobsController controller)
         {
-            mediator.Setup(x => x.Send(It.IsAny<PostDeleteJobCommand>(),
+            mediator.Setup(x => x.Send(It.IsAny<DeleteJobCommand>(),
                     CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
-            var actual = await controller.PostDeleteJob(applicationId, jobId, request) as StatusCodeResult;
+            var actual = await controller.DeleteJob(applicationId, jobId, request) as StatusCodeResult;
 
             Assert.IsNotNull(actual);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

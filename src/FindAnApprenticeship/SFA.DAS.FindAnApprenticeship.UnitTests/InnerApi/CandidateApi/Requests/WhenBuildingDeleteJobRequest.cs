@@ -2,7 +2,8 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-using static SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests.PostDeleteJobRequest;
+using System;
+using static SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests.DeleteJobRequest;
 
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.InnerApi.CandidateApi.Requests
@@ -13,11 +14,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.InnerApi.CandidateApi.Requests
         public void Then_The_Request_Url_Is_Correctly_Built(
         Guid applicationId,
         Guid candidateId,
-        PostDeleteJobRequestData data)
+        Guid jobId)
         {
-            var actual = new PostDeleteJobRequest(applicationId, candidateId, data);
+            var actual = new DeleteJobRequest(applicationId, candidateId, jobId);
 
-            actual.PostUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/work-history/delete");
+            actual.DeleteUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/work-history/{jobId}");
         }
     }
 }

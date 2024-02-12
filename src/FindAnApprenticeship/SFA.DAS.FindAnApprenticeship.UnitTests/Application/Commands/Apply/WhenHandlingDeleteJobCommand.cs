@@ -11,36 +11,25 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteJob;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-using SFA.DAS.SharedOuterApi.Services;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using static SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests.PostDeleteJobRequest;
-using SFA.DAS.SharedOuterApi.Models;
-using System.Net;
-using MediatR;
-using FluentAssertions;
+
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
 {
-    public class WhenHandlingDeleteJobCommand
+    public class WhenHandlingDeleteCommand
     {
         [Test, MoqAutoData]
         public async Task Then_The_Job_Is_Deleted(
-            PostDeleteJobCommand command,
+            DeleteJobCommand command,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-            PostDeleteJobCommandHandler handler)
+            DeleteJobCommandHandler handler)
         {
-            var expectedRequest = new PostDeleteJobRequest(command.ApplicationId, command.CandidateId, new PostDeleteJobRequestData
-            {
-                JobId = command.JobId,
-            });
+            var expectedRequest = new DeleteJobRequest(command.ApplicationId, command.CandidateId, command.JobId);
 
-            candidateApiClient
-                .Setup(client => client.PostWithResponseCode<NullResponse>(It.Is<PostDeleteJobRequest>(r => r.PostUrl == expectedRequest.PostUrl), true))
-                .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.OK, string.Empty));
+            candidateApiClient.Setup(client => client.Delete(It.Is<DeleteJobRequest>(r => r.DeleteUrl == expectedRequest.DeleteUrl)));
 
-            var result = await handler.Handle(command, CancellationToken.None);
+            await handler.Handle(command, CancellationToken.None);
 
-            result.Should().Be(Unit.Value);
+            candidateApiClient.Verify(x => x.Delete(It.IsAny<DeleteJobRequest>()), Times.Once);
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteJob
 {
-    public class PostDeleteJobCommand : IRequest<Unit>
+    public class DeleteJobCommand : IRequest<Unit>
     {
         public Guid JobId { get; set; }
         public Guid ApplicationId { get; set; }
