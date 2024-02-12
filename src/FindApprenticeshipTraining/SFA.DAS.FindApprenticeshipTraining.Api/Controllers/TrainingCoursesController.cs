@@ -193,7 +193,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 var model = new GetTrainingCourseProviderResponse
                 {
                     TrainingCourse = result.Course,
-                    TrainingCourseProvider = new GetProviderCourseItem().Map(result, result.Course.SectorSubjectAreaTier2Description, result.Course.Level, result.Location?.GeoPoint != null),
+                    TrainingCourseProvider = new GetProviderCourseItem().Map(result, result.Course.Level, result.Location?.GeoPoint != null),
                     AdditionalCourses = new GetTrainingAdditionalCourseItem
                     {
                         Total = result.AdditionalCourses.Count(),
