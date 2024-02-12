@@ -50,7 +50,7 @@ public class WhenGettingAStandard
             .Setup(mediator => mediator.Send(
                 It.Is<GetStandardQuery>(x => x.CourseCode == courseCode),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((GetStandardsListItem)null);
+            .ReturnsAsync((GetStandardsListItem?)null);
 
         var controllerResult = await controller.GetStandard(courseCode) as NotFoundResult;
 
