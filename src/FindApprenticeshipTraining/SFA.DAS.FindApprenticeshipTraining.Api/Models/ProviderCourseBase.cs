@@ -192,38 +192,5 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             return deliveryTypes;
 
         }
-
-        private DeliveryModeType MapDeliveryType(string deliveryType)
-        {
-            return deliveryType switch
-            {
-                "100PercentEmployer" => DeliveryModeType.Workplace,
-                "DayRelease" => DeliveryModeType.DayRelease,
-                "BlockRelease" => DeliveryModeType.BlockRelease,
-                "NotFound" => DeliveryModeType.NotFound,
-                _ => default
-            };
-        }
-
-        private GetDeliveryType CreateDeliveryTypeItem(GetDeliveryTypeItem deliveryTypeItem)
-        {
-            if (deliveryTypeItem.DeliveryModes == DeliveryModeType.NotFound.ToString())
-            {
-                return new GetDeliveryType
-                {
-                    DeliveryModeType = DeliveryModeType.NotFound
-                };
-            }
-            return new GetDeliveryType
-            {
-                DistanceInMiles = deliveryTypeItem.DistanceInMiles,
-                Address1 = deliveryTypeItem.Address1,
-                Address2 = deliveryTypeItem.Address2,
-                County = deliveryTypeItem.County,
-                Postcode = deliveryTypeItem.Postcode,
-                Town = deliveryTypeItem.Town,
-                National = deliveryTypeItem.National
-            };
-        }
     }
 }
