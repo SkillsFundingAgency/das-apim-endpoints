@@ -1,26 +1,27 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 
 namespace SFA.DAS.ApprenticeAan.Application.ApprenticeAccount.Queries.GetApprenticeAccount;
 
 public class GetApprenticeAccountQueryHandler : IRequestHandler<GetApprenticeAccountQuery, GetApprenticeAccountQueryResult?>
 {
-    private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _apprenticeAccountsApiClient;
+    private readonly IApprenticeAccountsApiClient _apprenticeAccountsApiClient;
 
-    public GetApprenticeAccountQueryHandler(IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> apprenticeAccountsApiClient)
+    public GetApprenticeAccountQueryHandler(IApprenticeAccountsApiClient apprenticeAccountsApiClient)
     {
         _apprenticeAccountsApiClient = apprenticeAccountsApiClient;
     }
 
     public async Task<GetApprenticeAccountQueryResult?> Handle(GetApprenticeAccountQuery request, CancellationToken cancellationToken)
     {
-        var apprenticeAccountResponse = await _apprenticeAccountsApiClient.GetWithResponseCode<GetApprenticeAccountQueryResult?>(new GetApprenticeRequest(request.ApprenticeId));
+        //   var apprenticeAccountResponse = await _apprenticeAccountsApiClient.GetWithResponseCode<GetApprenticeAccountQueryResult?>(new GetApprenticeRequest(request.ApprenticeId));
 
-        if (apprenticeAccountResponse.StatusCode == System.Net.HttpStatusCode.OK)
-            return apprenticeAccountResponse.Body;
-        else if (apprenticeAccountResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+        var apprenticeAccountResponse =
+            await _apprenticeAccountsApiClient.GetApprentice(request.ApprenticeId, cancellationToken);
+
+        if (apprenticeAccountResponse.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+            return apprenticeAccountResponse.GetContent();
+        else if (apprenticeAccountResponse.ResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
             return null;
         else
             throw new InvalidOperationException($"Unexpected response received from apprentice accounts api when getting account details for apprenticeId: {request.ApprenticeId}");

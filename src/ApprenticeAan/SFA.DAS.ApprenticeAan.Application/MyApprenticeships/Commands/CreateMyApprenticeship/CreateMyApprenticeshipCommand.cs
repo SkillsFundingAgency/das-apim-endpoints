@@ -4,7 +4,7 @@ using SFA.DAS.ApprenticeAan.Application.InnerApi.StagedApprentices;
 
 namespace SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Commands.CreateMyApprenticeship;
 
-public class CreateMyApprenticeshipCommand : IRequest<Unit>
+public class CreateMyApprenticeshipCommand : IRequest<Unit>, IRequest<string>
 {
     public Guid ApprenticeId { get; set; }
     public long? Uln { get; set; }

@@ -1,28 +1,19 @@
-﻿using System.Net;
-using MediatR;
-using SFA.DAS.ApprenticeAan.Application.InnerApi.MyApprenticeships;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using MediatR;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 
 namespace SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Commands.CreateMyApprenticeship;
 
-public class CreateMyApprenticeshipCommandHandler : IRequestHandler<CreateMyApprenticeshipCommand, Unit>
+public class CreateMyApprenticeshipCommandHandler : IRequestHandler<CreateMyApprenticeshipCommand, string>
 {
-    private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _apprenticeAccountsApiClient;
+    private readonly IApprenticeAccountsApiClient _apprenticeAccountsApiClient;
 
-    public CreateMyApprenticeshipCommandHandler(IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> apprenticeAccountsApiClient)
+    public CreateMyApprenticeshipCommandHandler(IApprenticeAccountsApiClient apprenticeAccountsApiClient)
     {
         _apprenticeAccountsApiClient = apprenticeAccountsApiClient;
     }
 
-    public async Task<Unit> Handle(CreateMyApprenticeshipCommand command, CancellationToken cancellationToken)
+    public async Task<string> Handle(CreateMyApprenticeshipCommand command, CancellationToken cancellationToken)
     {
-        PostMyApprenticeshipRequest apiRequest = new(command.ApprenticeId) { Data = command };
-
-        var response = await _apprenticeAccountsApiClient.PostWithResponseCode<object>(apiRequest, false);
-
-        if (response.StatusCode == HttpStatusCode.Created) return Unit.Value;
-
-        throw new InvalidOperationException($"An attempt to create MyApprenticeship for ApprenticeId: {command.ApprenticeId}, came back with unsuccessful response status: {response.StatusCode}");
+        return await _apprenticeAccountsApiClient.PostMyApprenticeship(command.ApprenticeId, command, cancellationToken);
     }
 }

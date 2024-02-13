@@ -1,26 +1,25 @@
-﻿using System.Text.RegularExpressions;
-using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using MediatR;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
+using static System.Text.RegularExpressions.Regex;
 
 namespace SFA.DAS.ApprenticeAan.Application.Locations.Queries.GetAddresses;
 
 public class GetAddressesQueryHandler : IRequestHandler<GetAddressesQuery, GetAddressesQueryResult>
 {
-    private readonly ILocationApiClient<LocationApiConfiguration> _locationApiClient;
+    private readonly ILocationApiClient _locationApiClient;
     public const double MinimumMatch = 0.1;
     public const double MaximumMatch = 1;
     public const string PostcodeRegex = @"^[a-zA-z]{1,2}\d[a-zA-z\d]?\s*\d[a-zA-Z]{2}$";
 
-    public GetAddressesQueryHandler(ILocationApiClient<LocationApiConfiguration> locationApiClient) => _locationApiClient = locationApiClient;
+
+    public GetAddressesQueryHandler(ILocationApiClient locationApiClient) => _locationApiClient = locationApiClient;
 
     public async Task<GetAddressesQueryResult> Handle(GetAddressesQuery request, CancellationToken cancellationToken)
     {
-        var isFullPostcode = Regex.IsMatch(request.Query, PostcodeRegex);
+        var isFullPostcode = IsMatch(request.Query, PostcodeRegex);
         var minMatch = isFullPostcode ? MaximumMatch : MinimumMatch;
-        var addressesResponse = await _locationApiClient.Get<GetAddressesListResponse>(new GetAddressesQueryRequest(request.Query, minMatch));
+
+        var addressesResponse = await _locationApiClient.GetAddresses(request.Query, minMatch);
 
         var addresses = addressesResponse.Addresses.Select(a => (AddressItem)a);
 

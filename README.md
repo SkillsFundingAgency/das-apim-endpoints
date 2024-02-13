@@ -552,3 +552,24 @@ You are able to run the API by doing the following:
 
 Starting the API will then show the swagger definition with the available operations. This outer API is used to provide data for the FindApprenticeshipJobs functions app:
 [das-findapprenticeship-jobs](https://github.com/SkillsFundingAgency/das-findapprenticeship-jobs)
+
+### Apprentice AAN
+
+When Running Apprentice AAN Api Locally
+
+Use the following appsettings.development.json
+
+```
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConfigurationStorageConnectionString": "UseDevelopmentStorage=true;",
+  "ConfigNames": "SFA.DAS.ApprenticeAan.OuterApi",
+  "Environment": "LOCAL",
+  "Version": "1.0"
+}
