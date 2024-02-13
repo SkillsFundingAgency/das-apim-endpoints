@@ -85,9 +85,23 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         public async Task<ActionResult> GetPendingPriceChange(Guid apprenticeshipKey)
         {
 	        var response = await _apiClient.Get<GetPendingPriceChangeApiResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey));
-            var providerResponse = await _apiCommitmentsClient.Get<GetProviderResponse>(new GetProviderRequest(response.PendingPriceChange.Ukprn.GetValueOrDefault()));
 
-	        return Ok(new GetPendingPriceChangeResponse(response, providerResponse.Name));
+            if(response == null || response.PendingPriceChange == null)
+            {
+                _logger.LogWarning($"No pending price change found for apprenticeship {apprenticeshipKey}");
+                return NotFound();
+            }
+
+            var ukprn = response.PendingPriceChange.Ukprn.GetValueOrDefault();
+            var providerResponse = await _apiCommitmentsClient.Get<GetProviderResponse>(new GetProviderRequest(ukprn));
+
+            if (providerResponse == null || string.IsNullOrEmpty(providerResponse.Name))
+            {
+                _logger.LogWarning($"No provider found for ukprn {ukprn}");
+                return NotFound();
+            }
+
+            return Ok(new GetPendingPriceChangeResponse(response, providerResponse.Name));
         }
 
         [HttpDelete]
