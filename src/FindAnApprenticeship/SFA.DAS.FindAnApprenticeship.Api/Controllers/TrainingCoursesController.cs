@@ -35,7 +35,6 @@ public class TrainingCoursesController : Controller
                 ApplicationId = applicationId,
                 CandidateId = request.CandidateId,
                 CourseName = request.CourseName,
-                TrainingProviderName = request.TrainingProviderName,
                 YearAchieved = request.YearAchieved
             });
 

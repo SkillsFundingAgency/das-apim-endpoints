@@ -7,7 +7,6 @@ public class PostTrainingCourseApiRequest
 {
     public Guid CandidateId { get; set; }
     public string CourseName { get; set; }
-    public string TrainingProviderName { get; set; }
     public int YearAchieved { get; set; }
 }
 
