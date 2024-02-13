@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SFA.DAS.EarlyConnect.Application.Commands.CreateStudentOnboardData;
 using SFA.DAS.EarlyConnect.InnerApi.Requests;
 using SFA.DAS.EarlyConnect.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -10,13 +9,11 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.CreateStudentData
 {
     public class CreateStudentDataCommandHandler : IRequestHandler<CreateStudentDataCommand, CreateStudentDataCommandResult>
     {
-        private readonly IMediator _mediator;
         private readonly IEarlyConnectApiClient<EarlyConnectApiConfiguration> _apiClient;
 
-        public CreateStudentDataCommandHandler(IEarlyConnectApiClient<EarlyConnectApiConfiguration> apiClient, IMediator mediator)
+        public CreateStudentDataCommandHandler(IEarlyConnectApiClient<EarlyConnectApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
-            _mediator = mediator;
         }
 
         public async Task<CreateStudentDataCommandResult> Handle(CreateStudentDataCommand request, CancellationToken cancellationToken)
@@ -27,16 +24,14 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.CreateStudentData
 
             var emails = request.StudentDataList.ListOfStudentData.Select(studentData => studentData.Email).ToList();
 
-            var result = await _mediator.Send(new CreateStudentOnboardDataCommand
-            {
-                Emails = new EmailData { Emails = emails }
-            });
+            var result = await _apiClient.PostWithResponseCode<CreateStudentOnboardDataResponse>(new CreateStudentOnboardDataRequest(new EmailData { Emails = emails }), true);
+
+            response.EnsureSuccessStatusCode();
 
             return new CreateStudentDataCommandResult
             {
-                Message = $"{response.Body.Message} - {result.Message}"
+                Message = $"{response.Body.Message} - {result.Body.Message}"
             };
         }
-
     }
 }
