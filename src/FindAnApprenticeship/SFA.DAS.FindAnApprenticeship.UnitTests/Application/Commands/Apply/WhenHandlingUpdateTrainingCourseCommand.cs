@@ -1,4 +1,5 @@
 ﻿using AutoFixture.NUnit3;
+using MediatR;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateTrainingCourse;
@@ -22,7 +23,8 @@ public class WhenHandlingUpdateTrainingCourseCommand
 
             candidateApiClient
                 .Setup(client => client.Put(
-                    It.Is<PutUpdateTrainingCourseApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)));
+                    It.Is<PutUpdateTrainingCourseApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
+                .Returns(Task.FromResult(Unit.Value));
 
             await handler.Handle(command, CancellationToken.None);
 

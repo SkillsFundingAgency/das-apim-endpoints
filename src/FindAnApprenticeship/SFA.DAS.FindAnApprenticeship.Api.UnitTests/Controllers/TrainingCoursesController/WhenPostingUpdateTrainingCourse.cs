@@ -28,7 +28,8 @@ public class WhenPostingUpdateTrainingCourse
                 && c.ApplicationId == applicationId
                 && c.CourseName == apiRequest.CourseName
                 && c.YearAchieved == apiRequest.YearAchieved),
-            It.IsAny<CancellationToken>()));
+            It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Unit.Value);
 
         var actual = await controller.PostUpdateTrainingCourse(applicationId, trainingCourseId, apiRequest);
 
