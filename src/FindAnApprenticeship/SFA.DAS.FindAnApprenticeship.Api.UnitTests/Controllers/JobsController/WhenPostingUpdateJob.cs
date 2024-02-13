@@ -33,8 +33,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.JobsController
                     && c.JobTitle == apiRequest.JobTitle
                     && c.StartDate == apiRequest.StartDate
                     && c.EndDate == apiRequest.EndDate),
-                It.IsAny<CancellationToken>()));
-                
+                It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Unit.Value);
+
             var actual = await controller.PostUpdateJob(applicationId, jobId, apiRequest);
 
             actual.Should().BeOfType<OkResult>();
