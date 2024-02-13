@@ -14,13 +14,12 @@ public class PostTrainingCourseApiRequest : IPostApiRequest
         Data = data;
     }
 
-    public string PostUrl => $"candidates/{_candidateId}/applications/{_applicationId}/training-course";
+    public string PostUrl => $"candidates/{_candidateId}/applications/{_applicationId}/trainingcourses";
     public object Data { get; set; }
 
     public class PostTrainingCourseApiRequestData
     {
         public string CourseName { get; set; }
-        public string TrainingProviderName { get; set; }
         public int YearAchieved { get; set; }
     }
 }
