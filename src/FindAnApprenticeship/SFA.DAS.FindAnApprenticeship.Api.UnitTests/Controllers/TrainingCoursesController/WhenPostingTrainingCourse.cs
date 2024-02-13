@@ -27,7 +27,6 @@ public class WhenPostingTrainingCourse
         mediator.Setup(x => x.Send(It.Is<CreateTrainingCourseCommand>(c =>
             c.CandidateId.Equals(apiRequest.CandidateId)
             && c.ApplicationId == applicationId
-            && c.TrainingProviderName == apiRequest.TrainingProviderName
             && c.CourseName == apiRequest.CourseName
             && c.YearAchieved == apiRequest.YearAchieved),
             CancellationToken.None))
