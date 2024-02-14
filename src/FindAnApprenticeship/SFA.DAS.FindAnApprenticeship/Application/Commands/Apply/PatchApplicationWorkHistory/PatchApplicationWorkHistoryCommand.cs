@@ -4,7 +4,7 @@ using System;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplication
 {
-    public class PatchApplicationCommand : IRequest<PatchApplicationCommandResponse>
+    public class PatchApplicationWorkHistoryCommand : IRequest<PatchApplicationWorkHistoryCommandResponse>
     {
         public Guid ApplicationId { set; get; }
         public Guid CandidateId { set; get; }
