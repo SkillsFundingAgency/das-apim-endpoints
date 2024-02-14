@@ -37,6 +37,7 @@
         <PackageReference Include="SFA.DAS.NLog.Targets.Redis" />
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
         <PackageReference Include="Swashbuckle.AspNetCore" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     </ItemGroup>
 
 
