@@ -60,12 +60,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     EmployerName = request.EmployerName
                 });
 
-                if (result == null)
-                {
-                    return NotFound();
-                }
-
-                return Created(result.Id.ToString(), (PostJobApiResponse)result);
+                return Ok();
 
             }
             catch (Exception ex)

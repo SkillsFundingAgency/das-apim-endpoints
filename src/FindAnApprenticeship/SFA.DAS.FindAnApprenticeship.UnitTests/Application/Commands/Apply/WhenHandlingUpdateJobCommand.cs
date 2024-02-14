@@ -19,16 +19,16 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             UpdateJobCommandHandler handler)
         {
-            var expectedRequest = new PutUpdateWorkHistoryApiRequest(command.ApplicationId, command.CandidateId, command.JobId, new PutUpdateWorkHistoryApiRequest.PutUpdateWorkHistoryApiRequestData());
+            var expectedRequest = new PutUpsertWorkHistoryApiRequest(command.ApplicationId, command.CandidateId, command.JobId, new PutUpsertWorkHistoryApiRequest.PutUpsertWorkHistoryApiRequestData());
 
             candidateApiClient
                 .Setup(client => client.Put(
-                    It.Is<PutUpdateWorkHistoryApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
+                    It.Is<PutUpsertWorkHistoryApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
                 .Returns(Task.FromResult(Unit.Value));
 
             await handler.Handle(command, CancellationToken.None);
 
-            candidateApiClient.Verify(x => x.Put(It.IsAny<PutUpdateWorkHistoryApiRequest>()), Times.Once);
+            candidateApiClient.Verify(x => x.Put(It.IsAny<PutUpsertWorkHistoryApiRequest>()), Times.Once);
         }
     }
 }
