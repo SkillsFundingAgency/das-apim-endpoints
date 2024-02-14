@@ -36,6 +36,7 @@ public class GetMemberProfileQueryHandlerTests
         var (getMemberResponse, _, _) = SetupGetMemberToReturnEmployerMember(aanHubApiClientMock, commitmentsV2ApiClientMock);
         SetupGetRegions(getMemberResponse.RegionId, aanHubApiClientMock);
         SetupProfilesAndPreferences(aanHubApiClientMock);
+        SetupActivities(aanHubApiClientMock);
 
         GetMemberProfileQueryResult actual = await sut.Handle(_query, _cancellationToken);
 
@@ -60,6 +61,7 @@ public class GetMemberProfileQueryHandlerTests
         var (getMemberResponse, _, _) = SetupGetMemberToReturnEmployerMember(aanHubApiClientMock, commitmentsV2ApiClientMock);
         var expectedRegionName = SetupGetRegions(getMemberResponse.RegionId, aanHubApiClientMock);
         SetupProfilesAndPreferences(aanHubApiClientMock);
+        SetupActivities(aanHubApiClientMock);
 
         GetMemberProfileQueryResult actual = await sut.Handle(_query, _cancellationToken);
 
@@ -74,6 +76,7 @@ public class GetMemberProfileQueryHandlerTests
         var (getMemberResponse, _, _) = SetupGetMemberToReturnEmployerMember(aanHubApiClientMock, commitmentsV2ApiClientMock, false);
         var expectedRegionName = SetupGetRegions(getMemberResponse.RegionId, aanHubApiClientMock);
         SetupProfilesAndPreferences(aanHubApiClientMock);
+        SetupActivities(aanHubApiClientMock);
 
         GetMemberProfileQueryResult actual = await sut.Handle(_query, _cancellationToken);
 
@@ -87,6 +90,7 @@ public class GetMemberProfileQueryHandlerTests
         var (sut, aanHubApiClientMock, commitmentsV2ApiClientMock, _, _) = SetupSut();
         var (getMemberResponse, _, _) = SetupGetMemberToReturnEmployerMember(aanHubApiClientMock, commitmentsV2ApiClientMock);
         SetupGetRegions(getMemberResponse.RegionId, aanHubApiClientMock);
+        SetupActivities(aanHubApiClientMock);
         var expected = SetupProfilesAndPreferences(aanHubApiClientMock);
 
         GetMemberProfileQueryResult actual = await sut.Handle(_query, _cancellationToken);
@@ -101,6 +105,7 @@ public class GetMemberProfileQueryHandlerTests
         var (sut, aanHubApiClientMock, commitmentsV2ApiClientMock, _, _) = SetupSut();
         var (getMemberResponse, _, _) = SetupGetMemberToReturnEmployerMember(aanHubApiClientMock, commitmentsV2ApiClientMock);
         SetupGetRegions(getMemberResponse.RegionId, aanHubApiClientMock);
+        SetupActivities(aanHubApiClientMock);
         var expected = SetupProfilesAndPreferences(aanHubApiClientMock);
 
         GetMemberProfileQueryResult actual = await sut.Handle(_query, _cancellationToken);
@@ -116,6 +121,7 @@ public class GetMemberProfileQueryHandlerTests
         var (sut, aanHubApiClientMock, commitmentsV2ApiClientMock, apprenticeAccountsApiClientMock, _) = SetupSut();
         var (getMemberResponse, accountSummaryResponse, apprenticeshipSummaryResponse) = SetupGetMemberToReturnEmployerMember(aanHubApiClientMock, commitmentsV2ApiClientMock);
         SetupGetRegions(getMemberResponse.RegionId, aanHubApiClientMock);
+        SetupActivities(aanHubApiClientMock);
         var expected = SetupProfilesAndPreferences(aanHubApiClientMock);
 
         //Act
@@ -143,6 +149,7 @@ public class GetMemberProfileQueryHandlerTests
         var (sut, aanHubApiClientMock, commitmentsV2ApiClientMock, apprenticeAccountsApiClientMock, coursesApiClientMock) = SetupSut();
         var (getMemberResponse, expectedStandard, _) = SetupGetMemberToReturnApprenticeMember(aanHubApiClientMock, apprenticeAccountsApiClientMock, coursesApiClientMock, true);
         SetupGetRegions(getMemberResponse.RegionId, aanHubApiClientMock);
+        SetupActivities(aanHubApiClientMock);
         var expected = SetupProfilesAndPreferences(aanHubApiClientMock);
 
         //Act
@@ -172,6 +179,7 @@ public class GetMemberProfileQueryHandlerTests
         var (sut, aanHubApiClientMock, commitmentsV2ApiClientMock, apprenticeAccountsApiClientMock, coursesApiClientMock) = SetupSut();
         var (getMemberResponse, _, expectedFramework) = SetupGetMemberToReturnApprenticeMember(aanHubApiClientMock, apprenticeAccountsApiClientMock, coursesApiClientMock, false);
         SetupGetRegions(getMemberResponse.RegionId, aanHubApiClientMock);
+        SetupActivities(aanHubApiClientMock);
         var expected = SetupProfilesAndPreferences(aanHubApiClientMock);
 
         //Act
@@ -192,6 +200,50 @@ public class GetMemberProfileQueryHandlerTests
             commitmentsV2ApiClientMock.Verify(c => c.GetEmployerAccountSummary(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Never);
             commitmentsV2ApiClientMock.Verify(c => c.GetEmployerApprenticeshipsSummary(It.IsAny<long>(), It.IsAny<CancellationToken>()), Times.Never);
         }
+    }
+
+    [Test]
+    public async Task GetMemberProfile_ShouldInvokeGetMemberActivities()
+    {
+        // Arrange
+        var (sut, aanHubApiClientMock, commitmentsV2ApiClientMock, _, _) = SetupSut();
+        var (getMemberResponse, _, _) = SetupGetMemberToReturnEmployerMember(aanHubApiClientMock, commitmentsV2ApiClientMock);
+        SetupGetRegions(getMemberResponse.RegionId, aanHubApiClientMock);
+        SetupProfilesAndPreferences(aanHubApiClientMock);
+        var expected = SetupActivities(aanHubApiClientMock);
+
+        // Act
+        GetMemberProfileQueryResult actual = await sut.Handle(_query, _cancellationToken);
+
+        // Assert
+        aanHubApiClientMock.Verify(a => a.GetMemberActivities(_memberId, _cancellationToken), Times.Once);
+    }
+
+    [Test]
+    public async Task GetMemberProfile_ReturnsExpectedActivitiesData()
+    {
+        // Arrange
+        var (sut, aanHubApiClientMock, commitmentsV2ApiClientMock, _, _) = SetupSut();
+        var (getMemberResponse, _, _) = SetupGetMemberToReturnEmployerMember(aanHubApiClientMock, commitmentsV2ApiClientMock);
+        SetupGetRegions(getMemberResponse.RegionId, aanHubApiClientMock);
+        SetupProfilesAndPreferences(aanHubApiClientMock);
+        var expected = SetupActivities(aanHubApiClientMock);
+
+        // Act
+        GetMemberProfileQueryResult actual = await sut.Handle(_query, _cancellationToken);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(actual.Activities, Is.Not.Null);
+            Assert.That(actual.Activities.LastSignedUpDate, Is.EqualTo(expected.LastSignedUpDate));
+            Assert.That(actual.Activities.EventsAttended, Is.Not.Null);
+            Assert.That(actual.Activities.EventsAttended.EventsDateRange, Is.EqualTo(expected.EventsAttended.EventsDateRange));
+            Assert.That(actual.Activities.EventsAttended.Events, Is.EqualTo(expected.EventsAttended.Events));
+            Assert.That(actual.Activities.EventsPlanned, Is.Not.Null);
+            Assert.That(actual.Activities.EventsPlanned.EventsDateRange, Is.EqualTo(expected.EventsPlanned.EventsDateRange));
+            Assert.That(actual.Activities.EventsPlanned.Events, Is.EqualTo(expected.EventsPlanned.Events));
+        });
     }
 
     private static (GetMemberProfileQueryHandler, Mock<IAanHubRestApiClient>, Mock<ICommitmentsV2ApiClient>, Mock<IApprenticeAccountsApiClient>, Mock<ICoursesApiClient>) SetupSut()
@@ -292,5 +344,12 @@ public class GetMemberProfileQueryHandlerTests
         var expectedProfilesAndPreferences = _fixture.Create<GetMemberProfilesAndPreferencesResponse>();
         aanHubApiClientMock.Setup(a => a.GetMemberProfileWithPreferences(_memberId, It.IsAny<Guid>(), _cancellationToken)).ReturnsAsync(expectedProfilesAndPreferences);
         return expectedProfilesAndPreferences;
+    }
+
+    private GetMemberActivitiesResponse SetupActivities(Mock<IAanHubRestApiClient> aanHubApiClientMock)
+    {
+        var expectedActivities = _fixture.Create<GetMemberActivitiesResponse>();
+        aanHubApiClientMock.Setup(a => a.GetMemberActivities(_memberId, _cancellationToken)).ReturnsAsync(expectedActivities);
+        return expectedActivities;
     }
 }

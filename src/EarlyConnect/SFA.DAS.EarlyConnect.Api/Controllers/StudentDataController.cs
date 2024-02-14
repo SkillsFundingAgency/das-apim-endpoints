@@ -17,6 +17,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly ILogger<StudentDataController> _logger;
+        private readonly string DataSource="UCAS";
 
         public StudentDataController(IMediator mediator, ILogger<StudentDataController> logger)
         {
@@ -44,12 +45,12 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
 
                 logId = await CreateLog(StudentDataUploadStatus.InProgress, request, ipAddress);
 
-                await _mediator.Send(new CreateStudentDataCommand
+                var response=await _mediator.Send(new CreateStudentDataCommand
                 {
-                    StudentDataList = request.MapFromCreateStudentDataRequest(logId),
+                    StudentDataList = request.MapFromCreateStudentDataRequest(logId, DataSource),
                 });
 
-                await UpdateLog(logId, StudentDataUploadStatus.Completed);
+                await UpdateLog(logId, StudentDataUploadStatus.Completed, response.Message);
 
                 return CreatedAtAction(nameof(CreateStudentData), null);
             }
@@ -77,7 +78,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             var createLogRequest = new CreateLogPostRequest
             {
                 RequestType = actionName,
-                RequestSource = "UCAS",
+                RequestSource = DataSource,
                 RequestIP = ipAddress,
                 Payload = JsonConvert.SerializeObject(request),
                 Status = status.ToString()
@@ -91,13 +92,13 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             return response.LogId;
         }
 
-        private async Task UpdateLog(int logId, StudentDataUploadStatus status, string error = null)
+        private async Task UpdateLog(int logId, StudentDataUploadStatus status, string message = null)
         {
             var updateLog = new UpdateLogPostRequest
             {
                 LogId = logId,
                 Status = status.ToString(),
-                Error = error
+                Error = message
             };
 
             await _mediator.Send(new UpdateLogDataCommand
