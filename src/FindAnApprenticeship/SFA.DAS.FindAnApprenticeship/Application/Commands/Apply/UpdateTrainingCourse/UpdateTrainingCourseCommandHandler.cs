@@ -17,12 +17,12 @@ public class UpdateTrainingCourseCommandHandler : IRequestHandler<UpdateTraining
 
     public async Task<Unit> Handle(UpdateTrainingCourseCommand command, CancellationToken cancellationToken)
     {
-        var requestBody = new PutUpdateTrainingCourseApiRequest.PutUpdateTrainingCourseApiRequestData
+        var requestBody = new PutUpsertTrainingCourseApiRequest.PutUpdateTrainingCourseApiRequestData
         {
             CourseName = command.CourseName,
             YearAchieved = command.YearAchieved
         };
-        var request = new PutUpdateTrainingCourseApiRequest(command.ApplicationId, command.CandidateId, command.TrainingCourseId, requestBody);
+        var request = new PutUpsertTrainingCourseApiRequest(command.ApplicationId, command.CandidateId, command.TrainingCourseId, requestBody);
 
         await _apiClient.Put(request);
         return Unit.Value;
