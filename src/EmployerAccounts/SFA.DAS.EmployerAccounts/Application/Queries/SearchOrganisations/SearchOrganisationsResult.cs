@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
+using static SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation.EducationalOrganisationResponse;
 
 namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
 {
@@ -9,11 +11,11 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
     {
         public IEnumerable<Organisation> Organisations { get; set; }
 
-        public static implicit operator SearchOrganisationsResult(GetSearchOrganisationsResponse organisations)
+        public static implicit operator SearchOrganisationsResult(EducationalOrganisationResponse organisationResponse)
         {
             return new SearchOrganisationsResult
             {
-                Organisations = organisations.Select(x => (Organisation)x)
+                Organisations = organisationResponse.EducationalOrganisations.Select(x => (Organisation)x)
             };
         }
         public class Organisation
@@ -27,7 +29,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
             public string Sector { get; set; }
             public OrganisationStatus OrganisationStatus { get; set; }
 
-            public static implicit operator Organisation(SharedOuterApi.InnerApi.Responses.ReferenceData.Organisation source)
+            public static implicit operator Organisation(EducationalOrganisation source)
             {
                 if (source == null)
                 {
@@ -37,13 +39,20 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
                 return new Organisation
                 {
                     Name = source.Name,
-                    Type = source.Type,
-                    SubType = source.SubType,
-                    Code = source.Code,
-                    RegistrationDate = source.RegistrationDate,
-                    Address = source.Address,
-                    Sector = source.Sector,
-                    OrganisationStatus = source.OrganisationStatus
+                    Type = OrganisationType.EducationOrganisation,
+                    SubType = OrganisationSubType.None,
+                    Code = source.URN,
+                    RegistrationDate = null,
+                    Address = new Address
+                    {
+                        Line1 = source.AddressLine1,
+                        Line2 = source.AddressLine2,
+                        Line3 = source.AddressLine3,
+                        Line4 = source.Town,
+                        Line5 = source.County,
+                        Postcode = source.PostCode
+                    },
+                    Sector = source.EducationalType
                 };
             }
         }
