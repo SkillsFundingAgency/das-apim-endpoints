@@ -19,16 +19,16 @@ public class WhenHandlingUpdateTrainingCourseCommand
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             UpdateTrainingCourseCommandHandler handler)
         {
-            var expectedRequest = new PutUpdateTrainingCourseApiRequest(command.ApplicationId, command.CandidateId, command.TrainingCourseId, new PutUpdateTrainingCourseApiRequest.PutUpdateTrainingCourseApiRequestData());
+            var expectedRequest = new PutUpsertTrainingCourseApiRequest(command.ApplicationId, command.CandidateId, command.TrainingCourseId, new PutUpsertTrainingCourseApiRequest.PutUpdateTrainingCourseApiRequestData());
 
             candidateApiClient
                 .Setup(client => client.Put(
-                    It.Is<PutUpdateTrainingCourseApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
+                    It.Is<PutUpsertTrainingCourseApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
                 .Returns(Task.FromResult(Unit.Value));
 
             await handler.Handle(command, CancellationToken.None);
 
-            candidateApiClient.Verify(x => x.Put(It.IsAny<PutUpdateTrainingCourseApiRequest>()), Times.Once);
+            candidateApiClient.Verify(x => x.Put(It.IsAny<PutUpsertTrainingCourseApiRequest>()), Times.Once);
         }
     }
 }

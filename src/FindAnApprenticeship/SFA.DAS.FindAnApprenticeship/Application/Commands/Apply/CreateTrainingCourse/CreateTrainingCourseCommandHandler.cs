@@ -1,14 +1,13 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateTrainingCourse;
-public class CreateTrainingCourseCommandHandler : IRequestHandler<CreateTrainingCourseCommand, CreateTrainingCourseCommandResponse>
+public class CreateTrainingCourseCommandHandler : IRequestHandler<CreateTrainingCourseCommand>
 {
     private readonly ICandidateApiClient<CandidateApiConfiguration> _apiClient;
 
@@ -17,21 +16,16 @@ public class CreateTrainingCourseCommandHandler : IRequestHandler<CreateTraining
         _apiClient = apiClient;
     }
 
-    public async Task<CreateTrainingCourseCommandResponse> Handle(CreateTrainingCourseCommand command, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(CreateTrainingCourseCommand command, CancellationToken cancellationToken)
     {
-        var requestBody = new PostTrainingCourseApiRequest.PostTrainingCourseApiRequestData
+        var requestBody = new PutUpsertTrainingCourseApiRequest.PutUpdateTrainingCourseApiRequestData
         {
             CourseName = command.CourseName,
             YearAchieved = command.YearAchieved
         };
-        var request = new PostTrainingCourseApiRequest(command.ApplicationId, command.CandidateId, requestBody);
+        var request = new PutUpsertTrainingCourseApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), requestBody);
 
-        var response = await _apiClient.PostWithResponseCode<PostTrainingCourseApiResponse>(request);
-        response.EnsureSuccessStatusCode();
-
-        return new CreateTrainingCourseCommandResponse
-        {
-            Id = response.Body.Id
-        };
+        await _apiClient.Put(request);
+        return Unit.Value;
     }
 }

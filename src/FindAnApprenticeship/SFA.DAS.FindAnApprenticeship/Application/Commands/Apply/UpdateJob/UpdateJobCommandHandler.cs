@@ -19,7 +19,7 @@ public class UpdateJobCommandHandler : IRequestHandler<UpdateJobCommand>
 
     public async Task<Unit> Handle(UpdateJobCommand command, CancellationToken cancellationToken)
     {
-        var requestBody = new PutUpdateWorkHistoryApiRequest.PutUpdateWorkHistoryApiRequestData
+        var requestBody = new PutUpsertWorkHistoryApiRequest.PutUpsertWorkHistoryApiRequestData
         {
             Employer = command.Employer,
             Description = command.Description,
@@ -28,7 +28,7 @@ public class UpdateJobCommandHandler : IRequestHandler<UpdateJobCommand>
             EndDate = command.EndDate,
             WorkHistoryType = WorkHistoryType.Job
         };
-        var request = new PutUpdateWorkHistoryApiRequest(command.ApplicationId, command.CandidateId, command.JobId, requestBody);
+        var request = new PutUpsertWorkHistoryApiRequest(command.ApplicationId, command.CandidateId, command.JobId, requestBody);
 
         await _apiClient.Put(request);
         return Unit.Value;
