@@ -22,7 +22,6 @@ public class CreateTrainingCourseCommandHandler : IRequestHandler<CreateTraining
         var requestBody = new PostTrainingCourseApiRequest.PostTrainingCourseApiRequestData
         {
             CourseName = command.CourseName,
-            TrainingProviderName = command.TrainingProviderName,
             YearAchieved = command.YearAchieved
         };
         var request = new PostTrainingCourseApiRequest(command.ApplicationId, command.CandidateId, requestBody);

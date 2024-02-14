@@ -1,7 +1,6 @@
 ﻿using System;
 using SFA.DAS.FindAnApprenticeship.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using static SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests.PutUpdateWorkHistoryApiRequest;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
 {
