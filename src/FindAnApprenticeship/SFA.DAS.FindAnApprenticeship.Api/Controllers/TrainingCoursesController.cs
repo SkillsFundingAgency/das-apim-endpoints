@@ -30,7 +30,7 @@ public class TrainingCoursesController : Controller
     {
         try
         {
-            var result = await _mediator.Send(new CreateTrainingCourseCommand
+            await _mediator.Send(new CreateTrainingCourseCommand
             {
                 ApplicationId = applicationId,
                 CandidateId = request.CandidateId,
@@ -38,12 +38,7 @@ public class TrainingCoursesController : Controller
                 YearAchieved = request.YearAchieved
             });
 
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Created(result.Id.ToString(), (PostTrainingCourseApiResponse)result);
+            return Ok();
 
         }
         catch (Exception ex)
@@ -97,7 +92,7 @@ public class TrainingCoursesController : Controller
     {
         try
         {
-            var result = await _mediator.Send(new UpdateTrainingCourseCommand
+             await _mediator.Send(new UpdateTrainingCourseCommand
             {
                 ApplicationId = applicationId,
                 CandidateId = request.CandidateId,
