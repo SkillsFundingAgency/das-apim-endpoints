@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
@@ -33,7 +34,9 @@ public class PutCandidateCommandHandler : IRequestHandler<PutCandidateCommand, P
             Email = request.Email,
             FirstName = userDetails?.RegistrationDetails?.FirstName,
             LastName = userDetails?.RegistrationDetails?.LastName,
+            DateOfBirth = userDetails?.RegistrationDetails?.DateOfBirth ?? DateTime.UtcNow
         };
+
         var putRequest = new PutCandidateApiRequest(request.GovUkIdentifier, putData);
 
         var candidateResult = await _candidateApiClient.PutWithResponseCode<PutCandidateApiResponse>(putRequest);
