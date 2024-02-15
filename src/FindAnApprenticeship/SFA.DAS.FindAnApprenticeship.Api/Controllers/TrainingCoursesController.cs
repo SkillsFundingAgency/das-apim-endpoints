@@ -9,6 +9,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateTrainingCour
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateTrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
@@ -58,7 +59,7 @@ public class TrainingCoursesController : Controller
                 CandidateId = candidateId,
                 ApplicationId = applicationId
             });
-            return Ok((GetTrainingCoursesApiResponse)result);
+            return Ok((Models.Applications.GetTrainingCoursesApiResponse)result);
         }
         catch (Exception e)
         {
@@ -78,7 +79,7 @@ public class TrainingCoursesController : Controller
                 ApplicationId = applicationId,
                 TrainingCourseId = trainingCourseId
             });
-            return Ok((GetTrainingCourseApiResponse)result);
+            return Ok((Models.Applications.GetTrainingCourseApiResponse)result);
         }
         catch (Exception e)
         {
@@ -105,6 +106,26 @@ public class TrainingCoursesController : Controller
         catch (Exception e)
         {
             _logger.LogError(e, "Update Training Course : An error occurred");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpGet("{trainingCourseId}/delete")]
+    public async Task<IActionResult> GetDeleteTrainingCourse([FromRoute] Guid applicationId, [FromRoute] Guid trainingCourseId, [FromQuery] Guid candidateId)
+    {
+        try
+        {
+            var result = await _mediator.Send(new GetDeleteTrainingCourseQuery
+            {
+                CandidateId = candidateId,
+                ApplicationId = applicationId,
+                TrainingCourseId = trainingCourseId
+            });
+            return Ok((GetDeleteTrainingCourseApiResponse)result);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Get Training Course : An error occurred");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
