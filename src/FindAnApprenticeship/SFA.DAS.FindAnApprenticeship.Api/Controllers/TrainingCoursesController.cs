@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateTrainingCourse;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteJob;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateTrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourses;
@@ -126,6 +127,27 @@ public class TrainingCoursesController : Controller
         catch (Exception e)
         {
             _logger.LogError(e, "Get Training Course : An error occurred");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpPost("{trainingCourseId}/delete")]
+    public async Task<IActionResult> PostDeleteTrainingCourse([FromRoute] Guid applicationId, [FromRoute] Guid TrainingCourseId, [FromBody] PostDeleteJobRequest request)
+    {
+        try
+        {
+            var result = await _mediator.Send(new PostDeleteTrainingCourseCommand
+            {
+                ApplicationId = applicationId,
+                TrainingCourseId = TrainingCourseId,
+                CandidateId = request.CandidateId
+            });
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "DeleteJob : An error occurred");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
