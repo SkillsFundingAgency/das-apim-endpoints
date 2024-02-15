@@ -6,9 +6,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
     public class PostWorkExperienceApiRequest
     {
         public Guid CandidateId { get; set; }
-        public string EmployerName { get; set; }
-        public string JobTitle { get; set; }
-        public string JobDescription { get; set; }
+        public string CompanyName { get; set; }
+        public string Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
     }

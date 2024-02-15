@@ -23,11 +23,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 {
                     ApplicationId = applicationId,
                     CandidateId = request.CandidateId,
-                    JobTitle = request.JobTitle,
-                    JobDescription = request.JobDescription,
+                    Description = request.Description,
                     StartDate = request.StartDate,
                     EndDate = request.EndDate,
-                    EmployerName = request.EmployerName
+                    CompanyName = request.CompanyName
                 });
 
                 if (result == null)

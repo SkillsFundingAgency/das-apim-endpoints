@@ -28,9 +28,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.WorkExperiences
             mediator.Setup(x => x.Send(It.Is<CreateWorkCommand>(c =>
                         c.CandidateId.Equals(apiRequest.CandidateId)
                         && c.ApplicationId == applicationId
-                        && c.EmployerName == apiRequest.EmployerName
-                        && c.JobDescription == apiRequest.JobDescription
-                        && c.JobTitle == apiRequest.JobTitle
+                        && c.CompanyName == apiRequest.CompanyName
+                        && c.Description == apiRequest.Description
                         && c.StartDate == apiRequest.StartDate
                         && c.EndDate == apiRequest.EndDate),
                     CancellationToken.None))

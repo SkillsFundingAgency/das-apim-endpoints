@@ -18,9 +18,9 @@ public class CreateWorkCommandHandler(ICandidateApiClient<CandidateApiConfigurat
     {
         var requestBody = new PostWorkHistoryApiRequest.PostWorkHistoryApiRequestData
         {
-            EmployerName = command.EmployerName,
-            JobDescription = command.JobDescription,
-            JobTitle = command.JobTitle,
+            EmployerName = command.CompanyName,
+            JobDescription = command.Description,
+            JobTitle = string.Empty,
             StartDate = command.StartDate,
             EndDate = command.EndDate,
             WorkHistoryType = WorkHistoryType.WorkExperience
