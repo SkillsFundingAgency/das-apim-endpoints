@@ -16,7 +16,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply;
 public class WhenHandlingCreateTrainingCourseCommand
 {
     [Test, MoqAutoData]
-    public async Task Then_The_TrainingCourse_Is_Updated(
+    public async Task Then_The_TrainingCourse_Is_Created(
         CreateTrainingCourseCommand command,
         PutUpsertTrainingCourseApiResponse apiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,

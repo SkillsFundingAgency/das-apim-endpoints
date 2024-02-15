@@ -60,8 +60,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     EmployerName = request.EmployerName
                 });
 
-                return Ok();
+                if (result is null) return NotFound();
 
+                return Created($"{result.Id}", result.Id);
             }
             catch (Exception ex)
             {
@@ -97,7 +98,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                await _mediator.Send(new UpdateJobCommand
+                var result = await _mediator.Send(new UpdateJobCommand
                 {
                     ApplicationId = applicationId,
                     JobId = jobId,
@@ -108,7 +109,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     StartDate = request.StartDate,
                     EndDate = request.EndDate
                 });
-                return Ok();
+
+                if (result is null) return NotFound();
+
+                return Ok(result.Id);
             }
             catch (Exception e)
             {
