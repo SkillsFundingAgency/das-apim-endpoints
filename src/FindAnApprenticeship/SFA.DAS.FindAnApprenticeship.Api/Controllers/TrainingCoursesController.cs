@@ -132,7 +132,7 @@ public class TrainingCoursesController : Controller
     }
 
     [HttpPost("{trainingCourseId}/delete")]
-    public async Task<IActionResult> PostDeleteTrainingCourse([FromRoute] Guid applicationId, [FromRoute] Guid TrainingCourseId, [FromBody] PostDeleteJobRequest request)
+    public async Task<IActionResult> PostDeleteTrainingCourse([FromRoute] Guid applicationId, [FromRoute] Guid TrainingCourseId, [FromBody] PostDeleteTrainingCourseRequest request)
     {
         try
         {
