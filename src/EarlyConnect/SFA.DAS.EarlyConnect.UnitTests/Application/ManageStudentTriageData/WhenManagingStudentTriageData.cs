@@ -20,8 +20,8 @@ public class WhenManagingStudentTriageData
     public async Task Handle_ValidRequest_ReturnsResult()
     {
         var earlyConnectApiClientMock = new Mock<IEarlyConnectApiClient<EarlyConnectApiConfiguration>>();
-        var epsNeApiClientMock = new Mock<ILepsNeApiClient<LepsNeApiConfiguration>>();
-        var handler = new ManageStudentTriageDataCommandHandler(earlyConnectApiClientMock.Object, epsNeApiClientMock.Object);
+        var lepsNeApiClientMock = new Mock<ILepsNeApiClient<LepsNeApiConfiguration>>();
+        var handler = new ManageStudentTriageDataCommandHandler(earlyConnectApiClientMock.Object, lepsNeApiClientMock.Object);
 
         var command = new ManageStudentTriageDataCommand
         {

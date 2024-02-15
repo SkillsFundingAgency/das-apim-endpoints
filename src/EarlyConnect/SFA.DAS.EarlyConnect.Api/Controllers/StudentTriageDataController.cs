@@ -19,7 +19,6 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly ILogger<StudentTriageDataController> _logger;
-        private readonly string DataSource = "SubmitStudentData";
 
         public StudentTriageDataController(IMediator mediator, ILogger<StudentTriageDataController> logger)
         {
@@ -133,7 +132,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             var createLogRequest = new CreateLogPostRequest
             {
                 RequestType = actionName,
-                RequestSource = DataSource,
+                RequestSource = request.DataSource,
                 RequestIP = ipAddress,
                 Payload = String.Empty,
                 Status = status.ToString()
