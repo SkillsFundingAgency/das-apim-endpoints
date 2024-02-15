@@ -36,11 +36,6 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
                     MaximumResults = maximumResults
                 });
 
-                if (result == null)
-                {
-                    return NotFound();
-                }
-
                 var model = (SearchOrganisationsResponse)result;
 
                 return Ok(model.Organisations);

@@ -31,6 +31,11 @@ namespace SFA.DAS.EmployerAccounts.Api.Models
 
             public static implicit operator Organisation(SearchOrganisationsResult.Organisation source)
             {
+                if (source == null)
+                {
+                    return null;
+                }
+
                 return new Organisation
                 {
                     Name = source.Name,
