@@ -35,6 +35,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     CandidateId = candidateId,
                     ApplicationId = applicationId,
                 });
+
+                if (result is null) return NotFound();
                 return Ok((GetJobsApiResponse)result);
             }
             catch (Exception e)
@@ -83,6 +85,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     ApplicationId = applicationId,
                     JobId = jobId
                 });
+
+                if (result is null) return NotFound();
                 return Ok((GetJobApiResponse)result);
             }
             catch (Exception e)

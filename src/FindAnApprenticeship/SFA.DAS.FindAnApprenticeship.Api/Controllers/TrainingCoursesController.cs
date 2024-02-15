@@ -59,6 +59,8 @@ public class TrainingCoursesController : Controller
                 CandidateId = candidateId,
                 ApplicationId = applicationId
             });
+
+            if (result is null) return NotFound();
             return Ok((GetTrainingCoursesApiResponse)result);
         }
         catch (Exception e)
@@ -79,6 +81,8 @@ public class TrainingCoursesController : Controller
                 ApplicationId = applicationId,
                 TrainingCourseId = trainingCourseId
             });
+
+            if (result is null) return NotFound();
             return Ok((GetTrainingCourseApiResponse)result);
         }
         catch (Exception e)

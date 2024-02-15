@@ -41,4 +41,24 @@ public class WhenGettingTrainingCourse
             actualObject.Should().BeEquivalentTo((GetTrainingCourseApiResponse)queryResult);
         }
     }
+
+    [Test, MoqAutoData]
+    public async Task And_Mediator_Response_Is_Null_Then_Returns_NotFound(
+           Guid candidateId,
+           Guid applicationId,
+           Guid trainingCourseId,
+           [Frozen] Mock<IMediator> mediator,
+           [Greedy] Api.Controllers.TrainingCoursesController controller)
+    {
+        mediator.Setup(x => x.Send(It.Is<GetTrainingCourseQuery>(q =>
+                    q.CandidateId == candidateId
+                    && q.ApplicationId == applicationId
+                    && q.TrainingCourseId == trainingCourseId),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(() => null);
+
+        var actual = await controller.GetTrainingCourse(applicationId, trainingCourseId, candidateId);
+
+        actual.Should().BeOfType<NotFoundResult>();
+    }
 }
