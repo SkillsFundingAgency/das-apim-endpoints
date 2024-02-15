@@ -18,7 +18,9 @@ public static class AddServiceRegistrationExtensions
         services.AddHttpClient();
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
+        services.AddTransient(typeof(ILepsNeExternalApiClient<>), typeof(LepsNeExternalApiClient<>));
         services.AddTransient<IEarlyConnectApiClient<EarlyConnectApiConfiguration>, EarlyConnectApiClient>();
+        services.AddTransient<ILepsNeApiClient<LepsNeApiConfiguration>, LepsNeApiClient>();
     }
 }
 
@@ -30,6 +32,10 @@ public static class AddConfigurationOptionsExtension
         services.AddOptions();
         services.Configure<EarlyConnectApiConfiguration>(configuration.GetSection(nameof(EarlyConnectApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<EarlyConnectApiConfiguration>>().Value);
+
+        services.Configure<LepsNeApiConfiguration>(configuration.GetSection(nameof(LepsNeApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<LepsNeApiConfiguration>>().Value);
+
         services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
     }

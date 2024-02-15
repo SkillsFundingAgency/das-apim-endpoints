@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
@@ -19,15 +20,20 @@ public class WhenManagingStudentTriageData
     public async Task Handle_ValidRequest_ReturnsResult()
     {
         var earlyConnectApiClientMock = new Mock<IEarlyConnectApiClient<EarlyConnectApiConfiguration>>();
-        var handler = new ManageStudentTriageDataCommandHandler(earlyConnectApiClientMock.Object);
+        var epsNeApiClientMock = new Mock<ILepsNeApiClient<LepsNeApiConfiguration>>();
+        var handler = new ManageStudentTriageDataCommandHandler(earlyConnectApiClientMock.Object, epsNeApiClientMock.Object);
 
         var command = new ManageStudentTriageDataCommand
         {
             StudentTriageData = new StudentTriageData()
         };
 
-        var expectedResponse = new Mock<ManageStudentTriageDataResponse>();
+        command.StudentTriageData.StudentSurvey = new StudentSurveyDto();
 
+        command.StudentTriageData.StudentSurvey.DateCompleted = null;
+
+        var expectedResponse = new Mock<ManageStudentTriageDataResponse>();
+        expectedResponse.Object.Message =String.Empty;
         var cancellationToken = new CancellationToken();
 
         var response = new ApiResponse<ManageStudentTriageDataResponse>(expectedResponse.Object, HttpStatusCode.OK, string.Empty);
