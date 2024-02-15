@@ -40,7 +40,7 @@ public class TrainingCoursesController : Controller
 
             if (result is null) return NotFound();
 
-            return Created($"{result.Id}", result.Id);
+            return Created($"{result.Id}", (PostTrainingCourseApiResponse)result);
         }
         catch (Exception ex)
         {

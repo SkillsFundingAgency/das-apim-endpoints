@@ -18,7 +18,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.JobsController
     public class WhenPostingJob
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Command_Response_Is_Returned(
+        public async Task Then_The_Command_ApiResponse_Is_Returned(
             Guid applicationId,
             CreateJobCommandResult commandResult,
             PostJobApiRequest apiRequest,
@@ -41,7 +41,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.JobsController
             using (new AssertionScope())
             {
                 actual.Should().BeOfType<CreatedResult>();
-                actual.As<CreatedResult>().Value.Should().BeEquivalentTo(commandResult.Id);
+                actual.As<CreatedResult>().Value.Should().BeEquivalentTo((PostJobApiResponse)commandResult);
             }
         }
 

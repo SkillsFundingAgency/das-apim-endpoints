@@ -37,7 +37,7 @@ public class WhenPostingTrainingCourse
         using (new AssertionScope())
         {
             actual.Should().BeOfType<CreatedResult>();
-            actual.As<CreatedResult>().Value.Should().BeEquivalentTo(commandResult.Id);
+            actual.As<CreatedResult>().Value.Should().BeEquivalentTo((PostTrainingCourseApiResponse)commandResult);
         }
     }
 

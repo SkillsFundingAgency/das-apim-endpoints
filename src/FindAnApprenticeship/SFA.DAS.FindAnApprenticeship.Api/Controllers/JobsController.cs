@@ -62,7 +62,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 
                 if (result is null) return NotFound();
 
-                return Created($"{result.Id}", result.Id);
+                return Created($"{result.Id}", (PostJobApiResponse)result);
             }
             catch (Exception ex)
             {
