@@ -36,13 +36,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             var response = okObjectResult.Value as GetDetailResponse;
 
             Assert.That(controllerResult, Is.Not.Null);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(response);
-            Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.OK);
-            Assert.AreEqual(getDetailQueryResult.Opportunity.Id, response.Opportunity.Id);
-            Assert.AreEqual(getDetailQueryResult.Sectors, response.Sectors);
-            Assert.AreEqual(getDetailQueryResult.JobRoles, response.JobRoles);
-            Assert.AreEqual(getDetailQueryResult.Levels, response.Levels);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(response, Is.Not.Null);
+            Assert.That(okObjectResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
+            Assert.That(getDetailQueryResult.Opportunity.Id, Is.EqualTo(response.Opportunity.Id));
+            Assert.That(getDetailQueryResult.Sectors, Is.EqualTo(response.Sectors));
+            Assert.That(getDetailQueryResult.JobRoles, Is.EqualTo(response.JobRoles));
+            Assert.That(getDetailQueryResult.Levels, Is.EqualTo(response.Levels));
         }
     }
 }

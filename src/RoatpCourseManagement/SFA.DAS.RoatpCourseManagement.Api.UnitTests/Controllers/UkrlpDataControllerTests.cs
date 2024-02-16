@@ -51,8 +51,8 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
 
             var okResult = response as OkObjectResult;
             var actualResponse = okResult.Value;
-            Assert.AreSame(actualResponse, providerAddresses);
-            Assert.AreEqual((int)HttpStatusCode.OK, okResult.StatusCode.GetValueOrDefault());
+            Assert.That(actualResponse, Is.SameAs(providerAddresses));
+            Assert.That((int)HttpStatusCode.OK, Is.EqualTo(okResult.StatusCode.GetValueOrDefault()));
             _mediator.Verify(x => x.Send(It.IsAny<UkrlpDataQuery>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -79,8 +79,8 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
 
             var okResult = response as OkObjectResult;
             var actualResponse = okResult.Value;
-            Assert.AreSame(actualResponse, providerAddresses);
-            Assert.AreEqual((int)HttpStatusCode.OK, okResult.StatusCode.GetValueOrDefault());
+            Assert.That(actualResponse, Is.SameAs(providerAddresses));
+            Assert.That((int)HttpStatusCode.OK, Is.SameAs(okResult.StatusCode.GetValueOrDefault()));
             _mediator.Verify(x => x.Send(It.IsAny<UkrlpDataQuery>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -92,7 +92,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             var response = await _sut.GetProvidersData(command);
 
             var badRequestResult = response as BadRequestResult;
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, badRequestResult.StatusCode);
+            Assert.That((int)HttpStatusCode.BadRequest, Is.EqualTo(badRequestResult.StatusCode));
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             var response = await _sut.GetProvidersData(command);
 
             var badRequestResult = response as BadRequestResult;
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, badRequestResult.StatusCode);
+            Assert.That((int)HttpStatusCode.BadRequest, Is.EqualTo(badRequestResult.StatusCode));
         }
 
         [Test]
@@ -121,7 +121,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             var response = await _sut.GetProvidersData(command);
 
             var notFoundResult = response as NotFoundResult;
-            Assert.AreEqual((int)HttpStatusCode.NotFound, notFoundResult.StatusCode);
+            Assert.That((int)HttpStatusCode.NotFound, Is.EqualTo(notFoundResult.StatusCode));
         }
 
         [Test]
@@ -139,7 +139,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             var response = await _sut.GetProvidersData(command);
 
             var notFoundResult = response as NotFoundResult;
-            Assert.AreEqual((int)HttpStatusCode.NotFound, notFoundResult.StatusCode);
+            Assert.That((int)HttpStatusCode.NotFound, Is.EqualTo(notFoundResult.StatusCode));
         }
     }
 }
