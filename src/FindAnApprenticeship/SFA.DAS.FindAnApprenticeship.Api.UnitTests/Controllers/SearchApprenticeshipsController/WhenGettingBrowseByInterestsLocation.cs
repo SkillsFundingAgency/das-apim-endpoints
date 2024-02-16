@@ -32,7 +32,7 @@ public class WhenGettingBrowseByInterestsLocation
 
         Assert.That(actual, Is.Not.Null);
         var actualModel = actual.Value as BrowseByInterestsLocationApiResponse;
-        Assert.IsNotNull(actualModel);
+        Assert.That(actualModel, Is.Not.Null);
         actualModel.Should().BeEquivalentTo((BrowseByInterestsLocationApiResponse)mediatorResult);
     }
 

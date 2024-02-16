@@ -60,7 +60,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
 
             var comparisonResult = compare.Compare(_queryResult, objectResult);
-            Assert.IsTrue(comparisonResult.AreEqual);
+            Assert.That(comparisonResult.AreEqual, Is.True);
         }
     }
 }

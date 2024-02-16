@@ -54,7 +54,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
             var compare = new CompareLogic(new ComparisonConfig { MembersToIgnore = new List<string> { "DraftApprenticeships", "ApprenticeshipEmailOverlaps" }, IgnoreObjectTypes = true });
 
             var comparisonResult = compare.Compare(_queryResult, objectResult);
-            Assert.IsTrue(comparisonResult.AreEqual);
+            Assert.That(comparisonResult.AreEqual, Is.True);
         }
 
         [Test]
@@ -68,7 +68,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
 
             var comparisonResult = compare.Compare(_queryResult.DraftApprenticeships.Last(), objectResult.DraftApprenticeships.Last());
-            Assert.IsTrue(comparisonResult.AreEqual);
+            Assert.That(comparisonResult.AreEqual, Is.True);
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
 
             var comparisonResult = compare.Compare(_queryResult.ApprenticeshipEmailOverlaps.Last(), objectResult.ApprenticeshipEmailOverlaps.Last());
-            Assert.IsTrue(comparisonResult.AreEqual);
+            Assert.That(comparisonResult.AreEqual, Is.True);
         }
     }
 }

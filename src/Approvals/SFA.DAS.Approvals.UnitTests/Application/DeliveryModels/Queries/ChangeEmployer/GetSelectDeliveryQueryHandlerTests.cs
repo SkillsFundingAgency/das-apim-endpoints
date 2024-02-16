@@ -80,7 +80,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
 
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         {
             _apprenticeshipResponse.ProviderId = _query.ProviderId + 1;
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

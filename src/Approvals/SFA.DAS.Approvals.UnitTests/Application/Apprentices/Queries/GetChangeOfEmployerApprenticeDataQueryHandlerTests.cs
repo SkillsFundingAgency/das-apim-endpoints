@@ -82,7 +82,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
                 .ReturnsAsync(new ApiResponse<GetApprenticeshipResponse>(null, HttpStatusCode.NotFound, string.Empty));
 
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

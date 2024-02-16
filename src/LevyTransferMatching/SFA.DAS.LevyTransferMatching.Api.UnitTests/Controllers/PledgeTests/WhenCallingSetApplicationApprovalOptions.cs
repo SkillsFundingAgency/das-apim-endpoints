@@ -55,7 +55,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         public async Task OkResponse_Is_Returned()
         {
             var result = await _controller.SetApplicationApprovalOptions(_pledgeId, _applicationId, _request);
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.That(result, Is.InstanceOf<OkResult>());
         }
     }
 }

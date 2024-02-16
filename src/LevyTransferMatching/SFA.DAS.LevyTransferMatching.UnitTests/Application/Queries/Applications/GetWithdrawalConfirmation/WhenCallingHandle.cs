@@ -43,7 +43,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
 
             var result = await getWithdrawalConfirmationQueryHandler.Handle(getWithdrawalConfirmationQuery, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

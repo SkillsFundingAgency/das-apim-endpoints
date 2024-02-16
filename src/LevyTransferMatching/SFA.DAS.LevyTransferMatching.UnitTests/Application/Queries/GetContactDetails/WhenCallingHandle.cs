@@ -35,7 +35,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetContactD
 
             var result = await getContactDetailsHandler.Handle(getContactDetailsQuery, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test, MoqAutoData]

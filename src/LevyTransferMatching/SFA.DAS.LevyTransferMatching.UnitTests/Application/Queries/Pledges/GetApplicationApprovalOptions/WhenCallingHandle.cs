@@ -47,7 +47,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
 
             var result = await getApplicationApprovalOptionsQueryHandler.Handle(getApplicationApprovalOptionsQuery, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

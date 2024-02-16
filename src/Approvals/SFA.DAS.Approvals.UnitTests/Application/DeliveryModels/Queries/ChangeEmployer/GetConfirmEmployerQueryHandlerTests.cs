@@ -108,7 +108,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         {
             _apprenticeshipApiResponse.ProviderId = _query.ProviderId + 1;
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

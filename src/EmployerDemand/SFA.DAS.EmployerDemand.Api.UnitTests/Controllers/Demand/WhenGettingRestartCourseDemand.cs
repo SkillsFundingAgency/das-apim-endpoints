@@ -35,7 +35,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int) HttpStatusCode.OK);
             var actualModel = actual.Value as GetRestartCourseDemandResponse;
-            Assert.IsNotNull(actualModel);
+            Assert.That(actualModel, Is.Not.Null);
             actualModel.Id.Should().Be(queryResult.EmployerDemand.Id);
         }
 

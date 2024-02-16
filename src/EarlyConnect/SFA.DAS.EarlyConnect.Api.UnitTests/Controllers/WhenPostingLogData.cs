@@ -57,7 +57,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.CreateLog(request);
 
-            Assert.IsInstanceOf<BadRequestResult>(result);
+            Assert.That(result, Is.InstanceOf<BadRequestResult>());
         }
         [Test]
         public async Task Post_UpdateLog_ValidRequest_ReturnsOkResult()
@@ -68,7 +68,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.UpdateLog(request);
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.That(result, Is.InstanceOf<OkResult>());
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.UpdateLog(request);
 
-            Assert.IsInstanceOf<BadRequestResult>(result);
+            Assert.That(result, Is.InstanceOf<BadRequestResult>());
         }
     }
 }

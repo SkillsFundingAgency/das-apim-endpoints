@@ -93,7 +93,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

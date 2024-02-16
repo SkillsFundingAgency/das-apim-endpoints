@@ -74,7 +74,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         {
             _apprenticeshipResponse.EmployerAccountId++;
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

@@ -71,7 +71,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.ManageStudentTriageData(request, new Guid());
 
-            Assert.IsInstanceOf<BadRequestResult>(result);
+            Assert.That(result, Is.InstanceOf<BadRequestResult>());
         }
     }
 }

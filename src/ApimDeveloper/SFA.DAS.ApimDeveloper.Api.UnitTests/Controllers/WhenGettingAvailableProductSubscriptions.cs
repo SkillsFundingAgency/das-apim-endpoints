@@ -36,7 +36,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             
             Assert.That(actual, Is.Not.Null);
             var actualModel = actual.Value as ProductSubscriptionsApiResponse;
-            Assert.IsNotNull(actualModel);
+            Assert.That(actualModel, Is.Not.Null);
         }
 
         [Test, MoqAutoData]

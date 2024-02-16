@@ -149,7 +149,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            act.Should().Throw<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.InternalServerError} ({HttpStatusCode.InternalServerError})")
+            act.Should().ThrowAsync<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.InternalServerError} ({HttpStatusCode.InternalServerError})").Result
                 .Which.ErrorContent.Should().Be(errorContent);
             mockNotificationService.Verify(service => service.Send(It.IsAny<SendEmailCommand>()), 
                 Times.Never);

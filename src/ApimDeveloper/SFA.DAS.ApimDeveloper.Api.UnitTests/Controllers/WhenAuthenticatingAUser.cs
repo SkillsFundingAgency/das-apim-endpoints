@@ -34,7 +34,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
 
             Assert.That(actual, Is.Not.Null);
             var actualModel = actual.Value as UserAuthenticationApiResponse;
-            Assert.IsNotNull(actualModel);
+            Assert.That(actualModel, Is.Not.Null);
             actualModel.User.Should().BeEquivalentTo(mediatorResult.User);
         }
 

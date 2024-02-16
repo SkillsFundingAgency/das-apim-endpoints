@@ -92,7 +92,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test, MoqAutoData]
@@ -116,7 +116,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }
