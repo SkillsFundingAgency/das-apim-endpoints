@@ -4,6 +4,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.ReferenceData
 {
     public class IdentifiableOrganisationTypesRequest : IGetApiRequest
     {
-        public string GetUrl => "IdentifiableOrganisationTypes";
+        public string GetUrl => "api/EducationalOrganisations/IdentifiableOrganisationTypes";
     }
 }

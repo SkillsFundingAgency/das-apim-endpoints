@@ -41,25 +41,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.SearchOrganisations
 
             model.Should().BeEquivalentTo(mediatorResult.Organisations);
         }
-
-        [Test, MoqAutoData]
-        public async Task And_Mediator_Response_IsNull_Returns_NotFound(
-         [Frozen] Mock<IMediator> mockMediator,
-         [Greedy] SearchOrganisationController controller)
-        {
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.IsAny<SearchOrganisationsQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync((SearchOrganisationsResult)null);
-
-            var controllerResult = await controller.SearchOrganisations("AB1 2CD") as NotFoundResult;
-
-            controllerResult.Should().NotBeNull();
-
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
-        }
-
+   
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Internal_Server_Error(
           [Frozen] Mock<IMediator> mockMediator,

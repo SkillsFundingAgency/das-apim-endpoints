@@ -12,19 +12,20 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetIdentifiableOrganisati
     public class GetIdentifiableOrganisationTypesQueryHandler : IRequestHandler<GetIdentifiableOrganisationTypesQuery, GetIdentifiableOrganisationTypesResult>
     {
         private readonly ILogger<GetIdentifiableOrganisationTypesQueryHandler> _logger;
-        private readonly IReferenceDataApiClient<ReferenceDataApiConfiguration> _refDataApi;
+        private readonly IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration> _eduOrgApi;
 
-        public GetIdentifiableOrganisationTypesQueryHandler(ILogger<GetIdentifiableOrganisationTypesQueryHandler> logger, IReferenceDataApiClient<ReferenceDataApiConfiguration> referenceDataApiClient)
+        public GetIdentifiableOrganisationTypesQueryHandler(ILogger<GetIdentifiableOrganisationTypesQueryHandler> logger,
+             IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration> educationalOrganisationApiClient)
         {
             _logger = logger;
-            _refDataApi = referenceDataApiClient;
+            _eduOrgApi = educationalOrganisationApiClient;
         }
 
         public async Task<GetIdentifiableOrganisationTypesResult> Handle(GetIdentifiableOrganisationTypesQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Getting GetIdentifiableOrganisationTypes from reference api");
+            _logger.LogInformation($"Getting GetIdentifiableOrganisationTypes from educational-organisations api");
 
-            var organisationTypes = await _refDataApi.Get<OrganisationType[]>(new IdentifiableOrganisationTypesRequest());
+            var organisationTypes = await _eduOrgApi.Get<string[]>(new IdentifiableOrganisationTypesRequest());
 
             return new GetIdentifiableOrganisationTypesResult
             {

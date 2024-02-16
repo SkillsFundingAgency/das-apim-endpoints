@@ -7,7 +7,6 @@ using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetIdentifiableOrganisationTypes;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.ReferenceData;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -18,12 +17,12 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetIdentifiable
         [Test, MoqAutoData]
         public async Task Then_GetIdentifiableOrganisationTypes_from_Reference_Api(
           GetIdentifiableOrganisationTypesQuery query,
-          OrganisationType[] apiResponse,
-          [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockApiClient,
+          string[] apiResponse,
+          [Frozen] Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>> mockApiClient,
           GetIdentifiableOrganisationTypesQueryHandler handler)
         {
             mockApiClient
-                .Setup(client => client.Get<OrganisationType[]>(It.IsAny<IdentifiableOrganisationTypesRequest>()))
+                .Setup(client => client.Get<string[]>(It.IsAny<IdentifiableOrganisationTypesRequest>()))
                 .ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
