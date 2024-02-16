@@ -91,7 +91,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             var item = await service.RetrieveFromCache<TestObject>(keyName);
             
             //Assert
-            Assert.IsNotNull(item);
+            Assert.That(item, Is.Not.Null);
             item.Should().BeEquivalentTo(test);
         }
 
@@ -115,7 +115,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             var item = await service.RetrieveFromCache<TestObject>(keyName);
             
             //Assert
-            Assert.IsNotNull(item);
+            Assert.That(item, Is.Not.Null);
             item.Should().BeEquivalentTo(test);
         }
         
@@ -136,7 +136,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             var item = await service.RetrieveFromCache<TestObject>(keyName);
             
             //Assert
-            Assert.IsNull(item);
+            Assert.That(item, Is.Not.Null);
         }
 
         [Test, MoqAutoData]
@@ -156,7 +156,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             var item = await service.RetrieveFromCache<List<TestObject>>(keyName);
             
             //Assert
-            Assert.IsNull(item);
+            Assert.That(item, Is.Not.Null);
         }
         
         [Test, MoqAutoData]

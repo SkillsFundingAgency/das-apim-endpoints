@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 
@@ -21,7 +19,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.EmployerAccounts
             response.PublicHashedAccountId.Should().BeNull();
             response.DasAccountName.Should().BeNull();            
             response.OwnerEmail.Should().BeNull();
-            response.ApprenticeshipEmployerType.Should().BeEquivalentTo(ApprenticeshipEmployerType.NonLevy);
+            response.ApprenticeshipEmployerType.Should().Be(ApprenticeshipEmployerType.NonLevy);
         }
     }
 }
