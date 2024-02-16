@@ -1,33 +1,34 @@
+using System.Linq;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
     public class GetProviderCourseItem : ProviderCourseBase
     {
-        public string Email { get ; set ; }
+        public string Email { get; set; }
 
-        public string Phone { get ; set ; }
+        public string Phone { get; set; }
 
-        public string Website { get ; set ; }
-        public string MarketingInfo { get ; set ; }
+        public string Website { get; set; }
+        public string MarketingInfo { get; set; }
 
 
         public int? NationalOverallCohort { get; set; }
 
-        public decimal? NationalOverallAchievementRate { get ; set ; }
-        public GetProviderAddress ProviderAddress { get ; set ; }
+        public decimal? NationalOverallAchievementRate { get; set; }
+        public GetProviderAddress ProviderAddress { get; set; }
 
-        public GetProviderCourseItem Map(GetTrainingCourseProviderResult source, string sectorSubjectArea, int level, bool hasLocation)
+        public GetProviderCourseItem Map(GetTrainingCourseProviderResult source, int level, bool hasLocation)
         {
-            var achievementRate = GetAchievementRateItem(source.ProviderStandard.AchievementRates, sectorSubjectArea, level);
-            var nationalRate = GetAchievementRateItem(source.OverallAchievementRates, sectorSubjectArea, level);
+            var achievementRate = source.ProviderStandard.AchievementRates.FirstOrDefault();
+            var nationalRate = GetAchievementRateItem(source.OverallAchievementRates, level);
             var deliveryModes = FilterDeliveryModes(source.ProviderStandard.DeliveryModels);
             var employerFeedbackResponse = EmployerFeedbackResponse(source.ProviderStandard.EmployerFeedback);
             var apprenticeFeedbackResponse = ApprenticeFeedbackResponse(source.ProviderStandard.ApprenticeFeedback);
-                        
+
             return new GetProviderCourseItem
             {
-                ProviderAddress = new GetProviderAddress().Map(source.ProviderStandard.ProviderAddress,hasLocation),
+                ProviderAddress = new GetProviderAddress().Map(source.ProviderStandard.ProviderAddress, hasLocation),
                 Website = source.ProviderStandard.StandardInfoUrl,
                 Phone = source.ProviderStandard.Phone,
                 Email = source.ProviderStandard.Email,
@@ -48,16 +49,16 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
         public GetProviderCourseItem Map(InnerApi.Responses.GetShortlistItem shortlistItem)
         {
-            var achievementRate = GetAchievementRateItem(shortlistItem.ProviderDetails.AchievementRates, shortlistItem.Course.SectorSubjectAreaTier2Description, shortlistItem.Course.Level);
+            var achievementRate = shortlistItem.ProviderDetails.AchievementRates.FirstOrDefault();
 
             var deliveryModes = FilterDeliveryModes(shortlistItem.ProviderDetails.DeliveryModels);
 
             var getEmployerFeedbackResponse = EmployerFeedbackResponse(shortlistItem.ProviderDetails.EmployerFeedback);
             var getApprenticeFeedbackResponse = ApprenticeFeedbackResponse(shortlistItem.ProviderDetails.ApprenticeFeedback);
-            
+
             return new GetProviderCourseItem
             {
-                ProviderAddress = new GetProviderAddress().Map(shortlistItem.ProviderDetails.ProviderAddress,!string.IsNullOrEmpty(shortlistItem.LocationDescription)),
+                ProviderAddress = new GetProviderAddress().Map(shortlistItem.ProviderDetails.ProviderAddress, !string.IsNullOrEmpty(shortlistItem.LocationDescription)),
                 Website = shortlistItem.ProviderDetails.StandardInfoUrl,
                 Phone = shortlistItem.ProviderDetails.Phone,
                 Email = shortlistItem.ProviderDetails.Email,
