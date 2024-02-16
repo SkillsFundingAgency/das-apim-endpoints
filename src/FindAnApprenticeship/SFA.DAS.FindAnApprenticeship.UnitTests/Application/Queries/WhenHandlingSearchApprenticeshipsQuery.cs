@@ -64,7 +64,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             // Assert
             using (new AssertionScope())
             {
-                Assert.NotNull(result);
+                Assert.That(result, Is.Not.Null);
                 result.TotalApprenticeshipCount.Should().Be(vacanciesResponse.Total);
                 result.TotalFound.Should().Be(vacanciesResponse.TotalFound);
                 result.LocationItem.Should().BeEquivalentTo(locationInfo);
@@ -95,7 +95,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.NotNull(result);
+            Assert.That(result, Is.Not.Null);
             result.VacancyReference.Should().Be(query.SearchTerm);
 
         }

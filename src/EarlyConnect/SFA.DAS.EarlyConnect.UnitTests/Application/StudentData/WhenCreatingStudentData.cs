@@ -36,6 +36,6 @@ public class WhenCreatingStudentData
         var result = await handler.Handle(command, cancellationToken);
 
         earlyConnectApiClientMock.Verify(x => x.PostWithResponseCode<CreateStudentDataResponse>(It.IsAny<CreateStudentDataRequest>(), It.IsAny<bool>()), Times.Once);
-        Assert.AreEqual(expectedResponse.Object.Message, result.Message);
+        Assert.That(expectedResponse.Object.Message, Is.EqualTo(result.Message));
     }
 }

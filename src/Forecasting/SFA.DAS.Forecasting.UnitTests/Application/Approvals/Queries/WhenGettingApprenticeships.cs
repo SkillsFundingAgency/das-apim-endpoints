@@ -52,29 +52,29 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Approvals.Queries
 
             Assert.That(result, Is.Not.Null);
 
-            Assert.AreEqual(_apiResponse.Apprenticeships.Count, result.Apprenticeships.Count());
-            Assert.AreEqual(_apiResponse.TotalApprenticeshipsFound, result.TotalApprenticeshipsFound);
+            Assert.That(_apiResponse.Apprenticeships.Count, Is.EqualTo(result.Apprenticeships.Count()));
+            Assert.That(_apiResponse.TotalApprenticeshipsFound, Is.EqualTo(result.TotalApprenticeshipsFound));
 
             var i = 0;
 
             foreach (var apprenticeship in result.Apprenticeships)
             {
                 var expected = _apiResponse.Apprenticeships.ToArray()[i];
-                Assert.AreEqual(expected.Id, apprenticeship.Id);
-                Assert.AreEqual(expected.TransferSenderId, apprenticeship.TransferSenderId);
-                Assert.AreEqual(expected.Uln , apprenticeship.Uln);
-                Assert.AreEqual(expected.ProviderId , apprenticeship.ProviderId);
-                Assert.AreEqual(expected.ProviderName , apprenticeship.ProviderName);
-                Assert.AreEqual(expected.FirstName , apprenticeship.FirstName);
-                Assert.AreEqual(expected.LastName , apprenticeship.LastName);
-                Assert.AreEqual(expected.CourseCode , apprenticeship.CourseCode);
-                Assert.AreEqual(expected.CourseName , apprenticeship.CourseName);
-                Assert.AreEqual(expected.StartDate , apprenticeship.StartDate);
-                Assert.AreEqual(expected.EndDate , apprenticeship.EndDate);
-                Assert.AreEqual(expected.Cost, apprenticeship.Cost);
-                Assert.AreEqual(expected.PledgeApplicationId , apprenticeship.PledgeApplicationId);
-                Assert.AreEqual(expected.HasHadDataLockSuccess, apprenticeship.HasHadDataLockSuccess);
-                Assert.AreEqual(_courseList.First().Level, apprenticeship.CourseLevel);
+                Assert.That(expected.Id, Is.EqualTo(apprenticeship.Id));
+                Assert.That(expected.TransferSenderId, Is.EqualTo(apprenticeship.TransferSenderId));
+                Assert.That(expected.Uln , Is.EqualTo(apprenticeship.Uln));
+                Assert.That(expected.ProviderId , Is.EqualTo(apprenticeship.ProviderId));
+                Assert.That(expected.ProviderName , Is.EqualTo(apprenticeship.ProviderName));
+                Assert.That(expected.FirstName , Is.EqualTo(apprenticeship.FirstName));
+                Assert.That(expected.LastName , Is.EqualTo(apprenticeship.LastName));
+                Assert.That(expected.CourseCode , Is.EqualTo(apprenticeship.CourseCode));
+                Assert.That(expected.CourseName , Is.EqualTo(apprenticeship.CourseName));
+                Assert.That(expected.StartDate , Is.EqualTo(apprenticeship.StartDate));
+                Assert.That(expected.EndDate , Is.EqualTo(apprenticeship.EndDate));
+                Assert.That(expected.Cost, Is.EqualTo(apprenticeship.Cost));
+                Assert.That(expected.PledgeApplicationId , Is.EqualTo(apprenticeship.PledgeApplicationId));
+                Assert.That(expected.HasHadDataLockSuccess, Is.EqualTo(apprenticeship.HasHadDataLockSuccess));
+                Assert.That(_courseList.First().Level, Is.EqualTo(apprenticeship.CourseLevel));
                 i++;
             }
         }
