@@ -30,7 +30,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.LandingPage
             var controllerResult = await InstantiateController<OkObjectResult>(controller, hubName, slugName);
          
             var actualResult = controllerResult.Value as GetLandingPageResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.LandingPage.Should().BeEquivalentTo(mediatorResult.PageModel);
         }
 
@@ -46,7 +46,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.LandingPage
             var controllerResult = await InstantiateController<NotFoundObjectResult>(controller, hubName, slugName);
 
             var actualResult = controllerResult.Value as NotFoundResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Message.Should().Be($"Landing page not found for {hubName}/{slugName}");
         }
 

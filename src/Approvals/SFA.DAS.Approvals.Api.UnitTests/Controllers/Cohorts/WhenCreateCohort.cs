@@ -67,7 +67,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
 
             var result = await _controller.Create(_request);
 
-            Assert.That(result, Is.lnstanceOf<OkOBjectResult>());
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
             ((OkObjectResult)result).Value.Should().BeEquivalentTo(expectedResult);
         }
     }

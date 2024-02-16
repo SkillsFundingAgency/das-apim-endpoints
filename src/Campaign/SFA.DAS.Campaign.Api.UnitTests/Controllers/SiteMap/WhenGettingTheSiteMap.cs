@@ -31,7 +31,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.SiteMap
             var controllerResult = await controller.GetFullSiteMapAsync(CancellationToken.None) as OkObjectResult;
 
             var actualResult = controllerResult.Value as GetSiteMapResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Map.MainContent.Pages.Should().NotBeNull();
         }
     }

@@ -42,7 +42,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.GetMetricsData(lepsCode);
 
-            Assert.That(result, Is.lnstanceOf<OkOBjectResult>());
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
             Assert.IsInstanceOf<GetMetricsDataListByLepsCodeResponse>(okResult.Value);
             Assert.AreEqual((int)HttpStatusCode.OK, okResult.StatusCode);

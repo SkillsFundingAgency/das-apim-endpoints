@@ -33,7 +33,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.OverlappingTrainingDateRequest
                 .ReturnsAsync(response);
 
             var actual = await handler.Handle(query, CancellationToken.None);
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
 
             apiClient
              .Verify(x => x.GetWithResponseCode<ValidateUlnOverlapOnStartDateResponse>(It.Is<ValidateUlnOverlapOnStartDateQueryRequest>(x =>

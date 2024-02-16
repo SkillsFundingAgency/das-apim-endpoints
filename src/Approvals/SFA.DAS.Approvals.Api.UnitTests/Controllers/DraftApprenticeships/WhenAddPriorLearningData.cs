@@ -50,7 +50,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
 
             var result = await _controller.AddPriorLearningData(cohortId, draftApprenticeshipId, _request);
 
-            Assert.That(result, Is.lnstanceOf<OkOBjectResult>());
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okObjectResult = (OkObjectResult)result;
             Assert.IsInstanceOf<AddPriorLearningDataCommandResult>(okObjectResult.Value);
             var objectResult = (AddPriorLearningDataCommandResult)okObjectResult.Value;

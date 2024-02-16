@@ -41,7 +41,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.GetLepsDataWithUsers();
 
-            Assert.That(result, Is.lnstanceOf<OkOBjectResult>());
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
             Assert.IsInstanceOf<GetLEPSDataListWithUsersResponse>(okResult.Value);
             Assert.AreEqual((int)HttpStatusCode.OK, okResult.StatusCode);

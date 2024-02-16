@@ -45,7 +45,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
         {
             var result = await _controller.GetReviewApprenticeshipUpdates(_apprenticeshipId);
 
-            Assert.That(result, Is.lnstanceOf<OkOBjectResult>());
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okObjectResult = (OkObjectResult) result;
             Assert.IsInstanceOf<GetReviewApprenticeshipUpdatesResponse>(okObjectResult.Value);
             var objectResult = (GetReviewApprenticeshipUpdatesResponse) okObjectResult.Value;

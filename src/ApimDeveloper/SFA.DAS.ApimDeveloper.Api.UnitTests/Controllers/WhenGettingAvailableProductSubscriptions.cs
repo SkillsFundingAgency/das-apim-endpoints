@@ -34,7 +34,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
 
             var actual = await controller.GetAvailableProducts(accountIdentifier, accountType) as OkObjectResult;
             
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualModel = actual.Value as ProductSubscriptionsApiResponse;
             Assert.IsNotNull(actualModel);
         }
@@ -51,7 +51,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             
             var actual = await controller.GetAvailableProducts(accountIdentifier,accountType) as StatusCodeResult;
             
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }

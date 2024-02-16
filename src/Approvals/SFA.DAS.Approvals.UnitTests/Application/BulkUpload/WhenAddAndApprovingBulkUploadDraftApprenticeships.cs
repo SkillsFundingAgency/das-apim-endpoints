@@ -45,7 +45,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
             reservationApiClient.Setup(x => x.PostWithResponseCode<BulkCreateReservationsWithNonLevyResult>(It.IsAny<PostBulkCreateReservationRequest>(), true)).ReturnsAsync(() => reservationApiResponse);
 
             var actual = await handler.Handle(command, CancellationToken.None);
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
 
             actual.BulkUploadAddAndApproveDraftApprenticeshipResponse.Should().BeEquivalentTo(response.BulkUploadAddAndApproveDraftApprenticeshipResponse.Select(item => (BulkUploadAddDraftApprenticeshipsResult)item));
         }

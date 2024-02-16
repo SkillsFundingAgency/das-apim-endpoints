@@ -169,7 +169,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             
             var actual = await handler.Handle(query, CancellationToken.None);
             
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
         }
         
         [Test, MoqAutoData]

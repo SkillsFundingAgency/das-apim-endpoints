@@ -66,7 +66,7 @@ public class WhenGettingSearchResults
 
         var actual = await controller.SearchResults(model) as StatusCodeResult;
 
-        Assert.IsNotNull(actual);
+        Assert.That(actual, Is.Not.Null);
         actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
 
         mediator.Verify(m => m.Send(It.Is<SearchApprenticeshipsQuery>(c =>

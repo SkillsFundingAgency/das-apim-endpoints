@@ -56,7 +56,7 @@ namespace SFA.DAS.EmploymentCheck.Api.UnitTests.RegisterEmploymentCheck
 
             var actual = await controller.RegisterCheck(request) as ObjectResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
             actual.Value.Should().Be("error");
         }

@@ -31,7 +31,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Hub
             var controllerResult = await InstantiateController<OkObjectResult>(controller, hubName);
 
             var actualResult = controllerResult.Value as GetHubResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Hub.Should().BeEquivalentTo(mediatorResult.PageModel);
         }
         
@@ -49,7 +49,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Hub
             var controllerResult = await InstantiateController<NotFoundObjectResult>(controller, hubName);
 
             var actualResult = controllerResult.Value as NotFoundResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Message.Should().Be($"Hub not found for {hubName}");
         }
 
