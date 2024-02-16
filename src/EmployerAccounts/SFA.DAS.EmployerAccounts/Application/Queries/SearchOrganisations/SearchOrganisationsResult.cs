@@ -9,15 +9,16 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
 {
     public class SearchOrganisationsResult
     {
-        public IEnumerable<Organisation> Organisations { get; set; }
+        public List<Organisation> Organisations { get; set; }
 
         public static implicit operator SearchOrganisationsResult(EducationalOrganisationResponse organisationResponse)
         {
             return new SearchOrganisationsResult
             {
-                Organisations = organisationResponse.EducationalOrganisations.Select(x => (Organisation)x)
+                Organisations = organisationResponse.EducationalOrganisations.Select(x => (Organisation)x).ToList()
             };
         }
+
         public class Organisation
         {
             public string Name { get; set; }
@@ -55,6 +56,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
                     Sector = source.EducationalType
                 };
             }
+
         }
     }
 }
