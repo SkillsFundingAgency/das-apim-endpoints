@@ -50,7 +50,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Approvals.Queries
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
 
             Assert.AreEqual(_apiResponse.Apprenticeships.Count, result.Apprenticeships.Count());
             Assert.AreEqual(_apiResponse.TotalApprenticeshipsFound, result.TotalApprenticeshipsFound);

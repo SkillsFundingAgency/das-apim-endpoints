@@ -37,7 +37,7 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Pledges
         {
             var result = await _controller.GetAccountsWithPledges() as ObjectResult;
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             var response = result.Value as GetAccountsWithPledgesResponse;
             Assert.IsNotNull(response);
 

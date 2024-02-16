@@ -71,7 +71,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetContactD
 
             var result = await getContactDetailsHandler.Handle(getContactDetailsQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             
             CollectionAssert.AreEqual(allJobRoles, result.AllJobRoles);
             Assert.AreEqual(1, result.JobRoles.Count());

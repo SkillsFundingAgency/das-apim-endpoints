@@ -48,7 +48,7 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Approvals
         {
             var result = await _controller.GetApprenticeships(_accountId, _status, _pageNumber, _pageItemCount) as ObjectResult;
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             var response = result.Value as GetApprenticeshipsResponse;
             Assert.IsNotNull(response);
 

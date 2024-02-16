@@ -49,7 +49,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.A
             var result = await _handler.Handle(request, cancellationToken);
 
             // Assert
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             Assert.IsInstanceOf<ApplicationsWithAutomaticApprovalQueryResult>(result);
 
             var expectedResult = new ApplicationsWithAutomaticApprovalQueryResult

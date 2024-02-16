@@ -41,7 +41,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         {
             var result = await _handler.Handle(_query, new CancellationToken());
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             Assert.IsNotNull(result.Pledges);
             CollectionAssert.IsNotEmpty(result.Pledges);
             Assert.That(!result.Pledges.Any(x => x.Id == 0));

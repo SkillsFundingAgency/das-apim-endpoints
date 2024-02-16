@@ -54,7 +54,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.G
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             Assert.IsNotNull(result.EmailDataList);
             Assert.IsNotEmpty(result.EmailDataList);
         }

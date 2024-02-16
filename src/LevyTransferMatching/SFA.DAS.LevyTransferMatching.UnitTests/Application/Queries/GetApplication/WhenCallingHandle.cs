@@ -34,7 +34,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetApplicat
 
             var result = await getApplicationQueryHandler.Handle(getApplicationQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             Assert.AreEqual(getApplicationResponse.Details, result.AboutOpportunity);
         }
 
@@ -51,7 +51,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetApplicat
 
             var result = await getApplicationQueryHandler.Handle(getApplicationQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             Assert.AreEqual(getApplicationResponse.Details, result.AboutOpportunity);
         }
 

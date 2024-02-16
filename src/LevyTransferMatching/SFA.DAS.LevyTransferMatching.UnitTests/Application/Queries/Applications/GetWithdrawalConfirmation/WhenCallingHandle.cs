@@ -27,7 +27,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
 
             var result = await getWithdrawalConfirmationQueryHandler.Handle(getWithdrawalConfirmationQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             Assert.AreEqual(getApplicationResponse.SenderEmployerAccountName, result.PledgeEmployerName);
         }
 

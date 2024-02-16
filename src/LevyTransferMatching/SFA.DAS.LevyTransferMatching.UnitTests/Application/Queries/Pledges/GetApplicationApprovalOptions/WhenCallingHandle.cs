@@ -30,7 +30,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
 
             var result = await getApplicationApprovalOptionsQueryHandler.Handle(getApplicationApprovalOptionsQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             Assert.AreEqual(getApplicationResponse.EmployerAccountName, result.EmployerAccountName);
             Assert.AreEqual(getApplicationResponse.Status, result.ApplicationStatus);
         }

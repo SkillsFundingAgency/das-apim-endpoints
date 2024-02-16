@@ -31,7 +31,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetStandard
 
             var result = await getStandardsQueryHandler.Handle(getStandardsQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             Assert.AreEqual(response.Standards.Count(), result.Standards.Count());
             client.Verify(x => x.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()), Times.Once);
         }
@@ -50,7 +50,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetStandard
 
             var result = await getStandardsQueryHandler.Handle(getStandardsQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             Assert.AreEqual(1, result.Standards.Count());
         }
     }

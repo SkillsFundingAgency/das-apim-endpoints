@@ -37,7 +37,7 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Approvals
         {
             var result = await _controller.GetAccountsWithCohorts() as ObjectResult;
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             var response = result.Value as GetAccountsWithCohortsResponse;
             Assert.IsNotNull(response);
 
