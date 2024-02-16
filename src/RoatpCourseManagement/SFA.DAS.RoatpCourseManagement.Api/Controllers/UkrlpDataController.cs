@@ -1,13 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.RoatpCourseManagement.Services;
-using System.Threading.Tasks;
 using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
-using NLog;
-using MediatR;
-using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
@@ -17,9 +13,9 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
         private readonly ILogger<UkrlpDataController> _logger;
         private readonly IMediator _mediator;
 
-        public UkrlpDataController( IMediator mediator, ILogger<UkrlpDataController> logger)
+        public UkrlpDataController(IMediator mediator, ILogger<UkrlpDataController> logger)
         {
-            _mediator = mediator; 
+            _mediator = mediator;
             _logger = logger;
         }
 
@@ -40,7 +36,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
             }
 
             _logger.LogInformation("Request to retrieve course directory data received");
-            
+
             var response = await _mediator.Send(query);
 
             if (response.Results == null || !response.Success)
