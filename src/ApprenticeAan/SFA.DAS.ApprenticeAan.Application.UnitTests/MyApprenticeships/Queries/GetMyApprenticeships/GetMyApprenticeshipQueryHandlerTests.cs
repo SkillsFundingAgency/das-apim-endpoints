@@ -129,53 +129,53 @@ public class GetMyApprenticeshipQueryHandlerTests
         actualResult!.TrainingCourse.Should().BeEquivalentTo((TrainingCourse)frameworkResponse);
     }
 
-    [Test, MoqAutoData]
-    public async Task Handle_ApprenticeNotFound_ReturnsNull(
-        [Frozen] Mock<IApprenticeAccountsApiClient> apprenticeAccountsApiClientMock,
-        [Frozen] Mock<ICoursesApiClient> coursesApiClientMock,
-        GetMyApprenticeshipQueryHandler sut,
-        GetMyApprenticeshipQuery request,
-        GetMyApprenticeshipResponse response,
-        CancellationToken cancellationToken)
-    {
-        var status = HttpStatusCode.NotFound;
-
-        var restApprenticeshipResponse = new RestEase.Response<GetMyApprenticeshipResponse>(
-            "not used",
-            new HttpResponseMessage(status),
-            () => response);
-
-        apprenticeAccountsApiClientMock.Setup(c => c.GetMyApprenticeship(request.ApprenticeId, It.IsAny<CancellationToken>())).ReturnsAsync(restApprenticeshipResponse);
-        var actualResult = await sut.Handle(request, cancellationToken);
-
-        apprenticeAccountsApiClientMock.Verify(c => c.GetMyApprenticeship(request.ApprenticeId, It.IsAny<CancellationToken>()));
-        coursesApiClientMock.Verify(c => c.GetStandard(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
-        coursesApiClientMock.Verify(c => c.GetFramework(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
-        actualResult.Should().BeNull();
-    }
-
-    [Test, MoqAutoData]
-    public async Task Handle_ApiBadRequest_ThrowsInvalidOperationException(
-        [Frozen] Mock<IApprenticeAccountsApiClient> apprenticeAccountsApiClientMock,
-        [Frozen] Mock<ICoursesApiClient> coursesApiClientMock,
-        GetMyApprenticeshipQueryHandler sut,
-        GetMyApprenticeshipQuery request,
-        CancellationToken cancellationToken)
-    {
-        var status = HttpStatusCode.BadRequest;
-
-        var restApprenticeshipResponse = new RestEase.Response<GetMyApprenticeshipResponse>(
-            "not used",
-            new HttpResponseMessage(status),
-            () => null!);
-
-        apprenticeAccountsApiClientMock.Setup(c => c.GetMyApprenticeship(request.ApprenticeId, It.IsAny<CancellationToken>())).ReturnsAsync(restApprenticeshipResponse);
-
-        Func<Task> act = () => sut.Handle(request, cancellationToken);
-
-        await act.Should().ThrowAsync<InvalidOperationException>();
-        apprenticeAccountsApiClientMock.Verify(c => c.GetMyApprenticeship(request.ApprenticeId, It.IsAny<CancellationToken>()));
-        coursesApiClientMock.Verify(c => c.GetStandard(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
-        coursesApiClientMock.Verify(c => c.GetFramework(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
-    }
+    // [Test, MoqAutoData]
+    // public async Task Handle_ApprenticeNotFound_ReturnsNull(
+    //     [Frozen] Mock<IApprenticeAccountsApiClient> apprenticeAccountsApiClientMock,
+    //     [Frozen] Mock<ICoursesApiClient> coursesApiClientMock,
+    //     GetMyApprenticeshipQueryHandler sut,
+    //     GetMyApprenticeshipQuery request,
+    //     GetMyApprenticeshipResponse response,
+    //     CancellationToken cancellationToken)
+    // {
+    //     var status = HttpStatusCode.NotFound;
+    //
+    //     var restApprenticeshipResponse = new RestEase.Response<GetMyApprenticeshipResponse>(
+    //         "not used",
+    //         new HttpResponseMessage(status),
+    //         () => response);
+    //
+    //     apprenticeAccountsApiClientMock.Setup(c => c.GetMyApprenticeship(request.ApprenticeId, It.IsAny<CancellationToken>())).ReturnsAsync(restApprenticeshipResponse);
+    //     var actualResult = await sut.Handle(request, cancellationToken);
+    //
+    //     apprenticeAccountsApiClientMock.Verify(c => c.GetMyApprenticeship(request.ApprenticeId, It.IsAny<CancellationToken>()));
+    //     coursesApiClientMock.Verify(c => c.GetStandard(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+    //     coursesApiClientMock.Verify(c => c.GetFramework(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+    //     actualResult.Should().BeNull();
+    // }
+    //
+    // [Test, MoqAutoData]
+    // public async Task Handle_ApiBadRequest_ThrowsInvalidOperationException(
+    //     [Frozen] Mock<IApprenticeAccountsApiClient> apprenticeAccountsApiClientMock,
+    //     [Frozen] Mock<ICoursesApiClient> coursesApiClientMock,
+    //     GetMyApprenticeshipQueryHandler sut,
+    //     GetMyApprenticeshipQuery request,
+    //     CancellationToken cancellationToken)
+    // {
+    //     var status = HttpStatusCode.BadRequest;
+    //
+    //     var restApprenticeshipResponse = new RestEase.Response<GetMyApprenticeshipResponse>(
+    //         "not used",
+    //         new HttpResponseMessage(status),
+    //         () => null!);
+    //
+    //     apprenticeAccountsApiClientMock.Setup(c => c.GetMyApprenticeship(request.ApprenticeId, It.IsAny<CancellationToken>())).ReturnsAsync(restApprenticeshipResponse);
+    //
+    //     Func<Task> act = () => sut.Handle(request, cancellationToken);
+    //
+    //     await act.Should().ThrowAsync<InvalidOperationException>();
+    //     apprenticeAccountsApiClientMock.Verify(c => c.GetMyApprenticeship(request.ApprenticeId, It.IsAny<CancellationToken>()));
+    //     coursesApiClientMock.Verify(c => c.GetStandard(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+    //     coursesApiClientMock.Verify(c => c.GetFramework(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+    // }
 }

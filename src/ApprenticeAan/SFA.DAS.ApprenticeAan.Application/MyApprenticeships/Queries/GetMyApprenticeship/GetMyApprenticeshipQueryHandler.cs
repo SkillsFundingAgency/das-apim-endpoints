@@ -21,17 +21,14 @@ public class GetMyApprenticeshipQueryHandler : IRequestHandler<GetMyApprenticesh
     {
         var response = await _apprenticeAccountsApiClient.GetMyApprenticeship(request.ApprenticeId, cancellationToken);
 
-        if (response.ResponseMessage.StatusCode == HttpStatusCode.OK)
+        return response.ResponseMessage.StatusCode switch
         {
-            var result = await ConvertResponseToResultWithTrainingCourse(response.GetContent(), cancellationToken);
-            return result;
-        }
-
-        if (response.ResponseMessage.StatusCode == HttpStatusCode.NotFound) return null;
-
-
-        throw new InvalidOperationException(
-            $"Unexpected response received from apprentice accounts api when getting MyApprenticeship for apprenticeId: {request.ApprenticeId}");
+            HttpStatusCode.OK => await ConvertResponseToResultWithTrainingCourse(response.GetContent(),
+                cancellationToken),
+            HttpStatusCode.NotFound => null,
+            _ => throw new InvalidOperationException(
+                $"Unexpected response received from apprentice accounts api when getting MyApprenticeship for apprenticeId: {request.ApprenticeId}")
+        };
     }
 
     private async Task<GetMyApprenticeshipQueryResult?> ConvertResponseToResultWithTrainingCourse(GetMyApprenticeshipResponse myApprenticeshipsResponse, CancellationToken cancellationToken)
