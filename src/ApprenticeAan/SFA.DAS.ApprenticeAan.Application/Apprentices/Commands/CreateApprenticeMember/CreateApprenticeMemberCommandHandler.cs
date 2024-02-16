@@ -14,6 +14,7 @@ public class CreateApprenticeMemberCommandHandler : IRequestHandler<CreateAppren
 
     public Task<CreateApprenticeMemberCommandResult> Handle(CreateApprenticeMemberCommand request, CancellationToken cancellationToken)
     {
-        return _apiClient.PostApprenticeMember(request, cancellationToken);
+        var res = _apiClient.PostApprenticeMember(request, cancellationToken);
+        return res ?? throw new SystemException("post apprentice member did not return result");
     }
 }
