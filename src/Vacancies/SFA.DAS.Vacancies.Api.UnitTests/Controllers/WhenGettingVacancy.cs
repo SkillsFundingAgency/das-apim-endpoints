@@ -30,10 +30,10 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             
             var controllerResult = await controller.GetVacancy(vacancyReference) as ObjectResult;
             
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetVacancyResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo((GetVacancyResponse)queryResult);
         }
 
@@ -51,7 +51,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             
             var controllerResult = await controller.GetVacancy(vacancyReference) as NotFoundResult;
             
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
 
@@ -67,7 +67,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             
             var controllerResult = await controller.GetVacancy(vacancyReference) as StatusCodeResult;
             
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }
