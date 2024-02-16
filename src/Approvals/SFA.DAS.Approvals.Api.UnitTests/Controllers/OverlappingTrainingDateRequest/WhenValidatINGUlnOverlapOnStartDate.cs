@@ -35,7 +35,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.OverlappingTrainingDateReq
 
             var controllerResult = await controller.ValidateUlnOverlapOnStartDate(providerId, uln, startDate, endDate) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
         }

@@ -30,11 +30,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.Account
 
             var controllerResult = await accountController.GetAccount(encodedAccountId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             Assert.AreEqual(controllerResult.StatusCode, (int)HttpStatusCode.OK);
 
             var model = controllerResult.Value as AccountDto;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             Assert.AreEqual(getAccountResult.Account.RemainingTransferAllowance, model.RemainingTransferAllowance);
         }
     }

@@ -37,7 +37,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.ApprenticeshipInc
 
             var controllerResult = await controller.RecalculateEarnings(request) as NoContentResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int) HttpStatusCode.NoContent);
         }
 

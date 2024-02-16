@@ -30,7 +30,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             var okObjectResult = controllerResult as OkObjectResult;
             var getApplicationResponse = okObjectResult.Value as GetApplicationResponse;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             Assert.IsNotNull(okObjectResult);
             Assert.IsNotNull(getApplicationResponse);
         }
@@ -49,7 +49,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             var controllerResult = await applicationController.Application(accountId, applicationId);
             var notFoundResult = controllerResult as NotFoundResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             Assert.IsNotNull(notFoundResult);
         }
     }

@@ -33,7 +33,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var createdResult = controllerResult as CreatedResult;
             var pledgeReference = createdResult.Value as PledgeIdDto;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             Assert.IsNotNull(createdResult);
             Assert.IsNotNull(pledgeReference);
             Assert.AreEqual(createdResult.StatusCode, (int)HttpStatusCode.Created);

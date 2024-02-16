@@ -31,7 +31,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Account
         {
             var controllerResult = await controller.UpdateVrfCaseStatus(accountId, accountLegalEntityId, vrfCaseStatus) as NoContentResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
             mockMediator
                 .Verify(mediator => mediator.Send(

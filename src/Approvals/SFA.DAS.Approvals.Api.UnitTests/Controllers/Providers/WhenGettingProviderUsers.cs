@@ -32,10 +32,10 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
 
             var controllerResult = await controller.GetUsers(100) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetProvidersUsersResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Users.Should().BeEquivalentTo(mediatorResult.Users);
         }
 

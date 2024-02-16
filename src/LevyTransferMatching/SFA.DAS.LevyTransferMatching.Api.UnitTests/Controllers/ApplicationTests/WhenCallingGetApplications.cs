@@ -24,7 +24,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
 
             var controllerResult = await controller.GetApplications(1) as OkObjectResult;
             var result = controllerResult.Value as GetApplicationsResponse;
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             Assert.IsNotNull(result);
 
             var expected = (GetApplicationsResponse) queryResult;

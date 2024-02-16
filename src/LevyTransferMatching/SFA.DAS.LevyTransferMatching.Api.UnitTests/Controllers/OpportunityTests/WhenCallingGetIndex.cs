@@ -38,7 +38,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             var okObjectResult = controllerResult as OkObjectResult;
             var responseObject = okObjectResult.Value as GetIndexResponse;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             Assert.IsNotNull(okObjectResult);
             Assert.IsNotNull(responseObject);
             Assert.IsNotNull(responseObject.Opportunities);

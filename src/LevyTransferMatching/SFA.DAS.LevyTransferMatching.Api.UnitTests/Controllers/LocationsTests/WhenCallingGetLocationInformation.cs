@@ -34,7 +34,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.LocationsTests
             var okObjectResult = controllerResult as OkObjectResult;
             var locationInformation = okObjectResult.Value as LocationInformationDto;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             Assert.IsNotNull(okObjectResult);
             Assert.IsNotNull(locationInformation);
             Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.OK);

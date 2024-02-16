@@ -30,7 +30,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.ValidationOverrid
                         c.ValidationOverrideRequest.Equals(request)),
                     It.IsAny<CancellationToken>()), Times.Once);
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
         }
     }
 }

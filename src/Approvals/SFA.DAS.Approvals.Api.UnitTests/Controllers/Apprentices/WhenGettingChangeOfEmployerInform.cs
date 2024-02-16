@@ -42,14 +42,14 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
         {
             var result = await _controller.ChangeEmployerInform(_providerId, _apprenticeshipId);
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
 
             var okObjectResult = result as OkObjectResult;
             var response = okObjectResult.Value as GetInformResponse;
 
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.InstanceOf<OkObjectResult>());
 
-            Assert.AreEqual(_queryResult.LegalEntityName, response.LegalEntityName);
+            Assert.That(_queryResult.LegalEntityName, Is.EqualTo(response.LegalEntityName));
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
 
             var result = await _controller.ChangeEmployerInform(_providerId, _apprenticeshipId);
 
-            Assert.IsInstanceOf<NotFoundResult>(result);
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
         }
     }
 }

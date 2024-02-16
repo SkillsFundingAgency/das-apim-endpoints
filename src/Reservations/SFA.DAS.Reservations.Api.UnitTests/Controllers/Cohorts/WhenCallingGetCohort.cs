@@ -35,10 +35,10 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.Providers
 
             var controllerResult = await controller.Get(cohortId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetCohortResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo(mediatorResult.Cohort);
         }
         [Test, MoqAutoData]
@@ -56,7 +56,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.Providers
 
             var controllerResult = await controller.Get(cohortId) as NotFoundResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
 

@@ -34,7 +34,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.BulkUpload
 
             var controllerResult = await controller.AddDraftapprenticeships(request) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
         }
 

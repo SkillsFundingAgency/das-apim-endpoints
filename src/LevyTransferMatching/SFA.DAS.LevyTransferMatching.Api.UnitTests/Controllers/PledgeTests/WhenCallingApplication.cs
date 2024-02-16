@@ -33,7 +33,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var createdResult = controllerResult as OkObjectResult;
             var getApplicationResponse = createdResult.Value as GetApplicationResponse;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             Assert.IsNotNull(createdResult);
             Assert.IsNotNull(getApplicationResponse);
             Assert.AreEqual(createdResult.StatusCode, (int)HttpStatusCode.OK);
@@ -55,7 +55,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var controllerResult = await pledgeController.Application(pledgeId, applicationId);
             var notFoundResult = controllerResult as NotFoundResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             Assert.IsNotNull(notFoundResult);
             Assert.AreEqual(notFoundResult.StatusCode, (int)HttpStatusCode.NotFound);
         }

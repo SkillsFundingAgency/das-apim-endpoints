@@ -54,7 +54,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
             var result = await _controller.ApplicationsForAutomaticApproval();
 
             // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(result, Is.lnstanceOf<OkOBjectResult>());
             var okResult = (OkObjectResult)result;
             var response = okResult.Value as GetApplicationsForAutomaticApprovalResponse;
             Assert.IsNotNull(response);

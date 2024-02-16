@@ -35,7 +35,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EligibleApprentic
 
             var controllerResult = await controller.GetApplicationAccountLegalEntity(accountId, applicationId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             controllerResult.Value.Should().Be(mediatorResult);
         }

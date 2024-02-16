@@ -36,10 +36,10 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.TrainingCourses
 
             var controllerResult = await controller.GetStandards(sector) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetStandardsResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
 
             var response = mediatorResult.Standards.Select(s => new GetStandardsResponseItem 
             { 
@@ -66,10 +66,10 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.TrainingCourses
 
             var controllerResult = await controller.GetStandards(sector) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetStandardsResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
 
             model.Standards.Should().BeEmpty();
         }

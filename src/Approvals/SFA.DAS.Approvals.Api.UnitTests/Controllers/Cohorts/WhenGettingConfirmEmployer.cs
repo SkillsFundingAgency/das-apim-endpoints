@@ -43,7 +43,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
         {
             var result = await _controller.GetConfirmEmployer();
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(result, Is.lnstanceOf<OkOBjectResult>());
             var okObjectResult = (OkObjectResult) result;
             Assert.IsInstanceOf<GetConfirmEmployerResponse>(okObjectResult.Value);
             var objectResult = (GetConfirmEmployerResponse) okObjectResult.Value;

@@ -49,7 +49,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
         {
             var result = await _controller.GetEditDraftApprenticeshipDeliveryModel(_cohortId, _draftApprenticeshipId, _courseCode);
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(result, Is.lnstanceOf<OkOBjectResult>());
             var okObjectResult = (OkObjectResult) result;
             Assert.IsInstanceOf<GetEditDraftApprenticeshipDeliveryModelResponse>(okObjectResult.Value);
             var objectResult = (GetEditDraftApprenticeshipDeliveryModelResponse) okObjectResult.Value;

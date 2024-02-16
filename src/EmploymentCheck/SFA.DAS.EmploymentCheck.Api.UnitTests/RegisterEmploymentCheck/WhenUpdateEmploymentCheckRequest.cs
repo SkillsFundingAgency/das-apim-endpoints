@@ -41,7 +41,7 @@ namespace SFA.DAS.EmploymentCheck.Api.UnitTests.RegisterEmploymentCheck
 
             var controllerResult = await controller.RegisterCheck(request) as OkObjectResult;
            
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.Value.Should().Be(response);
         }
 
