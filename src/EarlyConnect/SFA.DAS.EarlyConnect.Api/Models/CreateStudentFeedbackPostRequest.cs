@@ -2,5 +2,6 @@
 {
     public class CreateStudentFeedbackPostRequest
     {
+        public IEnumerable<StudentFeedbackRequestModel> ListOfStudentFeedback { get; set; }
     }
 }
