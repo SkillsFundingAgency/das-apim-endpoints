@@ -30,6 +30,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
         [Test, MoqAutoData]
         public async Task Then_NumberTransferPledgeApplicationsToReview_Should_Match_Api_Response(
         [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
         GetApplicationsResponse ltmApplicationsResponse,
         GetTasksQuery request,
         GetTasksQueryHandler handler)
@@ -40,6 +41,9 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
                     && r.ApplicationStatusFilter == ApplicationStatus.Pending)))
                 .ReturnsAsync(ltmApplicationsResponse);
 
+            mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(new GetCohortsResponse());
+
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
@@ -48,14 +52,17 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
 
         [Test, MoqAutoData]
         public async Task Then_NumberOfApprenticesToReview_Is_Returned(
-          [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
-          GetApprenticeshipUpdatesResponse cohortsResponse,
-          GetTasksQuery request,
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+           GetApprenticeshipUpdatesResponse apprenticeshipUpdatesResponse,
+           GetTasksQuery request,
           GetTasksQueryHandler handler)
         {
             mockCommitmentsApi
                 .Setup(m => m.Get<GetApprenticeshipUpdatesResponse>(It.Is<GetPendingApprenticeChangesRequest>(r => r.AccountId == request.AccountId)))
-                .ReturnsAsync(cohortsResponse);
+                .ReturnsAsync(apprenticeshipUpdatesResponse);
+
+            mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(new GetCohortsResponse());
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
@@ -81,6 +88,9 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
                     r.AccountId == request.AccountId && r.Originator == TransferType.AsSender)))
                 .ReturnsAsync(transferRequestResponse);
 
+            mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(new GetCohortsResponse());
+
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
@@ -105,6 +115,9 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
                     r.AccountId == request.AccountId && r.Originator == TransferType.AsSender)))
                 .ReturnsAsync(transferRequestResponse);
 
+            mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(new GetCohortsResponse());
+
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
             result.NumberOfTransferRequestToReview.Should().Be(2);
@@ -122,6 +135,8 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
                     r.AccountId == request.AccountId && r.Originator == TransferType.AsSender)))
                 .ReturnsAsync(new GetTransferRequestSummaryResponse());
 
+            mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(new GetCohortsResponse());
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
@@ -131,6 +146,8 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
         [Test, MoqAutoData]
         public async Task Then_Gets_Tasks_Returns_NumberOfPendingTransferConnections(
          [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> _financeApiClient,
+         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+
          List<GetTransferConnectionsResponse.TransferConnection> transferConnectionsResponse,
          GetTasksQuery request,
          GetTasksQueryHandler handler)
@@ -141,6 +158,9 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
                         r => r.AccountId == request.AccountId && r.Status == TransferConnectionInvitationStatus.Pending
                         )))
                 .ReturnsAsync(transferConnectionsResponse);
+
+            mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(new GetCohortsResponse());
 
             var result = await handler.Handle(request, CancellationToken.None);
 
@@ -215,6 +235,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
         [Test, MoqAutoData]
         public async Task Then_ShowLevyDeclarationTask_Is_True_If_In_DateRange_And_Levy(
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> mockAccountApi,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
         [Frozen] Mock<ICurrentDateTime> mockCurrentDateTime,
         GetAccountByIdResponse accountResponse,
         GetTasksQuery request,
@@ -226,6 +247,8 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
                 .Setup(m => m.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(r => r.AccountId == request.AccountId)))
                 .ReturnsAsync(accountResponse);
 
+            mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(new GetCohortsResponse());
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
@@ -235,6 +258,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
         [Test, MoqAutoData]
         public async Task Then_ShowLevyDeclarationTask_Is_False_If_In_DateRange_And_NonLevy(
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> mockAccountApi,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
         [Frozen] Mock<ICurrentDateTime> mockCurrentDateTime,
         GetAccountByIdResponse accountResponse,
         GetTasksQuery request,
@@ -246,6 +270,8 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
                 .Setup(m => m.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(r => r.AccountId == request.AccountId)))
                 .ReturnsAsync(accountResponse);
 
+            mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(new GetCohortsResponse());
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
 
@@ -255,6 +281,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
         [Test, MoqAutoData]
         public async Task Then_ShowLevyDeclarationTask_Is_False_If_Out_Of_DateRange_And_Levy(
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> mockAccountApi,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
         [Frozen] Mock<ICurrentDateTime> mockCurrentDateTime,
         GetAccountByIdResponse accountResponse,
         GetTasksQuery request,
@@ -265,6 +292,9 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetTasks
             mockAccountApi
                 .Setup(m => m.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(r => r.AccountId == request.AccountId)))
                 .ReturnsAsync(accountResponse);
+
+            mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+                .ReturnsAsync(new GetCohortsResponse());
 
             // Act
             var result = await handler.Handle(request, CancellationToken.None);
