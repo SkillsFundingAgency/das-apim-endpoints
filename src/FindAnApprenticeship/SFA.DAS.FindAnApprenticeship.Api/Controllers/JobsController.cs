@@ -2,10 +2,8 @@
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NLog;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateJob;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteJob;
@@ -13,7 +11,6 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateJob;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetJob;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory.DeleteJob;
-using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -141,7 +138,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     ApplicationId = applicationId,
                     JobId = jobId
                 });
-                return Ok((Models.Applications.GetDeleteJobApiResponse)result);
+                return Ok((GetDeleteJobApiResponse)result);
             }
             catch (Exception e)
             {
