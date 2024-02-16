@@ -36,6 +36,6 @@ public class WhenManagingStudentTriageData
         var result = await handler.Handle(command, cancellationToken);
 
         earlyConnectApiClientMock.Verify(x => x.PostWithResponseCode<ManageStudentTriageDataResponse>(It.IsAny<ManageStudentTriageDataRequest>(), It.IsAny<bool>()), Times.Once);
-        Assert.AreEqual(expectedResponse.Object.Message, result.Message);
+        Assert.That(result.Message, Is.EqualTo(expectedResponse.Object.Message));
     }
 }

@@ -53,12 +53,12 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.ManageStudentTriageData(request, new Guid());
 
-            Assert.IsInstanceOf<CreatedAtActionResult>(result);
+            Assert.That(result, Is.InstanceOf<CreatedAtActionResult>());
             var okResult = (CreatedAtActionResult)result;
 
-            Assert.AreEqual((int)HttpStatusCode.Created, okResult.StatusCode);
+            Assert.That(okResult.StatusCode, Is.EqualTo((int)HttpStatusCode.Created));
             var model = (ManageStudentTriageDataPostResponse)okResult.Value;
-            Assert.AreEqual(manageStudentTriageDataCommandResult.Message, model.Message);
+            Assert.That(model.Message, Is.EqualTo(manageStudentTriageDataCommandResult.Message));
         }
 
         [Test]

@@ -34,11 +34,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var pledgeReference = createdResult.Value as PledgeIdDto;
 
             Assert.That(controllerResult, Is.Not.Null);
-            Assert.IsNotNull(createdResult);
-            Assert.IsNotNull(pledgeReference);
-            Assert.AreEqual(createdResult.StatusCode, (int)HttpStatusCode.Created);
-            Assert.AreEqual(createdResult.Location, $"/accounts/{accountId}/pledges/{createPledgeResult.PledgeId}");
-            Assert.AreEqual(pledgeReference.Id, createPledgeResult.PledgeId);
+            Assert.That(createdResult, Is.Not.Null);
+            Assert.That(pledgeReference, Is.Not.Null);
+            Assert.That(createdResult.StatusCode, Is.EqualTo((int)HttpStatusCode.Created));
+            Assert.That(createdResult.Location, Is.EqualTo($"/accounts/{accountId}/pledges/{createPledgeResult.PledgeId}"));
+            Assert.That(pledgeReference.Id, Is.EqualTo(createPledgeResult.PledgeId));
         }
     }
 }

@@ -35,7 +35,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
             _mediator.Setup(x => x.Send(It.IsAny<ApplicationsWithAutomaticApprovalQuery>(), default))
                 .ReturnsAsync(expectedResult);
 
-            var result = await _controller.ApplicationsForAutomaticApproval();
+            await _controller.ApplicationsForAutomaticApproval();
 
             _mediator.Verify(x =>
                 x.Send(It.IsAny<ApplicationsWithAutomaticApprovalQuery>(), It.IsAny<CancellationToken>()));
@@ -57,15 +57,15 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
             var response = okResult.Value as GetApplicationsForAutomaticApprovalResponse;
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
 
-            Assert.AreEqual(expectedResult.Applications.Count(), response.Applications.Count());
+            Assert.That(response.Applications.Count(), Is.EqualTo(expectedResult.Applications.Count()));
             var i = 0;
             foreach (var item in response.Applications)
             {
                 var expectedItem = expectedResult.Applications.ToArray()[i];
-                Assert.AreEqual(expectedItem.Id, item.Id);
-                Assert.AreEqual(expectedItem.PledgeId, item.PledgeId);
+                Assert.That(item.Id, Is.EqualTo(expectedItem.Id));
+                Assert.That(item.PledgeId, Is.EqualTo(expectedItem.PledgeId));
 
                 i++;
             }

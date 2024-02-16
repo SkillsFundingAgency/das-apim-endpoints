@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SFA.DAS.Forecasting.Api.Controllers;
 using SFA.DAS.Forecasting.Api.Models;
 using SFA.DAS.Forecasting.Application.Approvals.Queries.GetAccountIds;
@@ -39,7 +40,7 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Approvals
 
             Assert.That(result, Is.Not.Null);
             var response = result.Value as GetAccountsWithCohortsResponse;
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
 
             CollectionAssert.AreEqual(_queryResult.AccountIds, response.AccountIds);
         }

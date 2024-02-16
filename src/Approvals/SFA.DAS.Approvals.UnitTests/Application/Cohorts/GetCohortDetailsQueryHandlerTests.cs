@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipDeliveryModel;
@@ -108,14 +109,14 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
         public async Task Handle_ProviderName_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.ProviderName, result.ProviderName);
+            Assert.That(_cohort.ProviderName, Is.EqualTo(result.ProviderName));
         }
 
         [Test]
         public async Task Handle_LegalEntityName_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.LegalEntityName, result.LegalEntityName);
+            Assert.That(_cohort.LegalEntityName, Is.EqualTo(result.LegalEntityName));
         }
 
         [Test]
@@ -149,35 +150,35 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
         public async Task Handle_CohortId_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.CohortId, result.CohortId);
+            Assert.That(_cohort.CohortId, Is.EqualTo(result.CohortId));
         }
 
         [Test]
         public async Task Handle_CohortReference_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.CohortReference, result.CohortReference);
+            Assert.That(_cohort.CohortReference, Is.EqualTo(result.CohortReference));
         }
 
         [Test]
         public async Task Handle_AccountId_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.AccountId, result.AccountId);
+            Assert.That(_cohort.AccountId, Is.EqualTo(result.AccountId));
         }
 
         [Test]
         public async Task Handle_AccountLegalEntity_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.AccountLegalEntityId, result.AccountLegalEntityId);
+            Assert.That(_cohort.AccountLegalEntityId, Is.EqualTo(result.AccountLegalEntityId));
         }
 
         [Test]
         public async Task Handle_ProviderId_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.ProviderId, result.ProviderId);
+            Assert.That(_cohort.ProviderId, Is.EqualTo(result.ProviderId));
         }
 
         
@@ -185,133 +186,133 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
         public async Task Handle_IsFundedByTransfer_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.IsFundedByTransfer, result.IsFundedByTransfer);
+            Assert.That(_cohort.IsFundedByTransfer, Is.EqualTo(result.IsFundedByTransfer));
         }
         
         [Test]
         public async Task Handle_TransferSenderId_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.TransferSenderId, result.TransferSenderId);
+            Assert.That(_cohort.TransferSenderId, Is.EqualTo(result.TransferSenderId));
         }
         
         [Test]
         public async Task Handle_PledgeApplicationId_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.PledgeApplicationId, result.PledgeApplicationId);
+            Assert.That(_cohort.PledgeApplicationId, Is.EqualTo(result.PledgeApplicationId));
         }
         
         [Test]
         public async Task Handle_WithParty_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.WithParty, result.WithParty);
+            Assert.That(_cohort.WithParty, Is.EqualTo(result.WithParty));
         }
         
         [Test]
         public async Task Handle_LatestMessageCreatedByEmployer_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.LatestMessageCreatedByEmployer, result.LatestMessageCreatedByEmployer);
+            Assert.That(_cohort.LatestMessageCreatedByEmployer, Is.EqualTo(result.LatestMessageCreatedByEmployer));
         }
         
         [Test]
         public async Task Handle_LatestMessageCreatedByProvider_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.LatestMessageCreatedByProvider, result.LatestMessageCreatedByProvider);
+            Assert.That(_cohort.LatestMessageCreatedByProvider, Is.EqualTo(result.LatestMessageCreatedByProvider));
         }
         
         [Test]
         public async Task Handle_IsApprovedByEmployer_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.IsApprovedByEmployer, result.IsApprovedByEmployer);
+            Assert.That(_cohort.IsApprovedByEmployer, Is.EqualTo(result.IsApprovedByEmployer));
         }
         
         [Test]
         public async Task Handle_IsApprovedByProvider_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.IsApprovedByProvider, result.IsApprovedByProvider);
+            Assert.That(_cohort.IsApprovedByProvider, Is.EqualTo(result.IsApprovedByProvider));
         }
         
         [Test]
         public async Task Handle_IsCompleteForEmployer_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.IsCompleteForEmployer, result.IsCompleteForEmployer);
+            Assert.That(_cohort.IsCompleteForEmployer, Is.EqualTo(result.IsCompleteForEmployer));
         }
 
         [Test]
         public async Task Handle_IsCompleteForProvider_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.IsCompleteForProvider, result.IsCompleteForProvider);
+            Assert.That(_cohort.IsCompleteForProvider, Is.EqualTo(result.IsCompleteForProvider));
         }
         
         [Test]
         public async Task Handle_LevyStatus_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.LevyStatus, result.LevyStatus);
+            Assert.That(_cohort.LevyStatus, Is.EqualTo(result.LevyStatus));
         }
         
         [Test]
         public async Task Handle_ChangeOfPartyRequestId_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.ChangeOfPartyRequestId, result.ChangeOfPartyRequestId);
+            Assert.That(_cohort.ChangeOfPartyRequestId, Is.EqualTo(result.ChangeOfPartyRequestId));
         }
         
         [Test]
         public async Task Handle_IsLinkedToChangeOfPartyRequest_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.IsLinkedToChangeOfPartyRequest, result.IsLinkedToChangeOfPartyRequest);
+            Assert.That(_cohort.IsLinkedToChangeOfPartyRequest, Is.EqualTo(result.IsLinkedToChangeOfPartyRequest));
         }
         
         [Test]
         public async Task Handle_TransferApprovalStatus_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.TransferApprovalStatus, result.TransferApprovalStatus);
+            Assert.That(_cohort.TransferApprovalStatus, Is.EqualTo(result.TransferApprovalStatus));
         }
 
         [Test]
         public async Task Handle_LastAction_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.LastAction, result.LastAction);
+            Assert.That(_cohort.LastAction, Is.EqualTo(result.LastAction));
         }
 
         [Test]
         public async Task Handle_ApprenticeEmailIsRequired_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.ApprenticeEmailIsRequired, result.ApprenticeEmailIsRequired);
+            Assert.That(_cohort.ApprenticeEmailIsRequired, Is.EqualTo(result.ApprenticeEmailIsRequired));
         }
 
         [Test]
         public async Task Handle_DraftApprenticeships_Are_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.DraftApprenticeships, result.DraftApprenticeships);
+            Assert.That(_draftApprenticeship.DraftApprenticeships, Is.EqualTo(result.DraftApprenticeships));
         }
         
         [Test]
         public async Task Handle_ApprenticeshipEmailOverlaps_Are_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_emailOverlaps.ApprenticeshipEmailOverlaps, result.ApprenticeshipEmailOverlaps);
+            Assert.That(_emailOverlaps.ApprenticeshipEmailOverlaps, Is.EqualTo(result.ApprenticeshipEmailOverlaps));
         }
 
         [Test]
         public async Task Handle_RplErrorDraftApprenticeshipIds_Are_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_rplErrors.DraftApprenticeshipIds, result.RplErrorDraftApprenticeshipIds);
+            Assert.That(_rplErrors.DraftApprenticeshipIds, Is.EqualTo(result.RplErrorDraftApprenticeshipIds));
         }
     }
 }

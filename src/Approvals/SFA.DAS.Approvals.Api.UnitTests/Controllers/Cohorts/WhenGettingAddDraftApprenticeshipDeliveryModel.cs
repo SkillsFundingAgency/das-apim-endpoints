@@ -51,7 +51,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
 
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okObjectResult = (OkObjectResult)result;
-            Assert.IsInstanceOf<GetAddDraftApprenticeshipDeliveryModelResponse>(okObjectResult.Value);
+            Assert.That(okObjectResult.Value, Is.InstanceOf<GetAddDraftApprenticeshipDeliveryModelResponse>());
             var objectResult = (GetAddDraftApprenticeshipDeliveryModelResponse)okObjectResult.Value;
 
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });

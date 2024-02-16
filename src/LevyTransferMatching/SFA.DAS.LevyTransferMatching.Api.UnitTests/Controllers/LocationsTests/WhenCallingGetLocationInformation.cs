@@ -13,6 +13,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using NUnit.Framework.Legacy;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.LocationsTests
 {
@@ -35,10 +36,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.LocationsTests
             var locationInformation = okObjectResult.Value as LocationInformationDto;
 
             Assert.That(controllerResult, Is.Not.Null);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(locationInformation);
-            Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.OK);
-            Assert.AreEqual(getLocationInformationResult.Name, locationInformation.Name);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(locationInformation, Is.Not.Null);
+            Assert.That(okObjectResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
+            Assert.That(getLocationInformationResult.Name, Is.EqualTo(locationInformation.Name));
             CollectionAssert.AreEqual(getLocationInformationResult.GeoPoint, locationInformation.GeoPoint);
         }
     }

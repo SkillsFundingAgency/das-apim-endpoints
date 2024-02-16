@@ -18,7 +18,7 @@ namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
             var actual = new ValidateUlnOverlapOnStartDateQueryRequest(providerId, uln, startDate, endDate);
 
             //Assert
-            Assert.AreEqual($"api/overlapping-training-date-request/{providerId}/validateUlnOverlap?uln={uln}&startDate={startDate}&endDate={endDate}", actual.GetUrl);
+            Assert.That(actual.GetUrl, Is.EqualTo($"api/overlapping-training-date-request/{providerId}/validateUlnOverlap?uln={uln}&startDate={startDate}&endDate={endDate}"));
         }
     }
 }

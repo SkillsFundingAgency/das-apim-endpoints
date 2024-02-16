@@ -44,14 +44,14 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
-            Assert.IsInstanceOf<GetStudentTriageDataBySurveyIdResponse>(okResult.Value);
-            Assert.AreEqual((int)HttpStatusCode.OK, okResult.StatusCode);
+            Assert.That(okResult.Value, Is.InstanceOf<GetStudentTriageDataBySurveyIdResponse>());
+            Assert.That(okResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
         }
 
         [Test]
         public async Task GetStudentTriageData_InvalidRequest_ReturnsBadRequest()
         {
-            Guid surveyId = Guid.NewGuid();
+            var surveyId = Guid.NewGuid();
             var exception = new Exception("Simulated error");
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetStudentTriageDataBySurveyIdQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(exception);
 
@@ -59,7 +59,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
             var badRequestResult = (BadRequestObjectResult)result;
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, badRequestResult.StatusCode);
+            Assert.That(badRequestResult.StatusCode, Is.EqualTo((int)HttpStatusCode.BadRequest));
         }
     }
 }

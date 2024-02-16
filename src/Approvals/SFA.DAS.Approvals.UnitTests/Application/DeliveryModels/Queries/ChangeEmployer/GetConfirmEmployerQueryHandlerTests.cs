@@ -61,28 +61,28 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         public async Task Handle_Returns_Current_LegalEntityName_For_Apprenticeship()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_apprenticeshipApiResponse.EmployerName, result.LegalEntityName);
+            Assert.That(_apprenticeshipApiResponse.EmployerName, Is.EqualTo(result.LegalEntityName));
         }
 
         [Test]
         public async Task Handle_Returns_Current_DeliveryModel_For_Apprenticeship()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_apprenticeshipApiResponse.DeliveryModel, result.DeliveryModel);
+            Assert.That(_apprenticeshipApiResponse.DeliveryModel, Is.EqualTo(result.DeliveryModel));
         }
 
         [Test]
         public async Task Handle_Returns_New_AccountLegalEntityName()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_accountLegalEntityApiResponse.AccountName, result.AccountName);
+            Assert.That(_accountLegalEntityApiResponse.AccountName, Is.EqualTo(result.AccountName));
         }
 
         [Test]
         public async Task Handle_Returns_New_AccountName()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_accountLegalEntityApiResponse.LegalEntityName, result.AccountLegalEntityName);
+            Assert.That(_accountLegalEntityApiResponse.LegalEntityName, Is.EqualTo(result.AccountLegalEntityName));
         }
 
         [Test]
@@ -93,14 +93,14 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
                 .ReturnsAsync(true);
 
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.IsTrue(result.IsFlexiJobAgency);
+            Assert.That(result.IsFlexiJobAgency, Is.True);
         }
 
         [Test]
         public async Task Handle_Returns_IsFlexiJobAgency_False_When_Not_On_Register()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.IsFalse(result.IsFlexiJobAgency);
+            Assert.That(result.IsFlexiJobAgency, Is.False);
         }
 
         [Test]

@@ -34,9 +34,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var getApplicationResponse = createdResult.Value as GetApplicationResponse;
 
             Assert.That(controllerResult, Is.Not.Null);
-            Assert.IsNotNull(createdResult);
-            Assert.IsNotNull(getApplicationResponse);
-            Assert.AreEqual(createdResult.StatusCode, (int)HttpStatusCode.OK);
+            Assert.That(createdResult, Is.Not.Null);
+            Assert.That(getApplicationResponse, Is.Not.Null);
+            Assert.That(createdResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
         }
 
         [Test, MoqAutoData]
@@ -56,8 +56,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var notFoundResult = controllerResult as NotFoundResult;
 
             Assert.That(controllerResult, Is.Not.Null);
-            Assert.IsNotNull(notFoundResult);
-            Assert.AreEqual(notFoundResult.StatusCode, (int)HttpStatusCode.NotFound);
+            Assert.That(notFoundResult, Is.Not.Null);
+            Assert.That(notFoundResult.StatusCode, Is.EqualTo((int)HttpStatusCode.NotFound));
         }
     }
 }

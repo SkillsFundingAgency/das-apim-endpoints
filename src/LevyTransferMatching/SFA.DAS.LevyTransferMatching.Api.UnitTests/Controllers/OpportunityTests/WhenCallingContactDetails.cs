@@ -30,8 +30,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             var getContactDetailsResponse = okObjectResult.Value as GetContactDetailsResponse;
 
             Assert.That(controllerResult, Is.Not.Null);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(getContactDetailsResponse);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(getContactDetailsResponse, Is.Not.Null);
         }
 
         [Test, MoqAutoData]
@@ -48,7 +48,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             var notFoundResult = controllerResult as NotFoundResult;
 
             Assert.That(controllerResult, Is.Not.Null);
-            Assert.IsNotNull(notFoundResult);
+            Assert.That(notFoundResult, Is.Not.Null);
         }
     }
 }

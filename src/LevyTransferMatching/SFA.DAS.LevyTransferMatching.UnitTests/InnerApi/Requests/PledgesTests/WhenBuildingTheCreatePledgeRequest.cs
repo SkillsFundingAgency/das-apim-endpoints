@@ -12,9 +12,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.InnerApi.Requests.PledgesTests
         {
             var actual = new CreatePledgeRequest(accountId, new CreatePledgeRequest.CreatePledgeRequestData());
 
-            Assert.AreEqual(
-                $"accounts/{accountId}/pledges",
-                actual.PostUrl);
+            Assert.That(actual.PostUrl, Is.EqualTo($"accounts/{accountId}/pledges"));
         }
     }
 }

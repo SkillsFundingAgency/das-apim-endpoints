@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             client.Verify(x =>
                 x.Patch(It.Is<PatchVendorRegistrationCaseStatusRequest>(
                     c =>
-                        c.PatchUrl.Contains(request.HashedLegalEntityId) && c.Data.IsSameOrEqualTo(request)
+                        c.PatchUrl.Contains(request.HashedLegalEntityId) && c.Data.Equals(request)
                 )), Times.Once
             );
         }

@@ -18,7 +18,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetLocation
         {
             var result = await getLocationInformationQueryHandler.Handle(getLocationInformationQuery, CancellationToken.None);
 
-            Assert.NotNull(result);
+            Assert.That(result, Is.Not.Null);
         }
     }
 }

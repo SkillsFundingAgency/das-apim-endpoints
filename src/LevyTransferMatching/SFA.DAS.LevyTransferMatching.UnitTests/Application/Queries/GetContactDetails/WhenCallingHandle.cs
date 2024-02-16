@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NUnit.Framework.Legacy;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetContactDetails
 {
@@ -74,13 +75,13 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetContactD
             Assert.That(result, Is.Not.Null);
             
             CollectionAssert.AreEqual(allJobRoles, result.AllJobRoles);
-            Assert.AreEqual(1, result.JobRoles.Count());
+            Assert.That(result.JobRoles.Count(), Is.EqualTo(1));
 
             CollectionAssert.AreEqual(allLevels, result.AllLevels);
-            Assert.AreEqual(2, result.Levels.Count());
+            Assert.That(result.Levels.Count(), Is.EqualTo(2));
 
             CollectionAssert.AreEqual(allSectors, result.AllSectors);
-            Assert.AreEqual(3, result.Sectors.Count());
+            Assert.That(result.Sectors.Count(), Is.EqualTo(3));
         }
     }
 }

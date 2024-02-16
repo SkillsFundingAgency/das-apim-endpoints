@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Models
             actual.LastName.Should().Be(source.LastName);
             actual.Uln.Should().Be(source.Uln);
             actual.DateOfBirth.Should().Be(source.DateOfBirth);
-            actual.ApprenticeshipEmployerTypeOnApproval.Should().Be(source.ApprenticeshipEmployerTypeOnApproval);
+            ((short)actual.ApprenticeshipEmployerTypeOnApproval).Should().Be((short)source.ApprenticeshipEmployerTypeOnApproval.Value);//TODO check this is correct
             actual.UKPRN.Should().Be(source.ProviderId);
         }
     }

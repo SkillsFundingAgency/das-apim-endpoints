@@ -33,9 +33,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.UserTests
             var response = controllerResult.Value as GetSelectAccountResponse;
 
             Assert.That(controllerResult, Is.Not.Null);
-            Assert.AreEqual(controllerResult.StatusCode, (int)HttpStatusCode.OK);
-            Assert.IsNotNull(response);
-            Assert.AreEqual(getSelectAccountQueryResult.Accounts.Count(), response.Accounts.Count());
+            Assert.That(controllerResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
+            Assert.That(response, Is.Not.Null);
+            Assert.That(getSelectAccountQueryResult.Accounts.Count(), Is.EqualTo(response.Accounts.Count()));
         }
     }
 }

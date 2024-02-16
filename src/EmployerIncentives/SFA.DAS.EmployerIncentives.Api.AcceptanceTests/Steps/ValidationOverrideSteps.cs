@@ -77,7 +77,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Then(@"the response of Accepted is returned")]
         public void ThenReturnAcceptedToTheCaller()
         {
-            _response.StatusCode.Should().Be((int)HttpStatusCode.Accepted);
+            _response.StatusCode.Should().Be(HttpStatusCode.Accepted);
         }
     }
 }

@@ -38,10 +38,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var response = okObjectResult.Value as GetApplicationApprovedResponse;
 
             Assert.That(controllerResult, Is.Not.Null);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(response);
-            Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.OK);
-            Assert.AreEqual(response.EmployerAccountName, getApplicationApprovedQueryResult.EmployerAccountName);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(response, Is.Not.Null);
+            Assert.That(okObjectResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
+            Assert.That(response.EmployerAccountName, Is.EqualTo(getApplicationApprovedQueryResult.EmployerAccountName));
         }
     }
 }

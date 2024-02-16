@@ -30,7 +30,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ReferenceTests
             var controllerResult = await referenceController.Levels() as ObjectResult;
 
             Assert.That(controllerResult, Is.Not.Null);
-            Assert.AreEqual(controllerResult.StatusCode, (int) HttpStatusCode.OK);
+            Assert.That(controllerResult.StatusCode, Is.EqualTo((int) HttpStatusCode.OK));
 
             var model = controllerResult.Value as IEnumerable<ReferenceDataItem>;
             Assert.That(model, Is.Not.Null);

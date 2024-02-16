@@ -43,7 +43,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetUserAcco
 
             var result = await _getSelectAccountQueryHandler.Handle(getSelectAccountQuery, CancellationToken.None);
 
-            Assert.AreEqual(userAccounts.Count(), result.Accounts.Count());
+            Assert.That(result.Accounts.Count(), Is.EqualTo(userAccounts.Count()));
         }
     }
 }

@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             LegalEntitiesService service)
         {
             client.Setup(x => x.Put(It.Is<PutAccountLegalEntityRequest>(y =>
-                y.PutUrl == $"accounts/{createObject.AccountId}/legalentities" && y.Data.IsSameOrEqualTo(createObject)))).Returns(Task.CompletedTask);
+                y.PutUrl == $"accounts/{createObject.AccountId}/legalentities" && y.Data.Equals(createObject)))).Returns(Task.CompletedTask);
             
             await service.CreateLegalEntity(createObject);
         

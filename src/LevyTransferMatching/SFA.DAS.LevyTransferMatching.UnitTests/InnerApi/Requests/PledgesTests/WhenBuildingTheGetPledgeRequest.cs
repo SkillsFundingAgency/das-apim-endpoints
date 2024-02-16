@@ -11,9 +11,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.InnerApi.Requests.PledgesTests
         {
             var actual = new GetPledgeRequest(id);
 
-            Assert.AreEqual(
-                $"pledges/{id}",
-                actual.GetUrl);
+            Assert.That(actual.GetUrl, Is.EqualTo($"pledges/{id}"));
         }
     }
 }

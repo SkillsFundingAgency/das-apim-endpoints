@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                 x.Patch(It.Is<PatchSignAgreementRequest>(
                     c =>
                         c.PatchUrl.Contains(request.AccountId.ToString()) && c.PatchUrl.Contains(request.AccountLegalEntityId.ToString())
-                                                                  && c.Data.IsSameOrEqualTo(request)
+                                                                  && c.Data.Equals(request)
                 )), Times.Once
             );
         }

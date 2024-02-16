@@ -53,7 +53,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            Assert.AreEqual(_deliveryModels, result.DeliveryModels);
+            Assert.That(result.DeliveryModels, Is.EqualTo(_deliveryModels));
         }
 
         [Test]
@@ -61,7 +61,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            Assert.AreEqual(_apprenticeshipResponse.EmployerName, result.LegalEntityName);
+            Assert.That(result.LegalEntityName, Is.EqualTo(_apprenticeshipResponse.EmployerName));
         }
 
         [Test]

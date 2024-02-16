@@ -50,10 +50,10 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreditPled
             var credit = (CreditPledgeRequest.CreditPledgeRequestData)request.Data;
 
             Assert.That(result, Is.Not.Null);
-            Assert.IsFalse(result.CreditPledgeSkipped);
-            Assert.AreEqual($"pledges/{command.PledgeId}/credit", request.PostUrl);
-            Assert.AreEqual(command.Amount, credit.Amount);
-            Assert.AreEqual(command.ApplicationId, credit.ApplicationId);
+            Assert.That(result.CreditPledgeSkipped, Is.False);
+            Assert.That(request.PostUrl, Is.EqualTo($"pledges/{command.PledgeId}/credit"));
+            Assert.That(command.Amount, Is.EqualTo(credit.Amount));
+            Assert.That(command.ApplicationId, Is.EqualTo(credit.ApplicationId));
         }
 
         [TestCase(0)]
@@ -70,7 +70,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreditPled
             var result = await _handler.Handle(command, CancellationToken.None);
 
             Assert.That(result, Is.Not.Null);
-            Assert.IsTrue(result.CreditPledgeSkipped);
+            Assert.That(result.CreditPledgeSkipped, Is.True);
         }
     }
 }

@@ -48,7 +48,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
 
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okObjectResult = (OkObjectResult)result;
-            Assert.IsInstanceOf<GetCohortDetailsResponse>(okObjectResult.Value);
+            Assert.That(okObjectResult.Value, Is.InstanceOf<GetCohortDetailsResponse>());
             var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
 
             var compare = new CompareLogic(new ComparisonConfig { MembersToIgnore = new List<string> { "DraftApprenticeships", "ApprenticeshipEmailOverlaps" }, IgnoreObjectTypes = true });

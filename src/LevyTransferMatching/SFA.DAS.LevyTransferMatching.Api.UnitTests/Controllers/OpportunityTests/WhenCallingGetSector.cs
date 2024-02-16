@@ -36,11 +36,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             var response = okObjectResult.Value as GetSectorResponse;
 
             Assert.That(controllerResult, Is.Not.Null);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(response);
-            Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.OK);
-            Assert.AreEqual(getSectorQueryResult.Sectors, response.Sectors);
-            Assert.AreEqual(getSectorQueryResult.Opportunity.Id, response.Opportunity.Id);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(response, Is.Not.Null);
+            Assert.That(okObjectResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
+            Assert.That(getSectorQueryResult.Sectors, Is.EqualTo(response.Sectors));
+            Assert.That(getSectorQueryResult.Opportunity.Id, Is.EqualTo(response.Opportunity.Id));
         }
     }
 }

@@ -50,9 +50,9 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Approvals
 
             Assert.That(result, Is.Not.Null);
             var response = result.Value as GetApprenticeshipsResponse;
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
 
-            Assert.AreEqual(_queryResult.TotalApprenticeshipsFound, response.TotalApprenticeshipsFound);
+            Assert.That(_queryResult.TotalApprenticeshipsFound, Is.EqualTo(response.TotalApprenticeshipsFound));
             CompareHelper.AreEqualIgnoringTypes(_queryResult.Apprenticeships.ToList(), response.Apprenticeships.ToList());
         }
 

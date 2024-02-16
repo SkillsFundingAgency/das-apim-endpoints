@@ -42,7 +42,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
 
             var result = await getApplicationDetailsQueryHandler.Handle(getApplicationDetailsQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result.Opportunity);
+            Assert.That(result.Opportunity, Is.Not.Null);
         }
 
         [Test, MoqAutoData]
@@ -108,8 +108,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
             var result = await getApplicationDetailsQueryHandler.Handle(getStandardsQuery, CancellationToken.None);
 
             Assert.That(result, Is.Not.Null);
-            Assert.IsNotNull(result.Standards);
-            Assert.AreEqual(1, result.Standards.Count());
+            Assert.That(result.Standards, Is.Not.Null);
+            Assert.That(result.Standards.Count(), Is.EqualTo(1));
         }
     }
 }

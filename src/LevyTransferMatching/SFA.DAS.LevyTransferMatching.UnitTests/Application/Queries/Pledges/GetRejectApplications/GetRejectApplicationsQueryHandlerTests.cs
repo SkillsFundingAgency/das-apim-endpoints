@@ -55,8 +55,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         {
             var result = await _handler.Handle(_query , CancellationToken.None);
             var applications = result.Applications.Select(x => x).ToList();
-            Assert.AreEqual("Mega Corp", applications[0].DasAccountName);
-            Assert.AreEqual(4, applications[0].Id);
+            Assert.That(applications[0].DasAccountName, Is.EqualTo("Mega Corp"));
+            Assert.That(applications[0].Id, Is.EqualTo(4));
         }
     }
 }

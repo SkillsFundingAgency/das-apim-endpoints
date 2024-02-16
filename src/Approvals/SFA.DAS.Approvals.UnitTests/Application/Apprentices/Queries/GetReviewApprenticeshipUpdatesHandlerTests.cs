@@ -20,6 +20,7 @@ using Party = SFA.DAS.Approvals.Application.Shared.Enums.Party;
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetApprenticeshipUpdatesResponse;
 using Standard = SFA.DAS.Approvals.Types.Standard;
 using System.Collections.Generic;
+using FluentAssertions;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprenticeshipUpdates;
 using SFA.DAS.Approvals.Extensions;
@@ -180,60 +181,60 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 
         public void AssertResultIsTrue()
         {
-            _result.IsValidCourseCode.IsSameOrEqualTo(true);
+            _result.IsValidCourseCode.Should().BeTrue();
         }
 
         public void AssertResultIsNull()
         {
-            Assert.IsNull(_result);
+            Assert.That(_result, Is.Null);
         }
 
         public void AssertResultIsOriginalApprentice()
         {
-            Assert.AreEqual(_apprenticeship.EmployerName, _result.EmployerName);
-            Assert.AreEqual(_apprenticeship.ProviderName, _result.ProviderName);
+            Assert.That(_apprenticeship.EmployerName, Is.EqualTo(_result.EmployerName));
+            Assert.That(_apprenticeship.ProviderName, Is.EqualTo(_result.ProviderName));
 
-            Assert.AreEqual(_apprenticeship.FirstName, _result.OriginalApprenticeship.FirstName);
-            Assert.AreEqual(_apprenticeship.LastName, _result.OriginalApprenticeship.LastName);
-            Assert.AreEqual(_apprenticeship.Email, _result.OriginalApprenticeship.Email);
-            Assert.AreEqual(_apprenticeship.Uln, _result.OriginalApprenticeship.Uln);
-            Assert.AreEqual(_apprenticeship.DateOfBirth, _result.OriginalApprenticeship.DateOfBirth);
-            Assert.AreEqual(_apprenticeship.StartDate, _result.OriginalApprenticeship.StartDate);
-            Assert.AreEqual(_apprenticeship.EndDate, _result.OriginalApprenticeship.EndDate);
-            Assert.AreEqual(_apprenticeship.CourseCode, _result.OriginalApprenticeship.CourseCode);
-            Assert.AreEqual(_apprenticeship.CourseName, _result.OriginalApprenticeship.CourseName);
-            Assert.AreEqual(_apprenticeship.Version, _result.OriginalApprenticeship.Version);
-            Assert.AreEqual(_apprenticeship.Option, _result.OriginalApprenticeship.Option);
-            Assert.AreEqual((DeliveryModel)Enum.Parse(typeof(DeliveryModel), _apprenticeship.DeliveryModel), _result.OriginalApprenticeship.DeliveryModel);
-            Assert.AreEqual(_apprenticeship.EmploymentEndDate, _result.OriginalApprenticeship.EmploymentEndDate);
-            Assert.AreEqual(_apprenticeship.EmploymentPrice, _result.OriginalApprenticeship.EmploymentPrice);
-            Assert.AreEqual(_apprenticeship.Uln, _result.OriginalApprenticeship.Uln);
-            Assert.AreEqual(_priceEpisodesResponse.PriceEpisodes.GetPrice(), _result.OriginalApprenticeship.Cost);
+            Assert.That(_apprenticeship.FirstName, Is.EqualTo(_result.OriginalApprenticeship.FirstName));
+            Assert.That(_apprenticeship.LastName, Is.EqualTo(_result.OriginalApprenticeship.LastName));
+            Assert.That(_apprenticeship.Email, Is.EqualTo(_result.OriginalApprenticeship.Email));
+            Assert.That(_apprenticeship.Uln,Is.EqualTo( _result.OriginalApprenticeship.Uln));
+            Assert.That(_apprenticeship.DateOfBirth, Is.EqualTo(_result.OriginalApprenticeship.DateOfBirth));
+            Assert.That(_apprenticeship.StartDate,Is.EqualTo( _result.OriginalApprenticeship.StartDate));
+            Assert.That(_apprenticeship.EndDate, Is.EqualTo(_result.OriginalApprenticeship.EndDate));
+            Assert.That(_apprenticeship.CourseCode, Is.EqualTo(_result.OriginalApprenticeship.CourseCode));
+            Assert.That(_apprenticeship.CourseName, Is.EqualTo(_result.OriginalApprenticeship.CourseName));
+            Assert.That(_apprenticeship.Version, Is.EqualTo(_result.OriginalApprenticeship.Version));
+            Assert.That(_apprenticeship.Option,Is.EqualTo( _result.OriginalApprenticeship.Option));
+            Assert.That((DeliveryModel)Enum.Parse(typeof(DeliveryModel), _apprenticeship.DeliveryModel), Is.EqualTo(_result.OriginalApprenticeship.DeliveryModel));
+            Assert.That(_apprenticeship.EmploymentEndDate, Is.EqualTo(_result.OriginalApprenticeship.EmploymentEndDate));
+            Assert.That(_apprenticeship.EmploymentPrice, Is.EqualTo(_result.OriginalApprenticeship.EmploymentPrice));
+            Assert.That(_apprenticeship.Uln, Is.EqualTo(_result.OriginalApprenticeship.Uln));
+            Assert.That(_priceEpisodesResponse.PriceEpisodes.GetPrice(), Is.EqualTo(_result.OriginalApprenticeship.Cost));
 
         }
         public void AssertResultIsApprenticeUpdates()
         {
             var update = _apprenticeshipUpdate.ApprenticeshipUpdates.First();
 
-            Assert.AreEqual(update.FirstName, _result.ApprenticeshipUpdates.FirstName);
-            Assert.AreEqual(update.LastName, _result.ApprenticeshipUpdates.LastName);
-            Assert.AreEqual(update.Email, _result.ApprenticeshipUpdates.Email);
-            Assert.AreEqual(update.DateOfBirth, _result.ApprenticeshipUpdates.DateOfBirth);
-            Assert.AreEqual(update.StartDate, _result.ApprenticeshipUpdates.StartDate);
-            Assert.AreEqual(update.EndDate, _result.ApprenticeshipUpdates.EndDate);
-            Assert.AreEqual(update.TrainingCode, _result.ApprenticeshipUpdates.CourseCode);
-            Assert.AreEqual(update.TrainingName, _result.ApprenticeshipUpdates.CourseName);
-            Assert.AreEqual(update.Version, _result.ApprenticeshipUpdates.Version);
-            Assert.AreEqual(update.Option, _result.ApprenticeshipUpdates.Option);
-            Assert.AreEqual(update.DeliveryModel, _result.ApprenticeshipUpdates.DeliveryModel);
-            Assert.AreEqual(update.EmploymentEndDate, _result.ApprenticeshipUpdates.EmploymentEndDate);
-            Assert.AreEqual(update.EmploymentPrice, _result.ApprenticeshipUpdates.EmploymentPrice);
-            Assert.AreEqual(update.Cost, _result.ApprenticeshipUpdates.Cost);
+            Assert.That(update.FirstName, Is.EqualTo(_result.ApprenticeshipUpdates.FirstName));
+            Assert.That(update.LastName, Is.EqualTo(_result.ApprenticeshipUpdates.LastName));
+            Assert.That(update.Email, Is.EqualTo(_result.ApprenticeshipUpdates.Email));
+            Assert.That(update.DateOfBirth, Is.EqualTo(_result.ApprenticeshipUpdates.DateOfBirth));
+            Assert.That(update.StartDate, Is.EqualTo(_result.ApprenticeshipUpdates.StartDate));
+            Assert.That(update.EndDate, Is.EqualTo(_result.ApprenticeshipUpdates.EndDate));
+            Assert.That(update.TrainingCode, Is.EqualTo(_result.ApprenticeshipUpdates.CourseCode));
+            Assert.That(update.TrainingName, Is.EqualTo(_result.ApprenticeshipUpdates.CourseName));
+            Assert.That(update.Version, Is.EqualTo(_result.ApprenticeshipUpdates.Version));
+            Assert.That(update.Option, Is.EqualTo(_result.ApprenticeshipUpdates.Option));
+            Assert.That(update.DeliveryModel, Is.EqualTo(_result.ApprenticeshipUpdates.DeliveryModel));
+            Assert.That(update.EmploymentEndDate, Is.EqualTo(_result.ApprenticeshipUpdates.EmploymentEndDate));
+            Assert.That(update.EmploymentPrice, Is.EqualTo(_result.ApprenticeshipUpdates.EmploymentPrice));
+            Assert.That(update.Cost, Is.EqualTo(_result.ApprenticeshipUpdates.Cost));
         }
 
         public void AssertResultIsFalse()
         {
-            _result.IsValidCourseCode.IsSameOrEqualTo(false);
+            _result.IsValidCourseCode.Should().BeFalse();
         }
         public WhenHandlingGetReviewApprenticeshipUpdatesFixture WithCourseCode(String courseCode)
         {

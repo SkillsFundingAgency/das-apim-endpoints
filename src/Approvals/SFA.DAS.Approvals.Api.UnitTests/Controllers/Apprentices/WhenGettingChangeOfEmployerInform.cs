@@ -47,7 +47,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
             var okObjectResult = result as OkObjectResult;
             var response = okObjectResult.Value as GetInformResponse;
 
-            Assert.That(response, Is.InstanceOf<OkObjectResult>());
+            Assert.That(response, Is.InstanceOf<GetInformResponse>());
 
             Assert.That(_queryResult.LegalEntityName, Is.EqualTo(response.LegalEntityName));
         }

@@ -50,7 +50,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.A
 
             // Assert
             Assert.That(result, Is.Not.Null);
-            Assert.IsInstanceOf<ApplicationsWithAutomaticApprovalQueryResult>(result);
+            Assert.That(result, Is.InstanceOf<ApplicationsWithAutomaticApprovalQueryResult>());
 
             var expectedResult = new ApplicationsWithAutomaticApprovalQueryResult
             {
@@ -61,7 +61,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.A
                 }
             };
 
-            Assert.AreEqual(expectedResult.Applications.Count(), result.Applications.Count());
+            Assert.That(result.Applications.Count(), Is.EqualTo(expectedResult.Applications.Count()));
         }
 
         [Test]
@@ -86,7 +86,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.A
                 applications[2]
             };
 
-            Assert.AreEqual(expectedResult.Count, result.Count);
+            Assert.That(result.Count, Is.EqualTo(expectedResult.Count));
 
         }
     }

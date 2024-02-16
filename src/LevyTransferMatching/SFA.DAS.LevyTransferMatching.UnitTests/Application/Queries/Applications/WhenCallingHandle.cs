@@ -34,7 +34,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.AreEqual(0, result.Applications.Count());
+            Assert.That(result.Applications.Count(), Is.EqualTo(0));
             coursesApiClient.Verify(o => o.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()), Times.Never);
         }
 

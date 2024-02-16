@@ -33,7 +33,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
                 x.UserId == request.UserId &&
                 x.UserDisplayName == request.UserDisplayName), It.IsAny<CancellationToken>()));
             Assert.That(controllerResult, Is.Not.Null);
-            Assert.IsNotNull(okObjectResult);
+            Assert.That(okObjectResult, Is.Not.Null);
         }
     }
 }

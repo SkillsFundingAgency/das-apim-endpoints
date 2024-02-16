@@ -37,7 +37,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.SetApplica
 
             var result = await setApplicationAcceptanceCommandHandler.Handle(setApplicationAcceptanceCommand, CancellationToken.None);
 
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test, MoqAutoData]
@@ -63,7 +63,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.SetApplica
 
             var result = await setApplicationAcceptanceCommandHandler.Handle(setApplicationAcceptanceCommand, CancellationToken.None);
 
-            Assert.IsFalse(result);
+            Assert.That(result, Is.False);
         }
 
         [Test, MoqAutoData]
@@ -89,7 +89,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.SetApplica
 
             var result = await setApplicationAcceptanceCommandHandler.Handle(setApplicationAcceptanceCommand, CancellationToken.None);
 
-            Assert.IsTrue(result);
+            Assert.That(result, Is.True);
         }
 
         [Test, MoqAutoData]
@@ -115,7 +115,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.SetApplica
 
             var result = await setApplicationAcceptanceCommandHandler.Handle(setApplicationAcceptanceCommand, CancellationToken.None);
 
-            Assert.IsFalse(result);
+            Assert.That(result, Is.True);
         }
     }
 }

@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NUnit.Framework.Legacy;
 using SFA.DAS.LevyTransferMatching.Models.Constants;
 using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetPledgesResponse;
 
@@ -62,21 +63,21 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
         public async Task Handle_Returns_Sectors()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_sectors, result.Sectors);
+            Assert.That(result.Sectors, Is.EqualTo(_sectors));
         }
 
         [Test]
         public async Task Handle_Returns_JobRoles()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_jobRoles, result.JobRoles);
+            Assert.That(result.JobRoles, Is.EqualTo(_jobRoles));
         }
 
         [Test]
         public async Task Handle_Returns_Levels()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_levels, result.Levels);
+            Assert.That(result.Levels, Is.EqualTo(_levels));
         }
 
         [Test]

@@ -46,7 +46,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         {
             var result = await _handler.Handle(new GetViewDraftApprenticeshipQuery { CohortId = _cohortId, DraftApprenticeshipId = _apprenticeshipId }, CancellationToken.None);
 
-            Assert.IsInstanceOf<GetViewDraftApprenticeshipQueryResult>(result);
+            Assert.That(result, Is.InstanceOf<GetViewDraftApprenticeshipQueryResult>());
 
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
 

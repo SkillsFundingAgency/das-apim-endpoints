@@ -48,9 +48,9 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.RejectBulk
 
             var data = (RejectApplicationRequestData)_request.Data;
             var applicationID = _command.ApplicationsToReject[0];
-            Assert.AreEqual($"/pledges/{_command.PledgeId}/applications/{applicationID}/reject", _request.PostUrl);
-            Assert.AreEqual(_command.UserId, data.UserId);
-            Assert.AreEqual(_command.UserDisplayName, data.UserDisplayName);
+            Assert.That(_request.PostUrl, Is.EqualTo($"/pledges/{_command.PledgeId}/applications/{applicationID}/reject"));
+            Assert.That(_command.UserId, Is.EqualTo(data.UserId));
+            Assert.That(_command.UserDisplayName, Is.EqualTo(data.UserDisplayName));
             
             _levyTransferMatchingService.Verify(
                x => x.RejectApplication(It.Is<RejectApplicationRequest>(r =>

@@ -31,8 +31,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             var getApplicationResponse = okObjectResult.Value as GetApplicationResponse;
 
             Assert.That(controllerResult, Is.Not.Null);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(getApplicationResponse);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(getApplicationResponse, Is.Not.Null);
         }
 
         [Test, MoqAutoData]
@@ -50,7 +50,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             var notFoundResult = controllerResult as NotFoundResult;
 
             Assert.That(controllerResult, Is.Not.Null);
-            Assert.IsNotNull(notFoundResult);
+            Assert.That(notFoundResult, Is.Not.Null);
         }
     }
 }

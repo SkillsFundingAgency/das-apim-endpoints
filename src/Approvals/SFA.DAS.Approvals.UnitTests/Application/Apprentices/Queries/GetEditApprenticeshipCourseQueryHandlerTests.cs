@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using FluentAssertions.Common;
 using Moq;
 using NUnit.Framework;
@@ -44,7 +45,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Standards.ToList().IsSameOrEqualTo(providerStandardsData.Standards.ToList());
+            result.Standards.ToList().Should().BeEquivalentTo(providerStandardsData.Standards.ToList());
         }
 
         [Test, MoqAutoData]
@@ -68,7 +69,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.IsMainProvider.IsSameOrEqualTo(providerStandardsData.IsMainProvider);
+            result.IsMainProvider.Should().Be(providerStandardsData.IsMainProvider);
         }
 
         [Test, MoqAutoData]

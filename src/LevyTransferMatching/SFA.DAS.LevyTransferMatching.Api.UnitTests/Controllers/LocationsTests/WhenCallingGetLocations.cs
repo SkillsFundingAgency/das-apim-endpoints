@@ -36,10 +36,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.LocationsTests
             var locations = okObjectResult.Value as LocationsDto;
 
             Assert.That(controllerResult, Is.Not.Null);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(locations);
-            Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.OK);
-            Assert.AreEqual(getLocationsResult.Locations.Count(), locations.Names.Count());
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(locations, Is.Not.Null);
+            Assert.That(okObjectResult.StatusCode,Is.EqualTo((int)HttpStatusCode.OK));
+            Assert.That(getLocationsResult.Locations.Count(), Is.EqualTo(locations.Names.Count()));
         }
     }
 }

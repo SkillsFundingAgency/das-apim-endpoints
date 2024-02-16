@@ -68,10 +68,10 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         public async Task Handle_Returns_objects_From_Commitments_Api()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_apprenticeship, result.Apprenticeship);
-            Assert.AreEqual(_priceEpisodesResponse, result.PriceEpisodes);
-            Assert.AreEqual(_accountLegalEntityResponse, result.AccountLegalEntity);
-            Assert.AreEqual(_getTrainingProgrammeResponse, result.TrainingProgrammeResponse);
+            Assert.That(result.Apprenticeship, Is.EqualTo(_apprenticeship));
+            Assert.That(result.PriceEpisodes, Is.EqualTo(_priceEpisodesResponse));
+            Assert.That(result.AccountLegalEntity, Is.EqualTo(_accountLegalEntityResponse));
+            Assert.That(result.TrainingProgrammeResponse, Is.EqualTo(_getTrainingProgrammeResponse));
         }
 
         [Test]

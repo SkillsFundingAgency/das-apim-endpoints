@@ -36,7 +36,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         public async Task Handle_Returns_EmployerAccountName()
         {
             var result = await _handler.Handle(new GetApplicationApprovedQuery(), CancellationToken.None);
-            Assert.AreEqual(_employerAccountName, result.EmployerAccountName);
+            Assert.That(result.EmployerAccountName, Is.EqualTo(_employerAccountName));
         }
     }
 }

@@ -43,17 +43,17 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Pledges
 
             Assert.That(result, Is.Not.Null);
             var response = result.Value as GetPledgesResponse;
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
 
-            Assert.AreEqual(_queryResult.Pledges.Count(), response.Pledges.Count());
+            Assert.That(_queryResult.Pledges.Count(), Is.EqualTo(response.Pledges.Count()));
 
             var i = 0;
 
             foreach (var pledge in response.Pledges)
             {
                 var expected = _queryResult.Pledges.ToArray()[i];
-                Assert.AreEqual(expected.Id, pledge.Id);
-                Assert.AreEqual(expected.AccountId, pledge.AccountId);
+                Assert.That(expected.Id, Is.EqualTo(pledge.Id));
+                Assert.That(expected.AccountId, Is.EqualTo(pledge.AccountId));
                 i++;
             }
         }

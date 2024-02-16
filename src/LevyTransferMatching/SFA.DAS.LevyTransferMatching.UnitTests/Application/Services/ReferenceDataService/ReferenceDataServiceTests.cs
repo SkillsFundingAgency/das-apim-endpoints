@@ -61,21 +61,21 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.ReferenceD
         public async Task GetSectors_Retrieves_Sectors()
         {
             var result = await _referenceDataService.GetSectors();
-            Assert.AreEqual(_sectors, result);
+            Assert.That(_sectors, Is.EqualTo(result));
         }
 
         [Test]
         public async Task GetSectors_Retrieves_Levels()
         {
             var result = await _referenceDataService.GetLevels();
-            Assert.AreEqual(_levels, result);
+            Assert.That(_levels, Is.EqualTo(result));
         }
 
         [Test]
         public async Task GetSectors_Retrieves_JobRoles()
         {
             var result = await _referenceDataService.GetJobRoles();
-            Assert.AreEqual(_jobRoles, result);
+            Assert.That(_jobRoles, Is.EqualTo(result));
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.ReferenceD
             SetupCache(_sectors, new GetSectorsRequest());
 
             var result = await _referenceDataService.GetSectors();
-            Assert.AreEqual(_sectors, result);
+            Assert.That(_sectors, Is.EqualTo(result));
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.ReferenceD
             SetupCache(_levels, new GetLevelsRequest());
 
             var result = await _referenceDataService.GetLevels();
-            Assert.AreEqual(_levels, result);
+            Assert.That(_levels, Is.EqualTo(result));
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.ReferenceD
             SetupCache(_jobRoles, new GetJobRolesRequest());
 
             var result = await _referenceDataService.GetJobRoles();
-            Assert.AreEqual(_jobRoles, result);
+            Assert.That(_jobRoles, Is.EqualTo(result));
         }
 
         private void SetupCache(List<ReferenceDataItem> data, IGetAllApiRequest apiRequest)
