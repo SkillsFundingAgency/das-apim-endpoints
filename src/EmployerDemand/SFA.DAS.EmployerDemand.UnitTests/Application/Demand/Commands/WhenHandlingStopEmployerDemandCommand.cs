@@ -46,6 +46,9 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 .Setup(client => client.Get<GetEmployerDemandResponse>(
                     It.Is<GetEmployerDemandRequest>(request => request.GetUrl.Contains($"demand/{command.EmployerDemandId}"))))
                 .ReturnsAsync(getDemandResponse);
+            mockApiClient.Setup(
+                    x => x.PostWithResponseCode<object>(It.IsAny<PostEmployerDemandNotificationAuditRequest>(), true))
+                .ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.Accepted, null));
 
             SendEmailCommand actualEmail = null;
             mockNotificationService

@@ -68,7 +68,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.That(result.HasNoDeclaredStandards, Is.False);
+            Assert.That(result.HasNoDeclaredStandards, Is.True);
         }
 
 

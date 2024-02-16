@@ -80,7 +80,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             var okResult = response as OkObjectResult;
             var actualResponse = okResult.Value;
             Assert.That(actualResponse, Is.SameAs(providerAddresses));
-            Assert.That((int)HttpStatusCode.OK, Is.SameAs(okResult.StatusCode.GetValueOrDefault()));
+            Assert.That((int)HttpStatusCode.OK, Is.EqualTo(okResult.StatusCode.GetValueOrDefault()));
             _mediator.Verify(x => x.Send(It.IsAny<UkrlpDataQuery>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 

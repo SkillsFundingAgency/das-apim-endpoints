@@ -1,3 +1,4 @@
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -11,6 +12,7 @@ using SFA.DAS.EmployerDemand.InnerApi.Responses;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
@@ -35,6 +37,9 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 .Setup(service => service.Send(It.IsAny<SendEmailCommand>()))
                 .Callback((SendEmailCommand args) => actualEmail = args)
                 .Returns(Task.CompletedTask);
+            employerDemandApiClient.Setup(
+                    x => x.PostWithResponseCode<object>(It.IsAny<PostEmployerDemandNotificationAuditRequest>(), true))
+                .ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.Accepted, null));
             var expectedEmail = new CreateEmployerDemandReminderEmail(
                 response.ContactEmailAddress,
                 response.OrganisationName,

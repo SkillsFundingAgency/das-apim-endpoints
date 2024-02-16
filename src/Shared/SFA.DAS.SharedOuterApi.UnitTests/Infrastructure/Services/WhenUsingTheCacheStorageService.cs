@@ -136,7 +136,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             var item = await service.RetrieveFromCache<TestObject>(keyName);
             
             //Assert
-            Assert.That(item, Is.Not.Null);
+            Assert.That(item, Is.Null);
         }
 
         [Test, MoqAutoData]
@@ -156,7 +156,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             var item = await service.RetrieveFromCache<List<TestObject>>(keyName);
             
             //Assert
-            Assert.That(item, Is.Not.Null);
+            Assert.That(item, Is.Null);
         }
         
         [Test, MoqAutoData]

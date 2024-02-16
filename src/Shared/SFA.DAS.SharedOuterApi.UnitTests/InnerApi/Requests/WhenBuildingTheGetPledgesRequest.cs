@@ -11,7 +11,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         {
             var actual = new GetPledgesRequest();
 
-            Assert.That($"pledges", Is.SameAs(actual.GetUrl));
+            Assert.That($"pledges", Is.EqualTo(actual.GetUrl));
         }
 
         [Test, AutoData]
@@ -19,7 +19,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         {
             var actual = new GetPledgesRequest(accountId: accountId);
 
-            Assert.That($"pledges?accountId={accountId}", Is.SameAs(actual.GetUrl));
+            Assert.That($"pledges?accountId={accountId}", Is.EqualTo(actual.GetUrl));
         }
     }
 }

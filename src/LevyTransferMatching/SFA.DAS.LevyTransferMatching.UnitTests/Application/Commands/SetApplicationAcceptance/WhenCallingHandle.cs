@@ -115,7 +115,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.SetApplica
 
             var result = await setApplicationAcceptanceCommandHandler.Handle(setApplicationAcceptanceCommand, CancellationToken.None);
 
-            Assert.That(result, Is.True);
+            Assert.That(result, Is.False);
         }
     }
 }

@@ -146,11 +146,16 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
                 .Setup(client => client.GetAll<GetEpaoCoursesListItem>(
                     It.Is<GetEpaoCoursesRequest>(request => request.EpaoId == query.EpaoId)))
                 .ReturnsAsync(apiResponse);
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardResponse>(
+                    It.IsAny<GetStandardRequest>()))
+                .ReturnsAsync((GetStandardResponse)null);   
             
-            foreach (var standard in allStandards)
+            foreach (var standard in matchingStandards)
             {
                 mockCoursesApiClient
-                    .Setup(client => client.Get<GetStandardResponse>(It.Is<GetStandardRequest>(c=>c.StandardId.Equals(standard.LarsCode))))
+                    .Setup(client => client.Get<GetStandardResponse>(
+                        It.Is<GetStandardRequest>(c=>c.StandardId.Equals(standard.LarsCode))))
                     .ReturnsAsync(standard);    
             }
             
