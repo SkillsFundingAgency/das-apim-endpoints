@@ -57,7 +57,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.GetMetricsData(lepsCode);
 
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
             var badRequestResult = (BadRequestObjectResult)result;
             Assert.AreEqual((int)HttpStatusCode.BadRequest, badRequestResult.StatusCode);
         }

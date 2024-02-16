@@ -50,7 +50,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
 
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okObjectResult = (OkObjectResult)result;
-            Assert.IsInstanceOf<GetEditDraftApprenticeshipPriorLearningSummaryQueryResult>(okObjectResult.Value);
+            Assert.That(okObjectResult.Value, Is.InstanceOf<GetEditDraftApprenticeshipPriorLearningSummaryQueryResult>());
             var objectResult = (GetEditDraftApprenticeshipPriorLearningSummaryQueryResult)okObjectResult.Value;
 
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });

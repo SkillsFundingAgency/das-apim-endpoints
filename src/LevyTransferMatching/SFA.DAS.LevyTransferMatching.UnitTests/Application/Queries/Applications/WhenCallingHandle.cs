@@ -58,8 +58,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-           Assert.IsTrue(result.Applications.Any());
-           Assert.AreEqual(response.Applications, response.Applications);
+           Assert.That(result.Applications.Any(), Is.True);
+           Assert.That(response.Applications, Is.EqualTo(response.Applications));
         }
     }
 }

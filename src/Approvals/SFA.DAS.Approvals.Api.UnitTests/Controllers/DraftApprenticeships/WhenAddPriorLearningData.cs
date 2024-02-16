@@ -52,7 +52,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
 
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okObjectResult = (OkObjectResult)result;
-            Assert.IsInstanceOf<AddPriorLearningDataCommandResult>(okObjectResult.Value);
+            Assert.That(okObjectResult.Value, Is.InstanceOf<AddPriorLearningDataCommandResult>());
             var objectResult = (AddPriorLearningDataCommandResult)okObjectResult.Value;
 
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });

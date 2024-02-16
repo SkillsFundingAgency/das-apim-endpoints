@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SFA.DAS.Forecasting.Application.Approvals.Queries;
 using SFA.DAS.Forecasting.Application.Approvals.Queries.GetAccountIds;
 using SFA.DAS.Forecasting.InnerApi.Requests;

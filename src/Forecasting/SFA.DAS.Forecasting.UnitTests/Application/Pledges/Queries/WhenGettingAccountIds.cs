@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Moq;
 using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using SFA.DAS.Forecasting.Application.Pledges.Queries.GetAccountsWithPledges;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -46,7 +47,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Pledges.Queries
         {
             _apiResponse.Pledges.ToList().ForEach(x => x.ApplicationCount = 0);
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(0, result.AccountIds.Count);
+            Assert.That(0, Is.EqualTo(result.AccountIds.Count));
         }
     }
 }
