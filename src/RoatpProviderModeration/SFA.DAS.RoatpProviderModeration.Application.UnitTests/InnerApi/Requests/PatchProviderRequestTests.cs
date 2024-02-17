@@ -15,8 +15,8 @@ namespace SFA.DAS.RoatpProviderModeration.Application.UnitTests.InnerApi.Request
         public void Constructor_ConstructsRequest(ProviderUpdateModel data)
         {
             var request = new PatchProviderRequest(data);
-            Assert.AreEqual(1, request.Data.Count);
-            Assert.IsTrue(request.Data.Any(x => x.Path == "MarketingInfo"));
+            Assert.That(request.Data.Count, Is.EqualTo(1));
+            Assert.That(request.Data.Any(x => x.Path == "MarketingInfo"),Is.True);
             request.PatchUrl.Should().Be($"providers/{data.Ukprn}?userId={HttpUtility.UrlEncode(data.UserId)}&userDisplayName={HttpUtility.UrlEncode(data.UserDisplayName)}");
         }
       
@@ -29,8 +29,8 @@ namespace SFA.DAS.RoatpProviderModeration.Application.UnitTests.InnerApi.Request
             };
             var request = new PatchProviderRequest(model);
 
-            Assert.AreEqual(numberOfPatches, request.Data.Count);
-            Assert.AreEqual(request.Data.Any(x => x.Path == "MarketingInfo"), marketingInfo != null);
+            Assert.That(request.Data.Count, Is.EqualTo(numberOfPatches));
+            Assert.That(request.Data.Any(x => x.Path == "MarketingInfo"), Is.EqualTo(marketingInfo != null));
         }
     }
 }
