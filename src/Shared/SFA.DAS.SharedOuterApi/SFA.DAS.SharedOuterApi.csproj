@@ -19,6 +19,7 @@
         <PackageReference Include="SFA.DAS.Api.Common" />
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
         <PackageReference Include="SFA.DAS.Notifications.Messages" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
         <PackageReference Include="System.Net.Http.Json" />
         <PackageReference Include="SFA.DAS.NServiceBus" />
     </ItemGroup>
