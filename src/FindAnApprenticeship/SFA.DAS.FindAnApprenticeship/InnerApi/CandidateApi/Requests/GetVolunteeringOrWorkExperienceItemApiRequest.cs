@@ -2,13 +2,13 @@
 using System;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-public class GetDeleteVolunteeringOrWorkExperienceApiRequest : IGetApiRequest
+public class GetVolunteeringOrWorkExperienceItemApiRequest : IGetApiRequest
 {
     private readonly Guid _applicationId;
     private readonly Guid _candidateId;
     private readonly Guid _id;
 
-    public GetDeleteVolunteeringOrWorkExperienceApiRequest(Guid applicationId, Guid candidateId, Guid id)
+    public GetVolunteeringOrWorkExperienceItemApiRequest(Guid applicationId, Guid candidateId, Guid id)
     {
         _applicationId = applicationId;
         _candidateId = candidateId;

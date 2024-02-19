@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-public class GetDeleteVolunteeringOrWorkExperienceApiResponse
+public class GetVolunteeringOrWorkExperienceItemApiResponse
 {
     public Guid Id { get; set; }
     public Guid ApplicationId { get; set; }

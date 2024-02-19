@@ -11,6 +11,6 @@ public class GetDeleteVolunteeringOrWorkExperienceQueryHandler (ICandidateApiCli
 {
     public async Task<GetDeleteVolunteeringOrWorkExperienceQueryResult> Handle(GetDeleteVolunteeringOrWorkExperienceQuery request, CancellationToken cancellationToken)
     {
-        return await ApiClient.Get<GetDeleteVolunteeringOrWorkExperienceApiResponse>(new GetDeleteVolunteeringOrWorkExperienceApiRequest(request.ApplicationId, request.CandidateId, request.Id));
+        return await ApiClient.Get<GetVolunteeringOrWorkExperienceItemApiResponse>(new GetVolunteeringOrWorkExperienceItemApiRequest(request.ApplicationId, request.CandidateId, request.Id));
     }
 }

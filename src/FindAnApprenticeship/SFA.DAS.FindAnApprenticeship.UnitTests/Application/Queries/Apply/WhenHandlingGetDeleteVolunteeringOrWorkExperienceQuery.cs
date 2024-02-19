@@ -15,14 +15,14 @@ public class WhenHandlingGetDeleteVolunteeringOrWorkExperienceQuery
     [Test, MoqAutoData]
     public async Task Then_The_QueryResult_Is_Returned_As_Expected(
         GetDeleteVolunteeringOrWorkExperienceQuery query,
-        GetDeleteVolunteeringOrWorkExperienceApiResponse apiResponse,
+        GetVolunteeringOrWorkExperienceItemApiResponse apiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetDeleteVolunteeringOrWorkExperienceQueryHandler handler)
     {
-        var expectedGetDeleteJobRequest = new GetDeleteVolunteeringOrWorkExperienceApiRequest(query.ApplicationId, query.CandidateId, query.Id);
+        var expectedGetDeleteJobRequest = new GetVolunteeringOrWorkExperienceItemApiRequest(query.ApplicationId, query.CandidateId, query.Id);
         candidateApiClient
-            .Setup(client => client.Get<GetDeleteVolunteeringOrWorkExperienceApiResponse>(
-                It.Is<GetDeleteVolunteeringOrWorkExperienceApiRequest>(r => r.GetUrl == expectedGetDeleteJobRequest.GetUrl)))
+            .Setup(client => client.Get<GetVolunteeringOrWorkExperienceItemApiResponse>(
+                It.Is<GetVolunteeringOrWorkExperienceItemApiRequest>(r => r.GetUrl == expectedGetDeleteJobRequest.GetUrl)))
             .ReturnsAsync(apiResponse);
 
         var result = await handler.Handle(query, CancellationToken.None);

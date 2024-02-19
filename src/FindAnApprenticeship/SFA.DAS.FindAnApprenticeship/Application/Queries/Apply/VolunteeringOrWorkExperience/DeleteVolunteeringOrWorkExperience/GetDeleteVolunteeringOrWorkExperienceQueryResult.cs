@@ -11,7 +11,7 @@ public class GetDeleteVolunteeringOrWorkExperienceQueryResult
     public DateTime FromDate { get; set; }
     public DateTime ToDate { get; set; }
 
-    public static implicit operator GetDeleteVolunteeringOrWorkExperienceQueryResult(GetDeleteVolunteeringOrWorkExperienceApiResponse source)
+    public static implicit operator GetDeleteVolunteeringOrWorkExperienceQueryResult(GetVolunteeringOrWorkExperienceItemApiResponse source)
     {
         return new GetDeleteVolunteeringOrWorkExperienceQueryResult
         {
