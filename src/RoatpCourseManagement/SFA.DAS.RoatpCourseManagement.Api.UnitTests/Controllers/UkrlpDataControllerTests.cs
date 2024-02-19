@@ -1,24 +1,17 @@
-﻿using AutoFixture.NUnit3;using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
-using SFA.DAS.RoatpCourseManagement.Services;
-using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
 using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models.Ukrlp;
-using Azure;
-using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
-using System.Net;
-using MediatR;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries;
-using System.Threading;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
 {
@@ -38,7 +31,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         [MoqAutoData]
         public async Task GetProviderAddressesFromProvidersUpdatedSince_ReturnsContent()
         {
-            var command = new UkrlpDataQuery {ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long>()};
+            var command = new UkrlpDataQuery { ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long>() };
             var providerAddresses = new List<ProviderAddress>
             {
                 new()
@@ -83,7 +76,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             _mediator.Setup(m => m.Send(command, It.IsAny<CancellationToken>())).ReturnsAsync(lookupResponse);
 
             var response = await _sut.GetProvidersData(command);
-        
+
             var okResult = response as OkObjectResult;
             var actualResponse = okResult.Value;
             Assert.AreSame(actualResponse, providerAddresses);
@@ -95,24 +88,24 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         [MoqAutoData]
         public async Task GetProviderAddresses_TwoParameters_ReturnsBadRequest()
         {
-            var command = new UkrlpDataQuery { ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long> {12345678} };
+            var command = new UkrlpDataQuery { ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long> { 12345678 } };
             var response = await _sut.GetProvidersData(command);
-        
+
             var badRequestResult = response as BadRequestResult;
             Assert.AreEqual((int)HttpStatusCode.BadRequest, badRequestResult.StatusCode);
         }
-        
+
         [Test]
         [MoqAutoData]
         public async Task GetProviderAddresses_NoParameters_ReturnsBadRequest()
         {
-            var command = new UkrlpDataQuery { ProvidersUpdatedSince = null, Ukprns = new List<long> () };
+            var command = new UkrlpDataQuery { ProvidersUpdatedSince = null, Ukprns = new List<long>() };
             var response = await _sut.GetProvidersData(command);
-        
+
             var badRequestResult = response as BadRequestResult;
             Assert.AreEqual((int)HttpStatusCode.BadRequest, badRequestResult.StatusCode);
         }
-        
+
         [Test]
         [MoqAutoData]
         public async Task GetProviderAddresses_NoContentFromService_ReturnsNotFound()
@@ -126,7 +119,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             _mediator.Setup(m => m.Send(command, It.IsAny<CancellationToken>())).ReturnsAsync(lookupResponse);
 
             var response = await _sut.GetProvidersData(command);
-            
+
             var notFoundResult = response as NotFoundResult;
             Assert.AreEqual((int)HttpStatusCode.NotFound, notFoundResult.StatusCode);
         }
