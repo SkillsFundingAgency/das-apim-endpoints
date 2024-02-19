@@ -78,7 +78,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.TrainingCourseProvider.ProviderAddress.Should().BeEquivalentTo(mediatorResult.ProviderStandard.ProviderAddress);
             model.ShortlistItemCount.Should().Be(mediatorResult.ShortlistItemCount);
             model.TrainingCourseProvider.DeliveryModes.Count.Should().Be(mediatorResult.ProviderStandard.DeliveryModels.ToList().Count);
-            Assert.IsTrue(model.TrainingCourseProvider.DeliveryModes.Any(x => x.Address1.Contains(mediatorResult.ProviderStandard.DeliveryModels.ToList().First().Address1)));
+            Assert.That(model.TrainingCourseProvider.DeliveryModes.Any(x => x.Address1.Contains(mediatorResult.ProviderStandard.DeliveryModels.ToList().First().Address1)), Is.True);
         }
 
         [Test, MoqAutoData]
