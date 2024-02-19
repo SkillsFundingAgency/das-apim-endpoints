@@ -1,6 +1,5 @@
 ﻿using System;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetLatestDetails;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 
 namespace SFA.DAS.EmployerAccounts.Api.Models
 {
@@ -19,15 +18,15 @@ namespace SFA.DAS.EmployerAccounts.Api.Models
     public class Organisation
     {
         public string Name { get; set; }
-        public OrganisationType Type { get; set; }
-        public OrganisationSubType SubType { get; set; }
+        public SharedOuterApi.InnerApi.Responses.ReferenceData.OrganisationType Type { get; set; }
+        public SharedOuterApi.InnerApi.Responses.ReferenceData.OrganisationSubType SubType { get; set; }
         public string Code { get; set; }
         public DateTime? RegistrationDate { get; set; }
-        public Address Address { get; set; }
+        public SharedOuterApi.InnerApi.Responses.ReferenceData.Address Address { get; set; }
         public string Sector { get; set; }
-        public OrganisationStatus OrganisationStatus { get; set; }
+        public SharedOuterApi.InnerApi.Responses.ReferenceData.OrganisationStatus OrganisationStatus { get; set; }
 
-        public static implicit operator Organisation(GetLatestDetailsResult.Organisation source)
+        public static implicit operator Organisation(Application.Models.Organisation source)
         {
             if (source == null)
             {

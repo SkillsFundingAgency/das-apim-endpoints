@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
             SearchOrganisationsResult organisations = educationalOrganisations;
 
             organisations.Organisations.AddRange(filteredRefApiOrganisations.Select(x =>
-                new SearchOrganisationsResult.Organisation
+                new Models.Organisation
                 {
                     Name = x.Name,
                     Type = x.Type,
