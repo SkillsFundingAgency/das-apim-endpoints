@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SFA.DAS.RoatpCourseManagement.Configuration;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models.Ukrlp;
-using SFA.DAS.RoatpCourseManagement.Services;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 {
@@ -54,7 +53,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
                 var request = _serializer.BuildGetAllUkrlpsFromUkprnsSoapRequest(ukprnsToCheck,
                     _ukrlpConfiguration.StakeholderId, _ukrlpConfiguration.QueryId);
                 var ukprnResponse = await GetUkrlpResponse(request);
-                
+
                 if (ukprnResponse == null || !ukprnResponse.Success)
                 {
                     _logger.LogWarning("The response from UKRLP was failure");
@@ -64,7 +63,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
                         Success = false
                     };
                 }
-                
+
                 response.Results.AddRange(ukprnResponse.Results);
 
                 Console.WriteLine($"Total fetched {fetched} off {query.Ukprns.Count}");

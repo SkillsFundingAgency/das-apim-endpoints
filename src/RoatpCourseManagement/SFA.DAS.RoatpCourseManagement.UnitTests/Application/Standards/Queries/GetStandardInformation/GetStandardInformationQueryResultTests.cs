@@ -14,11 +14,11 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.
         {
             GetStandardInformationQueryResult sut = source;
 
-            sut.Should().BeEquivalentTo(source, option => 
+            sut.Should().BeEquivalentTo(source, option =>
             {
                 option.WithMapping<GetStandardInformationQueryResult>(s => s.ApprovalBody, m => m.RegulatorName);
                 option.WithMapping<GetStandardInformationQueryResult>(s => s.Route, m => m.Sector);
-                option.Excluding(s => s.SectorSubjectAreaTier2Description);
+                option.Excluding(s => s.SectorSubjectAreaTier1);
                 return option;
             });
         }

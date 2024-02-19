@@ -1,4 +1,8 @@
-﻿using AutoFixture.NUnit3;
+﻿using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -9,10 +13,6 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.GetStandardInformation
 {
@@ -34,7 +34,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.
             {
                 option.WithMapping<GetStandardInformationQueryResult>(s => s.ApprovalBody, m => m.RegulatorName);
                 option.WithMapping<GetStandardInformationQueryResult>(s => s.Route, m => m.Sector);
-                option.Excluding(s => s.SectorSubjectAreaTier2Description);
+                option.Excluding(s => s.SectorSubjectAreaTier1);
                 return option;
             });
         }

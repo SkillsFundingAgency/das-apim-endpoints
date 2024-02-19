@@ -1,9 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using static System.String;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
@@ -15,12 +11,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public int Level { get; set; }
         public string LevelEquivalent { get; set; }
         public string Version { get; set; }
-        
+
 
         public string OverviewOfRole { get; set; }
 
         public string Keywords { get; set; }
-        
+
 
         public string Route { get; set; }
 
@@ -32,13 +28,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string IntegratedDegree { get; set; }
         public string SectorSubjectAreaTier2Description { get; set; }
         public decimal SectorSubjectAreaTier2 { get; set; }
+        public int SectorSubjectAreaTier1 { get; set; }
         public bool OtherBodyApprovalRequired { get; set; }
         public string ApprovalBody { get; set; }
         public List<string> Skills { get; set; }
         public bool CoreAndOptions { get; set; }
         public List<string> CoreDuties { get; set; }
 
-        
+
 
         private List<string> GetCoreSkillsCount()
         {
@@ -46,9 +43,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
             {
                 return CoreDuties;
             }
-            return  Skills;
+            return Skills;
         }
     }
 
-    
+
 }

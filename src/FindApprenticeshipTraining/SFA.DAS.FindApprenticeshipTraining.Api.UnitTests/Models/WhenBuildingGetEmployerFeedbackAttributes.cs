@@ -35,7 +35,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.EmployerFeedback.FeedbackAttributes.Should().BeEmpty();
         }
@@ -65,7 +65,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.EmployerFeedback.FeedbackAttributes.Sum(x => x.Strength).Should().Be(0);
             response.EmployerFeedback.FeedbackAttributes.Select(x => x.AttributeName).Should().Contain(source.EmployerFeedback.ProviderAttribute.Select(c => c.Name).ToList());
@@ -97,7 +97,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.EmployerFeedback.FeedbackAttributes.Sum(x => x.Weakness).Should().Be(0);
             response.EmployerFeedback.FeedbackAttributes.Select(x => x.AttributeName).Should().Contain(source.EmployerFeedback.ProviderAttribute.Select(c => c.Name).ToList());
@@ -172,7 +172,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.EmployerFeedback.FeedbackAttributes.Select(x => x.AttributeName)
                 .Should().ContainInOrder(
