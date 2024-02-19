@@ -35,7 +35,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetSh
         }
 
         public async Task<GetShortlistForUserResult> Handle(GetShortlistForUserQuery request, CancellationToken cancellationToken)
-        { 
+        {
             var shortlistForUserId = await _shortListApiClient.GetAll<ShortlistItem>(new GetShortlistForUserIdRequest(request.ShortlistUserId));
             if (shortlistForUserId == null || !shortlistForUserId.Any())
             {
@@ -64,7 +64,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetSh
                     CreatedDate = sl.CreatedDate
                 };
 
-                var providerDetails = providerDetailsList.First(x=>x.Ukprn==sl.Ukprn && x.LarsCode==sl.Larscode);
+                var providerDetails = providerDetailsList.First(x => x.Ukprn == sl.Ukprn && x.LarsCode == sl.Larscode);
 
                 var provider = new GetProviderStandardItem
                 {
@@ -106,10 +106,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetSh
 
             foreach (var item in shortlist)
             {
-                item.Course =
-                    coursesTask.Result.Standards.FirstOrDefault(listItem =>
-                        listItem.LarsCode == item.CourseId);
-
+                item.Course = coursesTask.Result.Standards.FirstOrDefault(listItem => listItem.LarsCode == item.CourseId);
                 item.ProviderDetails.ApprenticeFeedback = appFeedbackResult.FirstOrDefault(s => s.Ukprn == item.ProviderDetails.Ukprn);
                 item.ProviderDetails.EmployerFeedback = employerFeedbackResult.FirstOrDefault(s => s.Ukprn == item.ProviderDetails.Ukprn);
             }
