@@ -88,7 +88,6 @@ namespace SFA.DAS.LevyTransferMatching.Api
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions
                 (
                     options=>

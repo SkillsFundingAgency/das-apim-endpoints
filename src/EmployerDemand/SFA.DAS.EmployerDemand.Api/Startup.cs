@@ -69,7 +69,7 @@ namespace SFA.DAS.EmployerDemand.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                })
                 .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
             if (_configuration["Environment"] != "DEV")
