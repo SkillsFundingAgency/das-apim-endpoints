@@ -2,9 +2,9 @@
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
-public class PostTrainingCourseApiRequest
+public class PostUpdateTrainingCourseApiRequest
 {
     public Guid CandidateId { get; set; }
     public string CourseName { get; set; }
-    public uint YearAchieved { get; set; }
+    public int YearAchieved { get; set; }
 }

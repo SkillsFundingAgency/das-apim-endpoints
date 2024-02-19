@@ -1,5 +1,7 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Net;
+using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateTrainingCourse;
@@ -14,18 +16,25 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply;
 public class WhenHandlingCreateTrainingCourseCommand
 {
     [Test, MoqAutoData]
-    public async Task Then_The_CommandResponse_Is_Returned(
+    public async Task Then_The_TrainingCourse_Is_Created(
         CreateTrainingCourseCommand command,
-        PostTrainingCourseApiResponse apiResponse,
+        PutUpsertTrainingCourseApiResponse apiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         CreateTrainingCourseCommandHandler handler)
     {
-        var expectedRequest = new PostTrainingCourseApiRequest(command.ApplicationId, command.CandidateId, new PostTrainingCourseApiRequest.PostTrainingCourseApiRequestData());
-        candidateApiClient.Setup(client => client.PostWithResponseCode<PostTrainingCourseApiResponse>(It.Is<PostTrainingCourseApiRequest>(r => r.PostUrl == expectedRequest.PostUrl), true))
-            .ReturnsAsync(new ApiResponse<PostTrainingCourseApiResponse>(apiResponse, System.Net.HttpStatusCode.Created, string.Empty));
+        var expectedRequest = new PutUpsertTrainingCourseApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), new PutUpsertTrainingCourseApiRequest.PutUpdateTrainingCourseApiRequestData());
 
-        var result = await handler.Handle(command, CancellationToken.None);
+        candidateApiClient
+            .Setup(client => client.PutWithResponseCode<PutUpsertTrainingCourseApiResponse>(
+                It.Is<PutUpsertTrainingCourseApiRequest>(r => r.PutUrl.StartsWith(expectedRequest.PutUrl.Substring(0, 86)))))
+            .ReturnsAsync(new ApiResponse<PutUpsertTrainingCourseApiResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
-        result.Id.Should().Be(apiResponse.Id);
+        var actual = await handler.Handle(command, CancellationToken.None);
+
+        using (new AssertionScope())
+        {
+            actual.Should().NotBeNull();
+            actual.Id.Should().NotBeEmpty();
+        }
     }
 }

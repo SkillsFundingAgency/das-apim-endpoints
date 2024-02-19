@@ -19,28 +19,49 @@ public class WhenPostingTrainingCourse
     [Test, MoqAutoData]
     public async Task Then_The_Command_Response_Is_Returned(
         Guid applicationId,
+        CreateTrainingCourseCommandResult commandResult,
         PostTrainingCourseApiRequest apiRequest,
-        CreateTrainingCourseCommandResponse response,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.TrainingCoursesController controller)
     {
         mediator.Setup(x => x.Send(It.Is<CreateTrainingCourseCommand>(c =>
             c.CandidateId.Equals(apiRequest.CandidateId)
             && c.ApplicationId == applicationId
-            && c.TrainingProviderName == apiRequest.TrainingProviderName
             && c.CourseName == apiRequest.CourseName
-            && c.YearAchieved == apiRequest.YearAchieved),
+            && c.YearAchieved == (int)apiRequest.YearAchieved),
             CancellationToken.None))
-            .ReturnsAsync(response);
+            .ReturnsAsync(commandResult);
 
-        var actual = await controller.PostTrainingCourse(applicationId, apiRequest) as CreatedResult;
-        var actualModel = actual?.Value as PostTrainingCourseApiResponse;
+        var actual = await controller.PostTrainingCourse(applicationId, apiRequest);
 
         using (new AssertionScope())
         {
-            actual.Should().NotBeNull();
-            actualModel.Should().NotBeNull();
-            actualModel.Should().BeEquivalentTo((PostTrainingCourseApiResponse)response);
+            actual.Should().BeOfType<CreatedResult>();
+            actual.As<CreatedResult>().Value.Should().BeEquivalentTo((PostTrainingCourseApiResponse)commandResult);
+        }
+    }
+
+    [Test, MoqAutoData]
+    public async Task And_Command_Response_Is_Null_Then_NotFound_Returned(
+        Guid applicationId,
+        CreateTrainingCourseCommandResult commandResult,
+        PostTrainingCourseApiRequest apiRequest,
+        [Frozen] Mock<IMediator> mediator,
+        [Greedy] Api.Controllers.TrainingCoursesController controller)
+    {
+        mediator.Setup(x => x.Send(It.Is<CreateTrainingCourseCommand>(c =>
+            c.CandidateId.Equals(apiRequest.CandidateId)
+            && c.ApplicationId == applicationId
+            && c.CourseName == apiRequest.CourseName
+            && c.YearAchieved == apiRequest.YearAchieved),
+            CancellationToken.None))
+            .ReturnsAsync(() => null);
+
+        var actual = await controller.PostTrainingCourse(applicationId, apiRequest);
+
+        using (new AssertionScope())
+        {
+            actual.Should().BeOfType<NotFoundResult>();
         }
     }
 
@@ -59,25 +80,6 @@ public class WhenPostingTrainingCourse
         {
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
-        }
-    }
-
-    [Test, MoqAutoData]
-    public async Task And_Null_Is_Returned_Then_Not_Found_Response_Returned(
-        Guid applicationId,
-        PostTrainingCourseApiRequest apiRequest,
-        [Frozen]
-        Mock<IMediator> mediator,
-        [Greedy] Api.Controllers.TrainingCoursesController controller)
-    {
-        mediator.Setup(x => x.Send(It.IsAny<CreateTrainingCourseCommand>(), CancellationToken.None)).ReturnsAsync(() => null);
-
-        var actual = await controller.PostTrainingCourse(applicationId, apiRequest) as StatusCodeResult;
-
-        using (new AssertionScope())
-        {
-            actual.Should().NotBeNull();
-            actual.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
     }
 }
