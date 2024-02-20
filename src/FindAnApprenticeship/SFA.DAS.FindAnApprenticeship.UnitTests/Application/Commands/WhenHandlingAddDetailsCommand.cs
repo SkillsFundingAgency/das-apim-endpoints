@@ -39,8 +39,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                         c.PutUrl == expectedRequest.PutUrl
                         && ((PutCandidateApiRequestData)c.Data).FirstName == command.FirstName
                         && ((PutCandidateApiRequestData)c.Data).LastName == command.LastName
-                        && ((PutCandidateApiRequestData)c.Data).Email == command.Email
-                        )))
+                        && ((PutCandidateApiRequestData)c.Data).Email == command.Email)))
                 .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(command, CancellationToken.None);
