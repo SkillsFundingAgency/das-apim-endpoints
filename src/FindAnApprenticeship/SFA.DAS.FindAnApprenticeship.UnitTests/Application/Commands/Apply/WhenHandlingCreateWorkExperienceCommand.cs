@@ -20,16 +20,17 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
         [Test, MoqAutoData]
         public async Task Then_The_CommandResult_Is_Returned_As_Expected(
             CreateWorkCommand command,
-            PostWorkHistoryApiResponse apiResponse,
+            PutUpsertWorkHistoryApiResponse apiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             CreateWorkCommandHandler handler)
         {
-            var expectedRequest = new PostWorkHistoryApiRequest(command.ApplicationId, command.CandidateId, new PostWorkHistoryApiRequest.PostWorkHistoryApiRequestData());
+            var expectedRequest = new PutUpsertWorkHistoryApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), new PutUpsertWorkHistoryApiRequest.PutUpsertWorkHistoryApiRequestData());
+
             candidateApiClient
-                .Setup(client => client.PostWithResponseCode<PostWorkHistoryApiResponse>(
-                    It.Is<PostWorkHistoryApiRequest>(r => r.PostUrl == expectedRequest.PostUrl), true))
-                .ReturnsAsync(new ApiResponse<PostWorkHistoryApiResponse>(apiResponse, HttpStatusCode.Created, string.Empty));
-         
+                .Setup(client => client.PutWithResponseCode<PutUpsertWorkHistoryApiResponse>(
+                    It.Is<PutUpsertWorkHistoryApiRequest>(r => r.PutUrl.StartsWith(expectedRequest.PutUrl.Substring(0, 86)))))
+                .ReturnsAsync(new ApiResponse<PutUpsertWorkHistoryApiResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
+
             var result = await handler.Handle(command, CancellationToken.None);
 
             result.Id.Should().Be(apiResponse.Id);
