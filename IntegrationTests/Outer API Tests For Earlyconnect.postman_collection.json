@@ -346,6 +346,47 @@
 			},
 			"response": []
 		},
+
+		{
+			"name": "Update Delivery",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": ""
+					}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"source\":\"StudentData\",\r\n  \"ids\": [146,147]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "https://test-apim-erlycon-api.apprenticeships.education.gov.uk/early-connect/delivery-update"
+			},
+			"response": []
+		},
 		{
 			"name": "Survey-Create",
 			"request": {
