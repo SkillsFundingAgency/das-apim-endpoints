@@ -48,6 +48,7 @@ public class LiveVacancy
     public string? ApplicationUrl { get; set; }
     public string? AdditionalQuestion1 { get; set; }
     public string? AdditionalQuestion2 { get; set; }
+    public string? OwnerType { get; set; }
 }
 
 public class TrainingProvider

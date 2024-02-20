@@ -84,6 +84,7 @@ public class GetLiveVacanciesApiResponse
                 TypicalJobTitles = source.TypicalJobTitles,
                 AdditionalQuestion1 = source.AdditionalQuestion1,
                 AdditionalQuestion2 = source.AdditionalQuestion2,
+                OwnerType = source.OwnerType
             };
         }
 
@@ -137,6 +138,7 @@ public class GetLiveVacanciesApiResponse
         public string TypicalJobTitles { get; set; }
         public string? AdditionalQuestion1 { get; set; }
         public string? AdditionalQuestion2 { get; set; }
+        public string? OwnerType { get; set; }
 
     }
 
