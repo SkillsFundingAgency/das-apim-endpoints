@@ -68,8 +68,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         {
             await _apiClient.PostWithResponseCode<object>(new PostCreateApprenticeshipPriceChangeRequest(
                 apprenticeshipKey,
-                request.ProviderId,
-                request.EmployerId,
+                request.Requester,
                 request.UserId,
                 request.TrainingPrice,
                 request.AssessmentPrice,

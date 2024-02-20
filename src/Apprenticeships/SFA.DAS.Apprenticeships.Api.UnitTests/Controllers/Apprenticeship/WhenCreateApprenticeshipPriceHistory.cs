@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using Castle.Core.Logging;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -26,8 +25,7 @@ public class WhenCreateApprenticeshipPriceHistory
         var apprenticeshipKey = Guid.NewGuid();
         var request = new PostCreateApprenticeshipPriceChangeRequest(
             apprenticeshipKey: apprenticeshipKey,
-            providerId: 123,
-            employerId: 456,
+            requester: "Provider",
             userId: "testUser",
             trainingPrice: 1000,
             assessmentPrice: 500,
@@ -42,8 +40,7 @@ public class WhenCreateApprenticeshipPriceHistory
             request.ApprenticeshipKey,
             new Models.CreateApprenticeshipPriceChangeRequest
             {
-                ProviderId = ((CreateApprenticeshipPriceChangeRequest)request.Data).ProviderId,
-                EmployerId = ((CreateApprenticeshipPriceChangeRequest)request.Data).EmployerId,
+                Requester = ((CreateApprenticeshipPriceChangeRequest)request.Data).Requester,
                 UserId = ((CreateApprenticeshipPriceChangeRequest)request.Data).UserId,
                 TrainingPrice = ((CreateApprenticeshipPriceChangeRequest)request.Data).TrainingPrice,
                 AssessmentPrice = ((CreateApprenticeshipPriceChangeRequest)request.Data).AssessmentPrice,
@@ -54,8 +51,7 @@ public class WhenCreateApprenticeshipPriceHistory
 
         // Assert
         apiClient.Verify(x => x.PostWithResponseCode<object>(It.Is<PostCreateApprenticeshipPriceChangeRequest>(r =>
-            ((CreateApprenticeshipPriceChangeRequest)r.Data).ProviderId == ((CreateApprenticeshipPriceChangeRequest)request.Data).ProviderId &&
-            ((CreateApprenticeshipPriceChangeRequest)r.Data).EmployerId == ((CreateApprenticeshipPriceChangeRequest)request.Data).EmployerId &&
+            ((CreateApprenticeshipPriceChangeRequest)r.Data).Requester == ((CreateApprenticeshipPriceChangeRequest)request.Data).Requester &&
             ((CreateApprenticeshipPriceChangeRequest)r.Data).UserId == ((CreateApprenticeshipPriceChangeRequest)request.Data).UserId &&
             ((CreateApprenticeshipPriceChangeRequest)r.Data).TrainingPrice == ((CreateApprenticeshipPriceChangeRequest)request.Data).TrainingPrice &&
             ((CreateApprenticeshipPriceChangeRequest)r.Data).AssessmentPrice == ((CreateApprenticeshipPriceChangeRequest)request.Data).AssessmentPrice &&
