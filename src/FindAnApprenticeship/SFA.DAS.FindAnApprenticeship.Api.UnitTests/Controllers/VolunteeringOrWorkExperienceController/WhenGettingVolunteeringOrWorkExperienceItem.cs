@@ -29,7 +29,7 @@ public class WhenGettingVolunteeringOrWorkExperienceItem
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(queryResult);
 
-        var actual = await controller.Get(applicationId, candidateId, id);
+        var actual = await controller.GetDelete(applicationId, candidateId, id);
 
         actual.Should().BeOfType<OkObjectResult>();
         var actualObject = ((OkObjectResult)actual).Value as GetVolunteeringOrWorkExperienceItemApiResponse;

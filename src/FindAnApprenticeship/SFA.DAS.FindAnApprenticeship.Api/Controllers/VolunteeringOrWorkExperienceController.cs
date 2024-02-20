@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.DeleteVolunteeringOrWorkExperience;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteVolunteeringOrWorkExperience;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
@@ -22,8 +23,8 @@ public class VolunteeringOrWorkExperienceController : Controller
         _logger = logger;
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> Get([FromRoute] Guid applicationId, [FromQuery] Guid candidateId, [FromRoute] Guid id)
+    [HttpGet("{id}/delete")]
+    public async Task<IActionResult> GetDelete([FromRoute] Guid applicationId, [FromQuery] Guid candidateId, [FromRoute] Guid id)
     {
         try
         {
@@ -38,6 +39,27 @@ public class VolunteeringOrWorkExperienceController : Controller
         catch (Exception e)
         {
             _logger.LogError(e, "Get Volunteering or Work Experience : An error occurred");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpPost("{id}/delete")]
+    public async Task<IActionResult> PostDelete([FromRoute] Guid applicationId, [FromRoute] Guid id, [FromBody] PostDeleteVolunteeringOrWorkExperienceRequest request)
+    {
+        try
+        {
+            var result = await _mediator.Send(new PostDeleteVolunteeringOrWorkExperienceCommand
+            {
+                ApplicationId = applicationId,
+                Id = id,
+                CandidateId = request.CandidateId
+            });
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Delete Volunteering or Work Experience : An error occurred");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
