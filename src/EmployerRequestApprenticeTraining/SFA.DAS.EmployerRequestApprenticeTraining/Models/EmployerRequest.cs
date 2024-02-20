@@ -1,5 +1,5 @@
-﻿using System;
-using static SFA.DAS.EmployerRequestApprenticeTraining.Models.Enums;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
+using System;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Models
 {
@@ -8,7 +8,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Models
         public Guid Id { get; set; }
         public RequestType RequestType { get; set; }
 
-        public static explicit operator EmployerRequest(InnerApi.Responses.EmployerRequest source)
+        public static explicit operator EmployerRequest(SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining.EmployerRequest source)
         {
             return new EmployerRequest()
             {
