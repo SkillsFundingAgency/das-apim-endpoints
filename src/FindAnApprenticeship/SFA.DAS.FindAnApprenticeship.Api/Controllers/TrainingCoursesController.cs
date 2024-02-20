@@ -61,6 +61,7 @@ public class TrainingCoursesController : Controller
             });
 
             if (result is null) return NotFound();
+            return Ok((GetTrainingCoursesApiResponse)result);
         }
         catch (Exception e)
         {
