@@ -10,29 +10,30 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkE
 using System.Threading;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using FluentAssertions;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetVolunteeringOrWorkExperienceItem;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VolunteeringOrWorkExperienceController;
-public class WhenGettingDeleteVolunteeringOrWorkExperience
+public class WhenGettingVolunteeringOrWorkExperienceItem
 {
     [Test, MoqAutoData]
     public async Task Then_The_Query_Response_Is_Returned(
         Guid candidateId,
         Guid id,
         Guid applicationId,
-        GetDeleteVolunteeringOrWorkExperienceQueryResult queryResult,
+        GetVolunteeringOrWorkExperienceItemQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.VolunteeringOrWorkExperienceController controller)
     {
-        mediator.Setup(x => x.Send(It.Is<GetDeleteVolunteeringOrWorkExperienceQuery>(q =>
+        mediator.Setup(x => x.Send(It.Is<GetVolunteeringOrWorkExperienceItemQuery>(q =>
                     q.CandidateId == candidateId && q.ApplicationId == applicationId && q.Id == id),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(queryResult);
 
-        var actual = await controller.GetDeleteVolunteeringOrWorkExperience(applicationId, candidateId, id);
+        var actual = await controller.Get(applicationId, candidateId, id);
 
         actual.Should().BeOfType<OkObjectResult>();
-        var actualObject = ((OkObjectResult)actual).Value as GetDeleteVolunteeringOrWorkHistoryApiResponse;
+        var actualObject = ((OkObjectResult)actual).Value as GetVolunteeringOrWorkExperienceItemApiResponse;
         actualObject.Should().NotBeNull();
-        actualObject.Should().BeEquivalentTo((GetDeleteVolunteeringOrWorkHistoryApiResponse)queryResult);
+        actualObject.Should().BeEquivalentTo((GetVolunteeringOrWorkExperienceItemApiResponse)queryResult);
     }
 }

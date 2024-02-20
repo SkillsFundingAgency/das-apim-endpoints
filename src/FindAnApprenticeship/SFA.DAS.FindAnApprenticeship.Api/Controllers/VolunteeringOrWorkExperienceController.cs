@@ -22,18 +22,18 @@ public class VolunteeringOrWorkExperienceController : Controller
         _logger = logger;
     }
 
-    [HttpGet("{id}/delete")]
-    public async Task<IActionResult> GetDeleteVolunteeringOrWorkExperience([FromRoute] Guid applicationId, [FromQuery] Guid candidateId, [FromRoute] Guid id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Get([FromRoute] Guid applicationId, [FromQuery] Guid candidateId, [FromRoute] Guid id)
     {
         try
         {
-            var result = await _mediator.Send(new GetDeleteVolunteeringOrWorkExperienceQuery
+            var result = await _mediator.Send(new GetVolunteeringOrWorkExperienceItemQuery
             {
                 CandidateId = candidateId,
                 ApplicationId = applicationId,
                 Id = id
             });
-            return Ok((GetDeleteVolunteeringOrWorkHistoryApiResponse)result);
+            return Ok((GetVolunteeringOrWorkExperienceItemApiResponse)result);
         }
         catch (Exception e)
         {

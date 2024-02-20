@@ -2,6 +2,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
+using SFA.DAS.FindAnApprenticeship.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.InnerApi.CandidateApi.Requests;
 public class WhenBuildingGetVolunteeringOrWorkExperienceItemApiRequest
@@ -12,8 +13,8 @@ public class WhenBuildingGetVolunteeringOrWorkExperienceItemApiRequest
         Guid candidateId,
         Guid applicationId)
     {
-        var actual = new GetVolunteeringOrWorkExperienceItemApiRequest(applicationId, candidateId, id);
+        var actual = new GetWorkHistoryItemApiRequest(applicationId, candidateId, id, WorkHistoryType.WorkExperience);
 
-        actual.GetUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/volunteeringorworkexperience/{id}");
+        actual.GetUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/work-history/{id}?workHistoryType={WorkHistoryType.WorkExperience}");
     }
 }

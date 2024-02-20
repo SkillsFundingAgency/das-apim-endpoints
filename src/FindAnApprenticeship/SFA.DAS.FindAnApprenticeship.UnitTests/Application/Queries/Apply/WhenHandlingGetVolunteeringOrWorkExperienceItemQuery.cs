@@ -3,6 +3,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.DeleteVolunteeringOrWorkExperience;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetVolunteeringOrWorkExperienceItem;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -10,23 +11,23 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply;
-public class WhenHandlingGetDeleteVolunteeringOrWorkExperienceQuery
+public class WhenHandlingGetVolunteeringOrWorkExperienceItemQuery
 {
     [Test, MoqAutoData]
     public async Task Then_The_QueryResult_Is_Returned_As_Expected(
-        GetDeleteVolunteeringOrWorkExperienceQuery query,
-        GetVolunteeringOrWorkExperienceItemApiResponse apiResponse,
+        GetVolunteeringOrWorkExperienceItemQuery query,
+        GetWorkHistoryItemApiResponse apiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        GetDeleteVolunteeringOrWorkExperienceQueryHandler handler)
+        GetVolunteeringOrWorkExperienceItemQueryHandler handler)
     {
-        var expectedGetDeleteJobRequest = new GetVolunteeringOrWorkExperienceItemApiRequest(query.ApplicationId, query.CandidateId, query.Id);
+        var expectedGetDeleteJobRequest = new GetWorkHistoryItemApiRequest(query.ApplicationId, query.CandidateId, query.Id, Models.WorkHistoryType.WorkExperience);
         candidateApiClient
-            .Setup(client => client.Get<GetVolunteeringOrWorkExperienceItemApiResponse>(
-                It.Is<GetVolunteeringOrWorkExperienceItemApiRequest>(r => r.GetUrl == expectedGetDeleteJobRequest.GetUrl)))
+            .Setup(client => client.Get<GetWorkHistoryItemApiResponse>(
+                It.Is<GetWorkHistoryItemApiRequest>(r => r.GetUrl == expectedGetDeleteJobRequest.GetUrl)))
             .ReturnsAsync(apiResponse);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Should().BeEquivalentTo((GetDeleteVolunteeringOrWorkExperienceQueryResult)apiResponse);
+        result.Should().BeEquivalentTo((GetVolunteeringOrWorkExperienceItemQueryResult)apiResponse);
     }
 }
