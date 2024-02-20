@@ -17,6 +17,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.AppStart
     {
         [TestCase(typeof(IAzureClientCredentialHelper))]
         [TestCase(typeof(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>))]
+        [TestCase(typeof(IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>))]
         [TestCase(typeof(ILocationApiClient<LocationApiConfiguration>))]
         [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
         [TestCase(typeof(ICourseService))]
@@ -47,7 +48,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.AppStart
                 {
                     new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:1"),
                     new KeyValuePair<string, string>("FindApprenticeshipApiConfiguration:url", "http://localhost:2"),
-                    new KeyValuePair<string, string>("LocationApiConfiguration:url", "http://localhost:3")
+                    new KeyValuePair<string, string>("LocationApiConfiguration:url", "http://localhost:3"),
+                    new KeyValuePair<string, string>("FindApprenticeshipLegacyApiConfiguration:url", "http://localhost:4")
                 }
             };
 

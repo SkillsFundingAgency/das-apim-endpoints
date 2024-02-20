@@ -10,6 +10,6 @@
         public string Version { get; set; }
         public string ApprovalBody { get; set; }
         public string Route { get; set; }
-        public string SectorSubjectAreaTier2Description { get; set; }
+        public int SectorSubjectAreaTier1 { get; set; }
     }
 }
