@@ -1,8 +1,7 @@
 ﻿using System;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateJob;
-
-public class CreateJobCommandResponse
+public class CreateJobCommandResult
 {
     public Guid Id { get; set; }
 }
