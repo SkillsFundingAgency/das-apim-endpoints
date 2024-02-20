@@ -5,6 +5,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="InnerApi\Assessor\**" />
+      <EmbeddedResource Remove="InnerApi\Assessor\**" />
+      <None Remove="InnerApi\Assessor\**" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Compile Remove="InnerApi\Requests\GetLevelsListRequest.cs" />
     </ItemGroup>
 
@@ -22,10 +28,6 @@
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
         <PackageReference Include="System.Net.Http.Json" />
         <PackageReference Include="SFA.DAS.NServiceBus" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="InnerApi\Assessor\" />
     </ItemGroup>
 
 </Project>
