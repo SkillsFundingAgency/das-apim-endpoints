@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -14,11 +15,38 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.JobsController
 {
-    [TestFixture]
     public class WhenPostingJob
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Command_Response_Is_Returned(
+        public async Task Then_The_Command_ApiResponse_Is_Returned(
+            Guid applicationId,
+            CreateJobCommandResult commandResult,
+            PostJobApiRequest apiRequest,
+            [Frozen] Mock<IMediator> mediator,
+            [Greedy] Api.Controllers.JobsController controller)
+        {
+            mediator.Setup(x => x.Send(It.Is<CreateJobCommand>(c =>
+                        c.CandidateId.Equals(apiRequest.CandidateId)
+                        && c.ApplicationId == applicationId
+                        && c.EmployerName == apiRequest.EmployerName
+                        && c.JobDescription == apiRequest.JobDescription
+                        && c.JobTitle == apiRequest.JobTitle
+                        && c.StartDate == apiRequest.StartDate
+                        && c.EndDate == apiRequest.EndDate),
+                CancellationToken.None))
+                .ReturnsAsync(commandResult);
+
+            var actual = await controller.PostJob(applicationId, apiRequest);
+
+            using (new AssertionScope())
+            {
+                actual.Should().BeOfType<CreatedResult>();
+                actual.As<CreatedResult>().Value.Should().BeEquivalentTo((PostJobApiResponse)commandResult);
+            }
+        }
+
+        [Test, MoqAutoData]
+        public async Task And_Command_Response_Is_Null_Then_NotFound_Returned(
             Guid applicationId,
             PostJobApiRequest apiRequest,
             [Frozen] Mock<IMediator> mediator,
@@ -32,30 +60,33 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.JobsController
                         && c.JobTitle == apiRequest.JobTitle
                         && c.StartDate == apiRequest.StartDate
                         && c.EndDate == apiRequest.EndDate),
-                    CancellationToken.None))
-                .ReturnsAsync(Unit.Value);
+                CancellationToken.None))
+                .ReturnsAsync(() => null);
 
             var actual = await controller.PostJob(applicationId, apiRequest);
 
-            Assert.That(actual, Is.Not.Null);
-            actual.Should().BeOfType<OkResult>();
+            using (new AssertionScope())
+            {
+                actual.Should().BeOfType<NotFoundResult>();
+            }
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_An_Exception_Is_Thrown_Then_Internal_Server_Error_Response_Returned(
+        public async Task And_An_Exception_Is_Thrown_Then_Internal_Server_Error_Response_Returned(
             Guid applicationId,
             PostJobApiRequest apiRequest,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.JobsController controller)
         {
-            mediator.Setup(x => x.Send(It.IsAny<CreateJobCommand>(),
-                    CancellationToken.None))
-                .ThrowsAsync(new Exception());
+            mediator.Setup(x => x.Send(It.IsAny<CreateJobCommand>(), CancellationToken.None)).ThrowsAsync(new Exception());
 
             var actual = await controller.PostJob(applicationId, apiRequest) as StatusCodeResult;
 
-            Assert.IsNotNull(actual);
-            actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+            }
         }
     }
 }

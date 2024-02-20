@@ -3,13 +3,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateJob;
 
-public class CreateJobCommandHandler : IRequestHandler<CreateJobCommand>
+public class CreateJobCommandHandler : IRequestHandler<CreateJobCommand, CreateJobCommandResult>
 {
     private readonly ICandidateApiClient<CandidateApiConfiguration> _apiClient;
 
@@ -18,7 +20,7 @@ public class CreateJobCommandHandler : IRequestHandler<CreateJobCommand>
         _apiClient = apiClient;
     }
 
-    public async Task<Unit> Handle(CreateJobCommand command, CancellationToken cancellationToken)
+    public async Task<CreateJobCommandResult?> Handle(CreateJobCommand command, CancellationToken cancellationToken)
     {
         var requestBody = new PutUpsertWorkHistoryApiRequest.PutUpsertWorkHistoryApiRequestData
         {
@@ -31,8 +33,14 @@ public class CreateJobCommandHandler : IRequestHandler<CreateJobCommand>
         };
         var request = new PutUpsertWorkHistoryApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), requestBody);
 
-        await _apiClient.Put(request);
+        var result = await _apiClient.PutWithResponseCode<PutUpsertWorkHistoryApiResponse>(request);
+        result.EnsureSuccessStatusCode();
 
-        return Unit.Value;
+        if (result is null) return null;
+
+        return new CreateJobCommandResult
+        {
+            Id = result.Body.Id
+        };
     }
 }

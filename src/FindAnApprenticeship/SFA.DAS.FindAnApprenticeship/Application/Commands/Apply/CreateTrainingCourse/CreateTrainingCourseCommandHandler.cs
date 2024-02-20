@@ -3,11 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateTrainingCourse;
-public class CreateTrainingCourseCommandHandler : IRequestHandler<CreateTrainingCourseCommand>
+public class CreateTrainingCourseCommandHandler : IRequestHandler<CreateTrainingCourseCommand, CreateTrainingCourseCommandResult>
 {
     private readonly ICandidateApiClient<CandidateApiConfiguration> _apiClient;
 
@@ -16,7 +18,7 @@ public class CreateTrainingCourseCommandHandler : IRequestHandler<CreateTraining
         _apiClient = apiClient;
     }
 
-    public async Task<Unit> Handle(CreateTrainingCourseCommand command, CancellationToken cancellationToken)
+    public async Task<CreateTrainingCourseCommandResult?> Handle(CreateTrainingCourseCommand command, CancellationToken cancellationToken)
     {
         var requestBody = new PutUpsertTrainingCourseApiRequest.PutUpdateTrainingCourseApiRequestData
         {
@@ -25,7 +27,14 @@ public class CreateTrainingCourseCommandHandler : IRequestHandler<CreateTraining
         };
         var request = new PutUpsertTrainingCourseApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), requestBody);
 
-        await _apiClient.Put(request);
-        return Unit.Value;
+        var result = await _apiClient.PutWithResponseCode<PutUpsertTrainingCourseApiResponse>(request);
+        result.EnsureSuccessStatusCode();
+
+        if (result is null) return null;
+
+        return new CreateTrainingCourseCommandResult
+        {
+            Id = result.Body.Id
+        };
     }
 }

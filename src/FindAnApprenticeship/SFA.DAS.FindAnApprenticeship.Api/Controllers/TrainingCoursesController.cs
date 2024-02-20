@@ -30,16 +30,17 @@ public class TrainingCoursesController : Controller
     {
         try
         {
-            await _mediator.Send(new CreateTrainingCourseCommand
+            var result = await _mediator.Send(new CreateTrainingCourseCommand
             {
                 ApplicationId = applicationId,
                 CandidateId = request.CandidateId,
                 CourseName = request.CourseName,
-                YearAchieved = request.YearAchieved
+                YearAchieved = (int)request.YearAchieved
             });
 
-            return Ok();
+            if (result is null) return NotFound();
 
+            return Created($"{result.Id}", (PostTrainingCourseApiResponse)result);
         }
         catch (Exception ex)
         {
@@ -58,7 +59,8 @@ public class TrainingCoursesController : Controller
                 CandidateId = candidateId,
                 ApplicationId = applicationId
             });
-            return Ok((Models.Applications.GetTrainingCoursesApiResponse)result);
+
+            if (result is null) return NotFound();
         }
         catch (Exception e)
         {
@@ -78,7 +80,9 @@ public class TrainingCoursesController : Controller
                 ApplicationId = applicationId,
                 TrainingCourseId = trainingCourseId
             });
-            return Ok((Models.Applications.GetTrainingCourseApiResponse)result);
+
+            if (result is null) return NotFound();
+            return Ok((GetTrainingCourseApiResponse)result);
         }
         catch (Exception e)
         {
@@ -92,7 +96,7 @@ public class TrainingCoursesController : Controller
     {
         try
         {
-             await _mediator.Send(new UpdateTrainingCourseCommand
+            var result = await _mediator.Send(new UpdateTrainingCourseCommand
             {
                 ApplicationId = applicationId,
                 CandidateId = request.CandidateId,
@@ -100,7 +104,10 @@ public class TrainingCoursesController : Controller
                 CourseName = request.CourseName,
                 YearAchieved = request.YearAchieved
             });
-            return Ok();
+
+            if (result is null) return NotFound();
+
+            return Ok(result.Id);
         }
         catch (Exception e)
         {
