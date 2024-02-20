@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateTrainingCourse;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteJob;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PostDeleteTrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateTrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourses;
