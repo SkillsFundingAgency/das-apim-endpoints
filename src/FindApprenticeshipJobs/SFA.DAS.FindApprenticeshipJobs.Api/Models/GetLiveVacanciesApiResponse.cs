@@ -83,8 +83,7 @@ public class GetLiveVacanciesApiResponse
                 ApplicationUrl = source.ApplicationUrl,
                 TypicalJobTitles = source.TypicalJobTitles,
                 AdditionalQuestion1 = source.AdditionalQuestion1,
-                AdditionalQuestion2 = source.AdditionalQuestion2,
-                OwnerType = source.OwnerType
+                AdditionalQuestion2 = source.AdditionalQuestion2
             };
         }
 

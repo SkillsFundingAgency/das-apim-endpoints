@@ -93,8 +93,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 IsRecruitVacancy = true,
                 TypicalJobTitles = getStandardsListItem.TypicalJobTitles == null ? "" : SortTypicalJobTitles(getStandardsListItem.TypicalJobTitles),
                 AdditionalQuestion1 = source.AdditionalQuestion1,
-                AdditionalQuestion2 = source.AdditionalQuestion2,
-                OwnerType = source.OwnerType
+                AdditionalQuestion2 = source.AdditionalQuestion2
             };
         }
 
