@@ -27,7 +27,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.IsAny<ProviderEmailCommand>(),
-                    It.IsAny<CancellationToken>()));
+                    It.IsAny<CancellationToken>())).ReturnsAsync(Unit.Value);
 
             var controllerResult = await controller.EmailUsers(ukprn, request) as StatusCodeResult;
 
