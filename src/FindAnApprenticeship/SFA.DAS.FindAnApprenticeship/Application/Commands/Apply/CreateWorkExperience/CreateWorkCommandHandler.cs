@@ -6,6 +6,7 @@ using SFA.DAS.FindAnApprenticeship.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,18 +17,19 @@ public class CreateWorkCommandHandler(ICandidateApiClient<CandidateApiConfigurat
 {
     public async Task<CreateWorkCommandResponse> Handle(CreateWorkCommand command, CancellationToken cancellationToken)
     {
-        var requestBody = new PostWorkHistoryApiRequest.PostWorkHistoryApiRequestData
+        var requestBody = new PutUpsertWorkHistoryApiRequest.PutUpsertWorkHistoryApiRequestData
         {
-            EmployerName = command.CompanyName,
-            JobDescription = command.Description,
+            Employer = command.CompanyName,
+            Description = command.Description,
             JobTitle = string.Empty,
             StartDate = command.StartDate,
             EndDate = command.EndDate,
             WorkHistoryType = WorkHistoryType.WorkExperience
         };
-        var request = new PostWorkHistoryApiRequest(command.ApplicationId, command.CandidateId, requestBody);
 
-        var response = await apiClient.PostWithResponseCode<PostWorkHistoryApiResponse>(request);
+        var request = new PutUpsertWorkHistoryApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), requestBody);
+
+        var response = await apiClient.PutWithResponseCode<PutUpsertWorkHistoryApiResponse>(request);
 
         response.EnsureSuccessStatusCode();
 
