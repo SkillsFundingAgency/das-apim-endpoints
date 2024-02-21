@@ -22,7 +22,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetFeedbackTargetsForUp
         public async Task<GetFeedbackTargetsForUpdateResult> Handle(GetFeedbackTargetsForUpdateQuery request, CancellationToken cancellationToken)
         {
             var apiResponse =
-                await _feedbackApiClient.GetAll<ApprenticeFeedbackTarget>(
+                await _feedbackApiClient.GetAll<ApprenticeFeedbackTargetForUpdate>(
                     new GetApprenticeFeedbackTargetsForUpdateRequest() { BatchSize = request.BatchSize });
 
             return new GetFeedbackTargetsForUpdateResult
