@@ -20,5 +20,13 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
         public IReadOnlyCollection<ChangeOfEmployerLink> ChangeOfEmployerChain { get; set; }
         public IReadOnlyCollection<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequest { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
+        public PendingPriceChange PendingPriceChange { get; set; }
+    }
+
+    public class PendingPriceChange
+    {
+        public decimal Cost { get; set; }
+        public decimal? TrainingPrice { get; set; }
+        public decimal? EndPointAssessmentPrice { get; set; }
     }
 }
