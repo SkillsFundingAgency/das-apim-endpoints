@@ -11,6 +11,7 @@ var configuration = builder.Configuration.BuildConfiguration();
 builder.Services
     .AddConfigurationOptions(configuration)
     .AddServiceRegistration(configuration)
+    .AddServiceHealthChecks()
     .AddAuthentication(configuration)
     .AddApplicationInsightsTelemetry()
     .AddEndpointsApiExplorer()
