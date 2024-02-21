@@ -116,7 +116,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
-                var response = await _mediator.Send(new ProviderEmailCommand
+                await _mediator.Send(new ProviderEmailCommand
                 {
                     ProviderId = ukprn,
                     ProviderEmailRequest = request
