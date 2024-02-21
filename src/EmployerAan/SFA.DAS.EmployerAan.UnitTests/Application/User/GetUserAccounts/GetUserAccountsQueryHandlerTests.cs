@@ -2,8 +2,9 @@
 using FluentAssertions;
 using Moq;
 using SFA.DAS.EmployerAan.Application.User.GetUserAccounts;
-using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.EmployerAan.Models;
+using SFA.DAS.EmployerAan.Services;
+
 
 namespace SFA.DAS.EmployerAan.UnitTests.Application.User.GetUserAccounts;
 

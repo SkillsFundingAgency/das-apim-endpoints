@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using MediatR;
-using Microsoft.Extensions.Options;
 using RestEase.HttpClientFactory;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
@@ -8,28 +7,24 @@ using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
 using SFA.DAS.EmployerAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
-using SFA.DAS.EmployerAan.Configuration;
 using SFA.DAS.EmployerAan.Infrastructure;
-using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.EmployerAan.Services;
+
 
 namespace SFA.DAS.EmployerAan.Api.AppStart;
 
 [ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtensions
 {
+
+    private static readonly string Ready = "ready";
+    //MFCMFC to do add healthchecks
+
     public static IServiceCollection AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOptions();
         services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>()!.Value);
-        services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>()!.Value);
-        services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection(nameof(EmployerProfilesApiConfiguration)));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>()!.Value);
+
         return services;
     }
 
@@ -39,15 +34,14 @@ public static class ServiceCollectionExtensions
         services.AddMediatR(typeof(GetMyApprenticeshipQuery).Assembly);
         services.AddMediatR(typeof(GetEmployerMemberQuery).Assembly);
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
-        services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
-        services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
-        services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
         services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
-        services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
-        services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
 
         AddAanHubApiClient(services, configuration);
         AddCommitmentsV2ApiClient(services, configuration);
+        AddApprenticeAccountsApiClient(services, configuration);
+        AddAccountsApiClient(services, configuration);
+        AddCoursesApiClient(services, configuration);
+        AddEmployerProfilesApiClient(services, configuration);
         return services;
     }
 
@@ -68,37 +62,81 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    // private static void AddAanHubApiClient(IServiceCollection services, IConfiguration configuration)
+    // {
+    //     var apiConfig = configuration
+    //             .GetSection(nameof(AanHubApiConfiguration))
+    //             .Get<AanHubApiConfiguration>();
+    //
+    //     services.Configure<ApprenticeAccountsApiConfiguration>(configuration.GetSection(nameof(ApprenticeAccountsApiConfiguration)));
+    //     services.AddSingleton(c => c.GetService<IOptions<ApprenticeAccountsApiConfiguration>>()!.Value);
+    //
+    //     services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
+    //     services.AddSingleton(c => c.GetService<IOptions<CoursesApiConfiguration>>()!.Value);
+    //
+    //     services.AddSingleton(apiConfig);
+    //
+    //     services.AddScoped<AanHubApiHttpMessageHandler>();
+    //
+    //     services.AddRestEaseClient<IAanHubRestApiClient>(apiConfig.Url)
+    //         .AddHttpMessageHandler<AanHubApiHttpMessageHandler>();
+    // }
+
+    private static void AddApprenticeAccountsApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = GetApiConfiguration(configuration, "ApprenticeAccountsApiConfiguration");
+
+        services.AddRestEaseClient<IApprenticeAccountsApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+
+    }
+
+    private static void AddAccountsApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = GetApiConfiguration(configuration, "AccountsInnerApi");
+
+        services.AddRestEaseClient<IAccountsApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+
+    }
+
+    private static void AddCoursesApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = GetApiConfiguration(configuration, "CoursesApiConfiguration");
+
+        services.AddRestEaseClient<ICoursesApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+
+    }
+
+    private static void AddEmployerProfilesApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = GetApiConfiguration(configuration, "EmployerProfilesApiConfiguration");
+
+        services.AddRestEaseClient<IEmployerProfilesApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+
+    }
+
     private static void AddAanHubApiClient(IServiceCollection services, IConfiguration configuration)
     {
-        var apiConfig = configuration
-                .GetSection(nameof(AanHubApiConfiguration))
-                .Get<AanHubApiConfiguration>();
-
-        services.Configure<ApprenticeAccountsApiConfiguration>(configuration.GetSection(nameof(ApprenticeAccountsApiConfiguration)));
-        services.AddSingleton(c => c.GetService<IOptions<ApprenticeAccountsApiConfiguration>>()!.Value);
-
-        services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
-        services.AddSingleton(c => c.GetService<IOptions<CoursesApiConfiguration>>()!.Value);
-
-        services.AddSingleton(apiConfig);
-
-        services.AddScoped<AanHubApiHttpMessageHandler>();
+        var apiConfig = GetApiConfiguration(configuration, "AanHubApiConfiguration");
 
         services.AddRestEaseClient<IAanHubRestApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler<AanHubApiHttpMessageHandler>();
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+
     }
 
     private static void AddCommitmentsV2ApiClient(IServiceCollection services, IConfiguration configuration)
     {
-        var apiConfig = configuration
-                .GetSection(nameof(SFA.DAS.EmployerAan.Configuration.CommitmentsV2ApiConfiguration))
-                .Get<SFA.DAS.EmployerAan.Configuration.CommitmentsV2ApiConfiguration>();
+
+        var apiConfig = GetApiConfiguration(configuration, "CommitmentsV2ApiConfiguration");
 
         services.AddSingleton(apiConfig);
-
-        services.AddScoped<CommitmentsV2ApiHttpMessageHandler>();
-
         services.AddRestEaseClient<ICommitmentsV2ApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler<CommitmentsV2ApiHttpMessageHandler>();
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
     }
+
+    private static InnerApiConfiguration GetApiConfiguration(IConfiguration configuration, string configurationName)
+        => configuration.GetSection(configurationName).Get<InnerApiConfiguration>()!;
 }

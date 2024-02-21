@@ -2,12 +2,11 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.EmployerAan.Api.AppStart;
-using SFA.DAS.SharedOuterApi.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var configuration = builder.Configuration.BuildSharedConfiguration();
+var configuration = builder.Configuration.BuildConfiguration();
 
 builder.Services
     .AddConfigurationOptions(configuration)

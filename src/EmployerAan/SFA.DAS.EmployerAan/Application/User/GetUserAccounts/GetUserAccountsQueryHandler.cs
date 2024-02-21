@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.EmployerAan.Models;
+using SFA.DAS.EmployerAan.Services;
 
 namespace SFA.DAS.EmployerAan.Application.User.GetUserAccounts;
 
@@ -21,7 +21,7 @@ public class GetUserAccountsQueryHandler : IRequestHandler<GetUserAccountsQuery,
             UserId = request.UserId
         };
 
-        var response = await _employerAccountService.GetEmployerAccounts(profile);
+        var response = await _employerAccountService.GetEmployerAccounts(profile, cancellationToken);
 
         var employerAccountUsers = response.ToList();
         var account = employerAccountUsers.FirstOrDefault();
