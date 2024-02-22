@@ -6,7 +6,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models;
 
-public class WheMappingFromCommandResponseToCandidateResponse
+public class WhenMappingFromCommandResponseToCandidateResponse
 {
     [Test, AutoData]
     public void Then_The_Fields_Are_Mapped(PutCandidateCommandResult source)
