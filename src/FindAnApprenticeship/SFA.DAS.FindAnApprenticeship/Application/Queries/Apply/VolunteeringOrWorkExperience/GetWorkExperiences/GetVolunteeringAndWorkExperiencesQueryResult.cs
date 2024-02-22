@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetWorkExperiences;
+namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetWorkExperiences;
 
 public record GetVolunteeringAndWorkExperiencesQueryResult
 {

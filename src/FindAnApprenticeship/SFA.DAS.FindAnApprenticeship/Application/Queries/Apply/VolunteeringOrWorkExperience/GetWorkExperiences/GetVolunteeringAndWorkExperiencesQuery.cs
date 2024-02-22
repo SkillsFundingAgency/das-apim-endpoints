@@ -1,7 +1,7 @@
 ﻿using System;
 using MediatR;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetWorkExperiences
+namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetWorkExperiences
 {
     public class GetVolunteeringAndWorkExperiencesQuery : IRequest<GetVolunteeringAndWorkExperiencesQueryResult>
     {

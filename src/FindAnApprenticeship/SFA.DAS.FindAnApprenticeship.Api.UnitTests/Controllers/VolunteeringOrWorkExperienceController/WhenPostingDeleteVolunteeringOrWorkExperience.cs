@@ -11,7 +11,7 @@ using System;
 using System.Threading;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteVolunteering;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteWorkExperience;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VolunteeringOrWorkExperienceController;
 public class WhenPostingDeleteVolunteeringOrWorkExperience

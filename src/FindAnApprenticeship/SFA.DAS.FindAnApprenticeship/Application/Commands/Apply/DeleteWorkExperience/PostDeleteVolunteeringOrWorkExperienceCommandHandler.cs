@@ -5,7 +5,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteVolunteering;
+namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteWorkExperience;
 public class PostDeleteVolunteeringOrWorkExperienceCommandHandler(
     ICandidateApiClient<CandidateApiConfiguration> apiClient)
     : IRequestHandler<PostDeleteVolunteeringOrWorkExperienceCommand, Unit>

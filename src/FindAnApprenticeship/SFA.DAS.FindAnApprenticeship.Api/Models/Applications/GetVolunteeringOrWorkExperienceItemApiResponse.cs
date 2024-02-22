@@ -1,5 +1,5 @@
 ﻿using System;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetVolunteering;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetWorkExperience;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 

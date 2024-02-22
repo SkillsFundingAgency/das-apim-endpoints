@@ -1,7 +1,7 @@
 ﻿using System;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetVolunteering;
+namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetWorkExperience;
 public class GetVolunteeringOrWorkExperienceItemQueryResult
 {
     public Guid Id { get; set; }

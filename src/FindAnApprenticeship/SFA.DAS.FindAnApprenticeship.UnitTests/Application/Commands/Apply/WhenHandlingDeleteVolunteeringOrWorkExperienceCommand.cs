@@ -4,7 +4,7 @@ using FluentAssertions.Execution;
 using MediatR;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteVolunteering;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteWorkExperience;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;

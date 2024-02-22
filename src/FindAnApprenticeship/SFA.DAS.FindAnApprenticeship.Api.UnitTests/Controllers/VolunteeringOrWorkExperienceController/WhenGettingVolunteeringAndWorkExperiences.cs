@@ -4,14 +4,13 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetWorkExperiences;
-using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetWorkExperiences;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.WorkExperiencesController;
+namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VolunteeringOrWorkExperienceController;
 
 [TestFixture]
 public class WhenGettingVolunteeringAndWorkExperiences
@@ -22,7 +21,7 @@ public class WhenGettingVolunteeringAndWorkExperiences
         Guid applicationId,
         GetVolunteeringAndWorkExperiencesQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
-        [Greedy] Api.Controllers.WorkExperiencesController controller)
+        [Greedy] Api.Controllers.VolunteeringOrWorkExperienceController controller)
     {
         mediator.Setup(x => x.Send(It.Is<GetVolunteeringAndWorkExperiencesQuery>(q =>
                     q.CandidateId == candidateId && q.ApplicationId == applicationId),
@@ -34,7 +33,7 @@ public class WhenGettingVolunteeringAndWorkExperiences
         actual.Should().BeOfType<OkObjectResult>();
         var actualObject = ((OkObjectResult)actual).Value as GetVolunteeringAndWorkExperiencesQueryResult;
         actualObject.Should().NotBeNull();
-        actualObject.Should().BeEquivalentTo((GetVolunteeringAndWorkExperiencesQueryResult)queryResult);
+        actualObject.Should().BeEquivalentTo(queryResult);
     }
 
 
@@ -43,7 +42,7 @@ public class WhenGettingVolunteeringAndWorkExperiences
         Guid candidateId,
         Guid applicationId,
         [Frozen] Mock<IMediator> mediator,
-        [Greedy] Api.Controllers.WorkExperiencesController controller)
+        [Greedy] Api.Controllers.VolunteeringOrWorkExperienceController controller)
     {
         mediator.Setup(x => x.Send(It.Is<GetVolunteeringAndWorkExperiencesQuery>(q =>
                     q.CandidateId == candidateId && q.ApplicationId == applicationId),
