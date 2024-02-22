@@ -5,8 +5,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.DeleteVolunteeringOrWorkExperience;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteVolunteeringOrWorkExperience;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteVolunteering;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetVolunteering;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 

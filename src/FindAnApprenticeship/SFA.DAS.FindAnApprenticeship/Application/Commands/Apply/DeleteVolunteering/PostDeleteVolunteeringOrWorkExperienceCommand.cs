@@ -1,7 +1,7 @@
 ﻿using System;
 using MediatR;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteVolunteeringOrWorkExperience;
+namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteVolunteering;
 public class PostDeleteVolunteeringOrWorkExperienceCommand : IRequest<Unit>
 {
     public Guid Id { get; set; }
