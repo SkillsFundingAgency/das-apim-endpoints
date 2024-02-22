@@ -138,14 +138,14 @@ public class TrainingCoursesController : Controller
     }
 
     [HttpPost("{trainingCourseId}/delete")]
-    public async Task<IActionResult> PostDeleteTrainingCourse([FromRoute] Guid applicationId, [FromRoute] Guid TrainingCourseId, [FromBody] PostDeleteTrainingCourseRequest request)
+    public async Task<IActionResult> PostDeleteTrainingCourse([FromRoute] Guid applicationId, [FromRoute] Guid trainingCourseId, [FromBody] PostDeleteTrainingCourseRequest request)
     {
         try
         {
             var result = await _mediator.Send(new PostDeleteTrainingCourseCommand
             {
                 ApplicationId = applicationId,
-                TrainingCourseId = TrainingCourseId,
+                TrainingCourseId = trainingCourseId,
                 CandidateId = request.CandidateId
             });
 
