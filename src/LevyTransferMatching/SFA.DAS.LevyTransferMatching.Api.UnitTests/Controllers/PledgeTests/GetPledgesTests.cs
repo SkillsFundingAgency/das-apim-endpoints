@@ -10,7 +10,6 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework.Legacy;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 {

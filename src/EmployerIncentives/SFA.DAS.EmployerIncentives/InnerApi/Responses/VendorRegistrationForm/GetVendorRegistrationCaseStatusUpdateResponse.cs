@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.EmployerIncentives.InnerApi.Responses.VendorRegistrationForm

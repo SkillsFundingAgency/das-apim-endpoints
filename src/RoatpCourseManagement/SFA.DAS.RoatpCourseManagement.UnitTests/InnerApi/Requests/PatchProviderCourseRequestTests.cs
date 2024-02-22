@@ -2,7 +2,6 @@
 using System.Web;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 

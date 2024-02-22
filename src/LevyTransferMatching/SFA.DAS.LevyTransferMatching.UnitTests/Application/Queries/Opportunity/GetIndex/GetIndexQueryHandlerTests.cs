@@ -2,8 +2,6 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex;
-using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
-using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -12,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework.Legacy;
 using SFA.DAS.LevyTransferMatching.Models.Constants;
 using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetPledgesResponse;
 

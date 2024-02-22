@@ -9,7 +9,6 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.EmployerIncentives.Application.Commands.EmploymentCheck;
 using SFA.DAS.EmployerIncentives.Application.Commands.RegisterEmploymentCheck;
 
 namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EmploymentCheckTests

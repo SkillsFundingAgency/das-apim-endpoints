@@ -1,7 +1,5 @@
 ﻿using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using System;
-using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-using static SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory.GetJobsQueryResult;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetJob;
 

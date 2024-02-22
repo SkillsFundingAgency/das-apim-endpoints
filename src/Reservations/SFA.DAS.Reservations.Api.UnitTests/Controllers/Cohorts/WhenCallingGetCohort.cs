@@ -9,10 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Reservations.Api.Controllers;
-using SFA.DAS.Reservations.Api.Models;
 using SFA.DAS.Reservations.Application.Providers.Queries.GetCohort;
-using SFA.DAS.Reservations.Application.Providers.Queries.GetProvider;
-using SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCourseList;
 using SFA.DAS.Reservations.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 

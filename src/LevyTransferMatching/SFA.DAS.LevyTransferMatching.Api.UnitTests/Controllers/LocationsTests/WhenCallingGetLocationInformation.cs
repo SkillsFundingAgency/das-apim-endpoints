@@ -7,13 +7,9 @@ using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetLocationInformation;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NUnit.Framework.Legacy;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.LocationsTests
 {

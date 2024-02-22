@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Responses;
-using SFA.DAS.ApprenticeFeedback.Models;
 using SFA.DAS.ApprenticeFeedback.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;

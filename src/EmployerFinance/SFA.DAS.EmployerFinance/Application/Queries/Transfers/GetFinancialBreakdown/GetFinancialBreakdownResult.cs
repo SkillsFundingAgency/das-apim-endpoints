@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetFinancialBreakdown
 {

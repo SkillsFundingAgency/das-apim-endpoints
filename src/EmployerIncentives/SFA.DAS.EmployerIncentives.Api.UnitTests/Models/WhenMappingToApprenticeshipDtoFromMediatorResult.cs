@@ -3,9 +3,6 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Models
 {

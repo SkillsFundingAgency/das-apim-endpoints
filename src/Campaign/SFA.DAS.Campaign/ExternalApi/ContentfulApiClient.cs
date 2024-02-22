@@ -1,6 +1,5 @@
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 

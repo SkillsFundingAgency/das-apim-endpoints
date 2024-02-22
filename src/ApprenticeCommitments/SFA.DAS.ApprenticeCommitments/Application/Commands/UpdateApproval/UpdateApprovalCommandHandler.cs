@@ -9,7 +9,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Services;
 using static System.String;
 using ApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi.ApprenticeshipResponse;
-using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeAccountsApi;
 
 #nullable enable
 

@@ -5,7 +5,6 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;

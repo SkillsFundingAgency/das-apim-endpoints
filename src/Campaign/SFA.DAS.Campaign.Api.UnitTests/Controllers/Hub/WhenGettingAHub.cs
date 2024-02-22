@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -11,7 +8,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Campaign.Api.Controllers;
 using SFA.DAS.Campaign.Api.Models;
-using SFA.DAS.Campaign.Application.Queries.Articles;
 using SFA.DAS.Campaign.Application.Queries.Hub;
 using SFA.DAS.Testing.AutoFixture;
 

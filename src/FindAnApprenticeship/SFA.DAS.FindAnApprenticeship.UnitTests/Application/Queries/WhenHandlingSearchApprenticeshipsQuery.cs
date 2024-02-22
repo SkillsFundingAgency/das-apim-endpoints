@@ -1,9 +1,7 @@
 using AutoFixture.NUnit3;
-using Azure.Core;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Moq;
-using NServiceBus.Timeout.Core;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;

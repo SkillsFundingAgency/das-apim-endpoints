@@ -1,7 +1,4 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
-using SFA.DAS.EmployerIncentives.Application.Commands.AddJobRequest;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
