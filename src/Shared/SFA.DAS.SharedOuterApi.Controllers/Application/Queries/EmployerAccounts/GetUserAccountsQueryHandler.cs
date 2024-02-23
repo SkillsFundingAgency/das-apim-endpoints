@@ -5,17 +5,17 @@ using MediatR;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Services;
 
-namespace SFA.DAS.SharedOuterApi.Application.Queries.EmployerAccounts
+namespace SFA.DAS.SharedOuterApi.Controllers.Application.Queries.EmployerAccounts
 {
-    public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, GetAccountsQueryResult>
+    public class GetUserAccountsQueryHandler : IRequestHandler<GetUserAccountsQuery, GetUserAccountsQueryResult>
     {
         private readonly IEmployerAccountsService _employerAccountService;
 
-        public GetAccountsQueryHandler(IEmployerAccountsService employerAccountService)
+        public GetUserAccountsQueryHandler(IEmployerAccountsService employerAccountService)
         {
             _employerAccountService = employerAccountService;
         }
-        public async Task<GetAccountsQueryResult> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
+        public async Task<GetUserAccountsQueryResult> Handle(GetUserAccountsQuery request, CancellationToken cancellationToken)
         {
             var employerAccounts = (await _employerAccountService.GetEmployerAccounts(new EmployerProfile
             {
@@ -23,7 +23,7 @@ namespace SFA.DAS.SharedOuterApi.Application.Queries.EmployerAccounts
                 UserId = request.UserId
             })).ToList();
 
-            return new GetAccountsQueryResult
+            return new GetUserAccountsQueryResult
             {
                 EmployerUserId = employerAccounts.FirstOrDefault()?.UserId,
                 FirstName = employerAccounts.FirstOrDefault()?.FirstName,

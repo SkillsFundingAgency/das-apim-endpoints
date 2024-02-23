@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-namespace SFA.DAS.SharedOuterApi.Application.Queries.EmployerAccounts
+namespace SFA.DAS.SharedOuterApi.Controllers.Application.Queries.EmployerAccounts
 {
-    public class GetAccountsQueryResult
+    public class GetUserAccountsQueryResult
     {
         public string EmployerUserId { get; set; }
         public string FirstName { get; set; }

@@ -3,18 +3,18 @@ using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.SharedOuterApi.Application.Queries.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Controllers.Application.Queries.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Controllers.Models;
 
-namespace SFA.DAS.SharedOuterApi.Controllers
+namespace SFA.DAS.SharedOuterApi.Controllers.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class AccountUsersController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public AccountUsersController (IMediator mediator)
+        public UsersController (IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -25,7 +25,7 @@ namespace SFA.DAS.SharedOuterApi.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetAccountsQuery
+                var result = await _mediator.Send(new GetUserAccountsQuery
                 {
                     UserId = userId,
                     Email = email

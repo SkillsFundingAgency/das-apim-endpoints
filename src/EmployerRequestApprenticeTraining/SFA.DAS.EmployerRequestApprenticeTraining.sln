@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerRequestAppr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerRequestApprenticeTraining.MockApis", "SFA.DAS.EmployerRequestApprenticeTraining.MockApis\SFA.DAS.EmployerRequestApprenticeTraining.MockApis.csproj", "{755F1D2F-32C2-4093-9E2E-F055574964AB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Controllers", "..\Shared\SFA.DAS.SharedOuterApi.Controllers\SFA.DAS.SharedOuterApi.Controllers.csproj", "{791256A4-F00D-48B7-AD4F-F72C9C415E8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{755F1D2F-32C2-4093-9E2E-F055574964AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{755F1D2F-32C2-4093-9E2E-F055574964AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{755F1D2F-32C2-4093-9E2E-F055574964AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{791256A4-F00D-48B7-AD4F-F72C9C415E8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{791256A4-F00D-48B7-AD4F-F72C9C415E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{791256A4-F00D-48B7-AD4F-F72C9C415E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{791256A4-F00D-48B7-AD4F-F72C9C415E8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
