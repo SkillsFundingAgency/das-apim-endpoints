@@ -4,5 +4,5 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
 public class UpdateSkillsAndStrengthsApplicationModel
 {
-    public SectionStatus SkillsAndStrengthsSctionStatus { get; set; }
+    public SectionStatus SkillsAndStrengthsSectionStatus { get; set; }
 }

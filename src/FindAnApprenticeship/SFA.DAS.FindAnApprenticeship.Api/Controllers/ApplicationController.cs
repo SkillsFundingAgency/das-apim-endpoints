@@ -134,7 +134,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             {
                 ApplicationId = applicationId,
                 CandidateId = candidateId,
-                SkillsAndStrengthsSectionStatus = request.SkillsAndStrengthsSctionStatus
+                SkillsAndStrengthsSectionStatus = request.SkillsAndStrengthsSectionStatus
             }, cancellationToken);
 
             if (result.Application == null)

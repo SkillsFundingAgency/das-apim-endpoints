@@ -27,7 +27,7 @@ public class WhenUpdatingApplicationSkillsAndStrengths
         mediator.Setup(x => x.Send(It.Is<PatchApplicationSkillsAndStrengthsCommand>(c =>
                     c.CandidateId == candidateId &&
                     c.ApplicationId == applicationId &&
-                    c.SkillsAndStrengthsSectionStatus == model.SkillsAndStrengthsSctionStatus),
+                    c.SkillsAndStrengthsSectionStatus == model.SkillsAndStrengthsSectionStatus),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(result);
 
