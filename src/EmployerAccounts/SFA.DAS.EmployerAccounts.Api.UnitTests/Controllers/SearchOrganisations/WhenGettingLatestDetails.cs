@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Api.Controllers;
+using SFA.DAS.EmployerAccounts.Api.Models;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetLatestDetails;
 using SFA.DAS.EmployerAccounts.Exceptions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
@@ -37,7 +38,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.SearchOrganisations
             controllerResult.Should().NotBeNull();
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as Api.Models.Organisation;
+            var model = controllerResult.Value as OrganisationResponse;
 
             model.Should().NotBeNull();
 

@@ -35,13 +35,13 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.SearchOrganisations
             controllerResult.Should().NotBeNull();
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as IEnumerable<SearchOrganisationsResponse.Organisation>;
+            var model = controllerResult.Value as IEnumerable<OrganisationResponse>;
 
             model.Should().NotBeNull();
 
             model.Should().BeEquivalentTo(mediatorResult.Organisations);
         }
-   
+
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Internal_Server_Error(
           [Frozen] Mock<IMediator> mockMediator,
