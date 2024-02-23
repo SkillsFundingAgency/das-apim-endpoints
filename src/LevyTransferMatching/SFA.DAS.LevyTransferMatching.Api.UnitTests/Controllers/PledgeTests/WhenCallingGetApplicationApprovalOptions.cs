@@ -10,6 +10,7 @@ using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 {
@@ -49,9 +50,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         {
             mockMediator
                 .Setup(x => x.Send(
-                    It.Is<GetApplicationApprovalOptionsQuery>(y => (y.PledgeId == pledgeId) && (y.ApplicationId == applicationId)),
+                    It.Is<GetApplicationQuery>(y => (y.PledgeId == pledgeId) && (y.ApplicationId == applicationId)),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync((GetApplicationApprovalOptionsQueryResult)null);
+                .ReturnsAsync((GetApplicationResult)null);
 
             var controllerResult = await pledgeController.Application(pledgeId, applicationId);
             var notFoundResult = controllerResult as NotFoundResult;
