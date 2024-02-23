@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities
 {
-    public class RefreshLegalEntitiesCommandHandler : IRequestHandler<RefreshLegalEntitiesCommand>
+    public class RefreshLegalEntitiesCommandHandler : IRequestHandler<RefreshLegalEntitiesCommand, Unit>
     {
         private readonly IAccountsService _accountsService;
         private readonly ILegalEntitiesService _legalEntitiesService;

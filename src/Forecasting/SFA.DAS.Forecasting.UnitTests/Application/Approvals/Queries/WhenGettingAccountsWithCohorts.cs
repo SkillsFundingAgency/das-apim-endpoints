@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Forecasting.Application.Approvals.Queries.GetAccountIds;
@@ -36,7 +37,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Approvals.Queries
         public async Task Then_AccountsWithCohorts_Are_Retrieved()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            CollectionAssert.AreEqual(_apiResponse.AccountIds, result.AccountIds);
+            result.AccountIds.Should().BeEquivalentTo(_apiResponse.AccountIds);
         }
     }
 }

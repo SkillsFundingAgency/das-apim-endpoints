@@ -50,7 +50,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetAddressesQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAddressesQuery).Assembly));
             services.AddServiceRegistration();
 
             services.Configure<RouteOptions>(options =>

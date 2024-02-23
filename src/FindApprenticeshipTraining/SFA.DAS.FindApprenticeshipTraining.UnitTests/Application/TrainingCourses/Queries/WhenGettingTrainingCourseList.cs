@@ -30,7 +30,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetLevelsListResponse levelsApiResponse,
             int shortlistItemCount,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
-            [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>?> mockShortlistApiClient,
+            [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient,
             GetTrainingCoursesListQueryHandler handler)
         {
             var sectorsApiResponse = new GetRoutesListResponse
@@ -87,6 +87,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 Levels = new List<int>(),
                 RouteIds = new List<string>()
             };
+            cacheStorageService
+                .Setup(cache => cache.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse)))
+                .ReturnsAsync((GetRoutesListResponse)null);
+            cacheStorageService
+                .Setup(cache => cache.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+                .ReturnsAsync((GetStandardsListResponse)null);
+            cacheStorageService
+                .Setup(cache => cache.RetrieveFromCache<GetLevelsListResponse>(nameof(GetLevelsListResponse)))
+                .ReturnsAsync((GetLevelsListResponse)null);
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
                     It.IsAny<GetAvailableToStartStandardsListRequest>()))
@@ -281,6 +290,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 Levels = new List<int>(),
                 RouteIds = new List<string>()
             };
+            cacheStorageService
+                .Setup(cache => cache.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse)))
+                .ReturnsAsync((GetRoutesListResponse)null);
             cacheStorageService
                 .Setup(cache => cache.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
                 .ReturnsAsync(cachedStandards);

@@ -47,7 +47,7 @@ namespace SFA.DAS.EmployerProfiles.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetAccountsQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
             services.AddServiceRegistration();
             
             services.Configure<RouteOptions>(options =>

@@ -49,7 +49,7 @@ namespace SFA.DAS.Assessors.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetTrainingCoursesExportQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetTrainingCoursesExportQuery).Assembly));
             services.AddServiceRegistration();
 
             services.Configure<RouteOptions>(options =>

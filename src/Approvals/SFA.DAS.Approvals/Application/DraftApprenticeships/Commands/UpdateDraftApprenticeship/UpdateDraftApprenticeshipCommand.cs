@@ -6,7 +6,7 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraftApprenticeship
 {
-    public class UpdateDraftApprenticeshipCommand : IRequest
+    public class UpdateDraftApprenticeshipCommand : IRequest<Unit>
     {
         public long CohortId { get; set; }
         public Party? RequestingParty { get; set; }

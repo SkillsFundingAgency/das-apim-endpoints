@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
+using NUnit.Framework.Legacy;
 using SFA.DAS.LevyTransferMatching.Models.Constants;
 using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetPledgesResponse;
 
@@ -53,7 +55,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            CollectionAssert.AreEqual(result.Opportunities.Select(x => x.Id), _pledges.Pledges.Select(x => x.Id));
+            result.Opportunities.Select(x => x.Id).Should().BeEquivalentTo(_pledges.Pledges.Select(x => x.Id));
         }
 
         [Test]

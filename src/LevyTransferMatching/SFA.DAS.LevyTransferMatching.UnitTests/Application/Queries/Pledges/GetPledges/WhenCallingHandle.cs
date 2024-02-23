@@ -8,6 +8,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.GetPledges
 {
@@ -43,7 +44,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Pledges,Is.Not.Null);
-            CollectionAssert.IsNotEmpty(result.Pledges);
+            result.Pledges.Should().NotBeEmpty();
             Assert.That(!result.Pledges.Any(x => x.Id == 0));
             Assert.That(!result.Pledges.Any(x => x.Amount == 0));
             Assert.That(!result.Pledges.Any(x => x.RemainingAmount == 0));

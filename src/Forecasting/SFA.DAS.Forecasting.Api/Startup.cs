@@ -47,7 +47,7 @@ namespace SFA.DAS.Forecasting.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetFrameworkCoursesQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetFrameworkCoursesQuery).Assembly));
                 
             services.AddServiceRegistration();
 

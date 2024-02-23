@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerDemand.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetLocationsQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetLocationsQuery).Assembly));
             
             services.AddServiceRegistration();
             

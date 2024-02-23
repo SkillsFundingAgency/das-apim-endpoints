@@ -4,7 +4,7 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.AddJobRequest
 {
-    public class AddJobCommand : IRequest
+    public class AddJobCommand : IRequest<Unit>
     {
         public JobType Type { get; }
         public Dictionary<string, string> Data { get; }

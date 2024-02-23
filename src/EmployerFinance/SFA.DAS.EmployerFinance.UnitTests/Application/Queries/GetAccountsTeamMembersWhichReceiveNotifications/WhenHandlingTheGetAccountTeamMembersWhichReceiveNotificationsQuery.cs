@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetAccountTeamMembersWhichReceiveNotifications;
@@ -32,7 +33,7 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetPledges
 
             var results = await handler.Handle(query, CancellationToken.None);
 
-            CollectionAssert.AreEqual(response, results);
+            results.Should().BeEquivalentTo(response);
         }
     }
 }

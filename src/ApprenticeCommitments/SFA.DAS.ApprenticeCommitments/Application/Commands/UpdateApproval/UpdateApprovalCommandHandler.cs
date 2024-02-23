@@ -14,7 +14,7 @@ using ApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2I
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
 {
-    public class UpdateApprovalCommandHandler : IRequestHandler<UpdateApprovalCommand>
+    public class UpdateApprovalCommandHandler : IRequestHandler<UpdateApprovalCommand, Unit>
     {
         private readonly ApprenticeCommitmentsService _apprenticeCommitmentsService;
         private readonly CommitmentsV2Service _commitmentsService;

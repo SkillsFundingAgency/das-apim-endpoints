@@ -11,7 +11,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
 {
-    public class ApplicationCreatedEmailCommandHandler : IRequestHandler<ApplicationCreatedEmailCommand>
+    public class ApplicationCreatedEmailCommandHandler : IRequestHandler<ApplicationCreatedEmailCommand, Unit>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly IAccountsService _accountsService;

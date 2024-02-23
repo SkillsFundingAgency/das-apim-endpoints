@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprovalOptions
 {
-    public class SetApplicationApprovalOptionsCommand : IRequest
+    public class SetApplicationApprovalOptionsCommand : IRequest<Unit>
     {
         public int PledgeId { get; set; }
         public int ApplicationId { get; set; }

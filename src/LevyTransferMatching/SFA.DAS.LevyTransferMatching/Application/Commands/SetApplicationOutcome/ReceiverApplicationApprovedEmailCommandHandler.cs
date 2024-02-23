@@ -9,7 +9,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome
 {
-    public class ReceiverApplicationApprovedEmailCommandHandler : IRequestHandler<ReceiverApplicationApprovedEmailCommand>
+    public class ReceiverApplicationApprovedEmailCommandHandler : IRequestHandler<ReceiverApplicationApprovedEmailCommand, Unit>
     {
         private readonly IAccountsService _accountsService;
         private readonly ILogger<ReceiverApplicationApprovedEmailCommandHandler> _logger;

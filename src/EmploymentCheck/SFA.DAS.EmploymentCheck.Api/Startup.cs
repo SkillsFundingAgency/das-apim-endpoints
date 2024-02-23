@@ -58,7 +58,7 @@ namespace SFA.DAS.EmploymentCheck.Api
                 .AddCheck<EmploymentCheckApiHealthCheck>(nameof(EmploymentCheckApiHealthCheck.HealthCheckResultDescription))
                 ;
 
-            services.AddMediatR(typeof(RegisterCheckCommand).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(RegisterCheckCommand).Assembly));
             services.AddServiceRegistration();
 
             services

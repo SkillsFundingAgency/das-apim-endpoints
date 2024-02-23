@@ -51,7 +51,7 @@ namespace SFA.DAS.EpaoRegister.Api
             }
 
             services.AddServiceRegistration();
-            services.AddMediatR(typeof(GetEpaosQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEpaosQuery).Assembly));
             services.AddMediatRValidation();
 
             services.Configure<RouteOptions>(options =>

@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Command
 {
-    public class ValidateDraftApprenticeshipDetailsCommand : IRequest
+    public class ValidateDraftApprenticeshipDetailsCommand : IRequest<Unit>
     {
         public ValidateDraftApprenticeshipRequest DraftApprenticeshipRequest { get; set; }
 

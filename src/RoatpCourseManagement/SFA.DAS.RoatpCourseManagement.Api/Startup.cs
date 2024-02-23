@@ -49,7 +49,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api
 
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
-            services.AddMediatR(GetType().Assembly, typeof(GetAllProviderCoursesQueryHandler).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAllProviderCoursesQueryHandler).Assembly));
             services.AddHealthChecks()
                     .AddCheck<RoatpCourseManagementApiHealthCheck>(RoatpCourseManagementApiHealthCheck.HealthCheckResultDescription,
                         failureStatus: HealthStatus.Unhealthy,

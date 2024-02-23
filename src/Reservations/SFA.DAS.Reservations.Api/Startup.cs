@@ -58,7 +58,7 @@ namespace SFA.DAS.Reservations.Api
             services.Configure<CommitmentsV2ApiConfiguration>(_configuration.GetSection("CommitmentsV2ApiConfiguration"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
 
-            services.AddMediatR(typeof(GetTrainingCoursesQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetTrainingCoursesQuery).Assembly));
             services.AddServiceRegistration();
             
             services

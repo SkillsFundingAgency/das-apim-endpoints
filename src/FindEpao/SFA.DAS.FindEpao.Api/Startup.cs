@@ -49,7 +49,7 @@ namespace SFA.DAS.FindEpao.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetCourseListQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetCourseListQuery).Assembly));
             services.AddMediatRValidation();
             services.AddServiceRegistration();
 

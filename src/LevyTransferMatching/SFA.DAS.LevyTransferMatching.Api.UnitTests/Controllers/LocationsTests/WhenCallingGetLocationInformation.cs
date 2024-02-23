@@ -10,6 +10,7 @@ using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.LocationsTests
 {
@@ -36,7 +37,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.LocationsTests
             Assert.That(locationInformation, Is.Not.Null);
             Assert.That(okObjectResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
             Assert.That(getLocationInformationResult.Name, Is.EqualTo(locationInformation.Name));
-            CollectionAssert.AreEqual(getLocationInformationResult.GeoPoint, locationInformation.GeoPoint);
+            locationInformation.GeoPoint.Should().BeEquivalentTo(getLocationInformationResult.GeoPoint);
         }
     }
 }

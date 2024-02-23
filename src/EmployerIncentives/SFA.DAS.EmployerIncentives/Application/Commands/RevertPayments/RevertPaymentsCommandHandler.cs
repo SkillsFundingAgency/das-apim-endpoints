@@ -5,7 +5,7 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.RevertPayments
 {
-    public class RevertPaymentsCommandHandler : IRequestHandler<RevertPaymentsCommand>
+    public class RevertPaymentsCommandHandler : IRequestHandler<RevertPaymentsCommand, Unit>
     {
         private readonly IEmployerIncentivesService _service;
 

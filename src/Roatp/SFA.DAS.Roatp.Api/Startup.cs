@@ -49,7 +49,7 @@ namespace SFA.DAS.Roatp.Api
             services.AddHealthChecks()
                 .AddCheck<CharitiesApiHealthCheck>(nameof(CharitiesApiHealthCheck));
 
-            services.AddMediatR(GetType().Assembly, typeof(GetCharityQueryHandler).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetCharityQueryHandler).Assembly));
 
             services.AddFluentValidation(new[] { typeof(GetCharityQueryHandler).Assembly });
 

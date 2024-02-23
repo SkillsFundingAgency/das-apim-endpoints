@@ -60,7 +60,7 @@ namespace SFA.DAS.Funding.Api
             services.AddHealthChecks()
                 .AddCheck<FundingApprenticeshipEarningsHealthCheck>(nameof(FundingApprenticeshipEarningsHealthCheck));
 
-            services.AddMediatR(typeof(GetProviderEarningsSummaryQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetProviderEarningsSummaryQuery).Assembly));
             services.AddServiceRegistration();
 
             services

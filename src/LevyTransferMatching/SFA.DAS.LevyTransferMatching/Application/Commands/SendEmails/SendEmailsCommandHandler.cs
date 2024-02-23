@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.SendEmails
 {
-    public class SendEmailsCommandHandler : IRequestHandler<SendEmailsCommand>
+    public class SendEmailsCommandHandler : IRequestHandler<SendEmailsCommand, Unit>
     {
         private readonly INotificationService _notificationsService;
 

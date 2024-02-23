@@ -102,7 +102,7 @@ namespace SFA.DAS.LevyTransferMatching.Api
                         .AddCheck<LevyTransferMatchingApiHealthCheck>("Levy Transfer Matching Api Health Check");
             }
 
-            services.AddMediatR(typeof(IAccountsService));
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(IAccountsService).Assembly));
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
             

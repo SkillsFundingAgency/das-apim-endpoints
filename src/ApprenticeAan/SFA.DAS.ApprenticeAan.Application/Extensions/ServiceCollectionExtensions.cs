@@ -8,6 +8,9 @@ namespace SFA.DAS.ApprenticeAan.Application.Extensions
     [ExcludeFromCodeCoverage]
     public static class ServiceCollectionExtensions
     {
-        public static void AddApplicationRegistrations(this IServiceCollection services) { services.AddMediatR(typeof(GetRegionsQuery).Assembly); }
+        public static void AddApplicationRegistrations(this IServiceCollection services)
+        {
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetRegionsQuery).Assembly));
+        }
     }
 }

@@ -47,7 +47,7 @@ namespace SFA.DAS.EmployerFinance.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetFrameworksQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetFrameworksQuery).Assembly));
             services.AddServiceRegistration();
 
             services

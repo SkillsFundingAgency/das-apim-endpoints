@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprovalOptions
 {
-    public class SetApplicationApprovalOptionsCommandHandler : IRequestHandler<SetApplicationApprovalOptionsCommand>
+    public class SetApplicationApprovalOptionsCommandHandler : IRequestHandler<SetApplicationApprovalOptionsCommand, Unit>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
 

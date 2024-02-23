@@ -43,7 +43,7 @@ public class Startup
             services.AddAuthentication(azureAdConfiguration, policies);
         }
 
-        services.AddMediatR(typeof(DummyQuery).Assembly);
+        services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(DummyQuery).Assembly));
         services.AddServiceRegistration(_configuration);
 
         services

@@ -52,7 +52,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api
                 .AddCheck<AssessorsApiHealthCheck>(nameof(AssessorsApiHealthCheck))
                 .AddCheck<ApprenticeFeedbackApiHealthCheck>(nameof(ApprenticeFeedbackApiHealthCheck));
 
-            services.AddMediatR(typeof(GetApprenticeQuery).Assembly);
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetApprenticeQuery).Assembly));
 
             services.AddServiceRegistration();
 

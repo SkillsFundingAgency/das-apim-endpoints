@@ -22,7 +22,6 @@
 
   <ItemGroup>
       <PackageReference Include="MediatR" />
-      <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
       <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" />
       <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
@@ -52,6 +51,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.FindApprenticeshipTraining\SFA.DAS.FindApprenticeshipTraining.csproj" />
+      <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
   </ItemGroup>
 
 </Project>

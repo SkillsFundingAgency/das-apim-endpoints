@@ -49,7 +49,7 @@ namespace SFA.DAS.Approvals.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetStandardsQuery).Assembly);
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetStandardsQuery).Assembly));
             services.AddServiceRegistration(_configuration);
             services.AddAutoMapper(typeof(Startup));
 

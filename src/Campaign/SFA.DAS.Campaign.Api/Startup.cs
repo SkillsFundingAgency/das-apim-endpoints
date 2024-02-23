@@ -47,7 +47,7 @@ namespace SFA.DAS.Campaign.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetSectorsQuery).Assembly);
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetSectorsQuery).Assembly));
             services.AddServiceRegistration();
             
             services
