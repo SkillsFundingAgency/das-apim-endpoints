@@ -2,16 +2,16 @@
 using FluentAssertions.Execution;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetSkillsAndStrengths;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetExpectedSkillsAndStrengths;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models;
-public class WhenMappingFromCommandResponseToSkillsAndStrengthsApiResponse
+public class WhenMappingFromCommandResponseToExpectedSkillsAndStrengthsApiResponse
 {
     [Test, MoqAutoData]
-    public void Then_Fields_Are_Mapped_Correctly(GetSkillsAndStrengthsQueryResult source)
+    public void Then_Fields_Are_Mapped_Correctly(GetExpectedSkillsAndStrengthsQueryResult source)
     {
-        var actual = (GetSkillsAndStrengthsApiResponse)source;
+        var actual = (GetExpectedSkillsAndStrengthsApiResponse)source;
 
         using (new AssertionScope())
         {

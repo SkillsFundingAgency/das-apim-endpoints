@@ -7,37 +7,37 @@ using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading.Tasks;
 using System;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetSkillsAndStrengths;
 using System.Threading;
 using FluentAssertions;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using System.Net;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetExpectedSkillsAndStrengths;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SkillsAndStrengthsController;
-public class WhenCallingGet
+public class WhenCallingGetExpectedSkillsAndStrengths
 {
     [Test, MoqAutoData]
     public async Task Then_The_Query_Response_Is_Returned(
        Guid candidateId,
        Guid applicationId,
-       GetSkillsAndStrengthsQueryResult queryResult,
+       GetExpectedSkillsAndStrengthsQueryResult queryResult,
        [Frozen] Mock<IMediator> mediator,
        [Greedy] Api.Controllers.SkillsAndStrengthsController controller)
     {
-        mediator.Setup(x => x.Send(It.Is<GetSkillsAndStrengthsQuery>(q =>
+        mediator.Setup(x => x.Send(It.Is<GetExpectedSkillsAndStrengthsQuery>(q =>
                     q.CandidateId == candidateId
                     && q.ApplicationId == applicationId),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(queryResult);
 
-        var actual = await controller.Get(applicationId, candidateId);
+        var actual = await controller.GetExpectedSkillsAndStrengths(applicationId, candidateId);
 
         using (new AssertionScope())
         {
             actual.Should().BeOfType<OkObjectResult>();
-            var actualObject = ((OkObjectResult)actual).Value as GetSkillsAndStrengthsApiResponse;
+            var actualObject = ((OkObjectResult)actual).Value as GetExpectedSkillsAndStrengthsApiResponse;
             actualObject.Should().NotBeNull();
-            actualObject.Should().BeEquivalentTo((GetSkillsAndStrengthsApiResponse)queryResult);
+            actualObject.Should().BeEquivalentTo((GetExpectedSkillsAndStrengthsApiResponse)queryResult);
         }
     }
 
@@ -48,13 +48,13 @@ public class WhenCallingGet
            [Frozen] Mock<IMediator> mediator,
            [Greedy] Api.Controllers.SkillsAndStrengthsController controller)
     {
-        mediator.Setup(x => x.Send(It.Is<GetSkillsAndStrengthsQuery>(q =>
+        mediator.Setup(x => x.Send(It.Is<GetExpectedSkillsAndStrengthsQuery>(q =>
                     q.CandidateId == candidateId
                     && q.ApplicationId == applicationId),
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new InvalidOperationException());
 
-        var actual = await controller.Get(applicationId, candidateId);
+        var actual = await controller.GetExpectedSkillsAndStrengths(applicationId, candidateId);
 
         actual.As<StatusCodeResult>().StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }

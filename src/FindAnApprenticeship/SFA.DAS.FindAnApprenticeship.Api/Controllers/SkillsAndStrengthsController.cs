@@ -7,6 +7,7 @@ using System.Net;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetSkillsAndStrengths;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateSkillsAndStrengthsCommand;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetExpectedSkillsAndStrengths;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
@@ -25,20 +26,22 @@ public class SkillsAndStrengthsController : Controller
 
     [HttpGet]
     public async Task<IActionResult> Get([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
+    [HttpGet("expected")]
+    public async Task<IActionResult> GetExpectedSkillsAndStrengths([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
     {
         try
         {
-            var result = await _mediator.Send(new GetSkillsAndStrengthsQuery
+            var result = await _mediator.Send(new GetExpectedSkillsAndStrengthsQuery
             {
                 ApplicationId = applicationId,
                 CandidateId = candidateId
             });
 
-            return Ok((GetSkillsAndStrengthsApiResponse)result);
+            return Ok((GetExpectedSkillsAndStrengthsApiResponse)result);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Get Skills and Strengths : An error occurred");
+            _logger.LogError(e, "Get Expected Skills and Strengths : An error occurred");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
