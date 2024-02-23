@@ -4,10 +4,10 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Net;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetSkillsAndStrengths;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateSkillsAndStrengthsCommand;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetExpectedSkillsAndStrengths;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetCandidateSkillsAndStrengths;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
@@ -24,8 +24,26 @@ public class SkillsAndStrengthsController : Controller
         _logger = logger;
     }
 
-    [HttpGet]
-    public async Task<IActionResult> Get([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
+    [HttpGet("candidate")]
+    public async Task<IActionResult> GetCandidateSkillsAndStrengths([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
+    {
+        try
+        {
+            var result = await _mediator.Send(new GetCandidateSkillsAndStrengthsQuery
+            {
+                ApplicationId = applicationId,
+                CandidateId = candidateId
+            });
+
+            return Ok((GetCandidateSkillsAndStrengthsApiResponse)result);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Get Candidate Skills and Strengths : An error occurred");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
     [HttpGet("expected")]
     public async Task<IActionResult> GetExpectedSkillsAndStrengths([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
     {
