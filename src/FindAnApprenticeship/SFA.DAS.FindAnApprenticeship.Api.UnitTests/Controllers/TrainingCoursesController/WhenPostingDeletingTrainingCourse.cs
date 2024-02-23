@@ -39,7 +39,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.TrainingCourses
 
         [Test, MoqAutoData]
         public async Task Then_If_An_Exception_Is_Thrown_Then_Internal_Server_Error_Response_Returned(
-            Guid jobId,
+            Guid trainingCourseId,
             Guid applicationId,
             PostDeleteTrainingCourseRequest request,
             [Frozen] Mock<IMediator> mediator,
@@ -49,7 +49,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.TrainingCourses
                     CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
-            var actual = await controller.PostDeleteTrainingCourse(applicationId, jobId, request) as StatusCodeResult;
+            var actual = await controller.PostDeleteTrainingCourse(applicationId, trainingCourseId, request) as StatusCodeResult;
 
             Assert.IsNotNull(actual);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
