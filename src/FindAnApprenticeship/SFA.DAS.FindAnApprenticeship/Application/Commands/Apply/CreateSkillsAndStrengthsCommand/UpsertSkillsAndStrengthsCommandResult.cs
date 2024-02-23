@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateSkillsAndStrengthsCommand;
-public class CreateSkillsAndStrengthsCommandResult
+public class UpsertSkillsAndStrengthsCommandResult
 {
     public Guid Id { get; set; }
 }

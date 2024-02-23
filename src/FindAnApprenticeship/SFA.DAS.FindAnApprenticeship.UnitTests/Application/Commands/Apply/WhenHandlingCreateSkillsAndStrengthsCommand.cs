@@ -17,10 +17,10 @@ public class WhenHandlingCreateSkillsAndStrengthsCommand
 {
     [Test, MoqAutoData]
     public async Task Then_The_SkillsAndStrengths_Is_Created(
-        CreateSkillsAndStrengthsCommand command,
+        UpsertSkillsAndStrengthsCommand command,
         PutUpsertSkillsAndStrengthsApiResponse apiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        CreateSkillsAndStrengthsCommandHandler handler)
+        UpsertSkillsAndStrengthsCommandHandler handler)
     {
         var expectedRequest = new PutUpsertSkillsAndStrengthsApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), new PutUpsertSkillsAndStrengthsApiRequest.PutUpdateSkillsAndStrengthsApiRequestData());
 

@@ -19,12 +19,12 @@ public class WhenCallingPost
     [Test, MoqAutoData]
     public async Task Then_The_Command_Response_Is_Returned(
         Guid applicationId,
-        CreateSkillsAndStrengthsCommandResult commandResult,
+        UpsertSkillsAndStrengthsCommandResult commandResult,
         PostSkillsAndStrengthsApiRequest apiRequest,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.SkillsAndStrengthsController controller)
     {
-        mediator.Setup(x => x.Send(It.Is<CreateSkillsAndStrengthsCommand>(c =>
+        mediator.Setup(x => x.Send(It.Is<UpsertSkillsAndStrengthsCommand>(c =>
             c.CandidateId.Equals(apiRequest.CandidateId)
             && c.ApplicationId == applicationId),
             CancellationToken.None))
@@ -46,7 +46,7 @@ public class WhenCallingPost
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.SkillsAndStrengthsController controller)
     {
-        mediator.Setup(x => x.Send(It.Is<CreateSkillsAndStrengthsCommand>(c =>
+        mediator.Setup(x => x.Send(It.Is<UpsertSkillsAndStrengthsCommand>(c =>
             c.CandidateId.Equals(apiRequest.CandidateId)
             && c.ApplicationId == applicationId),
             CancellationToken.None))
@@ -67,7 +67,7 @@ public class WhenCallingPost
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.SkillsAndStrengthsController controller)
     {
-        mediator.Setup(x => x.Send(It.IsAny<CreateSkillsAndStrengthsCommand>(), CancellationToken.None)).ThrowsAsync(new Exception());
+        mediator.Setup(x => x.Send(It.IsAny<UpsertSkillsAndStrengthsCommand>(), CancellationToken.None)).ThrowsAsync(new Exception());
 
         var actual = await controller.Post(applicationId, apiRequest) as StatusCodeResult;
 

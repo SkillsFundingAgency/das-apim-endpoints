@@ -7,7 +7,7 @@ public class PostSkillsAndStrengthsApiResponse
 {
     public Guid Id { get; set; }
 
-    public static implicit operator PostSkillsAndStrengthsApiResponse(CreateSkillsAndStrengthsCommandResult source)
+    public static implicit operator PostSkillsAndStrengthsApiResponse(UpsertSkillsAndStrengthsCommandResult source)
     {
         return new PostSkillsAndStrengthsApiResponse
         {

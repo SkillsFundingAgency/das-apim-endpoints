@@ -9,16 +9,16 @@ using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateSkillsAndStrengthsCommand;
-public class CreateSkillsAndStrengthsCommandHandler : IRequestHandler<CreateSkillsAndStrengthsCommand, CreateSkillsAndStrengthsCommandResult>
+public class UpsertSkillsAndStrengthsCommandHandler : IRequestHandler<UpsertSkillsAndStrengthsCommand, UpsertSkillsAndStrengthsCommandResult>
 {
     private readonly ICandidateApiClient<CandidateApiConfiguration> _apiClient;
 
-    public CreateSkillsAndStrengthsCommandHandler(ICandidateApiClient<CandidateApiConfiguration> apiClient)
+    public UpsertSkillsAndStrengthsCommandHandler(ICandidateApiClient<CandidateApiConfiguration> apiClient)
     {
         _apiClient = apiClient;
     }
 
-    public async Task<CreateSkillsAndStrengthsCommandResult> Handle(CreateSkillsAndStrengthsCommand command, CancellationToken cancellationToken)
+    public async Task<UpsertSkillsAndStrengthsCommandResult> Handle(UpsertSkillsAndStrengthsCommand command, CancellationToken cancellationToken)
     {
         var requestBody = new PutUpsertSkillsAndStrengthsApiRequest.PutUpdateSkillsAndStrengthsApiRequestData
         {
@@ -31,7 +31,7 @@ public class CreateSkillsAndStrengthsCommandHandler : IRequestHandler<CreateSkil
 
         if (result is null) return null;
 
-        return new CreateSkillsAndStrengthsCommandResult
+        return new UpsertSkillsAndStrengthsCommandResult
         {
             Id = result.Body.Id
         };

@@ -8,7 +8,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models;
 public class WhenMappingFromCommandResultToPostSkillsAndStrengthsApiResponse
 {
     [Test, MoqAutoData]
-    public void Then_Fields_Are_Mapped_Correctly(CreateSkillsAndStrengthsCommandResult source)
+    public void Then_Fields_Are_Mapped_Correctly(UpsertSkillsAndStrengthsCommandResult source)
     {
         var actual = (PostSkillsAndStrengthsApiResponse)source;
 

@@ -49,7 +49,7 @@ public class SkillsAndStrengthsController : Controller
     {
         try
         {
-            var result = await _mediator.Send(new CreateSkillsAndStrengthsCommand
+            var result = await _mediator.Send(new UpsertSkillsAndStrengthsCommand
             {
                 ApplicationId = applicationId,
                 CandidateId = request.CandidateId,
