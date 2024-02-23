@@ -31,6 +31,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             int shortlistItemCount,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             [Frozen] Mock<IShortlistApiClient<ShortlistApiConfiguration>> mockShortlistApiClient,
+            [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetTrainingCoursesListQueryHandler handler)
         {
             var sectorsApiResponse = new GetRoutesListResponse
@@ -44,6 +45,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                     }
                 }
             };
+            cacheStorageService.Setup(x => x.RetrieveFromCache<GetRoutesListResponse>(It.IsAny<string>()))
+                .ReturnsAsync((GetRoutesListResponse)null);
+            cacheStorageService.Setup(x => x.RetrieveFromCache<GetLevelsListResponse>(It.IsAny<string>()))
+                .ReturnsAsync((GetLevelsListResponse)null);
+            cacheStorageService.Setup(x => x.RetrieveFromCache<GetStandardsListResponse>(It.IsAny<string>()))
+                .ReturnsAsync((GetStandardsListResponse)null);
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
                     It.Is<GetAvailableToStartStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword) 
@@ -128,6 +135,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetTrainingCoursesListQueryHandler handler)
         {
+            cacheStorageService.Setup(x => x.RetrieveFromCache<GetRoutesListResponse>(It.IsAny<string>()))
+                .ReturnsAsync((GetRoutesListResponse)null);
+            cacheStorageService.Setup(x => x.RetrieveFromCache<GetStandardsListResponse>(It.IsAny<string>()))
+                .ReturnsAsync((GetStandardsListResponse)null);
+            cacheStorageService.Setup(x => x.RetrieveFromCache<GetLevelsListResponse>(It.IsAny<string>()))
+                .ReturnsAsync((GetLevelsListResponse)null);
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
                     It.Is<GetAvailableToStartStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
@@ -154,6 +167,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetTrainingCoursesListQueryHandler handler)
         {
+            cacheStorageService
+                .Setup(cache => cache.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse)))
+                .ReturnsAsync((GetRoutesListResponse)null);
+            cacheStorageService
+                .Setup(cache => cache.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+                .ReturnsAsync((GetStandardsListResponse)null);
+            cacheStorageService.Setup(x => x.RetrieveFromCache<GetLevelsListResponse>(It.IsAny<string>()))
+                .ReturnsAsync((GetLevelsListResponse)null);
             var sectorsApiResponse = new GetRoutesListResponse
             {
                 Routes = new List<GetRoutesListItem>
@@ -192,6 +213,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCoursesListQueryHandler handler)
         {
             //Arrange
+            cacheStorageService.Setup(x => x.RetrieveFromCache<GetStandardsListResponse>(It.IsAny<string>()))
+                .ReturnsAsync((GetStandardsListResponse)null);
+            cacheStorageService.Setup(x => x.RetrieveFromCache<GetLevelsListResponse>(It.IsAny<string>()))
+                .ReturnsAsync((GetLevelsListResponse)null);
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
                     It.Is<GetAvailableToStartStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
@@ -224,6 +249,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetTrainingCoursesListQueryHandler handler)
         {
+            cacheStorageService.Setup(x => x.RetrieveFromCache<GetRoutesListResponse>(It.IsAny<string>()))
+                .ReturnsAsync((GetRoutesListResponse)null);
+            cacheStorageService.Setup(x => x.RetrieveFromCache<GetStandardsListResponse>(It.IsAny<string>()))
+                .ReturnsAsync((GetStandardsListResponse)null);
+            cacheStorageService.Setup(x => x.RetrieveFromCache<GetLevelsListResponse>(It.IsAny<string>()))
+                .ReturnsAsync((GetLevelsListResponse)null);
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
                     It.Is<GetAvailableToStartStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
@@ -250,6 +281,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCoursesListQueryHandler handler)
         {
             //Arrange
+            cacheStorageService.Setup(x => x.RetrieveFromCache<GetRoutesListResponse>(It.IsAny<string>()))
+                .ReturnsAsync((GetRoutesListResponse)null);
+            cacheStorageService.Setup(x => x.RetrieveFromCache<GetStandardsListResponse>(It.IsAny<string>()))
+                .ReturnsAsync((GetStandardsListResponse)null);
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
                     It.Is<GetAvailableToStartStandardsListRequest>(c=>c.Keyword.Equals(query.Keyword))))
@@ -296,6 +331,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             cacheStorageService
                 .Setup(cache => cache.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
                 .ReturnsAsync(cachedStandards);
+            cacheStorageService.Setup(x => x.RetrieveFromCache<GetLevelsListResponse>(It.IsAny<string>()))
+                .ReturnsAsync((GetLevelsListResponse)null);
 
             mockApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(

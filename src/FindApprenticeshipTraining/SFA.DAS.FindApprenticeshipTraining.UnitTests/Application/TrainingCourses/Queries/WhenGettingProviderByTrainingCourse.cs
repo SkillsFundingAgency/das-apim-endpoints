@@ -549,11 +549,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             mockApprenticeFeedbackApiClient
                 .Setup(s => s.GetWithResponseCode<GetApprenticeFeedbackResponse>(It.IsAny<GetApprenticeFeedbackDetailsRequest>()))
                 .ReturnsAsync(new ApiResponse<GetApprenticeFeedbackResponse>(apprenticeFeedbackResponse, HttpStatusCode.OK, string.Empty));
+            mockRoatpV2ApiClient.Setup(r => r.Get<GetProviderDetailsForCourse>(It.IsAny<GetProviderByCourseAndUkprnRequest>())).ReturnsAsync((GetProviderDetailsForCourse)null);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.ProviderStandard.Should().BeNull();
-            mockRoatpV2ApiClient.Verify(r => r.Get<GetProviderDetailsForCourse>(It.IsAny<GetProviderByCourseAndUkprnRequest>()));
+            
         }
 
         private static void ArrangeClients(

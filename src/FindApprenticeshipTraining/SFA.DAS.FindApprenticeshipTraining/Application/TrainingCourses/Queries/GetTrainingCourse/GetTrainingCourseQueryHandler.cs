@@ -17,18 +17,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         private readonly ICoursesApiClient<CoursesApiConfiguration> _apiClient;
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient;
         private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortlistApiClient;
-        private readonly ILocationLookupService _locationLookupService;
         private readonly CacheHelper _cacheHelper;
 
         public GetTrainingCourseQueryHandler (
             ICoursesApiClient<CoursesApiConfiguration> apiClient,
             ICacheStorageService cacheStorageService,
-            ILocationLookupService locationLookupService,
             IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient, 
             IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
         {
             _apiClient = apiClient;
-            _locationLookupService = locationLookupService;
             _roatpCourseManagementApiClient = roatpCourseManagementApiClient;
             _shortlistApiClient = shortlistApiClient;
             _cacheHelper = new CacheHelper(cacheStorageService);
@@ -36,8 +33,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         }
         public async Task<GetTrainingCourseResult> Handle(GetTrainingCourseQuery request, CancellationToken cancellationToken)
         {
-            var location = await _locationLookupService.GetLocationInformation(request.LocationName, request.Lat, request.Lon);
-            
             var standardTask = _apiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
             
             var ukprnsCountTask = _roatpCourseManagementApiClient.Get<GetTotalProvidersForStandardResponse>(
