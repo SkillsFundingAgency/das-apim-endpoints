@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateWorkExperience;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteWorkExperience;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateVolunteeringOrWorkExperience;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetWorkExperience;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetWorkExperiences;
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteWorkExperience;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetWorkExperience;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetWorkExperiences;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
@@ -66,6 +67,34 @@ public class VolunteeringOrWorkExperienceController(
         catch (Exception ex)
         {
             logger.LogError(ex, $"Error posting work experience for application {applicationId}", applicationId);
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpPost]
+    [Route("{id}")]
+    public async Task<IActionResult> PostUpdateWorkExperience([FromRoute] Guid applicationId, [FromRoute] Guid id, [FromBody] PostUpdateVolunteeringOrWorkExperienceApiRequest request)
+    {
+        try
+        {
+            var result = await mediator.Send(new UpdateVolunteeringOrWorkExperienceCommand
+            {
+                ApplicationId = applicationId,
+                Id = id,
+                CandidateId = request.CandidateId,
+                Employer = request.EmployerName,
+                Description = request.Description,
+                StartDate = request.StartDate,
+                EndDate = request.EndDate
+            });
+
+            if (result is null) return NotFound();
+
+            return Ok(result.Id);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "PostUpdateWorkExperience : An error occurred");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
