@@ -10,6 +10,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PostDeleteTraining
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateTrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
 [ApiController]
@@ -61,7 +62,7 @@ public class TrainingCoursesController : Controller
             });
 
             if (result is null) return NotFound();
-            return Ok((GetTrainingCoursesApiResponse)result);
+            return Ok((Models.Applications.GetTrainingCoursesApiResponse)result);
         }
         catch (Exception e)
         {
@@ -83,7 +84,7 @@ public class TrainingCoursesController : Controller
             });
 
             if (result is null) return NotFound();
-            return Ok((GetTrainingCourseApiResponse)result);
+            return Ok((Models.Applications.GetTrainingCourseApiResponse)result);
         }
         catch (Exception e)
         {
@@ -128,7 +129,7 @@ public class TrainingCoursesController : Controller
                 ApplicationId = applicationId,
                 TrainingCourseId = trainingCourseId
             });
-            return Ok((GetDeleteTrainingCourseApiResponse)result);
+            return Ok((Models.Applications.GetTrainingCourseApiResponse)result);
         }
         catch (Exception e)
         {

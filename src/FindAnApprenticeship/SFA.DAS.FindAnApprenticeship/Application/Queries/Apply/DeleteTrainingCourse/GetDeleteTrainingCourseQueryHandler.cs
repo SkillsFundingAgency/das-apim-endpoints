@@ -18,6 +18,6 @@ public class GetDeleteTrainingCourseQueryHandler : IRequestHandler<GetDeleteTrai
 
     public async Task<GetDeleteTrainingCourseQueryResult> Handle(GetDeleteTrainingCourseQuery request, CancellationToken cancellationToken)
     {
-        return await _candidateApiClient.Get<GetDeleteTrainingCourseResponse>(new GetTrainingCourseApiRequest(request.ApplicationId, request.CandidateId, request.TrainingCourseId));
+        return await _candidateApiClient.Get<GetTrainingCourseApiResponse>(new GetTrainingCourseApiRequest(request.ApplicationId, request.CandidateId, request.TrainingCourseId));
     }
 }
