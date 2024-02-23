@@ -15,14 +15,14 @@ public class WhenHandlingGetDeleteTrainingCourseQuery
     [Test, MoqAutoData]
     public async Task Then_The_QueryResult_Is_Returned_As_Expected(
         GetDeleteTrainingCourseQuery query,
-        GetDeleteTrainingCourseResponse trainingCourseApiResponse,
+        GetTrainingCourseApiResponse trainingCourseApiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetDeleteTrainingCourseQueryHandler handler)
     {
-        var expectedGetTrainingCourseRequest = new GetDeleteTrainingCourseRequest(query.ApplicationId, query.CandidateId, query.TrainingCourseId);
+        var expectedGetTrainingCourseRequest = new GetTrainingCourseApiRequest(query.ApplicationId, query.CandidateId, query.TrainingCourseId);
         candidateApiClient
-            .Setup(client => client.Get<GetDeleteTrainingCourseResponse>(
-                It.Is<GetDeleteTrainingCourseRequest>(r => r.GetUrl == expectedGetTrainingCourseRequest.GetUrl)))
+            .Setup(client => client.Get<GetTrainingCourseApiResponse>(
+                It.Is<GetTrainingCourseApiRequest>(r => r.GetUrl == expectedGetTrainingCourseRequest.GetUrl)))
             .ReturnsAsync(trainingCourseApiResponse);
 
         var result = await handler.Handle(query, CancellationToken.None);

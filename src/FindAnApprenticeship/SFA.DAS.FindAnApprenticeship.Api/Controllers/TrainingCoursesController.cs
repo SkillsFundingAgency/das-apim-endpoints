@@ -84,7 +84,7 @@ public class TrainingCoursesController : Controller
             });
 
             if (result is null) return NotFound();
-            return Ok((Models.Applications.GetTrainingCourseApiResponse)result);
+            return Ok((Models.Applications.GetTrainingCourseApiResponse)result.Course);
         }
         catch (Exception e)
         {
@@ -129,7 +129,7 @@ public class TrainingCoursesController : Controller
                 ApplicationId = applicationId,
                 TrainingCourseId = trainingCourseId
             });
-            return Ok((Models.Applications.GetTrainingCourseApiResponse)result);
+            return Ok((Models.Applications.GetTrainingCourseApiResponse)result.Course);
         }
         catch (Exception e)
         {

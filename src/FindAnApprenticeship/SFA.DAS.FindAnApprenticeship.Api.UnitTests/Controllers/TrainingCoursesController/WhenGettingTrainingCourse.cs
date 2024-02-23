@@ -38,7 +38,7 @@ public class WhenGettingTrainingCourse
             actual.Should().BeOfType<OkObjectResult>();
             var actualObject = ((OkObjectResult)actual).Value as GetTrainingCourseApiResponse;
             actualObject.Should().NotBeNull();
-            actualObject.Should().BeEquivalentTo((GetTrainingCourseApiResponse)queryResult);
+            actualObject.Should().BeEquivalentTo((GetTrainingCourseApiResponse)queryResult.Course);
         }
     }
 

@@ -36,9 +36,9 @@ public class WhenGettingDeleteTrainingCourse
         using (new AssertionScope())
         {
             actual.Should().BeOfType<OkObjectResult>();
-            var actualObject = ((OkObjectResult)actual).Value as GetDeleteTrainingCourseApiResponse;
+            var actualObject = ((OkObjectResult)actual).Value as GetTrainingCourseApiResponse;
             actualObject.Should().NotBeNull();
-            actualObject.Should().BeEquivalentTo((GetDeleteTrainingCourseApiResponse)queryResult);
+            actualObject.Should().BeEquivalentTo((GetTrainingCourseApiResponse)queryResult.Course);
         }
     }
 }
