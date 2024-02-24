@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.SharedOuterApi.Controllers.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Controllers.Models;
 
-namespace SFA.DAS.SharedOuterApi.Controllers.Controllers
+namespace SFA.DAS.SharedOuterApi.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
