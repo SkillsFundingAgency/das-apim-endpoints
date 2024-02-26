@@ -47,16 +47,6 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
 
                 getStudentTriageResult.EnsureSuccessStatusCode();
 
-                var isSurveyCompleted = (getStudentTriageResult.Body.StudentSurvey.DateCompleted != null);
-
-                if (isSurveyCompleted)
-                {
-                    return new ManageStudentTriageDataCommandResult
-                    {
-                        Message = $"{manageStudentResponse?.Body?.Message}"
-                    };
-                }
-
                 var studentTriageData = MapResponseToStudentData(getStudentTriageResult.Body);
 
                 var sendStudentDataresult = await _apiLepsClient.PostWithResponseCode<SendStudentDataToNeLepsResponse>(new SendStudentDataToNeLepsRequest(studentTriageData, request.SurveyGuid), false);
@@ -137,6 +127,7 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
                 .SelectMany(q => q.Answers.Select(answer => new AnswersDto
                 {
                     Id = answer.Id,
+                    QuestionId = questionId,
                     AnswerText = answer.AnswerText,
                     ShortDescription = answer.ShortDescription,
                 }));
@@ -149,6 +140,7 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
                 .Select(responseAnswer => new ResponseAnswersDto
                 {
                     Id = responseAnswer.Id,
+                    QuestionId = questionId,
                     AnswerId = responseAnswer.AnswerId,
                     AnswerText = GetAnswerText(responseAnswer.AnswerId.Value, questionId, responseData),
                     Response = responseAnswer.Response,
