@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using MediatR;
 using SFA.DAS.EarlyConnect.Configuration;
+using SFA.DAS.EarlyConnect.Configuration.FeatureToggle;
 using SFA.DAS.EarlyConnect.ExternalApi.Requests;
 using SFA.DAS.EarlyConnect.ExternalApi.Responses;
 using SFA.DAS.EarlyConnect.ExternalModels;
@@ -16,55 +17,76 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
     public class ManageStudentTriageDataCommandHandler : IRequestHandler<ManageStudentTriageDataCommand, ManageStudentTriageDataCommandResult>
     {
         private readonly IEarlyConnectApiClient<EarlyConnectApiConfiguration> _apiClient;
-
         private readonly ILepsNeApiClient<LepsNeApiConfiguration> _apiLepsClient;
+        private readonly IFeature _feature;
 
-        public ManageStudentTriageDataCommandHandler(IEarlyConnectApiClient<EarlyConnectApiConfiguration> apiClient, ILepsNeApiClient<LepsNeApiConfiguration> apiLepsClient)
+        public ManageStudentTriageDataCommandHandler(IEarlyConnectApiClient<EarlyConnectApiConfiguration> apiClient, ILepsNeApiClient<LepsNeApiConfiguration> apiLepsClient, IFeature feature)
         {
             _apiClient = apiClient;
             _apiLepsClient = apiLepsClient;
+            _feature = feature;
         }
 
         public async Task<ManageStudentTriageDataCommandResult> Handle(ManageStudentTriageDataCommand request, CancellationToken cancellationToken)
         {
-            var manageStudentresponse = await _apiClient.PostWithResponseCode<ManageStudentTriageDataResponse>(new ManageStudentTriageDataRequest(request.StudentTriageData, request.SurveyGuid), true);
+            var manageStudentResponse = await _apiClient.PostWithResponseCode<ManageStudentTriageDataResponse>(new ManageStudentTriageDataRequest(request.StudentTriageData, request.SurveyGuid), true);
 
-            manageStudentresponse.EnsureSuccessStatusCode();
+            manageStudentResponse.EnsureSuccessStatusCode();
 
             if (request.StudentTriageData.StudentSurvey.DateCompleted == null)
             {
                 return new ManageStudentTriageDataCommandResult
                 {
-                    Message = $"{manageStudentresponse?.Body?.Message}"
+                    Message = $"{manageStudentResponse?.Body?.Message}"
                 };
             }
-            var getStudentTriageresult = await _apiClient.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(new GetStudentTriageDataBySurveyIdRequest(request.SurveyGuid));
 
-            getStudentTriageresult.EnsureSuccessStatusCode();
-
-            var studentTriageData = MapResponseToStudentData(getStudentTriageresult.Body);
-
-            var sendStudentDataresult = await _apiLepsClient.PostWithResponseCode<SendStudentDataToNeLepsResponse>(new SendStudentDataToNeLepsRequest(studentTriageData, request.SurveyGuid), false);
-
-            if (sendStudentDataresult == null || sendStudentDataresult.StatusCode != HttpStatusCode.Created)
+            if (_feature.IsFeatureEnabled(FeatureNames.NorthEastDataSharing))
             {
+                var getStudentTriageResult = await _apiClient.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(new GetStudentTriageDataBySurveyIdRequest(request.SurveyGuid));
+
+                getStudentTriageResult.EnsureSuccessStatusCode();
+
+                var isSurveyCompleted = (getStudentTriageResult.Body.StudentSurvey.DateCompleted != null);
+
+                if (isSurveyCompleted)
+                {
+                    return new ManageStudentTriageDataCommandResult
+                    {
+                        Message = $"{manageStudentResponse?.Body?.Message}"
+                    };
+                }
+
+                var studentTriageData = MapResponseToStudentData(getStudentTriageResult.Body);
+
+                var sendStudentDataresult = await _apiLepsClient.PostWithResponseCode<SendStudentDataToNeLepsResponse>(new SendStudentDataToNeLepsRequest(studentTriageData, request.SurveyGuid), false);
+
+                if (sendStudentDataresult == null || sendStudentDataresult.StatusCode != HttpStatusCode.Created)
+                {
+                    return new ManageStudentTriageDataCommandResult
+                    {
+                        Message = $"{manageStudentResponse?.Body?.Message} - {sendStudentDataresult?.Body?.Message}"
+                    };
+                }
+
+                var deliveryUpdate = new DeliveryUpdate { Source = DataSource.StudentData, Ids = new List<int> { getStudentTriageResult.Body.Id } };
+
+                var deliveryUpdateresponse = await _apiClient.PostWithResponseCode<DeliveryUpdateDataResponse>(new DeliveryUpdateRequest(deliveryUpdate));
+
+                deliveryUpdateresponse.EnsureSuccessStatusCode();
+
                 return new ManageStudentTriageDataCommandResult
                 {
-                    Message = $"{manageStudentresponse?.Body?.Message} - {sendStudentDataresult?.Body?.Message}"
+                    Message = $"{manageStudentResponse?.Body?.Message} - {sendStudentDataresult?.Body?.Message} - {deliveryUpdateresponse?.Body?.Message}"
                 };
             }
-
-            var deliveryUpdate = new DeliveryUpdate { Source = DataSource.StudentData, Ids = new List<int> { getStudentTriageresult.Body.Id } };
-
-            var deliveryUpdateresponse = await _apiClient.PostWithResponseCode<DeliveryUpdateDataResponse>(new DeliveryUpdateRequest(deliveryUpdate));
-
-            deliveryUpdateresponse.EnsureSuccessStatusCode();
 
             return new ManageStudentTriageDataCommandResult
             {
-                Message = $"{manageStudentresponse?.Body?.Message} - {sendStudentDataresult?.Body?.Message} - {deliveryUpdateresponse?.Body?.Message}"
+                Message = $"{manageStudentResponse?.Body?.Message}"
             };
         }
+
         public StudentTriageData MapResponseToStudentData(GetStudentTriageDataBySurveyIdResponse responseData)
         {
             var studentData = new StudentTriageData
