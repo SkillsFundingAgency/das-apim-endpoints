@@ -13,7 +13,7 @@ public class ReferenceDataApiHealthChecksTests : HealthChecksTestsBase
     public async Task CheckHealthAsync_ValidQueryResult_ReturnsHealthyStatus(
         [Frozen] Mock<IReferenceDataApiClient> apiClient,
         HealthCheckContext healthCheckContext,
-        LocationsApiHealthCheck healthCheck,
+        ReferenceDataApiHealthCheck healthCheck,
         CancellationToken cancellationToken)
     {
         apiClient.Setup(x => x.GetHealth(cancellationToken)).ReturnsAsync(ResponseMessageOk);
@@ -27,7 +27,7 @@ public class ReferenceDataApiHealthChecksTests : HealthChecksTestsBase
     public async Task CheckHealthAsync_NotValidQueryResult_ReturnsUnHealthyStatus(
         [Frozen] Mock<IReferenceDataApiClient> apiClient,
         HealthCheckContext healthCheckContext,
-        LocationsApiHealthCheck healthCheck)
+        ReferenceDataApiHealthCheck healthCheck)
     {
         apiClient.Setup(x => x.GetHealth(It.IsAny<CancellationToken>())).ReturnsAsync(ResponseMessageBadRequest);
 

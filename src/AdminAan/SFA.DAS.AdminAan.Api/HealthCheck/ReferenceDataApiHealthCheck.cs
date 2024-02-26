@@ -5,7 +5,7 @@ namespace SFA.DAS.AdminAan.Api.HealthCheck;
 
 public class ReferenceDataApiHealthCheck : IHealthCheck
 {
-    public const string HealthCheckResultDescription = "Locations API Health Check";
+    public const string HealthCheckResultDescription = "Reference Data API Health Check";
 
     private readonly IReferenceDataApiClient _referenceDataApiClient;
 

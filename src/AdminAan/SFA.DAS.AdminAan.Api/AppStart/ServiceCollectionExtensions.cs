@@ -66,9 +66,10 @@ public static class ServiceCollectionExtensions
             .AddCheck<ReferenceDataApiHealthCheck>(ReferenceDataApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
                 tags: new[] { Ready })
-            .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription,
+            .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
                 tags: new[] { Ready });
+
         return services;
     }
 
