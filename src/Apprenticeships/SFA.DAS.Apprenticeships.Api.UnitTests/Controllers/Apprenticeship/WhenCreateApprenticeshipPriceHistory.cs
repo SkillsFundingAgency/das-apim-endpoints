@@ -33,7 +33,7 @@ public class WhenCreateApprenticeshipPriceHistory
             reason: "Test Reason",
             effectiveFromDate: new DateTime(2023, 04, 04));
             
-        apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<IPostApiRequest>(), It.IsAny<bool>())).ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.OK, ""));
+        apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateApprenticeshipPriceChangeRequest>(), It.IsAny<bool>())).ReturnsAsync(new ApiResponse<object>("", HttpStatusCode.OK, ""));
 
         // Act
         await sut.CreateApprenticeshipPriceChange(

@@ -1,4 +1,7 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -10,10 +13,8 @@ using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
 {
@@ -29,6 +30,8 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
             List<ProviderLocationModel> apiResponse)
         {
             apiClientMock.Setup(a => a.Get<List<ProviderLocationModel>>(It.IsAny<GetAllProviderLocationsQuery>())).ReturnsAsync(apiResponse);
+            apiClientMock.Setup(a => a.PostWithResponseCode<ProviderLocationsBulkInsertRequest>(It.IsAny<ProviderLocationsBulkInsertRequest>(), false)).ReturnsAsync(new ApiResponse<ProviderLocationsBulkInsertRequest>(null, System.Net.HttpStatusCode.OK, null));
+            apiClientMock.Setup(a => a.PostWithResponseCode<ProviderCourseLocationBulkInsertRequest>(It.IsAny<ProviderCourseLocationBulkInsertRequest>(), false)).ReturnsAsync(new ApiResponse<ProviderCourseLocationBulkInsertRequest>(null, System.Net.HttpStatusCode.OK, null));
 
             var result = await sut.Handle(command, cancellationToken);
 
@@ -49,7 +52,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
            CancellationToken cancellationToken,
            HttpRequestContentException expectedException)
         {
-            apiClientMock.Setup(a => a.Get<List<ProviderLocationModel>>(It.IsAny<GetAllProviderLocationsQuery>())).Throws(expectedException); 
+            apiClientMock.Setup(a => a.Get<List<ProviderLocationModel>>(It.IsAny<GetAllProviderLocationsQuery>())).Throws(expectedException);
 
             var actualException = Assert.ThrowsAsync<HttpRequestContentException>(() => sut.Handle(command, cancellationToken));
 

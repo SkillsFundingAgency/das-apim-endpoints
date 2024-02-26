@@ -74,4 +74,9 @@ public interface IAanHubRestApiClient
         [Path] Guid memberId,
         [Body] PostMemberStatusModel postMemberStatusModel,
         CancellationToken cancellationToken);
+
+    [Get("/members/{memberId}/activities")]
+    Task<GetMemberActivitiesResponse> GetMemberActivities(
+        [Path] Guid memberId,
+        CancellationToken cancellationToken);
 }

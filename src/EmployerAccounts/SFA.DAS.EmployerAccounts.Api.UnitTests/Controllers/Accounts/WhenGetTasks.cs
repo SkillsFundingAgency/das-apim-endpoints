@@ -46,10 +46,10 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
             [Greedy] AccountsController controller)
         {
             mockMediator
-               .Setup(mediator => mediator.Send(
-                   It.Is<GetTasksQuery>(p => p.AccountId == accountId),
-                   It.IsAny<CancellationToken>()))
-               .ReturnsAsync(() => null);
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetTasksQuery>(p => p.AccountId == accountId),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => null);
 
             var controllerResult = await controller.GetTasks(accountId) as NotFoundResult;
 

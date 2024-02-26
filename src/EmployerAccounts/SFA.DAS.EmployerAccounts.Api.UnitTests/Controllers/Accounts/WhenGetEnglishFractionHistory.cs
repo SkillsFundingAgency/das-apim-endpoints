@@ -48,10 +48,10 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
             [Greedy] AccountsController controller)
         {
             mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.Is<GetEnglishFractionHistoryQuery>(p => p.HashedAccountId == hashedAccountId && p.EmpRef == empRef),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => null);
+               .Setup(mediator => mediator.Send(
+                   It.Is<GetEnglishFractionHistoryQuery>(p => p.HashedAccountId == hashedAccountId && p.EmpRef == empRef),
+                   It.IsAny<CancellationToken>()))
+               .ReturnsAsync(() => null);
 
             var controllerResult = await controller.GetEnglishFractionHistory(hashedAccountId, empRef) as NotFoundResult;
 
