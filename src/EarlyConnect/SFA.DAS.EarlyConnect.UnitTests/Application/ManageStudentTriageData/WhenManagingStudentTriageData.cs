@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
@@ -10,6 +11,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.EarlyConnect.InnerApi.Responses;
 using SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData;
 using SFA.DAS.EarlyConnect.Models;
+using SFA.DAS.EarlyConnect.Configuration.FeatureToggle;
 
 namespace SFA.DAS.EarlyConnect.UnitTests.Application.ManageStudentTriageData;
 
@@ -19,15 +21,21 @@ public class WhenManagingStudentTriageData
     public async Task Handle_ValidRequest_ReturnsResult()
     {
         var earlyConnectApiClientMock = new Mock<IEarlyConnectApiClient<EarlyConnectApiConfiguration>>();
-        var handler = new ManageStudentTriageDataCommandHandler(earlyConnectApiClientMock.Object);
+        var lepsNeApiClientMock = new Mock<ILepsNeApiClient<LepsNeApiConfiguration>>();
+        var featureConfig = new Mock<IFeature>();
+        var handler = new ManageStudentTriageDataCommandHandler(earlyConnectApiClientMock.Object, lepsNeApiClientMock.Object, featureConfig.Object);
 
         var command = new ManageStudentTriageDataCommand
         {
             StudentTriageData = new StudentTriageData()
         };
 
-        var expectedResponse = new Mock<ManageStudentTriageDataResponse>();
+        command.StudentTriageData.StudentSurvey = new StudentSurveyDto();
 
+        command.StudentTriageData.StudentSurvey.DateCompleted = null;
+
+        var expectedResponse = new Mock<ManageStudentTriageDataResponse>();
+        expectedResponse.Object.Message =String.Empty;
         var cancellationToken = new CancellationToken();
 
         var response = new ApiResponse<ManageStudentTriageDataResponse>(expectedResponse.Object, HttpStatusCode.OK, string.Empty);
