@@ -556,3 +556,7 @@ Starting the API will then show the swagger definition with the available operat
 ### Employer AAN
 
 See the dedicated readme for setup: https://github.com/SkillsFundingAgency/das-apim-endpoints/blob/master/src/EmployerAan/README.md
+
+### Admin AAN
+
+See the dedicated readme for setup: https://github.com/SkillsFundingAgency/das-apim-endpoints/blob/master/src/AdminAan/README.md
