@@ -137,6 +137,7 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
                 .SelectMany(q => q.Answers.Select(answer => new AnswersDto
                 {
                     Id = answer.Id,
+                    QuestionId = questionId,
                     AnswerText = answer.AnswerText,
                     ShortDescription = answer.ShortDescription,
                 }));
@@ -149,6 +150,7 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
                 .Select(responseAnswer => new ResponseAnswersDto
                 {
                     Id = responseAnswer.Id,
+                    QuestionId = questionId,
                     AnswerId = responseAnswer.AnswerId,
                     AnswerText = GetAnswerText(responseAnswer.AnswerId.Value, questionId, responseData),
                     Response = responseAnswer.Response,
