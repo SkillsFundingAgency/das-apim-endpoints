@@ -8,13 +8,13 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetAdditionalQuestionTwo;
-public class GetAdditionalQuestionTwoQueryHandler : IRequestHandler<GetAdditionalQuestionTwoQuery, GetAdditionalQuestionTwoQueryResult>
+namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetEmployerAdditionalQuestionTwo;
+public class GetEmployerAdditionalQuestionTwoQueryHandler : IRequestHandler<GetEmployerAdditionalQuestionTwoQuery, GetEmployerAdditionalQuestionTwoQueryResult>
 {
     private readonly IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> _findApprenticeshipApiClient;
     private readonly ICandidateApiClient<CandidateApiConfiguration> _candidateApiClient;
 
-    public GetAdditionalQuestionTwoQueryHandler(
+    public GetEmployerAdditionalQuestionTwoQueryHandler(
         IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
         ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
     {
@@ -22,12 +22,12 @@ public class GetAdditionalQuestionTwoQueryHandler : IRequestHandler<GetAdditiona
         _candidateApiClient = candidateApiClient;
     }
 
-    public async Task<GetAdditionalQuestionTwoQueryResult> Handle(GetAdditionalQuestionTwoQuery request, CancellationToken cancellationToken)
+    public async Task<GetEmployerAdditionalQuestionTwoQueryResult> Handle(GetEmployerAdditionalQuestionTwoQuery request, CancellationToken cancellationToken)
     {
         var application = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId));
         var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference));
 
-        return new GetAdditionalQuestionTwoQueryResult
+        return new GetEmployerAdditionalQuestionTwoQueryResult
         {
             QuestionTwo = vacancy.AdditionalQuestion2
         };

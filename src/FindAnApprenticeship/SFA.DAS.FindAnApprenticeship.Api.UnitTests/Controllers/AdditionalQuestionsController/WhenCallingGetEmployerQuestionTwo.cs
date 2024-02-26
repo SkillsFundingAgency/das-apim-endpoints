@@ -9,28 +9,28 @@ using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading.Tasks;
 using System;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetAdditionalQuestionTwo;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetEmployerAdditionalQuestionTwo;
 using System.Threading;
 using FluentAssertions;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.AdditionalQuestionsController;
-public class WhenCallingGetQuestionTwo
+public class WhenCallingGetEmployerQuestionTwo
 {
     [Test, MoqAutoData]
     public async Task Then_The_Query_Response_Is_Returned(
        Guid candidateId,
        Guid applicationId,
-       GetAdditionalQuestionTwoQueryResult queryResult,
+       GetEmployerAdditionalQuestionTwoQueryResult queryResult,
        [Frozen] Mock<IMediator> mediator,
        [Greedy] Api.Controllers.AdditionalQuestionsController controller)
     {
-        mediator.Setup(x => x.Send(It.Is<GetAdditionalQuestionTwoQuery>(q =>
+        mediator.Setup(x => x.Send(It.Is<GetEmployerAdditionalQuestionTwoQuery>(q =>
                     q.CandidateId == candidateId
                     && q.ApplicationId == applicationId),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(queryResult);
 
-        var actual = await controller.GetQuestionTwo(applicationId, candidateId);
+        var actual = await controller.GetEmployerQuestionTwo(applicationId, candidateId);
 
         using (new AssertionScope())
         {
@@ -48,13 +48,13 @@ public class WhenCallingGetQuestionTwo
        [Frozen] Mock<IMediator> mediator,
        [Greedy] Api.Controllers.AdditionalQuestionsController controller)
     {
-        mediator.Setup(x => x.Send(It.Is<GetAdditionalQuestionTwoQuery>(q =>
+        mediator.Setup(x => x.Send(It.Is<GetEmployerAdditionalQuestionTwoQuery>(q =>
                     q.CandidateId == candidateId
                     && q.ApplicationId == applicationId),
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new InvalidOperationException());
 
-        var actual = await controller.GetQuestionTwo(applicationId, candidateId);
+        var actual = await controller.GetEmployerQuestionTwo(applicationId, candidateId);
 
         actual.As<StatusCodeResult>().StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }

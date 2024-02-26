@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetAdditionalQuestionTwo;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetEmployerAdditionalQuestionTwo;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
@@ -22,12 +22,12 @@ public class AdditionalQuestionsController : Controller
         _logger = logger;
     }
 
-    [HttpGet("question-two")]
-    public async Task<IActionResult> GetQuestionTwo([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
+    [HttpGet("employer/question-two")]
+    public async Task<IActionResult> GetEmployerQuestionTwo([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
     {
         try
         {
-            var result = await _mediator.Send(new GetAdditionalQuestionTwoQuery
+            var result = await _mediator.Send(new GetEmployerAdditionalQuestionTwoQuery
             {
                 ApplicationId = applicationId,
                 CandidateId = candidateId
