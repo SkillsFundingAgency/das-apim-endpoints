@@ -5,17 +5,17 @@ using MediatR;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Services;
 
-namespace SFA.DAS.SharedOuterApi.Controllers.Application.Queries.EmployerAccounts
+namespace SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts
 {
-    public class GetUserAccountsQueryHandler : IRequestHandler<GetUserAccountsQuery, GetUserAccountsQueryResult>
+    public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, GetAccountsQueryResult>
     {
         private readonly IEmployerAccountsService _employerAccountService;
 
-        public GetUserAccountsQueryHandler(IEmployerAccountsService employerAccountService)
+        public GetAccountsQueryHandler(IEmployerAccountsService employerAccountService)
         {
             _employerAccountService = employerAccountService;
         }
-        public async Task<GetUserAccountsQueryResult> Handle(GetUserAccountsQuery request, CancellationToken cancellationToken)
+        public async Task<GetAccountsQueryResult> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
         {
             var employerAccounts = (await _employerAccountService.GetEmployerAccounts(new EmployerProfile
             {
@@ -23,7 +23,7 @@ namespace SFA.DAS.SharedOuterApi.Controllers.Application.Queries.EmployerAccount
                 UserId = request.UserId
             })).ToList();
 
-            return new GetUserAccountsQueryResult
+            return new GetAccountsQueryResult
             {
                 EmployerUserId = employerAccounts.FirstOrDefault()?.UserId,
                 FirstName = employerAccounts.FirstOrDefault()?.FirstName,

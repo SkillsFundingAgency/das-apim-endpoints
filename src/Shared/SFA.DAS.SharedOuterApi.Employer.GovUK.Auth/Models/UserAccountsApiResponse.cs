@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.SharedOuterApi.Controllers.Application.Queries.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 
-namespace SFA.DAS.SharedOuterApi.Controllers.Models
+namespace SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Models
 {
     public class UserAccountsApiResponse
     {
@@ -12,7 +12,7 @@ namespace SFA.DAS.SharedOuterApi.Controllers.Models
         public string EmployerUserId { get; set; }
         public bool IsSuspended { get; set; }
 
-        public static implicit operator UserAccountsApiResponse(GetUserAccountsQueryResult source)
+        public static implicit operator UserAccountsApiResponse(GetAccountsQueryResult source)
         {
             if (source?.UserAccountResponse == null)
             {

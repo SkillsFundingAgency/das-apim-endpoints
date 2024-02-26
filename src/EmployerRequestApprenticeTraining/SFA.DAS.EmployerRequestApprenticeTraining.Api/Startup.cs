@@ -13,7 +13,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.AppStart;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Controllers.Application.Queries.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
@@ -52,7 +52,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
                 .AddCheck<RequestApprenticeTrainingApiHealthCheck>(nameof(RequestApprenticeTrainingApiHealthCheck));
 
             services.AddMediatR(typeof(GetEmployerRequestQuery).Assembly);
-            services.AddMediatR(typeof(GetUserAccountsQuery).Assembly);
+            services.AddMediatR(typeof(GetAccountsQuery).Assembly);
 
             services.AddServiceRegistration();
 
