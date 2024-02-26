@@ -10,8 +10,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public string Name { get; set; }
         public string TradingName { get; set; }
         public Guid? ShortlistId { get; set; }
-        public IEnumerable<GetAchievementRateItem> AchievementRates { get; set; }
-        
+        public IEnumerable<GetAchievementRateItem> AchievementRates { get; set; } = Enumerable.Empty<GetAchievementRateItem>();
+
         public IEnumerable<GetDeliveryTypeItem> DeliveryTypes { get; set; }
 
         public IEnumerable<DeliveryModel> DeliveryModels { get; set; }

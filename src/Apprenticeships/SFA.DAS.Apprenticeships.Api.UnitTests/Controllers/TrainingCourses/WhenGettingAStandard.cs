@@ -43,14 +43,14 @@ public class WhenGettingAStandard
 
     [Test]
     public async Task No_Standard_Is_Returned_From_Mediator_Then_Should_Return_NotFound()
+        [Frozen] Mock<IMediator> mockMediator,
     {
-        var mockMediator = new Mock<IMediator>();
-        var controller = new TrainingCoursesController(Mock.Of<ILogger<TrainingCoursesController>>(), mockMediator.Object);
         mockMediator
             .Setup(mediator => mediator.Send(
-                It.IsAny<GetStandardQuery>(),
+                It.Is<GetStandardQuery>(x => x.CourseCode == courseCode),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((GetStandardsListItem)null);
+            .ReturnsAsync((GetStandardsListItem?)null);
+
 
         var controllerResult = await controller.GetStandard("courseCode") as NotFoundResult;
 

@@ -16,8 +16,9 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
         public IReadOnlyCollection<ChangeOfEmployerLink> ChangeOfEmployerChain { get; set; }
         public IReadOnlyCollection<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequest { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
+        public PendingPriceChangeDetails PendingPriceChange { get; set; }
 
-        public class ApprenticeshipDetails
+		public class ApprenticeshipDetails
         {
             public long Id { get; set; }
             public long CohortId { get; set; }
@@ -166,5 +167,12 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
             public short Status { get; set; }
             public DateTime? ActionedOn { get; set; }
         }
-    }
+
+        public class PendingPriceChangeDetails
+        {
+	        public decimal Cost { get; set; }
+	        public decimal? TrainingPrice { get; set; }
+	        public decimal? EndPointAssessmentPrice { get; set; }
+        }
+	}
 }

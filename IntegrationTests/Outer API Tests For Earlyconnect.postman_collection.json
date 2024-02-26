@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3687ac1d-782a-494c-9952-e61f9b8c2eed",
+		"_postman_id": "5a9faab2-627d-48ed-88dc-5e4197ddf887",
 		"name": "EarlyConnect-OuterApi",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "21174429"
@@ -34,7 +34,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"listOfStudentData\": [\r\n    {\r\n      \"firstName\": \"Ratheesh\",\r\n      \"lastName\": \"RI\",\r\n      \"dateOfBirth\": \"1984-05-29\",\r\n      \"email\": \"ratheesh@education.co.uk\",\r\n      \"postcode\": \"NG82QA\",\r\n      \"industry\": \"Software\",\r\n      \"dateOfInterest\": \"2023-11-17\"\r\n    },\r\n    {\r\n      \"firstName\": \"David\",\r\n      \"lastName\": \"Rimar\",\r\n      \"dateOfBirth\": \"1984-05-29\",\r\n      \"email\": \"David@education.co.uk\",\r\n      \"postcode\": \"NG52QA\",\r\n      \"industry\": \"Software\",\r\n      \"dateOfInterest\": \"2023-11-17\"\r\n    }\r\n  ]\r\n}"
+					"raw": "{\r\n  \"listOfStudentData\": [\r\n    {\r\n      \"firstName\": \"Ratheesh\",\r\n      \"lastName\": \"RI\",\r\n      \"dateOfBirth\": \"1984-05-29\",\r\n      \"email\": \"ratheesh@education.co.uk\",\r\n      \"telephone\": \"07880360143\",\r\n      \"schoolName\": \"AKG\",\r\n      \"postcode\": \"NG82QA\",\r\n      \"industry\": \"Software\",\r\n      \"dateOfInterest\": \"2023-11-17\"\r\n    },\r\n    {\r\n      \"firstName\": \"David\",\r\n      \"lastName\": \"Rimar\",\r\n      \"dateOfBirth\": \"1984-05-29\",\r\n      \"email\": \"David@education.co.uk\",\r\n      \"telephone\": \"07880360143\",\r\n      \"schoolName\": \"AKG\",\r\n      \"postcode\": \"NG52QA\",\r\n      \"industry\": \"Software\",\r\n      \"dateOfInterest\": \"2023-11-17\"\r\n    }\r\n  ]\r\n}"
 				},
 				"url": {
 					"raw": "https://test-apim-erlycon-api.apprenticeships.education.gov.uk/early-connect/student-data/add",
@@ -341,6 +341,138 @@
 						"early-connect",
 						"api-log",
 						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Survey-Create",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"abc@gmail.com\",\r\n  \"lepsCode\": \"E37000025\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://test-apim-erlycon-api.apprenticeships.education.gov.uk/early-connect/student-triage-data/survey-create",
+					"protocol": "https",
+					"host": [
+						"test-apim-erlycon-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"early-connect",
+						"student-triage-data",
+						"survey-create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Student-triage-data",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 289,\r\n    \"lepsId\": 1,\r\n    \"logId\": 272,\r\n    \"firstName\": \"\",\r\n    \"lastName\": \"\",\r\n    \"dateOfBirth\": null,\r\n    \"schoolName\": \"\",\r\n    \"telephone\": \"\",\r\n    \"email\": \"test@example.com\",\r\n    \"postcode\": \"\",\r\n    \"dataSource\": \"Other\",\r\n    \"industry\": \"\",\r\n    \"dateInterest\": null,\r\n    \"surveyQuestions\": [\r\n        {\r\n            \"id\": 1,\r\n            \"surveyId\": 1,\r\n            \"questionTypeId\": 1,\r\n            \"questionText\": \"What is your favorite color?\",\r\n            \"shortDescription\": \"Color Question\",\r\n            \"summaryLabel\": \"Color Preference\",\r\n            \"validationMessage\": \"Please choose a color\",\r\n            \"defaultToggleAnswerId\": null,\r\n            \"sortOrder\": 0,\r\n            \"answers\": [\r\n                {\r\n                    \"id\": 1,\r\n                    \"questionId\": 1,\r\n                    \"answerText\": \"Red\",\r\n                    \"shortDescription\": \"Option for Red\",\r\n                    \"groupNumber\": 1,\r\n                    \"groupLabel\": \"101\",\r\n                    \"sortOrder\": 0\r\n                },\r\n                {\r\n                    \"id\": 2,\r\n                    \"questionId\": 1,\r\n                    \"answerText\": \"Blue\",\r\n                    \"shortDescription\": \"Option for Blue\",\r\n                    \"groupNumber\": 1,\r\n                    \"groupLabel\": \"102\",\r\n                    \"sortOrder\": 1\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"surveyId\": 1,\r\n            \"questionTypeId\": 2,\r\n            \"questionText\": \"What is your feedback?\",\r\n            \"shortDescription\": \"Feedback Question\",\r\n            \"summaryLabel\": \"Feedback Summary\",\r\n            \"validationMessage\": \"Provide your feedback\",\r\n            \"defaultToggleAnswerId\": null,\r\n            \"sortOrder\": 1,\r\n            \"answers\": [\r\n                {\r\n                    \"id\": 3,\r\n                    \"questionId\": 2,\r\n                    \"answerText\": \"Good\",\r\n                    \"shortDescription\": \"Positive Feedback\",\r\n                    \"groupNumber\": 0,\r\n                    \"groupLabel\": \"0\",\r\n                    \"sortOrder\": 0\r\n                },\r\n                {\r\n                    \"id\": 4,\r\n                    \"questionId\": 2,\r\n                    \"answerText\": \"Average\",\r\n                    \"shortDescription\": \"Neutral Feedback\",\r\n                    \"groupNumber\": 0,\r\n                    \"groupLabel\": \"0\",\r\n                    \"sortOrder\": 1\r\n                },\r\n                {\r\n                    \"id\": 5,\r\n                    \"questionId\": 2,\r\n                    \"answerText\": \"Poor\",\r\n                    \"shortDescription\": \"Negative Feedback\",\r\n                    \"groupNumber\": 0,\r\n                    \"groupLabel\": \"0\",\r\n                    \"sortOrder\": 2\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": 3,\r\n            \"surveyId\": 1,\r\n            \"questionTypeId\": 3,\r\n            \"questionText\": \"Select your preferences:\",\r\n            \"shortDescription\": \"Preferences Question\",\r\n            \"summaryLabel\": \"Preferences Summary\",\r\n            \"validationMessage\": \"Select one or more preferences\",\r\n            \"defaultToggleAnswerId\": null,\r\n            \"sortOrder\": 2,\r\n            \"answers\": [\r\n                {\r\n                    \"id\": 6,\r\n                    \"questionId\": 3,\r\n                    \"answerText\": \"Option 1\",\r\n                    \"shortDescription\": \"Checkbox Option 1\",\r\n                    \"groupNumber\": 1,\r\n                    \"groupLabel\": \"201\",\r\n                    \"sortOrder\": 0\r\n                },\r\n                {\r\n                    \"id\": 7,\r\n                    \"questionId\": 3,\r\n                    \"answerText\": \"Option 2\",\r\n                    \"shortDescription\": \"Checkbox Option 2\",\r\n                    \"groupNumber\": 1,\r\n                    \"groupLabel\": \"202\",\r\n                    \"sortOrder\": 1\r\n                }\r\n            ]\r\n        }\r\n    ],\r\n    \"studentSurvey\": {\r\n        \"id\": \"1498b5bb-6316-4447-aa03-08dc20cc5a54\",\r\n        \"studentId\": 289,\r\n        \"surveyId\": 1,\r\n        \"lastUpdated\": null,\r\n        \"dateCompleted\": null,\r\n        \"dateEmailSent\": null,\r\n        \"dateAdded\": \"2024-01-29T14:03:19.877\",\r\n        \"responseAnswers\": []\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://test-apim-erlycon-api.apprenticeships.education.gov.uk/early-connect/student-triage-data/1498b5bb-6316-4447-aa03-08dc20cc5a54",
+					"protocol": "https",
+					"host": [
+						"test-apim-erlycon-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"early-connect",
+						"student-triage-data",
+						"1498b5bb-6316-4447-aa03-08dc20cc5a54"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get student-triage-data",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 0,\r\n  \"lepsId\": 0,\r\n  \"logId\": 0,\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"dateOfBirth\": \"2024-01-31T13:20:43.840Z\",\r\n  \"telephone\": \"string\",\r\n  \"email\": \"string\",\r\n  \"postcode\": \"string\",\r\n  \"dataSource\": \"string\",\r\n  \"industry\": \"string\",\r\n  \"dateInterest\": \"2024-01-31T13:20:43.840Z\",\r\n  \"studentSurvey\": {\r\n    \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n    \"studentId\": 0,\r\n    \"surveyId\": 0,\r\n    \"lastUpdated\": \"2024-01-31T13:20:43.840Z\",\r\n    \"dateCompleted\": \"2024-01-31T13:20:43.840Z\",\r\n    \"dateEmailSent\": \"2024-01-31T13:20:43.840Z\",\r\n    \"dateAdded\": \"2024-01-31T13:20:43.840Z\",\r\n    \"responseAnswers\": [\r\n      {\r\n        \"id\": 0,\r\n        \"studentSurveyId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n        \"questionId\": 0,\r\n        \"answerId\": 0,\r\n        \"response\": \"string\",\r\n        \"dateAdded\": \"2024-01-31T13:20:43.840Z\"\r\n      }\r\n    ]\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://test-apim-erlycon-api.apprenticeships.education.gov.uk/early-connect/student-triage-data/7d87864a-475a-45cb-1782-08dc225f5c6f",
+					"protocol": "https",
+					"host": [
+						"test-apim-erlycon-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"early-connect",
+						"student-triage-data",
+						"7d87864a-475a-45cb-1782-08dc225f5c6f"
 					]
 				}
 			},

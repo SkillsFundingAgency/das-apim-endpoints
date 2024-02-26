@@ -7,13 +7,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
     public class GetTrainingCourseProviderListItem : ProviderCourseBase
     {
-        public GetTrainingCourseProviderListItem Map(GetProvidersListItem source, string sectorSubjectArea,
-            int level, List<DeliveryModeType> deliveryModes, List<FeedbackRatingType> employerFeedbackRatings, List<FeedbackRatingType> apprenticeFeedbackRatings, bool hasLocation)
+        public GetTrainingCourseProviderListItem Map(
+            GetProvidersListItem providerDetails,
+            List<DeliveryModeType> deliveryModes,
+            List<FeedbackRatingType> employerFeedbackRatings,
+            List<FeedbackRatingType> apprenticeFeedbackRatings,
+            bool hasLocation)
         {
-            var achievementRate = GetAchievementRateItem(source.AchievementRates, sectorSubjectArea, level);
-            var getDeliveryTypes = FilterDeliveryModes(source.DeliveryModels);
-            var getEmployerFeedbackResponse = EmployerFeedbackResponse(source.EmployerFeedback);
-            var getApprenticeFeedbackResponse = ApprenticeFeedbackResponse(source.ApprenticeFeedback);
+            var achievementRate = providerDetails.AchievementRates.FirstOrDefault(); //Inner api narrows down on the appropriate rates
+            var getDeliveryTypes = FilterDeliveryModes(providerDetails.DeliveryModels);
+            var getEmployerFeedbackResponse = EmployerFeedbackResponse(providerDetails.EmployerFeedback);
+            var getApprenticeFeedbackResponse = ApprenticeFeedbackResponse(providerDetails.ApprenticeFeedback);
 
             if (deliveryModes != null && deliveryModes.Any())
             {
@@ -50,10 +54,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
             return new GetTrainingCourseProviderListItem
             {
-                Name = source.Name,
-                TradingName = source.TradingName,
-                ProviderId = source.Ukprn,
-                ShortlistId = source.ShortlistId,
+                Name = providerDetails.Name,
+                TradingName = providerDetails.TradingName,
+                ProviderId = providerDetails.Ukprn,
+                ShortlistId = providerDetails.ShortlistId,
                 OverallCohort = achievementRate?.OverallCohort,
                 OverallAchievementRate = achievementRate?.OverallAchievementRate,
                 DeliveryModes = getDeliveryTypes,
