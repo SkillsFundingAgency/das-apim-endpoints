@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ObjectPool;
 using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -8,7 +7,6 @@ using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Text;
 
 namespace SFA.DAS.Apprenticeships.Application.Apprenticeship;
 
@@ -55,6 +53,8 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 
 		var earliestEffectiveDate = await GetEarliestEffectiveDate();
 
+		var provider = await _apiCommitmentsClient.Get<GetProviderResponse>(new GetProviderRequest(apprenticePriceInnerModel.UKPRN));
+
 		var apprenticeshipPriceOuterModel = new ApprenticeshipPriceResponse
 		{
 			ApprenticeshipKey = apprenticePriceInnerModel!.ApprenticeshipKey,
@@ -64,7 +64,8 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 			EarliestEffectiveDate = earliestEffectiveDate,
 			FundingBandMaximum = apprenticePriceInnerModel.FundingBandMaximum,
 			TrainingPrice = apprenticePriceInnerModel.TrainingPrice,
-			EmployerName = employerName
+			EmployerName = employerName,
+			ProviderName = provider.Name,
 		};
 
 		return apprenticeshipPriceOuterModel;
