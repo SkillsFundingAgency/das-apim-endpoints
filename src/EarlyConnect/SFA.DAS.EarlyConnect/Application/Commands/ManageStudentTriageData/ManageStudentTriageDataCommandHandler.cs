@@ -29,24 +29,33 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
 
         public async Task<ManageStudentTriageDataCommandResult> Handle(ManageStudentTriageDataCommand request, CancellationToken cancellationToken)
         {
-            var manageStudentresponse = await _apiClient.PostWithResponseCode<ManageStudentTriageDataResponse>(new ManageStudentTriageDataRequest(request.StudentTriageData, request.SurveyGuid), true);
+            var manageStudentResponse = await _apiClient.PostWithResponseCode<ManageStudentTriageDataResponse>(new ManageStudentTriageDataRequest(request.StudentTriageData, request.SurveyGuid), true);
 
-            manageStudentresponse.EnsureSuccessStatusCode();
+            manageStudentResponse.EnsureSuccessStatusCode();
 
             if (request.StudentTriageData.StudentSurvey.DateCompleted == null)
             {
                 return new ManageStudentTriageDataCommandResult
                 {
-                    Message = $"{manageStudentresponse?.Body?.Message}"
+                    Message = $"{manageStudentResponse?.Body?.Message}"
                 };
             }
-            var getStudentTriageresult = await _apiClient.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(new GetStudentTriageDataBySurveyIdRequest(request.SurveyGuid));
 
-            getStudentTriageresult.EnsureSuccessStatusCode();
+            var getStudentTriageResult = await _apiClient.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(new GetStudentTriageDataBySurveyIdRequest(request.SurveyGuid));
 
-            var studentTriageData = MapResponseToStudentData(getStudentTriageresult.Body);
+            getStudentTriageResult.EnsureSuccessStatusCode();
 
-            var adfsdf = _feature.IsFeatureEnabled(FeatureNames.NorthEastDataSharing);
+            var isSurveyCompleted = (getStudentTriageResult.Body.StudentSurvey.DateCompleted != null);
+
+            if (isSurveyCompleted)
+            {
+                return new ManageStudentTriageDataCommandResult
+                {
+                    Message = $"{manageStudentResponse?.Body?.Message}"
+                };
+            }
+
+            var studentTriageData = MapResponseToStudentData(getStudentTriageResult.Body);
 
             if (_feature.IsFeatureEnabled(FeatureNames.NorthEastDataSharing))
             {
@@ -56,11 +65,11 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
                 {
                     return new ManageStudentTriageDataCommandResult
                     {
-                        Message = $"{manageStudentresponse?.Body?.Message} - {sendStudentDataresult?.Body?.Message}"
+                        Message = $"{manageStudentResponse?.Body?.Message} - {sendStudentDataresult?.Body?.Message}"
                     };
                 }
 
-                var deliveryUpdate = new DeliveryUpdate { Source = DataSource.StudentData, Ids = new List<int> { getStudentTriageresult.Body.Id } };
+                var deliveryUpdate = new DeliveryUpdate { Source = DataSource.StudentData, Ids = new List<int> { getStudentTriageResult.Body.Id } };
 
                 var deliveryUpdateresponse = await _apiClient.PostWithResponseCode<DeliveryUpdateDataResponse>(new DeliveryUpdateRequest(deliveryUpdate));
 
@@ -68,13 +77,13 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
 
                 return new ManageStudentTriageDataCommandResult
                 {
-                    Message = $"{manageStudentresponse?.Body?.Message} - {sendStudentDataresult?.Body?.Message} - {deliveryUpdateresponse?.Body?.Message}"
+                    Message = $"{manageStudentResponse?.Body?.Message} - {sendStudentDataresult?.Body?.Message} - {deliveryUpdateresponse?.Body?.Message}"
                 };
             }
 
             return new ManageStudentTriageDataCommandResult
             {
-                Message = $"{manageStudentresponse?.Body?.Message}"
+                Message = $"{manageStudentResponse?.Body?.Message}"
             };
         }
         public StudentTriageData MapResponseToStudentData(GetStudentTriageDataBySurveyIdResponse responseData)

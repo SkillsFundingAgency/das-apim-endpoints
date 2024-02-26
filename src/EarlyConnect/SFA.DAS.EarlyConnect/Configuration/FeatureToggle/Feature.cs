@@ -1,21 +1,31 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace SFA.DAS.EarlyConnect.Configuration.FeatureToggle
+﻿namespace SFA.DAS.EarlyConnect.Configuration.FeatureToggle
 {
+    public interface IEarlyConnectFeaturesConfiguration 
+    {
+        bool NorthEastDataSharing { get; set; }
+    }
+
+    public class EarlyConnectFeaturesConfiguration : IEarlyConnectFeaturesConfiguration
+    {
+        public bool NorthEastDataSharing { get; set; }
+    }
+
     public class Feature : IFeature
     {
-        private readonly IConfiguration _configuration;
-        public Feature(IConfiguration configuration)
+        private readonly IEarlyConnectFeaturesConfiguration _featuresConfig;
+        public Feature(IEarlyConnectFeaturesConfiguration featuresConfig)
         {
-            _configuration = configuration;
+            _featuresConfig = featuresConfig;
         }
+
         public bool IsFeatureEnabled(string feature)
         {
-            var featureValue = _configuration[$"Features:{feature}"];
-            if (string.IsNullOrWhiteSpace(featureValue))
-                return false;
-
-            return bool.Parse(featureValue);
+            if (feature.Equals("NorthEastDataSharing")) 
+            { 
+                return _featuresConfig.NorthEastDataSharing;
+            }
+            
+            return false;
         }
     }
 }

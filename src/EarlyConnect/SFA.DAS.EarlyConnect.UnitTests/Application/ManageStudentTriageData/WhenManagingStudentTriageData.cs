@@ -11,6 +11,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.EarlyConnect.InnerApi.Responses;
 using SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData;
 using SFA.DAS.EarlyConnect.Models;
+using SFA.DAS.EarlyConnect.Configuration.FeatureToggle;
 
 namespace SFA.DAS.EarlyConnect.UnitTests.Application.ManageStudentTriageData;
 
@@ -21,7 +22,8 @@ public class WhenManagingStudentTriageData
     {
         var earlyConnectApiClientMock = new Mock<IEarlyConnectApiClient<EarlyConnectApiConfiguration>>();
         var lepsNeApiClientMock = new Mock<ILepsNeApiClient<LepsNeApiConfiguration>>();
-        var handler = new ManageStudentTriageDataCommandHandler(earlyConnectApiClientMock.Object, lepsNeApiClientMock.Object);
+        var featureConfig = new Mock<IFeature>();
+        var handler = new ManageStudentTriageDataCommandHandler(earlyConnectApiClientMock.Object, lepsNeApiClientMock.Object, featureConfig.Object);
 
         var command = new ManageStudentTriageDataCommand
         {

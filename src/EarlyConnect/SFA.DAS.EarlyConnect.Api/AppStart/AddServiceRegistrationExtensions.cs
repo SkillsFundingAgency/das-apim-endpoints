@@ -28,7 +28,6 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<ILepsNeApiClient<LepsNeApiConfiguration>, LepsNeApiClient>();
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddFeatureToggle();
-        var asf = configuration.GetSection("Features");
         services.AddFeatureManagement(configuration.GetSection("Features"));
     }
 }
@@ -48,7 +47,7 @@ public static class AddConfigurationOptionsExtension
         services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
 
-        //services.Configure<FeatureNames>(configuration.GetSection("Features"));
-        // services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
+        services.Configure<EarlyConnectFeaturesConfiguration>(configuration.GetSection("Features"));
+        services.AddSingleton<IEarlyConnectFeaturesConfiguration>(cfg => cfg.GetService<IOptions<EarlyConnectFeaturesConfiguration>>().Value);
     }
 }
