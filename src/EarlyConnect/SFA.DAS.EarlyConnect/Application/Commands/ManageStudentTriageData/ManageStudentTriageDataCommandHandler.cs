@@ -41,24 +41,24 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
                 };
             }
 
-            var getStudentTriageResult = await _apiClient.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(new GetStudentTriageDataBySurveyIdRequest(request.SurveyGuid));
-
-            getStudentTriageResult.EnsureSuccessStatusCode();
-
-            var isSurveyCompleted = (getStudentTriageResult.Body.StudentSurvey.DateCompleted != null);
-
-            if (isSurveyCompleted)
-            {
-                return new ManageStudentTriageDataCommandResult
-                {
-                    Message = $"{manageStudentResponse?.Body?.Message}"
-                };
-            }
-
-            var studentTriageData = MapResponseToStudentData(getStudentTriageResult.Body);
-
             if (_feature.IsFeatureEnabled(FeatureNames.NorthEastDataSharing))
             {
+                var getStudentTriageResult = await _apiClient.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(new GetStudentTriageDataBySurveyIdRequest(request.SurveyGuid));
+
+                getStudentTriageResult.EnsureSuccessStatusCode();
+
+                var isSurveyCompleted = (getStudentTriageResult.Body.StudentSurvey.DateCompleted != null);
+
+                if (isSurveyCompleted)
+                {
+                    return new ManageStudentTriageDataCommandResult
+                    {
+                        Message = $"{manageStudentResponse?.Body?.Message}"
+                    };
+                }
+
+                var studentTriageData = MapResponseToStudentData(getStudentTriageResult.Body);
+
                 var sendStudentDataresult = await _apiLepsClient.PostWithResponseCode<SendStudentDataToNeLepsResponse>(new SendStudentDataToNeLepsRequest(studentTriageData, request.SurveyGuid), false);
 
                 if (sendStudentDataresult == null || sendStudentDataresult.StatusCode != HttpStatusCode.Created)
@@ -86,6 +86,7 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
                 Message = $"{manageStudentResponse?.Body?.Message}"
             };
         }
+
         public StudentTriageData MapResponseToStudentData(GetStudentTriageDataBySurveyIdResponse responseData)
         {
             var studentData = new StudentTriageData
