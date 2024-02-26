@@ -41,9 +41,11 @@ public class WhenGettingAStandard
         model.Should().BeEquivalentTo((GetStandardResponse)mediatorResult);
     }
 
-    [Test]
-    public async Task No_Standard_Is_Returned_From_Mediator_Then_Should_Return_NotFound()
+    [Test, MoqAutoData]
+    public async Task No_Standard_Is_Returned_From_Mediator_Then_Should_Return_NotFound(
         [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] TrainingCoursesController controller,
+        string courseCode)
     {
         mockMediator
             .Setup(mediator => mediator.Send(
