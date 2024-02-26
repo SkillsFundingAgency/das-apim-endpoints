@@ -1,12 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using Microsoft.FeatureManagement;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.EarlyConnect.Api.Extensions;
-using SFA.DAS.EarlyConnect.Configuration;
 using SFA.DAS.EarlyConnect.Configuration.FeatureToggle;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -28,7 +25,6 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<ILepsNeApiClient<LepsNeApiConfiguration>, LepsNeApiClient>();
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddFeatureToggle();
-        services.AddFeatureManagement(configuration.GetSection("Features"));
     }
 }
 
