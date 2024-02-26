@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.Apprenticeship;
 using SFA.DAS.Apprenticeships.InnerApi;
+using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
@@ -36,22 +37,22 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         [Route("{apprenticeshipKey}/price")]
         public async Task<ActionResult> GetApprenticeshipPrice(Guid apprenticeshipKey)
         {
-			try
-			{
-				var apprenticeshipPriceResponse = await _mediator.Send(new GetApprenticeshipPriceQuery(apprenticeshipKey));
+            try
+            {
+                var apprenticeshipPriceResponse = await _mediator.Send(new GetApprenticeshipPriceQuery(apprenticeshipKey));
 
-				if (apprenticeshipPriceResponse == null)
-				{
-					return NotFound();
-				}
+                if (apprenticeshipPriceResponse == null)
+                {
+                    return NotFound();
+                }
 
-				return Ok(apprenticeshipPriceResponse);
-			}
-			catch (Exception e)
-			{
-				_logger.LogError(e, "Error attempting to get ApprenticeshipPrice");
-				return BadRequest();
-			}
+                return Ok(apprenticeshipPriceResponse);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to get ApprenticeshipPrice");
+                return BadRequest();
+            }
         }
 
         [HttpGet]
