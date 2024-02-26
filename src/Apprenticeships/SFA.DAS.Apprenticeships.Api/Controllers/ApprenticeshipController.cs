@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.Apprenticeship;
@@ -67,10 +68,9 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         public async Task<ActionResult> CreateApprenticeshipPriceChange(Guid apprenticeshipKey,
             [FromBody] CreateApprenticeshipPriceChangeRequest request)
         {
-			var response = await _apiClient.PostWithResponseCode<object>(new PostCreateApprenticeshipPriceChangeRequest(
+            var response = await _apiClient.PostWithResponseCode<object>(new PostCreateApprenticeshipPriceChangeRequest(
 				apprenticeshipKey,
-				request.ProviderId,
-				request.EmployerId,
+                request.Requester,
 				request.UserId,
 				request.TrainingPrice,
 				request.AssessmentPrice,
@@ -83,7 +83,10 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
 			{
 				return BadRequest();
 			}
-			return Ok();
+                return Ok();
+
+            _logger.LogError($"Error attempting to create apprenticeship price change. {response.StatusCode} returned from inner api.", response.StatusCode);
+            return BadRequest();
 		}
 
         [HttpGet]
