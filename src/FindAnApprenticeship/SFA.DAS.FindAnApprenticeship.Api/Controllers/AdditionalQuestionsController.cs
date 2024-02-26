@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetEmployerAdditionalQuestionTwo;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetCandidateAdditionalQuestionTwo;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
@@ -37,7 +38,27 @@ public class AdditionalQuestionsController : Controller
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Get Additional Question Two : An error occurred");
+            _logger.LogError(e, "Get Employer Additional Question Two : An error occurred");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpGet("question-two")]
+    public async Task<IActionResult> GetCandidateQuestionTwo([FromRoute] Guid applicationId, [FromQuery,] Guid candidateId)
+    {
+        try
+        {
+            var result = await _mediator.Send(new GetCandidateAdditionalQuestionTwoQuery
+            {
+                ApplicationId = applicationId,
+                CandidateId = candidateId
+            });
+
+            return Ok((GetCandidateAdditionalQuestionTwoApiResponse)result);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Get Candidate Additional Question Two : An error occurred");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
