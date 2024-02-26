@@ -4,7 +4,9 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRegistrations;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderRegistrations;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -13,26 +15,38 @@ namespace SFA.DAS.EmployerAccounts.Application.Commands.AddProviderDetailsFromIn
     public class AddProviderDetailsFromInvitationHandler : IRequestHandler<AddProviderDetailsFromInvitationCommand, Unit>
     {
         private readonly IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> _providerRelationshipsApiClient;
+        private readonly IProviderRegistrationsApiClient<ProviderRegistrationsApiConfiguration> _providerRegistrationsApiClient;
         private readonly ILogger<AddProviderDetailsFromInvitationHandler> _logger;
 
         public AddProviderDetailsFromInvitationHandler(
             ILogger<AddProviderDetailsFromInvitationHandler> logger,
-            IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> providerRelationshipsApiClient)
+            IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> providerRelationshipsApiClient,
+            IProviderRegistrationsApiClient<ProviderRegistrationsApiConfiguration> providerRegistrationsApiClient)
         {
             _logger = logger;
             _providerRelationshipsApiClient = providerRelationshipsApiClient;
+            _providerRegistrationsApiClient = providerRegistrationsApiClient;
         }
 
         public async Task<Unit> Handle(AddProviderDetailsFromInvitationCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Adding Provider Relationship from Invitation for {request.AccountId}");
+            _logger.LogInformation($"Getting Invitation with CorrelationId {request.CorrelationId}");
 
-            var result = await _providerRelationshipsApiClient
-                .PostWithResponseCode<AddAccountProviderFromInvitationResponse>(
-                new PostAddProviderDetailsFromInvitationRequest(request.AccountId, request.CorrelationId, request.UserId)
-                );
+            var invitationResponse = await _providerRegistrationsApiClient.GetWithResponseCode<GetInvitationResponse>(new GetInvitationRequest(request.CorrelationId));
 
-            result.EnsureSuccessStatusCode();
+            invitationResponse.EnsureSuccessStatusCode();
+
+            var invitation = invitationResponse.Body;
+            if (invitation != null && invitation.Invitation != null)
+            {
+                _logger.LogInformation($"Adding Provider Relationship from Invitation for {request.AccountId}");
+
+                await _providerRelationshipsApiClient
+                    .PostWithResponseCode<AddAccountProviderFromInvitationResponse>(
+                        new PostAddProviderDetailsFromInvitationRequest(request.AccountId,
+                            invitation.Invitation.Ukprn, request.CorrelationId, request.UserId)
+                    );
+            }
 
             return Unit.Value;
         }
