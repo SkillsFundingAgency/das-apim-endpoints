@@ -47,16 +47,6 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
 
                 getStudentTriageResult.EnsureSuccessStatusCode();
 
-                var isSurveyCompleted = (getStudentTriageResult.Body.StudentSurvey.DateCompleted != null);
-
-                if (isSurveyCompleted)
-                {
-                    return new ManageStudentTriageDataCommandResult
-                    {
-                        Message = $"{manageStudentResponse?.Body?.Message}"
-                    };
-                }
-
                 var studentTriageData = MapResponseToStudentData(getStudentTriageResult.Body);
 
                 var sendStudentDataresult = await _apiLepsClient.PostWithResponseCode<SendStudentDataToNeLepsResponse>(new SendStudentDataToNeLepsRequest(studentTriageData, request.SurveyGuid), false);
