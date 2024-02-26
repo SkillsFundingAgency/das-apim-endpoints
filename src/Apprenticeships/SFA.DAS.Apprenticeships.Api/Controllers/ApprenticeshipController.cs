@@ -66,19 +66,24 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         public async Task<ActionResult> CreateApprenticeshipPriceChange(Guid apprenticeshipKey,
             [FromBody] CreateApprenticeshipPriceChangeRequest request)
         {
-            await _apiClient.PostWithResponseCode<object>(new PostCreateApprenticeshipPriceChangeRequest(
-                apprenticeshipKey,
-                request.ProviderId,
-                request.EmployerId,
-                request.UserId,
-                request.TrainingPrice,
-                request.AssessmentPrice,
-                request.TotalPrice,
-                request.Reason,
-                request.EffectiveFromDate
-            ), false);
-            return Ok();
-        }
+			var response = await _apiClient.PostWithResponseCode<object>(new PostCreateApprenticeshipPriceChangeRequest(
+				apprenticeshipKey,
+				request.ProviderId,
+				request.EmployerId,
+				request.UserId,
+				request.TrainingPrice,
+				request.AssessmentPrice,
+				request.TotalPrice,
+				request.Reason,
+				request.EffectiveFromDate
+			), false);
+
+			if (!string.IsNullOrEmpty(response.ErrorContent))
+			{
+				return BadRequest();
+			}
+			return Ok();
+		}
 
         [HttpGet]
         [Route("{apprenticeshipKey}/priceHistory/pending")]
