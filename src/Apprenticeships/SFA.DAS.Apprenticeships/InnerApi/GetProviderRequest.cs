@@ -1,15 +1,14 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Apprenticeships.InnerApi
-{
-    public class GetProviderRequest : IGetApiRequest
-    {
-        public readonly long ProviderId;
-        public string GetUrl => $"api/providers/{ProviderId}";
+namespace SFA.DAS.Apprenticeships.InnerApi;
 
-        public GetProviderRequest(long providerId)
-        {
-            ProviderId = providerId;
-        }
+public class GetProviderRequest : IGetApiRequest
+{
+    public readonly long ProviderId;
+    public string GetUrl => $"api/providers/{ProviderId}";
+
+    public GetProviderRequest(long providerId)
+    {
+        ProviderId = providerId;
     }
 }

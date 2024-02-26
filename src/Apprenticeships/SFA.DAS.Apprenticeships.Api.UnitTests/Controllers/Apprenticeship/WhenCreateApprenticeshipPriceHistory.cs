@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using Castle.Core.Logging;
+using MediatR;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Api.Controllers;
@@ -17,7 +20,7 @@ public class WhenCreateApprenticeshipPriceHistory
     public async Task ThenCreatesApprenticeshipPriceHistoryUsingApiClient()
     {
         var apiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
-        var sut = new ApprenticeshipController(apiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>());
+        var sut = new ApprenticeshipController(Mock.Of<ILogger<ApprenticeshipController>>(), apiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), Mock.Of<IMediator>());
             
         // Arrange
         var apprenticeshipKey = Guid.NewGuid();
@@ -32,7 +35,7 @@ public class WhenCreateApprenticeshipPriceHistory
             reason: "Test Reason",
             effectiveFromDate: new DateTime(2023, 04, 04));
             
-        apiClient.Setup(x => x.PostWithResponseCode<object>(request, It.IsAny<bool>())).ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.OK, ""));
+        apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateApprenticeshipPriceChangeRequest>(), It.IsAny<bool>())).ReturnsAsync(new ApiResponse<object>("", HttpStatusCode.OK, ""));
 
         // Act
         await sut.CreateApprenticeshipPriceChange(

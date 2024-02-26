@@ -26,10 +26,11 @@ public class GetMemberProfileQueryHandler : IRequestHandler<GetMemberProfileQuer
 
         var getMemberTask = _aanHubApiClient.GetMember(request.MemberId, cancellationToken);
         var getProfileAndPreferencesTask = _aanHubApiClient.GetMemberProfileWithPreferences(request.MemberId, request.RequestedByMemberId, cancellationToken);
+        var getMemberActivities = _aanHubApiClient.GetMemberActivities(request.MemberId, cancellationToken);
 
-        await Task.WhenAll(getMemberTask, getProfileAndPreferencesTask);
+        await Task.WhenAll(getMemberTask, getProfileAndPreferencesTask, getMemberActivities);
 
-        UpdateResultWithMemberDetails(result, getMemberTask.Result, getProfileAndPreferencesTask.Result);
+        UpdateResultWithMemberDetails(result, getMemberTask.Result, getProfileAndPreferencesTask.Result, getMemberActivities.Result);
 
         await UpdateResultWithRegionName(result, getMemberTask.Result.RegionId, cancellationToken);
 
@@ -45,7 +46,7 @@ public class GetMemberProfileQueryHandler : IRequestHandler<GetMemberProfileQuer
         return result;
     }
 
-    private static void UpdateResultWithMemberDetails(GetMemberProfileQueryResult result, GetMemberResponse memberResponse, GetMemberProfilesAndPreferencesResponse profilesAndPreferencesResponse)
+    private static void UpdateResultWithMemberDetails(GetMemberProfileQueryResult result, GetMemberResponse memberResponse, GetMemberProfilesAndPreferencesResponse profilesAndPreferencesResponse, GetMemberActivitiesResponse memberActivitiesResponse)
     {
         result.FullName = memberResponse.FullName;
         result.FirstName = memberResponse.FirstName;
@@ -58,6 +59,7 @@ public class GetMemberProfileQueryHandler : IRequestHandler<GetMemberProfileQuer
         result.IsRegionalChair = memberResponse.IsRegionalChair.GetValueOrDefault();
         result.Profiles = profilesAndPreferencesResponse.Profiles;
         result.Preferences = profilesAndPreferencesResponse.Preferences;
+        result.Activities = memberActivitiesResponse;
     }
 
     private async Task UpdateResultWithRegionName(GetMemberProfileQueryResult result, int? regionId, CancellationToken cancellationToken)

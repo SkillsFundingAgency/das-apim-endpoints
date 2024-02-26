@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFrameworks>netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,6 +19,7 @@
         <PackageReference Include="SFA.DAS.Api.Common" />
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
         <PackageReference Include="SFA.DAS.Notifications.Messages" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
         <PackageReference Include="System.Net.Http.Json" />
         <PackageReference Include="SFA.DAS.NServiceBus" />
     </ItemGroup>
