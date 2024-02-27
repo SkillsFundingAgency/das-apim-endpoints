@@ -5,8 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetEmployerAdditionalQuestionTwo;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetCandidateAdditionalQuestionTwo;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetAdditionalQuestion;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
@@ -23,42 +22,23 @@ public class AdditionalQuestionsController : Controller
         _logger = logger;
     }
 
-    [HttpGet("employer/question-two")]
-    public async Task<IActionResult> GetEmployerQuestionTwo([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
+    [HttpGet]
+    public async Task<IActionResult> GetQuestion([FromRoute] Guid applicationId, [FromQuery] Guid candidateId, [FromQuery] Guid questionId)
     {
         try
         {
-            var result = await _mediator.Send(new GetEmployerAdditionalQuestionTwoQuery
+            var result = await _mediator.Send(new GetAdditionalQuestionQuery
             {
                 ApplicationId = applicationId,
-                CandidateId = candidateId
+                CandidateId = candidateId,
+                QuestionId = questionId
             });
 
-            return Ok((GetAdditionalQuestionTwoApiResponse)result);
+            return Ok((GetAdditionalQuestionApiResponse)result);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Get Employer Additional Question Two : An error occurred");
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-        }
-    }
-
-    [HttpGet("question-two")]
-    public async Task<IActionResult> GetCandidateQuestionTwo([FromRoute] Guid applicationId, [FromQuery,] Guid candidateId)
-    {
-        try
-        {
-            var result = await _mediator.Send(new GetCandidateAdditionalQuestionTwoQuery
-            {
-                ApplicationId = applicationId,
-                CandidateId = candidateId
-            });
-
-            return Ok((GetCandidateAdditionalQuestionTwoApiResponse)result);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Get Candidate Additional Question Two : An error occurred");
+            _logger.LogError(e, "Get Additional Question : An error occurred");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }

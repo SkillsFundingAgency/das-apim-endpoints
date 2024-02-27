@@ -2,18 +2,20 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-public class GetCandidateAdditionalQuestionTwoApiRequest : IGetApiRequest
+public class GetAdditionalQuestionApiRequest : IGetApiRequest
 {
     private readonly Guid _applicationId;
     private readonly Guid _candidateId;
+    private readonly Guid _questionId;
 
-    public GetCandidateAdditionalQuestionTwoApiRequest(Guid applicationId, Guid candidateId)
+    public GetAdditionalQuestionApiRequest(Guid applicationId, Guid candidateId, Guid questionId)
     {
         _applicationId = applicationId;
         _candidateId = candidateId;
+        _questionId = questionId;
     }
 
     //todo: update GetUrl
     public string GetUrl =>
-           $"candidates/{_candidateId}/applications/{_applicationId}/";
+           $"candidates/{_candidateId}/applications/{_applicationId}/{_questionId}";
 }
