@@ -109,7 +109,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
                 return NotFound();
             }
 
-            return Ok(new GetPendingPriceChangeResponse(response, providerResponse.Name));
+            return Ok(new GetPendingPriceChangeResponse(response, providerResponse.Name, apprenticeshipKey));
         }
 
         [HttpDelete]
