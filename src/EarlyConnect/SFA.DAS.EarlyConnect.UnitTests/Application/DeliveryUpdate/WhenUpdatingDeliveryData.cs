@@ -38,6 +38,6 @@ public class WhenUpdatingDeliveryData
         var result = await handler.Handle(command, cancellationToken);
 
         earlyConnectApiClientMock.Verify(x => x.PostWithResponseCode<DeliveryUpdateDataResponse>(It.IsAny<DeliveryUpdateRequest>(), It.IsAny<bool>()), Times.Once);
-        Assert.AreEqual(expectedResponse.Object.Message, result.Message);
+        Assert.That(result.Message, Is.EqualTo(expectedResponse.Object.Message));
     }
 }

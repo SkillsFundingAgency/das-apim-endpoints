@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
@@ -52,7 +52,7 @@ public class WhenCreatingStudentData
         earlyConnectApiClientMock.Verify(x => x.PostWithResponseCode<CreateStudentDataResponse>(
             It.IsAny<CreateStudentDataRequest>(), true), Times.Once);
 
-        Assert.AreEqual($"{expectedResponse.Message} - {expectedOnboardResponse.Message}", result.Message);
+        Assert.That(result.Message, Is.EqualTo($"{expectedResponse.Message} - {expectedOnboardResponse.Message}"));
     }
 
 
