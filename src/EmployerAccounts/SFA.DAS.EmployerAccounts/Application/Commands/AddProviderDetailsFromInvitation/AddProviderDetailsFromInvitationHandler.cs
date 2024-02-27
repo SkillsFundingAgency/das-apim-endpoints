@@ -37,14 +37,15 @@ namespace SFA.DAS.EmployerAccounts.Application.Commands.AddProviderDetailsFromIn
             invitationResponse.EnsureSuccessStatusCode();
 
             var invitation = invitationResponse.Body;
-            if (invitation != null && invitation.Invitation != null)
+            if (invitation != null)
             {
                 _logger.LogInformation($"Adding Provider Relationship from Invitation for {request.AccountId}");
 
                 await _providerRelationshipsApiClient
                     .PostWithResponseCode<AddAccountProviderFromInvitationResponse>(
                         new PostAddProviderDetailsFromInvitationRequest(request.AccountId,
-                            invitation.Invitation.Ukprn, request.CorrelationId, request.UserId)
+                            invitation.Ukprn, request.CorrelationId, request.UserId,
+                            request.Email, request.FirstName, request.LastName)
                     );
             }
 

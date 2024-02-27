@@ -8,14 +8,18 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships
         public long Ukprn { get; set; }
         public object Data { get; set; } = null;
 
-        public PostAddProviderDetailsFromInvitationRequest(long accountId, long ukprn, string correlationId, string userRef)
+        public PostAddProviderDetailsFromInvitationRequest(long accountId, long ukprn, string correlationId,
+            string userRef, string email, string firstName, string lastName)
         {
             AccountId = accountId;
             Data = new AddProviderDetailsFromInvitationRequest
             {
                 Ukprn = ukprn,
                 CorrelationId = correlationId,
-                UserRef = userRef
+                UserRef = userRef,
+                Email = email,
+                FirstName = firstName,
+                LastName = lastName
             };
         }
 
@@ -26,6 +30,9 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships
             public string CorrelationId { get; set; }
             public string UserRef { get; set; }
             public long Ukprn { get; set; }
+            public string Email { get; set; }
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
         }
     }
 }

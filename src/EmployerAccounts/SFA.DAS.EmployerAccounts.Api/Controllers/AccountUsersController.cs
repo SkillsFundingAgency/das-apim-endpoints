@@ -48,7 +48,10 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
                 {
                     UserId = userId,
                     CorrelationId = request.CorrelationId,
-                    AccountId = request.AccountId
+                    AccountId = request.AccountId,
+                    Email = request.Email,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName
                 });
 
                 return Ok();
