@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -48,6 +49,21 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to retrieve employer request for EmployerRequestId: {employerRequestId}");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("account/{accountId}")]
+        public async Task<IActionResult> GetEmployerRequests(long accountId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetEmployerRequestsQuery { AccountId = accountId });
+                return Ok(result.EmployerRequests);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to retrieve employer requests for AccoundId: {accountId}");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
