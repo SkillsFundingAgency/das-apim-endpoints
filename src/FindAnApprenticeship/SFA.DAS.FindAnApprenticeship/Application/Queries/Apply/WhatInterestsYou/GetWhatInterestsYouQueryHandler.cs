@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
@@ -23,10 +24,18 @@ public class GetWhatInterestsYouQueryHandler(
         var vacancyRequest = new GetVacancyRequest(application.VacancyReference);
         var vacancy = await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(vacancyRequest);
 
+        bool? isCompleted = application.InterestsStatus switch
+        {
+            Constants.SectionStatus.InProgress => false,
+            Constants.SectionStatus.Completed => true,
+            _ => null
+        };
+
         return new GetWhatInterestsYouQueryResult
         {
             EmployerName = vacancy.EmployerName,
-            StandardName = vacancy.CourseTitle
+            StandardName = vacancy.CourseTitle,
+            IsSectionCompleted = isCompleted
         };
     }
 }
