@@ -81,10 +81,9 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
 
 			if (!string.IsNullOrEmpty(response.ErrorContent))
 			{
-				return BadRequest();
+				return Ok();
 			}
-                return Ok();
-
+               
             _logger.LogError($"Error attempting to create apprenticeship price change. {response.StatusCode} returned from inner api.", response.StatusCode);
             return BadRequest();
 		}
