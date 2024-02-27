@@ -79,7 +79,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
 				request.EffectiveFromDate
 			), false);
 
-			if (!string.IsNullOrEmpty(response.ErrorContent))
+			if (string.IsNullOrEmpty(response.ErrorContent))
 			{
 				return Ok();
 			}
