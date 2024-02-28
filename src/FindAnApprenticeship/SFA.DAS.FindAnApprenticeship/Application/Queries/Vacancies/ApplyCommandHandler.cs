@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -34,7 +35,7 @@ public class ApplyCommandHandler : IRequestHandler<ApplyCommand, ApplyCommandRes
         PutApplicationApiRequest.PutApplicationApiRequestData putApplicationApiRequestData = new PutApplicationApiRequest.PutApplicationApiRequestData
         {
             CandidateId = request.CandidateId,
-            AdditionalQuestions = [result.AdditionalQuestion1, result.AdditionalQuestion2]
+            AdditionalQuestions = [result.AdditionalQuestions.ToList()[0].QuestionId, result.AdditionalQuestions.ToList()[1].QuestionId]
         };
         var putData = putApplicationApiRequestData;
         var vacancyReference =
