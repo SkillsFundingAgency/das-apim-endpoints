@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.ProviderAccounts
 
             var actual = await controller.GetProviderStatus(ukprn) as OkObjectResult;
             
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualModel = actual.Value as ProviderAccountResponse;
             actualModel.CanAccessService.Should().Be(result);
         }

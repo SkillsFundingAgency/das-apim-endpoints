@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.SendEmail
 {
-    public class SendBankDetailsRepeatReminderEmailsCommandHandler : IRequestHandler<SendBankDetailsRepeatReminderEmailsCommand>
+    public class SendBankDetailsRepeatReminderEmailsCommandHandler : IRequestHandler<SendBankDetailsRepeatReminderEmailsCommand, Unit>
     {
         private readonly IEmailService _emailService;
 

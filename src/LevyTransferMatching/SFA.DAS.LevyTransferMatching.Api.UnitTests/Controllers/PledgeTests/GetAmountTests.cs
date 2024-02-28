@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
-using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount;
 
@@ -41,12 +40,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var controllerResponse = await _controller.Amount(_encodedAccountId);
 
             var okObjectResult = controllerResponse as OkObjectResult;
-            Assert.IsNotNull(okObjectResult);
+            Assert.That(okObjectResult, Is.Not.Null);
             var response = okObjectResult.Value as GetAmountResponse;
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
 
-            Assert.AreEqual(_queryResult.RemainingTransferAllowance, response.RemainingTransferAllowance);
-            Assert.AreEqual(_queryResult.StartingTransferAllowance, response.StartingTransferAllowance);
+            Assert.That(_queryResult.RemainingTransferAllowance, Is.EqualTo(response.RemainingTransferAllowance));
+            Assert.That(_queryResult.StartingTransferAllowance, Is.EqualTo(response.StartingTransferAllowance));
 
         }
     }

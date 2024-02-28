@@ -7,7 +7,6 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpao;
-using SFA.DAS.EpaoRegister.InnerApi.Requests;
 using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;

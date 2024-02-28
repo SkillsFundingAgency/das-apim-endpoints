@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using System;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteJob

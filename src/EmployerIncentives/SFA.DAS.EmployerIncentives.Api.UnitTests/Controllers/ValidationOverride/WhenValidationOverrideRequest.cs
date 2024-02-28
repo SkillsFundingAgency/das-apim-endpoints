@@ -7,7 +7,6 @@ using SFA.DAS.EmployerIncentives.Api.Controllers;
 using SFA.DAS.EmployerIncentives.Application.Commands.ValidationOverride;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.Testing.AutoFixture;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.ValidationOverrid
                         c.ValidationOverrideRequest.Equals(request)),
                     It.IsAny<CancellationToken>()), Times.Once);
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
         }
     }
 }

@@ -34,6 +34,6 @@ public class WhenCreatingMetricData
         var result = await handler.Handle(command, cancellationToken);
 
         earlyConnectApiClientMock.Verify(x => x.PostWithResponseCode<object>(It.IsAny<CreateMetricDataRequest>(), It.IsAny<bool>()), Times.Once);
-        Assert.AreEqual(Unit.Value, result);
+        Assert.That(Unit.Value, Is.EqualTo(result));
     }
 }

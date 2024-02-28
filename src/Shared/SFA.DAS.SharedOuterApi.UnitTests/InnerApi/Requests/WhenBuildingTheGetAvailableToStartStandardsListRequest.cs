@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;

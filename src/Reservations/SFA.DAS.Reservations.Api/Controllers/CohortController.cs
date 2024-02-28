@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Reservations.Api.Models;
 using SFA.DAS.Reservations.Application.Providers.Queries.GetCohort;
 
 namespace SFA.DAS.Reservations.Api.Controllers

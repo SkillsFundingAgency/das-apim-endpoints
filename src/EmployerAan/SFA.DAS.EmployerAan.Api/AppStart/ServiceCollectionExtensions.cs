@@ -36,8 +36,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServiceRegistration(this IServiceCollection services, IConfigurationRoot configuration)
     {
         services.AddHttpClient();
-        services.AddMediatR(typeof(GetMyApprenticeshipQuery).Assembly);
-        services.AddMediatR(typeof(GetEmployerMemberQuery).Assembly);
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEmployerMemberQuery).Assembly));
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();

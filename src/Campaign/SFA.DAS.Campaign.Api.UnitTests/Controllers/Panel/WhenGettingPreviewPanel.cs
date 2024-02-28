@@ -52,7 +52,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Panel
 
             Assert.Multiple(() =>
             {
-                Assert.IsNotNull(actualResult);
+                Assert.That(actualResult, Is.Not.Null);
                 Assert.That(controllerResult.StatusCode.Equals(404));
                 Assert.That(actualResult.Message.Equals($"Preview Panel not found for panel id {panelId}."));
             });

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace SFA.DAS.FindEpao.InnerApi.Responses
 {
     public class GetStandardsListItem

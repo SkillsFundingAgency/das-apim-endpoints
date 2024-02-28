@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectPledgeApplications
 {
-    public class RejectPledgeApplicationsCommandHandler : IRequestHandler<RejectPledgeApplicationsCommand>
+    public class RejectPledgeApplicationsCommandHandler : IRequestHandler<RejectPledgeApplicationsCommand, Unit>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly ILogger<RejectPledgeApplicationsCommandHandler> _logger;

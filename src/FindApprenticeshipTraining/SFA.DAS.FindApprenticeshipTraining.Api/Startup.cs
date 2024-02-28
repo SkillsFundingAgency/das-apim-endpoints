@@ -51,7 +51,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetTrainingCoursesListQuery).Assembly);
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetTrainingCoursesListQuery).Assembly));
             services.AddServiceRegistration();
 
             services

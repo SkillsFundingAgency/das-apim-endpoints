@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplications
 {
-    public class RejectApplicationsCommand : IRequest
+    public class RejectApplicationsCommand : IRequest<Unit>
     { 
         public int PledgeId { get; set; }
         public int AccountId { get; set; }     

@@ -28,7 +28,7 @@ namespace SFA.DAS.AparRegister.Api.UnitTests.Controllers
 
             var actual = await controller.GetProviders() as OkObjectResult;
             
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualModel = actual.Value as ProvidersApiResponse;
             actualModel.Should().BeEquivalentTo((ProvidersApiResponse)mediatorResponse);
         }
@@ -43,7 +43,7 @@ namespace SFA.DAS.AparRegister.Api.UnitTests.Controllers
 
             var actual = await controller.GetProviders() as StatusCodeResult;
             
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int) HttpStatusCode.InternalServerError);
         }
     }

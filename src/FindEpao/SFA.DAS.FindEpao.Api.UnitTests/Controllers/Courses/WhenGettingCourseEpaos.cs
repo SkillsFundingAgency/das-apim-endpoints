@@ -33,10 +33,10 @@ namespace SFA.DAS.FindEpao.Api.UnitTests.Controllers.Courses
 
             var controllerResult = await controller.CourseEpaos(courseId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetCourseEpaoListResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Course.Should().BeEquivalentTo((GetCourseListItem)mediatorResult.Course);
             model.Epaos.Should().BeEquivalentTo(mediatorResult.Epaos.Select(item => (GetCourseEpaoListItem)item));
         }

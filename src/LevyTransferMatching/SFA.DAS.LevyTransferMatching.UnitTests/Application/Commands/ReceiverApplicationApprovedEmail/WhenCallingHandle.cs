@@ -2,11 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.LevyTransferMatching.Interfaces;

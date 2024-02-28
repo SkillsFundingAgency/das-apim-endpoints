@@ -1,5 +1,4 @@
 using MediatR;
-using SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities;
 
 namespace SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntity
 {

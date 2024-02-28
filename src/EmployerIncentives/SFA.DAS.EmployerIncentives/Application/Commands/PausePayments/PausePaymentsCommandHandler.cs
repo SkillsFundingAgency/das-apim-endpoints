@@ -7,7 +7,7 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.PausePayments
 {
-    public class PausePaymentsCommandHandler : IRequestHandler<PausePaymentsCommand>
+    public class PausePaymentsCommandHandler : IRequestHandler<PausePaymentsCommand, Unit>
     {
         private readonly IEmployerIncentivesApiClient<EmployerIncentivesConfiguration> _client;
 

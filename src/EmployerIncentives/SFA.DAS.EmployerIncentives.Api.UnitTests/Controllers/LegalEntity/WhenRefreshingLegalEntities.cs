@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.LegalEntity
 
             var controllerResult = await controller.RefreshLegalEntities(pageNumber, pageSize) as OkResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
         }
     }
 }

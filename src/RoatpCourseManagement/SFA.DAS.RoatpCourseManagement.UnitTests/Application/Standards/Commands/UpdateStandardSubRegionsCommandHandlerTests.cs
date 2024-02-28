@@ -41,7 +41,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
             apiClientMock.Verify(a => a.PostWithResponseCode<ProviderCourseLocationBulkInsertRequest>(It.IsAny<ProviderCourseLocationBulkInsertRequest>(), false), Times.Once);
             apiClientMock.Verify(a => a.Delete(It.IsAny<ProviderLocationBulkDeleteRequest>()), Times.Once);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
         }
 
         [Test, MoqAutoData]

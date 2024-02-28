@@ -36,7 +36,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Application
 
             var controllerResult = await controller.CreateApplication(request) as CreatedResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.Created);
             controllerResult.Location.Should().Be($"/accounts/{request.AccountId}/applications/{applicationId}");
         }

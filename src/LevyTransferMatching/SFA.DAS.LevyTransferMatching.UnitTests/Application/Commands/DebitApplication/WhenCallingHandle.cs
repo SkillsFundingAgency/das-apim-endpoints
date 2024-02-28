@@ -63,9 +63,9 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.DebitAppli
 
             var debit = (DebitApplicationRequest.DebitApplicationRequestData)_debitApplicationRequest.Data;
 
-            Assert.AreEqual($"applications/{_debitApplicationCommand.ApplicationId}/debit", _debitApplicationRequest.PostUrl);
-            Assert.AreEqual(_debitApplicationCommand.Amount, debit.Amount);
-            Assert.AreEqual(_debitApplicationCommand.NumberOfApprentices, debit.NumberOfApprentices);
+            Assert.That(_debitApplicationRequest.PostUrl, Is.EqualTo($"applications/{_debitApplicationCommand.ApplicationId}/debit"));
+            Assert.That(_debitApplicationCommand.Amount, Is.EqualTo(debit.Amount));
+            Assert.That(_debitApplicationCommand.NumberOfApprentices, Is.EqualTo(debit.NumberOfApprentices));
         }
     }
 }

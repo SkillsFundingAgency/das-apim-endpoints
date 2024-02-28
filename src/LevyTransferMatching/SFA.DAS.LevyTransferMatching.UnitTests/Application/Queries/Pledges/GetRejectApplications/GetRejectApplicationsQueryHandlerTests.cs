@@ -3,17 +3,12 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.LevyTransferMatching.Models.Constants;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.GetRejectApplications
 {
@@ -55,8 +50,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         {
             var result = await _handler.Handle(_query , CancellationToken.None);
             var applications = result.Applications.Select(x => x).ToList();
-            Assert.AreEqual("Mega Corp", applications[0].DasAccountName);
-            Assert.AreEqual(4, applications[0].Id);
+            Assert.That(applications[0].DasAccountName, Is.EqualTo("Mega Corp"));
+            Assert.That(applications[0].Id, Is.EqualTo(4));
         }
     }
 }

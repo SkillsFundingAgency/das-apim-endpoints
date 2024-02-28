@@ -1,5 +1,4 @@
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Commitments;
-using SFA.DAS.EmployerIncentives.Models;
 
 namespace SFA.DAS.EmployerIncentives.Application.Queries.EligibleApprenticeshipsSearch
 {

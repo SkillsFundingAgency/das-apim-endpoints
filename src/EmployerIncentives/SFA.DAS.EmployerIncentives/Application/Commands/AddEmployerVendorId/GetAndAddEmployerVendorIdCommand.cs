@@ -2,7 +2,7 @@ using MediatR;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
 {
-    public class GetAndAddEmployerVendorIdCommand : IRequest
+    public class GetAndAddEmployerVendorIdCommand : IRequest<Unit>
     {
         public string HashedLegalEntityId { get; }
 

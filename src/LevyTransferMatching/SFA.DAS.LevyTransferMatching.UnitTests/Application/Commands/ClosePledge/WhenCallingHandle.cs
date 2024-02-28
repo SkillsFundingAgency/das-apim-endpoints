@@ -1,18 +1,13 @@
 ﻿using AutoFixture;
-using AutoFixture.NUnit3;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ClosePledge;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
-using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
 using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -53,10 +48,10 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.ClosePledg
 
             var data = (ClosePledgeRequest.ClosePledgeRequestData)_request.Data;
 
-            Assert.AreEqual($"pledges/{_command.PledgeId}/close", _request.PostUrl);
-            Assert.AreEqual(_command.UserId, data.UserId);
-            Assert.AreEqual(_command.UserDisplayName, data.UserDisplayName);
-            Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+            Assert.That($"pledges/{_command.PledgeId}/close", Is.EqualTo(_request.PostUrl));
+            Assert.That(_command.UserId, Is.EqualTo(data.UserId));
+            Assert.That(_command.UserDisplayName, Is.EqualTo(data.UserDisplayName));
+            Assert.That(HttpStatusCode.OK, Is.EqualTo(response.StatusCode));
         }
 
         [Test]
@@ -72,8 +67,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.ClosePledg
 
             var response = await _handler.Handle(_command, CancellationToken.None);
 
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
-            Assert.AreEqual(error.Message, response.ErrorContent);
+            Assert.That(HttpStatusCode.NotFound, Is.EqualTo(response.StatusCode));
+            Assert.That(error.Message, Is.EqualTo(response.ErrorContent));
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using AutoFixture;
-using SFA.DAS.Approvals.Application.DeliveryModels.Constants;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;

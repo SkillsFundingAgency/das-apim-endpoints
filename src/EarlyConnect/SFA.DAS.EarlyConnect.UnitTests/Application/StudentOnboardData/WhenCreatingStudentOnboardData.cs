@@ -41,7 +41,7 @@ public class WhenCreatingStudentOnboardData
         earlyConnectApiClientMock.Verify(x => x.PostWithResponseCode<CreateStudentOnboardDataResponse>(
             It.IsAny<CreateStudentOnboardDataRequest>(), true), Times.Once);
 
-        Assert.AreEqual($"{expectedResponse.Message}", result.Message);
+        Assert.That(result.Message, Is.EqualTo($"{expectedResponse.Message}"));
     }
 
 

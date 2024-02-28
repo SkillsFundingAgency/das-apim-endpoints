@@ -32,7 +32,7 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddServiceRegistration(this IServiceCollection services, IConfigurationRoot configuration)
     {
-        services.AddMediatR(typeof(GetRegionsQuery).Assembly);
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRegionsQuery).Assembly));
 
         services.AddHttpClient();
         AddAanHubApiClient(services, configuration);

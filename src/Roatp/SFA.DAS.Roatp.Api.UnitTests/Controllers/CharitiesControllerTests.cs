@@ -32,7 +32,7 @@ namespace SFA.DAS.Roatp.Api.UnitTests.Controllers
 
             var statusCodeResult = response as IStatusCodeActionResult;
 
-            Assert.AreEqual(expectedStatusCode, statusCodeResult.StatusCode.GetValueOrDefault());
+            Assert.That(expectedStatusCode, Is.EqualTo(statusCodeResult.StatusCode.GetValueOrDefault()));
         }
     }
 }

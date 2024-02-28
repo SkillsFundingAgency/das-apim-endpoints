@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication
 {
-    public class ConfirmApplicationCommandHandler : IRequestHandler<ConfirmApplicationCommand>
+    public class ConfirmApplicationCommandHandler : IRequestHandler<ConfirmApplicationCommand, Unit>
     {
         private readonly IApplicationService _applicationService;
 
