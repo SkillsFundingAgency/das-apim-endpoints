@@ -6,7 +6,6 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
-using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
@@ -26,7 +25,7 @@ public class WhenHandlingGetNhsJobs
         LiveVacancy liveVacancy3,
         LiveVacancy liveVacancy4,
         [Frozen] Mock<ILiveVacancyMapper> mapper,
-        [Frozen] Mock<INhsJobsApiClient<NhsJobsConfiguration>> client,
+        [Frozen] Mock<INhsJobsApiClient> client,
         GetNhsJobsQueryHandler handler)
     {
         var xmlSerializer = new XmlSerializer(typeof(GetNhsJobApiResponse));
@@ -47,9 +46,9 @@ public class WhenHandlingGetNhsJobs
         mapper.Setup(x => x.Map(It.Is<GetNhsJobApiDetailResponse>(c=>c.Id == expectedResponse.Vacancies.LastOrDefault().Id))).Returns(liveVacancy2);
         mapper.Setup(x => x.Map(It.Is<GetNhsJobApiDetailResponse>(c=>c.Id == expectedResponse2.Vacancies.FirstOrDefault().Id))).Returns(liveVacancy3);
         mapper.Setup(x => x.Map(It.Is<GetNhsJobApiDetailResponse>(c=>c.Id == expectedResponse2.Vacancies.LastOrDefault().Id))).Returns(liveVacancy4);
-        client.Setup(x => x.GetWithResponseCode<string>(It.Is<GetNhsJobsApiRequest>(c => c.GetUrl.Contains("?contractType=Apprenticeship&page=1"))))
+        client.Setup(x => x.GetWithResponseCode(It.Is<GetNhsJobsApiRequest>(c => c.GetUrl.Contains("?contractType=Apprenticeship&page=1"))))
             .ReturnsAsync(new ApiResponse<string>(_nhsResponse, HttpStatusCode.OK, ""));
-        client.Setup(x => x.GetWithResponseCode<string>(It.Is<GetNhsJobsApiRequest>(c => c.GetUrl.Contains("?contractType=Apprenticeship&page=2"))))
+        client.Setup(x => x.GetWithResponseCode(It.Is<GetNhsJobsApiRequest>(c => c.GetUrl.Contains("?contractType=Apprenticeship&page=2"))))
             .ReturnsAsync(new ApiResponse<string>(_nhsResponse2, HttpStatusCode.OK, ""));
 
         var actual = await handler.Handle(query, CancellationToken.None);
@@ -61,11 +60,11 @@ public class WhenHandlingGetNhsJobs
     public async Task Then_If_There_Are_No_Nhs_Jobs_Returned_Then_Empty_List_Returned(
         GetNhsJobsQuery query,
         [Frozen] Mock<ILiveVacancyMapper> mapper,
-        [Frozen] Mock<INhsJobsApiClient<NhsJobsConfiguration>> client,
+        [Frozen] Mock<INhsJobsApiClient> client,
         GetNhsJobsQueryHandler handler)
     {
         mapper.Setup(x => x.Map(It.IsAny<GetNhsJobApiDetailResponse>())).Returns(((LiveVacancy)null!)!);
-        client.Setup(x => x.GetWithResponseCode<string>(It.Is<GetNhsJobsApiRequest>(c => c.GetUrl.Contains("?contractType=Apprenticeship&page=1"))))
+        client.Setup(x => x.GetWithResponseCode(It.Is<GetNhsJobsApiRequest>(c => c.GetUrl.Contains("?contractType=Apprenticeship&page=1"))))
             .ReturnsAsync(new ApiResponse<string>(_nhsNoResultsResponse, HttpStatusCode.OK, ""));
 
         var actual = await handler.Handle(query, CancellationToken.None);
@@ -77,11 +76,11 @@ public class WhenHandlingGetNhsJobs
     public async Task Then_If_There_Is_An_Error_Then_Empty_List_Returned(
         GetNhsJobsQuery query,
         [Frozen] Mock<ILiveVacancyMapper> mapper,
-        [Frozen] Mock<INhsJobsApiClient<NhsJobsConfiguration>> client,
+        [Frozen] Mock<INhsJobsApiClient> client,
         GetNhsJobsQueryHandler handler)
     {
         mapper.Setup(x => x.Map(It.IsAny<GetNhsJobApiDetailResponse>())).Returns(((LiveVacancy)null!)!);
-        client.Setup(x => x.GetWithResponseCode<string>(It.Is<GetNhsJobsApiRequest>(c => c.GetUrl.Contains("?contractType=Apprenticeship&page=1"))))
+        client.Setup(x => x.GetWithResponseCode(It.Is<GetNhsJobsApiRequest>(c => c.GetUrl.Contains("?contractType=Apprenticeship&page=1"))))
             .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.InternalServerError, "An error"));
 
         var actual = await handler.Handle(query, CancellationToken.None);

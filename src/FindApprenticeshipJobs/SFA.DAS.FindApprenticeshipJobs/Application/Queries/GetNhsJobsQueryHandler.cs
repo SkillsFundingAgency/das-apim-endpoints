@@ -1,13 +1,12 @@
 using System.Xml.Serialization;
 using MediatR;
-using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 
-public class GetNhsJobsQueryHandler(INhsJobsApiClient<NhsJobsConfiguration> nhsJobsApiClient, ILiveVacancyMapper liveVacancyMapper) : IRequestHandler<GetNhsJobsQuery, GetNhsJobsQueryResult>
+public class GetNhsJobsQueryHandler(INhsJobsApiClient nhsJobsApiClient, ILiveVacancyMapper liveVacancyMapper) : IRequestHandler<GetNhsJobsQuery, GetNhsJobsQueryResult>
 {
     public async Task<GetNhsJobsQueryResult> Handle(GetNhsJobsQuery request, CancellationToken cancellationToken)
     {
@@ -21,25 +20,27 @@ public class GetNhsJobsQueryHandler(INhsJobsApiClient<NhsJobsConfiguration> nhsJ
             };
         }
         
-        var vacancies = result.Vacancies.Select(liveVacancyMapper.Map).ToList();
+        var vacancies = result.Vacancies.ToList();
         
         for (var i = 2; result.TotalPages >= i; i++)
         {
             result = await GetNhsPageResult(i);
 
-            vacancies.AddRange(result.Vacancies.Select(liveVacancyMapper.Map).ToList());
+            vacancies.AddRange(result.Vacancies.ToList());
         }
+
+        var liveVacancies = vacancies.Select(liveVacancyMapper.Map).ToList();
         
 
         return new GetNhsJobsQueryResult
         {
-            NhsVacancies = vacancies.ToList()
+            NhsVacancies = liveVacancies.ToList()
         };
     }
 
     private async Task<GetNhsJobApiResponse?> GetNhsPageResult(int pageNumber)
     {
-        var apiResponse = await nhsJobsApiClient.GetWithResponseCode<string>(new GetNhsJobsApiRequest(pageNumber));
+        var apiResponse = await nhsJobsApiClient.GetWithResponseCode(new GetNhsJobsApiRequest(pageNumber));
 
         if ((int)apiResponse.StatusCode >= 300)
         {

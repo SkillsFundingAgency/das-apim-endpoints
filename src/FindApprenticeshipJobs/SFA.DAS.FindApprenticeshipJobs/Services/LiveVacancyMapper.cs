@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
+using Address = SFA.DAS.FindApprenticeshipJobs.Application.Shared.Address;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Services
 {
@@ -110,7 +111,13 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 },
                 ApplicationUrl = source.Url,
                 ClosingDate = DateTime.Parse(source.CloseDate),
-                PostedDate = DateTime.Parse(source.PostDate)
+                PostedDate = DateTime.Parse(source.PostDate),
+                Address = new Address
+                {
+                    Postcode = "source.Location"
+                },
+                Qualifications = [],
+                Skills = []
             };
         }
 
