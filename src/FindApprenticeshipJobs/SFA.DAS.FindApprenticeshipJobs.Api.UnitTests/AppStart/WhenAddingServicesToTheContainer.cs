@@ -18,7 +18,7 @@ public class WhenAddingServicesToTheContainer
     [TestCase(typeof(IAzureClientCredentialHelper))]
     [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
     [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
-    [TestCase(typeof(INhsJobsApiClient<NhsJobsConfiguration>))]
+    [TestCase(typeof(INhsJobsApiClient))]
     [TestCase(typeof(ICourseService))]
     public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
     {
