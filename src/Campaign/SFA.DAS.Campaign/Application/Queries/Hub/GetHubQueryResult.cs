@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SFA.DAS.Campaign.Models;
+﻿using SFA.DAS.Campaign.Models;
 
 namespace SFA.DAS.Campaign.Application.Queries.Hub
 {

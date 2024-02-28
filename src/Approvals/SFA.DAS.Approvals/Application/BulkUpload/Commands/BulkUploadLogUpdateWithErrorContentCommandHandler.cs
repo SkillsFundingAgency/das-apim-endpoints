@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 {
-    public class BulkUploadLogUpdateWithErrorContentCommandHandler : IRequestHandler<BulkUploadLogUpdateWithErrorContentCommand>
+    public class BulkUploadLogUpdateWithErrorContentCommandHandler : IRequestHandler<BulkUploadLogUpdateWithErrorContentCommand, Unit>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
 

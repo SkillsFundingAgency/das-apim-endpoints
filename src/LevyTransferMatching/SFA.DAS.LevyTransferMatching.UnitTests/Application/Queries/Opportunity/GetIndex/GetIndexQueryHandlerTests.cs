@@ -2,8 +2,6 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex;
-using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
-using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -12,6 +10,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
+using NUnit.Framework.Legacy;
 using SFA.DAS.LevyTransferMatching.Models.Constants;
 using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetPledgesResponse;
 
@@ -55,28 +55,28 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            CollectionAssert.AreEqual(result.Opportunities.Select(x => x.Id), _pledges.Pledges.Select(x => x.Id));
+            result.Opportunities.Select(x => x.Id).Should().BeEquivalentTo(_pledges.Pledges.Select(x => x.Id));
         }
 
         [Test]
         public async Task Handle_Returns_Sectors()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_sectors, result.Sectors);
+            Assert.That(result.Sectors, Is.EqualTo(_sectors));
         }
 
         [Test]
         public async Task Handle_Returns_JobRoles()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_jobRoles, result.JobRoles);
+            Assert.That(result.JobRoles, Is.EqualTo(_jobRoles));
         }
 
         [Test]
         public async Task Handle_Returns_Levels()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_levels, result.Levels);
+            Assert.That(result.Levels, Is.EqualTo(_levels));
         }
 
         [Test]

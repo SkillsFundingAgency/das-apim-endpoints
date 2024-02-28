@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.CollectionsCalendar
 {
-    public class UpdateCollectionCalendarPeriodCommand : IRequest
+    public class UpdateCollectionCalendarPeriodCommand : IRequest<Unit>
     {
         public byte PeriodNumber { get; }
         public short AcademicYear { get; }

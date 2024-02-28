@@ -1,14 +1,11 @@
 ﻿using MediatR;
-using Newtonsoft.Json;
-using SFA.DAS.EmployerIncentives.Application.Commands.AddJobRequest;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities
 {
-    public class RefreshLegalEntitiesCommandHandler : IRequestHandler<RefreshLegalEntitiesCommand>
+    public class RefreshLegalEntitiesCommandHandler : IRequestHandler<RefreshLegalEntitiesCommand, Unit>
     {
         private readonly IAccountsService _accountsService;
         private readonly ILegalEntitiesService _legalEntitiesService;

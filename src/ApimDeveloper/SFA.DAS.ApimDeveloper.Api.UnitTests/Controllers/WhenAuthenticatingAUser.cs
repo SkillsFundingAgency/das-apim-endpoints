@@ -32,9 +32,9 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
 
             var actual = await controller.AuthenticateUser(request) as OkObjectResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualModel = actual.Value as UserAuthenticationApiResponse;
-            Assert.IsNotNull(actualModel);
+            Assert.That(actualModel, Is.Not.Null);
             actualModel.User.Should().BeEquivalentTo(mediatorResult.User);
         }
 
@@ -54,7 +54,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             
             var actual = await controller.AuthenticateUser(request) as NotFoundResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
         

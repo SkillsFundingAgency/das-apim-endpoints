@@ -1,15 +1,13 @@
 ﻿using MediatR;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.SendEmails
 {
-    public class SendEmailsCommandHandler : IRequestHandler<SendEmailsCommand>
+    public class SendEmailsCommandHandler : IRequestHandler<SendEmailsCommand, Unit>
     {
         private readonly INotificationService _notificationsService;
 

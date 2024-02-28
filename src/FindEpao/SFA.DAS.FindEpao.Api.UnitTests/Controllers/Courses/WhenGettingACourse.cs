@@ -32,10 +32,10 @@ namespace SFA.DAS.FindEpao.Api.UnitTests.Controllers.Courses
 
             var controllerResult = await controller.Get(courseId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetCourseResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Course.Should().BeEquivalentTo(mediatorResult.Course, options => options
             .Excluding(c => c.LarsCode)
             .Excluding(c => c.StandardUId)

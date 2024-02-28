@@ -1,6 +1,4 @@
-﻿using SFA.DAS.Roatp.CourseManagement.InnerApi.Models;
-
-namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllStandardRegions
+﻿namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllStandardRegions
 {
     public class StandardRegionModel
     {

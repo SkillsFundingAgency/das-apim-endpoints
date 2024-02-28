@@ -22,6 +22,6 @@ public class ProviderContextTests
     [TestCase("invalid")]
     [TestCase("9223372036854775808")]
     [TestCase("-1")]
-    public void Parse_an_invalid_ukprn(string input)
+    public void Parse_an_invalid_ukprn(string? input)
         => this.Invoking(_ => ProviderContext.Create(input, null)).Should().Throw<InvalidUkprnException>();
 }

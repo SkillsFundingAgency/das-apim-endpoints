@@ -30,7 +30,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.LegalEntity
 
             var controllerResult = await controller.RefreshVendorRegistrationFormStatus(from) as OkObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.Value.Should().Be(lastCaseUpdated);
         }
     }

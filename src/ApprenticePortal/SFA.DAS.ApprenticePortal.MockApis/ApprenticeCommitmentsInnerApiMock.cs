@@ -6,7 +6,6 @@ using SFA.DAS.ApprenticePortal.MockApis.Helpers;
 using SFA.DAS.ApprenticePortal.Models;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
-using WireMock.Server;
 
 namespace SFA.DAS.ApprenticePortal.MockApis
 {

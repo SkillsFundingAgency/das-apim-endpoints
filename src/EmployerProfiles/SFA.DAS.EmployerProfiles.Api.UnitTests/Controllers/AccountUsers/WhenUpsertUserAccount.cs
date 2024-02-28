@@ -41,10 +41,10 @@ namespace SFA.DAS.EmployerProfiles.Api.UnitTests.Controllers.AccountUsers
 
             var controllerResult = await controller.UpsertUserAccount(userId, request) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as UpsertUserApiResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo((UpsertUserApiResponse)mediatorResult);
         }
 

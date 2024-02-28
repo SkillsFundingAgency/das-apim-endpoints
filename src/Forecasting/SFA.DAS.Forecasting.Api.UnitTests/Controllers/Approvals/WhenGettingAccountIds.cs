@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -37,11 +38,11 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Approvals
         {
             var result = await _controller.GetAccountsWithCohorts() as ObjectResult;
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             var response = result.Value as GetAccountsWithCohortsResponse;
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
 
-            CollectionAssert.AreEqual(_queryResult.AccountIds, response.AccountIds);
+            response.AccountIds.Should().BeEquivalentTo(_queryResult.AccountIds);
         }
     }
 }

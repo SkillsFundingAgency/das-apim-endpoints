@@ -31,10 +31,10 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Accounts
 
             var controllerResult = await controller.GetUsers(hashedAccountId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int) HttpStatusCode.OK);
             var model = controllerResult.Value as GetAccountUsersResult;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo(mediatorResult);
         }
 

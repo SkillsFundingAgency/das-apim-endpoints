@@ -8,8 +8,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
-using SFA.DAS.Approvals.Api.Models.DraftApprenticeships;
-using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeship;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipPriorLearningData;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
@@ -50,15 +48,15 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
         {
             var result = await _controller.GetPriorLearningData(_cohortId, _draftApprenticeshipId);
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okObjectResult = (OkObjectResult)result;
-            Assert.IsInstanceOf<GetEditDraftApprenticeshipPriorLearningDataQueryResult>(okObjectResult.Value);
+            Assert.That(okObjectResult.Value, Is.InstanceOf<GetEditDraftApprenticeshipPriorLearningDataQueryResult>());
             var objectResult = (GetEditDraftApprenticeshipPriorLearningDataQueryResult)okObjectResult.Value;
 
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
 
             var comparisonResult = compare.Compare(_queryResult, objectResult);
-            Assert.IsTrue(comparisonResult.AreEqual);
+            Assert.That(comparisonResult.AreEqual, Is.True);
         }
 
     }

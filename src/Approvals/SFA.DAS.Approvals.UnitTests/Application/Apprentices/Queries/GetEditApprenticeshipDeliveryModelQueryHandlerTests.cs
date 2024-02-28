@@ -9,7 +9,6 @@ using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
-using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -53,7 +52,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            Assert.AreEqual(_deliveryModels, result.DeliveryModels);
+            Assert.That(result.DeliveryModels, Is.EqualTo(_deliveryModels));
         }
 
         [Test]
@@ -61,7 +60,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            Assert.AreEqual(_apprenticeshipResponse.EmployerName, result.LegalEntityName);
+            Assert.That(result.LegalEntityName, Is.EqualTo(_apprenticeshipResponse.EmployerName));
         }
 
         [Test]
@@ -74,7 +73,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -82,7 +81,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         {
             _apprenticeshipResponse.EmployerAccountId++;
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

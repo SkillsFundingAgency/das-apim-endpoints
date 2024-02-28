@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;

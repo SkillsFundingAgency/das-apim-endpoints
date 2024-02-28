@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoFixture;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Forecasting.Api.Controllers;
@@ -41,29 +40,29 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Applications
         {
             var result = await _controller.GetApplications(_pledgeId) as ObjectResult;
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             var response = result.Value as GetApplicationsResponse;
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
 
-            Assert.AreEqual(_queryResult.Applications.Count(), response.Applications.Count());
+            Assert.That(_queryResult.Applications.Count(), Is.EqualTo(response.Applications.Count()));
 
             var i = 0;
 
             foreach (var application in response.Applications)
             {
                 var expected = _queryResult.Applications.ToArray()[i];
-                Assert.AreEqual(expected.Id, application.Id);
-                Assert.AreEqual(expected.EmployerAccountId, application.EmployerAccountId);
-                Assert.AreEqual(expected.PledgeId, application.PledgeId);
-                Assert.AreEqual(expected.StandardId, application.StandardId);
-                Assert.AreEqual(expected.StandardTitle, application.StandardTitle);
-                Assert.AreEqual(expected.StandardLevel, application.StandardLevel);
-                Assert.AreEqual(expected.StandardDuration, application.StandardDuration);
-                Assert.AreEqual(expected.StandardMaxFunding, application.StandardMaxFunding);
-                Assert.AreEqual(expected.StartDate, application.StartDate);
-                Assert.AreEqual(expected.NumberOfApprentices, application.NumberOfApprentices);
-                Assert.AreEqual(expected.NumberOfApprenticesUsed, application.NumberOfApprenticesUsed);
-                Assert.AreEqual(expected.Status, application.Status);
+                Assert.That(expected.Id, Is.EqualTo(application.Id));
+                Assert.That(expected.EmployerAccountId, Is.EqualTo(application.EmployerAccountId));
+                Assert.That(expected.PledgeId, Is.EqualTo(application.PledgeId));
+                Assert.That(expected.StandardId, Is.EqualTo(application.StandardId));
+                Assert.That(expected.StandardTitle, Is.EqualTo(application.StandardTitle));
+                Assert.That(expected.StandardLevel, Is.EqualTo(application.StandardLevel));
+                Assert.That(expected.StandardDuration, Is.EqualTo(application.StandardDuration));
+                Assert.That(expected.StandardMaxFunding, Is.EqualTo(application.StandardMaxFunding));
+                Assert.That(expected.StartDate, Is.EqualTo(application.StartDate));
+                Assert.That(expected.NumberOfApprentices, Is.EqualTo(application.NumberOfApprentices));
+                Assert.That(expected.NumberOfApprenticesUsed, Is.EqualTo(application.NumberOfApprenticesUsed));
+                Assert.That(expected.Status, Is.EqualTo(application.Status));
                 i++;
             }
         }

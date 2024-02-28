@@ -1,6 +1,4 @@
-﻿using SFA.DAS.Approvals.Api.Models.DataLock;
-
-namespace SFA.DAS.Approvals.Api.Models.DataLock
+﻿namespace SFA.DAS.Approvals.Api.Models.DataLock
 {
     /// <summary>
     /// A subset of data relating to data locks for an apprenticeship

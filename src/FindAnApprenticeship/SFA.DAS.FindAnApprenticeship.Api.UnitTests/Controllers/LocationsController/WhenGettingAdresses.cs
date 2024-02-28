@@ -31,10 +31,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.LocationsContro
 
             var controllerResult = await controller.Index("AB1 2CD") as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetAddressesListResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Addresses.Should().BeEquivalentTo(mediatorResult.AddressesResponse.Addresses.Select(item => item));
         }
 

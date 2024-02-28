@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.WithdrawApplicationAfterAcceptance
 {
-    public class WithdrawApplicationAfterAcceptanceCommandHandler : IRequestHandler<WithdrawApplicationAfterAcceptanceCommand>
+    public class WithdrawApplicationAfterAcceptanceCommandHandler : IRequestHandler<WithdrawApplicationAfterAcceptanceCommand, Unit>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
 

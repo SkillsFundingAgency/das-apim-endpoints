@@ -5,7 +5,7 @@ using MediatR;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
 {
-    public class UpdateApprovalCommand : IRequest
+    public class UpdateApprovalCommand : IRequest<Unit>
     {
         public long? CommitmentsContinuedApprenticeshipId { get; set; }
         public long CommitmentsApprenticeshipId { get; set; }

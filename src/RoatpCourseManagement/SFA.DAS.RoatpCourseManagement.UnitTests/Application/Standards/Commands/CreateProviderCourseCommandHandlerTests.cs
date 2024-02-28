@@ -1,6 +1,5 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.CreateProviderCourse;

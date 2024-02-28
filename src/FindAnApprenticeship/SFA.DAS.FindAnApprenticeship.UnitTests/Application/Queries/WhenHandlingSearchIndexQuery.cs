@@ -33,9 +33,9 @@ public class WhenHandlingSearchIndexQuery
         var result = await handler.Handle(query, CancellationToken.None);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.AreEqual(apiResponse.TotalVacancies, result.TotalApprenticeshipCount);
-        Assert.IsTrue(result.LocationSearched);
-        Assert.AreEqual(locationItem, result.LocationItem);
+        Assert.That(result, Is.Not.Null);
+        Assert.That(apiResponse.TotalVacancies, Is.EqualTo(result.TotalApprenticeshipCount));
+        Assert.That(result.LocationSearched, Is.True);
+        Assert.That(locationItem, Is.EqualTo(result.LocationItem));
     }
 }

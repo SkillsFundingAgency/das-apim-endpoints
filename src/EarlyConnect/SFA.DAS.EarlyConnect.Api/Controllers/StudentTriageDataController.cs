@@ -7,6 +7,8 @@ using SFA.DAS.EarlyConnect.Application.Commands.CreateOtherStudentTriageData;
 using SFA.DAS.EarlyConnect.InnerApi.Requests;
 using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId;
 using SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData;
+using SFA.DAS.EarlyConnect.Application.Commands.CreateLogData;
+using SFA.DAS.EarlyConnect.Application.Commands.UpdateLogData;
 
 namespace SFA.DAS.EarlyConnect.Api.Controllers
 {
@@ -17,7 +19,6 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly ILogger<StudentTriageDataController> _logger;
-        private readonly string DataSource = "UCAS";
 
         public StudentTriageDataController(IMediator mediator, ILogger<StudentTriageDataController> logger)
         {
@@ -66,24 +67,37 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [Route("{surveyGuid}")]
-        public async Task<IActionResult> ManageStudentTriageData(ManageStudentTriageDataPostRequest request,[FromRoute] Guid surveyGuid)
+        public async Task<IActionResult> ManageStudentTriageData(ManageStudentTriageDataPostRequest request, [FromRoute] Guid surveyGuid)
         {
+            int logId = 0;
+
             try
             {
+                logId = await CreateLog(StudentDataUploadStatus.InProgress, String.Empty, request);
+
                 var response = await _mediator.Send(new ManageStudentTriageDataCommand
                 {
                     StudentTriageData = request.MapFromManageStudentTriageDataRequest(),
-                    SurveyGuid= surveyGuid
+                    SurveyGuid = surveyGuid
                 });
 
+                await UpdateLog(logId, StudentDataUploadStatus.Completed, request, response.Message);
+
                 return CreatedAtAction(nameof(ManageStudentTriageData), (ManageStudentTriageDataPostResponse)response);
+
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error posting manage student triage data");
+                var apiException = (e as SharedOuterApi.Exceptions.ApiResponseException);
+                var status = apiException?.Status;
+                var errorMessage = apiException?.Error;
+                _logger.LogError(e, "Error posting student data");
+
+                if (logId > 0) await UpdateLog(logId, StudentDataUploadStatus.Error, request, $"Error posting manage student triage data {(errorMessage != null ? $"\nErrorInfo: {errorMessage}" : "")}\nMessage: {e.Message}\nStackTrace: {e.StackTrace}");
 
                 return BadRequest();
             }
+
         }
 
         [HttpGet]
@@ -106,6 +120,49 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
 
                 return BadRequest($"Error getting student triage data. {(errorMessage != null ? $"\nErrorInfo: {errorMessage}" : "")}");
             }
+        }
+
+        private async Task<int> CreateLog(StudentDataUploadStatus status, string ipAddress, ManageStudentTriageDataPostRequest request)
+        {
+            if (request.StudentSurvey.DateCompleted == null)
+            {
+                return 0;
+            }
+            var actionName = ControllerContext.ActionDescriptor.ActionName;
+            var createLogRequest = new CreateLogPostRequest
+            {
+                RequestType = actionName,
+                RequestSource = request.DataSource,
+                RequestIP = ipAddress,
+                Payload = String.Empty,
+                Status = status.ToString()
+            };
+
+            var response = await _mediator.Send(new CreateLogDataCommand
+            {
+                Log = LogMapper.MapFromLogCreateRequest(createLogRequest)
+            });
+
+            return response.LogId;
+        }
+
+        private async Task UpdateLog(int logId, StudentDataUploadStatus status, ManageStudentTriageDataPostRequest request, string message = null)
+        {
+            if (request.StudentSurvey.DateCompleted == null)
+            {
+                return;
+            }
+            var updateLog = new UpdateLogPostRequest
+            {
+                LogId = logId,
+                Status = status.ToString(),
+                Error = message
+            };
+
+            await _mediator.Send(new UpdateLogDataCommand
+            {
+                Log = LogMapper.MapFromLogUpdateRequest(updateLog)
+            });
         }
     }
 }

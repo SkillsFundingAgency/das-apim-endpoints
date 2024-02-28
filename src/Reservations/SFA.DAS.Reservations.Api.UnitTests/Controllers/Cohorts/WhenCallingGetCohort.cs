@@ -9,10 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Reservations.Api.Controllers;
-using SFA.DAS.Reservations.Api.Models;
 using SFA.DAS.Reservations.Application.Providers.Queries.GetCohort;
-using SFA.DAS.Reservations.Application.Providers.Queries.GetProvider;
-using SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCourseList;
 using SFA.DAS.Reservations.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -35,10 +32,10 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.Providers
 
             var controllerResult = await controller.Get(cohortId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetCohortResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo(mediatorResult.Cohort);
         }
         [Test, MoqAutoData]
@@ -56,7 +53,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.Providers
 
             var controllerResult = await controller.Get(cohortId) as NotFoundResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
 

@@ -31,14 +31,14 @@ namespace SFA.DAS.Roatp.UnitTests.Domain.Models
 
             Charity charity = response;
 
-            Assert.AreEqual(1, charity.Trustees.Count);
-            Assert.AreEqual(response.Id.ToString(), charity.CharityNumber);
-            Assert.AreEqual(response.RegistrationNumber.ToString(), charity.RegistrationNumber);
-            Assert.AreEqual(response.RegistrationDate, charity.RegistrationDate);
-            Assert.AreEqual(response.Name, charity.Name);
-            Assert.AreEqual(response.RegistrationStatus, charity.Status);
-            Assert.AreEqual(response.CharityType, charity.Type);
-            Assert.IsNull(charity.RemovalDate);
+            Assert.That(1, Is.EqualTo(charity.Trustees.Count));
+            Assert.That(response.Id.ToString(), Is.EqualTo(charity.CharityNumber));
+            Assert.That(response.RegistrationNumber.ToString(), Is.EqualTo(charity.RegistrationNumber));
+            Assert.That(response.RegistrationDate, Is.EqualTo(charity.RegistrationDate));
+            Assert.That(response.Name, Is.EqualTo(charity.Name));
+            Assert.That(response.RegistrationStatus, Is.EqualTo(charity.Status));
+            Assert.That(response.CharityType, Is.EqualTo(charity.Type));
+            Assert.That(charity.RemovalDate, Is.Null);
         }
     }
 }

@@ -32,10 +32,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.UserTests
             var controllerResult = await opportunityController.SelectAccount(opportunityId, userId) as OkObjectResult;
             var response = controllerResult.Value as GetSelectAccountResponse;
 
-            Assert.IsNotNull(controllerResult);
-            Assert.AreEqual(controllerResult.StatusCode, (int)HttpStatusCode.OK);
-            Assert.IsNotNull(response);
-            Assert.AreEqual(getSelectAccountQueryResult.Accounts.Count(), response.Accounts.Count());
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(controllerResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
+            Assert.That(response, Is.Not.Null);
+            Assert.That(getSelectAccountQueryResult.Accounts.Count(), Is.EqualTo(response.Accounts.Count()));
         }
     }
 }

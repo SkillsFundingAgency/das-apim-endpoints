@@ -3,7 +3,7 @@ using System;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.EmploymentCheck
 {
-    public class EmploymentCheckCommand : IRequest
+    public class EmploymentCheckCommand : IRequest<Unit>
     {
         public Guid CorrelationId { get; set; }
         public string Result { get; set; }

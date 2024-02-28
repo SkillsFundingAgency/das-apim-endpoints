@@ -3,7 +3,7 @@ using SFA.DAS.LevyTransferMatching.Types;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome
 {
-    public class SetApplicationOutcomeCommand : IRequest
+    public class SetApplicationOutcomeCommand : IRequest<Unit>
     {
         public int PledgeId { get; set; }
         public int ApplicationId { get; set; }
