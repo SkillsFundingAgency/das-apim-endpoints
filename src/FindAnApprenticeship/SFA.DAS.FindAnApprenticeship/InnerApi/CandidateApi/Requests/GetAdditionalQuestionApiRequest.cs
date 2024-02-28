@@ -6,15 +6,15 @@ public class GetAdditionalQuestionApiRequest : IGetApiRequest
 {
     private readonly Guid _applicationId;
     private readonly Guid _candidateId;
-    private readonly Guid _questionId;
+    private readonly Guid _id;
 
-    public GetAdditionalQuestionApiRequest(Guid applicationId, Guid candidateId, Guid questionId)
+    public GetAdditionalQuestionApiRequest(Guid applicationId, Guid candidateId, Guid id)
     {
         _applicationId = applicationId;
         _candidateId = candidateId;
-        _questionId = questionId;
+        _id = id;
     }
 
     public string GetUrl =>
-           $"candidates/{_candidateId}/applications/{_applicationId}/additional-question/{_questionId}";
+           $"candidates/{_candidateId}/applications/{_applicationId}/additional-question/{_id}";
 }

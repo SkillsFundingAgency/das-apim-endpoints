@@ -28,7 +28,7 @@ public class WhenCallingGetAdditionalQuestion
         mediator.Setup(x => x.Send(It.Is<GetAdditionalQuestionQuery>(q =>
                     q.CandidateId == candidateId
                     && q.ApplicationId == applicationId
-                    && q.QuestionId == questionId),
+                    && q.Id == questionId),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(queryResult);
 
@@ -54,7 +54,7 @@ public class WhenCallingGetAdditionalQuestion
         mediator.Setup(x => x.Send(It.Is<GetAdditionalQuestionQuery>(q =>
                     q.CandidateId == candidateId
                     && q.ApplicationId == applicationId
-                    && q.QuestionId == questionId),
+                    && q.Id == questionId),
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new InvalidOperationException());
 

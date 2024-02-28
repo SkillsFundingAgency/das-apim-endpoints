@@ -20,7 +20,7 @@ public class WhenHandlingGetAdditionalQuestionQuery
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetAdditionalQuestionQueryHandler handler)
     {
-        var expectedRequest = new GetAdditionalQuestionApiRequest(query.CandidateId, query.ApplicationId, query.QuestionId);
+        var expectedRequest = new GetAdditionalQuestionApiRequest(query.ApplicationId, query.CandidateId, query.Id);
 
         candidateApiClient
             .Setup(client => client.Get<GetAdditionalQuestionApiResponse>(
@@ -34,7 +34,7 @@ public class WhenHandlingGetAdditionalQuestionQuery
             result.Should().NotBeNull();
             result.Should().BeOfType<GetAdditionalQuestionQueryResult>();
             candidateApiClient.Verify(p => p.Get<GetAdditionalQuestionApiResponse>(It.Is<GetAdditionalQuestionApiRequest>(x => x.GetUrl == expectedRequest.GetUrl)), Times.Once);
-            result.QuestionText.Should().BeEquivalentTo(questionResponse.QuestionText);
+            result.QuestionId.Should().BeEquivalentTo(questionResponse.QuestionId);
         }
     }
 }

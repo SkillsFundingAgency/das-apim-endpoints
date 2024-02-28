@@ -22,7 +22,7 @@ public class WhenHandlingUpdateAdditionalQuestionCommand
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         UpdateAdditionalQuestionCommandHandler handler)
     {
-        var expectedRequest = new PutUpsertAdditionalQuestionApiRequest(command.ApplicationId, command.CandidateId, new PutUpsertAdditionalQuestionApiRequest.PutUpsertAdditionalQuestionApiRequestData());
+        var expectedRequest = new PutUpsertAdditionalQuestionApiRequest(command.ApplicationId, command.CandidateId, command.Id, new PutUpsertAdditionalQuestionApiRequest.PutUpsertAdditionalQuestionApiRequestData());
 
         candidateApiClient
                     .Setup(client => client.PutWithResponseCode<PutUpsertAdditionalQuestionApiResponse>(

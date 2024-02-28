@@ -19,14 +19,14 @@ public class GetAdditionalQuestionQueryHandler : IRequestHandler<GetAdditionalQu
 
     public async Task<GetAdditionalQuestionQueryResult> Handle(GetAdditionalQuestionQuery request, CancellationToken cancellationToken)
     {
-        var additionalQuestion = await _candidateApiClient.Get<GetAdditionalQuestionApiResponse>(new GetAdditionalQuestionApiRequest(request.CandidateId, request.ApplicationId, request.QuestionId));
+        var additionalQuestion = await _candidateApiClient.Get<GetAdditionalQuestionApiResponse>(new GetAdditionalQuestionApiRequest(request.ApplicationId, request.CandidateId, request.Id));
 
         return new GetAdditionalQuestionQueryResult
         {
-            QuestionText = additionalQuestion.QuestionText,
+            QuestionId = additionalQuestion.QuestionId,
             Answer = additionalQuestion.Answer,
             Id = additionalQuestion.Id,
-            QuestionId = additionalQuestion.QuestionId
+            ApplicationId = additionalQuestion.ApplicationId
         };
     }
 }
