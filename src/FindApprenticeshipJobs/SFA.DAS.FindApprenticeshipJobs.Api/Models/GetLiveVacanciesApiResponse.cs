@@ -91,7 +91,7 @@ public class GetLiveVacanciesApiResponse
         public string? AccountPublicHashedId { get; set; }
         public string ApprenticeshipLevel { get; set; }
         public Guid VacancyId { get; set; }
-        public long VacancyReference { get; set; }
+        public string VacancyReference { get; set; }
         public string Title { get; set; }
         public int NumberOfPositions { get; set; }
         public string ApprenticeshipTitle { get; set; }
