@@ -20,6 +20,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+        services.AddTransient<INhsJobsApiClient<NhsJobsConfiguration>, NhsJobsApiClient>();
         services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<ILiveVacancyMapper, LiveVacancyMapper>();
