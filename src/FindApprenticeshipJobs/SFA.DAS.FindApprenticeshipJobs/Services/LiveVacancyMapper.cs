@@ -1,4 +1,4 @@
-﻿using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Services
@@ -92,6 +92,11 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 AdditionalQuestion1 = source.AdditionalQuestion1,
                 AdditionalQuestion2 = source.AdditionalQuestion2
             };
+        }
+
+        public Application.Shared.LiveVacancy Map(GetNhsJobApiDetailResponse source)
+        {
+            throw new NotImplementedException();
         }
 
         private string GetApprenticeshipLevel(int level)
