@@ -10,11 +10,11 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.RecalculateApplicationCostProjections
 {
-    public class RecalculateApplicationCostProjectionsCommand : IRequest
+    public class RecalculateApplicationCostProjectionsCommand : IRequest<Unit>
     {
     }
 
-    public class RecalculateApplicationCostProjectionsCommandHandler : IRequestHandler<RecalculateApplicationCostProjectionsCommand>
+    public class RecalculateApplicationCostProjectionsCommandHandler : IRequestHandler<RecalculateApplicationCostProjectionsCommand, Unit>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly ILogger<RecalculateApplicationCostProjectionsCommandHandler> _logger;

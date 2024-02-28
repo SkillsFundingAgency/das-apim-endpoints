@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ObjectPool;
 using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -8,7 +7,6 @@ using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Text;
 
 namespace SFA.DAS.Apprenticeships.Application.Apprenticeship;
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -32,10 +31,10 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
 
             var controllerResult = await controller.GetStandardById(id) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetStandardDetailsResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo(mediatorResult.StandardDetails);
         }
 

@@ -61,7 +61,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Then(@"the employer is sent an email reminding them to supply their bank details")]
         public void ThenTheEmployerIsSentAnEmailRemindingThemToSupplyTheirBankDetails()
         {
-            _response.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            _response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var emailRequests = _context.InnerApi.MockServer.FindLogEntries(Request.Create().WithPath($"/api/EmailCommand/bank-details-required").UsingPost());
             emailRequests.ToList().Count().Should().Be(1);

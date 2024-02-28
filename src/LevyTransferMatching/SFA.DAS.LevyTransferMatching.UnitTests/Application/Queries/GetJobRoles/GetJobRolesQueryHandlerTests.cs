@@ -32,7 +32,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetJobRoles
         public async Task Handle_Returns_JobRoles()
         {
             var result = await _handler.Handle(new GetJobRolesQuery(), CancellationToken.None);
-            Assert.AreEqual(_jobRoles, result.ReferenceDataItems);
+            Assert.That(result.ReferenceDataItems, Is.EqualTo(_jobRoles));
         }
     }
 }

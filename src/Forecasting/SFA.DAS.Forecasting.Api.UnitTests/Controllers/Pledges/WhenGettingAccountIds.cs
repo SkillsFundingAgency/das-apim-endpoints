@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Forecasting.Api.Controllers;
@@ -37,11 +37,11 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Pledges
         {
             var result = await _controller.GetAccountsWithPledges() as ObjectResult;
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             var response = result.Value as GetAccountsWithPledgesResponse;
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
 
-            CollectionAssert.AreEqual(_queryResult.AccountIds, response.AccountIds);
+            response.AccountIds.Should().BeEquivalentTo(_queryResult.AccountIds);
         }
     }
 }

@@ -9,10 +9,8 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses;
-using SFA.DAS.EpaoRegister.InnerApi.Requests;
 using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Validation;
@@ -146,11 +144,16 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
                 .Setup(client => client.GetAll<GetEpaoCoursesListItem>(
                     It.Is<GetEpaoCoursesRequest>(request => request.EpaoId == query.EpaoId)))
                 .ReturnsAsync(apiResponse);
+            mockCoursesApiClient
+                .Setup(client => client.Get<GetStandardResponse>(
+                    It.IsAny<GetStandardRequest>()))
+                .ReturnsAsync((GetStandardResponse)null);   
             
-            foreach (var standard in allStandards)
+            foreach (var standard in matchingStandards)
             {
                 mockCoursesApiClient
-                    .Setup(client => client.Get<GetStandardResponse>(It.Is<GetStandardRequest>(c=>c.StandardId.Equals(standard.LarsCode))))
+                    .Setup(client => client.Get<GetStandardResponse>(
+                        It.Is<GetStandardRequest>(c=>c.StandardId.Equals(standard.LarsCode))))
                     .ReturnsAsync(standard);    
             }
             

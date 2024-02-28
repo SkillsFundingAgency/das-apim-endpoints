@@ -42,7 +42,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.IsFalse(result.HasNoDeclaredStandards);
+            Assert.That(result.HasNoDeclaredStandards, Is.False);
         }
 
         [Test, MoqAutoData]
@@ -68,7 +68,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.IsTrue(result.HasNoDeclaredStandards);
+            Assert.That(result.HasNoDeclaredStandards, Is.True);
         }
 
 
@@ -93,7 +93,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

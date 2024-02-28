@@ -60,7 +60,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Then(@"the employer is sent an email reminding them how to supply their bank details in case they are unable to complete the application")]
         public void ThenTheEmployerIsSentAnEmailRemindingThemHowToSupplyTheirBankDetailsInCaseTheyAreUnableToCompleteTheApplication()
         {
-            _response.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            _response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var emailRequests = _context.InnerApi.MockServer.FindLogEntries(Request.Create().WithPath($"/api/EmailCommand/bank-details-reminder").UsingPost());
             emailRequests.ToList().Count().Should().Be(1);

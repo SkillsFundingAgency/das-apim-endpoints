@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using AutoFixture.NUnit3;
-using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Forecasting.Application.Courses.Queries.GetFrameworkCoursesList;
@@ -46,9 +45,9 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Courses.Queries
             var actual = handler.Handle(query, CancellationToken.None);
 
             //Assert
-            Assert.AreEqual(2, actual.Result.Frameworks.Count());
-            Assert.AreEqual("1", actual.Result.Frameworks.First().Id);
-            Assert.AreEqual("3", actual.Result.Frameworks.Last().Id);
+            Assert.That(2, Is.EqualTo(actual.Result.Frameworks.Count()));
+            Assert.That("1", Is.EquivalentTo(actual.Result.Frameworks.First().Id));
+            Assert.That("3", Is.EquivalentTo(actual.Result.Frameworks.Last().Id));
         }
     }
 }

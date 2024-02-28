@@ -5,7 +5,6 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCourseList;
-using SFA.DAS.Reservations.InnerApi.Requests;
 using SFA.DAS.Reservations.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;

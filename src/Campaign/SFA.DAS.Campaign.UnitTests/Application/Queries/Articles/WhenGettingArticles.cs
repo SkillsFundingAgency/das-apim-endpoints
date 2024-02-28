@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Campaign.Api.Models;
 using SFA.DAS.Campaign.Application.Queries.Articles;
 using SFA.DAS.Campaign.Application.Queries.Banner;
 using SFA.DAS.Campaign.Application.Queries.Menu;

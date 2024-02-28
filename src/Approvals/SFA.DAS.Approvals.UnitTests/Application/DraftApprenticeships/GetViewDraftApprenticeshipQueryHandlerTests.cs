@@ -46,12 +46,12 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         {
             var result = await _handler.Handle(new GetViewDraftApprenticeshipQuery { CohortId = _cohortId, DraftApprenticeshipId = _apprenticeshipId }, CancellationToken.None);
 
-            Assert.IsInstanceOf<GetViewDraftApprenticeshipQueryResult>(result);
+            Assert.That(result, Is.InstanceOf<GetViewDraftApprenticeshipQueryResult>());
 
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
 
             var comparisonResult = compare.Compare(_apiResponse, result);
-            Assert.IsTrue(comparisonResult.AreEqual);
+            Assert.That(comparisonResult.AreEqual, Is.True);
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
 
             var result = await _handler.Handle(new GetViewDraftApprenticeshipQuery { CohortId = _cohortId, DraftApprenticeshipId = _apprenticeshipId }, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

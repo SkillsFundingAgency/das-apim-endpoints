@@ -29,10 +29,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.LocationsContro
 
             var controllerResult = await controller.GeoPoint("AB1 2CD") as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetGeoPointResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.GeoPoint.Should().BeEquivalentTo(mediatorResult.GetPointResponse.GeoPoint);
         }
     }

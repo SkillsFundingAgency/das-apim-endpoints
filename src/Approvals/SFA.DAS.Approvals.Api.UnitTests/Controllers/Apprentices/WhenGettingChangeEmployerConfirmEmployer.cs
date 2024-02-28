@@ -44,18 +44,18 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
         {
             var result = await _controller.ChangeEmployerConfirmEmployer(_providerId, _apprenticeshipId, _accountLegalEntityId);
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
 
             var okObjectResult = result as OkObjectResult;
             var response = okObjectResult.Value as GetConfirmEmployerResponse;
 
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
 
-            Assert.AreEqual(_queryResult.LegalEntityName, response.LegalEntityName);
-            Assert.AreEqual(_queryResult.AccountName, response.AccountName);
-            Assert.AreEqual(_queryResult.AccountLegalEntityName, response.AccountLegalEntityName);
-            Assert.AreEqual(_queryResult.IsFlexiJobAgency, response.IsFlexiJobAgency);
-            Assert.AreEqual(_queryResult.DeliveryModel, response.DeliveryModel);
+            Assert.That(_queryResult.LegalEntityName, Is.EqualTo(response.LegalEntityName));
+            Assert.That(_queryResult.AccountName,  Is.EqualTo(response.AccountName));
+            Assert.That(_queryResult.AccountLegalEntityName, Is.EqualTo(response.AccountLegalEntityName));
+            Assert.That(_queryResult.IsFlexiJobAgency, Is.EqualTo(response.IsFlexiJobAgency));
+            Assert.That(_queryResult.DeliveryModel, Is.EqualTo(response.DeliveryModel));
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
 
             var result = await _controller.ChangeEmployerConfirmEmployer(_providerId, _apprenticeshipId, _accountLegalEntityId);
 
-            Assert.IsInstanceOf<NotFoundResult>(result);
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
         }
     }
 }

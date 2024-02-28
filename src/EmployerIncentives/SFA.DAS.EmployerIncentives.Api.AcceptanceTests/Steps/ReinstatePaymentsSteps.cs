@@ -3,7 +3,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
@@ -75,13 +74,13 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Then(@"the response of OK is returned")]
         public void ThenReturnOkToTheCaller()
         {
-            _response.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            _response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Then(@"the response of Bad Request is returned")]
         public void ThenReturnBadRequestToTheCaller()
         {
-            _response.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            _response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [Then(@"the response body contains the full message")]

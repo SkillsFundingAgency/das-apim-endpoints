@@ -12,7 +12,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.WorkExperiencesController
+namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VolunteeringOrWorkExperienceController
 {
     [TestFixture]
     public class WhenPostingWorkExperience
@@ -23,7 +23,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.WorkExperiences
         PostWorkExperienceApiRequest apiRequest,
         CreateWorkCommandResponse result,
         [Frozen] Mock<IMediator> mediator,
-        [Greedy] Api.Controllers.WorkExperiencesController controller)
+        [Greedy] Api.Controllers.VolunteeringOrWorkExperienceController controller)
         {
             mediator.Setup(x => x.Send(It.Is<CreateWorkCommand>(c =>
                         c.CandidateId.Equals(apiRequest.CandidateId)
@@ -48,7 +48,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.WorkExperiences
             Guid applicationId,
             PostWorkExperienceApiRequest apiRequest,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] Api.Controllers.WorkExperiencesController controller)
+            [Greedy] Api.Controllers.VolunteeringOrWorkExperienceController controller)
         {
             mediator.Setup(x => x.Send(It.IsAny<CreateWorkCommand>(),
                     CancellationToken.None))
@@ -56,7 +56,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.WorkExperiences
 
             var actual = await controller.PostWorkExperience(applicationId, apiRequest) as StatusCodeResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
 
@@ -65,15 +65,15 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.WorkExperiences
             Guid applicationId,
             PostWorkExperienceApiRequest apiRequest,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] Api.Controllers.WorkExperiencesController controller)
+            [Greedy] Api.Controllers.VolunteeringOrWorkExperienceController controller)
         {
             mediator.Setup(x => x.Send(It.IsAny<CreateWorkCommand>(),
                     CancellationToken.None))
-                .ReturnsAsync((() => null));
+                .ReturnsAsync(() => null);
 
             var actual = await controller.PostWorkExperience(applicationId, apiRequest) as StatusCodeResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
     }

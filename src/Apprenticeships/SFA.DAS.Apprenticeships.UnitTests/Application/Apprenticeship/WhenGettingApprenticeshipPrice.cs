@@ -1,5 +1,4 @@
-﻿using Castle.Core.Logging;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -12,9 +11,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 

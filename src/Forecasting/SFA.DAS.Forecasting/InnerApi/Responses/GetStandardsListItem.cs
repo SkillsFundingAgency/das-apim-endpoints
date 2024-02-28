@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.Forecasting.InnerApi.Responses
 {

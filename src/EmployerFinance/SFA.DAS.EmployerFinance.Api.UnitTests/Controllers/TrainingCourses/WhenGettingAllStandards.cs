@@ -32,10 +32,10 @@ namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.TrainingCourses
 
             var controllerResult = await controller.GetStandards() as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetStandardsResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Standards.Should().BeEquivalentTo(mediatorResult.Standards.Select(item => (StandardResponse)item));
         }
 

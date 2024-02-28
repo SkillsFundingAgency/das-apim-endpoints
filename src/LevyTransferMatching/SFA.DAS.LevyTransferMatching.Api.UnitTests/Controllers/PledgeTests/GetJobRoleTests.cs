@@ -37,11 +37,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var controllerResponse = await _controller.JobRole();
 
             var okObjectResult = controllerResponse as OkObjectResult;
-            Assert.IsNotNull(okObjectResult);
+            Assert.That(okObjectResult, Is.Not.Null);
             var response = okObjectResult.Value as GetJobRoleResponse;
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
 
-            Assert.AreEqual(_queryResult.JobRoles, response.JobRoles);
+            Assert.That(response.JobRoles, Is.EqualTo(_queryResult.JobRoles));
         }
     }
 }

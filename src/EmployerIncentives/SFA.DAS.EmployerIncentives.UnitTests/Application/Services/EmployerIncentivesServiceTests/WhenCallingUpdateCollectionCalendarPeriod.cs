@@ -6,7 +6,6 @@ using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
-using System;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerIncentivesServiceTests
