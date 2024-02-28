@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateWhatInterestsYou;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WhatInterestsYou;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
@@ -34,5 +35,26 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 
+        [HttpPost("")]
+        public async Task<IActionResult> PostWhatInterestsYou([FromRoute] Guid applicationId, [FromBody] PostWhatInterestsYouApiRequest request)
+        {
+            try
+            {
+                await mediator.Send(new UpdateWhatInterestsYouCommand
+                {
+                    ApplicationId = applicationId,
+                    CandidateId = request.CandidateId,
+                    AnswerText = request.AnswerText,
+                    IsComplete = request.IsComplete
+                });
+
+                return Created();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "PostWhatInterestsYou : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }
