@@ -7,7 +7,7 @@ using SFA.DAS.LevyTransferMatching.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.AutoApproveApplication
 {
-    public class AutoApproveApplicationCommandHandler : IRequestHandler<AutoApproveApplicationCommand>
+    public class AutoApproveApplicationCommandHandler : IRequestHandler<AutoApproveApplicationCommand, Unit>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly ILogger<AutoApproveApplicationCommandHandler> _logger;

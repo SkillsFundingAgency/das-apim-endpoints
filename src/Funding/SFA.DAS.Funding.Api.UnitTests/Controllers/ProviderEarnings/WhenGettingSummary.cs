@@ -31,10 +31,10 @@ namespace SFA.DAS.Funding.Api.UnitTests.Controllers.ProviderEarnings
 
             var controllerResult = await controller.GetSummary(ukprn) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetProviderEarningsSummaryResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Summary.Should().BeEquivalentTo(mediatorResult.Summary);
         }
     }

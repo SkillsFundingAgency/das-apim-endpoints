@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.ValidationOverride
 {
-    public class ValidationOverrideCommandHandler : IRequestHandler<ValidationOverrideCommand>
+    public class ValidationOverrideCommandHandler : IRequestHandler<ValidationOverrideCommand, Unit>
     {
         private readonly IEmployerIncentivesApiClient<EmployerIncentivesConfiguration> _client;
 

@@ -51,7 +51,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            Assert.AreEqual(_deliveryModels, result.DeliveryModels);
+            Assert.That(result.DeliveryModels, Is.EqualTo(_deliveryModels));
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            Assert.AreEqual(_apprenticeshipResponse.EmployerName, result.LegalEntityName);
+            Assert.That(result.LegalEntityName, Is.EqualTo(_apprenticeshipResponse.EmployerName));
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            Assert.AreEqual((Enums.ApprenticeshipStatus)_apprenticeshipResponse.Status, result.Status);
+            Assert.That(result.Status, Is.EqualTo((Enums.ApprenticeshipStatus)_apprenticeshipResponse.Status));
         }
 
         [Test]
@@ -80,7 +80,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
 
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.ChangeE
         {
             _apprenticeshipResponse.ProviderId = _query.ProviderId + 1;
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

@@ -2,8 +2,6 @@
 using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,8 +29,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetStandard
 
             var result = await getStandardsQueryHandler.Handle(getStandardsQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(response.Standards.Count(), result.Standards.Count());
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Standards.Count(), Is.EqualTo(response.Standards.Count()));
             client.Verify(x => x.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()), Times.Once);
         }
 
@@ -50,8 +48,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetStandard
 
             var result = await getStandardsQueryHandler.Handle(getStandardsQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.Standards.Count());
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Standards.Count(), Is.EqualTo(1));
         }
     }
 }

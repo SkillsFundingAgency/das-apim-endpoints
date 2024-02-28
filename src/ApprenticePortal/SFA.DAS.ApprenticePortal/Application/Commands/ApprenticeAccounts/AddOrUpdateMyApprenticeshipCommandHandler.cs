@@ -16,7 +16,7 @@ using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeAccounts
 {
-    public class AddOrUpdateMyApprenticeshipCommandHandler : IRequestHandler<AddOrUpdateMyApprenticeshipCommand>
+    public class AddOrUpdateMyApprenticeshipCommandHandler : IRequestHandler<AddOrUpdateMyApprenticeshipCommand, Unit>
     {
         private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _accountsApiClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsApiClient;

@@ -30,10 +30,10 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Locations
 
             var controllerResult = await controller.GetGeopoint("AB1 2CD") as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetGeoPointResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.GeoPoint.Should().BeEquivalentTo(mediatorResult.GetPointResponse.GeoPoint);
         }
     }

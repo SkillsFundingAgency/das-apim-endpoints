@@ -52,7 +52,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
 
             Func<Task> action = async () => await service.Confirm(request);
 
-            action.Should().Throw<UlnAlreadySubmittedException>();
+            action.Should().ThrowAsync<UlnAlreadySubmittedException>();
         }
     }
 }

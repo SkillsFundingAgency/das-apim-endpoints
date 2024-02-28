@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
 
 namespace SFA.DAS.EmployerIncentives.InnerApi.Requests.Accounts
 {

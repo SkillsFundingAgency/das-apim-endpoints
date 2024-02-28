@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -81,8 +80,15 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApi,
             [Frozen] Mock<IEmployerDemandApiClient<EmployerDemandApiConfiguration>> mockDemandApi,
             [Frozen] Mock<ILocationLookupService> mockLocationLookup,
+            [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetAggregatedCourseDemandListQueryHandler handler)
         {
+            cacheStorageService
+                .Setup(client => client.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+                .ReturnsAsync((GetStandardsListResponse)null);
+            cacheStorageService
+                .Setup(client => client.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse)))
+                .ReturnsAsync((GetRoutesListResponse)null);
             mockLocationLookup
                 .Setup(service => service.GetLocationInformation(query.LocationName, default, default, false))
                 .ReturnsAsync(locationFromService);
@@ -130,8 +136,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             cacheStorageService
                 .Setup(client => client.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
                 .ReturnsAsync(cachedCourses);
-            mockCoursesApi
-                .Setup(client => client.Get<GetRoutesListResponse>(It.IsAny<GetRoutesListRequest>()))
+            cacheStorageService
+                .Setup(client => client.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse)))
                 .ReturnsAsync(coursesApiRoutesResponse);
             mockDemandApi
                 .Setup(client => client.Get<GetAggregatedCourseDemandListResponse>(It.Is<GetAggregatedCourseDemandListRequest>(request => 

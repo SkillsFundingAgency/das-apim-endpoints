@@ -2,8 +2,6 @@
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Commands.RevertPayments;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Infrastructure;

@@ -8,7 +8,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraftApprenticeship
 {
-    public class UpdateDraftApprenticeshipCommandHandler : IRequestHandler<UpdateDraftApprenticeshipCommand>
+    public class UpdateDraftApprenticeshipCommandHandler : IRequestHandler<UpdateDraftApprenticeshipCommand, Unit>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         

@@ -25,7 +25,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.OverlappingTrainingDateRequest
             var response = new ApiResponse<CreateOverlappingTrainingDateResult>(new CreateOverlappingTrainingDateResult { Id = 1 }, System.Net.HttpStatusCode.OK, string.Empty);
             apiClient.Setup(x => x.PostWithResponseCode<CreateOverlappingTrainingDateResult>(It.IsAny<PostCreateOverlappingTrainingDateRequest>(), true)).ReturnsAsync(response);
             var actual = await handler.Handle(query, CancellationToken.None);
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
         }
 
         [Test, MoqAutoData]
@@ -53,7 +53,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.OverlappingTrainingDateRequest
             && (x.Data as CreateOverlappingTrainingDateRequest).UserInfo == cmd.UserInfo
                 ), true)).ReturnsAsync(response);
             var actual = await handler.Handle(cmd, CancellationToken.None);
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
         }
     }
 }

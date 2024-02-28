@@ -37,11 +37,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var controllerResponse = await _controller.Level();
 
             var okObjectResult = controllerResponse as OkObjectResult;
-            Assert.IsNotNull(okObjectResult);
+            Assert.That(okObjectResult, Is.Not.Null);
             var response = okObjectResult.Value as GetLevelResponse;
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
 
-            Assert.AreEqual(_queryResult.Levels, response.Levels);
+            Assert.That(response.Levels, Is.EqualTo(_queryResult.Levels));
         }
     }
 }

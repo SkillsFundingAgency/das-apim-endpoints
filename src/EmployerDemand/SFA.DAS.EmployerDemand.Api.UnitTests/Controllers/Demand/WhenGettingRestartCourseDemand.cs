@@ -32,10 +32,10 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             var actual = await controller.Restart(id) as ObjectResult;
             
             //Assert
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int) HttpStatusCode.OK);
             var actualModel = actual.Value as GetRestartCourseDemandResponse;
-            Assert.IsNotNull(actualModel);
+            Assert.That(actualModel, Is.Not.Null);
             actualModel.Id.Should().Be(queryResult.EmployerDemand.Id);
         }
 
@@ -55,7 +55,7 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
             var actual = await controller.Restart(id) as NotFoundResult;
             
             //Assert
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int) HttpStatusCode.NotFound);
         }
     }

@@ -27,8 +27,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
 
             var result = await getWithdrawalConfirmationQueryHandler.Handle(getWithdrawalConfirmationQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(getApplicationResponse.SenderEmployerAccountName, result.PledgeEmployerName);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.PledgeEmployerName, Is.EqualTo(getApplicationResponse.SenderEmployerAccountName));
         }
 
         [Test, MoqAutoData]
@@ -43,7 +43,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
 
             var result = await getWithdrawalConfirmationQueryHandler.Handle(getWithdrawalConfirmationQuery, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

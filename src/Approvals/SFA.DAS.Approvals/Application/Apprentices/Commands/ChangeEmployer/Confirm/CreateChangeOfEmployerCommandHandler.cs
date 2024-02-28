@@ -10,7 +10,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm
 {
-    public class CreateChangeOfEmployerCommandHandler : IRequestHandler<CreateChangeOfEmployerCommand>
+    public class CreateChangeOfEmployerCommandHandler : IRequestHandler<CreateChangeOfEmployerCommand, Unit>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsApiClient;
 

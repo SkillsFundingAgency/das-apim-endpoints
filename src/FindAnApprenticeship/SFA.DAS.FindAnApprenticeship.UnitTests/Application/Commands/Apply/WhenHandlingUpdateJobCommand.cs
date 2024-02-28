@@ -1,34 +1,42 @@
-﻿using AutoFixture.NUnit3;
-using MediatR;
+﻿using System.Net;
+using AutoFixture.NUnit3;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateJob;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
 {
-    [TestFixture]
     public class WhenHandlingUpdateJobCommand
     {
         [Test, MoqAutoData]
-        public async Task Then_The_WorkHistoryItem_Is_Updated(
+        public async Task Then_The_Job_Is_Updated(
             UpdateJobCommand command,
+            PutUpsertWorkHistoryApiResponse apiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             UpdateJobCommandHandler handler)
         {
-            var expectedRequest = new PutUpdateWorkHistoryApiRequest(command.ApplicationId, command.CandidateId, command.JobId, new PutUpdateWorkHistoryApiRequest.PutUpdateWorkHistoryApiRequestData());
+            var expectedRequest = new PutUpsertWorkHistoryApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), new PutUpsertWorkHistoryApiRequest.PutUpsertWorkHistoryApiRequestData());
 
             candidateApiClient
-                .Setup(client => client.Put(
-                    It.Is<PutUpdateWorkHistoryApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
-                .Returns(Task.FromResult(Unit.Value));
+                        .Setup(client => client.PutWithResponseCode<PutUpsertWorkHistoryApiResponse>(
+                            It.Is<PutUpsertWorkHistoryApiRequest>(r => r.PutUrl.StartsWith(expectedRequest.PutUrl.Substring(0, 86)))))
+                        .ReturnsAsync(new ApiResponse<PutUpsertWorkHistoryApiResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
-            await handler.Handle(command, CancellationToken.None);
+            var actual = await handler.Handle(command, CancellationToken.None);
 
-            candidateApiClient.Verify(x => x.Put(It.IsAny<PutUpdateWorkHistoryApiRequest>()), Times.Once);
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                actual.Id.Should().NotBeEmpty();
+            }
         }
     }
 }

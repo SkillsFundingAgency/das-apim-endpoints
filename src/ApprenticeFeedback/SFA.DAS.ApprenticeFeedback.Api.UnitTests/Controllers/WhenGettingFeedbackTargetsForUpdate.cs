@@ -29,7 +29,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
 
             var actual = await controller.GetFeedbackTargetsForUpdate(batchSize) as ObjectResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
             actual.Value.Should().BeEquivalentTo(queryResult.FeedbackTargetsForUpdate);
         }
@@ -45,7 +45,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
 
             var actual = await controller.GetFeedbackTargetsForUpdate(batchSize) as StatusCodeResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }

@@ -1,7 +1,6 @@
 using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis;
-using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
@@ -10,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;

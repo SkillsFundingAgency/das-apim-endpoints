@@ -22,7 +22,7 @@ builder.Services
     .AddServiceRegistration()
     .AddAuthentication(configuration)
     .AddEndpointsApiExplorer()
-    .AddMediatR(typeof(GetProviderQuery).Assembly)
+    .AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetProviderQuery).Assembly))
     .AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "RoatpProviderModerationOuterApi", Version = "v1" });

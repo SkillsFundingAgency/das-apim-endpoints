@@ -5,7 +5,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Applications;
-using SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationWithdrawnAfterAcceptance;
 using SFA.DAS.LevyTransferMatching.Application.Commands.WithdrawApplicationAfterAcceptance;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
@@ -32,8 +31,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
                 x.ApplicationId == applicationId &&
                 x.UserId == request.UserId &&
                 x.UserDisplayName == request.UserDisplayName), It.IsAny<CancellationToken>()));
-            Assert.IsNotNull(controllerResult);
-            Assert.IsNotNull(okObjectResult);
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(okObjectResult, Is.Not.Null);
         }
     }
 }
