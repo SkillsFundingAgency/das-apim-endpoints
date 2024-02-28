@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
@@ -19,6 +20,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
         public class PutApplicationApiRequestData
         {
             public Guid CandidateId { get; set; }
+            public IEnumerable<string> AdditionalQuestions { get; set; }
         }
     }
 }

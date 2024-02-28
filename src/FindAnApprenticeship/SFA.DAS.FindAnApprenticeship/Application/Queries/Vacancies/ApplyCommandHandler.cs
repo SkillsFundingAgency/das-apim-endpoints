@@ -31,10 +31,12 @@ public class ApplyCommandHandler : IRequestHandler<ApplyCommand, ApplyCommandRes
             await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(
                 new GetVacancyRequest(request.VacancyReference));
 
-        var putData = new PutApplicationApiRequest.PutApplicationApiRequestData
+        PutApplicationApiRequest.PutApplicationApiRequestData putApplicationApiRequestData = new PutApplicationApiRequest.PutApplicationApiRequestData
         {
-            CandidateId = request.CandidateId
+            CandidateId = request.CandidateId,
+            AdditionalQuestions = [result.AdditionalQuestion1, result.AdditionalQuestion2]
         };
+        var putData = putApplicationApiRequestData;
         var vacancyReference =
             request.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
         var putRequest = new PutApplicationApiRequest(vacancyReference, putData);
