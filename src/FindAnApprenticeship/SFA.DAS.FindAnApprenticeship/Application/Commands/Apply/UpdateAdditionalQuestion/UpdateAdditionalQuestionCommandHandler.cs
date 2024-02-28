@@ -21,10 +21,9 @@ public class UpdateAdditionalQuestionCommandHandler : IRequestHandler<UpdateAddi
     {
         var requestBody = new PutUpsertAdditionalQuestionApiRequest.PutUpsertAdditionalQuestionApiRequestData
         {
-            Answer = command.Answer,
-            QuestionId = command.QuestionId
+            Answer = command.Answer
         };
-        var request = new PutUpsertAdditionalQuestionApiRequest(command.ApplicationId, command.CandidateId, requestBody);
+        var request = new PutUpsertAdditionalQuestionApiRequest(command.ApplicationId, command.CandidateId, command.Id, requestBody);
 
         var result = await _apiClient.PutWithResponseCode<PutUpsertAdditionalQuestionApiResponse>(request);
         result.EnsureSuccessStatusCode();

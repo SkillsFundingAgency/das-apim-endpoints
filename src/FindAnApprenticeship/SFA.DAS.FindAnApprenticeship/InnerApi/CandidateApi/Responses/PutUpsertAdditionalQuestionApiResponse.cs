@@ -7,5 +7,5 @@ public class PutUpsertAdditionalQuestionApiResponse
     public Guid CandidateId { get; set; }
     public string Answer { get; init; }
     public Guid ApplicationId { get; init; }
-    public required string QuestionId { get; init; }
+    public string QuestionId { get; init; }
 }

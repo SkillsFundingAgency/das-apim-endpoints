@@ -53,7 +53,7 @@ public class AdditionalQuestionsController : Controller
             {
                 ApplicationId = applicationId,
                 CandidateId = request.CandidateId,
-                QuestionId = request.QuestionId,
+                Id = request.Id,
                 Answer = request.Answer
             });
 

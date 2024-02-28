@@ -6,5 +6,5 @@ public class PostAdditionalQuestionApiRequest
 {
     public Guid CandidateId { get; set; }
     public string Answer { get; set; }
-    public Guid QuestionId { get; set; }
+    public Guid Id { get; set; }
 }

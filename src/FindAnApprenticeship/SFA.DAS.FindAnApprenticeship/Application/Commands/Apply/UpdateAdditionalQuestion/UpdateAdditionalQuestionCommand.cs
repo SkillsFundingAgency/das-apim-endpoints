@@ -6,6 +6,6 @@ public class UpdateAdditionalQuestionCommand : IRequest<UpdateAdditionalQuestion
 {
     public Guid ApplicationId { get; set; }
     public Guid CandidateId { get; set; }
-    public Guid QuestionId { get; set; }
+    public Guid Id { get; set; }
     public string Answer { get; set; }
 }
