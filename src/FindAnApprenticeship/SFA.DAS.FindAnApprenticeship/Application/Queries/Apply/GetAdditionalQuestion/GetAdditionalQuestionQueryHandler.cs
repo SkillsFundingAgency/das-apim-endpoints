@@ -23,9 +23,10 @@ public class GetAdditionalQuestionQueryHandler : IRequestHandler<GetAdditionalQu
 
         return new GetAdditionalQuestionQueryResult
         {
-            Question = additionalQuestion.Question,
+            QuestionText = additionalQuestion.QuestionText,
             Answer = additionalQuestion.Answer,
-            Id = additionalQuestion.Id
+            Id = additionalQuestion.Id,
+            QuestionId = additionalQuestion.QuestionId
         };
     }
 }

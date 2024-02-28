@@ -15,7 +15,6 @@ public class GetAdditionalQuestionApiRequest : IGetApiRequest
         _questionId = questionId;
     }
 
-    //todo: update GetUrl
     public string GetUrl =>
-           $"candidates/{_candidateId}/applications/{_applicationId}/{_questionId}";
+           $"candidates/{_candidateId}/applications/{_applicationId}/additional-question/{_questionId}";
 }

@@ -12,6 +12,6 @@ public class WhenMappingFromCommandResponseToGetAdditionalQuestionApiResponse
     {
         var actual = (GetAdditionalQuestionApiResponse)source;
 
-        actual.Question.Should().BeEquivalentTo(source.Question);
+        actual.Question.Should().BeEquivalentTo(source.QuestionText);
     }
 }

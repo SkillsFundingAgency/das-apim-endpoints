@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetAdditionalQuestion;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateAdditionalQuestion;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
@@ -23,7 +24,7 @@ public class AdditionalQuestionsController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetQuestion([FromRoute] Guid applicationId, [FromQuery] Guid candidateId, [FromQuery] Guid questionId)
+    public async Task<IActionResult> Get([FromRoute] Guid applicationId, [FromQuery] Guid candidateId, [FromQuery] Guid questionId)
     {
         try
         {
@@ -39,6 +40,30 @@ public class AdditionalQuestionsController : Controller
         catch (Exception e)
         {
             _logger.LogError(e, "Get Additional Question : An error occurred");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Post([FromRoute] Guid applicationId, [FromBody] PostAdditionalQuestionApiRequest request)
+    {
+        try
+        {
+            var result = await _mediator.Send(new UpdateAdditionalQuestionCommand
+            {
+                ApplicationId = applicationId,
+                CandidateId = request.CandidateId,
+                QuestionId = request.QuestionId,
+                Answer = request.Answer
+            });
+
+            if (result is null) return NotFound();
+
+            return Created($"{result.Id}", (PostAdditionalQuestionApiResponse)result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error posting additional question for application {applicationId}", applicationId);
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }

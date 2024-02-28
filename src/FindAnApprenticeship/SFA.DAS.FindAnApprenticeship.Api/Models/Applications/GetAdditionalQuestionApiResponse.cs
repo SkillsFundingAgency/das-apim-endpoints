@@ -13,7 +13,7 @@ public class GetAdditionalQuestionApiResponse
     {
         return new GetAdditionalQuestionApiResponse
         {
-            Question = source.Question,
+            Question = source.QuestionText,
             Answer = source.Answer,
             Id = source.Id
         };

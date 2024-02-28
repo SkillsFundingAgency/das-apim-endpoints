@@ -32,7 +32,7 @@ public class WhenCallingGetAdditionalQuestion
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(queryResult);
 
-        var actual = await controller.GetQuestion(applicationId, candidateId, questionId);
+        var actual = await controller.Get(applicationId, candidateId, questionId);
 
         using (new AssertionScope())
         {
@@ -58,7 +58,7 @@ public class WhenCallingGetAdditionalQuestion
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new InvalidOperationException());
 
-        var actual = await controller.GetQuestion(applicationId, candidateId, questionId);
+        var actual = await controller.Get(applicationId, candidateId, questionId);
 
         actual.As<StatusCodeResult>().StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }

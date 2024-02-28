@@ -14,6 +14,6 @@ public class WhenBuildingGetAdditionalQuestionApiRequest
     {
         var actual = new GetAdditionalQuestionApiRequest(applicationId, candidateId, questionId);
 
-        actual.GetUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/{questionId}");
+        actual.GetUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/additional-question/{questionId}");
     }
 }
