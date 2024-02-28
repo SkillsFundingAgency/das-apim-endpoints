@@ -10,6 +10,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 {
@@ -40,12 +41,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var controllerResponse = await _controller.Pledges(_accountId);
 
             var okObjectResult = controllerResponse as OkObjectResult;
-            Assert.IsNotNull(okObjectResult);
+            Assert.That(okObjectResult, Is.Not.Null);
             var response = okObjectResult.Value as GetPledgesResponse;
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
 
-            Assert.IsNotNull(response.Pledges);
-            CollectionAssert.IsNotEmpty(response.Pledges);
+            Assert.That(response.Pledges, Is.Not.Null);
+            response.Pledges.Should().NotBeEmpty();
             Assert.That(!response.Pledges.Any(x => x.Id == 0));
             Assert.That(!response.Pledges.Any(x => x.Amount == 0));
             Assert.That(!response.Pledges.Any(x => x.RemainingAmount == 0));

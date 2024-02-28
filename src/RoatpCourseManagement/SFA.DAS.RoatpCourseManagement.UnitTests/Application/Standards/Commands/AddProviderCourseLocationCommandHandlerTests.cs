@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.CreateProviderLocation;
-using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.AddNationalLocation;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;

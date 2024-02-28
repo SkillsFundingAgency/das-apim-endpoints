@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System.Linq;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
@@ -49,8 +48,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.A
             var result = await _handler.Handle(request, cancellationToken);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOf<ApplicationsWithAutomaticApprovalQueryResult>(result);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.InstanceOf<ApplicationsWithAutomaticApprovalQueryResult>());
 
             var expectedResult = new ApplicationsWithAutomaticApprovalQueryResult
             {
@@ -61,7 +60,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.A
                 }
             };
 
-            Assert.AreEqual(expectedResult.Applications.Count(), result.Applications.Count());
+            Assert.That(result.Applications.Count(), Is.EqualTo(expectedResult.Applications.Count()));
         }
 
         [Test]
@@ -86,7 +85,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.A
                 applications[2]
             };
 
-            Assert.AreEqual(expectedResult.Count, result.Count);
+            Assert.That(result.Count, Is.EqualTo(expectedResult.Count));
 
         }
     }

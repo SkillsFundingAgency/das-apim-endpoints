@@ -42,7 +42,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             //Act
             var actual = await apiClient.GetAll<string>(getTestRequest);
 
-            Assert.IsAssignableFrom<List<string>>(actual);
+            Assert.That(actual, Is.AssignableFrom<List<string>>());
             //Assert
             httpMessageHandler.Protected()
                 .Verify<Task<HttpResponseMessage>>(
@@ -116,7 +116,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
              var actualResult = await actual.GetAll<string>(getTestRequest);
              
              //Assert
-             Assert.IsEmpty(actualResult);
+             Assert.That(actualResult, Is.Empty);
          }
         
         private class GetAllTestRequest : IGetAllApiRequest

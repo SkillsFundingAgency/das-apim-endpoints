@@ -68,7 +68,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _deliveryModels.AddRange(fixture.CreateMany<string>(optionCount));
 
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(expectedHasMultiple, result.HasMultipleDeliveryModelOptions);
+            Assert.That(result.HasMultipleDeliveryModelOptions, Is.EqualTo(expectedHasMultiple));
         }
     }
 }

@@ -8,7 +8,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Command
 {
-    public class ValidateChangeOfEmployerOverlapCommandHandler : IRequestHandler<ValidateChangeOfEmployerOverlapCommand>
+    public class ValidateChangeOfEmployerOverlapCommandHandler : IRequestHandler<ValidateChangeOfEmployerOverlapCommand, Unit>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
 

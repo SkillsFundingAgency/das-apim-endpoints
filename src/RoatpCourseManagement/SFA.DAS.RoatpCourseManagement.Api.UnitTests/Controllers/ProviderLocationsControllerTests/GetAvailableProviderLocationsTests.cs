@@ -6,9 +6,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetAvailableProviderLocations;
-using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetProviderLocationDetails;
 using SFA.DAS.Testing.AutoFixture;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 

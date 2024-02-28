@@ -34,7 +34,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.IsTrue(result.IsValid);
+            Assert.That(result.IsValid, Is.True);
         }
 
         [Test, MoqAutoData]
@@ -55,7 +55,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.IsFalse(result.IsValid);
+            Assert.That(result.IsValid, Is.False);
         }
 
         [Test, MoqAutoData]
@@ -79,7 +79,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.IsTrue(result.IsValid);
+            Assert.That(result.IsValid, Is.True);
         }
 
 
@@ -100,7 +100,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.IsFalse(result.IsValid);
+            Assert.That(result.IsValid, Is.False);
         }
     }
 }

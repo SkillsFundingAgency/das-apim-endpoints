@@ -41,15 +41,15 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Pledges.Queries
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            Assert.AreEqual(_apiResponse.Pledges.Count(), result.Pledges.Count());
+            Assert.That(_apiResponse.Pledges.Count(), Is.EqualTo(result.Pledges.Count()));
 
             var i = 0;
 
             foreach (var pledge in result.Pledges)
             {
                 var expected = _apiResponse.Pledges.ToArray()[i];
-                Assert.AreEqual(expected.Id, pledge.Id);
-                Assert.AreEqual(expected.AccountId, pledge.AccountId);
+                Assert.That(expected.Id, Is.EqualTo(pledge.Id));
+                Assert.That(expected.AccountId, Is.EqualTo(pledge.AccountId));
                 i++;
             }
         }

@@ -25,7 +25,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.OverlappingTrainingDateRequest
             var response = new ApiResponse<object>(null, System.Net.HttpStatusCode.OK, string.Empty);
             apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostValidateChangeOfEmployerOverlapRequest>(), false)).ReturnsAsync(response);
             var actual = await handler.Handle(query, CancellationToken.None);
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
         }
 
         [Test, MoqAutoData]

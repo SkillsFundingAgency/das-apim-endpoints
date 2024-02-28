@@ -7,7 +7,7 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus
 {
-    public class UpdateVendorRegistrationCaseStatusCommandHandler : IRequestHandler<UpdateVendorRegistrationCaseStatusCommand>
+    public class UpdateVendorRegistrationCaseStatusCommandHandler : IRequestHandler<UpdateVendorRegistrationCaseStatusCommand, Unit>
     {
         private readonly ILegalEntitiesService _legalEntitiesService;
         private readonly IVendorRegistrationService _vendorRegistrationService;

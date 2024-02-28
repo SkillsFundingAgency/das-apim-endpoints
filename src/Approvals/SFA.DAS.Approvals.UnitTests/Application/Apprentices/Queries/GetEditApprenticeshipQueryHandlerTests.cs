@@ -59,14 +59,14 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         public async Task Handle_IsFundedByTransfer_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_apprenticeship.TransferSenderId.HasValue, result.IsFundedByTransfer);
+            Assert.That(result.IsFundedByTransfer, Is.EqualTo(_apprenticeship.TransferSenderId.HasValue));
         }
 
         [Test]
         public async Task Handle_IsCourseName_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_apprenticeship.CourseName, result.CourseName);
+            Assert.That(result.CourseName, Is.EqualTo(_apprenticeship.CourseName));
         }
 
         [TestCase(0, false)]
@@ -79,7 +79,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _deliveryModels.AddRange(fixture.CreateMany<string>(optionCount));
 
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(expectedHasMultiple, result.HasMultipleDeliveryModelOptions);
+            Assert.That(result.HasMultipleDeliveryModelOptions, Is.EqualTo(expectedHasMultiple));
         }
     }
 }

@@ -300,17 +300,17 @@ namespace SFA.DAS.Approvals.UnitTests.Services.DeliveryModelService
                 if (_apiResponse.HasPortableFlexiJobOption)
                     deliveryModels.Add(DeliveryModelStringTypes.PortableFlexiJob);
                 
-                Assert.AreEqual(deliveryModels, _result);
+                Assert.That(_result, Is.EqualTo(deliveryModels));
             }
 
             public void VerifyResult(params string[] expectedResult)
             {
-                Assert.AreEqual(expectedResult.ToList(), _result);
+                Assert.That(_result, Is.EqualTo(expectedResult.ToList()));
             }
 
             public void VerifyEmptyResult()
             {
-                Assert.IsEmpty(_result);
+                Assert.That(_result, Is.Empty);
             }
         }
 

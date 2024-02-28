@@ -32,10 +32,10 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers
 
             var controllerResult = await controller.GetStandardsList() as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetStandardsListResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Standards.Should().BeEquivalentTo(mediatorResult.Standards
                 .Select(item => (ApprenticeshipCourse)item));
         }

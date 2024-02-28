@@ -6,10 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateTrainingCourse;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PostDeleteTrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateTrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourses;
-
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
 [ApiController]
@@ -61,7 +62,7 @@ public class TrainingCoursesController : Controller
             });
 
             if (result is null) return NotFound();
-            return Ok((GetTrainingCoursesApiResponse)result);
+            return Ok((Models.Applications.GetTrainingCoursesApiResponse)result);
         }
         catch (Exception e)
         {
@@ -83,7 +84,7 @@ public class TrainingCoursesController : Controller
             });
 
             if (result is null) return NotFound();
-            return Ok((GetTrainingCourseApiResponse)result);
+            return Ok((Models.Applications.GetTrainingCourseApiResponse)result.Course);
         }
         catch (Exception e)
         {
@@ -113,6 +114,47 @@ public class TrainingCoursesController : Controller
         catch (Exception e)
         {
             _logger.LogError(e, "Update Training Course : An error occurred");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpGet("{trainingCourseId}/delete")]
+    public async Task<IActionResult> GetDeleteTrainingCourse([FromRoute] Guid applicationId, [FromRoute] Guid trainingCourseId, [FromQuery] Guid candidateId)
+    {
+        try
+        {
+            var result = await _mediator.Send(new GetDeleteTrainingCourseQuery
+            {
+                CandidateId = candidateId,
+                ApplicationId = applicationId,
+                TrainingCourseId = trainingCourseId
+            });
+            return Ok((Models.Applications.GetTrainingCourseApiResponse)result.Course);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Get Training Course : An error occurred");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpPost("{trainingCourseId}/delete")]
+    public async Task<IActionResult> PostDeleteTrainingCourse([FromRoute] Guid applicationId, [FromRoute] Guid trainingCourseId, [FromBody] PostDeleteTrainingCourseRequest request)
+    {
+        try
+        {
+            var result = await _mediator.Send(new PostDeleteTrainingCourseCommand
+            {
+                ApplicationId = applicationId,
+                TrainingCourseId = trainingCourseId,
+                CandidateId = request.CandidateId
+            });
+
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "DeleteJob : An error occurred");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }

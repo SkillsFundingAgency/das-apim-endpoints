@@ -28,10 +28,10 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
 
             var controllerResult = await controller.GetApprenticeTrainingProviders(request);
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             var model = controllerResult.Value;
 
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo(mediatorResult);
         }
     }

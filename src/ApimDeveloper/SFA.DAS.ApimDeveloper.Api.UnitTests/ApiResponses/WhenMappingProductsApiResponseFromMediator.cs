@@ -3,7 +3,6 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
-using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscriptions;
 
 namespace SFA.DAS.ApimDeveloper.Api.UnitTests.ApiResponses

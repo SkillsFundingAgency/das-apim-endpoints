@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoFixture;
 using FluentAssertions;
 using SFA.DAS.ApprenticePortal.Models;
 using TechTalk.SpecFlow;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
 
 namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
 {

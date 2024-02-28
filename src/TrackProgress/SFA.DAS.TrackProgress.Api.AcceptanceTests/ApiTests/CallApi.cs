@@ -15,7 +15,7 @@ public class CallApi : ApiFixture
     [TestCase("")]
     [TestCase(null)]
     [TestCase(" ")]
-    public async Task Track_progress_with_single_matching_apprenticeship_and_no_sandbox_mode(string optionToTest)
+    public async Task Track_progress_with_single_matching_apprenticeship_and_no_sandbox_mode(string? optionToTest)
     {
         var apprenticeship = An.Apprenticeship.WithOption(optionToTest);
         var course = A.Course.WithoutOptions();

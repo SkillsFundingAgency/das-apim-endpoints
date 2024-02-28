@@ -37,7 +37,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Application
 
             var controllerResult = await controller.ConfirmApplication(request) as StatusCodeResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
         }
 
@@ -60,7 +60,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Application
 
             var controllerResult = await controller.ConfirmApplication(request) as ConflictObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
         }
     }
 }

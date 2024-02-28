@@ -19,10 +19,10 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Extensions
             string key = "Key";
             var collection = valueOne.ToNameValueCollection(key);
 
-            Assert.IsInstanceOf<NameValueCollection>(collection);
+            Assert.That(collection, Is.InstanceOf<NameValueCollection>());
             for (int i = 0; i < collection.Count; i++)
             {
-                Assert.IsTrue(collection.GetKey(i) == key);
+                Assert.That(collection.GetKey(i) == key, Is.True);
             }
 
         }

@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using System;
 
 namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries
 {

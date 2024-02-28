@@ -1,5 +1,4 @@
-﻿using Microsoft.Azure.Amqp.Framing;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using System;
 using System.Collections.Generic;
 

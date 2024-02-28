@@ -46,11 +46,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
         {
             var actionResult = await _controller.Confirmation(_accountId, _opportunityId);
             var createdResult = actionResult as OkObjectResult;
-            Assert.IsNotNull(createdResult);
+            Assert.That(createdResult, Is.Not.Null);
             var response = createdResult.Value as GetConfirmationResponse;
-            Assert.IsNotNull(response);
-            Assert.AreEqual(_result.AccountName, response.AccountName);
-            Assert.AreEqual(_result.IsNamePublic, response.IsNamePublic);
+            Assert.That(response, Is.Not.Null);
+            Assert.That(_result.AccountName, Is.EqualTo(response.AccountName));
+            Assert.That(_result.IsNamePublic, Is.EqualTo(response.IsNamePublic));
         }
     }
 }

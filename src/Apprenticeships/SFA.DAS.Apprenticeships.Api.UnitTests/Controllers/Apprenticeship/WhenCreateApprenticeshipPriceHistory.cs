@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using Castle.Core.Logging;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Moq;

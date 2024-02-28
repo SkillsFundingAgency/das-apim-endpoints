@@ -1,9 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Campaign.InnerApi.Requests;
-using SFA.DAS.Campaign.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Campaign.Application.Queries.Sectors

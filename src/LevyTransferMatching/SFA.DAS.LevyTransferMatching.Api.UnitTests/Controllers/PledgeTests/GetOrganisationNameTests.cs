@@ -42,11 +42,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var controllerResponse = await _controller.Organisation(_encodedAccountId);
 
             var okObjectResult = controllerResponse as OkObjectResult;
-            Assert.IsNotNull(okObjectResult);
+            Assert.That(okObjectResult, Is.Not.Null);
             var response = okObjectResult.Value as GetOrganisationNameResponse;
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
 
-            Assert.AreEqual(_queryResult.DasAccountName, response.DasAccountName);
+            Assert.That(response.DasAccountName, Is.EqualTo(_queryResult.DasAccountName));
 
         }
 

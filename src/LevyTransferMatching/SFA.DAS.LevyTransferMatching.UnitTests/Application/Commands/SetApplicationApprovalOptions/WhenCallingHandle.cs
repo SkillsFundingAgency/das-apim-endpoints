@@ -1,15 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
-using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprovalOptions;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
-using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
-using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.SetApplicationApprovalOptions
 {
