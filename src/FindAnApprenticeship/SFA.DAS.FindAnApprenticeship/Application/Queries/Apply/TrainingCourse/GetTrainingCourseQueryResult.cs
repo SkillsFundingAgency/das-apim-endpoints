@@ -4,19 +4,28 @@ using System;
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
 public class GetTrainingCourseQueryResult
 {
-    public Guid Id { get; set; }
-    public Guid ApplicationId { get; set; }
-    public string CourseName { get; set; }
-    public int YearAchieved { get; set; }
+    public CourseResponse Course { get; set; }
 
     public static implicit operator GetTrainingCourseQueryResult(GetTrainingCourseApiResponse source)
     {
         return new GetTrainingCourseQueryResult
         {
-            Id = source.Id,
-            ApplicationId = source.ApplicationId,
-            CourseName = source.CourseName,
-            YearAchieved = source.YearAchieved
+            Course = new CourseResponse
+            {
+                Id = source.Id,
+                ApplicationId = source.ApplicationId,
+                CourseName = source.CourseName,
+                YearAchieved = source.YearAchieved
+            }
+
         };
     }
+}
+
+public class CourseResponse
+{
+    public Guid Id { get; set; }
+    public Guid ApplicationId { get; set; }
+    public string CourseName { get; set; }
+    public int YearAchieved { get; set; }
 }

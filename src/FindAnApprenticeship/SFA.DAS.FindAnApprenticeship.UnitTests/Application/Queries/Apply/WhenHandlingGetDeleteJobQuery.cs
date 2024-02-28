@@ -19,14 +19,14 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
         [Test, MoqAutoData]
         public async Task Then_The_QueryResult_Is_Returned_As_Expected(
             GetDeleteJobQuery query,
-            GetDeleteJobApiResponse deleteJobApiResponse,
+            GetWorkHistoryItemApiResponse deleteJobApiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             GetDeleteJobQueryHandler handler)
         {
-            var expectedGetDeleteJobRequest = new GetDeleteJobApiRequest(query.ApplicationId, query.CandidateId, query.JobId, WorkHistoryType.Job);
+            var expectedGetDeleteJobRequest = new GetWorkHistoryItemApiRequest(query.ApplicationId, query.CandidateId, query.JobId, WorkHistoryType.Job);
             candidateApiClient
-                .Setup(client => client.Get<GetDeleteJobApiResponse>(
-                    It.Is<GetDeleteJobApiRequest>(r => r.GetUrl == expectedGetDeleteJobRequest.GetUrl)))
+                .Setup(client => client.Get<GetWorkHistoryItemApiResponse>(
+                    It.Is<GetWorkHistoryItemApiRequest>(r => r.GetUrl == expectedGetDeleteJobRequest.GetUrl)))
                 .ReturnsAsync(deleteJobApiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);

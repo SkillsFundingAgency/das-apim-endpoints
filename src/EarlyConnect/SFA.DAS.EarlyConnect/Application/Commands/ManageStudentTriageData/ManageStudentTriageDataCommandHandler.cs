@@ -47,28 +47,37 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
 
                 getStudentTriageResult.EnsureSuccessStatusCode();
 
-                var studentTriageData = MapResponseToStudentData(getStudentTriageResult.Body);
-
-                var sendStudentDataresult = await _apiLepsClient.PostWithResponseCode<SendStudentDataToNeLepsResponse>(new SendStudentDataToNeLepsRequest(studentTriageData, request.SurveyGuid), false);
-
-                if (sendStudentDataresult == null || sendStudentDataresult.StatusCode != HttpStatusCode.Created)
+                if (getStudentTriageResult.Body.LepsId == (int)LepsRegion.Region.NorthEast)
                 {
+                    var studentTriageData = MapResponseToStudentData(getStudentTriageResult.Body);
+
+                    var sendStudentDataresult =
+                        await _apiLepsClient.PostWithResponseCode<SendStudentDataToNeLepsResponse>(
+                            new SendStudentDataToNeLepsRequest(studentTriageData, request.SurveyGuid), false);
+
+                    if (sendStudentDataresult == null || sendStudentDataresult.StatusCode != HttpStatusCode.Created)
+                    {
+                        return new ManageStudentTriageDataCommandResult
+                        {
+                            Message = $"{manageStudentResponse?.Body?.Message} - {sendStudentDataresult?.Body?.Message}"
+                        };
+                    }
+
+                    var deliveryUpdate = new DeliveryUpdate
+                    { Source = DataSource.StudentData, Ids = new List<int> { getStudentTriageResult.Body.Id } };
+
+                    var deliveryUpdateresponse =
+                        await _apiClient.PostWithResponseCode<DeliveryUpdateDataResponse>(
+                            new DeliveryUpdateRequest(deliveryUpdate));
+
+                    deliveryUpdateresponse.EnsureSuccessStatusCode();
+
                     return new ManageStudentTriageDataCommandResult
                     {
-                        Message = $"{manageStudentResponse?.Body?.Message} - {sendStudentDataresult?.Body?.Message}"
+                        Message =
+                            $"{manageStudentResponse?.Body?.Message} - {sendStudentDataresult?.Body?.Message} - {deliveryUpdateresponse?.Body?.Message}"
                     };
                 }
-
-                var deliveryUpdate = new DeliveryUpdate { Source = DataSource.StudentData, Ids = new List<int> { getStudentTriageResult.Body.Id } };
-
-                var deliveryUpdateresponse = await _apiClient.PostWithResponseCode<DeliveryUpdateDataResponse>(new DeliveryUpdateRequest(deliveryUpdate));
-
-                deliveryUpdateresponse.EnsureSuccessStatusCode();
-
-                return new ManageStudentTriageDataCommandResult
-                {
-                    Message = $"{manageStudentResponse?.Body?.Message} - {sendStudentDataresult?.Body?.Message} - {deliveryUpdateresponse?.Body?.Message}"
-                };
             }
 
             return new ManageStudentTriageDataCommandResult

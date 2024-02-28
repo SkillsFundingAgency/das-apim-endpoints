@@ -13,7 +13,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory.Del
         public Guid ApplicationId { get; set; }
         public string Description { get; set; }
 
-        public static implicit operator GetDeleteJobQueryResult(GetDeleteJobApiResponse source)
+        public static implicit operator GetDeleteJobQueryResult(GetWorkHistoryItemApiResponse source)
         {
             return new GetDeleteJobQueryResult
             {
