@@ -1,3 +1,4 @@
+﻿using System.Globalization;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 
@@ -12,7 +13,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
             return new Application.Shared.LiveVacancy
             {
                 Id = source.VacancyReference.ToString(),
-                VacancyReference = source.VacancyReference,
+                VacancyReference = source.VacancyReference.ToString(),
                 VacancyId = source.VacancyId,
                 Title = source.Title,
                 PostedDate = source.LiveDate,
@@ -96,7 +97,21 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
 
         public Application.Shared.LiveVacancy Map(GetNhsJobApiDetailResponse source)
         {
-            throw new NotImplementedException();
+            return new Application.Shared.LiveVacancy
+            {
+                Title = source.Title,
+                Description = source.Description,
+                Id = source.Id,
+                EmployerName = source.Employer,
+                VacancyReference = source.Reference,
+                Wage = new Application.Shared.Wage
+                {
+                    WageText   = source.Salary
+                },
+                ApplicationUrl = source.Url,
+                ClosingDate = DateTime.Parse(source.CloseDate),
+                PostedDate = DateTime.Parse(source.PostDate)
+            };
         }
 
         private string GetApprenticeshipLevel(int level)

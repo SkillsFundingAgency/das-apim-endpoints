@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Globalization;
+using System.Net;
 using AutoFixture;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -26,6 +27,26 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             var result = sut.Map(source, mockStandardsListResponse);
 
             AssertResponse(result, source, mockStandardsListResponse);
+        }
+
+        [Test, MoqAutoData]
+        public void Then_The_Nhs_Vacancy_Is_Mapped(GetNhsJobApiDetailResponse source, LiveVacancyMapper liveVacancyMapper, DateTime closeDate, DateTime postDate)
+        {
+            source.CloseDate = closeDate.ToString();
+            source.PostDate = postDate.ToString();
+            
+            var actual = liveVacancyMapper.Map(source);
+
+            actual.Id.Should().Be(source.Id);
+            actual.Title.Should().Be(source.Title);
+            actual.Description.Should().Be(source.Description);
+            actual.ClosingDate.Should().BeCloseTo(closeDate, TimeSpan.FromHours(1));
+            actual.PostedDate.Should().BeCloseTo(postDate, TimeSpan.FromHours(1));
+            actual.EmployerName.Should().Be(source.Employer);
+            actual.VacancyReference.Should().Be(source.Reference);
+            actual.ApplicationUrl.Should().Be(source.Url);
+            actual.Wage.WageText.Should().Be(source.Salary);
+            
         }
 
         private static void AssertResponse(FindApprenticeshipJobs.Application.Shared.LiveVacancy actual, LiveVacancy source, GetStandardsListResponse standardsListResponse)
