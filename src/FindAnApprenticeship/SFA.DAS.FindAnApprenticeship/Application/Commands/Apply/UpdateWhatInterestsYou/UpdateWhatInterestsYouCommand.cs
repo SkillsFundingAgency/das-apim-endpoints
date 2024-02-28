@@ -37,6 +37,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateWhatInte
         {
             var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
             jsonPatchDocument.Replace(x => x.InterestsStatus, request.IsComplete ? SectionStatus.Completed : SectionStatus.InProgress);
+            jsonPatchDocument.Replace(x => x.WhatIsYourInterest, request.AnswerText);
 
             var patchRequest = new PatchApplicationApiRequest(request.ApplicationId, request.CandidateId, jsonPatchDocument);
             var response = await _candidateApiClient.PatchWithResponseCode(patchRequest);

@@ -6,6 +6,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
     {
         public string EmployerName { get; set; }
         public string StandardName { get; set; }
+        public string AnswerText { get; set; }
         public bool? IsSectionCompleted { get; set; }
 
         public static implicit operator GetWhatInterestsYouApiResponse(GetWhatInterestsYouQueryResult source)
@@ -14,6 +15,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
             {
                 EmployerName = source.EmployerName,
                 StandardName = source.StandardName,
+                AnswerText = source.AnswerText,
                 IsSectionCompleted = source.IsSectionCompleted
             };
         }

@@ -35,6 +35,7 @@ public class GetWhatInterestsYouQueryHandler(
         {
             EmployerName = vacancy.EmployerName,
             StandardName = vacancy.CourseTitle,
+            AnswerText = application.WhatIsYourInterest,
             IsSectionCompleted = isCompleted
         };
     }
