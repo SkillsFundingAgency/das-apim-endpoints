@@ -32,7 +32,7 @@ public class LiveVacanciesController : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            _logger.LogError(ex, "An error occurred getting live vacancies");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -51,7 +51,7 @@ public class LiveVacanciesController : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            _logger.LogError(ex, $"An error occurred getting live vacancy {vacancyReference}");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
