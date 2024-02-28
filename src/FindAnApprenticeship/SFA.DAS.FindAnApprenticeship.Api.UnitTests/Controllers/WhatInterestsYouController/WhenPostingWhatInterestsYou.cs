@@ -31,7 +31,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.WhatInterestsYo
                         && c.AnswerText == apiRequest.AnswerText
                         && c.IsComplete == apiRequest.IsComplete),
                     CancellationToken.None))
-                .ReturnsAsync(Unit.Value);
+                .Returns(() => Task.CompletedTask);
 
             var actual = await controller.PostWhatInterestsYou(applicationId, apiRequest);
 

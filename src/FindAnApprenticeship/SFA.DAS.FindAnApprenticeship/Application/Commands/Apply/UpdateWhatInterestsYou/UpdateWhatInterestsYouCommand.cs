@@ -33,7 +33,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateWhatInte
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(UpdateWhatInterestsYouCommand request, CancellationToken cancellationToken)
+        public async Task Handle(UpdateWhatInterestsYouCommand request, CancellationToken cancellationToken)
         {
             var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
             jsonPatchDocument.Replace(x => x.InterestsStatus, request.IsComplete ? SectionStatus.Completed : SectionStatus.InProgress);
@@ -42,7 +42,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateWhatInte
             var patchRequest = new PatchApplicationApiRequest(request.ApplicationId, request.CandidateId, jsonPatchDocument);
             var response = await _candidateApiClient.PatchWithResponseCode(patchRequest);
             
-            if (response.StatusCode == System.Net.HttpStatusCode.OK) return Unit.Value;
+            if (response.StatusCode == System.Net.HttpStatusCode.OK) return;
 
             _logger.LogError($"Unable to patch application for candidate Id {request.CandidateId}");
             throw new HttpRequestContentException(
