@@ -14,7 +14,7 @@ public class ReferenceDataApiHealthCheck : IHealthCheck
         _referenceDataApiClient = referenceDataApiClient;
     }
 
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken)
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new())
     {
         var response = await _referenceDataApiClient.GetHealth(cancellationToken);
         return response.IsSuccessStatusCode

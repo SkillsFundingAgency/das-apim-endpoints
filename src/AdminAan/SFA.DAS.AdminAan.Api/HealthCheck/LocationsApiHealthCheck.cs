@@ -14,7 +14,7 @@ public class LocationsApiHealthCheck : IHealthCheck
         _locationApiClient = locationApiClient;
     }
 
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken)
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new())
     {
         var response = await _locationApiClient.GetHealth(cancellationToken);
         return response.IsSuccessStatusCode

@@ -14,7 +14,7 @@ public class CommitmentsV2InnerApiHealthCheck : IHealthCheck
         _commitmentsV2ApiClient = commitmentsV2ApiClient;
     }
 
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken)
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new())
     {
         var response = await _commitmentsV2ApiClient.GetHealth(cancellationToken);
         return response.IsSuccessStatusCode

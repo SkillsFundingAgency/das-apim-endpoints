@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using RestEase.HttpClientFactory;
 using SFA.DAS.AdminAan.Api.Extensions;
 using SFA.DAS.AdminAan.Api.HealthCheck;

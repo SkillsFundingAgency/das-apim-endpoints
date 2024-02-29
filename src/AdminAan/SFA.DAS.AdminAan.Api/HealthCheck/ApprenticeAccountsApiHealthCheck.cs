@@ -14,7 +14,7 @@ public class ApprenticeAccountsApiHealthCheck : IHealthCheck
         _apprenticeAccountsApiClient = apprenticeAccountsApiClient;
     }
 
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken)
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new())
     {
         var response = await _apprenticeAccountsApiClient.GetHealth(cancellationToken);
         return response.IsSuccessStatusCode

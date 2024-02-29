@@ -14,7 +14,7 @@ public class AanHubApiHealthCheck : IHealthCheck
         _aanHubApiClient = aanHubApiClient;
     }
 
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken)
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new())
     {
         var response = await _aanHubApiClient.GetHealth(cancellationToken);
         return response.IsSuccessStatusCode
