@@ -7,13 +7,15 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Models
     {
         public Guid Id { get; set; }
         public RequestType RequestType { get; set; }
+        public long AccountId { get; set; }
 
         public static explicit operator EmployerRequest(SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining.EmployerRequest source)
         {
             return new EmployerRequest()
             {
                 Id = source.Id,
-                RequestType = source.RequestType
+                RequestType = source.RequestType,
+                AccountId = source.AccountId
             };
         }
     }

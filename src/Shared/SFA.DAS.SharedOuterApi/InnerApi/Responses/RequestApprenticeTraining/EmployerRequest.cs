@@ -7,5 +7,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining
     {
         public Guid Id { get; set; }
         public RequestType RequestType { get; set; }
+        public long AccountId { get; set; }
     }
 }
