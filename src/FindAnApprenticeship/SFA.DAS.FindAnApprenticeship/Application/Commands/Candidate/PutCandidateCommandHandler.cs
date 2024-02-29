@@ -25,16 +25,26 @@ public class PutCandidateCommandHandler : IRequestHandler<PutCandidateCommand, P
     }
     public async Task<PutCandidateCommandResult> Handle(PutCandidateCommand request, CancellationToken cancellationToken)
     {
-        var userDetails =
-            await _legacyApiClient.Get<GetLegacyUserByEmailApiResponse>(
-                new GetLegacyUserByEmailApiRequest(request.Email));
+        //var userDetails =
+        //    await _legacyApiClient.Get<GetLegacyUserByEmailApiResponse>(
+        //        new GetLegacyUserByEmailApiRequest(request.Email));
+
+        //var putData = new PutCandidateApiRequestData
+        //{
+        //    Email = request.Email,
+        //    FirstName = userDetails?.RegistrationDetails?.FirstName,
+        //    LastName = userDetails?.RegistrationDetails?.LastName,
+        //    DateOfBirth = userDetails?.RegistrationDetails?.DateOfBirth ?? DateTime.UtcNow
+        //};
+
+        var userDetails = new GetLegacyUserByEmailApiResponse();
 
         var putData = new PutCandidateApiRequestData
         {
             Email = request.Email,
-            FirstName = userDetails?.RegistrationDetails?.FirstName,
-            LastName = userDetails?.RegistrationDetails?.LastName,
-            DateOfBirth = userDetails?.RegistrationDetails?.DateOfBirth ?? DateTime.UtcNow
+            FirstName = string.Empty,
+            LastName = string.Empty,
+            DateOfBirth = DateTime.UtcNow
         };
 
         var putRequest = new PutCandidateApiRequest(request.GovUkIdentifier, putData);
