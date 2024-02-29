@@ -1,7 +1,5 @@
-﻿using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory
 {
