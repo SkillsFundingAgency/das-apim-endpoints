@@ -42,20 +42,10 @@ public class WhenGettingAStandard
     }
 
     [Test, MoqAutoData]
-    public async Task No_Standard_Is_Returned_From_Mediator_Then_Should_Return_NotFound(
-        [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] TrainingCoursesController controller,
-        string courseCode)
+    public async Task No_Standard_Is_Returned_From_Mediator_Then_Should_Return_NotFound(string courseCode)
     {
-        mockMediator
-            .Setup(mediator => mediator.Send(
-                It.Is<GetStandardQuery>(x => x.CourseCode == courseCode),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((GetStandardsListItem?)null);
-
-
+		var controller = new TrainingCoursesController(Mock.Of<ILogger<TrainingCoursesController>>(), Mock.Of<IMediator>());
         var controllerResult = await controller.GetStandard("courseCode") as NotFoundResult;
-
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
     }
 
