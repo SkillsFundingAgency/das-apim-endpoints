@@ -10,5 +10,6 @@
 		public decimal PendingTotalPrice { get; set; }
 		public DateTime EffectiveFrom { get; set; }
 		public string Reason { get; set; }
+        public long? Ukprn { get; set; }
 	}
 }
