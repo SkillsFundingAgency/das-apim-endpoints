@@ -66,35 +66,35 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreateAppl
 
             var createdApplication = (CreateApplicationRequestData) _createApplicationRequest.Data;
 
-            Assert.AreEqual(_command.PledgeId, _createApplicationRequest.PledgeId);
-            Assert.AreEqual(_command.EmployerAccountId, createdApplication.EmployerAccountId);
-            Assert.AreEqual(_command.Details, createdApplication.Details);
-            Assert.AreEqual(_command.StandardId, createdApplication.StandardId);
-            Assert.AreEqual(_getStandardResponse.Title, createdApplication.StandardTitle);
-            Assert.AreEqual(_getStandardResponse.Level, createdApplication.StandardLevel);
-            Assert.AreEqual(_getStandardResponse.TypicalDuration, createdApplication.StandardDuration);
-            Assert.AreEqual(_getStandardResponse.Route, createdApplication.StandardRoute);
-            Assert.AreEqual(_getStandardResponse.MaxFundingOn(_command.StartDate), createdApplication.StandardMaxFunding);
-            Assert.AreEqual(_command.NumberOfApprentices, createdApplication.NumberOfApprentices);
-            Assert.AreEqual(_command.StartDate, createdApplication.StartDate);
-            Assert.AreEqual(_command.HasTrainingProvider, createdApplication.HasTrainingProvider);
-            CollectionAssert.AreEqual(_command.Sectors, createdApplication.Sectors);
-            CollectionAssert.AreEqual(_command.Locations, createdApplication.Locations);
-            Assert.AreEqual(_command.AdditionalLocation, createdApplication.AdditionalLocation);
-            Assert.AreEqual(_command.SpecificLocation, createdApplication.SpecificLocation);
-            Assert.AreEqual(_command.FirstName, createdApplication.FirstName);
-            Assert.AreEqual(_command.LastName, createdApplication.LastName);
-            CollectionAssert.AreEqual(_command.EmailAddresses, createdApplication.EmailAddresses);
-            Assert.AreEqual(_command.BusinessWebsite, createdApplication.BusinessWebsite);
-            Assert.AreEqual(_command.UserId, createdApplication.UserId);
-            Assert.AreEqual(_command.UserDisplayName, createdApplication.UserDisplayName);
+            Assert.That(_command.PledgeId, Is.EqualTo(_createApplicationRequest.PledgeId));
+            Assert.That(_command.EmployerAccountId, Is.EqualTo(createdApplication.EmployerAccountId));
+            Assert.That(_command.Details, Is.EqualTo(createdApplication.Details));
+            Assert.That(_command.StandardId, Is.EqualTo(createdApplication.StandardId));
+            Assert.That(_getStandardResponse.Title, Is.EqualTo(createdApplication.StandardTitle));
+            Assert.That(_getStandardResponse.Level, Is.EqualTo(createdApplication.StandardLevel));
+            Assert.That(_getStandardResponse.TypicalDuration, Is.EqualTo(createdApplication.StandardDuration));
+            Assert.That(_getStandardResponse.Route, Is.EqualTo(createdApplication.StandardRoute));
+            Assert.That(_getStandardResponse.MaxFundingOn(_command.StartDate), Is.EqualTo(createdApplication.StandardMaxFunding));
+            Assert.That(_command.NumberOfApprentices, Is.EqualTo(createdApplication.NumberOfApprentices));
+            Assert.That(_command.StartDate, Is.EqualTo(createdApplication.StartDate));
+            Assert.That(_command.HasTrainingProvider, Is.EqualTo(createdApplication.HasTrainingProvider));
+            Assert.That(_command.Sectors, Is.EquivalentTo(createdApplication.Sectors));
+            Assert.That(_command.Locations, Is.EqualTo(createdApplication.Locations));
+            Assert.That(_command.AdditionalLocation, Is.EqualTo(createdApplication.AdditionalLocation));
+            Assert.That(_command.SpecificLocation, Is.EqualTo(createdApplication.SpecificLocation));
+            Assert.That(_command.FirstName, Is.EqualTo(createdApplication.FirstName));
+            Assert.That(_command.LastName, Is.EqualTo(createdApplication.LastName));
+            Assert.That(_command.EmailAddresses, Is.EqualTo(createdApplication.EmailAddresses));
+            Assert.That(_command.BusinessWebsite, Is.EquivalentTo(createdApplication.BusinessWebsite));
+            Assert.That(_command.UserId, Is.EquivalentTo(createdApplication.UserId));
+            Assert.That(_command.UserDisplayName, Is.EquivalentTo(createdApplication.UserDisplayName));
         }
 
         [Test]
         public async Task Application_Id_Is_Returned()
         {
             var result = await _handler.Handle(_command, CancellationToken.None);
-            Assert.AreEqual(_response.ApplicationId, result.ApplicationId);
+            Assert.That(_response.ApplicationId, Is.EqualTo(result.ApplicationId));
         }
 
         [Test]

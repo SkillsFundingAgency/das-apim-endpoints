@@ -7,7 +7,7 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.ReinstateApplication
 {
-    public class ReinstateApplicationCommandHandler : IRequestHandler<ReinstateApplicationCommand>
+    public class ReinstateApplicationCommandHandler : IRequestHandler<ReinstateApplicationCommand, Unit>
     {
         private readonly IEmployerIncentivesApiClient<EmployerIncentivesConfiguration> _client;
 

@@ -7,7 +7,7 @@ namespace SFA.DAS.TrackProgress.Tests;
 
 public class ApiFixture
 {
-    protected TrackProgressApiFactory factory = null!;
+    protected TrackProgressApiFactory factory;
     protected Fixture fixture = null!;
     protected HttpClient client = null!;
 
@@ -29,5 +29,11 @@ public class ApiFixture
     public void TearDown()
     {
         client?.Dispose();
+    }
+
+    [OneTimeTearDown]
+    public void OneTimeTearDown()
+    {
+        factory.Dispose();
     }
 }

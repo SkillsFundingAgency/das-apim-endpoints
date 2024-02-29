@@ -41,7 +41,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
             var response = (GetTrainingCourseListItem)source;
 
-            Assert.AreEqual(response.TypicalJobTitles, expected);
+            Assert.That(response.TypicalJobTitles, Is.EqualTo(expected));
         }
 
         [Test, AutoData]

@@ -31,7 +31,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
 
             var actual = await controller.GetApiProduct(productId) as OkObjectResult;
             
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualModel = actual.Value as ProductApiResponseItem;
             actualModel.Should().BeEquivalentTo(mediatorResult.Product);
         }
@@ -51,7 +51,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             
             var actual = await controller.GetApiProduct(productId) as StatusCodeResult;
             
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
 
@@ -66,7 +66,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             
             var actual = await controller.GetApiProduct(productId) as StatusCodeResult;
             
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }

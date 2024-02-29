@@ -1,21 +1,14 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using MediatR;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users;
 using SFA.DAS.Testing.AutoFixture;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -55,10 +48,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController
 
             var actual = await controller.AddDetails(govUkIdentifier, model) as StatusCodeResult;
 
-            Assert.NotNull(actual);
-            Assert.AreEqual((int)HttpStatusCode.InternalServerError, actual.StatusCode);
-
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actual.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
         }
-
     }
 }

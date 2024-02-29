@@ -1,3 +1,4 @@
+using System.Net;
 using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
@@ -7,6 +8,7 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests.IncentiveApplication;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerIncentivesServiceTests
 {
@@ -18,6 +20,11 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
             ApplicationService sut)
         {
+            client.Setup(x =>
+                x.PostWithResponseCode<CreateIncentiveApplicationRequestData>(
+                    It.IsAny<CreateIncentiveApplicationRequest>(), false)).ReturnsAsync(
+                new ApiResponse<CreateIncentiveApplicationRequestData>(null, HttpStatusCode.Accepted, null));
+            
             await sut.Create(requestData);
 
             client.Verify(x =>

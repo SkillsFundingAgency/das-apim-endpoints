@@ -30,7 +30,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Articles
             var controllerResult = await InstantiateController<OkObjectResult>(controller, hubName, slugName);
          
             var actualResult = controllerResult.Value as GetArticleResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Article.Should().BeEquivalentTo(mediatorResult.PageModel);
         }
 
@@ -46,7 +46,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Articles
             var controllerResult = await InstantiateController<NotFoundObjectResult>(controller, hubName, slugName);
 
             var actualResult = controllerResult.Value as NotFoundResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Message.Should().Be($"Article not found for {hubName}/{slugName}");
         }
 

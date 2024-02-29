@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using SFA.DAS.Reservations.InnerApi.Responses;
 
 namespace SFA.DAS.Reservations.Api.Models

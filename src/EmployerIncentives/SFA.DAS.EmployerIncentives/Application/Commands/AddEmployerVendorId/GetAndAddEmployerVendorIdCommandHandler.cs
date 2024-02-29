@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.AddEmployerVendorId
 {
-    public class GetAndAddEmployerVendorIdCommandHandler : IRequestHandler<GetAndAddEmployerVendorIdCommand>
+    public class GetAndAddEmployerVendorIdCommandHandler : IRequestHandler<GetAndAddEmployerVendorIdCommand, Unit>
     {
         private readonly ICustomerEngagementFinanceService _financeService;
         private readonly IVendorRegistrationService _vendorRegistrationService;

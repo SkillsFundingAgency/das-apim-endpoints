@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.UpdateProviderLocationDetails;
-using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetProviderLocationDetails;
 using System;
 using System.Net;
 using System.Threading.Tasks;

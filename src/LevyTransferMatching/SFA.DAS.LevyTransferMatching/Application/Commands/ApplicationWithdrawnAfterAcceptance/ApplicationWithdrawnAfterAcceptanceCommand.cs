@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationWithdrawnAfterAcceptance
 {
-    public class ApplicationWithdrawnAfterAcceptanceCommand : IRequest
+    public class ApplicationWithdrawnAfterAcceptanceCommand : IRequest<Unit>
     {
         public int ApplicationId { get; set; }
         public int PledgeId { get; set; }

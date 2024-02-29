@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Net;
+using NUnit.Framework;
 using System.Threading.Tasks;
 using SFA.DAS.Testing.AutoFixture;
 using AutoFixture.NUnit3;
@@ -7,6 +8,7 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.Application.Services;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerIncentivesServiceTests
 {
@@ -18,6 +20,11 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
            [Frozen] Mock<IEmployerIncentivesApiClient<EmployerIncentivesConfiguration>> client,
            EmailService sut)
         {
+            client.Setup(x =>
+                x.PostWithResponseCode<PostBankDetailsRequiredEmailRequest>(
+                    It.IsAny<PostBankDetailsRequiredEmailRequest>(), false)).ReturnsAsync(
+                new ApiResponse<PostBankDetailsRequiredEmailRequest>(null, HttpStatusCode.Accepted, null));
+            
             await sut.SendEmail<PostBankDetailsRequiredEmailRequest>(requestData);
 
             client.Verify(x =>

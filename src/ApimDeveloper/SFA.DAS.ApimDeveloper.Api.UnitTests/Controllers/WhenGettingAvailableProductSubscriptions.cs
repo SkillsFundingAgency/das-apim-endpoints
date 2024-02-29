@@ -10,7 +10,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
 using SFA.DAS.ApimDeveloper.Api.Controllers;
-using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Queries.GetApiProductSubscriptions;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -34,9 +33,9 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
 
             var actual = await controller.GetAvailableProducts(accountIdentifier, accountType) as OkObjectResult;
             
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualModel = actual.Value as ProductSubscriptionsApiResponse;
-            Assert.IsNotNull(actualModel);
+            Assert.That(actualModel, Is.Not.Null);
         }
 
         [Test, MoqAutoData]
@@ -51,7 +50,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             
             var actual = await controller.GetAvailableProducts(accountIdentifier,accountType) as StatusCodeResult;
             
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }

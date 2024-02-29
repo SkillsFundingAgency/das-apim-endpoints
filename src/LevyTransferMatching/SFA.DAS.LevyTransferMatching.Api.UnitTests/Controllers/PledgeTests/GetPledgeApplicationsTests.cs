@@ -42,12 +42,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var okObjectResult = controllerResponse as OkObjectResult;
             var response = okObjectResult.Value as GetApplicationsResponse;
 
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(response);
-            Assert.IsNotNull(response.AutomaticApprovalOption);
-            Assert.AreEqual(_queryResult.Applications.Count(), response.Applications.Count());
-            Assert.AreEqual(response.PledgeRemainingAmount, _queryResult.RemainingAmount);
-            Assert.AreEqual(response.PledgeTotalAmount, _queryResult.TotalAmount);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(response, Is.Not.Null);
+            Assert.That(response.AutomaticApprovalOption, Is.Not.Null);
+            Assert.That(response.Applications.Count(), Is.EqualTo(_queryResult.Applications.Count()));
+            Assert.That(response.PledgeRemainingAmount, Is.EqualTo(_queryResult.RemainingAmount));
+            Assert.That(response.PledgeTotalAmount, Is.EqualTo(_queryResult.TotalAmount));
         }
     }
 }

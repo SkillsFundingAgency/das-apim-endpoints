@@ -176,7 +176,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            act.Should().Throw<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})")
+            act.Should().ThrowAsync<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})").Result
                 .Which.ErrorContent.Should().Be(errorContent);
             notificationService.Verify(service => service.Send(It.IsAny<SendEmailCommand>()), 
                 Times.Never);

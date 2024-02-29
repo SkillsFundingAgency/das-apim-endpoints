@@ -12,7 +12,7 @@ namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
             var actual = new GetFrameworksRequest();
             
             //Assert
-            Assert.AreEqual("api/courses/frameworks", actual.GetUrl);
+            Assert.That(actual.GetUrl, Is.EqualTo("api/courses/frameworks"));
         }
     }
 }

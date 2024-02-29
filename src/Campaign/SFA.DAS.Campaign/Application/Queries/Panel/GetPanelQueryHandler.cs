@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SFA.DAS.Campaign.Extensions;
 using SFA.DAS.Campaign.ExternalApi.Requests;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using SFA.DAS.Campaign.Interfaces;

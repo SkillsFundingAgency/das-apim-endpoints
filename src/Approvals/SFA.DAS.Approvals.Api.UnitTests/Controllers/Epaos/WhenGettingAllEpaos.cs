@@ -31,10 +31,10 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Epaos
 
             var controllerResult = await controller.GetAll() as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetEpaosListResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Epaos.Should().BeEquivalentTo(mediatorResult.Epaos);
         }
 

@@ -29,9 +29,9 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Hub
 
             var actual = await controller.GetPreviewHub(hubName) as OkObjectResult;
          
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualResult = actual.Value as GetHubResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Hub.Should().BeEquivalentTo(mediatorResult.PageModel);
         }
         
@@ -52,9 +52,9 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Hub
 
             var actual = await controller.GetPreviewHub(hubName) as NotFoundObjectResult;
          
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualResult = actual.Value as NotFoundResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Message.Should().Be($"Preview hub not found for {hubName}");
         }
     }

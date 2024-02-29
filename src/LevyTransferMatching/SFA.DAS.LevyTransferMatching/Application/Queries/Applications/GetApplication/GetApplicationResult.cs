@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication
 {
