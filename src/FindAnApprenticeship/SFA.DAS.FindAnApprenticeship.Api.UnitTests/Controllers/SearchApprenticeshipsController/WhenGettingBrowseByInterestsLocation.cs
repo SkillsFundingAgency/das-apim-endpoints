@@ -30,9 +30,9 @@ public class WhenGettingBrowseByInterestsLocation
         
         var actual = await controller.BrowseByInterestsLocation(searchTerm) as OkObjectResult;
 
-        Assert.IsNotNull(actual);
+        Assert.That(actual, Is.Not.Null);
         var actualModel = actual.Value as BrowseByInterestsLocationApiResponse;
-        Assert.IsNotNull(actualModel);
+        Assert.That(actualModel, Is.Not.Null);
         actualModel.Should().BeEquivalentTo((BrowseByInterestsLocationApiResponse)mediatorResult);
     }
 
@@ -49,7 +49,7 @@ public class WhenGettingBrowseByInterestsLocation
         
         var actual = await controller.BrowseByInterestsLocation(searchTerm) as StatusCodeResult;
         
-        Assert.IsNotNull(actual);
+        Assert.That(actual, Is.Not.Null);
         actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }
 }

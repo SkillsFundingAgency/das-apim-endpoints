@@ -38,10 +38,10 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Adverts
             var controllerResult = await controller.GetAdverts(postCode, route, distance) as ObjectResult;
             
             //Assert
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetAdvertsResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo((GetAdvertsResponse)queryResult);
         }
 
@@ -61,7 +61,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Adverts
             var controllerResult = await controller.GetAdverts(postCode, route, distance) as StatusCodeResult;
 
             //Assert
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }

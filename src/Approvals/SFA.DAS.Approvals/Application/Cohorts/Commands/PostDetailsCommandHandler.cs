@@ -15,7 +15,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Commands
 {
-    public class PostDetailsCommandHandler : IRequestHandler<PostDetailsCommand>
+    public class PostDetailsCommandHandler : IRequestHandler<PostDetailsCommand, Unit>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly ServiceParameters _serviceParameters;

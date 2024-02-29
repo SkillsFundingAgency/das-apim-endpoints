@@ -1,8 +1,5 @@
-﻿using AutoFixture.NUnit3;
-using Moq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetLocationInformation;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +15,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetLocation
         {
             var result = await getLocationInformationQueryHandler.Handle(getLocationInformationQuery, CancellationToken.None);
 
-            Assert.NotNull(result);
+            Assert.That(result, Is.Not.Null);
         }
     }
 }

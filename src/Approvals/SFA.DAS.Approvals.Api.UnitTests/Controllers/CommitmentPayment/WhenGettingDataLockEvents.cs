@@ -36,10 +36,10 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.CommitmentPayment
 
             var controllerResult = await controller.GetDataLockStatuses(sinceEventId, sinceTime, employerAccountId, ukprn, page) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetDataLockStatusListResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeOfType<GetDataLockStatusListResponse>();
         }
 
@@ -62,10 +62,10 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.CommitmentPayment
 
             var controllerResult = await controller.GetDataLockStatuses(sinceEventId, sinceTime, employerAccountId, ukprn, page) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetDataLockStatusListResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.TotalNumberOfPages.Should().Be(mediatorResult.PagedDataLockEvent.TotalNumberOfPages);
         }
 

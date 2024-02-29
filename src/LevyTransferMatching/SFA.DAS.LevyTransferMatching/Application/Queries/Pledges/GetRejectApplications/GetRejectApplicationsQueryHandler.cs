@@ -1,7 +1,5 @@
 ﻿using MediatR;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.LevyTransferMatching.Models.Constants;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

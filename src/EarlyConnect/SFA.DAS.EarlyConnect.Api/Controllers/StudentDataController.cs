@@ -43,6 +43,11 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                     ipAddress = ipAddress.Substring(0, 50);
                 }
 
+                if (ipAddress == null || string.IsNullOrEmpty(ipAddress))
+                {
+                    ipAddress = "";
+                }
+
                 logId = await CreateLog(StudentDataUploadStatus.InProgress, request, ipAddress);
 
                 var response=await _mediator.Send(new CreateStudentDataCommand

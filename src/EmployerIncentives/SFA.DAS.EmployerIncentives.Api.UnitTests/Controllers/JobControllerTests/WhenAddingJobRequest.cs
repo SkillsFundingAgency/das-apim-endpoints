@@ -36,7 +36,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.JobControllerTest
                         && c.Data.Equals(request.Data)),
                     It.IsAny<CancellationToken>()));
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
         }
 

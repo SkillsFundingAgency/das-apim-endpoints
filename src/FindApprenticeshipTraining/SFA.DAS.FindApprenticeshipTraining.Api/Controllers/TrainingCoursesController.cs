@@ -40,8 +40,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                 var queryResult = await _mediator.Send(new GetTrainingCoursesListQuery
                 {
                     Keyword = keyword,
-                    RouteIds = routeIds,
-                    Levels = levels,
+                    RouteIds = routeIds ?? [],
+                    Levels = levels ?? [],
                     OrderBy = orderBy.Equals("relevance", StringComparison.CurrentCultureIgnoreCase) ? OrderBy.Score : OrderBy.Title,
                     ShortlistUserId = shortlistUserId
                 });

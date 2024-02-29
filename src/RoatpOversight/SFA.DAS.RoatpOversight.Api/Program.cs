@@ -17,7 +17,7 @@ builder.Services
     .AddApplicationInsightsTelemetry()
     .AddEndpointsApiExplorer()
     .AddControllers(configuration)
-    .AddMediatR(typeof(CreateProviderCommand).Assembly)
+    .AddMediatR(c => c.RegisterServicesFromAssembly(typeof(CreateProviderCommand).Assembly))
     .AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "RoatpOversightOuterApi", Version = "v1" });

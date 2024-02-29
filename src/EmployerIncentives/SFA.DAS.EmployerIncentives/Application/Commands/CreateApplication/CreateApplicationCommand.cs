@@ -3,7 +3,7 @@ using System;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication
 {
-    public class CreateApplicationCommand : IRequest
+    public class CreateApplicationCommand : IRequest<Unit>
     {
         public Guid ApplicationId { get; }
         public long AccountId { get; }

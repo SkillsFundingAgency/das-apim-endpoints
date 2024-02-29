@@ -4,7 +4,7 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Commands
 {
-    public class PostDetailsCommand : IRequest
+    public class PostDetailsCommand : IRequest<Unit>
     {
         public CohortSubmissionType SubmissionType { get; set; }
         public long CohortId { get; set; }

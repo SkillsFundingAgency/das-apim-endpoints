@@ -32,7 +32,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderCourse
 
             var statusCodeResult = response as IStatusCodeActionResult;
 
-            Assert.AreEqual(expectedStatusCode, statusCodeResult.StatusCode.GetValueOrDefault());
+            Assert.That(expectedStatusCode, Is.EqualTo(statusCodeResult.StatusCode.GetValueOrDefault()));
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderCourse
 
             var statusCodeResult = response as IStatusCodeActionResult;
 
-            Assert.AreEqual(404, statusCodeResult.StatusCode.GetValueOrDefault());
+            Assert.That(404, Is.EqualTo(statusCodeResult.StatusCode.GetValueOrDefault()));
         }
     }
 }

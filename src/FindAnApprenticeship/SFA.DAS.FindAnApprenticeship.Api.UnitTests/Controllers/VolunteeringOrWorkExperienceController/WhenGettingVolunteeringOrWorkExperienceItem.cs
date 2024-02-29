@@ -1,16 +1,15 @@
 ﻿using AutoFixture.NUnit3;
+using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
-using System.Threading.Tasks;
-using System;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.DeleteVolunteeringOrWorkExperience;
-using System.Threading;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-using FluentAssertions;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetVolunteeringOrWorkExperienceItem;
+using SFA.DAS.Testing.AutoFixture;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetWorkExperience;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VolunteeringOrWorkExperienceController;
 public class WhenGettingVolunteeringOrWorkExperienceItem

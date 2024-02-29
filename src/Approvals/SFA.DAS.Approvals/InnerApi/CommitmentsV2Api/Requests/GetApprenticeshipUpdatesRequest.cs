@@ -1,6 +1,5 @@
 ﻿using SFA.DAS.Approvals.Enums;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
 
 namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests
 {

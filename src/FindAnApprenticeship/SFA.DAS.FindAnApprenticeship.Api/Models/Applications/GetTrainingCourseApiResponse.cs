@@ -10,7 +10,7 @@ public class GetTrainingCourseApiResponse
     public string CourseName { get; set; }
     public int YearAchieved { get; set; }
 
-    public static implicit operator GetTrainingCourseApiResponse(GetTrainingCourseQueryResult source)
+    public static implicit operator GetTrainingCourseApiResponse(CourseResponse source)
     {
         return new GetTrainingCourseApiResponse
         {

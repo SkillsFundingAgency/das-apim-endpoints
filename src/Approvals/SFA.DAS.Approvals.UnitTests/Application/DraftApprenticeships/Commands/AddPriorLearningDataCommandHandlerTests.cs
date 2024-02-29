@@ -75,9 +75,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
 
             var response = await _handler.Handle(_request, CancellationToken.None);
 
-            Assert.IsInstanceOf<AddPriorLearningDataCommandResult>(response);
-            Assert.AreEqual(_apprenticeship.HasStandardOptions, response.HasStandardOptions);
-            Assert.AreEqual(_priorLearningSummary.RplPriceReductionError, response.RplPriceReductionError);
+            Assert.That(response, Is.InstanceOf<AddPriorLearningDataCommandResult>());
+            Assert.That(_apprenticeship.HasStandardOptions, Is.EqualTo(response.HasStandardOptions));
+            Assert.That(_priorLearningSummary.RplPriceReductionError, Is.EqualTo(response.RplPriceReductionError));
         }
     }
 }

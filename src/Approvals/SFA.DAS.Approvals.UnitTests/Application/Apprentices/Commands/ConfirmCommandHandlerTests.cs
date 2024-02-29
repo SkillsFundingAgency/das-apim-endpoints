@@ -44,17 +44,17 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Commands
 
             var requestBody = _apiRequest.Data as CreateChangeOfPartyRequestRequest.Body;
 
-            Assert.AreEqual(_request.ApprenticeshipId, _apiRequest.ApprenticeshipId);
-            Assert.AreEqual(ChangeOfPartyRequestType.ChangeEmployer, requestBody.ChangeOfPartyRequestType);
-            Assert.AreEqual(_request.DeliveryModel, requestBody.DeliveryModel);
-            Assert.AreEqual(_request.EmploymentEndDate, requestBody.NewEmploymentEndDate);
-            Assert.AreEqual(_request.EmploymentPrice, requestBody.NewEmploymentPrice);
-            Assert.AreEqual(_request.EndDate, requestBody.NewEndDate);
-            Assert.AreEqual(_request.Price, requestBody.NewPrice);
-            Assert.AreEqual(_request.StartDate, requestBody.NewStartDate);
-            Assert.AreEqual(_request.HasOverlappingTrainingDates, requestBody.HasOverlappingTrainingDates);
-            Assert.AreEqual(_request.UserInfo, requestBody.UserInfo);
-            Assert.AreEqual(_request.AccountLegalEntityId, requestBody.NewPartyId);
+            Assert.That(_apiRequest.ApprenticeshipId, Is.EqualTo(_request.ApprenticeshipId));
+            Assert.That(requestBody.ChangeOfPartyRequestType, Is.EqualTo(ChangeOfPartyRequestType.ChangeEmployer));
+            Assert.That(requestBody.DeliveryModel, Is.EqualTo(_request.DeliveryModel));
+            Assert.That(requestBody.NewEmploymentEndDate, Is.EqualTo(_request.EmploymentEndDate));
+            Assert.That(requestBody.NewEmploymentPrice, Is.EqualTo(_request.EmploymentPrice));
+            Assert.That(requestBody.NewEndDate, Is.EqualTo(_request.EndDate));
+            Assert.That(requestBody.NewPrice, Is.EqualTo(_request.Price));
+            Assert.That(requestBody.NewStartDate, Is.EqualTo(_request.StartDate));
+            Assert.That(requestBody.HasOverlappingTrainingDates, Is.EqualTo(_request.HasOverlappingTrainingDates));
+            Assert.That(requestBody.UserInfo, Is.EqualTo(_request.UserInfo));
+            Assert.That(requestBody.NewPartyId, Is.EqualTo(_request.AccountLegalEntityId));
         }
     }
 }

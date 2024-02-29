@@ -47,15 +47,15 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
         {
             var result = await _controller.GetAddDraftApprenticeshipCourse(_cohortId, _draftApprenticeshipId);
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okObjectResult = (OkObjectResult) result;
-            Assert.IsInstanceOf<GetAddDraftApprenticeshipCourseResponse>(okObjectResult.Value);
+            Assert.That(okObjectResult.Value, Is.InstanceOf<GetAddDraftApprenticeshipCourseResponse>());
             var objectResult = (GetAddDraftApprenticeshipCourseResponse) okObjectResult.Value;
 
             var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
 
             var comparisonResult = compare.Compare(_queryResult, objectResult);
-            Assert.IsTrue(comparisonResult.AreEqual);
+            Assert.That(comparisonResult.AreEqual, Is.True);
         }
     }
 }

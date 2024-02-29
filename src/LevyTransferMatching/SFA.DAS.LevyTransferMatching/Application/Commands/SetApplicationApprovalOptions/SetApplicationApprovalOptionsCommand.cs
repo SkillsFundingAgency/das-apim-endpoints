@@ -1,11 +1,8 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprovalOptions
 {
-    public class SetApplicationApprovalOptionsCommand : IRequest
+    public class SetApplicationApprovalOptionsCommand : IRequest<Unit>
     {
         public int PledgeId { get; set; }
         public int ApplicationId { get; set; }

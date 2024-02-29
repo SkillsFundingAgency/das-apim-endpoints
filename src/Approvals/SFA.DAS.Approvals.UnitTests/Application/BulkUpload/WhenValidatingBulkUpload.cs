@@ -31,7 +31,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
 
             apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostValidateBulkUploadRequest>(), true)).ReturnsAsync(response);
             var actual = await handler.Handle(query, CancellationToken.None);
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
         }
     }
 }

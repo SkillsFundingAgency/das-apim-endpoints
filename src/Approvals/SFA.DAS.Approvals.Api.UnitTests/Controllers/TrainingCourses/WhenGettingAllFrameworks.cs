@@ -31,10 +31,10 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.TrainingCourses
 
             var controllerResult = await controller.GetFrameworks() as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetFrameworksListResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Frameworks.Should().BeEquivalentTo(mediatorResult.Frameworks);
         }
 

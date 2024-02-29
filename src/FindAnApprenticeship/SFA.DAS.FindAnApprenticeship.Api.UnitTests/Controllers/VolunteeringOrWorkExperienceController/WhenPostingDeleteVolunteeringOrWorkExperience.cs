@@ -8,10 +8,10 @@ using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading.Tasks;
 using System;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteVolunteeringOrWorkExperience;
 using System.Threading;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteWorkExperience;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VolunteeringOrWorkExperienceController;
 public class WhenPostingDeleteVolunteeringOrWorkExperience

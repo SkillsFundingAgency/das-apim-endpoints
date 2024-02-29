@@ -40,8 +40,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
 
             var result = await getDeclinedQueryHandler.Handle(getDeclinedQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(pledgeResponse.DasAccountName, result.EmployerAccountName);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.EmployerAccountName, Is.EqualTo(pledgeResponse.DasAccountName));
         }
 
         [Test, MoqAutoData]
@@ -56,7 +56,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
 
             var result = await getDeclinedQueryHandler.Handle(getDeclinedQuery, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

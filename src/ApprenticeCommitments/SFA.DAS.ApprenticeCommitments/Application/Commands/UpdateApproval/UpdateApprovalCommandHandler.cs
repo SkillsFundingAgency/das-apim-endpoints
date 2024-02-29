@@ -9,13 +9,12 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Services;
 using static System.String;
 using ApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi.ApprenticeshipResponse;
-using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeAccountsApi;
 
 #nullable enable
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
 {
-    public class UpdateApprovalCommandHandler : IRequestHandler<UpdateApprovalCommand>
+    public class UpdateApprovalCommandHandler : IRequestHandler<UpdateApprovalCommand, Unit>
     {
         private readonly ApprenticeCommitmentsService _apprenticeCommitmentsService;
         private readonly CommitmentsV2Service _commitmentsService;
