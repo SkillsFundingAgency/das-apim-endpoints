@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.Apprenticeship;
+using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
@@ -15,16 +16,19 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
     public class ApprenticeshipController : ControllerBase
     {
         private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apiClient;
-		private readonly IMediator _mediator;
+        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
+        private readonly IMediator _mediator;
         private readonly ILogger<ApprenticeshipController> _logger;
 
 		public ApprenticeshipController(
 			ILogger<ApprenticeshipController> logger,
 			IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apiClient,
-			IMediator mediator)
+            ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient,
+            IMediator mediator)
         {
             _logger = logger;
             _apiClient = apiClient;
+            _apiCommitmentsClient = apiCommitmentsClient;
             _mediator = mediator;
 		}
 
@@ -81,7 +85,9 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         public async Task<ActionResult> GetPendingPriceChange(Guid apprenticeshipKey)
         {
 	        var response = await _apiClient.Get<GetPendingPriceChangeApiResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey));
-	        return Ok(new GetPendingPriceChangeResponse(response));
+            var providerResponse = await _apiCommitmentsClient.Get<GetProviderResponse>(new GetProviderRequest(response.PendingPriceChange.Ukprn.GetValueOrDefault()));
+
+	        return Ok(new GetPendingPriceChangeResponse(response, providerResponse.Name));
         }
 
         [HttpDelete]
@@ -89,6 +95,22 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         public async Task<ActionResult> CancelPendingPriceChange(Guid apprenticeshipKey)
         {
             await _apiClient.Delete(new CancelPendingPriceChangeRequest(apprenticeshipKey));
+            return Ok();
+        }
+
+        [HttpPatch]
+        [Route("{apprenticeshipKey}/priceHistory/pending/reject")]
+        public async Task<ActionResult> RejectPendingPriceChange(Guid apprenticeshipKey, [FromBody] RejectPriceChangeRequest request)
+        {
+            await _apiClient.Patch(new PatchRejectApprenticeshipPriceChangeRequest(apprenticeshipKey, request.Reason));
+            return Ok();
+        }
+
+        [HttpPatch]
+        [Route("{apprenticeshipKey}/priceHistory/pending/approve")]
+        public async Task<ActionResult> ApprovePendingPriceChange(Guid apprenticeshipKey, [FromBody] ApprovePriceChangeRequest request)
+        {
+            await _apiClient.Patch(new PatchApproveApprenticeshipPriceChangeRequest(apprenticeshipKey, request.UserId));
             return Ok();
         }
     }
