@@ -75,7 +75,7 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 	{
 		if (!apprenticePriceInnerModel.AccountLegalEntityId.HasValue)
 		{
-			_logger.LogWarning($"No AccountLegalEntityId returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
+			_logger.LogError($"No AccountLegalEntityId returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
 			return null;
 		}
 
@@ -83,7 +83,7 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 		
 		if(employer == null)
 		{
-			_logger.LogWarning($"No AccountLegalEntity returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
+			_logger.LogError($"No AccountLegalEntity returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
 			return null;
 		}
 
@@ -94,7 +94,7 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 	{
 		if (apprenticePriceInnerModel.UKPRN < 1)
 		{
-			_logger.LogWarning($"Invalid UKPRN '{apprenticePriceInnerModel.UKPRN}' returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
+			_logger.LogError($"Invalid UKPRN '{apprenticePriceInnerModel.UKPRN}' returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
 			return null;
 		}
 
@@ -102,7 +102,7 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 
 		if (provider == null)
 		{
-			_logger.LogWarning($"No provider returned from CommitmentsClient for UKPRN:{apprenticePriceInnerModel.UKPRN}");
+			_logger.LogError($"No provider returned from CommitmentsClient for UKPRN:{apprenticePriceInnerModel.UKPRN}");
 			return null;
 		}
 
