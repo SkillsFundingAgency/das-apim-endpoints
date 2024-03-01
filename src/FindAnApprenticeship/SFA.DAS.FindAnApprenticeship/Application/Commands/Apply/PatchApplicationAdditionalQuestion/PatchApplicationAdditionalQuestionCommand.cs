@@ -8,6 +8,6 @@ public record PatchApplicationAdditionalQuestionCommand : IRequest<PatchApplicat
 {
     public Guid ApplicationId { set; get; }
     public Guid CandidateId { set; get; }
-    public SectionStatus AdditionalQuestionOne { get; set; }
-    public SectionStatus AdditionalQuestionTwo { get; set; }
+    public SectionStatus? AdditionalQuestionOne { get; set; }
+    public SectionStatus? AdditionalQuestionTwo { get; set; }
 }

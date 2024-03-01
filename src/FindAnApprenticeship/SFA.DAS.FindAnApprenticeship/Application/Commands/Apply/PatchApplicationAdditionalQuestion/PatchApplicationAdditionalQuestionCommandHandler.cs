@@ -27,11 +27,11 @@ public record PatchApplicationAdditionalQuestionCommandHandler : IRequestHandler
     public async Task<PatchApplicationAdditionalQuestionCommandResponse> Handle(PatchApplicationAdditionalQuestionCommand request, CancellationToken cancellationToken)
     {
         var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
-        if (request.AdditionalQuestionOne > 0)
+        if (request.AdditionalQuestionOne is > 0)
         {
             jsonPatchDocument.Replace(x => x.AdditionalQuestion1Status, request.AdditionalQuestionOne);
         }
-        if (request.AdditionalQuestionTwo > 0)
+        if (request.AdditionalQuestionTwo is > 0)
         {
             jsonPatchDocument.Replace(x => x.AdditionalQuestion2Status, request.AdditionalQuestionTwo);
         }
