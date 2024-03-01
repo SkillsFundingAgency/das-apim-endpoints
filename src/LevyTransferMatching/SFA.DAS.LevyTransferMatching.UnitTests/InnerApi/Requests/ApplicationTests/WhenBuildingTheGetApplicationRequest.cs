@@ -13,9 +13,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.InnerApi.Requests.ApplicationTe
         {
             var actual = new GetApplicationRequest(pledgeId, applicationId);
 
-            Assert.AreEqual(
-                 $"pledges/{pledgeId}/applications/{applicationId}",
-                actual.GetUrl);
+            Assert.That(actual.GetUrl, Is.EqualTo($"pledges/{pledgeId}/applications/{applicationId}"));
         }
 
         [Test, AutoData]
@@ -24,9 +22,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.InnerApi.Requests.ApplicationTe
         {
             var actual = new GetApplicationRequest(applicationId);
 
-            Assert.AreEqual(
-                 $"applications/{applicationId}",
-                actual.GetUrl);
+            Assert.That(actual.GetUrl, Is.EqualTo($"applications/{applicationId}"));
         }
     }
 }

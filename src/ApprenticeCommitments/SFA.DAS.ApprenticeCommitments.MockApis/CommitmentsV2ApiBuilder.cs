@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using AutoFixture;
-using Microsoft.Identity.Client;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Assessor;
 using WireMock;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;

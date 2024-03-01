@@ -26,7 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.AccountsSe
 
             var actual = await accountsService.GetAccount(encodedAccountId);
 
-            Assert.AreEqual(actual, apiResponse);
+            Assert.That(actual, Is.EqualTo(apiResponse));
         }
     }
 }

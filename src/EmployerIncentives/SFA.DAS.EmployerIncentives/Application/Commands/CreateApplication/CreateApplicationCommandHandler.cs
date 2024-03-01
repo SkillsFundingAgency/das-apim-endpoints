@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.CreateApplication
 {
-    public class CreateApplicationCommandHandler : IRequestHandler<CreateApplicationCommand>
+    public class CreateApplicationCommandHandler : IRequestHandler<CreateApplicationCommand, Unit>
     {
         private readonly ICommitmentsService _commitmentsService;
         private readonly IApplicationService _applicationService;

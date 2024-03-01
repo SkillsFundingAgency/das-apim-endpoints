@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 {
-    public class ValidateBulkUploadRecordsCommand :IRequest
+    public class ValidateBulkUploadRecordsCommand :IRequest<Unit>
     {
         public long ProviderId { get; set; }
         public bool RplDataExtended { get; set; }

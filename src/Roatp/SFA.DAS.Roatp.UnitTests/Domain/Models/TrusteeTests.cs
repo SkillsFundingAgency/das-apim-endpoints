@@ -19,8 +19,8 @@ namespace SFA.DAS.Roatp.UnitTests.Domain.Models
 
             Trustee trustee = charityTrustee;
 
-            Assert.AreEqual(charityTrustee.TrusteeId.ToString(), trustee.Id);
-            Assert.AreEqual(charityTrustee.Name, trustee.Name);
+            Assert.That(charityTrustee.TrusteeId.ToString(), Is.EqualTo(trustee.Id));
+            Assert.That(charityTrustee.Name, Is.EqualTo(trustee.Name));
         }
     }
 }

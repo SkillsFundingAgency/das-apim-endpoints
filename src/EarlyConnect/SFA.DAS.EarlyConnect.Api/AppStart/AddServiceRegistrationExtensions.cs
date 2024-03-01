@@ -3,6 +3,8 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.EarlyConnect.Api.Extensions;
+using SFA.DAS.EarlyConnect.Configuration.FeatureToggle;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -18,7 +20,11 @@ public static class AddServiceRegistrationExtensions
         services.AddHttpClient();
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
+        services.AddTransient(typeof(ILepsNeExternalApiClient<>), typeof(LepsNeExternalApiClient<>));
         services.AddTransient<IEarlyConnectApiClient<EarlyConnectApiConfiguration>, EarlyConnectApiClient>();
+        services.AddTransient<ILepsNeApiClient<LepsNeApiConfiguration>, LepsNeApiClient>();
+        services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddFeatureToggle();
     }
 }
 
@@ -30,7 +36,14 @@ public static class AddConfigurationOptionsExtension
         services.AddOptions();
         services.Configure<EarlyConnectApiConfiguration>(configuration.GetSection(nameof(EarlyConnectApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<EarlyConnectApiConfiguration>>().Value);
+
+        services.Configure<LepsNeApiConfiguration>(configuration.GetSection(nameof(LepsNeApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<LepsNeApiConfiguration>>().Value);
+
         services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
+
+        services.Configure<EarlyConnectFeaturesConfiguration>(configuration.GetSection("Features"));
+        services.AddSingleton<IEarlyConnectFeaturesConfiguration>(cfg => cfg.GetService<IOptions<EarlyConnectFeaturesConfiguration>>().Value);
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
+﻿namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 { 
     public class DeliveryModel
     {

@@ -14,7 +14,7 @@ namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
             var actual = new GetApprenticeRequest(id);
             
             //Assert
-            Assert.AreEqual($"apprentices/{id}", actual.GetUrl);
+            Assert.That(actual.GetUrl, Is.EqualTo($"apprentices/{id}"));
         }
     }
 }

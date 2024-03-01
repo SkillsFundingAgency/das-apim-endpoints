@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Forecasting.Application.Pledges.Queries.GetAccountsWithPledges;
@@ -38,7 +39,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Pledges.Queries
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
             var expected = _apiResponse.Pledges.Select(x => x.AccountId).Distinct();
-            CollectionAssert.AreEquivalent(expected, result.AccountIds);
+            expected.Should().BeEquivalentTo(result.AccountIds);
         }
 
         [Test]
@@ -46,7 +47,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Pledges.Queries
         {
             _apiResponse.Pledges.ToList().ForEach(x => x.ApplicationCount = 0);
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(0, result.AccountIds.Count);
+            Assert.That(0, Is.EqualTo(result.AccountIds.Count));
         }
     }
 }

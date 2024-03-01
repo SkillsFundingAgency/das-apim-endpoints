@@ -120,20 +120,20 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _deliveryModels.AddRange(fixture.CreateMany<string>(optionCount));
 
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(expectedHasMultiple, result.HasMultipleDeliveryModelOptions);
+            Assert.That(result.HasMultipleDeliveryModelOptions, Is.EqualTo(expectedHasMultiple));
         }
 
         [Test]
         public async Task Handle_Returns_objects_From_Commitments_Api()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_apprenticeship, result.Apprenticeship);
-            Assert.AreEqual(_priceEpisodesResponse.PriceEpisodes, result.PriceEpisodes);
-            Assert.AreEqual(_apprenticeshipUpdatesResponse.ApprenticeshipUpdates, result.ApprenticeshipUpdates);
-            Assert.AreEqual(_changeOfPartyRequestsResponse.ChangeOfPartyRequests, result.ChangeOfPartyRequests);
-            Assert.AreEqual(_changeOfProviderChainResponse.ChangeOfProviderChain, result.ChangeOfProviderChain);
-            Assert.AreEqual(_changeOfEmployerChainResponse.ChangeOfEmployerChain, result.ChangeOfEmployerChain);
-            Assert.AreEqual(_overlappingTrainingDateResponse.OverlappingTrainingDateRequest, result.OverlappingTrainingDateRequest);
+            Assert.That(result.Apprenticeship, Is.EqualTo(_apprenticeship));
+            Assert.That(result.PriceEpisodes, Is.EqualTo(_priceEpisodesResponse.PriceEpisodes));
+            Assert.That(result.ApprenticeshipUpdates, Is.EqualTo(_apprenticeshipUpdatesResponse.ApprenticeshipUpdates));
+            Assert.That(result.ChangeOfPartyRequests, Is.EqualTo(_changeOfPartyRequestsResponse.ChangeOfPartyRequests));
+            Assert.That(result.ChangeOfProviderChain, Is.EqualTo(_changeOfProviderChainResponse.ChangeOfProviderChain));
+            Assert.That(result.ChangeOfEmployerChain, Is.EqualTo(_changeOfEmployerChainResponse.ChangeOfEmployerChain));
+            Assert.That(result.OverlappingTrainingDateRequest, Is.EqualTo(_overlappingTrainingDateResponse.OverlappingTrainingDateRequest));
         }
 
         [Test]
@@ -165,7 +165,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
                 .ReturnsAsync(new ApiResponse<GetApprenticeshipResponse>(null, HttpStatusCode.NotFound, string.Empty));
 
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

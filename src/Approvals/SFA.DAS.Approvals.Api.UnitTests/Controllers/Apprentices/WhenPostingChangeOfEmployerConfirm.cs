@@ -67,7 +67,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
         public async Task Then_Ok_Result_Is_Returned()
         {
             var result = await _controller.ChangeEmployerConfirm(_providerId, _apprenticeshipId, _request);
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.That(result, Is.InstanceOf<OkResult>());
         }
 
         [Test]
@@ -75,7 +75,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
         {
             _mediator.Setup(x => x.Send(It.IsAny<CreateChangeOfEmployerCommand>(), It.IsAny<CancellationToken>())).Throws<InvalidOperationException>();
             var result = await _controller.ChangeEmployerConfirm(_providerId, _apprenticeshipId + 1, _request);
-            Assert.IsInstanceOf<BadRequestResult>(result);
+            Assert.That(result, Is.InstanceOf<BadRequestResult>());
         }
     }
 }

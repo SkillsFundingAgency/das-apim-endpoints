@@ -32,7 +32,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetSectors
         public async Task Handle_Returns_Sectors()
         {
             var result = await _handler.Handle(new GetSectorsQuery(), CancellationToken.None);
-            Assert.AreEqual(_sectors, result.ReferenceDataItems);
+            Assert.That(result.ReferenceDataItems, Is.EqualTo(_sectors));
         }
     }
 }

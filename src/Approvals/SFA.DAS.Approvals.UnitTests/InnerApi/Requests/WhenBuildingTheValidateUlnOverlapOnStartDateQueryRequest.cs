@@ -1,7 +1,5 @@
-﻿using AutoFixture;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
-using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
@@ -18,7 +16,7 @@ namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
             var actual = new ValidateUlnOverlapOnStartDateQueryRequest(providerId, uln, startDate, endDate);
 
             //Assert
-            Assert.AreEqual($"api/overlapping-training-date-request/{providerId}/validateUlnOverlap?uln={uln}&startDate={startDate}&endDate={endDate}", actual.GetUrl);
+            Assert.That(actual.GetUrl, Is.EqualTo($"api/overlapping-training-date-request/{providerId}/validateUlnOverlap?uln={uln}&startDate={startDate}&endDate={endDate}"));
         }
     }
 }

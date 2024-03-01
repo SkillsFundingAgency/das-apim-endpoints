@@ -26,7 +26,7 @@ builder.Services.AddSwaggerGen(c =>
     var filePath2 = Path.Combine(AppContext.BaseDirectory, $"{typeof(SubscriptionHeaderConstants).Namespace}.xml");
     c.IncludeXmlComments(filePath2);
 });
-builder.Services.AddMediatR(typeof(TrackProgressCommand));
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(TrackProgressCommand).Assembly));
 builder.Services.Configure<RouteOptions>(options =>
 {
     options.LowercaseUrls = true;

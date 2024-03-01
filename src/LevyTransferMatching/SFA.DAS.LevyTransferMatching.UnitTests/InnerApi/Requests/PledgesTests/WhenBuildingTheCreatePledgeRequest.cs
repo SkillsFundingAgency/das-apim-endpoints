@@ -1,7 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
-using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.InnerApi.Requests.PledgesTests
 {
@@ -12,9 +11,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.InnerApi.Requests.PledgesTests
         {
             var actual = new CreatePledgeRequest(accountId, new CreatePledgeRequest.CreatePledgeRequestData());
 
-            Assert.AreEqual(
-                $"accounts/{accountId}/pledges",
-                actual.PostUrl);
+            Assert.That(actual.PostUrl, Is.EqualTo($"accounts/{accountId}/pledges"));
         }
     }
 }

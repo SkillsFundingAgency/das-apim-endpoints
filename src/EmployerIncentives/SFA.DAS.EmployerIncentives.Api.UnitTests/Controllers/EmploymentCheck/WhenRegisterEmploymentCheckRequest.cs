@@ -9,7 +9,6 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.EmployerIncentives.Application.Commands.EmploymentCheck;
 using SFA.DAS.EmployerIncentives.Application.Commands.RegisterEmploymentCheck;
 
 namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EmploymentCheckTests
@@ -39,7 +38,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EmploymentCheckTe
                         && c.Uln.Equals(request.Uln)),
                     It.IsAny<CancellationToken>()));
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
         }
     }

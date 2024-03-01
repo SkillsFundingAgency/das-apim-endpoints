@@ -35,10 +35,10 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.Transfers
 
             var controllerResult = await controller.GetTransferValidity(senderId, receiverId, pledgeApplicationId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTransferValidityResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.IsValid.Should().Be(mediatorResult.IsValid);
         }
     }

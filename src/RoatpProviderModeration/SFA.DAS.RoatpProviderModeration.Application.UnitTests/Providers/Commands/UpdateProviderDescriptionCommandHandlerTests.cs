@@ -1,4 +1,5 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Net;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -10,6 +11,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.RoatpProviderModeration.Application.UnitTests.Providers.Commands
 {
@@ -23,6 +25,7 @@ namespace SFA.DAS.RoatpProviderModeration.Application.UnitTests.Providers.Comman
             UpdateProviderDescriptionCommand command,
             CancellationToken cancellationToken)
         {
+            apiClientMock.Setup(c => c.PatchWithResponseCode(It.IsAny<PatchProviderRequest>())).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted,null));
             await sut.Handle(command, cancellationToken);
             apiClientMock.Verify(a => a.PatchWithResponseCode(It.IsAny<PatchProviderRequest>()), Times.Once);
         }

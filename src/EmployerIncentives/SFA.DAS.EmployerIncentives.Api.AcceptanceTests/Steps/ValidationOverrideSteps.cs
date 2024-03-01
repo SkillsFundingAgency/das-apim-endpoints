@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using Newtonsoft.Json;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using System;
 using System.Collections.Generic;
@@ -77,7 +76,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Then(@"the response of Accepted is returned")]
         public void ThenReturnAcceptedToTheCaller()
         {
-            _response.StatusCode.Should().Be((int)HttpStatusCode.Accepted);
+            _response.StatusCode.Should().Be(HttpStatusCode.Accepted);
         }
     }
 }

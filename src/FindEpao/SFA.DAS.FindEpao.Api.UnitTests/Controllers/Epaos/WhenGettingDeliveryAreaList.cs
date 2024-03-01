@@ -10,7 +10,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindEpao.Api.Controllers;
 using SFA.DAS.FindEpao.Api.Models;
-using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList;
 using SFA.DAS.FindEpao.Application.Epaos.Queries.GetDeliveryAreaList;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -32,10 +31,10 @@ namespace SFA.DAS.FindEpao.Api.UnitTests.Controllers.Epaos
 
             var controllerResult = await controller.GetDeliveryAreas() as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetDeliveryAreaListResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.DeliveryAreas.Should().BeEquivalentTo(mediatorResult.DeliveryAreas);
         }
 

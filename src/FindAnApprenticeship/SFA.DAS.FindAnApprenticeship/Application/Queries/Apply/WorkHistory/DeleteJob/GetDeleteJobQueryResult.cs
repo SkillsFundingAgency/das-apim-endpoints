@@ -1,10 +1,5 @@
-﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetJob;
-using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+﻿using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory.DeleteJob
 {
@@ -18,7 +13,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory.Del
         public Guid ApplicationId { get; set; }
         public string Description { get; set; }
 
-        public static implicit operator GetDeleteJobQueryResult(GetDeleteJobApiResponse source)
+        public static implicit operator GetDeleteJobQueryResult(GetWorkHistoryItemApiResponse source)
         {
             return new GetDeleteJobQueryResult
             {

@@ -30,14 +30,14 @@ namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.Transfers
             var value = okObjectResult.Value;
             var getIndexResponse = value as GetCountsResponse;
 
-            Assert.IsNotNull(actionResult);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(value);
-            Assert.IsNotNull(getIndexResponse);
+            Assert.That(actionResult, Is.Not.Null);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(value, Is.Not.Null);
+            Assert.That(getIndexResponse, Is.Not.Null);
 
-            Assert.AreEqual(mediatorResult.PledgesCount, getIndexResponse.PledgesCount);
-            Assert.AreEqual(mediatorResult.ApplicationsCount, getIndexResponse.ApplicationsCount);
-            Assert.AreEqual(mediatorResult.CurrentYearEstimatedCommittedSpend, getIndexResponse.CurrentYearEstimatedCommittedSpend);
+            Assert.That(mediatorResult.PledgesCount, Is.EqualTo(getIndexResponse.PledgesCount));
+            Assert.That(mediatorResult.ApplicationsCount, Is.EqualTo(getIndexResponse.ApplicationsCount));
+            Assert.That(mediatorResult.CurrentYearEstimatedCommittedSpend, Is.EqualTo(getIndexResponse.CurrentYearEstimatedCommittedSpend));
         }
     }
 }

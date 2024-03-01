@@ -6,7 +6,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Forecasting.Application.Pledges.Queries.GetApplications;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -41,26 +40,26 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Applications.Queries
             _apiResponse.Applications.ToList().ForEach(a => a.Status = status);
 
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_apiResponse.Applications.Count(), result.Applications.Count());
+            Assert.That(_apiResponse.Applications.Count(), Is.EqualTo(result.Applications.Count()));
 
             var i = 0;
 
             foreach (var application in result.Applications)
             {
                 var expected = _apiResponse.Applications.ToArray()[i];
-                Assert.AreEqual(expected.Id, application.Id);
-                Assert.AreEqual(expected.Id, application.Id);
-                Assert.AreEqual(expected.EmployerAccountId, application.EmployerAccountId);
-                Assert.AreEqual(expected.PledgeId, application.PledgeId);
-                Assert.AreEqual(expected.StandardId, application.StandardId);
-                Assert.AreEqual(expected.StandardTitle, application.StandardTitle);
-                Assert.AreEqual(expected.StandardLevel, application.StandardLevel);
-                Assert.AreEqual(expected.StandardDuration, application.StandardDuration);
-                Assert.AreEqual(expected.StandardMaxFunding, application.StandardMaxFunding);
-                Assert.AreEqual(expected.StartDate, application.StartDate);
-                Assert.AreEqual(expected.NumberOfApprentices, application.NumberOfApprentices);
-                Assert.AreEqual(expected.NumberOfApprenticesUsed, application.NumberOfApprenticesUsed);
-                Assert.AreEqual(expected.Status, application.Status);
+                Assert.That(expected.Id, Is.EqualTo(application.Id));
+                Assert.That(expected.Id, Is.EqualTo(application.Id));
+                Assert.That(expected.EmployerAccountId, Is.EqualTo(application.EmployerAccountId));
+                Assert.That(expected.PledgeId, Is.EqualTo(application.PledgeId));
+                Assert.That(expected.StandardId, Is.EqualTo(application.StandardId));
+                Assert.That(expected.StandardTitle, Is.EqualTo(application.StandardTitle));
+                Assert.That(expected.StandardLevel, Is.EqualTo(application.StandardLevel));
+                Assert.That(expected.StandardDuration, Is.EqualTo(application.StandardDuration));
+                Assert.That(expected.StandardMaxFunding, Is.EqualTo(application.StandardMaxFunding));
+                Assert.That(expected.StartDate, Is.EqualTo(application.StartDate));
+                Assert.That(expected.NumberOfApprentices, Is.EqualTo(application.NumberOfApprentices));
+                Assert.That(expected.NumberOfApprenticesUsed, Is.EqualTo(application.NumberOfApprenticesUsed));
+                Assert.That(expected.Status, Is.EqualTo(application.Status));
                 i++;
             }
         }
@@ -69,7 +68,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.Applications.Queries
         public async Task Then_Applications__Not_Approved_Or_Accepted_Are_Not_Retrieved()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(0, result.Applications.Count());
+            Assert.That(0, Is.EqualTo(result.Applications.Count()));
             
         }
     }

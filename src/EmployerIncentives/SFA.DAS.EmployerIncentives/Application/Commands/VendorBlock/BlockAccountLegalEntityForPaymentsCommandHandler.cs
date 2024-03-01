@@ -6,7 +6,7 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 namespace SFA.DAS.EmployerIncentives.Application.Commands.VendorBlock
 {
     public class
-        BlockAccountLegalEntityForPaymentsCommandHandler : IRequestHandler<BlockAccountLegalEntityForPaymentsCommand>
+        BlockAccountLegalEntityForPaymentsCommandHandler : IRequestHandler<BlockAccountLegalEntityForPaymentsCommand, Unit>
     {
         private readonly ILegalEntitiesService _legalEntitiesService;
 

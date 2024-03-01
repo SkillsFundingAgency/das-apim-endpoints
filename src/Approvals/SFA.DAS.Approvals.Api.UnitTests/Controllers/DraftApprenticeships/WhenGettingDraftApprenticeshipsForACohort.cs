@@ -31,10 +31,10 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
 
             var controllerResult = await controller.GetAll(cohortId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetDraftApprenticeshipsResult;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.DraftApprenticeships.Should().BeEquivalentTo(mediatorResult.DraftApprenticeships);
         }
 

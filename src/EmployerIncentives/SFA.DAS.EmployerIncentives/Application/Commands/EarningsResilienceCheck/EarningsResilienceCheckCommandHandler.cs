@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.EarningsResilienceCheck
 {
-    public class EarningsResilienceCheckCommandHandler : IRequestHandler<EarningsResilienceCheckCommand>
+    public class EarningsResilienceCheckCommandHandler : IRequestHandler<EarningsResilienceCheckCommand, Unit>
     {
         private readonly IEarningsResilienceCheckService _earningsResilienceCheckService;
 

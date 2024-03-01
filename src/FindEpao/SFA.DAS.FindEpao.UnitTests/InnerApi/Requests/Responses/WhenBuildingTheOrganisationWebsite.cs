@@ -17,7 +17,7 @@ namespace SFA.DAS.FindEpao.UnitTests.InnerApi.Requests.Responses
         {
             var organisationData = new GetEpaoOrganisationData{WebsiteLink = websiteLink};
 
-            Assert.AreEqual(expectedWebsiteLink, organisationData.WebsiteLink);
+            Assert.That(expectedWebsiteLink, Is.EqualTo(organisationData.WebsiteLink));
         }
     }
 }

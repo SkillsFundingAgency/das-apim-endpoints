@@ -1,6 +1,4 @@
-﻿using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries;
-
-namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEmployer
+﻿namespace SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEmployer
 {
     public class GetConfirmEmployerQueryResult
     {

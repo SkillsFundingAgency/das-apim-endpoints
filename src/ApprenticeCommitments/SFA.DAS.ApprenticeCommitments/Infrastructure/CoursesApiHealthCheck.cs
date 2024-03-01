@@ -1,10 +1,8 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 

@@ -53,7 +53,7 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 
 		var earliestEffectiveDate = await GetEarliestEffectiveDate();
 
-		var provider = await _apiCommitmentsClient.Get<GetProviderResponse>(new GetProviderRequest(apprenticePriceInnerModel.UKPRN));
+		var providerName = await GetProviderName(apprenticePriceInnerModel);
 
 		var apprenticeshipPriceOuterModel = new ApprenticeshipPriceResponse
 		{
@@ -65,7 +65,7 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 			FundingBandMaximum = apprenticePriceInnerModel.FundingBandMaximum,
 			TrainingPrice = apprenticePriceInnerModel.TrainingPrice,
 			EmployerName = employerName,
-			ProviderName = provider.Name,
+			ProviderName = providerName,
 		};
 
 		return apprenticeshipPriceOuterModel;
@@ -75,7 +75,7 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 	{
 		if (!apprenticePriceInnerModel.AccountLegalEntityId.HasValue)
 		{
-			_logger.LogWarning($"No AccountLegalEntityId returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
+			_logger.LogError($"No AccountLegalEntityId returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
 			return null;
 		}
 
@@ -83,12 +83,32 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 		
 		if(employer == null)
 		{
-			_logger.LogWarning($"No AccountLegalEntity returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
+			_logger.LogError($"No AccountLegalEntity returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
 			return null;
 		}
 
 		return employer.LegalEntityName;
 	}
+
+	private async Task<string?> GetProviderName(GetApprenticeshipPriceResponse apprenticePriceInnerModel)
+	{
+		if (apprenticePriceInnerModel.UKPRN < 1)
+		{
+			_logger.LogError($"Invalid UKPRN '{apprenticePriceInnerModel.UKPRN}' returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
+			return null;
+		}
+
+		var provider = await _apiCommitmentsClient.Get<GetProviderResponse>(new GetProviderRequest(apprenticePriceInnerModel.UKPRN));
+
+		if (provider == null)
+		{
+			_logger.LogError($"No provider returned from CommitmentsClient for UKPRN:{apprenticePriceInnerModel.UKPRN}");
+			return null;
+		}
+
+		return provider.Name;
+	}
+
 
 	private async Task<DateTime> GetEarliestEffectiveDate()
 	{

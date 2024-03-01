@@ -1,15 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Campaign.Api.Models;
-using SFA.DAS.Campaign.Application.Queries.Menu;
 using SFA.DAS.Campaign.Extensions;
-using SFA.DAS.Campaign.Models;
 
 namespace SFA.DAS.Campaign.Api.Controllers
 {

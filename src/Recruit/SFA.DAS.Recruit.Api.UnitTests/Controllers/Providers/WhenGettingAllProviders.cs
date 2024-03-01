@@ -32,10 +32,10 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
 
             var controllerResult = await controller.GetAllProviders() as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetProvidersListResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Providers.Should().BeEquivalentTo(mediatorResult.Providers, options=>options
                 .Excluding(x=>x.Address.AddressLine1)
                 .Excluding(x => x.Address.AddressLine2)

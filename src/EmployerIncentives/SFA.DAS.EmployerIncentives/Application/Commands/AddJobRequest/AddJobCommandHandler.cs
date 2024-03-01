@@ -7,7 +7,7 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.AddJobRequest
 {
-    public class AddJobCommandHandler : IRequestHandler<AddJobCommand>
+    public class AddJobCommandHandler : IRequestHandler<AddJobCommand, Unit>
     {
         private readonly IEmployerIncentivesApiClient<EmployerIncentivesConfiguration> _client;
 

@@ -33,10 +33,10 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
 
             var controllerResult = await controller.GetProviderCoursesDeliveryModel(providerId, trainingCode, accountLegalEntityId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetDeliveryModelsQueryResult;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo(mediatorResponse);
         }
 

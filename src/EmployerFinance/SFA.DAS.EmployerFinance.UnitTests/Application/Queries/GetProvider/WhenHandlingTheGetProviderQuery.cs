@@ -47,11 +47,11 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider
 
             var actual = await _handler.Handle(_query, CancellationToken.None);
 
-            Assert.AreEqual(_roatpServiceApiResponse.Ukprn, actual.Ukprn);
-            Assert.AreEqual(_roatpServiceApiResponse.Name, actual.Name);
-            Assert.AreEqual(_roatpServiceApiResponse.ContactUrl, actual.ContactUrl);
-            Assert.AreEqual(_roatpServiceApiResponse.Phone, actual.Phone);
-            Assert.AreEqual(_roatpServiceApiResponse.Email, actual.Email);
+            Assert.That(_roatpServiceApiResponse.Ukprn, Is.EqualTo(actual.Ukprn));
+            Assert.That(_roatpServiceApiResponse.Name, Is.EqualTo(actual.Name));
+            Assert.That(_roatpServiceApiResponse.ContactUrl, Is.EqualTo(actual.ContactUrl));
+            Assert.That(_roatpServiceApiResponse.Phone, Is.EqualTo(actual.Phone));
+            Assert.That(_roatpServiceApiResponse.Email, Is.EqualTo(actual.Email));
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetContactDetails
 {
@@ -35,7 +36,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetContactD
 
             var result = await getContactDetailsHandler.Handle(getContactDetailsQuery, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
 
         [Test, MoqAutoData]
@@ -71,16 +72,16 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetContactD
 
             var result = await getContactDetailsHandler.Handle(getContactDetailsQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             
-            CollectionAssert.AreEqual(allJobRoles, result.AllJobRoles);
-            Assert.AreEqual(1, result.JobRoles.Count());
+            result.AllJobRoles.Should().BeEquivalentTo(allJobRoles);
+            Assert.That(result.JobRoles.Count(), Is.EqualTo(1));
 
-            CollectionAssert.AreEqual(allLevels, result.AllLevels);
-            Assert.AreEqual(2, result.Levels.Count());
+            result.AllLevels.Should().BeEquivalentTo(allLevels);
+            Assert.That(result.Levels.Count(), Is.EqualTo(2));
 
-            CollectionAssert.AreEqual(allSectors, result.AllSectors);
-            Assert.AreEqual(3, result.Sectors.Count());
+            result.AllSectors.Should().BeEquivalentTo(allSectors);
+            Assert.That(result.Sectors.Count(), Is.EqualTo(3));
         }
     }
 }
