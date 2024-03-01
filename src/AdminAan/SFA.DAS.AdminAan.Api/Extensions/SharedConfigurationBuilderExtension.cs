@@ -1,5 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using SFA.DAS.Configuration.AzureTableStorage;
+﻿using SFA.DAS.Configuration.AzureTableStorage;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.AdminAan.Api.Extensions;
 
@@ -13,11 +13,7 @@ public static class SharedConfigurationBuilderExtension
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddEnvironmentVariables();
 #if DEBUG
-        config.AddJsonFile("appsettings.json", true);
-        if (!configuration.IsLocalAcceptanceTests())
-        {
-            config.AddJsonFile("appsettings.Development.json", true);
-        }
+        config.AddJsonFile("appsettings.Development.json", true);
 #endif
         if (!configuration.IsLocalAcceptanceTestsOrDev())
         {
