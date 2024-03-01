@@ -3,20 +3,19 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 using SFA.DAS.ApprenticeAan.Api.HealthCheck;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
-using SFA.DAS.ApprenticeAan.Application.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.HealthCheck;
-public class ApprenticeAanInnerApiHealthChecksTests
+
+public class AanHubApiHealthChecksTests : HealthChecksTestsBase
 {
     [Test, MoqAutoData]
     public async Task CheckHealthAsync_ValidQueryResult_ReturnsHealthyStatus(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         HealthCheckContext healthCheckContext,
-        List<Calendar> calendars,
-        ApprenticeAanInnerApiHealthCheck healthCheck)
+        AanHubApiHealthCheck healthCheck)
     {
-        apiClient.Setup(x => x.GetCalendars(It.IsAny<CancellationToken>())).ReturnsAsync(calendars);
+        apiClient.Setup(x => x.GetHealth(It.IsAny<CancellationToken>())).ReturnsAsync(ResponseMessageOk);
 
         var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
 
@@ -27,23 +26,9 @@ public class ApprenticeAanInnerApiHealthChecksTests
     public async Task CheckHealthAsync_NotValidQueryResult_ReturnsUnHealthyStatus(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         HealthCheckContext healthCheckContext,
-        List<Calendar> calendars,
-        ApprenticeAanInnerApiHealthCheck healthCheck)
+        AanHubApiHealthCheck healthCheck)
     {
-        apiClient.Setup(x => x.GetCalendars(It.IsAny<CancellationToken>())).ReturnsAsync(calendars);
-
-        var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
-
-        Assert.That(actual.Status, Is.EqualTo(HealthStatus.Healthy));
-    }
-
-    [Test, MoqAutoData]
-    public async Task CheckHealthAsync_ExceptionThrown_ReturnsUnHealthyStatus(
-        [Frozen] Mock<IAanHubRestApiClient> apiClient,
-        HealthCheckContext healthCheckContext,
-        ApprenticeAanInnerApiHealthCheck healthCheck)
-    {
-        apiClient.Setup(x => x.GetCalendars(It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException());
+        apiClient.Setup(x => x.GetHealth(It.IsAny<CancellationToken>())).ReturnsAsync(ResponseMessageBadRequest);
 
         var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
 
