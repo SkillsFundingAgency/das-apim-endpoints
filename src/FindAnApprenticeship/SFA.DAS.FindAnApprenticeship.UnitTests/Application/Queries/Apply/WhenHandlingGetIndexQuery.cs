@@ -53,6 +53,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             result.WorkHistory.Jobs.Should().Be(applicationApiResponse.JobsStatus);
             result.ApplicationQuestions.AdditionalQuestion1.Should().Be(applicationApiResponse.AdditionalQuestion1Status);
             result.ApplicationQuestions.AdditionalQuestion2.Should().Be(applicationApiResponse.AdditionalQuestion2Status);
+            result.ApplicationQuestions.AdditionalQuestion1Id.Should().Be(applicationApiResponse.AdditionalQuestions[0].Id);
+            result.ApplicationQuestions.AdditionalQuestion2Id.Should().Be(applicationApiResponse.AdditionalQuestions[1].Id);
             result.InterviewAdjustments.RequestAdjustments.Should().Be(applicationApiResponse.InterviewAdjustmentsStatus);
             result.DisabilityConfidence.InterviewUnderDisabilityConfident.Should().Be(applicationApiResponse.DisabilityConfidenceStatus);
         }

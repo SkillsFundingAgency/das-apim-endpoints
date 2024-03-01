@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -30,9 +30,7 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
         var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference));
         if(vacancy == null) return null;
 
-        var additionalQuestions = new List<string>();
-        if (vacancy.AdditionalQuestion1 != null) { additionalQuestions.Add(vacancy.AdditionalQuestion1); }
-        if (vacancy.AdditionalQuestion2 != null) { additionalQuestions.Add(vacancy.AdditionalQuestion2); }
+        var additionalQuestions = application.AdditionalQuestions.ToList();
 
         return new GetIndexQueryResult
         {
@@ -56,9 +54,11 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
                 SkillsAndStrengths = application.SkillsAndStrengthStatus,
                 WhatInterestsYou = application.InterestsStatus,
                 AdditionalQuestion1 = application.AdditionalQuestion1Status,
-                AdditionalQuestion1Label = additionalQuestions[0],
+                AdditionalQuestion1Label = additionalQuestions[0].QuestionText,
+                AdditionalQuestion1Id = additionalQuestions[0].Id,
                 AdditionalQuestion2 = application.AdditionalQuestion2Status,
-                AdditionalQuestion2Label = additionalQuestions[1]
+                AdditionalQuestion2Label = additionalQuestions[1].QuestionText,
+                AdditionalQuestion2Id = additionalQuestions[1].Id
             },
             InterviewAdjustments = new GetIndexQueryResult.InterviewAdjustmentsSection
             {
