@@ -8,8 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplication;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationAdditionalQuestion;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationSkillsAndStrengths;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationTrainingCourses;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationVolunteeringAndWorkHistory;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
@@ -111,57 +109,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 ApplicationId = applicationId,
                 CandidateId = candidateId,
                 VolunteeringAndWorkExperienceStatus = request.VolunteeringAndWorkExperienceSectionStatus
-            }, cancellationToken);
-
-            if (result.Application == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result.Application);
-        }
-
-        [HttpPost("{candidateId}/skills-and-strengths")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateSkillsAndStrengths(
-            [FromRoute] Guid applicationId,
-            [FromRoute] Guid candidateId,
-            [FromBody] UpdateSkillsAndStrengthsApplicationModel request,
-            CancellationToken cancellationToken)
-        {
-            var result = await _mediator.Send(new PatchApplicationSkillsAndStrengthsCommand
-            {
-                ApplicationId = applicationId,
-                CandidateId = candidateId,
-                SkillsAndStrengthsSectionStatus = request.SkillsAndStrengthsSectionStatus
-            }, cancellationToken);
-
-            if (result.Application == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result.Application);
-        }
-
-        [HttpPost("{candidateId}/additional-question")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateAdditionalQuestion(
-            [FromRoute] Guid applicationId,
-            [FromRoute] Guid candidateId,
-            [FromBody] UpdateApplicationAdditionalQuestionModel request,
-            CancellationToken cancellationToken)
-        {
-            var result = await _mediator.Send(new PatchApplicationAdditionalQuestionCommand
-            {
-                ApplicationId = applicationId,
-                CandidateId = candidateId,
-                AdditionalQuestionOne = request.AdditionalQuestionOne,
-                AdditionalQuestionTwo = request.AdditionalQuestionTwo,
             }, cancellationToken);
 
             if (result.Application == null)

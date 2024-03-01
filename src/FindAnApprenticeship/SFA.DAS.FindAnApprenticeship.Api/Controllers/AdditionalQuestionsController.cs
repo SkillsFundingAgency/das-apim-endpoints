@@ -59,7 +59,7 @@ public class AdditionalQuestionsController : Controller
 
             if (result is null) return NotFound();
 
-            return Created($"{result.Id}", (PostAdditionalQuestionApiResponse)result);
+            return Created($"{result.Application.Id}", result.Application);
         }
         catch (Exception ex)
         {

@@ -35,7 +35,7 @@ public class WhenCallingPost
         using (new AssertionScope())
         {
             actual.Should().BeOfType<CreatedResult>();
-            actual.As<CreatedResult>().Value.Should().BeEquivalentTo((PostAdditionalQuestionApiResponse)commandResult);
+            actual.As<CreatedResult>().Value.Should().BeEquivalentTo(commandResult);
         }
     }
 
