@@ -54,7 +54,9 @@ public class AdditionalQuestionsController : Controller
                 ApplicationId = applicationId,
                 CandidateId = request.CandidateId,
                 Id = request.Id,
-                Answer = request.Answer
+                Answer = request.Answer,
+                UpdatedAdditionalQuestion = request.UpdatedAdditionalQuestion,
+               AdditionalQuestionSectionStatus = request.AdditionalQuestionSectionStatus
             });
 
             if (result is null) return NotFound();
