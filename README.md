@@ -552,3 +552,7 @@ You are able to run the API by doing the following:
 
 Starting the API will then show the swagger definition with the available operations. This outer API is used to provide data for the FindApprenticeshipJobs functions app:
 [das-findapprenticeship-jobs](https://github.com/SkillsFundingAgency/das-findapprenticeship-jobs)
+
+### Employer AAN
+
+See the dedicated readme for setup: https://github.com/SkillsFundingAgency/das-apim-endpoints/blob/master/src/EmployerAan/README.md
