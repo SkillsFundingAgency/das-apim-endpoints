@@ -44,11 +44,11 @@ public class UpdateAdditionalQuestionCommandHandler : IRequestHandler<UpdateAddi
         }
 
         var patchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, jsonPatchDocument);
-        var response = await _apiClient.PatchWithResponseCode(patchRequest);
-        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+        var patchResult = await _apiClient.PatchWithResponseCode(patchRequest);
+        if (patchResult.StatusCode != System.Net.HttpStatusCode.OK)
         {
             _logger.LogError($"Unable to patch application for candidate Id {command.CandidateId}");
-            throw new HttpRequestContentException($"Unable to patch application for candidate Id {command.CandidateId}", response.StatusCode, response.ErrorContent);
+            throw new HttpRequestContentException($"Unable to patch application for candidate Id {command.CandidateId}", patchResult.StatusCode, patchResult.ErrorContent);
         }
 
         var requestBody = new PutUpsertAdditionalQuestionApiRequest.PutUpsertAdditionalQuestionApiRequestData
@@ -57,14 +57,15 @@ public class UpdateAdditionalQuestionCommandHandler : IRequestHandler<UpdateAddi
         };
         var request = new PutUpsertAdditionalQuestionApiRequest(command.ApplicationId, command.CandidateId, command.Id, requestBody);
 
-        var result = await _apiClient.PutWithResponseCode<PutUpsertAdditionalQuestionApiResponse>(request);
-        result.EnsureSuccessStatusCode();
+        var upsertResult = await _apiClient.PutWithResponseCode<PutUpsertAdditionalQuestionApiResponse>(request);
+        upsertResult.EnsureSuccessStatusCode();
 
-        if (result is null) return null;
+        if (upsertResult is null) return null;
 
         return new UpdateAdditionalQuestionQueryResult
         {
-            Application = JsonConvert.DeserializeObject<Models.Application>(response.Body)
+            Application = JsonConvert.DeserializeObject<Models.Application>(patchResult.Body),
+            Id = upsertResult.Body.Id
         };
     }
 }
