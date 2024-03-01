@@ -44,8 +44,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             result.EmployerName.Should().Be(vacancyApiResponse.EmployerName);
             result.ClosingDate.Should().Be(vacancyApiResponse.ClosingDate);
             result.IsDisabilityConfident.Should().Be(vacancyApiResponse.IsDisabilityConfident);
-            result.ApplicationQuestions.AdditionalQuestion1Label.Should().Be(vacancyApiResponse.AdditionalQuestion1);
-            result.ApplicationQuestions.AdditionalQuestion2Label.Should().Be(vacancyApiResponse.AdditionalQuestion2);
+            result.ApplicationQuestions.AdditionalQuestion1Label.Should().Be(applicationApiResponse.AdditionalQuestions[0].QuestionText);
+            result.ApplicationQuestions.AdditionalQuestion2Label.Should().Be((applicationApiResponse.AdditionalQuestions[1].QuestionText));
 
             result.EducationHistory.Qualifications.Should().Be(applicationApiResponse.QualificationsStatus);
             result.EducationHistory.TrainingCourses.Should().Be(applicationApiResponse.TrainingCoursesStatus);
