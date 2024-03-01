@@ -3,6 +3,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourses;
+using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -16,6 +17,7 @@ public class WhenHandlingGetTrainingCoursesQuery
     public async Task Then_The_QueryResult_Is_Returned_As_Expected(
         GetTrainingCoursesQuery query,
         GetTrainingCoursesApiResponse trainingCoursesApiResponse,
+        GetApplicationApiResponse applicationApiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetTrainingCoursesQueryHandler handler)
     {
@@ -25,8 +27,24 @@ public class WhenHandlingGetTrainingCoursesQuery
                 It.Is<GetTrainingCoursesApiRequest>(r => r.GetUrl == expectedGetTrainingCoursesRequest.GetUrl)))
             .ReturnsAsync(trainingCoursesApiResponse);
 
+        var expectedApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+        applicationApiResponse.TrainingCoursesStatus = Constants.SectionStatus.InProgress;
+        candidateApiClient.Setup(client =>
+                client.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedApplicationRequest.GetUrl)))
+            .ReturnsAsync(applicationApiResponse);
+
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Should().BeEquivalentTo((GetTrainingCoursesQueryResult)trainingCoursesApiResponse);
+        result.Should().BeEquivalentTo(new GetTrainingCoursesQueryResult
+        {
+            IsSectionCompleted = false,
+            TrainingCourses = result.TrainingCourses.Select(x => new GetTrainingCoursesQueryResult.TrainingCourse
+            {
+                Id = x.Id,
+                ApplicationId = x.ApplicationId,
+                CourseName = x.CourseName,
+                YearAchieved = x.YearAchieved
+            }).ToList()
+        });
     }
 }
