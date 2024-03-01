@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -32,10 +32,14 @@ public class ApplyCommandHandler : IRequestHandler<ApplyCommand, ApplyCommandRes
             await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(
                 new GetVacancyRequest(request.VacancyReference));
 
+        var additionalQuestions = new List<string>();
+        if (result.AdditionalQuestion1 != null) { additionalQuestions.Add(result.AdditionalQuestion1); }
+        if (result.AdditionalQuestion2 != null) { additionalQuestions.Add(result.AdditionalQuestion2); }
+
         PutApplicationApiRequest.PutApplicationApiRequestData putApplicationApiRequestData = new PutApplicationApiRequest.PutApplicationApiRequestData
         {
             CandidateId = request.CandidateId,
-            AdditionalQuestions = [result.AdditionalQuestions.ToList()[0].QuestionId, result.AdditionalQuestions.ToList()[1].QuestionId]
+            AdditionalQuestions = additionalQuestions
         };
         var putData = putApplicationApiRequestData;
         var vacancyReference =
