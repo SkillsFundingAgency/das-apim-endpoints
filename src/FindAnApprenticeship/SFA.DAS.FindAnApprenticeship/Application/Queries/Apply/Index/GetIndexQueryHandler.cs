@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -32,19 +30,9 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
         var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference));
         if(vacancy == null) return null;
 
-        var additionalQuestions = new List<AdditionalQuestion>
-        {
-            new AdditionalQuestion
-            {
-                Id = Guid.Parse("D1390F02-B864-4187-A779-E92289E548AF"),
-                QuestionId = "Additional Question 1"
-            },
-            new AdditionalQuestion
-            {
-                Id = Guid.Parse("E1BD79D9-E6E2-4158-8B0E-B2A9CD5B1197"),
-                QuestionId = "Question 2"
-            },
-        };
+        var additionalQuestions = new List<string>();
+        if (vacancy.AdditionalQuestion1 != null) { additionalQuestions.Add(vacancy.AdditionalQuestion1); }
+        if (vacancy.AdditionalQuestion2 != null) { additionalQuestions.Add(vacancy.AdditionalQuestion2); }
 
         return new GetIndexQueryResult
         {
@@ -68,11 +56,9 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
                 SkillsAndStrengths = application.SkillsAndStrengthStatus,
                 WhatInterestsYou = application.InterestsStatus,
                 AdditionalQuestion1 = application.AdditionalQuestion1Status,
-                AdditionalQuestion1Label = additionalQuestions[0].QuestionId,
-                AdditionalQuestion1Id = additionalQuestions[0].Id,
+                AdditionalQuestion1Label = additionalQuestions[0],
                 AdditionalQuestion2 = application.AdditionalQuestion2Status,
-                AdditionalQuestion2Label = additionalQuestions[1].QuestionId,
-                AdditionalQuestion2Id = additionalQuestions[1].Id
+                AdditionalQuestion2Label = additionalQuestions[1]
             },
             InterviewAdjustments = new GetIndexQueryResult.InterviewAdjustmentsSection
             {
