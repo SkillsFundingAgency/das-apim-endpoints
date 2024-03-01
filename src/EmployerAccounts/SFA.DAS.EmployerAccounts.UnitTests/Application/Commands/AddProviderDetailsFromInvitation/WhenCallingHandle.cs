@@ -24,21 +24,20 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Commands.AddProviderDet
            [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> mockPRelationsAPI,
            [Frozen] Mock<IProviderRegistrationsApiClient<ProviderRegistrationsApiConfiguration>> mockPRegistrationApi,
            GetInvitationResponse invitation,
-           ApiResponse<AddAccountProviderFromInvitationResponse> addAccountProviderResponse,
+           AddAccountProviderFromInvitationResponse addAccountProviderResponse,
            AddProviderDetailsFromInvitationCommand command,
            AddProviderDetailsFromInvitationHandler handler)
         {
+            var relationApiResponse = new ApiResponse<AddAccountProviderFromInvitationResponse>(addAccountProviderResponse, System.Net.HttpStatusCode.OK, "");
             var invitationResponse = new ApiResponse<GetInvitationResponse>(invitation, System.Net.HttpStatusCode.OK, "");
 
             mockPRegistrationApi
                 .Setup(m => m.GetWithResponseCode<GetInvitationResponse>(It.IsAny<GetInvitationRequest>()))
                 .ReturnsAsync(invitationResponse);
-
-            var addAccountProviderRequest = new PostAddProviderDetailsFromInvitationRequest(command.AccountId,
-                invitationResponse.Body.Ukprn, command.CorrelationId, command.UserId, command.Email, command.FirstName, command.LastName);
-
-            mockPRelationsAPI.Setup(m => m.PostWithResponseCode<AddAccountProviderFromInvitationResponse>(addAccountProviderRequest, true))
-           .ReturnsAsync(addAccountProviderResponse);
+           
+            mockPRelationsAPI.Setup(m => m.PostWithResponseCode<AddAccountProviderFromInvitationResponse>(
+                It.IsAny<PostAddProviderDetailsFromInvitationRequest>(), true))
+                .ReturnsAsync(relationApiResponse);
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
