@@ -54,7 +54,7 @@ public class WhenCallingGetCandidateSkillsAndStrengths
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new InvalidOperationException());
 
-        var actual = await controller.GetExpectedSkillsAndStrengths(applicationId, candidateId);
+        var actual = await controller.GetCandidateSkillsAndStrengths(applicationId, candidateId);
 
         actual.As<StatusCodeResult>().StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }

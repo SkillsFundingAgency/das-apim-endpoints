@@ -30,7 +30,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
         public async Task When_Postcode_Is_Invalid_Then_Returns_Null()
         {
             var result = await _sut.GetExactMatchAddresses("rubbish");
-            Assert.Null(result);
+            Assert.That(result, Is.Null);
             _locationApiClientMock.Verify(a => a.GetWithResponseCode<GetAddressesListResponse>(It.IsAny<GetAddressesQueryRequest>()), Times.Never);
         }
 

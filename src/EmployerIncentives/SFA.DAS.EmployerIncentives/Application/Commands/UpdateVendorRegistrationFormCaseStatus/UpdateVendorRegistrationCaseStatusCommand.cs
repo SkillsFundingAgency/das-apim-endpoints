@@ -1,9 +1,8 @@
-﻿using System;
-using MediatR;
+﻿using MediatR;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateVendorRegistrationFormCaseStatus
 {
-    public class UpdateVendorRegistrationCaseStatusCommand : IRequest
+    public class UpdateVendorRegistrationCaseStatusCommand : IRequest<Unit>
     {
         public long AccountId { get; }
         public long AccountLegalEntityId { get; }

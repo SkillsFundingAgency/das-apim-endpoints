@@ -15,7 +15,7 @@ namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
             var actual = new PostCreateCohortRequest(fixture.Create<CreateCohortRequest>());
 
             //Assert
-            Assert.AreEqual($"api/cohorts", actual.PostUrl);
+            Assert.That(actual.PostUrl, Is.EqualTo("api/cohorts"));
         }
     }
 }

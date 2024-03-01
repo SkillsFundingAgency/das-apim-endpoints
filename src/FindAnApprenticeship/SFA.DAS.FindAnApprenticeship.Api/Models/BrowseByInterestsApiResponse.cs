@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.BrowseByInterests;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models

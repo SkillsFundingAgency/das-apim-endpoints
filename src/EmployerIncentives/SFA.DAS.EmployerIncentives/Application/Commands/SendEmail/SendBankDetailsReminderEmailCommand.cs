@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.SendEmail
 {
-    public class SendBankDetailsReminderEmailCommand : IRequest
+    public class SendBankDetailsReminderEmailCommand : IRequest<Unit>
     {
         public long AccountId { get; }
         public long AccountLegalEntityId { get; }

@@ -46,10 +46,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
 
             var controllerResult = await controller.GetProviderCourse(standardCode,providerId, location, lat, lon, shortlistUserId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCourseProviderResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.TrainingCourse.Should().BeEquivalentTo((GetTrainingCourseListItem)mediatorResult.Course);
             model.TrainingCourseProvider.Should()
                 .BeEquivalentTo(mediatorResult.ProviderStandard, 
@@ -78,7 +78,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
             model.TrainingCourseProvider.ProviderAddress.Should().BeEquivalentTo(mediatorResult.ProviderStandard.ProviderAddress);
             model.ShortlistItemCount.Should().Be(mediatorResult.ShortlistItemCount);
             model.TrainingCourseProvider.DeliveryModes.Count.Should().Be(mediatorResult.ProviderStandard.DeliveryModels.ToList().Count);
-            Assert.IsTrue(model.TrainingCourseProvider.DeliveryModes.Any(x => x.Address1.Contains(mediatorResult.ProviderStandard.DeliveryModels.ToList().First().Address1)));
+            Assert.That(model.TrainingCourseProvider.DeliveryModes.Any(x => x.Address1.Contains(mediatorResult.ProviderStandard.DeliveryModels.ToList().First().Address1)), Is.True);
         }
 
         [Test, MoqAutoData]
@@ -110,10 +110,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
 
             var controllerResult = await controller.GetProviderCourse(standardCode,providerId, location, lat, lon) as ObjectResult;
             
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCourseProviderResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.TrainingCourse.Should().NotBeNull();
             model.Location.Should().NotBeNull();
             model.TrainingCourseProvider.Should().BeNull();
@@ -151,7 +151,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
 
             var controllerResult = await controller.GetProviderCourse(standardCode,providerId, location, lat, lon, shortlistUserId) as StatusCodeResult;
             
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
         

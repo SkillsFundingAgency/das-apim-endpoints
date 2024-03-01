@@ -8,9 +8,6 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -33,7 +30,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.OverlappingTrainingDateRequest
                 .ReturnsAsync(response);
 
             var actual = await handler.Handle(query, CancellationToken.None);
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
 
             apiClient
              .Verify(x => x.GetWithResponseCode<ValidateUlnOverlapOnStartDateResponse>(It.Is<ValidateUlnOverlapOnStartDateQueryRequest>(x =>

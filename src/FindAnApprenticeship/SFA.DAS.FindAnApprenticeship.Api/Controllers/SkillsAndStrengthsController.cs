@@ -74,12 +74,16 @@ public class SkillsAndStrengthsController : Controller
             {
                 ApplicationId = applicationId,
                 CandidateId = request.CandidateId,
-                SkillsAndStrengths = request.SkillsAndStrengths
+                SkillsAndStrengths = request.SkillsAndStrengths,
+                SkillsAndStrengthsSectionStatus = request.SkillsAndStrengthsSectionStatus
             });
 
-            if (result is null) return NotFound();
+            if (result == null)
+            {
+                return NotFound();
+            }
 
-            return Created($"{result.Id}", (PostSkillsAndStrengthsApiResponse)result);
+            return Created($"{result.Id}", result.Application);
         }
         catch (Exception ex)
         {

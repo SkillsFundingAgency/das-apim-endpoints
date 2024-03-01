@@ -3,7 +3,6 @@ using System.Net;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.Commitments;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.InnerApi.Requests

@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
-using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -29,7 +28,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Menu
             var controllerResult = await controller.GetMenuAsync(CancellationToken.None) as OkObjectResult;
 
             var actualResult = controllerResult.Value as GetMenuResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             mockMediator.Verify(x => x.Send(It.Is<GetMenuQuery>(c => c.MenuType.Equals("TopLevel")), CancellationToken.None), Times.Once);
             mockMediator.Verify(x => x.Send(It.Is<GetMenuQuery>(c => c.MenuType.Equals("Apprentices")), CancellationToken.None), Times.Once);
             mockMediator.Verify(x => x.Send(It.Is<GetMenuQuery>(c => c.MenuType.Equals("Employers")), CancellationToken.None), Times.Once);

@@ -45,7 +45,7 @@ builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLev
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
-builder.Services.AddMediatR(typeof(GetLiveVacanciesQuery).Assembly);
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetLiveVacanciesQuery).Assembly));
 builder.Services.AddCache(configuration);
 
 var app = builder.Build();

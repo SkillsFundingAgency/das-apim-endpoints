@@ -64,10 +64,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
         {
             var actionResult = await _controller.Apply(_accountId, _opportunityId, _request);
             var createdResult = actionResult as CreatedResult;
-            Assert.IsNotNull(createdResult);
+            Assert.That(createdResult, Is.Not.Null);
             var response = createdResult.Value as ApplyResponse;
-            Assert.IsNotNull(response);
-            Assert.AreEqual(_result.ApplicationId, response.ApplicationId);
+            Assert.That(response, Is.Not.Null);
+            Assert.That(_result.ApplicationId, Is.EqualTo(response.ApplicationId));
         }
     }
 }

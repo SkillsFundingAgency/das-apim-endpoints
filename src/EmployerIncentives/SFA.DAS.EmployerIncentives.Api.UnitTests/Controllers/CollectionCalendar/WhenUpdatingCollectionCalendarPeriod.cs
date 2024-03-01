@@ -31,7 +31,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.CollectionCalenda
 
             var controllerResult = await controller.UpdateCollectionCalendarPeriod(request) as OkResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
         }
     }

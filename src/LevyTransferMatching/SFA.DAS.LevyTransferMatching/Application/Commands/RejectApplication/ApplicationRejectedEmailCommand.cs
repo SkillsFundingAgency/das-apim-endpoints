@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication
 {
-    public class ApplicationRejectedEmailCommand : IRequest
+    public class ApplicationRejectedEmailCommand : IRequest<Unit>
     { 
         public int PledgeId { get; set; }
         public int ApplicationId { get; set; }

@@ -5,9 +5,7 @@ using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAccepted;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
-using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Pledges;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
@@ -42,8 +40,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
 
             var result = await getAcceptedQueryHandler.Handle(getAcceptedQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(pledgeResponse.DasAccountName, result.EmployerAccountName);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.EmployerAccountName, Is.EqualTo(pledgeResponse.DasAccountName));
         }
 
         [Test, MoqAutoData]
@@ -58,7 +56,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
 
             var result = await getAcceptedQueryHandler.Handle(getAcceptedQuery, CancellationToken.None);
 
-            Assert.IsNull(result);
+            Assert.That(result, Is.Null);
         }
     }
 }

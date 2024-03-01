@@ -31,10 +31,10 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.TrainingProgrammes
 
             var controllerResult = await controller.GetAll() as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingProgrammesListResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.TrainingProgrammes.Should().BeEquivalentTo(mediatorResult.TrainingProgrammes);
         }
 

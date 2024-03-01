@@ -33,7 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             actual.ApprenticeFeedback.TotalFeedbackRating.Should().Be(3);
             actual.MarketingInfo.Should().Be(providerStandardItem.ProviderStandard.MarketingInfo);
             actual.DeliveryModes.Count.Should().Be(providerStandardItem.ProviderStandard.DeliveryModels.ToList().Count);
-            Assert.IsTrue(actual.DeliveryModes.Any(x => x.Address1.Contains(providerStandardItem.ProviderStandard.DeliveryModels.ToList().First().Address1)));
+            Assert.That(actual.DeliveryModes.Any(x => x.Address1.Contains(providerStandardItem.ProviderStandard.DeliveryModels.ToList().First().Address1)), Is.True);
         }
 
         [Test, AutoData]

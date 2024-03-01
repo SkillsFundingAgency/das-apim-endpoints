@@ -1,4 +1,5 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Net;
+using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.RenewSubscriptionKey;
@@ -8,6 +9,7 @@ using SFA.DAS.ApimDeveloper.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Commands
 {
@@ -19,6 +21,9 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Commands
             [Frozen] Mock<IApimDeveloperApiClient<ApimDeveloperApiConfiguration>> mockApiClient,
             RenewSubscriptionKeyCommandHandler handler)
         {
+            mockApiClient.Setup(x => x.PostWithResponseCode<string>(It.IsAny<PostRenewSubscriptionKeyRequest>(), true))
+                .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
+            
             //Act
             await handler.Handle(command, CancellationToken.None);
 

@@ -42,7 +42,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.CreateMetricsData(request);
 
-            Assert.IsInstanceOf<CreatedAtActionResult>(result);
+            Assert.That(result, Is.InstanceOf<CreatedAtActionResult>());
         }
 
         [Test]
@@ -59,8 +59,8 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.CreateMetricsData(request) as ObjectResult;
 
-            Assert.NotNull(result);
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.BadRequest));
         }
     }
 }

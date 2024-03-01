@@ -3,8 +3,6 @@ using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models;
-using SFA.DAS.LevyTransferMatching.Models.Constants;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
