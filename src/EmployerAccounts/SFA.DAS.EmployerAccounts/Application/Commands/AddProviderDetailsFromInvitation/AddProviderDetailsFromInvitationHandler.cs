@@ -30,7 +30,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Commands.AddProviderDetailsFromIn
 
         public async Task<Unit> Handle(AddProviderDetailsFromInvitationCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Getting Invitation with CorrelationId {request.CorrelationId}");
+            _logger.LogInformation("Getting Invitation with CorrelationId {correlationId}", request.CorrelationId);
 
             var invitationResponse = await _providerRegistrationsApiClient.GetWithResponseCode<GetInvitationResponse>(new GetInvitationRequest(request.CorrelationId));
 
@@ -39,7 +39,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Commands.AddProviderDetailsFromIn
             var invitation = invitationResponse.Body;
             if (invitation != null)
             {
-                _logger.LogInformation($"Adding Provider Relationship from Invitation for {request.AccountId}");
+                _logger.LogInformation("Adding Provider Relationship from Invitation for {accountId}", request.AccountId);
 
                 await _providerRelationshipsApiClient
                     .PostWithResponseCode<AddAccountProviderFromInvitationResponse>(

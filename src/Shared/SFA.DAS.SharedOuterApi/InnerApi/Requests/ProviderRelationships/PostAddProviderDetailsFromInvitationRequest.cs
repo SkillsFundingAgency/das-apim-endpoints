@@ -25,7 +25,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships
 
         public string PostUrl => $"accounts/{AccountId}/providers/invitation";
 
-        private class AddProviderDetailsFromInvitationRequest
+        private sealed class AddProviderDetailsFromInvitationRequest
         {
             public string CorrelationId { get; set; }
             public string UserRef { get; set; }

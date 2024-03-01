@@ -44,7 +44,7 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new AddProviderDetailsFromInvitationCommand
+                await _mediator.Send(new AddProviderDetailsFromInvitationCommand
                 {
                     UserId = userId,
                     CorrelationId = request.CorrelationId,
