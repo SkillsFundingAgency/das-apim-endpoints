@@ -42,7 +42,8 @@ public class WhenGettingApprenticeshipPrice
 				ApprenticeshipPlannedEndDate = expectedResponse.ApprenticeshipPlannedEndDate,
 				AssessmentPrice = expectedResponse.AssessmentPrice,
 				FundingBandMaximum = expectedResponse.FundingBandMaximum,
-				TrainingPrice = expectedResponse.TrainingPrice
+				TrainingPrice = expectedResponse.TrainingPrice,
+				UKPRN = 123
 			});
 
 		mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
