@@ -21,13 +21,13 @@ public class WhenGettingNhsVacancies
         uint mockPageNo,
         GetNhsJobsQueryResult mockQueryResult,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] NhsVacanciesController sut)
+        [Greedy] NhsVacanciesController controller)
     {
         mockMediator.Setup(x => x.Send(It.IsAny<GetNhsJobsQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
 
-        var actual = await sut.Get(It.IsAny<CancellationToken>()) as ObjectResult;
+        var actual = await controller.Get(It.IsAny<CancellationToken>()) as ObjectResult;
+        
         var actualValue = actual!.Value as GetLiveVacanciesApiResponse;
-
         using (new AssertionScope())
         {
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);

@@ -3,10 +3,14 @@ using MediatR;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 
-public class GetNhsJobsQueryHandler(INhsJobsApiClient nhsJobsApiClient, ILiveVacancyMapper liveVacancyMapper) : IRequestHandler<GetNhsJobsQuery, GetNhsJobsQueryResult>
+public class GetNhsJobsQueryHandler(INhsJobsApiClient nhsJobsApiClient, ILiveVacancyMapper liveVacancyMapper, ILocationApiClient<LocationApiConfiguration> locationApiClient) : IRequestHandler<GetNhsJobsQuery, GetNhsJobsQueryResult>
 {
     public async Task<GetNhsJobsQueryResult> Handle(GetNhsJobsQuery request, CancellationToken cancellationToken)
     {
@@ -28,8 +32,18 @@ public class GetNhsJobsQueryHandler(INhsJobsApiClient nhsJobsApiClient, ILiveVac
 
             vacancies.AddRange(result.Vacancies.ToList());
         }
+        
+        var postCodes = new List<string>();
+        foreach (var apiResponses in vacancies.Select(c => c.Locations))
+        {
+            postCodes.AddRange(apiResponses.Select(location => location.Location.Split(",").LastOrDefault()!.Trim()));
+        }
 
-        var liveVacancies = vacancies.Select(liveVacancyMapper.Map).ToList();
+        var locations =
+            await locationApiClient.PostWithResponseCode<GetLocationsListResponse>(
+                new GetLocationsByPostBulkPostcodeRequest(postCodes));
+
+        var liveVacancies = vacancies.Select(c=>liveVacancyMapper.Map(c,locations.Body) ).ToList();
         
 
         return new GetNhsJobsQueryResult
