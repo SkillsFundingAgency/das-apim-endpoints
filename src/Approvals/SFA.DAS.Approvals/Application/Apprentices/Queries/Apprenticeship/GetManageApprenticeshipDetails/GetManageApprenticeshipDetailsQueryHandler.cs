@@ -99,7 +99,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
 
         private PendingPriceChange ToResponse(GetPendingPriceChangeResponse pendingPriceChangeResponse)
         {
-            if(!pendingPriceChangeResponse.HasPendingPriceChange) return null;
+            if(pendingPriceChangeResponse == null || !pendingPriceChangeResponse.HasPendingPriceChange) return null;
 
             return new PendingPriceChange
             {
