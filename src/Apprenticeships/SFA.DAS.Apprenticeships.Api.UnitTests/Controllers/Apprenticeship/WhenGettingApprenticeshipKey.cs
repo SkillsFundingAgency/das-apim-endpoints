@@ -26,7 +26,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
             //  Arrange
             mockApprenticeshipsApiClient.Setup(x => x.Get<Guid>(It.IsAny<GetApprenticeshipKeyRequest>()))
                 .ReturnsAsync(expectedResponse);
-			var controller = new ApprenticeshipController(mockLogger.Object, mockApprenticeshipsApiClient.Object, mockMediator.Object);
+			var controller = new ApprenticeshipController(mockLogger.Object, mockApprenticeshipsApiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), mockMediator.Object);
 
 			//  Act
 			var result = await controller.GetApprenticeshipKey("anyApprenticeshipHashedId");

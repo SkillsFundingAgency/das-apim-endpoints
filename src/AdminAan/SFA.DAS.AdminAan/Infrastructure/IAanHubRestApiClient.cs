@@ -13,7 +13,7 @@ using SFA.DAS.AdminAan.Domain.LeavingReasons;
 
 namespace SFA.DAS.AdminAan.Infrastructure;
 
-public interface IAanHubRestApiClient
+public interface IAanHubRestApiClient : IHealthChecker
 {
     [Get("/regions")]
     Task<GetRegionsQueryResult> GetRegions(CancellationToken cancellationToken);
