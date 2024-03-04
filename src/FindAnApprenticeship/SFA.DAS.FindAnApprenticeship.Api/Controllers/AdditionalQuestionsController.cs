@@ -65,7 +65,7 @@ public class AdditionalQuestionsController : Controller
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error posting additional question for application {applicationId}", applicationId);
+            _logger.LogError(ex, "Error posting additional question for application:{applicationId}", applicationId);
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }

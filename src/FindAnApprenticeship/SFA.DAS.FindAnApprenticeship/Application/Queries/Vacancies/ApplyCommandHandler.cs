@@ -51,7 +51,6 @@ public class ApplyCommandHandler : IRequestHandler<ApplyCommand, ApplyCommandRes
 
         applicationResult.EnsureSuccessStatusCode();
 
-        if (result is null) return null;
         if (applicationResult is null) return null;
 
         return new ApplyCommandResponse
