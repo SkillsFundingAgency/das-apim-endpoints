@@ -54,11 +54,11 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
                 SkillsAndStrengths = application.SkillsAndStrengthStatus,
                 WhatInterestsYou = application.InterestsStatus,
                 AdditionalQuestion1 = application.AdditionalQuestion1Status,
-                AdditionalQuestion1Label = additionalQuestions[0].QuestionText,
-                AdditionalQuestion1Id = additionalQuestions[0].Id,
+                AdditionalQuestion1Label = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(0) != null ? additionalQuestions[0].QuestionText : null,
+                AdditionalQuestion1Id = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(0) != null ? additionalQuestions[0].Id : null,
                 AdditionalQuestion2 = application.AdditionalQuestion2Status,
-                AdditionalQuestion2Label = additionalQuestions[1].QuestionText,
-                AdditionalQuestion2Id = additionalQuestions[1].Id
+                AdditionalQuestion2Label = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(1) != null ? additionalQuestions[1].QuestionText : null,
+                AdditionalQuestion2Id = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(1) != null ? additionalQuestions[1].Id : null
             },
             InterviewAdjustments = new GetIndexQueryResult.InterviewAdjustmentsSection
             {

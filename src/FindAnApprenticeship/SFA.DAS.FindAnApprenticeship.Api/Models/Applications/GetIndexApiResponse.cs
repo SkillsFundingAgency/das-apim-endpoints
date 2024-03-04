@@ -53,10 +53,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
             public string WhatInterestsYou { get; set; }
             public string AdditionalQuestion1 { get; set; }
             public string AdditionalQuestion2 { get; set; }
-            public string AdditionalQuestion1Label { get; set; }
-            public string AdditionalQuestion2Label { get; set; }
-            public Guid AdditionalQuestion1Id { get; set; }
-            public Guid AdditionalQuestion2Id { get; set; }
+            public string? AdditionalQuestion1Label { get; set; }
+            public string? AdditionalQuestion2Label { get; set; }
+            public Guid? AdditionalQuestion1Id { get; set; }
+            public Guid? AdditionalQuestion2Id { get; set; }
 
             public static implicit operator ApplicationQuestionsSection(GetIndexQueryResult.ApplicationQuestionsSection source)
             {
