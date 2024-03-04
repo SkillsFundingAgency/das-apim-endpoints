@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using Address = SFA.DAS.FindApprenticeshipJobs.Application.Shared.Address;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Services
@@ -99,8 +100,11 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
             };
         }
 
-        public Application.Shared.LiveVacancy Map(GetNhsJobApiDetailResponse source)
+        public Application.Shared.LiveVacancy Map(GetNhsJobApiDetailResponse source, GetLocationsListResponse locations)
         {
+            var location = source.Locations.FirstOrDefault().Location.Split(",");
+            var locationLookup = locations.Locations.FirstOrDefault(c =>
+                c.Postcode.Replace(" ","").Equals(location[1].Replace(" ","").Trim(), StringComparison.CurrentCultureIgnoreCase));
             return new Application.Shared.LiveVacancy
             {
                 Title = source.Title,
@@ -117,7 +121,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 PostedDate = DateTime.Parse(source.PostDate),
                 Address = new Address
                 {
-                    Postcode = "source.Location"
+                    AddressLine4 = location[0].Trim(),
+                    Postcode = location[1].Trim(),
+                    Longitude = locationLookup?.Location?.GeoPoint?.FirstOrDefault() ?? 0,
+                    Latitude = locationLookup?.Location?.GeoPoint?.LastOrDefault() ?? 0
                 },
                 Qualifications = [],
                 Skills = []

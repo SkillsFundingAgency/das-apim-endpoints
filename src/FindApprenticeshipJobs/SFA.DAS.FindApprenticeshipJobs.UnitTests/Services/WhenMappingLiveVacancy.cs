@@ -7,6 +7,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Services;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -30,12 +31,23 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
         }
 
         [Test, MoqAutoData]
-        public void Then_The_Nhs_Vacancy_Is_Mapped(GetNhsJobApiDetailResponse source, LiveVacancyMapper liveVacancyMapper, DateTime closeDate, DateTime postDate)
+        public void Then_The_Nhs_Vacancy_Is_Mapped(GetNhsJobApiDetailResponse source, LiveVacancyMapper liveVacancyMapper, DateTime closeDate, DateTime postDate, GetLocationsListItem address, string address1, string postCode1, string postCode2)
         {
+            address.Postcode = $"{postCode1} {postCode2}";
+            var addressResponse = new GetLocationsListResponse
+            {
+                Locations = new List<GetLocationsListItem>
+                {
+                    address
+                }
+            };
             source.CloseDate = closeDate.ToString();
             source.PostDate = postDate.ToString();
+            source.Locations.Clear();
+            source.Locations.Add(new GetNhsJobLocationApiResponse{Location = $"{address1}, {postCode1}{postCode2} "});
             
-            var actual = liveVacancyMapper.Map(source);
+            
+            var actual = liveVacancyMapper.Map(source, addressResponse);
 
             actual.Id.Should().Be(source.Id);
             actual.Title.Should().Be(source.Title);
@@ -46,7 +58,11 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             actual.VacancyReference.Should().Be(source.Reference);
             actual.ApplicationUrl.Should().Be(source.Url);
             actual.Wage.WageText.Should().Be(source.Salary);
-            
+            actual.Address.AddressLine4.Should().Be(address1);
+            actual.Address.Postcode.Should().Be($"{postCode1}{postCode2}");
+            actual.Address.Longitude.Should().Be(address.Location.GeoPoint.FirstOrDefault());
+            actual.Address.Latitude.Should().Be(address.Location.GeoPoint.LastOrDefault());
+
         }
 
         private static void AssertResponse(FindApprenticeshipJobs.Application.Shared.LiveVacancy actual, LiveVacancy source, GetStandardsListResponse standardsListResponse)
