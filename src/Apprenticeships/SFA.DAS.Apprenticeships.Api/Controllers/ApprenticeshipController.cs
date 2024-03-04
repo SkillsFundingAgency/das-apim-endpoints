@@ -10,6 +10,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using CreateApprenticeshipPriceChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipPriceChangeRequest;
+using GetProviderResponse = SFA.DAS.Apprenticeships.Api.Models.GetProviderResponse;
 
 namespace SFA.DAS.Apprenticeships.Api.Controllers
 {
