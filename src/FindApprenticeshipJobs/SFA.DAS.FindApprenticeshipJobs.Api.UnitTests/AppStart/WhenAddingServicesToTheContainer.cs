@@ -18,6 +18,7 @@ public class WhenAddingServicesToTheContainer
     [TestCase(typeof(IAzureClientCredentialHelper))]
     [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
     [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
+    [TestCase(typeof(ILocationApiClient<LocationApiConfiguration>))]
     [TestCase(typeof(INhsJobsApiClient))]
     [TestCase(typeof(ICourseService))]
     public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
@@ -30,7 +31,7 @@ public class WhenAddingServicesToTheContainer
         serviceCollection.AddSingleton(Mock.Of<IConfiguration>());
         Api.AppStart.AddConfigurationOptionsExtension.AddConfigurationOptions(serviceCollection, configuration);
         serviceCollection.AddDistributedMemoryCache();
-        Api.AppStart.ServiceCollectionExtensions.AddServiceRegistration(serviceCollection, configuration);
+        Api.AppStart.ServiceCollectionExtensions.AddServiceRegistration(serviceCollection);
 
         var provider = serviceCollection.BuildServiceProvider();
         var type = provider.GetService(toResolve);
@@ -46,6 +47,7 @@ public class WhenAddingServicesToTheContainer
                 {
                     new("RecruitApiConfiguration:url", "http://localhost:1"),
                     new("CoursesApiConfiguration:url", "http://localhost:2"),
+                    new("LocationApiConfiguration:url", "http://localhost:3"),
                 }
         };
 
