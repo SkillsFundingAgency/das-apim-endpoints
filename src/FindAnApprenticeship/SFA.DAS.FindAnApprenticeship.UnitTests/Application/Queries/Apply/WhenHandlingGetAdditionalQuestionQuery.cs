@@ -34,7 +34,7 @@ public class WhenHandlingGetAdditionalQuestionQuery
             result.Should().NotBeNull();
             result.Should().BeOfType<GetAdditionalQuestionQueryResult>();
             candidateApiClient.Verify(p => p.Get<GetAdditionalQuestionApiResponse>(It.Is<GetAdditionalQuestionApiRequest>(x => x.GetUrl == expectedRequest.GetUrl)), Times.Once);
-            result.QuestionId.Should().BeEquivalentTo(questionResponse.QuestionId);
+            result.QuestionText.Should().BeEquivalentTo(questionResponse.QuestionText);
         }
     }
 }

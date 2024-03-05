@@ -23,7 +23,7 @@ public class GetAdditionalQuestionQueryHandler : IRequestHandler<GetAdditionalQu
 
         return new GetAdditionalQuestionQueryResult
         {
-            QuestionId = additionalQuestion.QuestionId,
+            QuestionText = additionalQuestion.QuestionText,
             Answer = additionalQuestion.Answer,
             Id = additionalQuestion.Id,
             ApplicationId = additionalQuestion.ApplicationId
