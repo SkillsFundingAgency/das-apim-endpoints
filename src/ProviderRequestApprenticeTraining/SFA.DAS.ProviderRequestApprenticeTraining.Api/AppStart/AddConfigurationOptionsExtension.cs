@@ -11,10 +11,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.AppStart
         {
             services.AddOptions();
 
-            services.Configure<AccountsConfiguration>(configuration.GetSection(nameof(AccountsConfiguration)));
+            services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection(nameof(RoatpV2ApiConfiguration)));
             services.Configure<RequestApprenticeTrainingApiConfiguration>(configuration.GetSection(nameof(RequestApprenticeTrainingApiConfiguration)));
 
-            services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<RequestApprenticeTrainingApiConfiguration>>().Value);
         }
     }

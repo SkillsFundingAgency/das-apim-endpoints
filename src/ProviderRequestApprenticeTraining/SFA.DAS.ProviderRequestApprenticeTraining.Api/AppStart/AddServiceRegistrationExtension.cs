@@ -16,8 +16,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.AppStart
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
 
-            services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
+            services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
             services.AddTransient<IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration>, RequestApprenticeTrainingApiClient>();
+
+            services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         }
     }
 }

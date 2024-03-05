@@ -13,6 +13,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Api.AppStart;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.Application.Queries.ProviderAccounts;
 using System.Collections.Generic;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api
@@ -51,6 +52,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api
                 .AddCheck<RequestApprenticeTrainingApiHealthCheck>(nameof(RequestApprenticeTrainingApiHealthCheck));
 
             services.AddMediatR(typeof(GetEmployerRequestQuery).Assembly);
+            services.AddMediatR(typeof(GetRoatpV2ProviderQuery).Assembly);
 
             services.AddServiceRegistration();
 

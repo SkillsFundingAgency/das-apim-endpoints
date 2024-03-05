@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth\SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.csproj" />
     <ProjectReference Include="..\SFA.DAS.ProviderRequestApprenticeTraining\SFA.DAS.ProviderRequestApprenticeTraining.csproj" />
   </ItemGroup>
 
