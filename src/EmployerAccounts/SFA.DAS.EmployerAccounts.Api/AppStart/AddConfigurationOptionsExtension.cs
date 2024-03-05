@@ -29,6 +29,8 @@ namespace SFA.DAS.EmployerAccounts.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
             services.Configure<LevyTransferMatchingApiConfiguration>(configuration.GetSection(nameof(LevyTransferMatchingApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<LevyTransferMatchingApiConfiguration>>().Value);
+            services.Configure<ProviderRegistrationsApiConfiguration>(configuration.GetSection(nameof(ProviderRegistrationsApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderRegistrationsApiConfiguration>>().Value);
         }
     }
 }

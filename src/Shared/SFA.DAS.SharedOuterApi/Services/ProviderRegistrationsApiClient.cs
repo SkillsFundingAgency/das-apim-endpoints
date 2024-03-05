@@ -7,11 +7,11 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
-    public class ProviderRelationshipsApiClient : IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>
+    public class ProviderRegistrationsApiClient : IProviderRegistrationsApiClient<ProviderRegistrationsApiConfiguration>
     {
-        private readonly IInternalApiClient<ProviderRelationshipsApiConfiguration> _apiClient;
+        private readonly IInternalApiClient<ProviderRegistrationsApiConfiguration> _apiClient;
 
-        public ProviderRelationshipsApiClient (IInternalApiClient<ProviderRelationshipsApiConfiguration> apiClient)
+        public ProviderRegistrationsApiClient (IInternalApiClient<ProviderRegistrationsApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
