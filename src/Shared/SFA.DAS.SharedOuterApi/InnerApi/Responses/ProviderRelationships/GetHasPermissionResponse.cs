@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses;
+namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderRelationships;
 
 public sealed class GetHasPermissionResponse
 {

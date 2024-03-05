@@ -12,8 +12,9 @@ namespace SFA.DAS.Approvals.Api.Controllers;
 [Route("[controller]/")]
 public class ProviderPermissionsController(ISender mediator) : Controller
 {
-    [Route("{ukPrn}/{accountLegalEntityId}/{operation}")]
-    public async Task<IActionResult> HasPermission(long? ukPrn, long? accountLegalEntityId, string operation)
+    [HttpGet]
+    [Route("has-permission")]
+    public async Task<IActionResult> HasPermission([FromQuery] long? ukPrn, [FromQuery] long? accountLegalEntityId, [FromQuery] string operation)
     {
         try
         {

@@ -11,7 +11,6 @@ using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.ProviderPermissions.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.ProviderPermissions;

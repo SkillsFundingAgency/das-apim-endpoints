@@ -14,6 +14,7 @@ using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using Party = SFA.DAS.Approvals.InnerApi.Responses.Party;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 {
