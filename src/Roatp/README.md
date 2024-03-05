@@ -20,9 +20,9 @@
 
 ### Config
 
-You can find the latest config file in [das-employer-config](https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-apim-endpoints/SFA.DAS.AdminAan.OuterApi.json) repository.
+You can find the latest config file in [das-employer-config](https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-apim-endpoints/SFA.DAS.RoATP.OuterApi.json) repository.
 
-In the SFA.DAS.AdminAan.API project, if not exist already, add appSettings.Development.json file with following content:
+In the SFA.DAS.Roatp.API project, if not exist already, add appSettings.Development.json file with following content:
 ```json
 {
   "Logging": {
