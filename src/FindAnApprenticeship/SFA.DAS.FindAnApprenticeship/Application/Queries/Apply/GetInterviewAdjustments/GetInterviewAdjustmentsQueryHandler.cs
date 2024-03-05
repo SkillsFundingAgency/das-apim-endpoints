@@ -20,7 +20,7 @@ public class GetInterviewAdjustmentsQueryHandler : IRequestHandler<GetInterviewA
     public async Task<GetInterviewAdjustmentsQueryResult> Handle(GetInterviewAdjustmentsQuery request, CancellationToken cancellationToken)
     {
         var applicationTask = _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId));
-        var interviewAdjustmentsTask = _candidateApiClient.Get<GetInterviewAdjustmentsApiResponse>(new GetInterviewAdjustmentsApiRequest(request.ApplicationId, request.CandidateId));
+        var interviewAdjustmentsTask = _candidateApiClient.Get<GetAboutYouItemApiResponse>(new GetAboutYouItemApiRequest(request.ApplicationId, request.CandidateId));
 
         await Task.WhenAll(applicationTask, interviewAdjustmentsTask);
 
@@ -37,7 +37,7 @@ public class GetInterviewAdjustmentsQueryHandler : IRequestHandler<GetInterviewA
         return new GetInterviewAdjustmentsQueryResult
         {
             ApplicationId = application.Id,
-            InterviewAdjustmentsDescription = interviewAdjustments.Support,
+            InterviewAdjustmentsDescription = interviewAdjustments.AboutYou.Support,
             IsSectionCompleted = isCompleted
         };
     }

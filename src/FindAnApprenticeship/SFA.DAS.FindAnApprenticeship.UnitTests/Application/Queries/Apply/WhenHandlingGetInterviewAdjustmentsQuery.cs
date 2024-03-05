@@ -15,15 +15,15 @@ public class WhenHandlingGetInterviewAdjustmentsQuery
     [Test, MoqAutoData]
     public async Task Then_The_QueryResult_Is_Returned_As_Expected(
         GetInterviewAdjustmentsQuery query,
-        GetInterviewAdjustmentsApiResponse interviewAdjustmentsApiResponse,
+        GetAboutYouItemApiResponse interviewAdjustmentsApiResponse,
         GetApplicationApiResponse applicationApiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetInterviewAdjustmentsQueryHandler handler)
     {
-        var expectedGetInterviewAdjustmentsRequest = new GetInterviewAdjustmentsApiRequest(query.ApplicationId, query.CandidateId);
+        var expectedGetInterviewAdjustmentsRequest = new GetAboutYouItemApiRequest(query.ApplicationId, query.CandidateId);
         candidateApiClient
-            .Setup(client => client.Get<GetInterviewAdjustmentsApiResponse>(
-                It.Is<GetInterviewAdjustmentsApiRequest>(r => r.GetUrl == expectedGetInterviewAdjustmentsRequest.GetUrl)))
+            .Setup(client => client.Get<GetAboutYouItemApiResponse>(
+                It.Is<GetAboutYouItemApiRequest>(r => r.GetUrl == expectedGetInterviewAdjustmentsRequest.GetUrl)))
             .ReturnsAsync(interviewAdjustmentsApiResponse);
 
         var expectedApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
@@ -37,7 +37,7 @@ public class WhenHandlingGetInterviewAdjustmentsQuery
         result.Should().BeEquivalentTo(new GetInterviewAdjustmentsQueryResult
         {
             IsSectionCompleted = false,
-            InterviewAdjustmentsDescription = interviewAdjustmentsApiResponse.Support,
+            InterviewAdjustmentsDescription = interviewAdjustmentsApiResponse.AboutYou.Support,
             ApplicationId = applicationApiResponse.Id
         });
     }
