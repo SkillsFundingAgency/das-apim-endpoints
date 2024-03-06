@@ -12,7 +12,7 @@ using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Application.Authorization.Queries;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Authorization;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Authorization;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Authorization;

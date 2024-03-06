@@ -29,7 +29,7 @@ namespace SFA.DAS.Approvals.Api
             _env = env;
             _configuration = configuration.BuildSharedConfiguration();
         }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(_env);
@@ -43,7 +43,7 @@ namespace SFA.DAS.Approvals.Api
                     .Get<AzureActiveDirectoryConfiguration>();
                 var policies = new Dictionary<string, string>
                 {
-                    {"default", "APIM"}
+                    { "default", "APIM" }
                 };
 
                 services.AddAuthentication(azureAdConfiguration, policies);
@@ -79,6 +79,7 @@ namespace SFA.DAS.Approvals.Api
 
             services.AddSwaggerGen(c =>
             {
+                c.CustomSchemaIds(type => type.ToString());
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApprovalsOuterApi", Version = "v1" });
             });
         }
@@ -92,7 +93,7 @@ namespace SFA.DAS.Approvals.Api
             }
 
             app.UseAuthentication();
-            
+
             app.UseRouting();
             app.UseApiGlobalExceptionHandler(loggerFactory.CreateLogger("Startup"));
             app.UseEndpoints(endpoints =>
@@ -101,8 +102,9 @@ namespace SFA.DAS.Approvals.Api
                     name: "default",
                     pattern: "api/{controller=TrainingCourses}/{action=GetList}/{id?}");
             });
-        
+
             app.UseSwagger();
+
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApprovalsOuterApi");
