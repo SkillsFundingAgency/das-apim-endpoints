@@ -14,7 +14,7 @@ public class GetAdditionalQuestionApiResponse
     {
         return new GetAdditionalQuestionApiResponse
         {
-            QuestionText = source.QuestionId,
+            QuestionText = source.QuestionText,
             Answer = source.Answer,
             Id = source.Id,
             ApplicationId = source.ApplicationId
