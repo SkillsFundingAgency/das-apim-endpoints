@@ -3,8 +3,8 @@ using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.ProviderPermissions.Queries;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderRelationships;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
 
@@ -19,7 +19,7 @@ public class ProviderPermissionsController(ISender mediator) : Controller
         try
         {
             var result = await mediator.Send(new GetHasPermissionQuery(ukPrn, accountLegalEntityId, operation));
-            return Ok(new ProviderPermissionResponse { HasPermission = result });
+            return Ok(new GetHasPermissionResponse { HasPermission = result });
         }
         catch (Exception)
         {

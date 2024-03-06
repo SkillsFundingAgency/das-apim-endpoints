@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
-using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.ProviderPermissions.Queries;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderRelationships;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.ProviderPermissions;
@@ -33,7 +33,7 @@ public class WhenGettingHasPermission
         var actual = await controller.HasPermission(ukprn, accountLegalEntityId, operation) as OkObjectResult;
         
         actual.Should().NotBeNull();
-        var actualModel = actual.Value as ProviderPermissionResponse;
+        var actualModel = actual.Value as GetHasPermissionResponse;
         actualModel.HasPermission.Should().Be(result);
     }
 

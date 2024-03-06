@@ -2,5 +2,4 @@
 
 public class ProviderPermissionResponse
 {
-    public bool HasPermission { get; set; }
 }
