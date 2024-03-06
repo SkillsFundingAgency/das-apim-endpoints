@@ -27,7 +27,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
             //  Arrange
             mockMediator.Setup(x => x.Send(It.IsAny<GetApprenticeshipPriceQuery>(), default)).ReturnsAsync(expectedResponse);
 
-			var controller = new ApprenticeshipController(mockLogger.Object, mockApprenticeshipsApiClient.Object, mockMediator.Object);
+			var controller = new ApprenticeshipController(mockLogger.Object, mockApprenticeshipsApiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), mockMediator.Object);
 
             //  Act
             var result = await controller.GetApprenticeshipPrice(Guid.NewGuid());

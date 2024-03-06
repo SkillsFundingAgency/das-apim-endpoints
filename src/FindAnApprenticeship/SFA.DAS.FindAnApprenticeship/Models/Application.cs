@@ -24,5 +24,6 @@ namespace SFA.DAS.FindAnApprenticeship.Models
         public SectionStatus ApplicationQuestionsSectionStatus { get; set; }
         public SectionStatus InterviewAdjustmentsSectionStatus { get; set; }
         public SectionStatus DisabilityConfidenceSectionStatus { get; set; }
+        public string WhatIsYourInterest { get; set; }
     }
 }

@@ -9,6 +9,8 @@
   <ItemGroup>
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="SFA.DAS.Telemetry" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="SFA.DAS.Api.Common" />
@@ -16,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     <ProjectReference Include="..\SFA.DAS.ApprenticeAan.Application\SFA.DAS.ApprenticeAan.Application.csproj" />
   </ItemGroup>
 

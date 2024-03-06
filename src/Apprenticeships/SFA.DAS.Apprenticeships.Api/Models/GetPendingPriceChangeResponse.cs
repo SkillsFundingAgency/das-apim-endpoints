@@ -6,10 +6,11 @@ namespace SFA.DAS.Apprenticeships.Api.Models
     {
 	    public bool HasPendingPriceChange { get; set; }
 	    public PendingPriceChange? PendingPriceChange { get; set; }
+        public string ProviderName { get; set; }
 
-		public GetPendingPriceChangeResponse(GetPendingPriceChangeApiResponse apiResponse)
+		public GetPendingPriceChangeResponse(GetPendingPriceChangeApiResponse apiResponse, string providerName)
 	    {
-		    HasPendingPriceChange = apiResponse.HasPendingPriceChange;
+            HasPendingPriceChange = apiResponse.HasPendingPriceChange;
 			PendingPriceChange = apiResponse.PendingPriceChange != null ? new PendingPriceChange
 			{
 				EffectiveFrom = apiResponse.PendingPriceChange.EffectiveFrom,
@@ -19,8 +20,10 @@ namespace SFA.DAS.Apprenticeships.Api.Models
 				PendingAssessmentPrice = apiResponse.PendingPriceChange.PendingAssessmentPrice,
 				PendingTotalPrice = apiResponse.PendingPriceChange.PendingTotalPrice,
 				PendingTrainingPrice = apiResponse.PendingPriceChange.PendingTrainingPrice,
-				Reason = apiResponse.PendingPriceChange.Reason
+				Reason = apiResponse.PendingPriceChange.Reason,
+				Ukprn = apiResponse.PendingPriceChange.Ukprn
 			} : null;
-	    }
+            ProviderName = providerName;
+        }
     }
 }
