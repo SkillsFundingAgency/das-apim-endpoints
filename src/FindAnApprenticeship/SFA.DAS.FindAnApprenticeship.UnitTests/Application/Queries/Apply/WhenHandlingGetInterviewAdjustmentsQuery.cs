@@ -20,6 +20,7 @@ public class WhenHandlingGetInterviewAdjustmentsQuery
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetInterviewAdjustmentsQueryHandler handler)
     {
+        applicationApiResponse.InterviewAdjustmentsStatus = Domain.Constants.SectionStatus.InProgress;
         var expectedGetInterviewAdjustmentsRequest = new GetAboutYouItemApiRequest(query.ApplicationId, query.CandidateId);
         candidateApiClient
             .Setup(client => client.Get<GetAboutYouItemApiResponse>(
@@ -36,7 +37,7 @@ public class WhenHandlingGetInterviewAdjustmentsQuery
 
         result.Should().BeEquivalentTo(new GetInterviewAdjustmentsQueryResult
         {
-            IsSectionCompleted = false,
+            IsSectionCompleted = true,
             InterviewAdjustmentsDescription = interviewAdjustmentsApiResponse.AboutYou.Support,
             ApplicationId = applicationApiResponse.Id
         });
