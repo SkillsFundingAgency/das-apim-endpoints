@@ -14,6 +14,7 @@ namespace SFA.DAS.Approvals.Api.Controllers;
 public class AuthorizationController(ISender mediator) : Controller
 {
     [HttpGet]
+    [Route(nameof(CanAccessCohort))]
     public async Task<IActionResult> CanAccessCohort([FromBody] GetCohortAccessRequest request)
     {
         try
@@ -28,6 +29,7 @@ public class AuthorizationController(ISender mediator) : Controller
     }
 
     [HttpGet]
+    [Route(nameof(CanAccessApprenticeship))]
     public async Task<IActionResult> CanAccessApprenticeship([FromBody] GetApprenticeshipAccessRequest request)
     {
         try
