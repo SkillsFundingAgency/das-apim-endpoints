@@ -1,18 +1,20 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using MediatR;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using RestEase.HttpClientFactory;
 using SFA.DAS.AdminAan.Api.Extensions;
+using SFA.DAS.AdminAan.Api.HealthCheck;
 using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.AdminAan.Api.AppStart;
 
 [ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtensions
 {
+    private static readonly string Ready = "ready";
     public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfigurationRoot configuration)
     {
         if (configuration.IsLocalAcceptanceTestsOrDev() || configuration.IsLocal()) return services;
@@ -44,6 +46,32 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
+
+    public static IServiceCollection AddServiceHealthChecks(this IServiceCollection services)
+    {
+        services.AddHealthChecks()
+            .AddCheck<AanHubApiHealthCheck>(AanHubApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready })
+            .AddCheck<CommitmentsV2InnerApiHealthCheck>(CommitmentsV2InnerApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready })
+            .AddCheck<ApprenticeAccountsApiHealthCheck>(ApprenticeAccountsApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready })
+            .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready })
+            .AddCheck<ReferenceDataApiHealthCheck>(ReferenceDataApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready })
+            .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready });
+
+        return services;
+    }
+
 
     private static void AddAanHubApiClient(IServiceCollection services, IConfiguration configuration)
     {
