@@ -10,7 +10,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 
-public class GetNhsJobsQueryHandler(INhsJobsApiClient nhsJobsApiClient, ILiveVacancyMapper liveVacancyMapper, ILocationApiClient<LocationApiConfiguration> locationApiClient) : IRequestHandler<GetNhsJobsQuery, GetNhsJobsQueryResult>
+public class GetNhsJobsQueryHandler(INhsJobsApiClient nhsJobsApiClient, ILiveVacancyMapper liveVacancyMapper, ILocationApiClient<LocationApiConfiguration> locationApiClient,ICourseService courseService) : IRequestHandler<GetNhsJobsQuery, GetNhsJobsQueryResult>
 {
     public async Task<GetNhsJobsQueryResult> Handle(GetNhsJobsQuery request, CancellationToken cancellationToken)
     {
@@ -39,11 +39,15 @@ public class GetNhsJobsQueryHandler(INhsJobsApiClient nhsJobsApiClient, ILiveVac
             postCodes.AddRange(apiResponses.Select(location => location.Location.Split(",").LastOrDefault()!.Trim()));
         }
 
-        var locations =
-            await locationApiClient.PostWithResponseCode<GetLocationsListResponse>(
+        var locationsTask =
+            locationApiClient.PostWithResponseCode<GetLocationsListResponse>(
                 new GetLocationsByPostBulkPostcodeRequest(postCodes));
+        var routesTask = courseService.GetRoutes();
 
-        var liveVacancies = vacancies.Select(c=>liveVacancyMapper.Map(c,locations.Body) ).ToList();
+        await Task.WhenAll(locationsTask, routesTask);
+        var route = routesTask.Result.Routes.FirstOrDefault(c => c.Name.Contains("health", StringComparison.CurrentCultureIgnoreCase));
+
+        var liveVacancies = vacancies.Select(c=>liveVacancyMapper.Map(c,locationsTask.Result.Body, route) ).ToList();
         
 
         return new GetNhsJobsQueryResult

@@ -100,13 +100,15 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
             };
         }
 
-        public Application.Shared.LiveVacancy Map(GetNhsJobApiDetailResponse source, GetLocationsListResponse locations)
+        public Application.Shared.LiveVacancy Map(GetNhsJobApiDetailResponse source, GetLocationsListResponse locations, GetRoutesListItem route)
         {
             var location = source.Locations.FirstOrDefault().Location.Split(",");
             var locationLookup = locations.Locations.FirstOrDefault(c =>
                 c.Postcode.Replace(" ","").Equals(location[1].Replace(" ","").Trim(), StringComparison.CurrentCultureIgnoreCase));
             return new Application.Shared.LiveVacancy
             {
+                Route = route.Name,
+                RouteCode = route.Id,
                 Title = source.Title,
                 Description = source.Description,
                 Id = source.Id,

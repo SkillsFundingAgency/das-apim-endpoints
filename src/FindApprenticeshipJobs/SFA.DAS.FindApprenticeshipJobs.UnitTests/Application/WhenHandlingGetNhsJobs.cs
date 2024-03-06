@@ -29,9 +29,11 @@ public class WhenHandlingGetNhsJobs
         LiveVacancy liveVacancy3,
         LiveVacancy liveVacancy4,
         GetLocationsListResponse locationsListResponse,
+        GetRoutesListItem route,
         [Frozen] Mock<ILiveVacancyMapper> mapper,
         [Frozen] Mock<INhsJobsApiClient> client,
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> locationApiClient,
+        [Frozen] Mock<ICourseService> courseService,
         GetNhsJobsQueryHandler handler)
     {
         var xmlSerializer = new XmlSerializer(typeof(GetNhsJobApiResponse));
@@ -59,11 +61,15 @@ public class WhenHandlingGetNhsJobs
             ), true)).ReturnsAsync(
             new ApiResponse<GetLocationsListResponse>(locationsListResponse, HttpStatusCode.OK, ""));
 
-        mapper.Setup(x => x.Map(It.IsAny<GetNhsJobApiDetailResponse>(), It.IsAny<GetLocationsListResponse>())).Returns((LiveVacancy)null);
-        mapper.Setup(x => x.Map(It.Is<GetNhsJobApiDetailResponse>(c=>c.Id == expectedResponse.Vacancies.FirstOrDefault().Id),locationsListResponse)).Returns(liveVacancy);
-        mapper.Setup(x => x.Map(It.Is<GetNhsJobApiDetailResponse>(c=>c.Id == expectedResponse.Vacancies.LastOrDefault().Id),locationsListResponse)).Returns(liveVacancy2);
-        mapper.Setup(x => x.Map(It.Is<GetNhsJobApiDetailResponse>(c=>c.Id == expectedResponse2.Vacancies.FirstOrDefault().Id),locationsListResponse)).Returns(liveVacancy3);
-        mapper.Setup(x => x.Map(It.Is<GetNhsJobApiDetailResponse>(c=>c.Id == expectedResponse2.Vacancies.LastOrDefault().Id),locationsListResponse)).Returns(liveVacancy4);
+        route.Name = "Health and Science";
+        courseService.Setup(x => x.GetRoutes()).ReturnsAsync(new GetRoutesListResponse
+            { Routes = new List<GetRoutesListItem>{route} });
+
+        mapper.Setup(x => x.Map(It.IsAny<GetNhsJobApiDetailResponse>(), It.IsAny<GetLocationsListResponse>(), It.IsAny<GetRoutesListItem>())).Returns((LiveVacancy)null);
+        mapper.Setup(x => x.Map(It.Is<GetNhsJobApiDetailResponse>(c=>c.Id == expectedResponse.Vacancies.FirstOrDefault().Id),locationsListResponse,route)).Returns(liveVacancy);
+        mapper.Setup(x => x.Map(It.Is<GetNhsJobApiDetailResponse>(c=>c.Id == expectedResponse.Vacancies.LastOrDefault().Id),locationsListResponse,route)).Returns(liveVacancy2);
+        mapper.Setup(x => x.Map(It.Is<GetNhsJobApiDetailResponse>(c=>c.Id == expectedResponse2.Vacancies.FirstOrDefault().Id),locationsListResponse,route)).Returns(liveVacancy3);
+        mapper.Setup(x => x.Map(It.Is<GetNhsJobApiDetailResponse>(c=>c.Id == expectedResponse2.Vacancies.LastOrDefault().Id),locationsListResponse,route)).Returns(liveVacancy4);
         client.Setup(x => x.GetWithResponseCode(It.Is<GetNhsJobsApiRequest>(c => c.GetUrl.Contains("?contractType=Apprenticeship&page=1"))))
             .ReturnsAsync(new ApiResponse<string>(_nhsResponse, HttpStatusCode.OK, ""));
         client.Setup(x => x.GetWithResponseCode(It.Is<GetNhsJobsApiRequest>(c => c.GetUrl.Contains("?contractType=Apprenticeship&page=2"))))
@@ -81,7 +87,7 @@ public class WhenHandlingGetNhsJobs
         [Frozen] Mock<INhsJobsApiClient> client,
         GetNhsJobsQueryHandler handler)
     {
-        mapper.Setup(x => x.Map(It.IsAny<GetNhsJobApiDetailResponse>(),It.IsAny<GetLocationsListResponse>())).Returns(((LiveVacancy)null!)!);
+        mapper.Setup(x => x.Map(It.IsAny<GetNhsJobApiDetailResponse>(),It.IsAny<GetLocationsListResponse>(),It.IsAny<GetRoutesListItem>())).Returns(((LiveVacancy)null!)!);
         client.Setup(x => x.GetWithResponseCode(It.Is<GetNhsJobsApiRequest>(c => c.GetUrl.Contains("?contractType=Apprenticeship&page=1"))))
             .ReturnsAsync(new ApiResponse<string>(_nhsNoResultsResponse, HttpStatusCode.OK, ""));
 
@@ -97,7 +103,7 @@ public class WhenHandlingGetNhsJobs
         [Frozen] Mock<INhsJobsApiClient> client,
         GetNhsJobsQueryHandler handler)
     {
-        mapper.Setup(x => x.Map(It.IsAny<GetNhsJobApiDetailResponse>(),It.IsAny<GetLocationsListResponse>())).Returns(((LiveVacancy)null!)!);
+        mapper.Setup(x => x.Map(It.IsAny<GetNhsJobApiDetailResponse>(),It.IsAny<GetLocationsListResponse>(),It.IsAny<GetRoutesListItem>())).Returns(((LiveVacancy)null!)!);
         client.Setup(x => x.GetWithResponseCode(It.Is<GetNhsJobsApiRequest>(c => c.GetUrl.Contains("?contractType=Apprenticeship&page=1"))))
             .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.InternalServerError, "An error"));
 

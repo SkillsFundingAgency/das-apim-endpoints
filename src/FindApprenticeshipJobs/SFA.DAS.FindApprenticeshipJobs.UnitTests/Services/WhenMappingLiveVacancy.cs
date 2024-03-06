@@ -31,7 +31,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
         }
 
         [Test, MoqAutoData]
-        public void Then_The_Nhs_Vacancy_Is_Mapped(GetNhsJobApiDetailResponse source, LiveVacancyMapper liveVacancyMapper, DateTime closeDate, DateTime postDate, GetLocationsListItem address, string address1, string postCode1, string postCode2)
+        public void Then_The_Nhs_Vacancy_Is_Mapped(GetNhsJobApiDetailResponse source, LiveVacancyMapper liveVacancyMapper, DateTime closeDate, DateTime postDate, GetLocationsListItem address, string address1, string postCode1, string postCode2, GetRoutesListItem route)
         {
             address.Postcode = $"{postCode1} {postCode2}";
             var addressResponse = new GetLocationsListResponse
@@ -47,7 +47,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             source.Locations.Add(new GetNhsJobLocationApiResponse{Location = $"{address1}, {postCode1}{postCode2} "});
             
             
-            var actual = liveVacancyMapper.Map(source, addressResponse);
+            var actual = liveVacancyMapper.Map(source, addressResponse, route);
 
             actual.Id.Should().Be(source.Id);
             actual.Title.Should().Be(source.Title);
@@ -62,6 +62,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             actual.Address.Postcode.Should().Be($"{postCode1}{postCode2}");
             actual.Address.Longitude.Should().Be(address.Location.GeoPoint.FirstOrDefault());
             actual.Address.Latitude.Should().Be(address.Location.GeoPoint.LastOrDefault());
+            actual.Route.Should().Be(route.Name);
+            actual.RouteCode.Should().Be(route.Id);
 
         }
 
