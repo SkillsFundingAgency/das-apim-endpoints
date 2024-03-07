@@ -37,7 +37,7 @@ public class GetInterviewAdjustmentsQueryHandler : IRequestHandler<GetInterviewA
         return new GetInterviewAdjustmentsQueryResult
         {
             ApplicationId = application.Id,
-            InterviewAdjustmentsDescription = interviewAdjustments.AboutYou.Support,
+            InterviewAdjustmentsDescription = interviewAdjustments.AboutYou is null ? null : interviewAdjustments.AboutYou.Support,
             IsSectionCompleted = isCompleted
         };
     }
