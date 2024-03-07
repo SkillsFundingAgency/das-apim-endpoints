@@ -29,7 +29,7 @@ public class GetTrainingCoursesQueryHandler : IRequestHandler<GetTrainingCourses
 
         bool? isCompleted = application.TrainingCoursesStatus switch
         {
-            Constants.SectionStatus.InProgress => false,
+            Constants.SectionStatus.Incomplete => false,
             Constants.SectionStatus.Completed => true,
             _ => null
         };
