@@ -8,9 +8,7 @@ using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -54,9 +52,9 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.G
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.EmailDataList);
-            Assert.IsNotEmpty(result.EmailDataList);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.EmailDataList, Is.Not.Null);
+            Assert.That(result.EmailDataList, Is.Not.Empty);
         }
     }
 }

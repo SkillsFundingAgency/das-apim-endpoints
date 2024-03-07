@@ -47,29 +47,29 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
         public async Task Handle_Returns_Opportunity()
         {
             var result = await _handler.Handle(_query, new System.Threading.CancellationToken());
-            Assert.NotNull(result.Opportunity);
-            Assert.AreEqual(_pledge.Id, result.Opportunity.Id);
+            Assert.That(result.Opportunity, Is.Not.Null);
+            Assert.That(result.Opportunity.Id, Is.EqualTo(_pledge.Id));
         }
 
         [Test]
         public async Task Handle_Returns_Sectors()
         {
             var result = await _handler.Handle(_query, new System.Threading.CancellationToken());
-            Assert.AreEqual(_sectors, result.Sectors);
+            Assert.That(result.Sectors, Is.EqualTo(_sectors));
         }
 
         [Test]
         public async Task Handle_Returns_JobRoles()
         {
             var result = await _handler.Handle(_query, new System.Threading.CancellationToken());
-            Assert.AreEqual(_jobRoles, result.JobRoles);
+            Assert.That(result.JobRoles, Is.EqualTo(_jobRoles));
         }
 
         [Test]
         public async Task Handle_Returns_Levels()
         {
             var result = await _handler.Handle(_query, new System.Threading.CancellationToken());
-            Assert.AreEqual(_levels, result.Levels);
+            Assert.That(result.Levels, Is.EqualTo(_levels));
         }
     }
 }

@@ -32,10 +32,10 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
 
             var controllerResult = await controller.GetRoutes() as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetRoutesResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Routes.Should().BeEquivalentTo(mediatorResult.Routes.Select(c=>(GetRouteResponseItem)c).ToList());
         }
 

@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateJob;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteJob;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateJob;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetJob;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory.DeleteJob;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -35,6 +37,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     CandidateId = candidateId,
                     ApplicationId = applicationId,
                 });
+
+                if (result is null) return NotFound();
                 return Ok((GetJobsApiResponse)result);
             }
             catch (Exception e)
@@ -60,13 +64,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     EmployerName = request.EmployerName
                 });
 
-                if (result == null)
-                {
-                    return NotFound();
-                }
+                if (result is null) return NotFound();
 
-                return Created(result.Id.ToString(), (PostJobApiResponse)result);
-
+                return Created($"{result.Id}", (PostJobApiResponse)result);
             }
             catch (Exception ex)
             {
@@ -87,6 +87,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     ApplicationId = applicationId,
                     JobId = jobId
                 });
+
+                if (result is null) return NotFound();
                 return Ok((GetJobApiResponse)result);
             }
             catch (Exception e)
@@ -102,7 +104,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                await _mediator.Send(new UpdateJobCommand
+                var result = await _mediator.Send(new UpdateJobCommand
                 {
                     ApplicationId = applicationId,
                     JobId = jobId,
@@ -113,11 +115,57 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     StartDate = request.StartDate,
                     EndDate = request.EndDate
                 });
-                return Ok();
+
+                if (result is null) return NotFound();
+
+                return Ok(result.Id);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Update Job : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{jobId}/delete")]
+        public async Task<IActionResult> GetDeleteJob([FromRoute] Guid applicationId, [FromQuery] Guid candidateId, [FromRoute] Guid jobId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetDeleteJobQuery
+                {
+                    CandidateId = candidateId,
+                    ApplicationId = applicationId,
+                    JobId = jobId
+                });
+                return Ok((GetDeleteJobApiResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Get Job : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+
+
+        [HttpPost("{jobId}/delete")]
+        public async Task<IActionResult> PostDeleteJob([FromRoute] Guid applicationId, [FromRoute]Guid jobId, [FromBody]PostDeleteJobRequest request)
+        {
+            try
+            {
+                var result = await _mediator.Send(new PostDeleteJobCommand
+                {
+                    ApplicationId = applicationId,
+                    JobId = jobId,
+                    CandidateId = request.CandidateId
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "DeleteJob : An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

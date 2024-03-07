@@ -1,5 +1,4 @@
 using AutoFixture.NUnit3;
-using FluentAssertions.Common;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Application.Services;
@@ -24,7 +23,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerInce
             client.Verify(x =>
                 x.Patch(It.Is<PatchVendorRegistrationCaseStatusRequest>(
                     c =>
-                        c.PatchUrl.Contains(request.HashedLegalEntityId) && c.Data.IsSameOrEqualTo(request)
+                        c.PatchUrl.Contains(request.HashedLegalEntityId) && c.Data.Equals(request)
                 )), Times.Once
             );
         }

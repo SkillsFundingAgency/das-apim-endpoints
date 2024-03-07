@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,7 +60,7 @@ namespace SFA.DAS.EmployerAccounts.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetEnglishFractionCurrentQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEnglishFractionCurrentQuery).Assembly));
             services.AddServiceRegistration();
 
             services
@@ -71,7 +70,7 @@ namespace SFA.DAS.EmployerAccounts.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                });
 
             if (_configuration["Environment"] != "DEV")
             {

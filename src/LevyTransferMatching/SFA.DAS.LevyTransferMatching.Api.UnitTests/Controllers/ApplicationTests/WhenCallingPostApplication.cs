@@ -29,8 +29,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             var actionResult = await applicationsController.Application(accountId, applicationId, setApplicationAcceptanceRequest);
             var noContentResult = actionResult as NoContentResult;
 
-            Assert.NotNull(actionResult);
-            Assert.NotNull(noContentResult);
+            Assert.That(actionResult, Is.Not.Null);
+            Assert.That(noContentResult, Is.Not.Null);
         }
 
         [Test, MoqAutoData]
@@ -48,8 +48,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             var actionResult = await applicationsController.Application(accountId, applicationId, setApplicationAcceptanceRequest);
             var badRequestResult = actionResult as BadRequestResult;
 
-            Assert.NotNull(actionResult);
-            Assert.NotNull(badRequestResult);
+            Assert.That(actionResult, Is.Not.Null);
+            Assert.That(badRequestResult, Is.Not.Null);
         }
     }
 }

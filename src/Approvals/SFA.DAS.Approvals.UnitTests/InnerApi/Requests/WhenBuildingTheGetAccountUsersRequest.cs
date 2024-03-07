@@ -16,7 +16,7 @@ namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
             var actual = new GetAccountUsersRequest(id);
 
             //Assert
-            Assert.AreEqual($"api/accounts/{id}/users", actual.GetUrl);
+            Assert.That(actual.GetUrl, Is.EqualTo($"api/accounts/{id}/users"));
         }
     }
 }

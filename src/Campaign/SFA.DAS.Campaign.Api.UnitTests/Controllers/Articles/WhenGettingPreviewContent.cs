@@ -30,9 +30,9 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Articles
 
             var actual = await controller.GetPreviewArticle(hubName, slugName) as OkObjectResult;
          
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualResult = actual.Value as GetArticleResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Article.Should().BeEquivalentTo(mediatorResult.PageModel);
         }
         
@@ -54,9 +54,9 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Articles
 
             var actual = await controller.GetPreviewArticle(hubName, slugName) as NotFoundObjectResult;
          
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualResult = actual.Value as NotFoundResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Message.Should().Be($"Preview article not found for {hubName}/{slugName}");
         }
     }

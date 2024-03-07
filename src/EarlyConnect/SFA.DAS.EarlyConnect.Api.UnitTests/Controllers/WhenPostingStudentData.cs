@@ -80,7 +80,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.CreateStudentData(request);
 
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
     }
 }

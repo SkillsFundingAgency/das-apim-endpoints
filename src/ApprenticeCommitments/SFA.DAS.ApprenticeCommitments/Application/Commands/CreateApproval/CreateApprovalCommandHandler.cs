@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using SFA.DAS.ApprenticeCommitments.Configuration;

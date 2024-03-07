@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,10 +31,10 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Controllers
 
             var controllerResult = await controller.GetQualifications() as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetQualificationsResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Qualifications.Should().BeEquivalentTo(mediatorResult.Qualifications);
         }
 

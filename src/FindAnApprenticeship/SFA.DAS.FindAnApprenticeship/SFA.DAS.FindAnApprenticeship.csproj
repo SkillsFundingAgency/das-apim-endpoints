@@ -11,6 +11,11 @@
   <ItemGroup>
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="InnerApi\LegacyApi\Responses\Enums\" />
   </ItemGroup>
 
 </Project>

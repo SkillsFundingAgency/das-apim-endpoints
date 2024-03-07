@@ -37,8 +37,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var controllerResponse = await pledgeController.ClosePledge(pledgeId, closePledgeRequest);
          
             var statusResult = controllerResponse as StatusCodeResult;
-            Assert.IsNotNull(statusResult);
-            Assert.AreEqual((int)HttpStatusCode.OK, statusResult.StatusCode);
+            Assert.That(statusResult, Is.Not.Null);
+            Assert.That(statusResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
         }
 
         [Test, MoqAutoData]
@@ -62,8 +62,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var controllerResponse = await pledgeController.ClosePledge(pledgeId, closePledgeRequest);
 
             var statusResult = controllerResponse as StatusCodeResult;
-            Assert.IsNotNull(statusResult);
-            Assert.AreEqual((int)HttpStatusCode.NotFound, statusResult.StatusCode);            
+            Assert.That(statusResult, Is.Not.Null);
+            Assert.That(statusResult.StatusCode, Is.EqualTo((int)HttpStatusCode.NotFound));            
         }
 
         [Test, MoqAutoData]
@@ -82,8 +82,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var controllerResponse = await pledgeController.ClosePledge(pledgeId, closePledgeRequest);
 
             var exception = controllerResponse as StatusCodeResult;
-            Assert.IsNotNull(exception);
-            Assert.AreEqual((int)HttpStatusCode.InternalServerError, exception.StatusCode);
+            Assert.That(exception, Is.Not.Null);
+            Assert.That(exception.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
         }
     }
 }

@@ -10,6 +10,7 @@ using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 {
@@ -34,10 +35,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var createdResult = controllerResult as OkObjectResult;
             var getApplicationApprovalOptionsResponse = createdResult.Value as GetApplicationApprovalOptionsResponse;
 
-            Assert.IsNotNull(controllerResult);
-            Assert.IsNotNull(createdResult);
-            Assert.IsNotNull(getApplicationApprovalOptionsResponse);
-            Assert.AreEqual(createdResult.StatusCode, (int)HttpStatusCode.OK);
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(createdResult,Is.Not.Null);
+            Assert.That(getApplicationApprovalOptionsResponse, Is.Not.Null);
+            Assert.That(createdResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
         }
 
         [Test, MoqAutoData]
@@ -49,16 +50,16 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
         {
             mockMediator
                 .Setup(x => x.Send(
-                    It.Is<GetApplicationApprovalOptionsQuery>(y => (y.PledgeId == pledgeId) && (y.ApplicationId == applicationId)),
+                    It.Is<GetApplicationQuery>(y => (y.PledgeId == pledgeId) && (y.ApplicationId == applicationId)),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync((GetApplicationApprovalOptionsQueryResult)null);
+                .ReturnsAsync((GetApplicationResult)null);
 
             var controllerResult = await pledgeController.Application(pledgeId, applicationId);
             var notFoundResult = controllerResult as NotFoundResult;
 
-            Assert.IsNotNull(controllerResult);
-            Assert.IsNotNull(notFoundResult);
-            Assert.AreEqual(notFoundResult.StatusCode, (int)HttpStatusCode.NotFound);
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(notFoundResult,Is.Not.Null);
+            Assert.That(notFoundResult.StatusCode, Is.EqualTo((int)HttpStatusCode.NotFound));
         }
     }
 }

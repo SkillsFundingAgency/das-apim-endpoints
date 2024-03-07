@@ -8,11 +8,11 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests;
 using SFA.DAS.FindApprenticeshipTraining.Api.Extensions;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
+using SFA.DAS.FindApprenticeshipTraining.Application;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourse;
+using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
-using SFA.DAS.FindApprenticeshipTraining.Application;
-using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
@@ -33,19 +33,19 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetList( [FromQuery] string keyword = "", [FromQuery] List<string> routeIds = null, [FromQuery]List<int> levels = null, [FromQuery]string orderBy = "relevance", [FromQuery] Guid? shortlistUserId = null)
+        public async Task<IActionResult> GetList([FromQuery] string keyword = "", [FromQuery] List<string> routeIds = null, [FromQuery] List<int> levels = null, [FromQuery] string orderBy = "relevance", [FromQuery] Guid? shortlistUserId = null)
         {
             try
             {
                 var queryResult = await _mediator.Send(new GetTrainingCoursesListQuery
                 {
-                    Keyword = keyword, 
-                    RouteIds = routeIds,
-                    Levels = levels,
+                    Keyword = keyword,
+                    RouteIds = routeIds ?? [],
+                    Levels = levels ?? [],
                     OrderBy = orderBy.Equals("relevance", StringComparison.CurrentCultureIgnoreCase) ? OrderBy.Score : OrderBy.Title,
                     ShortlistUserId = shortlistUserId
                 });
-                
+
                 var model = new GetTrainingCoursesListResponse
                 {
                     TrainingCourses = queryResult.Courses.Select(response => (GetTrainingCourseListItem)response),
@@ -67,7 +67,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<IActionResult> Get(  int id, [FromQuery] double lat = 0, [FromQuery] double lon = 0, [FromQuery] string location = "", Guid? shortlistUserId = null)
+        public async Task<IActionResult> Get(int id, [FromQuery] double lat = 0, [FromQuery] double lon = 0, [FromQuery] string location = "", Guid? shortlistUserId = null)
         {
             try
             {
@@ -85,13 +85,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     _logger.LogInformation($"Training course {id} not found");
                     return NotFound();
                 }
-                
+
                 var model = new GetTrainingCourseResponse
                 {
                     TrainingCourse = result.Course,
                     ProvidersCount = new GetTrainingCourseProviderCountResponse
                     {
-                        TotalProviders  = result.ProvidersCount,
+                        TotalProviders = result.ProvidersCount,
                         ProvidersAtLocation = result.ProvidersCountAtLocation
                     },
                     ShortlistItemCount = result.ShortlistItemCount
@@ -107,33 +107,26 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 
         [HttpGet]
         [Route("{id}/providers")]
-        public async Task<IActionResult> GetProviders(int id, [FromQuery]GetCourseProvidersRequest request)
+        public async Task<IActionResult> GetProviders(int id, [FromQuery] GetCourseProvidersRequest request)
         {
             try
             {
                 var result = await _mediator.Send(new GetTrainingCourseProvidersQuery
                 {
-                    Id = id, 
+                    Id = id,
                     Location = request.Location,
                     Lat = request.Lat,
                     Lon = request.Lon,
                     ShortlistUserId = request.ShortlistUserId
                 });
 
-                var sortedProviders = result.Providers.OrderBy(x => x.DeliveryModelsShortestDistance)
-                    .ThenByDescending(x => x.DeliveryModels.Any(d => d.LocationType == LocationType.National));
-
-                var sortOrder = request.SortOrder;
-
-                if (sortOrder == ProviderCourseSortOrder.SortOrder.Name || request.Lat==0) 
-                {
-                    sortedProviders = result.Providers.OrderBy(x => x.Name)
-                        .ThenByDescending(x => x.DeliveryModels.Any(d => d.LocationType == LocationType.National));
-                }
+                var sortedProviders = (request.SortOrder == ProviderCourseSortOrder.SortOrder.Name || request.Lat == 0) ?
+                    result.Providers.OrderBy(x => x.Name).ThenByDescending(x => x.DeliveryModels.Any(d => d.LocationType == LocationType.National)) :
+                    result.Providers.OrderBy(x => x.DeliveryModelsShortestDistance).ThenByDescending(x => x.DeliveryModels.Any(d => d.LocationType == LocationType.National));
 
                 var mappedProviders = sortedProviders
-                    .Select(c=> new GetTrainingCourseProviderListItem().Map(c,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, request.DeliveryModes, request.EmployerProviderRatings, request.ApprenticeProviderRatings, result.Location?.GeoPoint != null))
-                    .Where(x=>x!=null)
+                    .Select(provider => new GetTrainingCourseProviderListItem().Map(provider, request.DeliveryModes, request.EmployerProviderRatings, request.ApprenticeProviderRatings, result.Location?.GeoPoint != null))
+                    .Where(x => x != null)
                     .OrderByProviderScore(request.DeliveryModes)
                     .ToList();
                 var model = new GetTrainingCourseProvidersResponse
@@ -163,13 +156,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 
         [HttpGet]
         [Route("{id}/providers/{providerId}")]
-        public async Task<IActionResult> GetProviderCourse( int id, int providerId, [FromQuery]string location, [FromQuery]double lat=0, [FromQuery]double lon=0, [FromQuery]Guid? shortlistUserId = null)
+        public async Task<IActionResult> GetProviderCourse(int id, int providerId, [FromQuery] string location, [FromQuery] double lat = 0, [FromQuery] double lon = 0, [FromQuery] Guid? shortlistUserId = null)
         {
             try
             {
                 var result = await _mediator.Send(new GetTrainingCourseProviderQuery
                 {
-                    CourseId = id, 
+                    CourseId = id,
                     ProviderId = providerId,
                     Location = location,
                     Lat = lat,
@@ -185,7 +178,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     }
                     return Ok(new GetTrainingCourseProviderResponse
                     {
-                        TrainingCourse =  result.Course,
+                        TrainingCourse = result.Course,
                         Location = new GetLocationSearchResponseItem
                         {
                             Name = result.Location?.Name,
@@ -196,19 +189,19 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                         }
                     });
                 }
-                
+
                 var model = new GetTrainingCourseProviderResponse
                 {
                     TrainingCourse = result.Course,
-                    TrainingCourseProvider = new GetProviderCourseItem().Map(result,result.Course.SectorSubjectAreaTier2Description, result.Course.Level, result.Location?.GeoPoint != null),
+                    TrainingCourseProvider = new GetProviderCourseItem().Map(result, result.Course.Level, result.Location?.GeoPoint != null),
                     AdditionalCourses = new GetTrainingAdditionalCourseItem
                     {
                         Total = result.AdditionalCourses.Count(),
-                        Courses = result.AdditionalCourses.Select(c=>(GetTrainingProviderAdditionalCourseListItem)c).ToList()
+                        Courses = result.AdditionalCourses.Select(c => (GetTrainingProviderAdditionalCourseListItem)c).ToList()
                     },
                     ProvidersCount = new GetTrainingCourseProviderCountResponse
                     {
-                        TotalProviders  = result.TotalProviders,
+                        TotalProviders = result.TotalProviders,
                         ProvidersAtLocation = result.TotalProvidersAtLocation
                     },
                     Location = new GetLocationSearchResponseItem

@@ -34,10 +34,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             var okObjectResult = controllerResult as OkObjectResult;
             var response = okObjectResult.Value as ApplicationDetailsResponse;
 
-            Assert.IsNotNull(controllerResult);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(response);
-            Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.OK);
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(response, Is.Not.Null);
+            Assert.That(okObjectResult.StatusCode,Is.EqualTo((int)HttpStatusCode.OK));
         }
 
         [Test, MoqAutoData]
@@ -56,9 +56,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             var controllerResult = await opportunityController.GetApplicationDetails(accountId, opportunityId, default);
             var notFoundResult = controllerResult as NotFoundResult;
 
-            Assert.IsNotNull(controllerResult);
-            Assert.IsNotNull(notFoundResult);
-            Assert.AreEqual(notFoundResult.StatusCode, (int)HttpStatusCode.NotFound);
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(notFoundResult, Is.Not.Null);
+            Assert.That(notFoundResult.StatusCode, Is.EqualTo((int)HttpStatusCode.NotFound));
         }
     }
 }

@@ -6,8 +6,6 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApimDeveloper.Application.ApiProducts.Queries.GetApiProduct;
-using SFA.DAS.ApimDeveloper.Configuration;
-using SFA.DAS.ApimDeveloper.InnerApi.Requests;
 using SFA.DAS.ApimDeveloper.InnerApi.Responses;
 using SFA.DAS.ApimDeveloper.Interfaces;
 using SFA.DAS.Testing.AutoFixture;

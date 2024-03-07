@@ -42,7 +42,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
 
             var result = await getApplicationDetailsQueryHandler.Handle(getApplicationDetailsQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result.Opportunity);
+            Assert.That(result.Opportunity, Is.Not.Null);
         }
 
         [Test, MoqAutoData]
@@ -70,7 +70,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
 
             var result = await getApplicationDetailsQueryHandler.Handle(getApplicationDetailsQuery, CancellationToken.None);
 
-            Assert.IsNull(result.Opportunity);
+            Assert.That(result.Opportunity, Is.Null);
         }
 
         [Test, MoqAutoData]
@@ -87,9 +87,9 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
 
             var result = await getApplicationDetailsQueryHandler.Handle(getStandardsQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Standards);
-            Assert.AreEqual(response.Standards.Count(), result.Standards.Count());
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Standards, Is.Not.Null);
+            Assert.That(response.Standards.Count(), Is.EqualTo(result.Standards.Count()));
             client.Verify(x => x.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()), Times.Once);
         }
 
@@ -107,9 +107,9 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
 
             var result = await getApplicationDetailsQueryHandler.Handle(getStandardsQuery, CancellationToken.None);
 
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Standards);
-            Assert.AreEqual(1, result.Standards.Count());
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Standards, Is.Not.Null);
+            Assert.That(result.Standards.Count(), Is.EqualTo(1));
         }
     }
 }

@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-
+    <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -22,10 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.FindApprenticeshipTraining.Api\SFA.DAS.FindApprenticeshipTraining.Api.csproj" />
     <ProjectReference Include="..\SFA.DAS.FindApprenticeshipTraining\SFA.DAS.FindApprenticeshipTraining.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\Shortlist\" />
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
   </ItemGroup>
 
 </Project>

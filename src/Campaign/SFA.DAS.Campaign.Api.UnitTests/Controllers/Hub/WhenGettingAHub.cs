@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -11,7 +8,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Campaign.Api.Controllers;
 using SFA.DAS.Campaign.Api.Models;
-using SFA.DAS.Campaign.Application.Queries.Articles;
 using SFA.DAS.Campaign.Application.Queries.Hub;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -31,7 +27,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Hub
             var controllerResult = await InstantiateController<OkObjectResult>(controller, hubName);
 
             var actualResult = controllerResult.Value as GetHubResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Hub.Should().BeEquivalentTo(mediatorResult.PageModel);
         }
         
@@ -49,7 +45,7 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Hub
             var controllerResult = await InstantiateController<NotFoundObjectResult>(controller, hubName);
 
             var actualResult = controllerResult.Value as NotFoundResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Message.Should().Be($"Hub not found for {hubName}");
         }
 

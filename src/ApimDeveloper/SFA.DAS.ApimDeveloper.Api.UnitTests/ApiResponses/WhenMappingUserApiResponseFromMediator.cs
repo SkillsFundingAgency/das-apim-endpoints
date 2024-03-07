@@ -2,7 +2,6 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.ApimDeveloper.Api.ApiResponses;
-using SFA.DAS.ApimDeveloper.Application.Users.Commands.AuthenticateUser;
 using SFA.DAS.ApimDeveloper.Application.Users.Queries.GetUser;
 
 namespace SFA.DAS.ApimDeveloper.Api.UnitTests.ApiResponses

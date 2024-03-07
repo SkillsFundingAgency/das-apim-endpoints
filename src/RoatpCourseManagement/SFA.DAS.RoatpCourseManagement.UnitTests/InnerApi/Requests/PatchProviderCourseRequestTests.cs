@@ -2,7 +2,6 @@
 using System.Web;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 
@@ -15,12 +14,12 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Requests
         public void Constructor_ConstructsRequest(ProviderCourseUpdateModel data)
         {
             var request = new PatchProviderCourseRequest(data);
-            Assert.AreEqual(5, request.Data.Count);
-            Assert.IsTrue(request.Data.Any(x => x.Path == "ContactUsEmail"));
-            Assert.IsTrue(request.Data.Any(x => x.Path == "ContactUsPageUrl"));
-            Assert.IsTrue(request.Data.Any(x => x.Path == "ContactUsPhoneNumber"));
-            Assert.IsTrue(request.Data.Any(x => x.Path == "StandardInfoUrl"));
-            Assert.IsTrue(request.Data.Any(x => x.Path == "IsApprovedByRegulator"));
+            Assert.That(request.Data.Count, Is.EqualTo(5));
+            Assert.That(request.Data.Any(x => x.Path == "ContactUsEmail"), Is.True);
+            Assert.That(request.Data.Any(x => x.Path == "ContactUsPageUrl"), Is.True);
+            Assert.That(request.Data.Any(x => x.Path == "ContactUsPhoneNumber"), Is.True);
+            Assert.That(request.Data.Any(x => x.Path == "StandardInfoUrl"), Is.True);
+            Assert.That(request.Data.Any(x => x.Path == "IsApprovedByRegulator"), Is.True);
             request.PatchUrl.Should().Be($"providers/{data.Ukprn}/courses/{data.LarsCode}?userId={HttpUtility.UrlEncode(data.UserId)}&userDisplayName={HttpUtility.UrlEncode(data.UserDisplayName)}");
         }
 
@@ -67,12 +66,12 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Requests
             };
             var request = new PatchProviderCourseRequest(model);
 
-             Assert.AreEqual(numberOfPatches, request.Data.Count);
-             Assert.AreEqual(request.Data.Any(x => x.Path == "ContactUsEmail"), contactUsEmail!=null);
-             Assert.AreEqual(request.Data.Any(x => x.Path == "ContactUsPageUrl"), contactUsPageUrl != null);
-             Assert.AreEqual(request.Data.Any(x => x.Path == "StandardInfoUrl"), standardInfoUrl != null);
-             Assert.AreEqual(request.Data.Any(x => x.Path == "ContactUsPhoneNumber"), contactUsPhoneNumber != null);
-             Assert.AreEqual(request.Data.Any(x => x.Path == "IsApprovedByRegulator"), isApprovedByRegulator != null);
+             Assert.That(numberOfPatches, Is.EqualTo(request.Data.Count));
+             Assert.That(request.Data.Any(x => x.Path == "ContactUsEmail"), Is.EqualTo(contactUsEmail!=null));
+             Assert.That(request.Data.Any(x => x.Path == "ContactUsPageUrl"), Is.EqualTo(contactUsPageUrl != null));
+             Assert.That(request.Data.Any(x => x.Path == "StandardInfoUrl"), Is.EqualTo(standardInfoUrl != null));
+             Assert.That(request.Data.Any(x => x.Path == "ContactUsPhoneNumber"), Is.EqualTo(contactUsPhoneNumber != null));
+             Assert.That(request.Data.Any(x => x.Path == "IsApprovedByRegulator"), Is.EqualTo(isApprovedByRegulator != null));
         }
     }
 }

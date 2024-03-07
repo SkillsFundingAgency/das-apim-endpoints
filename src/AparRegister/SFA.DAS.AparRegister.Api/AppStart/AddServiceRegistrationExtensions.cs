@@ -15,7 +15,7 @@ namespace SFA.DAS.AparRegister.Api.AppStart
     {
         public static void AddServiceRegistration(this IServiceCollection services)
         {
-            services.AddMediatR(typeof(GetProvidersQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetProvidersQuery).Assembly));
             
             services.AddHttpClient();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();

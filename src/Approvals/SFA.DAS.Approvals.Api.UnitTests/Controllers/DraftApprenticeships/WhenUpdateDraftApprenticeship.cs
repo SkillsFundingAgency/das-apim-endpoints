@@ -67,7 +67,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
                 y.EndPointAssessmentPrice == _request.EndPointAssessmentPrice
             ), It.IsAny<CancellationToken>()), Times.Once);
 
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.That(result, Is.InstanceOf<OkResult>());
         }
     }
 }

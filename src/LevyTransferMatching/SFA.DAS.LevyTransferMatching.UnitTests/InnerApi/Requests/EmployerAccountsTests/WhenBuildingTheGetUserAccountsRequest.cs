@@ -11,9 +11,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.InnerApi.Requests.EmployerAccou
         {
             var actual = new GetUserAccountsRequest(userId);
 
-            Assert.AreEqual(
-                $"api/user/{userId}/accounts",
-                actual.GetAllUrl);
+            Assert.That(actual.GetAllUrl, Is.EqualTo($"api/user/{userId}/accounts"));
         }
     }
 }

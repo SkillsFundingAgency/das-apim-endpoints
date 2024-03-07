@@ -66,7 +66,7 @@ namespace SFA.DAS.EmployerIncentives.Api.AcceptanceTests.Steps
         [Then(@"the response of NoContent is returned")]
         public void ThenReturnNoContentToTheCaller()
         {
-            _response.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
+            _response.StatusCode.Should().Be(HttpStatusCode.NoContent);
         }
     }
 }

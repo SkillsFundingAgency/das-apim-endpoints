@@ -7,10 +7,7 @@ using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetDetail;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,14 +32,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             var okObjectResult = controllerResult as OkObjectResult;
             var response = okObjectResult.Value as GetDetailResponse;
 
-            Assert.IsNotNull(controllerResult);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(response);
-            Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.OK);
-            Assert.AreEqual(getDetailQueryResult.Opportunity.Id, response.Opportunity.Id);
-            Assert.AreEqual(getDetailQueryResult.Sectors, response.Sectors);
-            Assert.AreEqual(getDetailQueryResult.JobRoles, response.JobRoles);
-            Assert.AreEqual(getDetailQueryResult.Levels, response.Levels);
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(response, Is.Not.Null);
+            Assert.That(okObjectResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
+            Assert.That(getDetailQueryResult.Opportunity.Id, Is.EqualTo(response.Opportunity.Id));
+            Assert.That(getDetailQueryResult.Sectors, Is.EqualTo(response.Sectors));
+            Assert.That(getDetailQueryResult.JobRoles, Is.EqualTo(response.JobRoles));
+            Assert.That(getDetailQueryResult.Levels, Is.EqualTo(response.Levels));
         }
     }
 }

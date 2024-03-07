@@ -2,7 +2,7 @@ using MediatR;
 
 namespace SFA.DAS.EmployerIncentives.Application.Queries.GetLegalEntities
 {
-    public class RefreshLegalEntitiesCommand : IRequest
+    public class RefreshLegalEntitiesCommand : IRequest<Unit>
     {
         public RefreshLegalEntitiesCommand(int pageNumber, int pageSize)
         {

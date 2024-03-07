@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Forecasting.Api.Models;
-using SFA.DAS.Forecasting.Application.Approvals.Queries;
 using SFA.DAS.Forecasting.Application.Approvals.Queries.GetAccountIds;
 using SFA.DAS.Forecasting.Application.Approvals.Queries.GetApprenticeships;
 

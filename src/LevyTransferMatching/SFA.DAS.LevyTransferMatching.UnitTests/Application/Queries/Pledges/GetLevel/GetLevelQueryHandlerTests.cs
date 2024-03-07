@@ -32,7 +32,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         public async Task Handle_Returns_Levels()
         {
             var result = await _handler.Handle(new GetLevelQuery(), CancellationToken.None);
-            Assert.AreEqual(_levels, result.Levels);
+            Assert.That(result.Levels, Is.EqualTo(_levels));
         }
     }
 }

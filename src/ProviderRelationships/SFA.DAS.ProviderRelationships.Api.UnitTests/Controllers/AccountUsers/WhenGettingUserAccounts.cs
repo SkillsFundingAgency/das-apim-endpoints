@@ -29,10 +29,10 @@ public class WhenGettingUserAccounts
 
         var controllerResult = await controller.GetUserAccounts(userId,email) as ObjectResult;
 
-        Assert.IsNotNull(controllerResult);
+        Assert.That(controllerResult, Is.Not.Null);
         controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
         var model = controllerResult.Value as GetUserAccountsApiResponse;
-        Assert.IsNotNull(model);
+        Assert.That(model, Is.Not.Null);
         model.Should().BeEquivalentTo((GetUserAccountsApiResponse)mediatorResult);
     }
 
