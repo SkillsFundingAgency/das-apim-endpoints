@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetIdentifiableOrganisati
 
         public async Task<GetIdentifiableOrganisationTypesResult> Handle(GetIdentifiableOrganisationTypesQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Getting GetIdentifiableOrganisationTypes from reference api");
+            _logger.LogInformation("Getting GetIdentifiableOrganisationTypes from reference api");
 
             var organisationTypes = await _refDataApi.Get<OrganisationType[]>(new IdentifiableOrganisationTypesRequest());
 
