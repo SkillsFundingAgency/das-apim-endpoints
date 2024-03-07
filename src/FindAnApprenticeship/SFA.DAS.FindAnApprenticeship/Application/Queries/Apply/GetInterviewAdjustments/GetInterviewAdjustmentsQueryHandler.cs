@@ -29,8 +29,8 @@ public class GetInterviewAdjustmentsQueryHandler : IRequestHandler<GetInterviewA
 
         bool? isCompleted = application.InterviewAdjustmentsStatus switch
         {
-            Constants.SectionStatus.InProgress => true,
-            Constants.SectionStatus.Completed => false,
+            Constants.SectionStatus.InProgress => false,
+            Constants.SectionStatus.Completed => true,
             _ => null
         };
 
