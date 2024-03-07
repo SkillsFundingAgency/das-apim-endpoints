@@ -39,7 +39,7 @@ public class LiveVacancy
     public string Title { get; set; } = null!;
     public string? TrainingDescription { get; set; }
     public TrainingProvider TrainingProvider { get; set; } = null!;
-    public long VacancyReference { get; set; }
+    public string VacancyReference { get; set; }
     public Wage Wage { get; set; } = null!;
     public string AccountPublicHashedId { get; set; } = null!;
     public string AccountLegalEntityPublicHashedId { get; set; } = null!;

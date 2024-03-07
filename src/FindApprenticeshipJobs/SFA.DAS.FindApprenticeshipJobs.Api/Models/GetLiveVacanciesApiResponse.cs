@@ -16,6 +16,19 @@ public class GetLiveVacanciesApiResponse
         };
     }
 
+    public static implicit operator GetLiveVacanciesApiResponse(GetNhsJobsQueryResult source)
+    {
+        return new GetLiveVacanciesApiResponse
+        {
+            Vacancies = source.NhsVacancies.Select(x => (LiveVacancy)x),
+            PageSize = source.NhsVacancies.Count,
+            PageNo = 1,
+            TotalLiveVacanciesReturned = source.NhsVacancies.Count,
+            TotalLiveVacancies = source.NhsVacancies.Count,
+            TotalPages = 1
+        };
+    }
+
     public IEnumerable<LiveVacancy> Vacancies { get; set; } = null!;
     public int PageSize { get; set; }
     public int PageNo { get; set; }
@@ -63,7 +76,7 @@ public class GetLiveVacanciesApiResponse
                 IsEmployerAnonymous = source.IsEmployerAnonymous,
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
-                IsRecruitVacancy = true,
+                IsRecruitVacancy = source.IsRecruitVacancy,
                 AnonymousEmployerName = source.AnonymousEmployerName,
                 IsPositiveAboutDisability = source.IsPositiveAboutDisability,
                 VacancyLocationType = source.VacancyLocationType,
@@ -94,7 +107,7 @@ public class GetLiveVacanciesApiResponse
         public string? AccountPublicHashedId { get; set; }
         public string ApprenticeshipLevel { get; set; }
         public Guid VacancyId { get; set; }
-        public long VacancyReference { get; set; }
+        public string VacancyReference { get; set; }
         public string Title { get; set; }
         public int NumberOfPositions { get; set; }
         public string ApprenticeshipTitle { get; set; }
