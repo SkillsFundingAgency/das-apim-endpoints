@@ -32,7 +32,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
                 .ReturnsAsync(workHistoriesApiResponse);
 
             var expectedApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
-            applicationApiResponse.JobsStatus = Constants.SectionStatus.InProgress;
+            applicationApiResponse.JobsStatus = Constants.SectionStatus.Incomplete;
             candidateApiClient.Setup(client =>
                 client.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedApplicationRequest.GetUrl)))
                 .ReturnsAsync(applicationApiResponse);

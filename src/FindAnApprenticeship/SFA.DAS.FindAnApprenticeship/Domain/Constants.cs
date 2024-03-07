@@ -17,6 +17,7 @@ namespace SFA.DAS.FindAnApprenticeship.Domain
         {
             public const string NotStarted = "NotStarted";
             public const string InProgress = "InProgress";
+			public const string Incomplete = "Incomplete";
             public const string Completed = "Completed";
         }
     }
