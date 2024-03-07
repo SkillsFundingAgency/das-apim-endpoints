@@ -51,7 +51,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetLatestDetail
 
             Func<Task> action = async () => await handler.Handle(query, CancellationToken.None);
 
-            action.Should().Throw<OrganisationNotFoundException>()
+            action.Should().ThrowAsync<OrganisationNotFoundException>()
                 .WithMessage($"Did not find an organisation type Company with identifier {query.Identifier}");
         }
 
@@ -70,7 +70,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetLatestDetail
 
             Func<Task> action = async () => await handler.Handle(query, CancellationToken.None);
 
-            action.Should().Throw<InvalidGetOrganisationException>()
+            action.Should().ThrowAsync<InvalidGetOrganisationException>()
                 .WithMessage(errorMessage);
         }
     }
