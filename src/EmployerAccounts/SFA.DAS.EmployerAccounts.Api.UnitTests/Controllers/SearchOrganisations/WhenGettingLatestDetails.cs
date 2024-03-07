@@ -37,7 +37,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.SearchOrganisations
             controllerResult.Should().NotBeNull();
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as Api.Models.Organisation;
+            var model = controllerResult.Value as Api.Models.OrganisationResponse;
 
             model.Should().NotBeNull();
 
