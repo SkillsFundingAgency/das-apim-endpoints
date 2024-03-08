@@ -2,10 +2,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.DisabilityConfident
@@ -18,11 +20,12 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.DisabilityConfi
 
     public class GetDisabilityConfidentQueryResult
     {
+        public string EmployerName { get; set; }
         public bool? ApplyUnderDisabilityConfidentScheme { get; set; }
         public bool? IsSectionCompleted { get; set; }
     }
 
-    public class GetDisabilityConfidentQueryHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient) : IRequestHandler<GetDisabilityConfidentQuery, GetDisabilityConfidentQueryResult>
+    public class GetDisabilityConfidentQueryHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient, IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient) : IRequestHandler<GetDisabilityConfidentQuery, GetDisabilityConfidentQueryResult>
     {
         public async Task<GetDisabilityConfidentQueryResult> Handle(GetDisabilityConfidentQuery request, CancellationToken cancellationToken)
         {
@@ -34,15 +37,19 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.DisabilityConfi
                 return null;
             }
 
+            var vacancyRequest = new GetVacancyRequest(application.VacancyReference);
+            var vacancy = await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(vacancyRequest);
+
             bool? isCompleted = application.InterestsStatus switch
             {
-                Constants.SectionStatus.InProgress => false,
-                Constants.SectionStatus.Completed => true,
+                Domain.Constants.SectionStatus.Incomplete => false,
+                Domain.Constants.SectionStatus.Completed => true,
                 _ => null
             };
 
             return new GetDisabilityConfidentQueryResult
             {
+                EmployerName = vacancy.EmployerName,
                 ApplyUnderDisabilityConfidentScheme = application.ApplyUnderDisabilityConfidentScheme,
                 IsSectionCompleted = isCompleted
             };

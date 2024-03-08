@@ -51,6 +51,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
 
             result.Should().BeEquivalentTo(new
             {
+                vacancyApiResponse.EmployerName,
                 applicationApiResponse.ApplyUnderDisabilityConfidentScheme,
                 IsSectionCompleted = expectSectionCompleted
             });
