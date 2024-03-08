@@ -89,6 +89,7 @@ public class Startup
         app.ConfigureExceptionHandler(logger);
 
         app.UseHttpsRedirection()
+            .UseHealthChecks()
             .UseAuthentication();
 
         app.UseAuthentication();
