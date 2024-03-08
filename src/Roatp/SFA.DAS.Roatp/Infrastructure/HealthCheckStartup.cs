@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using SFA.DAS.Api.Common.Infrastructure;
 using System.Diagnostics.CodeAnalysis;
 
+namespace SFA.DAS.Roatp.Infrastructure;
+
 [ExcludeFromCodeCoverage]
 public static class HealthCheckStartup
 {
