@@ -12,6 +12,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Roatp.Api.AppStart;
 using SFA.DAS.Roatp.Api.HealthCheck;
 using SFA.DAS.Roatp.Application.Charities.Queries;
+using SFA.DAS.Roatp.Infrastructure;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 

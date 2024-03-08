@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace SFA.DAS.Roatp.Infrastructure;
 
 [ExcludeFromCodeCoverage]
-public static class HealthCheckStartup
+public static class UseHealthChecksExtension
 {
     public static IApplicationBuilder UseHealthChecks(this IApplicationBuilder app)
     {
