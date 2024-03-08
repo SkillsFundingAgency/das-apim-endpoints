@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;

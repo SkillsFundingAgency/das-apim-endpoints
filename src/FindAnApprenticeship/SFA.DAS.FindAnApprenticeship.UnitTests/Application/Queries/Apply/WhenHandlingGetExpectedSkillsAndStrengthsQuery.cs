@@ -52,7 +52,7 @@ public class WhenHandlingGetExpectedSkillsAndStrengthsQuery
     }
 
     [Test, MoqAutoData]
-    public async Task And_Application_Is_Null_Then_Exception_Is_Returned(
+    public void And_Application_Is_Null_Then_Exception_Is_Returned(
         GetExpectedSkillsAndStrengthsQuery query,
         GetApplicationApiResponse application,
         GetApprenticeshipVacancyItemResponse vacancy,
@@ -66,7 +66,7 @@ public class WhenHandlingGetExpectedSkillsAndStrengthsQuery
         candidateApiClient
             .Setup(client => client.Get<GetApplicationApiResponse>(
                 It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
-                .ReturnsAsync(() => null);
+                .Returns(Task.FromResult<GetApplicationApiResponse>(null!));
 
         findApprenticeshipApiClient
             .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(
@@ -75,11 +75,11 @@ public class WhenHandlingGetExpectedSkillsAndStrengthsQuery
 
         Func<Task> result = () => handler.Handle(query, CancellationToken.None);
 
-        result.Should().ThrowAsync<InvalidOperationException>();
+        _= result.Should().ThrowAsync<InvalidOperationException>();
     }
 
     [Test, MoqAutoData]
-    public async Task And_Vacancy_Is_Null_Then_Exception_Is_Returned(
+    public void And_Vacancy_Is_Null_Then_Exception_Is_Returned(
         GetExpectedSkillsAndStrengthsQuery query,
         GetApplicationApiResponse application,
         [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
@@ -97,10 +97,10 @@ public class WhenHandlingGetExpectedSkillsAndStrengthsQuery
         findApprenticeshipApiClient
             .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(
                 It.Is<GetVacancyRequest>(r => r.GetUrl == expectedGetVacancyRequest.GetUrl)))
-                .ReturnsAsync(() => null);
+            .Returns(Task.FromResult<GetApprenticeshipVacancyItemResponse>(null!));    
 
         Func<Task> result = () => handler.Handle(query, CancellationToken.None);
 
-        result.Should().ThrowAsync<InvalidOperationException>();
+        _= result.Should().ThrowAsync<InvalidOperationException>();
     }
 }

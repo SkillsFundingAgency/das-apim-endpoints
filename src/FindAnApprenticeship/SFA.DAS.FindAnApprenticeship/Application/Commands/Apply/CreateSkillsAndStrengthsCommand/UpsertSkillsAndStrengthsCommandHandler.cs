@@ -36,7 +36,7 @@ public class UpsertSkillsAndStrengthsCommandHandler : IRequestHandler<UpsertSkil
         var patchResult = await _apiClient.PatchWithResponseCode(patchRequest);
         if (patchResult.StatusCode != System.Net.HttpStatusCode.OK)
         {
-            _logger.LogError($"Unable to patch application for candidate Id {command.CandidateId}");
+            _logger.LogError("Unable to patch application for candidate Id {command.CandidateId}", command.CandidateId);
             throw new HttpRequestContentException($"Unable to patch application for candidate Id {command.CandidateId}", patchResult.StatusCode, patchResult.ErrorContent);
         }
 
