@@ -31,9 +31,9 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
         {
             var apprenticeTask = _accountsApiClient.Get<Apprentice>(new GetApprenticeRequest(request.ApprenticeId));
             var myApprenticeshipTask = _accountsApiClient.Get<MyApprenticeship>(new GetMyApprenticeshipRequest(request.ApprenticeId));
-            var apprenticeshipsTask = _commitmentsApiClient.Get<GetApprenticeApprenticeshipsResult>(new GetApprenticeApprenticeshipsRequest(request.ApprenticeId));
+            //var apprenticeshipsTask = _commitmentsApiClient.Get<GetApprenticeApprenticeshipsResult>(new GetApprenticeApprenticeshipsRequest(request.ApprenticeId));
 
-            await Task.WhenAll(apprenticeTask, apprenticeshipsTask, myApprenticeshipTask);
+            await Task.WhenAll(apprenticeTask, myApprenticeshipTask);
 
             var myApprenticeship = await myApprenticeshipTask;
             if (myApprenticeship != null)
@@ -46,7 +46,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
                 ApprenticeHomepage = new ApprenticeHomepage
                 {
                     Apprentice = await apprenticeTask,
-                    Apprenticeship = (await apprenticeshipsTask)?.Apprenticeships.FirstOrDefault(),
+                    Apprenticeship = null,
                     MyApprenticeship = myApprenticeship
                 }
             };
