@@ -6,6 +6,7 @@ namespace SFA.DAS.ApprenticeApp.Models
     {
         public Guid ApprenticeId { get; set; }
         public string FirstName { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public string LastName { get; set; }
         public bool TermsOfUseAccepted { get; set; }
     }
