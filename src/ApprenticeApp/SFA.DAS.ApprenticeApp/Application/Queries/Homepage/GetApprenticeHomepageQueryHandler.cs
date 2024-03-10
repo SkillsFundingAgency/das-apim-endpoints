@@ -31,23 +31,15 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
         {
             var apprenticeTask = _accountsApiClient.Get<Apprentice>(new GetApprenticeRequest(request.ApprenticeId));
             var myApprenticeshipTask = _accountsApiClient.Get<MyApprenticeship>(new GetMyApprenticeshipRequest(request.ApprenticeId));
-            //var apprenticeshipsTask = _commitmentsApiClient.Get<GetApprenticeApprenticeshipsResult>(new GetApprenticeApprenticeshipsRequest(request.ApprenticeId));
 
             await Task.WhenAll(apprenticeTask, myApprenticeshipTask);
-
-            var myApprenticeship = await myApprenticeshipTask;
-            if (myApprenticeship != null)
-            {
-                await PopulateMyApprenticeshipWithCourseTitle(myApprenticeship);
-            }
 
             return new GetApprenticeHomepageQueryResult
             {
                 ApprenticeHomepage = new ApprenticeHomepage
                 {
                     Apprentice = await apprenticeTask,
-                    Apprenticeship = null,
-                    MyApprenticeship = myApprenticeship
+                    MyApprenticeship = await myApprenticeshipTask
                 }
             };
         }
