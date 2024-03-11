@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Application.Authorization.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Authorization;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Authorization;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
 
@@ -14,12 +14,12 @@ namespace SFA.DAS.Approvals.Api.Controllers;
 public class AuthorizationController(ISender mediator) : Controller
 {
     [HttpGet]
-    [Route(nameof(CanAccessCohort))]
-    public async Task<IActionResult> CanAccessCohort([FromBody] GetCohortAccessRequest request)
+    [Route("{partyId}/can-access-cohort/{cohortId}")]
+    public async Task<IActionResult> CanAccessCohort(long partyId, long cohortId, [FromQuery] Party party)
     {
         try
         {
-            var result = await mediator.Send(new GetCohortAccessQuery(request.Party, request.PartyId, request.CohortId));
+            var result = await mediator.Send(new GetCohortAccessQuery(party, partyId, cohortId));
             return Ok(new GetCohortAccessResponse { HasCohortAccess = result });
         }
         catch (Exception)
@@ -29,12 +29,12 @@ public class AuthorizationController(ISender mediator) : Controller
     }
 
     [HttpGet]
-    [Route(nameof(CanAccessApprenticeship))]
-    public async Task<IActionResult> CanAccessApprenticeship([FromBody] GetApprenticeshipAccessRequest request)
+    [Route("{partyId}/can-access-apprenticeship/{apprenticeshipId}")]
+    public async Task<IActionResult> CanAccessApprenticeship(long partyId, long apprenticeshipId, [FromQuery] Party party)
     {
         try
         {
-            var result = await mediator.Send(new GetApprenticeshipAccessQuery(request.Party, request.PartyId, request.ApprenticeshipId));
+            var result = await mediator.Send(new GetApprenticeshipAccessQuery(party, partyId, apprenticeshipId));
             return Ok(new GetApprenticeshipAccessResponse { HasApprenticeshipAccess = result });
         }
         catch (Exception)

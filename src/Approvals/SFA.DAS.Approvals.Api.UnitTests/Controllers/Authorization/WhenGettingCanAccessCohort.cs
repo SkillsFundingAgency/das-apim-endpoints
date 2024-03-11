@@ -31,10 +31,8 @@ public class WhenGettingCanAccessCohort
         mediator.Setup(x => x.Send(
             It.Is<GetCohortAccessQuery>(c => c.Party.Equals(party) && c.PartyId.Equals(partyId) && c.CohortId.Equals(cohortId))
             , CancellationToken.None)).ReturnsAsync(result);
-        
-        var request = new GetCohortAccessRequest(party, partyId, cohortId);
-        
-        var actual = await controller.CanAccessCohort(request) as OkObjectResult;
+
+        var actual = await controller.CanAccessCohort(partyId, cohortId, party) as OkObjectResult;
 
         actual.Should().NotBeNull();
         var actualModel = actual.Value as GetCohortAccessResponse;
@@ -54,8 +52,7 @@ public class WhenGettingCanAccessCohort
             It.Is<GetCohortAccessQuery>(c => c.Party.Equals(party) && c.PartyId.Equals(partyId) && c.CohortId.Equals(cohortId))
             , CancellationToken.None)).ThrowsAsync(new Exception("Error"));
 
-        var request = new GetCohortAccessRequest(party, partyId, cohortId);
-        var actual = await controller.CanAccessCohort(request) as StatusCodeResult;
+        var actual = await controller.CanAccessCohort(partyId, cohortId, party) as StatusCodeResult;
 
         actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }

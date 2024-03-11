@@ -31,10 +31,8 @@ public class WhenGettingCanAccessApprenticeship
         mediator.Setup(x => x.Send(
             It.Is<GetApprenticeshipAccessQuery>(c => c.Party.Equals(party) && c.PartyId.Equals(partyId) && c.ApprenticeshipId.Equals(apprenticeshipId))
             , CancellationToken.None)).ReturnsAsync(result);
-        
-        var request = new GetApprenticeshipAccessRequest(party, partyId, apprenticeshipId);
-        
-        var actual = await controller.CanAccessApprenticeship(request) as OkObjectResult;
+
+        var actual = await controller.CanAccessApprenticeship(partyId, apprenticeshipId, party) as OkObjectResult;
 
         actual.Should().NotBeNull();
         var actualModel = actual.Value as GetApprenticeshipAccessResponse;
@@ -54,8 +52,7 @@ public class WhenGettingCanAccessApprenticeship
             It.Is<GetApprenticeshipAccessQuery>(c => c.Party.Equals(party) && c.PartyId.Equals(partyId) && c.ApprenticeshipId.Equals(apprenticeshipId))
             , CancellationToken.None)).ThrowsAsync(new Exception("Error"));
 
-        var request = new GetApprenticeshipAccessRequest(party, partyId, apprenticeshipId);
-        var actual = await controller.CanAccessApprenticeship(request) as StatusCodeResult;
+        var actual = await controller.CanAccessApprenticeship(partyId, apprenticeshipId, party) as StatusCodeResult;
 
         actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }
