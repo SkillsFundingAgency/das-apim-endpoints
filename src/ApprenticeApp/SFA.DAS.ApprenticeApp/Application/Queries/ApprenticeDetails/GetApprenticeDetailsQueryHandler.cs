@@ -6,7 +6,6 @@ using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.ApprenticeApp.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
 {
@@ -14,17 +13,14 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
     {
         private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _accountsApiClient;
         private readonly CoursesService _coursesService;
-        private readonly IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> _commitmentsApiClient;
 
         public GetApprenticeDetailsQueryHandler(
             IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> accountsApiClient,
-            IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> commitmentsApiClient,
             CoursesService coursesService
             )
         {
             _coursesService = coursesService;
             _accountsApiClient = accountsApiClient;
-            _commitmentsApiClient = commitmentsApiClient;
         }
 
         public async Task<GetApprenticeDetailsQueryResult> Handle(GetApprenticeDetailsQuery request, CancellationToken cancellationToken)
