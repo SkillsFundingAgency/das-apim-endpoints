@@ -3,7 +3,7 @@ using System;
 
 namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
 {
-    public class GetApprenticeHomepageQuery : IRequest<GetApprenticeHomepageQueryResult>
+    public class GetApprenticeDetailsQuery : IRequest<GetApprenticeDetailsQueryResult>
     {
         public Guid ApprenticeId { get; set; }
     }

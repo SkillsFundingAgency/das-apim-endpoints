@@ -11,13 +11,13 @@ using SFA.DAS.ApprenticeApp.Services;
 
 namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
 {
-    public class GetApprenticeHomepageQueryHandler : IRequestHandler<GetApprenticeHomepageQuery, GetApprenticeHomepageQueryResult>
+    public class GetApprenticeDetailsQueryHandler : IRequestHandler<GetApprenticeDetailsQuery, GetApprenticeDetailsQueryResult>
     {
         private readonly CoursesService _coursesService;
         private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _accountsApiClient;
         private readonly IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> _commitmentsApiClient;
 
-        public GetApprenticeHomepageQueryHandler(
+        public GetApprenticeDetailsQueryHandler(
             IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> accountsApiClient,
             IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> commitmentsApiClient,
             CoursesService coursesService)
@@ -27,16 +27,16 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
             _commitmentsApiClient = commitmentsApiClient;
         }
 
-        public async Task<GetApprenticeHomepageQueryResult> Handle(GetApprenticeHomepageQuery request, CancellationToken cancellationToken)
+        public async Task<GetApprenticeDetailsQueryResult> Handle(GetApprenticeDetailsQuery request, CancellationToken cancellationToken)
         {
             var apprenticeTask = _accountsApiClient.Get<Apprentice>(new GetApprenticeRequest(request.ApprenticeId));
             var myApprenticeshipTask = _accountsApiClient.Get<MyApprenticeship>(new GetMyApprenticeshipRequest(request.ApprenticeId));
 
             await Task.WhenAll(apprenticeTask, myApprenticeshipTask);
 
-            return new GetApprenticeHomepageQueryResult
+            return new GetApprenticeDetailsQueryResult
             {
-                ApprenticeHomepage = new ApprenticeHomepage
+                ApprenticeDetails = new ApprenticeDetails
                 {
                     Apprentice = await apprenticeTask,
                     MyApprenticeship = await myApprenticeshipTask

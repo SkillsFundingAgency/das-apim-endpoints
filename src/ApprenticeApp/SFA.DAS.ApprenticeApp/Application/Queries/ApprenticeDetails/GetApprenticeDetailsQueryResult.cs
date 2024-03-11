@@ -2,8 +2,8 @@
 
 namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
 {
-    public class GetApprenticeHomepageQueryResult
+    public class GetApprenticeDetailsQueryResult
     {
-        public ApprenticeHomepage ApprenticeHomepage { get; set; }
+        public ApprenticeDetails ApprenticeDetails { get; set; }
     }
 }

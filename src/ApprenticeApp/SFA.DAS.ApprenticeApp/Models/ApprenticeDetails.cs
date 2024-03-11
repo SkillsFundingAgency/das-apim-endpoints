@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.ApprenticeApp.Models
 {
-    public class ApprenticeHomepage
+    public class ApprenticeDetails
     {
         public Apprentice Apprentice { get; set; }
         public Apprenticeship Apprenticeship { get; set; }

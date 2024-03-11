@@ -9,8 +9,8 @@ using TechTalk.SpecFlow;
 namespace SFA.DAS.ApprenticeApp.Api.UnitTests.FeatureSteps
 {
     [Binding]
-    [Scope(Feature = "GetApprenticeHomePage")]
-    public class GetApprenticeHomePageSteps
+    [Scope(Feature = "GetApprenticeDetails")]
+    public class GetApprenticeDetailsSteps
     {
         private readonly Fixture _fixture = new Fixture();
         private readonly TestContext _context;
@@ -20,7 +20,7 @@ namespace SFA.DAS.ApprenticeApp.Api.UnitTests.FeatureSteps
         private StandardApiResponse _standardCourse;
         private FrameworkApiResponse _frameworkCourse;
 
-        public GetApprenticeHomePageSteps(TestContext context)
+        public GetApprenticeDetailsSteps(TestContext context)
         {
             _context = context;
             _apprentice = _fixture.Create<Apprentice>();
@@ -80,7 +80,7 @@ namespace SFA.DAS.ApprenticeApp.Api.UnitTests.FeatureSteps
         [Then(@"the result should contain the apprentice data, but with no apprenticeship data or my apprenticeship data")]
         public void ThenTheResultShouldContainTheApprenticeDataButWithNoApprenticeshipData()
         {
-            var homePageModel = new ApprenticeHomepage {Apprentice = _apprentice, Apprenticeship = null, MyApprenticeship = null};
+            var homePageModel = new ApprenticeDetails { Apprentice = _apprentice, Apprenticeship = null, MyApprenticeship = null};
             _context.OuterApiClient.Response.Should().Be200Ok().And.BeAs(homePageModel);
         }
 
