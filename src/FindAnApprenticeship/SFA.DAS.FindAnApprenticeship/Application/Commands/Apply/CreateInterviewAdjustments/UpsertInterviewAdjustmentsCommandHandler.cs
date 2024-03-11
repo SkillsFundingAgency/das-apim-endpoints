@@ -50,7 +50,7 @@ public class UpsertInterviewAdjustmentsCommandHandler : IRequestHandler<UpsertIn
             SkillsAndStrengths = aboutYouItem.AboutYou?.SkillsAndStrengths,
             HobbiesAndInterests = aboutYouItem.AboutYou?.HobbiesAndInterests,
             Improvements = aboutYouItem.AboutYou?.Improvements,
-            Support = aboutYouItem.AboutYou?.Support,
+            Support = command.InterviewAdjustmentsDescription,
         };
         var request = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), requestBody);
 
