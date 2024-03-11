@@ -56,11 +56,13 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
             {
                 var course = await _coursesService.GetFrameworkCourse(myApprenticeship.TrainingCode);
                 myApprenticeship.Title = course.Title;
+                myApprenticeship.Level = course.Level;
             }
             else
             {
                 var course = await _coursesService.GetStandardCourse(myApprenticeship.StandardUId);
                 myApprenticeship.Title = course.Title;
+                myApprenticeship.Level = course.Level;
             }
             return myApprenticeship;
         }

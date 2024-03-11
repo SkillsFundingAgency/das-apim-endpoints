@@ -38,11 +38,13 @@ namespace SFA.DAS.ApprenticeApp.Services
     public class FrameworkApiResponse
     {
         public string Title { get; set; }
+        public int Level { get; set; }
     }
 
     public class StandardApiResponse : StandardApiResponseBase
     {
         public string Title { get; set; }
+        public int Level { get; set; }
     }
 
 }
