@@ -6,19 +6,23 @@ using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.ApprenticeApp.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
 {
     public class GetApprenticeDetailsQueryHandler : IRequestHandler<GetApprenticeDetailsQuery, GetApprenticeDetailsQueryResult>
     {
         private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _accountsApiClient;
+        private readonly CoursesService _coursesService;
         private readonly IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> _commitmentsApiClient;
 
         public GetApprenticeDetailsQueryHandler(
             IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> accountsApiClient,
-            IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> commitmentsApiClient
+            IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> commitmentsApiClient,
+            CoursesService coursesService
             )
         {
+            _coursesService = coursesService;
             _accountsApiClient = accountsApiClient;
             _commitmentsApiClient = commitmentsApiClient;
         }
@@ -30,6 +34,12 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
 
             await Task.WhenAll(apprenticeTask, myApprenticeshipTask);
 
+            var myApprenticeship = await myApprenticeshipTask;
+            if (myApprenticeship != null)
+            {
+               // await PopulateMyApprenticeshipWithCourseTitle(myApprenticeship);
+            }
+
             return new GetApprenticeDetailsQueryResult
             {
                 ApprenticeDetails = new ApprenticeDetails
@@ -38,6 +48,21 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
                     MyApprenticeship = await myApprenticeshipTask
                 }
             };
+        }
+
+        private async Task<MyApprenticeship> PopulateMyApprenticeshipWithCourseTitle(MyApprenticeship myApprenticeship)
+        {
+            if (string.IsNullOrWhiteSpace(myApprenticeship.StandardUId))
+            {
+                var course = await _coursesService.GetFrameworkCourse(myApprenticeship.TrainingCode);
+                myApprenticeship.Title = course.Title;
+            }
+            else
+            {
+                var course = await _coursesService.GetStandardCourse(myApprenticeship.StandardUId);
+                myApprenticeship.Title = course.Title;
+            }
+            return myApprenticeship;
         }
     }
 }
