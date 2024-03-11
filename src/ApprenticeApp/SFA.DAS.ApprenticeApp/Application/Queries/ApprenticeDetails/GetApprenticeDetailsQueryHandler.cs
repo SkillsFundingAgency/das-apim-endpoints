@@ -37,7 +37,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
             var myApprenticeship = await myApprenticeshipTask;
             if (myApprenticeship != null)
             {
-               // await PopulateMyApprenticeshipWithCourseTitle(myApprenticeship);
+               await PopulateMyApprenticeshipWithCourseTitle(myApprenticeship);
             }
 
             return new GetApprenticeDetailsQueryResult
