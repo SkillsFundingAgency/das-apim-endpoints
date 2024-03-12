@@ -32,7 +32,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory
             
             bool? isCompleted = application.JobsStatus switch
             {
-                Constants.SectionStatus.InProgress => false,
+                Constants.SectionStatus.Incomplete => false,
                 Constants.SectionStatus.Completed => true,
                 _ => null
             };

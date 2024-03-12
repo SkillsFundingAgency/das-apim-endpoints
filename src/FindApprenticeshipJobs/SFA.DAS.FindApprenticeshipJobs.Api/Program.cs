@@ -17,7 +17,7 @@ var configuration = builder.Configuration.BuildSharedConfiguration();
 builder.Services
     .AddLogging()
     .AddApplicationInsightsTelemetry()
-    .AddServiceRegistration(configuration)
+    .AddServiceRegistration()
     .AddEndpointsApiExplorer()
     .AddSwaggerGen(c =>
     {
