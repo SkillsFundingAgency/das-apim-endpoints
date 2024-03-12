@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using RestEase;
 using SFA.DAS.AdminAan.Application.Admins.Commands.Create;
-using SFA.DAS.AdminAan.Application.Admins.Queries.Lookup;
+using SFA.DAS.AdminAan.Application.Admins.Queries.GetAdminMember;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Create;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Update;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvent;
@@ -53,7 +53,7 @@ public interface IAanHubRestApiClient : IHealthChecker
 
     [Get("/members/{email}")]
     [AllowAnyStatusCode]
-    Task<Response<LookupAdminMemberResult>> GetMemberByEmail([Path] string email, CancellationToken cancellationToken);
+    Task<Response<GetAdminMemberResult>> GetMemberByEmail([Path] string email, CancellationToken cancellationToken);
 
     [Get("members/{memberId}")]
     Task<GetMemberResponse> GetMember([Path] Guid memberId, CancellationToken cancellationToken);
