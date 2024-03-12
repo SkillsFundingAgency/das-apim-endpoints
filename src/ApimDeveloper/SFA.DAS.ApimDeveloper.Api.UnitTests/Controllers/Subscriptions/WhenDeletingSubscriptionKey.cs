@@ -1,13 +1,11 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApimDeveloper.Api.Controllers;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.DeleteSubscriptionKey;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.ComponentModel.DataAnnotations;

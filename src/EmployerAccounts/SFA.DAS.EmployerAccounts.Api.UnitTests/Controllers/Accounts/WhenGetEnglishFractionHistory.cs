@@ -33,10 +33,10 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
 
             var controllerResult = await controller.GetEnglishFractionHistory(hashedAccountId, empRef) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetEnglishFractionResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo((GetEnglishFractionResponse)mediatorResult);
         }
 
@@ -47,6 +47,12 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] AccountsController controller)
         {
+            mockMediator
+               .Setup(mediator => mediator.Send(
+                   It.Is<GetEnglishFractionHistoryQuery>(p => p.HashedAccountId == hashedAccountId && p.EmpRef == empRef),
+                   It.IsAny<CancellationToken>()))
+               .ReturnsAsync(() => null);
+
             var controllerResult = await controller.GetEnglishFractionHistory(hashedAccountId, empRef) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);

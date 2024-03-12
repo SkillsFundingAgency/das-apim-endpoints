@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndex;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -32,10 +31,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprentic
 
             var controllerResult = await controller.Index(locationSearchTerm) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as SearchIndexApiResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo((SearchIndexApiResponse)mediatorResult);
         }
 
@@ -46,13 +45,13 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SearchApprentic
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<SearchApprenticeshipsQuery>(),
+                    It.IsAny<SearchIndexQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new InvalidOperationException());
 
             var controllerResult = await controller.Index() as StatusCodeResult;
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+            controllerResult?.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }
 }

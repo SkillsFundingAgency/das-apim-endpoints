@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{B790C631-F118-4463-83D5-15BDFCB8CB31}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Roatp", "SFA.DAS.Roatp\SFA.DAS.Roatp.csproj", "{B79A5335-0798-43C7-9199-213444457A9C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Roatp.Api", "SFA.DAS.Roatp.Api\SFA.DAS.Roatp.Api.csproj", "{97356C1C-A427-49EB-86C2-0789EDCBB566}"
@@ -13,18 +11,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Roatp.Api.UnitTests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Roatp.UnitTests", "SFA.DAS.Roatp.UnitTests\SFA.DAS.Roatp.UnitTests.csproj", "{9F4E2AEF-88AB-4D60-B491-A4C856226274}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B790C631-F118-4463-83D5-15BDFCB8CB31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B790C631-F118-4463-83D5-15BDFCB8CB31}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B790C631-F118-4463-83D5-15BDFCB8CB31}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B790C631-F118-4463-83D5-15BDFCB8CB31}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B79A5335-0798-43C7-9199-213444457A9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B79A5335-0798-43C7-9199-213444457A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B79A5335-0798-43C7-9199-213444457A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -41,10 +33,6 @@ Global
 		{9F4E2AEF-88AB-4D60-B491-A4C856226274}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F4E2AEF-88AB-4D60-B491-A4C856226274}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F4E2AEF-88AB-4D60-B491-A4C856226274}.Release|Any CPU.Build.0 = Release|Any CPU
-		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-        {41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Debug|Any CPU.Build.0 = Debug|Any CPU
-        {41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Release|Any CPU.ActiveCfg = Release|Any CPU
-        {41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

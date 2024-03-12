@@ -43,7 +43,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.UndoApplic
         {
             await _handler.Handle(_command, CancellationToken.None);
 
-            Assert.AreEqual($"pledges/{_command.PledgeId}/applications/{_command.ApplicationId}/undo-approval", _request.PostUrl);
+            Assert.That(_request.PostUrl, Is.EqualTo($"pledges/{_command.PledgeId}/applications/{_command.ApplicationId}/undo-approval"));
         }
     }
 }

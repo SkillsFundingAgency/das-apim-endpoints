@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Globalization;
+using System.Net;
 using AutoFixture;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -6,6 +7,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Services;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -26,6 +28,43 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             var result = sut.Map(source, mockStandardsListResponse);
 
             AssertResponse(result, source, mockStandardsListResponse);
+        }
+
+        [Test, MoqAutoData]
+        public void Then_The_Nhs_Vacancy_Is_Mapped(GetNhsJobApiDetailResponse source, LiveVacancyMapper liveVacancyMapper, DateTime closeDate, DateTime postDate, GetLocationsListItem address, string address1, string postCode1, string postCode2, GetRoutesListItem route)
+        {
+            address.Postcode = $"{postCode1} {postCode2}";
+            var addressResponse = new GetLocationsListResponse
+            {
+                Locations = new List<GetLocationsListItem>
+                {
+                    address
+                }
+            };
+            source.CloseDate = closeDate.ToString();
+            source.PostDate = postDate.ToString();
+            source.Locations.Clear();
+            source.Locations.Add(new GetNhsJobLocationApiResponse{Location = $"{address1}, {postCode1}{postCode2} "});
+            
+            
+            var actual = liveVacancyMapper.Map(source, addressResponse, route);
+
+            actual.Id.Should().Be(source.Id);
+            actual.Title.Should().Be(source.Title);
+            actual.Description.Should().Be(source.Description);
+            actual.ClosingDate.Should().BeCloseTo(closeDate, TimeSpan.FromHours(1));
+            actual.PostedDate.Should().BeCloseTo(postDate, TimeSpan.FromHours(1));
+            actual.EmployerName.Should().Be(source.Employer);
+            actual.VacancyReference.Should().Be(source.Reference);
+            actual.ApplicationUrl.Should().Be(source.Url);
+            actual.Wage.WageText.Should().Be(source.Salary);
+            actual.Address.AddressLine4.Should().Be(address1);
+            actual.Address.Postcode.Should().Be($"{postCode1}{postCode2}");
+            actual.Address.Longitude.Should().Be(address.Location.GeoPoint.FirstOrDefault());
+            actual.Address.Latitude.Should().Be(address.Location.GeoPoint.LastOrDefault());
+            actual.Route.Should().Be(route.Name);
+            actual.RouteCode.Should().Be(route.Id);
+
         }
 
         private static void AssertResponse(FindApprenticeshipJobs.Application.Shared.LiveVacancy actual, LiveVacancy source, GetStandardsListResponse standardsListResponse)
@@ -100,7 +139,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                     Latitude = source.EmployerLocation?.Latitude ?? 0,
                     Longitude = source.EmployerLocation?.Longitude ?? 0,
                 },
-                
+                source.AdditionalQuestion1,
+                source.AdditionalQuestion2
             };
 
             actual.Should().BeEquivalentTo(expectedResult);

@@ -24,22 +24,22 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
 
             var controllerResult = await controller.GetApplications(1) as OkObjectResult;
             var result = controllerResult.Value as GetApplicationsResponse;
-            Assert.IsNotNull(controllerResult);
-            Assert.IsNotNull(result);
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(result, Is.Not.Null);
 
             var expected = (GetApplicationsResponse) queryResult;
             var x = expected.Applications.First();
             var y = result.Applications.First();
-            Assert.AreEqual(expected.Applications.Count(), result.Applications.Count());
-            Assert.AreEqual(x.DasAccountName, y.DasAccountName);
-            Assert.AreEqual(x.Details, y.Details);
-            Assert.AreEqual(x.Amount, y.Amount);
-            Assert.AreEqual(x.Status, y.Status);
-            Assert.AreEqual(x.CreatedOn, y.CreatedOn);
-            Assert.AreEqual(x.NumberOfApprentices, y.NumberOfApprentices);
-            Assert.AreEqual(x.Id, y.Id);
-            Assert.AreEqual(x.PledgeId, y.PledgeId);
-            Assert.AreEqual(x.IsNamePublic, y.IsNamePublic);
+            Assert.That(expected.Applications.Count(), Is.EqualTo(result.Applications.Count()));
+            Assert.That(x.DasAccountName, Is.EqualTo(y.DasAccountName));
+            Assert.That(x.Details, Is.EqualTo(y.Details));
+            Assert.That(x.Amount, Is.EqualTo(y.Amount));
+            Assert.That(x.Status, Is.EqualTo(y.Status));
+            Assert.That(x.CreatedOn,Is.EqualTo( y.CreatedOn));
+            Assert.That(x.NumberOfApprentices, Is.EqualTo(y.NumberOfApprentices));
+            Assert.That(x.Id, Is.EqualTo(y.Id));
+            Assert.That(x.PledgeId, Is.EqualTo(y.PledgeId));
+            Assert.That(x.IsNamePublic, Is.EqualTo(y.IsNamePublic));
         }
     }
 }

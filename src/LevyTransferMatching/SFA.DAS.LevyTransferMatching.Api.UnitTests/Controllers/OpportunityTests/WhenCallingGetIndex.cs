@@ -38,14 +38,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             var okObjectResult = controllerResult as OkObjectResult;
             var responseObject = okObjectResult.Value as GetIndexResponse;
 
-            Assert.IsNotNull(controllerResult);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(responseObject);
-            Assert.IsNotNull(responseObject.Opportunities);
-            Assert.IsNotNull(responseObject.Sectors);
-            Assert.IsNotNull(responseObject.JobRoles);
-            Assert.IsNotNull(responseObject.Levels);
-            Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.OK);
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(responseObject, Is.Not.Null);
+            Assert.That(responseObject.Opportunities, Is.Not.Null);
+            Assert.That(responseObject.Sectors, Is.Not.Null);
+            Assert.That(responseObject.JobRoles, Is.Not.Null);
+            Assert.That(responseObject.Levels, Is.Not.Null);
+            Assert.That(okObjectResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
         }
     }
 }

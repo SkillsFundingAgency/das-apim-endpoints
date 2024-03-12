@@ -1,11 +1,11 @@
-using MediatR;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.RoatpOversight.Api.Extensions;
+using SFA.DAS.RoatpOversight.Api.HealthCheck;
 using SFA.DAS.RoatpOversight.Application.Commands.CreateProvider;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var configuration = builder.Configuration.BuildSharedConfiguration();
+var configuration = builder.Configuration.BuildConfiguration();
 
 // Add services to the container.
 
@@ -17,13 +17,16 @@ builder.Services
     .AddApplicationInsightsTelemetry()
     .AddEndpointsApiExplorer()
     .AddControllers(configuration)
-    .AddMediatR(typeof(CreateProviderCommand).Assembly)
+    .AddMediatR(c => c.RegisterServicesFromAssembly(typeof(CreateProviderCommand).Assembly))
     .AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "RoatpOversightOuterApi", Version = "v1" });
     })
-    .AddHealthChecks().AddDependenciesToHealthChecks(builder.Services)
-    .AddServiceRegistrations();
+    .AddHealthChecks().AddCheck<RoatpV2ApiHealthCheck>(nameof(RoatpV2ApiHealthCheck));
+
+builder.Services.AddServiceRegistrations(configuration);
+
+builder.Services.AddServiceHealthChecks();
 
 var app = builder.Build();
 

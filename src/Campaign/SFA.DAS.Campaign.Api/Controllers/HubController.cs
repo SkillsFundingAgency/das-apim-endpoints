@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Campaign.Api.Models;
-using SFA.DAS.Campaign.Application.Queries.Articles;
 using SFA.DAS.Campaign.Application.Queries.Hub;
 using SFA.DAS.Campaign.Application.Queries.PreviewHub;
 

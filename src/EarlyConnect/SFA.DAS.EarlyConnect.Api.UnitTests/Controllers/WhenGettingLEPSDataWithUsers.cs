@@ -41,10 +41,10 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.GetLepsDataWithUsers();
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
-            Assert.IsInstanceOf<GetLEPSDataListWithUsersResponse>(okResult.Value);
-            Assert.AreEqual((int)HttpStatusCode.OK, okResult.StatusCode);
+            Assert.That(okResult.Value, Is.InstanceOf<GetLEPSDataListWithUsersResponse>());
+            Assert.That((int)HttpStatusCode.OK, Is.EqualTo(okResult.StatusCode));
         }
 
         [Test]
@@ -55,9 +55,9 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.GetLepsDataWithUsers();
 
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
             var badRequestResult = (BadRequestObjectResult)result;
-            Assert.AreEqual((int)HttpStatusCode.BadRequest, badRequestResult.StatusCode);
+            Assert.That((int)HttpStatusCode.BadRequest, Is.EqualTo(badRequestResult.StatusCode));
         }
     }
 }

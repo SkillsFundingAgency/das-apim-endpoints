@@ -43,12 +43,12 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
         {
             var result = await _controller.GetChangeEmployerApprenticeshipData(_providerId, _apprenticeshipId, _accountLegalEntityId);
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
 
             var okObjectResult = result as OkObjectResult;
             var response = okObjectResult.Value as GetChangeOfEmployerApprenticeDataQueryResult;
 
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
 
             var result = await _controller.GetChangeEmployerApprenticeshipData(_providerId, _apprenticeshipId, _accountLegalEntityId);
 
-            Assert.IsInstanceOf<NotFoundResult>(result);
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
         }
     }
 }

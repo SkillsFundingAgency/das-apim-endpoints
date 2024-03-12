@@ -4,7 +4,7 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests.VendorBlock;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.VendorBlock
 {
-    public class BlockAccountLegalEntityForPaymentsCommand : IRequest
+    public class BlockAccountLegalEntityForPaymentsCommand : IRequest<Unit>
     {
         public BlockAccountLegalEntityForPaymentsCommand(
             List<BlockAccountLegalEntityForPaymentsRequest> vendorBlockRequest)

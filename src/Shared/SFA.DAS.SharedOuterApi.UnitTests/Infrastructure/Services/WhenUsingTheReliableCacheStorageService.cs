@@ -5,7 +5,6 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -26,6 +25,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
         {
             //Arrange
             var response = new ApiResponse<TestData>(requestData, HttpStatusCode.OK, "");
+            cacheStorageService.Setup(x => x.RetrieveFromCache<TestData>(It.IsAny<string>())).ReturnsAsync((TestData)null);
             getApiClient.Setup(x => x.GetWithResponseCode<TestData>(It.Is<IGetApiRequest>(c => c.GetUrl.Equals(request.GetUrl))))
                 .ReturnsAsync(response);
             
@@ -68,7 +68,8 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             ReliableCacheStorageService<IApiConfiguration> reliableCacheStorageService)
         {
-            var response = new ApiResponse<TestData>(requestData, HttpStatusCode.NotFound, errorContent);
+            var response = new ApiResponse<TestData>(null, HttpStatusCode.NotFound, errorContent);
+            cacheStorageService.Setup(x => x.RetrieveFromCache<TestData>(It.IsAny<string>())).ReturnsAsync((TestData)null);
             getApiClient
                 .Setup(
                     x => x.GetWithResponseCode<TestData>(It.Is<IGetApiRequest>(c => c.GetUrl.Equals(request.GetUrl))))
@@ -92,6 +93,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             ReliableCacheStorageService<IApiConfiguration> reliableCacheStorageService)
         {
             var response = new ApiResponse<TestData>(requestData, HttpStatusCode.OK, "");
+            cacheStorageService.Setup(x => x.RetrieveFromCache<TestData>(It.IsAny<string>())).ReturnsAsync((TestData)null);
             getApiClient
                 .Setup(
                     x => x.GetWithResponseCode<TestData>(It.Is<IGetApiRequest>(c => c.GetUrl.Equals(request.GetUrl))))

@@ -17,7 +17,7 @@ namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
             var actual = new PostAddDraftApprenticeshipRequest(cohortId, request);
 
             //Assert
-            Assert.AreEqual($"api/cohorts/{cohortId}/draft-apprenticeships", actual.PostUrl);
+            Assert.That(actual.PostUrl, Is.EqualTo($"api/cohorts/{cohortId}/draft-apprenticeships"));
         }
     }
 }

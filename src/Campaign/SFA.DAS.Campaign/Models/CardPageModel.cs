@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SFA.DAS.Campaign.ExternalApi.Responses;
-
-namespace SFA.DAS.Campaign.Models
+﻿namespace SFA.DAS.Campaign.Models
 {
     public class CardPageModel : PageModel
     {

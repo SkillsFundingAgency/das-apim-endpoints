@@ -9,9 +9,9 @@ using SFA.DAS.TrackProgressInternal.Apis.TrackProgressInnerApi;
 
 namespace SFA.DAS.TrackProgressInternal.Application.Commands.TrackProgress;
 
-public record PopulateKsbsCommand(string Standard) : IRequest;
+public record PopulateKsbsCommand(string Standard) : IRequest<Unit>;
 
-public class PopulateKsbsCommandHandler : IRequestHandler<PopulateKsbsCommand>
+public class PopulateKsbsCommandHandler : IRequestHandler<PopulateKsbsCommand, Unit>
 {
     private readonly IInternalApiClient<TrackProgressApiConfiguration> _trackProgressApi;
     private readonly CourseApiClient _coursesApi;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.EmployerIncentives.InnerApi.Responses.Accounts
+﻿namespace SFA.DAS.EmployerIncentives.InnerApi.Responses.Accounts
 {
     public class AccountLegalEntity
     {

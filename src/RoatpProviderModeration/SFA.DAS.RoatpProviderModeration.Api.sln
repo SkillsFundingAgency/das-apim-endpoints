@@ -5,17 +5,13 @@ VisualStudioVersion = 17.3.32804.467
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BABD2C9B-36F1-4593-9E43-0B16E8106D87}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{A57EB591-4301-4A43-B0B5-029EE6B702E5}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{7F1922EF-517E-4DDD-9D15-4A51757CE742}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpProviderModeration.Application", "SFA.DAS.RoatpProviderModeration.Application\SFA.DAS.RoatpProviderModeration.Application.csproj", "{EDE5A818-6EFE-47A6-A4A8-A3E1F3298731}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpProviderModeration.Api", "SFA.DAS.RoatpProviderModeration.Api\SFA.DAS.RoatpProviderModeration.Api.csproj", "{7F006F84-712D-4C4B-B3B1-C46FFEF2A6BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.RoatpProviderModeration.Api.UnitTests", "SFA.DAS.RoatpProviderModeration.Api.UnitTests\SFA.DAS.RoatpProviderModeration.Api.UnitTests.csproj", "{6C79A8BB-B850-46EA-A1CF-E9828A3D4B89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpProviderModeration.Api.UnitTests", "SFA.DAS.RoatpProviderModeration.Api.UnitTests\SFA.DAS.RoatpProviderModeration.Api.UnitTests.csproj", "{6C79A8BB-B850-46EA-A1CF-E9828A3D4B89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.RoatpProviderModeration.Application.UnitTests", "SFA.DAS.RoatpProviderModeration.Application.UnitTests\SFA.DAS.RoatpProviderModeration.Application.UnitTests.csproj", "{40C5FD23-24BF-4476-BC76-E2EA2233F56A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpProviderModeration.Application.UnitTests", "SFA.DAS.RoatpProviderModeration.Application.UnitTests\SFA.DAS.RoatpProviderModeration.Application.UnitTests.csproj", "{40C5FD23-24BF-4476-BC76-E2EA2233F56A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,14 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A57EB591-4301-4A43-B0B5-029EE6B702E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A57EB591-4301-4A43-B0B5-029EE6B702E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A57EB591-4301-4A43-B0B5-029EE6B702E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A57EB591-4301-4A43-B0B5-029EE6B702E5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7F1922EF-517E-4DDD-9D15-4A51757CE742}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7F1922EF-517E-4DDD-9D15-4A51757CE742}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7F1922EF-517E-4DDD-9D15-4A51757CE742}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7F1922EF-517E-4DDD-9D15-4A51757CE742}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EDE5A818-6EFE-47A6-A4A8-A3E1F3298731}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EDE5A818-6EFE-47A6-A4A8-A3E1F3298731}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDE5A818-6EFE-47A6-A4A8-A3E1F3298731}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -52,7 +40,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{7F1922EF-517E-4DDD-9D15-4A51757CE742} = {BABD2C9B-36F1-4593-9E43-0B16E8106D87}
 		{6C79A8BB-B850-46EA-A1CF-E9828A3D4B89} = {BABD2C9B-36F1-4593-9E43-0B16E8106D87}
 		{40C5FD23-24BF-4476-BC76-E2EA2233F56A} = {BABD2C9B-36F1-4593-9E43-0B16E8106D87}
 	EndGlobalSection

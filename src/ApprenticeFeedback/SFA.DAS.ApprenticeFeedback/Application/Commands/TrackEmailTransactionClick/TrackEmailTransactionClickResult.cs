@@ -1,5 +1,4 @@
 ﻿using System;
-using static SFA.DAS.ApprenticeFeedback.Models.Enums;
 
 namespace SFA.DAS.ApprenticeFeedback.Application.Commands.TrackEmailTransactionClick
 {

@@ -46,6 +46,9 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                 .Setup(client => client.Get<GetEmployerDemandResponse>(
                     It.Is<GetEmployerDemandRequest>(request => request.GetUrl.Contains($"demand/{command.EmployerDemandId}"))))
                 .ReturnsAsync(getDemandResponse);
+            mockApiClient.Setup(
+                    x => x.PostWithResponseCode<object>(It.IsAny<PostEmployerDemandNotificationAuditRequest>(), true))
+                .ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.Accepted, null));
 
             SendEmailCommand actualEmail = null;
             mockNotificationService
@@ -149,7 +152,7 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
             
             //Assert
-            act.Should().Throw<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.InternalServerError} ({HttpStatusCode.InternalServerError})")
+            act.Should().ThrowAsync<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.InternalServerError} ({HttpStatusCode.InternalServerError})").Result
                 .Which.ErrorContent.Should().Be(errorContent);
             mockNotificationService.Verify(service => service.Send(It.IsAny<SendEmailCommand>()), 
                 Times.Never);

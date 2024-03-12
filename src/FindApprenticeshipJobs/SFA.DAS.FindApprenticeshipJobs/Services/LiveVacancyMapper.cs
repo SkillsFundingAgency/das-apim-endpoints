@@ -1,5 +1,8 @@
-﻿using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
+﻿using System.Globalization;
+using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using Address = SFA.DAS.FindApprenticeshipJobs.Application.Shared.Address;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Services
 {
@@ -11,7 +14,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
 
             return new Application.Shared.LiveVacancy
             {
-                Id = source.VacancyReference.ToString(),
+                Id = source.VacancyReference,
                 VacancyReference = source.VacancyReference,
                 VacancyId = source.VacancyId,
                 Title = source.Title,
@@ -64,6 +67,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 EmployerContactName = source.EmployerContactName,
                 EmployerContactEmail = source.EmployerContactEmail,
                 EmployerContactPhone = source.EmployerContactPhone,
+                ProviderContactEmail = source.ProviderContactEmail,
+                ProviderContactName = source.ProviderContactName,
+                ProviderContactPhone = source.ProviderContactPhone,
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
                 Address = new Application.Shared.Address
@@ -87,7 +93,43 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 RouteCode = getStandardsListItem.RouteCode,  
                 Route = getStandardsListItem?.Route ?? string.Empty,
 
-                IsRecruitVacancy = true
+                IsRecruitVacancy = true,
+                TypicalJobTitles = getStandardsListItem.TypicalJobTitles == null ? "" : SortTypicalJobTitles(getStandardsListItem.TypicalJobTitles),
+                AdditionalQuestion1 = source.AdditionalQuestion1,
+                AdditionalQuestion2 = source.AdditionalQuestion2
+            };
+        }
+
+        public Application.Shared.LiveVacancy Map(GetNhsJobApiDetailResponse source, GetLocationsListResponse locations, GetRoutesListItem route)
+        {
+            var location = source.Locations.FirstOrDefault().Location.Split(",");
+            var locationLookup = locations.Locations.FirstOrDefault(c =>
+                c.Postcode.Replace(" ","").Equals(location[1].Replace(" ","").Trim(), StringComparison.CurrentCultureIgnoreCase));
+            return new Application.Shared.LiveVacancy
+            {
+                Route = route.Name,
+                RouteCode = route.Id,
+                Title = source.Title,
+                Description = source.Description,
+                Id = source.Id,
+                EmployerName = source.Employer,
+                VacancyReference = source.Reference,
+                Wage = new Application.Shared.Wage
+                {
+                    WageText   = source.Salary
+                },
+                ApplicationUrl = source.Url,
+                ClosingDate = DateTime.Parse(source.CloseDate),
+                PostedDate = DateTime.Parse(source.PostDate),
+                Address = new Address
+                {
+                    AddressLine4 = location[0].Trim(),
+                    Postcode = location[1].Trim(),
+                    Longitude = locationLookup?.Location?.GeoPoint?.FirstOrDefault() ?? 0,
+                    Latitude = locationLookup?.Location?.GeoPoint?.LastOrDefault() ?? 0
+                },
+                Qualifications = [],
+                Skills = []
             };
         }
 
@@ -104,6 +146,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 7 => "Degree",
                 _ => ""
             };
+        }
+
+        private string SortTypicalJobTitles(string typicalJobTitles)
+        {
+            var orderedJobTitles = typicalJobTitles.Split("|").OrderBy(s => s);
+            return string.Join("|", orderedJobTitles);
         }
     }
 }

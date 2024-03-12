@@ -20,7 +20,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
         public async Task Then_The_Services_Are_Called_And_Data_Returned_Based_On_Request(
             SearchApprenticeshipsQuery query,
             LocationItem locationInfo,
-            GetApprenticeshipCountResponse apiResponse,
             GetVacanciesResponse vacanciesResponse,
             GetRoutesListResponse routesResponse,
             [Frozen] Mock<ICourseService> courseService,
@@ -35,32 +34,27 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 .ReturnsAsync(locationInfo);
             courseService.Setup(x => x.GetRoutes()).ReturnsAsync(routesResponse);
 
-            // Pass locationInfo to the request
-            var expectedRequest = new GetApprenticeshipCountRequest(
-                locationInfo.GeoPoint?.FirstOrDefault(),
-                locationInfo.GeoPoint?.LastOrDefault(),
-                query.SelectedRouteIds,
-                query.Distance
-            );
+            var categories = routesResponse.Routes.Where(route => query.SelectedRouteIds != null && query.SelectedRouteIds.Contains(route.Id.ToString()))
+                .Select(route => route.Name).ToList();
 
+            // Pass locationInfo to the request
             var vacancyRequest = new GetVacanciesRequest(
                 locationInfo.GeoPoint?.FirstOrDefault(),
                 locationInfo.GeoPoint?.LastOrDefault(),
-                query.SelectedRouteIds,
                 query.Distance,
-                query.Sort,
+                query.SearchTerm,
                 query.PageNumber,
-                query.PageSize);
-
-            apiClient
-                .Setup(client => client.Get<GetApprenticeshipCountResponse>(It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
-                .ReturnsAsync(apiResponse);
+                query.PageSize,
+                categories,
+                query.SelectedLevelIds,
+                query.Sort,
+                query.DisabilityConfident);
 
             apiClient
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
                 .ReturnsAsync(vacanciesResponse);
 
-            var totalPages = (int)Math.Ceiling((double)apiResponse.TotalVacancies / query.PageSize);
+            var totalPages = (int)Math.Ceiling((double)vacanciesResponse.TotalFound / query.PageSize);
 
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
@@ -68,15 +62,40 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             // Assert
             using (new AssertionScope())
             {
-                Assert.NotNull(result);
-                result.TotalApprenticeshipCount.Should().Be(apiResponse.TotalVacancies);
+                Assert.That(result, Is.Not.Null);
+                result.TotalApprenticeshipCount.Should().Be(vacanciesResponse.Total);
+                result.TotalFound.Should().Be(vacanciesResponse.TotalFound);
                 result.LocationItem.Should().BeEquivalentTo(locationInfo);
                 result.Routes.Should().BeEquivalentTo(routesResponse.Routes);
                 result.Vacancies.Should().BeEquivalentTo(vacanciesResponse.ApprenticeshipVacancies);
                 result.PageNumber.Should().Be(query.PageNumber);
                 result.PageSize.Should().Be(query.PageSize);
                 result.TotalPages.Should().Be(totalPages);
+                result.DisabilityConfident.Should().Be(query.DisabilityConfident);
             }
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Search_Term_Is_A_Vacancy_Reference_And_Vacancy_Reference_Is_Returned(
+            SearchApprenticeshipsQuery query, 
+            GetApprenticeshipVacancyItemResponse apiResponse,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            SearchApprenticeshipsQueryHandler handler
+            )
+        {
+            query.SearchTerm = "VAC1098765465";
+
+            var expectedRequest = new GetVacancyRequest(query.SearchTerm);
+
+            apiClient
+                .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(It.Is<GetVacancyRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
+                .ReturnsAsync(apiResponse);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            Assert.That(result, Is.Not.Null);
+            result.VacancyReference.Should().Be(query.SearchTerm);
+
         }
     }
 }

@@ -36,6 +36,6 @@ public class WhenCreatingLogData
         var result = await handler.Handle(command, cancellationToken);
 
         earlyConnectApiClientMock.Verify(x => x.PostWithResponseCode<CreateLogDataResponse>(It.IsAny<CreateLogDataRequest>(), It.IsAny<bool>()), Times.Once);
-        Assert.AreEqual(expectedResponse.Object.LogId, result.LogId);
+        Assert.That(expectedResponse.Object.LogId, Is.EqualTo(result.LogId));
     }
 }

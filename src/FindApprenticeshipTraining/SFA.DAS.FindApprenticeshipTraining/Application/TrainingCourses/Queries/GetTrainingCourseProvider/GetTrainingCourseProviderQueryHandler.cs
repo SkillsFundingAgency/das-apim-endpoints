@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
@@ -7,10 +11,6 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider
 {
@@ -53,7 +53,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 new GetProviderAdditionalStandardsRequest(request.ProviderId));
 
             var overallAchievementRatesTask = _roatpCourseManagementApiClient.Get<GetOverallAchievementRateResponse>(
-                new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier2Description));
+                new GetOverallAchievementRateRequest(courseTask.Result.SectorSubjectAreaTier1));
 
             var apprenticeFeedbackTask = _apprenticeFeedbackApiClient.GetWithResponseCode<GetApprenticeFeedbackResponse>(new GetApprenticeFeedbackDetailsRequest(request.ProviderId));
             var employerFeedbackTask = _employerFeedbackApiClient.GetWithResponseCode<GetEmployerFeedbackResponse>(new GetEmployerFeedbackDetailsRequest(request.ProviderId));
@@ -66,17 +66,17 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             var providerDetails = await GetProviderDetails(request.ProviderId, request.CourseId, locationTask.Result, shortlistTask.Result);
 
-            if(providerDetails != null && apprenticeFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK && apprenticeFeedbackTask.Result.Body != null)
+            if (providerDetails != null && apprenticeFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK && apprenticeFeedbackTask.Result.Body != null)
             {
                 providerDetails.ApprenticeFeedback = apprenticeFeedbackTask.Result.Body;
             }
-            
-            if(providerDetails != null && employerFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK && employerFeedbackTask.Result.Body != null)
+
+            if (providerDetails != null && employerFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK && employerFeedbackTask.Result.Body != null)
             {
                 providerDetails.EmployerFeedback = employerFeedbackTask.Result.Body;
             }
 
-      
+
             var additionalCourses = BuildAdditionalCoursesResponse(providerCoursesTask.Result
                 .Where(x => x.IsApprovedByRegulator != false || string.IsNullOrEmpty(x.ApprovalBody)).ToList());
 
@@ -122,7 +122,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 return new GetProviderStandardItem();
             }
 
-            var matchingShortlistItem = (ShortlistItem) null;
+            var matchingShortlistItem = (ShortlistItem)null;
             if (shortlistItems != null)
             {
                 matchingShortlistItem = shortlistItems.FirstOrDefault(s =>

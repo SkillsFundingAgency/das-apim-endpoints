@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
+﻿namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
     public class GetApprenticeFeedbackSummaryItem
     {

@@ -1,16 +1,15 @@
-﻿using AngleSharp;
+﻿using System.Diagnostics.CodeAnalysis;
+using AngleSharp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
-using SFA.DAS.RoatpCourseManagement.Services.NationalAchievementRates;
+using SFA.DAS.RoatpCourseManagement.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
-using System.Diagnostics.CodeAnalysis;
-using SFA.DAS.RoatpCourseManagement.Configuration;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
@@ -28,9 +27,6 @@ namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
-            services.AddTransient<IDataDownloadService, DataDownloadService>();
-            services.AddTransient<INationalAchievementRatesPageParser, NationalAchievementRatesPageParser>();
-            services.AddTransient<IZipArchiveHelper, ZipArchiveHelper>();
             services.AddTransient<IUkrlpSoapSerializer, UkrlpSoapSerializer>();
             services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         }

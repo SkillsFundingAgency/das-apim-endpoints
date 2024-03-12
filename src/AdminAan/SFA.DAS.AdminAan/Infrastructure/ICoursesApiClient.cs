@@ -3,7 +3,7 @@ using SFA.DAS.AdminAan.Domain.Courses;
 
 namespace SFA.DAS.AdminAan.Infrastructure;
 
-public interface ICoursesApiClient
+public interface ICoursesApiClient : IHealthChecker
 {
     [Get("api/courses/Standards/{standardUId}")]
     [AllowAnyStatusCode]

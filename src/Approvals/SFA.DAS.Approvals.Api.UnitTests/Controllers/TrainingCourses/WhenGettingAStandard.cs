@@ -33,18 +33,25 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.TrainingCourses
 
             var controllerResult = await controller.GetStandard(courseCode) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetStandardResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo((GetStandardResponse)mediatorResult);
         }
 
         [Test, MoqAutoData]
         public async Task And_Then_No_Standard_Is_Returned_From_Mediator(
             string courseCode,
+            [Frozen] Mock<IMediator> mockMediator,
             [Greedy] TrainingCoursesController controller)
         {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetStandardQuery>(x => x.CourseCode == courseCode),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => null);
+
             var controllerResult = await controller.GetStandard(courseCode) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);

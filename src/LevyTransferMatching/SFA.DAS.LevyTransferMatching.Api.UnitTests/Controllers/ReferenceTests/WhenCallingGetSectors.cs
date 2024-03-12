@@ -29,11 +29,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ReferenceTests
 
             var controllerResult = await referenceController.Sectors() as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
-            Assert.AreEqual(controllerResult.StatusCode, (int) HttpStatusCode.OK);
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(controllerResult.StatusCode, Is.EqualTo((int) HttpStatusCode.OK));
 
             var model = controllerResult.Value as IEnumerable<ReferenceDataItem>;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
         }
     }
 }

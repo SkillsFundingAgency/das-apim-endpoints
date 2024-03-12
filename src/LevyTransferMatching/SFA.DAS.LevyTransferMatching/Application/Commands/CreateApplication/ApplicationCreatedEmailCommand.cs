@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
 {
-    public class ApplicationCreatedEmailCommand : IRequest
+    public class ApplicationCreatedEmailCommand : IRequest<Unit>
     { 
         public int PledgeId { get; set; }
         public int ApplicationId { get; set; }

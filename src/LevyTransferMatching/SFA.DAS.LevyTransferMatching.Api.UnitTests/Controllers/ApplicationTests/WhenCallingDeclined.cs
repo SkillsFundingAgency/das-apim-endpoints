@@ -7,6 +7,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Applications;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetDeclined;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -29,9 +30,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             var okObjectResult = controllerResult as OkObjectResult;
             var getDeclinedResponse = okObjectResult.Value as GetDeclinedResponse;
 
-            Assert.IsNotNull(controllerResult);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(getDeclinedResponse);
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(getDeclinedResponse, Is.Not.Null);
         }
 
         [Test, MoqAutoData]
@@ -42,14 +43,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             [Greedy] ApplicationsController applicationController)
         {
             mockMediator
-                .Setup(x => x.Send(It.Is<GetDeclinedQuery>(y => y.ApplicationId == applicationId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((GetDeclinedResult)null);
+                .Setup(x => x.Send(It.Is<GetApplicationQuery>(y => y.ApplicationId == applicationId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((GetApplicationResult)null);
 
             var controllerResult = await applicationController.Application(accountId, applicationId);
             var notFoundResult = controllerResult as NotFoundResult;
 
-            Assert.IsNotNull(controllerResult);
-            Assert.IsNotNull(notFoundResult);
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(notFoundResult, Is.Not.Null);
         }
     }
 }

@@ -9,7 +9,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationCreatedForImmediateAutoApproval
 {
-    public class ApplicationCreatedForImmediateAutoApprovalCommandHandler : IRequestHandler<ApplicationCreatedForImmediateAutoApprovalCommand>
+    public class ApplicationCreatedForImmediateAutoApprovalCommandHandler : IRequestHandler<ApplicationCreatedForImmediateAutoApprovalCommand, Unit>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly ILogger<ApplicationCreatedForImmediateAutoApprovalCommandHandler> _logger;

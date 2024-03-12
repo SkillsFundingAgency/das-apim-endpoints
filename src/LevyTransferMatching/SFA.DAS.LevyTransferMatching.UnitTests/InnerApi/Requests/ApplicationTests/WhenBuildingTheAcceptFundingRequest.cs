@@ -14,9 +14,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.InnerApi.Requests.ApplicationTe
         {
             var actual = new AcceptFundingRequest(applicationId, accountId, data);
 
-            Assert.AreEqual(
-                $"/accounts/{accountId}/applications/{applicationId}/accept-funding",
-                actual.PostUrl);
+            Assert.That(actual.PostUrl, Is.EqualTo($"/accounts/{accountId}/applications/{applicationId}/accept-funding"));
         }
     }
 }

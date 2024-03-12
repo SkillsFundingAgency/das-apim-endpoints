@@ -161,7 +161,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
              var actualResult = await actual.Get<string>(getTestRequest);
              
              //Assert
-             Assert.IsNull(actualResult);
+             Assert.That(actualResult, Is.Null);
          }
          
         private class GetTestRequestNoVersion : IGetApiRequest

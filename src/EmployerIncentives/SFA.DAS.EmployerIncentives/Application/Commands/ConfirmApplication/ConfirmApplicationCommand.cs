@@ -3,7 +3,7 @@ using System;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.ConfirmApplication
 {
-    public class ConfirmApplicationCommand : IRequest
+    public class ConfirmApplicationCommand : IRequest<Unit>
     {
         public Guid ApplicationId { get; }
         public long AccountId { get; }

@@ -7,10 +7,7 @@ using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,7 +32,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.OverlappingTrainingDateReq
 
             var controllerResult = await controller.ValidateUlnOverlapOnStartDate(providerId, uln, startDate, endDate) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
         }

@@ -31,10 +31,10 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
 
             var controllerResult = await controller.Get(apprenticeId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetApprenticeResult;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo(mediatorResult);
         }
 
@@ -44,6 +44,12 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ApprenticesController controller)
         {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<GetApprenticeQuery>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => null);
+
             var controllerResult = await controller.Get(apprenticeId) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);

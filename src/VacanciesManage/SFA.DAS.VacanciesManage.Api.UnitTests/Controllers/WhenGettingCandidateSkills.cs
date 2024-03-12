@@ -12,7 +12,6 @@ using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Api.Controllers;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetCandidateSkills;
-using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetQualifications;
 
 namespace SFA.DAS.VacanciesManage.Api.UnitTests.Controllers
 {
@@ -32,10 +31,10 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Controllers
 
             var controllerResult = await controller.GetSkills() as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetCandidateSkillsListResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.CandidateSkills.Should().BeEquivalentTo(mediatorResult.CandidateSkills);
         }
 
