@@ -3,7 +3,7 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.WithdrawApplication
 {
-    public class WithdrawCommand : IRequest
+    public class WithdrawCommand : IRequest<Unit>
     {   
         public WithdrawRequest WithdrawRequest { get; }
 

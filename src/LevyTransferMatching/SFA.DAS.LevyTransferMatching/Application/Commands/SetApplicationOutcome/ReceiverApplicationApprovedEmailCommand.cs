@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome
 {
-    public class ReceiverApplicationApprovedEmailCommand : IRequest
+    public class ReceiverApplicationApprovedEmailCommand : IRequest<Unit>
     { 
         public int PledgeId { get; set; }
         public int ApplicationId { get; set; }

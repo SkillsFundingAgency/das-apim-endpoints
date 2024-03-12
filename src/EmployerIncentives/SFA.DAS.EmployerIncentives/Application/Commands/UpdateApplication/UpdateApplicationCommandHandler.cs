@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.UpdateApplication
 {
-    public class UpdateApplicationCommandHandler : IRequestHandler<UpdateApplicationCommand>
+    public class UpdateApplicationCommandHandler : IRequestHandler<UpdateApplicationCommand, Unit>
     {
         private readonly ICommitmentsService _commitmentsService;
         private readonly IApplicationService _applicationService;

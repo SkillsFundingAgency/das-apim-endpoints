@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.Campaign.InnerApi.Responses;
 
 namespace SFA.DAS.Campaign.Api.Models
 {

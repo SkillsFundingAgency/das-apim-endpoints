@@ -4,7 +4,7 @@
     {
         public string Id { get; set; } = null!;
         public Guid VacancyId { get; set; }
-        public long VacancyReference { get; set; }
+        public string VacancyReference { get; set; }
         public string Title { get; set; } = null!;
         public int NumberOfPositions { get; set; }
         public string? ApprenticeshipTitle { get; set; }
@@ -37,6 +37,9 @@
         public string? EmployerContactPhone { get; set; }
         public string? EmployerContactEmail { get; set; }
         public string? EmployerContactName { get; set; }
+        public string? ProviderContactEmail { get; set; }
+        public string? ProviderContactName { get; set; }
+        public string? ProviderContactPhone { get; set; }
         public string? ApprenticeshipLevel { get; set; }
         public int Duration { get; set; }
         public string? DurationUnit { get; set; }
@@ -45,5 +48,8 @@
         public string AccountLegalEntityPublicHashedId { get; set; } = null!;
         public string ApplicationMethod { get; set; } = null!;
         public string? ApplicationUrl { get; set; }
+        public string TypicalJobTitles { get; set; } = null!;
+        public string? AdditionalQuestion1 { get; set; }
+        public string? AdditionalQuestion2 { get; set; }
     }
 }

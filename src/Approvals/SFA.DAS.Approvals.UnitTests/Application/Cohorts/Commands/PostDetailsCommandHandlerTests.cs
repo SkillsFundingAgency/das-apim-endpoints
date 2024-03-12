@@ -90,12 +90,12 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
 
             var requestBody =_approveCohortRequest.Data as ApproveCohortRequest.Body;
 
-            Assert.AreEqual(_approveCohortRequest.CohortId, _request.CohortId);
-            Assert.AreEqual(Approvals.Application.Shared.Enums.Party.Employer, requestBody.RequestingParty);
-            Assert.AreEqual(_request.Message, requestBody.Message);
-            Assert.AreEqual(_request.UserInfo.UserId, requestBody.UserInfo.UserId);
-            Assert.AreEqual(_request.UserInfo.UserDisplayName, requestBody.UserInfo.UserDisplayName);
-            Assert.AreEqual(_request.UserInfo.UserEmail, requestBody.UserInfo.UserEmail);
+            Assert.That(_approveCohortRequest.CohortId, Is.EqualTo(_request.CohortId));
+            Assert.That(Approvals.Application.Shared.Enums.Party.Employer, Is.EqualTo(requestBody.RequestingParty));
+            Assert.That(_request.Message, Is.EqualTo(requestBody.Message));
+            Assert.That(_request.UserInfo.UserId, Is.EqualTo(requestBody.UserInfo.UserId));
+            Assert.That(_request.UserInfo.UserDisplayName, Is.EqualTo(requestBody.UserInfo.UserDisplayName));
+            Assert.That(_request.UserInfo.UserEmail, Is.EqualTo(requestBody.UserInfo.UserEmail));
         }
 
         [Test]
@@ -107,12 +107,12 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
 
             var requestBody = _sendCohortRequest.Data as SendCohortRequest.Body;
 
-            Assert.AreEqual(_sendCohortRequest.CohortId, _request.CohortId);
-            Assert.AreEqual(Approvals.Application.Shared.Enums.Party.Employer, requestBody.RequestingParty);
-            Assert.AreEqual(_request.Message, requestBody.Message);
-            Assert.AreEqual(_request.UserInfo.UserId, requestBody.UserInfo.UserId);
-            Assert.AreEqual(_request.UserInfo.UserDisplayName, requestBody.UserInfo.UserDisplayName);
-            Assert.AreEqual(_request.UserInfo.UserEmail, requestBody.UserInfo.UserEmail);
+            Assert.That(_sendCohortRequest.CohortId, Is.EqualTo(_request.CohortId));
+            Assert.That(Approvals.Application.Shared.Enums.Party.Employer, Is.EqualTo(requestBody.RequestingParty));
+            Assert.That(_request.Message, Is.EqualTo(requestBody.Message));
+            Assert.That(_request.UserInfo.UserId, Is.EqualTo(requestBody.UserInfo.UserId));
+            Assert.That(_request.UserInfo.UserDisplayName, Is.EqualTo(requestBody.UserInfo.UserDisplayName));
+            Assert.That(_request.UserInfo.UserEmail, Is.EqualTo(requestBody.UserInfo.UserEmail));
         }
     }
 }

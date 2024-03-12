@@ -1,5 +1,4 @@
 using AutoFixture.NUnit3;
-using FluentAssertions.Common;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Application.Services;
@@ -24,7 +23,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmploymentCh
             client.Verify(x =>
                 x.Put(It.Is<UpdateEmploymentCheckRequest>(
                     c =>
-                        c.PutUrl.Contains(request.CorrelationId.ToString()) && c.Data.IsSameOrEqualTo(request)
+                        c.PutUrl.Contains(request.CorrelationId.ToString()) && c.Data.Equals(request)//TODO
                 )), Times.Once
             );
         }

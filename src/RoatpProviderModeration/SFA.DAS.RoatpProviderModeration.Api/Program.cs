@@ -1,12 +1,11 @@
-using System.Text.Json.Serialization;
-using MediatR;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using NLog.Web;
+using SFA.DAS.RoatpProviderModeration.Api.AppStart;
+using SFA.DAS.RoatpProviderModeration.Api.HealthCheck;
 using SFA.DAS.RoatpProviderModeration.Application.Provider.Queries.GetProvider;
 using SFA.DAS.RoatpProviderModeration.OuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.AppStart;
-
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,15 +13,15 @@ builder.WebHost.UseNLog();
 
 // Add services to the container.
 
-var configuration = builder.Configuration.BuildSharedConfiguration();
+var configuration = builder.Configuration.BuildConfiguration();
 
 builder.Services
     .AddConfigurationOptions(configuration)
     .AddApplicationInsightsTelemetry()
-    .AddServiceRegistration()
+    .AddServiceRegistration(configuration)
     .AddAuthentication(configuration)
     .AddEndpointsApiExplorer()
-    .AddMediatR(typeof(GetProviderQuery).Assembly)
+    .AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetProviderQuery).Assembly))
     .AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "RoatpProviderModerationOuterApi", Version = "v1" });
@@ -40,9 +39,9 @@ builder.Services
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
-builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecks().AddCheck<RoatpV2ApiHealthCheck>(nameof(RoatpV2ApiHealthCheck));
 
-builder.Services.AddServiceRegistration();
+builder.Services.AddServiceHealthChecks();
 
 var app = builder.Build();
 

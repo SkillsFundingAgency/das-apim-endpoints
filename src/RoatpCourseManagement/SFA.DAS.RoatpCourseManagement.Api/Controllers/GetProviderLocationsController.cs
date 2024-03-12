@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetAllProviderLocations;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetAvailableProviderLocations;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetProviderLocationDetails;
-using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCoursesForProvider;
 using System;
 using System.Threading.Tasks;
 

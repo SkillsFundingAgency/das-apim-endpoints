@@ -2,7 +2,6 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.ApimDeveloper.Application.Users.Commands.ChangePassword;
 using SFA.DAS.ApimDeveloper.Application.Users.Commands.SendEmailToChangePassword;
 using SFA.DAS.ApimDeveloper.Configuration;
 using SFA.DAS.ApimDeveloper.Models;

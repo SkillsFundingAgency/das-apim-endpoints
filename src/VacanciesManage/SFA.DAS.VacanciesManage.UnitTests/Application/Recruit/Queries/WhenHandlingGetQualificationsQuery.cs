@@ -43,6 +43,8 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Queries
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetQualificationsQueryHandler handler)
         {
+            cacheStorageService.Setup(x => x.RetrieveFromCache<List<string>>("GetQualifications"))
+                .ReturnsAsync(() => null);
             apiClient.Setup(x =>
                     x.Get<List<string>>(
                         It.Is<GetQualificationsRequest>(c => c.GetUrl.Contains($"referencedata/candidate-qualifications"))))

@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Application
 
             var controllerResult = await controller.UpdateApplication(request) as OkObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             controllerResult.Value.Should().Be($"/accounts/{request.AccountId}/applications/{applicationId}");
         }

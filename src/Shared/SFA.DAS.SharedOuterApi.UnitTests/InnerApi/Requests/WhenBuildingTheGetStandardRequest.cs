@@ -13,7 +13,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             var actual = new GetStandardRequest(id);
 
             //Assert
-            Assert.AreEqual($"api/courses/standards/{id}",actual.GetUrl);
+            Assert.That($"api/courses/standards/{id}", Is.EqualTo(actual.GetUrl));
         }
     }
 }

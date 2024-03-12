@@ -68,147 +68,147 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         public async Task Handle_FirstName_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.FirstName, result.FirstName);
+            Assert.That(_draftApprenticeship.FirstName, Is.EqualTo(result.FirstName));
         }
 
         [Test]
         public async Task Handle_LastName_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.LastName, result.LastName);
+            Assert.That(_draftApprenticeship.LastName, Is.EqualTo(result.LastName));
         }
 
         [Test]
         public async Task Handle_ReservationId_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.ReservationId, result.ReservationId);
+            Assert.That(_draftApprenticeship.ReservationId, Is.EqualTo(result.ReservationId));
         }
 
         [Test]
         public async Task Handle_Email_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.Email, result.Email);
+            Assert.That(_draftApprenticeship.Email, Is.EqualTo(result.Email));
         }
 
         [Test]
         public async Task Handle_Uln_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.Uln, result.Uln);
+            Assert.That(_draftApprenticeship.Uln, Is.EqualTo(result.Uln));
         }
 
         [Test]
         public async Task Handle_DeliveryModel_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.DeliveryModel, result.DeliveryModel);
+            Assert.That(_draftApprenticeship.DeliveryModel, Is.EqualTo(result.DeliveryModel));
         }
 
         [Test]
         public async Task Handle_CourseCode_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.CourseCode, result.CourseCode);
+            Assert.That(_draftApprenticeship.CourseCode, Is.EqualTo(result.CourseCode));
         }
 
         [Test]
         public async Task Handle_StandardUId_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.StandardUId, result.StandardUId);
+            Assert.That(_draftApprenticeship.StandardUId, Is.EqualTo(result.StandardUId));
         }
 
         [Test]
         public async Task Handle_CourseName_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.TrainingCourseName, result.CourseName);
+            Assert.That(_draftApprenticeship.TrainingCourseName, Is.EqualTo(result.CourseName));
         }
 
         [Test]
         public async Task Handle_Cost_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.Cost, result.Cost);
+            Assert.That(_draftApprenticeship.Cost, Is.EqualTo(result.Cost));
         }
 
         [Test]
         public async Task Handle_TrainingPrice_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.TrainingPrice, result.TrainingPrice);
+            Assert.That(_draftApprenticeship.TrainingPrice, Is.EqualTo(result.TrainingPrice));
         }
 
         [Test]
         public async Task Handle_EndPointAssessmentPrice_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.EndPointAssessmentPrice, result.EndPointAssessmentPrice);
+            Assert.That(_draftApprenticeship.EndPointAssessmentPrice, Is.EqualTo(result.EndPointAssessmentPrice));
         }
 
         [Test]
         public async Task HandleEmploymentPrice_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.EmploymentPrice, result.EmploymentPrice);
+            Assert.That(_draftApprenticeship.EmploymentPrice, Is.EqualTo(result.EmploymentPrice));
         }
 
         [Test]
         public async Task Handle_EmploymentEndDate_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.EmploymentEndDate, result.EmploymentEndDate);
+            Assert.That(_draftApprenticeship.EmploymentEndDate, Is.EqualTo(result.EmploymentEndDate));
         }
 
         [Test]
         public async Task Handle_ProviderReference_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.ProviderReference, result.ProviderReference);
+            Assert.That(_draftApprenticeship.ProviderReference, Is.EqualTo(result.ProviderReference));
         }
 
         [Test]
         public async Task Handle_EmployerReference_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.EmployerReference, result.EmployerReference);
+            Assert.That(_draftApprenticeship.EmployerReference, Is.EqualTo(result.EmployerReference));
         }
 
         [Test]
         public async Task Handle_IsContinuation_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.IsContinuation, result.IsContinuation);
+            Assert.That(_draftApprenticeship.IsContinuation, Is.EqualTo(result.IsContinuation));
         }
 
         [Test]
         public async Task Handle_StartDate_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.StartDate, result.StartDate);
+            Assert.That(_draftApprenticeship.StartDate, Is.EqualTo(result.StartDate));
         }
 
         [Test]
         public async Task Handle_ActualStartDate_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.ActualStartDate, result.ActualStartDate);
+            Assert.That(_draftApprenticeship.ActualStartDate, Is.EqualTo(result.ActualStartDate));
         }
 
         [Test]
         public async Task Handle_IsOnFlexiPaymentPilot_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.IsOnFlexiPaymentPilot, result.IsOnFlexiPaymentPilot);
+            Assert.That(_draftApprenticeship.IsOnFlexiPaymentPilot, Is.EqualTo(result.IsOnFlexiPaymentPilot));
         }
 
         [Test]
         public async Task Handle_EmployerHasEditedCost_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.EmployerHasEditedCost, result.EmployerHasEditedCost);
+            Assert.That(_draftApprenticeship.EmployerHasEditedCost, Is.EqualTo(result.EmployerHasEditedCost));
         }
 
         [TestCase(0, false)]
@@ -221,7 +221,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             _deliveryModels.AddRange(fixture.CreateMany<string>(optionCount));
 
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(expectedHasMultiple, result.HasMultipleDeliveryModelOptions);
+            Assert.That(expectedHasMultiple, Is.EqualTo(result.HasMultipleDeliveryModelOptions));
         }
 
         [TestCase(true)]
@@ -235,56 +235,56 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             }
 
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(hasUnavailableDeliveryModel, result.HasUnavailableDeliveryModel);
+            Assert.That(hasUnavailableDeliveryModel, Is.EqualTo(result.HasUnavailableDeliveryModel));
         }
 
         [Test]
         public async Task Handle_ProviderId_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.ProviderId, result.ProviderId);
+            Assert.That(_cohort.ProviderId, Is.EqualTo(result.ProviderId));
         }
 
         [Test]
         public async Task Handle_ProviderName_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.ProviderName, result.ProviderName);
+            Assert.That(_cohort.ProviderName, Is.EqualTo(result.ProviderName));
         }
 
         [Test]
         public async Task Handle_AccountLegalEntityId_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.AccountLegalEntityId, result.AccountLegalEntityId);
+            Assert.That(_cohort.AccountLegalEntityId, Is.EqualTo(result.AccountLegalEntityId));
         }
 
         [Test]
         public async Task Handle_LegalEntityName_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.LegalEntityName, result.LegalEntityName);
+            Assert.That(_cohort.LegalEntityName, Is.EqualTo(result.LegalEntityName));
         }
 
         [Test]
         public async Task Handle_EmailAddressConfirmed_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.EmailAddressConfirmed, result.EmailAddressConfirmed);
+            Assert.That(_draftApprenticeship.EmailAddressConfirmed, Is.EqualTo(result.EmailAddressConfirmed));
         }
 
         [Test]
         public async Task Handle_RplStillRequired_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered, result.RecognisingPriorLearningStillNeedsToBeConsidered);
+            Assert.That(_draftApprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered, Is.EqualTo(result.RecognisingPriorLearningStillNeedsToBeConsidered));
         }
 
         [Test]
         public async Task Handle_RplExtendedStillRequired_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.RecognisingPriorLearningExtendedStillNeedsToBeConsidered, result.RecognisingPriorLearningExtendedStillNeedsToBeConsidered);
+            Assert.That(_draftApprenticeship.RecognisingPriorLearningExtendedStillNeedsToBeConsidered, Is.EqualTo(result.RecognisingPriorLearningExtendedStillNeedsToBeConsidered));
         }
     }
 }

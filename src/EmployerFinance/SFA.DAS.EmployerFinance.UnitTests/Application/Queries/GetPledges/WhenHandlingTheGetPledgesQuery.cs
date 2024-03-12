@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetPledges;
@@ -32,8 +33,8 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetPledges
 
             var results = await getPledgesQueryHandler.Handle(getPledgesQuery, CancellationToken.None);
 
-            CollectionAssert.AreEqual(getPledgesResponse.Pledges, results.Pledges);
-            Assert.AreEqual(getPledgesResponse.TotalPledges, results.TotalPledges);
+            results.Pledges.Should().BeEquivalentTo(getPledgesResponse.Pledges);
+            Assert.That(getPledgesResponse.TotalPledges, Is.EqualTo(results.TotalPledges));
         }
     }
 }

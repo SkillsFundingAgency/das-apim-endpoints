@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.SendEmails
 {
-    public class SendEmailsCommand : IRequest
+    public class SendEmailsCommand : IRequest<Unit>
     {
         public List<EmailData> EmailDataList { get; set; }
 

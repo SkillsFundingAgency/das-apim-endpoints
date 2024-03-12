@@ -31,18 +31,25 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
 
             var controllerResult = await controller.Get(cohortId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetCohortResult;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo(mediatorResult);
         }
 
         [Test, MoqAutoData]
         public async Task And_Then_No_Cohort_Is_Returned_From_Mediator(
             long cohortId,
+            [Frozen] Mock<IMediator> mockMediator,
             [Greedy] CohortController controller)
         {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<GetCohortQuery>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => null);
+
             var controllerResult = await controller.Get(cohortId) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);

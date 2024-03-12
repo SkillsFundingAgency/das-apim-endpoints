@@ -31,9 +31,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             var okObjectResult = controllerResult as OkObjectResult;
             var response = okObjectResult.Value as GetWithdrawalConfirmationResponse;
 
-            Assert.IsNotNull(controllerResult);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(response);
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(response, Is.Not.Null);
         }
 
         [Test, MoqAutoData]
@@ -50,8 +50,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             var controllerResult = await applicationController.GetWithdrawalConfirmation(accountId, applicationId);
             var notFoundResult = controllerResult as NotFoundResult;
 
-            Assert.IsNotNull(controllerResult);
-            Assert.IsNotNull(notFoundResult);
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(notFoundResult, Is.Not.Null);
         }
     }
 }

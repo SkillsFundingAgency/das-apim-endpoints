@@ -1,6 +1,5 @@
 ﻿
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,11 +33,11 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
                 .ReturnsAsync(mediatorResult);
 
             ObjectResult objectResult = await controller.GetFeedbackTransactionsToEmail(request.BatchSize) as ObjectResult;
-            Assert.IsNotNull(objectResult);
+            Assert.That(objectResult, Is.Not.Null);
             objectResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
 
             IEnumerable<GetFeedbackTransactionsToEmailResponse> result = (IEnumerable<GetFeedbackTransactionsToEmailResponse>)objectResult.Value;
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
         }
     }
 }

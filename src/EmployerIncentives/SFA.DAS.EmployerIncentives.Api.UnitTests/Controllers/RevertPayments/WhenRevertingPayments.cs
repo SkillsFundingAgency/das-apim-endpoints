@@ -29,7 +29,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.RevertPayments
                         c.RevertPaymentsRequest.Equals(request)),
                     It.IsAny<CancellationToken>()));
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
         }
     }
 }

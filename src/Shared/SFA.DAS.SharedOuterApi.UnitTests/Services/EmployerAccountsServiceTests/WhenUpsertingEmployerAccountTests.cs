@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
@@ -30,7 +28,10 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             EmployerAccountsService handler)
         {
             employerProfile.UserId = Guid.NewGuid().ToString();
-            
+
+            accountsApiClient
+                .Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<PutAccountUserRequest>()))
+                .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.Created, ""));
             employerProfilesApiClient.Setup(x => x.PutWithResponseCode<EmployerProfileUsersApiResponse>(
                 It.Is<PutUpsertEmployerUserAccountRequest>(c =>
                     c.PutUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}") 

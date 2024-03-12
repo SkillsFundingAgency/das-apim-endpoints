@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships
+﻿namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships
 {
     public class GetPendingPriceChangeApiResponse
 	{

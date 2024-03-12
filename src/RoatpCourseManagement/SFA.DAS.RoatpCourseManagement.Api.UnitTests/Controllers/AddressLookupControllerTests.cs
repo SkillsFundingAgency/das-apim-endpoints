@@ -6,7 +6,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
 using SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System.Threading;
 using System.Threading.Tasks;
 

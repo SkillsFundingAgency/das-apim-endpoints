@@ -5,7 +5,7 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.ReinstatePayments
 {
-    public class ReinstatePaymentsCommandHandler : IRequestHandler<ReinstatePaymentsCommand>
+    public class ReinstatePaymentsCommandHandler : IRequestHandler<ReinstatePaymentsCommand, Unit>
     {
         private readonly IEmployerIncentivesService _service;
 

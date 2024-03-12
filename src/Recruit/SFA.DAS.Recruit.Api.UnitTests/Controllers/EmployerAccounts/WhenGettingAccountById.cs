@@ -32,10 +32,10 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
 
             var controllerResult = await controller.GetById(accountId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetAccountResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.HashedAccountId.Should().Be(mediatorResult.HashedAccountId);
         }
 
