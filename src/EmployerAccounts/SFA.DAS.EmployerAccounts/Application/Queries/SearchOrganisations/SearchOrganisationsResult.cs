@@ -11,6 +11,11 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
 
         public static implicit operator SearchOrganisationsResult(GetSearchOrganisationsResponse organisations)
         {
+            if (organisations == null)
+            {
+                return null;
+            }
+
             return new SearchOrganisationsResult
             {
                 Organisations = organisations.Select(x => (OrganisationResult)x)
