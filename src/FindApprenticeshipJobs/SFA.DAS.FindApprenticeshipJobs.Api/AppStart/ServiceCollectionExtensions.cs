@@ -13,13 +13,15 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.AppStart;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddServiceRegistration(this IServiceCollection services)
     {
         services.AddHttpClient();
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+        services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
+        services.AddTransient<INhsJobsApiClient, NhsJobsApiClient>();
         services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<ILiveVacancyMapper, LiveVacancyMapper>();
