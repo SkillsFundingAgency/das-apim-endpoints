@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 using SFA.DAS.Approvals.InnerApi;

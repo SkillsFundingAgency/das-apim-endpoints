@@ -12,7 +12,6 @@ using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.Locations.GetLocations;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Locations

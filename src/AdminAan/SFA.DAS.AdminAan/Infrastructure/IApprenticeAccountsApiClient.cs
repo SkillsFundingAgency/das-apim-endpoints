@@ -3,7 +3,7 @@ using SFA.DAS.AdminAan.Domain.ApprenticeAccount;
 
 namespace SFA.DAS.AdminAan.Infrastructure;
 
-public interface IApprenticeAccountsApiClient
+public interface IApprenticeAccountsApiClient : IHealthChecker
 {
     [Get("apprentices/{id}/MyApprenticeship")]
     [AllowAnyStatusCode]

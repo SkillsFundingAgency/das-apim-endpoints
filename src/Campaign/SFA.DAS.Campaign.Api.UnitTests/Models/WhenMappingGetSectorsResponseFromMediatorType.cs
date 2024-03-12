@@ -2,7 +2,6 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Campaign.Api.Models;
-using SFA.DAS.Campaign.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.Campaign.Api.UnitTests.Models

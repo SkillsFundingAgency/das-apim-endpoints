@@ -46,7 +46,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             
             var actual = await controller.CreateProductSubscription(accountIdentifier, productId, accountType) as StatusCodeResult;
             
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
         
@@ -64,7 +64,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             
             var actual = await controller.CreateProductSubscription(accountIdentifier, productId, accountType) as ObjectResult;
             
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
     }

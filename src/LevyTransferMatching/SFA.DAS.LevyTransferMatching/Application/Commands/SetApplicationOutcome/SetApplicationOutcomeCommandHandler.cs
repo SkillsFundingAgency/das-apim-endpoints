@@ -8,7 +8,7 @@ using SFA.DAS.LevyTransferMatching.Types;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome
 {
-    public class SetApplicationOutcomeCommandHandler : IRequestHandler<SetApplicationOutcomeCommand>
+    public class SetApplicationOutcomeCommandHandler : IRequestHandler<SetApplicationOutcomeCommand, Unit>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly ILogger<SetApplicationOutcomeCommandHandler> _logger;

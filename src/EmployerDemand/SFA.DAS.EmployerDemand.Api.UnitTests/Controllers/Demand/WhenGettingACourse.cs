@@ -33,10 +33,10 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand
 
             var controllerResult = await controller.Create(courseId, locationName) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetCourseResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.TrainingCourse.Should().BeEquivalentTo((GetCourseListItem)mediatorResult.Course);
             model.Location.Should().BeEquivalentTo((GetLocationSearchResponseItem)mediatorResult.Location);
         }

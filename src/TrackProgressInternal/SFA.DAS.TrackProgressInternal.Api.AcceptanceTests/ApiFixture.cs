@@ -28,6 +28,12 @@ public class ApiFixture
         client?.Dispose();
     }
 
+    [OneTimeTearDown]
+    public void OneTimeTearDown()
+    {
+        factory.Dispose();
+    }
+
     protected string InnerApiUrl(string path)
         => $"{factory.TrackProgressInnerApi.BaseAddress}{path}";
 }

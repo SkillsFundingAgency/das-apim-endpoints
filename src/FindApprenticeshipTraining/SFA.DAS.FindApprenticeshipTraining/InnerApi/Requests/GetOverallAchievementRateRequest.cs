@@ -4,13 +4,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
     public class GetOverallAchievementRateRequest : IGetApiRequest
     {
-        private readonly string _sectorSubjectAreaTier2Description;
+        private readonly int _sectorSubjectAreaTier1;
 
-        public GetOverallAchievementRateRequest(string sectorSubjectAreaTier2Description)
+        public GetOverallAchievementRateRequest(int sectorSubjectAreaTier1)
         {
-            _sectorSubjectAreaTier2Description = sectorSubjectAreaTier2Description;
+            _sectorSubjectAreaTier1 = sectorSubjectAreaTier1;
         }
 
-        public string GetUrl => $"api/AchievementRates/Overall?sector={_sectorSubjectAreaTier2Description}";
+        public string GetUrl => $"api/AchievementRates/Overall?sectorSubjectAreaTier1Code={_sectorSubjectAreaTier1}";
     }
 }

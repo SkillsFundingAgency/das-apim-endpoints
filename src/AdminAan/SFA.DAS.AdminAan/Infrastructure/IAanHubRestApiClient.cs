@@ -9,10 +9,11 @@ using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.AdminAan.Application.Entities;
 using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.AdminAan.Domain;
+using SFA.DAS.AdminAan.Domain.LeavingReasons;
 
 namespace SFA.DAS.AdminAan.Infrastructure;
 
-public interface IAanHubRestApiClient
+public interface IAanHubRestApiClient : IHealthChecker
 {
     [Get("/regions")]
     Task<GetRegionsQueryResult> GetRegions(CancellationToken cancellationToken);
@@ -66,4 +67,16 @@ public interface IAanHubRestApiClient
 
     [Get("/profiles/{userType}")]
     Task<GetProfilesResponse> GetProfiles([Path] string userType, CancellationToken cancellationToken);
+
+    [Post("/members/{memberId}/remove")]
+    Task<string> PostMemberLeaving(
+        [Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId,
+        [Path] Guid memberId,
+        [Body] PostMemberStatusModel postMemberStatusModel,
+        CancellationToken cancellationToken);
+
+    [Get("/members/{memberId}/activities")]
+    Task<GetMemberActivitiesResponse> GetMemberActivities(
+        [Path] Guid memberId,
+        CancellationToken cancellationToken);
 }

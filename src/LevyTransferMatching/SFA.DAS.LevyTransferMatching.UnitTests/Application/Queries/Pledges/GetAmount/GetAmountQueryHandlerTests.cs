@@ -34,14 +34,14 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         public async Task Handle_Result_Has_Correct_RemainingTransferAllowance()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(result.RemainingTransferAllowance, _account.RemainingTransferAllowance);
+            Assert.That(result.RemainingTransferAllowance, Is.EqualTo(_account.RemainingTransferAllowance));
         }
 
         [Test]
         public async Task Handle_Result_Has_Correct_StartingTransferAllowance()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(result.StartingTransferAllowance, _account.StartingTransferAllowance);
+            Assert.That(result.StartingTransferAllowance, Is.EqualTo(_account.StartingTransferAllowance));
         }
     }
 }

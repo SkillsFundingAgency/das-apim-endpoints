@@ -7,16 +7,17 @@ using Moq;
 using SFA.DAS.EmployerAan.Api.Controllers;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMemberSummary;
 using SFA.DAS.EmployerAan.Application.InnerApi.MyApprenticeships;
-using SFA.DAS.EmployerAan.Application.InnerApi.Standards.Requests;
 using SFA.DAS.EmployerAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.EmployerAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 using SFA.DAS.EmployerAan.Common;
+using SFA.DAS.EmployerAan.Infrastructure;
 using SFA.DAS.EmployerAan.InnerApi.MyApprenticeships;
 using SFA.DAS.EmployerAan.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using GetStandardResponse = SFA.DAS.EmployerAan.InnerApi.Standards.Responses.GetStandardResponse;
 
 namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers;
 public class MemberProfilesControllerTests
@@ -97,8 +98,16 @@ public class MemberProfilesControllerTests
         apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<GetMyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == myApprenticeshipQuery.ApprenticeId)))
             .ReturnsAsync(new ApiResponse<GetMyApprenticeshipResponse>(myApprenticeshipResponse, HttpStatusCode.OK, null));
 
-        Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClientMock = new();
-        coursesApiClientMock.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardQueryRequest>())).ReturnsAsync(standardResponse);
+        Mock<ICoursesApiClient> coursesApiClientMock = new();
+  
+        var status = HttpStatusCode.OK;
+        var restStandardResponse = new RestEase.Response<GetStandardResponse>(
+            "not used",
+            new HttpResponseMessage(status),
+            () => standardResponse);
+
+        coursesApiClientMock.Setup(c => c.GetStandard(standardUid, It.IsAny<CancellationToken>())).ReturnsAsync(restStandardResponse);
+
         var sut = new MemberProfilesController(mockMediator.Object);
 
         // Act

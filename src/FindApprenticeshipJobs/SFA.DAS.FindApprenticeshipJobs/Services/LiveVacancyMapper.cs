@@ -64,6 +64,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 EmployerContactName = source.EmployerContactName,
                 EmployerContactEmail = source.EmployerContactEmail,
                 EmployerContactPhone = source.EmployerContactPhone,
+                ProviderContactEmail = source.ProviderContactEmail,
+                ProviderContactName = source.ProviderContactName,
+                ProviderContactPhone = source.ProviderContactPhone,
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
                 Address = new Application.Shared.Address
@@ -87,7 +90,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 RouteCode = getStandardsListItem.RouteCode,  
                 Route = getStandardsListItem?.Route ?? string.Empty,
 
-                IsRecruitVacancy = true
+                IsRecruitVacancy = true,
+                TypicalJobTitles = getStandardsListItem.TypicalJobTitles == null ? "" : SortTypicalJobTitles(getStandardsListItem.TypicalJobTitles),
+                AdditionalQuestion1 = source.AdditionalQuestion1,
+                AdditionalQuestion2 = source.AdditionalQuestion2
             };
         }
 
@@ -104,6 +110,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 7 => "Degree",
                 _ => ""
             };
+        }
+
+        private string SortTypicalJobTitles(string typicalJobTitles)
+        {
+            var orderedJobTitles = typicalJobTitles.Split("|").OrderBy(s => s);
+            return string.Join("|", orderedJobTitles);
         }
     }
 }

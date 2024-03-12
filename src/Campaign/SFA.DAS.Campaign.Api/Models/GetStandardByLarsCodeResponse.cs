@@ -1,6 +1,4 @@
-﻿using Microsoft.Azure.Amqp.Framing;
-using SFA.DAS.Campaign.Application.Queries.Standard;
-using System;
+﻿using SFA.DAS.Campaign.Application.Queries.Standard;
 
 namespace SFA.DAS.Campaign.Api.Models
 {

@@ -18,6 +18,9 @@ public class LiveVacancy
     public string? EmployerContactEmail { get; set; }
     public string? EmployerContactName { get; set; }
     public string? EmployerContactPhone { get; set; }
+    public string? ProviderContactEmail { get; set; }
+    public string? ProviderContactName { get; set; }
+    public string? ProviderContactPhone { get; set; }
     public string? EmployerDescription { get; set; }
     public Address? EmployerLocation { get; set; }
     public string? EmployerName { get; set; }
@@ -43,6 +46,8 @@ public class LiveVacancy
     public VacancyType? VacancyType { get; set; }
     public string ApplicationMethod { get; set; } = null!;
     public string? ApplicationUrl { get; set; }
+    public string? AdditionalQuestion1 { get; set; }
+    public string? AdditionalQuestion2 { get; set; }
 }
 
 public class TrainingProvider

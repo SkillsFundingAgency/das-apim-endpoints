@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Command
 {
-    public class ValidateDraftApprenticeshipDetailsCommandHandler : IRequestHandler<ValidateDraftApprenticeshipDetailsCommand>
+    public class ValidateDraftApprenticeshipDetailsCommandHandler : IRequestHandler<ValidateDraftApprenticeshipDetailsCommand, Unit>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
 

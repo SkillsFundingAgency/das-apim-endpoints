@@ -7,12 +7,10 @@ using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetLocationInformation;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.LocationsTests
 {
@@ -34,12 +32,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.LocationsTests
             var okObjectResult = controllerResult as OkObjectResult;
             var locationInformation = okObjectResult.Value as LocationInformationDto;
 
-            Assert.IsNotNull(controllerResult);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(locationInformation);
-            Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.OK);
-            Assert.AreEqual(getLocationInformationResult.Name, locationInformation.Name);
-            CollectionAssert.AreEqual(getLocationInformationResult.GeoPoint, locationInformation.GeoPoint);
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(locationInformation, Is.Not.Null);
+            Assert.That(okObjectResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
+            Assert.That(getLocationInformationResult.Name, Is.EqualTo(locationInformation.Name));
+            locationInformation.GeoPoint.Should().BeEquivalentTo(getLocationInformationResult.GeoPoint);
         }
     }
 }

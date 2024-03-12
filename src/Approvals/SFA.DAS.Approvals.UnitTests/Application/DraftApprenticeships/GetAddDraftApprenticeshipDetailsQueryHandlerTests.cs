@@ -69,28 +69,28 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             _deliveryModels.AddRange(fixture.CreateMany<string>(optionCount));
 
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(expectedHasMultiple, result.HasMultipleDeliveryModelOptions);
+            Assert.That(expectedHasMultiple, Is.EqualTo(result.HasMultipleDeliveryModelOptions));
         }
 
         [Test]
         public async Task Handle_ProviderName_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.ProviderName, result.ProviderName);
+            Assert.That(_cohort.ProviderName, Is.EqualTo(result.ProviderName));
         }
 
         [Test]
         public async Task Handle_LegalEntityName_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.LegalEntityName, result.LegalEntityName);
+            Assert.That(_cohort.LegalEntityName, Is.EqualTo(result.LegalEntityName));
         }
         
         [Test]
         public async Task Handle_AccountLegalEntityId_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.AccountLegalEntityId, result.AccountLegalEntityId);
+            Assert.That(_cohort.AccountLegalEntityId, Is.EqualTo(result.AccountLegalEntityId));
         }
     }
 }

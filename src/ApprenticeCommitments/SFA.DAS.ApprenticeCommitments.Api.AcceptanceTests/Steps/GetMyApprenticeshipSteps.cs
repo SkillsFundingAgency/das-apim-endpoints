@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using System;

@@ -7,7 +7,7 @@ using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
-using SFA.DAS.NServiceBus.Configuration.NLog;
+//using SFA.DAS.NServiceBus.Configuration.NLog;
 using SFA.DAS.NServiceBus.Hosting;
 using SFA.DAS.SharedOuterApi.Configuration;
 
@@ -31,7 +31,8 @@ namespace SFA.DAS.SharedOuterApi.AppStart
                 .UseInstallers()
                 .UseMessageConventions()
                 .UseNewtonsoftJsonSerializer()
-                .UseNLogFactory();
+                //.UseNLogFactory()
+                ;
 
             if (!string.IsNullOrEmpty(config.NServiceBusLicense))
             {

@@ -34,21 +34,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             return "";
         }
 
-        protected GetAchievementRateItem GetAchievementRateItem(IEnumerable<GetAchievementRateItem> list, string subjectArea, int level)
+        protected GetAchievementRateItem GetAchievementRateItem(IEnumerable<GetAchievementRateItem> list, int level)
         {
-            if (list == null)
-                return null;
+            if (!list.Any()) return null;
 
-            var result = list.Where(c =>
-                c.SectorSubjectArea.Equals(subjectArea, StringComparison.CurrentCultureIgnoreCase)).ToList();
-
-            if (result.Count == 0)
-                return null;
-
-            var item = result.FirstOrDefault(c => c.Level.Equals(MapLevel(level)))
-                       ?? result.FirstOrDefault(c => c.Level.Equals("AllLevels"));
-
-            return item;
+            return list.FirstOrDefault(c => c.Level.Equals(MapLevel(level))) ?? list.FirstOrDefault(c => c.Level.Equals("AllLevels"));
         }
 
         protected GetEmployerFeedbackResponse EmployerFeedbackResponse(InnerApi.Responses.GetEmployerFeedbackResponse employerFeedback)
@@ -81,7 +71,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 TotalFeedbackRating = employerFeedback.Stars,
                 TotalEmployerResponses = employerFeedback.ReviewCount,
                 FeedbackAttributes = feedbackAttrItems,
-            };            
+            };
         }
 
         protected GetApprenticeFeedbackResponse ApprenticeFeedbackResponse(
@@ -129,14 +119,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
             {
                 deliveryTypes.Add(
                     new GetDeliveryType
-                        {
-                            DeliveryModeType = DeliveryModeType.NotFound
-                        });
+                    {
+                        DeliveryModeType = DeliveryModeType.NotFound
+                    });
 
                 return deliveryTypes;
             }
 
-            foreach (var deliveryModel in deliveryModels.OrderBy(c=>c.DistanceInMiles))
+            foreach (var deliveryModel in deliveryModels.OrderBy(c => c.DistanceInMiles))
             {
                 var deliveryType = new GetDeliveryType
                 {
@@ -178,62 +168,29 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 switch (deliveryModel.LocationType)
                 {
                     case LocationType.Provider:
-                    {
-                        deliveryType.National = false;
-                        if (deliveryModel.DayRelease is true && !hasDayRelease)
                         {
-                            deliveryType.DeliveryModeType = DeliveryModeType.DayRelease;
-                            hasDayRelease = true;
-                            deliveryTypes.Add(deliveryType);
-                        }
+                            deliveryType.National = false;
+                            if (deliveryModel.DayRelease is true && !hasDayRelease)
+                            {
+                                deliveryType.DeliveryModeType = DeliveryModeType.DayRelease;
+                                hasDayRelease = true;
+                                deliveryTypes.Add(deliveryType);
+                            }
 
-                        if (deliveryModel.BlockRelease is true && !hasBlockRelease)
-                        {
-                            deliveryType.DeliveryModeType = DeliveryModeType.BlockRelease;
-                            hasBlockRelease = true;
-                            deliveryTypes.Add(deliveryType);
-                        }
+                            if (deliveryModel.BlockRelease is true && !hasBlockRelease)
+                            {
+                                deliveryType.DeliveryModeType = DeliveryModeType.BlockRelease;
+                                hasBlockRelease = true;
+                                deliveryTypes.Add(deliveryType);
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                 }
             }
 
             return deliveryTypes;
 
-        }
-
-        private DeliveryModeType MapDeliveryType(string deliveryType)
-        {
-            return deliveryType switch
-            {
-                "100PercentEmployer" => DeliveryModeType.Workplace,
-                "DayRelease" => DeliveryModeType.DayRelease,
-                "BlockRelease" => DeliveryModeType.BlockRelease,
-                "NotFound" => DeliveryModeType.NotFound,
-                _ => default
-            };
-        }
-
-        private GetDeliveryType CreateDeliveryTypeItem(GetDeliveryTypeItem deliveryTypeItem)
-        {
-            if (deliveryTypeItem.DeliveryModes == DeliveryModeType.NotFound.ToString())
-            {
-                return new GetDeliveryType
-                {
-                    DeliveryModeType = DeliveryModeType.NotFound
-                };
-            }
-            return new GetDeliveryType
-            {
-                DistanceInMiles = deliveryTypeItem.DistanceInMiles,
-                Address1 = deliveryTypeItem.Address1,
-                Address2 = deliveryTypeItem.Address2,
-                County = deliveryTypeItem.County,
-                Postcode = deliveryTypeItem.Postcode,
-                Town = deliveryTypeItem.Town,
-                National = deliveryTypeItem.National
-            };
         }
     }
 }

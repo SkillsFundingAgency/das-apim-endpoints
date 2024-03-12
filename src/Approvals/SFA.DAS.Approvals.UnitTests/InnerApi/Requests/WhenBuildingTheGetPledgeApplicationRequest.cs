@@ -16,7 +16,7 @@ namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
             var actual = new GetPledgeApplicationRequest(id);
             
             //Assert
-            Assert.AreEqual($"applications/{id}", actual.GetUrl);
+            Assert.That(actual.GetUrl, Is.EqualTo($"applications/{id}"));
         }
     }
 }

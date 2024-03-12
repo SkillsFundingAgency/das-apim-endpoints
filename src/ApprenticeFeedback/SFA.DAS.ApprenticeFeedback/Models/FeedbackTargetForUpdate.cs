@@ -10,11 +10,11 @@ namespace SFA.DAS.ApprenticeFeedback.Models
         public long ApprenticeshipId { get; set; }
         
 
-        public static explicit operator FeedbackTargetForUpdate(ApprenticeFeedbackTarget source)
+        public static explicit operator FeedbackTargetForUpdate(ApprenticeFeedbackTargetForUpdate source)
         {
             return new FeedbackTargetForUpdate()
             {
-                ApprenticeFeedbackTargetId = source.Id,
+                ApprenticeFeedbackTargetId = source.ApprenticeFeedbackTargetId,
                 ApprenticeId = source.ApprenticeId,
                 ApprenticeshipId = source.ApprenticeshipId,
             };

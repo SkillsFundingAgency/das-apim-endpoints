@@ -10,7 +10,6 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndex;
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using SFA.DAS.FindAnApprenticeship.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -45,7 +44,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 _logger.LogError(e, "Error calling Browse By Interests Index");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
-
         }
 
         [HttpGet]

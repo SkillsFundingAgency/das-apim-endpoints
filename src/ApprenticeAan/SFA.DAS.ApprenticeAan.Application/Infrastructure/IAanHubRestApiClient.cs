@@ -19,7 +19,7 @@ using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
 
 namespace SFA.DAS.ApprenticeAan.Application.Infrastructure;
 
-public interface IAanHubRestApiClient
+public interface IAanHubRestApiClient : IHealthChecker
 {
     [Get("/regions")]
     Task<GetRegionsQueryResult> GetRegions(CancellationToken cancellationToken);
@@ -98,6 +98,10 @@ public interface IAanHubRestApiClient
     [Post("members/{memberId}/Leaving")]
     [AllowAnyStatusCode]
     Task<HttpResponseMessage> PostMembersLeaving([Path] Guid memberId, [Body] PostMemberLeavingModel model, CancellationToken cancellationToken);
+
+    [Post("members/{memberId}/reinstate")]
+    [AllowAnyStatusCode]
+    Task<HttpResponseMessage> PostMembersReinstate([Path] Guid memberId, CancellationToken cancellationToken);
 
     [Get("/leavingReasons")]
     Task<List<LeavingCategory>> GetLeavingReasons(CancellationToken cancellationToken);

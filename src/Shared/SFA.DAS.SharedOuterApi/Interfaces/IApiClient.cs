@@ -2,7 +2,6 @@
 using SFA.DAS.SharedOuterApi.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NServiceBus.Timeout.Core;
 
 namespace SFA.DAS.SharedOuterApi.Interfaces
 {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.ApprenticePortal.Models
+﻿namespace SFA.DAS.ApprenticePortal.Models
 {
     public class ApprenticeHomepage
     {
