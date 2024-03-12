@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplication;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationDisabilityConfidence;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationTrainingCourses;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationVolunteeringAndWorkHistory;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
@@ -109,6 +110,31 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 ApplicationId = applicationId,
                 CandidateId = candidateId,
                 VolunteeringAndWorkExperienceStatus = request.VolunteeringAndWorkExperienceSectionStatus
+            }, cancellationToken);
+
+            if (result.Application == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result.Application);
+        }
+
+        [HttpPost("{candidateId}/disability-confidence")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateDisabilityConfidence(
+            [FromRoute] Guid applicationId,
+            [FromRoute] Guid candidateId,
+            [FromBody] UpdateDisabilityConfidenceModel request,
+            CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new PatchApplicationDisabilityConfidenceCommand
+            {
+                ApplicationId = applicationId,
+                CandidateId = candidateId,
+                DisabilityConfidenceStatus = request.DisabilityConfidenceModelSectionStatus
             }, cancellationToken);
 
             if (result.Application == null)
