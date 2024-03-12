@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Authorization;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Authorization;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Authorization.Queries;
@@ -14,8 +13,6 @@ public class GetApprenticeshipAccessQueryHandler(ICommitmentsV2ApiClient<Commitm
     {
         var apiRequest = new GetApprenticeshipAccessRequest(request.Party, request.PartyId, request.ApprenticeshipId);
         
-        var response = await apiClient.Get<GetApprenticeshipAccessResponse>(apiRequest);
-        
-        return response.HasApprenticeshipAccess;
+        return await apiClient.Get<bool>(apiRequest);
     }
 }
