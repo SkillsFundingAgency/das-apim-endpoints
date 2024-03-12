@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Authorization;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Authorization;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -15,10 +14,8 @@ public class GetCohortAccessQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2Ap
     {
         var apiRequest = new GetCohortAccessRequest(request.Party, request.PartyId, request.CohortId);
 
-        var response = await apiClient.GetWithResponseCode<GetCohortAccessResponse>(apiRequest);
+        var response = await apiClient.Get<GetCohortAccessResponse>(apiRequest);
 
-        response.EnsureSuccessStatusCode();
-
-        return response.Body.HasCohortAccess;
+        return response.HasCohortAccess;
     }
 }
