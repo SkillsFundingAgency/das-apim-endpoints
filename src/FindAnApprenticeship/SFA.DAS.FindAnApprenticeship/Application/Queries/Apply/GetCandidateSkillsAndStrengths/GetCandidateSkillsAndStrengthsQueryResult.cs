@@ -6,7 +6,7 @@ public class GetCandidateSkillsAndStrengthsQueryResult
 {
     public AboutYouItem AboutYou { get; set; }
 
-    public static implicit operator GetCandidateSkillsAndStrengthsQueryResult(GetCandidateSkillsAndStrengthsItemApiResponse source)
+    public static implicit operator GetCandidateSkillsAndStrengthsQueryResult(GetAboutYouItemApiResponse source)
     {
         return new GetCandidateSkillsAndStrengthsQueryResult
         {
@@ -23,7 +23,7 @@ public class AboutYouItem
     public string? Support { get; set; }
     public Guid? ApplicationId { get; set; }
 
-    public static implicit operator AboutYouItem(GetCandidateSkillsAndStrengthsItemApiResponse source)
+    public static implicit operator AboutYouItem(GetAboutYouItemApiResponse source)
     {
         return new AboutYouItem
         {
