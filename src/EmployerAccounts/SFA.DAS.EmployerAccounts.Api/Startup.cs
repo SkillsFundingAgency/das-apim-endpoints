@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -61,7 +62,7 @@ namespace SFA.DAS.EmployerAccounts.Api
             }
 
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEnglishFractionCurrentQuery).Assembly));
-            services.AddServiceRegistration();
+            services.AddServiceRegistration(_configuration);
 
             services
                 .AddMvc(o =>

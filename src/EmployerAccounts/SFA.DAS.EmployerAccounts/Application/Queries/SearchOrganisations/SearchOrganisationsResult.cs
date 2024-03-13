@@ -7,19 +7,24 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
 {
     public class SearchOrganisationsResult
     {
+        public SearchOrganisationsResult(List<Organisation> organisations)
+        {
+            Organisations = organisations.Select(x => (OrganisationResult)x);
+        }
+
         public IEnumerable<OrganisationResult> Organisations { get; set; }
 
-        public static implicit operator SearchOrganisationsResult(GetSearchOrganisationsResponse organisations)
-        {
-            if (organisations == null)
-            {
-                return null;
-            }
+        //public static implicit operator SearchOrganisationsResult(GetSearchOrganisationsResponse organisations)
+        //{
+        //    if (organisations == null)
+        //    {
+        //        return null;
+        //    }
 
-            return new SearchOrganisationsResult
-            {
-                Organisations = organisations.Select(x => (OrganisationResult)x)
-            };
-        }
+        //    return new SearchOrganisationsResult
+        //    {
+        //        Organisations = organisations.Select(x => (OrganisationResult)x)
+        //    };
+        //}
     }
 }

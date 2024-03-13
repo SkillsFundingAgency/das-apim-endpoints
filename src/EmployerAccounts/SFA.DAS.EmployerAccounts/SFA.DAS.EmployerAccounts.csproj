@@ -19,6 +19,8 @@
 
     <ItemGroup>
         <PackageReference Include="MediatR" />
+        <PackageReference Include="RestEase" />
+        <PackageReference Include="RestEase.HttpClientFactory" />
     </ItemGroup>
 
 </Project>
