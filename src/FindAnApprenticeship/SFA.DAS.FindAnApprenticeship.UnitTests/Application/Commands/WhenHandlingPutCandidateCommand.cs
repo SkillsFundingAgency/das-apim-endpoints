@@ -56,6 +56,48 @@ public class WhenHandlingPutCandidateCommand
             result.LastName.Should().BeEquivalentTo(legacyUserByEmailApiResponse.RegistrationDetails?.LastName);
         }
     }
+    [Test, MoqAutoData]
+    public async Task Then_The_Put_Is_Sent_And_If_Legacy_Api_Has_DateOfBirth_As_DateTime_Min_Value_Then_Null_Sent(
+        PutCandidateCommand command,
+        PutCandidateApiResponse response,
+        GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
+        [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
+        PutCandidateCommandHandler handler)
+    {
+        legacyUserByEmailApiResponse.RegistrationDetails.DateOfBirth = DateTime.MinValue;
+        response.FirstName = legacyUserByEmailApiResponse.RegistrationDetails?.FirstName;
+        response.LastName = legacyUserByEmailApiResponse.RegistrationDetails?.LastName;
+
+        var expectedPutData = new PutCandidateApiRequestData
+        {
+            Email = command.Email
+        };
+        var expectedRequest = new PutCandidateApiRequest(command.GovUkIdentifier, expectedPutData);
+
+        mockApiClient
+                .Setup(client => client.PutWithResponseCode<PutCandidateApiResponse>(
+                    It.Is<PutCandidateApiRequest>(r => 
+                        r.PutUrl == expectedRequest.PutUrl
+                        && ((PutCandidateApiRequestData)r.Data).DateOfBirth == null)))
+                .ReturnsAsync(new ApiResponse<PutCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
+
+        var legacyGetRequest = new GetLegacyUserByEmailApiRequest(command.Email);
+        mockLegacyApiClient
+            .Setup(client => client.Get<GetLegacyUserByEmailApiResponse>(
+                It.Is<GetLegacyUserByEmailApiRequest>(r => r.GetUrl == legacyGetRequest.GetUrl)))
+            .ReturnsAsync(legacyUserByEmailApiResponse);
+
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        using (new AssertionScope())
+        {
+            result.GovUkIdentifier.Should().BeEquivalentTo(response.GovUkIdentifier);
+            result.Email.Should().BeEquivalentTo(response.Email);
+            result.FirstName.Should().BeEquivalentTo(legacyUserByEmailApiResponse.RegistrationDetails?.FirstName);
+            result.LastName.Should().BeEquivalentTo(legacyUserByEmailApiResponse.RegistrationDetails?.LastName);
+        }
+    }
 
     [Test, MoqAutoData]
     public async Task And_Api_Returns_Null_Then_Return_Null(
