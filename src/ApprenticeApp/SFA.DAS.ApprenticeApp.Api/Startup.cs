@@ -11,7 +11,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.ApprenticeApp.Api.AppStart;
 using SFA.DAS.ApprenticeApp.Api.ErrorHandler;
-using SFA.DAS.ApprenticeApp.Application.Queries.Homepage;
+using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System.Collections.Generic;

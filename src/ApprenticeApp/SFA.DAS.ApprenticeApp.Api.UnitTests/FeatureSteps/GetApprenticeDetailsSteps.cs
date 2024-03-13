@@ -71,27 +71,27 @@ namespace SFA.DAS.ApprenticeApp.Api.UnitTests.FeatureSteps
             _context.CoursesInnerApi.WithFrameworkCourse(_myApprenticeship.TrainingCode, _frameworkCourse);
         }
 
-        [When(@"the apprentice's homepage is requested")]
-        public async Task WhenTheApprenticeSHomepageIsRequested()
+        [When(@"the apprentice's details are requested")]
+        public async Task WhenTheApprenticeDetailsAreRequested()
         {
-            await _context.OuterApiClient.Get($"/apprentices/{_apprentice.ApprenticeId}/homepage");
+            await _context.OuterApiClient.Get($"/apprentices/{_apprentice.ApprenticeId}/details");
         }
         
         [Then(@"the result should contain the apprentice data, but with no apprenticeship data or my apprenticeship data")]
         public void ThenTheResultShouldContainTheApprenticeDataButWithNoApprenticeshipData()
         {
-            var homePageModel = new ApprenticeDetails { Apprentice = _apprentice, Apprenticeship = null, MyApprenticeship = null};
-            _context.OuterApiClient.Response.Should().Be200Ok().And.BeAs(homePageModel);
+            var detailsModel = new ApprenticeDetails { Apprentice = _apprentice, MyApprenticeship = null};
+            _context.OuterApiClient.Response.Should().Be200Ok().And.BeAs(detailsModel);
         }
 
         [Then(@"the result should have apprentice and first apprenticeship")]
         public void ThenTheResultShouldHaveApprenticeAndFirstApprenticeshipAndMyApprenticeship()
         {
-            var homePageModel = new
+            var detailsModel = new
             {
-                Apprentice = _apprentice, Apprenticeship = _apprenticeshipsResult.Apprenticeships.FirstOrDefault()
+                Apprentice = _apprentice, MyApprenticeship = _apprenticeshipsResult.Apprenticeships.FirstOrDefault()
             };
-            _context.OuterApiClient.Response.Should().BeEquivalentTo(homePageModel, o=>o.ExcludingMissingMembers());
+            _context.OuterApiClient.Response.Should().BeEquivalentTo(detailsModel, o=>o.ExcludingMissingMembers());
         }
 
         [Then(@"a Framework MyApprenticeship course")]

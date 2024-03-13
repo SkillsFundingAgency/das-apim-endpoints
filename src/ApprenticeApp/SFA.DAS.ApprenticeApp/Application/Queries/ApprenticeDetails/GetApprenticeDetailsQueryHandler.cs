@@ -7,7 +7,7 @@ using SFA.DAS.ApprenticeApp.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
+namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
 {
     public class GetApprenticeDetailsQueryHandler : IRequestHandler<GetApprenticeDetailsQuery, GetApprenticeDetailsQueryResult>
     {

@@ -31,4 +31,6 @@
     <ProjectReference Include="..\SFA.DAS.ApprenticeApp.Api\SFA.DAS.ApprenticeApp.Api.csproj" />
     <ProjectReference Include="..\SFA.DAS.ApprenticeApp.MockApis\SFA.DAS.ApprenticeApp.MockApis.csproj" />
   </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
 </Project>

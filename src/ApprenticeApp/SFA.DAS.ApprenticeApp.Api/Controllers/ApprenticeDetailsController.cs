@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ApprenticeApp.Application.Queries.Homepage;
+using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using System;
 using System.Threading.Tasks;
 

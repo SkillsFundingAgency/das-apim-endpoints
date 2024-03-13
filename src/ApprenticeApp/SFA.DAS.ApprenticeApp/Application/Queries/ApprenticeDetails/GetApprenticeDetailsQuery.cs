@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using System;
 
-namespace SFA.DAS.ApprenticeApp.Application.Queries.Homepage
+namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
 {
     public class GetApprenticeDetailsQuery : IRequest<GetApprenticeDetailsQueryResult>
     {
