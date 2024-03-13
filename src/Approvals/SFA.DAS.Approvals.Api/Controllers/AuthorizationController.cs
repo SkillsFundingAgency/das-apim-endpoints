@@ -25,7 +25,7 @@ public class AuthorizationController(ISender mediator, ILogger<AuthorizationCont
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, $"{nameof(CanAccessCohort)} threw an exception.");
+            logger.LogError(exception, "{method} threw an exception.", nameof(CanAccessCohort));
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -41,7 +41,7 @@ public class AuthorizationController(ISender mediator, ILogger<AuthorizationCont
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, $"{nameof(CanAccessApprenticeship)} threw an exception.");
+            logger.LogError(exception, "{method} threw an exception.", nameof(CanAccessApprenticeship));
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
