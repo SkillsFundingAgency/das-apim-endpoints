@@ -1,13 +1,12 @@
 ﻿using System.Net;
 using AutoFixture.NUnit3;
-using FluentAssertions;
 using FluentAssertions.Execution;
+using FluentAssertions;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateSkillsAndStrengthsCommand;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -15,26 +14,27 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateInterviewAdjustments;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply;
-public class WhenHandlingCreateSkillsAndStrengthsCommand
+public class WhenHandlingCreateInterviewAdjustmentsCommand
 {
     [Test, MoqAutoData]
-    public async Task Then_The_SkillsAndStrengths_Is_Created(
-        UpsertSkillsAndStrengthsCommand command,
+    public async Task Then_InterviewAdjustments_Is_Created(
+        UpsertInterviewAdjustmentsCommand command,
         Models.Application updateApplicationResponse,
         GetAboutYouItemApiResponse apiResponse,
-        PutUpsertAboutYouItemApiResponse createSkillsAndStrengthsApiResponse,
+        PutUpsertAboutYouItemApiResponse createdItemResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        [Frozen] Mock<ILogger<UpsertSkillsAndStrengthsCommandHandler>> loggerMock,
-        UpsertSkillsAndStrengthsCommandHandler handler)
+        [Frozen] Mock<ILogger<UpsertInterviewAdjustmentsCommandHandler>> loggerMock,
+        UpsertInterviewAdjustmentsCommandHandler handler)
     {
         var expectedRequest = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData());
 
         candidateApiClient
             .Setup(client => client.PutWithResponseCode<PutUpsertAboutYouItemApiResponse>(
                 It.Is<PutUpsertAboutYouItemApiRequest>(r => r.PutUrl.StartsWith(expectedRequest.PutUrl.Substring(0, 86)))))
-            .ReturnsAsync(new ApiResponse<PutUpsertAboutYouItemApiResponse>(createSkillsAndStrengthsApiResponse, HttpStatusCode.OK, string.Empty));
+            .ReturnsAsync(new ApiResponse<PutUpsertAboutYouItemApiResponse>(createdItemResponse, HttpStatusCode.OK, string.Empty));
 
         var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
 
@@ -60,10 +60,10 @@ public class WhenHandlingCreateSkillsAndStrengthsCommand
 
     [Test, MoqAutoData]
     public async Task Then_The_Update_Application_Status_Api_Response_NotFound_CommandResult_Is_Returned_As_Expected(
-        UpsertSkillsAndStrengthsCommand command,
+        UpsertInterviewAdjustmentsCommand command,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        [Frozen] Mock<ILogger<UpsertSkillsAndStrengthsCommandHandler>> loggerMock,
-        [Frozen] UpsertSkillsAndStrengthsCommandHandler handler)
+        [Frozen] Mock<ILogger<UpsertInterviewAdjustmentsCommandHandler>> loggerMock,
+        UpsertInterviewAdjustmentsCommandHandler handler)
     {
         var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
 

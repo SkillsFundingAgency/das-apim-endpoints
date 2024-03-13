@@ -17,7 +17,7 @@ public class GetCandidateSkillsAndStrengthsQueryHandler : IRequestHandler<GetCan
 
     public async Task<GetCandidateSkillsAndStrengthsQueryResult> Handle(GetCandidateSkillsAndStrengthsQuery request, CancellationToken cancellationToken)
     {
-        return await _candidateApiClient.Get<GetCandidateSkillsAndStrengthsItemApiResponse>
-            (new GetCandidateSkillsAndStrengthsItemApiRequest(request.ApplicationId, request.CandidateId));
+        return await _candidateApiClient.Get<GetAboutYouItemApiResponse>
+            (new GetAboutYouItemApiRequest(request.ApplicationId, request.CandidateId));
     }
 }

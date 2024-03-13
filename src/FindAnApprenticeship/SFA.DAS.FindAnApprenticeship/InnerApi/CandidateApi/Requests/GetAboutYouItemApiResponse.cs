@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-public class GetCandidateSkillsAndStrengthsItemApiResponse
+public class GetAboutYouItemApiResponse
 {
     public AboutYouItem AboutYou { get; set; }
 }

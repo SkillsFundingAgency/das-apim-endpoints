@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateSkillsAndStrengthsCommand;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -12,31 +13,33 @@ using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateSkillsAndStrengthsCommand;
-public class UpsertSkillsAndStrengthsCommandHandler : IRequestHandler<UpsertSkillsAndStrengthsCommand, UpsertSkillsAndStrengthsCommandResult>
+namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateInterviewAdjustments;
+public class UpsertInterviewAdjustmentsCommandHandler : IRequestHandler<UpsertInterviewAdjustmentsCommand, UpsertInterviewAdjustmentsCommandResult>
 {
     private readonly ICandidateApiClient<CandidateApiConfiguration> _apiClient;
     private readonly ILogger<UpsertSkillsAndStrengthsCommandHandler> _logger;
 
-    public UpsertSkillsAndStrengthsCommandHandler(ICandidateApiClient<CandidateApiConfiguration> apiClient, ILogger<UpsertSkillsAndStrengthsCommandHandler> logger)
+    public UpsertInterviewAdjustmentsCommandHandler(
+        ICandidateApiClient<CandidateApiConfiguration> apiClient,
+        ILogger<UpsertSkillsAndStrengthsCommandHandler> logger)
     {
         _apiClient = apiClient;
         _logger = logger;
     }
 
-    public async Task<UpsertSkillsAndStrengthsCommandResult> Handle(UpsertSkillsAndStrengthsCommand command, CancellationToken cancellationToken)
+    public async Task<UpsertInterviewAdjustmentsCommandResult> Handle(UpsertInterviewAdjustmentsCommand command, CancellationToken cancellationToken)
     {
         var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
-        if (command.SkillsAndStrengthsSectionStatus > 0)
+        if (command.InterviewAdjustmentsSectionStatus > 0)
         {
-            jsonPatchDocument.Replace(x => x.SkillsAndStrengthStatus, command.SkillsAndStrengthsSectionStatus);
+            jsonPatchDocument.Replace(x => x.InterviewAdjustmentsStatus, command.InterviewAdjustmentsSectionStatus);
         }
 
         var patchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, jsonPatchDocument);
         var patchResult = await _apiClient.PatchWithResponseCode(patchRequest);
         if (patchResult.StatusCode != System.Net.HttpStatusCode.OK)
         {
-            _logger.LogError("Unable to patch application for candidate Id {command.CandidateId}", command.CandidateId);
+            _logger.LogError($"Unable to patch application for candidate Id {command.CandidateId}", command.CandidateId);
             throw new HttpRequestContentException($"Unable to patch application for candidate Id {command.CandidateId}", patchResult.StatusCode, patchResult.ErrorContent);
         }
 
@@ -44,10 +47,10 @@ public class UpsertSkillsAndStrengthsCommandHandler : IRequestHandler<UpsertSkil
 
         var requestBody = new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData
         {
-            SkillsAndStrengths = command.SkillsAndStrengths,
-            HobbiesAndInterests = aboutYouItem.AboutYou.HobbiesAndInterests,
-            Improvements = aboutYouItem.AboutYou.Improvements,
-            Support = aboutYouItem.AboutYou.Support
+            SkillsAndStrengths = aboutYouItem.AboutYou?.SkillsAndStrengths,
+            HobbiesAndInterests = aboutYouItem.AboutYou?.HobbiesAndInterests,
+            Improvements = aboutYouItem.AboutYou?.Improvements,
+            Support = command.InterviewAdjustmentsDescription,
         };
         var request = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), requestBody);
 
@@ -56,7 +59,7 @@ public class UpsertSkillsAndStrengthsCommandHandler : IRequestHandler<UpsertSkil
 
         if (putResult is null) return null;
 
-        return new UpsertSkillsAndStrengthsCommandResult
+        return new UpsertInterviewAdjustmentsCommandResult
         {
             Id = putResult.Body.Id,
             Application = JsonConvert.DeserializeObject<Models.Application>(patchResult.Body)
