@@ -87,7 +87,7 @@ public class SkillsAndStrengthsController : Controller
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error posting skills and strengths for application {applicationId}", applicationId);
+            _logger.LogError(ex, $"Error posting skills and strengths for application {applicationId}", applicationId);
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
