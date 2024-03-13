@@ -26,14 +26,15 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
 
         [HttpGet]
         [Route("organisations/search/results")]
-        public async Task<IActionResult> SearchOrganisations([FromQuery] string searchTerm, [FromQuery] int maximumResults = 500)
+        public async Task<IActionResult> SearchOrganisations([FromQuery] string searchTerm, [FromQuery] int maximumResults = 500, [FromQuery] int version = 0)
         {
             try
             {
                 var result = await _mediator.Send(new SearchOrganisationsQuery()
                 {
                     SearchTerm = searchTerm,
-                    MaximumResults = maximumResults
+                    MaximumResults = maximumResults,
+                    Version = version
                 });
 
                 if (result == null)

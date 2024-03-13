@@ -15,19 +15,30 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
     {
         private readonly ILogger<SearchOrganisationsQueryHandler> _logger;
         private readonly IReferenceDataApiClient _apiClient;
+        private readonly IReferenceDataApiClient<ReferenceDataApiConfiguration> _refDataApi;
 
-        public SearchOrganisationsQueryHandler(ILogger<SearchOrganisationsQueryHandler> logger, IReferenceDataApiClient referenceDataApiClient)
+        public SearchOrganisationsQueryHandler(ILogger<SearchOrganisationsQueryHandler> logger, IReferenceDataApiClient<ReferenceDataApiConfiguration> referenceDataApiClient, IReferenceDataApiClient apiClient)
         {
             _logger = logger;
-            _apiClient = referenceDataApiClient;
+            _apiClient = apiClient;
+            _refDataApi = referenceDataApiClient;
         }
 
         public async Task<SearchOrganisationsResult> Handle(SearchOrganisationsQuery request, CancellationToken cancellationToken)
         {
+            //version 0 = as it was
+            //version 1 = restease
+            // v 3 = as it was with version header.
             _logger.LogInformation("Searching for Organisation with searchTerm: {SearchTerm}", request.SearchTerm);
 
-            var result = await _apiClient.SearchOrganisations(request.SearchTerm, request.MaximumResults, cancellationToken);
+            if (request.Version == 0)
+            {
+                var organisations = await _refDataApi.Get<GetSearchOrganisationsResponse>(new GetSearchOrganisationsRequest(request.SearchTerm, request.MaximumResults));
 
+                return new SearchOrganisationsResult(organisations);
+            }
+            
+            var result = await _apiClient.SearchOrganisations(request.SearchTerm, request.MaximumResults, cancellationToken);
 
             if (result.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -37,8 +48,9 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
 
             _logger.LogInformation("Call to ReferenceData Api was not successful. There has been status returned of StatusCode {StatusCode}", result.ResponseMessage.StatusCode);
 
-            return new SearchOrganisationsResult(new List<Organisation>());
-
+            return new SearchOrganisationsResult([]);
+            
+                    
         }
     }
 }

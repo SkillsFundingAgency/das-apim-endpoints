@@ -29,6 +29,23 @@ namespace SFA.DAS.EmployerAccounts.Infrastructure
                 var accessToken = await _azureClientCredentialHelper.GetAccessTokenAsync(_apiIdentifier);
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             }
+
+            Console.WriteLine($"Sending HTTP request: {request.Method} {request.RequestUri}");
+
+
+            if (request.Headers != null)
+            {
+                Console.WriteLine("RequestHEaders: ");
+                foreach (var header in request.Headers)
+                {
+                    Console.WriteLine($"{header.Key}: {string.Join(", ", header.Value)}");
+                }
+            }
+
+            if (request.Content != null)
+            {
+                Console.WriteLine($"Request Content: {await request.Content.ReadAsStringAsync()}");
+            }
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(continueOnCapturedContext: false);
         }
     }
