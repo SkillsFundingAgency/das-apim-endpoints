@@ -1,11 +1,9 @@
-﻿namespace SFA.DAS.EarlyConnect.Web.Infrastructure;
-public static class LepsRegion
+﻿namespace SFA.DAS.EarlyConnect.Web.Infrastructure
 {
-    public enum Region
+    public static class LepsRegion
     {
-        Default,
-        NorthEast,
-        Lancashire,
-        London,
+        public const string NorthEast = "E37000025";
+        public const string Lancashire = "E37000019";
+        public const string London = "E37000051";
     }
 }

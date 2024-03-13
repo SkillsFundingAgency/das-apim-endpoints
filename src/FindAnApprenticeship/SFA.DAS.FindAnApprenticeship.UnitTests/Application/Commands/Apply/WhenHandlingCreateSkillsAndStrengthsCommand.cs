@@ -23,23 +23,30 @@ public class WhenHandlingCreateSkillsAndStrengthsCommand
     public async Task Then_The_SkillsAndStrengths_Is_Created(
         UpsertSkillsAndStrengthsCommand command,
         Models.Application updateApplicationResponse,
-        PutUpsertSkillsAndStrengthsApiResponse createSkillsAndStrengthsApiResponse,
+        GetAboutYouItemApiResponse apiResponse,
+        PutUpsertAboutYouItemApiResponse createSkillsAndStrengthsApiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<ILogger<UpsertSkillsAndStrengthsCommandHandler>> loggerMock,
         UpsertSkillsAndStrengthsCommandHandler handler)
     {
-        var expectedRequest = new PutUpsertSkillsAndStrengthsApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), new PutUpsertSkillsAndStrengthsApiRequest.PutUpdateSkillsAndStrengthsApiRequestData());
+        var expectedRequest = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData());
 
         candidateApiClient
-            .Setup(client => client.PutWithResponseCode<PutUpsertSkillsAndStrengthsApiResponse>(
-                It.Is<PutUpsertSkillsAndStrengthsApiRequest>(r => r.PutUrl.StartsWith(expectedRequest.PutUrl.Substring(0, 86)))))
-            .ReturnsAsync(new ApiResponse<PutUpsertSkillsAndStrengthsApiResponse>(createSkillsAndStrengthsApiResponse, HttpStatusCode.OK, string.Empty));
+            .Setup(client => client.PutWithResponseCode<PutUpsertAboutYouItemApiResponse>(
+                It.Is<PutUpsertAboutYouItemApiRequest>(r => r.PutUrl.StartsWith(expectedRequest.PutUrl.Substring(0, 86)))))
+            .ReturnsAsync(new ApiResponse<PutUpsertAboutYouItemApiResponse>(createSkillsAndStrengthsApiResponse, HttpStatusCode.OK, string.Empty));
 
         var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
 
         candidateApiClient
             .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
             .ReturnsAsync(new ApiResponse<string>(JsonConvert.SerializeObject(updateApplicationResponse), HttpStatusCode.OK, string.Empty));
+
+        var expectedApiRequest = new GetAboutYouItemApiRequest(command.ApplicationId, command.CandidateId);
+        candidateApiClient
+            .Setup(client => client.Get<GetAboutYouItemApiResponse>(
+                It.Is<GetAboutYouItemApiRequest>(r => r.GetUrl == expectedApiRequest.GetUrl)))
+            .ReturnsAsync(apiResponse);
 
         var actual = await handler.Handle(command, CancellationToken.None);
 

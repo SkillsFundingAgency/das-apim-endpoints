@@ -7,6 +7,7 @@ namespace SFA.DAS.EarlyConnect.Api.Models
     {
         public int Id { get; set; }
         public int? LepsId { get; set; }
+        public string LepCode { get; set; }
         public int? LogId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -26,6 +27,7 @@ namespace SFA.DAS.EarlyConnect.Api.Models
             {
                 Id = source.Id,
                 LepsId = source.LepsId,
+                LepCode = source.LepCode,
                 LogId = source.LogId,
                 FirstName = source.FirstName,
                 LastName = source.LastName,
