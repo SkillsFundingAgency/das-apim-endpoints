@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-public class PutUpsertSkillsAndStrengthsApiResponse
+public class PutUpsertAboutYouItemApiResponse
 {
     public Guid Id { get; set; }
     public string Strengths { get; set; }
