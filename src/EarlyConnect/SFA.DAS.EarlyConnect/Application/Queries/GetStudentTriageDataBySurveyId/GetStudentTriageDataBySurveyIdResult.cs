@@ -5,6 +5,7 @@ namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyI
     public class GetStudentTriageDataBySurveyIdResult
     {
         public int Id { get; set; }
+        public DateTime? LepDateSent { get; set; }
         public int? LepsId { get; set; }
         public int? LogId { get; set; }
         public string FirstName { get; set; }
