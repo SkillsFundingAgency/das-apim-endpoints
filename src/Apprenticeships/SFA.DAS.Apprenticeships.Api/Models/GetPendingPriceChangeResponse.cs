@@ -29,7 +29,7 @@ namespace SFA.DAS.Apprenticeships.Api.Models
 				ApprenticeshipKey = apprenticeshipKey,
 				ProviderApprovedDate = apiResponse.PendingPriceChange.ProviderApprovedDate,
 				EmployerApprovedDate = apiResponse.PendingPriceChange.EmployerApprovedDate,
-				Requester = apiResponse.PendingPriceChange.Requester
+				Initiator = apiResponse.PendingPriceChange.Initiator
 
             } : null;
             ProviderName = providerName;
