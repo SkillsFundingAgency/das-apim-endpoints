@@ -109,7 +109,15 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
                 return NotFound();
             }
 
-            return Ok(new GetPendingPriceChangeResponse(response, providerResponse.Name, apprenticeshipKey));
+            var accountLegalEntityId = response.PendingPriceChange.AccountLegalEntityId.GetValueOrDefault();
+            var employerResponse = await _apiCommitmentsClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
+            if (employerResponse == null || string.IsNullOrEmpty(employerResponse.AccountName))
+            {
+                _logger.LogWarning($"No employer found for accountLegalEntityId {ukprn}");
+                return NotFound();
+            }
+
+            return Ok(new GetPendingPriceChangeResponse(response, providerResponse.Name, apprenticeshipKey, employerResponse.AccountName));
         }
 
         [HttpDelete]
