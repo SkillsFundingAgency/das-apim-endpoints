@@ -43,32 +43,19 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
 
         public async Task<SearchOrganisationsResult> Handle(SearchOrganisationsQuery request, CancellationToken cancellationToken)
         {
-            //version 0 = as it was
-            //version 1 = restease
-            // v 3 = as it was with version header.
+
             _logger.LogInformation("Searching for Organisation with searchTerm: {SearchTerm}", request.SearchTerm);
 
             if (request.Version == 0)
             {
-               // var organisations = await _refDataApi.Get<GetSearchOrganisationsResponse>(new GetSearchOrganisationsRequest(request.SearchTerm, request.MaximumResults));
-                var organisations = await GetWithResponseCode<GetSearchOrganisationsResponse>(new GetSearchOrganisationsRequest(request.SearchTerm, request.MaximumResults));
+                var absoluteOrgs = await GetWithResponseCode<GetSearchOrganisationsResponse>(new GetSearchOrganisationsRequest(request.SearchTerm, request.MaximumResults));
 
-                return new SearchOrganisationsResult(organisations.Body);
-            }
-            
-            var result = await _apiClient.SearchOrganisations(request.SearchTerm, request.MaximumResults, cancellationToken);
-
-            if (result.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                var response = result.GetContent();
-                return new SearchOrganisationsResult(response);
+                return new SearchOrganisationsResult(absoluteOrgs.Body);
             }
 
-            _logger.LogInformation("Call to ReferenceData Api was not successful. There has been status returned of StatusCode {StatusCode}", result.ResponseMessage.StatusCode);
+            var organisations = await _refDataApi.Get<GetSearchOrganisationsResponse>(new GetSearchOrganisationsRequest(request.SearchTerm, request.MaximumResults));
 
-            return new SearchOrganisationsResult([]);
-            
-                    
+            return new SearchOrganisationsResult(organisations);
         }
 
 
