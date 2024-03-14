@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeAan.Api.U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeAan.Application.UnitTests", "SFA.DAS.ApprenticeAan.Application.UnitTests\SFA.DAS.ApprenticeAan.Application.UnitTests.csproj", "{9EC414A8-B018-4390-AB14-628DB896D08F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{CE1F1BD2-B2B5-457E-9627-A0502729CC99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{9EC414A8-B018-4390-AB14-628DB896D08F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EC414A8-B018-4390-AB14-628DB896D08F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EC414A8-B018-4390-AB14-628DB896D08F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE1F1BD2-B2B5-457E-9627-A0502729CC99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE1F1BD2-B2B5-457E-9627-A0502729CC99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE1F1BD2-B2B5-457E-9627-A0502729CC99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE1F1BD2-B2B5-457E-9627-A0502729CC99}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
