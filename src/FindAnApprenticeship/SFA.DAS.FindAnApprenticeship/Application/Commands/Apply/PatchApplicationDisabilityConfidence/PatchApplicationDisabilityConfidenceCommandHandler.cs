@@ -39,7 +39,7 @@ public record PatchApplicationDisabilityConfidenceCommandHandler : IRequestHandl
                 Application = JsonConvert.DeserializeObject<Models.Application>(response.Body)
             };
 
-        _logger.LogError($"Unable to patch application for candidate Id {request.CandidateId}");
+        _logger.LogError("Unable to patch application for candidate Id {request.CandidateId}", request.CandidateId);
         throw new HttpRequestContentException($"Unable to patch application for candidate Id {request.CandidateId}", response.StatusCode, response.ErrorContent);
     }
 }
