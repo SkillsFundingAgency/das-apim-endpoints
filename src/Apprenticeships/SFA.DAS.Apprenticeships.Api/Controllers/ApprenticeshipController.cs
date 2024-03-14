@@ -92,7 +92,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         [Route("{apprenticeshipKey}/priceHistory/pending")]
         public async Task<ActionResult> GetPendingPriceChange(Guid apprenticeshipKey)
         {
-	          var response = await _apiClient.Get<GetPendingPriceChangeApiResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey));
+            var response = await _apiClient.Get<GetPendingPriceChangeApiResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey));
 
             if (response == null || response.PendingPriceChange == null)
             {
