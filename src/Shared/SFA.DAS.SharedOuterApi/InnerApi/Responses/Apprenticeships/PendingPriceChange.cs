@@ -18,5 +18,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships
 		public string LastName { get; set; }
 		public DateTime? ProviderApprovedDate { get; set; }
 		public DateTime? EmployerApprovedDate { get; set; }
-	}
+        public string Requester { get; set; }
+    }
 }
