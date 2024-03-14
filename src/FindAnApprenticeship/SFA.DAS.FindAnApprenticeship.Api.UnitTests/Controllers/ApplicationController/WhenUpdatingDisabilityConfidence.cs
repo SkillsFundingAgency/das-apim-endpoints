@@ -11,6 +11,7 @@ using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplicationController;
 
@@ -29,7 +30,7 @@ public class WhenUpdatingDisabilityConfidence
         mediator.Setup(x => x.Send(It.Is<PatchApplicationDisabilityConfidenceCommand>(c =>
                     c.CandidateId == candidateId &&
                     c.ApplicationId == applicationId &&
-                    c.DisabilityConfidenceStatus == model.DisabilityConfidenceModelSectionStatus),
+                    c.DisabilityConfidenceStatus == SectionStatus.Completed),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(result);
 
@@ -57,7 +58,7 @@ public class WhenUpdatingDisabilityConfidence
         mediator.Setup(x => x.Send(It.Is<PatchApplicationDisabilityConfidenceCommand>(c =>
                     c.CandidateId == candidateId &&
                     c.ApplicationId == applicationId &&
-                    c.DisabilityConfidenceStatus == model.DisabilityConfidenceModelSectionStatus),
+                    c.DisabilityConfidenceStatus == SectionStatus.Completed),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(result);
 

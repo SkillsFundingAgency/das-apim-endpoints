@@ -1,14 +1,13 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.DisabilityConfident
 {
@@ -40,7 +39,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.DisabilityConfi
             var vacancyRequest = new GetVacancyRequest(application.VacancyReference);
             var vacancy = await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(vacancyRequest);
 
-            bool? isCompleted = application.InterestsStatus switch
+            bool? isCompleted = application.DisabilityConfidenceStatus switch
             {
                 Domain.Constants.SectionStatus.Incomplete => false,
                 Domain.Constants.SectionStatus.Completed => true,
