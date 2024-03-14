@@ -14,6 +14,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.ReferenceData
             MaximumResults = maximumResults;
         }
 
-        public string GetUrl => $"?searchTerm={HttpUtility.UrlEncode(SearchTerm)}&maximumResults={MaximumResults}";
+        public string GetUrl => $"api/organisations/?searchTerm={HttpUtility.UrlEncode(SearchTerm)}&maximumResults={MaximumResults}";
     }
 }
