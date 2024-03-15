@@ -14,7 +14,6 @@
     <PackageReference Include="SFA.DAS.Telemetry" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="SFA.DAS.Api.Common" />
-    <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
   </ItemGroup>
 
   <ItemGroup>
