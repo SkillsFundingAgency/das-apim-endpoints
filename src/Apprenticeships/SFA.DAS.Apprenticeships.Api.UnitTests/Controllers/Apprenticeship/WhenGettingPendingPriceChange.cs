@@ -41,6 +41,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
 
             _apprenticeshipKey = _fixture.Create<Guid>();
             _apiResponse = _fixture.Create<GetPendingPriceChangeApiResponse>();
+            _apiResponse.PendingPriceChange.Initiator = _fixture.Create<PriceChangeInitiator>().ToString();
             _providerResponse = _fixture.Create<GetProviderResponse>();
             _accountLegalEntityResponse = _fixture.Create<GetAccountLegalEntityResponse>();
 
@@ -63,7 +64,9 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
             //  Assert
             var okObjectResult = result.ShouldBeOfType<OkObjectResult>();
             var actualResponse = okObjectResult.Value.ShouldBeOfType<GetPendingPriceChangeResponse>();
-            actualResponse.Should().BeEquivalentTo(_apiResponse);
+            actualResponse.Should().BeEquivalentTo(_apiResponse, options => options.Excluding(x => x.PendingPriceChange.Initiator));
+            actualResponse.PendingPriceChange.Initiator.ToString().Should()
+                .Be(_apiResponse.PendingPriceChange.Initiator);
         }
 
         [Test]

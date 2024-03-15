@@ -12,6 +12,7 @@ namespace SFA.DAS.Apprenticeships.Api.Models
         public GetPendingPriceChangeResponse(GetPendingPriceChangeApiResponse apiResponse, string providerName, Guid apprenticeshipKey, string employerName)
 		{
             HasPendingPriceChange = apiResponse.HasPendingPriceChange;
+            Enum.TryParse(apiResponse.PendingPriceChange.Initiator, out PriceChangeInitiator initiator);
 			PendingPriceChange = apiResponse.PendingPriceChange != null ? new PendingPriceChange
 			{
 				EffectiveFrom = apiResponse.PendingPriceChange.EffectiveFrom,
@@ -29,7 +30,7 @@ namespace SFA.DAS.Apprenticeships.Api.Models
 				ApprenticeshipKey = apprenticeshipKey,
 				ProviderApprovedDate = apiResponse.PendingPriceChange.ProviderApprovedDate,
 				EmployerApprovedDate = apiResponse.PendingPriceChange.EmployerApprovedDate,
-				Initiator = apiResponse.PendingPriceChange.Initiator
+				Initiator = initiator
 
             } : null;
             ProviderName = providerName;
