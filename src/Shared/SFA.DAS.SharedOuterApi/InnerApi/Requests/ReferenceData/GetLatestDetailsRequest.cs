@@ -15,6 +15,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.ReferenceData
             OrganisationType = organisationType;
         }
 
-        public string GetUrl => $"api/organisation/get?identifier={HttpUtility.UrlEncode(Identifier)}&organisationType={OrganisationType}";
+        public string GetUrl => $"api/organisations/get?identifier={HttpUtility.UrlEncode(Identifier)}&organisationType={OrganisationType}";
     }
 }
