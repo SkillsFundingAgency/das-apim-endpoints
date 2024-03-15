@@ -105,7 +105,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
 
             if (providerResponse == null || string.IsNullOrEmpty(providerResponse.Name))
             {
-                _logger.LogWarning($"No provider found for ukprn {ukprn}");
+                _logger.LogWarning($"No provider found for {nameof(ukprn)} {ukprn}");
                 return NotFound();
             }
 
@@ -113,7 +113,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
             var employerResponse = await _apiCommitmentsClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
             if (employerResponse == null || string.IsNullOrEmpty(employerResponse.AccountName))
             {
-                _logger.LogWarning($"No employer found for accountLegalEntityId {ukprn}");
+                _logger.LogWarning($"No employer found for {nameof(accountLegalEntityId)} {accountLegalEntityId}");
                 return NotFound();
             }
 
