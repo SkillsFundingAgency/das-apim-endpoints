@@ -14,7 +14,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         {
             var actual = new GetLatestDetailsRequest(searchTerm, organisationType);
 
-            var expected = $"get?identifier={HttpUtility.UrlEncode(searchTerm)}&organisationType={organisationType}";
+            var expected = $"api/organisation/get?identifier={HttpUtility.UrlEncode(searchTerm)}&organisationType={organisationType}";
 
             actual.GetUrl.Should().Be(expected);
         }
