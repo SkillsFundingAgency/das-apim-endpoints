@@ -50,7 +50,7 @@ public class WhenCreateApprenticeshipPriceHistory
             request.ApprenticeshipKey,
             new Models.CreateApprenticeshipPriceChangeRequest
             {
-                Requester = ((CreateApprenticeshipPriceChangeRequest)request.Data).Requester,
+                Initiator = ((CreateApprenticeshipPriceChangeRequest)request.Data).Initiator,
                 UserId = ((CreateApprenticeshipPriceChangeRequest)request.Data).UserId,
                 TrainingPrice = ((CreateApprenticeshipPriceChangeRequest)request.Data).TrainingPrice,
                 AssessmentPrice = ((CreateApprenticeshipPriceChangeRequest)request.Data).AssessmentPrice,
@@ -61,7 +61,7 @@ public class WhenCreateApprenticeshipPriceHistory
 
         // Assert
         apiClient.Verify(x => x.PostWithResponseCode<object>(It.Is<PostCreateApprenticeshipPriceChangeRequest>(r =>
-            ((CreateApprenticeshipPriceChangeRequest)r.Data).Requester == ((CreateApprenticeshipPriceChangeRequest)request.Data).Requester &&
+            ((CreateApprenticeshipPriceChangeRequest)r.Data).Initiator == ((CreateApprenticeshipPriceChangeRequest)request.Data).Initiator &&
             ((CreateApprenticeshipPriceChangeRequest)r.Data).UserId == ((CreateApprenticeshipPriceChangeRequest)request.Data).UserId &&
             ((CreateApprenticeshipPriceChangeRequest)r.Data).TrainingPrice == ((CreateApprenticeshipPriceChangeRequest)request.Data).TrainingPrice &&
             ((CreateApprenticeshipPriceChangeRequest)r.Data).AssessmentPrice == ((CreateApprenticeshipPriceChangeRequest)request.Data).AssessmentPrice &&
