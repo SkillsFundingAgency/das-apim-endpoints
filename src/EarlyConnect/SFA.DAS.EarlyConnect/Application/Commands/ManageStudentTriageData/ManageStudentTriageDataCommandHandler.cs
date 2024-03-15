@@ -17,13 +17,18 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
     public class ManageStudentTriageDataCommandHandler : IRequestHandler<ManageStudentTriageDataCommand, ManageStudentTriageDataCommandResult>
     {
         private readonly IEarlyConnectApiClient<EarlyConnectApiConfiguration> _apiClient;
-        private readonly ILepsNeApiClient<LepsNeApiConfiguration> _apiLepsClient;
+        private readonly ILepsNeApiClient<LepsNeApiConfiguration> _apiLepsNeClient;
+        private readonly ILepsLaApiClient<LepsLaApiConfiguration> _apiLepsLaClient;
         private readonly IFeature _feature;
 
-        public ManageStudentTriageDataCommandHandler(IEarlyConnectApiClient<EarlyConnectApiConfiguration> apiClient, ILepsNeApiClient<LepsNeApiConfiguration> apiLepsClient, IFeature feature)
+        public ManageStudentTriageDataCommandHandler(IEarlyConnectApiClient<EarlyConnectApiConfiguration> apiClient,
+            ILepsNeApiClient<LepsNeApiConfiguration> apiLepsNeClient,
+            ILepsLaApiClient<LepsLaApiConfiguration> apiLepsLaClient,
+            IFeature feature)
         {
             _apiClient = apiClient;
-            _apiLepsClient = apiLepsClient;
+            _apiLepsNeClient = apiLepsNeClient;
+            _apiLepsLaClient = apiLepsLaClient;
             _feature = feature;
         }
 
@@ -52,8 +57,39 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
                     var studentTriageData = MapResponseToStudentData(getStudentTriageResult.Body);
 
                     var sendStudentDataresult =
-                        await _apiLepsClient.PostWithResponseCode<SendStudentDataToNeLepsResponse>(
+                        await _apiLepsNeClient.PostWithResponseCode<SendStudentDataToNeLepsResponse>(
                             new SendStudentDataToNeLepsRequest(studentTriageData, request.SurveyGuid), false);
+
+                    if (sendStudentDataresult == null || sendStudentDataresult.StatusCode != HttpStatusCode.Created)
+                    {
+                        return new ManageStudentTriageDataCommandResult
+                        {
+                            Message = $"{manageStudentResponse?.Body?.Message} - {sendStudentDataresult?.Body?.Message}"
+                        };
+                    }
+
+                    var deliveryUpdate = new DeliveryUpdate
+                    { Source = DataSource.StudentData, Ids = new List<int> { getStudentTriageResult.Body.Id } };
+
+                    var deliveryUpdateresponse =
+                        await _apiClient.PostWithResponseCode<DeliveryUpdateDataResponse>(
+                            new DeliveryUpdateRequest(deliveryUpdate));
+
+                    deliveryUpdateresponse.EnsureSuccessStatusCode();
+
+                    return new ManageStudentTriageDataCommandResult
+                    {
+                        Message =
+                            $"{manageStudentResponse?.Body?.Message} - {sendStudentDataresult?.Body?.Message} - {deliveryUpdateresponse?.Body?.Message}"
+                    };
+                }
+                if (getStudentTriageResult.Body.LepsId == (int)LepsRegion.Region.Lancashire && getStudentTriageResult.Body.LepDateSent == null)
+                {
+                    var studentTriageData = MapResponseToStudentData(getStudentTriageResult.Body);
+
+                    var sendStudentDataresult =
+                        await _apiLepsLaClient.PostWithResponseCode<SendStudentDataToLaLepsResponse>(
+                            new SendStudentDataToLaLepsRequest(studentTriageData, request.SurveyGuid), false);
 
                     if (sendStudentDataresult == null || sendStudentDataresult.StatusCode != HttpStatusCode.Created)
                     {
