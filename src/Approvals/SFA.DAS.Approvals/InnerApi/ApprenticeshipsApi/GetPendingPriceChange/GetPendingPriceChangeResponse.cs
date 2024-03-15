@@ -20,6 +20,5 @@ namespace SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange
 		public string Reason { get; set; }
         public DateTime? ProviderApprovedDate { get; set; }
         public DateTime? EmployerApprovedDate { get; set; }
-        public string Initiator { get; set; }
     }
 }
