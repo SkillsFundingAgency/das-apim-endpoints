@@ -35,7 +35,7 @@ public class WhenCreateApprenticeshipPriceHistory
         var apprenticeshipKey = Guid.NewGuid();
         var request = new PostCreateApprenticeshipPriceChangeRequest(
             apprenticeshipKey: apprenticeshipKey,
-            initiator: "Provider",
+            requester: "Provider",
             userId: "testUser",
             trainingPrice: 1000,
             assessmentPrice: 500,

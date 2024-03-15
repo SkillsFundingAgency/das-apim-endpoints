@@ -17,7 +17,7 @@
 		public Guid ApprenticeshipKey { get; set; }
 		public DateTime? ProviderApprovedDate { get; set; }
 		public DateTime? EmployerApprovedDate { get; set; }
-        public PriceChangeInitiator Initiator { get; set; }
+        public string Initiator { get; set; }
 
     }
 }
