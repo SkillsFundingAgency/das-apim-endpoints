@@ -133,7 +133,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
                 .Setup(service => service.ValidateEpaoStandardDates(It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
                 .Returns(true);
             mockCourseEpaoFilter
-                .Setup(service => service.ValidateVersionDates(It.IsAny<DateTime>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+                .Setup(service => service.ValidateVersionDates(It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
                 .Returns(false);
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -186,7 +186,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
                 .Setup(service => service.ValidateEpaoStandardDates(It.IsAny<DateTime?>(),It.IsAny<DateTime?>(),It.IsAny<DateTime?>()))
                 .Returns(true);
             mockCourseEpaoFilter
-                .Setup(service => service.ValidateVersionDates(It.IsAny<DateTime>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
+                .Setup(service => service.ValidateVersionDates(It.IsAny<DateTime?>(), It.IsAny<DateTime?>()))
                 .Returns(true);
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -206,7 +206,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
                     Times.Once);
 
                 foreach (var standardVersion in courseListItem.StandardVersions)
-                    mockCourseEpaoFilter.Verify(x => x.ValidateVersionDates(standardVersion.DateVersionApproved, standardVersion.EffectiveFrom, standardVersion.EffectiveTo), Times.Once);
+                    mockCourseEpaoFilter.Verify(x => x.ValidateVersionDates(standardVersion.EffectiveFrom, standardVersion.EffectiveTo), Times.Once);
             }
 
             result.EffectiveFrom.Should().Be(courseEpaosApiResponse
