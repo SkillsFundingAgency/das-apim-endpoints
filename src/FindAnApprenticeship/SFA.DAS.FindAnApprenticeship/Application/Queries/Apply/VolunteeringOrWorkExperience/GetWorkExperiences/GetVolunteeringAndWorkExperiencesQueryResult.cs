@@ -1,21 +1,13 @@
 ﻿using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetWorkExperiences;
 
 public record GetVolunteeringAndWorkExperiencesQueryResult
 {
+    public bool? IsSectionCompleted { get; set; }
     public List<VolunteeringAndWorkExperience> VolunteeringAndWorkExperiences { get; set; } = [];
-
-    public static implicit operator GetVolunteeringAndWorkExperiencesQueryResult(GetWorkHistoriesApiResponse source)
-    {
-        return new GetVolunteeringAndWorkExperiencesQueryResult
-        {
-            VolunteeringAndWorkExperiences = source.WorkHistories.Select(x => (VolunteeringAndWorkExperience)x).ToList()
-        };
-    }
 
     public record VolunteeringAndWorkExperience
     {

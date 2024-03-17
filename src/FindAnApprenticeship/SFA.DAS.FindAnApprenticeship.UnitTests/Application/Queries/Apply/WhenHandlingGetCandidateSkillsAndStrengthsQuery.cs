@@ -14,14 +14,14 @@ public class WhenHandlingGetCandidateSkillsAndStrengthsQuery
     [Test, MoqAutoData]
     public async Task Then_The_QueryResult_Is_Returned_As_Expected(
         GetCandidateSkillsAndStrengthsQuery query,
-        GetCandidateSkillsAndStrengthsItemApiResponse apiResponse,
+        GetAboutYouItemApiResponse apiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetCandidateSkillsAndStrengthsQueryHandler handler)
     {
-        var expectedApiRequest = new GetCandidateSkillsAndStrengthsItemApiRequest(query.ApplicationId, query.CandidateId);
+        var expectedApiRequest = new GetAboutYouItemApiRequest(query.ApplicationId, query.CandidateId);
         candidateApiClient
-            .Setup(client => client.Get<GetCandidateSkillsAndStrengthsItemApiResponse>(
-                It.Is<GetCandidateSkillsAndStrengthsItemApiRequest>(r => r.GetUrl == expectedApiRequest.GetUrl)))
+            .Setup(client => client.Get<GetAboutYouItemApiResponse>(
+                It.Is<GetAboutYouItemApiRequest>(r => r.GetUrl == expectedApiRequest.GetUrl)))
             .ReturnsAsync(apiResponse);
 
         var result = await handler.Handle(query, CancellationToken.None);

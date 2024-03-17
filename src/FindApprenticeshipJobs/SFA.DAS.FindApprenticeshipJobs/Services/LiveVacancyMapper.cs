@@ -14,8 +14,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
 
             return new Application.Shared.LiveVacancy
             {
-                Id = source.VacancyReference,
-                VacancyReference = source.VacancyReference,
+                Id = source.VacancyReference.ToString(),
+                VacancyReference = source.VacancyReference.ToString(),
                 VacancyId = source.VacancyId,
                 Title = source.Title,
                 PostedDate = source.LiveDate,

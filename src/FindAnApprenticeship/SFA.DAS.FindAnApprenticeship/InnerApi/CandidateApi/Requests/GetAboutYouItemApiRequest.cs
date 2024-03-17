@@ -2,12 +2,12 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-public class GetCandidateSkillsAndStrengthsItemApiRequest : IGetApiRequest
+public class GetAboutYouItemApiRequest : IGetApiRequest
 {
     private readonly Guid _applicationId;
     private readonly Guid _candidateId;
 
-    public GetCandidateSkillsAndStrengthsItemApiRequest(Guid applicationId, Guid candidateId)
+    public GetAboutYouItemApiRequest(Guid applicationId, Guid candidateId)
     {
         _applicationId = applicationId;
         _candidateId = candidateId;
