@@ -17,22 +17,14 @@ public class WhenHandlingUpsertDateOfBirthCommand
 {
     [Test, MoqAutoData]
     public async Task Then_The_Put_Is_Sent_And_Data_Returned(
-        string govIdentifier,
-        string email,
-        DateTime dob,
+        UpsertDateOfBirthCommand command,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         UpsertDateOfBirthCommandHandler handler)
     {
-        var command = new UpsertDateOfBirthCommand
-        {
-            GovUkIdentifier = govIdentifier,
-            Email = email,
-            DateOfBirth = DateOnly.FromDateTime(dob)
-        };
         var expectedPutData = new PutCandidateApiRequestData
         {
             Email = command.Email,
-            DateOfBirth = command.DateOfBirth.ToDateTime(TimeOnly.Parse("00:00 PM"))
+            DateOfBirth = command.DateOfBirth
         };
 
         var expectedRequest = new PutCandidateApiRequest(command.GovUkIdentifier, expectedPutData);
@@ -51,18 +43,10 @@ public class WhenHandlingUpsertDateOfBirthCommand
 
     [Test, MoqAutoData]
     public void And_Api_Returns_Null_Then_Return_Null(
-        string govIdentifier,
-        string email,
-        DateTime dob,
+        UpsertDateOfBirthCommand command,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         UpsertDateOfBirthCommandHandler handler)
     {
-        var command = new UpsertDateOfBirthCommand
-        {
-            GovUkIdentifier = govIdentifier,
-            Email = email,
-            DateOfBirth = DateOnly.FromDateTime(dob)
-        };
         mockApiClient.Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<PutCandidateApiRequest>()))
             .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.BadRequest, "error"));
 

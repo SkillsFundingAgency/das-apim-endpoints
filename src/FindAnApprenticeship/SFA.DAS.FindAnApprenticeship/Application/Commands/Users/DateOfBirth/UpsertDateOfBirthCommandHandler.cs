@@ -21,7 +21,7 @@ public class UpsertDateOfBirthCommandHandler : IRequestHandler<UpsertDateOfBirth
     {
         var putData = new PutCandidateApiRequestData
         {
-            DateOfBirth = command.DateOfBirth.ToDateTime(TimeOnly.Parse("00:00 PM")),
+            DateOfBirth = command.DateOfBirth,
             Email = command.Email
         };
 

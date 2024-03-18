@@ -18,16 +18,10 @@ public class WhenPostingDateOfBirth
     [Test, MoqAutoData]
     public async Task Then_Returns_Put_Response(
         string govUkIdentifier,
-        string email,
-        DateTime dob,
+        CandidatesDateOfBirthModel model,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.UsersController controller)
     {
-        var model = new CandidatesDateOfBirthModel
-        {
-            Email = email,
-            DateOfBirth = DateOnly.FromDateTime(dob)
-        };
         var actual = await controller.DateOfBirth(govUkIdentifier, model) as OkObjectResult;
 
         actual.Should().NotBeNull();
@@ -42,16 +36,10 @@ public class WhenPostingDateOfBirth
     [Test, MoqAutoData]
     public async Task Then_Throws_Exception(
         string govUkIdentifier,
-        string email,
-        DateTime dob,
+        CandidatesDateOfBirthModel model,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.UsersController controller)
     {
-        var model = new CandidatesDateOfBirthModel
-        {
-            Email = email,
-            DateOfBirth = DateOnly.FromDateTime(dob)
-        };
         mediator.Setup(x => x.Send(It.IsAny<UpsertDateOfBirthCommand>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new InvalidOperationException());
 

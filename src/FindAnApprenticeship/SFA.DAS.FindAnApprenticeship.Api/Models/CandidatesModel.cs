@@ -15,5 +15,5 @@ public class CandidatesNameModel : CandidatesModel
 
 public class CandidatesDateOfBirthModel : CandidatesModel
 {
-    public DateOnly DateOfBirth { get; set; }
+    public DateTime DateOfBirth { get; set; }
 }
