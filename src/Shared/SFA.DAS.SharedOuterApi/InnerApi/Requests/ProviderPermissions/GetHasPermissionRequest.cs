@@ -2,7 +2,14 @@
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderPermissions;
 
-public class GetHasPermissionRequest(long? ukPrn, long? accountLegalEntityId, string operation) : IGetApiRequest
+public enum Operation : short
 {
-    public string GetUrl => $"permissions/has?ukprn={ukPrn}&accountLegalEntityId={accountLegalEntityId}&operation={operation}";
+    CreateCohort = 0,
+    Recruitment = 1,
+    RecruitmentRequiresReview = 2
+}
+
+public class GetHasPermissionRequest(long? ukPrn, long? accountLegalEntityId, Operation operation) : IGetApiRequest
+{
+    public string GetUrl => $"permissions/has?ukprn={ukPrn}&accountLegalEntityId={accountLegalEntityId}&operation={(int)operation}";
 }
