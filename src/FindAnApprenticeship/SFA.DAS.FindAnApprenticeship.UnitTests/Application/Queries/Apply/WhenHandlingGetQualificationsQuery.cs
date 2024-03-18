@@ -20,6 +20,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
         public async Task Then_The_QueryResult_Is_Returned_As_Expected(
             GetQualificationsQuery query,
             GetApplicationApiResponse applicationApiResponse,
+            GetQualificationsReferenceDataApiResponse referenceDataApiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             GetQualificationsQueryHandler handler)
         {
@@ -31,15 +32,19 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
                 client.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedApplicationRequest.GetUrl)))
                 .ReturnsAsync(applicationApiResponse);
 
+            var expectedReferenceDataRequest = new GetQualificationsReferenceDataApiRequest();
+            candidateApiClient.Setup(client =>
+                    client.Get<GetQualificationsReferenceDataApiResponse>(It.Is<GetQualificationsReferenceDataApiRequest>(r => r.GetUrl == expectedReferenceDataRequest.GetUrl)))
+                .ReturnsAsync(referenceDataApiResponse);
+
             var result = await handler.Handle(query, CancellationToken.None);
 
             using var scope = new AssertionScope();
 
-            result.Should().BeEquivalentTo(new GetQualificationsQueryResult
-            {
-                IsSectionCompleted = false,
-                Qualifications = Enumerable.Empty<GetQualificationsQueryResult.Qualification>().ToList()
-            });
+            result.IsSectionCompleted.Should().BeFalse();
+            result.Qualifications.Should()
+                .BeEquivalentTo(Enumerable.Empty<GetQualificationsQueryResult.Qualification>().ToList());
+            result.QualificationTypes.Should().BeEquivalentTo(referenceDataApiResponse.QualificationReferences);
         }
     }
 }
