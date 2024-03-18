@@ -17,6 +17,7 @@ using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using Party = SFA.DAS.Approvals.InnerApi.Responses.Party;
 using Standard = SFA.DAS.Approvals.Types.Standard;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
