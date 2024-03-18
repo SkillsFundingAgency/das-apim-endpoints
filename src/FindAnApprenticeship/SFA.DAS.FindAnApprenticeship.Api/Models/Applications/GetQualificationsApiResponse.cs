@@ -11,7 +11,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
 
         public List<Qualification> Qualifications { get; set; }
 
-        public List<QualificationType> QualificationsTypes { get; set; }
+        public List<QualificationType> QualificationTypes { get; set; }
 
         public class QualificationType
         {
@@ -27,18 +27,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
             public string? Grade { get; set; }
             public string? AdditionalInformation { get; set; }
             public bool? IsPredicted { get; set; }
-
-            public static implicit operator Qualification(GetQualificationsQueryResult.Qualification source)
-            {
-                return new Qualification
-                {
-                    Id = source.Id,
-                    AdditionalInformation = source.AdditionalInformation,
-                    Grade = source.Grade,
-                    IsPredicted = source.IsPredicted,
-                    Subject = source.Subject
-                };
-            }
         }
 
         public static implicit operator GetQualificationsApiResponse(GetQualificationsQueryResult source)
@@ -46,8 +34,15 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
             return new GetQualificationsApiResponse
             {
                 IsSectionCompleted = source.IsSectionCompleted,
-                Qualifications = source.Qualifications.Select(x => (Qualification)x).ToList(),
-                QualificationsTypes = source.QualificationTypes.Select(x => new QualificationType
+                Qualifications = source.Qualifications.Select(x => new Qualification
+                {
+                    Id = x.Id,
+                    AdditionalInformation = x.AdditionalInformation,
+                    Grade = x.Grade,
+                    IsPredicted = x.IsPredicted,
+                    Subject = x.Subject
+                }).ToList(),
+                QualificationTypes = source.QualificationTypes.Select(x => new QualificationType
                 {
                     Id = x.Id,
                     Name = x.Name,
