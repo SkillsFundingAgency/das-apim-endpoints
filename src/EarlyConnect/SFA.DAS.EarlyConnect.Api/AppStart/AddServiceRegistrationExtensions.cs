@@ -5,6 +5,7 @@ using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.EarlyConnect.Api.Extensions;
 using SFA.DAS.EarlyConnect.Configuration.FeatureToggle;
+using SFA.DAS.EarlyConnect.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -26,6 +27,7 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<ILepsNeApiClient<LepsNeApiConfiguration>, LepsNeApiClient>();
         services.AddTransient<ILepsLaApiClient<LepsLaApiConfiguration>, LepsLaApiClient>();
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddTransient<ISendStudentDataToLepsService, SendStudentDataToLepsService>();
         services.AddFeatureToggle();
     }
 }

@@ -13,6 +13,6 @@ namespace SFA.DAS.EarlyConnect.ExternalApi.Requests
             Data = studentTriageData;
             SurveyGuid = surveyGuid;
         }
-        public string PostUrl => $"leps/student/";
+        public string PostUrl => $"earlyConnect/triagedStudent/";
     }
 }
