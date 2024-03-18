@@ -22,9 +22,22 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
 
         public class Qualification
         {
+            public Guid Id { get; set; }
+            public string? Subject { get; set; }
+            public string? Grade { get; set; }
+            public string? AdditionalInformation { get; set; }
+            public bool? IsPredicted { get; set; }
+
             public static implicit operator Qualification(GetQualificationsQueryResult.Qualification source)
             {
-                return new Qualification();
+                return new Qualification
+                {
+                    Id = source.Id,
+                    AdditionalInformation = source.AdditionalInformation,
+                    Grade = source.Grade,
+                    IsPredicted = source.IsPredicted,
+                    Subject = source.Subject
+                };
             }
         }
 

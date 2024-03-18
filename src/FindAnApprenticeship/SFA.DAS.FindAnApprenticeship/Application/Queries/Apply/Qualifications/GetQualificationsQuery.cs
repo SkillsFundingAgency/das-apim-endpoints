@@ -26,6 +26,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Qualifications
 
         public class Qualification
         {
+            public Guid Id { get; set; }
+            public string? Subject { get; set; }
+            public string? Grade { get; set; }
+            public string? AdditionalInformation { get; set; }
+            public bool? IsPredicted { get; set; }
         }
 
         public class QualificationReferenceDataItem
@@ -46,6 +51,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Qualifications
             var qualificationTypesRequest = new GetQualificationsReferenceDataApiRequest();
             var qualificationTypes = await candidateApiClient.Get<GetQualificationsReferenceDataApiResponse>(qualificationTypesRequest);
 
+            var qualificationsRequest = new GetQualificationsApiRequest(request.ApplicationId, request.CandidateId);
+            var qualifications = await candidateApiClient.Get<GetQualificationsApiResponse>(qualificationsRequest);
+
             bool? isCompleted = application.QualificationsStatus switch
             {
                 Constants.SectionStatus.Incomplete => false,
@@ -56,7 +64,14 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Qualifications
             return new GetQualificationsQueryResult
             {
                 IsSectionCompleted = isCompleted,
-                Qualifications = new List<GetQualificationsQueryResult.Qualification>(),
+                Qualifications = qualifications.Qualifications.Select(x => new GetQualificationsQueryResult.Qualification
+                {
+                    Id = x.Id,
+                    AdditionalInformation = x.AdditionalInformation,
+                    Grade = x.Grade,
+                    IsPredicted = x.IsPredicted,
+                    Subject = x.Subject
+                }).ToList(),
                 QualificationTypes = qualificationTypes.QualificationReferences.Select(x => new GetQualificationsQueryResult.QualificationReferenceDataItem
                 {
                     Id = x.Id,
