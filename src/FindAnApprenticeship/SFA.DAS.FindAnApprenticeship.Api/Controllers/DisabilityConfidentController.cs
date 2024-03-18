@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DisabilityConfident;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.DisabilityConfident;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateWhatInterestsYou;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -34,6 +33,27 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 logger.LogError(e, "GetDisabilityConfident : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("details")]
+        public async Task<IActionResult> GetDisabilityConfidentDetails([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
+        {
+            try
+            {
+                var result = await mediator.Send(new GetDisabilityConfidentDetailsQuery
+                {
+                    CandidateId = candidateId,
+                    ApplicationId = applicationId,
+                });
+
+                if (result is null) return NotFound();
+                return Ok((GetDisabilityConfidentDetailsApiResponse)result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "GetDisabilityConfidentDetails : An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
