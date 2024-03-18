@@ -10,6 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Application.ProviderPermissions.Queries;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderPermissions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderRelationships;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -21,7 +22,7 @@ public class WhenGettingHasPermission
     public async Task Then_Mediator_Query_Is_Handled_And_Response_Returned(
         long? ukprn, 
         long? accountLegalEntityId,
-        string operation,
+        Operation operation,
         bool result,
         [Frozen] Mock<ISender> mediator,
         [Greedy]ProviderPermissionsController controller)
@@ -41,7 +42,7 @@ public class WhenGettingHasPermission
     public async Task Then_If_Error_Then_Internal_Server_Error_Response_Returned(
         long? ukprn, 
         long? accountLegalEntityId,
-        string operation,
+        Operation operation,
         bool result,
         [Frozen] Mock<ISender> mediator,
         [Greedy]ProviderPermissionsController controller)
