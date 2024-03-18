@@ -17,7 +17,7 @@ public class GetQualificationTypesQueryHandler(ICandidateApiClient<CandidateApiC
 
         return new GetQualificationTypesQueryResult
         {
-            QualificationTypes = response.Body.QualificationReferencesQualificationReferences
+            QualificationTypes = response.Body.QualificationReferences
         };
     }
 }

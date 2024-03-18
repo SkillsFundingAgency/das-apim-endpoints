@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetQualificationTypes;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 
@@ -9,7 +9,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
 public class GetQualificationReferenceTypesApiResponse
 {
-    [JsonProperty("QualificationTypes")]
+    [JsonPropertyName("QualificationTypes")]
     public List<GetQualificationTypeApiResponse> QualificationTypes { get; set; }
     public static implicit operator GetQualificationReferenceTypesApiResponse(GetQualificationTypesQueryResult source)
     {
@@ -22,13 +22,13 @@ public class GetQualificationReferenceTypesApiResponse
 
 public class GetQualificationTypeApiResponse
 {
-    [JsonProperty("id")]
+    [JsonPropertyName("id")]
     public Guid Id { get; set; }
 
-    [JsonProperty("name")]
+    [JsonPropertyName("name")]
     public string Name { get; set; }
 
-    [JsonProperty("order")]
+    [JsonPropertyName("order")]
     public long Order { get; set; }
 
     public static implicit operator GetQualificationTypeApiResponse(QualificationReference source)

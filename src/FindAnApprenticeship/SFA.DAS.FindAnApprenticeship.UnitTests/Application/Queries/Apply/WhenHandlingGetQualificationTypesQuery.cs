@@ -30,6 +30,6 @@ public class WhenHandlingGetQualificationTypesQuery
         
         var actual = await handler.Handle(query, CancellationToken.None);
 
-        actual.QualificationTypes.Should().BeEquivalentTo(apiResponse.QualificationReferencesQualificationReferences);
+        actual.QualificationTypes.Should().BeEquivalentTo(apiResponse.QualificationReferences);
     }
 }
