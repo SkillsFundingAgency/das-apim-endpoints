@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateQualifications;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateWhatInterestsYou;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Qualifications;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
