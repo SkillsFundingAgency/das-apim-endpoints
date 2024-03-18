@@ -79,7 +79,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             throw new NotImplementedException();
         }
-        [HttpGet("delete/{qualificationReferenceId}")]
+        
+        [HttpPost("delete/{qualificationReferenceId}")]
         public async Task<IActionResult> PostDeleteQualification([FromRoute] Guid applicationId)
         {
             throw new NotImplementedException();
