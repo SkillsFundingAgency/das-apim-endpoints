@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateQualifications;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetQualificationTypes;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Qualifications;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
@@ -60,7 +61,17 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         [HttpGet("add/select-type")]
         public async Task<IActionResult> GetAddSelectType([FromRoute] Guid applicationId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = await mediator.Send(new GetQualificationTypesQuery());
+
+                return Ok((GetQualificationReferenceTypesApiResponse)result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "GetAddSelectType : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpGet("add/{qualificationReferenceId}")]
