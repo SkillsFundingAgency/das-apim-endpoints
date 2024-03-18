@@ -56,6 +56,33 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+        
+        [HttpGet("add/select-type")]
+        public async Task<IActionResult> GetAddSelectType([FromRoute] Guid applicationId)
+        {
+            throw new NotImplementedException();
+        }
 
+        [HttpGet("add/{qualificationReferenceId}")]
+        public async Task<IActionResult> GetAddQualification([FromRoute] Guid applicationId, [FromRoute]Guid qualificationReferenceId)
+        {
+            throw new NotImplementedException();
+        }
+        [HttpPost("add/{qualificationReferenceId}")]
+        public async Task<IActionResult> PostAddQualification([FromRoute] Guid applicationId, [FromRoute]Guid qualificationReferenceId)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpGet("delete/{qualificationReferenceId}")]
+        public async Task<IActionResult> GetDeleteQualification([FromRoute] Guid applicationId, [FromRoute] Guid qualificationReferenceId, [FromQuery] Guid candidateId)
+        {
+            throw new NotImplementedException();
+        }
+        [HttpGet("delete/{qualificationReferenceId}")]
+        public async Task<IActionResult> PostDeleteQualification([FromRoute] Guid applicationId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
