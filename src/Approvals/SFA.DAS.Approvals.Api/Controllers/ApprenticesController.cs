@@ -4,9 +4,11 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm;
+using SFA.DAS.Approvals.Application.Apprentices.Commands.StopApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Queries;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
@@ -345,5 +347,28 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("/{apprenticeshipId}/stop")]
+        public async Task<IActionResult> StopApprenticeship(long apprenticeshipId, [FromBody] StopApprenticeshipRequest request)
+        {
+            try
+            {
+                await _mediator.Send(new StopApprenticeshipCommand
+                {
+                    AccountId = request.AccountId,
+                    ApprenticeshipId = apprenticeshipId,
+                    MadeRedundant = request.MadeRedundant,
+                    StopDate = request.StopDate,
+                    UserInfo = request.UserInfo
+                });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error stopping apprenticeship {id}", apprenticeshipId);
+                return BadRequest();
+            }
+        }
     }
 }
