@@ -1,4 +1,5 @@
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetQualificationTypes;
@@ -11,7 +12,7 @@ public class WhenMappingFromQueryToGetQualificationReferenceTypesApiResponse
     public void Then_The_Fields_Are_Mapped(GetQualificationTypesQueryResult source)
     {
         var actual = (GetQualificationReferenceTypesApiResponse)source;
-        
-        
+
+        actual.QualificationTypes.Should().BeEquivalentTo(source.QualificationTypes);
     }
 }
