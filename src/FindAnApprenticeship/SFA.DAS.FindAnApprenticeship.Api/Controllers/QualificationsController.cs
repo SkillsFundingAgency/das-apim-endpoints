@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
@@ -96,20 +97,23 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
         
         [HttpPost("{qualificationReferenceId}/modify")]
-        public async Task<IActionResult> PostAddQualification([FromRoute] Guid applicationId, [FromRoute]Guid qualificationReferenceId, [FromQuery]Guid candidateId, [FromBody] UpdateApplicationQualificationRequest request)
+        public async Task<IActionResult> PostAddQualification([FromRoute] Guid applicationId, [FromRoute]Guid qualificationReferenceId, [FromBody] UpdateApplicationQualificationRequest request)
         {
             try
             {
                 await mediator.Send(new UpdateApplicationQualificationCommand
                 {
                     ApplicationId = applicationId,
-                    CandidateId = candidateId,
-                    Grade = request.Grade,
-                    Id = request.Id,
-                    Subject = request.Subject,
-                    AdditionalInformation = request.AdditionalInformation,
-                    IsPredicted = request.IsPredicted,
-                    ToYear = request.ToYear,
+                    CandidateId = request.CandidateId,
+                    Subjects = request.Subjects.Select(c=>new UpdateApplicationQualificationCommand.Subject
+                    {
+                        ToYear = c.ToYear,
+                        Grade = c.Grade,
+                        Id = c.Id,
+                        Name = c.Name,
+                        AdditionalInformation = c.AdditionalInformation,
+                        IsPredicted = c.IsPredicted
+                    }).ToList(),
                     QualificationReferenceId = qualificationReferenceId
                 });
 

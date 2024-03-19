@@ -13,25 +13,30 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply;
 public class WhenHandlingUpdateQualificationCommand
 {
     [Test, MoqAutoData]
-    public async Task Then_The_Command_Is_Handled_And_Api_Called(
+    public async Task Then_The_Command_Is_Handled_And_Api_Called_For_Each_Subject(
         UpdateApplicationQualificationCommand command,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         UpdateApplicationQualificationCommandHandler handler)
     {
         await handler.Handle(command, CancellationToken.None);
 
-        candidateApiClient.Verify(x =>
-            x.PutWithResponseCode<PutApplicationQualificationApiResponse>(
-                It.Is<PutApplicationQualificationApiRequest>(c =>
-                    c.PutUrl.Contains(
-                        $"api/candidates/{command.CandidateId}/applications/{command.ApplicationId}/Qualifications")
-                    && ((PutApplicationQualificationApiRequestData)c.Data).QualificationReferenceId == command.QualificationReferenceId
-                    && ((PutApplicationQualificationApiRequestData)c.Data).Id == command.Id
-                    && ((PutApplicationQualificationApiRequestData)c.Data).ToYear == command.ToYear
-                    && ((PutApplicationQualificationApiRequestData)c.Data).Grade == command.Grade
-                    && ((PutApplicationQualificationApiRequestData)c.Data).Subject == command.Subject
-                    && ((PutApplicationQualificationApiRequestData)c.Data).IsPredicted == command.IsPredicted
-                    && ((PutApplicationQualificationApiRequestData)c.Data).AdditionalInformation == command.AdditionalInformation
+        foreach (var subject in command.Subjects)
+        {
+            candidateApiClient.Verify(x =>
+                x.PutWithResponseCode<PutApplicationQualificationApiResponse>(
+                    It.Is<PutApplicationQualificationApiRequest>(c =>
+                        c.PutUrl.Contains(
+                            $"api/candidates/{command.CandidateId}/applications/{command.ApplicationId}/Qualifications")
+                        && ((PutApplicationQualificationApiRequestData)c.Data).QualificationReferenceId == command.QualificationReferenceId
+                        && ((PutApplicationQualificationApiRequestData)c.Data).Id == subject.Id
+                        && ((PutApplicationQualificationApiRequestData)c.Data).ToYear == subject.ToYear
+                        && ((PutApplicationQualificationApiRequestData)c.Data).Grade == subject.Grade
+                        && ((PutApplicationQualificationApiRequestData)c.Data).Subject == subject.Name
+                        && ((PutApplicationQualificationApiRequestData)c.Data).IsPredicted == subject.IsPredicted
+                        && ((PutApplicationQualificationApiRequestData)c.Data).AdditionalInformation == subject.AdditionalInformation
                     )));
+        }
+        
+        
     }
 }

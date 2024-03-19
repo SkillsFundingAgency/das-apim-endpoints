@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -12,19 +14,22 @@ public class UpdateApplicationQualificationCommandHandler(ICandidateApiClient<Ca
 {
     public async Task<Unit> Handle(UpdateApplicationQualificationCommand request, CancellationToken cancellationToken)
     {
-        var apiRequest = new PutApplicationQualificationApiRequest(request.CandidateId, request.ApplicationId,
-            new PutApplicationQualificationApiRequestData
+        var requests = request.Subjects.Select(subject => new PutApplicationQualificationApiRequest(request.CandidateId, request.ApplicationId, new PutApplicationQualificationApiRequestData
             {
-                Grade = request.Grade,
-                Id = request.Id,
-                Subject = request.Subject,
-                AdditionalInformation = request.AdditionalInformation,
-                IsPredicted = request.IsPredicted,
-                ToYear = request.ToYear,
+                Grade = subject.Grade,
+                Id = subject.Id,
+                Subject = subject.Name,
+                AdditionalInformation = subject.AdditionalInformation,
+                IsPredicted = subject.IsPredicted,
+                ToYear = subject.ToYear,
                 QualificationReferenceId = request.QualificationReferenceId
-            });
+            }))
+            .Select(candidateApiClient.PutWithResponseCode<PutApplicationQualificationApiResponse>)
+            .Cast<Task>()
+            .ToList();
 
-        await candidateApiClient.PutWithResponseCode<PutApplicationQualificationApiResponse>(apiRequest);
+
+        await Task.WhenAll(requests);
         
         return new Unit();
     }
