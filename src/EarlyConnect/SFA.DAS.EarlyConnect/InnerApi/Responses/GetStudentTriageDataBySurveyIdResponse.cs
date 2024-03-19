@@ -7,6 +7,7 @@ namespace SFA.DAS.EarlyConnect.InnerApi.Responses
         public int Id { get; set; }
         public DateTime? LepDateSent { get; set; }
         public int? LepsId { get; set; }
+        public string LepCode { get; set; }
         public int? LogId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
