@@ -72,7 +72,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             var expectedResult = new
             {
                 Id = source.VacancyReference.ToString(),
-                source.VacancyReference,
+                VacancyReference = source.VacancyReference.ToString(),
                 source.VacancyId,
                 source.Title,
                 PostedDate = source.LiveDate,

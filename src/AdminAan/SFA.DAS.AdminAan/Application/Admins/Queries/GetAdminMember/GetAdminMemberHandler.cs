@@ -1,17 +1,17 @@
 ﻿using MediatR;
 using SFA.DAS.AdminAan.Infrastructure;
 
-namespace SFA.DAS.AdminAan.Application.Admins.Queries.Lookup;
-public class LookupAdminMemberHandler : IRequestHandler<LookupAdminMemberRequest, LookupAdminMemberResult?>
+namespace SFA.DAS.AdminAan.Application.Admins.Queries.GetAdminMember;
+public class GetAdminMemberHandler : IRequestHandler<GetAdminMemberRequest, GetAdminMemberResult?>
 {
     private readonly IAanHubRestApiClient _apiClient;
 
-    public LookupAdminMemberHandler(IAanHubRestApiClient apiClient)
+    public GetAdminMemberHandler(IAanHubRestApiClient apiClient)
     {
         _apiClient = apiClient;
     }
 
-    public async Task<LookupAdminMemberResult?> Handle(LookupAdminMemberRequest request,
+    public async Task<GetAdminMemberResult?> Handle(GetAdminMemberRequest request,
         CancellationToken cancellationToken)
     {
         var result = await _apiClient.GetMemberByEmail(request.Email, cancellationToken);

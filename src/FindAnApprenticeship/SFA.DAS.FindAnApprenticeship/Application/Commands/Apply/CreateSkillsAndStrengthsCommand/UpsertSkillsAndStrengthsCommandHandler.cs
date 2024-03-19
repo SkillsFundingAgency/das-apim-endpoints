@@ -40,13 +40,18 @@ public class UpsertSkillsAndStrengthsCommandHandler : IRequestHandler<UpsertSkil
             throw new HttpRequestContentException($"Unable to patch application for candidate Id {command.CandidateId}", patchResult.StatusCode, patchResult.ErrorContent);
         }
 
-        var requestBody = new PutUpsertSkillsAndStrengthsApiRequest.PutUpdateSkillsAndStrengthsApiRequestData
-        {
-            SkillsAndStrengths = command.SkillsAndStrengths
-        };
-        var request = new PutUpsertSkillsAndStrengthsApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), requestBody);
+        var aboutYouItem = await _apiClient.Get<GetAboutYouItemApiResponse>(new GetAboutYouItemApiRequest(command.ApplicationId, command.CandidateId));
 
-        var putResult = await _apiClient.PutWithResponseCode<PutUpsertSkillsAndStrengthsApiResponse>(request);
+        var requestBody = new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData
+        {
+            SkillsAndStrengths = command.SkillsAndStrengths,
+            HobbiesAndInterests = aboutYouItem.AboutYou.HobbiesAndInterests,
+            Improvements = aboutYouItem.AboutYou.Improvements,
+            Support = aboutYouItem.AboutYou.Support
+        };
+        var request = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), requestBody);
+
+        var putResult = await _apiClient.PutWithResponseCode<PutUpsertAboutYouItemApiResponse>(request);
         putResult.EnsureSuccessStatusCode();
 
         if (putResult is null) return null;
