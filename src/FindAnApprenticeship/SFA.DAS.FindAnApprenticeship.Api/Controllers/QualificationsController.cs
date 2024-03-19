@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateQualifications;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetAddQualification;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetQualificationTypes;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Qualifications;
 
@@ -74,12 +75,25 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 
-        [HttpGet("add/{qualificationReferenceId}")]
+        [HttpGet("{qualificationReferenceId}/modify")]
         public async Task<IActionResult> GetAddQualification([FromRoute] Guid applicationId, [FromRoute]Guid qualificationReferenceId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = await mediator.Send(new GetAddQualificationQuery
+                {
+                    QualificationReferenceTypeId = qualificationReferenceId
+                });
+
+                return Ok((GetQualificationReferenceTypeApiResponse)result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "GetAddQualification : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
-        [HttpPost("add/{qualificationReferenceId}")]
+        [HttpPost("{qualificationReferenceId}/modify")]
         public async Task<IActionResult> PostAddQualification([FromRoute] Guid applicationId, [FromRoute]Guid qualificationReferenceId)
         {
             throw new NotImplementedException();
