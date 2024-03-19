@@ -3,13 +3,13 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 
-public class PutQualificationApiRequest(Guid candidateId, Guid applicationId, PutQualificationApiRequestData data) : IPutApiRequest
+public class PutApplicationQualificationApiRequest(Guid candidateId, Guid applicationId, PutApplicationQualificationApiRequestData data) : IPutApiRequest
 {
     public string PutUrl => $"api/candidates/{candidateId}/applications/{applicationId}/Qualifications";
     public object Data { get; set; } = data;
 }
 
-public class PutQualificationApiRequestData
+public class PutApplicationQualificationApiRequestData
 {
     public Guid Id { get; set; }
     public int? ToYear { get; set; }

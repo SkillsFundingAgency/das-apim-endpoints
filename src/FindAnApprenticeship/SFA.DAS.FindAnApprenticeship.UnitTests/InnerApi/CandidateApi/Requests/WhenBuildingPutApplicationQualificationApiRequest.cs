@@ -5,17 +5,17 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.InnerApi.CandidateApi.Requests;
 
-public class WhenBuildingPutQualificationApiRequest
+public class WhenBuildingPutApplicationQualificationApiRequest
 {
     [Test, AutoData]
     public void Then_The_Url_And_Data_Are_Correct(
         Guid candidateId,
         Guid applicationId,
-        PutQualificationApiRequestData putQualificationApiRequestData)
+        PutApplicationQualificationApiRequestData putApplicationQualificationApiRequestData)
     {
-        var actual = new PutQualificationApiRequest(candidateId, applicationId, putQualificationApiRequestData);
+        var actual = new PutApplicationQualificationApiRequest(candidateId, applicationId, putApplicationQualificationApiRequestData);
 
         actual.PutUrl.Should().Be($"api/candidates/{candidateId}/applications/{applicationId}/Qualifications");
-        ((PutQualificationApiRequestData)actual.Data).Should().BeEquivalentTo(putQualificationApiRequestData);
+        ((PutApplicationQualificationApiRequestData)actual.Data).Should().BeEquivalentTo(putApplicationQualificationApiRequestData);
     }
 }

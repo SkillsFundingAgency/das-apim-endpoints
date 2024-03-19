@@ -50,8 +50,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             using var scope = new AssertionScope();
 
             result.IsSectionCompleted.Should().BeFalse();
-            result.QualificationTypes.Should().BeEquivalentTo(referenceDataApiResponse.QualificationReferences);
-            result.Qualifications.Should().BeEquivalentTo(qualificationsApiResponse.Qualifications);
+            result.QualificationTypes.Should().BeEquivalentTo(referenceDataApiResponse.QualificationReferences, options=>options.ExcludingMissingMembers());
+            result.Qualifications.Should().BeEquivalentTo(qualificationsApiResponse.Qualifications, options=>options.ExcludingMissingMembers());
+            
         }
     }
 }
