@@ -348,7 +348,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpPost]
-        [Route("/{apprenticeshipId}/stop")]
+        [Route("{apprenticeshipId}/stop")]
         public async Task<IActionResult> StopApprenticeship(long apprenticeshipId, [FromBody] StopApprenticeshipRequest request)
         {
             try
