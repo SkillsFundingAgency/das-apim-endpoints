@@ -20,6 +20,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
         public string DisabilityConfidenceStatus { get; set; }
         public List<Question> AdditionalQuestions { get; set; } = [];
         public string WhatIsYourInterest { get; set; }
+        public bool? ApplyUnderDisabilityConfidentScheme { get; set; }
     }
 
     public class Question
