@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateApplicationQualification;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateQualifications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetAddQualification;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetQualificationTypes;
@@ -93,10 +94,32 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+        
         [HttpPost("{qualificationReferenceId}/modify")]
-        public async Task<IActionResult> PostAddQualification([FromRoute] Guid applicationId, [FromRoute]Guid qualificationReferenceId)
+        public async Task<IActionResult> PostAddQualification([FromRoute] Guid applicationId, [FromRoute]Guid qualificationReferenceId, [FromQuery]Guid candidateId, [FromBody] UpdateApplicationQualificationRequest request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await mediator.Send(new UpdateApplicationQualificationCommand
+                {
+                    ApplicationId = applicationId,
+                    CandidateId = candidateId,
+                    Grade = request.Grade,
+                    Id = request.Id,
+                    Subject = request.Subject,
+                    AdditionalInformation = request.AdditionalInformation,
+                    IsPredicted = request.IsPredicted,
+                    ToYear = request.ToYear,
+                    QualificationReferenceId = qualificationReferenceId
+                });
+
+                return Created();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "PostAddQualification : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [HttpGet("delete/{qualificationReferenceId}")]
