@@ -12,12 +12,21 @@ public class GetQualificationTypesQueryHandler(ICandidateApiClient<CandidateApiC
 {
     public async Task<GetQualificationTypesQueryResult> Handle(GetQualificationTypesQuery request, CancellationToken cancellationToken)
     {
-        var response = await apiClient.GetWithResponseCode<GetQualificationReferenceTypesApiResponse>(
+        var referenceDataTask = apiClient.GetWithResponseCode<GetQualificationReferenceTypesApiResponse>(
                 new GetQualificationReferenceTypesApiRequest());
+
+        var qualificationsTask = apiClient.GetWithResponseCode<GetQualificationsApiResponse>(
+            new GetQualificationsApiRequest(request.ApplicationId, request.CandidateId));
+
+        await Task.WhenAll(referenceDataTask, qualificationsTask);
+
+        var referenceData = referenceDataTask.Result;
+        var qualifications = qualificationsTask.Result;
 
         return new GetQualificationTypesQueryResult
         {
-            QualificationTypes = response.Body.QualificationReferences
+            HasAddedQualifications = qualifications.Body.Qualifications.Count > 0,
+            QualificationTypes = referenceData.Body.QualificationReferences
         };
     }
 }

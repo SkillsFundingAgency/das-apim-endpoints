@@ -5,5 +5,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetQualificatio
 
 public class GetQualificationTypesQueryResult
 {
+    public bool HasAddedQualifications { get; set; }
     public List<QualificationReference> QualificationTypes { get; set; }
 }

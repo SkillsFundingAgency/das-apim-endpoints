@@ -9,12 +9,15 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
 public class GetQualificationReferenceTypesApiResponse
 {
+    public bool HasAddedQualifications { get; set; }
+
     [JsonPropertyName("QualificationTypes")]
     public List<GetQualificationTypeApiResponse> QualificationTypes { get; set; }
     public static implicit operator GetQualificationReferenceTypesApiResponse(GetQualificationTypesQueryResult source)
     {
         return new GetQualificationReferenceTypesApiResponse()
         {
+            HasAddedQualifications = source.HasAddedQualifications,
             QualificationTypes = source.QualificationTypes.Select(c=>(GetQualificationTypeApiResponse)c).ToList()
         };
     }

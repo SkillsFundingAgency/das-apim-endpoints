@@ -62,11 +62,15 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
         
         [HttpGet("add/select-type")]
-        public async Task<IActionResult> GetAddSelectType([FromRoute] Guid applicationId)
+        public async Task<IActionResult> GetAddSelectType([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
         {
             try
             {
-                var result = await mediator.Send(new GetQualificationTypesQuery());
+                var result = await mediator.Send(new GetQualificationTypesQuery
+                {
+                    ApplicationId = applicationId,
+                    CandidateId = candidateId
+                });
 
                 return Ok((GetQualificationReferenceTypesApiResponse)result);
             }
