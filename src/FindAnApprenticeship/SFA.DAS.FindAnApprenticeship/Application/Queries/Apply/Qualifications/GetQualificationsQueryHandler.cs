@@ -7,6 +7,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using static SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses.GetQualificationsApiResponse;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Qualifications;
 
@@ -45,7 +46,8 @@ public class GetQualificationsQueryHandler(ICandidateApiClient<CandidateApiConfi
                 AdditionalInformation = x.AdditionalInformation,
                 Grade = x.Grade,
                 IsPredicted = x.IsPredicted,
-                Subject = x.Subject
+                Subject = x.Subject,
+                QualificationReference =x.QualificationReference.Id
             }).ToList(),
             QualificationTypes = qualificationTypes.QualificationReferences.Select(x => new GetQualificationsQueryResult.QualificationReferenceDataItem
             {

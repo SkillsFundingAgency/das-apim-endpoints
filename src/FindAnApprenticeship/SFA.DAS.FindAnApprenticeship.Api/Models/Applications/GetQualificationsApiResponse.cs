@@ -27,6 +27,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
             public string? Grade { get; set; }
             public string? AdditionalInformation { get; set; }
             public bool? IsPredicted { get; set; }
+            public Guid QualificationReference { get; set; }
         }
 
         public static implicit operator GetQualificationsApiResponse(GetQualificationsQueryResult source)
@@ -40,7 +41,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
                     AdditionalInformation = x.AdditionalInformation,
                     Grade = x.Grade,
                     IsPredicted = x.IsPredicted,
-                    Subject = x.Subject
+                    Subject = x.Subject,
+                    QualificationReference = x.QualificationReference
                 }).ToList(),
                 QualificationTypes = source.QualificationTypes.Select(x => new QualificationType
                 {
