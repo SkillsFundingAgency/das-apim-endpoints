@@ -16,7 +16,6 @@
 
     <ItemGroup>
         <PackageReference Include="MediatR" />
-        <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" />
         <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
         <PackageReference Include="Microsoft.Extensions.Http" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
