@@ -36,5 +36,11 @@ public class WhenGettingSummary
         actualObject.Should().NotBeNull();
         actualObject!.Candidate.Should().BeEquivalentTo(queryResult.CandidateDetails, options => options.Excluding(fil => fil.Address));
         actualObject!.Candidate.Address.Should().BeEquivalentTo(queryResult.CandidateDetails.Address);
+        actualObject!.ApplicationQuestions.Should().BeEquivalentTo(queryResult.ApplicationQuestions);
+        actualObject!.WorkHistory.Should().BeEquivalentTo(queryResult.WorkHistory);
+        actualObject!.DisabilityConfidence.Should().BeEquivalentTo(queryResult.DisabilityConfidence);
+        actualObject!.IsDisabilityConfident.Should().Be(queryResult.IsDisabilityConfident); 
+        actualObject!.EducationHistory.Should().BeEquivalentTo(queryResult.EducationHistory);
+        actualObject!.InterviewAdjustments.Should().BeEquivalentTo(queryResult.InterviewAdjustments);
     }
 }

@@ -5,7 +5,17 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
 
 public class GetApplicationQueryResult
 {
+    public bool IsDisabilityConfident { get; set; }
+    public EducationHistorySection EducationHistory { get; set; }
+    public WorkHistorySection WorkHistory { get; set; }
+    public ApplicationQuestionsSection ApplicationQuestions { get; set; }
+    public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
+    public DisabilityConfidenceSection DisabilityConfidence { get; set; }
+
+
     public Candidate CandidateDetails { get; set; }
+
+
 
     public record Candidate
     {
@@ -41,5 +51,36 @@ public class GetApplicationQueryResult
                 Postcode = source.Postcode,
             };
         }
+    }
+
+    public class EducationHistorySection
+    {
+        public string QualificationsStatus { get; set; }
+        public string TrainingCoursesStatus { get; set; }
+    }
+
+    public class WorkHistorySection
+    {
+        public string JobsStatus { get; set; }
+        public string VolunteeringAndWorkExperienceStatus { get; set; }
+    }
+
+    public class ApplicationQuestionsSection
+    {
+        public string SkillsAndStrengthsStatus { get; set; }
+        public string WhatInterestsYouStatus { get; set; }
+        public string AdditionalQuestion1Status { get; set; }
+        public string AdditionalQuestion2Status { get; set; }
+        public Guid? AdditionalQuestion1Id { get; set; }
+        public Guid? AdditionalQuestion2Id { get; set; }
+    }
+
+    public class InterviewAdjustmentsSection
+    {
+        public string RequestAdjustmentsStatus { get; set; }
+    }
+    public class DisabilityConfidenceSection
+    {
+        public string InterviewUnderDisabilityConfidentStatus { get; set; }
     }
 }
