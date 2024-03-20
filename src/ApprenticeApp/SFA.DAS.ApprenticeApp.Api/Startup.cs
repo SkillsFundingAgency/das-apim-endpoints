@@ -106,7 +106,7 @@ namespace SFA.DAS.ApprenticeApp.Api
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "api/{controller=ApprenticePortal}/{action=index}/{id?}");
+                    pattern: "api/{controller=ApprenticeApp}/{action=index}/{id?}");
             });
 
             app.UseHealthChecks();

@@ -4,7 +4,7 @@
 	  <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(RunConfiguration)' == 'SFA.DAS.ApprenticePortal.Api' " />
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'SFA.DAS.ApprenticeApp.Api' " />
   <ItemGroup>
       <Content Remove="nlog.Debug.config" />
       <Content Remove="nlog.Release.config" />

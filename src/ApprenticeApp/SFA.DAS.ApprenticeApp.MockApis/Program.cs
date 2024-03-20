@@ -25,12 +25,12 @@ namespace SFA.DAS.ApprenticeApp.MockApis
             {
                 Console.WriteLine("Optional parameters (!cmad, !accounts) will exclude that fake API");
                 Console.WriteLine("examples:");
-                Console.WriteLine("SFA.DAS.ApprenticePortal.MockApis --h                <-- shows this page");
-                Console.WriteLine("SFA.DAS.ApprenticePortal.MockApis !cmad              <-- excludes fake inner ApprenticeCommitments api");
-                Console.WriteLine("SFA.DAS.ApprenticePortal.MockApis !cmad !account     <-- excludes fake inner ApprenticeCommitments api and inner ApprenticeAccounts api");
-                Console.WriteLine("SFA.DAS.ApprenticePortal.MockApis !commitments       <-- excludes Commitments V2 api");
-                Console.WriteLine("SFA.DAS.ApprenticePortal.MockApis !provider          <-- excludes Provider Account api");
-                Console.WriteLine("SFA.DAS.ApprenticePortal.MockApis !courses          <-- excludes Courses api");
+                Console.WriteLine("SFA.DAS.ApprenticeApp.MockApis --h                <-- shows this page");
+                Console.WriteLine("SFA.DAS.ApprenticeApp.MockApis !cmad              <-- excludes fake inner ApprenticeCommitments api");
+                Console.WriteLine("SFA.DAS.ApprenticeApp.MockApis !cmad !account     <-- excludes fake inner ApprenticeCommitments api and inner ApprenticeAccounts api");
+                Console.WriteLine("SFA.DAS.ApprenticeApp.MockApis !commitments       <-- excludes Commitments V2 api");
+                Console.WriteLine("SFA.DAS.ApprenticeApp.MockApis !provider          <-- excludes Provider Account api");
+                Console.WriteLine("SFA.DAS.ApprenticeApp.MockApis !courses          <-- excludes Courses api");
 
                 Console.WriteLine("");
                 Console.WriteLine("");

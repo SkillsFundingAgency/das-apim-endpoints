@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "SFA.DAS.ApprenticePortal.MockApis": {
+    "SFA.DAS.ApprenticeApp.MockApis": {
       "commandName": "Project"
     }
   }
