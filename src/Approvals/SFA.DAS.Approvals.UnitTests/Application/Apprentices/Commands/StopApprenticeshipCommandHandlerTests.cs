@@ -25,14 +25,14 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Commands
         StopApprenticeshipCommandHandler handler)
         {
             mockCommitmentsApi
-                .Setup(m => m.PostWithResponseCode<StopApprenticeshipRequestResponse>(It.IsAny<StopApprenticeshipRequest>(), false))
-                .ReturnsAsync(new ApiResponse<StopApprenticeshipRequestResponse>(null, HttpStatusCode.OK, string.Empty));
+                .Setup(m => m.PostWithResponseCode<string>(It.IsAny<StopApprenticeshipRequest>(), false))
+                .ReturnsAsync(new ApiResponse<string>(null, HttpStatusCode.OK, string.Empty));
 
             // Act
             var result = await handler.Handle(command, CancellationToken.None);
 
             result.Should().Be(Unit.Value);
-            mockCommitmentsApi.Verify(m => m.PostWithResponseCode<StopApprenticeshipRequestResponse>(It.IsAny<StopApprenticeshipRequest>(), false)
+            mockCommitmentsApi.Verify(m => m.PostWithResponseCode<string>(It.IsAny<StopApprenticeshipRequest>(), false)
             , Times.Once);
         }
     }

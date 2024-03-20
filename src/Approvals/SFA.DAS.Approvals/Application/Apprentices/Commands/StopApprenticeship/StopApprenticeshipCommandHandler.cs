@@ -29,7 +29,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Commands.StopApprenticeship
 
             var apiRequest = new StopApprenticeshipRequest(request.ApprenticeshipId, body);
 
-            var response = await _commitmentsApiClient.PostWithResponseCode<StopApprenticeshipRequestResponse>(apiRequest, false);
+            var response = await _commitmentsApiClient.PostWithResponseCode<string>(apiRequest, false);
 
             response.EnsureSuccessStatusCode();
 
