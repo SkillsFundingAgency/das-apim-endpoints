@@ -3,40 +3,51 @@ using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.Reservations.Api.Models;
 using SFA.DAS.Reservations.Application.ProviderAccounts.Queries;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
-namespace SFA.DAS.Reservations.Api.Controllers
+namespace SFA.DAS.Reservations.Api.Controllers;
+
+[ApiController]
+[Route("[controller]/")]
+public class ProviderAccountsController(IMediator mediator, ILogger<ProviderAccountsController> logger) : Controller
 {
-    [ApiController]
-    [Route("[controller]/")]
-    public class ProviderAccountsController : Controller
+    [HttpGet]
+    [Route("{ukprn}")]
+    public async Task<IActionResult> GetProviderStatus([FromRoute] int ukprn)
     {
-        private readonly IMediator _mediator;
-
-        public ProviderAccountsController(IMediator mediator)
+        try
         {
-            _mediator = mediator;
+            var result = await mediator.Send(new GetRoatpV2ProviderQuery
+            {
+                Ukprn = ukprn
+            });
+
+            return Ok(new ProviderAccountResponse { CanAccessService = result });
         }
-
-        [HttpGet]
-        [Route("{ukprn}")]
-        public async Task<IActionResult> GetProviderStatus([FromRoute]int ukprn)
+        catch (Exception)
         {
-            try
-            {
-                var result = await _mediator.Send(new GetRoatpV2ProviderQuery
-                {
-                    Ukprn = ukprn
-                });
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
 
-                return Ok(new ProviderAccountResponse{CanAccessService = result});
-            
-            }
-            catch (Exception)
-            {
-                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
-            }
+    [HttpGet]
+    [Route("{ukprn}/legalentities-with-create-cohort")]
+    public async Task<IActionResult> GetAccountLegalEntitiesWithCreatCohort([FromRoute] int ukprn)
+    {
+        try
+        {
+            var request = new GetProviderAccountLegalEntitiesWithCreatCohortQuery(ukprn);
+            var result = await mediator.Send(request);
+
+            return Ok(result);
+        }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "GetAccountLegalEntities() threw an exception.");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 }
