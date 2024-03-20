@@ -9,6 +9,7 @@ using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateApplicationQualification;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateQualifications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetAddQualification;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetDeleteQualifications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetQualificationTypes;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Qualifications;
 
@@ -131,13 +132,28 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet("delete/{qualificationReferenceId}")]
-        public async Task<IActionResult> GetDeleteQualification([FromRoute] Guid applicationId, [FromRoute] Guid qualificationReferenceId, [FromQuery] Guid candidateId)
+        public async Task<IActionResult> GetDeleteQualifications([FromRoute] Guid applicationId, [FromRoute] Guid qualificationReferenceId, [FromQuery] Guid candidateId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = await mediator.Send(new GetDeleteQualificationsQuery
+                {
+                    ApplicationId = applicationId,
+                    CandidateId = candidateId,
+                    QualificationReference = qualificationReferenceId
+                });
+
+                return Ok((GetDeleteQualificationsApiResponse)result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "GetDeleteQualifications : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
         
         [HttpPost("delete/{qualificationReferenceId}")]
-        public async Task<IActionResult> PostDeleteQualification([FromRoute] Guid applicationId)
+        public async Task<IActionResult> PostDeleteQualifications([FromRoute] Guid applicationId)
         {
             throw new NotImplementedException();
         }
