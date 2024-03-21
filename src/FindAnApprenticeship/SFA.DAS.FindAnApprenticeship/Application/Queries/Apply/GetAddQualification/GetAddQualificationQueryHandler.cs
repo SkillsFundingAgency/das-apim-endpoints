@@ -13,13 +13,23 @@ public class GetAddQualificationQueryHandler(ICandidateApiClient<CandidateApiCon
 {
     public async Task<GetAddQualificationQueryResult> Handle(GetAddQualificationQuery request, CancellationToken cancellationToken)
     {
-        var response = await apiClient.GetWithResponseCode<GetQualificationReferenceTypesApiResponse>(
+        var qualificationTypeTask = apiClient.GetWithResponseCode<GetQualificationReferenceTypesApiResponse>(
             new GetQualificationReferenceTypesApiRequest());
-        var result = response.Body.QualificationReferences.FirstOrDefault(x => x.Id == request.QualificationReferenceTypeId);
+        var qualificationsTask = apiClient.GetWithResponseCode<GetQualificationsApiResponse>(
+            new GetQualificationsApiRequest(request.ApplicationId, request.CandidateId,
+                request.QualificationReferenceTypeId));
 
+        await Task.WhenAll(qualificationTypeTask, qualificationsTask);
+        
+        var result = qualificationTypeTask.Result.Body.QualificationReferences
+            .FirstOrDefault(x => x.Id == request.QualificationReferenceTypeId);
+        
         return new GetAddQualificationQueryResult
         {
-            QualificationType = result
+            QualificationType = result,
+            Qualifications = request.Id == null 
+                ? qualificationsTask.Result.Body.Qualifications 
+                : qualificationsTask.Result.Body.Qualifications.Where(c=>c.Id == request.Id).ToList()
         };
     }
 }
