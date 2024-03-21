@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
+using SFA.DAS.FindAnApprenticeship.Api.Models.Applications.Qualifications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateApplicationQualification;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetAddQualification;
 using SFA.DAS.Testing.AutoFixture;

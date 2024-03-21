@@ -9,6 +9,7 @@ using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Api.Models.Applications.Qualifications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetDeleteQualifications;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.QualificationsController
