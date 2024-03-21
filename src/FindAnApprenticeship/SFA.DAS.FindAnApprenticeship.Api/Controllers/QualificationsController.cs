@@ -83,13 +83,16 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet("{qualificationReferenceId}/modify")]
-        public async Task<IActionResult> GetAddQualification([FromRoute] Guid applicationId, [FromRoute]Guid qualificationReferenceId)
+        public async Task<IActionResult> GetAddQualification([FromRoute] Guid applicationId, [FromRoute]Guid qualificationReferenceId, [FromQuery]Guid candidateId, [FromQuery]Guid? id = null)
         {
             try
             {
                 var result = await mediator.Send(new GetAddQualificationQuery
                 {
-                    QualificationReferenceTypeId = qualificationReferenceId
+                    QualificationReferenceTypeId = qualificationReferenceId,
+                    ApplicationId = applicationId,
+                    CandidateId = candidateId,
+                    Id = id
                 });
 
                 return Ok((GetQualificationReferenceTypeApiResponse)result);

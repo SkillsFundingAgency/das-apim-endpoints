@@ -20,14 +20,21 @@ public class WhenGettingAddQualification
     public async Task Then_The_Request_Is_Handled_And_Data_Returned(
         Guid applicationId,
         Guid qualificationReferenceTypeId,
+        Guid candidateId,
+        Guid? id,
         GetAddQualificationQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
         [Greedy]Api.Controllers.QualificationsController controller)
     {
-        mediator.Setup(x => x.Send(It.Is<GetAddQualificationQuery>(c=>c.QualificationReferenceTypeId == qualificationReferenceTypeId), CancellationToken.None))
+        mediator.Setup(x => x.Send(It.Is<GetAddQualificationQuery>(c=>
+                c.QualificationReferenceTypeId == qualificationReferenceTypeId
+                && c.ApplicationId == applicationId
+                && c.CandidateId == candidateId
+                && c.Id == id
+                ), CancellationToken.None))
             .ReturnsAsync(queryResult);
         
-        var actual = await controller.GetAddQualification(applicationId,qualificationReferenceTypeId) as OkObjectResult;
+        var actual = await controller.GetAddQualification(applicationId,qualificationReferenceTypeId, candidateId, id) as OkObjectResult;
 
         actual.Should().NotBeNull();
         var actualValue = actual!.Value as GetQualificationReferenceTypeApiResponse;
@@ -38,6 +45,8 @@ public class WhenGettingAddQualification
     public async Task Then_If_There_Is_An_Exception_Then_Internal_Server_Error_Returned(
         Guid applicationId,
         Guid qualificationReferenceTypeId,
+        Guid candidateId,
+        Guid? id,
         GetAddQualificationQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
         [Greedy]Api.Controllers.QualificationsController controller)
@@ -45,7 +54,7 @@ public class WhenGettingAddQualification
         mediator.Setup(x => x.Send(It.IsAny<GetAddQualificationQuery>(), CancellationToken.None))
             .ThrowsAsync(new Exception());
         
-        var actual = await controller.GetAddQualification(applicationId, qualificationReferenceTypeId) as StatusCodeResult;
+        var actual = await controller.GetAddQualification(applicationId, qualificationReferenceTypeId, candidateId, id) as StatusCodeResult;
 
         actual.Should().NotBeNull();
         actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
