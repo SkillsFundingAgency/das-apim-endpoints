@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
@@ -199,19 +199,19 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             public void AssertResultIsAllStandards()
             {
                 var expected = _allStandardsResponse.TrainingProgrammes.ToDictionary(x => x.CourseCode, y => y.Name);
-                CollectionAssert.AreEqual(expected, _result.Standards.ToDictionary(x => x.CourseCode, y => y.Name));
+                expected.Should().BeEquivalentTo(_result.Standards.ToDictionary(x => x.CourseCode, y => y.Name));
             }
 
             public void AssertResultIsAllStandardsFromCache()
             {
                 var expected = _allStandardsCacheResponse.TrainingProgrammes.ToDictionary(x => x.CourseCode, y => y.Name);
-                CollectionAssert.AreEqual(expected, _result.Standards.ToDictionary(x => x.CourseCode, y => y.Name));
+                expected.Should().BeEquivalentTo(_result.Standards.ToDictionary(x => x.CourseCode, y => y.Name));
             }
 
             public void AssertResultIsAsDefinedInManagingStandards()
             {
                 var expected = _getProviderStandardsResponse.ToDictionary(x => x.LarsCode.ToString(), y => y.CourseNameWithLevel);
-                CollectionAssert.AreEqual(expected, _result.Standards.ToDictionary(x => x.CourseCode, y => y.Name));
+                expected.Should().BeEquivalentTo(_result.Standards.ToDictionary(x => x.CourseCode, y => y.Name));
             }
 
             public void AssertResultIndicatesIsMainProvider(bool expectIsMainProvider)

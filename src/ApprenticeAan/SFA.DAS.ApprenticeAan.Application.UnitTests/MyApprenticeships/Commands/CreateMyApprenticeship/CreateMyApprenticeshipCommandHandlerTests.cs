@@ -1,62 +1,49 @@
-﻿using System.Linq.Expressions;
-using System.Net;
+﻿using System.Net;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
-using SFA.DAS.ApprenticeAan.Application.InnerApi.MyApprenticeships;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Commands.CreateMyApprenticeship;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MyApprenticeships.Commands.CreateMyApprenticeships;
+namespace SFA.DAS.ApprenticeAan.Application.UnitTests.MyApprenticeships.Commands.CreateMyApprenticeship;
 
 public class CreateMyApprenticeshipCommandHandlerTests
 {
     [Test, MoqAutoData]
     public async Task Handle_InvokesAccountsApi(
-        [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apiClientMock,
+        [Frozen] Mock<IApprenticeAccountsApiClient> apiClientMock,
         CreateMyApprenticeshipCommandHandler sut,
         CreateMyApprenticeshipCommand command,
         CancellationToken cancellationToken)
     {
-        ApiResponse<object> result = new(this, HttpStatusCode.Created, null);
-        apiClientMock.Setup(c => c.PostWithResponseCode<object>(It.IsAny<PostMyApprenticeshipRequest>(), false)).ReturnsAsync(result);
+        apiClientMock.Setup(c => c.PostMyApprenticeship(command.ApprenticeId, command, It.IsAny<CancellationToken>())).ReturnsAsync(new HttpResponseMessage(HttpStatusCode.Created));
 
         await sut.Handle(command, cancellationToken);
 
-        Expression<Func<PostMyApprenticeshipRequest, bool>> IsCorrectRequest = r => r.PostUrl == $"apprentices/{command.ApprenticeId}/MyApprenticeship" && r.Data == command;
-
         apiClientMock
-            .Verify(c => c.PostWithResponseCode<object>(It.Is(IsCorrectRequest), false));
+             .Verify(c => c.PostMyApprenticeship(command.ApprenticeId, command, It.IsAny<CancellationToken>()));
     }
 
     [Test, MoqAutoData]
     public async Task Handle_OnSuccess_ReturnsUnit(
-        [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apiClientMock,
+        [Frozen] Mock<IApprenticeAccountsApiClient> apiClientMock,
         CreateMyApprenticeshipCommandHandler sut,
         CreateMyApprenticeshipCommand command)
     {
-        ApiResponse<object> response = new(this, HttpStatusCode.Created, null);
-        apiClientMock.Setup(c => c.PostWithResponseCode<object>(It.IsAny<PostMyApprenticeshipRequest>(), false)).ReturnsAsync(response);
-
+        apiClientMock.Setup(c => c.PostMyApprenticeship(command.ApprenticeId, command, It.IsAny<CancellationToken>())).ReturnsAsync(new HttpResponseMessage(HttpStatusCode.Created));
         var result = await sut.Handle(command, new CancellationToken());
-
         result.Should().NotBeNull();
     }
 
+
     [Test, MoqAutoData]
-    public async Task Handle_OnFailure_ThrowsException(
-        [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apiClientMock,
+    public void Handle_OnFailure_ThrowsInvalidOperationException(
+        [Frozen] Mock<IApprenticeAccountsApiClient> apiClientMock,
         CreateMyApprenticeshipCommandHandler sut,
         CreateMyApprenticeshipCommand command)
     {
-        ApiResponse<object> response = new(this, HttpStatusCode.BadRequest, null);
-        apiClientMock.Setup(c => c.PostWithResponseCode<object>(It.IsAny<PostMyApprenticeshipRequest>(), false)).ReturnsAsync(response);
-
-        Func<Task> action = () => sut.Handle(command, new CancellationToken());
-
-        await action.Should().ThrowAsync<InvalidOperationException>();
+        apiClientMock.Setup(c => c.PostMyApprenticeship(command.ApprenticeId, command, It.IsAny<CancellationToken>())).ReturnsAsync(new HttpResponseMessage(HttpStatusCode.Ambiguous));
+        Assert.That(() => sut.Handle(command, It.IsAny<CancellationToken>()), Throws.InvalidOperationException);
     }
 }

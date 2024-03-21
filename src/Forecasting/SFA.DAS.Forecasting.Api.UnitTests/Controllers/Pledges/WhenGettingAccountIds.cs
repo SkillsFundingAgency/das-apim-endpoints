@@ -1,12 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using SFA.DAS.Forecasting.Api.Controllers;
 using SFA.DAS.Forecasting.Api.Models;
 using SFA.DAS.Forecasting.Application.Pledges.Queries.GetAccountsWithPledges;
@@ -42,7 +41,7 @@ namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Pledges
             var response = result.Value as GetAccountsWithPledgesResponse;
             Assert.That(response, Is.Not.Null);
 
-            CollectionAssert.AreEqual(_queryResult.AccountIds, response.AccountIds);
+            response.AccountIds.Should().BeEquivalentTo(_queryResult.AccountIds);
         }
     }
 }

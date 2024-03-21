@@ -4,9 +4,9 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Legacy;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipDeliveryModel;
@@ -131,7 +131,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            CollectionAssert.AreEqual(Enumerable.Empty<string>(), result.InvalidProviderCourseCodes);
+            result.InvalidProviderCourseCodes.Should().BeEquivalentTo(Enumerable.Empty<string>());
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             var expected = _draftApprenticeship.DraftApprenticeships.Select(x => x.CourseCode).Distinct();
 
-            CollectionAssert.AreEqual(expected, result.InvalidProviderCourseCodes);
+            expected.Should().BeEquivalentTo(result.InvalidProviderCourseCodes);
         }
 
         [Test]

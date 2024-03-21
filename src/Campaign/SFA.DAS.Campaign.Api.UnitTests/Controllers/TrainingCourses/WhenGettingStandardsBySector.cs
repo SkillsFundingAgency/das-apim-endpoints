@@ -12,7 +12,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Campaign.Api.Controllers;
 using SFA.DAS.Campaign.Api.Models;
-using SFA.DAS.Campaign.Application.Queries.Sectors;
 using SFA.DAS.Campaign.Application.Queries.Standards;
 using SFA.DAS.Campaign.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;

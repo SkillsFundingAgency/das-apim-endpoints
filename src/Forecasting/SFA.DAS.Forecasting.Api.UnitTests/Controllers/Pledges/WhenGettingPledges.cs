@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using AutoFixture;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Forecasting.Api.Controllers;

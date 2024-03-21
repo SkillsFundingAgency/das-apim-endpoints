@@ -7,6 +7,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Applications;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetDeclined;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -42,8 +43,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             [Greedy] ApplicationsController applicationController)
         {
             mockMediator
-                .Setup(x => x.Send(It.Is<GetDeclinedQuery>(y => y.ApplicationId == applicationId), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((GetDeclinedResult)null);
+                .Setup(x => x.Send(It.Is<GetApplicationQuery>(y => y.ApplicationId == applicationId), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((GetApplicationResult)null);
 
             var controllerResult = await applicationController.Application(accountId, applicationId);
             var notFoundResult = controllerResult as NotFoundResult;

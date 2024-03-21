@@ -3,7 +3,7 @@ using MediatR;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateJob
 {
-    public class CreateJobCommand : IRequest<CreateJobCommandResponse>
+    public class CreateJobCommand : IRequest<CreateJobCommandResult>
     {
         public Guid CandidateId { get; set; }
         public Guid ApplicationId { get; set; }

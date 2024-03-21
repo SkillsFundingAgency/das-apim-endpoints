@@ -51,8 +51,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api
                 .AddCheck<AccountsApiHealthCheck>(nameof(AccountsApiHealthCheck))
                 .AddCheck<RequestApprenticeTrainingApiHealthCheck>(nameof(RequestApprenticeTrainingApiHealthCheck));
 
-            services.AddMediatR(typeof(GetEmployerRequestQuery).Assembly);
-            services.AddMediatR(typeof(GetRoatpV2ProviderQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEmployerRequestQuery).Assembly));
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRoatpV2ProviderQuery).Assembly));
 
             services.AddServiceRegistration();
 

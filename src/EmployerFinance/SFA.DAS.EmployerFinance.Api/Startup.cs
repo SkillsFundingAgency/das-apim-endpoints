@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +11,6 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerFinance.Api.AppStart;
-using SFA.DAS.EmployerFinance.Api.Models;
 using SFA.DAS.EmployerFinance.Application.Queries.GetFrameworks;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
@@ -49,7 +47,7 @@ namespace SFA.DAS.EmployerFinance.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetFrameworksQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetFrameworksQuery).Assembly));
             services.AddServiceRegistration();
 
             services
@@ -59,7 +57,7 @@ namespace SFA.DAS.EmployerFinance.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                });
 
             if (_configuration["Environment"] != "DEV")
             {

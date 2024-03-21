@@ -68,7 +68,15 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public string EmployerContactEmail { get; init; }
         [JsonProperty("employerContactName")]
         public string EmployerContactName { get; init; }
+        [JsonProperty("providerContactPhone")]
+        public string ProviderContactPhone { get; init; }
 
+        [JsonProperty("providerContactEmail")]
+        public string ProviderContactEmail { get; init; }
+
+        [JsonProperty("providerContactName")]
+        public string ProviderContactName { get; init; }
+        
         [JsonProperty("vacancyLocationType")]
         public VacancyLocationType VacancyLocationType { get; init; }
 
@@ -82,7 +90,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 
         [JsonProperty("additionalQuestion2")]
         public string AdditionalQuestion2 { get; init; }
-    
+
     }
 
     public class VacancyQualification

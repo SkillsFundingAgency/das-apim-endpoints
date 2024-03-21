@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -59,7 +58,7 @@ namespace SFA.DAS.EmploymentCheck.Api
                 .AddCheck<EmploymentCheckApiHealthCheck>(nameof(EmploymentCheckApiHealthCheck.HealthCheckResultDescription))
                 ;
 
-            services.AddMediatR(typeof(RegisterCheckCommand).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(RegisterCheckCommand).Assembly));
             services.AddServiceRegistration();
 
             services
@@ -70,7 +69,6 @@ namespace SFA.DAS.EmploymentCheck.Api
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;

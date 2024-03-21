@@ -1,5 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;

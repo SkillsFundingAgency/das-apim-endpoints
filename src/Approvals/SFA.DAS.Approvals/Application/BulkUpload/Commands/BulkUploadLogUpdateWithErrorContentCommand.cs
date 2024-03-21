@@ -3,7 +3,7 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 {
-    public class BulkUploadLogUpdateWithErrorContentCommand : IRequest
+    public class BulkUploadLogUpdateWithErrorContentCommand : IRequest<Unit>
     {
         public long LogId { get; set; }
         public long ProviderId { get; set; }

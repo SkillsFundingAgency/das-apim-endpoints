@@ -3,23 +3,17 @@ using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.Forecasting.Api.AppStart;
 using SFA.DAS.Forecasting.Application.Courses.Queries.GetFrameworkCoursesList;
-using SFA.DAS.Forecasting.Application.Courses.Queries.GetStandardCoursesList;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.Forecasting.Api
 {
@@ -53,7 +47,7 @@ namespace SFA.DAS.Forecasting.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetFrameworkCoursesQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetFrameworkCoursesQuery).Assembly));
                 
             services.AddServiceRegistration();
 
@@ -64,7 +58,7 @@ namespace SFA.DAS.Forecasting.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                });
 
             if (_configuration["Environment"] != "DEV")
             {

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoFixture;
-using Microsoft.OpenApi.Writers;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using WireMock;
 using WireMock.RequestBuilders;
@@ -14,7 +13,6 @@ using WireMock.Server;
 using WireMock.Settings;
 using WireMock.Types;
 using WireMock.Util;
-using static SFA.DAS.ApprenticeCommitments.MockApis.CommitmentsV2ApiBuilder;
 
 namespace SFA.DAS.ApprenticeCommitments.MockApis
 {

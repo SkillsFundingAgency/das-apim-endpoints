@@ -8,14 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="SFA.DAS.Api.Common" />
-    <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     <ProjectReference Include="..\SFA.DAS.AdminAan\SFA.DAS.AdminAan.csproj" />
   </ItemGroup>
 

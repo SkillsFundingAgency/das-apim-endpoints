@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndex;
 using SFA.DAS.Testing.AutoFixture;
 

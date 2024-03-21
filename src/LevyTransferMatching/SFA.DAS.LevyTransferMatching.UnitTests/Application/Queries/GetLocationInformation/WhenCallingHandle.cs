@@ -1,8 +1,5 @@
-﻿using AutoFixture.NUnit3;
-using Moq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetLocationInformation;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;

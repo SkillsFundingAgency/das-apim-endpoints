@@ -10,7 +10,6 @@
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
-    <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 

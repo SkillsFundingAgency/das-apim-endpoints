@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Vacancies.Api.Models;
 using SFA.DAS.Vacancies.Application.TrainingCourses.Queries;
-using SFA.DAS.Vacancies.InnerApi.Responses;
 
 namespace SFA.DAS.Vacancies.Api.Controllers
 {

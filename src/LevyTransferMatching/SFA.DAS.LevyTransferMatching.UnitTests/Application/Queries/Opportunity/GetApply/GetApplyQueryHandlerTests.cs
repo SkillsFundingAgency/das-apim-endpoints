@@ -5,9 +5,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApply;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity.GetApply

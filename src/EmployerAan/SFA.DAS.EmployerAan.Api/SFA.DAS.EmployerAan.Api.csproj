@@ -12,7 +12,6 @@
     <PackageReference Include="SFA.DAS.Api.Common" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,14 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Campaign.Application.Queries.PreviewArticles;
 using SFA.DAS.Campaign.Configuration;
 using SFA.DAS.Campaign.Extensions;
 using SFA.DAS.Campaign.ExternalApi.Requests;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.Campaign.Models;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Campaign.Application.Queries.PreviewHub
 {

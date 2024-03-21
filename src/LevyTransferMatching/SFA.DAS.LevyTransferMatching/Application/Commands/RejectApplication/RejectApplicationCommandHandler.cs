@@ -7,7 +7,7 @@ using SFA.DAS.LevyTransferMatching.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication
 {
-    public class RejectApplicationCommandHandler : IRequestHandler<RejectApplicationCommand>
+    public class RejectApplicationCommandHandler : IRequestHandler<RejectApplicationCommand, Unit>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly ILogger<RejectApplicationCommandHandler> _logger;

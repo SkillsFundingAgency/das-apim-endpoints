@@ -7,7 +7,6 @@ using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetLevels;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetLevels
 {

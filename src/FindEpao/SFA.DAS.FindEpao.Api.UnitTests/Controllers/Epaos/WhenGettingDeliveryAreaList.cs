@@ -10,7 +10,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindEpao.Api.Controllers;
 using SFA.DAS.FindEpao.Api.Models;
-using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList;
 using SFA.DAS.FindEpao.Application.Epaos.Queries.GetDeliveryAreaList;
 using SFA.DAS.Testing.AutoFixture;
 

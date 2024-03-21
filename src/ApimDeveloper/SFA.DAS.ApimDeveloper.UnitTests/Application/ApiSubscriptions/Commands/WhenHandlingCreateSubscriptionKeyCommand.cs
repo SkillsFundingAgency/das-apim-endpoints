@@ -1,15 +1,12 @@
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
-using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApimDeveloper.Application.ApiSubscriptions.Commands.CreateSubscriptionKey;
 using SFA.DAS.ApimDeveloper.Configuration;
 using SFA.DAS.ApimDeveloper.InnerApi.Requests;
-using SFA.DAS.ApimDeveloper.InnerApi.Responses;
 using SFA.DAS.ApimDeveloper.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Models;

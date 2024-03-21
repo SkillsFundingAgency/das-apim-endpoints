@@ -10,7 +10,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models;
-using SFA.DAS.Approvals.Application.Providers.Queries;
 using SFA.DAS.Approvals.Application.ProviderUsers.Queries;
 using SFA.DAS.Testing.AutoFixture;
 

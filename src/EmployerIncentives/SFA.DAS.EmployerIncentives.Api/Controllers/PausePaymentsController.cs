@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using System.Net.Http;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;

@@ -1,6 +1,7 @@
 ﻿using AutoFixture.NUnit3;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.Locations.Queries.GetAddresses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+
 
 namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Locations.Queries.GetAddresses;
 

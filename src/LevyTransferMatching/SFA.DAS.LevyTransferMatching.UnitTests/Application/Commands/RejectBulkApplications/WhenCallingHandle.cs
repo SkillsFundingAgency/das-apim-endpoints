@@ -1,16 +1,11 @@
 ﻿using AutoFixture;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplications;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 

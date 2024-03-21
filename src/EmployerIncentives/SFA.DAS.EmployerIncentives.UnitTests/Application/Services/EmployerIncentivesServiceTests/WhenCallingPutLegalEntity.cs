@@ -1,14 +1,11 @@
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
-using FluentAssertions;
-using FluentAssertions.Common;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Application.Services;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 using SFA.DAS.EmployerIncentives.Interfaces;
-using SFA.DAS.EmployerIncentives.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerIncentivesServiceTests

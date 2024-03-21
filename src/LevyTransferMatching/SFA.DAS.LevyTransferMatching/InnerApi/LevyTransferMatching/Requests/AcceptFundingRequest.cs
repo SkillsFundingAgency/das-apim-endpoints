@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests
 {

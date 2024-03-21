@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.EarningsResilienceCheck
 {
-    public class EarningsResilienceCheckCommand : IRequest
+    public class EarningsResilienceCheckCommand : IRequest<Unit>
     {
     }
 }

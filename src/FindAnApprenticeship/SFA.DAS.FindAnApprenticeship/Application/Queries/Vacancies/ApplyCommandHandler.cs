@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -31,10 +32,16 @@ public class ApplyCommandHandler : IRequestHandler<ApplyCommand, ApplyCommandRes
             await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(
                 new GetVacancyRequest(request.VacancyReference));
 
-        var putData = new PutApplicationApiRequest.PutApplicationApiRequestData
+        var additionalQuestions = new List<string>();
+        if (result.AdditionalQuestion1 != null) { additionalQuestions.Add(result.AdditionalQuestion1); }
+        if (result.AdditionalQuestion2 != null) { additionalQuestions.Add(result.AdditionalQuestion2); }
+
+        PutApplicationApiRequest.PutApplicationApiRequestData putApplicationApiRequestData = new PutApplicationApiRequest.PutApplicationApiRequestData
         {
-            CandidateId = request.CandidateId
+            CandidateId = request.CandidateId,
+            AdditionalQuestions = additionalQuestions
         };
+        var putData = putApplicationApiRequestData;
         var vacancyReference =
             request.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
         var putRequest = new PutApplicationApiRequest(vacancyReference, putData);
@@ -44,7 +51,6 @@ public class ApplyCommandHandler : IRequestHandler<ApplyCommand, ApplyCommandRes
 
         applicationResult.EnsureSuccessStatusCode();
 
-        if (result is null) return null;
         if (applicationResult is null) return null;
 
         return new ApplyCommandResponse
