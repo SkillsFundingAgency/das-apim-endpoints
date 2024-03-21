@@ -6,6 +6,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
+using SFA.DAS.FindAnApprenticeship.Api.Models.Applications.Qualifications;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteQualifications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateApplicationQualification;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateQualifications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetAddQualification;
@@ -153,9 +155,16 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
         
         [HttpPost("delete/{qualificationReferenceId}")]
-        public async Task<IActionResult> PostDeleteQualifications([FromRoute] Guid applicationId)
+        public async Task<IActionResult> PostDeleteQualifications([FromRoute] Guid applicationId, [FromRoute] Guid qualificationReferenceId, PostDeleteQualificationsApiRequest request)
         {
-            throw new NotImplementedException();
+            await mediator.Send(new DeleteQualificationsCommand
+            {
+                ApplicationId = applicationId,
+                CandidateId = request.CandidateId,
+                QualificationReferenceId = qualificationReferenceId
+            });
+
+            return Ok();
         }
     }
 }
