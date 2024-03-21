@@ -27,14 +27,7 @@ public class GetDeleteQualificationsQueryHandler(ICandidateApiClient<CandidateAp
         return new GetDeleteQualificationsQueryResult
         {
             QualificationReference = request.QualificationReference,
-            Qualifications = qualifications.Qualifications.Select(x => new GetDeleteQualificationsQueryResult.Qualification
-            {
-                AdditionalInformation = x.AdditionalInformation,
-                Grade = x.Grade,
-                IsPredicted = x.IsPredicted,
-                Subject = x.Subject
-            }).ToList()
-
+            Qualifications = qualifications.Qualifications
         };
     }
 }

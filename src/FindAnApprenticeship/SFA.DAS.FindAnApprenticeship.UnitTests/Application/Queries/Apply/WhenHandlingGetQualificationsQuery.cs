@@ -21,7 +21,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             GetQualificationsQuery query,
             GetQualificationsApiResponse qualificationsApiResponse,
             GetApplicationApiResponse applicationApiResponse,
-            GetQualificationsReferenceDataApiResponse referenceDataApiResponse,
+            GetQualificationReferenceTypesApiResponse referenceDataApiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             GetQualificationsQueryHandler handler)
         {
@@ -33,9 +33,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
                 client.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedApplicationRequest.GetUrl)))
                 .ReturnsAsync(applicationApiResponse);
 
-            var expectedReferenceDataRequest = new GetQualificationsReferenceDataApiRequest();
+            var expectedReferenceDataRequest = new GetQualificationReferenceTypesApiRequest();
             candidateApiClient.Setup(client =>
-                    client.Get<GetQualificationsReferenceDataApiResponse>(It.Is<GetQualificationsReferenceDataApiRequest>(r => r.GetUrl == expectedReferenceDataRequest.GetUrl)))
+                    client.Get<GetQualificationReferenceTypesApiResponse>(It.Is<GetQualificationReferenceTypesApiRequest>(r => r.GetUrl == expectedReferenceDataRequest.GetUrl)))
                 .ReturnsAsync(referenceDataApiResponse);
 
             var expectedQualificationsApiRequest =

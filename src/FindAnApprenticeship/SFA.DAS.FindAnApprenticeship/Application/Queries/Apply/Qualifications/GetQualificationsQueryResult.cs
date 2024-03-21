@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Qualifications;
 
@@ -7,22 +8,5 @@ public class GetQualificationsQueryResult
 {
     public bool? IsSectionCompleted { get; set; }
     public List<Qualification> Qualifications { get; set; }
-    public List<QualificationReferenceDataItem> QualificationTypes { get; set; }
-
-    public class Qualification
-    {
-        public Guid Id { get; set; }
-        public string? Subject { get; set; }
-        public string? Grade { get; set; }
-        public string? AdditionalInformation { get; set; }
-        public bool? IsPredicted { get; set; }
-        public Guid QualificationReference { get; set; }
-    }
-
-    public class QualificationReferenceDataItem
-    {
-        public Guid Id { get; set; }
-        public required string Name { get; set; }
-        public short Order { get; set; }
-    }
+    public List<QualificationReference> QualificationTypes { get; set; }
 }

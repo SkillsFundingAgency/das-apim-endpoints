@@ -12,5 +12,5 @@ public class QualificationReference
     public string Name { get; set; }
 
     [JsonPropertyName("order")]
-    public long Order { get; set; }
+    public int Order { get; set; }
 }

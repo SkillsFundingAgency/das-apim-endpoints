@@ -14,14 +14,9 @@ public class GetQualificationsQueryHandler(ICandidateApiClient<CandidateApiConfi
 {
     public async Task<GetQualificationsQueryResult> Handle(GetQualificationsQuery request, CancellationToken cancellationToken)
     {
-        var applicationRequest = new GetApplicationApiRequest(request.CandidateId, request.ApplicationId);
-        var applicationTask = candidateApiClient.Get<GetApplicationApiResponse>(applicationRequest);
-
-        var qualificationTypesRequest = new GetQualificationsReferenceDataApiRequest();
-        var qualificationTypesTask = candidateApiClient.Get<GetQualificationsReferenceDataApiResponse>(qualificationTypesRequest);
-
-        var qualificationsRequest = new GetQualificationsApiRequest(request.ApplicationId, request.CandidateId);
-        var qualificationsTask = candidateApiClient.Get<GetQualificationsApiResponse>(qualificationsRequest);
+        var applicationTask = candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId));
+        var qualificationTypesTask = candidateApiClient.Get<GetQualificationReferenceTypesApiResponse>(new GetQualificationReferenceTypesApiRequest());
+        var qualificationsTask = candidateApiClient.Get<GetQualificationsApiResponse>(new GetQualificationsApiRequest(request.ApplicationId, request.CandidateId));
 
         await Task.WhenAll(applicationTask, qualificationTypesTask, qualificationsTask);
 
@@ -39,21 +34,8 @@ public class GetQualificationsQueryHandler(ICandidateApiClient<CandidateApiConfi
         return new GetQualificationsQueryResult
         {
             IsSectionCompleted = isCompleted,
-            Qualifications = qualifications.Qualifications.Select(x => new GetQualificationsQueryResult.Qualification
-            {
-                Id = x.Id,
-                AdditionalInformation = x.AdditionalInformation,
-                Grade = x.Grade,
-                IsPredicted = x.IsPredicted,
-                Subject = x.Subject,
-                QualificationReference =x.QualificationReference.Id
-            }).ToList(),
-            QualificationTypes = qualificationTypes.QualificationReferences.Select(x => new GetQualificationsQueryResult.QualificationReferenceDataItem
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Order = x.Order
-            }).ToList()
+            Qualifications = qualifications.Qualifications.ToList(),
+            QualificationTypes = qualificationTypes.QualificationReferences.ToList()
         };
     }
 }

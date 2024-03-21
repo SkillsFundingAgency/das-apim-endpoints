@@ -17,7 +17,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
         {
             public Guid Id { get; set; }
             public required string Name { get; set; }
-            public short Order { get; set; }
+            public int Order { get; set; }
         }
 
         public class Qualification
@@ -42,7 +42,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
                     Grade = x.Grade,
                     IsPredicted = x.IsPredicted,
                     Subject = x.Subject,
-                    QualificationReference = x.QualificationReference
+                    QualificationReference = x.QualificationReference.Id
                 }).ToList(),
                 QualificationTypes = source.QualificationTypes.Select(x => new QualificationType
                 {

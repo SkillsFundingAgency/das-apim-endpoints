@@ -12,7 +12,8 @@ public class GetQualificationReferenceTypeApiResponse
     {
         return new GetQualificationReferenceTypeApiResponse
         {
-            QualificationType = source.QualificationType
+            QualificationType = source.QualificationType,
+            //Qualifications = source.Qualifications
         };
     }
 }
