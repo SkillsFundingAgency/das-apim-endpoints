@@ -32,7 +32,7 @@ public class WhenPostingModifyApplicationQualification
     {
         request.Subjects = [subject];
         
-        var actual = await controller.PostAddQualification(applicationId,qualificationReferenceTypeId, request) as CreatedResult;
+        var actual = await controller.PostModifyQualification(applicationId,qualificationReferenceTypeId, request) as CreatedResult;
 
         actual.Should().NotBeNull();
         mediator.Verify(x => x.Send(It.Is<UpdateApplicationQualificationCommand>(c=>
@@ -59,7 +59,7 @@ public class WhenPostingModifyApplicationQualification
         mediator.Setup(x => x.Send(It.IsAny<UpdateApplicationQualificationCommand>(), CancellationToken.None))
             .ThrowsAsync(new Exception());
         
-        var actual = await controller.PostAddQualification(applicationId,qualificationReferenceTypeId, request) as StatusCodeResult;
+        var actual = await controller.PostModifyQualification(applicationId,qualificationReferenceTypeId, request) as StatusCodeResult;
 
         actual.Should().NotBeNull();
         actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

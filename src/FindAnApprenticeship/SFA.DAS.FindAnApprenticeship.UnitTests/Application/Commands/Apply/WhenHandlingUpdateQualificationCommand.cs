@@ -14,13 +14,17 @@ public class WhenHandlingUpdateQualificationCommand
 {
     [Test, MoqAutoData]
     public async Task Then_The_Command_Is_Handled_And_Api_Called_For_Each_Subject(
+        UpdateApplicationQualificationCommand.Subject deleted,
         UpdateApplicationQualificationCommand command,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         UpdateApplicationQualificationCommandHandler handler)
     {
+        deleted.IsDeleted = true;
+        command.Subjects.Add(deleted);
+        
         await handler.Handle(command, CancellationToken.None);
 
-        foreach (var subject in command.Subjects)
+        foreach (var subject in command.Subjects.Where(x=>x.IsDeleted is null or false))
         {
             candidateApiClient.Verify(x =>
                 x.PutWithResponseCode<PutApplicationQualificationApiResponse>(
@@ -36,7 +40,12 @@ public class WhenHandlingUpdateQualificationCommand
                         && ((PutApplicationQualificationApiRequestData)c.Data).AdditionalInformation == subject.AdditionalInformation
                     )));
         }
-        
-        
+
+        candidateApiClient.Verify(x =>
+            x.Delete(It.Is<DeleteQualificationApiRequest>(c =>
+                c.DeleteUrl.Contains(command.ApplicationId.ToString())
+                && c.DeleteUrl.Contains(command.CandidateId.ToString())
+                && c.DeleteUrl.Contains(deleted.Id.ToString())
+                )), Times.Once);
     }
 }

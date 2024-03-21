@@ -84,7 +84,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet("{qualificationReferenceId}/modify")]
-        public async Task<IActionResult> GetAddQualification([FromRoute] Guid applicationId, [FromRoute]Guid qualificationReferenceId, [FromQuery]Guid candidateId, [FromQuery]Guid? id = null)
+        public async Task<IActionResult> GetModifyQualification([FromRoute] Guid applicationId, [FromRoute]Guid qualificationReferenceId, [FromQuery]Guid candidateId, [FromQuery]Guid? id = null)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
         
         [HttpPost("{qualificationReferenceId}/modify")]
-        public async Task<IActionResult> PostAddQualification([FromRoute] Guid applicationId, [FromRoute]Guid qualificationReferenceId, [FromBody] UpdateApplicationQualificationRequest request)
+        public async Task<IActionResult> PostModifyQualification([FromRoute] Guid applicationId, [FromRoute]Guid qualificationReferenceId, [FromBody] UpdateApplicationQualificationRequest request)
         {
             try
             {
@@ -121,7 +121,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                         Id = c.Id,
                         Name = c.Name,
                         AdditionalInformation = c.AdditionalInformation,
-                        IsPredicted = c.IsPredicted
+                        IsPredicted = c.IsPredicted,
+                        IsDeleted = c.IsDeleted
                     }).ToList(),
                     QualificationReferenceId = qualificationReferenceId
                 });
