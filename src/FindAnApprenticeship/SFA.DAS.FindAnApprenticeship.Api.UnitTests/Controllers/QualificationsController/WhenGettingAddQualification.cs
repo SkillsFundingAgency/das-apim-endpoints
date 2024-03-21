@@ -35,7 +35,7 @@ public class WhenGettingAddQualification
                 ), CancellationToken.None))
             .ReturnsAsync(queryResult);
         
-        var actual = await controller.GetAddQualification(applicationId,qualificationReferenceTypeId, candidateId, id) as OkObjectResult;
+        var actual = await controller.GetModifyQualification(applicationId,qualificationReferenceTypeId, candidateId, id) as OkObjectResult;
 
         actual.Should().NotBeNull();
         var actualValue = actual!.Value as GetQualificationReferenceTypeApiResponse;
@@ -55,7 +55,7 @@ public class WhenGettingAddQualification
         mediator.Setup(x => x.Send(It.IsAny<GetAddQualificationQuery>(), CancellationToken.None))
             .ThrowsAsync(new Exception());
         
-        var actual = await controller.GetAddQualification(applicationId, qualificationReferenceTypeId, candidateId, id) as StatusCodeResult;
+        var actual = await controller.GetModifyQualification(applicationId, qualificationReferenceTypeId, candidateId, id) as StatusCodeResult;
 
         actual.Should().NotBeNull();
         actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
