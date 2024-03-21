@@ -8,6 +8,8 @@ using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DateOfBirth;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.AddDetails;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePostcodeAddress;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddressesByPostcode;
+using System.Linq;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -25,16 +27,16 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPut]
-        [Route ("{govUkIdentifier}/add-details")]
-        public async Task <IActionResult> AddDetails ([FromRoute] string govUkIdentifier,[FromBody] CandidatesNameModel model)
+        [Route("{govUkIdentifier}/add-details")]
+        public async Task<IActionResult> AddDetails([FromRoute] string govUkIdentifier, [FromBody] CandidatesNameModel model)
         {
             try
             {
                 var result = await _mediator.Send(new AddDetailsCommand
                 {
-                    FirstName = model.FirstName, 
-                    LastName = model.LastName, 
-                    GovUkIdentifier = govUkIdentifier, 
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    GovUkIdentifier = govUkIdentifier,
                     Email = model.Email
                 });
 
@@ -58,7 +60,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     GovUkIdentifier = govUkIdentifier,
                     Email = model.Email,
                     DateOfBirth = model.DateOfBirth,
-                    
+
                 });
 
                 return Ok(result);
@@ -76,12 +78,32 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetCandidatePostcodeAddressQuery { Postcode =  postcode });
+                var result = await _mediator.Send(new GetCandidatePostcodeAddressQuery { Postcode = postcode });
                 return Ok(result);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error getting candidate PostcodeAddress");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("select-address")]
+        public async Task<IActionResult> SelectAddress([FromQuery] string postcode)
+        {
+            try
+            {
+                var queryResponse = await _mediator.Send(new GetCandidateAddressesByPostcodeQuery(postcode));
+
+                if (queryResponse.AddressesResponse == null || !queryResponse.AddressesResponse.Addresses.Any())
+                    return NotFound();
+
+                return Ok(queryResponse.AddressesResponse);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting addresses by postcode");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
