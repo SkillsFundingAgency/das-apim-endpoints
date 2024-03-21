@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetDeleteQualifications;
 
@@ -7,7 +6,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
 {
     public class GetDeleteQualificationsApiResponse
     {
-        public Guid QualificationReference { get; set; }
+        public string QualificationReference { get; set; }
 
         public List<Qualification> Qualifications { get; set; }
 

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -13,21 +13,24 @@ public class GetDeleteQualificationsQueryHandler(ICandidateApiClient<CandidateAp
 {
     public async Task<GetDeleteQualificationsQueryResult> Handle(GetDeleteQualificationsQuery request, CancellationToken cancellationToken)
     {
-        var applicationRequest = new GetApplicationApiRequest(request.CandidateId, request.ApplicationId);
-        var applicationTask = candidateApiClient.Get<GetApplicationApiResponse>(applicationRequest);
+        var applicationTask = candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId));
 
-        var qualificationsRequest = new GetQualificationsApiRequest(request.ApplicationId, request.CandidateId, request.QualificationReference);
-        var qualificationsTask = candidateApiClient.Get<GetQualificationsApiResponse>(qualificationsRequest);
+        var qualificationsTask = candidateApiClient.Get<GetQualificationsApiResponse>(new GetQualificationsApiRequest(request.ApplicationId, request.CandidateId, request.QualificationReference));
 
-        await Task.WhenAll(applicationTask, qualificationsTask);
+        var qualificationTypesTask = candidateApiClient.Get<GetQualificationReferenceTypesApiResponse>(new GetQualificationReferenceTypesApiRequest());
+
+        await Task.WhenAll(applicationTask, qualificationTypesTask, qualificationsTask);
 
         var application = applicationTask.Result;
         var qualifications = qualificationsTask.Result;
+        var qualificationTypes = qualificationTypesTask.Result;
+
+        var qualification = qualificationTypes.QualificationReferences.Single(x => x.Id == request.QualificationReference);
 
         return new GetDeleteQualificationsQueryResult
         {
-            QualificationReference = request.QualificationReference,
-            Qualifications = qualifications.Qualifications
+            Qualifications = qualifications.Qualifications,
+            QualificationReference = qualification.Name,
         };
     }
 }
