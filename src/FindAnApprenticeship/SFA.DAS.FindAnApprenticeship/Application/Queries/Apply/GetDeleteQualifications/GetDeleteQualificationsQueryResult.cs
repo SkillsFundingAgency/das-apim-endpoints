@@ -5,7 +5,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetDeleteQualif
 
 public class GetDeleteQualificationsQueryResult
 {
-    public Guid QualificationReference { get; set; }
+    public string QualificationReference { get; set; }
     public List<Qualification> Qualifications { get; set; }
 
     public class Qualification

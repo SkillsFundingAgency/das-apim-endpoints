@@ -21,6 +21,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             GetDeleteQualificationsQuery query,
             GetQualificationsApiResponse qualificationsApiResponse,
             GetApplicationApiResponse applicationApiResponse,
+            GetQualificationsReferenceDataApiResponse referenceDataApiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             GetDeleteQualificationsQueryHandler handler)
         {
@@ -31,6 +32,13 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             candidateApiClient.Setup(client =>
                 client.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedApplicationRequest.GetUrl)))
                 .ReturnsAsync(applicationApiResponse);
+
+            referenceDataApiResponse.QualificationReferences.First().Id = query.QualificationReference;
+
+            var expectedReferenceDataRequest = new GetQualificationsReferenceDataApiRequest();
+            candidateApiClient.Setup(client =>
+                    client.Get<GetQualificationsReferenceDataApiResponse>(It.Is<GetQualificationsReferenceDataApiRequest>(r => r.GetUrl == expectedReferenceDataRequest.GetUrl)))
+                .ReturnsAsync(referenceDataApiResponse);
 
             var expectedQualificationsApiRequest =
                 new GetQualificationsApiRequest(query.ApplicationId, query.CandidateId, query.QualificationReference);
@@ -43,7 +51,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
 
             using var scope = new AssertionScope();
 
-            result.QualificationReference.Should().Be(query.QualificationReference);
+            result.QualificationReference.Should().Be(referenceDataApiResponse.QualificationReferences.First().Name);
             result.Qualifications.Should().BeEquivalentTo(qualificationsApiResponse.Qualifications, options=>options.ExcludingMissingMembers());
         }
     }
