@@ -7,4 +7,12 @@ public class GetAddQualificationQueryResult
 {
     public QualificationReference? QualificationType { get; set; }
     public List<Qualification> Qualifications { get; set; }
+    public List<CourseResponse> Courses { get; set; }
+
+    public class CourseResponse
+    {
+        public string Id { get; set; }
+        public string Title { get; set; }
+        public bool IsStandard { get; set; }
+    }
 }
