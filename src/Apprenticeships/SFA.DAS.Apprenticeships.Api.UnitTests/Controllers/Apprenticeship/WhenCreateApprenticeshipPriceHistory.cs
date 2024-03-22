@@ -11,6 +11,7 @@ using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Api.Controllers;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -43,7 +44,7 @@ public class WhenCreateApprenticeshipPriceHistory
             reason: "Test Reason",
             effectiveFromDate: new DateTime(2023, 04, 04));
             
-        apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateApprenticeshipPriceChangeRequest>(), It.IsAny<bool>())).ReturnsAsync(new ApiResponse<object>("", HttpStatusCode.OK, ""));
+        apiClient.Setup(x => x.PostWithResponseCode<PostCreateApprenticeshipPriceChangeApiResponse>(It.IsAny<PostCreateApprenticeshipPriceChangeRequest>(), It.IsAny<bool>())).ReturnsAsync(new ApiResponse<PostCreateApprenticeshipPriceChangeApiResponse>(new PostCreateApprenticeshipPriceChangeApiResponse(), HttpStatusCode.OK, ""));
 
         // Act
         var response = await sut.CreateApprenticeshipPriceChange(
@@ -69,7 +70,7 @@ public class WhenCreateApprenticeshipPriceHistory
             ((CreateApprenticeshipPriceChangeRequest)r.Data).Reason == ((CreateApprenticeshipPriceChangeRequest)request.Data).Reason &&
             ((CreateApprenticeshipPriceChangeRequest)r.Data).EffectiveFromDate == ((CreateApprenticeshipPriceChangeRequest)request.Data).EffectiveFromDate &&
             r.ApprenticeshipKey == request.ApprenticeshipKey), It.IsAny<bool>()), Times.Once);
-        response.Should().BeOfType<OkResult>();
+        response.Should().BeOfType<OkObjectResult>();
     }
 
 	[Test]
@@ -81,7 +82,7 @@ public class WhenCreateApprenticeshipPriceHistory
 		// Arrange
 		var apprenticeshipKey = Guid.NewGuid();
 		var request = _fixture.Create<Models.CreateApprenticeshipPriceChangeRequest>();
-		apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostCreateApprenticeshipPriceChangeRequest>(), It.IsAny<bool>())).ReturnsAsync(new ApiResponse<object>("", HttpStatusCode.NotFound, "Has Error"));
+		apiClient.Setup(x => x.PostWithResponseCode<PostCreateApprenticeshipPriceChangeApiResponse>(It.IsAny<PostCreateApprenticeshipPriceChangeRequest>(), It.IsAny<bool>())).ReturnsAsync(new ApiResponse<PostCreateApprenticeshipPriceChangeApiResponse>(null, HttpStatusCode.NotFound, "Has Error"));
 
 		// Act
 		var response = await sut.CreateApprenticeshipPriceChange(apprenticeshipKey, request);
