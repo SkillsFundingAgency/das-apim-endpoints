@@ -47,9 +47,9 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.SearchOrganisat
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            var expectedTotal = eduOrgApiResponse.EducationalOrganisations.Count() + refApiResponse.Count() - 1;
+            var expectedTotal = eduOrgApiResponse.EducationalOrganisations.Count + refApiResponse.Count - 1;
 
-            result.Organisations.Count().Should().Be(expectedTotal);
+            result.Organisations.Count.Should().Be(expectedTotal);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerAccounts.Strategies
         {
             var eduResponse = await _eduOrgApi.GetWithResponseCode<GetLatestDetailsForEducationalOrgResponse>(new GetLatestDetailsForEducationalOrgRequest(identifier));
             OrganisationApiResponseHelper.CheckApiResponseStatus(eduResponse.StatusCode, orgType, identifier, eduResponse.ErrorContent);
-            var eduOrgDetail = eduResponse?.Body.EducationalOrganisation;
+            var eduOrgDetail = eduResponse.Body.EducationalOrganisation;
 
             return new GetLatestDetailsResult
             {
