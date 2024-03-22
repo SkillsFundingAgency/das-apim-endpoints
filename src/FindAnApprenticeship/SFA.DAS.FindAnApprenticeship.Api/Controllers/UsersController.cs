@@ -10,6 +10,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.AddDetails;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePostcodeAddress;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddressesByPostcode;
 using System.Linq;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Address;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -104,6 +105,33 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error getting addresses by postcode");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("{govUkIdentifier}/select-address")]
+        public async Task<IActionResult> SelectAddress([FromRoute] string govUkIdentifier, [FromBody] CandidatesAddressModel model)
+        {
+            try
+            {
+                var result = await _mediator.Send(new CreateAddressCommand
+                {
+                    GovUkIdentifier = govUkIdentifier,
+                    Email = model.Email,
+                    AddressLine1 = model.AddressLine1,
+                    AddressLine2 = model.AddressLine2,
+                    AddressLine3 = model.AddressLine3,
+                    AddressLine4 = model.AddressLine4,
+                    Postcode = model.Postcode,
+                    Uprn = model.Uprn
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error posting candidate address details");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
