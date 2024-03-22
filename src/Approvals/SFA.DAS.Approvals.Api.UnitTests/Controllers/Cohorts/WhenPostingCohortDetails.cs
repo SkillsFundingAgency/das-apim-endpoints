@@ -43,7 +43,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
         public async Task OkResponseIsReturned()
         {
             var result = await _controller.Details(_cohortId, _request);
-            Assert.IsInstanceOf<OkResult>(result);
+            Assert.That(result, Is.InstanceOf<OkResult>());
         }
 
         [Test]

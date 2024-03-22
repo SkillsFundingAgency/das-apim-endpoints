@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskList;
-using SFA.DAS.SharedOuterApi.Models;
+﻿using SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskList;
 
 namespace SFA.DAS.EmployerAccounts.Api.Models
 {

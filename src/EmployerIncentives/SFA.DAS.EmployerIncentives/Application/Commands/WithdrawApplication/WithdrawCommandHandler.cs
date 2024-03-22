@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.WithdrawApplication
 {
-    public class WithdrawCommandHandler : IRequestHandler<WithdrawCommand>
+    public class WithdrawCommandHandler : IRequestHandler<WithdrawCommand, Unit>
     {
         private readonly IEmployerIncentivesApiClient<EmployerIncentivesConfiguration> _client;
 

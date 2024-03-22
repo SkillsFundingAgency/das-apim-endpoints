@@ -35,7 +35,7 @@ namespace SFA.DAS.EmployerProfiles.Api.UnitTests.AppStart
             var provider = serviceCollection.BuildServiceProvider();
 
             var type = provider.GetService(toResolve);
-            Assert.IsNotNull(type);
+            Assert.That(type, Is.Not.Null);
         }
         
         private static IConfigurationRoot GenerateConfiguration()

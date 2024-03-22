@@ -1,19 +1,17 @@
-﻿using System.Net;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.RoatpOversight.Application.Commands.CreateProvider;
-using SFA.DAS.RoatpOversight.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.RoatpOversight.Infrastructure;
+using System.Net;
+using System.Web;
 
-namespace SFA.DAS.RoatpOversight.Application.Providers.Commands.CreateProvider;
+namespace SFA.DAS.RoatpOversight.Application.Commands.CreateProvider;
 
 public class CreateProviderCommandHandler : IRequestHandler<CreateProviderCommand, Unit>
 {
-    private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _apiClient;
+    private readonly IRoatpV2ApiClient _apiClient;
     private readonly ILogger<CreateProviderCommandHandler> _logger;
 
-    public CreateProviderCommandHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> apiClient, ILogger<CreateProviderCommandHandler> logger)
+    public CreateProviderCommandHandler(IRoatpV2ApiClient apiClient, ILogger<CreateProviderCommandHandler> logger)
     {
         _apiClient = apiClient;
         _logger = logger;
@@ -21,9 +19,8 @@ public class CreateProviderCommandHandler : IRequestHandler<CreateProviderComman
 
     public async Task<Unit> Handle(CreateProviderCommand command, CancellationToken cancellationToken)
     {
-        CreateProviderRequest apiRequest = new(command);
-
-        var response = await _apiClient.PostWithResponseCode<int>(apiRequest);
+        var response =
+            await _apiClient.CreateProvider(HttpUtility.UrlEncode(command.UserId), HttpUtility.UrlEncode(command.UserDisplayName), command, cancellationToken);
 
         if (response.StatusCode != HttpStatusCode.Created)
         {

@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ObjectPool;
 using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -8,7 +7,6 @@ using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Text;
 
 namespace SFA.DAS.Apprenticeships.Application.Apprenticeship;
 
@@ -55,6 +53,8 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 
 		var earliestEffectiveDate = await GetEarliestEffectiveDate();
 
+		var providerName = await GetProviderName(apprenticePriceInnerModel);
+
 		var apprenticeshipPriceOuterModel = new ApprenticeshipPriceResponse
 		{
 			ApprenticeshipKey = apprenticePriceInnerModel!.ApprenticeshipKey,
@@ -64,7 +64,8 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 			EarliestEffectiveDate = earliestEffectiveDate,
 			FundingBandMaximum = apprenticePriceInnerModel.FundingBandMaximum,
 			TrainingPrice = apprenticePriceInnerModel.TrainingPrice,
-			EmployerName = employerName
+			EmployerName = employerName,
+			ProviderName = providerName,
 		};
 
 		return apprenticeshipPriceOuterModel;
@@ -74,7 +75,7 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 	{
 		if (!apprenticePriceInnerModel.AccountLegalEntityId.HasValue)
 		{
-			_logger.LogWarning($"No AccountLegalEntityId returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
+			_logger.LogError($"No AccountLegalEntityId returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
 			return null;
 		}
 
@@ -82,12 +83,32 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 		
 		if(employer == null)
 		{
-			_logger.LogWarning($"No AccountLegalEntity returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
+			_logger.LogError($"No AccountLegalEntity returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
 			return null;
 		}
 
 		return employer.LegalEntityName;
 	}
+
+	private async Task<string?> GetProviderName(GetApprenticeshipPriceResponse apprenticePriceInnerModel)
+	{
+		if (apprenticePriceInnerModel.UKPRN < 1)
+		{
+			_logger.LogError($"Invalid UKPRN '{apprenticePriceInnerModel.UKPRN}' returned from innerApi for apprenticeshipKey:{apprenticePriceInnerModel.ApprenticeshipKey}");
+			return null;
+		}
+
+		var provider = await _apiCommitmentsClient.Get<GetProviderResponse>(new GetProviderRequest(apprenticePriceInnerModel.UKPRN));
+
+		if (provider == null)
+		{
+			_logger.LogError($"No provider returned from CommitmentsClient for UKPRN:{apprenticePriceInnerModel.UKPRN}");
+			return null;
+		}
+
+		return provider.Name;
+	}
+
 
 	private async Task<DateTime> GetEarliestEffectiveDate()
 	{

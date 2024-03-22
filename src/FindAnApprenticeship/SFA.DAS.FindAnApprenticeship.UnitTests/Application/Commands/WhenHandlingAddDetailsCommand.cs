@@ -1,5 +1,4 @@
 ﻿using AutoFixture.NUnit3;
-using Azure;
 using FluentAssertions;
 using MediatR;
 using Moq;

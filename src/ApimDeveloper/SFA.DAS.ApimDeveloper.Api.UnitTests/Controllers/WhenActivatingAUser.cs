@@ -25,7 +25,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
         {
             var actual = await controller.ActivateAccount(id) as NoContentResult;
             
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
             mediator.Verify(x => 
                     x.Send(It.Is<ActivateUserCommand>(c => c.Id.Equals(id)), CancellationToken.None),

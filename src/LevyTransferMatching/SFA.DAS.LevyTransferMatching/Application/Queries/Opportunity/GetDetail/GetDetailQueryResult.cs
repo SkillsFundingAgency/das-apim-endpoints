@@ -1,8 +1,6 @@
 ﻿using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetDetail
 {

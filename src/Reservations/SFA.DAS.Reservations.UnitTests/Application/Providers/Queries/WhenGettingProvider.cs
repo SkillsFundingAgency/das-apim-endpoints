@@ -28,7 +28,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Providers.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             result.Should().BeEquivalentTo(new GetProviderResult { Provider = (GetProviderResponse)apiResponse });
         }
 
@@ -48,8 +48,8 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Providers.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.IsNotNull(result);
-            Assert.IsNull(result.Provider);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Provider, Is.Null);
         }
     }
 }

@@ -2,7 +2,6 @@
 using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
-using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using System;
 using System.Net;
 using System.Threading.Tasks;

@@ -31,9 +31,9 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.LandingPage
 
             var actual = await controller.GetPreviewLandingPage(hubName, slugName) as OkObjectResult;
          
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualResult = actual.Value as GetLandingPageResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.LandingPage.Should().BeEquivalentTo(mediatorResult.PageModel);
         }
         
@@ -55,9 +55,9 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.LandingPage
 
             var actual = await controller.GetPreviewLandingPage(hubName, slugName) as NotFoundObjectResult;
          
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualResult = actual.Value as NotFoundResponse;
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Message.Should().Be($"Preview landing page not found for {hubName}/{slugName}");
         }
     }

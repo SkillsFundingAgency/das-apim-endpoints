@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.Campaign.Application.Queries.Standard;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;

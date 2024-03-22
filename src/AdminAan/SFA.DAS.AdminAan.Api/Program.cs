@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.AdminAan.Api.AppStart;
-using SFA.DAS.AdminAan.Api.Extensions;
+using SFA.DAS.SharedOuterApi.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +12,7 @@ builder.Services
     .AddLogging()
     .AddApplicationInsightsTelemetry()
     .AddServiceRegistration(configuration)
+    .AddServiceHealthChecks()
     .AddAuthentication(configuration)
     .AddEndpointsApiExplorer()
     .AddSwaggerGen(c =>

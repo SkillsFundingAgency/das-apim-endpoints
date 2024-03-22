@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
 using AutoFixture;
-using SFA.DAS.LevyTransferMatching.Application.Commands.AutoApproveApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests

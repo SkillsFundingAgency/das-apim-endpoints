@@ -3,7 +3,7 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.ReinstatePayments
 {
-    public class ReinstatePaymentsCommand : IRequest
+    public class ReinstatePaymentsCommand : IRequest<Unit>
     {
         public ReinstatePaymentsRequest ReinstatePaymentsRequest { get; }
 

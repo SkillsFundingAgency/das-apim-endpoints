@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.Notifications.Messages.Commands;
@@ -12,7 +11,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
 {
-    public class ApplicationCreatedEmailCommandHandler : IRequestHandler<ApplicationCreatedEmailCommand>
+    public class ApplicationCreatedEmailCommandHandler : IRequestHandler<ApplicationCreatedEmailCommand, Unit>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly IAccountsService _accountsService;

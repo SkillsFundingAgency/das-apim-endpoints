@@ -1,5 +1,4 @@
-﻿using Castle.Core.Logging;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -12,9 +11,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,7 +42,8 @@ public class WhenGettingApprenticeshipPrice
 				ApprenticeshipPlannedEndDate = expectedResponse.ApprenticeshipPlannedEndDate,
 				AssessmentPrice = expectedResponse.AssessmentPrice,
 				FundingBandMaximum = expectedResponse.FundingBandMaximum,
-				TrainingPrice = expectedResponse.TrainingPrice
+				TrainingPrice = expectedResponse.TrainingPrice,
+				UKPRN = 123
 			});
 
 		mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
@@ -61,7 +58,13 @@ public class WhenGettingApprenticeshipPrice
 			HardCloseDate = expectedResponse.EarliestEffectiveDate
 		});
 
-		var handler = new GetApprenticeshipPriceQueryHandler(_mocklogger.Object, mockApprenticeshipsApiClient.Object, mockCommitmentsV2ApiApiClient.Object, mockCollectionCalendarApiClient.Object);
+        mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetProviderResponse>(It.IsAny<GetProviderRequest>()))
+            .ReturnsAsync(new GetProviderResponse
+            {
+                Name = expectedResponse.ProviderName!
+            });
+
+        var handler = new GetApprenticeshipPriceQueryHandler(_mocklogger.Object, mockApprenticeshipsApiClient.Object, mockCommitmentsV2ApiApiClient.Object, mockCollectionCalendarApiClient.Object);
 
 		//  Act
 		var result = await handler.Handle(new GetApprenticeshipPriceQuery( Guid.NewGuid()), CancellationToken.None);

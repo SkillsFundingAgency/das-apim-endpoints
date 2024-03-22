@@ -1,6 +1,4 @@
-﻿using SFA.DAS.Approvals.Enums;
-
-namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries
+﻿namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries
 {
     public class ValidateUlnOverlapOnStartDateQueryResult
     {

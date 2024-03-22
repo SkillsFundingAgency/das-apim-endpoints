@@ -35,8 +35,8 @@ public class WhenCreatingOtherStudentTriageData
         var result = await handler.Handle(command, cancellationToken);
 
         earlyConnectApiClientMock.Verify(x => x.PostWithResponseCode<CreateOtherStudentTriageDataResponse>(It.IsAny<CreateOtherStudentTriageDataRequest>(), It.IsAny<bool>()), Times.Once);
-        Assert.AreEqual(expectedResponse.Object.StudentSurveyId, result.StudentSurveyId);
-        Assert.AreEqual(expectedResponse.Object.AuthCode, result.AuthCode);
-        Assert.AreEqual(expectedResponse.Object.ExpiryDate, result.ExpiryDate);
+        Assert.That(expectedResponse.Object.StudentSurveyId, Is.EqualTo(result.StudentSurveyId));
+        Assert.That(expectedResponse.Object.AuthCode, Is.EqualTo(result.AuthCode));
+        Assert.That(expectedResponse.Object.ExpiryDate, Is.EqualTo(result.ExpiryDate));
     }
 }

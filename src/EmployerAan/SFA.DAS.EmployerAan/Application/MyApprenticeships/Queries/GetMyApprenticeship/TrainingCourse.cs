@@ -1,4 +1,5 @@
-﻿namespace SFA.DAS.EmployerAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
+﻿
+namespace SFA.DAS.EmployerAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 
 public class TrainingCourse
 {
@@ -7,7 +8,7 @@ public class TrainingCourse
     public int? Duration { get; set; }
     public string? Sector { get; set; }
 
-    public static implicit operator TrainingCourse(GetStandardResponse standard)
+    public static implicit operator TrainingCourse(EmployerAan.InnerApi.Standards.Responses.GetStandardResponse standard)
     {
         return new TrainingCourse
         {
@@ -18,7 +19,7 @@ public class TrainingCourse
         };
     }
 
-    public static implicit operator TrainingCourse(GetFrameworkResponse framework)
+    public static implicit operator TrainingCourse(EmployerAan.InnerApi.Standards.Responses.GetFrameworkResponse framework)
     {
         return new TrainingCourse
         {

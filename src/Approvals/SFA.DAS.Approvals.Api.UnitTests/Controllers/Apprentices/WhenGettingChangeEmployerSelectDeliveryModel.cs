@@ -49,16 +49,16 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
         {
             var result = await _controller.ChangeEmployerSelectDeliveryModel(_providerId, _apprenticeshipId, _accountLegalEntityId);
 
-            Assert.IsInstanceOf<OkObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
 
             var okObjectResult = result as OkObjectResult;
             var response = okObjectResult.Value as GetSelectDeliveryModelResponse;
 
-            Assert.IsNotNull(response);
+            Assert.That(response, Is.Not.Null);
 
-            Assert.AreEqual(_queryResult.DeliveryModels, response.DeliveryModels);
-            Assert.AreEqual(_queryResult.LegalEntityName, response.LegalEntityName);
-            Assert.AreEqual(_queryResult.Status, response.Status);
+            Assert.That(_queryResult.DeliveryModels, Is.EqualTo(response.DeliveryModels));
+            Assert.That(_queryResult.LegalEntityName, Is.EqualTo(response.LegalEntityName));
+            Assert.That(_queryResult.Status, Is.EqualTo(response.Status));
         }
 
         [Test]
@@ -68,7 +68,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
 
             var result = await _controller.ChangeEmployerSelectDeliveryModel(_providerId, _apprenticeshipId, _accountLegalEntityId);
 
-            Assert.IsInstanceOf<NotFoundResult>(result);
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
         }
     }
 }

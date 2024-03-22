@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
 
 namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
 {

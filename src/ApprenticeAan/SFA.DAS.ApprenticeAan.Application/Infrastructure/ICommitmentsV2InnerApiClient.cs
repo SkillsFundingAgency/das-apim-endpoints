@@ -2,9 +2,9 @@
 using SFA.DAS.ApprenticeAan.Application.Employer.Queries.GetEmployerMemberSummary;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.ApprenticeshipsValidate;
 
-namespace SFA.DAS.ApprenticeAan.Infrastructure;
+namespace SFA.DAS.ApprenticeAan.Application.Infrastructure;
 
-public interface ICommitmentsV2InnerApiClient
+public interface ICommitmentsV2InnerApiClient : IHealthChecker
 {
     [Get("/api/accounts/{employerAccountId}/summary")]
     Task<AccountsSummary?> GetEmployerAccountSummary([Path] long employerAccountId, CancellationToken cancellationToken);

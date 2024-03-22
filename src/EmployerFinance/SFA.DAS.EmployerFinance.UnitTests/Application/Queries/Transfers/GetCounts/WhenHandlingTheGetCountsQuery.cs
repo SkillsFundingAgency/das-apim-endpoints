@@ -46,12 +46,12 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.Transfers.GetCou
 
             var results = await getCountsQueryHandler.Handle(getCountsQuery, CancellationToken.None);
 
-            Assert.AreEqual(getPledgesResponse.TotalPledges, results.PledgesCount);
-            Assert.AreEqual(getApplicationsResponse.Applications.Count(), results.ApplicationsCount);
-            Assert.AreEqual((getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
+            Assert.That(getPledgesResponse.TotalPledges, Is.EqualTo(results.PledgesCount));
+            Assert.That(getApplicationsResponse.Applications.Count(), Is.EqualTo(results.ApplicationsCount));
+            Assert.That((getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
                              getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications)
                              + getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments)
-                             + getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.TransferConnections)), results.CurrentYearEstimatedCommittedSpend);
+                             + getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.TransferConnections)), Is.EqualTo(results.CurrentYearEstimatedCommittedSpend));
         }
     }
 }

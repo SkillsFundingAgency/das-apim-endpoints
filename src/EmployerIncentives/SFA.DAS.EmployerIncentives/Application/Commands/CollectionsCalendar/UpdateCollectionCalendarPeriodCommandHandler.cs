@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.CollectionsCalendar
 {
-    public class UpdateCollectionCalendarPeriodCommandHandler : IRequestHandler<UpdateCollectionCalendarPeriodCommand>
+    public class UpdateCollectionCalendarPeriodCommandHandler : IRequestHandler<UpdateCollectionCalendarPeriodCommand, Unit>
     {
         private readonly ICollectionCalendarService _collectionCalendarService;
     

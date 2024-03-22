@@ -1,15 +1,6 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Assessor;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using WireMock.ResponseProviders;
-using WireMock;
 using WireMock.Server;
-using WireMock.Settings;
-using WireMock.Types;
-using WireMock.Util;
 
 namespace SFA.DAS.ApprenticeCommitments.MockApis
 {

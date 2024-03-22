@@ -65,7 +65,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
                 .ReturnsAsync(mediatorCommandResponse);
 
             ObjectResult objectResult = await controller.ProcessEmailTransaction(feedbackTransactionId, feedbackTransaction) as ObjectResult;
-            Assert.IsNotNull(objectResult);
+            Assert.That(objectResult, Is.Not.Null);
             objectResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
 
             object result = objectResult.Value;

@@ -29,12 +29,17 @@ public class PutCandidateCommandHandler : IRequestHandler<PutCandidateCommand, P
             await _legacyApiClient.Get<GetLegacyUserByEmailApiResponse>(
                 new GetLegacyUserByEmailApiRequest(request.Email));
 
+        var registrationDetailsDateOfBirth = userDetails?.RegistrationDetails?.DateOfBirth;
+        if (registrationDetailsDateOfBirth == DateTime.MinValue)
+        {
+            registrationDetailsDateOfBirth = null;
+        }
         var putData = new PutCandidateApiRequestData
         {
             Email = request.Email,
             FirstName = userDetails?.RegistrationDetails?.FirstName,
             LastName = userDetails?.RegistrationDetails?.LastName,
-            DateOfBirth = userDetails?.RegistrationDetails?.DateOfBirth ?? DateTime.UtcNow
+            DateOfBirth = registrationDetailsDateOfBirth,
         };
 
         var putRequest = new PutCandidateApiRequest(request.GovUkIdentifier, putData);

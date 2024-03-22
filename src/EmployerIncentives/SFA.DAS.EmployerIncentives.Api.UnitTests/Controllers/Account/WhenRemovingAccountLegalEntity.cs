@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.Account
         {
             var controllerResult = await controller.RemoveLegalEntity(accountId, accountLegalEntityId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.Accepted);
             mockMediator
                 .Verify(mediator => mediator.Send(

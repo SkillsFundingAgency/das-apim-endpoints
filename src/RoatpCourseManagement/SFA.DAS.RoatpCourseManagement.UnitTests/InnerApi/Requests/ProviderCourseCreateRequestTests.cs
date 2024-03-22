@@ -1,7 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.NServiceBus;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.CreateProviderCourse;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using System.Web;

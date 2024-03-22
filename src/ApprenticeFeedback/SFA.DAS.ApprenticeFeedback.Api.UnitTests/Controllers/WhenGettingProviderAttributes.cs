@@ -28,7 +28,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
 
             var actual = await controller.GetProviderAttributes() as ObjectResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
             actual.Value.Should().BeEquivalentTo(queryResult.Attributes);
         }
@@ -43,7 +43,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
 
             var actual = await controller.GetProviderAttributes() as StatusCodeResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }

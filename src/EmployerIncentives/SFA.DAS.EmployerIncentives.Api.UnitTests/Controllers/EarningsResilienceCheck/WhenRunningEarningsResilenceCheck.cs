@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EarningsResilienc
 
             var controllerResult = await controller.EarningsResilienceCheck() as OkResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
         }
     }
 }

@@ -39,7 +39,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
             //Act
             var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
             //Assert
-            Assert.AreEqual(HealthStatus.Healthy, actual.Status);
+            Assert.That(HealthStatus.Healthy, Is.EqualTo(actual.Status));
         }
 
         [Test, MoqAutoData]
@@ -54,7 +54,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
             //Act
             var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
             //Assert
-            Assert.AreEqual(HealthStatus.Unhealthy, actual.Status);
+            Assert.That(HealthStatus.Unhealthy, Is.EqualTo(actual.Status));
         }
     }
 }

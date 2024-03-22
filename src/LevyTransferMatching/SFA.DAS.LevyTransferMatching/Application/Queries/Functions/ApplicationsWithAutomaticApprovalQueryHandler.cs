@@ -6,8 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
-using SFA.DAS.LevyTransferMatching.Models.Constants;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using AutomaticApprovalOption = SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching.AutomaticApprovalOption;
 
