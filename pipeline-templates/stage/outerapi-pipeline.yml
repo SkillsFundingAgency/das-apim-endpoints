@@ -11,13 +11,19 @@ stages:
       TargetProjects: |
         src/${{ parameters.OuterApiName }}/**/*.csproj
         src/Shared/SFA.DAS.SharedOuterApi/SFA.DAS.SharedOuterApi.csproj
-        ${{ if eq(parameters.IncludeEmployerGovUKAuth, true) }}:
-          src/Shared/SFA.DAS.SharedOuterApi/SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj
+        ${{
+          if eq(parameters.IncludeEmployerGovUKAuth, true),
+          'src/Shared/SFA.DAS.SharedOuterApi/SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj',
+          ''
+        }}
       UnitTestProjects: |
         src/${{ parameters.OuterApiName }}/**/*UnitTests.csproj
         src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj
-        ${{ if eq(parameters.IncludeEmployerGovUKAuth, true) }}:
-          src/Shared/SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.UnitTests/SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.UnitTests.csproj
+        ${{
+          if eq(parameters.IncludeEmployerGovUKAuth, true),
+          'src/Shared/SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.UnitTests/SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.UnitTests.csproj',
+          ''
+        }}
       AcceptanceTestProjects: 'src/${{ parameters.OuterApiName }}/**/*AcceptanceTests.csproj'
       PublishProject: 'src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.Api/SFA.DAS.${{ parameters.OuterApiName }}.Api.csproj'
 
