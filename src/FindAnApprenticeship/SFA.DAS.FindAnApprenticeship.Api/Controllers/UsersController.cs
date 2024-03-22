@@ -123,8 +123,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     AddressLine2 = model.AddressLine2,
                     AddressLine3 = model.AddressLine3,
                     AddressLine4 = model.AddressLine4,
-                    Postcode = model.Postcode,
-                    Uprn = model.Uprn
+                    Postcode = model.Postcode
                 });
 
                 return Ok(result);

@@ -25,5 +25,4 @@ public class CandidatesAddressModel : CandidatesModel
     public string AddressLine3 { get; set; }
     public string AddressLine4 { get; set; }
     public string Postcode { get; set; }
-    public string Uprn { get; set; }
 }

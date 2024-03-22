@@ -26,8 +26,7 @@ public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand,
             AddressLine2 = request.AddressLine2,
             AddressLine3 = request.AddressLine3,
             AddressLine4 = request.AddressLine4,
-            Postcode = request.Postcode,
-            Uprn = request.Uprn
+            Postcode = request.Postcode
         };
 
         var postRequest = new PutCandidateAddressApiRequest(request.GovUkIdentifier, postData);
