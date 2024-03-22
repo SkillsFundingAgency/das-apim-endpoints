@@ -12,7 +12,7 @@ public class PutCandidateAddressApiRequest : IPutApiRequest
         Data = data;
     }
 
-    public string PutUrl => $"api/address/{_govUkIdentifier}";
+    public string PutUrl => $"api/addresses/{_govUkIdentifier}";
 
 
 }

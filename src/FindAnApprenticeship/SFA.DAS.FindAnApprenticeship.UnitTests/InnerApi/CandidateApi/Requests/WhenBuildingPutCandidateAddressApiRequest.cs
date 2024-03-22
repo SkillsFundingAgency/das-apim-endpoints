@@ -11,6 +11,6 @@ public class WhenBuildingPutCandidateAddressApiRequest
     {
         var actual = new PutCandidateAddressApiRequest(govIdentifier, new PutCandidateAddressApiRequestData());
 
-        actual.PutUrl.Should().Be($"api/address/{govIdentifier}");
+        actual.PutUrl.Should().Be($"api/addresses/{govIdentifier}");
     }
 }
