@@ -12,7 +12,7 @@ stages:
       SonarCloudProjectKey: SkillsFundingAgency_das-apim-endpoints_${{ parameters.OuterApiName }}
       TargetProjects: |
         src/${{ parameters.OuterApiName }}/**/*.csproj
-        src/Shared/SFA.DAS.SharedOuterApi/SFA.DAS.SharedOuterApi.csproj
+        src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj
         ${{ parameters.AdditionalProjectPathToInclude }}
       UnitTestProjects: |
         src/${{ parameters.OuterApiName }}/**/*UnitTests.csproj
