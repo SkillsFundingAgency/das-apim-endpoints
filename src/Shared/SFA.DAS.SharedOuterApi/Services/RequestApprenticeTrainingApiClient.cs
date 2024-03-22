@@ -3,12 +3,13 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
+    [ExcludeFromCodeCoverage]
     public class RequestApprenticeTrainingApiClient : IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration>
     {
         private readonly IInternalApiClient<RequestApprenticeTrainingApiConfiguration> _apiClient;
