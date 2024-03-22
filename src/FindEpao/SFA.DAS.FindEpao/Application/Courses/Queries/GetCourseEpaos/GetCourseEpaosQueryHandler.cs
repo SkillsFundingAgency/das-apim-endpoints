@@ -63,7 +63,7 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
                 if (epaoTasks.TryGetValue(filtEpao.EpaoId, out var epaoResponse) && epaoResponse.Result != null)
                 {
                     var epaoVersions = epaoResponse.Result
-                        .Where(c => _courseEpaoIsValidFilterService.ValidateVersionDates(c.DateVersionApproved, c.EffectiveFrom, c.EffectiveTo))
+                        .Where(c => _courseEpaoIsValidFilterService.ValidateVersionDates(c.EffectiveFrom, c.EffectiveTo))
                         .Select(x => x.Version).ToArray();
 
                     filtEpao.CourseEpaoDetails.StandardVersions = epaoVersions;

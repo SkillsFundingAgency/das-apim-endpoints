@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -75,7 +74,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api
                 .AddCheck<ApprenticeLoginApiHealthCheck>(nameof(ApprenticeLoginApiHealthCheck))
                 .AddCheck<CoursesApiHealthCheck>(nameof(CoursesApiHealthCheck));
 
-            services.AddMediatR(GetType().Assembly, typeof(CreateApprovalCommandHandler).Assembly);
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(CreateApprovalCommandHandler).Assembly));
             services.AddFluentValidation(new[] { typeof(CreateApprovalCommandHandler).Assembly });
             services.AddServiceRegistration();
 
@@ -87,7 +86,6 @@ namespace SFA.DAS.ApprenticeCommitments.Api
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;

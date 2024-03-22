@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching
+﻿namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching
 {
     public enum AutomaticApprovalOption
     {

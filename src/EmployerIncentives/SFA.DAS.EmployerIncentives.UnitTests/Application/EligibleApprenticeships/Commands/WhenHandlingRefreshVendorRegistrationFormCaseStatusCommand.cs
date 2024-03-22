@@ -101,7 +101,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
 
             Func<Task> f = async () => await handler.Handle(command, CancellationToken.None);
 
-            f.Should().Throw<ArgumentNullException>();
+            f.Should().ThrowAsync<ArgumentNullException>();
 
             vendorRegistrationService.Verify(
                 x => x.UpdateVendorRegistrationCaseStatus(It.IsAny<UpdateVendorRegistrationCaseStatusRequest>()), Times.Never());

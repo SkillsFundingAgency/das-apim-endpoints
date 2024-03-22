@@ -32,10 +32,10 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
 
             var controllerResult = await controller.GetDraftList() as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetCourseListResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Courses.Should().BeEquivalentTo(mediatorResult.TrainingCourses.Select(item => (GetCourseListItem)item));
         }
 

@@ -1,6 +1,4 @@
-﻿using SFA.DAS.Approvals.InnerApi.Responses.ProviderEvent;
-
-namespace SFA.DAS.Approvals.InnerApi.Responses.ProviderEvent
+﻿namespace SFA.DAS.Approvals.InnerApi.Responses.ProviderEvent
 {
     public class NamedCalendarPeriod : CalendarPeriod
     {

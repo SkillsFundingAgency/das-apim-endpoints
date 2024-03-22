@@ -55,10 +55,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
 
             var controllerResult = await controller.GetProviders(id, request) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCourseProvidersResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.TrainingCourse.Should().BeEquivalentTo((GetTrainingCourseListItem)mediatorResult.Course);
             model.TrainingCourseProviders.Should()
                 .BeEquivalentTo(mediatorResult.Providers,
@@ -126,10 +126,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
 
             var controllerResult = await controller.GetProviders(id, request) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCourseProvidersResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.TrainingCourseProviders.Count().Should().Be(1);
             model.Total.Should().Be(mediatorResult.Total);
             model.TotalFiltered.Should().Be(model.TrainingCourseProviders.Count());
@@ -172,10 +172,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
 
             var controllerResult = await controller.GetProviders(id, request) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCourseProvidersResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.TrainingCourseProviders.Count().Should().Be(2);
             model.Total.Should().Be(mediatorResult.Total);
             model.TotalFiltered.Should().Be(model.TrainingCourseProviders.Count());
@@ -219,10 +219,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
 
             var controllerResult = await controller.GetProviders(id, request) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCourseProvidersResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.TrainingCourseProviders.Count().Should().Be(2);
             model.Total.Should().Be(mediatorResult.Total);
             model.TotalFiltered.Should().Be(model.TrainingCourseProviders.Count());
@@ -331,10 +331,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.TrainingC
 
             var controllerResult = await controller.GetProviders(id, request) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCourseProvidersResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.TrainingCourseProviders.First().Name.Should().Be(expectedFirstName);
             model.TrainingCourseProviders.First().DeliveryModes.First().DistanceInMiles.Should()
                 .Be(expectedDistanceInMiles);

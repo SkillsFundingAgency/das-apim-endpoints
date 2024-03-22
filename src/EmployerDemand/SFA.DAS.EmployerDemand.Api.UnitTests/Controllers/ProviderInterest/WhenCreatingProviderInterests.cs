@@ -28,14 +28,20 @@ namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.ProviderInterest
             CreateProviderInterestsCommand actualCommand = null;
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<CreateProviderInterestsCommand>(),
+                    It.Is<CreateProviderInterestsCommand>(
+                        c=>c.Ukprn == request.Ukprn
+                        && c.Email == request.Email
+                        && c.Phone == request.Phone
+                        && c.Website == request.Website
+                        && c.FatUrl == request.FatUrl
+                        && c.ProviderName == request.ProviderName
+                        && c.EmployerDemandIds == request.EmployerDemandIds
+                        ),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(returnId)
-                .Callback((CreateProviderInterestsCommand command, CancellationToken token) => actualCommand = command);
+                .ReturnsAsync(returnId);
             
             var controllerResult = await controller.CreateProviderInterests(request) as CreatedResult;
 
-            actualCommand.Should().BeEquivalentTo((CreateProviderInterestsCommand)request);
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Created);
             controllerResult.Value.Should().Be(returnId);
         }

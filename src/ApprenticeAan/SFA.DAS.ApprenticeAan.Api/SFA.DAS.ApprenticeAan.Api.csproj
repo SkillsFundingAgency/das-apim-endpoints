@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" />
-    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="SFA.DAS.Telemetry" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="SFA.DAS.Api.Common" />
-    <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
   </ItemGroup>
 
   <ItemGroup>

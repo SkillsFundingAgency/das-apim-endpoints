@@ -34,8 +34,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetLocation
 
             foreach (var location in result.Locations)
             {
-                Assert.NotNull(location.DisplayName, location.DisplayName);
-                Assert.AreNotEqual("", location.DisplayName);
+                Assert.That(location.DisplayName, Is.Not.Null);
+                Assert.That(location.DisplayName, Is.Not.EqualTo(""));
             }
         }
     }

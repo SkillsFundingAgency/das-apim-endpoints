@@ -7,6 +7,7 @@ namespace SFA.DAS.EarlyConnect.Api.Models
     {
         public int Id { get; set; }
         public int? LepsId { get; set; }
+        public string LepCode { get; set; }
         public int? LogId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -26,6 +27,7 @@ namespace SFA.DAS.EarlyConnect.Api.Models
             {
                 Id = source.Id,
                 LepsId = source.LepsId,
+                LepCode = source.LepCode,
                 LogId = source.LogId,
                 FirstName = source.FirstName,
                 LastName = source.LastName,
@@ -50,6 +52,8 @@ namespace SFA.DAS.EarlyConnect.Api.Models
         public string QuestionText { get; set; }
         public string ShortDescription { get; set; }
         public string SummaryLabel { get; set; }
+        public string GroupLabel { get; set; }
+        public int GroupNumber { get; set; }
         public string ValidationMessage { get; set; }
         public int? DefaultToggleAnswerId { get; set; }
         public int SortOrder { get; set; }
@@ -64,6 +68,8 @@ namespace SFA.DAS.EarlyConnect.Api.Models
                 QuestionText = source.QuestionText,
                 ShortDescription = source.ShortDescription,
                 SummaryLabel = source.SummaryLabel,
+                GroupLabel = source.GroupLabel,
+                GroupNumber = source.GroupNumber,
                 ValidationMessage = source.ValidationMessage,
                 DefaultToggleAnswerId = source.DefaultToggleAnswerId,
                 SortOrder = source.SortOrder,

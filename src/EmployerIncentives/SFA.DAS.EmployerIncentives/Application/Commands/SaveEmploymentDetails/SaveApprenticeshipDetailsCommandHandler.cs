@@ -8,7 +8,7 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.SaveApprenticeshipDetails
 {
-    public class SaveApprenticeshipDetailsCommandHandler : IRequestHandler<SaveApprenticeshipDetailsCommand>
+    public class SaveApprenticeshipDetailsCommandHandler : IRequestHandler<SaveApprenticeshipDetailsCommand, Unit>
     {
         private readonly ICommitmentsService _commitmentsService;
         private readonly IApplicationService _applicationService;

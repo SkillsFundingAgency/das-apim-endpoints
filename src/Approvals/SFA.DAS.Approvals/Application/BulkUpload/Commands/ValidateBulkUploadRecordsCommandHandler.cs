@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 {
-    public class ValidateBulkUploadRecordsCommandHandler : IRequestHandler<ValidateBulkUploadRecordsCommand>
+    public class ValidateBulkUploadRecordsCommandHandler : IRequestHandler<ValidateBulkUploadRecordsCommand, Unit>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly IReservationApiClient<ReservationApiConfiguration> _reservationApiClient;

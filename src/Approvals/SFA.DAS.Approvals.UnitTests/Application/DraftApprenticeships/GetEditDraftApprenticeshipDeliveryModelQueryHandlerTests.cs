@@ -68,21 +68,21 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         public async Task Handle_LegalEntityName_Is_Returned()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_cohort.LegalEntityName, result.EmployerName);
+            Assert.That(_cohort.LegalEntityName, Is.EqualTo(result.EmployerName));
         }
 
         [Test]
         public async Task Handle_DeliveryModel_Is_Returned()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.DeliveryModel.ToString(), result.DeliveryModel);
+            Assert.That(_draftApprenticeship.DeliveryModel.ToString(), Is.EqualTo(result.DeliveryModel));
         }
 
         [Test]
         public async Task Handle_DeliveryModels_Is_Returned()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_deliveryModels, result.DeliveryModels);
+            Assert.That(_deliveryModels, Is.EqualTo(result.DeliveryModels));
         }
 
         [TestCase(true)]
@@ -96,7 +96,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             }
 
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(hasUnavailableDeliveryModel, result.HasUnavailableDeliveryModel);
+            Assert.That(hasUnavailableDeliveryModel, Is.EqualTo(result.HasUnavailableDeliveryModel));
         }
     }
 }

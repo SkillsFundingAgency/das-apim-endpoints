@@ -33,10 +33,10 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers
 
             var controllerResult = await controller.GetList() as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetTrainingCoursesListResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Standards.Should().BeEquivalentTo(mediatorResult.Courses.Select(course => (GetTrainingCoursesListItem)course));
             model.Standards.All(m => m.Id > 0).Should().BeTrue();
         }

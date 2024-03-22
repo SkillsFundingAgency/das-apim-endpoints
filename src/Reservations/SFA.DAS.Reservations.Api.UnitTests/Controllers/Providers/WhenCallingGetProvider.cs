@@ -11,7 +11,6 @@ using NUnit.Framework;
 using SFA.DAS.Reservations.Api.Controllers;
 using SFA.DAS.Reservations.Api.Models;
 using SFA.DAS.Reservations.Application.Providers.Queries.GetProvider;
-using SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCourseList;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.Providers
@@ -34,10 +33,10 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.Providers
 
             var controllerResult = await controller.GetProvider(ukPrn) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetProviderResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo(mediatorResult.Provider);
         }
         [Test, MoqAutoData]
@@ -55,7 +54,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.Providers
 
             var controllerResult = await controller.GetProvider(ukPrn) as NotFoundResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
             
         }

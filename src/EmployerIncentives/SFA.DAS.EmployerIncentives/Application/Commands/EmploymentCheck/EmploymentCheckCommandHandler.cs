@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.EmploymentCheck
 {
-    public class EmploymentCheckCommandCommandHandler : IRequestHandler<EmploymentCheckCommand>
+    public class EmploymentCheckCommandCommandHandler : IRequestHandler<EmploymentCheckCommand, Unit>
     {
         private readonly IIncentivesEmploymentCheckService _incentivesEmploymentCheckService;
 

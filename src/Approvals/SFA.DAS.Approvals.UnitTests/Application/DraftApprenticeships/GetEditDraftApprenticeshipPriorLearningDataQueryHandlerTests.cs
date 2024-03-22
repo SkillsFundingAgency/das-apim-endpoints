@@ -43,14 +43,14 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         public async Task Handle_TrainingTotalHours_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.TrainingTotalHours, result.TrainingTotalHours);
+            Assert.That(result.TrainingTotalHours, Is.EqualTo(_draftApprenticeship.TrainingTotalHours));
         }
 
         [Test]
         public async Task Handle_DurationReducedByHours_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.DurationReducedByHours, result.DurationReducedByHours);
+            Assert.That(result.DurationReducedByHours, Is.EqualTo(_draftApprenticeship.DurationReducedByHours));
         }
 
         [TestCase(true, 100, true)]
@@ -64,7 +64,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             _draftApprenticeship.IsDurationReducedByRpl = isDurationReducedByRpl;
             _draftApprenticeship.DurationReducedBy = durationReducedBy;
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(expected, result.IsDurationReducedByRpl);
+            Assert.That(result.IsDurationReducedByRpl, Is.EqualTo(expected));
         }
 
         [TestCase(true, 100, 100)]
@@ -78,14 +78,14 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             _draftApprenticeship.IsDurationReducedByRpl = isDurationReducedByRpl;
             _draftApprenticeship.DurationReducedBy = durationReducedBy;
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(expected, result.DurationReducedBy);
+            Assert.That(result.DurationReducedBy, Is.EqualTo(expected));
         }
 
         [Test]
         public async Task Handle_PriceReduced_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_draftApprenticeship.PriceReducedBy, result.PriceReduced);
+            Assert.That(result.PriceReduced, Is.EqualTo(_draftApprenticeship.PriceReducedBy));
         }
     }
 }

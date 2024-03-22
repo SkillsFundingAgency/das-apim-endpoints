@@ -16,6 +16,19 @@ public class GetLiveVacanciesApiResponse
         };
     }
 
+    public static implicit operator GetLiveVacanciesApiResponse(GetNhsJobsQueryResult source)
+    {
+        return new GetLiveVacanciesApiResponse
+        {
+            Vacancies = source.NhsVacancies.Select(x => (LiveVacancy)x),
+            PageSize = source.NhsVacancies.Count,
+            PageNo = 1,
+            TotalLiveVacanciesReturned = source.NhsVacancies.Count,
+            TotalLiveVacancies = source.NhsVacancies.Count,
+            TotalPages = 1
+        };
+    }
+
     public IEnumerable<LiveVacancy> Vacancies { get; set; } = null!;
     public int PageSize { get; set; }
     public int PageNo { get; set; }
@@ -63,13 +76,16 @@ public class GetLiveVacanciesApiResponse
                 IsEmployerAnonymous = source.IsEmployerAnonymous,
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
-                IsRecruitVacancy = true,
+                IsRecruitVacancy = source.IsRecruitVacancy,
                 AnonymousEmployerName = source.AnonymousEmployerName,
                 IsPositiveAboutDisability = source.IsPositiveAboutDisability,
                 VacancyLocationType = source.VacancyLocationType,
                 EmployerContactName = source.EmployerContactName,
                 EmployerContactEmail = source.EmployerContactEmail,
                 EmployerContactPhone = source.EmployerContactPhone,
+                ProviderContactEmail = source.ProviderContactEmail,
+                ProviderContactName = source.ProviderContactName,
+                ProviderContactPhone = source.ProviderContactPhone,
                 ApprenticeshipLevel = source.ApprenticeshipLevel,
                 Duration = source.Duration,
                 DurationUnit = source.DurationUnit,
@@ -80,7 +96,7 @@ public class GetLiveVacanciesApiResponse
                 ApplicationUrl = source.ApplicationUrl,
                 TypicalJobTitles = source.TypicalJobTitles,
                 AdditionalQuestion1 = source.AdditionalQuestion1,
-                AdditionalQuestion2 = source.AdditionalQuestion2,
+                AdditionalQuestion2 = source.AdditionalQuestion2
             };
         }
 
@@ -91,7 +107,7 @@ public class GetLiveVacanciesApiResponse
         public string? AccountPublicHashedId { get; set; }
         public string ApprenticeshipLevel { get; set; }
         public Guid VacancyId { get; set; }
-        public long VacancyReference { get; set; }
+        public string VacancyReference { get; set; }
         public string Title { get; set; }
         public int NumberOfPositions { get; set; }
         public string ApprenticeshipTitle { get; set; }
@@ -126,11 +142,15 @@ public class GetLiveVacanciesApiResponse
         public string? EmployerContactPhone { get; set; }
         public string? EmployerContactEmail { get; set; }
         public string? EmployerContactName { get; set; }
+        public string? ProviderContactEmail { get; set; }
+        public string? ProviderContactName { get; set; }
+        public string? ProviderContactPhone { get; set; }
         public string ApplicationMethod { get; set; }
         public string? ApplicationUrl { get; set; }
         public string TypicalJobTitles { get; set; }
         public string? AdditionalQuestion1 { get; set; }
         public string? AdditionalQuestion2 { get; set; }
+        public string? OwnerType { get; set; }
 
     }
 

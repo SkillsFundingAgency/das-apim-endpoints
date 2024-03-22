@@ -37,10 +37,10 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EligibleApprentic
 
             var controllerResult = await controller.GetEligibleApprentices(accountId, accountLegalEntityId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as IEnumerable<EligibleApprenticeshipDto>;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Count().Should().Be(mediatorResult.Apprentices.Length);
         }
         

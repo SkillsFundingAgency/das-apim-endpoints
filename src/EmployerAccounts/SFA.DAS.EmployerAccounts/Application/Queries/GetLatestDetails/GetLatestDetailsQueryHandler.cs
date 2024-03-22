@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetLatestDetails
 
         public async Task<GetLatestDetailsResult> Handle(GetLatestDetailsQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Getting Latest Details for Organisation with identifier: {request.Identifier}");
+            _logger.LogInformation("Getting Latest Details for Organisation with identifier: {Identifier}", request.Identifier);
 
             var organisationApiStrategy = _organisationApiStrategyFactory.CreateStrategy(request.OrganisationType);
             return await organisationApiStrategy.GetOrganisationDetails(request.Identifier, request.OrganisationType);

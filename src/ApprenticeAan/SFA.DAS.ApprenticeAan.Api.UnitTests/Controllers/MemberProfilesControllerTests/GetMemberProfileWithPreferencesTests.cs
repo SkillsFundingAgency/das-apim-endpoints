@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -7,15 +6,12 @@ using Moq;
 using SFA.DAS.ApprenticeAan.Api.Controllers;
 using SFA.DAS.ApprenticeAan.Application.Common;
 using SFA.DAS.ApprenticeAan.Application.Employer.Queries.GetEmployerMemberSummary;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.MyApprenticeships;
-using SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Requests;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Responses;
 using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.ApprenticeAan.Application.Models;
 using SFA.DAS.ApprenticeAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Api.UnitTests.Controllers.MemberProfiles;
@@ -31,33 +27,33 @@ public class GetMemberProfileWithPreferencesTests
     [MoqInlineAutoData(false, true, MemberUserType.Employer)]
     [MoqInlineAutoData(false, false, MemberUserType.Employer)]
     public async Task When_MediatorCommandSuccessful_Then_ReturnOk(
-        bool isPublicView,
-        bool isApprenticeshipSectionShow,
-        MemberUserType userType,
-        GetMyApprenticeshipQueryResult? myApprenticeship,
-        Apprenticeship? apprenticeship,
-        [Frozen] Mock<IMediator> mediatorMock,
-        Guid appreticeId,
-        long accountId,
-        Guid memberId,
-        Guid requestedByMemberId,
-        GetStandardResponse standardResponse,
-        string standardUid,
-        CancellationToken cancellationToken)
+         bool isPublicView,
+         bool isApprenticeshipSectionShow,
+         MemberUserType userType,
+         GetMyApprenticeshipQueryResult? myApprenticeship,
+         Apprenticeship? apprenticeship,
+         [Frozen] Mock<IMediator> mediatorMock,
+         Guid apprenticeId,
+         long accountId,
+         Guid memberId,
+         Guid requestedByMemberId,
+         GetStandardResponse standardResponse,
+         string standardUid,
+         CancellationToken cancellationToken)
     {
         GetMemberProfileWithPreferencesQueryResult memberProfileWithPreferencesQueryResult = new GetMemberProfileWithPreferencesQueryResult();
-        memberProfileWithPreferencesQueryResult.ApprenticeId = appreticeId;
+        memberProfileWithPreferencesQueryResult.ApprenticeId = apprenticeId;
         memberProfileWithPreferencesQueryResult.AccountId = accountId;
         memberProfileWithPreferencesQueryResult.UserType = userType;
-        GetMyApprenticeshipQuery myApprenticeshipQuery = new() { ApprenticeId = appreticeId };
+        GetMyApprenticeshipQuery myApprenticeshipQuery = new() { ApprenticeId = apprenticeId };
         GetEmployerMemberSummaryQuery employerMemberSummaryQuery = new(accountId);
         List<MemberPreference> memberPreferences = new()
-        {
-            new MemberPreference{ PreferenceId = 1, Value =  true },
-            new MemberPreference{ PreferenceId = 2, Value =  true },
-            new MemberPreference{ PreferenceId = 3, Value =  isApprenticeshipSectionShow },
-            new MemberPreference{ PreferenceId = 4, Value =  false },
-        };
+         {
+             new MemberPreference{ PreferenceId = 1, Value =  true },
+             new MemberPreference{ PreferenceId = 2, Value =  true },
+             new MemberPreference{ PreferenceId = 3, Value =  isApprenticeshipSectionShow },
+             new MemberPreference{ PreferenceId = 4, Value =  false },
+         };
         memberProfileWithPreferencesQueryResult.Preferences = memberPreferences;
         int apprenticeshipPreferenceId = 3;
         var isApprenticeSectionShareAllowed = (memberProfileWithPreferencesQueryResult.Preferences.Any(x => x.PreferenceId == apprenticeshipPreferenceId)) ? memberProfileWithPreferencesQueryResult.Preferences.FirstOrDefault(x => x.PreferenceId == apprenticeshipPreferenceId)!.Value : false;
@@ -89,20 +85,33 @@ public class GetMemberProfileWithPreferencesTests
             mediatorMock.Setup(m => m.Send(It.Is<GetEmployerMemberSummaryQuery>(x => x.EmployerAccountId == accountId), cancellationToken)).ReturnsAsync(getEmployerMemberSummaryQueryResult!);
         }
 
-        mediatorMock.Setup(m => m.Send(It.Is<GetMyApprenticeshipQuery>(x => x.ApprenticeId == appreticeId), cancellationToken)).ReturnsAsync(myApprenticeship);
+        mediatorMock.Setup(m => m.Send(It.Is<GetMyApprenticeshipQuery>(x => x.ApprenticeId == apprenticeId), cancellationToken)).ReturnsAsync(myApprenticeship);
 
         mediatorMock.Setup(m => m.Send(It.IsAny<GetMemberProfileWithPreferencesQuery>(), cancellationToken)).ReturnsAsync(memberProfileWithPreferencesQueryResult);
 
-        Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> apprenticeAccountsApiClientMock = new();
+        Mock<IApprenticeAccountsApiClient> apprenticeAccountsApiClientMock = new();
 
         GetMyApprenticeshipResponse myApprenticeshipResponse = new() { StandardUId = standardUid };
 
-        apprenticeAccountsApiClientMock.Setup(c => c.GetWithResponseCode<GetMyApprenticeshipResponse>(It.Is<GetMyApprenticeshipRequest>(r => r.Id == myApprenticeshipQuery.ApprenticeId)))
-            .ReturnsAsync(new ApiResponse<GetMyApprenticeshipResponse>(myApprenticeshipResponse, HttpStatusCode.OK, null));
+        var status = System.Net.HttpStatusCode.OK;
 
-        Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClientMock = new();
-        coursesApiClientMock.Setup(c => c.Get<GetStandardResponse>(It.IsAny<GetStandardRequest>())).ReturnsAsync(standardResponse);
+        var restApprenticeshipResponse = new RestEase.Response<GetMyApprenticeshipResponse>(
+            "not used",
+            new HttpResponseMessage(status),
+            () => myApprenticeshipResponse);
 
+        apprenticeAccountsApiClientMock.Setup(c => c.GetMyApprenticeship(myApprenticeshipQuery.ApprenticeId, It.IsAny<CancellationToken>()))
+             .ReturnsAsync(restApprenticeshipResponse);
+
+        Mock<ICoursesApiClient> coursesApiClientMock = new();
+
+        var restStandardResponse = new RestEase.Response<GetStandardResponse>(
+            "not used",
+            new HttpResponseMessage(status),
+            () => standardResponse);
+
+        coursesApiClientMock.Setup(x => x.GetStandard(standardUid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(restStandardResponse);
 
         var sut = new MemberProfilesController(mediatorMock.Object);
 

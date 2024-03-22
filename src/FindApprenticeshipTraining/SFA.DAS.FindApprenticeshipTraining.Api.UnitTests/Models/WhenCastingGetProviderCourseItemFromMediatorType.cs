@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
@@ -19,8 +20,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             providerStandardItem.ProviderStandard.ApprenticeFeedback.ReviewCount = 129;
             providerStandardItem.ProviderStandard.ApprenticeFeedback.Stars = 3;
 
-            var actual =new GetProviderCourseItem().Map(providerStandardItem, "",1, true);
-            
+            var actual = new GetProviderCourseItem().Map(providerStandardItem, 1, true);
+
             actual.Should().BeEquivalentTo(providerStandardItem.Course, options => options.ExcludingMissingMembers());
 
             actual.Website.Should().Be(providerStandardItem.ProviderStandard.StandardInfoUrl);
@@ -32,22 +33,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             actual.ApprenticeFeedback.TotalFeedbackRating.Should().Be(3);
             actual.MarketingInfo.Should().Be(providerStandardItem.ProviderStandard.MarketingInfo);
             actual.DeliveryModes.Count.Should().Be(providerStandardItem.ProviderStandard.DeliveryModels.ToList().Count);
-            Assert.IsTrue(actual.DeliveryModes.Any(x => x.Address1.Contains(providerStandardItem.ProviderStandard.DeliveryModels.ToList().First().Address1)));
+            Assert.That(actual.DeliveryModes.Any(x => x.Address1.Contains(providerStandardItem.ProviderStandard.DeliveryModels.ToList().First().Address1)), Is.True);
         }
 
         [Test, AutoData]
-        public void Then_Maps_Fields_Appropriately_Matching_AchievementRates_With_Sector_And_Level_Higher_Than_Three(string sectorSubjectArea,
-            GetTrainingCourseProviderResult source, GetAchievementRateItem item, GetAchievementRateItem item2)
+        public void Then_Maps_Fields_Appropriately_Matching_AchievementRates_With_Sector_And_Level_Higher_Than_Three(GetTrainingCourseProviderResult source, GetAchievementRateItem item, GetAchievementRateItem item2)
         {
-            item.SectorSubjectArea = sectorSubjectArea;
             item.Level = "AllLevels";
             source.ProviderStandard.AchievementRates = new List<GetAchievementRateItem>
             {
                 item,
                 item2
             };
-            
-            var response = new GetProviderCourseItem().Map(source, sectorSubjectArea,5, true);
+
+            var response = new GetProviderCourseItem().Map(source, 5, true);
 
             response.Name.Should().Be(source.ProviderStandard.Name);
             response.TradingName.Should().Be(source.ProviderStandard.TradingName);
@@ -56,54 +55,55 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
             response.OverallAchievementRate.Should().Be(item.OverallAchievementRate);
 
         }
-        [Test, AutoData]
 
-        public void Then_Maps_Fields_Appropriately_Matching_AchievementRates_With_Sector_And_Level(string sectorSubjectArea,
-            GetTrainingCourseProviderResult source, GetAchievementRateItem item, GetAchievementRateItem item2,GetAchievementRateItem item3)
+        [Test, AutoData]
+        public void Then_Maps_AchievementRates_From_First_Item(GetTrainingCourseProviderResult source, GetAchievementRateItem item)
         {
-            item.SectorSubjectArea = sectorSubjectArea;
             item.Level = "Two";
             source.ProviderStandard.AchievementRates = new List<GetAchievementRateItem>
             {
-                item,
-                item2
+                item
             };
-            item3.SectorSubjectArea = sectorSubjectArea;
-            item3.Level = "Two";
+            var response = new GetProviderCourseItem().Map(source, 2, true);
+
+            using (new AssertionScope())
+            {
+                response.OverallCohort.Should().Be(item.OverallCohort);
+                response.OverallAchievementRate.Should().Be(item.OverallAchievementRate);
+            }
+        }
+
+        [Test, AutoData]
+        public void Then_Maps_National_AchievementRates_Mapping_With_Level(GetTrainingCourseProviderResult source, GetAchievementRateItem item2, GetAchievementRateItem expected)
+        {
+            expected.Level = "Two";
             source.OverallAchievementRates = new List<GetAchievementRateItem>
             {
                 item2,
-                item3
+                expected
             };
-            
-            var response = new GetProviderCourseItem().Map(source, sectorSubjectArea,2, true);
 
-            response.Name.Should().Be(source.ProviderStandard.Name);
-            response.TradingName.Should().Be(source.ProviderStandard.TradingName);
-            response.ProviderId.Should().Be(source.ProviderStandard.Ukprn);
-            response.OverallCohort.Should().Be(item.OverallCohort);
-            response.NationalOverallCohort.Should().Be(item3.OverallCohort);
-            response.OverallAchievementRate.Should().Be(item.OverallAchievementRate);
-            response.NationalOverallAchievementRate.Should().Be(item3.OverallAchievementRate);
+            var response = new GetProviderCourseItem().Map(source, 2, true);
 
-        }
-        
-        [Test, AutoData]
-        public void Then_Maps_Fields_Appropriately_Returning_Null_For_AchievementRate_Data_If_No_Matching_No_AchievementRates(string sectorSubjectArea,
-            GetTrainingCourseProviderResult source, GetAchievementRateItem item, GetAchievementRateItem item2)
-        {
-            source.ProviderStandard.AchievementRates = new List<GetAchievementRateItem>
+            using (new AssertionScope())
             {
-                item,
-                item2
-            };
+                response.NationalOverallCohort.Should().Be(expected.OverallCohort);
+                response.NationalOverallAchievementRate.Should().Be(expected.OverallAchievementRate);
+            }
+        }
+
+        [Test, AutoData]
+        public void Then_Maps_Fields_Appropriately_Returning_Null_For_AchievementRate_Data_If_No_AchievementRates(GetTrainingCourseProviderResult source, GetAchievementRateItem item, GetAchievementRateItem item2)
+        {
+            source.ProviderStandard.AchievementRates = new List<GetAchievementRateItem>();
+
             source.OverallAchievementRates = new List<GetAchievementRateItem>
             {
                 item,
                 item2
             };
-            
-            var response = new GetProviderCourseItem().Map(source, sectorSubjectArea, 1, true);
+
+            var response = new GetProviderCourseItem().Map(source, 1, true);
 
             response.Name.Should().Be(source.ProviderStandard.Name);
             response.TradingName.Should().Be(source.ProviderStandard.TradingName);

@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -88,7 +87,6 @@ namespace SFA.DAS.LevyTransferMatching.Api
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions
                 (
                     options=>
@@ -104,7 +102,7 @@ namespace SFA.DAS.LevyTransferMatching.Api
                         .AddCheck<LevyTransferMatchingApiHealthCheck>("Levy Transfer Matching Api Health Check");
             }
 
-            services.AddMediatR(typeof(IAccountsService));
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(IAccountsService).Assembly));
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
             

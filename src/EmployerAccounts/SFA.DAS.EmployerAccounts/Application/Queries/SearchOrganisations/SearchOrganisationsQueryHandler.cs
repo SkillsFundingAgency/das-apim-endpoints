@@ -31,7 +31,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
 
         public async Task<SearchOrganisationsResult> Handle(SearchOrganisationsQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Searching for Organisation with searchTerm: {request.SearchTerm}");
+            _logger.LogInformation("Searching for Organisation with searchTerm: {SearchTerm}", request.SearchTerm);
 
             var refApiOrganisationsTask = _refDataApi.Get<GetSearchOrganisationsResponse>(new GetSearchOrganisationsRequest(request.SearchTerm, request.MaximumResults));
             var educationalOrganisationsTask = _eduOrgApi.Get<EducationalOrganisationResponse>(new SearchEducationalOrganisationsRequest(request.SearchTerm, request.MaximumResults));

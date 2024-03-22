@@ -34,7 +34,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.CreatePled
 
             var result = await createPledgeHandler.Handle(createPledgeCommand, CancellationToken.None);
 
-            Assert.AreEqual(result.PledgeId, response.Id);
+            Assert.That(result.PledgeId, Is.EqualTo(response.Id));
         }
 
         [Test, MoqAutoData]

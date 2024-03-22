@@ -71,17 +71,17 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.Transfers.GetFin
 
             var results = await getFinancialBreakdownHandler.Handle(getFinancialBreakdownQuery, CancellationToken.None);
 
-            Assert.AreEqual(getPledgesResponse.Pledges.Where(p => p.Status != PledgeStatus.Closed).Sum(x => x.Amount), results.AmountPledged);
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.ProjectionStartDate, results.ProjectionStartDate);
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.TransferConnections), results.TransferConnections);
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications), results.AcceptedPledgeApplications);
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications), results.ApprovedPledgeApplications);
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments), results.PledgeOriginatedCommitments);
-            Assert.AreEqual(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.Commitments), results.Commitments);            
-            Assert.AreEqual((getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
+            Assert.That(getPledgesResponse.Pledges.Where(p => p.Status != PledgeStatus.Closed).Sum(x => x.Amount), Is.EqualTo(results.AmountPledged));
+            Assert.That(getTransferFinancialBreakdownResponse.ProjectionStartDate, Is.EqualTo(results.ProjectionStartDate));
+            Assert.That(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.TransferConnections), Is.EqualTo(results.TransferConnections));
+            Assert.That(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications), Is.EqualTo(results.AcceptedPledgeApplications));
+            Assert.That(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications), Is.EqualTo(results.ApprovedPledgeApplications));
+            Assert.That(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments), Is.EqualTo(results.PledgeOriginatedCommitments));
+            Assert.That(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.Commitments), Is.EqualTo(results.Commitments));            
+            Assert.That((getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
                 getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) 
                 + getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments)
-                + getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.TransferConnections)), results.CurrentYearEstimatedCommittedSpend);
+                + getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.TransferConnections)), Is.EqualTo(results.CurrentYearEstimatedCommittedSpend));
         }
     }
 }

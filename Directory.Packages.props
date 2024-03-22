@@ -5,115 +5,79 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="AngleSharp" Version="0.17.1" />
-    <PackageVersion Include="AutoFixture" Version="4.17.0" />
-    <PackageVersion Include="AutoFixture.AutoMoq" Version="4.15.0" />
-    <PackageVersion Include="AutoFixture.NUnit3" Version="4.8.0" />
+    <PackageVersion Include="AutoFixture" Version="4.18.1" />
+    <PackageVersion Include="AutoFixture.AutoMoq" Version="4.18.1" />
+    <PackageVersion Include="AutoFixture.NUnit3" Version="4.18.1" />
     <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
-    <PackageVersion Include="CompareNETObjects" Version="4.77.0" />
-    <PackageVersion Include="coverlet.collector" Version="3.1.2" />
-    <PackageVersion Include="coverlet.msbuild" Version="3.1.2" />
+	<PackageVersion Include="Azure.Identity" Version="1.10.4" />
+    <PackageVersion Include="CompareNETObjects" Version="4.83.0" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.1" />
+    <PackageVersion Include="coverlet.msbuild" Version="6.0.1" />
     <PackageVersion Include="CsvHelper" Version="28.0.1" />
-    <PackageVersion Include="Faker.Net" Version="2.0.154" />
-    <PackageVersion Include="FluentValidation" Version="10.0.4" />
+    <PackageVersion Include="Faker.Net" Version="2.0.163" />
+    <PackageVersion Include="FluentValidation" Version="11.9.0" />
     <PackageVersion Include="Google.Protobuf" Version="3.15.0" />
-    <PackageVersion Include="MediatR" Version="9.0.0" />
-    <PackageVersion Include="MediatR.Extensions.FluentValidation.AspNetCore" Version="1.2.0" />
-    <PackageVersion Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
+    <PackageVersion Include="MediatR" Version="12.2.0" />
+    <PackageVersion Include="MediatR.Extensions.FluentValidation.AspNetCore" Version="5.1.0" />
+	<PackageVersion Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="12.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.Abstractions" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
     <PackageVersion Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.JsonPatch" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.JsonPatch" Version="8.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-    <PackageVersion Include="Microsoft.AspNetCore.Server.Kestrel.Core" Version="2.1.7" />
-    <PackageVersion Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
-    <PackageVersion Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.21.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Server.Kestrel.Core" Version="2.2.0" />
+    <PackageVersion Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
+    <PackageVersion Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.22.0" />
     <PackageVersion Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.2" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="2.2.0" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="2.2.0" />
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.0" />
-    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="2.2.0" />
-    <PackageVersion Include="Moq" Version="4.7.0" />
-    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageVersion Include="NLog.Web.AspNetCore" Version="4.8.0" />
-    <PackageVersion Include="NUnit" Version="3.12.0" />
-    <PackageVersion Include="NUnit3TestAdapter" Version="3.15.1" />
-    <PackageVersion Include="NUnit.Analyzers" Version="3.3.0" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="8.0.2" />
+	<PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.3.1" />
+    <PackageVersion Include="Moq" Version="4.20.70" />
+	<PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="NLog.Web.AspNetCore" Version="5.3.8" />
+    <PackageVersion Include="NUnit" Version="4.0.1" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="4.5.0" />
+    <PackageVersion Include="NUnit.Analyzers" Version="4.0.1" />
     <PackageVersion Include="RestEase" Version="1.6.4" />
     <PackageVersion Include="RestEase.HttpClientFactory" Version="1.6.4" />
     <PackageVersion Include="Scrutor" Version="3.3.0" />
-    <PackageVersion Include="SFA.DAS.Api.Common" Version="1.0.19" />
+    <PackageVersion Include="SFA.DAS.Api.Common" Version="17.1.88" />
     <PackageVersion Include="SFA.DAS.Common.Domain" Version="1.4.283" />
     <PackageVersion Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
     <PackageVersion Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
     <PackageVersion Include="SFA.DAS.Notifications.Messages" Version="3.0.0" />
     <PackageVersion Include="SFA.DAS.Telemetry" Version="17.1.70" />
-    <PackageVersion Include="SFA.DAS.Testing" Version="3.0.106" />
-    <PackageVersion Include="SFA.DAS.Testing.AutoFixture" Version="3.0.106" />
-    <PackageVersion Include="SpecFlow" Version="3.5.14" />
-    <PackageVersion Include="SpecFlow.Plus.LivingDocPlugin" Version="3.5.286" />
-    <PackageVersion Include="SpecFlow.NUnit" Version="3.5.14" />
-    <PackageVersion Include="SpecFlow.Tools.MsBuild.Generation" Version="3.5.14" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageVersion Include="SFA.DAS.Testing" Version="3.0.169" />
+    <PackageVersion Include="SFA.DAS.Testing.AutoFixture" Version="3.0.169" />
+    <PackageVersion Include="SpecFlow" Version="3.9.74" />
+    <PackageVersion Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
+    <PackageVersion Include="SpecFlow.NUnit" Version="3.9.74" />
+    <PackageVersion Include="SpecFlow.Tools.MsBuild.Generation" Version="3.9.74" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageVersion Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-    <PackageVersion Include="System.Drawing.Common">
-      <Version>4.7.2</Version>
-    </PackageVersion>
-    <PackageVersion Include="System.Net.Http">
-      <Version>4.3.4</Version>
-    </PackageVersion>
+    <PackageVersion Include="System.Drawing.Common" Version="8.0.2" />
+    <PackageVersion Include="System.Net.Http" Version="4.3.4" />
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="4.7.1" />
     <PackageVersion Include="System.Net.Security" Version="4.3.1" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageVersion Include="WireMock.Net" Version="1.5.6" />
-    <PackageVersion Include="WireMock.Net.FluentAssertions" Version="1.5.6" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
-    <PackageVersion Include="FluentAssertions" Version="6.7.0" />
+    <PackageVersion Include="WireMock.Net" Version="1.5.48" />
+    <PackageVersion Include="WireMock.Net.FluentAssertions" Version="1.5.48" />
+    <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="FluentAssertions.Web" Version="1.2.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.JsonPatch" Version="8.0.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageVersion Include="SFA.DAS.NServiceBus" Version="17.0.49" />
     <PackageVersion Include="System.Text.Encodings.Web" Version="8.0.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="8.0.0" />
-    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.3.1" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <PackageVersion Include="FluentAssertions" Version="6.7.0" />
-    <PackageVersion Include="FluentAssertions.Web" Version="1.2.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.8" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.8" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="6.0.0" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
-    <PackageVersion Include="SFA.DAS.NServiceBus" Version="17.0.49" />
-    <PackageVersion Include="System.Text.Encodings.Web" Version="6.0.0" />
-    <PackageVersion Include="System.Net.Http.Json" Version="6.0.0" />
-    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-    <PackageVersion Include="FluentAssertions" Version="5.10.3" />
-    <PackageVersion Include="FluentAssertions.Web" Version="1.0.138" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.20" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.20" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.20" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="3.1.20" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="3.1.20" />
-    <PackageVersion Include="Microsoft.Extensions.Options" Version="3.1.20" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
-    <PackageVersion Include="SFA.DAS.NServiceBus" Version="17.0.6" />
-    <PackageVersion Include="System.Text.Encodings.Web" Version="4.7.2" />
-    <PackageVersion Include="System.Net.Http.Json" Version="3.2.1" />
-    <PackageVersion Include="System.Drawing.Common" Version="4.7.3" />
-    <PackageVersion Include="System.Net.Http" Version="4.3.4" />
-    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
   </ItemGroup>
 </Project>

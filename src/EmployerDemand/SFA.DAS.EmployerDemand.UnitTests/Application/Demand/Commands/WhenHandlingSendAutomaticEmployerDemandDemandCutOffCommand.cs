@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -12,6 +13,7 @@ using SFA.DAS.EmployerDemand.InnerApi.Responses;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
@@ -31,6 +33,15 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Commands
                     x.Get<GetEmployerDemandResponse>(It.Is<GetEmployerDemandRequest>(c =>
                         c.GetUrl.Contains(command.EmployerDemandId.ToString()))))
                 .ReturnsAsync(response);
+            employerDemandApiClient.Setup(
+                x => x.PostWithResponseCode<object>(It.Is<PostEmployerDemandNotificationAuditRequest>(c =>
+                    c.PostUrl.Contains($"{command.EmployerDemandId}/notification-audit/{command.Id}?notificationType={(short)NotificationType.StoppedAutomaticCutOff}")),true)).ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.Accepted,""));
+            employerDemandApiClient.Setup(
+                x => x.PatchWithResponseCode(It.Is<PatchCourseDemandRequest>(c =>
+                    c.PatchUrl.Contains($"api/demand/{command.EmployerDemandId}") 
+                    && c.Data.FirstOrDefault().Path.Equals("Stopped")
+                    && c.Data.FirstOrDefault().Value.Equals(true)
+                ))).ReturnsAsync(new ApiResponse<string>(null, HttpStatusCode.Accepted,""));
             SendEmailCommand actualEmail = null;
             notificationService
                 .Setup(service => service.Send(It.IsAny<SendEmailCommand>()))

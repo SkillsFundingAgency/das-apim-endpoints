@@ -43,7 +43,7 @@ public static class Startup
             services.AddAuthentication(azureAdConfiguration, policies);
         }
 
-        services.AddMediatR(typeof(GetTrainingCoursesQuery).Assembly);
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetTrainingCoursesQuery).Assembly));
         services.AddServiceRegistration();
 
         services.Configure<RouteOptions>(options =>

@@ -28,7 +28,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.LevyTransf
 
             var actual = await levyTransferMatchingService.CreatePledge(pledge);
 
-            Assert.AreEqual(actual.Id, response.Id);
+            Assert.That(actual.Id, Is.EqualTo(response.Id));
         }
     }
 }

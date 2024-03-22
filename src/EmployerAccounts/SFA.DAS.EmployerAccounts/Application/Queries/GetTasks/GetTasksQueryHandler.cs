@@ -46,7 +46,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
 
         public async Task<GetTasksQueryResult> Handle(GetTasksQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"Getting Tasks for account {request.AccountId}");
+            _logger.LogInformation("Getting Tasks for account {AccountId}", request.AccountId);
 
             var accountTask = _accountsApi.Get<GetAccountByIdResponse>(new GetAccountByIdRequest(request.AccountId));
             var pledgeApplicationsToReviewTask = _ltmApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
@@ -85,7 +85,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks
             {
                 NumberOfCohortsReadyToReview = cohortsToReview?.Count() ?? 0,
                 NumberTransferPledgeApplicationsToReview = pledgeApplicationsToReview?.TotalItems ?? 0,
-                NumberOfPendingTransferConnections = pendingTransferConnections?.Count() ?? 0,
+                NumberOfPendingTransferConnections = pendingTransferConnections?.Count ?? 0,
                 ShowLevyDeclarationTask = account?.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy && IsInDateRange(),
                 NumberOfTransferRequestToReview = pendingTransferRequestsRequestsToReview?.Count() ?? 0,
                 NumberOfApprenticesToReview = apprenticeChangesCount

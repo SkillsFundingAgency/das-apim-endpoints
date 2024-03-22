@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Commands
 {
-    public class CreateApprenticeshipFromRegistration : IRequestHandler<CreateApprenticeshipFromRegistration.Command>
+    public class CreateApprenticeshipFromRegistration : IRequestHandler<CreateApprenticeshipFromRegistration.Command, Unit>
     {
-        public class Command : IRequest
+        public class Command : IRequest<Unit>
         {
             public Guid RegistrationId { get; set; }
             public Guid ApprenticeId { get; set; }

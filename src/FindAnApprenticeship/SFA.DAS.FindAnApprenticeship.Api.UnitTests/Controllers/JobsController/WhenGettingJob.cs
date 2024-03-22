@@ -17,13 +17,31 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.JobsController
     public class WhenGettingJob
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Query_Response_Is_Returned(
+        public async Task Then_Mediator_Returns_Null_Response_So_NotFound_Is_Returned(
            Guid candidateId,
            Guid jobId,
            Guid applicationId,
-           GetJobQueryResult queryResult,
            [Frozen] Mock<IMediator> mediator,
            [Greedy] Api.Controllers.JobsController controller)
+        {
+            mediator.Setup(x => x.Send(It.Is<GetJobQuery>(q =>
+                        q.CandidateId == candidateId && q.ApplicationId == applicationId && q.JobId == jobId),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => null);
+
+            var actual = await controller.GetJob(applicationId, jobId, candidateId);
+
+            actual.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Query_Response_Is_Returned(
+            Guid candidateId,
+            Guid jobId,
+            Guid applicationId,
+            GetJobQueryResult queryResult,
+            [Frozen] Mock<IMediator> mediator,
+            [Greedy] Api.Controllers.JobsController controller)
         {
             mediator.Setup(x => x.Send(It.Is<GetJobQuery>(q =>
                         q.CandidateId == candidateId && q.ApplicationId == applicationId && q.JobId == jobId),

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
@@ -29,6 +30,8 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
         var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference));
         if(vacancy == null) return null;
 
+        var additionalQuestions = application.AdditionalQuestions.ToList();
+
         return new GetIndexQueryResult
         {
             VacancyReference = vacancy.VacancyReference,
@@ -51,9 +54,11 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
                 SkillsAndStrengths = application.SkillsAndStrengthStatus,
                 WhatInterestsYou = application.InterestsStatus,
                 AdditionalQuestion1 = application.AdditionalQuestion1Status,
-                AdditionalQuestion1Label = vacancy.AdditionalQuestion1,
+                AdditionalQuestion1Label = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(0) != null ? additionalQuestions[0].QuestionText : null,
+                AdditionalQuestion1Id = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(0) != null ? additionalQuestions[0].Id : null,
                 AdditionalQuestion2 = application.AdditionalQuestion2Status,
-                AdditionalQuestion2Label = vacancy.AdditionalQuestion2
+                AdditionalQuestion2Label = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(1) != null ? additionalQuestions[1].QuestionText : null,
+                AdditionalQuestion2Id = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(1) != null ? additionalQuestions[1].Id : null
             },
             InterviewAdjustments = new GetIndexQueryResult.InterviewAdjustmentsSection
             {

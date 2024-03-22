@@ -4,6 +4,6 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetLatestDetails
 {
     public class GetLatestDetailsResult
     {
-        public Organisation OrganisationDetail { get; set; }
+        public OrganisationResult OrganisationDetail { get; set; }
     }
 }

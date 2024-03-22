@@ -3,7 +3,7 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests.ApprenticeshipDetails;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.SaveApprenticeshipDetails
 {
-    public class SaveApprenticeshipDetailsCommand : IRequest
+    public class SaveApprenticeshipDetailsCommand : IRequest<Unit>
     {
         public ApprenticeshipDetailsRequest ApprenticeshipDetailsRequest { get; }
 

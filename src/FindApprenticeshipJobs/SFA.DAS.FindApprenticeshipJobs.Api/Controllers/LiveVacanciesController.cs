@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindApprenticeshipJobs.Api.Models;
@@ -32,7 +32,7 @@ public class LiveVacanciesController : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            _logger.LogError(ex, "Error invoking Get Live Vacancies");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -51,7 +51,7 @@ public class LiveVacanciesController : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            _logger.LogError(ex, "Error invoking Get Live Vacancy");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }

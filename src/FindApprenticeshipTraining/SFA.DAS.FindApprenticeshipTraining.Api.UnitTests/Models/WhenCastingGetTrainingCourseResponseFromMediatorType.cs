@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
@@ -26,6 +25,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 .Excluding(tc => tc.IsActive)
                 .Excluding(tc => tc.LarsCode)
                 .Excluding(tc => tc.StandardUId)
+                .Excluding(tc => tc.SectorSubjectAreaTier1)
             );
 
             response.Id.Should().Be(source.LarsCode);
@@ -37,11 +37,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         {
             source.TypicalJobTitles = "B|Z|A|V";
 
-            var expected = new List<string> {"A", "B", "V", "Z"};
+            var expected = new List<string> { "A", "B", "V", "Z" };
 
-            var response = (GetTrainingCourseListItem) source;
+            var response = (GetTrainingCourseListItem)source;
 
-            Assert.AreEqual(response.TypicalJobTitles, expected);
+            Assert.That(response.TypicalJobTitles, Is.EqualTo(expected));
         }
 
         [Test, AutoData]
@@ -50,7 +50,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         {
             source.CoreAndOptions = true;
 
-            var response = (GetTrainingCourseListItem) source;
+            var response = (GetTrainingCourseListItem)source;
 
             response.CoreSkills.Should().BeEquivalentTo(source.CoreDuties);
         }

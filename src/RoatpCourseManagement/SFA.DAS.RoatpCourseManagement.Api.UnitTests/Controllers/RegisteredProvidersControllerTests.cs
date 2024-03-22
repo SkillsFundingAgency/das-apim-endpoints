@@ -38,8 +38,8 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
 
             var okResult = response as OkObjectResult;
             var actualResponse = okResult.Value;
-            Assert.AreSame(apiResponse.Body, actualResponse);
-            Assert.AreEqual((int)HttpStatusCode.OK, statusCodeResult.StatusCode.GetValueOrDefault());
+            Assert.That(apiResponse.Body, Is.SameAs(actualResponse));
+            Assert.That((int)HttpStatusCode.OK, Is.EqualTo(statusCodeResult.StatusCode.GetValueOrDefault()));
         }
 
         [TestCase(HttpStatusCode.BadRequest)]
@@ -68,8 +68,8 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
 
             var statusCodeResult = response as IStatusCodeActionResult;
 
-            Assert.AreEqual((int)statusCode, statusCodeResult.StatusCode.GetValueOrDefault());
-            Assert.AreEqual(errorMessage, ((ObjectResult)statusCodeResult).Value);
+            Assert.That((int)statusCode, Is.EqualTo(statusCodeResult.StatusCode.GetValueOrDefault()));
+            Assert.That(errorMessage, Is.EqualTo(((ObjectResult)statusCodeResult).Value));
         }
     }
 }

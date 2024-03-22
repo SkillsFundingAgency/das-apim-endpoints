@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Threading;

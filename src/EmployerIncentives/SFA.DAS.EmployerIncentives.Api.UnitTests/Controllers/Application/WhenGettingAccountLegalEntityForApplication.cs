@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Api.Controllers;
-using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApplicationAccountLegalEntity;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -35,7 +34,7 @@ namespace SFA.DAS.EmployerIncentives.Api.UnitTests.Controllers.EligibleApprentic
 
             var controllerResult = await controller.GetApplicationAccountLegalEntity(accountId, applicationId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             controllerResult.Value.Should().Be(mediatorResult);
         }

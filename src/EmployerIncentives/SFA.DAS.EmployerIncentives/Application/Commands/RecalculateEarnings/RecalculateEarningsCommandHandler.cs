@@ -5,7 +5,7 @@ using SFA.DAS.EmployerIncentives.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Application.Commands.RecalculateEarnings
 {
-    public class RecalculateEarningsCommandHandler :  IRequestHandler<RecalculateEarningsCommand>
+    public class RecalculateEarningsCommandHandler :  IRequestHandler<RecalculateEarningsCommand, Unit>
     {
         private readonly IEmployerIncentivesService _service;
 

@@ -2,26 +2,25 @@
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 
-namespace SFA.DAS.RoatpProviderModeration.OuterApi.AppStart
+namespace SFA.DAS.RoatpProviderModeration.Api.AppStart;
+
+public static class AuthenticationServiceExtension
 {
-    public static class AuthenticationServiceExtension
+    public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfigurationRoot configuration)
     {
-        public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfigurationRoot configuration)
+        if (!configuration.IsLocalOrDev())
         {
-            if (!configuration.IsLocalOrDev())
+            var azureAdConfiguration = configuration
+                .GetSection("AzureAd")
+                .Get<AzureActiveDirectoryConfiguration>();
+            var policies = new Dictionary<string, string>
             {
-                var azureAdConfiguration = configuration
-                    .GetSection("AzureAd")
-                    .Get<AzureActiveDirectoryConfiguration>();
-                var policies = new Dictionary<string, string>
-                {
-                    {"default", "APIM"}
-                };
+                {"default", "APIM"}
+            };
 
-                services.AddAuthentication(azureAdConfiguration, policies);
-            }
-
-            return services;
+            services.AddAuthentication(azureAdConfiguration, policies);
         }
+
+        return services;
     }
 }

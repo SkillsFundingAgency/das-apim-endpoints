@@ -32,10 +32,10 @@ namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.Providers
 
             var controllerResult = await controller.GetAccountProjectionSummary(accountId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetAccountProjectionSummaryResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo(mediatorResult);
         }
 
