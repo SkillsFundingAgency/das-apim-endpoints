@@ -12,7 +12,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         {
             var actual = new IdentifiableOrganisationTypesRequest();
 
-            var expected = "api/organisations/IdentifiableOrganisationTypes";
+            var expected = "api/EducationalOrganisations/IdentifiableOrganisationTypes";
 
             actual.GetUrl.Should().Be(expected);
         }

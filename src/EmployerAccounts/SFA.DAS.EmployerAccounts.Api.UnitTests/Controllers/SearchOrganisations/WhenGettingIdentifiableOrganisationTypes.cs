@@ -10,7 +10,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Api.Controllers;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetIdentifiableOrganisationTypes;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.SearchOrganisations
@@ -34,7 +33,7 @@ namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.SearchOrganisations
             controllerResult.Should().NotBeNull();
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as OrganisationType[];
+            var model = controllerResult.Value as string[];
 
             model.Should().NotBeNull();
             model.Should().BeEquivalentTo(mediatorResult.OrganisationTypes);
