@@ -15,5 +15,7 @@ public class WhenMappingFromQueryToGetQualificationReferenceTypeApiResponse
         var actual = (GetQualificationReferenceTypeApiResponse)source;
 
         actual.QualificationType.Should().BeEquivalentTo(source.QualificationType);
+        actual.Qualifications.Should().BeEquivalentTo(source.Qualifications);
+        actual.Courses.Should().BeEquivalentTo(source.Courses);
     }
 }
