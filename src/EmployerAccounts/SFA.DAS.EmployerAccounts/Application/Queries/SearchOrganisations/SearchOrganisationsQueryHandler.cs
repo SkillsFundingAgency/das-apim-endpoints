@@ -45,7 +45,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
             return result;
         }
 
-        private SearchOrganisationsResult AggregateOrganisations(EducationalOrganisationResponse educationalOrganisations, GetSearchOrganisationsResponse refApiOrganisations)
+        private static SearchOrganisationsResult AggregateOrganisations(EducationalOrganisationResponse educationalOrganisations, GetSearchOrganisationsResponse refApiOrganisations)
         {
             var eduOrgCodes = educationalOrganisations.EducationalOrganisations.Select(org => org.URN).ToList();
             var filteredRefApiOrganisations = refApiOrganisations?.Where(org => !eduOrgCodes.Contains(org.Code)).ToList();
@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations
             SearchOrganisationsResult organisations = educationalOrganisations;
 
             organisations.Organisations.AddRange(filteredRefApiOrganisations.Select(x =>
-                new Models.Organisation
+                new Models.OrganisationResult
                 {
                     Name = x.Name,
                     Type = x.Type,
