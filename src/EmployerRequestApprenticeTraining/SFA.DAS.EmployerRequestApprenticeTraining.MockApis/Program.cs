@@ -1,20 +1,22 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using WireMock.Server;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.MockApis
 {
-    public class Program
+    [ExcludeFromCodeCoverage]
+    public static class Program
     {
         private const int PortAssessorApi = 59023;
         
-        private static WireMockServer _fakeAssessorApi;
+        private static WireMockServer _fakeRatApi;
         
         static void Main(string[] args)
         {
             if (args.Contains("--h"))
             {
-                Console.WriteLine("Optional parameters (!assessor) will exclude that fake API");
+                Console.WriteLine("Optional parameters (!rat) will exclude that fake API");
                 Console.WriteLine("examples:");
                 Console.WriteLine("SFA.DAS.EmployerRequestApprenticeTraining.MockApis --h                 <-- shows this page");
                 Console.WriteLine("SFA.DAS.EmployerRequestApprenticeTraining.MockApis !assessor           <-- excludes fake assessor api");
@@ -28,11 +30,10 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.MockApis
 
             try
             {
-                if (!args.Contains("!assessor", StringComparer.CurrentCultureIgnoreCase))
+                if (!args.Contains("!rat", StringComparer.CurrentCultureIgnoreCase))
                 {
-                    _fakeAssessorApi = AssessorInnerApiBuilder.Create(PortAssessorApi)
+                    _fakeRatApi = RequestApprenticeTrainingInnerApiBuilder.Create(PortAssessorApi)
                         .WithPing()
-                        .WithLearner()
                         .Build();
                 }
 
@@ -41,8 +42,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.MockApis
             }
             finally
             {
-                _fakeAssessorApi?.Stop();
-                _fakeAssessorApi?.Dispose();
+                _fakeRatApi?.Stop();
+                _fakeRatApi?.Dispose();
             }
         }
     }
