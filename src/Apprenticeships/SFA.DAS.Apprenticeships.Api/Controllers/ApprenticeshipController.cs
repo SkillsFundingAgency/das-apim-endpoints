@@ -69,7 +69,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         public async Task<ActionResult> CreateApprenticeshipPriceChange(Guid apprenticeshipKey,
             [FromBody] CreateApprenticeshipPriceChangeRequest request)
         {
-            var response = await _apiClient.PostWithResponseCode<object>(new PostCreateApprenticeshipPriceChangeRequest(
+            var response = await _apiClient.PostWithResponseCode<PostCreateApprenticeshipPriceChangeApiResponse>(new PostCreateApprenticeshipPriceChangeRequest(
             apprenticeshipKey,
             request.Initiator,
 				    request.UserId,
@@ -77,11 +77,11 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
 				    request.AssessmentPrice,
 				    request.TotalPrice,
 				    request.Reason,
-				    request.EffectiveFromDate), false);
+				    request.EffectiveFromDate));
 
 			      if (string.IsNullOrEmpty(response.ErrorContent))
 			      {
-				        return Ok();
+				        return Ok(new PostCreateApprenticeshipPriceChangeResponse(response.Body.PriceChangeStatus));
 			      }
                
             _logger.LogError($"Error attempting to create apprenticeship price change. {response.StatusCode} returned from inner api.", response.StatusCode);
