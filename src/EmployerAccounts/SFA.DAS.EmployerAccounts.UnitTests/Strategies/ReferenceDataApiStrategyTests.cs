@@ -62,7 +62,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Strategies
             // Act
             Func<Task> act = async () => await strategy.GetOrganisationDetails(identifier, organisationType);
 
-            act.Should().Throw<InvalidGetOrganisationException>();
+            act.Should().ThrowAsync<InvalidGetOrganisationException>();
         }
 
 
@@ -86,7 +86,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Strategies
             // Act
             Func<Task> act = async () => await strategy.GetOrganisationDetails(identifier, organisationType);
 
-            act.Should().Throw<OrganisationNotFoundException>();
+            act.Should().ThrowAsync<OrganisationNotFoundException>();
         }
     }
 }
