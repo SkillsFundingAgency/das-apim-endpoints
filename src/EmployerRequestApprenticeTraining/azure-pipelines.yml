@@ -47,4 +47,5 @@ stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
     OuterApiName: EmployerRequestApprenticeTraining
-    IncludeEmployerGovUKAuth: true
+    AdditionalProjectPathToInclude: src/Shared/SFA.DAS.SharedOuterApi/SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj
+    AdditionalTestProjectPathToInclude: src/Shared/SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.UnitTests/SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.UnitTests.csproj
