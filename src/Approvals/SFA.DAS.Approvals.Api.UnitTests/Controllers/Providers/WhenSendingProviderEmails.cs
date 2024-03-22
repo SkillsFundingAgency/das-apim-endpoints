@@ -31,7 +31,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
 
             var controllerResult = await controller.EmailUsers(ukprn, request) as StatusCodeResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             mockMediator.Verify(x=>x.Send(It.Is<ProviderEmailCommand>(p=>p.ProviderId == ukprn), It.IsAny<CancellationToken>()));
         }
@@ -50,7 +50,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Providers
 
             var controllerResult = await controller.EmailUsers(ukprn, request) as StatusCodeResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
             mockMediator.Verify(x => x.Send(It.Is<ProviderEmailCommand>(p => p.ProviderId == ukprn), It.IsAny<CancellationToken>()));
         }

@@ -24,7 +24,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.ProviderUsers.Commands
             var response = new ApiResponse<object>(null, System.Net.HttpStatusCode.OK, string.Empty);
             apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostSendProviderEmailsRequest>(), false)).ReturnsAsync(response);
             var actual = await handler.Handle(request, CancellationToken.None);
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             apiClient.Verify(x=>x.PostWithResponseCode<object>( It.Is<PostSendProviderEmailsRequest>(r=>r.ProviderId == request.ProviderId && ((ProviderEmailRequest)r.Data) == request.ProviderEmailRequest), false)); 
         }
     }

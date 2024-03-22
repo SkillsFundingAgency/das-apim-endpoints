@@ -8,7 +8,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.ProviderUsers.Commands
 {
-    public class ProviderEmailCommandHandler : IRequestHandler<ProviderEmailCommand>
+    public class ProviderEmailCommandHandler : IRequestHandler<ProviderEmailCommand, Unit>
     {
         private readonly IProviderAccountApiClient<ProviderAccountApiConfiguration> _providerAccountApiClient;
 
