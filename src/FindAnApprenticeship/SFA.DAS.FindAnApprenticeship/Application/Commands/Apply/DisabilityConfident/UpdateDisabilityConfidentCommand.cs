@@ -31,7 +31,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DisabilityConf
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK) return;
 
-            logger.LogError($"Unable to patch application for candidate Id {request.CandidateId}");
+            logger.LogError("Unable to patch application for candidate Id {CandidateId}", request.CandidateId);
             throw new HttpRequestContentException(
                 $"Unable to patch application for candidate Id {request.CandidateId}", response.StatusCode,
                 response.ErrorContent);

@@ -12,6 +12,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationDi
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationTrainingCourses;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationVolunteeringAndWorkHistory;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
+using SFA.DAS.FindAnApprenticeship.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -134,7 +135,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             {
                 ApplicationId = applicationId,
                 CandidateId = candidateId,
-                DisabilityConfidenceStatus = request.DisabilityConfidenceModelSectionStatus
+                DisabilityConfidenceStatus = request.IsSectionCompleted 
+                    ? SectionStatus.Completed 
+                    : SectionStatus.Incomplete
             }, cancellationToken);
 
             if (result.Application == null)
