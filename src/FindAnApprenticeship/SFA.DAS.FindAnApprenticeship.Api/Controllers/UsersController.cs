@@ -112,7 +112,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 
         [HttpPost]
         [Route("{candidateId}/select-address")]
-        public async Task<IActionResult> SelectAddress([FromRoute] string candidateId, [FromBody] CandidatesAddressModel model)
+        public async Task<IActionResult> SelectAddress([FromRoute] Guid candidateId, [FromBody] CandidatesAddressModel model)
         {
             try
             {
@@ -137,14 +137,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{govUkIdentifier}/enter-address")]
-        public async Task<IActionResult> EnterAddress([FromRoute] string govUkIdentifier, [FromBody] CandidatesManuallyEnteredAddressModel model)
+        [Route("{candidateId}/enter-address")]
+        public async Task<IActionResult> EnterAddress([FromRoute] Guid candidateId, [FromBody] CandidatesManuallyEnteredAddressModel model)
         {
             try
             {
                 var result = await _mediator.Send(new CreateManuallyEnteredAddressCommand
                 {
-                    GovUkIdentifier = govUkIdentifier,
+                    CandidateId = candidateId,
                     Email = model.Email,
                     AddressLine1 = model.AddressLine1,
                     AddressLine2 = model.AddressLine2,

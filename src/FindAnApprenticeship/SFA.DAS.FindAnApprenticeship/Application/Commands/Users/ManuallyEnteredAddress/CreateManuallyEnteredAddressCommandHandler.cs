@@ -11,14 +11,20 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.ManuallyEntere
 public class CreateManuallyEnteredAddressCommandHandler : IRequestHandler<CreateManuallyEnteredAddressCommand, Unit>
 {
     private readonly ICandidateApiClient<CandidateApiConfiguration> _candidateApiClient;
+    private readonly ILocationLookupService _locationLookupService;
 
-    public CreateManuallyEnteredAddressCommandHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
+    public CreateManuallyEnteredAddressCommandHandler(
+        ICandidateApiClient<CandidateApiConfiguration> candidateApiClient, 
+        ILocationLookupService locationLookupService)
     {
         _candidateApiClient = candidateApiClient;
+        _locationLookupService = locationLookupService;
     }
 
     public async Task<Unit> Handle(CreateManuallyEnteredAddressCommand request, CancellationToken cancellationToken)
     {
+        var geoPoint = await _locationLookupService.GetLocationInformation(request.Postcode, default, default);
+
         var postData = new PutCandidateAddressApiRequestData
         {
             Email = request.Email,
@@ -26,10 +32,12 @@ public class CreateManuallyEnteredAddressCommandHandler : IRequestHandler<Create
             AddressLine2 = request.AddressLine2,
             AddressLine3 = request.TownOrCity,
             AddressLine4 = request.County,
+            Latitude = geoPoint.GeoPoint[0],
+            Longitude = geoPoint.GeoPoint[1],
             Postcode = request.Postcode
         };
 
-        var postRequest = new PutCandidateAddressApiRequest(request.GovUkIdentifier, postData);
+        var postRequest = new PutCandidateAddressApiRequest(request.CandidateId, postData);
 
         var response = await _candidateApiClient.PutWithResponseCode<PostCandidateAddressApiResponse>(postRequest);
 

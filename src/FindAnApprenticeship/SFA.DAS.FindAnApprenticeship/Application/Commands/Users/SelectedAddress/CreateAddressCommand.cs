@@ -1,9 +1,10 @@
-﻿using MediatR;
+﻿using System;
+using MediatR;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Address;
 public class CreateAddressCommand : IRequest<Unit>
 {
-    public string CandidateId { get; set; }
+    public Guid CandidateId { get; set; }
     public string Email { get; set; }
     public string AddressLine1 { get; set; }
     public string AddressLine2 { get; set; }

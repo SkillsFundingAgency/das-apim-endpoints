@@ -17,10 +17,14 @@ public class WhenHandlingPostManuallyEnteredAddressCommand
     public async Task Then_The_Address_Record_Is_Created(
         CreateManuallyEnteredAddressCommand command,
         ApiResponse<PostCandidateAddressApiResponse> apiResponse,
+        LocationItem locationItem,
+        [Frozen] Mock<ILocationLookupService> locationLookupService,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         CreateManuallyEnteredAddressCommandHandler handler)
     {
-        var expectedRequest = new PutCandidateAddressApiRequest(command.GovUkIdentifier, new PutCandidateAddressApiRequestData());
+        var expectedRequest = new PutCandidateAddressApiRequest(command.CandidateId, new PutCandidateAddressApiRequestData());
+
+        locationLookupService.Setup(x => x.GetLocationInformation(command.Postcode, default, default, false)).ReturnsAsync(locationItem);
 
         candidateApiClient
             .Setup(client => client.PutWithResponseCode<PostCandidateAddressApiResponse>(
@@ -30,5 +34,6 @@ public class WhenHandlingPostManuallyEnteredAddressCommand
         var actual = await handler.Handle(command, CancellationToken.None);
 
         actual.Should().NotBeNull();
+        locationLookupService.Verify(x => x.GetLocationInformation(command.Postcode, default, default, false), Times.Once);
     }
 }

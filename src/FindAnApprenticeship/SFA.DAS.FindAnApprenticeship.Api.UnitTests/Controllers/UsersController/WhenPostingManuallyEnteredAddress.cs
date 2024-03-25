@@ -17,22 +17,22 @@ public class WhenPostingManuallyEnteredAddress
 {
     [Test, MoqAutoData]
     public async Task Then_Returns_Ok_Response(
-        string govUkIdentifier,
+        Guid candidateId,
         CandidatesManuallyEnteredAddressModel model,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.UsersController controller)
     {
-        var actual = await controller.EnterAddress(govUkIdentifier, model) as OkObjectResult;
+        var actual = await controller.EnterAddress(candidateId, model) as OkObjectResult;
 
         actual.Should().NotBeNull();
         actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
         mediator.Verify(x => x.Send(It.Is<CreateManuallyEnteredAddressCommand>(
-            c => c.GovUkIdentifier.Equals(govUkIdentifier)), It.IsAny<CancellationToken>()), Times.Once);
+            c => c.CandidateId.Equals(candidateId)), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test, MoqAutoData]
     public async Task Then_Throws_Exception(
-        string govUkIdentifier,
+        Guid candidateId,
         CandidatesManuallyEnteredAddressModel model,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.UsersController controller)
@@ -40,7 +40,7 @@ public class WhenPostingManuallyEnteredAddress
         mediator.Setup(x => x.Send(It.IsAny<CreateManuallyEnteredAddressCommand>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new InvalidOperationException());
 
-        var actual = await controller.EnterAddress(govUkIdentifier, model) as StatusCodeResult;
+        var actual = await controller.EnterAddress(candidateId, model) as StatusCodeResult;
 
         Assert.That(actual, Is.Not.Null);
         Assert.That(actual.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
