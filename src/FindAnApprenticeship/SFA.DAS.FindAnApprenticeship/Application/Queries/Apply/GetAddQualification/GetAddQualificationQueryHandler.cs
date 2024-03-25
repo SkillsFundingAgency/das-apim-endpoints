@@ -59,7 +59,7 @@ public class GetAddQualificationQueryHandler(ICandidateApiClient<CandidateApiCon
             courseList.AddRange(standards.Standards.Select(standard => 
                 new GetAddQualificationQueryResult.CourseResponse
                 {
-                    Id = standard.Id, 
+                    Id = standard.StandardUId, 
                     Title = standard.Title, 
                     IsStandard = true
                 }));

@@ -10,7 +10,4 @@ public class QualificationReference
 
     [JsonPropertyName("name")]
     public string Name { get; set; }
-
-    [JsonPropertyName("order")]
-    public int Order { get; set; }
 }

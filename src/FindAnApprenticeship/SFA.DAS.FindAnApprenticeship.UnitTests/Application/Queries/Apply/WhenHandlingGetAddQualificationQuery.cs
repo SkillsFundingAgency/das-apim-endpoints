@@ -116,7 +116,7 @@ public class WhenHandlingGetAddQualificationQuery
         expectedCourses.AddRange(standards.Standards.Select(standard => 
             new GetAddQualificationQueryResult.CourseResponse
             {
-                Id = standard.Id, 
+                Id = standard.StandardUId, 
                 Title = standard.Title, 
                 IsStandard = true
             }));
@@ -175,7 +175,7 @@ public class WhenHandlingGetAddQualificationQuery
         expectedCourses.AddRange(standards.Standards.Select(standard => 
             new GetAddQualificationQueryResult.CourseResponse
             {
-                Id = standard.Id, 
+                Id = standard.StandardUId, 
                 Title = standard.Title, 
                 IsStandard = true
             }));
