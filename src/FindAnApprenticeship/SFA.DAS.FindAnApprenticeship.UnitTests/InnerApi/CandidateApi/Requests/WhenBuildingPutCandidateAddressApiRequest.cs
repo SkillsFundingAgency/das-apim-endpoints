@@ -7,10 +7,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.InnerApi.CandidateApi.Requests;
 public class WhenBuildingPutCandidateAddressApiRequest
 {
     [Test, AutoData]
-    public void Then_The_Request_Url_Is_Correctly_Built(string govIdentifier)
+    public void Then_The_Request_Url_Is_Correctly_Built(string candidateId)
     {
-        var actual = new PutCandidateAddressApiRequest(govIdentifier, new PutCandidateAddressApiRequestData());
+        var actual = new PutCandidateAddressApiRequest(candidateId, new PutCandidateAddressApiRequestData());
 
-        actual.PutUrl.Should().Be($"api/addresses/{govIdentifier}");
+        actual.PutUrl.Should().Be($"api/candidates/{candidateId}/addresses");
     }
 }
