@@ -11,6 +11,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteQualificatio
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateApplicationQualification;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateQualifications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetAddQualification;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetDeleteQualification;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetDeleteQualifications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetQualificationTypes;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Qualifications;
@@ -137,18 +138,31 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet("delete/{qualificationReferenceId}")]
-        public async Task<IActionResult> GetDeleteQualifications([FromRoute] Guid applicationId, [FromRoute] Guid qualificationReferenceId, [FromQuery] Guid candidateId)
+        public async Task<IActionResult> GetDeleteQualifications([FromRoute] Guid applicationId, [FromRoute] Guid qualificationReferenceId, [FromQuery] Guid candidateId, [FromQuery] Guid? id)
         {
             try
             {
-                var result = await mediator.Send(new GetDeleteQualificationsQuery
+                if (id.HasValue)
+                {
+                    var singleQuery = await mediator.Send(new GetDeleteQualificationQuery
+                    {
+                        ApplicationId = applicationId,
+                        CandidateId = candidateId,
+                        QualificationReference = qualificationReferenceId,
+                        Id = id.Value
+                    });
+
+                    return Ok((GetDeleteQualificationsApiResponse)singleQuery);
+                }
+                
+                var multipleQuery = await mediator.Send(new GetDeleteQualificationsQuery
                 {
                     ApplicationId = applicationId,
                     CandidateId = candidateId,
                     QualificationReference = qualificationReferenceId
                 });
 
-                return Ok((GetDeleteQualificationsApiResponse)result);
+                return Ok((GetDeleteQualificationsApiResponse)multipleQuery);
             }
             catch (Exception e)
             {
@@ -164,7 +178,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             {
                 ApplicationId = applicationId,
                 CandidateId = request.CandidateId,
-                QualificationReferenceId = qualificationReferenceId
+                QualificationReferenceId = qualificationReferenceId,
+                Id = request.Id
             });
 
             return Ok();
