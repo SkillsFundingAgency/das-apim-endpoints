@@ -20,7 +20,7 @@ public class WhenHandlingPostCandidateAddressCommand
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         CreateAddressCommandHandler handler)
     {
-        var expectedRequest = new PutCandidateAddressApiRequest(command.GovUkIdentifier, new PutCandidateAddressApiRequestData());
+        var expectedRequest = new PutCandidateAddressApiRequest(command.CandidateId, new PutCandidateAddressApiRequestData());
 
         candidateApiClient
             .Setup(client => client.PutWithResponseCode<PostCandidateAddressApiResponse>(

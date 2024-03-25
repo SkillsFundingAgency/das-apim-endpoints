@@ -99,7 +99,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 var queryResponse = await _mediator.Send(new GetCandidateAddressesByPostcodeQuery(postcode));
 
                 if (queryResponse.AddressesResponse == null || !queryResponse.AddressesResponse.Addresses.Any())
-                    return NotFound();
+                    return Ok();
 
                 return Ok(queryResponse.AddressesResponse);
             }
@@ -111,14 +111,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{govUkIdentifier}/select-address")]
-        public async Task<IActionResult> SelectAddress([FromRoute] string govUkIdentifier, [FromBody] CandidatesAddressModel model)
+        [Route("{candidateId}/select-address")]
+        public async Task<IActionResult> SelectAddress([FromRoute] string candidateId, [FromBody] CandidatesAddressModel model)
         {
             try
             {
                 var result = await _mediator.Send(new CreateAddressCommand
                 {
-                    GovUkIdentifier = govUkIdentifier,
+                    CandidateId = candidateId,
                     Email = model.Email,
                     AddressLine1 = model.AddressLine1,
                     AddressLine2 = model.AddressLine2,

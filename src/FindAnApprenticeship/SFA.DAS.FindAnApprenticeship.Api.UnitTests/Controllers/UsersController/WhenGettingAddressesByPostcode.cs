@@ -46,7 +46,7 @@ public class WhenGettingAddressesByPostcode
     }
 
     [Test,MoqAutoData]
-    public async Task And_Api_Returns_No_Addresses_Return_Not_Found_Result(
+    public async Task And_Api_Returns_No_Addresses_Return_Empty_Ok_Result(
         string postcode,
         GetCandidateAddressesByPostcodeQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
@@ -60,6 +60,6 @@ public class WhenGettingAddressesByPostcode
 
         var actual = await controller.SelectAddress(postcode);
 
-        actual.Should().BeOfType<NotFoundResult>();
+        actual.Should().BeOfType<OkResult>();
     }
 }

@@ -27,7 +27,7 @@ public class WhenPostingSelectAddress
         actual.Should().NotBeNull();
         actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
         mediator.Verify(x => x.Send(It.Is<CreateAddressCommand>(
-            c => c.GovUkIdentifier.Equals(govUkIdentifier)), It.IsAny<CancellationToken>()), Times.Once);
+            c => c.CandidateId.Equals(govUkIdentifier)), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test, MoqAutoData]
