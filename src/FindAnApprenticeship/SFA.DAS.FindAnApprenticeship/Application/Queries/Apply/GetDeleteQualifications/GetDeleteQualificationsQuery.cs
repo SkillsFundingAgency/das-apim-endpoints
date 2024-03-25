@@ -1,7 +1,5 @@
 ﻿using MediatR;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Qualifications;
 using System;
-using SFA.DAS.FindAnApprenticeship.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetDeleteQualifications;
 
