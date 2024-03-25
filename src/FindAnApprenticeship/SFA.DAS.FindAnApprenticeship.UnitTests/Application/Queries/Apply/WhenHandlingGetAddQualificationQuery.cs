@@ -93,6 +93,10 @@ public class WhenHandlingGetAddQualificationQuery
         GetAddQualificationQueryHandler handler
     )
     {
+        cacheStorageService.Setup(x => x.RetrieveFromCache<GetStandardsApiResponse>(nameof(GetStandardsApiResponse)))
+            .ReturnsAsync((GetStandardsApiResponse)null);
+        cacheStorageService.Setup(x => x.RetrieveFromCache<GetFrameworksApiResponse>(nameof(GetFrameworksApiResponse)))
+            .ReturnsAsync((GetFrameworksApiResponse)null);
         apiResponse.QualificationReferences.Last().Name = "Apprenticeship";
         query.Id = apiResponseQualifications.Qualifications.FirstOrDefault()!.Id;
         query.QualificationReferenceTypeId = apiResponse.QualificationReferences.Last().Id;

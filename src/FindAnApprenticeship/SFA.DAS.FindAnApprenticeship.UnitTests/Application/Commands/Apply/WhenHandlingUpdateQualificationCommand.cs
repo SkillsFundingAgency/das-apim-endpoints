@@ -1,3 +1,4 @@
+using System.Net;
 using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
@@ -6,6 +7,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply;
@@ -19,6 +21,10 @@ public class WhenHandlingUpdateQualificationCommand
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         UpdateApplicationQualificationCommandHandler handler)
     {
+        candidateApiClient.Setup(x =>
+            x.PutWithResponseCode<PutApplicationQualificationApiResponse>(
+                It.IsAny<PutApplicationQualificationApiRequest>())).ReturnsAsync(
+            new ApiResponse<PutApplicationQualificationApiResponse>(null, HttpStatusCode.Accepted, ""));
         deleted.IsDeleted = true;
         command.Subjects.Add(deleted);
         
