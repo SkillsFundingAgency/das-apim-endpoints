@@ -1,20 +1,20 @@
 ﻿using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
 
-public class GetApplicationQueryResult
+public record GetApplicationQueryResult
 {
     public bool IsDisabilityConfident { get; set; }
+    public Candidate CandidateDetails { get; set; }
+    public AboutYouSection AboutYou { get; set; }
     public EducationHistorySection EducationHistory { get; set; }
     public WorkHistorySection WorkHistory { get; set; }
     public ApplicationQuestionsSection ApplicationQuestions { get; set; }
     public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
     public DisabilityConfidenceSection DisabilityConfidence { get; set; }
-
-
-    public Candidate CandidateDetails { get; set; }
-
+    public WhatIsYourInterestSection WhatIsYourInterest { get; set; }
 
 
     public record Candidate
@@ -53,34 +53,122 @@ public class GetApplicationQueryResult
         }
     }
 
-    public class EducationHistorySection
+    public record EducationHistorySection
     {
         public string QualificationsStatus { get; set; }
         public string TrainingCoursesStatus { get; set; }
+        public List<TrainingCourse> TrainingCourses { get; set; } = [];
+        public record TrainingCourse
+        {
+            public Guid Id { get; set; }
+            public Guid ApplicationId { get; set; }
+            public string CourseName { get; set; }
+            public int YearAchieved { get; set; }
+
+            public static implicit operator TrainingCourse(GetTrainingCoursesApiResponse.TrainingCourseItem source)
+            {
+                return new TrainingCourse
+                {
+                    ApplicationId = source.ApplicationId,
+                    Id = source.Id,
+                    CourseName = source.CourseName,
+                    YearAchieved = source.YearAchieved
+                };
+            }
+        }
     }
 
-    public class WorkHistorySection
+    public record WorkHistorySection
     {
         public string JobsStatus { get; set; }
         public string VolunteeringAndWorkExperienceStatus { get; set; }
+        public List<Job> Jobs { get; set; } = [];
+        public List<VolunteeringAndWorkExperience> VolunteeringAndWorkExperiences { get; set; } = [];
+        public record Job
+        {
+            public Guid Id { get; set; }
+            public string Employer { get; set; }
+            public string JobTitle { get; set; }
+            public DateTime StartDate { get; set; }
+            public DateTime? EndDate { get; set; }
+            public Guid ApplicationId { get; set; }
+            public string Description { get; set; }
+
+            public static implicit operator Job(GetWorkHistoriesApiResponse.WorkHistoryItem source)
+            {
+                return new Job
+                {
+                    ApplicationId = source.ApplicationId,
+                    Id = source.Id,
+                    Employer = source.Employer,
+                    JobTitle = source.JobTitle,
+                    StartDate = source.StartDate,
+                    EndDate = source.EndDate,
+                    Description = source.Description
+                };
+            }
+        }
+        public record VolunteeringAndWorkExperience
+        {
+            public Guid Id { get; set; }
+            public string Employer { get; set; }
+            public string JobTitle { get; set; }
+            public DateTime StartDate { get; set; }
+            public DateTime? EndDate { get; set; }
+            public Guid ApplicationId { get; set; }
+            public string Description { get; set; }
+
+            public static implicit operator VolunteeringAndWorkExperience(GetWorkHistoriesApiResponse.WorkHistoryItem source)
+            {
+                return new VolunteeringAndWorkExperience
+                {
+                    ApplicationId = source.ApplicationId,
+                    Id = source.Id,
+                    Employer = source.Employer,
+                    JobTitle = source.JobTitle,
+                    StartDate = source.StartDate,
+                    EndDate = source.EndDate,
+                    Description = source.Description
+                };
+            }
+        }
     }
 
-    public class ApplicationQuestionsSection
+    public record ApplicationQuestionsSection
     {
         public string SkillsAndStrengthsStatus { get; set; }
         public string WhatInterestsYouStatus { get; set; }
-        public string AdditionalQuestion1Status { get; set; }
-        public string AdditionalQuestion2Status { get; set; }
-        public Guid? AdditionalQuestion1Id { get; set; }
-        public Guid? AdditionalQuestion2Id { get; set; }
+        public Question? AdditionalQuestion1 { get; set; }
+        public Question? AdditionalQuestion2 { get; set; }
+
+        public record Question
+        {
+            public Guid Id { get; set; }
+            public string Status { get; set; }
+            public string QuestionLabel { get; set; }
+            public string Answer { get; set; }
+        }
     }
 
-    public class InterviewAdjustmentsSection
+    public record InterviewAdjustmentsSection
     {
         public string RequestAdjustmentsStatus { get; set; }
     }
-    public class DisabilityConfidenceSection
+    public record DisabilityConfidenceSection
     {
         public string InterviewUnderDisabilityConfidentStatus { get; set; }
+    }
+
+    public record WhatIsYourInterestSection
+    {
+        public string WhatIsYourInterest { get; set; }
+    }
+
+    public record AboutYouSection
+    {
+        public string SkillsAndStrengths { get; set; }
+        public string Improvements { get; set; }
+        public string HobbiesAndInterests { get; set; }
+        public string Support { get; set; }
     }
 }
