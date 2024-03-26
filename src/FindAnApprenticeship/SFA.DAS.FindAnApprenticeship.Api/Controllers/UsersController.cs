@@ -12,6 +12,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddressesByPo
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Address;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.ManuallyEnteredAddress;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.PhoneNumber;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -158,6 +159,28 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error posting candidate manually entered address details");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("{govUkIdentifier}/phone-number")]
+        public async Task<IActionResult> PhoneNumber([FromRoute] string govUkIdentifier, [FromBody] CandidatesPhoneNumberModel model)
+        {
+            try
+            {
+                var result = await _mediator.Send(new CreatePhoneNumberCommand
+                {
+                    GovUkIdentifier = govUkIdentifier,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error posting candidate phone number");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

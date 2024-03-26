@@ -35,3 +35,8 @@ public class CandidatesManuallyEnteredAddressModel : CandidatesModel
     public string County { get; set; }
     public string Postcode { get; set; }
 }
+
+public class CandidatesPhoneNumberModel : CandidatesModel
+{
+    public string PhoneNumber { get; set; }
+}
