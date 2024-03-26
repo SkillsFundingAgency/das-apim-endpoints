@@ -7,7 +7,7 @@ trigger:
     include:
     - azure
     - pipeline-templates
-    - src/ApprenticePortal
+    - src/ApprenticeApp
 
 pr:
   autoCancel: true
@@ -18,7 +18,7 @@ pr:
     include:
     - azure
     - pipeline-templates
-    - src/ApprenticePortal
+    - src/ApprenticeApp
 
 variables:
 - group: Release Management Resources
@@ -46,4 +46,4 @@ resources:
 stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
-    OuterApiName: ApprenticePortal
+    OuterApiName: ApprenticeApp
