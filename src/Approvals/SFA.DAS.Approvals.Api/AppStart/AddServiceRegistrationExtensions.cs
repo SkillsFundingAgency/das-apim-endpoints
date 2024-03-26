@@ -35,6 +35,7 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddHttpClient();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
+            services.AddTransient(typeof(ITokenPassThroughInternalApiClient<>), typeof(TokenPassThroughInternalApiClient<>));
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<IFjaaApiClient<FjaaApiConfiguration>, FjaaApiClient>();
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
