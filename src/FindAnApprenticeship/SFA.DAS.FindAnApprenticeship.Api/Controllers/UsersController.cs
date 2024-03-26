@@ -13,6 +13,7 @@ using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Address;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.ManuallyEnteredAddress;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.PhoneNumber;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -107,6 +108,26 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error getting addresses by postcode");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("{candidateId}/user-postcode")]
+        public async Task<IActionResult> UserPostcode([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var queryResponse = await _mediator.Send(new GetCandidatePostcodeQuery()
+                {
+                    CandidateId = candidateId
+                });
+
+                return Ok(queryResponse);
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(e, $"Error getting user address");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
