@@ -64,7 +64,6 @@ namespace SFA.DAS.ApprenticeApp.Api.ErrorHandler
             var errorList = errors.Select(x => new ErrorItem { PropertyName = x.PropertyName, ErrorMessage = x.ErrorMessage });
             return JsonConvert.SerializeObject(errorList, Formatting.Indented);
         }
-
     }
 
     public class ErrorItem

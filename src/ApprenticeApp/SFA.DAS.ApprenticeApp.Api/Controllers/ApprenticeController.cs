@@ -42,6 +42,5 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
 
             return NoContent();
         }
-
     }
 }

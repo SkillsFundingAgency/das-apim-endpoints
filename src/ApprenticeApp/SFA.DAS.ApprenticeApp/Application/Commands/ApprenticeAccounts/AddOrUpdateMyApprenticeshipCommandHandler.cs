@@ -61,7 +61,6 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts
                         $"Call to GetMyApprenticeship, expected an OK or NotFound, but received {response}");
             }
 
-
             return Unit.Value;
         }
 
