@@ -1,0 +1,7 @@
+{
+  "profiles": {
+    "SFA.DAS.ApprenticeApp.MockApis": {
+      "commandName": "Project"
+    }
+  }
+}
