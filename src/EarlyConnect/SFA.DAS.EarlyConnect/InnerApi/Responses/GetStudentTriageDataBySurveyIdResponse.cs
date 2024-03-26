@@ -5,6 +5,7 @@ namespace SFA.DAS.EarlyConnect.InnerApi.Responses
     public class GetStudentTriageDataBySurveyIdResponse
     {
         public int Id { get; set; }
+        public DateTime? LepDateSent { get; set; }
         public int? LepsId { get; set; }
         public string LepCode { get; set; }
         public int? LogId { get; set; }
