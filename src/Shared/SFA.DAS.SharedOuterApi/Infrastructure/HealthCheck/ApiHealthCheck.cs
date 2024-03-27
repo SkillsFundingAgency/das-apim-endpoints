@@ -14,10 +14,10 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
     public class ApiHealthCheck<T>
     {
         private readonly string _healthCheckDescription;
-        private readonly IApiClient<T> _apiClient;
+        private readonly IGetApiClient<T> _apiClient;
         private readonly ILogger<ApiHealthCheck<T>> _logger;
 
-        public ApiHealthCheck(string healthCheckDescription, IApiClient<T> apiClient, ILogger<ApiHealthCheck<T>> logger)
+        public ApiHealthCheck(string healthCheckDescription, IGetApiClient<T> apiClient, ILogger<ApiHealthCheck<T>> logger)
         {
             _healthCheckDescription = healthCheckDescription;
             _apiClient = apiClient;

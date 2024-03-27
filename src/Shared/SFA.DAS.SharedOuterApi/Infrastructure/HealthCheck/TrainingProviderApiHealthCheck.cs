@@ -1,33 +1,15 @@
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using SFA.DAS.Api.Common.Infrastructure;
-using SFA.DAS.SharedOuterApi.Services;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
 {
-    public class TrainingProviderApiHealthCheck : IHealthCheck
+    public class TrainingProviderApiHealthCheck : ApiHealthCheck<TrainingProviderConfiguration>, IHealthCheck
     {
-        private const string HealthCheckResultDescription = "Training Provider Service Health Check";
-        private readonly TrainingProviderService _service;
-
-        public TrainingProviderApiHealthCheck(TrainingProviderService service)
+        public TrainingProviderApiHealthCheck(ITrainingProviderApiClient<TrainingProviderConfiguration> client, ILogger<TrainingProviderApiHealthCheck> logger)
+            : base("Training Provider Api", client, logger)
         {
-            _service = service;
-        }
-        public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = new CancellationToken())
-        {
-            var timer = Stopwatch.StartNew();
-            var isHealthy = await _service.IsHealthy();
-            timer.Stop();
-            var durationString = timer.Elapsed.ToHumanReadableString();
-            var data = new Dictionary<string, object> { { "Duration", durationString } };
-
-            return (isHealthy ? HealthCheckResult.Healthy(HealthCheckResultDescription, data)
-                : HealthCheckResult.Unhealthy(HealthCheckResultDescription, null, data));
-
         }
     }
 }
