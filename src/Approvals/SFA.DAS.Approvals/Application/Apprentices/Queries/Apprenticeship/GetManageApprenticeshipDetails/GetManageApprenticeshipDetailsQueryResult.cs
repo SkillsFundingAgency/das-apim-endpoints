@@ -31,5 +31,6 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
         public decimal? EndPointAssessmentPrice { get; set; }
         public DateTime? ProviderApprovedDate { get; set; }
         public DateTime? EmployerApprovedDate { get; set; }
+        public string Initiator { get; set; }
     }
 }

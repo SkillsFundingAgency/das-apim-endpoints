@@ -7,12 +7,16 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships
     {
         public PatchApproveApprenticeshipPriceChangeRequest(
             Guid apprenticeshipKey,
-            string userId)
+            string userId,
+            decimal? TrainingPrice,
+            decimal? AssessmentPrice)
         {
             ApprenticeshipKey = apprenticeshipKey;
             Data = new ApproveApprenticeshipPriceChangeRequest
             {
-                UserId = userId
+                UserId = userId,
+                TrainingPrice = TrainingPrice,
+                AssessmentPrice = AssessmentPrice
             };
         }
         
@@ -24,5 +28,8 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships
     public class ApproveApprenticeshipPriceChangeRequest
     {
         public string UserId { get; set; }
+        // These 2 properties are only used when a provider is approving a employer initiated price change
+        public decimal? TrainingPrice { get; set; }
+        public decimal? AssessmentPrice { get; set; }
     }
 }
