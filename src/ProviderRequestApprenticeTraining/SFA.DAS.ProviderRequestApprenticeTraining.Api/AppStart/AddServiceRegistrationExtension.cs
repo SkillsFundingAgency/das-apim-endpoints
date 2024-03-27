@@ -5,9 +5,11 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.AppStart
 {
+    [ExcludeFromCodeCoverage]
     public static class AddServiceRegistrationExtension
     {
         public static void AddServiceRegistration(this IServiceCollection services)

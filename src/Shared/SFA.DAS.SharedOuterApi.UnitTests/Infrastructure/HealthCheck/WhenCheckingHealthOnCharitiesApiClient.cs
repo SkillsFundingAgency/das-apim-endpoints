@@ -13,13 +13,13 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
 {
-    public class WhenCheckingHealthOnLocationApi
+    public class WhenCheckingHealthOnCharitiesApiClient
     {
         [Test, MoqAutoData]
         public async Task Then_The_Ping_Endpoint_Is_Called(
-            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> client,
+            [Frozen] Mock<ICharitiesApiClient<CharitiesApiConfiguration>> client,
             HealthCheckContext healthCheckContext,
-            LocationsApiHealthCheck healthCheck)
+            CharitiesApiHealthCheck healthCheck)
         {
             // Act
             await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
@@ -35,9 +35,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
         public async Task Then_The_Correct_HealthStatus_Is_Returned(
             HttpStatusCode httpStatusCode,
             HealthStatus healthStatus,
-            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> client,
+            [Frozen] Mock<ICharitiesApiClient<CharitiesApiConfiguration>> client,
             HealthCheckContext healthCheckContext,
-            LocationsApiHealthCheck healthCheck)
+            CharitiesApiHealthCheck healthCheck)
         {
             // Arrange
             client.Setup(x => x.GetResponseCode(It.IsAny<GetPingRequest>()))

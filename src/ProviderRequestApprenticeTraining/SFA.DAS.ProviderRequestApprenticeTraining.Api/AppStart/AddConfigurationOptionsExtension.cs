@@ -2,9 +2,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.SharedOuterApi.Configuration;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.AppStart
 {
+    [ExcludeFromCodeCoverage]
     public static class AddConfigurationOptionsExtension
     {
         public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)

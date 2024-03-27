@@ -13,53 +13,41 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
 {
-    public class WhenCallingPingOnTheRequestApprenticeTrainingApiClient
+    public class WhenCheckingHealthOnRequestApprenticeTrainingApiClient
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Ping_Endpoint_Is_Called_For_RequestApprenticeTrainingApi(
+        public async Task Then_The_Ping_Endpoint_Is_Called(
             [Frozen] Mock<IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration>> client,
             HealthCheckContext healthCheckContext,
             RequestApprenticeTrainingApiHealthCheck healthCheck)
         {
-            //Act
+            // Act
             await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
             
-            //Assert
+            // Assert
             client.Verify(x => x.GetResponseCode(It.IsAny<GetPingRequest>()), Times.Once);
         }
 
-        [Test, MoqAutoData]
-        public async Task Then_If_It_Is_Successful_200_Is_Returned(
+        [Test]
+        [MoqInlineAutoData(HttpStatusCode.OK, HealthStatus.Healthy)]
+        [MoqInlineAutoData(HttpStatusCode.NotFound, HealthStatus.Unhealthy)]
+        [MoqInlineAutoData(HttpStatusCode.InternalServerError, HealthStatus.Unhealthy)]
+        public async Task Then_The_Correct_HealthStatus_Is_Returned(
+            HttpStatusCode httpStatusCode,
+            HealthStatus healthStatus,
             [Frozen] Mock<IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration>> client,
             HealthCheckContext healthCheckContext,
             RequestApprenticeTrainingApiHealthCheck healthCheck)
         {
-            //Arrange
+            // Arrange
             client.Setup(x => x.GetResponseCode(It.IsAny<GetPingRequest>()))
-                .ReturnsAsync(HttpStatusCode.OK);
+                .ReturnsAsync(httpStatusCode);
 
-            //Act
+            // Act
             var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
 
-            //Assert
-            Assert.That(HealthStatus.Healthy, Is.EqualTo(actual.Status));
-        }
-
-        [Test, MoqAutoData]
-        public async Task And_RequestApprenticeTrainingApi_Ping_Not_Found_Then_Unhealthy(
-            [Frozen] Mock<IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration>> client,
-            HealthCheckContext healthCheckContext,
-            RequestApprenticeTrainingApiHealthCheck healthCheck)
-        {
-            //Arrange
-            client.Setup(x => x.GetResponseCode(new GetPingRequest()))
-                .ReturnsAsync(HttpStatusCode.NotFound);
-            
-            //Act
-            var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
-            
-            //Assert
-            Assert.That(HealthStatus.Unhealthy, Is.EqualTo(actual.Status));
+            // Assert
+            Assert.That(healthStatus, Is.EqualTo(actual.Status));
         }
     }
 }

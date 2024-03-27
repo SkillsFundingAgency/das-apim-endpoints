@@ -13,48 +13,41 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
 {
-    public class WhenCallingPingOnTheAssessorsApiClient
+    public class WhenCheckingHealthOnAssessorsApiClient
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Ping_Endpoint_Is_Called_For_AssessorsApi(
+        public async Task Then_The_Ping_Endpoint_Is_Called(
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> client,
             HealthCheckContext healthCheckContext,
             AssessorsApiHealthCheck healthCheck)
         {
-            //Act
+            // Act
             await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
-            //Assert
+
+            // Assert
             client.Verify(x => x.GetResponseCode(It.IsAny<GetPingRequest>()), Times.Once);
         }
 
-        [Test, MoqAutoData]
-        public async Task And_200_Then_Healthy(
+        [Test]
+        [MoqInlineAutoData(HttpStatusCode.OK, HealthStatus.Healthy)]
+        [MoqInlineAutoData(HttpStatusCode.NotFound, HealthStatus.Unhealthy)]
+        [MoqInlineAutoData(HttpStatusCode.InternalServerError, HealthStatus.Unhealthy)]
+        public async Task Then_The_Correct_HealthStatus_Is_Returned(
+            HttpStatusCode httpStatusCode,
+            HealthStatus healthStatus,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> client,
             HealthCheckContext healthCheckContext,
             AssessorsApiHealthCheck healthCheck)
         {
-            //Arrange
+            // Arrange
             client.Setup(x => x.GetResponseCode(It.IsAny<GetPingRequest>()))
-                .ReturnsAsync(HttpStatusCode.OK);
-            //Act
-            var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
-            //Assert
-            Assert.That(HealthStatus.Healthy, Is.EqualTo(actual.Status));
-        }
+                .ReturnsAsync(httpStatusCode);
 
-        [Test, MoqAutoData]
-        public async Task And_404_Then_Unhealthy(
-            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> client,
-            HealthCheckContext healthCheckContext,
-            AssessorsApiHealthCheck healthCheck)
-        {
-            //Arrange
-            client.Setup(x => x.GetResponseCode(new GetPingRequest()))
-                .ReturnsAsync(HttpStatusCode.NotFound);
-            //Act
+            // Act
             var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
-            //Assert
-            Assert.That(HealthStatus.Unhealthy, Is.EqualTo(actual.Status));
+
+            // Assert
+            Assert.That(healthStatus, Is.EqualTo(actual.Status));
         }
     }
 }

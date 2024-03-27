@@ -1,47 +1,53 @@
 using AutoFixture.NUnit3;
-using FluentAssertions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
 {
     public class WhenCheckingHealthOnAccountsApi
     {
         [Test, MoqAutoData]
-        public async Task Then_Then_The_Service_Is_Called_And_Healthy_Returned_If_True(
-            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> apiClient,
-            HealthCheckContext context,
+        public async Task Then_The_Ping_Endpoint_Is_Called(
+            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> client,
+            HealthCheckContext healthCheckContext,
             AccountsApiHealthCheck healthCheck)
         {
-            apiClient.Setup(x => x.GetResponseCode(It.IsAny<GetPingRequest>()))
-                .ReturnsAsync(HttpStatusCode.OK);
+            // Act
+            await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
 
-            var actual = await healthCheck.CheckHealthAsync(context, CancellationToken.None);
-
-            actual.Status.Should().Be(HealthStatus.Healthy);
+            // Assert
+            client.Verify(x => x.GetResponseCode(It.IsAny<GetPingRequest>()), Times.Once);
         }
 
-        [Test, MoqAutoData]
-        public async Task Then_Then_The_Service_Is_Called_And_UnHealthy_Returned_If_False(
-            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> apiClient,
-            HealthCheckContext context,
+        [Test]
+        [MoqInlineAutoData(HttpStatusCode.OK, HealthStatus.Healthy)]
+        [MoqInlineAutoData(HttpStatusCode.NotFound, HealthStatus.Unhealthy)]
+        [MoqInlineAutoData(HttpStatusCode.InternalServerError, HealthStatus.Unhealthy)]
+        public async Task Then_The_Correct_HealthStatus_Is_Returned(
+            HttpStatusCode httpStatusCode,
+            HealthStatus healthStatus,
+            [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> client,
+            HealthCheckContext healthCheckContext,
             AccountsApiHealthCheck healthCheck)
         {
-            apiClient.Setup(x => x.GetResponseCode(It.IsAny<GetPingRequest>()))
-                .ReturnsAsync(HttpStatusCode.InternalServerError);
+            // Arrange
+            client.Setup(x => x.GetResponseCode(It.IsAny<GetPingRequest>()))
+                .ReturnsAsync(httpStatusCode);
 
-            var actual = await healthCheck.CheckHealthAsync(context, CancellationToken.None);
+            // Act
+            var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
 
-            actual.Status.Should().Be(HealthStatus.Unhealthy);
+            // Assert
+            Assert.That(healthStatus, Is.EqualTo(actual.Status));
         }
     }
 }
