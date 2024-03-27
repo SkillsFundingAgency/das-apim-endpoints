@@ -25,6 +25,7 @@ namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyI
             return new GetStudentTriageDataBySurveyIdResult
             {
                 Id = result.Body.Id,
+                LepDateSent = result.Body.LepDateSent,
                 LepsId = result.Body.LepsId,
                 LepCode = result.Body.LepCode,
                 LogId = result.Body.LogId,

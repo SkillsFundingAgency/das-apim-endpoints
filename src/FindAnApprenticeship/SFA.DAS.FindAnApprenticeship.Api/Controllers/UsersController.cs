@@ -1,11 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Users;
 using System;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DateOfBirth;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.AddDetails;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -41,6 +42,29 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error saving details");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("{govUkIdentifier}/date-of-birth")]
+        public async Task<IActionResult> DateOfBirth([FromRoute] string govUkIdentifier, [FromBody] CandidatesDateOfBirthModel model)
+        {
+            try
+            {
+                var result = await _mediator.Send(new UpsertDateOfBirthCommand
+                {
+                    GovUkIdentifier = govUkIdentifier,
+                    Email = model.Email,
+                    DateOfBirth = model.DateOfBirth,
+                    
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error posting candidate date of birth details");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

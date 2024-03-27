@@ -135,6 +135,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                 RequestSource = request.DataSource,
                 RequestIP = ipAddress,
                 Payload = String.Empty,
+                FileName = $"StudentId-{request.Id}|StudentSurveyId-{(request.StudentSurvey?.Id != null ? request.StudentSurvey.Id.ToString() : "")}",
                 Status = status.ToString()
             };
 
