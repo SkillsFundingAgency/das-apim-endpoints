@@ -8,7 +8,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
     public class CharitiesApiHealthCheck : ApiHealthCheck<CharitiesApiConfiguration>, IHealthCheck
     {
         public CharitiesApiHealthCheck(ICharitiesApiClient<CharitiesApiConfiguration> client, ILogger<CharitiesApiHealthCheck> logger)
-            : base("Charities Api", client, logger)
+            : base("Charities API", client, logger)
         {
         }
     }

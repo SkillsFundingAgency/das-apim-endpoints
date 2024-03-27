@@ -8,7 +8,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
     public class RoatpCourseManagementApiHealthCheck : ApiHealthCheck<RoatpV2ApiConfiguration>, IHealthCheck
     {
         public RoatpCourseManagementApiHealthCheck(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> client, ILogger<RoatpCourseManagementApiHealthCheck> logger)
-            : base("Roatp Course Management Api", client, logger)
+            : base("Roatp Course Management API", client, logger)
         {
         }
     }

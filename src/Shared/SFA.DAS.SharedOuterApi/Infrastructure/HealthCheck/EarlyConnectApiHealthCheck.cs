@@ -8,7 +8,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
     public class EarlyConnectApiHealthCheck : ApiHealthCheck<EarlyConnectApiConfiguration>, IHealthCheck
     {
         public EarlyConnectApiHealthCheck(IEarlyConnectApiClient<EarlyConnectApiConfiguration> client, ILogger<EarlyConnectApiHealthCheck> logger)
-            : base("EarlyConnect Api", client, logger)
+            : base("EarlyConnect API", client, logger)
         {
         }
     }

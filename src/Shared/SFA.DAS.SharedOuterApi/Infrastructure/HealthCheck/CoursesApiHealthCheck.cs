@@ -8,7 +8,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
     public class CoursesApiHealthCheck : ApiHealthCheck<CoursesApiConfiguration>, IHealthCheck
     {
         public CoursesApiHealthCheck(ICoursesApiClient<CoursesApiConfiguration> client, ILogger<CoursesApiHealthCheck> logger)
-            : base("Courses Api", client, logger)
+            : base("Courses API", client, logger)
         {
         }
     }

@@ -7,10 +7,8 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
 {
     public class RequestApprenticeTrainingApiHealthCheck : ApiHealthCheck<RequestApprenticeTrainingApiConfiguration>, IHealthCheck
     {
-        public const string RequestApprenticeTrainingApiHealthCheckDescription = "Request Apprentice Training API";
-
         public RequestApprenticeTrainingApiHealthCheck(IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration> client, ILogger<RequestApprenticeTrainingApiHealthCheck> logger)
-            : base(RequestApprenticeTrainingApiHealthCheckDescription, client, logger)
+            : base("Request Apprentice Training API", client, logger)
         {
         }
     }

@@ -8,7 +8,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
     public class ApprenticeFeedbackApiHealthCheck : ApiHealthCheck<ApprenticeFeedbackApiConfiguration>, IHealthCheck
     {
         public ApprenticeFeedbackApiHealthCheck(IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> client, ILogger<ApprenticeFeedbackApiHealthCheck> logger)
-            : base("Apprentice Feedback Api", client, logger)
+            : base("Apprentice Feedback API", client, logger)
         {
         }
     }
