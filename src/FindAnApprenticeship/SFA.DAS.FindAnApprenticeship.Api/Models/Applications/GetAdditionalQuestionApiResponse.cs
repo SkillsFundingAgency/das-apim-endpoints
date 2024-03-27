@@ -9,6 +9,7 @@ public class GetAdditionalQuestionApiResponse
     public string QuestionText { get; set; }
     public string Answer { get; set; }
     public Guid ApplicationId { get; set; }
+    public bool? IsSectionCompleted { get; set; }
 
     public static implicit operator GetAdditionalQuestionApiResponse(GetAdditionalQuestionQueryResult source)
     {
@@ -17,7 +18,8 @@ public class GetAdditionalQuestionApiResponse
             QuestionText = source.QuestionText,
             Answer = source.Answer,
             Id = source.Id,
-            ApplicationId = source.ApplicationId
+            ApplicationId = source.ApplicationId,
+            IsSectionCompleted = source.IsSectionCompleted,
         };
     }
 }

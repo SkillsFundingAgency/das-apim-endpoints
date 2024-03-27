@@ -45,9 +45,9 @@ public class UpsertSkillsAndStrengthsCommandHandler : IRequestHandler<UpsertSkil
         var requestBody = new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData
         {
             SkillsAndStrengths = command.SkillsAndStrengths,
-            HobbiesAndInterests = aboutYouItem.AboutYou.HobbiesAndInterests,
-            Improvements = aboutYouItem.AboutYou.Improvements,
-            Support = aboutYouItem.AboutYou.Support
+            HobbiesAndInterests = aboutYouItem.AboutYou?.HobbiesAndInterests,
+            Improvements = aboutYouItem.AboutYou?.Improvements,
+            Support = aboutYouItem.AboutYou?.Support
         };
         var request = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), requestBody);
 

@@ -9,6 +9,7 @@ public class GetExpectedSkillsAndStrengthsApiResponse
     public Guid ApplicationId { get; set; }
     public string Employer { get; set; }
     public IEnumerable<string> ExpectedSkillsAndStrengths { get; set; }
+    public bool? IsSectionCompleted { get; set; }
 
     public static implicit operator GetExpectedSkillsAndStrengthsApiResponse(GetExpectedSkillsAndStrengthsQueryResult source)
     {
@@ -16,7 +17,8 @@ public class GetExpectedSkillsAndStrengthsApiResponse
         {
             ApplicationId = source.ApplicationId,
             Employer = source.Employer,
-            ExpectedSkillsAndStrengths = source.ExpectedSkillsAndStrengths
+            ExpectedSkillsAndStrengths = source.ExpectedSkillsAndStrengths,
+            IsSectionCompleted = source.IsSectionCompleted
         };
     }
 }

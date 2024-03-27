@@ -7,4 +7,5 @@ public class GetAdditionalQuestionQuery : IRequest<GetAdditionalQuestionQueryRes
     public Guid CandidateId { get; set; }
     public Guid ApplicationId { get; set; }
     public Guid Id { get; set; }
+    public int AdditionalQuestion { get; set; }
 }
