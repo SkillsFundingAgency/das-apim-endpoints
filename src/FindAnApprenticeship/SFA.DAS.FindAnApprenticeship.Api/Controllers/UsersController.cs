@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DateOfBirth;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.AddDetails;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePostcodeAddress;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -65,6 +66,22 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error posting candidate date of birth details");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("postcode-address")]
+        public async Task<IActionResult> PostcodeAddress([FromQuery] string postcode)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCandidatePostcodeAddressQuery { Postcode =  postcode });
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting candidate PostcodeAddress");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
