@@ -50,9 +50,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddHealthChecks()
-                .AddCheck<RoatpCourseManagementApiHealthCheck>(nameof(RoatpCourseManagementApiHealthCheck))
-                .AddCheck<RequestApprenticeTrainingApiHealthCheck>(nameof(RequestApprenticeTrainingApiHealthCheck));
+            if (_configuration["Environment"] != "DEV")
+            {
+                services.AddHealthChecks()
+                    .AddCheck<RoatpCourseManagementApiHealthCheck>(RoatpCourseManagementApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<RequestApprenticeTrainingApiHealthCheck>(RequestApprenticeTrainingApiHealthCheck.HealthCheckResultDescription);
+            }
 
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEmployerRequestQuery).Assembly));
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRoatpV2ProviderQuery).Assembly));

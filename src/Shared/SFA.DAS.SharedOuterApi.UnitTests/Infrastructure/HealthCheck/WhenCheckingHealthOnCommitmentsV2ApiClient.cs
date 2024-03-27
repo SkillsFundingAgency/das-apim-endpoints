@@ -19,7 +19,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
         public async Task Then_The_Ping_Endpoint_Is_Called(
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> client,
             HealthCheckContext healthCheckContext,
-            CommitmentsV2HealthCheck healthCheck)
+            CommitmentsV2ApiHealthCheck healthCheck)
         {
             // Act
             await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
@@ -37,7 +37,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
             HealthStatus healthStatus,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> client,
             HealthCheckContext healthCheckContext,
-            CommitmentsV2HealthCheck healthCheck)
+            CommitmentsV2ApiHealthCheck healthCheck)
         {
             // Arrange
             client.Setup(x => x.GetResponseCode(It.IsAny<GetPingRequest>()))

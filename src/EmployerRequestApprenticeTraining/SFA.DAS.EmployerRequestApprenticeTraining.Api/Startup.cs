@@ -16,6 +16,7 @@ using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerR
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
 {
@@ -49,9 +50,13 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddHealthChecks()
-                .AddCheck<AccountsApiHealthCheck>(nameof(AccountsApiHealthCheck))
-                .AddCheck<RequestApprenticeTrainingApiHealthCheck>(nameof(RequestApprenticeTrainingApiHealthCheck));
+            if (_configuration["Environment"] != "DEV")
+            {
+                services.AddHealthChecks()
+                    .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<EmployerProfilesApiHealthCheck>(EmployerProfilesApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<RequestApprenticeTrainingApiHealthCheck>(RequestApprenticeTrainingApiHealthCheck.HealthCheckResultDescription);
+            }
 
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEmployerRequestQuery).Assembly));
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
