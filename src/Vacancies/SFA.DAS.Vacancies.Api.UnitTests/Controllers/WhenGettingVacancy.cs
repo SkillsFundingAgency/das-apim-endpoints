@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using Azure.Core;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -21,9 +22,12 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
         public async Task Then_The_Handler_Is_Called_And_Data_Returned(
             string vacancyReference,
             GetVacancyQueryResult queryResult,
+            int ukprn,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
+            queryResult.Vacancy.Ukprn = ukprn.ToString();
+
             mockMediator.Setup(x => x.Send(It.Is<GetVacancyQuery>(c => 
                     c.VacancyReference.Equals(vacancyReference)),
                 CancellationToken.None)).ReturnsAsync(queryResult);

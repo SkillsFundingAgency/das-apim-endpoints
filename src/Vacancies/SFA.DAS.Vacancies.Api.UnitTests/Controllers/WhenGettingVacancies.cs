@@ -22,10 +22,17 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task Then_Gets_Vacancies_From_Mediator_As_Employer_With_Filter(
             SearchVacancyRequest request,
+            int ukprn,
             GetVacanciesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
+            request.Ukprn = ukprn;
+            foreach (var vacancy in mediatorResult.Vacancies)
+            {
+                vacancy.Ukprn = ukprn.ToString();
+            }
+
             var accountId = "ABC123";
             var accountIdentifier = $"Employer-{accountId}-product";
             request.FilterBySubscription = true;
@@ -65,10 +72,17 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task Then_Gets_Vacancies_From_Mediator_As_Employer_With_No_AccountId_Filter_When_FilterBySubscription_Is_False(
             SearchVacancyRequest request,
+            int ukprn,
             GetVacanciesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
+            request.Ukprn = ukprn;
+            foreach (var vacancy in mediatorResult.Vacancies)
+            {
+                vacancy.Ukprn = ukprn.ToString();
+            }
+
             var accountId = "ABC123";
             var accountIdentifier = $"Employer-{accountId}-product";
             request.FilterBySubscription = false;
@@ -113,6 +127,12 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
+            request.Ukprn = ukprn;
+            foreach (var vacancy in mediatorResult.Vacancies)
+            {
+                vacancy.Ukprn = ukprn.ToString();
+            }
+
             request.FilterBySubscription = true;
             var accountIdentifier = $"Provider-{ukprn}-product";
             mockMediator
@@ -146,6 +166,12 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
+            request.Ukprn = ukprn;
+            foreach (var vacancy in mediatorResult.Vacancies)
+            {
+                vacancy.Ukprn = ukprn.ToString();
+            }
+
             request.FilterBySubscription = false;
             var accountIdentifier = $"Provider-{ukprn}-product";
             mockMediator

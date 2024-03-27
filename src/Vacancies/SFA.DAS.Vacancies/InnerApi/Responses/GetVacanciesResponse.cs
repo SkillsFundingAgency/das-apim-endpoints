@@ -19,7 +19,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
     public class GetVacanciesListItem
     {
         [JsonPropertyName("id")]
-        public long Id { get; set; }
+        public string Id { get; set; }
 
         [JsonPropertyName("anonymousEmployerName")]
         public string AnonymousEmployerName { get; set; }
@@ -85,7 +85,7 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
         public string Title { get; set; }
 
         [JsonPropertyName("ukprn")]
-        public int Ukprn { get; set; }
+        public string Ukprn { get; set; }
 
         [JsonPropertyName("vacancyLocationType")]
         public string VacancyLocationType { get; set; }
