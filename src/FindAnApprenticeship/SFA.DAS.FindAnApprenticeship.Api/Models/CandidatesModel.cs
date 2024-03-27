@@ -17,3 +17,21 @@ public class CandidatesDateOfBirthModel : CandidatesModel
 {
     public DateTime DateOfBirth { get; set; }
 }
+
+public class CandidatesAddressModel : CandidatesModel
+{
+    public string AddressLine1 { get; set; }
+    public string AddressLine2 { get; set; }
+    public string AddressLine3 { get; set; }
+    public string AddressLine4 { get; set; }
+    public string Postcode { get; set; }
+}
+
+public class CandidatesManuallyEnteredAddressModel : CandidatesModel
+{
+    public string AddressLine1 { get; set; }
+    public string AddressLine2 { get; set; }
+    public string TownOrCity { get; set; }
+    public string County { get; set; }
+    public string Postcode { get; set; }
+}
