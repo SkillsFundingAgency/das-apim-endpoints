@@ -47,3 +47,5 @@ stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
     OuterApiName: ProviderRequestApprenticeTraining
+    AdditionalProjectPathToInclude: src/Shared/SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth/SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.csproj
+    AdditionalTestProjectPathToInclude: src/Shared/SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.UnitTests/SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.UnitTests.csproj

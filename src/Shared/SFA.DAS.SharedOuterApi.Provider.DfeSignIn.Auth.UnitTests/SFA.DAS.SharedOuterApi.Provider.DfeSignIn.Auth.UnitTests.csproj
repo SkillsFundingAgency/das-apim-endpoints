@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-
-    <IsPackable>false</IsPackable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,7 +13,7 @@
     </PackageReference>
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="Moq" />
+    <PackageReference Include="MediatR" />
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="coverlet.collector" />
@@ -21,8 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.ProviderRequestApprenticeTraining.Api\SFA.DAS.ProviderRequestApprenticeTraining.Api.csproj" />
-    <ProjectReference Include="..\SFA.DAS.ProviderRequestApprenticeTraining\SFA.DAS.ProviderRequestApprenticeTraining.csproj" />
+    <ProjectReference Include="..\SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth\SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.csproj" />
   </ItemGroup>
 
 </Project>
