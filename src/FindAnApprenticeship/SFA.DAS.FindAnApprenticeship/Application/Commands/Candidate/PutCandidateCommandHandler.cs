@@ -56,7 +56,8 @@ public class PutCandidateCommandHandler : IRequestHandler<PutCandidateCommand, P
             GovUkIdentifier = candidateResult.Body.GovUkIdentifier,
             Email = candidateResult.Body.Email,
             FirstName = candidateResult.Body.FirstName,
-            LastName = candidateResult.Body.LastName
+            LastName = candidateResult.Body.LastName,
+            PhoneNumber = candidateResult.Body.PhoneNumber
         };
     }
 }
