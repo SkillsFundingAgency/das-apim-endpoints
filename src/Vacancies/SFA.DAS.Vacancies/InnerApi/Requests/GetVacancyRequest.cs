@@ -12,5 +12,6 @@ namespace SFA.DAS.Vacancies.InnerApi.Requests
         }
 
         public string GetUrl => $"api/Vacancies/{_vacancyReference}";
+        public string Version => "2.0";
     }
 }
