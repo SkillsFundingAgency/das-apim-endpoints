@@ -32,7 +32,7 @@ public class UpdateApplicationQualificationCommandHandler(ICandidateApiClient<Ca
 
         var deleteRequests = request.Subjects.Where(c => c.IsDeleted is true)
             .Select(deletedQualification =>
-                new DeleteQualificationApiRequest(request.ApplicationId, request.CandidateId, deletedQualification.Id))
+                new DeleteQualificationApiRequest(request.CandidateId, request.ApplicationId, deletedQualification.Id))
             .Select(deleteRequest => candidateApiClient.Delete(deleteRequest)).ToList();
 
         await Task.WhenAll(deleteRequests);

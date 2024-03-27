@@ -49,9 +49,6 @@ public class WhenHandlingUpdateQualificationCommand
 
         candidateApiClient.Verify(x =>
             x.Delete(It.Is<DeleteQualificationApiRequest>(c =>
-                c.DeleteUrl.Contains(command.ApplicationId.ToString())
-                && c.DeleteUrl.Contains(command.CandidateId.ToString())
-                && c.DeleteUrl.Contains(deleted.Id.ToString())
-                )), Times.Once);
+                c.DeleteUrl.Contains($"api/candidates/{command.CandidateId}/applications/{command.ApplicationId}/Qualifications/{deleted.Id}"))), Times.Once);
     }
 }
