@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -19,8 +18,7 @@ public class GetCandidatePostcodeAddressQueryHandler : IRequestHandler<GetCandid
 
     public async Task<GetCandidatePostcodeAddressQueryResult> Handle(GetCandidatePostcodeAddressQuery request, CancellationToken cancellationToken)
     {
-        var postcodeDecoded = HttpUtility.UrlDecode(request.Postcode);
-        var result = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcodeRequest(postcodeDecoded));
+        var result = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcodeRequest(request.Postcode));
 
 
         if (result?.Postcode is not null)
