@@ -39,6 +39,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.Providers
             Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo(mediatorResult.Provider);
         }
+        
         [Test, MoqAutoData]
         public async Task Then_Returns_Not_Found_If_No_Provider(
             int ukPrn,
