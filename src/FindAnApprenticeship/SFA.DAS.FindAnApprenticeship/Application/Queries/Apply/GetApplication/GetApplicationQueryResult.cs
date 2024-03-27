@@ -61,7 +61,6 @@ public record GetApplicationQueryResult
         public record TrainingCourse
         {
             public Guid Id { get; set; }
-            public Guid ApplicationId { get; set; }
             public string CourseName { get; set; }
             public int YearAchieved { get; set; }
 
@@ -69,7 +68,6 @@ public record GetApplicationQueryResult
             {
                 return new TrainingCourse
                 {
-                    ApplicationId = source.ApplicationId,
                     Id = source.Id,
                     CourseName = source.CourseName,
                     YearAchieved = source.YearAchieved
@@ -91,14 +89,12 @@ public record GetApplicationQueryResult
             public string JobTitle { get; set; }
             public DateTime StartDate { get; set; }
             public DateTime? EndDate { get; set; }
-            public Guid ApplicationId { get; set; }
             public string Description { get; set; }
 
             public static implicit operator Job(GetWorkHistoriesApiResponse.WorkHistoryItem source)
             {
                 return new Job
                 {
-                    ApplicationId = source.ApplicationId,
                     Id = source.Id,
                     Employer = source.Employer,
                     JobTitle = source.JobTitle,
@@ -115,14 +111,12 @@ public record GetApplicationQueryResult
             public string JobTitle { get; set; }
             public DateTime StartDate { get; set; }
             public DateTime? EndDate { get; set; }
-            public Guid ApplicationId { get; set; }
             public string Description { get; set; }
 
             public static implicit operator VolunteeringAndWorkExperience(GetWorkHistoriesApiResponse.WorkHistoryItem source)
             {
                 return new VolunteeringAndWorkExperience
                 {
-                    ApplicationId = source.ApplicationId,
                     Id = source.Id,
                     Employer = source.Employer,
                     JobTitle = source.JobTitle,
@@ -153,10 +147,12 @@ public record GetApplicationQueryResult
     public record InterviewAdjustmentsSection
     {
         public string RequestAdjustmentsStatus { get; set; }
+        public string InterviewAdjustmentsDescription { get; set; }
     }
     public record DisabilityConfidenceSection
     {
         public string InterviewUnderDisabilityConfidentStatus { get; set; }
+        public bool? ApplyUnderDisabilityConfidentScheme { get; set; }
     }
 
     public record WhatIsYourInterestSection

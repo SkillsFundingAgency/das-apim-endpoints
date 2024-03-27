@@ -18,5 +18,7 @@ namespace SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange
 		public decimal PendingTotalPrice { get; set; }
 		public DateTime EffectiveFrom { get; set; }
 		public string Reason { get; set; }
-	}
+        public DateTime? ProviderApprovedDate { get; set; }
+        public DateTime? EmployerApprovedDate { get; set; }
+    }
 }

@@ -1,7 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 using static SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication.GetApplicationQueryResult;
@@ -13,7 +12,7 @@ public class WhenMappingCandidateAddressFromApiResponse
     [Test, MoqAutoData]
     public void Then_Fields_Are_Mapped_Correctly(GetAddressApiResponse source)
     {
-        var actual = (GetApplicationQueryResult.CandidateAddress)source;
+        var actual = (CandidateAddress)source;
 
         actual.Should().BeEquivalentTo(source, options => options.Excluding(fil => fil.CandidateId));
     }
@@ -23,7 +22,7 @@ public class WhenMappingCandidateAddressFromApiResponse
     {
         var actual = (EducationHistorySection.TrainingCourse)source;
 
-        actual.Should().BeEquivalentTo(source);
+        actual.Should().BeEquivalentTo(source, options => options.Excluding(fil => fil.ApplicationId));
     }
 
     [Test, AutoData]
@@ -31,7 +30,10 @@ public class WhenMappingCandidateAddressFromApiResponse
     {
         var actual = (WorkHistorySection.Job)source;
 
-        actual.Should().BeEquivalentTo(source, options => options.Excluding(fil => fil.WorkHistoryType));
+        actual.Should().BeEquivalentTo(source, options => options
+            .Excluding(fil => fil.WorkHistoryType)
+            .Excluding(fil => fil.ApplicationId)
+        );
     }
 
     [Test, AutoData]
@@ -39,6 +41,9 @@ public class WhenMappingCandidateAddressFromApiResponse
     {
         var actual = (WorkHistorySection.VolunteeringAndWorkExperience)source;
 
-        actual.Should().BeEquivalentTo(source, options => options.Excluding(fil => fil.WorkHistoryType));
+        actual.Should().BeEquivalentTo(source, options => options
+            .Excluding(fil => fil.WorkHistoryType)
+            .Excluding(fil => fil.ApplicationId)
+        );
     }
 }
