@@ -14,10 +14,10 @@
     <PackageReference Include="SFA.DAS.Telemetry" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="SFA.DAS.Api.Common" />
-    <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     <ProjectReference Include="..\SFA.DAS.ApprenticeAan.Application\SFA.DAS.ApprenticeAan.Application.csproj" />
   </ItemGroup>
 

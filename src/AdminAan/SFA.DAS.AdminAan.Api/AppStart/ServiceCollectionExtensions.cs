@@ -1,13 +1,13 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using RestEase.HttpClientFactory;
-using SFA.DAS.AdminAan.Api.Extensions;
 using SFA.DAS.AdminAan.Api.HealthCheck;
 using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
-using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.AdminAan.Api.AppStart;
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.ApprenticeAan.Api.AppStart;
+using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.Telemetry.Startup;
 
 [assembly: ApiController]
@@ -10,7 +11,7 @@ using SFA.DAS.Telemetry.Startup;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var configuration = builder.Configuration.BuildConfiguration();
+var configuration = builder.Configuration.BuildSharedConfiguration();
 
 builder.Services
     .AddLogging()

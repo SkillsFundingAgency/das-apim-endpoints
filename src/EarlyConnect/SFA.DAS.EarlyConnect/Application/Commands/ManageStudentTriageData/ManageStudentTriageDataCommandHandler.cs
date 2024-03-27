@@ -47,7 +47,7 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
 
                 getStudentTriageResult.EnsureSuccessStatusCode();
 
-                if (getStudentTriageResult.Body.LepCode.ToUpper() == LepsRegion.NorthEast)
+                if (getStudentTriageResult.Body.LepCode.ToUpper() == LepsRegion.NorthEast && getStudentTriageResult.Body.LepDateSent == null)
                 {
                     var studentTriageData = MapResponseToStudentData(getStudentTriageResult.Body);
 

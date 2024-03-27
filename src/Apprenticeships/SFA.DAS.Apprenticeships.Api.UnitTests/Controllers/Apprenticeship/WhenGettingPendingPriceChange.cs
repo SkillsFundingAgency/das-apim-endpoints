@@ -14,6 +14,7 @@ using AutoFixture;
 using SFA.DAS.Apprenticeships.InnerApi;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using GetProviderResponse = SFA.DAS.Apprenticeships.Api.Models.GetProviderResponse;
 
 namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
 {

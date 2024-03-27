@@ -10,6 +10,12 @@
 		public decimal PendingTotalPrice { get; set; }
 		public DateTime EffectiveFrom { get; set; }
 		public string Reason { get; set; }
-        public long? Ukprn { get; set; }
+		public long? Ukprn { get; set; }
+		public string? FirstName { get; set; }
+		public string? LastName { get; set; }
+		public Guid ApprenticeshipKey { get; set; }
+		public DateTime? ProviderApprovedDate { get; set; }
+		public DateTime? EmployerApprovedDate { get; set; }
+
 	}
 }

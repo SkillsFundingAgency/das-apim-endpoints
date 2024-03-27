@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using MediatR.Extensions.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,9 +14,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Roatp.Api.AppStart;
 using SFA.DAS.Roatp.Api.HealthCheck;
 using SFA.DAS.Roatp.Application.Charities.Queries;
-using SFA.DAS.Roatp.Infrastructure;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.Roatp.Api;
 
@@ -25,7 +25,7 @@ public class Startup
     private readonly IConfiguration _configuration;
     public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
-        _configuration = configuration.BuildConfiguration();
+        _configuration = configuration.BuildSharedConfiguration();
         _env = env;
     }
     public void ConfigureServices(IServiceCollection services)
