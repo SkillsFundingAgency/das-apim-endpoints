@@ -7,17 +7,17 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
-public class GetCandidatePostcodeQueryHandler : IRequestHandler<GetCandidatePostcodeQuery, GetCandidatePostcodeQueryResult>
+public class GetCandidateAddressQueryHandler : IRequestHandler<GetCandidateAddressQuery, GetCandidateAddressQueryResult>
 {
     private readonly ICandidateApiClient<CandidateApiConfiguration> _candidateApiClient;
 
-    public GetCandidatePostcodeQueryHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
+    public GetCandidateAddressQueryHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
     {
         _candidateApiClient = candidateApiClient;
     }
 
-    public async Task<GetCandidatePostcodeQueryResult> Handle(GetCandidatePostcodeQuery request, CancellationToken cancellationToken)
+    public async Task<GetCandidateAddressQueryResult> Handle(GetCandidateAddressQuery request, CancellationToken cancellationToken)
     {
-        return await _candidateApiClient.Get<GetCandidatePostcodeApiResponse>(new GetCandidatePostcodeApiRequest(request.CandidateId));
+        return await _candidateApiClient.Get<GetCandidateAddressApiResponse>(new GetCandidateAddressApiRequest(request.CandidateId));
     }
 }

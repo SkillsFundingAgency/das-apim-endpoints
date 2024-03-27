@@ -2,7 +2,7 @@
 using MediatR;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
-public class GetCandidatePostcodeQuery : IRequest<GetCandidatePostcodeQueryResult>
+public class GetCandidateAddressQuery : IRequest<GetCandidateAddressQueryResult>
 {
     public Guid CandidateId { get; set; }
 }

@@ -10,18 +10,18 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries;
-public class WhenHandlingGetCandidatePostcodeQuery
+public class WhenHandlingGetCandidateAddressQuery
 {
     [Test, MoqAutoData]
-    public async Task Then_Gets_Postcode_From_Candidates(
-        GetCandidatePostcodeQuery query,
-        GetCandidatePostcodeApiResponse apiResponse,
+    public async Task Then_Gets_Address_From_Candidates(
+        GetCandidateAddressQuery query,
+        GetCandidateAddressApiResponse apiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
-        GetCandidatePostcodeQueryHandler handler)
+        GetCandidateAddressQueryHandler handler)
     {
         mockApiClient
-            .Setup(client => client.Get<GetCandidatePostcodeApiResponse>(
-                It.Is<GetCandidatePostcodeApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
+            .Setup(client => client.Get<GetCandidateAddressApiResponse>(
+                It.Is<GetCandidateAddressApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
             .ReturnsAsync(apiResponse);
 
         var result = await handler.Handle(query, CancellationToken.None);

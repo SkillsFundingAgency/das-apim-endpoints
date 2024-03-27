@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-public class GetCandidatePostcodeApiResponse
+public class GetCandidateAddressApiResponse
 {
     public Guid Id { get; set; }
     public string AddressLine1 { get; set; } = null!;

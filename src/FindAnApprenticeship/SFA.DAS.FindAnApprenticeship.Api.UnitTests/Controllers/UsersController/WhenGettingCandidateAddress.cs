@@ -12,7 +12,7 @@ using System.Threading;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController;
-public class WhenGettingCandidatePostcode
+public class WhenGettingCandidateAddress
 {
     [Test, MoqAutoData]
     public async Task And_An_Exception_Is_Thrown_Then_Returns_InternalServerError(
@@ -20,10 +20,10 @@ public class WhenGettingCandidatePostcode
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.UsersController controller)
     {
-        mediator.Setup(x => x.Send(It.Is<GetCandidatePostcodeQuery>(x => x.CandidateId == candidateId), CancellationToken.None))
+        mediator.Setup(x => x.Send(It.Is<GetCandidateAddressQuery>(x => x.CandidateId == candidateId), CancellationToken.None))
             .ThrowsAsync(new Exception());
 
-        var actual = await controller.UserPostcode(candidateId) as StatusCodeResult;
+        var actual = await controller.UserAddress(candidateId) as StatusCodeResult;
 
         actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }
@@ -31,14 +31,14 @@ public class WhenGettingCandidatePostcode
     [Test, MoqAutoData]
     public async Task Then_Returns_Ok_Result(
         Guid candidateId,
-        GetCandidatePostcodeQueryResult queryResult,
+        GetCandidateAddressQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.UsersController controller)
     {
-        mediator.Setup(x => x.Send(It.Is<GetCandidatePostcodeQuery>(x => x.CandidateId == candidateId), CancellationToken.None))
+        mediator.Setup(x => x.Send(It.Is<GetCandidateAddressQuery>(x => x.CandidateId == candidateId), CancellationToken.None))
             .ReturnsAsync(queryResult);
 
-        var actual = await controller.UserPostcode(candidateId);
+        var actual = await controller.UserAddress(candidateId);
 
         actual.Should().BeOfType<OkObjectResult>();
     }

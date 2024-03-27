@@ -2,11 +2,11 @@
 using System;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-public class GetCandidatePostcodeApiRequest : IGetApiRequest
+public class GetCandidateAddressApiRequest : IGetApiRequest
 {
     private readonly Guid _candidateId;
 
-    public GetCandidatePostcodeApiRequest(Guid candidateId)
+    public GetCandidateAddressApiRequest(Guid candidateId)
     {
         _candidateId = candidateId;
     }

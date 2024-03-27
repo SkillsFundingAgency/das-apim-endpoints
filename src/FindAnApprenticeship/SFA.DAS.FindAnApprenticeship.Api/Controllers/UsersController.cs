@@ -113,12 +113,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{candidateId}/user-postcode")]
-        public async Task<IActionResult> UserPostcode([FromRoute] Guid candidateId)
+        [Route("{candidateId}/user-address")]
+        public async Task<IActionResult> UserAddress([FromRoute] Guid candidateId)
         {
             try
             {
-                var queryResponse = await _mediator.Send(new GetCandidatePostcodeQuery()
+                var queryResponse = await _mediator.Send(new GetCandidateAddressQuery()
                 {
                     CandidateId = candidateId
                 });
