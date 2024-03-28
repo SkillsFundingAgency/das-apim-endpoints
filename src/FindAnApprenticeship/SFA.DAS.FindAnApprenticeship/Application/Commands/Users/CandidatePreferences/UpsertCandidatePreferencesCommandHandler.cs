@@ -26,8 +26,6 @@ public class UpsertCandidatePreferencesCommandHandler : IRequestHandler<UpsertCa
             var seperatedCandidatePreferences = candidatePreference.ContactMethodsAndStatus.Select(x => new PutCandidatePreferencesRequestData.CandidatePreference
             {
                 PreferenceId = candidatePreference.PreferenceId,
-                PreferenceMeaning = candidatePreference.PreferenceMeaning,
-                PreferenceHint = candidatePreference.PreferenceHint,
                 ContactMethod = x.ContactMethod,
                 Status = x.Status
             }).ToList();
@@ -38,7 +36,7 @@ public class UpsertCandidatePreferencesCommandHandler : IRequestHandler<UpsertCa
         var apiRequest = new PutCandidatePreferencesApiRequest(request.CandidateId, new PutCandidatePreferencesRequestData
         { CandidatePreferences = candidatePreferencesRequestData });
 
-         await _candidateApiClient.PutWithResponseCode<NullResponse>(apiRequest);
+        await _candidateApiClient.PutWithResponseCode<NullResponse>(apiRequest);
         return Unit.Value;
     }
 }
