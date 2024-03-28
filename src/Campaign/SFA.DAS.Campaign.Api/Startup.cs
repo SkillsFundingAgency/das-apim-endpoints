@@ -62,7 +62,7 @@ namespace SFA.DAS.Campaign.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check");
+                    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription);
             }
             
             if (_configuration.IsLocalOrDev())

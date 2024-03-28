@@ -48,9 +48,9 @@ namespace SFA.DAS.ApprenticeFeedback.Api
             }
                         
             services.AddHealthChecks()
-                .AddCheck<ApprenticeAccountsApiHealthCheck>(nameof(ApprenticeAccountsApiHealthCheck))
-                .AddCheck<AssessorsApiHealthCheck>(nameof(AssessorsApiHealthCheck))
-                .AddCheck<ApprenticeFeedbackApiHealthCheck>(nameof(ApprenticeFeedbackApiHealthCheck));
+                .AddCheck<ApprenticeAccountsApiHealthCheck>(ApprenticeAccountsApiHealthCheck.HealthCheckResultDescription)
+                .AddCheck<AssessorsApiHealthCheck>(AssessorsApiHealthCheck.HealthCheckResultDescription)
+                .AddCheck<ApprenticeFeedbackApiHealthCheck>(ApprenticeFeedbackApiHealthCheck.HealthCheckResultDescription);
 
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetApprenticeQuery).Assembly));
 

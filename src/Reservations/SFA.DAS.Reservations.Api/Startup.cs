@@ -73,9 +73,9 @@ namespace SFA.DAS.Reservations.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<FinanceApiHealthCheck>("Finance API health check")
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<CommitmentsV2HealthCheck>("CommitmentsV2 API health check");
+                    .AddCheck<FinanceApiHealthCheck>(FinanceApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<CommitmentsV2ApiHealthCheck>(CommitmentsV2ApiHealthCheck.HealthCheckResultDescription);
             }
             
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

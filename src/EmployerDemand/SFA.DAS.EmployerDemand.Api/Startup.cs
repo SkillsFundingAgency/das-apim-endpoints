@@ -74,9 +74,9 @@ namespace SFA.DAS.EmployerDemand.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<EmployerDemandApiHealthCheck>("Employer Demand API health check")
-                    .AddCheck<LocationsApiHealthCheck>("Location API health check");
+                    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<EmployerDemandApiHealthCheck>(EmployerDemandApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription);
             }
             
             if (_configuration.IsLocalOrDev())

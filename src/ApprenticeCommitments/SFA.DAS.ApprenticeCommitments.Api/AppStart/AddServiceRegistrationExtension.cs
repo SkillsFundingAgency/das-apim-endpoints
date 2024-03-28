@@ -6,6 +6,7 @@ using SFA.DAS.ApprenticeCommitments.Api.Controllers;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin;
 using SFA.DAS.ApprenticeCommitments.Configuration;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
@@ -27,6 +28,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
             services.AddTransient<ApprenticeCommitmentsService>();
             services.AddTransient<ApprenticeLoginService>();
             services.AddTransient<CommitmentsV2Service>();
+            services.AddTransient<ITrainingProviderApiClient<TrainingProviderConfiguration>, TrainingProviderApiClient>();
             services.AddTransient<TrainingProviderService>();
             services.AddTransient<CoursesService>();
             services.AddTransient<ApimClient>();

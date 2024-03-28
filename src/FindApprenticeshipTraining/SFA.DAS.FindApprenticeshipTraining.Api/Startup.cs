@@ -84,10 +84,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<RoatpCourseManagementApiHealthCheck>("Roatp Course Management API health check")
+                    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<RoatpCourseManagementApiHealthCheck>(RoatpCourseManagementApiHealthCheck.HealthCheckResultDescription)
                     .AddCheck<ShortlistApiHealthCheck>("Shortlist API health check")
-                    .AddCheck<LocationsApiHealthCheck>("Location API health check");
+                    .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription);
             }
 
             services.AddApplicationInsightsTelemetry();

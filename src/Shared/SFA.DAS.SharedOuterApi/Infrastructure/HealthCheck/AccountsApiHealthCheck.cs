@@ -7,10 +7,11 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
 {
     public class AccountsApiHealthCheck : ApiHealthCheck<AccountsConfiguration>, IHealthCheck
     {
-        public const string AccountsApiHealthCheckDescription = "Accounts API";
-        
+        public static readonly string HealthCheckDescription = "Accounts API";
+        public static string HealthCheckResultDescription => $"{HealthCheckDescription} check";
+
         public AccountsApiHealthCheck(IAccountsApiClient<AccountsConfiguration> client, ILogger<AccountsApiHealthCheck> logger)
-            : base(AccountsApiHealthCheckDescription, client, logger)
+            : base(HealthCheckDescription, HealthCheckResultDescription, client, logger)
         {
         }
     }

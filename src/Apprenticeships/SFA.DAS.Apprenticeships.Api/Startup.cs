@@ -63,7 +63,7 @@ public class Startup
         if (_configuration["Environment"] != "DEV")
         {
             services.AddHealthChecks()
-                .AddCheck<CoursesApiHealthCheck>("Courses API health check");
+                .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription);
         }
 
         services.AddApplicationInsightsTelemetry(x => x.ConnectionString = _configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
