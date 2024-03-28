@@ -41,16 +41,16 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
-            Guid employerRequestId,
+            CreateEmployerRequestCommand command,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] EmployerRequestController controller)
         {
             // Arrange
-            mediator.Setup(x => x.Send(It.IsAny<GetEmployerRequestQuery>(), CancellationToken.None))
+            mediator.Setup(x => x.Send(It.IsAny<CreateEmployerRequestCommand>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
             // Act
-            var actual = await controller.GetEmployerRequest(employerRequestId) as StatusCodeResult;
+            var actual = await controller.CreateEmployerRequest(command) as StatusCodeResult;
 
             // Assert
             Assert.That(actual, Is.Not.Null);

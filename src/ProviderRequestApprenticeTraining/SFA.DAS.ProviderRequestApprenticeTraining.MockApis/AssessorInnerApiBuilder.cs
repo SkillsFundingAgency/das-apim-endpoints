@@ -2,6 +2,7 @@
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Assessor;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading.Tasks;
 using WireMock;
@@ -15,6 +16,7 @@ using WireMock.Util;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.MockApis
 {
+    [ExcludeFromCodeCoverage]
     public class AssessorInnerApiBuilder
     {
         private readonly WireMockServer _server;

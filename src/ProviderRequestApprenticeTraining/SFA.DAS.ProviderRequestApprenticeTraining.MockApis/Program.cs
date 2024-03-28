@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using WireMock.Server;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.MockApis
 {
+    [ExcludeFromCodeCoverage]
     public class Program
     {
         private const int PortAssessorApi = 59023;
