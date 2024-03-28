@@ -14,7 +14,7 @@ public class PutCandidatePreferencesApiRequest : IPutApiRequest
         Data = data;
     }
 
-    public string PutUrl => $"/api/candidates/{_candidateId}/CandidatePreferences/";
+    public string PutUrl => $"api/candidates/{_candidateId}/NotificationPreferences/";
 }
 
 public class PutCandidatePreferencesRequestData
@@ -24,8 +24,6 @@ public class PutCandidatePreferencesRequestData
     public class CandidatePreference
     {
         public Guid PreferenceId { get; set; }
-        public string PreferenceMeaning { get; set; } = null!;
-        public string PreferenceHint { get; set; } = null!;
         public string ContactMethod { get; set; }
         public bool Status { get; set; }
     }

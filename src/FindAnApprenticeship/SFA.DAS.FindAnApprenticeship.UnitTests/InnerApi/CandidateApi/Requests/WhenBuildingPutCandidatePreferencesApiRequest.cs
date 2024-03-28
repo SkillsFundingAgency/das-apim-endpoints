@@ -11,6 +11,6 @@ public class WhenBuildingPutCandidatePreferencesApiRequest
     {
         var actual = new PutCandidatePreferencesApiRequest(candidateId, new PutCandidatePreferencesRequestData());
 
-        actual.PutUrl.Should().Be($"/api/candidates/{candidateId}/CandidatePreferences/");
+        actual.PutUrl.Should().Be($"api/candidates/{candidateId}/NotificationPreferences/");
     }
 }
