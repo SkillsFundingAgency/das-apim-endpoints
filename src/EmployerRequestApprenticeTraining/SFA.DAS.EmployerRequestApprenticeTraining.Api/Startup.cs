@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -16,7 +13,8 @@ using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerR
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
-using SFA.DAS.SharedOuterApi.Services;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
 {
@@ -50,7 +48,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            if (_configuration["Environment"] != "DEV")
+            if (!_configuration.IsLocalOrDev())
             {
                 services.AddHealthChecks()
                     .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription)
@@ -88,9 +86,37 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
                 options.ConnectionString = _configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
             });
 
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(opt =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerRequestApprenticeTrainingOuterApi", Version = "v1" });
+                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerRequestApprenticeTrainingOuterApi", Version = "v1" });
+
+                if (!_configuration.IsLocalOrDev())
+                {
+                    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                    {
+                        In = ParameterLocation.Header,
+                        Description = "Please enter token",
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.Http,
+                        BearerFormat = "JWT",
+                        Scheme = "bearer"
+                    });
+
+                    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type=ReferenceType.SecurityScheme,
+                                    Id="Bearer"
+                                }
+                            },
+                            new string[]{}
+                        }
+                    });
+                }
             });
         }
 

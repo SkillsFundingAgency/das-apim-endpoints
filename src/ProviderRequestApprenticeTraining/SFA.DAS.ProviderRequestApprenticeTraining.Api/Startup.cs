@@ -50,7 +50,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            if (_configuration["Environment"] != "DEV")
+            if (!_configuration.IsLocalOrDev())
             {
                 services.AddHealthChecks()
                     .AddCheck<RoatpCourseManagementApiHealthCheck>(RoatpCourseManagementApiHealthCheck.HealthCheckResultDescription)
@@ -87,9 +87,37 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api
                 options.ConnectionString = _configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
             });
 
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(opt =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProviderRequestApprenticeTrainingOuterApi", Version = "v1" });
+                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "ProviderRequestApprenticeTrainingOuterApi", Version = "v1" });
+
+                if (!_configuration.IsLocalOrDev())
+                {
+                    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                    {
+                        In = ParameterLocation.Header,
+                        Description = "Please enter token",
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.Http,
+                        BearerFormat = "JWT",
+                        Scheme = "bearer"
+                    });
+
+                    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type=ReferenceType.SecurityScheme,
+                                    Id="Bearer"
+                                }
+                            },
+                            new string[]{}
+                        }
+                    });
+                }
             });
         }
 
