@@ -14,12 +14,16 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
     public class ApiHealthCheck<T>
     {
         private readonly string _healthCheckDescription;
+        private readonly string _healthCheckResultDescription;
+
         private readonly IGetApiClient<T> _apiClient;
         private readonly ILogger<ApiHealthCheck<T>> _logger;
 
-        public ApiHealthCheck(string healthCheckDescription, IGetApiClient<T> apiClient, ILogger<ApiHealthCheck<T>> logger)
+        public ApiHealthCheck(string healthCheckDescription, string healthCheckResultDescription,
+            IGetApiClient<T> apiClient, ILogger<ApiHealthCheck<T>> logger)
         {
             _healthCheckDescription = healthCheckDescription;
+            _healthCheckResultDescription = healthCheckResultDescription;
             _apiClient = apiClient;
             _logger = logger;
         }
@@ -38,12 +42,12 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
 
                 _logger.LogInformation($"{_healthCheckDescription} ping successful and took {durationString}");
 
-                return HealthCheckResult.Healthy($"{_healthCheckDescription} check",
+                return HealthCheckResult.Healthy(_healthCheckResultDescription,
                     new Dictionary<string, object> { { "Duration", durationString } });
             }
 
             _logger.LogWarning($"{_healthCheckDescription} ping failed : [Code: {response}]");
-            return HealthCheckResult.Unhealthy($"{_healthCheckDescription} check");
+            return HealthCheckResult.Unhealthy(_healthCheckResultDescription);
         }
     }
 }

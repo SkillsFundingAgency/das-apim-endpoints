@@ -11,7 +11,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
         public static string HealthCheckResultDescription => $"{HealthCheckDescription} check";
 
         public TrainingProviderApiHealthCheck(ITrainingProviderApiClient<TrainingProviderConfiguration> client, ILogger<TrainingProviderApiHealthCheck> logger)
-            : base(HealthCheckDescription, client, logger)
+            : base(HealthCheckDescription, HealthCheckResultDescription, client, logger)
         {
         }
     }

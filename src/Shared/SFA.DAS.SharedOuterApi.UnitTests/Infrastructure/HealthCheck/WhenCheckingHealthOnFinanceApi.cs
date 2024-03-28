@@ -50,5 +50,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
             // Assert
             Assert.That(healthStatus, Is.EqualTo(actual.Status));
         }
+
+        [Test, MoqAutoData]
+        public void Then_HealthCheckResultDescription_IsConsistent()
+        {
+            FinanceApiHealthCheck.HealthCheckResultDescription.Should().Be(FinanceApiHealthCheck.HealthCheckDescription + " check");
+        }
     }
 }

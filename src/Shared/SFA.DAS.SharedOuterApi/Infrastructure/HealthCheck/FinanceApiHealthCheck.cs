@@ -10,7 +10,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
         public static readonly string HealthCheckDescription = "Finance API";
         public static string HealthCheckResultDescription => $"{HealthCheckDescription} check";
         public FinanceApiHealthCheck(IFinanceApiClient<FinanceApiConfiguration> client, ILogger<FinanceApiHealthCheck> logger)
-            : base (HealthCheckDescription, client, logger)
+            : base(HealthCheckDescription, HealthCheckResultDescription, client, logger)
         {
         }
     }

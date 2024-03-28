@@ -11,7 +11,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
         public static string HealthCheckResultDescription => $"{HealthCheckDescription} check";
 
         public CommitmentsV2ApiHealthCheck(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> client, ILogger<CommitmentsV2ApiHealthCheck> logger)
-            : base(HealthCheckDescription, client, logger)
+            : base(HealthCheckDescription, HealthCheckResultDescription, client, logger)
         {
         }
     }

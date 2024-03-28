@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 using NUnit.Framework;
@@ -48,6 +49,12 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
 
             // Assert
             Assert.That(healthStatus, Is.EqualTo(actual.Status));
+        }
+
+        [Test, MoqAutoData]
+        public void Then_HealthCheckResultDescription_IsConsistent()
+        {
+            ApprenticeAccountsApiHealthCheck.HealthCheckResultDescription.Should().Be(ApprenticeAccountsApiHealthCheck.HealthCheckDescription + " check");
         }
     }
 }

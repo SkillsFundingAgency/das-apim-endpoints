@@ -10,7 +10,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
         public static readonly string HealthCheckDescription = "EarlyConnect API";
         public static string HealthCheckResultDescription => $"{HealthCheckDescription} check";
         public EarlyConnectApiHealthCheck(IEarlyConnectApiClient<EarlyConnectApiConfiguration> client, ILogger<EarlyConnectApiHealthCheck> logger)
-            : base(HealthCheckDescription, client, logger)
+            : base(HealthCheckDescription, HealthCheckResultDescription, client, logger)
         {
         }
     }
