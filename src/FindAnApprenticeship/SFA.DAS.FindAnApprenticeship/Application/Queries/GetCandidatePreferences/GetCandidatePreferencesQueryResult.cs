@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 #nullable enable
 using System;
-using Newtonsoft.Json;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePreferences;
 public class GetCandidatePreferencesQueryResult
@@ -13,7 +12,7 @@ public class GetCandidatePreferencesQueryResult
         public Guid PreferenceId { get; set; }
         public string PreferenceMeaning { get; set; } = null!;
         public string PreferenceHint { get; set; } = null!;
-        public List<ContactMethodStatus> ContactMethodsAndStatus { get; set; } = new List<ContactMethodStatus>();
+        public List<ContactMethodStatus>? ContactMethodsAndStatus { get; set; }
     }
 
     public class ContactMethodStatus
