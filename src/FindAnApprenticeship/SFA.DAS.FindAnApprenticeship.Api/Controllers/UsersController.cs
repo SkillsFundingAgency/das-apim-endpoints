@@ -14,6 +14,8 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Address;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.ManuallyEnteredAddress;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePreferences;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CandidatePreferences;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.PhoneNumber;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -112,6 +114,26 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("{candidateId}/user-address")]
+        public async Task<IActionResult> UserAddress([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var queryResponse = await _mediator.Send(new GetCandidateAddressQuery()
+                {
+                    CandidateId = candidateId
+                });
+
+                return Ok(queryResponse);
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(e, $"Error getting user address");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
         [HttpPost]
         [Route("{candidateId}/select-address")]
         public async Task<IActionResult> SelectAddress([FromRoute] Guid candidateId, [FromBody] CandidatesAddressModel model)
@@ -182,6 +204,24 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+        [HttpPost]
+        [Route("{govUkIdentifier}/phone-number")]
+        public async Task<IActionResult> PhoneNumber([FromRoute] string govUkIdentifier, [FromBody] CandidatesPhoneNumberModel model)
+        {
+            try
+            {
+                var result = await _mediator.Send(new CreatePhoneNumberCommand
+                {
+                    GovUkIdentifier = govUkIdentifier,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error posting candidate phone number");
 
         [HttpPost("{candidateId}/candidate-preferences")]
         public async Task<IActionResult> UpsertCandidatePreferences([FromRoute] Guid candidateId, [FromBody] CandidatePreferencesModel model)

@@ -13,7 +13,8 @@ public class CandidateResponse
             Email = source.Email,
             FirstName = source.FirstName,
             LastName = source.LastName,
-            Id = source.Id
+            Id = source.Id,
+            PhoneNumber = source.PhoneNumber
         };
     }
     public Guid Id { get; set; }
@@ -21,4 +22,5 @@ public class CandidateResponse
     public string Email { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    public string PhoneNumber { get; set; }
 }

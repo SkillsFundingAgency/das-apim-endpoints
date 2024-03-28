@@ -55,3 +55,8 @@ public class CandidatePreferencesModel : CandidatesModel
         public bool Status { get; set; }
     }
 }
+
+public class CandidatesPhoneNumberModel : CandidatesModel
+{
+    public string PhoneNumber { get; set; }
+}
