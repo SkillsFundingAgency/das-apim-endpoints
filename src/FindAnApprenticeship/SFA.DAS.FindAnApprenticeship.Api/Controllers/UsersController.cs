@@ -12,6 +12,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddressesByPo
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Address;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.ManuallyEnteredAddress;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePreferences;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -158,6 +159,25 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error posting candidate manually entered address details");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{candidateId}/candidate-preferences")]
+        public async Task<IActionResult> GetCandidatePreferences([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCandidatePreferencesQuery()
+                {
+                    CandidateId = candidateId
+                });
+
+                return Ok(result);
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(e, $"Error getting candidate preferences");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
