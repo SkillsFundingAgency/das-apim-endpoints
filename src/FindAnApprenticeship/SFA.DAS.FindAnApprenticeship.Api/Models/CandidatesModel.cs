@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models;
 
@@ -34,4 +35,23 @@ public class CandidatesManuallyEnteredAddressModel : CandidatesModel
     public string TownOrCity { get; set; }
     public string County { get; set; }
     public string Postcode { get; set; }
+}
+
+public class CandidatePreferencesModel : CandidatesModel
+{
+    public List<CandidatePreference> CandidatePreferences { get; set; }
+
+    public class CandidatePreference
+    {
+        public Guid PreferenceId { get; set; }
+        public string PreferenceMeaning { get; set; } = null!;
+        public string PreferenceHint { get; set; } = null!;
+        public List<ContactMethodStatus> ContactMethodsAndStatus { get; set; }
+    }
+
+    public class ContactMethodStatus
+    {
+        public string ContactMethod { get; set; }
+        public bool Status { get; set; }
+    }
 }

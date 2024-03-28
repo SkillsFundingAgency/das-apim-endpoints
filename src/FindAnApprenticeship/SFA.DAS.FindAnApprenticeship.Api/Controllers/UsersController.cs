@@ -13,6 +13,7 @@ using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Address;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.ManuallyEnteredAddress;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePreferences;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CandidatePreferences;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -175,9 +176,39 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 
                 return Ok(result);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.LogError(e, $"Error getting candidate preferences");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{candidateId}/candidate-preferences")]
+        public async Task<IActionResult> UpsertCandidatePreferences([FromRoute] Guid candidateId, [FromBody] CandidatePreferencesModel model)
+        {
+            try
+            {
+                var result = await _mediator.Send(new UpsertCandidatePreferencesCommand
+                {
+                    CandidateId = candidateId,
+                    CandidatePreferences = model.CandidatePreferences.Select(x => new UpsertCandidatePreferencesCommand.CandidatePreference
+                    {
+                        PreferenceId = x.PreferenceId,
+                        PreferenceMeaning = x.PreferenceMeaning,
+                        PreferenceHint = x.PreferenceHint,
+                        ContactMethodsAndStatus = x.ContactMethodsAndStatus.Select(x => new UpsertCandidatePreferencesCommand.ContactMethodStatus
+                        {
+                            ContactMethod = x.ContactMethod,
+                            Status = x.Status
+                        }).ToList()
+                    }).ToList()
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error upserting candidate preferences");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
