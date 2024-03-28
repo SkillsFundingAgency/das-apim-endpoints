@@ -186,24 +186,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 
-        [HttpGet("{candidateId}/candidate-preferences")]
-        public async Task<IActionResult> GetCandidatePreferences([FromRoute] Guid candidateId)
-        {
-            try
-            {
-                var result = await _mediator.Send(new GetCandidatePreferencesQuery()
-                {
-                    CandidateId = candidateId
-                });
-
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error getting candidate preferences");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
-        }
         [HttpPost]
         [Route("{govUkIdentifier}/phone-number")]
         public async Task<IActionResult> PhoneNumber([FromRoute] string govUkIdentifier, [FromBody] CandidatesPhoneNumberModel model)
@@ -222,6 +204,28 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error posting candidate phone number");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{candidateId}/candidate-preferences")]
+        public async Task<IActionResult> GetCandidatePreferences([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCandidatePreferencesQuery()
+                {
+                    CandidateId = candidateId
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting candidate preferences");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
 
         [HttpPost("{candidateId}/candidate-preferences")]
         public async Task<IActionResult> UpsertCandidatePreferences([FromRoute] Guid candidateId, [FromBody] CandidatePreferencesModel model)
