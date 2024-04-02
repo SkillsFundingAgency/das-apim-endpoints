@@ -48,10 +48,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api
                 };
 
                 services.AddAuthentication(azureAdConfiguration, policies);
-            }
-
-            if (!_configuration.IsLocalOrDev())
-            {
+            
                 services.AddHealthChecks()
                     .AddCheck<RoatpCourseManagementApiHealthCheck>(RoatpCourseManagementApiHealthCheck.HealthCheckResultDescription)
                     .AddCheck<RequestApprenticeTrainingApiHealthCheck>(RequestApprenticeTrainingApiHealthCheck.HealthCheckResultDescription);

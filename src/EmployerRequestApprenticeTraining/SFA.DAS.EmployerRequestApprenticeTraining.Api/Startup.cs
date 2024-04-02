@@ -46,10 +46,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
                 };
 
                 services.AddAuthentication(azureAdConfiguration, policies);
-            }
-
-            if (!_configuration.IsLocalOrDev())
-            {
+            
                 services.AddHealthChecks()
                     .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription)
                     .AddCheck<EmployerProfilesApiHealthCheck>(EmployerProfilesApiHealthCheck.HealthCheckResultDescription)
