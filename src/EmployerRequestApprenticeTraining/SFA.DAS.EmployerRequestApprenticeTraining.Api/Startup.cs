@@ -132,7 +132,10 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
             }
 
             app.UseHttpsRedirection();
-            app.UseHealthChecks();
+            if (!_configuration.IsLocalOrDev())
+            {
+                app.UseHealthChecks();
+            }
             app.UseAuthentication();
 
             app.UseSwagger();

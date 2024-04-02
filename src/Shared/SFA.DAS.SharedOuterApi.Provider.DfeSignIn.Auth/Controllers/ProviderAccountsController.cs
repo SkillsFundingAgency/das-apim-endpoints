@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.Application.Queries.ProviderAccounts;
 using SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.Models;
 using System.Net;
@@ -11,10 +12,12 @@ namespace SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.Controllers
     public class ProviderAccountsController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<ProviderAccountsController> _logger;
 
-        public ProviderAccountsController(IMediator mediator)
+        public ProviderAccountsController(IMediator mediator, ILogger<ProviderAccountsController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -31,8 +34,9 @@ namespace SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.Controllers
                 return Ok(new ProviderAccountResponse { CanAccessService = result });
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, $"Unable to get provider status for ukprn {ukprn}");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

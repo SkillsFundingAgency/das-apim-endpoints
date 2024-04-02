@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Models;
 
@@ -13,10 +14,12 @@ namespace SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Controllers
     public class AccountUsersController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<AccountUsersController> _logger;
 
-        public AccountUsersController (IMediator mediator)
+        public AccountUsersController (IMediator mediator, ILogger<AccountUsersController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
         
         [HttpGet]
@@ -33,9 +36,9 @@ namespace SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Controllers
 
                 return Ok((UserAccountsApiResponse) result);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
+                _logger.LogError(ex, $"Unable to get user accounts for userId {userId}, email {email}");
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
         }
