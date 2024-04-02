@@ -11,6 +11,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePostcodeAddre
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddressesByPostcode;
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Address;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetDateOfBirth;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -49,6 +50,26 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+
+        [HttpGet]
+        [Route("{govUkIdentifier}/date-of-birth")]
+        public async Task<IActionResult> DateOfBirth([FromRoute] string govUkIdentifier)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetDateOfBirthQuery
+                {
+                    GovUkIdentifier = govUkIdentifier
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting candidate date of birth details");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+    }
 
         [HttpPost]
         [Route("{govUkIdentifier}/date-of-birth")]
