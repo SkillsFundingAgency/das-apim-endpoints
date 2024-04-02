@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Net;
 using System.Security;
 using System.Threading.Tasks;
@@ -74,7 +75,8 @@ namespace SFA.DAS.Vacancies.Api.Controllers
                     DistanceInMiles = request.DistanceInMiles,
                     NationWideOnly = request.NationWideOnly,
                     StandardLarsCode = request.StandardLarsCode,
-                    PostedInLastNumberOfDays = request.PostedInLastNumberOfDays
+                    PostedInLastNumberOfDays = request.PostedInLastNumberOfDays,
+                    AdditionalDataSources = request.AdditionalDataSources?.Select(x => x.ToString()).ToList()
                 });
 
                 return Ok((GetVacanciesListResponse)queryResponse);
