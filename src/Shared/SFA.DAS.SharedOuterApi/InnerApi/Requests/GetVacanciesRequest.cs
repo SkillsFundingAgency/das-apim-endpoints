@@ -91,7 +91,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             {
                 url += $"&postedInLastNumberOfDays={_postedInLastNumberOfDays}";
             }
-
             if (_additionalDataSources != null && _additionalDataSources.Any())
             {
                 url += $"&additionalDataSources={string.Join("&additionalDataSources=", _additionalDataSources)}";
