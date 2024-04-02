@@ -5,7 +5,7 @@ namespace SFA.DAS.Reservations.Application.ProviderAccounts.Queries;
 
 public record GetProviderAccountLegalEntitiesWithCreatCohortResponse
 {
-    public List<GetProviderAccountLegalEntityWithCreatCohortItem> ProviderAccountLegalEntities { get ; set ; }
+    public List<GetProviderAccountLegalEntityWithCreatCohortItem> AccountProviderLegalEntities { get ; set ; }
 }
 
 public class GetProviderAccountLegalEntityWithCreatCohortItem
