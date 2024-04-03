@@ -16,18 +16,18 @@ public class WhenHandlingGetProviderAccountLegalEntitiesWithCreatCohortQuery
 {
     [Test, MoqAutoData]
     public async Task Then_The_Query_Is_Handled_And_Api_Called_For_Ukprn(
-        GetProviderAccountLegalEntitiesWithCreatCohortResponse apiQueryResponse,
+        GetProviderAccountLegalEntitiesWithCreateCohortResult apiQueryResponse,
         GetProviderAccountLegalEntitiesWithCreatCohortQuery withCreatCohortQuery,
         [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> apiClient,
         GetProviderAccountLegalEntitiesWithCreatCohortQueryHandler handler)
     {
         apiClient.Setup(x =>
-                x.Get<GetProviderAccountLegalEntitiesWithCreatCohortResponse>(
+                x.Get<GetProviderAccountLegalEntitiesWithCreateCohortResult>(
                     It.Is<GetProviderAccountLegalEntitiesWithCreatCohortRequest>(c => c.GetUrl.Contains($"ukprn={withCreatCohortQuery.Ukprn}"))))
             .ReturnsAsync(apiQueryResponse);
             
         var actual = await handler.Handle(withCreatCohortQuery, CancellationToken.None);
 
-        actual.ProviderAccountLegalEntities.Should().BeEquivalentTo(apiQueryResponse.ProviderAccountLegalEntities);
+        actual.AccountProviderLegalEntities.Should().BeEquivalentTo(apiQueryResponse.AccountProviderLegalEntities);
     }
 }
