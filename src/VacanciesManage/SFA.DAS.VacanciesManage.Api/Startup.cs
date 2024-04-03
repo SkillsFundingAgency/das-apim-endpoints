@@ -67,7 +67,7 @@ namespace SFA.DAS.VacanciesManage.Api
             if (configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check");
+                    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription);
             }
             
             if (configuration.IsLocalOrDev())
