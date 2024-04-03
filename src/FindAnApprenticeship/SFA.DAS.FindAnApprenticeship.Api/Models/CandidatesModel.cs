@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.FindAnApprenticeship.Api.Models;
+﻿using System;
+
+namespace SFA.DAS.FindAnApprenticeship.Api.Models;
 
 public class CandidatesModel
 {
@@ -9,4 +11,9 @@ public class CandidatesNameModel : CandidatesModel
 {
     public string FirstName { get; set; } = null!;
     public string LastName { get; set; } = null!;
+}
+
+public class CandidatesDateOfBirthModel : CandidatesModel
+{
+    public DateTime DateOfBirth { get; set; }
 }
