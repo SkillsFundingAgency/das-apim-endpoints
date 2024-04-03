@@ -1,5 +1,4 @@
-﻿using System.Net;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.Apprenticeship;
@@ -36,6 +35,13 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
 		}
 
         [HttpGet]
+        [Route("{apprenticeshipHashedId}/key")]
+        public async Task<ActionResult> GetApprenticeshipKey(string apprenticeshipHashedId)
+        {
+            return Ok(await _apiClient.Get<Guid>(new GetApprenticeshipKeyRequest { ApprenticeshipHashedId = apprenticeshipHashedId }));
+        }
+
+        [HttpGet]
         [Route("{apprenticeshipKey}/price")]
         public async Task<ActionResult> GetApprenticeshipPrice(Guid apprenticeshipKey)
         {
@@ -58,12 +64,27 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{apprenticeshipHashedId}/key")]
-        public async Task<ActionResult> GetApprenticeshipKey(string apprenticeshipHashedId)
+        [Route("{apprenticeshipKey}/startDate")]
+        public async Task<ActionResult> GetApprenticeshipStartDate(Guid apprenticeshipKey)
         {
-            return Ok(await _apiClient.Get<Guid>(new GetApprenticeshipKeyRequest { ApprenticeshipHashedId = apprenticeshipHashedId }));
+            try
+            {
+                var apprenticeshipStartDateResponse = await _mediator.Send(new GetApprenticeshipStartDateQuery(apprenticeshipKey));
+
+                if (apprenticeshipStartDateResponse == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(apprenticeshipStartDateResponse);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to get Apprenticeship Start Date");
+                return BadRequest();
+            }
         }
-        
+
         [HttpPost]
         [Route("{apprenticeshipKey}/priceHistory")]
         public async Task<ActionResult> CreateApprenticeshipPriceChange(Guid apprenticeshipKey,
