@@ -17,6 +17,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.GetDateOfBirth;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CandidatePreferences;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.PhoneNumber;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateName;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -52,6 +53,26 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error saving details");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("{govUkIdentifier}/user-name")]
+        public async Task<IActionResult> UserName([FromRoute] string govUkIdentifier)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCandidateNameQuery
+                {
+                    GovUkIdentifier = govUkIdentifier
+                });
+
+                return Ok(result);
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(e, "Error getting user name");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
