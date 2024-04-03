@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Reservations.Api.Models;
 using SFA.DAS.Reservations.Application.ProviderAccounts.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
 namespace SFA.DAS.Reservations.Api.Controllers;
 
@@ -46,7 +45,7 @@ public class ProviderAccountsController(IMediator mediator, ILogger<ProviderAcco
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "GetAccountLegalEntities() threw an exception.");
+            logger.LogError(exception, "GetAccountLegalEntitiesWithCreatCohort() threw an exception.");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
