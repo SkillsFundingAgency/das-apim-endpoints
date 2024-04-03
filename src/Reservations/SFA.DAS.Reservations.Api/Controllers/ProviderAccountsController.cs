@@ -41,7 +41,9 @@ public class ProviderAccountsController(IMediator mediator, ILogger<ProviderAcco
             var request = new GetProviderAccountLegalEntitiesWithCreatCohortQuery(ukprn);
             var result = await mediator.Send(request);
 
-            return Ok(result);
+            var model = (GetProviderAccountLegalEntitiesWithCreatCohortResponse)result;
+
+            return Ok(model);
         }
         catch (Exception exception)
         {

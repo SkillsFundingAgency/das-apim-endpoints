@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Reservations.Api.Controllers;
+using SFA.DAS.Reservations.Api.Models;
 using SFA.DAS.Reservations.Application.ProviderAccounts.Queries;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -18,7 +19,7 @@ public class WhenGettingProviderLegalEntitiesWithCreatCohort
     [Test, MoqAutoData]
     public async Task Then_Get_Provider_Legal_Entities_Is_Called(
         int ukprn,
-        GetProviderAccountLegalEntitiesWithCreatCohortResponse mediatorResult,
+        GetProviderAccountLegalEntitiesWithCreateCohortResult mediatorResult,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] ProviderAccountsController controller)
     {

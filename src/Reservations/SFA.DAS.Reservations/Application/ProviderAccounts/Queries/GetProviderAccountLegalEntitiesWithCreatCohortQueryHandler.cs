@@ -8,10 +8,10 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 namespace SFA.DAS.Reservations.Application.ProviderAccounts.Queries;
 
 public class GetProviderAccountLegalEntitiesWithCreatCohortQueryHandler(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> apiClient)
-    : IRequestHandler<GetProviderAccountLegalEntitiesWithCreatCohortQuery, GetProviderAccountLegalEntitiesWithCreatCohortResponse>
+    : IRequestHandler<GetProviderAccountLegalEntitiesWithCreatCohortQuery, GetProviderAccountLegalEntitiesWithCreateCohortResult>
 {
-    public async Task<GetProviderAccountLegalEntitiesWithCreatCohortResponse> Handle(GetProviderAccountLegalEntitiesWithCreatCohortQuery request, CancellationToken cancellationToken)
+    public async Task<GetProviderAccountLegalEntitiesWithCreateCohortResult> Handle(GetProviderAccountLegalEntitiesWithCreatCohortQuery request, CancellationToken cancellationToken)
     {
-        return await apiClient.Get<GetProviderAccountLegalEntitiesWithCreatCohortResponse>(new GetProviderAccountLegalEntitiesWithCreatCohortRequest(request.Ukprn));
+        return await apiClient.Get<GetProviderAccountLegalEntitiesWithCreateCohortResult>(new GetProviderAccountLegalEntitiesWithCreatCohortRequest(request.Ukprn));
     }
 }
