@@ -61,7 +61,7 @@ public class Startup
         if (_configuration["Environment"] != "DEV")
         {
             services.AddHealthChecks()
-                .AddCheck<EarlyConnectApiHealthCheck>("EarlyConnect API health check");
+                .AddCheck<EarlyConnectApiHealthCheck>(EarlyConnectApiHealthCheck.HealthCheckResultDescription);
         }
 
         services.AddApplicationInsightsTelemetry(x => x.ConnectionString = _configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
