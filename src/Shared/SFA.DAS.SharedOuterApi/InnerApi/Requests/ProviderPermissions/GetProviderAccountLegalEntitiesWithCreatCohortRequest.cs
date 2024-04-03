@@ -11,5 +11,5 @@ public class GetProviderAccountLegalEntitiesWithCreatCohortRequest : IGetApiRequ
         _ukprn = ukprn;
     }
 
-    public string GetUrl => $"accountproviderlegalentities?ukprn={_ukprn}&operations=1";
+    public string GetUrl => $"accountproviderlegalentities?ukprn={_ukprn}&operations=0";
 }
