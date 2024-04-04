@@ -17,6 +17,7 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
         public IReadOnlyCollection<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequest { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public PendingPriceChangeDetails PendingPriceChange { get; set; }
+        public bool? CanActualStartDateBeChanged { get; set; }
 
 		public class ApprenticeshipDetails
         {

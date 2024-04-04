@@ -65,7 +65,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
             var deliveryModelTask = _deliveryModelService.GetDeliveryModels(apprenticeship.ProviderId,
                 apprenticeship.CourseCode, apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
             var pendingPriceChangeTask = _apprenticeshipsApiClient.GetWithResponseCode<GetPendingPriceChangeResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey.Body));
-            var actualStartDateCanBeChangedTask = ActualStartDateCanBeChanged(apprenticeship.ActualStartDate);
+            var canActualStartDateBeChangedTask = CanActualStartDateBeChanged(apprenticeship.ActualStartDate);
 
             await Task.WhenAll(priceEpisodesResponseTask, 
                 apprenticeshipUpdatesResponseTask,
@@ -76,7 +76,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                 overlappingTrainingDateResponseTask, 
                 deliveryModelTask,
                 pendingPriceChangeTask,
-                actualStartDateCanBeChangedTask);
+                canActualStartDateBeChangedTask);
 
             var priceEpisodesResponse = priceEpisodesResponseTask.Result;
             var apprenticeshipUpdatesResponse = apprenticeshipUpdatesResponseTask.Result;
@@ -87,7 +87,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
             var overlappingTrainingDateResponse = overlappingTrainingDateResponseTask.Result;
             var deliveryModel = deliveryModelTask.Result;
             var pendingPriceChangeResponse = pendingPriceChangeTask.Result;
-            var actualStartDateCanBeChanged = actualStartDateCanBeChangedTask.Result;
+            var canActualStartDateBeChanged = canActualStartDateBeChangedTask.Result;
 
             return new GetManageApprenticeshipDetailsQueryResult
             {
@@ -101,7 +101,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                 OverlappingTrainingDateRequest = overlappingTrainingDateResponse.Body.OverlappingTrainingDateRequest,
                 HasMultipleDeliveryModelOptions = deliveryModel.Count > 1,
                 PendingPriceChange = ToResponse(pendingPriceChangeResponse.Body),
-                ActualStartDateCanBeChanged = actualStartDateCanBeChanged
+                CanActualStartDateBeChanged = canActualStartDateBeChanged
             };
         }
 
@@ -120,7 +120,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
             };
         }
 
-        private async Task<bool?> ActualStartDateCanBeChanged(DateTime? actualStartDate)
+        private async Task<bool?> CanActualStartDateBeChanged(DateTime? actualStartDate)
         {
             if(actualStartDate == null) return null;
             var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now));
