@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Address;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.ManuallyEnteredAddress;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -11,16 +11,16 @@ using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands;
-public class WhenHandlingPostCandidateAddressCommand
+public class WhenHandlingPostManuallyEnteredAddressCommand
 {
     [Test, MoqAutoData]
     public async Task Then_The_Address_Record_Is_Created(
-        CreateAddressCommand command,
-        LocationItem locationItem,
+        CreateManuallyEnteredAddressCommand command,
         ApiResponse<PostCandidateAddressApiResponse> apiResponse,
+        LocationItem locationItem,
         [Frozen] Mock<ILocationLookupService> locationLookupService,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        CreateAddressCommandHandler handler)
+        CreateManuallyEnteredAddressCommandHandler handler)
     {
         var expectedRequest = new PutCandidateAddressApiRequest(command.CandidateId, new PutCandidateAddressApiRequestData());
 

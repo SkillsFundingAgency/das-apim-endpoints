@@ -11,6 +11,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePostcodeAddre
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddressesByPostcode;
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Address;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.ManuallyEnteredAddress;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetDateOfBirth;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
@@ -132,7 +133,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 
         [HttpPost]
         [Route("{candidateId}/select-address")]
-        public async Task<IActionResult> SelectAddress([FromRoute] string candidateId, [FromBody] CandidatesAddressModel model)
+        public async Task<IActionResult> SelectAddress([FromRoute] Guid candidateId, [FromBody] CandidatesAddressModel model)
         {
             try
             {
@@ -152,6 +153,32 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error posting candidate address details");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("{candidateId}/enter-address")]
+        public async Task<IActionResult> EnterAddress([FromRoute] Guid candidateId, [FromBody] CandidatesManuallyEnteredAddressModel model)
+        {
+            try
+            {
+                var result = await _mediator.Send(new CreateManuallyEnteredAddressCommand
+                {
+                    CandidateId = candidateId,
+                    Email = model.Email,
+                    AddressLine1 = model.AddressLine1,
+                    AddressLine2 = model.AddressLine2,
+                    TownOrCity = model.TownOrCity,
+                    County = model.County,
+                    Postcode = model.Postcode
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error posting candidate manually entered address details");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

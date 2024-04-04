@@ -1,12 +1,13 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using System;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 public class PutCandidateAddressApiRequest : IPutApiRequest
 {
-    private readonly string _candidateId;
+    private readonly Guid _candidateId;
     public object Data { get; set; }
 
-    public PutCandidateAddressApiRequest(string candidateId, PutCandidateAddressApiRequestData data)
+    public PutCandidateAddressApiRequest(Guid candidateId, PutCandidateAddressApiRequestData data)
     {
         _candidateId = candidateId;
         Data = data;
