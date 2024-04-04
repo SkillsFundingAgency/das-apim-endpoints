@@ -28,6 +28,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         private Mock<IDeliveryModelService> _deliveryModelService;
         private ServiceParameters _serviceParameters;
         private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _apprenticeshipsApiClient;
+        private Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> _collectionCalendarApiClient;
 
         private GetApprenticeshipResponse _apprenticeship;
         private GetManageApprenticeshipDetailsQuery _query;
@@ -51,6 +52,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _apprenticeship = fixture.Build<GetApprenticeshipResponse>()
                 .With(x => x.EmployerAccountId, 123)
                 .With(x=>x.Id, _query.ApprenticeshipId)
+                .With(x => x.ActualStartDate, (DateTime?)null)
                 .Create();
 
             _priceEpisodesResponse = fixture.Create<GetPriceEpisodesResponse>();
@@ -107,7 +109,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(It.Is<GetPendingPriceChangeRequest>(r => r.ApprenticeshipKey == apprenticeshipKey)))
                 .ReturnsAsync(new ApiResponse<GetPendingPriceChangeResponse>(_pendingPriceChangeResponse, HttpStatusCode.OK, string.Empty));
 
-            _handler = new GetManageApprenticeshipDetailsQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters, _apprenticeshipsApiClient.Object);
+            _collectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
+
+            _handler = new GetManageApprenticeshipDetailsQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters, _apprenticeshipsApiClient.Object, _collectionCalendarApiClient.Object);
         }
 
         [TestCase(0, false)]
