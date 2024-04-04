@@ -10,4 +10,11 @@ public record GetProviderAccountLegalEntitiesWithCreateCohortResult
 public class GetProviderAccountLegalEntitiesWithCreateCohortResultItem
 {
     public long AccountId { get; set; }
+    public string AccountHashedId { get; set; }
+    public string AccountPublicHashedId { get; set; }
+    public string AccountName { get; set; }
+    public int AccountLegalEntityId { get; set; }
+    public string AccountLegalEntityPublicHashedId { get; set; }
+    public string AccountLegalEntityName { get; set; }
+    public long AccountProviderId { get; set; }
 }
