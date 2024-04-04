@@ -10,11 +10,18 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
     public class WhenMappingFromMediatorResponseToGetVacanciesListResponse
     {
         [Test, AutoData]
-        public void Then_The_Fields_Are_Mapped(GetVacanciesQueryResult source)
+        public void Then_The_Fields_Are_Mapped(GetVacanciesQueryResult source, int ukprn)
         {
+            foreach (var vacancy in source.Vacancies)
+            {
+                vacancy.Ukprn = ukprn.ToString();
+            }
+
             var actual = (GetVacanciesListResponse) source;
 
-            actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options => options.ExcludingMissingMembers().Excluding(c=>c.EmployerName));
+            actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options => options.ExcludingMissingMembers()
+                        .Excluding(c => c.EmployerName)
+                        .Excluding(c => c.Ukprn));
             actual.Total.Should().Be(source.Total);
             actual.TotalFiltered.Should().Be(source.TotalFiltered);
             actual.TotalPages.Should().Be(source.TotalPages);
@@ -29,12 +36,13 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
         }
         
         [Test, AutoData]
-        public void And_IsEmployerAnonymous_Then_Anon_Values_Used(GetVacanciesQueryResult source)
+        public void And_IsEmployerAnonymous_Then_Anon_Values_Used(GetVacanciesQueryResult source, int ukprn)
         {
             //arrange
             var sourceVacancies = source.Vacancies.ToList();
             foreach (var getVacanciesItem in sourceVacancies)
             {
+                getVacanciesItem.Ukprn = ukprn.ToString();
                 getVacanciesItem.IsEmployerAnonymous = true;
                 getVacanciesItem.VacancyLocationType = "nAtiONal";
             }
@@ -45,6 +53,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             //assert
             actual.Vacancies.Should().BeEquivalentTo(sourceVacancies, options => options
                 .ExcludingMissingMembers()
+                .Excluding(item => item.Ukprn)
                 .Excluding(item => item.EmployerName)
                 .Excluding(item => item.CourseTitle)
                 .Excluding(item => item.CourseLevel)
@@ -52,6 +61,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.Vacancies.TrueForAll(c => c.IsNationalVacancy).Should().BeTrue();
             for (var i = 0; i < actual.Vacancies.Count; i++)
             {
+                actual.Vacancies[i].Ukprn.Should().Be(int.Parse(sourceVacancies[i].Ukprn));
                 actual.Vacancies[i].EmployerName.Should().Be(sourceVacancies[i].AnonymousEmployerName);
                 actual.Vacancies[i].Course.Title.Should().Be($"{sourceVacancies[i].CourseTitle} (level {sourceVacancies[i].CourseLevel})");
                 actual.Vacancies[i].Course.Level.Should().Be(sourceVacancies[i].CourseLevel);
