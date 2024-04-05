@@ -16,6 +16,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePreferences;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetDateOfBirth;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CandidatePreferences;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.PhoneNumber;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.CheckAnswers;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateName;
 
@@ -295,6 +296,25 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error upserting candidate preferences");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{candidateId}/create-account/check-answers")]
+        public async Task<IActionResult> GetCheckAnswers([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCheckAnswersQuery
+                {
+                    CandidateId = candidateId
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting candidate create account check answers");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

@@ -1,14 +1,10 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using System;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-public class GetCandidateDateOfBirthApiRequest : IGetApiRequest
+namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
 {
-    private readonly string _govUkIdentifier;
-
-    public GetCandidateDateOfBirthApiRequest(string govUkIdentifier)
+    public class GetCandidateApiRequest(Guid govUkIdentifier) : IGetApiRequest
     {
-        _govUkIdentifier = govUkIdentifier;
+        public string GetUrl => $"api/candidates/{govUkIdentifier}";
     }
-
-    public string GetUrl => $"api/candidates/{_govUkIdentifier}";
 }
