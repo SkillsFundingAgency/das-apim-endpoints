@@ -1,10 +1,7 @@
-﻿using System.Net;
-using System.Threading.Tasks;
-
-namespace SFA.DAS.SharedOuterApi.Interfaces
+﻿namespace SFA.DAS.SharedOuterApi.Interfaces
 {
-    public interface ILepsLaApiClient<T> : ILepsLaExternalApiClient<T>
+    public interface ILepsLaApiClient<T> : IInternalApiClient<T>
     {
-        Task<HttpStatusCode> GetResponseCode(IGetApiRequest request);
+
     }
 }

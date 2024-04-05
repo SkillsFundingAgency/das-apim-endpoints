@@ -22,10 +22,9 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient(typeof(ILepsNeExternalApiClient<>), typeof(LepsNeExternalApiClient<>));
-        services.AddTransient(typeof(ILepsLaExternalApiClient<>), typeof(LepsLaExternalApiClient<>));
         services.AddTransient<IEarlyConnectApiClient<EarlyConnectApiConfiguration>, EarlyConnectApiClient>();
-        services.AddTransient<ILepsNeApiClient<LepsNeApiConfiguration>, LepsNeApiClient>();
         services.AddTransient<ILepsLaApiClient<LepsLaApiConfiguration>, LepsLaApiClient>();
+        services.AddTransient<ILepsNeApiClient<LepsNeApiConfiguration>, LepsNeApiClient>();
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient<ISendStudentDataToLepsService, SendStudentDataToLepsService>();
         services.AddFeatureToggle();
