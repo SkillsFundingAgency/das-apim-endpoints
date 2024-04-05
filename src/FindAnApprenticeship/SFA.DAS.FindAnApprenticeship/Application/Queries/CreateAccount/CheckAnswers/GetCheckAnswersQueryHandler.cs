@@ -14,9 +14,15 @@ public class GetCheckAnswersQueryHandler(ICandidateApiClient<CandidateApiConfigu
 {
     public async Task<GetCheckAnswersQueryResult> Handle(GetCheckAnswersQuery request, CancellationToken cancellationToken)
     {
-        var candidate = await apiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId));
-        var preferences = await apiClient.Get<GetCandidatePreferencesApiResponse>(new GetCandidatePreferencesApiRequest(request.CandidateId));
-        var address = await apiClient.Get<GetCandidateAddressApiResponse>(new GetCandidateAddressApiRequest(request.CandidateId));
+        var candidateTask =  apiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId));
+        var preferencesTask =  apiClient.Get<GetCandidatePreferencesApiResponse>(new GetCandidatePreferencesApiRequest(request.CandidateId));
+        var addressTask = apiClient.Get<GetCandidateAddressApiResponse>(new GetCandidateAddressApiRequest(request.CandidateId));
+
+        await Task.WhenAll(candidateTask, preferencesTask, addressTask);
+
+        var candidate = candidateTask.Result;
+        var preferences = preferencesTask.Result;
+        var address = addressTask.Result;
 
         address ??= new GetCandidateAddressApiResponse();
 
