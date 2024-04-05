@@ -4,7 +4,6 @@ using SFA.DAS.EarlyConnect.Configuration.FeatureToggle;
 using SFA.DAS.EarlyConnect.InnerApi.Requests;
 using SFA.DAS.EarlyConnect.InnerApi.Responses;
 using SFA.DAS.EarlyConnect.Services;
-using SFA.DAS.EarlyConnect.Web.Infrastructure;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -37,15 +36,9 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
             if (request.StudentTriageData.StudentSurvey.DateCompleted == null)
                 return CreateCommandResult($"{manageStudentResponse?.Body?.Message}");
 
-            if (_feature.IsFeatureEnabled(FeatureNames.NorthEastDataSharing))
+            if (_feature.IsFeatureEnabled(FeatureNames.NorthEastDataSharing) || _feature.IsFeatureEnabled(FeatureNames.LancashireDataSharing))
             {
-                SendStudentDataToLepsServiceResponse response = await _sendStudentDataToLepsService.SendStudentDataToLeps(request.SurveyGuid, LepsRegion.Region.NorthEast);
-                return CreateCommandResult($"{response?.Message}");
-            }
-
-            if (_feature.IsFeatureEnabled(FeatureNames.LancashireDataSharing))
-            {
-                SendStudentDataToLepsServiceResponse response = await _sendStudentDataToLepsService.SendStudentDataToLeps(request.SurveyGuid, LepsRegion.Region.NorthEast);
+                SendStudentDataToLepsServiceResponse response = await _sendStudentDataToLepsService.SendStudentDataToLeps(request.SurveyGuid);
                 return CreateCommandResult($"{response?.Message}");
             }
 

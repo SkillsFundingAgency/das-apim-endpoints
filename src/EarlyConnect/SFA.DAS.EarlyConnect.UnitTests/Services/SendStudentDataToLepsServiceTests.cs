@@ -28,7 +28,7 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
             var mockLaApiClient = new Mock<ILepsLaApiClient<LepsLaApiConfiguration>>();
             var service = new SendStudentDataToLepsService(mockApiClient.Object, mockNeApiClient.Object, mockLaApiClient.Object);
 
-            apiResponse.LepsId = (int)LepsRegion.Region.NorthEast;
+            apiResponse.LepCode = LepsRegion.NorthEast;
             apiResponse.LepDateSent = null;
 
             foreach (var surveyQuestion in apiResponse.SurveyQuestions)
@@ -46,7 +46,7 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
             mockNeApiClient.Setup(x => x.PostWithResponseCode<SendStudentDataToNeLepsResponse>(It.IsAny<SendStudentDataToNeLepsRequest>(), false))
                 .ReturnsAsync(SendStudentDataToNeLepsResponse);
 
-            var result = await service.SendStudentDataToLeps(surveyGuid, LepsRegion.Region.NorthEast);
+            var result = await service.SendStudentDataToLeps(surveyGuid);
 
             mockNeApiClient.Verify(x => x.PostWithResponseCode<SendStudentDataToNeLepsResponse>(It.IsAny<SendStudentDataToNeLepsRequest>(), false), Times.Once);
             Assert.That(result, Is.Not.Null);
@@ -60,7 +60,7 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
             var mockLaApiClient = new Mock<ILepsLaApiClient<LepsLaApiConfiguration>>();
             var service = new SendStudentDataToLepsService(mockApiClient.Object, mockNeApiClient.Object, mockLaApiClient.Object);
 
-            apiResponse.LepsId = (int)LepsRegion.Region.Lancashire;
+            apiResponse.LepCode = LepsRegion.Lancashire;
             apiResponse.LepDateSent = null;
 
             foreach (var surveyQuestion in apiResponse.SurveyQuestions)
@@ -78,7 +78,7 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
             mockNeApiClient.Setup(x => x.PostWithResponseCode<SendStudentDataToNeLepsResponse>(It.IsAny<SendStudentDataToNeLepsRequest>(), false))
                 .ReturnsAsync(SendStudentDataToNeLepsResponse);
 
-            var result = await service.SendStudentDataToLeps(surveyGuid, LepsRegion.Region.NorthEast);
+            var result = await service.SendStudentDataToLeps(surveyGuid);
 
             mockLaApiClient.Verify(x => x.PostWithResponseCode<SendStudentDataToLaLepsResponse>(It.IsAny<SendStudentDataToLaLepsRequest>(), false), Times.Once);
             Assert.That(result, Is.Not.Null);

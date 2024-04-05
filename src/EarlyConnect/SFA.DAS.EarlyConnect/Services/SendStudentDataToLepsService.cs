@@ -27,22 +27,20 @@ namespace SFA.DAS.EarlyConnect.Services
             _apiLepsNeClient = apiLepsNeClient;
             _apiLepsLaClient = apiLepsLaClient;
         }
-        public async Task<SendStudentDataToLepsServiceResponse> SendStudentDataToLeps(Guid SurveyGuid, LepsRegion.Region region)
+        public async Task<SendStudentDataToLepsServiceResponse> SendStudentDataToLeps(Guid SurveyGuid)
         {
             var getStudentTriageResult = await _apiClient.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(new GetStudentTriageDataBySurveyIdRequest(SurveyGuid));
             getStudentTriageResult.EnsureSuccessStatusCode();
 
             _sendStudentDataToLepsServiceResponse = new SendStudentDataToLepsServiceResponse();
 
-            if (getStudentTriageResult.Body.LepsId == (int)LepsRegion.Region.NorthEast &&
-                getStudentTriageResult.Body.LepDateSent == null)
+            if (getStudentTriageResult.Body.LepCode.ToUpper() == LepsRegion.NorthEast && getStudentTriageResult.Body.LepDateSent == null)
             {
                 return await SendToNorthEast(getStudentTriageResult.Body, SurveyGuid);
 
             }
 
-            if (getStudentTriageResult.Body.LepsId == (int)LepsRegion.Region.Lancashire &&
-                getStudentTriageResult.Body.LepDateSent == null)
+            if (getStudentTriageResult.Body.LepCode.ToUpper() == LepsRegion.Lancashire && getStudentTriageResult.Body.LepDateSent == null)
             {
                 return await SendToLancashire(getStudentTriageResult.Body, SurveyGuid);
             }

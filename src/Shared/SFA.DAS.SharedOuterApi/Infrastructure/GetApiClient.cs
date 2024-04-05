@@ -50,7 +50,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
             httpRequestMessage.AddVersion(request.Version);
-            await AddAuthenticationHeader(httpRequestMessage);
+            //await AddAuthenticationHeader(httpRequestMessage);
 
             var response = await HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
 
