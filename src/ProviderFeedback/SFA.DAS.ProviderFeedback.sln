@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ProviderFeedback", "SFA.DAS.ProviderFeedback\SFA.DAS.ProviderFeedback.csproj", "{F3821728-6123-429F-B4BB-3C7D22AA8239}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ProviderFeedback", "SFA.DAS.ProviderFeedback\SFA.DAS.ProviderFeedback.csproj", "{F3821728-6123-429F-B4BB-3C7D22AA8239}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ProviderFeedback.Api", "SFA.DAS.ProviderFeedback.Api\SFA.DAS.ProviderFeedback.Api.csproj", "{67A358F6-BFB2-46A5-826D-FD86088B5020}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F3821728-6123-429F-B4BB-3C7D22AA8239}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3821728-6123-429F-B4BB-3C7D22AA8239}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3821728-6123-429F-B4BB-3C7D22AA8239}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67A358F6-BFB2-46A5-826D-FD86088B5020}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67A358F6-BFB2-46A5-826D-FD86088B5020}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67A358F6-BFB2-46A5-826D-FD86088B5020}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67A358F6-BFB2-46A5-826D-FD86088B5020}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
