@@ -16,7 +16,6 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Security.KeyVault.Certificates" />
-        <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" />
         <PackageReference Include="MediatR" />
         <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
         <PackageReference Include="Microsoft.Extensions.Http" />
