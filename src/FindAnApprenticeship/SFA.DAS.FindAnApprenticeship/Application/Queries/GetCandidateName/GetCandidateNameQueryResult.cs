@@ -7,13 +7,13 @@ public class GetCandidateNameQueryResult
     public string MiddleNames { get; set; }
     public string LastName { get; set; }
 
-    public static implicit operator GetCandidateNameQueryResult(GetCandidateNameApiResponse source)
+    public static implicit operator GetCandidateNameQueryResult(GetCandidateApiResponse source)
     {
         return new GetCandidateNameQueryResult
         {
-            FirstName = source != null ? source.FirstName : null,
-            MiddleNames = source != null ? source.MiddleNames : null,
-            LastName = source != null ? source.LastName : null
+            FirstName = source?.FirstName,
+            MiddleNames = source?.MiddleNames,
+            LastName = source?.LastName
         };
     }
 }

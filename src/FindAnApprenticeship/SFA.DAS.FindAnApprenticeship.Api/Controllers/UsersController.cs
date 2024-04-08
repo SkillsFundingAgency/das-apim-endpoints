@@ -60,14 +60,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{govUkIdentifier}/user-name")]
-        public async Task<IActionResult> UserName([FromRoute] string govUkIdentifier)
+        [Route("{candidateId}/user-name")]
+        public async Task<IActionResult> UserName([FromRoute] Guid candidateId)
         {
             try
             {
                 var result = await _mediator.Send(new GetCandidateNameQuery
                 {
-                    GovUkIdentifier = govUkIdentifier
+                    CandidateId = candidateId
                 });
 
                 return Ok(result);
@@ -80,14 +80,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{govUkIdentifier}/date-of-birth")]
-        public async Task<IActionResult> DateOfBirth([FromRoute] string govUkIdentifier)
+        [Route("{candidateId}/date-of-birth")]
+        public async Task<IActionResult> DateOfBirth([FromRoute] Guid candidateId)
         {
             try
             {
                 var result = await _mediator.Send(new GetDateOfBirthQuery
                 {
-                    GovUkIdentifier = govUkIdentifier
+                    CandidateId = candidateId
                 });
 
                 return Ok(result);
@@ -97,7 +97,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 _logger.LogError(e, $"Error getting candidate date of birth details");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
-    }
+        }
 
         [HttpPost]
         [Route("{govUkIdentifier}/date-of-birth")]

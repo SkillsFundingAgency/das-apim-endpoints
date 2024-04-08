@@ -7,17 +7,11 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateName;
-public class GetCandidateNameQueryHandler : IRequestHandler<GetCandidateNameQuery, GetCandidateNameQueryResult>
+public class GetCandidateNameQueryHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
+    : IRequestHandler<GetCandidateNameQuery, GetCandidateNameQueryResult>
 {
-    private readonly ICandidateApiClient<CandidateApiConfiguration> _candidateApiClient;
-
-    public GetCandidateNameQueryHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
-    {
-        _candidateApiClient = candidateApiClient;
-    }
-
     public async Task<GetCandidateNameQueryResult> Handle(GetCandidateNameQuery request, CancellationToken cancellationToken)
     {
-        return await _candidateApiClient.Get<GetCandidateNameApiResponse>(new GetCandidateNameApiRequest(request.GovUkIdentifier));
+        return await candidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId));
     }
 }
