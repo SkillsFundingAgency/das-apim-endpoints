@@ -15,30 +15,30 @@ using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands;
-public class WhenHandlingPutCandidateCommand
+public class WhenHandlingPostCandidateCommand
 {
     [Test, MoqAutoData]
-    public async Task Then_The_Put_Is_Sent_And_Data_Returned(
-        PutCandidateCommand command,
-        PutCandidateApiResponse response,
+    public async Task Then_The_Post_Is_Sent_And_Data_Returned(
+        CreateCandidateCommand command,
+        PostCandidateApiResponse response,
         GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
-        PutCandidateCommandHandler handler)
+        CreateCandidateCommandHandler handler)
     {
         response.FirstName = legacyUserByEmailApiResponse.RegistrationDetails?.FirstName;
         response.LastName = legacyUserByEmailApiResponse.RegistrationDetails?.LastName;
 
-        var expectedPutData = new PutCandidateApiRequestData
+        var expectedPostData = new PostCandidateApiRequestData
         {
             Email = command.Email
         };
-        var expectedRequest = new PutCandidateApiRequest(command.GovUkIdentifier, expectedPutData);
+        var expectedRequest = new PostCandidateApiRequest(command.GovUkIdentifier, expectedPostData);
 
         mockApiClient
-                .Setup(client => client.PutWithResponseCode<PutCandidateApiResponse>(
-                    It.Is<PutCandidateApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
-                .ReturnsAsync(new ApiResponse<PutCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
+                .Setup(client => client.PostWithResponseCode<PostCandidateApiResponse>(
+                    It.Is<PostCandidateApiRequest>(r => r.PostUrl == expectedRequest.PostUrl), true))
+                .ReturnsAsync(new ApiResponse<PostCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
 
         var legacyGetRequest = new GetLegacyUserByEmailApiRequest(command.Email);
         mockLegacyApiClient
@@ -57,30 +57,30 @@ public class WhenHandlingPutCandidateCommand
         }
     }
     [Test, MoqAutoData]
-    public async Task Then_The_Put_Is_Sent_And_If_Legacy_Api_Has_DateOfBirth_As_DateTime_Min_Value_Then_Null_Sent(
-        PutCandidateCommand command,
-        PutCandidateApiResponse response,
+    public async Task Then_The_Post_Is_Sent_And_If_Legacy_Api_Has_DateOfBirth_As_DateTime_Min_Value_Then_Null_Sent(
+        CreateCandidateCommand command,
+        PostCandidateApiResponse response,
         GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
-        PutCandidateCommandHandler handler)
+        CreateCandidateCommandHandler handler)
     {
         legacyUserByEmailApiResponse.RegistrationDetails.DateOfBirth = DateTime.MinValue;
         response.FirstName = legacyUserByEmailApiResponse.RegistrationDetails?.FirstName;
         response.LastName = legacyUserByEmailApiResponse.RegistrationDetails?.LastName;
 
-        var expectedPutData = new PutCandidateApiRequestData
+        var expectedPostData = new PostCandidateApiRequestData
         {
             Email = command.Email
         };
-        var expectedRequest = new PutCandidateApiRequest(command.GovUkIdentifier, expectedPutData);
+        var expectedRequest = new PostCandidateApiRequest(command.GovUkIdentifier, expectedPostData);
 
         mockApiClient
-                .Setup(client => client.PutWithResponseCode<PutCandidateApiResponse>(
-                    It.Is<PutCandidateApiRequest>(r => 
-                        r.PutUrl == expectedRequest.PutUrl
-                        && ((PutCandidateApiRequestData)r.Data).DateOfBirth == null)))
-                .ReturnsAsync(new ApiResponse<PutCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
+                .Setup(client => client.PostWithResponseCode<PostCandidateApiResponse>(
+                    It.Is<PostCandidateApiRequest>(r => 
+                        r.PostUrl == expectedRequest.PostUrl
+                        && ((PostCandidateApiRequestData)r.Data).DateOfBirth == null), true))
+                .ReturnsAsync(new ApiResponse<PostCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
 
         var legacyGetRequest = new GetLegacyUserByEmailApiRequest(command.Email);
         mockLegacyApiClient
@@ -101,19 +101,19 @@ public class WhenHandlingPutCandidateCommand
 
     [Test, MoqAutoData]
     public async Task And_Api_Returns_Null_Then_Return_Null(
-        PutCandidateCommand command,
+        CreateCandidateCommand command,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
-        PutCandidateCommandHandler handler)
+        CreateCandidateCommandHandler handler)
     {
-        var expectedPutData = new PutCandidateApiRequestData
+        var expectedPostData = new PostCandidateApiRequestData
         {
             Email = command.Email
         };
-        var expectedRequest = new PutCandidateApiRequest(command.GovUkIdentifier, expectedPutData);
+        var expectedRequest = new PostCandidateApiRequest(command.GovUkIdentifier, expectedPostData);
 
         mockApiClient
-                .Setup(client => client.PutWithResponseCode<PutCandidateApiResponse>(
-                    It.Is<PutCandidateApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
+                .Setup(client => client.PostWithResponseCode<PostCandidateApiResponse>(
+                    It.Is<PostCandidateApiRequest>(r => r.PostUrl == expectedRequest.PostUrl), true))
                 .ReturnsAsync(() => null);
 
         Func<Task> result = () => handler.Handle(command, CancellationToken.None);
@@ -122,25 +122,25 @@ public class WhenHandlingPutCandidateCommand
     }
 
     [Test, MoqAutoData]
-    public async Task Then_LegacyApi_Returns_Null_The_Put_Is_Sent_And_Data_Returned(
-        PutCandidateCommand command,
-        PutCandidateApiResponse response,
+    public async Task Then_LegacyApi_Returns_Null_The_Post_Is_Sent_And_Data_Returned(
+        CreateCandidateCommand command,
+        PostCandidateApiResponse response,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
-        PutCandidateCommandHandler handler)
+        CreateCandidateCommandHandler handler)
     {
         response.FirstName = null;
         response.LastName = null;
-        var expectedPutData = new PutCandidateApiRequestData
+        var expectedPostData = new PostCandidateApiRequestData
         {
             Email = command.Email
         };
-        var expectedRequest = new PutCandidateApiRequest(command.GovUkIdentifier, expectedPutData);
+        var expectedRequest = new PostCandidateApiRequest(command.GovUkIdentifier, expectedPostData);
 
         mockApiClient
-            .Setup(client => client.PutWithResponseCode<PutCandidateApiResponse>(
-                It.Is<PutCandidateApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
-            .ReturnsAsync(new ApiResponse<PutCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
+            .Setup(client => client.PostWithResponseCode<PostCandidateApiResponse>(
+                It.Is<PostCandidateApiRequest>(r => r.PostUrl == expectedRequest.PostUrl), true))
+            .ReturnsAsync(new ApiResponse<PostCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
 
         var legacyGetRequest = new GetLegacyUserByEmailApiRequest(command.Email);
         mockLegacyApiClient

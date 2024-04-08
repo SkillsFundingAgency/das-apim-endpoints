@@ -5,18 +5,19 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models;
 
 public class CandidateResponse
 {
-    public static implicit operator CandidateResponse(PutCandidateCommandResult source)
+    public static implicit operator CandidateResponse(CreateCandidateCommandResult source)
     {
         return new CandidateResponse
         {
-            GovUkIdentifier = source.GovUkIdentifier,
             Email = source.Email,
+            GovUkIdentifier = source.GovUkIdentifier,
+            Id = source.Id,
             FirstName = source.FirstName,
             LastName = source.LastName,
-            Id = source.Id,
             PhoneNumber = source.PhoneNumber
         };
     }
+
     public Guid Id { get; set; }
     public string GovUkIdentifier { get; set; }
     public string Email { get; set; }

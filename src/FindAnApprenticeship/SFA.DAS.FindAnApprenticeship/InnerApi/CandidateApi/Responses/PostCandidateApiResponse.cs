@@ -1,8 +1,8 @@
-﻿#nullable enable
-using System;
+﻿using System;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
-public class PutCandidateCommandResult
+namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+
+public class PostCandidateApiResponse
 {
     public Guid Id { get; set; }
     public string GovUkIdentifier { get; set; } = null!;

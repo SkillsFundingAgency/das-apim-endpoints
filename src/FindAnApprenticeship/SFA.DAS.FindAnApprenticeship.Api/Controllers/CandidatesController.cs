@@ -22,7 +22,7 @@ public class CandidatesController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpPut]
+    [HttpPost]
     [Route("{govIdentifier}")]
     public async Task<IActionResult> Index(
         [FromRoute] string govIdentifier, 
@@ -30,7 +30,7 @@ public class CandidatesController : ControllerBase
     {
         try
         {
-            var queryResponse = await _mediator.Send(new PutCandidateCommand
+            var queryResponse = await _mediator.Send(new CreateCandidateCommand
             {
                 GovUkIdentifier = govIdentifier,
                 Email = request.Email

@@ -15,6 +15,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.ManuallyEnteredAdd
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePreferences;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetDateOfBirth;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CandidatePreferences;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CheckAnswers;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.PhoneNumber;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.CheckAnswers;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
@@ -318,5 +319,25 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+
+        [HttpPost("{candidateId}/create-account/check-answers")]
+        public async Task<IActionResult> PostCheckAnswers([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                await _mediator.Send(new UpdateCheckAnswersCommand
+                {
+                    CandidateId = candidateId
+                });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error posting candidate create account check answers");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
     }
 }
