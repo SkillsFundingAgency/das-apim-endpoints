@@ -26,55 +26,23 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             _apiClient = apiClient;
             Configuration = apiConfiguration;
 
-            //----------------------------------------------------------
+            // Retrieve the client SSL certificate from Azure Key Vault
+            var certificateClient = new CertificateClient(new Uri(Configuration.KeyVaultIdentifier), new DefaultAzureCredential());
+            var certificateName = Configuration.CertificateName;
 
-            //// Automatically pick the certificate from certificate store - Windows
-            //var httpClientHandler = new HttpClientHandler();
-            //httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
+            // Retrieve the certificate from Azure Key Vault
+            KeyVaultCertificate certificate = await certificateClient.GetCertificateAsync(certificateName);
 
-            //----------------------------------------------------------
+            // Retrieve the certificate data
+            byte[] certificateBytes = certificate.Cer;
 
-            //Read the certificate from certificate store  -Windows
-            var certificateStore = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-            certificateStore.Open(OpenFlags.ReadOnly);
-            var certificates = certificateStore.Certificates.Find(
-                X509FindType.FindBySubjectName, Configuration.CertificateName, validOnly: false);
+            // Create X509Certificate2 object from the certificate data
+            var certificateX509 = new X509Certificate2(certificateBytes);
 
-            // Make sure at least one certificate is found
-            if (certificates.Count == 0)
-            {
-                throw new Exception("Client SSL certificate not found in the certificate store.");
-            }
-
-            // Choose the first certificate found
-            var clientCertificate = certificates[0];
-
-            // Create an instance of HttpClientHandler and configure client certificate
+            // Create HttpClientHandler and configure client certificate
             var httpClientHandler = new HttpClientHandler();
-            httpClientHandler.ClientCertificates.Add(clientCertificate);
+            httpClientHandler.ClientCertificates.Add(certificateX509);
             httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
-
-            //----------------------------------------------------------
-
-            //// Retrieve the client SSL certificate from Azure Key Vault
-            //var certificateClient = new CertificateClient(new Uri(Configuration.KeyVaultIdentifier), new DefaultAzureCredential());
-            //var certificateName = Configuration.CertificateName;
-
-            //// Retrieve the certificate from Azure Key Vault
-            //KeyVaultCertificate certificate = await certificateClient.GetCertificateAsync(certificateName);
-
-            //// Retrieve the certificate data
-            //byte[] certificateBytes = certificate.Cer;
-
-            //// Create X509Certificate2 object from the certificate data
-            //var certificateX509 = new X509Certificate2(certificateBytes);
-
-            //// Create HttpClientHandler and configure client certificate
-            //var httpClientHandler = new HttpClientHandler();
-            //httpClientHandler.ClientCertificates.Add(certificateX509);
-            //httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
-
-            //----------------------------------------------------------
 
             HttpClient = new HttpClient(httpClientHandler);
             HttpClient.BaseAddress = new Uri(apiConfiguration.Url);
