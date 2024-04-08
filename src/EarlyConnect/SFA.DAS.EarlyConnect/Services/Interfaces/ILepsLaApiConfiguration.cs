@@ -1,4 +1,6 @@
-namespace SFA.DAS.SharedOuterApi.Interfaces
+using SFA.DAS.SharedOuterApi.Interfaces;
+
+namespace SFA.DAS.EarlyConnect.Services.Interfaces
 {
     public interface ILepsLaApiConfiguration : IApiConfiguration
     {

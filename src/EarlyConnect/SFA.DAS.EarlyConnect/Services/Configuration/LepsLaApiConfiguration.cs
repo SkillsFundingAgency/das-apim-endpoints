@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Configuration
+namespace SFA.DAS.EarlyConnect.Services.Configuration
 {
     public class LepsLaApiConfiguration : IInternalApiConfiguration
     {

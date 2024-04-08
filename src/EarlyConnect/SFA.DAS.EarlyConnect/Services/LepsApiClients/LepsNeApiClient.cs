@@ -1,18 +1,16 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
+﻿using System.Net.Http.Headers;
 using SFA.DAS.Api.Common.Interfaces;
-using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using SFA.DAS.EarlyConnect.Services.Interfaces;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
-namespace SFA.DAS.SharedOuterApi.Infrastructure
+namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 {
-    public class LepsNeExternalApiClient<T> : ApiClient<T>, ILepsNeExternalApiClient<T> where T : ILepsNeExternalApiConfiguration
+    public class LepsNeApiClient<T> : ApiClient<T>, ILepsNeApiClient<T> where T : ILepsNeApiConfiguration
     {
         private readonly IAzureClientCredentialHelper _azureClientCredentialHelper;
 
-        public LepsNeExternalApiClient(
+        public LepsNeApiClient(
             IHttpClientFactory httpClientFactory,
             T apiConfiguration,
             IAzureClientCredentialHelper azureClientCredentialHelper) : base(httpClientFactory, apiConfiguration)

@@ -1,20 +1,16 @@
-using System;
-using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using Azure.Security.KeyVault.Certificates;
 using Azure.Identity;
+using SFA.DAS.EarlyConnect.Services.Interfaces;
+using SFA.DAS.EarlyConnect.Services.Configuration;
 
-namespace SFA.DAS.SharedOuterApi.Services
+namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 {
     public class LepsLaApiClient : ILepsLaApiClient<LepsLaApiConfiguration>
     {
@@ -171,17 +167,17 @@ namespace SFA.DAS.SharedOuterApi.Services
         }
         public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
         private static bool IsNot200RangeResponseCode(HttpStatusCode statusCode)
         {

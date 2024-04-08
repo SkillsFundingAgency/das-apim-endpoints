@@ -5,6 +5,8 @@ using SFA.DAS.EarlyConnect.ExternalApi.Responses;
 using SFA.DAS.EarlyConnect.ExternalModels;
 using SFA.DAS.EarlyConnect.InnerApi.Requests;
 using SFA.DAS.EarlyConnect.InnerApi.Responses;
+using SFA.DAS.EarlyConnect.Services.Configuration;
+using SFA.DAS.EarlyConnect.Services.Interfaces;
 using SFA.DAS.EarlyConnect.Web.Infrastructure;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;

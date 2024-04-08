@@ -12,7 +12,7 @@ using SFA.DAS.EarlyConnect.InnerApi.Responses;
 using SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData;
 using SFA.DAS.EarlyConnect.Models;
 using SFA.DAS.EarlyConnect.Configuration.FeatureToggle;
-using SFA.DAS.EarlyConnect.Services;
+using SFA.DAS.EarlyConnect.Services.Interfaces;
 
 namespace SFA.DAS.EarlyConnect.UnitTests.Application.ManageStudentTriageData;
 

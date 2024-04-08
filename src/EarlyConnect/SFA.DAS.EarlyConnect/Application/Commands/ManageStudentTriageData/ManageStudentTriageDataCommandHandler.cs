@@ -4,6 +4,7 @@ using SFA.DAS.EarlyConnect.Configuration.FeatureToggle;
 using SFA.DAS.EarlyConnect.InnerApi.Requests;
 using SFA.DAS.EarlyConnect.InnerApi.Responses;
 using SFA.DAS.EarlyConnect.Services;
+using SFA.DAS.EarlyConnect.Services.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;

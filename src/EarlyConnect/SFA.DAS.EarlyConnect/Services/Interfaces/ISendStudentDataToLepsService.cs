@@ -1,6 +1,5 @@
-﻿using SFA.DAS.EarlyConnect.Web.Infrastructure;
-
-namespace SFA.DAS.EarlyConnect.Services
+﻿
+namespace SFA.DAS.EarlyConnect.Services.Interfaces
 {
     public interface ISendStudentDataToLepsService
     {
