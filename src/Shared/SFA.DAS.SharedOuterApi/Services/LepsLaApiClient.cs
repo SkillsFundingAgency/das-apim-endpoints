@@ -117,7 +117,6 @@ namespace SFA.DAS.SharedOuterApi.Services
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl);
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
-            await AddAuthenticationHeader(requestMessage);
 
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -191,13 +190,6 @@ namespace SFA.DAS.SharedOuterApi.Services
         public virtual string HandleException(HttpResponseMessage response, string json)
         {
             return json;
-        }
-        protected async Task AddAuthenticationHeader(HttpRequestMessage httpRequestMessage)
-        {
-            var username = Configuration.ClientId;
-            var password = Configuration.ClientSecret;
-            var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{username}:{password}"));
-            httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Basic", credentials);
         }
     }
 }
