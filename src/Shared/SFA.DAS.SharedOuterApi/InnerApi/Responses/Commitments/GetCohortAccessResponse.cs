@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Authorization;
+namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 
 public record GetCohortAccessResponse
 {
