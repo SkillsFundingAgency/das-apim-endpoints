@@ -5,16 +5,22 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="InnerApi\Assessor\**" />
+      <EmbeddedResource Remove="InnerApi\Assessor\**" />
+      <None Remove="InnerApi\Assessor\**" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Compile Remove="InnerApi\Requests\GetLevelsListRequest.cs" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Azure.Security.KeyVault.Certificates" />
         <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" />
+        <PackageReference Include="MediatR" />
         <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
         <PackageReference Include="Microsoft.Extensions.Http" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
-        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
         <PackageReference Include="SFA.DAS.Api.Common" />
@@ -23,10 +29,6 @@
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
         <PackageReference Include="System.Net.Http.Json" />
         <PackageReference Include="SFA.DAS.NServiceBus" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="InnerApi\Assessor\" />
     </ItemGroup>
 
 </Project>

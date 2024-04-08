@@ -69,7 +69,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<LocationsApiHealthCheck>("Locations API health check");
+                    .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription);
             }
             
             if (_configuration.IsLocalOrDev())
