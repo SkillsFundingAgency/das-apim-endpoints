@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Users;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.AddDetails;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;

@@ -107,7 +107,8 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                 EndPointAssessmentPrice = pendingPriceChangeResponse.PendingPriceChange.PendingAssessmentPrice,
                 TrainingPrice = pendingPriceChangeResponse.PendingPriceChange.PendingTrainingPrice,
                 ProviderApprovedDate = pendingPriceChangeResponse.PendingPriceChange.ProviderApprovedDate,
-                EmployerApprovedDate = pendingPriceChangeResponse.PendingPriceChange.EmployerApprovedDate
+                EmployerApprovedDate = pendingPriceChangeResponse.PendingPriceChange.EmployerApprovedDate,
+                Initiator = pendingPriceChangeResponse.PendingPriceChange.Initiator,
             };
         }
     }
