@@ -18,7 +18,7 @@ public class CreatePhoneNumberCommandHandler : IRequestHandler<CreatePhoneNumber
     }
     public async Task<Unit> Handle(CreatePhoneNumberCommand request, CancellationToken cancellationToken)
     {
-        var postRequest = new PutCandidateApiRequest(request.GovUkIdentifier, new PutCandidateApiRequestData
+        var postRequest = new PutCandidateApiRequest(request.CandidateId, new PutCandidateApiRequestData
         {
             Email = request.Email,
             PhoneNumber = request.PhoneNumber

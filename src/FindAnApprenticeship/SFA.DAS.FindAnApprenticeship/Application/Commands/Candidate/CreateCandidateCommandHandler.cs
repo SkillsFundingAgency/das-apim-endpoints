@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -19,6 +20,24 @@ public class CreateCandidateCommandHandler(
 {
     public async Task<CreateCandidateCommandResult> Handle(CreateCandidateCommand request, CancellationToken cancellationToken)
     {
+        var existingUser =
+            await candidateApiClient.GetWithResponseCode<GetCandidateApiResponse>(
+                new GetCandidateApiRequest(Guid.Parse(request.GovUkIdentifier)));
+
+        if (existingUser.StatusCode != HttpStatusCode.NotFound)
+        {
+            return new CreateCandidateCommandResult
+            {
+                Id = existingUser.Body.Id,
+                GovUkIdentifier = existingUser.Body.GovUkIdentifier,
+                Email = existingUser.Body.Email,
+                FirstName = existingUser.Body.FirstName,
+                LastName = existingUser.Body.LastName,
+                PhoneNumber = existingUser.Body.PhoneNumber,
+                DateOfBirth = existingUser.Body.DateOfBirth
+            };
+        }
+
         var userDetails =
             await legacyApiClient.Get<GetLegacyUserByEmailApiResponse>(
                 new GetLegacyUserByEmailApiRequest(request.Email));

@@ -37,16 +37,16 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPut]
-        [Route("{govUkIdentifier}/add-details")]
-        public async Task<IActionResult> AddDetails([FromRoute] string govUkIdentifier, [FromBody] CandidatesNameModel model)
+        [Route("{candidateId}/create-account/add-details")]
+        public async Task<IActionResult> AddDetails([FromRoute] Guid candidateId, [FromBody] CandidatesNameModel model)
         {
             try
             {
                 var result = await _mediator.Send(new AddDetailsCommand
                 {
+                    CandidateId = candidateId,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    GovUkIdentifier = govUkIdentifier,
                     Email = model.Email
                 });
 
@@ -60,7 +60,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{candidateId}/user-name")]
+        [Route("{candidateId}/create-account/user-name")]
         public async Task<IActionResult> UserName([FromRoute] Guid candidateId)
         {
             try
@@ -80,7 +80,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{candidateId}/date-of-birth")]
+        [Route("{candidateId}/create-account/date-of-birth")]
         public async Task<IActionResult> DateOfBirth([FromRoute] Guid candidateId)
         {
             try
@@ -100,14 +100,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{govUkIdentifier}/date-of-birth")]
-        public async Task<IActionResult> DateOfBirth([FromRoute] string govUkIdentifier, [FromBody] CandidatesDateOfBirthModel model)
+        [Route("{candidateId}/create-account/date-of-birth")]
+        public async Task<IActionResult> DateOfBirth([FromRoute] Guid candidateId, [FromBody] CandidatesDateOfBirthModel model)
         {
             try
             {
                 var result = await _mediator.Send(new UpsertDateOfBirthCommand
                 {
-                    GovUkIdentifier = govUkIdentifier,
+                    CandidateId = candidateId,
                     Email = model.Email,
                     DateOfBirth = model.DateOfBirth,
 
@@ -123,7 +123,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("postcode-address")]
+        [Route("create-account/postcode-address")]
         public async Task<IActionResult> PostcodeAddress([FromQuery] string postcode)
         {
             try
@@ -139,7 +139,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("select-address")]
+        [Route("create-account/select-address")]
         public async Task<IActionResult> SelectAddress([FromQuery] string postcode)
         {
             try
@@ -159,12 +159,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{candidateId}/user-address")]
+        [Route("{candidateId}/create-account/user-address")]
         public async Task<IActionResult> UserAddress([FromRoute] Guid candidateId)
         {
             try
             {
-                var queryResponse = await _mediator.Send(new GetCandidateAddressQuery()
+                var queryResponse = await _mediator.Send(new GetCandidateAddressQuery
                 {
                     CandidateId = candidateId
                 });
@@ -179,7 +179,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{candidateId}/select-address")]
+        [Route("{candidateId}/create-account/select-address")]
         public async Task<IActionResult> SelectAddress([FromRoute] Guid candidateId, [FromBody] CandidatesAddressModel model)
         {
             try
@@ -205,7 +205,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{candidateId}/enter-address")]
+        [Route("{candidateId}/create-account/enter-address")]
         public async Task<IActionResult> EnterAddress([FromRoute] Guid candidateId, [FromBody] CandidatesManuallyEnteredAddressModel model)
         {
             try
@@ -231,14 +231,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{govUkIdentifier}/phone-number")]
-        public async Task<IActionResult> PhoneNumber([FromRoute] string govUkIdentifier, [FromBody] CandidatesPhoneNumberModel model)
+        [Route("{candidateId}/create-account/phone-number")]
+        public async Task<IActionResult> PhoneNumber([FromRoute] Guid candidateId, [FromBody] CandidatesPhoneNumberModel model)
         {
             try
             {
                 var result = await _mediator.Send(new CreatePhoneNumberCommand
                 {
-                    GovUkIdentifier = govUkIdentifier,
+                    CandidateId = candidateId,
                     Email = model.Email,
                     PhoneNumber = model.PhoneNumber
                 });
@@ -252,7 +252,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 
-        [HttpGet("{candidateId}/candidate-preferences")]
+        [HttpGet("{candidateId}/create-account/candidate-preferences")]
         public async Task<IActionResult> GetCandidatePreferences([FromRoute] Guid candidateId)
         {
             try
@@ -271,7 +271,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 
-        [HttpPost("{candidateId}/candidate-preferences")]
+        [HttpPost("{candidateId}/create-account/candidate-preferences")]
         public async Task<IActionResult> UpsertCandidatePreferences([FromRoute] Guid candidateId, [FromBody] CandidatePreferencesModel model)
         {
             try
@@ -338,6 +338,5 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
-
     }
 }

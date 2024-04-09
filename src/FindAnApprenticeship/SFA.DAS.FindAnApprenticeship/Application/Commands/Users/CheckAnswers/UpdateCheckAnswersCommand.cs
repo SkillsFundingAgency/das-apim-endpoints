@@ -6,7 +6,6 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CheckAnswers
 {
@@ -19,7 +18,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CheckAnswers
     {
         public async Task Handle(UpdateCheckAnswersCommand request, CancellationToken cancellationToken)
         {
-            var postRequest = new PutCandidateApiRequest(request.CandidateId.ToString(), new PutCandidateApiRequestData
+            var postRequest = new PutCandidateApiRequest(request.CandidateId, new PutCandidateApiRequestData
             {
                 Status = 1
             });
