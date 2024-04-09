@@ -7,6 +7,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses;
+using SFA.DAS.FindAnApprenticeship.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -34,7 +35,8 @@ public class CreateCandidateCommandHandler(
                 FirstName = existingUser.Body.FirstName,
                 LastName = existingUser.Body.LastName,
                 PhoneNumber = existingUser.Body.PhoneNumber,
-                DateOfBirth = existingUser.Body.DateOfBirth
+                DateOfBirth = existingUser.Body.DateOfBirth,
+                Status = existingUser.Body.Status
             };
         }
 
@@ -72,7 +74,8 @@ public class CreateCandidateCommandHandler(
             FirstName = candidateResult.Body.FirstName,
             LastName = candidateResult.Body.LastName,
             PhoneNumber = candidateResult.Body.PhoneNumber,
-            DateOfBirth = registrationDetailsDateOfBirth
+            DateOfBirth = registrationDetailsDateOfBirth,
+            Status = UserStatus.Incomplete
         };
     }
 }

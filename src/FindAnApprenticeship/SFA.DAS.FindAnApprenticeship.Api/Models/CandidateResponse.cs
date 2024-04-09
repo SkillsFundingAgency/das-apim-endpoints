@@ -1,5 +1,7 @@
 using System;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
+using SFA.DAS.FindAnApprenticeship.Domain;
+using SFA.DAS.FindAnApprenticeship.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models;
 
@@ -14,7 +16,8 @@ public class CandidateResponse
             Id = source.Id,
             FirstName = source.FirstName,
             LastName = source.LastName,
-            PhoneNumber = source.PhoneNumber
+            PhoneNumber = source.PhoneNumber,
+            Status = source.Status
         };
     }
 
@@ -24,4 +27,5 @@ public class CandidateResponse
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string PhoneNumber { get; set; }
+    public UserStatus Status { get; set; }
 }
