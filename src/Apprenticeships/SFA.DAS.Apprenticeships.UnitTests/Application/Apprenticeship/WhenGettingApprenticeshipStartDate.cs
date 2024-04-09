@@ -13,38 +13,33 @@ using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 
 namespace SFA.DAS.Apprenticeships.UnitTests.Application.Apprenticeship;
 
-public class WhenGettingApprenticeshipPrice
+public class WhenGettingApprenticeshipStartDate
 {
-	private readonly Mock<ILogger<GetApprenticeshipPriceQueryHandler>> _mocklogger;
+	private readonly Mock<ILogger<GetApprenticeshipStartDateQueryHandler>> _mocklogger;
 
-    public WhenGettingApprenticeshipPrice()
+    public WhenGettingApprenticeshipStartDate()
     {
-		_mocklogger = new Mock<ILogger<GetApprenticeshipPriceQueryHandler>>();
+		_mocklogger = new Mock<ILogger<GetApprenticeshipStartDateQueryHandler>>();
     }
 
     [Test, MoqAutoData]
-	public async Task Then_Gets_ApprenticeshipPrice_From_ApiClient(
-		ApprenticeshipPriceResponse expectedResponse,
+	public async Task Then_Gets_ApprenticeshipStartDate_From_ApiClient(
+		ApprenticeshipStartDateResponse expectedResponse,
 		Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient,
 		Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsV2ApiApiClient,
 		Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> mockCollectionCalendarApiClient)
 	{
 		//  Arrange
-		mockApprenticeshipsApiClient.Setup(x => x.Get<GetApprenticeshipPriceResponse>(It.IsAny<GetApprenticeshipPriceRequest>()))
-			.ReturnsAsync(new GetApprenticeshipPriceResponse
+		mockApprenticeshipsApiClient.Setup(x => x.Get<GetApprenticeshipStartDateResponse>(It.IsAny<GetApprenticeshipStartDateRequest>()))
+			.ReturnsAsync(new GetApprenticeshipStartDateResponse
 			{
 				AccountLegalEntityId = 1,
 				ApprenticeshipKey = expectedResponse.ApprenticeshipKey,
-				ApprenticeshipActualStartDate = expectedResponse.ApprenticeshipActualStartDate,
-				ApprenticeshipPlannedEndDate = expectedResponse.ApprenticeshipPlannedEndDate,
-				AssessmentPrice = expectedResponse.AssessmentPrice,
-				FundingBandMaximum = expectedResponse.FundingBandMaximum,
-				TrainingPrice = expectedResponse.TrainingPrice,
+				ActualStartDate = expectedResponse.ActualStartDate,
+				PlannedEndDate = expectedResponse.PlannedEndDate,
 				UKPRN = 123
 			});
 
@@ -54,22 +49,16 @@ public class WhenGettingApprenticeshipPrice
 				LegalEntityName = expectedResponse.EmployerName!
 			});
 
-		mockCollectionCalendarApiClient.Setup(x => x.Get<GetAcademicYearsResponse>(It.IsAny<GetAcademicYearsRequest>())).ReturnsAsync(new GetAcademicYearsResponse
-		{
-			StartDate = expectedResponse.EarliestEffectiveDate,
-			HardCloseDate = expectedResponse.EarliestEffectiveDate
-		});
-
         mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetProviderResponse>(It.IsAny<GetProviderRequest>()))
             .ReturnsAsync(new GetProviderResponse
             {
                 Name = expectedResponse.ProviderName!
             });
 
-        var handler = new GetApprenticeshipPriceQueryHandler(_mocklogger.Object, mockApprenticeshipsApiClient.Object, mockCommitmentsV2ApiApiClient.Object, mockCollectionCalendarApiClient.Object);
+        var handler = new GetApprenticeshipStartDateQueryHandler(_mocklogger.Object, mockApprenticeshipsApiClient.Object, mockCommitmentsV2ApiApiClient.Object, mockCollectionCalendarApiClient.Object);
 
 		//  Act
-		var result = await handler.Handle(new GetApprenticeshipPriceQuery( Guid.NewGuid()), CancellationToken.None);
+		var result = await handler.Handle(new GetApprenticeshipStartDateQuery( Guid.NewGuid()), CancellationToken.None);
 
 		//  Assert
 		result.Should().BeEquivalentTo(expectedResponse);

@@ -22,6 +22,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
         public IReadOnlyCollection<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequest { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public PendingPriceChange PendingPriceChange { get; set; }
+        public bool? CanActualStartDateBeChanged { get; set; }
     }
 
     public class PendingPriceChange
