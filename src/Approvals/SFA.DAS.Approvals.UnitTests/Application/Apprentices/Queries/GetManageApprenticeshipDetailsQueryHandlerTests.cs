@@ -7,6 +7,7 @@ using AutoFixture;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using NUnit.Framework.Constraints;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetApprenticeshipKey;
@@ -15,6 +16,8 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -28,6 +31,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         private Mock<IDeliveryModelService> _deliveryModelService;
         private ServiceParameters _serviceParameters;
         private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _apprenticeshipsApiClient;
+        private Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> _collectionCalendarApiClient;
 
         private GetApprenticeshipResponse _apprenticeship;
         private GetManageApprenticeshipDetailsQuery _query;
@@ -51,6 +55,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _apprenticeship = fixture.Build<GetApprenticeshipResponse>()
                 .With(x => x.EmployerAccountId, 123)
                 .With(x=>x.Id, _query.ApprenticeshipId)
+                .With(x => x.ActualStartDate, (DateTime?)null)
                 .Create();
 
             _priceEpisodesResponse = fixture.Create<GetPriceEpisodesResponse>();
@@ -107,7 +112,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(It.Is<GetPendingPriceChangeRequest>(r => r.ApprenticeshipKey == apprenticeshipKey)))
                 .ReturnsAsync(new ApiResponse<GetPendingPriceChangeResponse>(_pendingPriceChangeResponse, HttpStatusCode.OK, string.Empty));
 
-            _handler = new GetManageApprenticeshipDetailsQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters, _apprenticeshipsApiClient.Object);
+            _collectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
+
+            _handler = new GetManageApprenticeshipDetailsQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters, _apprenticeshipsApiClient.Object, _collectionCalendarApiClient.Object);
         }
 
         [TestCase(0, false)]
@@ -147,6 +154,104 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             result.PendingPriceChange.ProviderApprovedDate.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.ProviderApprovedDate);
             result.PendingPriceChange.EmployerApprovedDate.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.EmployerApprovedDate);
         }
+
+        [Test]
+        public async Task Handle_Returns_Correct_CanActualStartDateBeChanged_CurrentAcademicYear()
+        {
+            // Arrange
+            // Intentionally using dates in the past to assert that the test will work forever
+            // Simple current academic year scenario
+            var actualStartDate = new DateTime(2020, 10, 1);
+            var currentAcademicYearStartDate = new DateTime(2020, 08, 01);
+            _apprenticeship.ActualStartDate = actualStartDate;
+
+            var currentAcademicYearResponse = new GetAcademicYearsResponse
+            {
+                StartDate = currentAcademicYearStartDate
+            };
+            _collectionCalendarApiClient
+                .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(r => r._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
+                .ReturnsAsync(currentAcademicYearResponse);
+
+            // Act
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            // Assert
+            result.CanActualStartDateBeChanged.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task Handle_Returns_Correct_CanActualStartDateBeChanged_PreviousOpenAcademicYear()
+        {
+            // Arrange
+            // Intentionally using dates in the past to assert that the test will work forever
+            // Here the previous academic year is open, doesn't matter that the hard close date is years later the api will control returning correct data, but we need the hard close date to be AFTER DateTime.Now for this scenario
+            var actualStartDate = new DateTime(2019, 10, 1);
+            var currentAcademicYearStartDate = new DateTime(2020, 08, 01);
+            var previousAcademicYearStartDate = new DateTime(2019, 08, 01);
+            var previousAcademicYearHardCloseDate = DateTime.Now.AddMonths(1);
+            _apprenticeship.ActualStartDate = actualStartDate;
+
+            var currentAcademicYearResponse = new GetAcademicYearsResponse
+            {
+                StartDate = currentAcademicYearStartDate
+            };
+            var previousAcademicYearResponse = new GetAcademicYearsResponse
+            {
+                StartDate = previousAcademicYearStartDate,
+                HardCloseDate = previousAcademicYearHardCloseDate
+            };
+
+            _collectionCalendarApiClient
+                .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(r => r._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
+                .ReturnsAsync(currentAcademicYearResponse);
+            _collectionCalendarApiClient
+                .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(r => r._dateTime == DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"))))
+                .ReturnsAsync(previousAcademicYearResponse);
+
+            // Act
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            // Assert
+            result.CanActualStartDateBeChanged.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task Handle_Returns_Correct_CanActualStartDateBeChanged_PreviousClosedAcademicYear()
+        {
+            // Arrange
+            // Intentionally using dates in the past to assert that the test will work forever
+            // Here the previous academic year is closed, again doesn't matter that the hard close date is years later the api will control returning correct data, but we need the hard close date to be BEFORE DateTime.Now for this scenario
+            var actualStartDate = new DateTime(2019, 10, 1);
+            var currentAcademicYearStartDate = new DateTime(2020, 08, 01);
+            var previousAcademicYearStartDate = new DateTime(2019, 08, 01);
+            var previousAcademicYearHardCloseDate = DateTime.Now.AddMonths(-1);
+            _apprenticeship.ActualStartDate = actualStartDate;
+
+            var currentAcademicYearResponse = new GetAcademicYearsResponse
+            {
+                StartDate = currentAcademicYearStartDate
+            };
+            var previousAcademicYearResponse = new GetAcademicYearsResponse
+            {
+                StartDate = previousAcademicYearStartDate,
+                HardCloseDate = previousAcademicYearHardCloseDate
+            };
+
+            _collectionCalendarApiClient
+                .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(r => r._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
+                .ReturnsAsync(currentAcademicYearResponse);
+            _collectionCalendarApiClient
+                .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(r => r._dateTime == DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"))))
+                .ReturnsAsync(previousAcademicYearResponse);
+
+            // Act
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            // Assert
+            result.CanActualStartDateBeChanged.Should().BeFalse();
+        }
+
 
         [Test]
         public async Task When_apprenticeship_has_no_pending_price_change_then_details_not_returned()
