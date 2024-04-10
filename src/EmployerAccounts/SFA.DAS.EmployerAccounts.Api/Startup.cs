@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +17,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.EmployerAccounts.Api.AppStart;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent;
+using SFA.DAS.EmployerAccounts.Services;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
@@ -42,11 +42,11 @@ namespace SFA.DAS.EmployerAccounts.Api
                 builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
                 builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
             });
-            
+
             services.AddSingleton(_env);
-            
+
             services.AddConfigurationOptions(_configuration);
-            
+
             if (!_configuration.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration
@@ -56,11 +56,11 @@ namespace SFA.DAS.EmployerAccounts.Api
                 {
                     {"default", "APIM"}
                 };
-               
+
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetEnglishFractionCurrentQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEnglishFractionCurrentQuery).Assembly));
             services.AddServiceRegistration();
 
             services
@@ -70,13 +70,13 @@ namespace SFA.DAS.EmployerAccounts.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                });
 
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<AccountsApiHealthCheck>($"{AccountsApiHealthCheck.AccountsApiHealthCheckDescription} health check")
-                    .AddCheck<FinanceApiHealthCheck>($"{FinanceApiHealthCheck.FinanceApiHealthCheckDescription} health check");
+                    .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<FinanceApiHealthCheck>(FinanceApiHealthCheck.HealthCheckResultDescription);
             }
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
@@ -85,6 +85,8 @@ namespace SFA.DAS.EmployerAccounts.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerAccountsOuterApi", Version = "v1" });
             });
+
+            services.AddDateTimeServices(_configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

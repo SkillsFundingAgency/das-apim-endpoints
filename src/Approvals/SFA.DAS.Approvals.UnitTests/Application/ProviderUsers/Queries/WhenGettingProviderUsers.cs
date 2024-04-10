@@ -5,7 +5,6 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Approvals.Application.Providers.Queries;
 using SFA.DAS.Approvals.Application.ProviderUsers.Queries;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;

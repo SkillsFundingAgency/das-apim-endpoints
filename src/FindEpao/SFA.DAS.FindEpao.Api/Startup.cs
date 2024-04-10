@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
@@ -50,7 +49,7 @@ namespace SFA.DAS.FindEpao.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetCourseListQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetCourseListQuery).Assembly));
             services.AddMediatRValidation();
             services.AddServiceRegistration();
 
@@ -85,8 +84,8 @@ namespace SFA.DAS.FindEpao.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<AssessorsApiHealthCheck>("Assessors API health check");
+                    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<AssessorsApiHealthCheck>(AssessorsApiHealthCheck.HealthCheckResultDescription);
             }
             
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

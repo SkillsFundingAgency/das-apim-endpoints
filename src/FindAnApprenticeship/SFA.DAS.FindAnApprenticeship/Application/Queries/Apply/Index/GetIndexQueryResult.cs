@@ -4,6 +4,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
 
 public class GetIndexQueryResult
 {
+    public string VacancyReference { get; set; }
     public string VacancyTitle { get; set; }
     public string EmployerName { get; set; }
     public DateTime ClosingDate { get; set; }
@@ -32,8 +33,10 @@ public class GetIndexQueryResult
         public string WhatInterestsYou { get; set; }
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
-        public string AdditionalQuestion1Label { get; set; }
-        public string AdditionalQuestion2Label { get; set; }
+        public string? AdditionalQuestion1Label { get; set; }
+        public string? AdditionalQuestion2Label { get; set; }
+        public Guid? AdditionalQuestion1Id { get; set; }
+        public Guid? AdditionalQuestion2Id { get; set; }
     }
 
     public class InterviewAdjustmentsSection

@@ -60,7 +60,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Authorisation
         public async Task HandleRequirementAsync_Return_True_For_Valid_Account_Pledge_Combination()
         {
             await _sut.HandleAsync(_context);
-            Assert.IsTrue(_context.HasSucceeded);
+            Assert.That(_context.HasSucceeded, Is.True);
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Authorisation
             _httpContext.Request.RouteValues.Add("AccountId", 0);
 
             await _sut.HandleAsync(_context);
-            Assert.IsFalse(_context.HasSucceeded);
+            Assert.That(_context.HasSucceeded, Is.False);
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Authorisation
             _httpContext.Request.RouteValues.Remove("AccountId");
 
             await _sut.HandleAsync(_context);
-            Assert.IsFalse(_context.HasSucceeded);
+            Assert.That(_context.HasSucceeded, Is.False);
         }
 
         [Test]
@@ -88,7 +88,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Authorisation
             _httpContext.Request.RouteValues.Remove("PledgeId");
 
             await _sut.HandleAsync(_context);
-            Assert.IsFalse(_context.HasSucceeded);
+            Assert.That(_context.HasSucceeded, Is.False);
         }
     }
 }

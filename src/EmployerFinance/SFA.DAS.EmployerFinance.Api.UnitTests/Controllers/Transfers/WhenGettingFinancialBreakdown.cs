@@ -30,15 +30,15 @@ namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.Transfers
             var value = okObjectResult.Value;
             var getFinancialBreakdownResponse = value as GetFinancialBreakdownResponse;
 
-            Assert.IsNotNull(actionResult);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(value);
-            Assert.IsNotNull(getFinancialBreakdownResponse);
+            Assert.That(actionResult, Is.Not.Null);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(value, Is.Not.Null);
+            Assert.That(getFinancialBreakdownResponse, Is.Not.Null);
 
-            Assert.AreEqual(mediatorResult.Commitments, getFinancialBreakdownResponse.Commitments);
-            Assert.AreEqual(mediatorResult.AcceptedPledgeApplications, getFinancialBreakdownResponse.AcceptedPledgeApplications);
-            Assert.AreEqual(mediatorResult.ApprovedPledgeApplications, getFinancialBreakdownResponse.ApprovedPledgeApplications);
-            Assert.AreEqual(mediatorResult.TransferConnections, getFinancialBreakdownResponse.TransferConnections);
+            Assert.That(mediatorResult.Commitments, Is.EqualTo(getFinancialBreakdownResponse.Commitments));
+            Assert.That(mediatorResult.AcceptedPledgeApplications, Is.EqualTo(getFinancialBreakdownResponse.AcceptedPledgeApplications));
+            Assert.That(mediatorResult.ApprovedPledgeApplications, Is.EqualTo(getFinancialBreakdownResponse.ApprovedPledgeApplications));
+            Assert.That(mediatorResult.TransferConnections, Is.EqualTo(getFinancialBreakdownResponse.TransferConnections));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
@@ -6,7 +7,6 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
@@ -24,53 +24,49 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
 
     public async Task<GetIndexQueryResult> Handle(GetIndexQuery request, CancellationToken cancellationToken)
     {
-        var result = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(request.VacancyReference));
+        var application = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId));
+        if (application == null) return null;
 
-        var putData = new PutApplicationApiRequest.PutApplicationApiRequestData
-        {
-            Email = request.ApplicantEmailAddress
-        };
-        var putRequest = new PutApplicationApiRequest(request.VacancyReference, putData);
+        var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference));
+        if(vacancy == null) return null;
 
-        var applicationResult = await _candidateApiClient.PutWithResponseCode<PutApplicationApiResponse>(putRequest);
-
-        applicationResult.EnsureSuccessStatusCode();
-
-        if (result is null) return null;
-        if(applicationResult is null) return null;
+        var additionalQuestions = application.AdditionalQuestions.ToList();
 
         return new GetIndexQueryResult
         {
-            VacancyTitle = result.Title,
-            EmployerName = result.EmployerName,
-            ClosingDate = result.ClosingDate,
-            IsDisabilityConfident = result.IsDisabilityConfident,
+            VacancyReference = vacancy.VacancyReference,
+            VacancyTitle = vacancy.Title,
+            EmployerName = vacancy.EmployerName,
+            ClosingDate = vacancy.ClosingDate,
+            IsDisabilityConfident = vacancy.IsDisabilityConfident,
             EducationHistory = new GetIndexQueryResult.EducationHistorySection
             {
-                Qualifications = applicationResult.Body.QualificationStatus,
-                TrainingCourses = applicationResult.Body.TrainingCourseStatus,
+                Qualifications = application.QualificationsStatus,
+                TrainingCourses = application.TrainingCoursesStatus,
             },
             WorkHistory = new GetIndexQueryResult.WorkHistorySection
             {
-                Jobs = applicationResult.Body.JobStatus,
-                VolunteeringAndWorkExperience = applicationResult.Body.WorkExperienceStatus,
+                Jobs = application.JobsStatus,
+                VolunteeringAndWorkExperience = application.WorkExperienceStatus,
             },
             ApplicationQuestions = new GetIndexQueryResult.ApplicationQuestionsSection
             {
-                SkillsAndStrengths = applicationResult.Body.SkillsAndStrengthsStatus,
-                WhatInterestsYou = applicationResult.Body.InterestsStatus,
-                AdditionalQuestion1 = applicationResult.Body.AdditionalQuestion1Status,
-                AdditionalQuestion1Label = result.AdditionalQuestion1,
-                AdditionalQuestion2 = applicationResult.Body.AdditionalQuestion2Status,
-                AdditionalQuestion2Label = result.AdditionalQuestion2
+                SkillsAndStrengths = application.SkillsAndStrengthStatus,
+                WhatInterestsYou = application.InterestsStatus,
+                AdditionalQuestion1 = application.AdditionalQuestion1Status,
+                AdditionalQuestion1Label = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(0) != null ? additionalQuestions[0].QuestionText : null,
+                AdditionalQuestion1Id = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(0) != null ? additionalQuestions[0].Id : null,
+                AdditionalQuestion2 = application.AdditionalQuestion2Status,
+                AdditionalQuestion2Label = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(1) != null ? additionalQuestions[1].QuestionText : null,
+                AdditionalQuestion2Id = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(1) != null ? additionalQuestions[1].Id : null
             },
             InterviewAdjustments = new GetIndexQueryResult.InterviewAdjustmentsSection
             {
-                RequestAdjustments = applicationResult.Body.InterviewAdjustmentsStatus
+                RequestAdjustments = application.InterviewAdjustmentsStatus
             },
             DisabilityConfidence = new GetIndexQueryResult.DisabilityConfidenceSection
             {
-                InterviewUnderDisabilityConfident = applicationResult.Body.DisabilityConfidenceStatus,
+                InterviewUnderDisabilityConfident = application.DisabilityConfidenceStatus,
             }
         };
     }

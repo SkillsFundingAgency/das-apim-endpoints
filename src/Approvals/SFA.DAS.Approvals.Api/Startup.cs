@@ -3,7 +3,6 @@ using System.Text.Json.Serialization;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,7 +49,7 @@ namespace SFA.DAS.Approvals.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetStandardsQuery).Assembly);
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetStandardsQuery).Assembly));
             services.AddServiceRegistration(_configuration);
             services.AddAutoMapper(typeof(Startup));
 
@@ -61,7 +60,7 @@ namespace SFA.DAS.Approvals.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                });
 
             services.AddControllers().AddJsonOptions(options =>
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
@@ -69,11 +68,11 @@ namespace SFA.DAS.Approvals.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<RoatpCourseManagementApiHealthCheck>("Roatp Course Management API health check")
-                    .AddCheck<ApprenticeCommitmentsApiHealthCheck>("ApprenticeCommitments API health check")
-                    .AddCheck<ApprenticeAccountsApiHealthCheck>("ApprenticeAccounts API health check")
-                    .AddCheck<ProviderCoursesApiHealthCheck>("ProviderCourses API health check");
+                    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<RoatpCourseManagementApiHealthCheck>(RoatpCourseManagementApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<ApprenticeCommitmentsApiHealthCheck>(ApprenticeCommitmentsApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<ApprenticeAccountsApiHealthCheck>(ApprenticeAccountsApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<ProviderCoursesApiHealthCheck>(ProviderCoursesApiHealthCheck.HealthCheckResultDescription);
             }
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

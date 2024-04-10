@@ -5,7 +5,6 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
@@ -50,7 +49,7 @@ namespace SFA.DAS.EmployerContactForms.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetAddressesQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAddressesQuery).Assembly));
             services.AddServiceRegistration();
 
             services.Configure<RouteOptions>(options =>
@@ -63,13 +62,12 @@ namespace SFA.DAS.EmployerContactForms.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
+                }).AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<LocationsApiHealthCheck>("Locations API health check");
+                    .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription);
             }
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

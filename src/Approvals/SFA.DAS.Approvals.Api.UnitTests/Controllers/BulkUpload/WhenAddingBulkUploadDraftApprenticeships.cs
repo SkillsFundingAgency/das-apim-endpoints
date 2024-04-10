@@ -10,7 +10,6 @@ using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.BulkUpload.Commands;
-using SFA.DAS.Approvals.Application.Cohorts.Queries;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.BulkUpload
@@ -34,15 +33,21 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.BulkUpload
 
             var controllerResult = await controller.AddDraftapprenticeships(request) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
         }
 
         [Test, MoqAutoData]
         public async Task And_Then_No_Result_Is_Returned_From_Mediator(
              BulkUploadAddDraftApprenticeshipsRequest request,
+             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] BulkUploadController controller)
         {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<BulkUploadAddDraftApprenticeshipsCommand>(),
+                    It.IsAny<CancellationToken>())).ReturnsAsync(()=> null);
+
             var controllerResult = await controller.AddDraftapprenticeships(request) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);

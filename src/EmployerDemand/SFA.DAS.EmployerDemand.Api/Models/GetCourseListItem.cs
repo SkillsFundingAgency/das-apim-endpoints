@@ -1,4 +1,3 @@
-using SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDemand;
 using System;
 using SFA.DAS.EmployerDemand.InnerApi.Responses;
 

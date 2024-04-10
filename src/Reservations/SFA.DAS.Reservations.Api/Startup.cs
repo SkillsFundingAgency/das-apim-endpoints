@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -59,7 +58,7 @@ namespace SFA.DAS.Reservations.Api
             services.Configure<CommitmentsV2ApiConfiguration>(_configuration.GetSection("CommitmentsV2ApiConfiguration"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
 
-            services.AddMediatR(typeof(GetTrainingCoursesQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetTrainingCoursesQuery).Assembly));
             services.AddServiceRegistration();
             
             services
@@ -69,14 +68,14 @@ namespace SFA.DAS.Reservations.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                });
 
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<FinanceApiHealthCheck>("Finance API health check")
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<CommitmentsV2HealthCheck>("CommitmentsV2 API health check");
+                    .AddCheck<FinanceApiHealthCheck>(FinanceApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<CommitmentsV2ApiHealthCheck>(CommitmentsV2ApiHealthCheck.HealthCheckResultDescription);
             }
             
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

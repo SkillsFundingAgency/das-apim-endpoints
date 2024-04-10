@@ -11,9 +11,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.InnerApi.Requests.AccountsTests
         {
             var actual = new GetAccountRequest(encodedAccountId);
 
-            Assert.AreEqual(
-                $"api/accounts/{encodedAccountId}",
-                actual.GetUrl);
+            Assert.That(actual.GetUrl, Is.EqualTo($"api/accounts/{encodedAccountId}"));
         }
     }
 }

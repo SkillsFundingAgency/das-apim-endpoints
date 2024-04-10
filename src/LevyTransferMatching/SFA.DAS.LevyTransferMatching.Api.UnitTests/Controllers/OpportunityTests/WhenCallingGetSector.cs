@@ -7,10 +7,7 @@ using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Opportunity;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSector;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,12 +32,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.OpportunityTest
             var okObjectResult = controllerResult as OkObjectResult;
             var response = okObjectResult.Value as GetSectorResponse;
 
-            Assert.IsNotNull(controllerResult);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(response);
-            Assert.AreEqual(okObjectResult.StatusCode, (int)HttpStatusCode.OK);
-            Assert.AreEqual(getSectorQueryResult.Sectors, response.Sectors);
-            Assert.AreEqual(getSectorQueryResult.Opportunity.Id, response.Opportunity.Id);
+            Assert.That(controllerResult, Is.Not.Null);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(response, Is.Not.Null);
+            Assert.That(okObjectResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
+            Assert.That(getSectorQueryResult.Sectors, Is.EqualTo(response.Sectors));
+            Assert.That(getSectorQueryResult.Opportunity.Id, Is.EqualTo(response.Opportunity.Id));
         }
     }
 }

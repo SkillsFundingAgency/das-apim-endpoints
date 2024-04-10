@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,12 +51,12 @@ namespace SFA.DAS.ApprenticePortal.Api
             }
 
             services.AddHealthChecks()
-                .AddCheck<ApprenticeAccountsApiHealthCheck>(nameof(ApprenticeAccountsApiHealthCheck))
-                .AddCheck<CommitmentsV2HealthCheck>(nameof(CommitmentsV2HealthCheck))
-                .AddCheck<CoursesApiHealthCheck>(nameof(CoursesApiHealthCheck))
-                .AddCheck<ApprenticeCommitmentsApiHealthCheck>(nameof(ApprenticeCommitmentsApiHealthCheck));
+                .AddCheck<ApprenticeAccountsApiHealthCheck>(ApprenticeAccountsApiHealthCheck.HealthCheckResultDescription)
+                .AddCheck<CommitmentsV2ApiHealthCheck>(CommitmentsV2ApiHealthCheck.HealthCheckResultDescription)
+                .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription)
+                .AddCheck<ApprenticeCommitmentsApiHealthCheck>(ApprenticeCommitmentsApiHealthCheck.HealthCheckResultDescription);
 
-            services.AddMediatR(typeof(GetApprenticeHomepageQuery).Assembly);
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetApprenticeHomepageQuery).Assembly));
 
             services.AddServiceRegistration();
 
@@ -69,7 +68,6 @@ namespace SFA.DAS.ApprenticePortal.Api
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;

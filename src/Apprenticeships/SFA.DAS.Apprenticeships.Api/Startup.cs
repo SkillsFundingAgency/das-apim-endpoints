@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
@@ -46,7 +45,7 @@ public class Startup
             services.AddAuthentication(azureAdConfiguration, policies);
         }
 
-        services.AddMediatR(typeof(GetStandardQuery).Assembly);
+        services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetStandardQuery).Assembly));
         services.AddServiceRegistration(_configuration);
 
         services
@@ -56,7 +55,7 @@ public class Startup
                 {
                     o.Filters.Add(new AuthorizeFilter("default"));
                 }
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            });
 
         services.AddControllers().AddJsonOptions(options =>
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
@@ -64,7 +63,7 @@ public class Startup
         if (_configuration["Environment"] != "DEV")
         {
             services.AddHealthChecks()
-                .AddCheck<CoursesApiHealthCheck>("Courses API health check");
+                .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription);
         }
 
         services.AddApplicationInsightsTelemetry(x => x.ConnectionString = _configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

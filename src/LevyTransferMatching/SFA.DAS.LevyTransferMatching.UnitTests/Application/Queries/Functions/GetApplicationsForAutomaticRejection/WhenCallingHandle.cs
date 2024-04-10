@@ -48,7 +48,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.G
             var result = await _handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             Assert.That(result.Applications.Any(), Is.True);
             Assert.That(result.Applications.Count() == 2);
         }
@@ -72,7 +72,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.G
             var result = await _handler.Handle(request, CancellationToken.None);
 
             // Assert
-            Assert.IsNotNull(result);
+            Assert.That(result, Is.Not.Null);
             Assert.That(result.Applications.Any(), Is.True);
             Assert.That(result.Applications.Count() == 1);
         }

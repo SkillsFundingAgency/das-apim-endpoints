@@ -31,10 +31,10 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Accounts
 
             var controllerResult = await controller.Get(hashedAccountId) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int) HttpStatusCode.OK);
             var model = controllerResult.Value as GetAccountResult;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo(mediatorResult);
         }
 
@@ -44,6 +44,12 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Accounts
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] AccountsController controller)
         {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<GetAccountQuery>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(() => null);
+
             var controllerResult = await controller.Get(hashedAccountId) as NotFoundResult;
 
             controllerResult.StatusCode.Should().Be((int) HttpStatusCode.NotFound);

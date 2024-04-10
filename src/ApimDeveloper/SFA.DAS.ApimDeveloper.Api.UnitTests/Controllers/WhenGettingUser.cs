@@ -51,7 +51,7 @@ namespace SFA.DAS.ApimDeveloper.Api.UnitTests.Controllers
             
             var actual = await controller.GetUser(email) as NotFoundResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
         

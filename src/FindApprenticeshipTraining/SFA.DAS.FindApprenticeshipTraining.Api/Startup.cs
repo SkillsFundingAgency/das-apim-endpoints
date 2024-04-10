@@ -35,9 +35,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(_env);
-            
+
             services.AddConfigurationOptions(_configuration);
-            
+
             if (!_configuration.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration
@@ -51,7 +51,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetTrainingCoursesListQuery).Assembly);
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetTrainingCoursesListQuery).Assembly));
             services.AddServiceRegistration();
 
             services
@@ -66,14 +66,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             var configuration = _configuration
                 .GetSection("FindApprenticeshipTrainingConfiguration")
                 .Get<FindApprenticeshipTrainingConfiguration>();
-            
+
             if (_configuration.IsLocalOrDev())
             {
                 services.AddDistributedMemoryCache();
             }
             else
             {
-                
+
 
                 services.AddStackExchangeRedisCache(options =>
                 {
@@ -84,10 +84,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<RoatpCourseManagementApiHealthCheck>("Roatp Course Management API health check")
+                    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<RoatpCourseManagementApiHealthCheck>(RoatpCourseManagementApiHealthCheck.HealthCheckResultDescription)
                     .AddCheck<ShortlistApiHealthCheck>("Shortlist API health check")
-                    .AddCheck<LocationsApiHealthCheck>("Location API health check");
+                    .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription);
             }
 
             services.AddApplicationInsightsTelemetry();
@@ -113,19 +113,20 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                 app.UseHealthChecks();
             }
 
-            app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "api/{controller=Standards}/{action=index}/{id?}");
-            });
-
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "FindApprenticeshipTrainingOuterApi");
                 c.RoutePrefix = string.Empty;
+            });
+
+            app.UseRouting();
+            app.UseMiddleware<SecurityHeadersMiddleware>();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "api/{controller=Standards}/{action=index}/{id?}");
             });
         }
 

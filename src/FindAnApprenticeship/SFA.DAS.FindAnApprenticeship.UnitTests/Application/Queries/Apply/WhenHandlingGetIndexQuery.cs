@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Moq;
@@ -11,7 +10,6 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
@@ -22,45 +20,43 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
         [Test, MoqAutoData]
         public async Task Then_The_QueryResult_Is_Returned_As_Expected(
             GetIndexQuery query,
-            GetApprenticeshipVacancyItemResponse faaApiResponse,
-            PutApplicationApiResponse candidateApiResponse,
+            GetApplicationApiResponse applicationApiResponse,
+            GetApprenticeshipVacancyItemResponse vacancyApiResponse,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> faaApiClient,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             GetIndexQueryHandler handler)
         {
-            var expectedPutData = new PutApplicationApiRequest.PutApplicationApiRequestData
-                { Email = query.ApplicantEmailAddress };
-            var expectedRequest = new PutApplicationApiRequest(query.VacancyReference, expectedPutData);
-
-            var expectedGetRequest = new GetVacancyRequest(query.VacancyReference);
-
-            faaApiClient
-                .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(It.Is<GetVacancyRequest>(r => r.GetUrl == expectedGetRequest.GetUrl)))
-                .ReturnsAsync(faaApiResponse);
-
+            var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
             candidateApiClient
-                .Setup(client => client.PutWithResponseCode<PutApplicationApiResponse>(
-                    It.Is<PutApplicationApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
-                .ReturnsAsync(new ApiResponse<PutApplicationApiResponse>(candidateApiResponse, HttpStatusCode.OK, string.Empty));
+                .Setup(client => client.Get<GetApplicationApiResponse>(
+                    It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
+                .ReturnsAsync(applicationApiResponse);
+
+            var expectedGetVacancyRequest = new GetVacancyRequest(applicationApiResponse.VacancyReference);
+            faaApiClient
+                .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(It.Is<GetVacancyRequest>(r => r.GetUrl == expectedGetVacancyRequest.GetUrl)))
+                .ReturnsAsync(vacancyApiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
             using var scope = new AssertionScope();
-            result.VacancyTitle.Should().Be(faaApiResponse.Title);
-            result.EmployerName.Should().Be(faaApiResponse.EmployerName);
-            result.ClosingDate.Should().Be(faaApiResponse.ClosingDate);
-            result.IsDisabilityConfident.Should().Be(faaApiResponse.IsDisabilityConfident);
-            result.ApplicationQuestions.AdditionalQuestion1Label.Should().Be(faaApiResponse.AdditionalQuestion1);
-            result.ApplicationQuestions.AdditionalQuestion2Label.Should().Be(faaApiResponse.AdditionalQuestion2);
+            result.VacancyTitle.Should().Be(vacancyApiResponse.Title);
+            result.EmployerName.Should().Be(vacancyApiResponse.EmployerName);
+            result.ClosingDate.Should().Be(vacancyApiResponse.ClosingDate);
+            result.IsDisabilityConfident.Should().Be(vacancyApiResponse.IsDisabilityConfident);
+            result.ApplicationQuestions.AdditionalQuestion1Label.Should().Be(applicationApiResponse.AdditionalQuestions[0].QuestionText);
+            result.ApplicationQuestions.AdditionalQuestion2Label.Should().Be((applicationApiResponse.AdditionalQuestions[1].QuestionText));
 
-            result.EducationHistory.Qualifications.Should().Be(candidateApiResponse.QualificationStatus);
-            result.EducationHistory.TrainingCourses.Should().Be(candidateApiResponse.TrainingCourseStatus);
-            result.WorkHistory.VolunteeringAndWorkExperience.Should().Be(candidateApiResponse.WorkExperienceStatus);
-            result.WorkHistory.Jobs.Should().Be(candidateApiResponse.JobStatus);
-            result.ApplicationQuestions.AdditionalQuestion1.Should().Be(candidateApiResponse.AdditionalQuestion1Status);
-            result.ApplicationQuestions.AdditionalQuestion2.Should().Be(candidateApiResponse.AdditionalQuestion2Status);
-            result.InterviewAdjustments.RequestAdjustments.Should().Be(candidateApiResponse.InterviewAdjustmentsStatus);
-            result.DisabilityConfidence.InterviewUnderDisabilityConfident.Should().Be(candidateApiResponse.DisabilityConfidenceStatus);
+            result.EducationHistory.Qualifications.Should().Be(applicationApiResponse.QualificationsStatus);
+            result.EducationHistory.TrainingCourses.Should().Be(applicationApiResponse.TrainingCoursesStatus);
+            result.WorkHistory.VolunteeringAndWorkExperience.Should().Be(applicationApiResponse.WorkExperienceStatus);
+            result.WorkHistory.Jobs.Should().Be(applicationApiResponse.JobsStatus);
+            result.ApplicationQuestions.AdditionalQuestion1.Should().Be(applicationApiResponse.AdditionalQuestion1Status);
+            result.ApplicationQuestions.AdditionalQuestion2.Should().Be(applicationApiResponse.AdditionalQuestion2Status);
+            result.ApplicationQuestions.AdditionalQuestion1Id.Should().Be(applicationApiResponse.AdditionalQuestions[0].Id);
+            result.ApplicationQuestions.AdditionalQuestion2Id.Should().Be(applicationApiResponse.AdditionalQuestions[1].Id);
+            result.InterviewAdjustments.RequestAdjustments.Should().Be(applicationApiResponse.InterviewAdjustmentsStatus);
+            result.DisabilityConfidence.InterviewUnderDisabilityConfident.Should().Be(applicationApiResponse.DisabilityConfidenceStatus);
         }
     }
 }

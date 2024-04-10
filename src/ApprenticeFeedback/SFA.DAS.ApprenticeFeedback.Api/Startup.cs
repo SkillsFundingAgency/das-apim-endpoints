@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
@@ -49,11 +48,11 @@ namespace SFA.DAS.ApprenticeFeedback.Api
             }
                         
             services.AddHealthChecks()
-                .AddCheck<ApprenticeAccountsApiHealthCheck>(nameof(ApprenticeAccountsApiHealthCheck))
-                .AddCheck<AssessorsApiHealthCheck>(nameof(AssessorsApiHealthCheck))
-                .AddCheck<ApprenticeFeedbackApiHealthCheck>(nameof(ApprenticeFeedbackApiHealthCheck));
+                .AddCheck<ApprenticeAccountsApiHealthCheck>(ApprenticeAccountsApiHealthCheck.HealthCheckResultDescription)
+                .AddCheck<AssessorsApiHealthCheck>(AssessorsApiHealthCheck.HealthCheckResultDescription)
+                .AddCheck<ApprenticeFeedbackApiHealthCheck>(ApprenticeFeedbackApiHealthCheck.HealthCheckResultDescription);
 
-            services.AddMediatR(typeof(GetApprenticeQuery).Assembly);
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetApprenticeQuery).Assembly));
 
             services.AddServiceRegistration();
 
@@ -65,7 +64,6 @@ namespace SFA.DAS.ApprenticeFeedback.Api
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;

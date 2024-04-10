@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +18,6 @@ using SFA.DAS.Funding.Configuration;
 using SFA.DAS.Funding.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.Funding.Api
 {
@@ -40,10 +38,10 @@ namespace SFA.DAS.Funding.Api
             services.AddOptions();
             services.AddSingleton(_env);
             services.Configure<FundingApprenticeshipEarningsConfiguration>(_configuration.GetSection("FundingApprenticeshipEarningsInnerApi"));
-            services.Configure<ApprenticeshipsConfiguration>(_configuration.GetSection("ApprenticeshipsInnerApi"));
+            services.Configure<ApprenticeshipsApiConfiguration>(_configuration.GetSection("ApprenticeshipsInnerApi"));
             services.Configure<RoatpV2ApiConfiguration>(_configuration.GetSection(nameof(RoatpV2ApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FundingApprenticeshipEarningsConfiguration>>().Value);
-            services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeshipsConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeshipsApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
 
             if (!_configuration.IsLocalOrDev())
@@ -62,7 +60,7 @@ namespace SFA.DAS.Funding.Api
             services.AddHealthChecks()
                 .AddCheck<FundingApprenticeshipEarningsHealthCheck>(nameof(FundingApprenticeshipEarningsHealthCheck));
 
-            services.AddMediatR(typeof(GetProviderEarningsSummaryQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetProviderEarningsSummaryQuery).Assembly));
             services.AddServiceRegistration();
 
             services
@@ -73,7 +71,6 @@ namespace SFA.DAS.Funding.Api
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;

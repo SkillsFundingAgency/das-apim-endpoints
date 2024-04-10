@@ -1,14 +1,15 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using MediatR;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using RestEase.HttpClientFactory;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.EmployerAan.Api.HealthCheck;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
 using SFA.DAS.EmployerAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
-using SFA.DAS.EmployerAan.Configuration;
 using SFA.DAS.EmployerAan.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -21,6 +22,8 @@ namespace SFA.DAS.EmployerAan.Api.AppStart;
 [ExcludeFromCodeCoverage]
 public static class ServiceCollectionExtensions
 {
+    private static readonly string Ready = "ready";
+
     public static IServiceCollection AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOptions();
@@ -36,18 +39,17 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServiceRegistration(this IServiceCollection services, IConfigurationRoot configuration)
     {
         services.AddHttpClient();
-        services.AddMediatR(typeof(GetMyApprenticeshipQuery).Assembly);
-        services.AddMediatR(typeof(GetEmployerMemberQuery).Assembly);
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEmployerMemberQuery).Assembly));
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
         services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
-        services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
-        services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
 
         AddAanHubApiClient(services, configuration);
         AddCommitmentsV2ApiClient(services, configuration);
+        AddApprenticeAccountsApiClient(services, configuration);
+        AddCoursesApiClient(services, configuration);
         return services;
     }
 
@@ -70,35 +72,58 @@ public static class ServiceCollectionExtensions
 
     private static void AddAanHubApiClient(IServiceCollection services, IConfiguration configuration)
     {
-        var apiConfig = configuration
-                .GetSection(nameof(AanHubApiConfiguration))
-                .Get<AanHubApiConfiguration>();
-
-        services.Configure<ApprenticeAccountsApiConfiguration>(configuration.GetSection(nameof(ApprenticeAccountsApiConfiguration)));
-        services.AddSingleton(c => c.GetService<IOptions<ApprenticeAccountsApiConfiguration>>()!.Value);
-
-        services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
-        services.AddSingleton(c => c.GetService<IOptions<CoursesApiConfiguration>>()!.Value);
-
-        services.AddSingleton(apiConfig);
-
-        services.AddScoped<AanHubApiHttpMessageHandler>();
+        var apiConfig = GetApiConfiguration(configuration, "AanHubApiConfiguration");
 
         services.AddRestEaseClient<IAanHubRestApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler<AanHubApiHttpMessageHandler>();
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
     }
 
     private static void AddCommitmentsV2ApiClient(IServiceCollection services, IConfiguration configuration)
     {
-        var apiConfig = configuration
-                .GetSection(nameof(SFA.DAS.EmployerAan.Configuration.CommitmentsV2ApiConfiguration))
-                .Get<SFA.DAS.EmployerAan.Configuration.CommitmentsV2ApiConfiguration>();
+
+        var apiConfig = GetApiConfiguration(configuration, "CommitmentsV2ApiConfiguration");
 
         services.AddSingleton(apiConfig);
-
-        services.AddScoped<CommitmentsV2ApiHttpMessageHandler>();
-
         services.AddRestEaseClient<ICommitmentsV2ApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler<CommitmentsV2ApiHttpMessageHandler>();
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+    }
+
+    private static void AddApprenticeAccountsApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = GetApiConfiguration(configuration, "ApprenticeAccountsApiConfiguration");
+
+        services.AddRestEaseClient<Infrastructure.IApprenticeAccountsApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+    }
+
+    private static void AddCoursesApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = GetApiConfiguration(configuration, "CoursesApiConfiguration");
+
+        services.AddRestEaseClient<ICoursesApiClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+    }
+
+
+    private static InnerApiConfiguration GetApiConfiguration(IConfiguration configuration, string configurationName)
+        => configuration.GetSection(configurationName).Get<InnerApiConfiguration>()!;
+
+    public static IServiceCollection AddServiceHealthChecks(this IServiceCollection services)
+    {
+        services.AddHealthChecks()
+            .AddCheck<AanHubApiHealthCheck>(AanHubApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready })
+            .AddCheck<CommitmentsV2InnerApiHealthCheck>(CommitmentsV2InnerApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready })
+            .AddCheck<ApprenticeAccountsApiHealthCheck>(ApprenticeAccountsApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready })
+            .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready });
+
+        return services;
     }
 }

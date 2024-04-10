@@ -163,7 +163,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             var actualResult = await actual.GetWithResponseCode<string>(getTestRequest);
              
             //Assert
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.StatusCode.Should().Be(HttpStatusCode.TooManyRequests);
             actualResult.Body.Should().BeNull();
             actualResult.ErrorContent.Should().Be(responseContent);
@@ -194,7 +194,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             var actualResult = await actualClient.GetWithResponseCode<TestClass>(getTestRequest);
              
             //Assert
-            Assert.IsNotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.StatusCode.Should().Be(HttpStatusCode.Accepted);
             actualResult.Body.SomeId.Should().Be(responseValue);
         }

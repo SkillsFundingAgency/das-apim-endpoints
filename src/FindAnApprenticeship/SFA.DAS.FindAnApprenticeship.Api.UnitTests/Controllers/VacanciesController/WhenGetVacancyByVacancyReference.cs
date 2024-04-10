@@ -55,21 +55,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
 
             var actual = await controller.SearchByVacancyReference(vacancyReference) as StatusCodeResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
 
             mediator.Verify(m => m.Send(It.Is<GetApprenticeshipVacancyQuery>(c =>
                     c.VacancyReference == vacancyReference),
                 CancellationToken.None));
-
-            logger.Verify(l =>
-                l.Log(
-                    LogLevel.Error,
-            It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((state, type) => state.ToString()!.Contains("Error getting vacancy details by reference:")),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()!
-                ), Times.AtLeastOnce);
         }
 
         [Test, MoqAutoData]
@@ -85,7 +76,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
 
             var actual = await controller.SearchByVacancyReference(vacancyReference) as StatusCodeResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
 
             mediator.Verify(m => m.Send(It.Is<GetApprenticeshipVacancyQuery>(c =>

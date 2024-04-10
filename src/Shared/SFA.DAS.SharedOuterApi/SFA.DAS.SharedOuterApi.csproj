@@ -1,30 +1,32 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="InnerApi\Assessor\**" />
+      <EmbeddedResource Remove="InnerApi\Assessor\**" />
+      <None Remove="InnerApi\Assessor\**" />
+    </ItemGroup>
 
     <ItemGroup>
       <Compile Remove="InnerApi\Requests\GetLevelsListRequest.cs" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" />
+        <PackageReference Include="MediatR" />
         <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
         <PackageReference Include="Microsoft.Extensions.Http" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
-        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
         <PackageReference Include="SFA.DAS.Api.Common" />
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
         <PackageReference Include="SFA.DAS.Notifications.Messages" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
         <PackageReference Include="System.Net.Http.Json" />
         <PackageReference Include="SFA.DAS.NServiceBus" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="InnerApi\Assessor\" />
     </ItemGroup>
 
 </Project>

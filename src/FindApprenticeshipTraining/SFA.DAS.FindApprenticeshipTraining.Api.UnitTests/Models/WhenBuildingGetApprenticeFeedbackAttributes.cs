@@ -11,33 +11,33 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
     {
 
         [Test, AutoData]
-        public void Then_Returns_EmptyApprentice_Feedback_Attribute_Lists_Source_Is_Null(InnerApi.Responses.GetProvidersListItem source, string sectorSubjectArea)
+        public void Then_Returns_EmptyApprentice_Feedback_Attribute_Lists_Source_Is_Null(InnerApi.Responses.GetProvidersListItem source)
         {
             source.ApprenticeFeedback = null;
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
             response.ApprenticeFeedback.FeedbackAttributes.Should().BeEmpty();
             response.ApprenticeFeedback.TotalApprenticeResponses.Should().Be(0);
             response.ApprenticeFeedback.TotalFeedbackRating.Should().Be(0);
         }
 
         [Test, AutoData]
-        public void Then_Returns_EmptyApprentice_Feedback_Attribute_Lists_ProviderAttribute_Is_Null(InnerApi.Responses.GetProvidersListItem source, string sectorSubjectArea)
+        public void Then_Returns_EmptyApprentice_Feedback_Attribute_Lists_ProviderAttribute_Is_Null(InnerApi.Responses.GetProvidersListItem source)
         {
             source.ApprenticeFeedback.ProviderAttribute = null;
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
             response.ApprenticeFeedback.FeedbackAttributes.Should().BeEmpty();
         }
 
         [Test, AutoData]
-        public void Then_Returns_EmptyApprentice_Feedback_Attribute_Lists_Source_Is_Empty(InnerApi.Responses.GetProvidersListItem source, string sectorSubjectArea)
+        public void Then_Returns_EmptyApprentice_Feedback_Attribute_Lists_Source_Is_Empty(InnerApi.Responses.GetProvidersListItem source)
         {
             source.ApprenticeFeedback.ProviderAttribute = new List<InnerApi.Responses.GetApprenticeFeedbackAttributeItem>();
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
             response.ApprenticeFeedback.FeedbackAttributes.Should().BeEmpty();
         }
 
         [Test, AutoData]
-        public void Then_Returns_EmptyApprentice_Feedback_Attribute_Lists_If_Totals_Are_Zero(InnerApi.Responses.GetProvidersListItem source, string sectorSubjectArea)
+        public void Then_Returns_EmptyApprentice_Feedback_Attribute_Lists_If_Totals_Are_Zero(InnerApi.Responses.GetProvidersListItem source)
         {
             source.ApprenticeFeedback.ProviderAttribute = new List<InnerApi.Responses.GetApprenticeFeedbackAttributeItem>
             {
@@ -64,7 +64,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.ApprenticeFeedback.FeedbackAttributes.Should().BeEmpty();
         }
@@ -97,7 +97,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.ApprenticeFeedback.FeedbackAttributes.Sum(x => x.Agree).Should().Be(0);
             response.ApprenticeFeedback.FeedbackAttributes.Select(x => x.Name).Should().Contain(source.ApprenticeFeedback.ProviderAttribute.Select(c => c.Name).ToList());
@@ -132,7 +132,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.ApprenticeFeedback.FeedbackAttributes.Sum(x => x.Disagree).Should().Be(0);
             response.ApprenticeFeedback.FeedbackAttributes.Select(x => x.Name).Should().Contain(source.ApprenticeFeedback.ProviderAttribute.Select(c => c.Name).ToList());
@@ -217,7 +217,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 }
             };
 
-            var response = new GetTrainingCourseProviderListItem().Map(source, sectorSubjectArea, 1, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
+            var response = new GetTrainingCourseProviderListItem().Map(source, new List<DeliveryModeType>(), new List<FeedbackRatingType>(), new List<FeedbackRatingType>(), true);
 
             response.ApprenticeFeedback.FeedbackAttributes.Select(x => x.Name)
                 .Should().ContainInOrder(

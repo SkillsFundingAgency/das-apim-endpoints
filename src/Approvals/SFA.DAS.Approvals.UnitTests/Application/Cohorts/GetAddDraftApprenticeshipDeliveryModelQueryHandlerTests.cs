@@ -63,14 +63,14 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
         public async Task Handle_LegalEntityName_Is_Returned()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_accountLegalEntity.LegalEntityName, result.EmployerName);
+            Assert.That(_accountLegalEntity.LegalEntityName, Is.EqualTo(result.EmployerName));
         }
 
         [Test]
         public async Task Handle_DeliveryModels_Is_Returned()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_deliveryModels, result.DeliveryModels);
+            Assert.That(_deliveryModels, Is.EqualTo(result.DeliveryModels));
         }
     }
 }

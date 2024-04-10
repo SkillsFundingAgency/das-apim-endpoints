@@ -31,13 +31,13 @@ namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.Pledges
             var value = okObjectResult.Value;
             var getPledgesResponse = value as GetPledgesResponse;
 
-            Assert.IsNotNull(actionResult);
-            Assert.IsNotNull(okObjectResult);
-            Assert.IsNotNull(value);
-            Assert.IsNotNull(getPledgesResponse);
+            Assert.That(actionResult, Is.Not.Null);
+            Assert.That(okObjectResult, Is.Not.Null);
+            Assert.That(value, Is.Not.Null);
+            Assert.That(getPledgesResponse, Is.Not.Null);
 
-            Assert.AreEqual(mediatorResult.TotalPledges, getPledgesResponse.TotalPledges);
-            Assert.AreEqual(mediatorResult.Pledges.Count(), getPledgesResponse.Pledges.Count());
+            Assert.That(mediatorResult.TotalPledges, Is.EqualTo(getPledgesResponse.TotalPledges));
+            Assert.That(mediatorResult.Pledges.Count(), Is.EqualTo(getPledgesResponse.Pledges.Count()));
         }
     }
 }

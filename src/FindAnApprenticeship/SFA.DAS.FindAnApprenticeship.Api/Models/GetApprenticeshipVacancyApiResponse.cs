@@ -69,6 +69,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string EmployerContactPhone { get; init; }
         public string EmployerContactEmail { get; init; }
         public string EmployerContactName { get; init; }
+        public string ProviderContactPhone { get; init; }
+        public string ProviderContactEmail { get; init; }
+        public string ProviderContactName { get; init; }
+
         public string AnonymousEmployerName { get; init; }
         public bool IsEmployerAnonymous { get; init; }
 
@@ -136,10 +140,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 EmployerContactEmail = source.ApprenticeshipVacancy.EmployerContactEmail,
                 EmployerContactName = source.ApprenticeshipVacancy.EmployerContactName,
                 EmployerContactPhone = source.ApprenticeshipVacancy.EmployerContactPhone,
+                ProviderContactEmail = source.ApprenticeshipVacancy.ProviderContactEmail,
+                ProviderContactName = source.ApprenticeshipVacancy.ProviderContactName,
+                ProviderContactPhone = source.ApprenticeshipVacancy.ProviderContactPhone,
                 EmployerWebsiteUrl = source.ApprenticeshipVacancy.EmployerWebsiteUrl,
                 AnonymousEmployerName = source.ApprenticeshipVacancy.AnonymousEmployerName,
                 IsEmployerAnonymous = source.ApprenticeshipVacancy.IsEmployerAnonymous,
-
                 Address = source.ApprenticeshipVacancy.Address,
                 Qualifications = source.ApprenticeshipVacancy.Qualifications
                     .Select(l => (VacancyQualificationApiResponse) l).ToList(),

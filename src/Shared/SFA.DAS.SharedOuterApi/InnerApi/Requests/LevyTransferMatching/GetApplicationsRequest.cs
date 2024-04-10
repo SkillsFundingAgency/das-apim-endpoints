@@ -8,6 +8,8 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching
     {
         public int? PledgeId { get; set; }
         public long? AccountId { get; set; }
+        public long? SenderAccountId { get; set; }
+
         public string ApplicationStatusFilter { get; set; }
 
         public string SortOrder { get; set; }
@@ -30,6 +32,11 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching
                 if (AccountId.HasValue)
                 {
                     queryParameters.Add("accountId", AccountId.Value.ToString());
+                }
+
+                 if (SenderAccountId.HasValue)
+                {
+                    queryParameters.Add("senderAccountId", SenderAccountId.Value.ToString());
                 }
 
                 if (ApplicationStatusFilter != null)

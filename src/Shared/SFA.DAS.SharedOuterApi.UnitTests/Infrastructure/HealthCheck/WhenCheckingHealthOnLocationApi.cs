@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 using NUnit.Framework;
@@ -21,40 +22,39 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.HealthCheck
             HealthCheckContext healthCheckContext,
             LocationsApiHealthCheck healthCheck)
         {
-            //Act
+            // Act
             await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
-            //Assert
+
+            // Assert
             client.Verify(x => x.GetResponseCode(It.IsAny<GetPingRequest>()), Times.Once);
         }
 
-        [Test, MoqAutoData]
-        public async Task Then_If_It_Is_Successful_Returns_Healthy(
+        [Test]
+        [MoqInlineAutoData(HttpStatusCode.OK, HealthStatus.Healthy)]
+        [MoqInlineAutoData(HttpStatusCode.NotFound, HealthStatus.Unhealthy)]
+        [MoqInlineAutoData(HttpStatusCode.InternalServerError, HealthStatus.Unhealthy)]
+        public async Task Then_The_Correct_HealthStatus_Is_Returned(
+            HttpStatusCode httpStatusCode,
+            HealthStatus healthStatus,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> client,
             HealthCheckContext healthCheckContext,
             LocationsApiHealthCheck healthCheck)
         {
-            //Arrange
+            // Arrange
             client.Setup(x => x.GetResponseCode(It.IsAny<GetPingRequest>()))
-                .ReturnsAsync(HttpStatusCode.OK);
-            //Act
+                .ReturnsAsync(httpStatusCode);
+
+            // Act
             var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
-            //Assert
-            Assert.AreEqual(HealthStatus.Healthy, actual.Status);
+
+            // Assert
+            Assert.That(healthStatus, Is.EqualTo(actual.Status));
         }
 
         [Test, MoqAutoData]
-        public async Task And_Not_Successful_Returns_UnHealthy(
-            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> client,
-            HealthCheckContext healthCheckContext,
-            LocationsApiHealthCheck healthCheck)
+        public void Then_HealthCheckResultDescription_IsConsistent()
         {
-            //Arrange
-            client.Setup(x => x.GetResponseCode(new GetPingRequest()))
-                .ReturnsAsync(HttpStatusCode.NotFound);
-            //Act
-            var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
-            //Assert
-            Assert.AreEqual(HealthStatus.Unhealthy, actual.Status);
+            LocationsApiHealthCheck.HealthCheckResultDescription.Should().Be(LocationsApiHealthCheck.HealthCheckDescription + " check");
         }
     }
 }

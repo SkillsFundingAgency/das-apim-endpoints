@@ -6,6 +6,7 @@ using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetChangeOfPa
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetChangeOfProviderChainResponse;
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetChangeOfEmployerChainResponse;
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetOverlappingTrainingDateResponse;
+using System;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails
 {
@@ -20,5 +21,16 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
         public IReadOnlyCollection<ChangeOfEmployerLink> ChangeOfEmployerChain { get; set; }
         public IReadOnlyCollection<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequest { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
+        public PendingPriceChange PendingPriceChange { get; set; }
+    }
+
+    public class PendingPriceChange
+    {
+        public decimal Cost { get; set; }
+        public decimal? TrainingPrice { get; set; }
+        public decimal? EndPointAssessmentPrice { get; set; }
+        public DateTime? ProviderApprovedDate { get; set; }
+        public DateTime? EmployerApprovedDate { get; set; }
+        public string Initiator { get; set; }
     }
 }

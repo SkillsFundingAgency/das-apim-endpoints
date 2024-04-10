@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.EpaoRegister.InnerApi.Requests;
 using SFA.DAS.EpaoRegister.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;

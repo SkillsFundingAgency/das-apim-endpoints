@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
@@ -48,7 +47,7 @@ namespace SFA.DAS.EmployerFeedback.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(typeof(GetAccountsQuery).Assembly);
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
             services.AddServiceRegistration();
             
             services.Configure<RouteOptions>(options =>
@@ -61,13 +60,13 @@ namespace SFA.DAS.EmployerFeedback.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                })
                 .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                     .AddCheck<AccountsApiHealthCheck>("Accounts API health check");
+                     .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription);
             }
             
             services.AddApplicationInsightsTelemetry();

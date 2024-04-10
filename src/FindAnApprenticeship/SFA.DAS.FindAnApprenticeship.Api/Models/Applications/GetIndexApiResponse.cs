@@ -5,6 +5,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
 {
     public class GetIndexApiResponse
     {
+        public string VacancyReference { get; set; }
         public string VacancyTitle { get; set; }
         public string EmployerName { get; set; }
         public DateTime ClosingDate { get; set; }
@@ -52,8 +53,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
             public string WhatInterestsYou { get; set; }
             public string AdditionalQuestion1 { get; set; }
             public string AdditionalQuestion2 { get; set; }
-            public string AdditionalQuestion1Label { get; set; }
-            public string AdditionalQuestion2Label { get; set; }
+            public string? AdditionalQuestion1Label { get; set; }
+            public string? AdditionalQuestion2Label { get; set; }
+            public Guid? AdditionalQuestion1Id { get; set; }
+            public Guid? AdditionalQuestion2Id { get; set; }
 
             public static implicit operator ApplicationQuestionsSection(GetIndexQueryResult.ApplicationQuestionsSection source)
             {
@@ -64,7 +67,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
                     AdditionalQuestion1 = source.AdditionalQuestion1,
                     AdditionalQuestion2 = source.AdditionalQuestion2,
                     AdditionalQuestion1Label = source.AdditionalQuestion1Label,
-                    AdditionalQuestion2Label = source.AdditionalQuestion2Label
+                    AdditionalQuestion2Label = source.AdditionalQuestion2Label,
+                    AdditionalQuestion1Id = source.AdditionalQuestion1Id,
+                    AdditionalQuestion2Id = source.AdditionalQuestion2Id
                 };
             }
         }
@@ -98,6 +103,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
         {
             return new GetIndexApiResponse
             {
+                VacancyReference = source.VacancyReference,
                 VacancyTitle = source.VacancyTitle,
                 EmployerName = source.EmployerName,
                 ClosingDate = source.ClosingDate,

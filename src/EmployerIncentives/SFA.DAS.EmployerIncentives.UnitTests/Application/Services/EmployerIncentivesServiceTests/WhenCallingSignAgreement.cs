@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
-using FluentAssertions.Common;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerIncentives.Application.Services;
@@ -25,7 +24,7 @@ namespace SFA.DAS.EmployerIncentives.UnitTests.Application.EligibleApprenticeshi
                 x.Patch(It.Is<PatchSignAgreementRequest>(
                     c =>
                         c.PatchUrl.Contains(request.AccountId.ToString()) && c.PatchUrl.Contains(request.AccountLegalEntityId.ToString())
-                                                                  && c.Data.IsSameOrEqualTo(request)
+                                                                  && c.Data.Equals(request)
                 )), Times.Once
             );
         }

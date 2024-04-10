@@ -36,8 +36,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportuniti
         public async Task Handle_Returns_Confirmation_Result()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.AreEqual(_pledge.DasAccountName, result.AccountName);
-            Assert.AreEqual(_pledge.IsNamePublic, result.IsNamePublic);
+            Assert.That(result.AccountName, Is.EqualTo(_pledge.DasAccountName));
+            Assert.That(result.IsNamePublic, Is.EqualTo(_pledge.IsNamePublic));
         }
     }
 }

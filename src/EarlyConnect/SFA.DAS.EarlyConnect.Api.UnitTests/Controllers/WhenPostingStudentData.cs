@@ -52,10 +52,11 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
             };
 
             var createLogDataCommandResult = new CreateLogDataCommandResult { LogId = 1 };
+            var createStudentDataCommandResult = new CreateStudentDataCommandResult { Message = "Test" };
 
             _httpContextMock.SetupGet(x => x.Connection.RemoteIpAddress).Returns(new IPAddress(new byte[] { 127, 0, 0, 1 }));
             _mediatorMock.Setup(x => x.Send(It.IsAny<CreateLogDataCommand>(), It.IsAny<CancellationToken>())).ReturnsAsync(createLogDataCommandResult);
-            _mediatorMock.Setup(x => x.Send(It.IsAny<CreateStudentDataCommand>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(Unit.Value));
+            _mediatorMock.Setup(x => x.Send(It.IsAny<CreateStudentDataCommand>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(createStudentDataCommandResult));
             _mediatorMock.Setup(x => x.Send(It.IsAny<UpdateLogDataCommand>(), It.IsAny<CancellationToken>())).Returns(Task.FromResult(Unit.Value));
 
             var result = await _controller.CreateStudentData(request);
@@ -79,7 +80,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var result = await _controller.CreateStudentData(request);
 
-            Assert.IsInstanceOf<BadRequestObjectResult>(result);
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
         }
     }
 }

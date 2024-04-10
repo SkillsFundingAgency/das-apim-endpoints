@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -9,7 +8,6 @@ using SFA.DAS.Campaign.Application.Queries.Banner;
 using SFA.DAS.Campaign.Application.Queries.Menu;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using SFA.DAS.Campaign.Models;
-using static SFA.DAS.Campaign.Models.PanelModel;
 
 namespace SFA.DAS.Campaign.Extensions
 {

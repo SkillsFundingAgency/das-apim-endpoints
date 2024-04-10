@@ -1,16 +1,11 @@
 ﻿using AutoFixture;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplications;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -48,9 +43,9 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.RejectBulk
 
             var data = (RejectApplicationRequestData)_request.Data;
             var applicationID = _command.ApplicationsToReject[0];
-            Assert.AreEqual($"/pledges/{_command.PledgeId}/applications/{applicationID}/reject", _request.PostUrl);
-            Assert.AreEqual(_command.UserId, data.UserId);
-            Assert.AreEqual(_command.UserDisplayName, data.UserDisplayName);
+            Assert.That(_request.PostUrl, Is.EqualTo($"/pledges/{_command.PledgeId}/applications/{applicationID}/reject"));
+            Assert.That(_command.UserId, Is.EqualTo(data.UserId));
+            Assert.That(_command.UserDisplayName, Is.EqualTo(data.UserDisplayName));
             
             _levyTransferMatchingService.Verify(
                x => x.RejectApplication(It.Is<RejectApplicationRequest>(r =>

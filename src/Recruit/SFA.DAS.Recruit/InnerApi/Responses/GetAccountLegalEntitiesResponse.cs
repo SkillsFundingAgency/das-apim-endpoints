@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 

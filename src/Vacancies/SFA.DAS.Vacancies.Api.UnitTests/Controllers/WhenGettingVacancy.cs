@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using Azure.Core;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -21,19 +22,22 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
         public async Task Then_The_Handler_Is_Called_And_Data_Returned(
             string vacancyReference,
             GetVacancyQueryResult queryResult,
+            int ukprn,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
+            queryResult.Vacancy.Ukprn = ukprn.ToString();
+
             mockMediator.Setup(x => x.Send(It.Is<GetVacancyQuery>(c => 
                     c.VacancyReference.Equals(vacancyReference)),
                 CancellationToken.None)).ReturnsAsync(queryResult);
             
             var controllerResult = await controller.GetVacancy(vacancyReference) as ObjectResult;
             
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetVacancyResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo((GetVacancyResponse)queryResult);
         }
 
@@ -51,7 +55,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             
             var controllerResult = await controller.GetVacancy(vacancyReference) as NotFoundResult;
             
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
 
@@ -67,7 +71,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             
             var controllerResult = await controller.GetVacancy(vacancyReference) as StatusCodeResult;
             
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }
