@@ -11,6 +11,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using GetLevelsListResponse = SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses.GetLevelsListResponse;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList
 {
@@ -72,7 +73,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             }
 
             var levelsTask = _cacheHelper.GetRequest<GetLevelsListResponse>(_apiClient,
-                new GetLevelsListRequest(), nameof(GetLevelsListResponse), out var saveLevelsToCache);
+                new InnerApi.Requests.GetLevelsListRequest(), nameof(GetLevelsListResponse), out var saveLevelsToCache);
             taskList.Add(levelsTask);
 
             var shortlistItemCountTask = request.ShortlistUserId.HasValue
