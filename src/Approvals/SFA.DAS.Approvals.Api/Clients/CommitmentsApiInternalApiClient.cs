@@ -17,7 +17,7 @@ namespace SFA.DAS.Approvals.Api.Clients
             CommitmentsV2ApiConfiguration apiConfiguration, 
             IAzureClientCredentialHelper azureClientCredentialHelper,
             ILogger<CommitmentsApiInternalApiClient> logger) 
-            : base(httpClientFactory, apiConfiguration, azureClientCredentialHelper)
+            : base(httpClientFactory, apiConfiguration, azureClientCredentialHelper, logger)
         {
             _logger = logger;
         }

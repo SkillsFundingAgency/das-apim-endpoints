@@ -47,7 +47,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
             await AddAuthenticationHeader(requestMessage);
-
+       
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

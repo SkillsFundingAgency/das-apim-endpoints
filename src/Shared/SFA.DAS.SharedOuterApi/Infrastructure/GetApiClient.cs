@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
@@ -53,7 +54,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             await AddAuthenticationHeader(httpRequestMessage);
 
             var response = await HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
-
+            LogHeaders(response);
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             var errorContent = "";
@@ -88,6 +89,25 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         }
 
         protected abstract Task AddAuthenticationHeader(HttpRequestMessage httpRequestMessage);
+
+        private void LogHeaders(HttpResponseMessage httpResponseMessage)
+        {
+            var headers = httpResponseMessage.RequestMessage.Headers;
+
+            var headersString = "";
+
+            foreach (var header in headers)
+            {
+                headersString += $"{header.Key}: {string.Join(", ", header.Value)} ";
+            }
+
+            LogMessage($"Request headers: {headersString}");
+        }
+
+        protected virtual void LogMessage(string message)
+        {
+
+        }
 
     }
 }

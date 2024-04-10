@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using NUnit.Framework;
@@ -37,7 +38,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             var client = new HttpClient(httpMessageHandler.Object);
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
-            var apiClient = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, configuration, azureClientCredentialHelper.Object);
+            var apiClient = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, configuration, azureClientCredentialHelper.Object, Mock.Of<ILogger<InternalApiClient<TestInternalApiConfiguration>>>());
 
             //Act
             var actual = await apiClient.GetAll<string>(getTestRequest);
@@ -75,7 +76,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
              var client = new HttpClient(httpMessageHandler.Object);
              var clientFactory = new Mock<IHttpClientFactory>();
              clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
-             var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object,configuration, Mock.Of<IAzureClientCredentialHelper>());
+             var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object,configuration, Mock.Of<IAzureClientCredentialHelper>(), Mock.Of<ILogger<InternalApiClient<TestInternalApiConfiguration>>>());
 
              //Act
              await actual.GetAll<string>(getTestRequest);
@@ -110,7 +111,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
              var client = new HttpClient(httpMessageHandler.Object);
              var clientFactory = new Mock<IHttpClientFactory>();
              clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
-             var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object,configuration, Mock.Of<IAzureClientCredentialHelper>());
+             var actual = new InternalApiClient<TestInternalApiConfiguration>(clientFactory.Object,configuration, Mock.Of<IAzureClientCredentialHelper>(), Mock.Of<ILogger<InternalApiClient<TestInternalApiConfiguration>>>());
 
              //Act
              var actualResult = await actual.GetAll<string>(getTestRequest);
