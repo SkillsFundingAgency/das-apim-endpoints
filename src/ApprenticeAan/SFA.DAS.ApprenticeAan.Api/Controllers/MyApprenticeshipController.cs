@@ -40,7 +40,9 @@ public class MyApprenticeshipController : ControllerBase
 
         if (myApprenticeship != null) return Ok(myApprenticeship);
 
-        var commitment = await _mediator.Send(new GetRecentCommitmentQuery(model.FirstName, model.LastName, model.DateOfBirth), cancellationToken);
+        GetRecentCommitmentQueryResult? commitment = null;
+            
+            //await _mediator.Send(new GetRecentCommitmentQuery(model.FirstName, model.LastName, model.DateOfBirth), cancellationToken);
 
         CreateMyApprenticeshipCommand? command = null;
 

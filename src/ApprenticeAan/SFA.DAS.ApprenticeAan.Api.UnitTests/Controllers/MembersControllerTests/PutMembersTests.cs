@@ -86,6 +86,8 @@ public class PutMembersTests
         // Arrange
         request.patchMemberRequest.RegionId = regionId;
         request.patchMemberRequest.OrganisationName = string.Empty;
+        request.patchMemberRequest.FirstName = null;
+        request.patchMemberRequest.LastName = null;
 
         // Act
         var result = await sut.UpdateMemberProfileAndPreferences(memberId, request, cancellationToken);
@@ -111,6 +113,8 @@ public class PutMembersTests
         // Arrange
         request.patchMemberRequest.OrganisationName = organisationName;
         request.patchMemberRequest.RegionId = 0;
+        request.patchMemberRequest.FirstName = null;
+        request.patchMemberRequest.LastName = null;
 
         //Act
         var result = await sut.UpdateMemberProfileAndPreferences(memberId, request, cancellationToken);
@@ -137,6 +141,8 @@ public class PutMembersTests
         // Arrange
         request.patchMemberRequest.RegionId = regionId;
         request.patchMemberRequest.OrganisationName = organisationName;
+        request.patchMemberRequest.FirstName = null;
+        request.patchMemberRequest.LastName = null;
 
         // Act
         var result = await sut.UpdateMemberProfileAndPreferences(memberId, request, cancellationToken);
@@ -241,5 +247,46 @@ public class PutMembersTests
 
         // Assert
         aanHubRestApiClientMock.Verify(x => x.PutMemberProfile(memberId, request.updateMemberProfileRequest, cancellationToken), Times.Once());
+    }
+
+    [Test, MoqAutoData]
+    public async Task UpdateMemberProfileAndPreferences_FirstNameAndLastNameAreValid_ShouldInvokePatchMember(
+        [Frozen] Mock<IAanHubRestApiClient> aanHubRestApiClientMock,
+        [Greedy] MembersController sut,
+        Guid memberId,
+        string firstName,
+        string lastName,
+        UpdateMemberProfileModel request,
+        CancellationToken cancellationToken
+    )
+    {
+        request.patchMemberRequest.FirstName = firstName;
+        request.patchMemberRequest.LastName = lastName;
+        request.patchMemberRequest.RegionId = 0;
+        request.patchMemberRequest.OrganisationName = null;
+
+        var result = await sut.UpdateMemberProfileAndPreferences(memberId, request, cancellationToken);
+
+        aanHubRestApiClientMock.Verify(a => 
+            a.PatchMember(
+                It.IsAny<Guid>(), 
+                It.IsAny<Guid>(), 
+                It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.Count == 2), 
+                It.IsAny<CancellationToken>()
+            ), 
+            Times.Once
+        );
+
+        aanHubRestApiClientMock.Verify(a => 
+            a.PatchMember(
+                It.IsAny<Guid>(), 
+                It.IsAny<Guid>(), 
+                It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.First().path == "/FirstName" && j.Operations.Last().path == "/LastName"), 
+                It.IsAny<CancellationToken>()
+            ), 
+            Times.Once
+        );
+
+        aanHubRestApiClientMock.Verify(a => a.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.First().value.ToString() == firstName && j.Operations.Last().value.ToString() == lastName), It.IsAny<CancellationToken>()), Times.Once, "The Region Id and Organisation Name value is not added to the Operations array ");
     }
 }
