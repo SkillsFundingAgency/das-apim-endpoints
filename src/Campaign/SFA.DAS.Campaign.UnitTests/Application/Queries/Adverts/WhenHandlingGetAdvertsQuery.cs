@@ -40,7 +40,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.Adverts
             query.Route = standards.Standards.First().Route.ToLower();
             configuration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl;
             var expectedAdvertUrl = new GetVacanciesRequest(0, 20, null, null, null, new List<int>{ standards.Standards.First().LarsCode}, null,
-                locationItem.GeoPoint.First(), locationItem.GeoPoint.Last(), query.Distance, null, null, "DistanceAsc");
+                locationItem.GeoPoint.First(), locationItem.GeoPoint.Last(), query.Distance, null, null, null,  "DistanceAsc");
             locationLookupService.Setup(x => x.GetLocationInformation(query.Postcode, 0, 0, false))
                 .ReturnsAsync(locationItem);
             faaApiClient

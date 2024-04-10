@@ -70,7 +70,7 @@ namespace SFA.DAS.Campaign.Application.Queries.Adverts
                 var advertRequest = new GetVacanciesRequest(0, 20, null, null, null, 
                     standards, null,
                     locationTask.Result.GeoPoint.FirstOrDefault(), locationTask.Result.GeoPoint.LastOrDefault(),
-                    request.Distance, null, null, "DistanceAsc");
+                    request.Distance, null, null,null, "DistanceAsc");
 
                 var adverts = await _findApprenticeshipApiClient.Get<GetVacanciesResponse>(advertRequest);
                 
