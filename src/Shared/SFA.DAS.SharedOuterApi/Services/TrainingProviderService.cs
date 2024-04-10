@@ -1,11 +1,10 @@
-using System.Linq;
-using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
@@ -14,8 +13,6 @@ namespace SFA.DAS.SharedOuterApi.Services
         private readonly IInternalApiClient<TrainingProviderConfiguration> _client;
 
         public TrainingProviderService(IInternalApiClient<TrainingProviderConfiguration> client) => _client = client;
-
-        public Task<bool> IsHealthy() => HealthCheck.IsHealthy(_client);
 
         public async Task<TrainingProviderResponse> GetTrainingProviderDetails(long trainingProviderId)
         {
