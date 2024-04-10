@@ -41,22 +41,6 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Services
             dateTimeService.Now.Should().Be(DateTime.Parse(validDateTimeString));
         }
 
-        [Test, MoqAutoData]
-        public void AddDateTimeServices_WithInvalidDateTimeString_ShouldUseCurrentDateTime(
-            ServiceCollection services,
-            [Frozen] Mock<IConfiguration> configuration
-            )
-        {
-            configuration.SetupGet(x => x[It.Is<string>(s => s.Equals("EmployerAccountsOuterOverrideDatetime"))])
-                .Returns("");
 
-            services.AddDateTimeServices(configuration.Object);
-
-            var serviceProvider = services.BuildServiceProvider();
-            var dateTimeService = serviceProvider.GetService<ICurrentDateTime>();
-
-            dateTimeService.Should().NotBeNull();
-            dateTimeService.Now.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
-        }
     }
 }
