@@ -14,6 +14,8 @@ public class GetCheckAnswersQueryResult
     public string Town { get; set; }
     public string County { get; set; }
     public string Postcode { get; set; }
+    public string PhoneNumber { get; set; }
+    public string Email { get; set; }
     public List<CandidatePreference> CandidatePreferences { get; set; }
 
     public class CandidatePreference

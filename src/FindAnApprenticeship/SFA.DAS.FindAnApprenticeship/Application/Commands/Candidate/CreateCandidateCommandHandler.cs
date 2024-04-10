@@ -14,15 +14,22 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
 
-public class CreateCandidateCommandHandler(
-    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
-    IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> legacyApiClient)
-    : IRequestHandler<CreateCandidateCommand, CreateCandidateCommandResult>
+public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateCommand, CreateCandidateCommandResult>
 {
+    private readonly ICandidateApiClient<CandidateApiConfiguration> _candidateApiClient;
+    private readonly IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> _legacyApiClient;
+
+    public CreateCandidateCommandHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
+        IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> legacyApiClient)
+    {
+        _candidateApiClient = candidateApiClient;
+        _legacyApiClient = legacyApiClient;
+    }
+
     public async Task<CreateCandidateCommandResult> Handle(CreateCandidateCommand request, CancellationToken cancellationToken)
     {
         var existingUser =
-            await candidateApiClient.GetWithResponseCode<GetCandidateApiResponse>(
+            await _candidateApiClient.GetWithResponseCode<GetCandidateApiResponse>(
                 new GetCandidateApiRequest(Guid.Parse(request.GovUkIdentifier)));
 
         if (existingUser.StatusCode != HttpStatusCode.NotFound)
@@ -41,7 +48,7 @@ public class CreateCandidateCommandHandler(
         }
 
         var userDetails =
-            await legacyApiClient.Get<GetLegacyUserByEmailApiResponse>(
+            await _legacyApiClient.Get<GetLegacyUserByEmailApiResponse>(
                 new GetLegacyUserByEmailApiRequest(request.Email));
 
         var registrationDetailsDateOfBirth = userDetails?.RegistrationDetails?.DateOfBirth;
@@ -60,7 +67,7 @@ public class CreateCandidateCommandHandler(
 
         var postRequest = new PostCandidateApiRequest(request.GovUkIdentifier, postData);
 
-        var candidateResult = await candidateApiClient.PostWithResponseCode<PostCandidateApiResponse>(postRequest);
+        var candidateResult = await _candidateApiClient.PostWithResponseCode<PostCandidateApiResponse>(postRequest);
 
         candidateResult.EnsureSuccessStatusCode();
 

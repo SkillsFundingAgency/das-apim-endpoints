@@ -37,6 +37,8 @@ public class GetCheckAnswersQueryHandler(ICandidateApiClient<CandidateApiConfigu
             Town = address.Town,
             County = address.County,
             Postcode = address.Postcode,
+            PhoneNumber = candidate.PhoneNumber,
+            Email = candidate.Email,
             CandidatePreferences = preferences.CandidatePreferences == null
                 ? new List<GetCheckAnswersQueryResult.CandidatePreference>()
                 : preferences.CandidatePreferences.Select(cp => new GetCheckAnswersQueryResult.CandidatePreference

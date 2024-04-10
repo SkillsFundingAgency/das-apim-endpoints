@@ -29,7 +29,7 @@ public class WhenHandlingCreateUserPhoneNumberCommand
             PhoneNumber = command.PhoneNumber
         };
 
-        var expectedRequest = new PutCandidateApiRequest(command.GovUkIdentifier, expectedPutData);
+        var expectedRequest = new PutCandidateApiRequest(command.CandidateId, expectedPutData);
 
         mockApiClient
             .Setup(client => client.PutWithResponseCode<PutCandidateApiResponse>(

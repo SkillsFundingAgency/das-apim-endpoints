@@ -17,22 +17,22 @@ public class WhenPostingPhoneNumber
 {
     [Test, MoqAutoData]
     public async Task Then_Returns_Ok_Response(
-        string govId,
+        Guid candidateId,
         CandidatesPhoneNumberModel model,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.UsersController controller)
     {
-        var actual = await controller.PhoneNumber(govId, model) as OkObjectResult;
+        var actual = await controller.PhoneNumber(candidateId, model) as OkObjectResult;
 
         actual.Should().NotBeNull();
         actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
         mediator.Verify(x => x.Send(It.Is<CreatePhoneNumberCommand>(
-            c => c.GovUkIdentifier.Equals(govId)), It.IsAny<CancellationToken>()), Times.Once);
+            c => c.CandidateId.Equals(candidateId)), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test, MoqAutoData]
     public async Task Then_Throws_Exception(
-        string govId,
+        Guid candidateId,
         CandidatesPhoneNumberModel model,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.UsersController controller)
@@ -40,7 +40,7 @@ public class WhenPostingPhoneNumber
         mediator.Setup(x => x.Send(It.IsAny<CreatePhoneNumberCommand>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new InvalidOperationException());
 
-        var actual = await controller.PhoneNumber(govId, model) as StatusCodeResult;
+        var actual = await controller.PhoneNumber(candidateId, model) as StatusCodeResult;
 
         Assert.That(actual, Is.Not.Null);
         Assert.That(actual.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));

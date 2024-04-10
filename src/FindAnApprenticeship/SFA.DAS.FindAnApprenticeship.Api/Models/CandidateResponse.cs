@@ -17,7 +17,8 @@ public class CandidateResponse
             FirstName = source.FirstName,
             LastName = source.LastName,
             PhoneNumber = source.PhoneNumber,
-            Status = source.Status
+            Status = source.Status,
+            DateOfBirth = source.DateOfBirth
         };
     }
 
@@ -28,4 +29,5 @@ public class CandidateResponse
     public string LastName { get; set; }
     public string PhoneNumber { get; set; }
     public UserStatus Status { get; set; }
+    public DateTime? DateOfBirth { get; set; }
 }

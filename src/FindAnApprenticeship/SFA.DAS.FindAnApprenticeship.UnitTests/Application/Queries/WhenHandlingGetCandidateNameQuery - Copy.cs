@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateName;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.PhoneNumber;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -10,14 +10,14 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries;
-public class WhenHandlingGetCandidateNameQuery
+public class WhenHandlingGetPhoneNumberQuery
 {
     [Test, MoqAutoData]
-    public async Task Then_Gets_Candidate_Name_From_Candidates_Api(
-        GetCandidateNameQuery query,
+    public async Task Then_Gets_Candidate_PhoneNumber_From_Candidates_Api(
+        GetPhoneNumberQuery query,
         GetCandidateApiResponse apiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
-        GetCandidateNameQueryHandler handler)
+        GetPhoneNumberQueryHandler handler)
     {
         mockApiClient
             .Setup(client => client.Get<GetCandidateApiResponse>(
@@ -26,14 +26,14 @@ public class WhenHandlingGetCandidateNameQuery
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.FirstName.Should().Be(apiResponse.FirstName);
+        result.PhoneNumber.Should().Be(apiResponse.PhoneNumber);
     }
 
     [Test, MoqAutoData]
-    public async Task And_No_Name_Returned_Then_Name_Set_To_Null(
-        GetCandidateNameQuery query,
+    public async Task And_No_PhoneNumber_Returned_Then_PhoneNumber_Set_To_Null(
+        GetPhoneNumberQuery query,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
-        GetCandidateNameQueryHandler handler)
+        GetPhoneNumberQueryHandler handler)
     {
         mockApiClient
             .Setup(client => client.Get<GetCandidateApiResponse>(
@@ -42,6 +42,6 @@ public class WhenHandlingGetCandidateNameQuery
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.FirstName.Should().BeNull();
+        result.PhoneNumber.Should().BeNull();
     }
 }
