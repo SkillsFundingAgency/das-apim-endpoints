@@ -41,6 +41,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
         }
 
         public string GetUrl => BuildGetUrl();
+        public string Version => "2.0";
 
         private string BuildGetUrl()
         {
