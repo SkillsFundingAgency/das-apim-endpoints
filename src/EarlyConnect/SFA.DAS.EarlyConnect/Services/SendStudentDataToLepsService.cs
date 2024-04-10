@@ -29,7 +29,7 @@ namespace SFA.DAS.EarlyConnect.Services
             _apiLepsNeClient = apiLepsNeClient;
             _apiLepsLaClient = apiLepsLaClient;
         }
-        public async Task<SendStudentDataToLepsServiceResponse> SendStudentDataToLeps(Guid SurveyGuid)
+        public async Task<SendStudentDataToLepsServiceResponse> SendStudentDataToNe(Guid SurveyGuid)
         {
             var getStudentTriageResult = await _apiClient.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(new GetStudentTriageDataBySurveyIdRequest(SurveyGuid));
             getStudentTriageResult.EnsureSuccessStatusCode();
@@ -42,12 +42,22 @@ namespace SFA.DAS.EarlyConnect.Services
 
             }
 
+            return CreateSendStudentDataToLepsServiceResponse("LepCode not matching");
+        }
+
+        public async Task<SendStudentDataToLepsServiceResponse> SendStudentDataToLa(Guid SurveyGuid)
+        {
+            var getStudentTriageResult = await _apiClient.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(new GetStudentTriageDataBySurveyIdRequest(SurveyGuid));
+            getStudentTriageResult.EnsureSuccessStatusCode();
+
+            _sendStudentDataToLepsServiceResponse = new SendStudentDataToLepsServiceResponse();
+
             if (getStudentTriageResult.Body.LepCode.ToUpper() == LepsRegion.Lancashire && getStudentTriageResult.Body.LepDateSent == null)
             {
                 return await SendToLancashire(getStudentTriageResult.Body, SurveyGuid);
             }
 
-            return CreateSendStudentDataToLepsServiceResponse("Leps not enabled");
+            return CreateSendStudentDataToLepsServiceResponse("LepCode not matching");
         }
 
         private async Task<SendStudentDataToLepsServiceResponse> SendToNorthEast(GetStudentTriageDataBySurveyIdResponse data, Guid surveyGuid)

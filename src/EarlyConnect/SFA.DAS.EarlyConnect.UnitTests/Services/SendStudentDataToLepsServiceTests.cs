@@ -48,7 +48,7 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
             mockNeApiClient.Setup(x => x.PostWithResponseCode<SendStudentDataToNeLepsResponse>(It.IsAny<SendStudentDataToNeLepsRequest>(), false))
                 .ReturnsAsync(SendStudentDataToNeLepsResponse);
 
-            var result = await service.SendStudentDataToLeps(surveyGuid);
+            var result = await service.SendStudentDataToNe(surveyGuid);
 
             mockNeApiClient.Verify(x => x.PostWithResponseCode<SendStudentDataToNeLepsResponse>(It.IsAny<SendStudentDataToNeLepsRequest>(), false), Times.Once);
             Assert.That(result, Is.Not.Null);
@@ -80,7 +80,7 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
             mockNeApiClient.Setup(x => x.PostWithResponseCode<SendStudentDataToNeLepsResponse>(It.IsAny<SendStudentDataToNeLepsRequest>(), false))
                 .ReturnsAsync(SendStudentDataToNeLepsResponse);
 
-            var result = await service.SendStudentDataToLeps(surveyGuid);
+            var result = await service.SendStudentDataToLa(surveyGuid);
 
             mockLaApiClient.Verify(x => x.PostWithResponseCode<SendStudentDataToLaLepsResponse>(It.IsAny<SendStudentDataToLaLepsRequest>(), false), Times.Once);
             Assert.That(result, Is.Not.Null);

@@ -37,9 +37,15 @@ namespace SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData
             if (request.StudentTriageData.StudentSurvey.DateCompleted == null)
                 return CreateCommandResult($"{manageStudentResponse?.Body?.Message}");
 
-            if (_feature.IsFeatureEnabled(FeatureNames.NorthEastDataSharing) || _feature.IsFeatureEnabled(FeatureNames.LancashireDataSharing))
+            if (_feature.IsFeatureEnabled(FeatureNames.NorthEastDataSharing))
             {
-                SendStudentDataToLepsServiceResponse response = await _sendStudentDataToLepsService.SendStudentDataToLeps(request.SurveyGuid);
+                SendStudentDataToLepsServiceResponse response = await _sendStudentDataToLepsService.SendStudentDataToNe(request.SurveyGuid);
+                return CreateCommandResult($"{response?.Message}");
+            }
+
+            if (_feature.IsFeatureEnabled(FeatureNames.LancashireDataSharing))
+            {
+                SendStudentDataToLepsServiceResponse response = await _sendStudentDataToLepsService.SendStudentDataToLa(request.SurveyGuid);
                 return CreateCommandResult($"{response?.Message}");
             }
 
