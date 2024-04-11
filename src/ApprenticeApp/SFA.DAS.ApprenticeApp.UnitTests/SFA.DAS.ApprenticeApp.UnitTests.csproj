@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.ApprenticeApp\SFA.DAS.ApprenticeApp.csproj" />
+    <ProjectReference Include="..\SFA.DAS.ApprenticeApp.Api\SFA.DAS.ApprenticeApp.Api.csproj" />
   </ItemGroup>
 
 </Project>
