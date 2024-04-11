@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using MediatR;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
@@ -68,7 +67,6 @@ public class Startup
         }
 
         services.AddApplicationInsightsTelemetry(x => x.ConnectionString = _configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
-        services.AddSingleton<ITelemetryInitializer, RequestHeaderTelemetryInitializer>();
 
         services.AddSwaggerGen(c =>
         {
