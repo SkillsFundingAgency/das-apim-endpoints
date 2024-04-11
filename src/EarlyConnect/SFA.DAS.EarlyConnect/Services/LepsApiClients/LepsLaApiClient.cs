@@ -17,45 +17,13 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         private IInternalApiClient<LepsLaApiConfiguration> _apiClient;
         protected LepsLaApiConfiguration Configuration;
         protected HttpClient HttpClient;
-        public LepsLaApiClient(IInternalApiClient<LepsLaApiConfiguration> apiClient, IHttpClientFactory httpClientFactory, LepsLaApiConfiguration apiConfiguration)
+        public LepsLaApiClient(IInternalApiClient<LepsLaApiConfiguration> apiClient,
+            LepsLaApiConfiguration apiConfiguration)
         {
-            InitializeAsync(apiClient, httpClientFactory, apiConfiguration);
+            _apiClient = apiClient;
+            Configuration = apiConfiguration;
         }
-        private void InitializeAsync(IInternalApiClient<LepsLaApiConfiguration> apiClient, IHttpClientFactory httpClientFactory, LepsLaApiConfiguration apiConfiguration)
-        {
-            try
-            {
-                _apiClient = apiClient;
-                Configuration = apiConfiguration;
 
-                // Retrieve the client SSL certificate from Azure Key Vault
-                var certificateClient = new CertificateClient(new Uri(Configuration.KeyVaultIdentifier), new DefaultAzureCredential());
-                var certificateName = Configuration.CertificateName;
-
-                // Retrieve the certificate from Azure Key Vault
-
-                KeyVaultCertificate certificate = certificateClient.GetCertificate(certificateName);
-
-                // Retrieve the certificate data
-                byte[] certificateBytes = certificate.Cer;
-
-                // Create X509Certificate2 object from the certificate data
-                var certificateX509 = new X509Certificate2(certificateBytes);
-
-                // Create HttpClientHandler and configure client certificate
-                var httpClientHandler = new HttpClientHandler();
-                httpClientHandler.ClientCertificates.Add(certificateX509);
-                httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
-
-                HttpClient = new HttpClient(httpClientHandler);
-                HttpClient.BaseAddress = new Uri(apiConfiguration.Url);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
         public Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
             return _apiClient.Get<TResponse>(request);
@@ -88,6 +56,8 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl);
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
+
+            AddAuthenticationCertificate();
 
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -161,6 +131,30 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         public virtual string HandleException(HttpResponseMessage response, string json)
         {
             return json;
+        }
+        private void AddAuthenticationCertificate()
+        {
+            // Retrieve the client SSL certificate from Azure Key Vault
+            var certificateClient = new CertificateClient(new Uri(Configuration.KeyVaultIdentifier), new DefaultAzureCredential());
+            var certificateName = Configuration.CertificateName;
+
+            // Retrieve the certificate from Azure Key Vault
+
+            KeyVaultCertificate certificate = certificateClient.GetCertificate(certificateName);
+
+            // Retrieve the certificate data
+            byte[] certificateBytes = certificate.Cer;
+
+            // Create X509Certificate2 object from the certificate data
+            var certificateX509 = new X509Certificate2(certificateBytes);
+
+            // Create HttpClientHandler and configure client certificate
+            var httpClientHandler = new HttpClientHandler();
+            httpClientHandler.ClientCertificates.Add(certificateX509);
+            httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
+
+            HttpClient = new HttpClient(httpClientHandler);
+            HttpClient.BaseAddress = new Uri(Configuration.Url);
         }
     }
 }
