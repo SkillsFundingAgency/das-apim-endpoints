@@ -134,7 +134,6 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         }
         private void AddAuthenticationCertificate()
         {
-
             var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
 
             var certificateClient = new CertificateClient(vaultUri: new Uri(Configuration.KeyVaultIdentifier), credential: new DefaultAzureCredential(defaultAzureCredentialOptions));
@@ -143,6 +142,7 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             // Create HttpClientHandler and configure client certificate
             var httpClientHandler = new HttpClientHandler();
             httpClientHandler.ClientCertificates.Add(certificate);
+            httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
 
 
             HttpClient = new HttpClient(httpClientHandler);
