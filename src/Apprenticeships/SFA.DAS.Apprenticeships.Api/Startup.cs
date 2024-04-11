@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Apprenticeships.Api.AppStart;
+using SFA.DAS.Apprenticeships.Api.Middleware;
 using SFA.DAS.Apprenticeships.Application.TrainingCourses;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
@@ -78,6 +79,8 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
     {
+        app.UseMiddleware<LogRequestMiddleware>();
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();

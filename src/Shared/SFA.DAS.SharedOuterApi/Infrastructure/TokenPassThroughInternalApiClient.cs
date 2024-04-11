@@ -28,7 +28,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             if (authHeader != null)
             {
                 httpRequestMessage.Headers.Add("Authorization", authHeader);
-                _logger.LogInformation($"Added User Bearer token to request");
+                _logger.LogInformation($"Added User Bearer token to request {authHeader}");
             }
             else
             {

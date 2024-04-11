@@ -38,6 +38,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         [Route("{apprenticeshipHashedId}/key")]
         public async Task<ActionResult> GetApprenticeshipKey(string apprenticeshipHashedId)
         {
+            _logger.LogInformation($"Controller Request Path: {ControllerContext.HttpContext.Request.Path} Headers:{HeadersToString(ControllerContext.HttpContext)}");
             return Ok(await _apiClient.Get<Guid>(new GetApprenticeshipKeyRequest { ApprenticeshipHashedId = apprenticeshipHashedId }));
         }
 
@@ -163,6 +164,20 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         {
             await _apiClient.Patch(new PatchApproveApprenticeshipPriceChangeRequest(apprenticeshipKey, request.UserId, request.TrainingPrice, request.AssessmentPrice));
             return Ok();
+        }
+
+        private string HeadersToString(HttpContext context)
+        {
+            var headers = context.Request.Headers;
+
+            var headersString = "";
+
+            foreach (var header in headers)
+            {
+                headersString += $"{header.Key}: {string.Join(", ", header.Value)} ";
+            }
+
+            return headersString;
         }
     }
 }
