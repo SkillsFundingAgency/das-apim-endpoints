@@ -69,19 +69,19 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         public async Task<ActionResult> CreateApprenticeshipPriceChange(Guid apprenticeshipKey,
             [FromBody] CreateApprenticeshipPriceChangeRequest request)
         {
-            var response = await _apiClient.PostWithResponseCode<object>(new PostCreateApprenticeshipPriceChangeRequest(
+            var response = await _apiClient.PostWithResponseCode<PostCreateApprenticeshipPriceChangeApiResponse>(new PostCreateApprenticeshipPriceChangeRequest(
             apprenticeshipKey,
-            request.Requester,
+            request.Initiator,
 				    request.UserId,
 				    request.TrainingPrice,
 				    request.AssessmentPrice,
 				    request.TotalPrice,
 				    request.Reason,
-				    request.EffectiveFromDate), false);
+				    request.EffectiveFromDate));
 
 			      if (string.IsNullOrEmpty(response.ErrorContent))
 			      {
-				        return Ok();
+				        return Ok(new PostCreateApprenticeshipPriceChangeResponse(response.Body.PriceChangeStatus));
 			      }
                
             _logger.LogError($"Error attempting to create apprenticeship price change. {response.StatusCode} returned from inner api.", response.StatusCode);
@@ -92,7 +92,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         [Route("{apprenticeshipKey}/priceHistory/pending")]
         public async Task<ActionResult> GetPendingPriceChange(Guid apprenticeshipKey)
         {
-	          var response = await _apiClient.Get<GetPendingPriceChangeApiResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey));
+            var response = await _apiClient.Get<GetPendingPriceChangeApiResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey));
 
             if (response == null || response.PendingPriceChange == null)
             {
@@ -105,11 +105,19 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
 
             if (providerResponse == null || string.IsNullOrEmpty(providerResponse.Name))
             {
-                _logger.LogWarning($"No provider found for ukprn {ukprn}");
+                _logger.LogWarning($"No provider found for {nameof(ukprn)} {ukprn}");
                 return NotFound();
             }
 
-            return Ok(new GetPendingPriceChangeResponse(response, providerResponse.Name, apprenticeshipKey));
+            var accountLegalEntityId = response.PendingPriceChange.AccountLegalEntityId.GetValueOrDefault();
+            var employerResponse = await _apiCommitmentsClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
+            if (employerResponse == null || string.IsNullOrEmpty(employerResponse.AccountName))
+            {
+                _logger.LogWarning($"No employer found for {nameof(accountLegalEntityId)} {accountLegalEntityId}");
+                return NotFound();
+            }
+
+            return Ok(new GetPendingPriceChangeResponse(response, providerResponse.Name, apprenticeshipKey, employerResponse.AccountName));
         }
 
         [HttpDelete]
@@ -132,7 +140,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         [Route("{apprenticeshipKey}/priceHistory/pending/approve")]
         public async Task<ActionResult> ApprovePendingPriceChange(Guid apprenticeshipKey, [FromBody] ApprovePriceChangeRequest request)
         {
-            await _apiClient.Patch(new PatchApproveApprenticeshipPriceChangeRequest(apprenticeshipKey, request.UserId));
+            await _apiClient.Patch(new PatchApproveApprenticeshipPriceChangeRequest(apprenticeshipKey, request.UserId, request.TrainingPrice, request.AssessmentPrice));
             return Ok();
         }
     }
