@@ -26,7 +26,6 @@ public record GetApplicationQueryResult
         public string? MiddleName { get; set; }
         public string? LastName { get; set; }
         public string? PhoneNumber { get; set; }
-        public DateTime? DateOfBirth { get; set; }
         public CandidateAddress Address { get; set; }
     }
 

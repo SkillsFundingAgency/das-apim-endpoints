@@ -37,7 +37,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             query.AccountLegalEntityPublicHashedId = "";
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
-                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, categories, query.PostedInLastNumberOfDays, query.Sort);
+                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, categories, query.PostedInLastNumberOfDays, query.AdditionalDataSources, query.Sort);
             apiClient.Setup(x =>
                 x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
                     c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
@@ -66,7 +66,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             query.AccountLegalEntityPublicHashedId = "";
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
-                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, categories, query.PostedInLastNumberOfDays, query.Sort);
+                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, categories, query.PostedInLastNumberOfDays, query.AdditionalDataSources, query.Sort);
             apiClient.Setup(x =>
                 x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
                     c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(new GetVacanciesResponse
@@ -102,7 +102,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
-                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, categories, query.PostedInLastNumberOfDays, query.Sort);
+                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, categories, query.PostedInLastNumberOfDays, query.AdditionalDataSources, query.Sort);
             apiClient.Setup(x =>
                 x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
                     c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
@@ -139,7 +139,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             query.AccountLegalEntityPublicHashedId = "";
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
-                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, new List<string>(), query.PostedInLastNumberOfDays, query.Sort);
+                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, new List<string>(), query.PostedInLastNumberOfDays, query.AdditionalDataSources, query.Sort);
             apiClient.Setup(x =>
                 x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
                     c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
@@ -177,7 +177,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             query.AccountLegalEntityPublicHashedId = "";
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
-                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, new List<string>(), query.PostedInLastNumberOfDays, query.Sort);
+                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, new List<string>(), query.PostedInLastNumberOfDays, query.AdditionalDataSources, query.Sort);
             courseService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(new List<string>());
             apiClient.Setup(x =>
                 x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
@@ -205,7 +205,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             query.AccountIdentifier = new AccountIdentifier("Employer-ABC123-Product");
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
-                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, new List<string>(), query.PostedInLastNumberOfDays, query.Sort);
+                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, new List<string>(), query.PostedInLastNumberOfDays, query.AdditionalDataSources, query.Sort);
             courseService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(new List<string>());
             apiClient.Setup(x =>
                 x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
@@ -254,7 +254,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             query.AccountIdentifier = new AccountIdentifier($"External-{externalId}-Product");
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
                 "", query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode, 
-                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, new List<string>(), query.PostedInLastNumberOfDays, query.Sort);
+                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, new List<string>(), query.PostedInLastNumberOfDays, query.AdditionalDataSources, query.Sort);
             courseService.Setup(x => x.MapRoutesToCategories(query.Routes)).Returns(new List<string>());
             apiClient.Setup(x =>
                 x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>

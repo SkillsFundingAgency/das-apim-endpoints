@@ -42,7 +42,6 @@ public record GetApplicationApiResponse
         public string? MiddleName { get; set; }
         public string? LastName { get; set; }
         public string? PhoneNumber { get; set; }
-        public DateTime? DateOfBirth { get; set; }
         public AddressDetailsSection Address { get; set; }
 
         public static implicit operator CandidateDetailsSection(GetApplicationQueryResult.Candidate source)
@@ -58,7 +57,6 @@ public record GetApplicationApiResponse
                 MiddleName = source.MiddleName,
                 LastName = source.LastName,
                 PhoneNumber = source.PhoneNumber,
-                DateOfBirth = source.DateOfBirth,
                 Address = source.Address
             };
         }

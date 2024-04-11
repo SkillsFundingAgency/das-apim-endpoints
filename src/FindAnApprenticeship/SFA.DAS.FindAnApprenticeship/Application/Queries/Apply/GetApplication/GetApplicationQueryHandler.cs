@@ -144,7 +144,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                     LastName = candidate.LastName,
                     MiddleName = candidate.MiddleName,
                     PhoneNumber = candidate.PhoneNumber,
-                    DateOfBirth = candidate.DateOfBirth,
                     Address = address
                 },
                 AboutYou = new GetApplicationQueryResult.AboutYouSection
