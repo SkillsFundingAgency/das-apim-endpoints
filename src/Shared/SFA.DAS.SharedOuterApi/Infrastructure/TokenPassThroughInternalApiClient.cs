@@ -24,11 +24,11 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         protected override Task AddAuthenticationHeader(HttpRequestMessage httpRequestMessage)
         {
-            var authHeader = _httpContextAccessor.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            var authHeader = _httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Authorization"].FirstOrDefault();
             if (authHeader != null)
             {
                 httpRequestMessage.Headers.Add("Authorization", authHeader);
-                _logger.LogInformation($"Added User Bearer token to request {authHeader}");
+                _logger.LogInformation($"Added bearer token from incoming X-Forwarded-Authorization header {authHeader} to outgoing HttpRequestMessage");
             }
             else
             {
