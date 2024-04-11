@@ -134,24 +134,16 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         }
         private void AddAuthenticationCertificate()
         {
-            // Retrieve the client SSL certificate from Azure Key Vault
-            var certificateClient = new CertificateClient(new Uri(Configuration.KeyVaultIdentifier), new DefaultAzureCredential());
-            var certificateName = Configuration.CertificateName;
 
-            // Retrieve the certificate from Azure Key Vault
+            var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
 
-            KeyVaultCertificate certificate = certificateClient.GetCertificate(certificateName);
-
-            // Retrieve the certificate data
-            byte[] certificateBytes = certificate.Cer;
-
-            // Create X509Certificate2 object from the certificate data
-            var certificateX509 = new X509Certificate2(certificateBytes);
+            var certificateClient = new CertificateClient(vaultUri: new Uri(Configuration.KeyVaultIdentifier), credential: new DefaultAzureCredential(defaultAzureCredentialOptions));
+            var certificate = certificateClient.DownloadCertificate(Configuration.CertificateName);
 
             // Create HttpClientHandler and configure client certificate
             var httpClientHandler = new HttpClientHandler();
-            httpClientHandler.ClientCertificates.Add(certificateX509);
-            httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
+            httpClientHandler.ClientCertificates.Add(certificate);
+
 
             HttpClient = new HttpClient(httpClientHandler);
             HttpClient.BaseAddress = new Uri(Configuration.Url);
