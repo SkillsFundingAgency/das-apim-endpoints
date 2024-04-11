@@ -18,6 +18,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CandidatePreferenc
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CheckAnswers;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.PhoneNumber;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.CheckAnswers;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.PhoneNumber;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateName;
 
@@ -226,6 +227,26 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error posting candidate manually entered address details");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("{candidateId}/create-account/phone-number")]
+        public async Task<IActionResult> PhoneNumber([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetPhoneNumberQuery
+                {
+                    CandidateId = candidateId
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting phone number");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
