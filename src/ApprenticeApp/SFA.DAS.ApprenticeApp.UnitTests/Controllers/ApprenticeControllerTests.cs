@@ -20,7 +20,6 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             var httpContext = new DefaultHttpContext();
             var apprenticeId = Guid.NewGuid();
 
-
             var queryResult = new GetApprenticeQuery
             {
                 ApprenticeId = apprenticeId
@@ -32,13 +31,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             };
 
             var result = await controller.GetApprentice(apprenticeId);
-
             result.Should().BeOfType(typeof(NotFoundResult));
-
         }
-
-     
-
-
     }
 }
