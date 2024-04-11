@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using SFA.DAS.ApprenticeApp.InnerApi.CommitmentsV2.Responses;
 using WireMock.RequestBuilders;
@@ -6,6 +7,7 @@ using WireMock.ResponseBuilders;
 
 namespace SFA.DAS.ApprenticeApp.MockApis
 {
+    [ExcludeFromCodeCoverageAttribute]
     public class CommitmentsV2InnerApiMock : ApiMock
     {
         public CommitmentsV2InnerApiMock() : this(0) {}
