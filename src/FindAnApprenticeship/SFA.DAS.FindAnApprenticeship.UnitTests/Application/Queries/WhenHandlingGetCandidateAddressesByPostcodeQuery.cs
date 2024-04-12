@@ -26,7 +26,7 @@ public class WhenHandlingGetCandidateAddressesByPostcodeQuery
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.AddressesResponse.Addresses.Count().Should().Be(apiResponse.Addresses.Count());
+        result.Addresses.Count().Should().Be(apiResponse.Addresses.Count());
     }
 
     [Test, MoqAutoData]
@@ -42,6 +42,6 @@ public class WhenHandlingGetCandidateAddressesByPostcodeQuery
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.AddressesResponse.Should().BeNull();
+        result.Should().BeNull();
     }
 }

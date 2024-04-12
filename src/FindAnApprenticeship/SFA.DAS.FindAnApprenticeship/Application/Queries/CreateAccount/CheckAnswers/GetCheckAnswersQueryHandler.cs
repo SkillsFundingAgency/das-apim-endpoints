@@ -32,6 +32,7 @@ public class GetCheckAnswersQueryHandler(ICandidateApiClient<CandidateApiConfigu
             MiddleNames = candidate.MiddleNames,
             LastName = candidate.LastName,
             DateOfBirth = candidate.DateOfBirth,
+            Uprn = address.Uprn,
             AddressLine1 = address.AddressLine1,
             AddressLine2 = address.AddressLine2,
             Town = address.Town,

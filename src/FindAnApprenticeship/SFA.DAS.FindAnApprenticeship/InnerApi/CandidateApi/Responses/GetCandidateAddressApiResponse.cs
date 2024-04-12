@@ -4,6 +4,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 public class GetCandidateAddressApiResponse
 {
     public Guid Id { get; set; }
+    public string? Uprn { get; set; }
     public string AddressLine1 { get; set; } = null!;
     public string? AddressLine2 { get; set; }
     public string Town { get; set; } = null!;

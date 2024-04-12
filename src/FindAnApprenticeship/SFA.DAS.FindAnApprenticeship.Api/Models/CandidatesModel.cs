@@ -21,6 +21,7 @@ public class CandidatesDateOfBirthModel : CandidatesModel
 
 public class CandidatesAddressModel : CandidatesModel
 {
+    public string? Uprn { get; set; }
     public string AddressLine1 { get; set; }
     public string AddressLine2 { get; set; }
     public string AddressLine3 { get; set; }

@@ -18,6 +18,7 @@ public class WhenGettingAddressesByPostcode
 {
     [Test, MoqAutoData]
     public async Task And_An_Exception_Is_Thrown_Then_Returns_InternalServerError(
+        Guid candidateId,
         string postcode,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.UsersController controller)
@@ -25,13 +26,14 @@ public class WhenGettingAddressesByPostcode
         mediator.Setup(x => x.Send(It.Is<GetCandidateAddressesByPostcodeQuery>(x => x.Postcode == postcode), CancellationToken.None))
             .ThrowsAsync(new Exception());
 
-        var actual = await controller.SelectAddress(postcode) as StatusCodeResult;
+        var actual = await controller.SelectAddress(candidateId, postcode) as StatusCodeResult;
 
         actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }
 
     [Test, MoqAutoData]
     public async Task Then_Returns_Ok_Result(
+        Guid candidateId,
         string postcode,
         GetCandidateAddressesByPostcodeQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
@@ -40,25 +42,26 @@ public class WhenGettingAddressesByPostcode
         mediator.Setup(x => x.Send(It.Is<GetCandidateAddressesByPostcodeQuery>(x => x.Postcode == postcode), CancellationToken.None))
             .ReturnsAsync(queryResult);
 
-        var actual = await controller.SelectAddress(postcode);
+        var actual = await controller.SelectAddress(candidateId, postcode);
 
         actual.Should().BeOfType<OkObjectResult>();
     }
 
     [Test,MoqAutoData]
     public async Task And_Api_Returns_No_Addresses_Return_Empty_Ok_Result(
+        Guid candidateId,
         string postcode,
         GetCandidateAddressesByPostcodeQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.UsersController controller)
     {
         var emptyList = Enumerable.Empty<GetAddressesListItem>();
-        queryResult.AddressesResponse.Addresses = emptyList;
+        queryResult.Addresses = emptyList;
 
         mediator.Setup(x => x.Send(It.Is<GetCandidateAddressesByPostcodeQuery>(x => x.Postcode == postcode), CancellationToken.None))
             .ReturnsAsync(queryResult);
 
-        var actual = await controller.SelectAddress(postcode);
+        var actual = await controller.SelectAddress(candidateId, postcode);
 
         actual.Should().BeOfType<OkResult>();
     }

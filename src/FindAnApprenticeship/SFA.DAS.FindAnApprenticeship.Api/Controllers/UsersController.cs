@@ -140,17 +140,18 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("create-account/select-address")]
-        public async Task<IActionResult> SelectAddress([FromQuery] string postcode)
+        [Route("{candidateId}/create-account/select-address")]
+        public async Task<IActionResult> SelectAddress([FromRoute] Guid candidateId, [FromQuery] string postcode)
         {
             try
             {
-                var queryResponse = await _mediator.Send(new GetCandidateAddressesByPostcodeQuery(postcode));
+                var result = await _mediator.Send(new GetCandidateAddressesByPostcodeQuery
+                {
+                    CandidateId = candidateId,
+                    Postcode = postcode
+                });
 
-                if (queryResponse.AddressesResponse == null || !queryResponse.AddressesResponse.Addresses.Any())
-                    return Ok();
-
-                return Ok(queryResponse.AddressesResponse);
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -188,6 +189,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 var result = await _mediator.Send(new CreateAddressCommand
                 {
                     CandidateId = candidateId,
+                    Uprn = model.Uprn,
                     Email = model.Email,
                     AddressLine1 = model.AddressLine1,
                     AddressLine2 = model.AddressLine2,

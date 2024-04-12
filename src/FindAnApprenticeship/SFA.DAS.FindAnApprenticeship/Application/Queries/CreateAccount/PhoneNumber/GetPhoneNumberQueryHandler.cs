@@ -13,6 +13,15 @@ public class GetPhoneNumberQueryHandler(ICandidateApiClient<CandidateApiConfigur
 {
     public async Task<GetPhoneNumberQueryResult> Handle(GetPhoneNumberQuery request, CancellationToken cancellationToken)
     {
-        return await candidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId));
+        var candidate = candidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId));
+        var address = candidateApiClient.Get<GetCandidateAddressApiResponse>(new GetCandidateAddressApiRequest(request.CandidateId));
+
+        await Task.WhenAll(candidate, address);
+
+        return new GetPhoneNumberQueryResult
+        {
+            PhoneNumber = candidate.Result.PhoneNumber,
+            IsAddressFromLookup = !string.IsNullOrEmpty(address.Result.Uprn)
+        };
     }
 }
