@@ -32,7 +32,6 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
         public bool IsLinkedToChangeOfPartyRequest { get; set; }
         public TransferApprovalStatus? TransferApprovalStatus { get; set; }
         public LastAction LastAction { get; set; }
-        public bool ApprenticeEmailIsRequired { get; set; }
         public bool HasUnavailableFlexiJobAgencyDeliveryModel { get; set; }
         public IEnumerable<string> InvalidProviderCourseCodes { get; set; }
         public IEnumerable<DraftApprenticeship> DraftApprenticeships { get; set; }
@@ -68,7 +67,6 @@ namespace SFA.DAS.Approvals.Api.Models.Cohorts
                 IsLinkedToChangeOfPartyRequest = source.IsLinkedToChangeOfPartyRequest,
                 TransferApprovalStatus = source.TransferApprovalStatus,
                 LastAction = source.LastAction,
-                ApprenticeEmailIsRequired = source.ApprenticeEmailIsRequired,
                 DraftApprenticeships = source.DraftApprenticeships.Select(x=>(DraftApprenticeship)x),
                 ApprenticeshipEmailOverlaps = source.ApprenticeshipEmailOverlaps.Select(x=>(ApprenticeshipEmailOverlap)x),
                 RplErrorDraftApprenticeshipIds = source.RplErrorDraftApprenticeshipIds

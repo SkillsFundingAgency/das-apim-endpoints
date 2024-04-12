@@ -288,13 +288,6 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
         }
 
         [Test]
-        public async Task Handle_ApprenticeEmailIsRequired_Is_Mapped()
-        {
-            var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.That(_cohort.ApprenticeEmailIsRequired, Is.EqualTo(result.ApprenticeEmailIsRequired));
-        }
-
-        [Test]
         public async Task Handle_DraftApprenticeships_Are_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);

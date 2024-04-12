@@ -26,6 +26,5 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         public long CohortId { get; set; }
         public string CohortReference { get; set; }
         public string LatestMessageCreatedByEmployer { get; set; }
-        public bool ApprenticeEmailIsRequired { get; set; }
     }
 }

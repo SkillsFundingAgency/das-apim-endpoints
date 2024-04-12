@@ -23,7 +23,6 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries
         public long AccountLegalEntityId { get; set; }
         public long CohortId { get; set; }
         public string LatestMessageCreatedByEmployer { get; set; }
-        public bool ApprenticeEmailIsRequired { get; set; }
 
         public static implicit operator GetCohortResult(InnerApi.Responses.GetCohortResponse result)
         {
@@ -47,8 +46,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries
                 LegalEntityName = result.LegalEntityName,
                 AccountLegalEntityId = result.AccountLegalEntityId,
                 CohortId = result.CohortId,
-                LatestMessageCreatedByEmployer = result.LatestMessageCreatedByEmployer,
-                ApprenticeEmailIsRequired = result.ApprenticeEmailIsRequired
+                LatestMessageCreatedByEmployer = result.LatestMessageCreatedByEmployer
             };
         }
     }
