@@ -10,6 +10,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
 {
@@ -24,7 +25,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             var tokenValue = Guid.NewGuid().ToString();
             var authToken = $"Bearer {tokenValue}";
             var httpContextAccessor = new Mock<IHttpContextAccessor>();
-            httpContextAccessor.Setup(x => x.HttpContext.Request.Headers["Authorization"]).Returns(authToken);
+            httpContextAccessor.Setup(x => x.HttpContext.Request.Headers["X-Forwarded-Authorization"]).Returns(authToken);
             config.Url = "https://test.local";
             var response = new HttpResponseMessage
             {
@@ -37,7 +38,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             var client = new HttpClient(httpMessageHandler.Object);
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
-            var sut = new TokenPassThroughInternalApiClient<TestInternalApiConfiguration>(clientFactory.Object, config, httpContextAccessor.Object);
+            var sut = new TokenPassThroughInternalApiClient<TestInternalApiConfiguration>(
+                clientFactory.Object, 
+                config, 
+                httpContextAccessor.Object, 
+                Mock.Of<ILogger<TokenPassThroughInternalApiClient<TestInternalApiConfiguration>>>());
 
             //Act
             await sut.Get<string>(getTestRequest);
