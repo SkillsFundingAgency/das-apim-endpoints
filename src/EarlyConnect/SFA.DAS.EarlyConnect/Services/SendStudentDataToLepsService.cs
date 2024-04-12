@@ -42,7 +42,7 @@ namespace SFA.DAS.EarlyConnect.Services
 
             }
 
-            return CreateSendStudentDataToLepsServiceResponse("LepCode not matching");
+            return CreateSendStudentDataToLepsServiceResponse("LepCode not matching with Ne");
         }
 
         public async Task<SendStudentDataToLepsServiceResponse> SendStudentDataToLa(Guid SurveyGuid)
@@ -57,7 +57,7 @@ namespace SFA.DAS.EarlyConnect.Services
                 return await SendToLancashire(getStudentTriageResult.Body, SurveyGuid);
             }
 
-            return CreateSendStudentDataToLepsServiceResponse("LepCode not matching");
+            return CreateSendStudentDataToLepsServiceResponse("LepCode not matching with La");
         }
 
         private async Task<SendStudentDataToLepsServiceResponse> SendToNorthEast(GetStudentTriageDataBySurveyIdResponse data, Guid surveyGuid)
