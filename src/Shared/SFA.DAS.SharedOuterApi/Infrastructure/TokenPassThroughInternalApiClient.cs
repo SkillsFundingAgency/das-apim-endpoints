@@ -12,6 +12,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<TokenPassThroughInternalApiClient<T>> _logger;
 
+        /// <summary>
+        /// ApiClient used for requests to APIs that require tokens with account-level claims for Authorization.
+        /// </summary>
         public TokenPassThroughInternalApiClient(
             IHttpClientFactory httpClientFactory,
             T apiConfiguration,
@@ -22,6 +25,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             _logger = logger;
         }
 
+        /// <summary>
+        /// Stores the bearer token from the incoming request of the current <see cref="HttpContext"/> to the Authorization header of the outgoing request
+        /// </summary>
         protected override Task AddAuthenticationHeader(HttpRequestMessage httpRequestMessage)
         {
             var authHeader = _httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Authorization"].FirstOrDefault();
@@ -31,7 +37,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             }
             else
             {
-                    _logger.LogWarning("Bearer token not received in header 'X-Forwarded-Authorization', and therefore no Authorization header was attached to request message.");
+                _logger.LogWarning("Bearer token not received in header 'X-Forwarded-Authorization', and therefore no Authorization header was attached to request message.");
             }
 
             return Task.CompletedTask;
