@@ -132,25 +132,76 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         {
             return json;
         }
-        private void AddAuthenticationCertificate()
+
+        //private void AddAuthenticationCertificate()
+        //{
+        //    try
+        //    {
+        //        var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
+
+        //        //defaultAzureCredentialOptions = new DefaultAzureCredentialOptions { VisualStudioTenantId = "c9d1feb2-1125-48ec-b4d4-4b9c3292a2e9" };
+
+        //        //defaultAzureCredentialOptions = new DefaultAzureCredentialOptions { VisualStudioTenantId = "1a92889b-8ea1-4a16-8132-347814051567" };
+
+        //        //defaultAzureCredentialOptions = new DefaultAzureCredentialOptions { VisualStudioTenantId = "04b07795-8ddb-461a-bbee-02f9e1bf7b46" };
+
+
+        //        var certificateClient = new CertificateClient(vaultUri: new Uri(Configuration.KeyVaultIdentifier), credential: new DefaultAzureCredential(defaultAzureCredentialOptions));
+        //        var certificate = certificateClient.DownloadCertificate(Configuration.CertificateName);
+
+        //        if (certificate == null || certificate.Value == null)
+        //        {
+        //            throw new Exception("Certificate was not properly returned from the Key Vault.");
+        //        }
+        //        // Create HttpClientHandler and configure client certificate
+        //        var httpClientHandler = new HttpClientHandler();
+        //        httpClientHandler.ClientCertificates.Add(certificate);
+        //        httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
+
+
+        //        HttpClient = new HttpClient(httpClientHandler);
+        //        HttpClient.BaseAddress = new Uri(Configuration.Url);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.WriteLine(e);
+        //        throw;
+        //    }
+        //}
+
+        private void  AddAuthenticationCertificate()
         {
-            var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
-
-            var certificateClient = new CertificateClient(vaultUri: new Uri(Configuration.KeyVaultIdentifier), credential: new DefaultAzureCredential(defaultAzureCredentialOptions));
-            var certificate = certificateClient.DownloadCertificate(Configuration.CertificateName);
-
-            if (certificate == null || certificate.Value == null)
+            try
             {
-                throw new Exception("Certificate was not properly returned from the Key Vault.");
+                var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
+
+                var certificateClient = new CertificateClient(vaultUri: new Uri(Configuration.KeyVaultIdentifier), credential: new DefaultAzureCredential(defaultAzureCredentialOptions));
+                var certificateResponse =  certificateClient.GetCertificate(Configuration.CertificateName);
+
+                if (certificateResponse != null)
+                {
+                    // Assuming the certificate is password-protected and you have the password stored in a variable named 'certificatePassword'
+                    var certificatePassword = "abc123";
+                    var certificate = new X509Certificate2(certificateResponse.Value.Cer, certificatePassword);
+
+                    // Create HttpClientHandler and configure client certificate
+                    var httpClientHandler = new HttpClientHandler();
+                    httpClientHandler.ClientCertificates.Add(certificate);
+                    httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
+
+                    HttpClient = new HttpClient(httpClientHandler);
+                    HttpClient.BaseAddress = new Uri(Configuration.Url);
+                }
+                else
+                {
+                    throw new Exception("Certificate was not properly returned from the Key Vault.");
+                }
             }
-            // Create HttpClientHandler and configure client certificate
-            var httpClientHandler = new HttpClientHandler();
-            httpClientHandler.ClientCertificates.Add(certificate);
-            httpClientHandler.ClientCertificateOptions = ClientCertificateOption.Automatic;
-
-
-            HttpClient = new HttpClient(httpClientHandler);
-            HttpClient.BaseAddress = new Uri(Configuration.Url);
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while adding authentication certificate: " + ex.Message);
+                throw;
+            }
         }
     }
 }
