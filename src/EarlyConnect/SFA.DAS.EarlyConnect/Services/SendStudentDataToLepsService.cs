@@ -75,6 +75,8 @@ namespace SFA.DAS.EarlyConnect.Services
 
             await PerformDeliveryUpdate(data.Id);
 
+            CreateSendStudentDataToLepsServiceResponse("Ne process completed");
+
             return _sendStudentDataToLepsServiceResponse;
         }
 
@@ -92,6 +94,8 @@ namespace SFA.DAS.EarlyConnect.Services
             }
 
             await PerformDeliveryUpdate(data.Id);
+
+            CreateSendStudentDataToLepsServiceResponse("La process completed");
 
             return _sendStudentDataToLepsServiceResponse;
         }
