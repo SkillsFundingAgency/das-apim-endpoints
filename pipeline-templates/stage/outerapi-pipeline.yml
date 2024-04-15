@@ -1,6 +1,7 @@
 parameters:
   OuterApiName:
   SandboxEnabled: $False
+  AddXForwardedAuthorization: $False
   SharedOuterApiProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi/SFA.DAS.SharedOuterApi.csproj'
   SharedOuterApiTestProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj' 
   AdditionalProjectPathToInclude: ''
@@ -52,6 +53,7 @@ stages:
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
+      AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -80,6 +82,7 @@ stages:
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
+      AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -108,6 +111,7 @@ stages:
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
+      AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
 
 - stage: Deploy_PP
   dependsOn: Build
@@ -136,6 +140,7 @@ stages:
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
+      AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
 
 - stage: Deploy_PROD
   dependsOn: Build
@@ -163,6 +168,7 @@ stages:
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
+      AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
 
 - stage: Deploy_MO
   dependsOn: Build
@@ -190,6 +196,7 @@ stages:
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
+      AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
 
 - stage: Deploy_DEMO
   dependsOn: Build
@@ -218,3 +225,4 @@ stages:
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
+      AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
