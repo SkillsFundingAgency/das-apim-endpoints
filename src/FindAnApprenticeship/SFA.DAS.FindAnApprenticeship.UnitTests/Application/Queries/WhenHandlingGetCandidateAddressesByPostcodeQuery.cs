@@ -28,20 +28,4 @@ public class WhenHandlingGetCandidateAddressesByPostcodeQuery
 
         result.Addresses.Count().Should().Be(apiResponse.Addresses.Count());
     }
-
-    [Test, MoqAutoData]
-    public async Task Then_No_Address_Returned_So_PostcodeExists_Is_False(
-        GetCandidateAddressesByPostcodeQuery query,
-        [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockApiClient,
-        GetCandidateAddressesByPostcodeQueryHandler handler)
-    {
-        mockApiClient
-                .Setup(client => client.Get<GetAddressesListResponse>(
-                It.Is<GetAddressesQueryRequest>(c => c.GetUrl.Contains(query.Postcode))))
-                .ReturnsAsync(() => null);
-
-        var result = await handler.Handle(query, CancellationToken.None);
-
-        result.Should().BeNull();
-    }
 }

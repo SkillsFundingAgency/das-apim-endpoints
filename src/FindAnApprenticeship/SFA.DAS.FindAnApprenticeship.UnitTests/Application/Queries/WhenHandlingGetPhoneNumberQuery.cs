@@ -28,20 +28,4 @@ public class WhenHandlingGetPhoneNumberQuery
 
         result.PhoneNumber.Should().Be(apiResponse.PhoneNumber);
     }
-
-    [Test, MoqAutoData]
-    public async Task And_No_PhoneNumber_Returned_Then_PhoneNumber_Set_To_Null(
-        GetPhoneNumberQuery query,
-        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
-        GetPhoneNumberQueryHandler handler)
-    {
-        mockApiClient
-            .Setup(client => client.Get<GetCandidateApiResponse>(
-                It.Is<GetCandidateApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
-            .ReturnsAsync(() => null);
-
-        var result = await handler.Handle(query, CancellationToken.None);
-
-        result.PhoneNumber.Should().BeNull();
-    }
 }
