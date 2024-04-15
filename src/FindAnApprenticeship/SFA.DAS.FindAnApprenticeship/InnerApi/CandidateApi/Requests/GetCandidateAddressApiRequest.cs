@@ -13,5 +13,5 @@ public record GetCandidateAddressApiRequest : IGetApiRequest
     }
 
     public string GetUrl =>
-        $"/api/addresses/{_candidateId}";
+        $"/api/candidates/{_candidateId}/addresses";
 }

@@ -13,6 +13,6 @@ public class WhenBuildingGetCandidateAddressApiRequest
     {
         var actual = new GetCandidateAddressApiRequest(candidateId);
 
-        actual.GetUrl.Should().Be($"/api/addresses/{candidateId}");
+        actual.GetUrl.Should().Be($"/api/candidates/{candidateId}/addresses");
     }
 }
