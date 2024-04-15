@@ -138,26 +138,18 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             try
             {
                 var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
-
                 var certificateClient = new CertificateClient(vaultUri: new Uri(Configuration.KeyVaultIdentifier), credential: new DefaultAzureCredential(defaultAzureCredentialOptions));
-                var certificateResponse = certificateClient.GetCertificate(Configuration.CertificateName);
-                var certificatePassword = "abc123";
+                var certificate = certificateClient.DownloadCertificate(Configuration.CertificateName);
 
-                if (certificateResponse != null)
-                {
-                    var certificate = new X509Certificate2(certificateResponse.Value.Cer, certificatePassword);
-
-                    // Create HttpClientHandler and configure client certificate
-                    var httpClientHandler = new HttpClientHandler();
-                    httpClientHandler.ClientCertificates.Add(certificate);
-
-                    HttpClient = new HttpClient(httpClientHandler);
-                    HttpClient.BaseAddress = new Uri(Configuration.Url);
-                }
-                else
+                if (certificate == null || certificate.Value == null)
                 {
                     throw new Exception("Certificate was not properly returned from the Key Vault.");
                 }
+                var httpClientHandler = new HttpClientHandler();
+                httpClientHandler.ClientCertificates.Add(certificate);
+
+                HttpClient = new HttpClient(httpClientHandler);
+                HttpClient.BaseAddress = new Uri(Configuration.Url);
             }
             catch (Exception ex)
             {
