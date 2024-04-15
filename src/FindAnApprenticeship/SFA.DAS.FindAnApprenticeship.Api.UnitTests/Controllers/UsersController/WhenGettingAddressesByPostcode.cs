@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 using System;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddressesByPostcode;
 using System.Threading;
-using System.Linq;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController;
 public class WhenGettingAddressesByPostcode
@@ -45,24 +44,13 @@ public class WhenGettingAddressesByPostcode
         var actual = await controller.SelectAddress(candidateId, postcode);
 
         actual.Should().BeOfType<OkObjectResult>();
+
+        var result = ((OkObjectResult)actual).Value as GetCandidateAddressesByPostcodeQueryResult;
+
+        result.Should().NotBeNull();
+        result.Uprn.Should().Be(queryResult.Uprn);
+        result.Postcode.Should().Be(queryResult.Postcode);
+        result.Addresses.Should().BeEquivalentTo(queryResult.Addresses);
     }
 
-    [Test,MoqAutoData]
-    public async Task And_Api_Returns_No_Addresses_Return_Empty_Ok_Result(
-        Guid candidateId,
-        string postcode,
-        GetCandidateAddressesByPostcodeQueryResult queryResult,
-        [Frozen] Mock<IMediator> mediator,
-        [Greedy] Api.Controllers.UsersController controller)
-    {
-        var emptyList = Enumerable.Empty<GetAddressesListItem>();
-        queryResult.Addresses = emptyList;
-
-        mediator.Setup(x => x.Send(It.Is<GetCandidateAddressesByPostcodeQuery>(x => x.Postcode == postcode), CancellationToken.None))
-            .ReturnsAsync(queryResult);
-
-        var actual = await controller.SelectAddress(candidateId, postcode);
-
-        actual.Should().BeOfType<OkResult>();
-    }
 }
