@@ -6,7 +6,7 @@ using SFA.DAS.ProviderFeedback.Application.Queries.GetProviderFeedback;
 namespace SFA.DAS.ProviderFeedback.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]/")]
+    [Route("/providerfeedback/")]
     public class ProviderFeedbackController : ControllerBase
     {
         private readonly ILogger<ProviderFeedbackController> _logger;
@@ -21,7 +21,7 @@ namespace SFA.DAS.ProviderFeedback.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/provider/{providerId}")]
+        [Route("provider/{providerId}")]
         public async Task<IActionResult> GetProviderFeedback(int providerId)
         {
             try
