@@ -1,14 +1,16 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-public class GetCandidateDateOfBirthApiRequest : IGetApiRequest
-{
-    private readonly string _govUkIdentifier;
 
-    public GetCandidateDateOfBirthApiRequest(string govUkIdentifier)
+public record GetCandidateApiRequest : IGetApiRequest
+{
+    private readonly string _govIdentifier;
+
+    public GetCandidateApiRequest(string govIdentifier)
     {
-        _govUkIdentifier = govUkIdentifier;
+        _govIdentifier = govIdentifier;
     }
 
-    public string GetUrl => $"api/candidates/{_govUkIdentifier}";
+    public string GetUrl =>
+        $"/api/candidates/{_govIdentifier}";
 }
