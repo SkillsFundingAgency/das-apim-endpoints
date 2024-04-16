@@ -23,6 +23,8 @@ namespace SFA.DAS.Reservations.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpConfiguration>>().Value);
             services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection("RoatpConfiguration"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
+            services.Configure<ReservationApiConfiguration>(configuration.GetSection(nameof(ReservationApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ReservationApiConfiguration>>().Value);
         }
     }
 }
