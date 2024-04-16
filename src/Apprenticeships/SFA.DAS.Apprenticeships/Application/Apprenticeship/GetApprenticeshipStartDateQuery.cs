@@ -3,9 +3,11 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.Apprenticeships.Application.Apprenticeship;
 
@@ -26,7 +28,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 	private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
 	private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
 
-	public GetApprenticeshipStartDateQueryHandler(
+    public GetApprenticeshipStartDateQueryHandler(
 		ILogger<GetApprenticeshipStartDateQueryHandler> logger,
 		IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient,
 		ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient,
@@ -36,7 +38,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 		_apprenticeshipsApiClient = apprenticeshipsApiClient;
 		_apiCommitmentsClient = apiCommitmentsClient;
 		_collectionCalendarApiClient = collectionCalendarApiClient;
-	}
+    }
 
 	public async Task<ApprenticeshipStartDateResponse?> Handle(GetApprenticeshipStartDateQuery request, CancellationToken cancellationToken)
 	{
@@ -45,10 +47,12 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 		if (apprenticeStartDateInnerModel == null)
 		{
 			_logger.LogWarning($"No ApprenticeshipStartDate returned from innerApi for apprenticeshipKey:{request.ApprenticeshipKey}");
-			return null;
+			return null; 
 		}
 
-		string? employerName = await GetEmployerName(apprenticeStartDateInnerModel);
+        var standard = await _apiCommitmentsClient.Get<GetTrainingProgrammeVersionsResponse>(new GetTrainingProgrammeVersionsRequest(apprenticeStartDateInnerModel.CourseCode.ToString()));
+
+        string? employerName = await GetEmployerName(apprenticeStartDateInnerModel);
 
 		var providerName = await GetProviderName(apprenticeStartDateInnerModel);
 
@@ -59,6 +63,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 			PlannedEndDate = apprenticeStartDateInnerModel.PlannedEndDate,
 			EmployerName = employerName,
 			ProviderName = providerName,
+			Standard = ToStandardInfo(standard)
 		};
 
 		return apprenticeshipStartDateOuterModel;
@@ -101,5 +106,21 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 
 		return provider.Name;
 	}
+
+    private static StandardInfo ToStandardInfo(GetTrainingProgrammeVersionsResponse response)
+    {
+        return new StandardInfo
+        {
+			 CourseCode = response.TrainingProgrammeVersions.MaxBy(x => x.Version)?.CourseCode,
+			 EffectiveFrom = response.TrainingProgrammeVersions.MaxBy(x => x.Version)?.EffectiveFrom,
+             EffectiveTo = response.TrainingProgrammeVersions.MaxBy(x => x.Version)?.EffectiveTo,
+			 Versions = response.TrainingProgrammeVersions.Select(x => new StandardVersionInfo
+             {
+                 EffectiveFrom = x.EffectiveFrom,
+                 EffectiveTo = x.EffectiveTo,
+                 Version = x.Version
+             }).ToList()
+        };
+    }
 
 }

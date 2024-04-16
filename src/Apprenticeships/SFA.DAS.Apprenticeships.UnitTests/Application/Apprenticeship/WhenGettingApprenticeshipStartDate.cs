@@ -11,6 +11,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,11 +29,24 @@ public class WhenGettingApprenticeshipStartDate
     [Test, MoqAutoData]
 	public async Task Then_Gets_ApprenticeshipStartDate_From_ApiClient(
 		ApprenticeshipStartDateResponse expectedResponse,
-		Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient,
+		DateTime effectiveFrom,
+        DateTime effectiveTo,
+        Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient,
 		Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsV2ApiApiClient,
 		Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> mockCollectionCalendarApiClient)
 	{
 		//  Arrange
+        expectedResponse.Standard = new StandardInfo
+        {
+            CourseCode = 456.ToString(),
+            EffectiveFrom = effectiveFrom,
+            EffectiveTo = effectiveTo,
+            Versions = new List<StandardVersionInfo>
+            {
+                new() { EffectiveFrom = effectiveFrom, EffectiveTo = effectiveTo, Version = "1.1" }
+            }
+        };
+
 		mockApprenticeshipsApiClient.Setup(x => x.Get<GetApprenticeshipStartDateResponse>(It.IsAny<GetApprenticeshipStartDateRequest>()))
 			.ReturnsAsync(new GetApprenticeshipStartDateResponse
 			{
@@ -40,7 +54,8 @@ public class WhenGettingApprenticeshipStartDate
 				ApprenticeshipKey = expectedResponse.ApprenticeshipKey,
 				ActualStartDate = expectedResponse.ActualStartDate,
 				PlannedEndDate = expectedResponse.PlannedEndDate,
-				UKPRN = 123
+				UKPRN = 123,
+				CourseCode = 456
 			});
 
 		mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
@@ -53,6 +68,21 @@ public class WhenGettingApprenticeshipStartDate
             .ReturnsAsync(new GetProviderResponse
             {
                 Name = expectedResponse.ProviderName!
+            });
+
+        mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetTrainingProgrammeVersionsResponse>(It.IsAny<GetTrainingProgrammeVersionsRequest>()))
+            .ReturnsAsync(new GetTrainingProgrammeVersionsResponse
+            {
+                TrainingProgrammeVersions = new List<TrainingProgramme>
+                {
+					new()
+                    {
+                        CourseCode = expectedResponse.Standard.CourseCode,
+                        EffectiveFrom = expectedResponse.Standard.EffectiveFrom,
+						EffectiveTo = expectedResponse.Standard.EffectiveTo,
+						Version = expectedResponse.Standard.Versions[0].Version
+                    }
+                }
             });
 
         var handler = new GetApprenticeshipStartDateQueryHandler(_mocklogger.Object, mockApprenticeshipsApiClient.Object, mockCommitmentsV2ApiApiClient.Object, mockCollectionCalendarApiClient.Object);
