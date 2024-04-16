@@ -32,7 +32,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
 
             var candidateTask =
                 candidateApiClient.Get<GetCandidateApiResponse>(
-                    new GetCandidateApiRequest(request.CandidateId.ToString()));
+                    new GetCandidateApiRequest(request.CandidateId));
 
             var addressTask =
                 candidateApiClient.Get<GetAddressApiResponse>(
@@ -142,7 +142,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                     Email = candidate.Email,
                     FirstName = candidate.FirstName,
                     LastName = candidate.LastName,
-                    MiddleName = candidate.MiddleName,
+                    MiddleName = candidate.MiddleNames,
                     PhoneNumber = candidate.PhoneNumber,
                     Address = address
                 },

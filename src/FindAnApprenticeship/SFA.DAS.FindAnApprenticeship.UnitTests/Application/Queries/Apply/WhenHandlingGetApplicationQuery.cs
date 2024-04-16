@@ -47,7 +47,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
                     It.Is<GetVacancyRequest>(r => r.GetUrl == expectedGetVacancyRequest.GetUrl)))
                 .ReturnsAsync(apprenticeshipVacancyItemApiResponse);
 
-            var expectedGetCandidateRequest = new GetCandidateApiRequest(query.CandidateId.ToString());
+            var expectedGetCandidateRequest = new GetCandidateApiRequest(query.CandidateId);
             candidateApiClient
                 .Setup(client => client.Get<GetCandidateApiResponse>(
                     It.Is<GetCandidateApiRequest>(r => r.GetUrl == expectedGetCandidateRequest.GetUrl)))

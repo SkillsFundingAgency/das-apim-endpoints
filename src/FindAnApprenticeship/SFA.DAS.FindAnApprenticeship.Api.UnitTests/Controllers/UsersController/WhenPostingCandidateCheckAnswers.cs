@@ -20,8 +20,8 @@ public class WhenPostingCandidateCheckAnswers
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.UsersController controller)
     {
-        mediator.Setup(x => x.Send(It.Is<UpdateCheckAnswersCommand>(x => x.CandidateId == candidateId), CancellationToken.None))
-            .ThrowsAsync(new Exception());
+        mediator.Setup(x => x.Send(It.Is<UpdateCheckAnswersCommand>(x => x.CandidateId == candidateId), CancellationToken.None)
+            ).Throws<Exception>();
 
         var actual = await controller.PostCheckAnswers(candidateId) as StatusCodeResult;
 

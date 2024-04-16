@@ -9,10 +9,10 @@ public class WhenBuildingGetCandidateApiRequest
 {
     [Test, AutoData]
     public void Then_The_Request_Url_Is_Correctly_Built(
-        string govIdentifier)
+        Guid candidateId)
     {
-        var actual = new GetCandidateApiRequest(govIdentifier);
+        var actual = new GetCandidateApiRequest(candidateId);
 
-        actual.GetUrl.Should().Be($"/api/candidates/{govIdentifier}");
+        actual.GetUrl.Should().Be($"/api/candidates/{candidateId}");
     }
 }
