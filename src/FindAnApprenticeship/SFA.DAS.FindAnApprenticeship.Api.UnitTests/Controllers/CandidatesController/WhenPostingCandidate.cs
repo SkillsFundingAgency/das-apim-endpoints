@@ -12,17 +12,17 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.CandidatesController;
-public class WhenPuttingCandidate
+public class WhenPostingCandidate
 {
     [Test, MoqAutoData]
-    public async Task Then_Returns_Put_Response(
+    public async Task Then_Returns_Post_Response(
         string govIdentifier,
         CandidatesModel model,
-        PutCandidateCommandResult result,
+        CreateCandidateCommandResult result,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.CandidatesController controller)
     {
-        mediator.Setup(x => x.Send(It.Is<PutCandidateCommand>(x => (x.GovUkIdentifier == govIdentifier) && (x.Email == model.Email)),
+        mediator.Setup(x => x.Send(It.Is<CreateCandidateCommand>(x => (x.GovUkIdentifier == govIdentifier) && (x.Email == model.Email)),
         It.IsAny<CancellationToken>()))
         .ReturnsAsync(result);
 

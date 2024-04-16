@@ -1,9 +1,8 @@
-﻿using System;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-
-public record GetCandidateAddressApiRequest : IGetApiRequest
+public class GetCandidateAddressApiRequest : IGetApiRequest
 {
     private readonly Guid _candidateId;
 
@@ -13,5 +12,5 @@ public record GetCandidateAddressApiRequest : IGetApiRequest
     }
 
     public string GetUrl =>
-        $"/api/candidates/{_candidateId}/addresses";
+        $"api/candidates/{_candidateId}/addresses";
 }

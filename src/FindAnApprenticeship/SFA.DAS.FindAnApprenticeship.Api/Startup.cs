@@ -63,8 +63,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                })
-                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
+                });
 
             if (_configuration["Environment"] != "DEV")
             {
