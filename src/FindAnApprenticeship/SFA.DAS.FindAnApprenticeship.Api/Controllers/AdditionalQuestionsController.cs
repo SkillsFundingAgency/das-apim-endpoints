@@ -24,7 +24,7 @@ public class AdditionalQuestionsController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get([FromRoute] Guid applicationId, [FromQuery] Guid candidateId, [FromQuery] Guid id)
+    public async Task<IActionResult> Get([FromRoute] Guid applicationId, [FromQuery] Guid candidateId, [FromQuery] Guid id, [FromQuery] int additionalQuestion)
     {
         try
         {
@@ -32,7 +32,8 @@ public class AdditionalQuestionsController : Controller
             {
                 ApplicationId = applicationId,
                 CandidateId = candidateId,
-                Id = id
+                Id = id,
+                AdditionalQuestion = additionalQuestion
             });
 
             return Ok((GetAdditionalQuestionApiResponse)result);
