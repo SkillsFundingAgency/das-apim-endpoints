@@ -10,16 +10,19 @@ using NUnit.Framework;
 using NUnit.Framework.Constraints;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
-using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetApprenticeshipKey;
 using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using GetApprenticeshipKeyRequest = SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetApprenticeshipKey.GetApprenticeshipKeyRequest;
+using GetPendingPriceChangeRequest = SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange.GetPendingPriceChangeRequest;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 {
@@ -44,8 +47,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         private GetChangeOfEmployerChainResponse _changeOfEmployerChainResponse;
         private GetOverlappingTrainingDateResponse _overlappingTrainingDateResponse;
         private GetPendingPriceChangeResponse _pendingPriceChangeResponse;
+        private GetPendingStartDateChangeApiResponse _pendingStartDateChangeResponse;
 
-        
+
         [SetUp]
         public void Setup()
         {
@@ -66,6 +70,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _changeOfEmployerChainResponse = fixture.Create<GetChangeOfEmployerChainResponse>();
             _overlappingTrainingDateResponse = fixture.Create<GetOverlappingTrainingDateResponse>();
             _pendingPriceChangeResponse = fixture.Create<GetPendingPriceChangeResponse>();
+            _pendingStartDateChangeResponse = fixture.Create<GetPendingStartDateChangeApiResponse>();
 
             _deliveryModels = fixture.Create<List<string>>();
 
@@ -111,6 +116,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<Guid>(It.Is<GetApprenticeshipKeyRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId))).ReturnsAsync(new ApiResponse<Guid>(apprenticeshipKey, HttpStatusCode.OK, string.Empty));
             _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(It.Is<GetPendingPriceChangeRequest>(r => r.ApprenticeshipKey == apprenticeshipKey)))
                 .ReturnsAsync(new ApiResponse<GetPendingPriceChangeResponse>(_pendingPriceChangeResponse, HttpStatusCode.OK, string.Empty));
+            _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(It.Is<GetPendingStartDateChangeRequest>(r => r.ApprenticeshipKey == apprenticeshipKey)))
+                .ReturnsAsync(new ApiResponse<GetPendingStartDateChangeApiResponse>(_pendingStartDateChangeResponse, HttpStatusCode.OK, string.Empty));
 
             _collectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
 
@@ -153,6 +160,17 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             result.PendingPriceChange.EndPointAssessmentPrice.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.PendingAssessmentPrice);
             result.PendingPriceChange.ProviderApprovedDate.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.ProviderApprovedDate);
             result.PendingPriceChange.EmployerApprovedDate.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.EmployerApprovedDate);
+        }
+
+        [Test]
+        public async Task When_apprenticeship_has_pending_start_date_change_then_details_returned()
+        {
+            _pendingStartDateChangeResponse.HasPendingStartDateChange = true;
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            result.PendingStartDateChange.PendingActualStartDate.Should().Be(_pendingStartDateChangeResponse.PendingStartDateChange.PendingActualStartDate);
+            result.PendingStartDateChange.ProviderApprovedDate.Should().Be(_pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate);
+            result.PendingStartDateChange.EmployerApprovedDate.Should().Be(_pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate);
+            result.PendingStartDateChange.Initiator.Should().Be(_pendingStartDateChangeResponse.PendingStartDateChange.Initiator);
         }
 
         [Test]
