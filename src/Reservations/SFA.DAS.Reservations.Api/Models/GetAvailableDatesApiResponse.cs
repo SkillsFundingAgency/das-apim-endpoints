@@ -9,6 +9,7 @@ namespace SFA.DAS.Reservations.Api.Models
     public class GetAvailableDatesApiResponse
     {
         public IEnumerable<AvailableDateStartWindowResponseItem> AvailableDates { get; set; }
+        public AvailableDateStartWindowResponseItem PreviousMonth { get; set; }
 
         public static explicit operator GetAvailableDatesApiResponse(GetAvailableDatesResult source)
         {
@@ -19,7 +20,8 @@ namespace SFA.DAS.Reservations.Api.Models
 
             return new GetAvailableDatesApiResponse()
             {
-                AvailableDates = source.AvailableDates.Select(x => (AvailableDateStartWindowResponseItem)x)
+                AvailableDates = source.AvailableDates.Select(x => (AvailableDateStartWindowResponseItem)x),
+                PreviousMonth = source.PreviousMonth
             };
         }
     }
