@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Reservations.Application.Rules.Queries.GetAvailableDates;
-using SFA.DAS.Reservations.InnerApi.Responses;
 using SFA.DAS.Reservations.Api.Models;
 
 namespace SFA.DAS.Reservations.Api.Controllers
@@ -38,11 +37,9 @@ namespace SFA.DAS.Reservations.Api.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e, "Error calling GetAvailableDates");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
-
     }
-
 }
