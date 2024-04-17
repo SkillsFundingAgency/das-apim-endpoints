@@ -9,5 +9,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships
         public DateTime? PlannedEndDate { get; set; }
         public long? AccountLegalEntityId { get; set; }
         public long UKPRN { get; set; }
+        public DateTime ApprenticeDateOfBirth { get; set; }
     }
 }
