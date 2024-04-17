@@ -34,7 +34,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
 
                 return Ok(result);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest();
             }
