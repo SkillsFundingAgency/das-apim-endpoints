@@ -144,18 +144,21 @@ public class WhenHandlingGetAddQualificationQuery
     }
     
     [Test, MoqAutoData]
-    public async Task Then_The_Request_To_CandidateApi_Is_Made_And_Courses_Returned_From_Cache_If_Single_Qualification_Returned_Is_Apprenticeship(
+    public async Task Then_The_Request_To_CandidateApi_Is_Made_And_Distinct_Courses_Returned_From_Cache_If_Single_Qualification_Returned_Is_Apprenticeship(
         GetQualificationReferenceTypesApiResponse apiResponse,
         GetQualificationsApiResponse apiResponseQualifications,
         GetAddQualificationQuery query,
         GetStandardsApiResponse standards,
         GetFrameworksApiResponse frameworks,
+        GetStandardApiResponseItem standard,
         [Frozen] Mock<ICacheStorageService> cacheStorageService,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetAddQualificationQueryHandler handler
     )
     {
+        standards.Standards.Add(standard);
+        standards.Standards.Add(standard);
         apiResponse.QualificationReferences.Last().Name = "Apprenticeship";
         query.Id = apiResponseQualifications.Qualifications.FirstOrDefault()!.Id;
         query.QualificationReferenceTypeId = apiResponse.QualificationReferences.Last().Id;
@@ -176,7 +179,7 @@ public class WhenHandlingGetAddQualificationQuery
         cacheStorageService.Setup(x => x.RetrieveFromCache<GetFrameworksApiResponse>(nameof(GetFrameworksApiResponse)))
             .ReturnsAsync(frameworks);
         var expectedCourses = new List<GetAddQualificationQueryResult.CourseResponse>();
-        expectedCourses.AddRange(standards.Standards.Select(standard => 
+        expectedCourses.AddRange(standards.Standards.DistinctBy(c=>c.Title).Select(standard => 
             new GetAddQualificationQueryResult.CourseResponse
             {
                 Id = standard.StandardUId, 

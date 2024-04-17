@@ -77,6 +77,8 @@ public class GetAddQualificationQueryHandler(ICandidateApiClient<CandidateApiCon
                     Title = framework.Title, 
                     IsStandard = false
                 }));
+
+            courseList = courseList.GroupBy(c => c.Title).Select(c=>c.FirstOrDefault()).ToList();
         }
 
         return courseList;
