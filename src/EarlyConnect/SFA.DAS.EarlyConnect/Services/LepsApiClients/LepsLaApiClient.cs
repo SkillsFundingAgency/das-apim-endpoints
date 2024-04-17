@@ -134,65 +134,21 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             return json;
         }
 
-        //private void AddAuthenticationCertificate()
-        //{
-        //    try
-        //    {
-        //        var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
-        //        var certificateClient = new CertificateClient(vaultUri: new Uri(Configuration.KeyVaultIdentifier), credential: new DefaultAzureCredential(defaultAzureCredentialOptions));
-        //        var certificate = certificateClient.DownloadCertificate(Configuration.CertificateName);
-
-        //        if (certificate == null || certificate.Value == null)
-        //        {
-        //            throw new Exception("Certificate was not properly returned from the Key Vault.");
-        //        }
-        //        var httpClientHandler = new HttpClientHandler();
-        //        httpClientHandler.ClientCertificates.Add(certificate);
-
-        //        HttpClient = new HttpClient(httpClientHandler);
-        //        HttpClient.BaseAddress = new Uri(Configuration.Url);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine("An error occurred while reading certificate: " + ex.Message);
-        //        throw;
-        //    }
-        //}
-
         private void AddAuthenticationCertificate()
         {
             try
             {
                 var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
                 var certificateClient = new CertificateClient(vaultUri: new Uri(Configuration.KeyVaultIdentifier), credential: new DefaultAzureCredential(defaultAzureCredentialOptions));
-
-                // Define X509KeyStorageFlags based on the platform
-                X509KeyStorageFlags keyStorageFlags = X509KeyStorageFlags.EphemeralKeySet;
-                if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
-                    // Adjust key storage flags for Azure App Services
-                    keyStorageFlags |= X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.UserKeySet;
-                }
-
-                // Define options for downloading the certificate with specified key storage flags
-                var options = new DownloadCertificateOptions(Configuration.CertificateName)
-                {
-                    KeyStorageFlags = keyStorageFlags
-                };
-
-                // Download the certificate
-                var certificate = certificateClient.DownloadCertificate(options);
+                var certificate = certificateClient.DownloadCertificate(Configuration.CertificateName);
 
                 if (certificate == null || certificate.Value == null)
                 {
                     throw new Exception("Certificate was not properly returned from the Key Vault.");
                 }
-
-                // Create HttpClientHandler and add the certificate
                 var httpClientHandler = new HttpClientHandler();
                 httpClientHandler.ClientCertificates.Add(certificate);
 
-                // Create HttpClient with configured HttpClientHandler
                 HttpClient = new HttpClient(httpClientHandler);
                 HttpClient.BaseAddress = new Uri(Configuration.Url);
             }
