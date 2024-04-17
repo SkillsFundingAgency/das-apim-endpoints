@@ -8,6 +8,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 public record GetApplicationApiResponse
 {
     public bool IsDisabilityConfident { get; set; }
+    public bool IsApplicationComplete { get; set; }
     public CandidateDetailsSection Candidate { get; set; }
     public AboutYouSection AboutYou { get; set; }
     public EducationHistorySection EducationHistory { get; set; }
@@ -27,6 +28,7 @@ public record GetApplicationApiResponse
             EducationHistory = source.EducationHistory,
             InterviewAdjustments = source.InterviewAdjustments,
             IsDisabilityConfident = source.IsDisabilityConfident,
+            IsApplicationComplete = source.IsApplicationComplete,
             WorkHistory = source.WorkHistory,
             WhatIsYourInterest = source.WhatIsYourInterest,
             AboutYou = source.AboutYou,

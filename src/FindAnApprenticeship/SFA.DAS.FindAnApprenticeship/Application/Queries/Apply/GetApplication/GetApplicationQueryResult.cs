@@ -15,6 +15,7 @@ public record GetApplicationQueryResult
     public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
     public DisabilityConfidenceSection DisabilityConfidence { get; set; }
     public WhatIsYourInterestSection WhatIsYourInterest { get; set; }
+    public bool IsApplicationComplete { get; set; }
 
 
     public record Candidate

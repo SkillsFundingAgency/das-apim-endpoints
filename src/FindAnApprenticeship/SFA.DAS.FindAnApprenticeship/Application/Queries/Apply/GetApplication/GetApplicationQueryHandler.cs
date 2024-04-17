@@ -156,7 +156,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                 WhatIsYourInterest = new GetApplicationQueryResult.WhatIsYourInterestSection
                 {
                     WhatIsYourInterest = application.WhatIsYourInterest
-                }
+                },
+                IsApplicationComplete = application.ApplicationAllSectionStatus.Equals("Completed", StringComparison.CurrentCultureIgnoreCase)
             };
         }
     }

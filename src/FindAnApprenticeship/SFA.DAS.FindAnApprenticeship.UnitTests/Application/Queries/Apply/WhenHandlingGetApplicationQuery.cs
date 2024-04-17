@@ -36,6 +36,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             GetApplicationQueryHandler handler)
         {
             var expectedGetApplicationApiRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+            applicationApiResponse.ApplicationAllSectionStatus = "completed";
             candidateApiClient
                 .Setup(client => client.Get<GetApplicationApiResponse>(
                     It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedGetApplicationApiRequest.GetUrl)))
@@ -105,6 +106,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
                     .Excluding(p=>p.DateOfBirth)
                     .Excluding(p=>p.Status)
                 );
+            result.IsApplicationComplete.Should().BeTrue();
         }
     }
 }
