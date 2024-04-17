@@ -16,6 +16,19 @@ public class WhenMappingMediatrResponseToGetApplicationApiResponse
 
         actual.Candidate.Should().BeEquivalentTo(source.CandidateDetails);
     }
+    
+    [Test, AutoData]
+    public void Then_The_Fields_Are_Mapped_For_Null_Additional_Questions(GetApplicationQueryResult source)
+    {
+        source.ApplicationQuestions.AdditionalQuestion1 = null;
+        source.ApplicationQuestions.AdditionalQuestion2 = null;
+        
+        var actual = (GetApplicationApiResponse)source;
+
+        actual.Candidate.Should().BeEquivalentTo(source.CandidateDetails);
+        actual.ApplicationQuestions.AdditionalQuestion1.Should().BeNull();
+        actual.ApplicationQuestions.AdditionalQuestion2.Should().BeNull();
+    }
 
     [Test, AutoData]
     public void Then_Candidate_The_Fields_Are_Mapped_To_CandidateDetailsSection(GetApplicationQueryResult.Candidate source)

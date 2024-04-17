@@ -197,6 +197,10 @@ public record GetApplicationApiResponse
 
             public static implicit operator Question(GetApplicationQueryResult.ApplicationQuestionsSection.Question source)
             {
+                if (source == null)
+                {
+                    return null;
+                }
                 return new Question
                 {
                     Id = source.Id,
