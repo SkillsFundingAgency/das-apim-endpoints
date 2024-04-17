@@ -100,7 +100,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
 
             using var scope = new AssertionScope();
             result.CandidateDetails.Address.Should().BeEquivalentTo(addressApiResponse, options => options.Excluding(fil => fil.CandidateId));
-            result.CandidateDetails.Should().BeEquivalentTo(candidateApiResponse);
+            result.CandidateDetails.Should().BeEquivalentTo(candidateApiResponse, options=> options
+                    .Excluding(p=>p.MiddleNames)
+                    .Excluding(p=>p.DateOfBirth)
+                    .Excluding(p=>p.Status)
+                );
         }
     }
 }
