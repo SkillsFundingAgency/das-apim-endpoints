@@ -11,7 +11,7 @@ public class WhenBuildingGetCandidateApiRequest
     public void Then_The_Request_Url_Is_Correctly_Built(
         Guid candidateId)
     {
-        var actual = new GetCandidateApiRequest(candidateId);
+        var actual = new GetCandidateApiRequest(candidateId.ToString());
 
         actual.GetUrl.Should().Be($"api/candidates/{candidateId}");
     }

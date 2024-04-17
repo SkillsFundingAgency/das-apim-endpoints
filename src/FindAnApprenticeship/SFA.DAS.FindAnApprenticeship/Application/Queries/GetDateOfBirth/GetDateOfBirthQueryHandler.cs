@@ -12,6 +12,6 @@ public class GetDateOfBirthQueryHandler(ICandidateApiClient<CandidateApiConfigur
 {
     public async Task<GetDateOfBirthQueryResult> Handle(GetDateOfBirthQuery request, CancellationToken cancellationToken)
     {
-        return await candidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId));
+        return await candidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId.ToString()));
     }
 }

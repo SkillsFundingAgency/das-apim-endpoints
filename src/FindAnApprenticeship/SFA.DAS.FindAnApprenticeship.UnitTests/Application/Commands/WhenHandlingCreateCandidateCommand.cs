@@ -20,7 +20,7 @@ public class WhenHandlingPostCandidateCommand
     [Test, MoqAutoData]
     public async Task Then_If_Candidate_Already_Exists_Then_Details_Are_Returned(
         CreateCandidateCommand command,
-        Guid govUkId,
+        string govUkId,
         GetCandidateApiResponse candidate,
         PostCandidateApiResponse response,
         GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
@@ -28,7 +28,7 @@ public class WhenHandlingPostCandidateCommand
         [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
         CreateCandidateCommandHandler handler)
     {
-        command.GovUkIdentifier = govUkId.ToString();
+        command.GovUkIdentifier = govUkId;
 
         var expectedGetCandidateRequest = new GetCandidateApiRequest(govUkId);
         mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(
@@ -51,14 +51,14 @@ public class WhenHandlingPostCandidateCommand
     [Test, MoqAutoData]
     public async Task Then_The_Post_Is_Sent_And_Data_Returned(
         CreateCandidateCommand command,
-        Guid govUkId,
+        string govUkId,
         PostCandidateApiResponse response,
         GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
         CreateCandidateCommandHandler handler)
     {
-        command.GovUkIdentifier = govUkId.ToString();
+        command.GovUkIdentifier = govUkId;
         response.FirstName = legacyUserByEmailApiResponse.RegistrationDetails?.FirstName;
         response.LastName = legacyUserByEmailApiResponse.RegistrationDetails?.LastName;
 
@@ -99,14 +99,14 @@ public class WhenHandlingPostCandidateCommand
     [Test, MoqAutoData]
     public async Task Then_The_Post_Is_Sent_And_If_Legacy_Api_Has_DateOfBirth_As_DateTime_Min_Value_Then_Null_Sent(
         CreateCandidateCommand command,
-        Guid govUkId,
+        string govUkId,
         PostCandidateApiResponse response,
         GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
         CreateCandidateCommandHandler handler)
     {
-        command.GovUkIdentifier = govUkId.ToString();
+        command.GovUkIdentifier = govUkId;
 
         legacyUserByEmailApiResponse.RegistrationDetails.DateOfBirth = DateTime.MinValue;
         response.FirstName = legacyUserByEmailApiResponse.RegistrationDetails?.FirstName;
@@ -151,11 +151,11 @@ public class WhenHandlingPostCandidateCommand
     [Test, MoqAutoData]
     public async Task And_Api_Returns_Null_Then_Return_Null(
         CreateCandidateCommand command,
-        Guid govUkId,
+        string govUkId,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         CreateCandidateCommandHandler handler)
     {
-        command.GovUkIdentifier = govUkId.ToString();
+        command.GovUkIdentifier = govUkId;
 
         var expectedPostData = new PostCandidateApiRequestData
         {
@@ -182,13 +182,13 @@ public class WhenHandlingPostCandidateCommand
     [Test, MoqAutoData]
     public async Task Then_LegacyApi_Returns_Null_The_Post_Is_Sent_And_Data_Returned(
         CreateCandidateCommand command,
-        Guid govUkId,
+        string govUkId,
         PostCandidateApiResponse response,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
         CreateCandidateCommandHandler handler)
     {
-        command.GovUkIdentifier = govUkId.ToString();
+        command.GovUkIdentifier = govUkId;
 
         response.FirstName = null;
         response.LastName = null;

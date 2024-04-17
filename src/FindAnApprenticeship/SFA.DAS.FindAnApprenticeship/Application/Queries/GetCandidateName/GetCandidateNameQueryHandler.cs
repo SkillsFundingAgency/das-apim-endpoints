@@ -12,6 +12,6 @@ public class GetCandidateNameQueryHandler(ICandidateApiClient<CandidateApiConfig
 {
     public async Task<GetCandidateNameQueryResult> Handle(GetCandidateNameQuery request, CancellationToken cancellationToken)
     {
-        return await candidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId));
+        return await candidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId.ToString()));
     }
 }

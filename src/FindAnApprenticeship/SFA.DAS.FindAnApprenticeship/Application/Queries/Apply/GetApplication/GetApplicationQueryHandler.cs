@@ -32,7 +32,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
 
             var candidateTask =
                 candidateApiClient.Get<GetCandidateApiResponse>(
-                    new GetCandidateApiRequest(request.CandidateId));
+                    new GetCandidateApiRequest(request.CandidateId.ToString()));
 
             var addressTask =
                 candidateApiClient.Get<GetAddressApiResponse>(

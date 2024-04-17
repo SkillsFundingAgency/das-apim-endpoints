@@ -13,7 +13,7 @@ public class GetPhoneNumberQueryHandler(ICandidateApiClient<CandidateApiConfigur
 {
     public async Task<GetPhoneNumberQueryResult> Handle(GetPhoneNumberQuery request, CancellationToken cancellationToken)
     {
-        var candidate = candidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId));
+        var candidate = candidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId.ToString()));
         var address = candidateApiClient.Get<GetCandidateAddressApiResponse>(new GetCandidateAddressApiRequest(request.CandidateId));
 
         await Task.WhenAll(candidate, address);

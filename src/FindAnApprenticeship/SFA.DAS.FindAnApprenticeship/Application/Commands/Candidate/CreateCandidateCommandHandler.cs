@@ -30,7 +30,7 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
     {
         var existingUser =
             await _candidateApiClient.GetWithResponseCode<GetCandidateApiResponse>(
-                new GetCandidateApiRequest(Guid.Parse(request.GovUkIdentifier)));
+                new GetCandidateApiRequest(request.GovUkIdentifier));
 
         if (existingUser.StatusCode != HttpStatusCode.NotFound)
         {
