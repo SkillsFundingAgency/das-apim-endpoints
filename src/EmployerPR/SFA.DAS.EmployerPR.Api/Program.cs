@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Authorization;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.EmployerPR.Api.AppStart;
 using SFA.DAS.EmployerPR.Application.Queries.GetEmployerAccountProviders;
