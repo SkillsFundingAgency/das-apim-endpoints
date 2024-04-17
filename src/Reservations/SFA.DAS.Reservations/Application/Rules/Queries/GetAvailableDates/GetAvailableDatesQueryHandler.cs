@@ -28,8 +28,7 @@ namespace SFA.DAS.Reservations.Application.Rules.Queries.GetAvailableDates
 
             return new GetAvailableDatesResult
             {
-                AvailableDates = innerApiResponse.AvailableDates,
-                PreviousMonth = innerApiResponse.PreviousMonth
+                AvailableDates = innerApiResponse.AvailableDates
             };
         }
     }
