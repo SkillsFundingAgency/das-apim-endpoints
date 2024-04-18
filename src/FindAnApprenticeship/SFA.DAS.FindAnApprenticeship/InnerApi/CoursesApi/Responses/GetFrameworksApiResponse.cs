@@ -16,4 +16,6 @@ public class GetFrameworkApiResponseItem
 
     [JsonPropertyName("title")]
     public string Title { get; set; }
+
+    public int Level { get; set; }
 }
