@@ -5,16 +5,19 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.Enums;
 using SFA.DAS.Approvals.Extensions;
-using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetApprenticeshipKey;
 using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using GetApprenticeshipKeyRequest = SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetApprenticeshipKey.GetApprenticeshipKeyRequest;
+using GetPendingPriceChangeRequest = SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange.GetPendingPriceChangeRequest;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails
 {
@@ -66,6 +69,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                 apprenticeship.CourseCode, apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
             var pendingPriceChangeTask = _apprenticeshipsApiClient.GetWithResponseCode<GetPendingPriceChangeResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey.Body));
             var canActualStartDateBeChangedTask = CanActualStartDateBeChanged(apprenticeship.ActualStartDate);
+            var pendingStartDateChangeTask = _apprenticeshipsApiClient.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(new GetPendingStartDateChangeRequest(apprenticeshipKey.Body));
 
             await Task.WhenAll(priceEpisodesResponseTask, 
                 apprenticeshipUpdatesResponseTask,
@@ -76,7 +80,8 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                 overlappingTrainingDateResponseTask, 
                 deliveryModelTask,
                 pendingPriceChangeTask,
-                canActualStartDateBeChangedTask);
+                canActualStartDateBeChangedTask,
+                pendingStartDateChangeTask);
 
             var priceEpisodesResponse = priceEpisodesResponseTask.Result;
             var apprenticeshipUpdatesResponse = apprenticeshipUpdatesResponseTask.Result;
@@ -88,6 +93,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
             var deliveryModel = deliveryModelTask.Result;
             var pendingPriceChangeResponse = pendingPriceChangeTask.Result;
             var canActualStartDateBeChanged = canActualStartDateBeChangedTask.Result;
+            var pendingStartDateResponse = pendingStartDateChangeTask.Result;
 
             return new GetManageApprenticeshipDetailsQueryResult
             {
@@ -101,7 +107,8 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                 OverlappingTrainingDateRequest = overlappingTrainingDateResponse.Body.OverlappingTrainingDateRequest,
                 HasMultipleDeliveryModelOptions = deliveryModel.Count > 1,
                 PendingPriceChange = ToResponse(pendingPriceChangeResponse.Body),
-                CanActualStartDateBeChanged = canActualStartDateBeChanged
+                CanActualStartDateBeChanged = canActualStartDateBeChanged,
+                PendingStartDateChange = ToResponse(pendingStartDateResponse.Body)
             };
         }
 
@@ -117,6 +124,18 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                 ProviderApprovedDate = pendingPriceChangeResponse.PendingPriceChange.ProviderApprovedDate,
                 EmployerApprovedDate = pendingPriceChangeResponse.PendingPriceChange.EmployerApprovedDate,
                 Initiator = pendingPriceChangeResponse.PendingPriceChange.Initiator,
+            };
+        }
+        private PendingStartDateChange ToResponse(GetPendingStartDateChangeApiResponse pendingStartDateChangeResponse)
+        {
+            if (pendingStartDateChangeResponse == null || !pendingStartDateChangeResponse.HasPendingStartDateChange) return null;
+
+            return new PendingStartDateChange
+            {
+                PendingActualStartDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingActualStartDate,
+                ProviderApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate,
+                EmployerApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate,
+                Initiator = pendingStartDateChangeResponse.PendingStartDateChange.Initiator
             };
         }
 

@@ -1,11 +1,14 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apprenticeships.Extensions;
 using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 
@@ -63,8 +66,11 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 			PlannedEndDate = apprenticeStartDateInnerModel.PlannedEndDate,
 			EmployerName = employerName,
 			ProviderName = providerName,
-			Standard = ToStandardInfo(standard, apprenticeStartDateInnerModel.CourseVersion)
-		};
+			EarliestStartDate = await GetEarliestNewStartDate(apprenticeStartDateInnerModel.ActualStartDate),
+			LatestStartDate = await GetLatestNewStartDate(apprenticeStartDateInnerModel.ActualStartDate),
+			LastFridayOfSchool = apprenticeStartDateInnerModel.ApprenticeDateOfBirth.GetLastFridayInJuneOfSchoolYearApprenticeTurned16(),
+			Standard = ToStandardInfo(standard, apprenticeStartDateInne
+        };
 
         if (apprenticeshipStartDateOuterModel.Standard.CourseCode == null)
         {
@@ -135,4 +141,23 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
         };
     }
 
+    private async Task<DateTime?> GetEarliestNewStartDate(DateTime? currentActualStartDate)
+    {
+        if (currentActualStartDate == null) return null;
+
+        var academicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(currentActualStartDate.Value));
+
+        return academicYear.StartDate;
+    }
+
+    private async Task<DateTime?> GetLatestNewStartDate(DateTime? currentActualStartDate)
+    {
+		if (currentActualStartDate == null) return null; 
+
+		var nextYear = currentActualStartDate.Value.AddYears(1);
+
+        var academicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(nextYear));
+
+        return academicYear.EndDate;
+    }
 }

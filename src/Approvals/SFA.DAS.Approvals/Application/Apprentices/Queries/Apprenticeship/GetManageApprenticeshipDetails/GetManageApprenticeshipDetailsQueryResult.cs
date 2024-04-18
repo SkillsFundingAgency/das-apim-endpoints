@@ -23,6 +23,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public PendingPriceChange PendingPriceChange { get; set; }
         public bool? CanActualStartDateBeChanged { get; set; }
+        public PendingStartDateChange PendingStartDateChange { get; set; }
     }
 
     public class PendingPriceChange
@@ -33,5 +34,13 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
         public DateTime? ProviderApprovedDate { get; set; }
         public DateTime? EmployerApprovedDate { get; set; }
         public string Initiator { get; set; }
+    }
+
+    public class PendingStartDateChange
+    {
+        public DateTime PendingActualStartDate { get; set; }
+        public string? Initiator { get; set; }
+        public DateTime? ProviderApprovedDate { get; set; }
+        public DateTime? EmployerApprovedDate { get; set; }
     }
 }
