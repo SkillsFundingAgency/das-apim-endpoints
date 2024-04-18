@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.EmployerPR.Api.AppStart;
 using SFA.DAS.EmployerPR.Application.Queries.GetEmployerAccountProviders;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using System.Text.Json.Serialization;
 
 
@@ -17,6 +15,7 @@ builder.Services
     .AddLogging()
     .AddApplicationInsightsTelemetry()
     .AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEmployerAccountProvidersQuery).Assembly))
+    .AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly))
     .AddConfigurationOptions(configuration)
     .AddServiceRegistration(configuration)
     .AddServiceHealthChecks()
