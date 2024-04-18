@@ -34,7 +34,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     $"VAC{applicationApiResponse.Applications[i].VacancyReference}";
             }
 
-            var expectedGetApplicationRequest = new GetApplicationsApiRequest(query.CandidateId);
+            var expectedGetApplicationRequest = new GetApplicationsApiRequest(query.CandidateId, query.Status);
             candidateApiClient
                 .Setup(client => client.Get<GetApplicationsApiResponse>(
                     It.Is<GetApplicationsApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))

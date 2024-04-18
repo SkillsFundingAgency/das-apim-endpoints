@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
+using SFA.DAS.FindAnApprenticeship.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplicationsController
@@ -18,16 +19,17 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplicationsCon
         [Test, MoqAutoData]
         public async Task Then_The_Query_Response_Is_Returned(
             Guid candidateId,
+            ApplicationStatus status,
             GetApplicationsQueryResult queryResult,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.ApplicationsController controller)
         {
             mediator.Setup(x => x.Send(It.Is<GetApplicationsQuery>(q =>
-                        q.CandidateId == candidateId),
+                        q.CandidateId == candidateId && q.Status == status),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(queryResult);
 
-            var actual = await controller.Index(candidateId);
+            var actual = await controller.Index(candidateId, status);
 
             actual.Should().BeOfType<OkObjectResult>();
             var actualObject = ((OkObjectResult)actual).Value as GetApplicationsQueryResult;

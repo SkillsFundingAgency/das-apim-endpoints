@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
+using SFA.DAS.FindAnApprenticeship.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -22,13 +23,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index ([FromQuery] Guid candidateId)
+        public async Task<IActionResult> Index ([FromQuery] Guid candidateId, [FromQuery] ApplicationStatus status)
         {
             try
             {
                 var result = await _mediator.Send(new GetApplicationsQuery
                 {
-                    CandidateId = candidateId
+                    CandidateId = candidateId,
+                    Status = status
                 });
 
                 return Ok(result);
