@@ -1,63 +1,63 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
-using System.Security.Cryptography.X509Certificates;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using Azure.Security.KeyVault.Certificates;
-using Azure.Identity;
 using SFA.DAS.EarlyConnect.Services.Interfaces;
 using SFA.DAS.EarlyConnect.Services.Configuration;
 
 namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 {
-    public class LepsLaApiClient : ILepsLaApiClient<LepsLaApiConfiguration>
+    public class LepsLoApiClient : ILepsLoApiClient<LepsLoApiConfiguration>
     {
-        private IInternalApiClient<LepsLaApiConfiguration> _apiClient;
-        protected LepsLaApiConfiguration Configuration;
-        protected HttpClient HttpClient;
-        public LepsLaApiClient(IInternalApiClient<LepsLaApiConfiguration> apiClient,
-            LepsLaApiConfiguration apiConfiguration)
+        protected LepsLoApiConfiguration Configuration;
+        protected readonly HttpClient HttpClient;
+
+        public LepsLoApiClient(
+            IHttpClientFactory httpClientFactory,
+            LepsLoApiConfiguration apiConfiguration)
         {
-            _apiClient = apiClient;
+            HttpClient = httpClientFactory.CreateClient();
+            HttpClient.BaseAddress = new Uri(apiConfiguration.Url);
             Configuration = apiConfiguration;
         }
-
         public Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            return _apiClient.Get<TResponse>(request);
+            throw new NotImplementedException();
         }
 
         public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
         {
-            return _apiClient.GetAll<TResponse>(request);
+            throw new NotImplementedException();
         }
 
         public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
         {
-            return _apiClient.GetResponseCode(request);
+            throw new NotImplementedException();
         }
 
         public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
         {
-            return _apiClient.GetWithResponseCode<TResponse>(request);
+            throw new NotImplementedException();
         }
 
         public Task<TResponse> Post<TResponse>(IPostApiRequest request)
         {
-            return _apiClient.Post<TResponse>(request);
+            throw new NotImplementedException();
         }
 
         public async Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
         {
             var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
 
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl);
-            requestMessage.AddVersion(request.Version);
-            requestMessage.Content = stringContent;
+            var queryString = $"?api-version={Configuration.apiversion}&sp={Configuration.SignedPermissions}&sv={Configuration.SignedVersion}&sig={Configuration.Signature}";
 
-            AddAuthenticationCertificate();
+            var fullUrl = request.PostUrl + queryString;
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, fullUrl);
+            requestMessage.Content = stringContent;
+            requestMessage.Headers.Add("APIKey", Configuration.ApiKey);
 
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -88,27 +88,27 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 
         public Task Post<TData>(IPostApiRequest<TData> request)
         {
-            return _apiClient.Post(request);
+            throw new NotImplementedException();
         }
 
         public Task Delete(IDeleteApiRequest request)
         {
-            return _apiClient.Delete(request);
+            throw new NotImplementedException();
         }
 
         public Task Patch<TData>(IPatchApiRequest<TData> request)
         {
-            return _apiClient.Patch(request);
+            throw new NotImplementedException();
         }
 
         public Task Put(IPutApiRequest request)
         {
-            return _apiClient.Put(request);
+            throw new NotImplementedException();
         }
 
         public Task Put<TData>(IPutApiRequest<TData> request)
         {
-            return _apiClient.Put(request);
+            throw new NotImplementedException();
         }
         public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
         {
@@ -131,31 +131,6 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         public virtual string HandleException(HttpResponseMessage response, string json)
         {
             return json;
-        }
-
-        private void AddAuthenticationCertificate()
-        {
-            try
-            {
-                var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
-                var certificateClient = new CertificateClient(vaultUri: new Uri(Configuration.KeyVaultIdentifier), credential: new DefaultAzureCredential(defaultAzureCredentialOptions));
-                var certificate = certificateClient.DownloadCertificate(Configuration.CertificateName);
-
-                if (certificate == null || certificate.Value == null)
-                {
-                    throw new Exception("Certificate was not properly returned from the Key Vault.");
-                }
-                var httpClientHandler = new HttpClientHandler();
-                httpClientHandler.ClientCertificates.Add(certificate);
-
-                HttpClient = new HttpClient(httpClientHandler);
-                HttpClient.BaseAddress = new Uri(Configuration.Url);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An error occurred while reading certificate: " + ex.Message);
-                throw;
-            }
         }
     }
 }

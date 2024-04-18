@@ -1,15 +1,15 @@
 ﻿namespace SFA.DAS.EarlyConnect.Configuration.FeatureToggle
 {
-    public interface IEarlyConnectFeaturesConfiguration 
+    public interface IEarlyConnectFeaturesConfiguration
     {
         bool NorthEastDataSharing { get; set; }
-        bool LancashireDataSharing { get; set; }
+        bool LondonDataSharing { get; set; }
     }
 
     public class EarlyConnectFeaturesConfiguration : IEarlyConnectFeaturesConfiguration
     {
         public bool NorthEastDataSharing { get; set; }
-        public bool LancashireDataSharing { get; set; }
+        public bool LondonDataSharing { get; set; }
     }
 
     public class Feature : IFeature
@@ -22,13 +22,13 @@
 
         public bool IsFeatureEnabled(string feature)
         {
-            if (feature.Equals("NorthEastDataSharing")) 
-            { 
+            if (feature.Equals("NorthEastDataSharing"))
+            {
                 return _featuresConfig.NorthEastDataSharing;
             }
-            if (feature.Equals("LancashireDataSharing"))
+            if (feature.Equals("LondonDataSharing"))
             {
-                return _featuresConfig.LancashireDataSharing;
+                return _featuresConfig.LondonDataSharing;
             }
             return false;
         }

@@ -18,16 +18,16 @@ namespace SFA.DAS.EarlyConnect.Services
     {
         private readonly IEarlyConnectApiClient<EarlyConnectApiConfiguration> _apiClient;
         private readonly ILepsNeApiClient<LepsNeApiConfiguration> _apiLepsNeClient;
-        private readonly ILepsLaApiClient<LepsLaApiConfiguration> _apiLepsLaClient;
+        private readonly ILepsLoApiClient<LepsLoApiConfiguration> _apiLepsLoClient;
         private SendStudentDataToLepsServiceResponse _sendStudentDataToLepsServiceResponse;
 
         public SendStudentDataToLepsService(IEarlyConnectApiClient<EarlyConnectApiConfiguration> apiClient,
             ILepsNeApiClient<LepsNeApiConfiguration> apiLepsNeClient,
-            ILepsLaApiClient<LepsLaApiConfiguration> apiLepsLaClient)
+            ILepsLoApiClient<LepsLoApiConfiguration> apiLepsLoClient)
         {
             _apiClient = apiClient;
             _apiLepsNeClient = apiLepsNeClient;
-            _apiLepsLaClient = apiLepsLaClient;
+            _apiLepsLoClient = apiLepsLoClient;
         }
         public async Task<SendStudentDataToLepsServiceResponse> SendStudentDataToNe(Guid SurveyGuid)
         {
@@ -45,19 +45,19 @@ namespace SFA.DAS.EarlyConnect.Services
             return CreateSendStudentDataToLepsServiceResponse("LepCode not matching with Ne");
         }
 
-        public async Task<SendStudentDataToLepsServiceResponse> SendStudentDataToLa(Guid SurveyGuid)
+        public async Task<SendStudentDataToLepsServiceResponse> SendStudentDataToLo(Guid SurveyGuid)
         {
             var getStudentTriageResult = await _apiClient.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(new GetStudentTriageDataBySurveyIdRequest(SurveyGuid));
             getStudentTriageResult.EnsureSuccessStatusCode();
 
             _sendStudentDataToLepsServiceResponse = new SendStudentDataToLepsServiceResponse();
 
-            if (getStudentTriageResult.Body.LepCode.ToUpper() == LepsRegion.Lancashire && getStudentTriageResult.Body.LepDateSent == null)
+            if (getStudentTriageResult.Body.LepCode.ToUpper() == LepsRegion.London && getStudentTriageResult.Body.LepDateSent == null)
             {
-                return await SendToLancashire(getStudentTriageResult.Body, SurveyGuid);
+                return await SendToLondon(getStudentTriageResult.Body, SurveyGuid);
             }
 
-            return CreateSendStudentDataToLepsServiceResponse("LepCode not matching with La");
+            return CreateSendStudentDataToLepsServiceResponse("LepCode not matching with Lo");
         }
 
         private async Task<SendStudentDataToLepsServiceResponse> SendToNorthEast(GetStudentTriageDataBySurveyIdResponse data, Guid surveyGuid)
@@ -80,22 +80,22 @@ namespace SFA.DAS.EarlyConnect.Services
             return _sendStudentDataToLepsServiceResponse;
         }
 
-        private async Task<SendStudentDataToLepsServiceResponse> SendToLancashire(GetStudentTriageDataBySurveyIdResponse data, Guid surveyGuid)
+        private async Task<SendStudentDataToLepsServiceResponse> SendToLondon(GetStudentTriageDataBySurveyIdResponse data, Guid surveyGuid)
         {
             var studentTriageData = MapResponseToStudentData(data);
 
             var sendStudentDataresult =
-                await _apiLepsLaClient.PostWithResponseCode<SendStudentDataToLaLepsResponse>(
-                    new SendStudentDataToLaLepsRequest(studentTriageData, surveyGuid), false);
+                await _apiLepsLoClient.PostWithResponseCode<SendStudentDataToLoLepsResponse>(
+                    new SendStudentDataToLoLepsRequest(studentTriageData, surveyGuid), false);
 
-            if (sendStudentDataresult == null || sendStudentDataresult.StatusCode != HttpStatusCode.Created)
+            if (sendStudentDataresult == null || (sendStudentDataresult.StatusCode != HttpStatusCode.Created && sendStudentDataresult.StatusCode != HttpStatusCode.OK))
             {
                 return CreateSendStudentDataToLepsServiceResponse($"{sendStudentDataresult?.Body?.Message}");
             }
 
             await PerformDeliveryUpdate(data.Id);
 
-            CreateSendStudentDataToLepsServiceResponse("La process completed");
+            CreateSendStudentDataToLepsServiceResponse("Lo process completed");
 
             return _sendStudentDataToLepsServiceResponse;
         }

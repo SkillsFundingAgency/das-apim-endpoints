@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.EarlyConnect.Services.Interfaces
 {
-    public interface ILepsLaApiClient<T> : IInternalApiClient<T>
+    public interface ILepsLoApiClient<T> : IInternalApiClient<T>
     {
 
     }

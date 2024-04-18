@@ -27,8 +27,8 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
             var surveyGuid = Guid.NewGuid();
             var mockApiClient = new Mock<IEarlyConnectApiClient<EarlyConnectApiConfiguration>>();
             var mockNeApiClient = new Mock<ILepsNeApiClient<LepsNeApiConfiguration>>();
-            var mockLaApiClient = new Mock<ILepsLaApiClient<LepsLaApiConfiguration>>();
-            var service = new SendStudentDataToLepsService(mockApiClient.Object, mockNeApiClient.Object, mockLaApiClient.Object);
+            var mockLoApiClient = new Mock<ILepsLoApiClient<LepsLoApiConfiguration>>();
+            var service = new SendStudentDataToLepsService(mockApiClient.Object, mockNeApiClient.Object, mockLoApiClient.Object);
 
             apiResponse.LepCode = LepsRegion.NorthEast;
             apiResponse.LepDateSent = null;
@@ -54,15 +54,15 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
             Assert.That(result, Is.Not.Null);
         }
         [Test, MoqAutoData]
-        public async Task SendStudentDataToLeps_WhenLancashireRegionAndLepDateSentIsNull_CallsLaApiClient(GetStudentTriageDataBySurveyIdResponse apiResponse)
+        public async Task SendStudentDataToLeps_WhenLondonRegionAndLepDateSentIsNull_CallsLaApiClient(GetStudentTriageDataBySurveyIdResponse apiResponse)
         {
             var surveyGuid = Guid.NewGuid();
             var mockApiClient = new Mock<IEarlyConnectApiClient<EarlyConnectApiConfiguration>>();
             var mockNeApiClient = new Mock<ILepsNeApiClient<LepsNeApiConfiguration>>();
-            var mockLaApiClient = new Mock<ILepsLaApiClient<LepsLaApiConfiguration>>();
-            var service = new SendStudentDataToLepsService(mockApiClient.Object, mockNeApiClient.Object, mockLaApiClient.Object);
+            var mockLoApiClient = new Mock<ILepsLoApiClient<LepsLoApiConfiguration>>();
+            var service = new SendStudentDataToLepsService(mockApiClient.Object, mockNeApiClient.Object, mockLoApiClient.Object);
 
-            apiResponse.LepCode = LepsRegion.Lancashire;
+            apiResponse.LepCode = LepsRegion.London;
             apiResponse.LepDateSent = null;
 
             foreach (var surveyQuestion in apiResponse.SurveyQuestions)
@@ -70,19 +70,19 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
                 surveyQuestion.QuestionTypeId = 1;
             }
 
-            var SendStudentDataToNeLepsexpectedResponse = new Mock<SendStudentDataToNeLepsResponse>();
+            var SendStudentDataToLoLepsexpectedResponse = new Mock<SendStudentDataToLoLepsResponse>();
 
-            var SendStudentDataToNeLepsResponse = new ApiResponse<SendStudentDataToNeLepsResponse>(SendStudentDataToNeLepsexpectedResponse.Object, HttpStatusCode.OK, string.Empty);
+            var SendStudentDataToLoLepsResponse = new ApiResponse<SendStudentDataToLoLepsResponse>(SendStudentDataToLoLepsexpectedResponse.Object, HttpStatusCode.OK, string.Empty);
 
             mockApiClient.Setup(x => x.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(It.IsAny<GetStudentTriageDataBySurveyIdRequest>())).ReturnsAsync(new ApiResponse<GetStudentTriageDataBySurveyIdResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
             var sendStudentDataResponse = new SendStudentDataToNeLepsResponse();
-            mockNeApiClient.Setup(x => x.PostWithResponseCode<SendStudentDataToNeLepsResponse>(It.IsAny<SendStudentDataToNeLepsRequest>(), false))
-                .ReturnsAsync(SendStudentDataToNeLepsResponse);
+            mockNeApiClient.Setup(x => x.PostWithResponseCode<SendStudentDataToLoLepsResponse>(It.IsAny<SendStudentDataToNeLepsRequest>(), false))
+                .ReturnsAsync(SendStudentDataToLoLepsResponse);
 
-            var result = await service.SendStudentDataToLa(surveyGuid);
+            var result = await service.SendStudentDataToLo(surveyGuid);
 
-            mockLaApiClient.Verify(x => x.PostWithResponseCode<SendStudentDataToLaLepsResponse>(It.IsAny<SendStudentDataToLaLepsRequest>(), false), Times.Once);
+            mockLoApiClient.Verify(x => x.PostWithResponseCode<SendStudentDataToLoLepsResponse>(It.IsAny<SendStudentDataToLoLepsRequest>(), false), Times.Once);
             Assert.That(result, Is.Not.Null);
         }
     }

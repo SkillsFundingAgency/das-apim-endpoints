@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.EarlyConnect.ExternalApi.Responses
 {
-    public class SendStudentDataToLaLepsResponse
+    public class SendStudentDataToLoLepsResponse
     {
         public string Message { get; set; }
     }
