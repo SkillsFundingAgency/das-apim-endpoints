@@ -8,5 +8,10 @@ public class PutUpsertAboutYouItemApiResponse
     public string Improvements { get; set; }
     public string HobbiesAndInterests { get; set; }
     public string Support { get; set; }
+    public string? Sex { get; set; }
+    public string? EthnicGroup { get; set; }
+    public string? EthnicSubGroup { get; set; }
+    public string? IsGenderIdentifySameSexAtBirth { get; set; }
+    public string? OtherEthnicSubGroupAnswer { get; set; }
     public Guid ApplicationId { get; set; }
 }
