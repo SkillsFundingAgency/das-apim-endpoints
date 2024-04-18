@@ -128,8 +128,8 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
         return new StandardInfo
         {
 			 CourseCode = response.TrainingProgrammeVersions.FirstOrDefault(x => x.Version == courseVersion)?.CourseCode,
-			 EffectiveFrom = response.TrainingProgrammeVersions.MaxBy(x => x.EffectiveFrom)?.EffectiveFrom,
-             EffectiveTo = response.TrainingProgrammeVersions.MaxBy(x => x.EffectiveTo)?.EffectiveTo,
+			 EffectiveFrom = response.TrainingProgrammeVersions.Any(x => x.EffectiveFrom == null) ? null : response.TrainingProgrammeVersions.MinBy(x => x.EffectiveFrom)?.EffectiveFrom,
+             EffectiveTo = response.TrainingProgrammeVersions.Any(x => x.EffectiveTo == null) ? null : response.TrainingProgrammeVersions.MaxBy(x => x.EffectiveTo)?.EffectiveTo,
 			 StandardVersion = response.TrainingProgrammeVersions.Select(x => new StandardVersionInfo
              {
                  EffectiveFrom = x.EffectiveFrom,
