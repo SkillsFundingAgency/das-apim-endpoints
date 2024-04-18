@@ -27,7 +27,7 @@ public class WhenHandlingUpsertDateOfBirthCommand
             DateOfBirth = command.DateOfBirth
         };
 
-        var expectedRequest = new PutCandidateApiRequest(command.GovUkIdentifier, expectedPutData);
+        var expectedRequest = new PutCandidateApiRequest(command.CandidateId, expectedPutData);
 
         mockApiClient
             .Setup(client => client.PutWithResponseCode<NullResponse>(

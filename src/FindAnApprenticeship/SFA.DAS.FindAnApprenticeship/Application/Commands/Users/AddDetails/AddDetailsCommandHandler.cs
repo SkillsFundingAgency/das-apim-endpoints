@@ -28,7 +28,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.AddDetails
                 Email = command.Email
             };
 
-            var putRequest = new PutCandidateApiRequest(command.GovUkIdentifier, putData);
+            var putRequest = new PutCandidateApiRequest(command.CandidateId, putData);
 
             var response = await _candidateApiClient.PutWithResponseCode<NullResponse>(putRequest);
 
