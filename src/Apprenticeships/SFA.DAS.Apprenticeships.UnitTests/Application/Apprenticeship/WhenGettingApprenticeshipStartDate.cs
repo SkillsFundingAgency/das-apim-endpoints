@@ -41,9 +41,9 @@ public class WhenGettingApprenticeshipStartDate
             CourseCode = 456.ToString(),
             EffectiveFrom = effectiveFrom,
             EffectiveTo = effectiveTo,
-            Versions = new List<StandardVersionInfo>
+            StandardVersion = new StandardVersionInfo
             {
-                new() { EffectiveFrom = effectiveFrom, EffectiveTo = effectiveTo, Version = "1.1" }
+                EffectiveFrom = effectiveFrom, EffectiveTo = effectiveTo, Version = "1.1" 
             }
         };
 
@@ -55,7 +55,8 @@ public class WhenGettingApprenticeshipStartDate
 				ActualStartDate = expectedResponse.ActualStartDate,
 				PlannedEndDate = expectedResponse.PlannedEndDate,
 				UKPRN = 123,
-				CourseCode = 456
+				CourseCode = 456.ToString(),
+                CourseVersion = "1.1"
 			});
 
 		mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
@@ -80,7 +81,7 @@ public class WhenGettingApprenticeshipStartDate
                         CourseCode = expectedResponse.Standard.CourseCode,
                         EffectiveFrom = expectedResponse.Standard.EffectiveFrom,
 						EffectiveTo = expectedResponse.Standard.EffectiveTo,
-						Version = expectedResponse.Standard.Versions[0].Version
+						Version = expectedResponse.Standard.StandardVersion.Version
                     }
                 }
             });

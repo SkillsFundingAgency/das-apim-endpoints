@@ -50,7 +50,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 			return null; 
 		}
 
-        var standard = await _apiCommitmentsClient.Get<GetTrainingProgrammeVersionsResponse>(new GetTrainingProgrammeVersionsRequest(apprenticeStartDateInnerModel.CourseCode.ToString()));
+        var standard = await _apiCommitmentsClient.Get<GetTrainingProgrammeVersionsResponse>(new GetTrainingProgrammeVersionsRequest(apprenticeStartDateInnerModel.CourseCode));
 
         string? employerName = await GetEmployerName(apprenticeStartDateInnerModel);
 
@@ -63,10 +63,22 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 			PlannedEndDate = apprenticeStartDateInnerModel.PlannedEndDate,
 			EmployerName = employerName,
 			ProviderName = providerName,
-			Standard = ToStandardInfo(standard)
+			Standard = ToStandardInfo(standard, apprenticeStartDateInnerModel.CourseVersion)
 		};
 
-		return apprenticeshipStartDateOuterModel;
+        if (apprenticeshipStartDateOuterModel.Standard.CourseCode == null)
+        {
+            _logger.LogWarning($"No course/standard data available for apprenticeshipKey:{request.ApprenticeshipKey}");
+            return null;
+        }
+
+        if (apprenticeshipStartDateOuterModel.Standard.StandardVersion == null)
+        {
+            _logger.LogWarning($"No standard version data available for apprenticeshipKey:{request.ApprenticeshipKey}");
+            return null;
+        }
+
+        return apprenticeshipStartDateOuterModel;
 	}
 
 	private async Task<string?> GetEmployerName(GetApprenticeshipStartDateResponse apprenticeStartDateInnerModel)
@@ -107,19 +119,19 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 		return provider.Name;
 	}
 
-    private static StandardInfo ToStandardInfo(GetTrainingProgrammeVersionsResponse response)
+    private static StandardInfo ToStandardInfo(GetTrainingProgrammeVersionsResponse response, string courseVersion)
     {
         return new StandardInfo
         {
-			 CourseCode = response.TrainingProgrammeVersions.MaxBy(x => x.Version)?.CourseCode,
-			 EffectiveFrom = response.TrainingProgrammeVersions.MaxBy(x => x.Version)?.EffectiveFrom,
-             EffectiveTo = response.TrainingProgrammeVersions.MaxBy(x => x.Version)?.EffectiveTo,
-			 Versions = response.TrainingProgrammeVersions.Select(x => new StandardVersionInfo
+			 CourseCode = response.TrainingProgrammeVersions.FirstOrDefault(x => x.Version == courseVersion)?.CourseCode,
+			 EffectiveFrom = response.TrainingProgrammeVersions.MaxBy(x => x.EffectiveFrom)?.EffectiveFrom,
+             EffectiveTo = response.TrainingProgrammeVersions.MaxBy(x => x.EffectiveTo)?.EffectiveTo,
+			 StandardVersion = response.TrainingProgrammeVersions.Select(x => new StandardVersionInfo
              {
                  EffectiveFrom = x.EffectiveFrom,
                  EffectiveTo = x.EffectiveTo,
                  Version = x.Version
-             }).ToList()
+             }).FirstOrDefault(x => x.Version == courseVersion)
         };
     }
 
