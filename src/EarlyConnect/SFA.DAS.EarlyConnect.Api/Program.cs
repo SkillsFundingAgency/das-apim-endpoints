@@ -8,6 +8,8 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        Environment.SetEnvironmentVariable("WEBSITE_LOAD_USER_PROFILE", "1");
+
         CreateHostBuilder(args).Build().Run();
     }
 
