@@ -47,3 +47,5 @@ stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
     OuterApiName: EmployerPR
+    AdditionalProjectPathToInclude: src/Shared/SFA.DAS.SharedOuterApi.Employer.GovUK.Auth/SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj
+    AdditionalTestProjectPathToInclude: src/Shared/SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.UnitTests/SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.UnitTests.csproj
