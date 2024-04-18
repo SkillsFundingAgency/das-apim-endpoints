@@ -40,7 +40,9 @@ public class GetApplicationsQueryHandler(ICandidateApiClient<CandidateApiConfigu
             {
                 Id = application.Id,
                 EmployerName = vacancy.EmployerName,
-                Title = vacancy.Title
+                Title = vacancy.Title,
+                ClosingDate = vacancy.ClosingDate,
+                CreatedDate = application.CreatedDate
             });
         }
 
