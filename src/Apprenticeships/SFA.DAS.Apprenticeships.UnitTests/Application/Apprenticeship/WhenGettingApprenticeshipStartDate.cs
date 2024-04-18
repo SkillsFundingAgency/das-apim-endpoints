@@ -38,9 +38,6 @@ public class WhenGettingApprenticeshipStartDate
 
     [Test]
 	public async Task Then_Gets_ApprenticeshipStartDate_From_ApiClient()
-		DateTime effectiveFrom,
-        DateTime effectiveTo,
-        Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient,
 	{
         //  Arrange
         var expectedResponse = _fixture.Create<ApprenticeshipStartDateResponse>();
@@ -48,8 +45,9 @@ public class WhenGettingApprenticeshipStartDate
         var expectedLatestStartDate = _fixture.Create<DateTime>();
         var expectedLastFridayOfSchool = new DateTime(2021, 6, 25);
         var dateOfBirth = new DateTime(2005, 3, 3);
+        var effectiveFrom = _fixture.Create<DateTime>();
+        var effectiveTo = _fixture.Create<DateTime>();
 
-        _mockApprenticeshipsApiClient.Setup(x => x.Get<GetApprenticeshipStartDateResponse>(It.IsAny<GetApprenticeshipStartDateRequest>()))
         expectedResponse.Standard = new StandardInfo
         {
             CourseCode = 456.ToString(),
@@ -61,7 +59,8 @@ public class WhenGettingApprenticeshipStartDate
             }
         };
 
-			.ReturnsAsync(new GetApprenticeshipStartDateResponse
+        _mockApprenticeshipsApiClient.Setup(x => x.Get<GetApprenticeshipStartDateResponse>(It.IsAny<GetApprenticeshipStartDateRequest>()))
+        .ReturnsAsync(new GetApprenticeshipStartDateResponse
 			{
 				AccountLegalEntityId = 1,
 				ApprenticeshipKey = expectedResponse.ApprenticeshipKey,
@@ -85,7 +84,7 @@ public class WhenGettingApprenticeshipStartDate
                 Name = expectedResponse.ProviderName!
             });
 
-        mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetTrainingProgrammeVersionsResponse>(It.IsAny<GetTrainingProgrammeVersionsRequest>()))
+        _mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetTrainingProgrammeVersionsResponse>(It.IsAny<GetTrainingProgrammeVersionsRequest>()))
             .ReturnsAsync(new GetTrainingProgrammeVersionsResponse
             {
                 TrainingProgrammeVersions = new List<TrainingProgramme>

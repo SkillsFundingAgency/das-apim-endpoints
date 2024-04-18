@@ -4,13 +4,11 @@ using SFA.DAS.Apprenticeships.Extensions;
 using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.Apprenticeships.Application.Apprenticeship;
 
@@ -69,7 +67,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 			EarliestStartDate = await GetEarliestNewStartDate(apprenticeStartDateInnerModel.ActualStartDate),
 			LatestStartDate = await GetLatestNewStartDate(apprenticeStartDateInnerModel.ActualStartDate),
 			LastFridayOfSchool = apprenticeStartDateInnerModel.ApprenticeDateOfBirth.GetLastFridayInJuneOfSchoolYearApprenticeTurned16(),
-			Standard = ToStandardInfo(standard, apprenticeStartDateInne
+			Standard = ToStandardInfo(standard, apprenticeStartDateInnerModel.CourseVersion)
         };
 
         if (apprenticeshipStartDateOuterModel.Standard.CourseCode == null)
