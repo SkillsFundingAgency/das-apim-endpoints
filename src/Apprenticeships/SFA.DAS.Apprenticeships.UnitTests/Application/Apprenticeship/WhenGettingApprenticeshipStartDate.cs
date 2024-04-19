@@ -56,7 +56,7 @@ public class WhenGettingApprenticeshipStartDate
             EffectiveTo = effectiveTo,
             StandardVersion = new StandardVersionInfo
             {
-                EffectiveFrom = effectiveFrom, EffectiveTo = effectiveTo, Version = "1.1" 
+                VersionEarliestStartDate = effectiveFrom, VersionLatestStartDate = effectiveTo, Version = "1.1" 
             }
         };
 
@@ -140,8 +140,10 @@ public class WhenGettingApprenticeshipStartDate
         var effectiveFrom = _fixture.Create<DateTime>();
         var effectiveTo = effectiveFrom.Add(_fixture.Create<TimeSpan>());
 
-        var expectedStandardEffectiveFrom = (DateTime?)effectiveFrom;
-        var expectedStandardEffectiveTo = (DateTime?)effectiveTo;
+        var firstVersionDate = _fixture.Create<DateTime>();
+        var secondVersionDate = firstVersionDate.Add(_fixture.Create<TimeSpan>());
+        var thirdVersionDate = secondVersionDate.Add(_fixture.Create<TimeSpan>());
+        var fourthVersionDate = thirdVersionDate.Add(_fixture.Create<TimeSpan>());
 
         expectedResponse.Standard = new StandardInfo
         {
@@ -150,9 +152,9 @@ public class WhenGettingApprenticeshipStartDate
             EffectiveTo = effectiveTo,
             StandardVersion = new StandardVersionInfo
             {
-                EffectiveFrom = effectiveFrom,
-                EffectiveTo = effectiveTo,
-                Version = "1.1"
+                VersionEarliestStartDate = secondVersionDate,
+                VersionLatestStartDate = thirdVersionDate,
+                Version = "1.2"
             }
         };
 
@@ -166,7 +168,7 @@ public class WhenGettingApprenticeshipStartDate
             UKPRN = 123,
             ApprenticeDateOfBirth = dateOfBirth,
             CourseCode = 456.ToString(),
-            CourseVersion = "1.1"
+            CourseVersion = "1.2"
         });
 
         _mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
@@ -188,34 +190,40 @@ public class WhenGettingApprenticeshipStartDate
                 CourseCode = expectedResponse.Standard.CourseCode,
                 EffectiveFrom = expectedResponse.Standard.EffectiveFrom,
                 EffectiveTo = expectedResponse.Standard.EffectiveTo,
-                Version = expectedResponse.Standard.StandardVersion.Version
+                Version = expectedResponse.Standard.StandardVersion.Version,
+                VersionEarliestStartDate = expectedResponse.Standard.StandardVersion.VersionEarliestStartDate,
+                VersionLatestStartDate = expectedResponse.Standard.StandardVersion.VersionLatestStartDate
             }
         };
 
         if (multipleVersions)
         {
-            var expectedSecondEffectiveTo = effectiveTo.Add(_fixture.Create<TimeSpan>());
-            expectedStandardEffectiveTo = expectedSecondEffectiveTo.Add(_fixture.Create<TimeSpan>());
             expectedTrainingProgrammeVersions.Add(new TrainingProgramme
             {
+                EffectiveFrom = effectiveFrom,
+                EffectiveTo = effectiveTo,
                 CourseCode = expectedResponse.Standard.CourseCode,
-                EffectiveFrom = effectiveTo,
-                EffectiveTo = expectedSecondEffectiveTo,
+                VersionEarliestStartDate = firstVersionDate,
+                VersionLatestStartDate = secondVersionDate,
+                Version = "1.1"
             });
             expectedTrainingProgrammeVersions.Add(new TrainingProgramme
             {
+                EffectiveFrom = effectiveFrom,
+                EffectiveTo = effectiveTo,
                 CourseCode = expectedResponse.Standard.CourseCode,
-                EffectiveFrom = expectedSecondEffectiveTo,
-                EffectiveTo = expectedStandardEffectiveTo,
+                VersionEarliestStartDate = thirdVersionDate,
+                VersionLatestStartDate = fourthVersionDate,
+                Version = "1.3"
             });
         }
 
         if (openEndedDates)
         {
-            expectedStandardEffectiveFrom = null;
-            expectedStandardEffectiveTo = null;
-            expectedTrainingProgrammeVersions.First().EffectiveFrom = null;
-            expectedTrainingProgrammeVersions.Last().EffectiveTo = null;
+            expectedTrainingProgrammeVersions.Single(x => x.Version == "1.2").VersionEarliestStartDate = null;
+            expectedTrainingProgrammeVersions.Single(x => x.Version == "1.2").VersionLatestStartDate = null;
+            expectedTrainingProgrammeVersions.Single(x => x.Version == "1.2").EffectiveFrom = null;
+            expectedTrainingProgrammeVersions.Single(x => x.Version == "1.2").EffectiveTo = null;
         }
 
         _mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetTrainingProgrammeVersionsResponse>(It.IsAny<GetTrainingProgrammeVersionsRequest>()))
@@ -237,8 +245,10 @@ public class WhenGettingApprenticeshipStartDate
         var result = await handler.Handle(new GetApprenticeshipStartDateQuery(Guid.NewGuid()), CancellationToken.None);
 
         //  Assert
-        result.Standard.EffectiveTo.Should().Be(expectedStandardEffectiveTo);
-        result.Standard.EffectiveFrom.Should().Be(expectedStandardEffectiveFrom);
+        result.Standard.EffectiveFrom.Should().Be(openEndedDates ? null : effectiveFrom);
+        result.Standard.EffectiveTo.Should().Be(openEndedDates ? null : effectiveTo);
+        result.Standard.StandardVersion.VersionEarliestStartDate.Should().Be(openEndedDates ? null : secondVersionDate);
+        result.Standard.StandardVersion.VersionLatestStartDate.Should().Be(openEndedDates ? null : thirdVersionDate);
     }
 }
 

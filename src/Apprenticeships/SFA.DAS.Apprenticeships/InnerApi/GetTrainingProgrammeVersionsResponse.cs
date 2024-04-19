@@ -23,6 +23,8 @@ namespace SFA.DAS.Apprenticeships.InnerApi
         public string StandardPageUrl { get; set; }
         public List<string> Options { get; set; }
         public List<TrainingProgrammeFundingPeriod> FundingPeriods { get; set; }
+        public DateTime? VersionEarliestStartDate { get; set; }
+        public DateTime? VersionLatestStartDate { get; set; }
     }
 
     public class TrainingProgrammeFundingPeriod

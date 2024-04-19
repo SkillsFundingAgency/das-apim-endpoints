@@ -132,8 +132,8 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
              EffectiveTo = response.TrainingProgrammeVersions.Any(x => x.EffectiveTo == null) ? null : response.TrainingProgrammeVersions.MaxBy(x => x.EffectiveTo)?.EffectiveTo,
 			 StandardVersion = response.TrainingProgrammeVersions.Select(x => new StandardVersionInfo
              {
-                 EffectiveFrom = x.EffectiveFrom,
-                 EffectiveTo = x.EffectiveTo,
+                 VersionEarliestStartDate = x.VersionEarliestStartDate,
+                 VersionLatestStartDate = x.VersionLatestStartDate,
                  Version = x.Version
              }).FirstOrDefault(x => x.Version == courseVersion)
         };
