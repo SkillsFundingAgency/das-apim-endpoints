@@ -39,7 +39,47 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Vacancies
 
             candidateApiClient
                 .Setup(client => client.PutWithResponseCode<PutApplicationApiResponse>(
-                    It.Is<PutApplicationApiRequest>(r => r.PutUrl == expectedPutRequest.PutUrl)))
+                    It.Is<PutApplicationApiRequest>(r => 
+                        r.PutUrl == expectedPutRequest.PutUrl
+                        && ((PutApplicationApiRequest.PutApplicationApiRequestData)r.Data).IsAdditionalQuestion1Complete == 0
+                        && ((PutApplicationApiRequest.PutApplicationApiRequestData)r.Data).IsAdditionalQuestion2Complete == 0
+                        )))
+                .ReturnsAsync(new ApiResponse<PutApplicationApiResponse>(candidateApiResponse, HttpStatusCode.OK, string.Empty));
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.ApplicationId.Should().Be(candidateApiResponse.Id);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_No_Additional_Questions_Section_Status_Set_To_NotRequired(
+            ApplyCommand query,
+            GetApprenticeshipVacancyItemResponse faaApiResponse,
+            PutApplicationApiResponse candidateApiResponse,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> faaApiClient,
+            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            ApplyCommandHandler handler)
+        {
+            var expectedPutData = new PutApplicationApiRequest.PutApplicationApiRequestData
+                { CandidateId = query.CandidateId };
+            var expectedPutRequest = new PutApplicationApiRequest(query.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase), expectedPutData);
+
+            var expectedGetRequest = new GetVacancyRequest(query.VacancyReference);
+
+            faaApiResponse.AdditionalQuestion1 = null;
+            faaApiResponse.AdditionalQuestion2 = string.Empty;
+            faaApiClient
+                .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(It.Is<GetVacancyRequest>(r => r.GetUrl == expectedGetRequest.GetUrl)))
+                .ReturnsAsync(faaApiResponse);
+            
+
+            candidateApiClient
+                .Setup(client => client.PutWithResponseCode<PutApplicationApiResponse>(
+                    It.Is<PutApplicationApiRequest>(r => 
+                        r.PutUrl == expectedPutRequest.PutUrl
+                        && ((PutApplicationApiRequest.PutApplicationApiRequestData)r.Data).IsAdditionalQuestion1Complete == 4
+                        && ((PutApplicationApiRequest.PutApplicationApiRequestData)r.Data).IsAdditionalQuestion2Complete == 4
+                        )))
                 .ReturnsAsync(new ApiResponse<PutApplicationApiResponse>(candidateApiResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);

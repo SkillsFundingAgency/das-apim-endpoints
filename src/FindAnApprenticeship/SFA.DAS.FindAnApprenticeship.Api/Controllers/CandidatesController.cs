@@ -30,7 +30,7 @@ public class CandidatesController : ControllerBase
     {
         try
         {
-            var queryResponse = await _mediator.Send(new PutCandidateCommand
+            var queryResponse = await _mediator.Send(new CreateCandidateCommand
             {
                 GovUkIdentifier = govIdentifier,
                 Email = request.Email

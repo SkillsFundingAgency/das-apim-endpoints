@@ -13,23 +13,15 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Vacancies;
 
-public class ApplyCommandHandler : IRequestHandler<ApplyCommand, ApplyCommandResponse>
+public class ApplyCommandHandler(
+    IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
+    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
+    : IRequestHandler<ApplyCommand, ApplyCommandResponse>
 {
-    private readonly IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> _findApprenticeshipApiClient;
-    private readonly ICandidateApiClient<CandidateApiConfiguration> _candidateApiClient;
-
-    public ApplyCommandHandler(
-        IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
-        ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
-    {
-        _findApprenticeshipApiClient = findApprenticeshipApiClient;
-        _candidateApiClient = candidateApiClient;
-    }
-
     public async Task<ApplyCommandResponse> Handle(ApplyCommand request, CancellationToken cancellationToken)
     {
         var result =
-            await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(
+            await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(
                 new GetVacancyRequest(request.VacancyReference));
 
         var additionalQuestions = new List<string>();
@@ -39,7 +31,9 @@ public class ApplyCommandHandler : IRequestHandler<ApplyCommand, ApplyCommandRes
         PutApplicationApiRequest.PutApplicationApiRequestData putApplicationApiRequestData = new PutApplicationApiRequest.PutApplicationApiRequestData
         {
             CandidateId = request.CandidateId,
-            AdditionalQuestions = additionalQuestions
+            AdditionalQuestions = additionalQuestions,
+            IsAdditionalQuestion1Complete = string.IsNullOrEmpty(result.AdditionalQuestion1) ? (short)4 : (short)0,
+            IsAdditionalQuestion2Complete = string.IsNullOrEmpty(result.AdditionalQuestion2) ? (short)4 : (short)0
         };
         var putData = putApplicationApiRequestData;
         var vacancyReference =
@@ -47,7 +41,7 @@ public class ApplyCommandHandler : IRequestHandler<ApplyCommand, ApplyCommandRes
         var putRequest = new PutApplicationApiRequest(vacancyReference, putData);
 
         var applicationResult =
-            await _candidateApiClient.PutWithResponseCode<PutApplicationApiResponse>(putRequest);
+            await candidateApiClient.PutWithResponseCode<PutApplicationApiResponse>(putRequest);
 
         applicationResult.EnsureSuccessStatusCode();
 
