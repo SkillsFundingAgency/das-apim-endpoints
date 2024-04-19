@@ -156,6 +156,10 @@
                                 {
                                     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                                     "value": "[reference(concat('api-application-insights-', parameters('appServiceName'))).outputs.InstrumentationKey.value]"
+                                },
+                                {
+                                    "name": "WEBSITE_LOAD_USER_PROFILE",
+                                    "value": "1"
                                 }
                             ]
                         }

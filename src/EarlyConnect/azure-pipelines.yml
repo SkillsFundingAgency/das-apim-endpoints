@@ -23,6 +23,7 @@ pr:
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
+- group: RELEASE das-apim-endpoints-EarlyConnect
 
 resources:
   repositories:
