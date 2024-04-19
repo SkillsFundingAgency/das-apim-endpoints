@@ -26,6 +26,7 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient(typeof(ILepsNeApiClient<>), typeof(LepsNeApiClient<>));
         services.AddTransient<IEarlyConnectApiClient<EarlyConnectApiConfiguration>, EarlyConnectApiClient>();
+        services.AddTransient<ILepsLoApiClient<LepsLoApiConfiguration>, LepsLoApiClient>();
         services.AddTransient<ILepsLaApiClient<LepsLaApiConfiguration>, LepsLaApiClient>();
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient<ISendStudentDataToLepsService, SendStudentDataToLepsService>();
@@ -44,6 +45,9 @@ public static class AddConfigurationOptionsExtension
 
         services.Configure<LepsNeApiConfiguration>(configuration.GetSection(nameof(LepsNeApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<LepsNeApiConfiguration>>().Value);
+
+        services.Configure<LepsLoApiConfiguration>(configuration.GetSection(nameof(LepsLoApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<LepsLoApiConfiguration>>().Value);
 
         services.Configure<LepsLaApiConfiguration>(configuration.GetSection(nameof(LepsLaApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<LepsLaApiConfiguration>>().Value);
