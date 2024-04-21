@@ -18,7 +18,6 @@ public static class AddServiceRegistrationExtensions
         services.AddHttpClient();
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
-        services.AddTransient<IProviderFeedbackApiClient<ProviderFeedbackApiConfiguration>, ProviderFeedbackApiClient>();
         services.AddTransient<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>, ApprenticeFeedbackApiClient>();
         services.AddTransient<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>, EmployerFeedbackApiClient>();
     }
@@ -30,8 +29,6 @@ public static class AddConfigurationOptionsExtension
     public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOptions();
-        services.Configure<ProviderFeedbackApiConfiguration>(configuration.GetSection(nameof(ProviderFeedbackApiConfiguration)));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderFeedbackApiConfiguration>>().Value);
         services.Configure<ApprenticeFeedbackApiConfiguration>(configuration.GetSection(nameof(ApprenticeFeedbackApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeFeedbackApiConfiguration>>().Value);
         services.Configure<EmployerFeedbackApiConfiguration>(configuration.GetSection(nameof(EmployerFeedbackApiConfiguration)));
