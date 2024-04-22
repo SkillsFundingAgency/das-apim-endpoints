@@ -17,6 +17,8 @@
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.60.3" />
+    <PackageReference Include="Azure.Identity" Version="1.11.0" />     
   </ItemGroup>
 
   <ItemGroup>

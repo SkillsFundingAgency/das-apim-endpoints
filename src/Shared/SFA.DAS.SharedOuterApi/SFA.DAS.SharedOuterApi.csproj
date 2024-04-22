@@ -27,6 +27,8 @@
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
         <PackageReference Include="System.Net.Http.Json" />
         <PackageReference Include="SFA.DAS.NServiceBus" />
+        <PackageReference Include="Microsoft.Identity.Client" Version="4.60.3" />
+        <PackageReference Include="Azure.Identity" Version="1.11.0" />        
     </ItemGroup>
 
 </Project>
