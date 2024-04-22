@@ -31,6 +31,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             GetAdditionalQuestionApiResponse additionalQuestion1ApiResponse,
             GetAdditionalQuestionApiResponse additionalQuestion2ApiResponse,
             GetApprenticeshipVacancyItemResponse apprenticeshipVacancyItemApiResponse,
+            GetQualificationsApiResponse qualificationsApiResponse,
+            GetQualificationReferenceTypesApiResponse qualificationReferenceTypesApiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
             GetApplicationQueryHandler handler)
@@ -95,6 +97,18 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
                 .Setup(client => client.Get<GetAdditionalQuestionApiResponse>(
                     It.Is<GetAdditionalQuestionApiRequest>(r => r.GetUrl == expectedGetAdditionalQuestion2ApiRequest.GetUrl)))
                 .ReturnsAsync(additionalQuestion2ApiResponse);
+
+            var expectedGetQualificationsApiRequest = new GetQualificationsApiRequest(query.ApplicationId, query.CandidateId);
+            candidateApiClient
+                .Setup(client => client.Get<GetQualificationsApiResponse>(
+                    It.Is<GetQualificationsApiRequest>(r => r.GetUrl == expectedGetQualificationsApiRequest.GetUrl)))
+                .ReturnsAsync(qualificationsApiResponse);
+
+            var expectedGetQualificationTypesApiRequest = new GetQualificationReferenceTypesApiRequest();
+            candidateApiClient
+                .Setup(client => client.Get<GetQualificationReferenceTypesApiResponse>(
+                    It.Is<GetQualificationReferenceTypesApiRequest>(r => r.GetUrl == expectedGetQualificationTypesApiRequest.GetUrl)))
+                .ReturnsAsync(qualificationReferenceTypesApiResponse);
 
 
             var result = await handler.Handle(query, CancellationToken.None);

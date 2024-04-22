@@ -50,13 +50,21 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
             var otherDetailsTask = candidateApiClient.Get<GetAboutYouItemApiResponse>(
                 new GetAboutYouItemApiRequest(request.ApplicationId, request.CandidateId));
 
+            var qualificationTypesTask = candidateApiClient.Get<GetQualificationReferenceTypesApiResponse>(
+                new GetQualificationReferenceTypesApiRequest());
+
+            var qualificationsTask = candidateApiClient.Get<GetQualificationsApiResponse>(
+                new GetQualificationsApiRequest(request.ApplicationId, request.CandidateId));
+
             await Task.WhenAll(
                 candidateTask,
                 addressTask,
                 trainingCoursesTask,
                 workHistoriesJobTask,
                 workHistoriesVolunteeringTask,
-                otherDetailsTask);
+                otherDetailsTask,
+                qualificationsTask,
+                qualificationTypesTask);
 
             var candidate = candidateTask.Result;
             var address = addressTask.Result;
@@ -64,6 +72,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
             var jobs = workHistoriesJobTask.Result;
             var volunteeringExperiences = workHistoriesVolunteeringTask.Result;
             var otherDetails = otherDetailsTask.Result;
+            var qualifications = qualificationsTask.Result;
+            var qualificationTypes = qualificationTypesTask.Result;
 
             GetApplicationQueryResult.ApplicationQuestionsSection.Question additionalQuestion1 = null;
             GetApplicationQueryResult.ApplicationQuestionsSection.Question additionalQuestion2 = null;
@@ -109,7 +119,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                 {
                     QualificationsStatus = application.QualificationsStatus,
                     TrainingCoursesStatus = application.TrainingCoursesStatus,
-                    TrainingCourses = trainingCourses.TrainingCourses.Select(x => (GetApplicationQueryResult.EducationHistorySection.TrainingCourse)x).ToList()
+                    TrainingCourses = trainingCourses.TrainingCourses.Select(x => (GetApplicationQueryResult.EducationHistorySection.TrainingCourse)x).ToList(),
+                    Qualifications = qualifications.Qualifications.Select(x => (GetApplicationQueryResult.EducationHistorySection.Qualification)x).ToList(),
+                    QualificationTypes = qualificationTypes.QualificationReferences.Select(x => (GetApplicationQueryResult.EducationHistorySection.QualificationReference)x).ToList()
                 },
                 WorkHistory = new GetApplicationQueryResult.WorkHistorySection
                 {

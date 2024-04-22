@@ -92,6 +92,8 @@ public record GetApplicationApiResponse
         public string QualificationsStatus { get; set; }
         public string TrainingCoursesStatus { get; set; }
         public List<TrainingCourse> TrainingCourses { get; set; } = [];
+        public List<Qualification> Qualifications { get; set; } = [];
+        public List<QualificationReference> QualificationTypes { get; set; } = [];
 
         public static implicit operator EducationHistorySection(GetApplicationQueryResult.EducationHistorySection source)
         {
@@ -99,7 +101,9 @@ public record GetApplicationApiResponse
             {
                 QualificationsStatus = source.QualificationsStatus,
                 TrainingCoursesStatus = source.TrainingCoursesStatus,
-                TrainingCourses = source.TrainingCourses.Select(x => (GetApplicationApiResponse.EducationHistorySection.TrainingCourse)x).ToList()
+                TrainingCourses = source.TrainingCourses.Select(x => (GetApplicationApiResponse.EducationHistorySection.TrainingCourse)x).ToList(),
+                Qualifications = source.Qualifications.Select(x => (GetApplicationApiResponse.EducationHistorySection.Qualification)x).ToList(),
+                QualificationTypes = source.QualificationTypes.Select(x => (GetApplicationApiResponse.EducationHistorySection.QualificationReference)x).ToList()
             };
         }
         
@@ -115,6 +119,46 @@ public record GetApplicationApiResponse
                     Id = source.Id,
                     CourseName = source.CourseName,
                     YearAchieved = source.YearAchieved
+                };
+            }
+        }
+
+        public record Qualification
+        {
+            public Guid Id { get; set; }
+            public string? Subject { get; set; }
+            public string? Grade { get; set; }
+            public string? AdditionalInformation { get; set; }
+            public bool? IsPredicted { get; set; }
+            public Guid QualificationReferenceId { get; set; }
+            public QualificationReference QualificationReference { get; set; }
+
+            public static implicit operator Qualification(GetApplicationQueryResult.EducationHistorySection.Qualification source)
+            {
+                return new Qualification
+                {
+                    Id = source.Id,
+                    Subject = source.Subject,
+                    Grade = source.Grade,
+                    AdditionalInformation = source.AdditionalInformation,
+                    IsPredicted = source.IsPredicted,
+                    QualificationReference = source.QualificationReference,
+                    QualificationReferenceId = source.QualificationReference.Id,
+                };
+            }
+        }
+
+        public record QualificationReference
+        {
+            public Guid Id { get; set; }
+            public string Name { get; set; }
+
+            public static implicit operator QualificationReference(GetApplicationQueryResult.EducationHistorySection.QualificationReference source)
+            {
+                return new QualificationReference
+                {
+                    Id = source.Id,
+                    Name = source.Name
                 };
             }
         }

@@ -58,6 +58,8 @@ public record GetApplicationQueryResult
         public string QualificationsStatus { get; set; }
         public string TrainingCoursesStatus { get; set; }
         public List<TrainingCourse> TrainingCourses { get; set; } = [];
+        public List<Qualification> Qualifications { get; set; } = [];
+        public List<QualificationReference> QualificationTypes { get; set; } = [];
         public record TrainingCourse
         {
             public Guid Id { get; set; }
@@ -71,6 +73,44 @@ public record GetApplicationQueryResult
                     Id = source.Id,
                     CourseName = source.CourseName,
                     YearAchieved = source.YearAchieved
+                };
+            }
+        }
+
+        public record Qualification
+        {
+            public Guid Id { get; set; }
+            public string? Subject { get; set; }
+            public string? Grade { get; set; }
+            public string? AdditionalInformation { get; set; }
+            public bool? IsPredicted { get; set; }
+            public QualificationReference QualificationReference { get; set; }
+
+            public static implicit operator Qualification(InnerApi.CandidateApi.Responses.Qualification source)
+            {
+                return new Qualification
+                {
+                    Id = source.Id,
+                    Subject = source.Subject,
+                    Grade = source.Grade,
+                    AdditionalInformation = source.AdditionalInformation,
+                    IsPredicted = source.IsPredicted,
+                    QualificationReference = source.QualificationReference
+                };
+            }
+        }
+
+        public record QualificationReference
+        {
+            public Guid Id { get; set; }
+            public string Name { get; set; }
+
+            public static implicit operator QualificationReference(InnerApi.CandidateApi.Responses.QualificationReference source)
+            {
+                return new QualificationReference
+                {
+                    Id = source.Id,
+                    Name = source.Name
                 };
             }
         }
