@@ -31,7 +31,7 @@ public class WhenHandlingGetInterviewAdjustmentsQuery
                 It.Is<GetAboutYouItemApiRequest>(r => r.GetUrl == expectedGetInterviewAdjustmentsRequest.GetUrl)))
             .ReturnsAsync(interviewAdjustmentsApiResponse);
 
-        var expectedApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+        var expectedApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
         candidateApiClient.Setup(client =>
                 client.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedApplicationRequest.GetUrl)))
             .ReturnsAsync(applicationApiResponse);

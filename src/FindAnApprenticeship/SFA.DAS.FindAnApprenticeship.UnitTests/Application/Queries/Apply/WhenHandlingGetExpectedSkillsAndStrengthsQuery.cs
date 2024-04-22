@@ -31,7 +31,7 @@ public class WhenHandlingGetExpectedSkillsAndStrengthsQuery
     {
         application.SkillsAndStrengthStatus = sectionStatus;
 
-        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
         var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference);
 
         candidateApiClient
@@ -68,7 +68,7 @@ public class WhenHandlingGetExpectedSkillsAndStrengthsQuery
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetExpectedSkillsAndStrengthsQueryHandler handler)
     {
-        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
         var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference);
 
         candidateApiClient
@@ -94,7 +94,7 @@ public class WhenHandlingGetExpectedSkillsAndStrengthsQuery
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetExpectedSkillsAndStrengthsQueryHandler handler)
     {
-        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
         var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference);
 
         candidateApiClient

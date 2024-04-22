@@ -28,7 +28,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.DisabilityConfi
     {
         public async Task<GetDisabilityConfidentQueryResult> Handle(GetDisabilityConfidentQuery request, CancellationToken cancellationToken)
         {
-            var applicationRequest = new GetApplicationApiRequest(request.CandidateId, request.ApplicationId);
+            var applicationRequest = new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false);
             var application = await candidateApiClient.Get<GetApplicationApiResponse>(applicationRequest);
 
             if (application == null)

@@ -26,7 +26,7 @@ public class GetApplicationSubmittedQueryHandler : IRequestHandler<GetApplicatio
 
     public async Task<GetApplicationSubmittedQueryResult> Handle(GetApplicationSubmittedQuery request, CancellationToken cancellationToken)
     {
-        var application = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId));
+        var application = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
         if (application is null) throw new InvalidOperationException($"Application is null");
 
         var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference));

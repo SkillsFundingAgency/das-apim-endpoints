@@ -27,7 +27,7 @@ public class WhenHandlingGetTrainingCoursesQuery
                 It.Is<GetTrainingCoursesApiRequest>(r => r.GetUrl == expectedGetTrainingCoursesRequest.GetUrl)))
             .ReturnsAsync(trainingCoursesApiResponse);
 
-        var expectedApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+        var expectedApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
         applicationApiResponse.TrainingCoursesStatus = Constants.SectionStatus.NotStarted;
         candidateApiClient.Setup(client =>
                 client.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedApplicationRequest.GetUrl)))

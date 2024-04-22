@@ -27,7 +27,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
         {
             applicationApiResponse.QualificationsStatus = Constants.SectionStatus.Incomplete;
 
-            var expectedApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+            var expectedApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
             applicationApiResponse.JobsStatus = Constants.SectionStatus.Incomplete;
             candidateApiClient.Setup(client =>
                 client.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedApplicationRequest.GetUrl)))

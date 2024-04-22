@@ -16,7 +16,7 @@ public class GetVolunteeringAndWorkExperiencesQueryHandler(ICandidateApiClient<C
 {
     public async Task<GetVolunteeringAndWorkExperiencesQueryResult> Handle(GetVolunteeringAndWorkExperiencesQuery request, CancellationToken cancellationToken)
     {
-        var applicationRequest = new GetApplicationApiRequest(request.CandidateId, request.ApplicationId);
+        var applicationRequest = new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false);
         var application = await candidateApiClient.Get<GetApplicationApiResponse>(applicationRequest);
 
         var workExperience = await candidateApiClient.Get<GetWorkHistoriesApiResponse>(

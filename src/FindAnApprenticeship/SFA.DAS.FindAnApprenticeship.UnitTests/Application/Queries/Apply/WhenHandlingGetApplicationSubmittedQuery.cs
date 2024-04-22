@@ -25,7 +25,7 @@ public class WhenHandlingGetApplicationSubmittedQuery
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetApplicationSubmittedQueryHandler handler)
     {
-        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
         var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference);
 
         candidateApiClient
@@ -60,7 +60,7 @@ public class WhenHandlingGetApplicationSubmittedQuery
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetApplicationSubmittedQueryHandler handler)
     {
-        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
         var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference);
 
         candidateApiClient
@@ -87,7 +87,7 @@ public class WhenHandlingGetApplicationSubmittedQuery
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetApplicationSubmittedQueryHandler handler)
     {
-        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
         var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference);
 
         candidateApiClient
