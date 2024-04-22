@@ -5,7 +5,7 @@ using SFA.DAS.ApprenticeApp.MockApis.Helpers;
 
 namespace SFA.DAS.ApprenticeApp.MockApis
 {
-    [ExcludeFromCodeCoverageAttribute]
+    [ExcludeFromCodeCoverage]
     public static class Program
     {
         private const int PortInnerApi = 5501;

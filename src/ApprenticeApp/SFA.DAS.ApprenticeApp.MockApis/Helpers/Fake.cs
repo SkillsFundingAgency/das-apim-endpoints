@@ -8,7 +8,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 
 namespace SFA.DAS.ApprenticeApp.MockApis.Helpers
 {
-    [ExcludeFromCodeCoverageAttribute]
+    [ExcludeFromCodeCoverage]
     public static class Fake
     {
         public static Apprentice Apprentice => new()
