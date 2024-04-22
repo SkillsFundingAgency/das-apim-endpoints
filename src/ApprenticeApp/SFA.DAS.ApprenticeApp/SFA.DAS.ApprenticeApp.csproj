@@ -14,4 +14,12 @@
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Application\Events\" />
+    <None Remove="Application\Commands\ApprenticeSubscriptions\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Application\Events\" />
+    <Folder Include="Application\Commands\ApprenticeSubscriptions\" />
+  </ItemGroup>
 </Project>

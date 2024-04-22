@@ -22,6 +22,7 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
             services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
             services.AddTransient<TrainingProviderService>();
             services.AddTransient<CoursesService>();
+            services.AddTransient<SubscriptionService>();
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using System;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestEase;
-using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts;
-using System;
-using System.Threading.Tasks;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts;
+using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeSubscriptions;
+using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts;
 
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
 {
@@ -14,7 +15,9 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         private readonly IMediator _mediator;
 
         public ApprenticeController(IMediator mediator)
-            => _mediator = mediator;
+        {
+            _mediator = mediator;
+        }
 
         [HttpGet]
         [Route("/apprentices/{id}")]
@@ -41,6 +44,38 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             });
 
             return NoContent();
+        }
+
+        [HttpPost("/apprentices/{id}/subscriptions")]
+        public async Task<IActionResult> ApprenticeAddSubscription(Guid id, [FromBody] ApprenticeAddSubscriptionRequest request)
+        {
+            await _mediator.Send(new AddApprenticeSubscriptionCommand
+            {
+                ApprenticeId = id,
+                Endpoint = request.Endpoint,
+                PublicKey = request.PublicKey,
+                AuthenticationSecret = request.AuthenticationSecret
+            });
+
+            return Ok();
+        }
+
+        [HttpDelete("/apprentices/{id}/subscriptions")]
+        public async Task<IActionResult> ApprenticeDeleteSubscription(Guid id)
+        {
+            await _mediator.Send(new DeleteApprenticeSubscriptionCommand
+            {
+                ApprenticeId = id
+            });
+            
+            return Ok();
+        }
+
+        public class ApprenticeAddSubscriptionRequest
+        {
+            public string Endpoint { get; set; }
+            public string PublicKey { get; set; }
+            public string AuthenticationSecret { get; set; }
         }
     }
 }

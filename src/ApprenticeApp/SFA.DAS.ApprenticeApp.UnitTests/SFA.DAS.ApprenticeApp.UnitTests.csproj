@@ -21,6 +21,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.ApprenticeApp\SFA.DAS.ApprenticeApp.csproj" />
+    <ProjectReference Include="..\SFA.DAS.ApprenticeApp.Api\SFA.DAS.ApprenticeApp.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Controllers\" />
+    <None Remove="Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
 </Project>
