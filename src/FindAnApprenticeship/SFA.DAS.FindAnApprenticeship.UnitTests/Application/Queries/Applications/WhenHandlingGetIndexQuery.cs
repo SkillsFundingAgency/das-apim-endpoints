@@ -69,7 +69,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                 {
                     Id = application.Id,
                     Title = vacancy.Title,
-                    EmployerName = vacancy.EmployerName
+                    VacancyReference = vacancy.VacancyReference,
+                    EmployerName = vacancy.EmployerName,
+                    CreatedDate = application.CreatedDate,
+                    ClosingDate = vacancy.ClosingDate
                 });
             }
 

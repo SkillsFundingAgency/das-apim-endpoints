@@ -39,6 +39,7 @@ public class GetApplicationsQueryHandler(ICandidateApiClient<CandidateApiConfigu
             result.Applications.Add(new GetApplicationsQueryResult.Application
             {
                 Id = application.Id,
+                VacancyReference = vacancy.VacancyReference,
                 EmployerName = vacancy.EmployerName,
                 Title = vacancy.Title,
                 ClosingDate = vacancy.ClosingDate,

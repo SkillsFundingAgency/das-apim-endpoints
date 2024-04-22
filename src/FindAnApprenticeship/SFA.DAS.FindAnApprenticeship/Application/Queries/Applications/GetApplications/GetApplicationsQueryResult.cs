@@ -12,6 +12,7 @@ public class GetApplicationsQueryResult
     {
         public Guid Id { get; set; }
         public string Title { get; set; }
+        public string VacancyReference { get; set; }
         public string EmployerName { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime ClosingDate { get; set; }
