@@ -8,6 +8,8 @@
 	<PackageReference Include="MediatR" />
 	<PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
     <PackageReference Include="SFA.DAS.Common.Domain" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.60.3" />
+    <PackageReference Include="Azure.Identity" Version="1.11.0" />     
   </ItemGroup>
 
   <ItemGroup>
