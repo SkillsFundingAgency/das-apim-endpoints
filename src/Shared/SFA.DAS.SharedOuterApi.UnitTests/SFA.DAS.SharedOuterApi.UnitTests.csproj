@@ -21,8 +21,6 @@
         <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
         <PackageReference Include="System.ComponentModel.TypeConverter" />
         <PackageReference Include="SFA.DAS.Api.Common" />
-        <PackageReference Include="Microsoft.Identity.Client" Version="4.60.3" />
-        <PackageReference Include="Azure.Identity" Version="1.11.0" />        
     </ItemGroup>
 
     <ItemGroup>

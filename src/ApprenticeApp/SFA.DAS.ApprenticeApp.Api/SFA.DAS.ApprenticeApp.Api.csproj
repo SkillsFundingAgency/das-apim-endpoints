@@ -14,7 +14,10 @@
         <PackageReference Include="FluentValidation" />
         <PackageReference Include="MediatR" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" />
         <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
         <PackageReference Include="Microsoft.Extensions.Options" />
@@ -24,8 +27,6 @@
         <PackageReference Include="SFA.DAS.NLog.Targets.Redis" />
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
         <PackageReference Include="Swashbuckle.AspNetCore" />
-        <PackageReference Include="Microsoft.Identity.Client" Version="4.60.3" />
-        <PackageReference Include="Azure.Identity" Version="1.11.0" />     
     </ItemGroup>
     <ItemGroup>
         <Content Update="appsettings.development.json">
