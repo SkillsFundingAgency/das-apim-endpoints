@@ -6,7 +6,7 @@ using SFA.DAS.ProviderFeedback.Application.Queries.GetProviderFeedback;
 namespace SFA.DAS.ProviderFeedback.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]/")]
+    [Route("/providerFeedback/")]
     public class ProviderFeedbackController : ControllerBase
     {
         private readonly ILogger<ProviderFeedbackController> _logger;
