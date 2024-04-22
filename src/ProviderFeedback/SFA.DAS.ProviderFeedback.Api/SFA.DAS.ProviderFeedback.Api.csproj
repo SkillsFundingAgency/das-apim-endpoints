@@ -1,41 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<Nullable>enable</Nullable>
-		<ImplicitUsings>enable</ImplicitUsings>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
-		<PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" />
-		<PackageReference Include="NLog.Web.AspNetCore" />
-		<PackageReference Include="SFA.DAS.Api.Common" />
-		<PackageReference Include="SFA.DAS.NLog.Targets.Redis" />
-		<PackageReference Include="Swashbuckle.AspNetCore" />
-	</ItemGroup>
-	
-	<ItemGroup>
-		<Content Update="nlog.config">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<TransformOnBuild>true</TransformOnBuild>
-		</Content>
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+    <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" />
+    <PackageReference Include="NLog.Web.AspNetCore" />
+    <PackageReference Include="SFA.DAS.Api.Common" />
+    <PackageReference Include="SFA.DAS.NLog.Targets.Redis" />
+    <PackageReference Include="Swashbuckle.AspNetCore" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<None Include="nlog.Debug.config">
-			<IsTransformFile>true</IsTransformFile>
-			<DependentUpon>nlog.config</DependentUpon>
-		</None>
-		<None Include="nlog.Release.config">
-			<IsTransformFile>true</IsTransformFile>
-			<DependentUpon>nlog.config</DependentUpon>
-		</None>
-	</ItemGroup>
+  <ItemGroup>
+    <Content Update="nlog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <TransformOnBuild>true</TransformOnBuild>
+    </Content>
+  </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
-		<ProjectReference Include="..\SFA.DAS.ProviderFeedback\SFA.DAS.ProviderFeedback.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <None Include="nlog.Debug.config">
+      <IsTransformFile>true</IsTransformFile>
+      <DependentUpon>nlog.config</DependentUpon>
+    </None>
+    <None Include="nlog.Release.config">
+      <IsTransformFile>true</IsTransformFile>
+      <DependentUpon>nlog.config</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    <ProjectReference Include="..\SFA.DAS.ProviderFeedback\SFA.DAS.ProviderFeedback.csproj" />
+  </ItemGroup>
 
 </Project>
