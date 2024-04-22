@@ -28,7 +28,8 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
             var mockApiClient = new Mock<IEarlyConnectApiClient<EarlyConnectApiConfiguration>>();
             var mockNeApiClient = new Mock<ILepsNeApiClient<LepsNeApiConfiguration>>();
             var mockLaApiClient = new Mock<ILepsLaApiClient<LepsLaApiConfiguration>>();
-            var service = new SendStudentDataToLepsService(mockApiClient.Object, mockNeApiClient.Object, mockLaApiClient.Object);
+            var mockLoApiClient = new Mock<ILepsLoApiClient<LepsLoApiConfiguration>>();
+            var service = new SendStudentDataToLepsService(mockApiClient.Object, mockNeApiClient.Object, mockLaApiClient.Object, mockLoApiClient.Object);
 
             apiResponse.LepCode = LepsRegion.NorthEast;
             apiResponse.LepDateSent = null;
@@ -60,7 +61,8 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
             var mockApiClient = new Mock<IEarlyConnectApiClient<EarlyConnectApiConfiguration>>();
             var mockNeApiClient = new Mock<ILepsNeApiClient<LepsNeApiConfiguration>>();
             var mockLaApiClient = new Mock<ILepsLaApiClient<LepsLaApiConfiguration>>();
-            var service = new SendStudentDataToLepsService(mockApiClient.Object, mockNeApiClient.Object, mockLaApiClient.Object);
+            var mockLoApiClient = new Mock<ILepsLoApiClient<LepsLoApiConfiguration>>();
+            var service = new SendStudentDataToLepsService(mockApiClient.Object, mockNeApiClient.Object, mockLaApiClient.Object, mockLoApiClient.Object);
 
             apiResponse.LepCode = LepsRegion.Lancashire;
             apiResponse.LepDateSent = null;
@@ -83,6 +85,38 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
             var result = await service.SendStudentDataToLa(surveyGuid);
 
             mockLaApiClient.Verify(x => x.PostWithResponseCode<SendStudentDataToLaLepsResponse>(It.IsAny<SendStudentDataToLaLepsRequest>(), false), Times.Once);
+            Assert.That(result, Is.Not.Null);
+        }
+        public async Task SendStudentDataToLeps_WhenLondonRegionAndLepDateSentIsNull_CallsLaApiClient(GetStudentTriageDataBySurveyIdResponse apiResponse)
+        {
+            var surveyGuid = Guid.NewGuid();
+            var mockApiClient = new Mock<IEarlyConnectApiClient<EarlyConnectApiConfiguration>>();
+            var mockNeApiClient = new Mock<ILepsNeApiClient<LepsNeApiConfiguration>>();
+            var mockLaApiClient = new Mock<ILepsLaApiClient<LepsLaApiConfiguration>>();
+            var mockLoApiClient = new Mock<ILepsLoApiClient<LepsLoApiConfiguration>>();
+            var service = new SendStudentDataToLepsService(mockApiClient.Object, mockNeApiClient.Object, mockLaApiClient.Object, mockLoApiClient.Object);
+
+            apiResponse.LepCode = LepsRegion.London;
+            apiResponse.LepDateSent = null;
+
+            foreach (var surveyQuestion in apiResponse.SurveyQuestions)
+            {
+                surveyQuestion.QuestionTypeId = 1;
+            }
+
+            var SendStudentDataToLoLepsexpectedResponse = new Mock<SendStudentDataToLoLepsResponse>();
+
+            var SendStudentDataToLoLepsResponse = new ApiResponse<SendStudentDataToLoLepsResponse>(SendStudentDataToLoLepsexpectedResponse.Object, HttpStatusCode.OK, string.Empty);
+
+            mockApiClient.Setup(x => x.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(It.IsAny<GetStudentTriageDataBySurveyIdRequest>())).ReturnsAsync(new ApiResponse<GetStudentTriageDataBySurveyIdResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
+
+            var sendStudentDataResponse = new SendStudentDataToNeLepsResponse();
+            mockNeApiClient.Setup(x => x.PostWithResponseCode<SendStudentDataToLoLepsResponse>(It.IsAny<SendStudentDataToNeLepsRequest>(), false))
+                .ReturnsAsync(SendStudentDataToLoLepsResponse);
+
+            var result = await service.SendStudentDataToLo(surveyGuid);
+
+            mockLoApiClient.Verify(x => x.PostWithResponseCode<SendStudentDataToLoLepsResponse>(It.IsAny<SendStudentDataToLoLepsRequest>(), false), Times.Once);
             Assert.That(result, Is.Not.Null);
         }
     }
