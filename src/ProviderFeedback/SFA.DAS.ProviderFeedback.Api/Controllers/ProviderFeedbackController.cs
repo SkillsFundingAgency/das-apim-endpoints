@@ -21,14 +21,14 @@ namespace SFA.DAS.ProviderFeedback.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/provider/{providerId}")]
-        public async Task<IActionResult> GetProviderFeedback(int providerId)
+        [Route("{ukprn}")]
+        public async Task<IActionResult> GetProviderFeedback(int ukprn)
         {
             try
             {
                 var result = await _mediator.Send(new GetProviderFeedbackQuery
                 {
-                    ProviderId = providerId,
+                    ProviderId = ukprn,
                 });
 
                 if (result.ProviderStandard == null)
@@ -45,7 +45,7 @@ namespace SFA.DAS.ProviderFeedback.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get provider feedback {providerId}");
+                _logger.LogError(e, $"Error attempting to get provider feedback for {ukprn}");
                 return BadRequest();
             }
         }
