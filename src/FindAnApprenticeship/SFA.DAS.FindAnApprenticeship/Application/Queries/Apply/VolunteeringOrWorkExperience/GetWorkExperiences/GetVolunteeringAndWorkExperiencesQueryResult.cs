@@ -19,7 +19,7 @@ public record GetVolunteeringAndWorkExperiencesQueryResult
         public Guid ApplicationId { get; set; }
         public string Description { get; set; }
 
-        public static implicit operator VolunteeringAndWorkExperience(GetWorkHistoriesApiResponse.WorkHistoryItem source)
+        public static implicit operator VolunteeringAndWorkExperience(GetWorkHistoryItemApiResponse source)
         {
             return new VolunteeringAndWorkExperience
             {

@@ -64,7 +64,7 @@ public record GetApplicationQueryResult
             public string CourseName { get; set; }
             public int YearAchieved { get; set; }
 
-            public static implicit operator TrainingCourse(GetTrainingCoursesApiResponse.TrainingCourseItem source)
+            public static implicit operator TrainingCourse(GetTrainingCourseApiResponse source)
             {
                 return new TrainingCourse
                 {
@@ -91,7 +91,7 @@ public record GetApplicationQueryResult
             public DateTime? EndDate { get; set; }
             public string Description { get; set; }
 
-            public static implicit operator Job(GetWorkHistoriesApiResponse.WorkHistoryItem source)
+            public static implicit operator Job(GetWorkHistoryItemApiResponse source)
             {
                 return new Job
                 {
@@ -113,7 +113,7 @@ public record GetApplicationQueryResult
             public DateTime? EndDate { get; set; }
             public string Description { get; set; }
 
-            public static implicit operator VolunteeringAndWorkExperience(GetWorkHistoriesApiResponse.WorkHistoryItem source)
+            public static implicit operator VolunteeringAndWorkExperience(GetWorkHistoryItemApiResponse source)
             {
                 return new VolunteeringAndWorkExperience
                 {
