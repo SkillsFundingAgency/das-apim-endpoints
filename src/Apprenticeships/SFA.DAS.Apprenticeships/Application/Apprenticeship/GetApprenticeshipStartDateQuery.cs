@@ -47,7 +47,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 
 		if (apprenticeStartDateInnerModel == null)
 		{
-			_logger.LogWarning($"No ApprenticeshipStartDate returned from innerApi for apprenticeshipKey:{request.ApprenticeshipKey}");
+			_logger.LogWarning("No ApprenticeshipStartDate returned from innerApi for apprenticeshipKey:{key}", request.ApprenticeshipKey);
 			return null; 
 		}
 
@@ -59,7 +59,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 
 		var apprenticeshipStartDateOuterModel = new ApprenticeshipStartDateResponse
 		{
-			ApprenticeshipKey = apprenticeStartDateInnerModel!.ApprenticeshipKey,
+			ApprenticeshipKey = apprenticeStartDateInnerModel.ApprenticeshipKey,
 			ActualStartDate = apprenticeStartDateInnerModel.ActualStartDate,
 			PlannedEndDate = apprenticeStartDateInnerModel.PlannedEndDate,
 			EmployerName = employerName,
@@ -72,13 +72,13 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 
         if (apprenticeshipStartDateOuterModel.Standard.CourseCode == null)
         {
-            _logger.LogWarning($"No course/standard data available for apprenticeshipKey:{request.ApprenticeshipKey}");
+            _logger.LogWarning("No course/standard data available for apprenticeshipKey:{key}", request.ApprenticeshipKey);
             return null;
         }
 
         if (apprenticeshipStartDateOuterModel.Standard.StandardVersion == null)
         {
-            _logger.LogWarning($"No standard version data available for apprenticeshipKey:{request.ApprenticeshipKey}");
+            _logger.LogWarning("No standard version data available for apprenticeshipKey:{key}", request.ApprenticeshipKey);
             return null;
         }
 
@@ -89,7 +89,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 	{
 		if (!apprenticeStartDateInnerModel.AccountLegalEntityId.HasValue)
 		{
-			_logger.LogError($"No AccountLegalEntityId returned from innerApi for apprenticeshipKey:{apprenticeStartDateInnerModel.ApprenticeshipKey}");
+			_logger.LogError("No AccountLegalEntityId returned from innerApi for apprenticeshipKey:{key}", apprenticeStartDateInnerModel.ApprenticeshipKey);
 			return null;
 		}
 
@@ -97,7 +97,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 		
 		if(employer == null)
 		{
-			_logger.LogError($"No AccountLegalEntity returned from innerApi for apprenticeshipKey:{apprenticeStartDateInnerModel.ApprenticeshipKey}");
+			_logger.LogError("No AccountLegalEntity returned from innerApi for apprenticeshipKey:{key}", apprenticeStartDateInnerModel.ApprenticeshipKey);
 			return null;
 		}
 
@@ -108,7 +108,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 	{
 		if (apprenticeStartDateInnerModel.UKPRN < 1)
 		{
-			_logger.LogError($"Invalid UKPRN '{apprenticeStartDateInnerModel.UKPRN}' returned from innerApi for apprenticeshipKey:{apprenticeStartDateInnerModel.ApprenticeshipKey}");
+			_logger.LogError("Invalid UKPRN '{UKPRN}' returned from innerApi for apprenticeshipKey:{key}", apprenticeStartDateInnerModel.UKPRN, apprenticeStartDateInnerModel.ApprenticeshipKey);
 			return null;
 		}
 
@@ -116,7 +116,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 
 		if (provider == null)
 		{
-			_logger.LogError($"No provider returned from CommitmentsClient for UKPRN:{apprenticeStartDateInnerModel.UKPRN}");
+			_logger.LogError("No provider returned from CommitmentsClient for UKPRN:{UKPRN}", apprenticeStartDateInnerModel.UKPRN);
 			return null;
 		}
 
