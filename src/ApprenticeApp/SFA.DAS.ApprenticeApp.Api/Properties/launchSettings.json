@@ -18,7 +18,7 @@
     "SFA.DAS.ApprenticeApp.Api": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:5123;http://localhost:5124",
+      "applicationUrl": "http://localhost:42970",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

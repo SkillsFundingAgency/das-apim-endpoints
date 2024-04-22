@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using SFA.DAS.ApprenticeApp.MockApis;
 using WireMock.Logging;
@@ -7,6 +8,7 @@ using WireMock.Server;
 
 namespace SFA.DAS.ApprenticeApp.MockApis
 {
+    [ExcludeFromCodeCoverage]
     public abstract class ApiMock : IDisposable, IResettable
     {
         private bool _disposed = false;

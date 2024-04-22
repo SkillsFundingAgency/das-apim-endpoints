@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using SFA.DAS.ApprenticeApp.MockApis.Helpers;
@@ -9,6 +10,7 @@ using WireMock.ResponseBuilders;
 
 namespace SFA.DAS.ApprenticeApp.MockApis
 {
+    [ExcludeFromCodeCoverage]
     public class ApprenticeCommitmentsInnerApiMock : ApiMock
     {
         private readonly GetApprenticeApprenticeshipsResult _existingApprenticeships;
