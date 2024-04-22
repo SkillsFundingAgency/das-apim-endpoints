@@ -1,6 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
@@ -60,10 +59,18 @@ public static class AddServiceCollectionExtensions
                 failureStatus: HealthStatus.Unhealthy,
                 tags: new[] { Ready });
 
-        // NOTE: The employer profiles inner api does not seem to work to provide a standard health check when running locally
-        // However there is evidence this is working when deployed (the outer api for EmployerRequestApprenticeTraining has it)
+        return services;
+    }
 
-        // TODO add a healthcheck for ProviderRelationships.  Do we add this to shared?
+    public static IServiceCollection AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddOptions();
+        services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection(nameof(EmployerProfilesApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>()!.Value);
+        services.Configure<ProviderRelationshipsApiConfiguration>(configuration.GetSection(nameof(ProviderRelationshipsApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderRelationshipsApiConfiguration>>()!.Value);
+        services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>()!.Value);
         return services;
     }
 }
