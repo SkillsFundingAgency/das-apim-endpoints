@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
 {
@@ -22,6 +23,10 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
         public string WhatIsYourInterest { get; set; }
         public bool? ApplyUnderDisabilityConfidentScheme { get; set; }
         public string ApplicationAllSectionStatus { get; set; }
+        public List<GetTrainingCourseApiResponse> TrainingCourses { get; set; } = [];
+        public List<Qualification> Qualifications { get; set; } = [];
+        public List<GetWorkHistoryItemApiResponse> WorkHistory { get; set; } = [];
+        public AboutYouItem AboutYou { get; set; }
     }
 
     public class Question
