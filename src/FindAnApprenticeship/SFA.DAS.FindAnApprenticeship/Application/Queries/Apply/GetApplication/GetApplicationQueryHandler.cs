@@ -22,7 +22,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
         GetApplicationQuery request,
             CancellationToken cancellationToken)
         {
-            var application = await candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId));
+            var application = await candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true));
             if (application == null) return null;
 
             var vacancy = await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference));
@@ -38,32 +38,17 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                 candidateApiClient.Get<GetAddressApiResponse>(
                     new GetCandidateAddressApiRequest(request.CandidateId));
 
-            var trainingCoursesTask = candidateApiClient.Get<GetTrainingCoursesApiResponse>(
-                new GetTrainingCoursesApiRequest(request.ApplicationId, request.CandidateId));
-
-            var workHistoriesJobTask = candidateApiClient.Get<GetWorkHistoriesApiResponse>(
-                new GetWorkHistoriesApiRequest(request.ApplicationId, request.CandidateId, WorkHistoryType.Job));
-
-            var workHistoriesVolunteeringTask = candidateApiClient.Get<GetWorkHistoriesApiResponse>(
-                new GetWorkHistoriesApiRequest(request.ApplicationId, request.CandidateId, WorkHistoryType.WorkExperience));
-
-            var otherDetailsTask = candidateApiClient.Get<GetAboutYouItemApiResponse>(
-                new GetAboutYouItemApiRequest(request.ApplicationId, request.CandidateId));
-
             await Task.WhenAll(
                 candidateTask,
-                addressTask,
-                trainingCoursesTask,
-                workHistoriesJobTask,
-                workHistoriesVolunteeringTask,
-                otherDetailsTask);
+                addressTask
+                );
 
             var candidate = candidateTask.Result;
             var address = addressTask.Result;
-            var trainingCourses = trainingCoursesTask.Result;
-            var jobs = workHistoriesJobTask.Result;
-            var volunteeringExperiences = workHistoriesVolunteeringTask.Result;
-            var otherDetails = otherDetailsTask.Result;
+            var trainingCourses = application.TrainingCourses;
+            var jobs = application.WorkHistory.Where(c=>c.WorkHistoryType == WorkHistoryType.Job);
+            var volunteeringExperiences = application.WorkHistory.Where(c=>c.WorkHistoryType == WorkHistoryType.WorkExperience);
+            var otherDetails = application.AboutYou;
 
             GetApplicationQueryResult.ApplicationQuestionsSection.Question additionalQuestion1 = null;
             GetApplicationQueryResult.ApplicationQuestionsSection.Question additionalQuestion2 = null;
@@ -109,14 +94,14 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                 {
                     QualificationsStatus = application.QualificationsStatus,
                     TrainingCoursesStatus = application.TrainingCoursesStatus,
-                    TrainingCourses = trainingCourses.TrainingCourses.Select(x => (GetApplicationQueryResult.EducationHistorySection.TrainingCourse)x).ToList()
+                    TrainingCourses = trainingCourses.Select(x => (GetApplicationQueryResult.EducationHistorySection.TrainingCourse)x).ToList()
                 },
                 WorkHistory = new GetApplicationQueryResult.WorkHistorySection
                 {
                     JobsStatus = application.JobsStatus,
                     VolunteeringAndWorkExperienceStatus = application.WorkExperienceStatus,
-                    Jobs = jobs.WorkHistories.Select(x => (GetApplicationQueryResult.WorkHistorySection.Job)x).ToList(),
-                    VolunteeringAndWorkExperiences = volunteeringExperiences.WorkHistories.Select(x => (GetApplicationQueryResult.WorkHistorySection.VolunteeringAndWorkExperience)x).ToList()
+                    Jobs = jobs.Select(x => (GetApplicationQueryResult.WorkHistorySection.Job)x).ToList(),
+                    VolunteeringAndWorkExperiences = volunteeringExperiences.Select(x => (GetApplicationQueryResult.WorkHistorySection.VolunteeringAndWorkExperience)x).ToList()
                 },
                 ApplicationQuestions = new GetApplicationQueryResult.ApplicationQuestionsSection
                 {
@@ -128,7 +113,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                 InterviewAdjustments = new GetApplicationQueryResult.InterviewAdjustmentsSection
                 {
                     RequestAdjustmentsStatus = application.InterviewAdjustmentsStatus,
-                    InterviewAdjustmentsDescription = otherDetails.AboutYou?.Support,
+                    InterviewAdjustmentsDescription = otherDetails?.Support,
                 },
                 DisabilityConfidence = new GetApplicationQueryResult.DisabilityConfidenceSection
                 {
@@ -148,10 +133,10 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                 },
                 AboutYou = new GetApplicationQueryResult.AboutYouSection
                 {
-                    HobbiesAndInterests = otherDetails.AboutYou?.HobbiesAndInterests,
-                    Improvements = otherDetails.AboutYou?.Improvements,
-                    SkillsAndStrengths = otherDetails.AboutYou?.SkillsAndStrengths,
-                    Support = otherDetails.AboutYou?.Support
+                    HobbiesAndInterests = otherDetails?.HobbiesAndInterests,
+                    Improvements = otherDetails?.Improvements,
+                    SkillsAndStrengths = otherDetails?.SkillsAndStrengths,
+                    Support = otherDetails?.Support
                 },
                 WhatIsYourInterest = new GetApplicationQueryResult.WhatIsYourInterestSection
                 {

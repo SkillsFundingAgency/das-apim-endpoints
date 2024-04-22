@@ -24,10 +24,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             GetApplicationApiResponse applicationApiResponse,
             GetCandidateApiResponse candidateApiResponse,
             GetAddressApiResponse addressApiResponse,
-            GetTrainingCoursesApiResponse trainingCoursesApiResponse,
-            GetWorkHistoriesApiResponse jobWorkHistoriesApiResponse,
-            GetWorkHistoriesApiResponse volunteeringWorkHistoriesApiResponse,
-            GetAboutYouItemApiResponse aboutYouItemApiResponse,
             GetAdditionalQuestionApiResponse additionalQuestion1ApiResponse,
             GetAdditionalQuestionApiResponse additionalQuestion2ApiResponse,
             GetApprenticeshipVacancyItemResponse apprenticeshipVacancyItemApiResponse,
@@ -35,7 +31,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
             GetApplicationQueryHandler handler)
         {
-            var expectedGetApplicationApiRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+            var expectedGetApplicationApiRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, true);
             applicationApiResponse.ApplicationAllSectionStatus = "completed";
             candidateApiClient
                 .Setup(client => client.Get<GetApplicationApiResponse>(
@@ -59,30 +55,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
                 .Setup(client => client.Get<GetAddressApiResponse>(
                     It.Is<GetCandidateAddressApiRequest>(r => r.GetUrl == expectedGetAddressRequest.GetUrl)))
                 .ReturnsAsync(addressApiResponse);
-
-            var expectedGetTrainingCoursesApiRequest = new GetTrainingCoursesApiRequest(query.ApplicationId, query.CandidateId);
-            candidateApiClient
-                .Setup(client => client.Get<GetTrainingCoursesApiResponse>(
-                    It.Is<GetTrainingCoursesApiRequest>(r => r.GetUrl == expectedGetTrainingCoursesApiRequest.GetUrl)))
-                .ReturnsAsync(trainingCoursesApiResponse);
-
-            var expectedGetWorkHistoriesApiRequest = new GetWorkHistoriesApiRequest(query.ApplicationId, query.CandidateId, WorkHistoryType.Job);
-            candidateApiClient
-                .Setup(client => client.Get<GetWorkHistoriesApiResponse>(
-                    It.Is<GetWorkHistoriesApiRequest>(r => r.GetUrl == expectedGetWorkHistoriesApiRequest.GetUrl)))
-                .ReturnsAsync(jobWorkHistoriesApiResponse);
-
-            var expectedGetVolunteeringWorkHistoriesApiRequest = new GetWorkHistoriesApiRequest(query.ApplicationId, query.CandidateId, WorkHistoryType.WorkExperience);
-            candidateApiClient
-                .Setup(client => client.Get<GetWorkHistoriesApiResponse>(
-                    It.Is<GetWorkHistoriesApiRequest>(r => r.GetUrl == expectedGetVolunteeringWorkHistoriesApiRequest.GetUrl)))
-                .ReturnsAsync(volunteeringWorkHistoriesApiResponse);
-
-            var expectedGetAboutYouItemApiRequest = new GetAboutYouItemApiRequest(query.ApplicationId, query.CandidateId);
-            candidateApiClient
-                .Setup(client => client.Get<GetAboutYouItemApiResponse>(
-                    It.Is<GetAboutYouItemApiRequest>(r => r.GetUrl == expectedGetAboutYouItemApiRequest.GetUrl)))
-                .ReturnsAsync(aboutYouItemApiResponse);
 
             var expectedGetAdditionalQuestion1ApiRequest = new GetAdditionalQuestionApiRequest(query.ApplicationId, query.CandidateId, applicationApiResponse.AdditionalQuestions[0].Id);
             candidateApiClient
