@@ -37,7 +37,11 @@ public class MembersController : ControllerBase
         [FromBody] UpdateMemberProfileModel request,
         CancellationToken cancellationToken)
     {
-        if (request.patchMemberRequest.RegionId > 0 || !string.IsNullOrEmpty(request.patchMemberRequest.OrganisationName))
+        if (request.patchMemberRequest.RegionId > 0 || 
+            !string.IsNullOrEmpty(request.patchMemberRequest.OrganisationName) || 
+            !string.IsNullOrWhiteSpace(request.patchMemberRequest.FirstName) || 
+            !string.IsNullOrWhiteSpace(request.patchMemberRequest.LastName)
+        )
         {
             PatchMemberRequest patchMemberRequest = request.patchMemberRequest;
             JsonPatchDocument<PatchMemberRequest> jsonPatchDocument = new JsonPatchDocument<PatchMemberRequest>();
@@ -48,6 +52,14 @@ public class MembersController : ControllerBase
             if (!string.IsNullOrEmpty(patchMemberRequest.OrganisationName))
             {
                 jsonPatchDocument.Replace(x => x.OrganisationName, patchMemberRequest.OrganisationName);
+            }
+            if(!string.IsNullOrWhiteSpace(patchMemberRequest.FirstName))
+            {
+                jsonPatchDocument.Replace(x => x.FirstName, patchMemberRequest.FirstName);
+            }
+            if (!string.IsNullOrWhiteSpace(patchMemberRequest.LastName))
+            {
+                jsonPatchDocument.Replace(x => x.LastName, patchMemberRequest.LastName);
             }
             jsonPatchDocument.ApplyTo(patchMemberRequest);
             await _apiClient.PatchMember(memberId, memberId, jsonPatchDocument, cancellationToken);

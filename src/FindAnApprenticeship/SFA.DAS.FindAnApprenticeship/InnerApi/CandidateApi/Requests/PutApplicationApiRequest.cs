@@ -23,6 +23,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
             public IEnumerable<string> AdditionalQuestions { get; set; }
             public short IsAdditionalQuestion1Complete { get; set; }
             public short IsAdditionalQuestion2Complete { get; set; }
+            public short IsDisabilityConfidenceComplete { get; set; }
             
         }
     }

@@ -60,7 +60,7 @@ public class GetAddQualificationQueryHandler(ICandidateApiClient<CandidateApiCon
                 new GetAddQualificationQueryResult.CourseResponse
                 {
                     Id = standard.StandardUId, 
-                    Title = standard.Title, 
+                    Title = standard.Title + $" (level {standard.Level})", 
                     IsStandard = true
                 }));
 
@@ -74,7 +74,7 @@ public class GetAddQualificationQueryHandler(ICandidateApiClient<CandidateApiCon
                 new GetAddQualificationQueryResult.CourseResponse
                 {
                     Id = framework.Id, 
-                    Title = framework.Title, 
+                    Title = framework.Title + $" (level {framework.Level})", 
                     IsStandard = false
                 }));
 
