@@ -4,7 +4,7 @@ using SFA.DAS.ApprenticeApp.Models;
 
 namespace SFA.DAS.ApprenticeApp.MockApis.Helpers
 {
-    [ExcludeFromCodeCoverageAttribute]
+    [ExcludeFromCodeCoverage]
     public static class ApprenticeExtensions
     {
         public static string ApprenticeUrlId(this Apprentice apprentice)

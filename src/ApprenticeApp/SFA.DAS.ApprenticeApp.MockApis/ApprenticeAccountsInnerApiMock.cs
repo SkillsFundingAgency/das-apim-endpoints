@@ -8,7 +8,7 @@ using WireMock.ResponseBuilders;
 
 namespace SFA.DAS.ApprenticeApp.MockApis
 {
-    [ExcludeFromCodeCoverageAttribute]
+    [ExcludeFromCodeCoverage]
     public class ApprenticeAccountsInnerApiMock : ApiMock
     {
         public Apprentice AnyApprentice { get; }

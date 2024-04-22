@@ -8,7 +8,7 @@ using WireMock.Server;
 
 namespace SFA.DAS.ApprenticeApp.MockApis
 {
-    [ExcludeFromCodeCoverageAttribute]
+    [ExcludeFromCodeCoverage]
     public abstract class ApiMock : IDisposable, IResettable
     {
         private bool _disposed = false;
