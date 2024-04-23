@@ -13,6 +13,6 @@ namespace SFA.DAS.EarlyConnect.ExternalApi.Requests
             Data = studentTriageData;
             SurveyGuid = surveyGuid;
         }
-        public string PostUrl => "workflows/1ef91ec83e22419a866a49674e74f4ab/triggers/manual/paths/invoke";
+        public string PostUrl => "triggers/manual/paths/invoke";
     }
 }
