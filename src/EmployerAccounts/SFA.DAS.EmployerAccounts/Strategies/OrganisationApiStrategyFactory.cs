@@ -16,13 +16,14 @@ namespace SFA.DAS.EmployerAccounts.Strategies
         private readonly Dictionary<OrganisationType, Func<IOrganisationApiStrategy>> _strategyFactories;
 
         public OrganisationApiStrategyFactory(IReferenceDataApiClient<ReferenceDataApiConfiguration> refDataApi,
-        IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration> eduOrgApi)
+        IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration> eduOrgApi,
+        IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration> psOrgApi)
         {
             _strategyFactories = new Dictionary<OrganisationType, Func<IOrganisationApiStrategy>>
             {
                 { OrganisationType.Company, () => new ReferenceDataApiStrategy(refDataApi) },
                 { OrganisationType.Charity, () => new ReferenceDataApiStrategy(refDataApi) },
-                { OrganisationType.PublicSector, () => new ReferenceDataApiStrategy(refDataApi) },
+                { OrganisationType.PublicSector, () => new PublicSectorOrganisationApiStrategy(psOrgApi) },
                 { OrganisationType.EducationOrganisation, () => new EducationOrganisationApiStrategy(eduOrgApi) }
             };
         }
