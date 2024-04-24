@@ -1,17 +1,20 @@
-﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 
-public class GetApplicationsQueryHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient, IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient) : IRequestHandler<GetApplicationsQuery, GetApplicationsQueryResult>
+public class GetApplicationsQueryHandler(
+    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
+    IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient)
+    : IRequestHandler<GetApplicationsQuery, GetApplicationsQueryResult>
 {
     public async Task<GetApplicationsQueryResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
     {
@@ -43,7 +46,9 @@ public class GetApplicationsQueryHandler(ICandidateApiClient<CandidateApiConfigu
                 EmployerName = vacancy.EmployerName,
                 Title = vacancy.Title,
                 ClosingDate = vacancy.ClosingDate,
-                CreatedDate = application.CreatedDate
+                CreatedDate = application.CreatedDate,
+                Status = request.Status,
+                SubmittedDate = application.SubmittedDate
             });
         }
 

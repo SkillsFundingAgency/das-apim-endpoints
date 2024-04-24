@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.FindAnApprenticeship.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 
@@ -15,6 +16,8 @@ public class GetApplicationsQueryResult
         public string VacancyReference { get; set; }
         public string EmployerName { get; set; }
         public DateTime CreatedDate { get; set; }
+        public DateTime? SubmittedDate { get; set; }
         public DateTime ClosingDate { get; set; }
+        public ApplicationStatus Status { get; set; }
     }
 }
