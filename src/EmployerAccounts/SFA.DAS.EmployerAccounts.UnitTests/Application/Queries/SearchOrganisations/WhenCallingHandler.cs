@@ -67,4 +67,42 @@ public class WhenCallingHandler
         result.Organisations.Count(o => o.Type == OrganisationType.EducationOrganisation).Should().Be(totalEducationResultsExpected);
         result.Organisations.Count(o => o.Type == OrganisationType.PublicSector).Should().Be(totalPublicSectorResultsExpected);
     }
+
+    [Test, MoqAutoData]
+    public async Task Then_should_return_top_2(
+    [Frozen] Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>> mockEduOrgApiClient,
+    [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockPSOrgApiClient,
+    [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockRefApiClient,
+    GetSearchOrganisationsResponse refApiOrgs,
+    EducationalOrganisationResponse eduOrgApiResponse,
+    PublicSectorOrganisationsResponse psOrgApiResponse,
+    SearchOrganisationsQueryHandler handler)
+    {
+        var query = new SearchOrganisationsQuery
+        {
+            SearchTerm = "XXX",
+            MaximumResults = 2
+        };
+
+        mockEduOrgApiClient
+            .Setup(client => client.Get<EducationalOrganisationResponse>(
+                It.Is<SearchEducationalOrganisationsRequest>(p =>
+                    p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
+            .ReturnsAsync(eduOrgApiResponse);
+
+        mockPSOrgApiClient
+            .Setup(client =>
+                client.Get<PublicSectorOrganisationsResponse>(
+                    It.Is<SearchPublicSectorOrganisationsRequest>(p => p.SearchTerm == query.SearchTerm)))
+            .ReturnsAsync(psOrgApiResponse);
+
+        mockRefApiClient
+            .Setup(client => client.Get<GetSearchOrganisationsResponse>(It.Is<GetSearchOrganisationsRequest>(p =>
+                p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
+            .ReturnsAsync(refApiOrgs);
+
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        result.Organisations.Count.Should().Be(query.MaximumResults);
+    }
 }
