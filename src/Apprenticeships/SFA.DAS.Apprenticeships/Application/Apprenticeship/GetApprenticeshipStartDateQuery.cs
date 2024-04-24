@@ -73,13 +73,11 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
         if (apprenticeshipStartDateOuterModel.Standard.CourseCode == null)
         {
             _logger.LogWarning("No course/standard data available for apprenticeshipKey:{key}", request.ApprenticeshipKey);
-            return null;
         }
 
         if (apprenticeshipStartDateOuterModel.Standard.StandardVersion == null)
         {
             _logger.LogWarning("No standard version data available for apprenticeshipKey:{key}", request.ApprenticeshipKey);
-            return null;
         }
 
         return apprenticeshipStartDateOuterModel;
