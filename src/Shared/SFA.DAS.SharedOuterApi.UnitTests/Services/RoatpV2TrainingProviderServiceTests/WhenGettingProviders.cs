@@ -10,25 +10,26 @@ using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Services.RoatpV2TrainingProviderServiceTests;
 
-public class WhenGettingProviderSummary
+public class WhenGettingProviders
 {
     [Test, MoqAutoData]
-    public async Task Then_If_Response_Is_Successful_Then_Provider_Returned(
+    public async Task Then_If_Response_Is_Successful_Then_Providers_Returned(
         int ukprn,
-        GetProviderSummaryResponse apiResponse,
+        GetProvidersResponse apiResponse,
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClient,
         RoatpV2TrainingProviderService service)
     {
         apiClient.Setup(x =>
-                x.GetWithResponseCode<GetProviderSummaryResponse>(
-                    It.Is<GetRoatpProviderRequest>(c => c.GetUrl.Contains(ukprn.ToString()))))
-            .ReturnsAsync(new ApiResponse<GetProviderSummaryResponse>(apiResponse, HttpStatusCode.OK, ""));
+                x.GetWithResponseCode<GetProvidersResponse>(
+                    It.IsAny<GetRoatpProvidersRequest>()))
+            .ReturnsAsync(new ApiResponse<GetProvidersResponse>(apiResponse, HttpStatusCode.OK, ""));
 
-        var actual = await service.GetProviderSummary(ukprn);
+        var actual = await service.GetProviders(new CancellationToken());
 
         actual.Should().BeEquivalentTo(apiResponse);
     }
@@ -40,12 +41,11 @@ public class WhenGettingProviderSummary
         RoatpV2TrainingProviderService service)
     {
         apiClient.Setup(x =>
-                x.GetWithResponseCode<GetProviderSummaryResponse>(
-                    It.Is<GetRoatpProviderRequest>(c => c.GetUrl.Contains(ukprn.ToString()))))
-            .ReturnsAsync(new ApiResponse<GetProviderSummaryResponse>(null, HttpStatusCode.NotFound, "Error"));
+                x.GetWithResponseCode<GetProvidersResponse>(
+                    It.IsAny<GetRoatpProvidersRequest>()))
+            .ReturnsAsync(new ApiResponse<GetProvidersResponse>(null, HttpStatusCode.NotFound, "Error"));
 
-        var actual = await service.GetProviderSummary(ukprn);
-
+        var actual = await service.GetProviders(new CancellationToken());
         actual.Should().BeNull();
     }
 }

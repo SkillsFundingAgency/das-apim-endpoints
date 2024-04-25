@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.EmployerPR.Api\SFA.DAS.EmployerPR.Api.csproj" />
+  </ItemGroup>
+
 </Project>
