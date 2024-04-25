@@ -32,7 +32,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Vacancies
             var expectedPutRequest = new PutApplicationApiRequest(query.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase), expectedPutData);
 
             var expectedGetRequest = new GetVacancyRequest(query.VacancyReference);
-
+            faaApiResponse.IsDisabilityConfident = true;
             faaApiClient
                 .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(It.Is<GetVacancyRequest>(r => r.GetUrl == expectedGetRequest.GetUrl)))
                 .ReturnsAsync(faaApiResponse);
@@ -43,6 +43,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Vacancies
                         r.PutUrl == expectedPutRequest.PutUrl
                         && ((PutApplicationApiRequest.PutApplicationApiRequestData)r.Data).IsAdditionalQuestion1Complete == 0
                         && ((PutApplicationApiRequest.PutApplicationApiRequestData)r.Data).IsAdditionalQuestion2Complete == 0
+                        && ((PutApplicationApiRequest.PutApplicationApiRequestData)r.Data).IsDisabilityConfidenceComplete == 0
                         )))
                 .ReturnsAsync(new ApiResponse<PutApplicationApiResponse>(candidateApiResponse, HttpStatusCode.OK, string.Empty));
 
@@ -66,6 +67,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Vacancies
 
             var expectedGetRequest = new GetVacancyRequest(query.VacancyReference);
 
+            faaApiResponse.IsDisabilityConfident = false;
             faaApiResponse.AdditionalQuestion1 = null;
             faaApiResponse.AdditionalQuestion2 = string.Empty;
             faaApiClient
@@ -79,6 +81,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Vacancies
                         r.PutUrl == expectedPutRequest.PutUrl
                         && ((PutApplicationApiRequest.PutApplicationApiRequestData)r.Data).IsAdditionalQuestion1Complete == 4
                         && ((PutApplicationApiRequest.PutApplicationApiRequestData)r.Data).IsAdditionalQuestion2Complete == 4
+                        && ((PutApplicationApiRequest.PutApplicationApiRequestData)r.Data).IsDisabilityConfidenceComplete == 4
                         )))
                 .ReturnsAsync(new ApiResponse<PutApplicationApiResponse>(candidateApiResponse, HttpStatusCode.OK, string.Empty));
 

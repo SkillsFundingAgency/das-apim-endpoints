@@ -33,7 +33,8 @@ public class ApplyCommandHandler(
             CandidateId = request.CandidateId,
             AdditionalQuestions = additionalQuestions,
             IsAdditionalQuestion1Complete = string.IsNullOrEmpty(result.AdditionalQuestion1) ? (short)4 : (short)0,
-            IsAdditionalQuestion2Complete = string.IsNullOrEmpty(result.AdditionalQuestion2) ? (short)4 : (short)0
+            IsAdditionalQuestion2Complete = string.IsNullOrEmpty(result.AdditionalQuestion2) ? (short)4 : (short)0,
+            IsDisabilityConfidenceComplete = result.IsDisabilityConfident ? (short)0 :(short)4
         };
         var putData = putApplicationApiRequestData;
         var vacancyReference =
