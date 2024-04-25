@@ -18,6 +18,7 @@ public class WhenMappingFromCommandResponseToExpectedSkillsAndStrengthsApiRespon
             actual.ApplicationId.Should().Be(source.ApplicationId);
             actual.Employer.Should().Be(source.Employer);
             actual.ExpectedSkillsAndStrengths.Should().BeEquivalentTo(source.ExpectedSkillsAndStrengths);
+            actual.IsSectionCompleted.Should().Be(source.IsSectionCompleted);
         }
     }
 }
