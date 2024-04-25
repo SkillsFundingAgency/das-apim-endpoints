@@ -33,6 +33,6 @@ public class WhenHandlingGetPhoneNumberQuery
 
         result.PhoneNumber.Should().Be(apiResponse.PhoneNumber);
         result.IsAddressFromLookup.Should().Be(!string.IsNullOrEmpty(apiResponse2.Uprn));
-        result.PostCode.Should().Be(apiResponse2.Postcode);
+        result.Postcode.Should().Be(apiResponse2.Postcode);
     }
 }
