@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.VacanciesManage.Configuration;
-using SFA.DAS.VacanciesManage.Interfaces;
 
-namespace SFA.DAS.VacanciesManage.Services
-{
-    public class RecruitApiClient : IRecruitApiClient<RecruitApiConfiguration>
+namespace SFA.DAS.SharedOuterApi.Services;
+
+public class RecruitApiClient : IRecruitApiClient<RecruitApiConfiguration>
     {
         private readonly IInternalApiClient<RecruitApiConfiguration> _apiClient;
 
@@ -87,4 +86,3 @@ namespace SFA.DAS.VacanciesManage.Services
             throw new System.NotImplementedException();
         }
     }
-}
