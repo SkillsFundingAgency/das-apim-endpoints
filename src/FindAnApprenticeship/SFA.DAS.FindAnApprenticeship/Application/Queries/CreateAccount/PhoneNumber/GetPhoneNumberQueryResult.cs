@@ -4,4 +4,5 @@ public class GetPhoneNumberQueryResult
 {
     public string PhoneNumber { get; set; }
     public bool IsAddressFromLookup { get; set; }
+    public string PostCode { get; set; }
 }

@@ -21,7 +21,8 @@ public class GetPhoneNumberQueryHandler(ICandidateApiClient<CandidateApiConfigur
         return new GetPhoneNumberQueryResult
         {
             PhoneNumber = candidate.Result.PhoneNumber,
-            IsAddressFromLookup = !string.IsNullOrEmpty(address.Result.Uprn)
+            IsAddressFromLookup = !string.IsNullOrEmpty(address.Result.Uprn),
+            PostCode = address.Result.Postcode
         };
     }
 }
