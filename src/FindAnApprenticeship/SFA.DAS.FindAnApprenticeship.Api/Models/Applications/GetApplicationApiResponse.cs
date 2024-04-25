@@ -99,7 +99,7 @@ public record GetApplicationApiResponse
             {
                 QualificationsStatus = source.QualificationsStatus,
                 TrainingCoursesStatus = source.TrainingCoursesStatus,
-                TrainingCourses = source.TrainingCourses.Select(x => (GetApplicationApiResponse.EducationHistorySection.TrainingCourse)x).ToList()
+                TrainingCourses = source.TrainingCourses?.Select(x => (GetApplicationApiResponse.EducationHistorySection.TrainingCourse)x).ToList() ?? []
             };
         }
         
@@ -133,8 +133,8 @@ public record GetApplicationApiResponse
             {
                 JobsStatus = source.JobsStatus,
                 VolunteeringAndWorkExperienceStatus = source.VolunteeringAndWorkExperienceStatus,
-                Jobs = source.Jobs.Select(x => (GetApplicationApiResponse.WorkHistorySection.Job)x).ToList(),
-                VolunteeringAndWorkExperiences = source.VolunteeringAndWorkExperiences.Select(x => (GetApplicationApiResponse.WorkHistorySection.VolunteeringAndWorkExperience)x).ToList(),
+                Jobs = source.Jobs?.Select(x => (GetApplicationApiResponse.WorkHistorySection.Job)x).ToList() ?? [],
+                VolunteeringAndWorkExperiences = source.VolunteeringAndWorkExperiences?.Select(x => (GetApplicationApiResponse.WorkHistorySection.VolunteeringAndWorkExperience)x).ToList() ?? []
             };
         }
         public record Job
