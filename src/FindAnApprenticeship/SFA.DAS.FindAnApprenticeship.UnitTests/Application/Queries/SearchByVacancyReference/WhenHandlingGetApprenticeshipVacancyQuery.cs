@@ -3,6 +3,8 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -45,6 +47,52 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
 
             // Assert
             result.ApprenticeshipVacancy.Should().BeEquivalentTo(apiResponse);
+            result.CourseDetail.Should().BeEquivalentTo(courseResponse);
+            result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_When_Vacancy_Is_Not_Found_Then_Returns_Closed_Vacancy_Instead(
+            GetApprenticeshipVacancyQuery query,
+            GetClosedVacancyResponse closedVacancyResponse,
+            GetStandardsListItemResponse courseResponse,
+            GetCourseLevelsListResponse courseLevelsResponse,
+            int courseCode,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> courseApiClient,
+            [Frozen] Mock<ICourseService> courseService,
+            GetApprenticeshipVacancyQueryHandler handler)
+        {
+            // Arrange
+            closedVacancyResponse.ProgrammeId = courseCode.ToString();
+
+            var expectedRequest = new GetVacancyRequest(query.VacancyReference);
+
+            courseApiClient
+                .Setup(x => x.Get<GetStandardsListItemResponse>(
+                    It.Is<GetStandardRequest>(c => c.StandardId.Equals(Convert.ToInt32(closedVacancyResponse.ProgrammeId)))))
+                .ReturnsAsync(courseResponse);
+
+            courseService.Setup(x => x.GetLevels()).ReturnsAsync(courseLevelsResponse);
+
+            apiClient
+                .Setup(client =>
+                    client.Get<GetApprenticeshipVacancyItemResponse>(
+                        It.Is<GetVacancyRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
+                .ReturnsAsync(() => null);
+
+            var expectedRecruitApiRequest = new GetClosedVacancyRequest(query.VacancyReference);
+            recruitApiClient.Setup(x =>
+                    x.Get<GetClosedVacancyResponse>(
+                        It.Is<GetClosedVacancyRequest>(x => x.GetUrl == expectedRecruitApiRequest.GetUrl)))
+                .ReturnsAsync(closedVacancyResponse);
+
+            // Act
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            result.ApprenticeshipVacancy.Should().BeEquivalentTo((GetApprenticeshipVacancyQueryResult.Vacancy)closedVacancyResponse);
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
         }

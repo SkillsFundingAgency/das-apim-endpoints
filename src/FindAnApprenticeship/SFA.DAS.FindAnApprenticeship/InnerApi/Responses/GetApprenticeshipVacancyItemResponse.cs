@@ -91,6 +91,9 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonProperty("additionalQuestion2")]
         public string AdditionalQuestion2 { get; init; }
 
+        [JsonProperty("isClosed")]
+        public bool IsClosed { get; set; }
+
     }
 
     public class VacancyQualification
