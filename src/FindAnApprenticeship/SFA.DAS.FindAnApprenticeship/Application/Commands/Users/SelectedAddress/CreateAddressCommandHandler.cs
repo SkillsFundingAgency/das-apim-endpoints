@@ -25,6 +25,7 @@ public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand,
 
         var postData = new PutCandidateAddressApiRequestData
         {
+            Uprn = request.Uprn,
             Email = request.Email,
             AddressLine1 = request.AddressLine1,
             AddressLine2 = request.AddressLine2,

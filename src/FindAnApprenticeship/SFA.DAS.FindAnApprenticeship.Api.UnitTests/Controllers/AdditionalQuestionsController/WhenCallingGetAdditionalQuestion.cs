@@ -21,6 +21,7 @@ public class WhenCallingGetAdditionalQuestion
        Guid candidateId,
        Guid applicationId,
        Guid questionId,
+       int additionalQuestion,
        GetAdditionalQuestionQueryResult queryResult,
        [Frozen] Mock<IMediator> mediator,
        [Greedy] Api.Controllers.AdditionalQuestionsController controller)
@@ -32,7 +33,7 @@ public class WhenCallingGetAdditionalQuestion
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(queryResult);
 
-        var actual = await controller.Get(applicationId, candidateId, questionId);
+        var actual = await controller.Get(applicationId, candidateId, questionId, additionalQuestion);
 
         using (new AssertionScope())
         {
@@ -48,6 +49,7 @@ public class WhenCallingGetAdditionalQuestion
        Guid candidateId,
        Guid applicationId,
        Guid questionId,
+       int additionalQuestion,
        [Frozen] Mock<IMediator> mediator,
        [Greedy] Api.Controllers.AdditionalQuestionsController controller)
     {
@@ -58,7 +60,7 @@ public class WhenCallingGetAdditionalQuestion
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new InvalidOperationException());
 
-        var actual = await controller.Get(applicationId, candidateId, questionId);
+        var actual = await controller.Get(applicationId, candidateId, questionId, additionalQuestion);
 
         actual.As<StatusCodeResult>().StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }

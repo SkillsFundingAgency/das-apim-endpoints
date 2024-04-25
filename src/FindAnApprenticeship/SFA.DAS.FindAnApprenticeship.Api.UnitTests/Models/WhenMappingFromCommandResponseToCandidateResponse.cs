@@ -9,7 +9,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models;
 public class WhenMappingFromCommandResponseToCandidateResponse
 {
     [Test, AutoData]
-    public void Then_The_Fields_Are_Mapped(PutCandidateCommandResult source)
+    public void Then_The_Fields_Are_Mapped(CreateCandidateCommandResult source)
     {
         var actual = (CandidateResponse)source;
 
