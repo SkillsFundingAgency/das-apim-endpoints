@@ -18,17 +18,17 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController
     {
         [Test, MoqAutoData]
         public async Task Then_Returns_Put_Response(
-            string govIdentifier,
+            Guid candidateId,
             CandidatesNameModel model,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.UsersController controller)
         {
-            var actual = await controller.AddDetails(govIdentifier, model) as OkObjectResult;
+            var actual = await controller.AddDetails(candidateId, model) as OkObjectResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
             mediator.Verify(x => x.Send(It.Is<AddDetailsCommand>(
-                c=>c.GovUkIdentifier.Equals(govIdentifier)
+                c=>c.CandidateId.Equals(candidateId)
                 && c.FirstName.Equals(model.FirstName)
                 && c.LastName.Equals(model.LastName)
                 && c.Email.Equals(model.Email)
@@ -37,7 +37,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController
 
         [Test, MoqAutoData]
         public async Task Then_Throws_Exception(
-            string govUkIdentifier,
+            Guid candidateId,
             CandidatesNameModel model,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.UsersController controller
@@ -46,7 +46,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController
             mediator.Setup(x => x.Send(It.IsAny<AddDetailsCommand>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new InvalidOperationException());
 
-            var actual = await controller.AddDetails(govUkIdentifier, model) as StatusCodeResult;
+            var actual = await controller.AddDetails(candidateId, model) as StatusCodeResult;
 
             Assert.That(actual, Is.Not.Null);
             Assert.That(actual.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));

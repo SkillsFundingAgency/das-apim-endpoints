@@ -12,7 +12,15 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddressesByPo
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Address;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.ManuallyEnteredAddress;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePreferences;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetDateOfBirth;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CandidatePreferences;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CheckAnswers;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.PhoneNumber;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.CheckAnswers;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.PhoneNumber;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateName;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -30,16 +38,16 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPut]
-        [Route("{govUkIdentifier}/add-details")]
-        public async Task<IActionResult> AddDetails([FromRoute] string govUkIdentifier, [FromBody] CandidatesNameModel model)
+        [Route("{candidateId}/create-account/add-details")]
+        public async Task<IActionResult> AddDetails([FromRoute] Guid candidateId, [FromBody] CandidatesNameModel model)
         {
             try
             {
                 var result = await _mediator.Send(new AddDetailsCommand
                 {
+                    CandidateId = candidateId,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    GovUkIdentifier = govUkIdentifier,
                     Email = model.Email
                 });
 
@@ -53,14 +61,34 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{govUkIdentifier}/date-of-birth")]
-        public async Task<IActionResult> DateOfBirth([FromRoute] string govUkIdentifier)
+        [Route("{candidateId}/create-account/user-name")]
+        public async Task<IActionResult> UserName([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCandidateNameQuery
+                {
+                    CandidateId = candidateId
+                });
+
+                return Ok(result);
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(e, "Error getting user name");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("{candidateId}/create-account/date-of-birth")]
+        public async Task<IActionResult> DateOfBirth([FromRoute] Guid candidateId)
         {
             try
             {
                 var result = await _mediator.Send(new GetDateOfBirthQuery
                 {
-                    GovUkIdentifier = govUkIdentifier
+                    CandidateId = candidateId
                 });
 
                 return Ok(result);
@@ -70,17 +98,17 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 _logger.LogError(e, $"Error getting candidate date of birth details");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
-    }
+        }
 
         [HttpPost]
-        [Route("{govUkIdentifier}/date-of-birth")]
-        public async Task<IActionResult> DateOfBirth([FromRoute] string govUkIdentifier, [FromBody] CandidatesDateOfBirthModel model)
+        [Route("{candidateId}/create-account/date-of-birth")]
+        public async Task<IActionResult> DateOfBirth([FromRoute] Guid candidateId, [FromBody] CandidatesDateOfBirthModel model)
         {
             try
             {
                 var result = await _mediator.Send(new UpsertDateOfBirthCommand
                 {
-                    GovUkIdentifier = govUkIdentifier,
+                    CandidateId = candidateId,
                     Email = model.Email,
                     DateOfBirth = model.DateOfBirth,
 
@@ -96,7 +124,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("postcode-address")]
+        [Route("create-account/postcode-address")]
         public async Task<IActionResult> PostcodeAddress([FromQuery] string postcode)
         {
             try
@@ -112,17 +140,18 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("select-address")]
-        public async Task<IActionResult> SelectAddress([FromQuery] string postcode)
+        [Route("{candidateId}/create-account/select-address")]
+        public async Task<IActionResult> SelectAddress([FromRoute] Guid candidateId, [FromQuery] string postcode)
         {
             try
             {
-                var queryResponse = await _mediator.Send(new GetCandidateAddressesByPostcodeQuery(postcode));
+                var result = await _mediator.Send(new GetCandidateAddressesByPostcodeQuery
+                {
+                    CandidateId = candidateId,
+                    Postcode = postcode
+                });
 
-                if (queryResponse.AddressesResponse == null || !queryResponse.AddressesResponse.Addresses.Any())
-                    return Ok();
-
-                return Ok(queryResponse.AddressesResponse);
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -131,8 +160,28 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("{candidateId}/create-account/user-address")]
+        public async Task<IActionResult> UserAddress([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var queryResponse = await _mediator.Send(new GetCandidateAddressQuery
+                {
+                    CandidateId = candidateId
+                });
+
+                return Ok(queryResponse);
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(e, $"Error getting user address");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
         [HttpPost]
-        [Route("{candidateId}/select-address")]
+        [Route("{candidateId}/create-account/select-address")]
         public async Task<IActionResult> SelectAddress([FromRoute] Guid candidateId, [FromBody] CandidatesAddressModel model)
         {
             try
@@ -140,6 +189,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 var result = await _mediator.Send(new CreateAddressCommand
                 {
                     CandidateId = candidateId,
+                    Uprn = model.Uprn,
                     Email = model.Email,
                     AddressLine1 = model.AddressLine1,
                     AddressLine2 = model.AddressLine2,
@@ -158,7 +208,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{candidateId}/enter-address")]
+        [Route("{candidateId}/create-account/enter-address")]
         public async Task<IActionResult> EnterAddress([FromRoute] Guid candidateId, [FromBody] CandidatesManuallyEnteredAddressModel model)
         {
             try
@@ -179,6 +229,135 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error posting candidate manually entered address details");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("{candidateId}/create-account/phone-number")]
+        public async Task<IActionResult> PhoneNumber([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetPhoneNumberQuery
+                {
+                    CandidateId = candidateId
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting phone number");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("{candidateId}/create-account/phone-number")]
+        public async Task<IActionResult> PhoneNumber([FromRoute] Guid candidateId, [FromBody] CandidatesPhoneNumberModel model)
+        {
+            try
+            {
+                var result = await _mediator.Send(new CreatePhoneNumberCommand
+                {
+                    CandidateId = candidateId,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error posting candidate phone number");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{candidateId}/create-account/candidate-preferences")]
+        public async Task<IActionResult> GetCandidatePreferences([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCandidatePreferencesQuery()
+                {
+                    CandidateId = candidateId
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting candidate preferences");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{candidateId}/create-account/candidate-preferences")]
+        public async Task<IActionResult> UpsertCandidatePreferences([FromRoute] Guid candidateId, [FromBody] CandidatePreferencesModel model)
+        {
+            try
+            {
+                var result = await _mediator.Send(new UpsertCandidatePreferencesCommand
+                {
+                    CandidateId = candidateId,
+                    CandidatePreferences = model.CandidatePreferences.Select(x => new UpsertCandidatePreferencesCommand.CandidatePreference
+                    {
+                        PreferenceId = x.PreferenceId,
+                        PreferenceMeaning = x.PreferenceMeaning,
+                        PreferenceHint = x.PreferenceHint,
+                        ContactMethodsAndStatus = x.ContactMethodsAndStatus.Select(x => new UpsertCandidatePreferencesCommand.ContactMethodStatus
+                        {
+                            ContactMethod = x.ContactMethod,
+                            Status = x.Status
+                        }).ToList()
+                    }).ToList()
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error upserting candidate preferences");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{candidateId}/create-account/check-answers")]
+        public async Task<IActionResult> GetCheckAnswers([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCheckAnswersQuery
+                {
+                    CandidateId = candidateId
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting candidate create account check answers");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{candidateId}/create-account/check-answers")]
+        public async Task<IActionResult> PostCheckAnswers([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                await _mediator.Send(new UpdateCheckAnswersCommand
+                {
+                    CandidateId = candidateId
+                });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error posting candidate create account check answers");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
