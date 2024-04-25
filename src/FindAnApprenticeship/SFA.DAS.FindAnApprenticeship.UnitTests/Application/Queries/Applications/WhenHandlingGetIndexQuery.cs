@@ -74,7 +74,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     CreatedDate = application.CreatedDate,
                     ClosingDate = vacancy.ClosingDate,
                     SubmittedDate = application.SubmittedDate,
-                    Status = query.Status
+                    Status = query.Status,
+                    ResponseDate = application.ResponseDate,
+                    ResponseNotes = application.ResponseNotes,
                 });
             }
 

@@ -37,18 +37,20 @@ public class GetApplicationsQueryHandler(
 
         foreach (var application in applications.Applications)
         {
-            var vacancy = vacancies.Body.ApprenticeshipVacancies.Single(v => v.VacancyReference == $"VAC{application.VacancyReference}");
+            var vacancy = vacancies.Body.ApprenticeshipVacancies.FirstOrDefault(v => v.VacancyReference == $"VAC{application.VacancyReference}");
 
             result.Applications.Add(new GetApplicationsQueryResult.Application
             {
                 Id = application.Id,
-                VacancyReference = vacancy.VacancyReference,
-                EmployerName = vacancy.EmployerName,
-                Title = vacancy.Title,
-                ClosingDate = vacancy.ClosingDate,
+                VacancyReference = vacancy?.VacancyReference,
+                EmployerName = vacancy?.EmployerName,
+                Title = vacancy?.Title,
+                ClosingDate = vacancy!.ClosingDate,
                 CreatedDate = application.CreatedDate,
                 Status = request.Status,
-                SubmittedDate = application.SubmittedDate
+                SubmittedDate = application.SubmittedDate,
+                ResponseDate = application.ResponseDate,
+                ResponseNotes = application.ResponseNotes
             });
         }
 
