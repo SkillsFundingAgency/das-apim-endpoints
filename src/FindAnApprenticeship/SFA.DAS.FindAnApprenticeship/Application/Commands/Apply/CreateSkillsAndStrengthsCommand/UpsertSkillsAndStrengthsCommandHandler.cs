@@ -47,7 +47,12 @@ public class UpsertSkillsAndStrengthsCommandHandler : IRequestHandler<UpsertSkil
             SkillsAndStrengths = command.SkillsAndStrengths,
             HobbiesAndInterests = aboutYouItem.AboutYou?.HobbiesAndInterests,
             Improvements = aboutYouItem.AboutYou?.Improvements,
-            Support = aboutYouItem.AboutYou?.Support
+            Support = aboutYouItem.AboutYou?.Support,
+            Sex = aboutYouItem.AboutYou?.Sex,
+            EthnicGroup = aboutYouItem.AboutYou?.EthnicGroup,
+            EthnicSubGroup = aboutYouItem.AboutYou?.EthnicSubGroup,
+            IsGenderIdentifySameSexAtBirth = aboutYouItem.AboutYou?.IsGenderIdentifySameSexAtBirth,
+            OtherEthnicSubGroupAnswer = aboutYouItem.AboutYou?.OtherEthnicSubGroupAnswer,
         };
         var request = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), requestBody);
 

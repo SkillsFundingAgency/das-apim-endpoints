@@ -121,14 +121,14 @@ public class WhenHandlingGetAddQualificationQuery
             new GetAddQualificationQueryResult.CourseResponse
             {
                 Id = standard.StandardUId, 
-                Title = standard.Title, 
+                Title = standard.Title + $" (level {standard.Level})", 
                 IsStandard = true
             }));
         expectedCourses.AddRange(frameworks.Frameworks.Select(framework => 
             new GetAddQualificationQueryResult.CourseResponse
             {
                 Id = framework.Id, 
-                Title = framework.Title, 
+                Title = framework.Title + $" (level {framework.Level})", 
                 IsStandard = false
             }));
         
@@ -183,14 +183,14 @@ public class WhenHandlingGetAddQualificationQuery
             new GetAddQualificationQueryResult.CourseResponse
             {
                 Id = standard.StandardUId, 
-                Title = standard.Title, 
+                Title = standard.Title + $" (level {standard.Level})", 
                 IsStandard = true
             }));
         expectedCourses.AddRange(frameworks.Frameworks.Select(framework => 
             new GetAddQualificationQueryResult.CourseResponse
             {
                 Id = framework.Id, 
-                Title = framework.Title, 
+                Title = framework.Title+ $" (level {framework.Level})", 
                 IsStandard = false
             }));
         
