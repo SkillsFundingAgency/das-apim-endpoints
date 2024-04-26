@@ -1,16 +1,16 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.ReferenceDataJobs.Configuration;
-using SFA.DAS.ReferenceDataJobs.InnerApi.Requests;
-using SFA.DAS.ReferenceDataJobs.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.PublicSectorOrganisations;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ReferenceDataJobs.Application.Commands;
 public class StartDataLoadsCommandHandler : IRequestHandler<StartDataLoadsCommand>
 {
-    private readonly IPublicSectorOrganisationsApiClient<PublicSectorOrganisationsApiConfiguration> _psoApiClient;
+    private readonly IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration> _psoApiClient;
     private readonly ILogger<StartDataLoadsCommandHandler> _logger;
 
-    public StartDataLoadsCommandHandler(IPublicSectorOrganisationsApiClient<PublicSectorOrganisationsApiConfiguration> psoApiClient, ILogger<StartDataLoadsCommandHandler> logger)
+    public StartDataLoadsCommandHandler(IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration> psoApiClient, ILogger<StartDataLoadsCommandHandler> logger)
     {
         _psoApiClient = psoApiClient;
         _logger = logger;

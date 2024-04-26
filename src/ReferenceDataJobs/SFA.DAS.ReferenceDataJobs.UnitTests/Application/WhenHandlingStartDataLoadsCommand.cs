@@ -4,9 +4,9 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ReferenceDataJobs.Application.Commands;
-using SFA.DAS.ReferenceDataJobs.Configuration;
-using SFA.DAS.ReferenceDataJobs.InnerApi.Requests;
-using SFA.DAS.ReferenceDataJobs.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.PublicSectorOrganisations;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -18,7 +18,7 @@ public class WhenHandlingStartDataLoadsCommand
     [Test, MoqAutoData]
     public async Task Then_call_is_successful(
         StartDataLoadsCommand command,
-        [Frozen] Mock<IPublicSectorOrganisationsApiClient<PublicSectorOrganisationsApiConfiguration>> mockApiClient,
+        [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockApiClient,
         StartDataLoadsCommandHandler sut)
     {
         var responseFromApi = new ApiResponse<object>(null, HttpStatusCode.OK, null);
@@ -35,7 +35,7 @@ public class WhenHandlingStartDataLoadsCommand
     [Test, MoqAutoData]
     public async Task Then_call_is_unsuccessful(
         StartDataLoadsCommand command,
-        [Frozen] Mock<IPublicSectorOrganisationsApiClient<PublicSectorOrganisationsApiConfiguration>> mockApiClient,
+        [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockApiClient,
         [Greedy] StartDataLoadsCommandHandler sut)
     {
         mockApiClient
