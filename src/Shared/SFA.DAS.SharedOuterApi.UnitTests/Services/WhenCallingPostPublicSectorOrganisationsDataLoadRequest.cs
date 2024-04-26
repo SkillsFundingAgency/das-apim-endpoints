@@ -1,15 +1,16 @@
+﻿using System.Net;
+using System.Threading.Tasks;
 using AutoFixture.NUnit3;
-using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using System.Net;
 using FluentAssertions;
 using Moq;
+using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.PublicSectorOrganisations;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Services;
 
-namespace SFA.DAS.ReferenceDataJobs.UnitTests.Services;
+namespace SFA.DAS.SharedOuterApi.UnitTests.Services;
 
 public class WhenCallingPostPublicSectorOrganisationsDataLoadRequest
 {
@@ -18,7 +19,7 @@ public class WhenCallingPostPublicSectorOrganisationsDataLoadRequest
         [Frozen] Mock<IInternalApiClient<PublicSectorOrganisationApiConfiguration>> mockApiClient,
         PostPublicSectorOrganisationsDataLoadRequest request,
         bool includeResponse
-        )
+    )
     {
         var responseFromApi = new ApiResponse<object>(null, HttpStatusCode.OK, null);
         mockApiClient.Setup(x => x.PostWithResponseCode<object>(request, includeResponse)).ReturnsAsync(responseFromApi);
