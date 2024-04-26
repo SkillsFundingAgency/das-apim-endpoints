@@ -8,7 +8,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
     {
         public Guid Id { get; set; }
         public Guid CandidateId { get; set; }
-        public string VacancyReference { get; set; }
+        public long VacancyReference { get; set; }
         public string QualificationsStatus { get; set; }
         public string TrainingCoursesStatus { get; set; }
         public string JobsStatus { get; set; }
@@ -27,6 +27,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
         public List<Qualification> Qualifications { get; set; } = [];
         public List<GetWorkHistoryItemApiResponse> WorkHistory { get; set; } = [];
         public AboutYouItem AboutYou { get; set; }
+        public GetCandidateApiResponse Candidate { get; set; }
     }
 
     public class Question
