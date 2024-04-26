@@ -21,6 +21,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
             services.AddTransient<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>, FindApprenticeshipLegacyApiClient>();
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<ICandidateApiClient<CandidateApiConfiguration>, CandidateApiClient>();
+            services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
