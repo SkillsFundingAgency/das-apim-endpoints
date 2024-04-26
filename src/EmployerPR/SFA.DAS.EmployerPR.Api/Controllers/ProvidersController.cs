@@ -6,12 +6,8 @@ namespace SFA.DAS.EmployerPR.Api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class ProvidersController : ControllerBase
+public class ProvidersController(IMediator _mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public ProvidersController(IMediator mediator) => _mediator = mediator;
-
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(typeof(GetRoatpProvidersQueryResult), StatusCodes.Status200OK)]
