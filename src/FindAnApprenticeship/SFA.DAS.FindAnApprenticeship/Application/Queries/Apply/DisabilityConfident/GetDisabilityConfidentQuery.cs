@@ -36,7 +36,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.DisabilityConfi
                 return null;
             }
 
-            var vacancyRequest = new GetVacancyRequest(application.VacancyReference);
+            var vacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
             var vacancy = await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(vacancyRequest);
 
             bool? isCompleted = application.DisabilityConfidenceStatus switch

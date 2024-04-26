@@ -27,7 +27,7 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
         var application = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
         if (application == null) return null;
 
-        var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference));
+        var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference.ToString()));
         if(vacancy == null) return null;
 
         var additionalQuestions = application.AdditionalQuestions.ToList();

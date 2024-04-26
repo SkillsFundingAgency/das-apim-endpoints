@@ -21,7 +21,7 @@ public class GetWhatInterestsYouQueryHandler(
         var applicationRequest = new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false);
         var application = await candidateApiClient.Get<GetApplicationApiResponse>(applicationRequest);
 
-        var vacancyRequest = new GetVacancyRequest(application.VacancyReference);
+        var vacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
         var vacancy = await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(vacancyRequest);
 
         bool? isCompleted = application.InterestsStatus switch

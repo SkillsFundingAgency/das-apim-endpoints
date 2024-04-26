@@ -26,7 +26,7 @@ public class WhenHandlingGetApplicationSubmittedQuery
         GetApplicationSubmittedQueryHandler handler)
     {
         var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
-        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference);
+        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
 
         candidateApiClient
             .Setup(client => client.Get<GetApplicationApiResponse>(
@@ -61,7 +61,7 @@ public class WhenHandlingGetApplicationSubmittedQuery
         GetApplicationSubmittedQueryHandler handler)
     {
         var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
-        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference);
+        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
 
         candidateApiClient
             .Setup(client => client.Get<GetApplicationApiResponse>(
@@ -88,7 +88,7 @@ public class WhenHandlingGetApplicationSubmittedQuery
         GetApplicationSubmittedQueryHandler handler)
     {
         var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
-        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference);
+        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
 
         candidateApiClient
             .Setup(client => client.Get<GetApplicationApiResponse>(

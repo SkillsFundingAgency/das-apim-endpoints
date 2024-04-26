@@ -25,7 +25,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
             var application = await candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true));
             if (application == null) return null;
 
-            var vacancy = await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference));
+            var vacancy = await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference.ToString()));
             if (vacancy == null) return null;
 
             var additionalQuestions = application.AdditionalQuestions.ToList();
