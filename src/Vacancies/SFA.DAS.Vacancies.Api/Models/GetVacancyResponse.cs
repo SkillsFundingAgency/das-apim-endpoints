@@ -34,7 +34,7 @@ namespace SFA.DAS.Vacancies.Api.Models
                 ProviderName = source.Vacancy.ProviderName,
                 StartDate = source.Vacancy.StartDate,
                 Title = source.Vacancy.Title,
-                Ukprn = source.Vacancy.Ukprn,
+                Ukprn = int.Parse(source.Vacancy.Ukprn),
                 VacancyReference = source.Vacancy.VacancyReference,
                 VacancyUrl = source.Vacancy.VacancyUrl,
                 Course = source.Vacancy,

@@ -68,11 +68,11 @@ namespace SFA.DAS.Approvals.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>("Courses API health check")
-                    .AddCheck<RoatpCourseManagementApiHealthCheck>("Roatp Course Management API health check")
-                    .AddCheck<ApprenticeCommitmentsApiHealthCheck>("ApprenticeCommitments API health check")
-                    .AddCheck<ApprenticeAccountsApiHealthCheck>("ApprenticeAccounts API health check")
-                    .AddCheck<ProviderCoursesApiHealthCheck>("ProviderCourses API health check");
+                    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<RoatpCourseManagementApiHealthCheck>(RoatpCourseManagementApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<ApprenticeCommitmentsApiHealthCheck>(ApprenticeCommitmentsApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<ApprenticeAccountsApiHealthCheck>(ApprenticeAccountsApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<ProviderCoursesApiHealthCheck>(ProviderCoursesApiHealthCheck.HealthCheckResultDescription);
             }
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);

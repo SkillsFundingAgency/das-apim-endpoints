@@ -80,6 +80,9 @@ namespace SFA.DAS.Vacancies.Api
         /// </summary>
         [FromQuery]
         public bool? FilterBySubscription { get; set; }
+
+        [FromHeader]
+        public List<AdditionalDataSource> AdditionalDataSources { get; set; } = null;
     }
 
     public enum VacancySort
@@ -90,5 +93,10 @@ namespace SFA.DAS.Vacancies.Api
         DistanceAsc,
         ExpectedStartDateDesc,
         ExpectedStartDateAsc
+    }
+
+    public enum AdditionalDataSource
+    {
+        Nhs
     }
 }

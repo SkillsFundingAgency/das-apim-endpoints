@@ -175,6 +175,7 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
             public decimal? EndPointAssessmentPrice { get; set; }
             public DateTime? ProviderApprovedDate { get; set; }
             public DateTime? EmployerApprovedDate { get; set; }
+            public string Initiator { get; set; }
         }
     }
 }

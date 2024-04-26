@@ -68,7 +68,7 @@ namespace SFA.DAS.EmployerIncentives.Api
                 .AddCheck<EmployerIncentivesHealthCheck>(nameof(EmployerIncentivesHealthCheck))
                 .AddCheck<CommitmentsHealthCheck>(nameof(CommitmentsHealthCheck))
                 .AddCheck<CustomerEngagementFinanceApiHealthCheck>(nameof(CustomerEngagementFinanceApiHealthCheck))
-                .AddCheck<AccountsApiHealthCheck>(nameof(AccountsApiHealthCheck))
+                .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription)
                 ;
 
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEligibleApprenticeshipsSearchQuery).Assembly));

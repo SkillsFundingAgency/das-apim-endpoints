@@ -4,7 +4,6 @@ using FluentAssertions.Execution;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedbackTarget;
 using SFA.DAS.ApprenticeFeedback.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.ApprenticeAccounts;
@@ -181,7 +180,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Services
         [Test, MoqAutoData]
         public async Task Then_ShouldLogError_WhenExceptionIsThrownFromAssessorClient(
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssesorsApiClient,
-            [Frozen] Mock<ILogger<UpdateApprenticeFeedbackTargetCommandHandler>> mockLogger,
+            [Frozen] Mock<ILogger<ApprenticeshipDetailsService>> mockLogger,
             ApprenticeshipDetailsService sut)
         {
             // Arrange
@@ -199,7 +198,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Services
         [Test, MoqAutoData]
         public async Task Then_ShouldLogError_WhenExceptionIsThrownFromAccountsClient(
             [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> mockApprenticeAccountsApiClient,
-            [Frozen] Mock<ILogger<UpdateApprenticeFeedbackTargetCommandHandler>> mockLogger,
+            [Frozen] Mock<ILogger<ApprenticeshipDetailsService>> mockLogger,
             ApprenticeshipDetailsService sut)
         {
             // Arrange
@@ -218,7 +217,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Services
         public async Task Then_ShouldNotLogError_WhenMyApprenticeshipDataIsNotFound(
             [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> mockApprenticeAccountsApiClient,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssesorsApiClient,
-            [Frozen] Mock<ILogger<UpdateApprenticeFeedbackTargetCommandHandler>> mockLogger,
+            [Frozen] Mock<ILogger<ApprenticeshipDetailsService>> mockLogger,
             ApprenticeshipDetailsService sut)
         {
             // Arrange
