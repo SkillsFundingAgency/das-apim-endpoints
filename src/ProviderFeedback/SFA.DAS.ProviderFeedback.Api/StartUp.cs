@@ -1,11 +1,12 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using MediatR;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.ProviderFeedback.Application.Queries;
+using SFA.DAS.ProviderFeedback.Api.AppStart;
+using SFA.DAS.ProviderFeedback.Api.ErrorHandler;
+using SFA.DAS.ProviderFeedback.Application.Queries.GetProviderFeedback;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
@@ -26,7 +27,7 @@ public class Startup
         services.AddOptions();
         services.AddSingleton(_env);
 
-        //services.AddConfigurationOptions(_configuration);
+        services.AddConfigurationOptions(_configuration);
 
         if (!_configuration.IsLocalOrDev())
         {
@@ -41,8 +42,9 @@ public class Startup
             services.AddAuthentication(azureAdConfiguration, policies);
         }
 
-        services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(DummyQuery).Assembly));
-        //services.AddServiceRegistration(_configuration);
+        services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetProviderFeedbackQueryHandler).Assembly));
+
+        services.AddServiceRegistration(_configuration);
 
         services
             .AddMvc(o =>
@@ -59,10 +61,10 @@ public class Startup
         if (_configuration["Environment"] != "DEV")
         {
             services.AddHealthChecks()
-                .AddCheck<EarlyConnectApiHealthCheck>(EarlyConnectApiHealthCheck.HealthCheckResultDescription);
+                .AddCheck<ProviderFeedbackApiHealthCheck>(ProviderFeedbackApiHealthCheck.HealthCheckResultDescription);
         }
 
-        //services.AddApplicationInsightsTelemetry(x => x.ConnectionString = _configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+        services.AddApplicationInsightsTelemetry(x => x.ConnectionString = _configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
         services.AddSwaggerGen(c =>
         {
@@ -81,7 +83,7 @@ public class Startup
         app.UseHealthChecks();
 
         app.UseRouting();
-        //app.UseApiGlobalExceptionHandler(loggerFactory.CreateLogger("Startup"));
+        app.UseApiGlobalExceptionHandler(loggerFactory.CreateLogger("Startup"));
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllerRoute(
