@@ -22,7 +22,7 @@ public class SubmitApplicationCommandHandler(IRecruitApiClient<RecruitApiConfigu
             await candidateApiClient.Get<GetApplicationApiResponse>(
                 new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true));
 
-        if (application == null)
+        if (application == null || application.Status == "Submitted")
         {
             return false;
         }

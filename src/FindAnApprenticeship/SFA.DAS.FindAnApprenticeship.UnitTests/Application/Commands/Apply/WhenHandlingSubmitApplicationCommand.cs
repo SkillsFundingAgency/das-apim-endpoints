@@ -129,4 +129,31 @@ public class WhenHandlingSubmitApplicationCommand
         candidateApiClient.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()), Times.Never);
         actual.Should().BeFalse();
     }
+    
+    [Test, MoqAutoData]
+    public async Task Then_The_Application_Is_Not_Submitted_To_Recruit_If_Application_Is_Already_Submitted(
+        GetApplicationApiResponse applicationApiResponse,
+        SubmitApplicationCommand request,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+        SubmitApplicationCommandHandler handler)
+    {
+        applicationApiResponse.Status = "Submitted";
+        var expectedGetApplicationRequest =
+            new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true);
+        candidateApiClient
+            .Setup(x => x.Get<GetApplicationApiResponse>(
+                It.Is<GetApplicationApiRequest>(c => 
+                    c.GetUrl == expectedGetApplicationRequest.GetUrl
+                )))
+            .ReturnsAsync(applicationApiResponse);
+        
+        var actual = await handler.Handle(request, CancellationToken.None);
+        
+        recruitApiClient
+            .Verify(x => x.PostWithResponseCode<NullResponse>(
+                It.IsAny<PostSubmitApplicationRequest>(), true), Times.Never);
+        candidateApiClient.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()), Times.Never);
+        actual.Should().BeFalse();
+    }
 }
