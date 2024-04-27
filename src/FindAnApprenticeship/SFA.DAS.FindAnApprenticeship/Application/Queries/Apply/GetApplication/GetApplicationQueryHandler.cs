@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
 {
     public class GetApplicationQueryHandler(
-        IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
         ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
         : IRequestHandler<GetApplicationQuery, GetApplicationQueryResult>
     {
@@ -22,29 +21,20 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
         GetApplicationQuery request,
             CancellationToken cancellationToken)
         {
-            var application = await candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true));
-            if (application == null) return null;
+            var applicationTask = candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true));
+            var qualificationTypesTask = candidateApiClient.Get<GetQualificationReferenceTypesApiResponse>(new GetQualificationReferenceTypesApiRequest());
 
-            var vacancy = await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference.ToString()));
-            if (vacancy == null) return null;
+            await Task.WhenAll(applicationTask, qualificationTypesTask);
+
+            var application = applicationTask.Result;
+            var qualificationTypes = qualificationTypesTask.Result;
+            
+            if (application == null) return null;
 
             var additionalQuestions = application.AdditionalQuestions.ToList();
 
-            var candidateTask =
-                candidateApiClient.Get<GetCandidateApiResponse>(
-                    new GetCandidateApiRequest(request.CandidateId.ToString()));
-
-            var addressTask =
-                candidateApiClient.Get<GetAddressApiResponse>(
-                    new GetCandidateAddressApiRequest(request.CandidateId));
-
-            await Task.WhenAll(
-                candidateTask,
-                addressTask
-                );
-
-            var candidate = candidateTask.Result;
-            var address = addressTask.Result;
+            var candidate = application.Candidate;
+            var address = application.Candidate.Address;
             var trainingCourses = application.TrainingCourses;
             var jobs = application.WorkHistory?.Where(c=>c.WorkHistoryType == WorkHistoryType.Job);
             var volunteeringExperiences = application.WorkHistory?.Where(c=>c.WorkHistoryType == WorkHistoryType.WorkExperience);
@@ -87,13 +77,13 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
 
             return new GetApplicationQueryResult
             {
-                IsDisabilityConfident = vacancy.IsDisabilityConfident,
+                IsDisabilityConfident = application.DisabilityConfidenceStatus != "NotRequired",
                 EducationHistory = new GetApplicationQueryResult.EducationHistorySection
                 {
                     QualificationsStatus = application.QualificationsStatus,
                     TrainingCoursesStatus = application.TrainingCoursesStatus,
                     TrainingCourses = trainingCourses?.Select(x => (GetApplicationQueryResult.EducationHistorySection.TrainingCourse)x).ToList(),
-                    Qualifications = qualifications.Qualifications.Select(x => (GetApplicationQueryResult.EducationHistorySection.Qualification)x).ToList(),
+                    Qualifications = application.Qualifications.Select(x => (GetApplicationQueryResult.EducationHistorySection.Qualification)x).ToList(),
                     QualificationTypes = qualificationTypes.QualificationReferences.Select(x => (GetApplicationQueryResult.EducationHistorySection.QualificationReference)x).ToList()
                 },
                 WorkHistory = new GetApplicationQueryResult.WorkHistorySection

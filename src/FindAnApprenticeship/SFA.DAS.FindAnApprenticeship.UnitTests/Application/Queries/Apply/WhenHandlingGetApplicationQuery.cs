@@ -22,15 +22,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
         public async Task Then_The_QueryResult_Is_Returned_As_Expected(
             GetApplicationQuery query,
             GetApplicationApiResponse applicationApiResponse,
-            GetCandidateApiResponse candidateApiResponse,
-            GetAddressApiResponse addressApiResponse,
-            GetAdditionalQuestionApiResponse additionalQuestion1ApiResponse,
-            GetAdditionalQuestionApiResponse additionalQuestion2ApiResponse,
-            GetApprenticeshipVacancyItemResponse apprenticeshipVacancyItemApiResponse,
-            GetQualificationsApiResponse qualificationsApiResponse,
             GetQualificationReferenceTypesApiResponse qualificationReferenceTypesApiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
             GetApplicationQueryHandler handler)
         {
             var expectedGetApplicationApiRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, true);
@@ -39,42 +32,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
                 .Setup(client => client.Get<GetApplicationApiResponse>(
                     It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedGetApplicationApiRequest.GetUrl)))
                 .ReturnsAsync(applicationApiResponse);
-
-            var expectedGetVacancyRequest = new GetVacancyRequest(applicationApiResponse.VacancyReference.ToString());
-            findApprenticeshipApiClient
-                .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(
-                    It.Is<GetVacancyRequest>(r => r.GetUrl == expectedGetVacancyRequest.GetUrl)))
-                .ReturnsAsync(apprenticeshipVacancyItemApiResponse);
-
-            var expectedGetCandidateRequest = new GetCandidateApiRequest(query.CandidateId.ToString());
-            candidateApiClient
-                .Setup(client => client.Get<GetCandidateApiResponse>(
-                    It.Is<GetCandidateApiRequest>(r => r.GetUrl == expectedGetCandidateRequest.GetUrl)))
-                .ReturnsAsync(candidateApiResponse);
-
-            var expectedGetAddressRequest = new GetCandidateAddressApiRequest(query.CandidateId);
-            candidateApiClient
-                .Setup(client => client.Get<GetAddressApiResponse>(
-                    It.Is<GetCandidateAddressApiRequest>(r => r.GetUrl == expectedGetAddressRequest.GetUrl)))
-                .ReturnsAsync(addressApiResponse);
-
-            var expectedGetAdditionalQuestion1ApiRequest = new GetAdditionalQuestionApiRequest(query.ApplicationId, query.CandidateId, applicationApiResponse.AdditionalQuestions[0].Id);
-            candidateApiClient
-                .Setup(client => client.Get<GetAdditionalQuestionApiResponse>(
-                    It.Is<GetAdditionalQuestionApiRequest>(r => r.GetUrl == expectedGetAdditionalQuestion1ApiRequest.GetUrl)))
-                .ReturnsAsync(additionalQuestion1ApiResponse);
-
-            var expectedGetAdditionalQuestion2ApiRequest = new GetAdditionalQuestionApiRequest(query.ApplicationId, query.CandidateId, applicationApiResponse.AdditionalQuestions[1].Id);
-            candidateApiClient
-                .Setup(client => client.Get<GetAdditionalQuestionApiResponse>(
-                    It.Is<GetAdditionalQuestionApiRequest>(r => r.GetUrl == expectedGetAdditionalQuestion2ApiRequest.GetUrl)))
-                .ReturnsAsync(additionalQuestion2ApiResponse);
-
-            var expectedGetQualificationsApiRequest = new GetQualificationsApiRequest(query.ApplicationId, query.CandidateId);
-            candidateApiClient
-                .Setup(client => client.Get<GetQualificationsApiResponse>(
-                    It.Is<GetQualificationsApiRequest>(r => r.GetUrl == expectedGetQualificationsApiRequest.GetUrl)))
-                .ReturnsAsync(qualificationsApiResponse);
 
             var expectedGetQualificationTypesApiRequest = new GetQualificationReferenceTypesApiRequest();
             candidateApiClient
@@ -86,11 +43,12 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             var result = await handler.Handle(query, CancellationToken.None);
 
             using var scope = new AssertionScope();
-            result.CandidateDetails.Address.Should().BeEquivalentTo(addressApiResponse, options => options.Excluding(fil => fil.CandidateId));
-            result.CandidateDetails.Should().BeEquivalentTo(candidateApiResponse, options=> options
+            result.CandidateDetails.Address.Should().BeEquivalentTo(applicationApiResponse.Candidate.Address, options => options.Excluding(fil => fil.CandidateId));
+            result.CandidateDetails.Should().BeEquivalentTo(applicationApiResponse.Candidate, options=> options
                     .Excluding(p=>p.MiddleNames)
                     .Excluding(p=>p.DateOfBirth)
                     .Excluding(p=>p.Status)
+                    .Excluding(p=>p.Address)
                 );
             result.IsApplicationComplete.Should().BeTrue();
         }
