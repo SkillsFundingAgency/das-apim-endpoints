@@ -84,7 +84,7 @@ public class PostSubmitApplicationRequestData
     }
     public Guid ApplicationId { get; set; }
     public Guid CandidateId { get; set; }
-    public long VacancyReference { get; set; }
+    public string VacancyReference { get; set; }
     public string AddressLine1 { get; set; }
     public string AddressLine2 { get; set; }
     public string AddressLine3 { get; set; }

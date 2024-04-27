@@ -20,7 +20,7 @@ public class WhenHandlingSubmitApplicationCommand
 {
     [Test, MoqAutoData]
     public async Task Then_The_Application_Is_Submitted_To_Recruit(
-        long vacancyReference,
+        string vacancyReference,
         SubmitApplicationCommand request,
         GetApplicationApiResponse applicationApiResponse,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
@@ -82,7 +82,7 @@ public class WhenHandlingSubmitApplicationCommand
     
     [Test, MoqAutoData]
     public async Task Then_The_ApplicationStatus_Is_Not_Updated_If_Not_Successfully_Submitted(
-        long vacancyReference,
+        string vacancyReference,
         SubmitApplicationCommand request,
         GetApplicationApiResponse applicationApiResponse,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
