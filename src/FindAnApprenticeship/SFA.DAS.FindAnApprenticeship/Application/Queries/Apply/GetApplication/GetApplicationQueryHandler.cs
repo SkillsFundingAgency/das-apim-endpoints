@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
@@ -92,7 +92,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                 {
                     QualificationsStatus = application.QualificationsStatus,
                     TrainingCoursesStatus = application.TrainingCoursesStatus,
-                    TrainingCourses = trainingCourses?.Select(x => (GetApplicationQueryResult.EducationHistorySection.TrainingCourse)x).ToList()
+                    TrainingCourses = trainingCourses?.Select(x => (GetApplicationQueryResult.EducationHistorySection.TrainingCourse)x).ToList(),
+                    Qualifications = qualifications.Qualifications.Select(x => (GetApplicationQueryResult.EducationHistorySection.Qualification)x).ToList(),
+                    QualificationTypes = qualificationTypes.QualificationReferences.Select(x => (GetApplicationQueryResult.EducationHistorySection.QualificationReference)x).ToList()
                 },
                 WorkHistory = new GetApplicationQueryResult.WorkHistorySection
                 {
