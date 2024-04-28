@@ -4,6 +4,7 @@ using FluentAssertions.Execution;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetExpectedSkillsAndStrengths;
+using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
@@ -15,8 +16,12 @@ using SFA.DAS.Testing.AutoFixture;
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply;
 public class WhenHandlingGetExpectedSkillsAndStrengthsQuery
 {
-    [Test, MoqAutoData]
+    [Test]
+    [MoqInlineAutoData(false, Domain.Constants.SectionStatus.Incomplete)]
+    [MoqInlineAutoData(true, Domain.Constants.SectionStatus.Completed)]
     public async Task Then_The_QueryResult_Is_Returned_As_Expected(
+        bool isSectionCompleted,
+        string sectionStatus,
         GetExpectedSkillsAndStrengthsQuery query,
         GetApplicationApiResponse application,
         GetApprenticeshipVacancyItemResponse vacancy,
@@ -24,6 +29,8 @@ public class WhenHandlingGetExpectedSkillsAndStrengthsQuery
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetExpectedSkillsAndStrengthsQueryHandler handler)
     {
+        application.SkillsAndStrengthStatus = sectionStatus;
+
         var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
         var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference);
 
@@ -48,6 +55,7 @@ public class WhenHandlingGetExpectedSkillsAndStrengthsQuery
             result.Employer.Should().BeEquivalentTo(vacancy.EmployerName);
             result.ExpectedSkillsAndStrengths.Should().BeEquivalentTo(vacancy.Skills);
             result.ApplicationId.Should().Be(application.Id);
+            result.IsSectionCompleted.Should().Be(isSectionCompleted);
         }
     }
 
