@@ -71,7 +71,7 @@ namespace SFA.DAS.Vacancies.Api.Models
                StartDate = source.StartDate,
                Title = source.Title,
                Ukprn = int.Parse(source.Ukprn),
-               VacancyReference = source.VacancyReference,
+               VacancyReference = source.VacancyReference.Replace("VAC",""),
                VacancyUrl = source.VacancyUrl,
                Course = source,
                Wage = source,

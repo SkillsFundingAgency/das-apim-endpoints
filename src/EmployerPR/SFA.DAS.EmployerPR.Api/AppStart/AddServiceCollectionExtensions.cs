@@ -44,7 +44,8 @@ public static class AddServiceCollectionExtensions
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
         services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
-
+        services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
+        services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
         return services;
     }
@@ -69,6 +70,8 @@ public static class AddServiceCollectionExtensions
         services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>()!.Value);
         services.Configure<ProviderRelationshipsApiConfiguration>(configuration.GetSection(nameof(ProviderRelationshipsApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderRelationshipsApiConfiguration>>()!.Value);
+        services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection(nameof(RoatpV2ApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>()!.Value);
         services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>()!.Value);
         return services;

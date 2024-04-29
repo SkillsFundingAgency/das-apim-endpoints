@@ -1,6 +1,8 @@
-namespace SFA.DAS.SharedOuterApi.Interfaces
+using SFA.DAS.SharedOuterApi.Interfaces;
+
+namespace SFA.DAS.EarlyConnect.Services.Interfaces
 {
-    public interface ILepsNeExternalApiConfiguration : IApiConfiguration
+    public interface ILepsNeApiConfiguration : IApiConfiguration
     {
         string Identifier { get; set; }
         string ClientId { get; set; }
