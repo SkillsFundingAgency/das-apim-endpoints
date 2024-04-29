@@ -43,6 +43,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
        public string ApprenticeshipLevel { get ; set ; }
        public string WageText { get; set; }
        public bool IsDisabilityConfident { get; set; }
+       public string? ApplicationStatus { get; set; }
 
        public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
        {
@@ -68,7 +69,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                PostCode = source.Address.Postcode,
                CourseRoute = source.CourseRoute,
                CourseLevel = source.CourseLevel,
-               IsDisabilityConfident = source.IsDisabilityConfident
+               IsDisabilityConfident = source.IsDisabilityConfident,
+               ApplicationStatus = source.ApplicationStatus,
            };
        }
     }
