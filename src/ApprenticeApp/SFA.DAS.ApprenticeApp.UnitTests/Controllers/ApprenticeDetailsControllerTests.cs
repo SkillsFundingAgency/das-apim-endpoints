@@ -8,7 +8,6 @@ using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Api.Controllers;
 using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts;
 using SFA.DAS.Testing.AutoFixture;
-using static SFA.DAS.ApprenticeApp.Api.Controllers.ApprenticeDetailsController;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests
 {

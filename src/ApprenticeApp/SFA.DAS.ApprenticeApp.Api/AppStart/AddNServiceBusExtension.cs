@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.ApprenticeApp.Api.AppStart
 {
+    [ExcludeFromCodeCoverage]
     public static class AddNServiceBusExtension
     {
         public static async Task<UpdateableServiceProvider> StartServiceBus

@@ -6,9 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Api.Controllers;
-using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts;
 using SFA.DAS.Testing.AutoFixture;
-using static SFA.DAS.ApprenticeApp.Api.Controllers.MyApprenticeshipController;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests
 {

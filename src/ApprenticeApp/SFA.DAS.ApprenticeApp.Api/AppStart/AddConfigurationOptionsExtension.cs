@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
@@ -8,6 +9,7 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
 {
     public static class AddConfigurationOptionsExtension
     {
+        [ExcludeFromCodeCoverage]
         public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddOptions();
