@@ -4,7 +4,7 @@ using AutoFixture.NUnit3;
 using Moq;
 using NServiceBus;
 using NUnit.Framework;
-using SFA.DAS.ApprenticeApp.Application.Events;
+using SFA.DAS.PushNotifications.Messages.Events;
 using SFA.DAS.ApprenticeApp.Services;
 using SFA.DAS.Testing.AutoFixture;
 

@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using SFA.DAS.ApprenticeApp.Application.Events;
+using SFA.DAS.PushNotifications.Messages.Events;
 
 namespace SFA.DAS.ApprenticeApp.Services
 {

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.ApprenticeApp.Application.Events;
+using SFA.DAS.PushNotifications.Messages.Events;
 using SFA.DAS.ApprenticeApp.Services;
 
 namespace SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeSubscriptions
