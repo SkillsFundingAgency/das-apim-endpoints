@@ -1,5 +1,4 @@
-﻿@ignore
-Feature: PatchApprentice
+﻿Feature: PatchApprentice
 	As the portal APPLICATION
 	I need to be able to pass a PATCH request through to the inner API
 

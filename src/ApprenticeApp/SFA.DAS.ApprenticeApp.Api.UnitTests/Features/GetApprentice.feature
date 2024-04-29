@@ -1,5 +1,4 @@
-﻿@ignore
-Feature: GetApprentice
+﻿Feature: GetApprentice
 	As the portal APPLICATION
 	I need to retrieve my apprentice details
 

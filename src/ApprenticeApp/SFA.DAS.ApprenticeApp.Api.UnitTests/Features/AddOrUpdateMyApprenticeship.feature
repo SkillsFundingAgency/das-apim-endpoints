@@ -1,5 +1,4 @@
-﻿@ignore
-Feature: AddOrUpdateMyApprenticeship
+﻿Feature: AddOrUpdateMyApprenticeship
 
 As a Portal application 
 I need to add or update my apprenticeship details 

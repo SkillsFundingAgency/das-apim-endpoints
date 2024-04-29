@@ -29,33 +29,39 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
                 .UseErrorQueue($"{endpointName}-errors")
                 .UseInstallers()
                 .UseMessageConventions()
-                .UseNewtonsoftJsonSerializer()
-                ;
+                .UseNewtonsoftJsonSerializer();
 
-            if (!string.IsNullOrEmpty(config.NServiceBusLicense))
+            if (config != null)
             {
-                endpointConfiguration.UseLicense(config.NServiceBusLicense);
-            }
+                if (!string.IsNullOrEmpty(config.NServiceBusLicense))
+                {
+                    endpointConfiguration.UseLicense(config.NServiceBusLicense);
+                }
 
-            endpointConfiguration.SendOnly();
+                endpointConfiguration.SendOnly();
 
-            if (config.NServiceBusConnectionString.Equals("UseLearningEndpoint=true", StringComparison.CurrentCultureIgnoreCase))
-            {
-                endpointConfiguration.UseLearningTransport(s => s.AddRouting());
+                if (config.NServiceBusConnectionString.Equals("UseLearningEndpoint=true", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    endpointConfiguration.UseLearningTransport(s => s.AddRouting());
+                }
+                else
+                {
+                    var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
+                    transport.ConnectionString(config.NServiceBusConnectionString);
+                }
+
+                var endpoint = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
+
+                serviceProvider.AddSingleton(p => endpoint)
+                    .AddSingleton<IMessageSession>(p => p.GetService<IEndpointInstance>())
+                    .AddHostedService<NServiceBusHostedService>();
+
+                return serviceProvider;
             }
             else
             {
-                var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
-                transport.ConnectionString(config.NServiceBusConnectionString);
+                return null;
             }
-
-            var endpoint = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
-
-            serviceProvider.AddSingleton(p => endpoint)
-                .AddSingleton<IMessageSession>(p => p.GetService<IEndpointInstance>())
-                .AddHostedService<NServiceBusHostedService>();
-
-            return serviceProvider;
         }
     }
 }
