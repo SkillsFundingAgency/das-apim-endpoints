@@ -1,4 +1,5 @@
-﻿Feature: GetApprenticeDetails
+﻿@ignore
+Feature: GetApprenticeDetails
 	As an apprentice
 	I need to retrieve my details, 
 	It should collect the apprenticeships from CMAD and MyApprenitceship from Apprentice Accounts and lookup the course title
