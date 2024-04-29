@@ -12,13 +12,13 @@ public class GetRoatpProvidersQueryHandlerTests
 {
     [Test, MoqAutoData]
     public async Task Handle_ReturnCalendarEvents(
-        [Frozen] Mock<IRoatpV2TrainingProviderService> apiClient,
+        [Frozen] Mock<IRoatpV2TrainingProviderService> trainingProviderService,
         GetRoatpProvidersQueryHandler handler,
         GetProvidersResponse expected,
         CancellationToken cancellationToken)
     {
         var query = new GetRoatpProvidersQuery();
-        apiClient.Setup(x => x.GetProviders(cancellationToken)).ReturnsAsync(expected);
+        trainingProviderService.Setup(x => x.GetProviders(cancellationToken)).ReturnsAsync(expected);
         var actual = await handler.Handle(query, cancellationToken);
         actual.Should().Be(expected.RegisteredProviders.Select(provider => (RoatpProvider)provider));
     }
