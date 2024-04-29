@@ -27,4 +27,12 @@
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EditorConfigFiles Remove="C:\dev\das-apim-endpoints\src\Shared\SFA.DAS.SharedOuterApi.UnitTests\Services\LocationLookupServiceTests\.editorconfig" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="C:\dev\das-apim-endpoints\src\Shared\SFA.DAS.SharedOuterApi.UnitTests\Services\LocationLookupServiceTests\.editorconfig" />
+    </ItemGroup>
+
 </Project>
