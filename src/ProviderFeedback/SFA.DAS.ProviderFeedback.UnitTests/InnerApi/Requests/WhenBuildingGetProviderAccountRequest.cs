@@ -1,5 +1,6 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using Microsoft.Identity.Client;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
@@ -12,6 +13,6 @@ public class WhenBuildingGetProviderAccountRequest
     {
         var actual = new GetAccountProvidersRequest(ukprn);
 
-        actual.GetUrl.Should().Be($"provideraccounts/{ukprn}");
+        actual.GetUrl.Should().Be($"accounts/{ukprn}/providers");
     }
 }
