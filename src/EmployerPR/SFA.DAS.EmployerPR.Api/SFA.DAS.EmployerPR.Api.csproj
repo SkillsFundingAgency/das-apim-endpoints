@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>  
-    <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+    <PackageReference Include="SFA.DAS.Api.Common" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
     <!--Transitive dependencies-->
