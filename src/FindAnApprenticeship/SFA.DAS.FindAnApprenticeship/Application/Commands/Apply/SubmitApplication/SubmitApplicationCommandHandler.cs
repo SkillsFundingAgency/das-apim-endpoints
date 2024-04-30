@@ -28,9 +28,9 @@ public class SubmitApplicationCommandHandler(IRecruitApiClient<RecruitApiConfigu
         }
 
         var response = await recruitApiClient.PostWithResponseCode<NullResponse>(
-            new PostSubmitApplicationRequest(request.CandidateId, application));
+            new PostSubmitApplicationRequest(request.CandidateId, application), false);
 
-        if (response.StatusCode != HttpStatusCode.OK)
+        if (response.StatusCode != HttpStatusCode.NoContent)
         {
             return false;
         }

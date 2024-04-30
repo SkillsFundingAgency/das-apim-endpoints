@@ -41,7 +41,7 @@ public class WhenHandlingSubmitApplicationCommand
                 It.Is<PostSubmitApplicationRequest>(c => 
                     c.PostUrl.Contains(request.CandidateId.ToString())
                     && ((PostSubmitApplicationRequestData)c.Data).VacancyReference == vacancyReference
-                ), true)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.OK, ""));
+                ), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
         
         
         var actual = await handler.Handle(request, CancellationToken.None);
@@ -66,7 +66,7 @@ public class WhenHandlingSubmitApplicationCommand
             .Setup(x => x.PostWithResponseCode<NullResponse>(
                 It.Is<PostSubmitApplicationRequest>(c => 
                     c.PostUrl.Contains(request.CandidateId.ToString())
-                ), true)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.OK, ""));
+                ), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
 
         var actual = await handler.Handle(request, CancellationToken.None);
 
@@ -100,7 +100,7 @@ public class WhenHandlingSubmitApplicationCommand
             .ReturnsAsync(applicationApiResponse);
         recruitApiClient
             .Setup(x => x.PostWithResponseCode<NullResponse>(
-                It.Is<PostSubmitApplicationRequest>(c => c.PostUrl.Contains(request.CandidateId.ToString())), true))
+                It.Is<PostSubmitApplicationRequest>(c => c.PostUrl.Contains(request.CandidateId.ToString())), false))
             .ReturnsAsync(new ApiResponse<NullResponse>(null!, HttpStatusCode.InternalServerError, "An error Occurred"));
 
         var actual = await handler.Handle(request, CancellationToken.None);
