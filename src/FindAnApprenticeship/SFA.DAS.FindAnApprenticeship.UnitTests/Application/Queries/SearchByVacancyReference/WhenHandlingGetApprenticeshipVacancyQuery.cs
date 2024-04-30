@@ -98,7 +98,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().NotBeNull();
-            result.Application!.CreatedDate.Should().Be(applicationResponse.CreatedDate);
             result.Application!.SubmittedDate.Should().Be(applicationResponse.SubmittedDate);
             result.Application!.Status.Should().Be(applicationResponse.Status);
         }

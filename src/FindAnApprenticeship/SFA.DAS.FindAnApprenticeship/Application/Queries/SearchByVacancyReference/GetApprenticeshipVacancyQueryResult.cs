@@ -15,7 +15,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
         public class CandidateApplication
         {
             public string Status { get; set; }
-            public DateTime CreatedDate { get; set; }
             public DateTime? SubmittedDate { get; set; }
         }
     }

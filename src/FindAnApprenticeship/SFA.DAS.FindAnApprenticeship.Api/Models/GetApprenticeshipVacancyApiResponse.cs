@@ -204,7 +204,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
     public class CandidateApplication
     {
         public string Status { get; set; }
-        public DateTime CreatedDate { get; set; }
         public DateTime? SubmittedDate { get; set; }
 
         public static implicit operator CandidateApplication(GetApprenticeshipVacancyQueryResult.CandidateApplication source)
@@ -214,7 +213,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
             return new CandidateApplication
             {
                 SubmittedDate = source.SubmittedDate,
-                CreatedDate = source.CreatedDate,
                 Status = source.Status
             };
         }

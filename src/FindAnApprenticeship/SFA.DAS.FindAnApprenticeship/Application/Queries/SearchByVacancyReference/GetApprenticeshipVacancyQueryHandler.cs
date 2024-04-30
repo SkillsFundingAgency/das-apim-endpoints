@@ -32,8 +32,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
 
             if (!string.IsNullOrEmpty(request.CandidateId))
             {
+                var vacancyReference =
+                    request.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
+
                 var application = await candidateApiClient.Get<GetApplicationByReferenceApiResponse>(
-                    new GetApplicationByReferenceApiRequest(Guid.Parse(request.CandidateId), request.VacancyReference));
+                    new GetApplicationByReferenceApiRequest(Guid.Parse(request.CandidateId), vacancyReference));
 
                 if (application != null)
                 {
@@ -41,7 +44,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     {
                         Status = application.Status,
                         SubmittedDate = application.SubmittedDate,
-                        CreatedDate = application.CreatedDate,
                     };
                 }
             }

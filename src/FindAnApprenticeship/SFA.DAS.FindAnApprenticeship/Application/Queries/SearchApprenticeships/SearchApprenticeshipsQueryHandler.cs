@@ -84,10 +84,13 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 
                 foreach (var vacancy in vacancyResult.ApprenticeshipVacancies)
                 {
-                    vacancy.ApplicationStatus = candidateApplications.Applications.FirstOrDefault(fil =>
+                    vacancy.Application = new GetVacanciesListItem.CandidateApplication
+                    {
+                        Status = candidateApplications.Applications.FirstOrDefault(fil =>
                                 fil.VacancyReference.Equals(vacancy.Id,
                                     StringComparison.CurrentCultureIgnoreCase))?
-                            .Status;
+                            .Status
+                    };
                     apprenticeshipVacancies.Add(vacancy);
                 }
             }
