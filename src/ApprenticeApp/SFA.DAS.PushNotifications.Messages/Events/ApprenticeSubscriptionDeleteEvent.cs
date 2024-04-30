@@ -7,6 +7,6 @@ namespace SFA.DAS.PushNotifications.Messages.Events
     public class ApprenticeSubscriptionDeleteEvent
     {
         public Guid ApprenticeId { get; set; }
-        public string EndPoint { get; set; } = null!;
+        public string Endpoint { get; set; } = null!;
     }
 }
