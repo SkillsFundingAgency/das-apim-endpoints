@@ -86,6 +86,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string CourseOverviewOfRole { get; set; }
         public string StandardPageUrl { get; set; }
         [JsonProperty("levels")] public List<GetCourseLevelsListItem> Levels { get; set; }
+       
+        public CandidateApplication Application { get; set; }
 
 
         public static implicit operator GetApprenticeshipVacancyApiResponse(GetApprenticeshipVacancyQueryResult source)
@@ -153,7 +155,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 StandardPageUrl = source.CourseDetail.StandardPageUrl,
                 CourseCoreDuties = source.CourseDetail.CoreDuties,
                 CourseSkills = source.CourseDetail.Skills,
-                Levels = source.Levels
+                Levels = source.Levels,
+                Application = (CandidateApplication)source.Application,
             };
         }
     }
@@ -194,6 +197,23 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 AddressLine3 = source.AddressLine3,
                 AddressLine4 = source.AddressLine4,
                 Postcode = source.Postcode,
+            };
+        }
+    }
+
+    public class CandidateApplication
+    {
+        public string Status { get; set; }
+        public DateTime? SubmittedDate { get; set; }
+
+        public static implicit operator CandidateApplication(GetApprenticeshipVacancyQueryResult.CandidateApplication source)
+        {
+            if (source is null) return null;
+
+            return new CandidateApplication
+            {
+                SubmittedDate = source.SubmittedDate,
+                Status = source.Status
             };
         }
     }

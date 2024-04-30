@@ -4,6 +4,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
+using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
 {
@@ -54,6 +55,36 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
                 .Excluding(c => c.TotalPages)
             );
             actual.Location.Should().BeNull();
+        }
+
+        [Test, AutoData]
+        public void Then_The_Fields_Are_Mapped_For_GetVacanciesListResponse(GetVacanciesListItem source)
+        {
+            var actual = (GetVacanciesListResponseItem)source;
+
+            actual.Should().BeEquivalentTo(source, options => options
+                .Excluding(c => c.Application)
+                .Excluding(c => c.EmployerName)
+                .Excluding(c => c.Address)
+                .Excluding(c => c.AnonymousEmployerName)
+                .Excluding(c => c.IsEmployerAnonymous)
+            );
+        }
+
+        [Test, AutoData]
+        public void Then_The_Fields_Are_Mapped_For_CandidateApplicationDetails(GetVacanciesListItem.CandidateApplication source)
+        {
+            var actual = (CandidateApplicationDetails)source;
+
+            actual.Should().BeEquivalentTo(source);
+        }
+
+        [Test, AutoData]
+        public void Then_The_Fields_Are_Mapped_For_CandidateApplicationDetails_When_Source_Is_Null()
+        {
+            var actual = (CandidateApplicationDetails)(GetVacanciesListItem.CandidateApplication) null;
+
+            actual.Should().BeNull();
         }
     }
 }
