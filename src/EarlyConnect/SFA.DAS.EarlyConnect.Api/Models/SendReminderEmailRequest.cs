@@ -2,6 +2,6 @@
 {
     public class SendReminderEmailRequest
     {
-        public string LepsCode { get; set; }
+        public string? LepsCode { get; set; }
     }
 }
