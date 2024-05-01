@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -29,6 +30,17 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
 
         var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference));
         if(vacancy == null) return null;
+
+        GetApplicationApiResponse previousApplication = null;
+        GetApprenticeshipVacancyItemResponse previousVacancy = null;
+        if (application.PreviousAnswersSourceId.HasValue)
+        {
+            previousApplication = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, application.PreviousAnswersSourceId.Value));
+            if (previousApplication == null) return null;
+
+            previousVacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(previousApplication.VacancyReference));
+            if (previousVacancy == null) return null;
+        }
 
         var additionalQuestions = application.AdditionalQuestions.ToList();
 
@@ -67,6 +79,12 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
             DisabilityConfidence = new GetIndexQueryResult.DisabilityConfidenceSection
             {
                 InterviewUnderDisabilityConfident = application.DisabilityConfidenceStatus,
+            },
+            PreviousApplication = previousVacancy == null ? null : new GetIndexQueryResult.PreviousApplicationDetails
+            {
+                EmployerName = previousVacancy.EmployerName,
+                SubmissionDate = previousApplication.SubmittedDate,
+                VacancyTitle = previousVacancy.Title
             }
         };
     }

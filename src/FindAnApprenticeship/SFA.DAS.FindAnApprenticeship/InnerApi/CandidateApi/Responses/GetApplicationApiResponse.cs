@@ -22,6 +22,9 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
         public string WhatIsYourInterest { get; set; }
         public bool? ApplyUnderDisabilityConfidentScheme { get; set; }
         public string ApplicationAllSectionStatus { get; set; }
+        public Guid? PreviousAnswersSourceId { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime SubmittedDate { get; set; }
     }
 
     public class Question

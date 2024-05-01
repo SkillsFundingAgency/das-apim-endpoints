@@ -16,6 +16,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
         public ApplicationQuestionsSection ApplicationQuestions { get; set; }
         public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
         public DisabilityConfidenceSection DisabilityConfidence { get; set; }
+        public PreviousApplicationDetails PreviousApplication { get; set; }
 
         public class EducationHistorySection
         {
@@ -112,8 +113,27 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
                 WorkHistory = source.WorkHistory,
                 ApplicationQuestions = source.ApplicationQuestions,
                 InterviewAdjustments = source.InterviewAdjustments,
-                DisabilityConfidence = source.DisabilityConfidence
+                DisabilityConfidence = source.DisabilityConfidence,
+                PreviousApplication = source.PreviousApplication
             };
+        }
+
+        public class PreviousApplicationDetails
+        {
+            public string VacancyTitle { get; set; }
+            public string EmployerName { get; set; }
+            public DateTime SubmissionDate { get; set; }
+
+            public static implicit operator PreviousApplicationDetails(
+                GetIndexQueryResult.PreviousApplicationDetails source)
+            {
+                return new PreviousApplicationDetails
+                {
+                    EmployerName = source.EmployerName,
+                    SubmissionDate = source.SubmissionDate,
+                    VacancyTitle = source.VacancyTitle
+                };
+            }
         }
     }
 }
