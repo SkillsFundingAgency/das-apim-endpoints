@@ -70,7 +70,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
         {
             // Arrange
             var expectedRequest = new GetVacancyRequest(query.VacancyReference);
-            var expectedGetApplicationByReferenceApiRequest = new GetApplicationByReferenceApiRequest(candidateId, query.VacancyReference);
+            var vacancyReference = query.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
+            var expectedGetApplicationByReferenceApiRequest = new GetApplicationByReferenceApiRequest(candidateId, vacancyReference);
             query.CandidateId = candidateId.ToString();
 
             courseApiClient
@@ -117,7 +118,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
         {
             // Arrange
             var expectedRequest = new GetVacancyRequest(query.VacancyReference);
-            var expectedGetApplicationByReferenceApiRequest = new GetApplicationByReferenceApiRequest(candidateId, query.VacancyReference);
             query.CandidateId = candidateId.ToString();
 
             courseApiClient
@@ -134,7 +134,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             candidateApiClient
                 .Setup(client =>
                     client.Get<GetApplicationByReferenceApiResponse>(
-                        It.Is<GetApplicationByReferenceApiRequest>(r => r.GetUrl == expectedGetApplicationByReferenceApiRequest.GetUrl)))
+                        It.IsAny<GetApplicationByReferenceApiRequest>()))
                 .ReturnsAsync((GetApplicationByReferenceApiResponse)null!);
 
             // Act
