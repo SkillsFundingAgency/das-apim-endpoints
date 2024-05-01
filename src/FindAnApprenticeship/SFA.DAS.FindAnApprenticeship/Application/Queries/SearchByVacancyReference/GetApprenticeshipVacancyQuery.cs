@@ -7,5 +7,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
     {
         [Required]
         public string VacancyReference { get; set; }
+
+        public string CandidateId { get; set; }
     }
 }

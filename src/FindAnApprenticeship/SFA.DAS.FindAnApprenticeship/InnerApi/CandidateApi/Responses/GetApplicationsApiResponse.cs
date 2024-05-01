@@ -13,7 +13,10 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
             public Guid CandidateId { get; set; }
             public string Status { get; set; }
             public DateTime CreatedDate { get; set; }
+            public DateTime? SubmittedDate { get; set; }
             public DateTime ClosingDate { get; set; }
+            public DateTime? ResponseDate { get; set; }
+            public string? ResponseNotes { get; set; }
             public string VacancyReference { get; set; }
             public string QualificationsStatus { get; set; }
             public string TrainingCoursesStatus { get; set; }
