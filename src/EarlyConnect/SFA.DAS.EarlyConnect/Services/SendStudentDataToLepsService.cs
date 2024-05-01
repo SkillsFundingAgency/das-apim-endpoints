@@ -107,7 +107,7 @@ namespace SFA.DAS.EarlyConnect.Services
 
             if (sendStudentDataresult == null || sendStudentDataresult.StatusCode != HttpStatusCode.Created)
             {
-                return CreateSendStudentDataToLepsServiceResponse($"{sendStudentDataresult?.Body?.Message}");
+                return CreateSendStudentDataToLepsServiceResponse($"{sendStudentDataresult?.Body?.Message}-{sendStudentDataresult?.StatusCode}-{sendStudentDataresult?.ErrorContent}");
             }
 
             await PerformDeliveryUpdate(data.Id);
