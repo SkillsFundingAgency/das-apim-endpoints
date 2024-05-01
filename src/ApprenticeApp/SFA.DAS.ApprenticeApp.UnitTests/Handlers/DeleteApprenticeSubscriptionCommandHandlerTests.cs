@@ -12,8 +12,8 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
     {
         [Test, MoqAutoData]
         public async Task DeleteAppSubCommandHandlerTest(
-            DeleteApprenticeSubscriptionCommandHandler sut,
-            DeleteApprenticeSubscriptionCommand command,
+            RemoveApprenticeSubscriptionCommandHandler sut,
+            RemoveApprenticeSubscriptionCommand command,
             CancellationToken cancellationToken)
         {
             command.ApprenticeId = new Guid();

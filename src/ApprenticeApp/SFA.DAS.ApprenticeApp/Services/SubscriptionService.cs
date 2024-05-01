@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
-using SFA.DAS.PushNotifications.Messages.Events;
+using SFA.DAS.PushNotifications.Messages.Commands;
 
 namespace SFA.DAS.ApprenticeApp.Services
 {
@@ -20,15 +20,15 @@ namespace SFA.DAS.ApprenticeApp.Services
             _messageSession = messageSession;
         }
       
-        public async Task AddApprenticeSubscription(ApprenticeSubscriptionCreateEvent message)
+        public async Task AddApprenticeSubscription(AddWebPushSubscriptionCommand message)
         {
             try
             {
-                _logger.LogInformation($"Processing {nameof(ApprenticeSubscriptionCreateEvent)} to publish to NServiceBus");
+                _logger.LogInformation($"Processing {nameof(AddWebPushSubscriptionCommand)} to publish to NServiceBus");
 
                 await _messageSession.Publish(message);
 
-                _logger.LogInformation($"Finished processing {nameof(ApprenticeSubscriptionCreateEvent)} to publish to NServiceBus");
+                _logger.LogInformation($"Finished processing {nameof(AddWebPushSubscriptionCommand)} to publish to NServiceBus");
             }
             catch (Exception ex)
             {
@@ -37,15 +37,15 @@ namespace SFA.DAS.ApprenticeApp.Services
             }
         }
 
-        public async Task DeleteApprenticeSubscription(ApprenticeSubscriptionDeleteEvent message)
+        public async Task DeleteApprenticeSubscription(RemoveWebPushSubscriptionCommand message)
         {
             try
             {
-                _logger.LogInformation($"Processing {nameof(ApprenticeSubscriptionDeleteEvent)} to publish to NServiceBus");
+                _logger.LogInformation($"Processing {nameof(RemoveWebPushSubscriptionCommand)} to publish to NServiceBus");
 
                 await _messageSession.Publish(message);
 
-                _logger.LogInformation($"Finished processing {nameof(ApprenticeSubscriptionDeleteEvent)} to publish to NServiceBus");
+                _logger.LogInformation($"Finished processing {nameof(RemoveWebPushSubscriptionCommand)} to publish to NServiceBus");
             }
             catch (Exception ex)
             {

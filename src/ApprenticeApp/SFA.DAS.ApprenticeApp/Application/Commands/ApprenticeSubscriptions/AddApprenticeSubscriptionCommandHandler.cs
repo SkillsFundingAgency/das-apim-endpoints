@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.PushNotifications.Messages.Events;
+using SFA.DAS.PushNotifications.Messages.Commands;
 using SFA.DAS.ApprenticeApp.Services;
 
 namespace SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeSubscriptions
@@ -28,7 +28,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeSubscriptions
                 "AddApprenticeSubscriptionCommand Apprentice:{ApprenticeId}",
                 request.ApprenticeId);
 
-            ApprenticeSubscriptionCreateEvent message = new()
+            AddWebPushSubscriptionCommand message = new()
             {
                 ApprenticeId = request.ApprenticeId,
                 Endpoint = request.Endpoint,

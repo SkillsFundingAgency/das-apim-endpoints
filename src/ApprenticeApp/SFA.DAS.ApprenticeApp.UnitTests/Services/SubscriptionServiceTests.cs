@@ -4,7 +4,7 @@ using AutoFixture.NUnit3;
 using Moq;
 using NServiceBus;
 using NUnit.Framework;
-using SFA.DAS.PushNotifications.Messages.Events;
+using SFA.DAS.PushNotifications.Messages.Commands;
 using SFA.DAS.ApprenticeApp.Services;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -17,7 +17,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             [Frozen] Mock<IMessageSession> mockMessageSession,
             SubscriptionService service)
         {
-            ApprenticeSubscriptionCreateEvent message = new() { ApprenticeId = Guid.Empty, AuthenticationSecret = "a", Endpoint = "b", PublicKey = "c" };
+            AddWebPushSubscriptionCommand message = new() { ApprenticeId = Guid.Empty, AuthenticationSecret = "a", Endpoint = "b", PublicKey = "c" };
 
             await service.AddApprenticeSubscription(message);
 
@@ -29,7 +29,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             [Frozen] Mock<IMessageSession> mockMessageSession,
             SubscriptionService service)
         {
-            ApprenticeSubscriptionDeleteEvent message = new() { ApprenticeId = Guid.Empty};
+            RemoveWebPushSubscriptionCommand message = new() { ApprenticeId = Guid.Empty, Endpoint = "endpoint"};
 
             await service.DeleteApprenticeSubscription(message);
 
