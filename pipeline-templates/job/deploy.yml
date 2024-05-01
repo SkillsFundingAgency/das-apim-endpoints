@@ -16,6 +16,7 @@ parameters:
   ProductId:
   ApplicationIdentifierUri:
   SandboxEnabled: $False
+  AddXForwardedAuthorization: $False
 
 jobs:
 - deployment: DeployInfrastructure
