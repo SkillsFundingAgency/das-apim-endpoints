@@ -28,6 +28,5 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             var result = await controller.Post(apprenticeId, request);
             result.Should().BeOfType(typeof(OkResult));
         }
-     
     }
 }

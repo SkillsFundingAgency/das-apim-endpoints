@@ -33,6 +33,5 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             var result = await controller.GetApprenticeDetails(apprenticeId);
             result.Should().BeOfType(typeof(NotFoundResult));
         }
-     
     }
 }
