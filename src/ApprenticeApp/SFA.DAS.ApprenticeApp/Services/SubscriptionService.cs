@@ -37,7 +37,7 @@ namespace SFA.DAS.ApprenticeApp.Services
             }
         }
 
-        public async Task DeleteApprenticeSubscription(RemoveWebPushSubscriptionCommand message)
+        public async Task RemoveApprenticeSubscription(RemoveWebPushSubscriptionCommand message)
         {
             try
             {

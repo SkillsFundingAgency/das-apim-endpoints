@@ -34,7 +34,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeSubscriptions
                 Endpoint = request.Endpoint
             };
 
-            await _subscriptionService.DeleteApprenticeSubscription(message);
+            await _subscriptionService.RemoveApprenticeSubscription(message);
 
             return Unit.Value;
         }

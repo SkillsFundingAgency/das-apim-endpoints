@@ -6,6 +6,6 @@ namespace SFA.DAS.ApprenticeApp.Services
     public interface ISubscriptionService
     {
         Task AddApprenticeSubscription(AddWebPushSubscriptionCommand message);
-        Task DeleteApprenticeSubscription(RemoveWebPushSubscriptionCommand message);
+        Task RemoveApprenticeSubscription(RemoveWebPushSubscriptionCommand message);
     }
 }

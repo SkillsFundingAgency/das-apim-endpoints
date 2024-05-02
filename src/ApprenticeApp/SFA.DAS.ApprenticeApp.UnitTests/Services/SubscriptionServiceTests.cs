@@ -31,7 +31,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
         {
             RemoveWebPushSubscriptionCommand message = new() { ApprenticeId = Guid.Empty, Endpoint = "endpoint"};
 
-            await service.DeleteApprenticeSubscription(message);
+            await service.RemoveApprenticeSubscription(message);
 
             mockMessageSession.Verify(session => session.Publish(message, It.IsAny<PublishOptions>()));
         }
