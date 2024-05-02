@@ -57,9 +57,8 @@ public class WhenMappingGetApplicationResponseToPostSubmitApplicationRequestData
         actual.Postcode.Should().Be(source.Candidate.Address.Postcode);
         actual.Email.Should().Be(source.Candidate.Email);
         actual.Phone.Should().Be(source.Candidate.PhoneNumber);
-        actual.HobbiesAndInterests.Should().Be(source.AboutYou.HobbiesAndInterests);
+        actual.WhatIsYourInterest.Should().Be(source.WhatIsYourInterest);
         actual.Strengths.Should().Be(source.AboutYou.SkillsAndStrengths);
-        actual.Improvements.Should().Be(source.AboutYou.Improvements);
         actual.ApplicationDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(30));
         actual.AdditionalQuestion1.Should().BeEquivalentTo(new AdditionalQuestion{AnswerText = source.AdditionalQuestions.FirstOrDefault().Answer, QuestionText = source.AdditionalQuestions.FirstOrDefault().QuestionText});
         actual.AdditionalQuestion2.Should().BeEquivalentTo(new AdditionalQuestion{AnswerText = source.AdditionalQuestions.LastOrDefault().Answer, QuestionText = source.AdditionalQuestions.LastOrDefault().QuestionText});

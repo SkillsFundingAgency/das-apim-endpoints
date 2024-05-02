@@ -64,9 +64,8 @@ public class PostSubmitApplicationRequestData
             AddressLine3 = source.Candidate.Address.Town,
             AddressLine4 = source.Candidate.Address.County,
             Postcode = source.Candidate.Address.Postcode,
-            HobbiesAndInterests = source.AboutYou.HobbiesAndInterests,
             Strengths = source.AboutYou.SkillsAndStrengths,
-            Improvements = source.AboutYou.Improvements,
+            WhatIsYourInterest = source.WhatIsYourInterest,
             ApplicationDate = DateTime.UtcNow,
             AdditionalQuestion1 = source.AdditionalQuestions?.FirstOrDefault() != null ? new AdditionalQuestion
             {
@@ -95,8 +94,7 @@ public class PostSubmitApplicationRequestData
     public string Email { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string HobbiesAndInterests { get; set; }
-    public string Improvements { get; set; }
+    public string WhatIsYourInterest { get; set; }
     
     public string Phone { get; set; }
     
