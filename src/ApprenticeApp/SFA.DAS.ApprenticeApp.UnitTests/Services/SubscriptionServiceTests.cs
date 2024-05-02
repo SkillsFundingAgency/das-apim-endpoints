@@ -21,7 +21,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
 
             await service.AddApprenticeSubscription(message);
 
-            mockMessageSession.Verify(session => session.Publish(message, It.IsAny<PublishOptions>()));
+            mockMessageSession.Verify(session => session.Send(message, It.IsAny<SendOptions>()));
         }
 
         [Test, MoqAutoData]
@@ -33,8 +33,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
 
             await service.RemoveApprenticeSubscription(message);
 
-            mockMessageSession.Verify(session => session.Publish(message, It.IsAny<PublishOptions>()));
+            mockMessageSession.Verify(session => session.Send(message, It.IsAny<SendOptions>()));
         }
-
     }
 }

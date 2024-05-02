@@ -24,11 +24,11 @@ namespace SFA.DAS.ApprenticeApp.Services
         {
             try
             {
-                _logger.LogInformation($"Processing {nameof(AddWebPushSubscriptionCommand)} to publish to NServiceBus");
+                _logger.LogInformation($"Processing {nameof(AddWebPushSubscriptionCommand)} to send to NServiceBus");
 
-                await _messageSession.Publish(message);
+                await _messageSession.Send(message);
 
-                _logger.LogInformation($"Finished processing {nameof(AddWebPushSubscriptionCommand)} to publish to NServiceBus");
+                _logger.LogInformation($"Finished processing {nameof(AddWebPushSubscriptionCommand)} to send to NServiceBus");
             }
             catch (Exception ex)
             {
@@ -41,11 +41,11 @@ namespace SFA.DAS.ApprenticeApp.Services
         {
             try
             {
-                _logger.LogInformation($"Processing {nameof(RemoveWebPushSubscriptionCommand)} to publish to NServiceBus");
+                _logger.LogInformation($"Processing {nameof(RemoveWebPushSubscriptionCommand)} to send to NServiceBus");
 
-                await _messageSession.Publish(message);
+                await _messageSession.Send(message);
 
-                _logger.LogInformation($"Finished processing {nameof(RemoveWebPushSubscriptionCommand)} to publish to NServiceBus");
+                _logger.LogInformation($"Finished processing {nameof(RemoveWebPushSubscriptionCommand)} to send to NServiceBus");
             }
             catch (Exception ex)
             {

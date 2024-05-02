@@ -123,7 +123,7 @@ namespace SFA.DAS.ApprenticeApp.Api
 
         public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
         {
-            serviceProvider.StartServiceBus(_configuration, EndpointName).GetAwaiter().GetResult();
+            serviceProvider.StartServiceBus(_configuration).GetAwaiter().GetResult();
         }
     }
 }

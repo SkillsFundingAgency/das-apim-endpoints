@@ -8,7 +8,7 @@ using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.NServiceBus.Hosting;
-using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.PushNotifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.ApprenticeApp.Api.AppStart
@@ -19,13 +19,14 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
         public static async Task<UpdateableServiceProvider> StartServiceBus
         (
             this UpdateableServiceProvider serviceProvider,
-            IConfiguration configuration,
-            string endpointName
+            IConfiguration configuration
         )
         {
             var config = configuration
-                .GetSection("NServiceBusConfiguration")
-                .Get<NServiceBusConfiguration>();
+            .GetSection("NServiceBusConfiguration")
+            .Get<NServiceBusConfiguration>();
+
+            string endpointName = configuration["NServiceBusConfiguration:NServiceBusEndpointName"];
 
             var endpointConfiguration = new EndpointConfiguration(endpointName)
                 .UseErrorQueue($"{endpointName}-errors")
@@ -44,12 +45,15 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
 
                 if (config.NServiceBusConnectionString.Equals("UseLearningEndpoint=true", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    endpointConfiguration.UseLearningTransport(s => s.AddRouting());
+                    endpointConfiguration.UseLearningTransport(s => s.AddRouting(endpointName));
                 }
                 else
                 {
                     var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
                     transport.ConnectionString(config.NServiceBusConnectionString);
+
+                    var routing = transport.Routing();
+                    routing.AddRouting(endpointName);
                 }
 
                 var endpoint = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
@@ -64,6 +68,12 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
             {
                 return null;
             }
+        }
+
+        public static void AddRouting(this RoutingSettings routingSettings, string endpointName)
+        {
+            routingSettings.RouteToEndpoint(typeof(AddWebPushSubscriptionCommand), endpointName);
+            routingSettings.RouteToEndpoint(typeof(RemoveWebPushSubscriptionCommand), endpointName);
         }
     }
 }
