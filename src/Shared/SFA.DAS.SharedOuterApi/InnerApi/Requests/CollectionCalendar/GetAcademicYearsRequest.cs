@@ -1,6 +1,7 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using System;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Apprenticeships.InnerApi
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar
 {
 	public class GetAcademicYearsRequest : IGetApiRequest
 	{
