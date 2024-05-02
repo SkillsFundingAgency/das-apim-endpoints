@@ -12,9 +12,9 @@ namespace SFA.DAS.SharedOuterApi.Services
     [ExcludeFromCodeCoverage]
     public class ApprenticeshipsApiClient : IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>
     {
-        private readonly ITokenPassThroughInternalApiClient<ApprenticeshipsApiConfiguration> _apiClient;
+        private readonly IInternalApiClient<ApprenticeshipsApiConfiguration> _apiClient;
 
-        public ApprenticeshipsApiClient(ITokenPassThroughInternalApiClient<ApprenticeshipsApiConfiguration> apiClient)
+        public ApprenticeshipsApiClient(IInternalApiClient<ApprenticeshipsApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
@@ -26,9 +26,7 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            var result = await _apiClient.GetWithResponseCode<TResponse>(request);
-            if (result.StatusCode == HttpStatusCode.Unauthorized) throw new ApiUnauthorizedException();
-            return result.Body;
+            return await _apiClient.Get<TResponse>(request);
         }
 
         public async Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
@@ -91,6 +89,4 @@ namespace SFA.DAS.SharedOuterApi.Services
             return await _apiClient.PutWithResponseCode<TResponse>(request);
         }
     }
-
-    public class ApiUnauthorizedException : Exception { }
 }

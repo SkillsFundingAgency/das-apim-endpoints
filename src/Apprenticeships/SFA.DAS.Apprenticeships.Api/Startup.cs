@@ -80,10 +80,6 @@ public class Startup
         {
             app.UseDeveloperExceptionPage();
         }
-        else
-        {
-            app.UseExceptionHandler("/Error");
-        }
 
         app.UseAuthentication();
         app.UseHealthChecks();

@@ -16,7 +16,6 @@ parameters:
   ProductId:
   ApplicationIdentifierUri:
   SandboxEnabled: $False
-  AddXForwardedAuthorization: $False
 
 jobs:
 - deployment: DeployInfrastructure
@@ -85,7 +84,6 @@ jobs:
               -ProductId ${{ parameters.ProductId }} `
               -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }} `
               -SandboxEnabled ${{ parameters.SandboxEnabled }} `
-              -AddXForwardedAuthorization ${{ parameters.AddXForwardedAuthorization }} `
               -Verbose
             azurePowerShellVersion: LatestVersion
             pwsh: true

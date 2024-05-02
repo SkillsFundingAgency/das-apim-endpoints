@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
+﻿namespace SFA.DAS.Apprenticeships.Responses;
 
 public class GetAcademicYearsResponse
 {

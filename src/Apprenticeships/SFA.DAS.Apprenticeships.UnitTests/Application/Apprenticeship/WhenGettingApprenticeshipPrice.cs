@@ -13,8 +13,6 @@ using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 
 namespace SFA.DAS.Apprenticeships.UnitTests.Application.Apprenticeship;
 
