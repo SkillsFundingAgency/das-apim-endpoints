@@ -57,7 +57,10 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 
 		var providerName = await GetProviderName(apprenticeStartDateInnerModel);
 
-		var apprenticeshipStartDateOuterModel = new ApprenticeshipStartDateResponse
+		var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now));
+        var previousAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now.AddYears(-1)));
+
+        var apprenticeshipStartDateOuterModel = new ApprenticeshipStartDateResponse
 		{
 			ApprenticeshipKey = apprenticeStartDateInnerModel.ApprenticeshipKey,
 			ActualStartDate = apprenticeStartDateInnerModel.ActualStartDate,
@@ -67,7 +70,9 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 			EarliestStartDate = await GetEarliestNewStartDate(apprenticeStartDateInnerModel.ActualStartDate),
 			LatestStartDate = await GetLatestNewStartDate(apprenticeStartDateInnerModel.ActualStartDate),
 			LastFridayOfSchool = apprenticeStartDateInnerModel.ApprenticeDateOfBirth.GetLastFridayInJuneOfSchoolYearApprenticeTurned16(),
-			Standard = ToStandardInfo(standard, apprenticeStartDateInnerModel.CourseVersion)
+			Standard = ToStandardInfo(standard, apprenticeStartDateInnerModel.CourseVersion),
+            CurrentAcademicYear = ToAcademicYearDetails(currentAcademicYear),
+            PreviousAcademicYear = ToAcademicYearDetails(previousAcademicYear)
         };
 
         if (apprenticeshipStartDateOuterModel.Standard.CourseCode == null)
@@ -134,6 +139,17 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
                  VersionLatestStartDate = x.VersionLatestStartDate,
                  Version = x.Version
              }).FirstOrDefault(x => x.Version == courseVersion)
+        };
+    }
+
+    private static AcademicYearDetails ToAcademicYearDetails(GetAcademicYearsResponse response)
+    {
+        return new AcademicYearDetails
+        {
+            AcademicYear = response.AcademicYear,
+            StartDate = response.StartDate,
+            EndDate = response.EndDate,
+            HardCloseDate = response.HardCloseDate
         };
     }
 
