@@ -1,10 +1,12 @@
-﻿using System.Net;
-using SFA.DAS.FindApprenticeshipJobs.Configuration;
-using SFA.DAS.FindApprenticeshipJobs.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.FindApprenticeshipJobs.Services;
+namespace SFA.DAS.SharedOuterApi.Services;
 public class RecruitApiClient : IRecruitApiClient<RecruitApiConfiguration>
 {
     private readonly IInternalApiClient<RecruitApiConfiguration> _apiClient;

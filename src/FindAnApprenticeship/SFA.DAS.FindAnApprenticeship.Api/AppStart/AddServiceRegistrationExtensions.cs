@@ -24,6 +24,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
             services.AddTransient<ILocationLookupService, LocationLookupService>();
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
+            services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
         }
     }
 }

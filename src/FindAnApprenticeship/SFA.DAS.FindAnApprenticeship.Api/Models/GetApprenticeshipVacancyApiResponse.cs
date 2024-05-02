@@ -75,7 +75,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
 
         public string AnonymousEmployerName { get; init; }
         public bool IsEmployerAnonymous { get; init; }
-
+        public bool IsClosed { get; set; }
 
         [JsonProperty("VacancyQualification")]
         public IEnumerable<VacancyQualificationApiResponse> Qualifications { get; init; }
@@ -149,14 +149,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 AnonymousEmployerName = source.ApprenticeshipVacancy.AnonymousEmployerName,
                 IsEmployerAnonymous = source.ApprenticeshipVacancy.IsEmployerAnonymous,
                 Address = source.ApprenticeshipVacancy.Address,
-                Qualifications = source.ApprenticeshipVacancy.Qualifications
-                    .Select(l => (VacancyQualificationApiResponse) l).ToList(),
+                Qualifications = source.ApprenticeshipVacancy.Qualifications?.Select(l => (VacancyQualificationApiResponse) l),
                 CourseOverviewOfRole = source.CourseDetail.OverviewOfRole,
                 StandardPageUrl = source.CourseDetail.StandardPageUrl,
                 CourseCoreDuties = source.CourseDetail.CoreDuties,
                 CourseSkills = source.CourseDetail.Skills,
                 Levels = source.Levels,
                 Application = (CandidateApplication)source.Application,
+				IsClosed = source.ApprenticeshipVacancy.IsClosed
             };
         }
     }
@@ -168,7 +168,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string Grade { get; init; }
         public Weighting Weighting { get; init; }
 
-        public static implicit operator VacancyQualificationApiResponse(VacancyQualification source)
+        public static implicit operator VacancyQualificationApiResponse(GetApprenticeshipVacancyQueryResult.VacancyQualification source)
         {
             return new VacancyQualificationApiResponse
             {
