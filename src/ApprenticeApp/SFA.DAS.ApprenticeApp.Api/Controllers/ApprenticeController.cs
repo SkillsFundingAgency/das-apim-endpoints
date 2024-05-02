@@ -61,7 +61,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         }
 
         [HttpDelete("/apprentices/{id}/subscriptions")]
-        public async Task<IActionResult> ApprenticeDeleteSubscription(Guid id)
+        public async Task<IActionResult> ApprenticeRemoveSubscription(Guid id)
         {
             await _mediator.Send(new RemoveApprenticeSubscriptionCommand
             {

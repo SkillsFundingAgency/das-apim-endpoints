@@ -64,7 +64,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
                 HttpContext = httpContext
             };
 
-            var result = await controller.ApprenticeDeleteSubscription(apprenticeId) as OkResult;
+            var result = await controller.ApprenticeRemoveSubscription(apprenticeId) as OkResult;
             result.Should().BeOfType(typeof(OkResult));
         }
     }
