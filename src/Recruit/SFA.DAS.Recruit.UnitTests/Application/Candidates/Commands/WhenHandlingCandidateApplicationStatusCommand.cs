@@ -22,6 +22,7 @@ public class WhenHandlingCandidateApplicationStatusCommand
         [Frozen]Mock<ICandidateApiClient<CandidateApiConfiguration>> apiClient,
         CandidateApplicationStatusCommandHandler handler)
     {
+        request.Outcome = "successful";
         apiClient.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()))
             .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.Accepted, ""));
         
@@ -30,10 +31,10 @@ public class WhenHandlingCandidateApplicationStatusCommand
         apiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
                 c.PatchUrl.Contains(request.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
                 c.PatchUrl.Contains(request.CandidateId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
-                c.Data.Operations[0].path == "/Feedback" &&
+                c.Data.Operations[0].path == "/ResponseNotes" &&
                 c.Data.Operations[0].value.ToString() == request.Feedback &&
-                c.Data.Operations[1].path == "/Outcome" &&
-                c.Data.Operations[1].value.ToString() == request.Outcome
+                c.Data.Operations[1].path == "/ApplicationStatus" &&
+                ((ApplicationStatus)c.Data.Operations[1].value) == ApplicationStatus.Successful
             )), Times.Once
         );
     }

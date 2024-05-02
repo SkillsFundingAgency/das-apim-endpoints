@@ -24,6 +24,14 @@ public class PatchApplicationApiRequest : IPatchApiRequest<JsonPatchDocument<App
 }
 public class Application
 {
-    public string Outcome { get; set; }
-    public string Feedback { get; set; }
+    public string ResponseNotes { get; set; }
+    public ApplicationStatus ApplicationStatus { get; set; }
+}
+public enum ApplicationStatus
+{
+    Draft = 0,
+    Submitted = 1,
+    Withdrawn = 2,
+    Successful = 3,
+    UnSuccessful = 4,
 }

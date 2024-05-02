@@ -21,9 +21,13 @@ public class CandidateApplicationStatusCommandHandler : IRequestHandler<Candidat
     public async Task<Unit> Handle(CandidateApplicationStatusCommand request, CancellationToken cancellationToken)
     {
         var jsonPatchDocument = new JsonPatchDocument<InnerApi.Requests.Application>();
+
+        var applicationStatus = request.Outcome.Equals("Successful", StringComparison.CurrentCultureIgnoreCase)
+            ? ApplicationStatus.Successful
+            : ApplicationStatus.UnSuccessful;
         
-        jsonPatchDocument.Replace(x => x.Feedback, request.Feedback);
-        jsonPatchDocument.Replace(x => x.Outcome, request.Outcome);
+        jsonPatchDocument.Replace(x => x.ResponseNotes, request.Feedback);
+        jsonPatchDocument.Replace(x => x.ApplicationStatus, applicationStatus);
         
         var patchRequest = new PatchApplicationApiRequest(request.ApplicationId, request.CandidateId, jsonPatchDocument);
         
