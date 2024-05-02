@@ -61,11 +61,12 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         }
 
         [HttpDelete("/apprentices/{id}/subscriptions")]
-        public async Task<IActionResult> ApprenticeRemoveSubscription(Guid id)
+        public async Task<IActionResult> ApprenticeRemoveSubscription(Guid id, [FromBody] ApprenticeRemoveSubscriptionRequest request)
         {
             await _mediator.Send(new RemoveApprenticeSubscriptionCommand
             {
-                ApprenticeId = id
+                ApprenticeId = id,
+                Endpoint = request.Endpoint
             });
             
             return Ok();
@@ -76,6 +77,11 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             public string Endpoint { get; set; }
             public string PublicKey { get; set; }
             public string AuthenticationSecret { get; set; }
+        }
+
+        public class ApprenticeRemoveSubscriptionRequest
+        {
+            public string Endpoint { get; set; }
         }
     }
 }

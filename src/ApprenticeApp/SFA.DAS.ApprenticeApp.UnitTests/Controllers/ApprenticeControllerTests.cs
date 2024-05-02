@@ -58,13 +58,15 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
         {
             var httpContext = new DefaultHttpContext();
             var apprenticeId = Guid.NewGuid();
+            var apprenticeRemoveSubscriptionRequest = new ApprenticeRemoveSubscriptionRequest() { Endpoint = "a" };
+
 
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
             };
 
-            var result = await controller.ApprenticeRemoveSubscription(apprenticeId) as OkResult;
+            var result = await controller.ApprenticeRemoveSubscription(apprenticeId, apprenticeRemoveSubscriptionRequest) as OkResult;
             result.Should().BeOfType(typeof(OkResult));
         }
     }
