@@ -1,4 +1,4 @@
-﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -177,8 +177,8 @@ public record GetApplicationApiResponse
             {
                 JobsStatus = source.JobsStatus,
                 VolunteeringAndWorkExperienceStatus = source.VolunteeringAndWorkExperienceStatus,
-                Jobs = source.Jobs.Select(x => (GetApplicationApiResponse.WorkHistorySection.Job)x).ToList(),
-                VolunteeringAndWorkExperiences = source.VolunteeringAndWorkExperiences.Select(x => (GetApplicationApiResponse.WorkHistorySection.VolunteeringAndWorkExperience)x).ToList(),
+                Jobs = source.Jobs?.Select(x => (GetApplicationApiResponse.WorkHistorySection.Job)x).ToList() ?? [],
+                VolunteeringAndWorkExperiences = source.VolunteeringAndWorkExperiences?.Select(x => (GetApplicationApiResponse.WorkHistorySection.VolunteeringAndWorkExperience)x).ToList() ?? []
             };
         }
         public record Job

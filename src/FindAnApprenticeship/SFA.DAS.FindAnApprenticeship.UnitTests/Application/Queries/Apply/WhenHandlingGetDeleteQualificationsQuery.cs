@@ -25,14 +25,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             GetDeleteQualificationsQueryHandler handler)
         {
-            applicationApiResponse.QualificationsStatus = Constants.SectionStatus.Incomplete;
-
-            var expectedApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
-            applicationApiResponse.JobsStatus = Constants.SectionStatus.Incomplete;
-            candidateApiClient.Setup(client =>
-                client.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedApplicationRequest.GetUrl)))
-                .ReturnsAsync(applicationApiResponse);
-
             referenceDataApiResponse.QualificationReferences.First().Id = query.QualificationReference;
 
             var expectedReferenceDataRequest = new GetQualificationReferenceTypesApiRequest();
