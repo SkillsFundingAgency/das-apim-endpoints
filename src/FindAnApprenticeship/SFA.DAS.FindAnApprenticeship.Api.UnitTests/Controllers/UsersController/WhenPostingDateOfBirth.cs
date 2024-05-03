@@ -17,17 +17,17 @@ public class WhenPostingDateOfBirth
 {
     [Test, MoqAutoData]
     public async Task Then_Returns_Put_Response(
-        string govUkIdentifier,
+        Guid candidateId,
         CandidatesDateOfBirthModel model,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.UsersController controller)
     {
-        var actual = await controller.DateOfBirth(govUkIdentifier, model) as OkObjectResult;
+        var actual = await controller.DateOfBirth(candidateId, model) as OkObjectResult;
 
         actual.Should().NotBeNull();
         actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
         mediator.Verify(x => x.Send(It.Is<UpsertDateOfBirthCommand>(
-            c => c.GovUkIdentifier.Equals(govUkIdentifier)
+            c => c.CandidateId.Equals(candidateId)
             && c.DateOfBirth.Equals(model.DateOfBirth)
             && c.Email.Equals(model.Email)
             ), It.IsAny<CancellationToken>()), Times.Once);
@@ -35,7 +35,7 @@ public class WhenPostingDateOfBirth
 
     [Test, MoqAutoData]
     public async Task Then_Throws_Exception(
-        string govUkIdentifier,
+        Guid candidateId,
         CandidatesDateOfBirthModel model,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.UsersController controller)
@@ -43,7 +43,7 @@ public class WhenPostingDateOfBirth
         mediator.Setup(x => x.Send(It.IsAny<UpsertDateOfBirthCommand>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new InvalidOperationException());
 
-        var actual = await controller.DateOfBirth(govUkIdentifier, model) as StatusCodeResult;
+        var actual = await controller.DateOfBirth(candidateId, model) as StatusCodeResult;
 
         Assert.That(actual, Is.Not.Null);
         Assert.That(actual.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));

@@ -9,6 +9,12 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
     public class TokenPassThroughInternalApiClient<T> : ApiClient<T>, ITokenPassThroughInternalApiClient<T> where T : IInternalApiConfiguration
     {
+#if DEBUG
+        private const string _authorizationHeaderKey = "Authorization";
+#else
+        private const string _authorizationHeaderKey = "X-Forwarded-Authorization";
+#endif
+
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<TokenPassThroughInternalApiClient<T>> _logger;
 
@@ -30,7 +36,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         /// </summary>
         protected override Task AddAuthenticationHeader(HttpRequestMessage httpRequestMessage)
         {
-            var authHeader = _httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Authorization"].FirstOrDefault();
+            var authHeader = _httpContextAccessor.HttpContext.Request.Headers[_authorizationHeaderKey].FirstOrDefault();
             if (authHeader != null)
             {
                 httpRequestMessage.Headers.Add("Authorization", authHeader);

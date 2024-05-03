@@ -6,11 +6,11 @@ public class GetDateOfBirthQueryResult
 {
     public DateTime? DateOfBirth { get; set; }
 
-    public static implicit operator GetDateOfBirthQueryResult(GetCandidateDateOfBirthApiResponse source)
+    public static implicit operator GetDateOfBirthQueryResult(GetCandidateApiResponse source)
     {
         return new GetDateOfBirthQueryResult
         {
-            DateOfBirth = source != null ? source.DateOfBirth : null
+            DateOfBirth = source?.DateOfBirth
         };
     }
 }

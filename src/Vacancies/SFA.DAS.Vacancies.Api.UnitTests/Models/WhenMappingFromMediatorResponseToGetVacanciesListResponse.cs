@@ -21,14 +21,16 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
 
             actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options => options.ExcludingMissingMembers()
                         .Excluding(c => c.EmployerName)
-                        .Excluding(c => c.Ukprn));
+                        .Excluding(c => c.Ukprn)
+                        .Excluding(c => c.VacancyReference)
+            );
             actual.Total.Should().Be(source.Total);
             actual.TotalFiltered.Should().Be(source.TotalFiltered);
             actual.TotalPages.Should().Be(source.TotalPages);
             foreach (var vacancy in actual.Vacancies)
             {
                 var expectedVacancy =
-                    source.Vacancies.Single(c => c.VacancyReference.Equals(vacancy.VacancyReference));
+                    source.Vacancies.Single(c => c.VacancyReference.Equals(vacancy.VacancyReference.Replace("VAC","")));
                 vacancy.Location.Lat.Should().Be(expectedVacancy.Location.Lat);
                 vacancy.Location.Lon.Should().Be(expectedVacancy.Location.Lon);    
             }
