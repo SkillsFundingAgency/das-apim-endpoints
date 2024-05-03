@@ -110,6 +110,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             {
                 return new Vacancy
                 {
+                    Id = source.VacancyReferenceNumeric.ToString(),
+                    VacancyReference = source.VacancyReference,
                     EmployerName = source.EmployerName,
                     Title = source.Title,
                     ClosingDate = source.ClosingDate,
@@ -121,7 +123,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                         AddressLine3 = source.EmployerLocation?.AddressLine3,
                         AddressLine4 = source.EmployerLocation?.AddressLine4,
                         Postcode = source.EmployerLocation?.Postcode
-                    }
+                    },
+                    Ukprn = source.TrainingProvider.Ukprn.ToString()
                 };
             }
 

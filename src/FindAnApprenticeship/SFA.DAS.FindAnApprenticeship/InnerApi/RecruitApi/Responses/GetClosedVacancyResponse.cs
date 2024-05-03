@@ -17,6 +17,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
         public string ProgrammeId { get; set; }
         public int CourseId => Convert.ToInt32(ProgrammeId);
         public Address EmployerLocation { get; set; }
+        public TrainingProviderDetails TrainingProvider { get; set; }
 
         public class Address
         {
@@ -32,6 +33,11 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
             public string Postcode { get; set; }
         }
 
+        public class TrainingProviderDetails
+        {
+            public string Name { get; set; }
+            public int Ukprn { get; set; }
+        }
     }
 
     public class GetClosedVacanciesByReferenceResponse
