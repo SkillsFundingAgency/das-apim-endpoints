@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Moq;
@@ -7,12 +6,11 @@ using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using static SFA.DAS.FindAnApprenticeship.InnerApi.Responses.PostGetVacanciesByReferenceApiResponse;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Applications
 {
@@ -23,15 +21,14 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
         public async Task Then_The_QueryResult_Is_Returned_As_Expected(
             GetApplicationsQuery query,
             GetApplicationsApiResponse applicationApiResponse,
-            PostGetVacanciesByReferenceApiResponse vacanciesResponse,
-            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> faaApiClient,
+            List<ApprenticeshipVacancy> vacancies,
+            [Frozen] Mock<IVacancyService> vacancyService,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             GetApplicationsQueryHandler handler)
         {
             for (var i = 0; i < applicationApiResponse.Applications.Count; i++)
             {
-                vacanciesResponse.ApprenticeshipVacancies.ToList()[i].VacancyReference =
-                    $"VAC{applicationApiResponse.Applications[i].VacancyReference}";
+                vacancies[i].VacancyReference = applicationApiResponse.Applications[i].VacancyReference;
             }
 
             var expectedGetApplicationRequest = new GetApplicationsApiRequest(query.CandidateId, query.Status);
@@ -40,18 +37,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     It.Is<GetApplicationsApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
                 .ReturnsAsync(applicationApiResponse);
 
-            var expectedVacanciesRequest = new PostGetVacanciesByReferenceApiRequest(
-                new PostGetVacanciesByReferenceApiRequestBody
-                {
-                    VacancyReferences = applicationApiResponse.Applications.Select(x => $"VAC{x.VacancyReference}")
-                        .ToList()
-                });
-
-            faaApiClient.Setup(client =>
-                    client.PostWithResponseCode<PostGetVacanciesByReferenceApiResponse>(
-                        It.Is<PostGetVacanciesByReferenceApiRequest>(r =>
-                            r.PostUrl == expectedVacanciesRequest.PostUrl), true))
-                .ReturnsAsync(new ApiResponse<PostGetVacanciesByReferenceApiResponse>(vacanciesResponse, HttpStatusCode.OK, string.Empty));
+            vacancyService.Setup(x => x.GetVacancies(It.IsAny<List<string>>()))
+                .ReturnsAsync(vacancies.Select(x => (IVacancy)x).ToList());
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -62,8 +49,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
 
             foreach (var application in applicationApiResponse.Applications)
             {
-                var vacancy = vacanciesResponse.ApprenticeshipVacancies.Single(x =>
-                    x.VacancyReference == $"VAC{application.VacancyReference}");
+                var vacancy = vacancies.Single(x =>
+                    x.VacancyReference == $"{application.VacancyReference}");
 
                 expectedResult.Applications.Add(new GetApplicationsQueryResult.Application
                 {

@@ -1,19 +1,18 @@
 ﻿using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Services;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 
 public class GetApplicationsQueryHandler(
-    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
-    IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient)
+    IVacancyService vacancyService,
+    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
     : IRequestHandler<GetApplicationsQuery, GetApplicationsQueryResult>
 {
     public async Task<GetApplicationsQueryResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
@@ -24,20 +23,15 @@ public class GetApplicationsQueryHandler(
 
         if (applications.Applications.Count == 0)  { return new GetApplicationsQueryResult(); }
 
-        var vacancyReferences = applications.Applications.Select(x => $"VAC{x.VacancyReference}");
-
-        var vacanciesRequest = new PostGetVacanciesByReferenceApiRequest(new PostGetVacanciesByReferenceApiRequestBody
-        {
-            VacancyReferences = vacancyReferences.ToList()
-        });
-
-        var vacancies = await findApprenticeshipApiClient.PostWithResponseCode<PostGetVacanciesByReferenceApiResponse>(vacanciesRequest);
+        var vacancyReferences = applications.Applications.Select(x => $"{x.VacancyReference}").ToList();
+        
+        var vacancies = await vacancyService.GetVacancies(vacancyReferences);
 
         var result = new GetApplicationsQueryResult();
 
         foreach (var application in applications.Applications)
         {
-            var vacancy = vacancies.Body.ApprenticeshipVacancies.FirstOrDefault(v => v.VacancyReference == $"VAC{application.VacancyReference}");
+            var vacancy = vacancies.FirstOrDefault(v => v.VacancyReference.Replace("VAC", string.Empty) == application.VacancyReference);
 
             result.Applications.Add(new GetApplicationsQueryResult.Application
             {

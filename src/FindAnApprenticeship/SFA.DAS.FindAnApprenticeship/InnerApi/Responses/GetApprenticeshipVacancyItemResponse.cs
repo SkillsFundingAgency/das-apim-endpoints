@@ -1,10 +1,11 @@
 ﻿using Newtonsoft.Json;
+using SFA.DAS.FindAnApprenticeship.Services;
 using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 {
-    public class GetApprenticeshipVacancyItemResponse : GetVacanciesListItem
+    public class GetApprenticeshipVacancyItemResponse : GetVacanciesListItem, IVacancy
     {
         [JsonProperty("longDescription")]
         public string LongDescription { get; init; }

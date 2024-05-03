@@ -1,14 +1,21 @@
-﻿using System;
+﻿using SFA.DAS.FindAnApprenticeship.Services;
+using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
 {
-    public class GetClosedVacancyResponse
+    public class GetClosedVacancyResponse: IVacancy
     {
+        [JsonPropertyName("vacancyReference")]
+        public long VacancyReferenceNumeric { get; set; }
+        [JsonIgnore]
+        public string VacancyReference => $"VAC{VacancyReferenceNumeric}";
         public string EmployerName { get; set; }
         public string Title { get; set; }
         public DateTime ClosingDate { get; set; }
         public string ProgrammeId { get; set; }
+        public int CourseId => Convert.ToInt32(ProgrammeId);
         public Address EmployerLocation { get; set; }
 
         public class Address
@@ -25,5 +32,10 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
             public string Postcode { get; set; }
         }
 
+    }
+
+    public class GetClosedVacanciesByReferenceResponse
+    {
+        public List<GetClosedVacancyResponse> Vacancies { get; set; }
     }
 }

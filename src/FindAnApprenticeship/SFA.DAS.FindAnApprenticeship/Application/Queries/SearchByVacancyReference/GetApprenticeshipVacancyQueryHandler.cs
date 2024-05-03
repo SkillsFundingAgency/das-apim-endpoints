@@ -10,45 +10,35 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
+using SFA.DAS.FindAnApprenticeship.Services;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference
 {
     public class GetApprenticeshipVacancyQueryHandler(
-        IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
-        IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
         ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
         ICourseService courseService,
+        IVacancyService vacancyService,
         ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
         : IRequestHandler<GetApprenticeshipVacancyQuery, GetApprenticeshipVacancyQueryResult>
     {
         public async Task<GetApprenticeshipVacancyQueryResult> Handle(GetApprenticeshipVacancyQuery request, CancellationToken cancellationToken)
         {
-            var result = await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(request.VacancyReference));
-            GetClosedVacancyResponse closedVacancy = null;
+            var vacancy = await vacancyService.GetVacancy(request.VacancyReference);
 
-            if (result is null)
-            {
-                closedVacancy = await recruitApiClient.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(request.VacancyReference));
+            if (vacancy == null) { return null; }
 
-                if (closedVacancy is null) return null;
-            }
-
-            var courseId = result?.CourseId ?? Convert.ToInt32(closedVacancy.ProgrammeId);
-
-            var courseResult = await coursesApiClient.Get<GetStandardsListItemResponse>(new GetStandardRequest(courseId));
+            var courseResult = await coursesApiClient.Get<GetStandardsListItemResponse>(new GetStandardRequest(vacancy.CourseId));
             var courseLevels = await courseService.GetLevels();
 
             GetApprenticeshipVacancyQueryResult.CandidateApplication candidateApplicationDetails = null;
 
-            if (!string.IsNullOrEmpty(request.CandidateId))
+            if (request.CandidateId.HasValue)
             {
                 var vacancyReference =
                     request.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
 
                 var application = await candidateApiClient.Get<GetApplicationByReferenceApiResponse>(
-                    new GetApplicationByReferenceApiRequest(Guid.Parse(request.CandidateId), vacancyReference));
+                    new GetApplicationByReferenceApiRequest(request.CandidateId.Value, vacancyReference));
 
                 if (application != null)
                 {
@@ -59,9 +49,10 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     };
                 }
             }
+
             return new GetApprenticeshipVacancyQueryResult
             {
-                ApprenticeshipVacancy = result != null ? result : closedVacancy,
+                ApprenticeshipVacancy = GetApprenticeshipVacancyQueryResult.Vacancy.FromIVacancy(vacancy),
                 CourseDetail = courseResult,
                 Levels = courseLevels.Levels.ToList(),
                 Application = candidateApplicationDetails

@@ -4,6 +4,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.FindAnApprenticeship.Services;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference
 {
@@ -93,7 +94,17 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string AdditionalQuestion2 { get; init; }
 
             public bool IsClosed { get; set; }
-			public CandidateApplication? Application { get; set; } = null;
+
+
+            public static Vacancy FromIVacancy(IVacancy source)
+            {
+                return source switch
+                {
+                    GetClosedVacancyResponse response => response,
+                    GetApprenticeshipVacancyItemResponse response => response,
+                    _ => throw new InvalidCastException()
+                };
+            }
 
             public static implicit operator Vacancy(GetClosedVacancyResponse source)
             {
