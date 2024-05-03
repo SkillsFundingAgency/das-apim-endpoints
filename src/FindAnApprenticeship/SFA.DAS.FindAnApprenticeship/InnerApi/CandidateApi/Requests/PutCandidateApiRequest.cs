@@ -1,21 +1,13 @@
 ﻿using System;
+using SFA.DAS.FindAnApprenticeship.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-public class PutCandidateApiRequest : IPutApiRequest
+public class PutCandidateApiRequest(Guid candidateId, PutCandidateApiRequestData data) : IPutApiRequest
 {
-    private readonly string _govIdentifier;
-    public object Data { get; set; }
+    public object Data { get; set; } = data;
 
-    public PutCandidateApiRequest(string govIdentifier, PutCandidateApiRequestData data)
-    {
-        _govIdentifier = govIdentifier;
-        Data = data;
-    }
-
-    public string PutUrl => $"/api/candidates/{_govIdentifier}";
-
-    
+    public string PutUrl => $"/api/candidates/{candidateId}";
 }
 public class PutCandidateApiRequestData
 {
@@ -23,4 +15,6 @@ public class PutCandidateApiRequestData
     public DateTime? DateOfBirth { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    public string PhoneNumber { get; set; }
+    public UserStatus Status { get; set; }
 }
