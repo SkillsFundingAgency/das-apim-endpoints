@@ -47,6 +47,8 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
             services.Configure<ApprenticeshipsApiConfiguration>(configuration.GetSection("ApprenticeshipsApiConfiguration"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeshipsApiConfiguration>>().Value);
-		}
+            services.Configure<CollectionCalendarApiConfiguration>(configuration.GetSection("CollectionCalendarApiConfiguration"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CollectionCalendarApiConfiguration>>().Value);
+        }
     }
 }

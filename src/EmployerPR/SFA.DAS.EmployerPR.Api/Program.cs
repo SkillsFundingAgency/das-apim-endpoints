@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.EmployerPR.Api.AppStart;
-using SFA.DAS.EmployerPR.Application.Queries.GetEmployerAccountProviders;
+using SFA.DAS.EmployerPR.Application.Queries.GetRoatpProviders;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using System.Text.Json.Serialization;
@@ -14,7 +14,7 @@ var configuration = builder.Configuration.BuildSharedConfiguration();
 builder.Services
     .AddLogging()
     .AddApplicationInsightsTelemetry()
-    .AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEmployerAccountProvidersQuery).Assembly))
+    .AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRoatpProvidersQuery).Assembly))
     .AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly))
     .AddConfigurationOptions(configuration)
     .AddServiceRegistration(configuration)
