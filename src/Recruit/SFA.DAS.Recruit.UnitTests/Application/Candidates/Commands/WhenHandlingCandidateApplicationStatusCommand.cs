@@ -33,7 +33,7 @@ public class WhenHandlingCandidateApplicationStatusCommand
                 c.PatchUrl.Contains(request.CandidateId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
                 c.Data.Operations[0].path == "/ResponseNotes" &&
                 c.Data.Operations[0].value.ToString() == request.Feedback &&
-                c.Data.Operations[1].path == "/ApplicationStatus" &&
+                c.Data.Operations[1].path == "/Status" &&
                 ((ApplicationStatus)c.Data.Operations[1].value) == ApplicationStatus.Successful
             )), Times.Once
         );

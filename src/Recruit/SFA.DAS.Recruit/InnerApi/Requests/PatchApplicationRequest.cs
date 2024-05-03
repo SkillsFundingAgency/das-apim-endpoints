@@ -25,7 +25,7 @@ public class PatchApplicationApiRequest : IPatchApiRequest<JsonPatchDocument<App
 public class Application
 {
     public string ResponseNotes { get; set; }
-    public ApplicationStatus ApplicationStatus { get; set; }
+    public ApplicationStatus Status { get; set; }
 }
 public enum ApplicationStatus
 {

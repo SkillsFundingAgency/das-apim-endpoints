@@ -27,7 +27,7 @@ public class CandidateApplicationStatusCommandHandler : IRequestHandler<Candidat
             : ApplicationStatus.UnSuccessful;
         
         jsonPatchDocument.Replace(x => x.ResponseNotes, request.Feedback);
-        jsonPatchDocument.Replace(x => x.ApplicationStatus, applicationStatus);
+        jsonPatchDocument.Replace(x => x.Status, applicationStatus);
         
         var patchRequest = new PatchApplicationApiRequest(request.ApplicationId, request.CandidateId, jsonPatchDocument);
         
