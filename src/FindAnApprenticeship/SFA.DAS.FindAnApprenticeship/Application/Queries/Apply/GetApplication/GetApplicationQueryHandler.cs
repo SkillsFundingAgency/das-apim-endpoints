@@ -123,8 +123,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                 },
                 AboutYou = new GetApplicationQueryResult.AboutYouSection
                 {
-                    HobbiesAndInterests = otherDetails?.HobbiesAndInterests,
-                    Improvements = otherDetails?.Improvements,
                     SkillsAndStrengths = otherDetails?.SkillsAndStrengths,
                     Support = otherDetails?.Support
                 },
