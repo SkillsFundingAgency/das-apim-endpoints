@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplication;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationStatus;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationDisabilityConfidence;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationTrainingCourses;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationVolunteeringAndWorkHistory;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplicationSubmitted;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
 using SFA.DAS.FindAnApprenticeship.Models;
@@ -45,6 +47,48 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 _logger.LogError(e, $"Error getting application index {applicationId}", applicationId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
+        }
+
+        [HttpGet("{candidateId}/summary")]
+        public async Task<IActionResult> GetApplicationSummary([FromRoute] Guid applicationId, [FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetApplicationQuery
+                    { CandidateId = candidateId, ApplicationId = applicationId });
+
+                return Ok((GetApplicationApiResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting GetApplicationDetails {applicationId}", applicationId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{candidateId}/status")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateApplicationStatus(
+            [FromRoute] Guid applicationId,
+            [FromRoute] Guid candidateId,
+            [FromBody] UpdateApplicationStatusModel request,
+            CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new PatchApplicationStatusCommand
+            {
+                ApplicationId = applicationId,
+                CandidateId = candidateId,
+                Status = request.Status
+            }, cancellationToken);
+
+            if (result.Application == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(result.Application);
         }
 
         [HttpPost("{candidateId}/work-history")]
