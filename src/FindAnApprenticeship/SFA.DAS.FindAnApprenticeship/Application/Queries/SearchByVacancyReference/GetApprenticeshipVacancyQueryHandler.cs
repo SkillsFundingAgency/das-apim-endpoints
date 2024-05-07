@@ -10,33 +10,35 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Services;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference
 {
     public class GetApprenticeshipVacancyQueryHandler(
-        IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
         ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
         ICourseService courseService,
+        IVacancyService vacancyService,
         ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
         : IRequestHandler<GetApprenticeshipVacancyQuery, GetApprenticeshipVacancyQueryResult>
     {
         public async Task<GetApprenticeshipVacancyQueryResult> Handle(GetApprenticeshipVacancyQuery request, CancellationToken cancellationToken)
         {
-            var result = await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(request.VacancyReference));
+            var vacancy = await vacancyService.GetVacancy(request.VacancyReference);
 
-            if (result is null) return null;
+            if (vacancy == null) { return null; }
 
-            var courseResult = await coursesApiClient.Get<GetStandardsListItemResponse>(new GetStandardRequest(result.CourseId));
+            var courseResult = await coursesApiClient.Get<GetStandardsListItemResponse>(new GetStandardRequest(vacancy.CourseId));
             var courseLevels = await courseService.GetLevels();
+
             GetApprenticeshipVacancyQueryResult.CandidateApplication candidateApplicationDetails = null;
 
-            if (!string.IsNullOrEmpty(request.CandidateId))
+            if (request.CandidateId.HasValue)
             {
                 var vacancyReference =
                     request.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
 
                 var application = await candidateApiClient.Get<GetApplicationByReferenceApiResponse>(
-                    new GetApplicationByReferenceApiRequest(Guid.Parse(request.CandidateId), vacancyReference));
+                    new GetApplicationByReferenceApiRequest(request.CandidateId.Value, vacancyReference));
 
                 if (application != null)
                 {
@@ -50,7 +52,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
 
             return new GetApprenticeshipVacancyQueryResult
             {
-                ApprenticeshipVacancy = result,
+                ApprenticeshipVacancy = GetApprenticeshipVacancyQueryResult.Vacancy.FromIVacancy(vacancy),
                 CourseDetail = courseResult,
                 Levels = courseLevels.Levels.ToList(),
                 Application = candidateApplicationDetails

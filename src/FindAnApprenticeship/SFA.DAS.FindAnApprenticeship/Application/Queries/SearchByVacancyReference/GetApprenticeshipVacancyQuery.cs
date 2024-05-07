@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using MediatR;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference
@@ -8,6 +9,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
         [Required]
         public string VacancyReference { get; set; }
 
-        public string CandidateId { get; set; }
+        public Guid? CandidateId { get; set; }
     }
 }

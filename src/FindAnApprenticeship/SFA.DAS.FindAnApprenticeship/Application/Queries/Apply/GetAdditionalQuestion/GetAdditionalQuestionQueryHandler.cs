@@ -13,7 +13,7 @@ public class GetAdditionalQuestionQueryHandler(ICandidateApiClient<CandidateApiC
 {
     public async Task<GetAdditionalQuestionQueryResult> Handle(GetAdditionalQuestionQuery request, CancellationToken cancellationToken)
     {
-        var applicationRequest = new GetApplicationApiRequest(request.CandidateId, request.ApplicationId);
+        var applicationRequest = new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false);
         var application = await candidateApiClient.Get<GetApplicationApiResponse>(applicationRequest);
 
         var sectionStatus = request.AdditionalQuestion switch
