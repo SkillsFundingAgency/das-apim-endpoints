@@ -211,6 +211,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
         {
             public string Status { get; set; }
             public DateTime? SubmittedDate { get; set; }
+            public Guid ApplicationId { get; set; }
         }
     }
 }
