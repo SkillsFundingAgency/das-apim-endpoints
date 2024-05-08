@@ -53,8 +53,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Services.VacancyService
             apiClient
                 .Setup(client =>
                     client.Get<GetApprenticeshipVacancyItemResponse>(
-                        It.Is<GetVacancyRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
-                .ReturnsAsync(() => null);
+                        It.IsAny<GetVacancyRequest>()))
+                .ReturnsAsync((GetApprenticeshipVacancyItemResponse)null);
 
             var expectedRecruitApiRequest = new GetClosedVacancyRequest(vacancyReference.ToString());
             recruitApiClient.Setup(x =>
