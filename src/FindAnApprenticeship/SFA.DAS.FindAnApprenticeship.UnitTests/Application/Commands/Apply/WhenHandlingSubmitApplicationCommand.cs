@@ -30,6 +30,12 @@ public class WhenHandlingSubmitApplicationCommand
         var expectedGetApplicationRequest =
             new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true);
         applicationApiResponse.VacancyReference = vacancyReference;
+        candidateApiClient.Setup(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
+                c.PatchUrl.Contains(request.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                c.PatchUrl.Contains(request.CandidateId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                c.Data.Operations[0].path == "/Status" &&
+                (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Submitted
+            ))).ReturnsAsync(new ApiResponse<string>("",HttpStatusCode.Accepted,""));
         candidateApiClient
             .Setup(x => x.Get<GetApplicationApiResponse>(
                 It.Is<GetApplicationApiRequest>(c => 
@@ -68,6 +74,12 @@ public class WhenHandlingSubmitApplicationCommand
                 It.Is<GetApplicationApiRequest>(c => 
                     c.GetUrl.Contains(request.CandidateId.ToString()) && c.GetUrl.Contains(request.ApplicationId.ToString()))))
             .ReturnsAsync(applicationApiResponse);
+        candidateApiClient.Setup(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
+            c.PatchUrl.Contains(request.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+            c.PatchUrl.Contains(request.CandidateId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+            c.Data.Operations[0].path == "/Status" &&
+            (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Submitted
+        ))).ReturnsAsync(new ApiResponse<string>("",HttpStatusCode.Accepted,""));
         recruitApiClient
             .Setup(x => x.PostWithResponseCode<NullResponse>(
                 It.Is<PostSubmitApplicationRequest>(c => 

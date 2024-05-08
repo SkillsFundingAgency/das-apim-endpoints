@@ -323,8 +323,6 @@ public record GetApplicationApiResponse
             return new AboutYouSection
             {
                 Support = source.Support,
-                HobbiesAndInterests = source.HobbiesAndInterests,
-                Improvements = source.Improvements,
                 SkillsAndStrengths = source.SkillsAndStrengths
             };
         }

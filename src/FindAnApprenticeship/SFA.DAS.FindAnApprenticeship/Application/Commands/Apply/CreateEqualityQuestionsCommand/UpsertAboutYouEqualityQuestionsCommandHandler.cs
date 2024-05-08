@@ -20,8 +20,6 @@ public class UpsertAboutYouEqualityQuestionsCommandHandler(
         var requestBody = new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData
         {
             SkillsAndStrengths = aboutYouItem.AboutYou?.SkillsAndStrengths,
-            HobbiesAndInterests = aboutYouItem.AboutYou?.HobbiesAndInterests,
-            Improvements = aboutYouItem.AboutYou?.Improvements,
             Support = aboutYouItem.AboutYou?.Support,
             Sex = command.Sex,
             EthnicGroup = command.EthnicGroup,
