@@ -27,7 +27,7 @@ public class UpsertAboutYouEqualityQuestionsCommandHandler(
             IsGenderIdentifySameSexAtBirth = command.IsGenderIdentifySameSexAtBirth,
             OtherEthnicSubGroupAnswer = command.OtherEthnicSubGroupAnswer,
         };
-        var request = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), requestBody);
+        var request = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, aboutYouItem.AboutYou?.Id ?? Guid.NewGuid(), requestBody);
 
         var putResult = await apiClient.PutWithResponseCode<PutUpsertAboutYouItemApiResponse>(request);
         putResult.EnsureSuccessStatusCode();
