@@ -11,14 +11,12 @@ using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 [ExcludeFromCodeCoverage]
-
-
-public class Startup1
+public class Startup
 {
     private readonly IWebHostEnvironment _env;
     private readonly IConfiguration _configuration;
 
-    public Startup1(IConfiguration configuration, IWebHostEnvironment env)
+    public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
         _env = env;
         _configuration = configuration.BuildSharedConfiguration();
