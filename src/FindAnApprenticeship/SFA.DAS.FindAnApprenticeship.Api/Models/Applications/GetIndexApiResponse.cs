@@ -127,6 +127,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
             public static implicit operator PreviousApplicationDetails(
                 GetIndexQueryResult.PreviousApplicationDetails source)
             {
+                if (source == null) return null;
+
                 return new PreviousApplicationDetails
                 {
                     EmployerName = source.EmployerName,

@@ -28,7 +28,7 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
         var application = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
         if (application == null) return null;
 
-        var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference.ToString()));
+        var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference));
         if(vacancy == null) return null;
 
         GetApplicationApiResponse previousApplication = null;
@@ -83,7 +83,7 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
             PreviousApplication = previousVacancy == null ? null : new GetIndexQueryResult.PreviousApplicationDetails
             {
                 EmployerName = previousVacancy.EmployerName,
-                SubmissionDate = previousApplication.SubmittedDate,
+                SubmissionDate = previousApplication.SubmittedDate ?? DateTime.UtcNow,
                 VacancyTitle = previousVacancy.Title
             }
         };
