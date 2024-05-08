@@ -1,10 +1,11 @@
-using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace SFA.DAS.SharedOuterApi.Interfaces
+namespace SFA.DAS.SharedOuterApi.Interfaces;
+
+public interface IRoatpV2TrainingProviderService
 {
-    public interface IRoatpV2TrainingProviderService
-    {
-        Task<GetProviderSummaryResponse> GetProviderSummary(int ukprn);
-    }
+    Task<GetProviderSummaryResponse> GetProviderSummary(int ukprn);
+    Task<GetProvidersResponse> GetProviders(CancellationToken cancellationToken);
 }
