@@ -13,6 +13,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationDi
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationTrainingCourses;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationVolunteeringAndWorkHistory;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.SubmitApplication;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplication;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplicationSubmitted;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
@@ -63,6 +64,23 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error getting GetApplicationDetails {applicationId}", applicationId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{candidateId}/view")]
+        public async Task<IActionResult> GetApplication([FromRoute] Guid applicationId, [FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetApplicationViewQuery
+                { CandidateId = candidateId, ApplicationId = applicationId });
+
+                return Ok((GetApplicationViewApiResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting GetApplication {applicationId}", applicationId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
