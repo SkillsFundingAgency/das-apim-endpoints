@@ -20,22 +20,22 @@ namespace SFA.DAS.ProviderFeedback.Api.Controllers
 
         [HttpGet]
         [Route("{ukprn}")]
-        public async Task<IActionResult> GetProviderStatus([FromRoute]int ukprn)
+        public async Task<IActionResult> GetProviderStatus([FromRoute] int ukprn)
         {
-            //try
-            //{
+            try
+            {
                 var result = await _mediator.Send(new GetRoatpV2ProviderQuery
                 {
                     Ukprn = ukprn
                 });
 
-                return Ok(new ProviderAccountResponse{CanAccessService = result});
-            
-            //}
-            //catch (Exception)
-            //{
-            //    return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
-            //}
+                return Ok(new ProviderAccountResponse { CanAccessService = result });
+
+            }
+            catch (Exception)
+            {
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
     }
 }
