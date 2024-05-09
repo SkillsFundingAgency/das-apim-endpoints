@@ -19,7 +19,10 @@
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
   </ItemGroup>
-
+  <!--Transitive packages-->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Identity.Client" Version="4.61.1" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.EmployerPR.Api\SFA.DAS.EmployerPR.Api.csproj" />
   </ItemGroup>

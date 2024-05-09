@@ -16,7 +16,7 @@ public class GetPermissionsHandler : IRequestHandler<GetPermissionsQuery, GetPer
     public async Task<GetPermissionsResponse> Handle(GetPermissionsQuery query, CancellationToken cancellationToken)
     {
         var response =
-            await _apiClient.Get<GetPermissionsResponse>(new GetPermissionsRequest(query.Ukprn, query.PublicHashedId));
+            await _apiClient.Get<GetPermissionsResponse>(new GetPermissionsRequest(query.Ukprn, query.AccountLegalEntityId));
 
         return response;
     }

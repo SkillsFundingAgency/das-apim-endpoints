@@ -11,7 +11,10 @@
     <PackageReference Include="MediatR" />
     <PackageReference Include="SFA.DAS.Api.Common" />
   </ItemGroup>
-
+  <!--Transitive packages-->
+  <ItemGroup>
+    <PackageVersion Include="Microsoft.Identity.Client" Version="4.61.1" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
   </ItemGroup>

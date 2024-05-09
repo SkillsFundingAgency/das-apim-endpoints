@@ -4,15 +4,15 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
 
 public class GetPermissionsRequest : IGetApiRequest
 {
-    public string GetUrl => $"permissions?Ukprn={Ukprn}&PublicHashedId={PublicHashedId}";
+    public string GetUrl => $"permissions?Ukprn={Ukprn}&accountLegalEntityId={AccountLegalEntityId}";
 
     public long? Ukprn { get; }
 
-    public string? PublicHashedId { get; set; }
+    public string? AccountLegalEntityId { get; set; }
 
-    public GetPermissionsRequest(long? ukprn, string? publicHashedId)
+    public GetPermissionsRequest(long? ukprn, string? accountLegalEntityId)
     {
         Ukprn = ukprn;
-        PublicHashedId = publicHashedId;
+        AccountLegalEntityId = accountLegalEntityId;
     }
 }
