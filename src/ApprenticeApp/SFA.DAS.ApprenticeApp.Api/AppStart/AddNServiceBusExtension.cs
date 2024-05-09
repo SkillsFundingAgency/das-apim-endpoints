@@ -27,6 +27,7 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
             .Get<NServiceBusConfiguration>();
 
             string endpointName = configuration["NServiceBusConfiguration:NServiceBusEndpointName"];
+            if (string.IsNullOrEmpty(endpointName)) { endpointName = "SFA.DAS.ApprenticeApp"; }
 
             var endpointConfiguration = new EndpointConfiguration(endpointName)
                 .UseErrorQueue($"{endpointName}-errors")
@@ -43,7 +44,7 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
 
                 endpointConfiguration.SendOnly();
 
-                if (config.NServiceBusConnectionString.Equals("UseLearningEndpoint=true", StringComparison.CurrentCultureIgnoreCase))
+                if (config.NServiceBusConnectionString.Equals("UseLearningEndpoint=true", StringComparison.CurrentCultureIgnoreCase) || string.IsNullOrEmpty(config.NServiceBusConnectionString))
                 {
                     endpointConfiguration.UseLearningTransport(s => s.AddRouting(endpointName));
                 }
