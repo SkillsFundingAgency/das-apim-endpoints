@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.EmployerPR.InnerApi.Requests;
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
 public class GetAccountLegalEntitiesRequest : IGetAllApiRequest
 {
     private readonly string _hashedAccountId;
