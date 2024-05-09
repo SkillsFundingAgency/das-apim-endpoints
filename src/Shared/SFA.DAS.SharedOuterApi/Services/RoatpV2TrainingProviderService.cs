@@ -22,9 +22,11 @@ namespace SFA.DAS.SharedOuterApi.Services
                 await _roatpCourseManagementApiClient.GetWithResponseCode<GetProviderSummaryResponse>(
                     new GetRoatpProviderRequest(ukprn));
 
+            actual.EnsureSuccessStatusCode();
+
             return ApiResponseErrorChecking.IsSuccessStatusCode(actual.StatusCode) ? actual.Body : null;
         }
     }
 
-    
+
 }
