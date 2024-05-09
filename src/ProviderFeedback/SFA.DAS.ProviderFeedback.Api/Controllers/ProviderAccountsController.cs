@@ -29,7 +29,7 @@ namespace SFA.DAS.ProviderFeedback.Api.Controllers
                     Ukprn = ukprn
                 });
 
-                return Ok(new ProviderAccountResponse{CanAccessService = false});
+                return Ok(new ProviderAccountResponse{CanAccessService = result});
             
             //}
             //catch (Exception)
