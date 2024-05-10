@@ -19,12 +19,11 @@ public class GetAccountLegalEntitiesQueryHandlerTests
         string hashedAccountId,
         List<GetAccountLegalEntityResponse> expected)
     {
-        var request = new GetAccountLegalEntitiesRequest(hashedAccountId);
         var query = new GetAccountLegalEntitiesQuery { HashedAccountId = hashedAccountId };
 
         accountsApiClient.Setup(x =>
-            x.GetAll<GetAccountLegalEntityResponse>(request)).ReturnsAsync(expected);
+            x.GetAll<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntitiesRequest>())).ReturnsAsync(expected);
         var actual = await handler.Handle(query, new CancellationToken());
-        actual.Should().Be(expected?.Select(legalEntities => (LegalEntity)legalEntities));
+        actual.LegalEntities.Should().BeEquivalentTo(expected?.Select(legalEntities => (LegalEntity)legalEntities));
     }
 }
