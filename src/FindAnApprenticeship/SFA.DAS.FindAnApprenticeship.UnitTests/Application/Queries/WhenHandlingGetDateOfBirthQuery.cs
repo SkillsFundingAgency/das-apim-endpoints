@@ -13,15 +13,15 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries;
 public class WhenHandlingGetDateOfBirthQuery
 {
     [Test, MoqAutoData]
-    public async Task Then_Gets_CandidatePreferences_From_Candidates_Api(
+    public async Task Then_Gets_DateOfBirth_From_Candidates_Api(
         GetDateOfBirthQuery query,
-        GetCandidateDateOfBirthApiResponse apiResponse,
+        GetCandidateApiResponse apiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         GetDateOfBirthQueryHandler handler)
     {
         mockApiClient
-            .Setup(client => client.Get<GetCandidateDateOfBirthApiResponse>(
-                It.Is<GetCandidateDateOfBirthApiRequest>(c => c.GetUrl.Contains(query.GovUkIdentifier))))
+            .Setup(client => client.Get<GetCandidateApiResponse>(
+                It.Is<GetCandidateApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
             .ReturnsAsync(apiResponse);
 
         var result = await handler.Handle(query, CancellationToken.None);
@@ -30,15 +30,14 @@ public class WhenHandlingGetDateOfBirthQuery
     }
 
     [Test, MoqAutoData]
-    public async Task And_No_CandidatePreferences_Returned_Then_Empty_List(
+    public async Task And_No_DateOfBirth_Returned_Then_Returns_Null(
         GetDateOfBirthQuery query,
-        GetCandidateDateOfBirthApiResponse apiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         GetDateOfBirthQueryHandler handler)
     {
         mockApiClient
-            .Setup(client => client.Get<GetCandidateDateOfBirthApiResponse>(
-                It.Is<GetCandidateDateOfBirthApiRequest>(c => c.GetUrl.Contains(query.GovUkIdentifier))))
+            .Setup(client => client.Get<GetCandidateApiResponse>(
+                It.Is<GetCandidateApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
             .ReturnsAsync(() => null);
 
         var result = await handler.Handle(query, CancellationToken.None);

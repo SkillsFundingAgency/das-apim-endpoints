@@ -36,6 +36,10 @@
         "loggingRedisKey": {
             "type": "string"
         },
+        "logAnalyticsWorkspaceId": {
+            "defaultValue": "",
+            "type": "string"
+        },
         "configurationStorageConnectionString": {
             "type": "securestring"
         },
@@ -56,7 +60,10 @@
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
-        "appServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]"
+        "appServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]",
+        "logAnalyticsWorkspaceProperties": {
+            "WorkspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]"
+        }
     },
     "resources": [
         {

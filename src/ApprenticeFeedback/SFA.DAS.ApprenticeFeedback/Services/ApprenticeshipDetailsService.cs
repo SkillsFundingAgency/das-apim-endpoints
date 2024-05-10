@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using SFA.DAS.ApprenticeFeedback.Application.Commands.UpdateApprenticeFeedbackTarget;
-using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
+using SFA.DAS.ApprenticeFeedback.Exceptions;
+using SFA.DAS.ApprenticeFeedback.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.ApprenticeAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Assessor;
@@ -16,21 +16,21 @@ namespace SFA.DAS.ApprenticeFeedback.Services
     {
         private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _apprenticeAccountsApiClient;
         private readonly IAssessorsApiClient<AssessorsApiConfiguration> _assessorsApiClient;
-        private readonly ILogger<UpdateApprenticeFeedbackTargetCommandHandler> _logger;
+        private readonly ILogger<ApprenticeshipDetailsService> _logger;
 
         public ApprenticeshipDetailsService(
             IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> apprenticeAccountsApiClient,
             IAssessorsApiClient<AssessorsApiConfiguration> assessorsApiClient, 
-            ILogger<UpdateApprenticeFeedbackTargetCommandHandler> logger)
+            ILogger<ApprenticeshipDetailsService> logger)
         {
             _apprenticeAccountsApiClient = apprenticeAccountsApiClient;
             _assessorsApiClient = assessorsApiClient;
             _logger = logger;
         }
 
-        public async Task<(LearnerData LearnerData, MyApprenticeshipData MyApprenticeshipData)> Get(Guid apprenticeId, long apprenticeshipId)
+        public async Task<ApprenticeshipDetails> Get(Guid apprenticeId, long apprenticeshipId)
         {
-            var apprenticeDetails = (LearnerData: (LearnerData)null, MyApprenticeshipData: (MyApprenticeshipData)null);
+            var apprenticeshipDetails = new ApprenticeshipDetails();
 
             try
             {
@@ -45,12 +45,12 @@ namespace SFA.DAS.ApprenticeFeedback.Services
                     {
                         errorMsg += $", Content: {learnerResponse.ErrorContent}";
                     }
-                    throw new Exception(errorMsg);
+                    throw new ApprenticeshipDetailsException(errorMsg);
                 }
 
-                apprenticeDetails.LearnerData = learnerResponse.Body;
+                apprenticeshipDetails.LearnerData = learnerResponse.Body;
 
-                if (apprenticeDetails.LearnerData == null)
+                if (apprenticeshipDetails.LearnerData == null)
                 {
                     _logger.LogDebug($"Retrieving my apprenticeship record with apprentice Id: {apprenticeId}");
                     var myApprenticeshipResponse = await _apprenticeAccountsApiClient.GetWithResponseCode<GetMyApprenticeshipResponse>(new GetMyApprenticeshipRequest(apprenticeId));
@@ -61,10 +61,10 @@ namespace SFA.DAS.ApprenticeFeedback.Services
                         {
                             errorMsg += $", Content: {myApprenticeshipResponse.ErrorContent}";
                         }
-                        throw new Exception(errorMsg);
+                        throw new ApprenticeshipDetailsException(errorMsg);
                     }
 
-                    apprenticeDetails.MyApprenticeshipData = myApprenticeshipResponse.Body;
+                    apprenticeshipDetails.MyApprenticeshipData = myApprenticeshipResponse.Body;
                 }
             }
             catch (Exception ex) 
@@ -72,7 +72,7 @@ namespace SFA.DAS.ApprenticeFeedback.Services
                 _logger.LogError(ex.Message);
             }
 
-            return apprenticeDetails;
+            return apprenticeshipDetails;
         }
     }
 }

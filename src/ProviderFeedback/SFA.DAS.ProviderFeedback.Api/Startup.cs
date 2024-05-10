@@ -43,7 +43,6 @@ public class Startup
         }
 
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetProviderFeedbackQueryHandler).Assembly));
-
         services.AddServiceRegistration(_configuration);
 
         services

@@ -8,19 +8,13 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.FindAnApprenticeship.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetInterviewAdjustments;
-public class GetInterviewAdjustmentsQueryHandler : IRequestHandler<GetInterviewAdjustmentsQuery, GetInterviewAdjustmentsQueryResult>
+public class GetInterviewAdjustmentsQueryHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
+    : IRequestHandler<GetInterviewAdjustmentsQuery, GetInterviewAdjustmentsQueryResult>
 {
-    private readonly ICandidateApiClient<CandidateApiConfiguration> _candidateApiClient;
-
-    public GetInterviewAdjustmentsQueryHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
-    {
-        _candidateApiClient = candidateApiClient;
-    }
-
     public async Task<GetInterviewAdjustmentsQueryResult> Handle(GetInterviewAdjustmentsQuery request, CancellationToken cancellationToken)
     {
-        var applicationTask = _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId));
-        var interviewAdjustmentsTask = _candidateApiClient.Get<GetAboutYouItemApiResponse>(new GetAboutYouItemApiRequest(request.ApplicationId, request.CandidateId));
+        var applicationTask = candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId));
+        var interviewAdjustmentsTask = candidateApiClient.Get<GetAboutYouItemApiResponse>(new GetAboutYouItemApiRequest(request.ApplicationId, request.CandidateId));
 
         await Task.WhenAll(applicationTask, interviewAdjustmentsTask);
 
@@ -29,7 +23,7 @@ public class GetInterviewAdjustmentsQueryHandler : IRequestHandler<GetInterviewA
 
         bool? isCompleted = application.InterviewAdjustmentsStatus switch
         {
-            Constants.SectionStatus.InProgress => false,
+            Constants.SectionStatus.Incomplete => false,
             Constants.SectionStatus.Completed => true,
             _ => null
         };
@@ -37,7 +31,7 @@ public class GetInterviewAdjustmentsQueryHandler : IRequestHandler<GetInterviewA
         return new GetInterviewAdjustmentsQueryResult
         {
             ApplicationId = application.Id,
-            InterviewAdjustmentsDescription = interviewAdjustments.AboutYou is null ? null : interviewAdjustments.AboutYou.Support,
+            InterviewAdjustmentsDescription = interviewAdjustments.AboutYou?.Support,
             IsSectionCompleted = isCompleted
         };
     }

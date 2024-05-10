@@ -2,9 +2,11 @@
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Responses;
+using SFA.DAS.ApprenticeFeedback.Models;
 using SFA.DAS.ApprenticeFeedback.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,29 +34,58 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.TriggerFeedbackTargetU
             
             if(apprenticeshipDetails.LearnerData == null && apprenticeshipDetails.MyApprenticeshipData == null)
             {
+                _logger.LogInformation($"Unable to retrieve my apprenticeship for ApprenticeId: {command.ApprenticeId} or learner for apprentice commitments Id: {command.ApprenticeshipId}");
+                return await DeferUpdateApprenticeFeedbackTarget(command.ApprenticeFeedbackTargetId);
+            }
+
+            return await UpdateApprenticeFeedbackTarget(command.ApprenticeFeedbackTargetId, apprenticeshipDetails);
+        }
+
+        private async Task<TriggerFeedbackTargetUpdateResponse> DeferUpdateApprenticeFeedbackTarget(Guid apprenticeFeedbackTargetId)
+        {
+            var request = new UpdateApprenticeFeedbackTargetDeferRequest(
+                new UpdateApprenticeFeedbackTargetDeferRequestData
+                {
+                    ApprenticeFeedbackTargetId = apprenticeFeedbackTargetId,
+                });
+
+            var response = await _feedbackApiClient.PostWithResponseCode<UpdateApprenticeFeedbackTargetDeferRequestData, ApprenticeFeedbackTarget>(request);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                var message = $"Error deferring update to the apprentice feedback target with ApprenticeFeedbackTargetId: {apprenticeFeedbackTargetId}, Content: {response.ErrorContent}";
+                _logger.LogError(message);
                 return new TriggerFeedbackTargetUpdateResponse()
                 {
                     Success = false,
-                    Message = $"Unable to retrieve my apprenticeship data Id: {command.ApprenticeId} or learner for apprentice commitments Id: {command.ApprenticeshipId}"
+                    Message = message
                 };
             }
-            
+
+            return new TriggerFeedbackTargetUpdateResponse()
+            {
+                Success = true
+            };
+        }
+
+        private async Task<TriggerFeedbackTargetUpdateResponse> UpdateApprenticeFeedbackTarget(Guid apprenticeFeedbackTargetId, ApprenticeshipDetails apprenticeshipDetails)
+        {
             var updateApprenticeFeedbackTargetRequest = new UpdateApprenticeFeedbackTargetRequest(
                 new UpdateApprenticeFeedbackTargetRequestData
                 {
-                    ApprenticeFeedbackTargetId = command.ApprenticeFeedbackTargetId,
+                    ApprenticeFeedbackTargetId = apprenticeFeedbackTargetId,
                     Learner = apprenticeshipDetails.LearnerData,
                     MyApprenticeship = apprenticeshipDetails.MyApprenticeshipData
                 });
 
-            var updateApprenticeFeedbackTargetResponse = await _feedbackApiClient.PostWithResponseCode<UpdateApprenticeFeedbackTargetRequestData, ApprenticeFeedbackTarget>(updateApprenticeFeedbackTargetRequest);
-            if (updateApprenticeFeedbackTargetResponse.StatusCode != System.Net.HttpStatusCode.OK)
+            var response = await _feedbackApiClient.PostWithResponseCode<UpdateApprenticeFeedbackTargetRequestData, ApprenticeFeedbackTarget>(updateApprenticeFeedbackTargetRequest);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                _logger.LogError($"Error updating the apprentice feedback target with Id: {command.ApprenticeFeedbackTargetId}, Content: {updateApprenticeFeedbackTargetResponse.ErrorContent}");
+                var message = $"Error updating the apprentice feedback target with ApprenticeFeedbackTargetId: {apprenticeFeedbackTargetId}, Content: {response.ErrorContent}";
+                _logger.LogError(message);
                 return new TriggerFeedbackTargetUpdateResponse()
                 {
                     Success = false,
-                    Message = updateApprenticeFeedbackTargetResponse.ErrorContent
+                    Message = message
                 };
             }
 
