@@ -1,12 +1,13 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses
 {
     public class GetLegacyApplicationsByEmailApiResponse
     {
-        [JsonProperty("apprenticeships")]
+        [JsonPropertyName("apprenticeships")]
         public List<Application> Applications { get; set; }
 
         public class Application
@@ -24,9 +25,9 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses
         public class CandidateInformation
         {
             public List<Qualification> Qualifications { get; set; } = null!;
-            [JsonProperty("workExperience")]
+            [JsonPropertyName("workExperience")]
             public List<WorkExperience> WorkExperiences { get; set; } = null!;
-            [JsonProperty("aboutYou")]
+            [JsonPropertyName("aboutYou")]
             public AboutYou AboutYou { get; set; }
 
         }
@@ -41,46 +42,46 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses
         }
         public class WorkExperience
         {
-            [JsonProperty("employer")]
+            [JsonPropertyName("employer")]
             public string Employer { get; set; }
 
-            [JsonProperty("jobTitle")]
+            [JsonPropertyName("jobTitle")]
             public string JobTitle { get; set; }
 
-            [JsonProperty("description")]
+            [JsonPropertyName("description")]
             public string Description { get; set; }
 
-            [JsonProperty("fromDate")]
+            [JsonPropertyName("fromDate")]
             public DateTime FromDate { get; set; }
 
-            [JsonProperty("toDate")]
+            [JsonPropertyName("toDate")]
             public DateTime ToDate { get; set; }
         }
 
         public class TrainingCourse
         {
-            [JsonProperty("provider")]
+            [JsonPropertyName("provider")]
             public string Provider { get; set; }
-            [JsonProperty("title")]
+            [JsonPropertyName("title")]
             public string Title { get; set; }
-            [JsonProperty("fromDate")]
+            [JsonPropertyName("fromDate")]
             public DateTime FromDate { get; set; }
-            [JsonProperty("toDate")]
+            [JsonPropertyName("toDate")]
             public DateTime ToDate { get; set; }
         }
 
         public class AboutYou
         {
-            [JsonProperty("strengths")]
+            [JsonPropertyName("strengths")]
             public string Strengths { get; set; }
 
-            [JsonProperty("improvements")]
+            [JsonPropertyName("improvements")]
             public string Improvements { get; set; }
 
-            [JsonProperty("hobbiesAndInterests")]
+            [JsonPropertyName("hobbiesAndInterests")]
             public string HobbiesAndInterests { get; set; }
 
-            [JsonProperty("support")]
+            [JsonPropertyName("support")]
             public string Support { get; set; }
         }
     }

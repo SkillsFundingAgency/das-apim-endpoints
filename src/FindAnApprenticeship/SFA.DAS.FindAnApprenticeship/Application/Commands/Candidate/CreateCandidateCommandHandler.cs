@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Requests;
@@ -22,14 +24,17 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
     private readonly ICandidateApiClient<CandidateApiConfiguration> _candidateApiClient;
     private readonly IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> _legacyApiClient;
     private readonly IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> _findApprenticeshipApiClient;
+    private readonly ILogger<CreateCandidateCommandHandler> _logger;
 
     public CreateCandidateCommandHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
         IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> legacyApiClient,
-        IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient)
+        IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
+        ILogger<CreateCandidateCommandHandler> logger)
     {
         _candidateApiClient = candidateApiClient;
         _legacyApiClient = legacyApiClient;
         _findApprenticeshipApiClient = findApprenticeshipApiClient;
+        _logger = logger;
     }
 
     public async Task<CreateCandidateCommandResult> Handle(CreateCandidateCommand request, CancellationToken cancellationToken)
@@ -96,14 +101,28 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
 
     private async Task MigrateLegacyApplications(Guid candidateId, string emailAddress)
     {
+        _logger.LogInformation($"Migrating applications for candidate [{candidateId}] using email address [{emailAddress}].");
+
         var legacyApplications =
             await _legacyApiClient.Get<GetLegacyApplicationsByEmailApiResponse>(
                 new GetLegacyApplicationsByEmailApiRequest(emailAddress));
+
+        if (legacyApplications?.Applications == null || legacyApplications.Applications.Count == 0)
+        {
+            _logger.LogInformation($"No legacy applications found for email address [{emailAddress}].");
+            return;
+        }
 
         foreach (var legacyApplication in legacyApplications.Applications)
         {
             var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(
                     new GetVacancyRequest(legacyApplication.Vacancy.VacancyReference));
+
+            if (vacancy == null)
+            {
+                _logger.LogError($"Unable to retrieve vacancy [{legacyApplication.Vacancy.VacancyReference}].");
+                continue;
+            }
 
             var additionalQuestions = new List<string>();
             if (vacancy.AdditionalQuestion1 != null) { additionalQuestions.Add(vacancy.AdditionalQuestion1); }
