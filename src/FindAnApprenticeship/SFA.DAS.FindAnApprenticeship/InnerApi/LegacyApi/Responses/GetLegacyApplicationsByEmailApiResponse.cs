@@ -11,7 +11,14 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses
 
         public class Application
         {
+            public Vacancy Vacancy { get; set; }
             public CandidateInformation CandidateInformation { get; set; }
+        }
+
+        public class Vacancy
+        {
+            public long Id { get; set; }
+            public string VacancyReference { get; set; }
         }
 
         public class CandidateInformation
