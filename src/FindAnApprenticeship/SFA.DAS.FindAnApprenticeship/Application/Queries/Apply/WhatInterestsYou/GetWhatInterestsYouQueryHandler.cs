@@ -27,6 +27,7 @@ public class GetWhatInterestsYouQueryHandler(
         bool? isCompleted = application.InterestsStatus switch
         {
             Constants.SectionStatus.Incomplete => false,
+            Constants.SectionStatus.InProgress => false,
             Constants.SectionStatus.Completed => true,
             _ => null
         };

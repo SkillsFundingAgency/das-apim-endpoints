@@ -16,6 +16,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             source.Vacancy.Ukprn = ukprn.ToString();
             source.Vacancy.WageType = 3;
             source.Vacancy.WageUnit = 1;
+            source.Vacancy.VacancyReference = $"VAC{source.Vacancy.VacancyReference}";
             
             var actual = (GetVacancyResponse)source;
             
@@ -45,6 +46,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(c=>c.Score)
                 .Excluding(c=>c.IsPositiveAboutDisability)
                 .Excluding(item => item.Ukprn)
+                .Excluding(item => item.VacancyReference)
             );
             actual.FullDescription.Should().Be(source.Vacancy.LongDescription);
             actual.Qualifications.Should().BeEquivalentTo(source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());
@@ -61,6 +63,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.Wage.WageAmountLowerBound.Should().Be(source.Vacancy.WageAmountLowerBound);
             actual.Wage.WageAmountUpperBound.Should().Be(source.Vacancy.WageAmountUpperBound);
             actual.Ukprn.Should().Be(ukprn);
+            actual.VacancyReference.Should().Be(source.Vacancy.VacancyReference.Replace("VAC", ""));
         }
 
         [Test, AutoData]
