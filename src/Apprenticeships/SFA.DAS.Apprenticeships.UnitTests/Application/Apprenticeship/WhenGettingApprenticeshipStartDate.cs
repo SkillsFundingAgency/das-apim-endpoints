@@ -118,12 +118,22 @@ public class WhenGettingApprenticeshipStartDate
         _mockCollectionCalendarApiClient
             .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(y =>
                 y._dateTime == _expectedResponse.ActualStartDate.Value.ToString("yyyy-MM-dd"))))
-            .ReturnsAsync(new GetAcademicYearsResponse { StartDate = _expectedEarliestStartDate });
+            .ReturnsAsync(new GetAcademicYearsResponse { StartDate = _expectedEarliestStartDate, AcademicYear = _expectedResponse.CurrentAcademicYear.AcademicYear });
 
         _mockCollectionCalendarApiClient
             .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(y =>
                 y._dateTime == _expectedResponse.ActualStartDate.Value.AddYears(1).ToString("yyyy-MM-dd"))))
             .ReturnsAsync(new GetAcademicYearsResponse { EndDate = _expectedLatestStartDate });
+
+        _mockCollectionCalendarApiClient
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(y =>
+                y._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
+            .ReturnsAsync(new GetAcademicYearsResponse { AcademicYear = _expectedResponse.CurrentAcademicYear.AcademicYear });
+
+        _mockCollectionCalendarApiClient
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(y =>
+                y._dateTime == DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"))))
+            .ReturnsAsync(new GetAcademicYearsResponse { AcademicYear = _expectedResponse.PreviousAcademicYear.AcademicYear });
 
         _sut = new GetApprenticeshipStartDateQueryHandler(_mocklogger.Object, _mockApprenticeshipsApiClient.Object, _mockCommitmentsV2ApiApiClient.Object, _mockCollectionCalendarApiClient.Object);
     }
@@ -143,6 +153,8 @@ public class WhenGettingApprenticeshipStartDate
         result.EarliestStartDate.Should().Be(_expectedEarliestStartDate);
         result.LatestStartDate.Should().Be(_expectedLatestStartDate);
         result.LastFridayOfSchool.Should().Be(_expectedLastFridayOfSchool);
+        result.CurrentAcademicYear.AcademicYear.Should().Be(_expectedResponse.CurrentAcademicYear.AcademicYear);
+        result.PreviousAcademicYear.AcademicYear.Should().Be(_expectedResponse.PreviousAcademicYear.AcademicYear);
     }
 
     [TestCase(true, true)]
