@@ -124,24 +124,11 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
                 continue;
             }
 
-            var additionalQuestions = new List<string>();
-            if (vacancy.AdditionalQuestion1 != null) { additionalQuestions.Add(vacancy.AdditionalQuestion1); }
-            if (vacancy.AdditionalQuestion2 != null) { additionalQuestions.Add(vacancy.AdditionalQuestion2); }
+            var data = PostApplicationApiRequest.PostApplicationApiRequestData.Map(legacyApplication, vacancy, candidateId);
+            var postRequest = new PostApplicationApiRequest(data);
 
-            PutApplicationApiRequest.PutApplicationApiRequestData putApplicationApiRequestData = new PutApplicationApiRequest.PutApplicationApiRequestData
-            {
-                CandidateId = candidateId,
-                AdditionalQuestions = additionalQuestions,
-                IsAdditionalQuestion1Complete = string.IsNullOrEmpty(vacancy.AdditionalQuestion1) ? (short)4 : (short)0,
-                IsAdditionalQuestion2Complete = string.IsNullOrEmpty(vacancy.AdditionalQuestion2) ? (short)4 : (short)0,
-                IsDisabilityConfidenceComplete = vacancy.IsDisabilityConfident ? (short)0 : (short)4
-            };
-            var putData = putApplicationApiRequestData;
-            var vacancyReference =
-                legacyApplication.Vacancy.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
-            var putRequest = new PutApplicationApiRequest(vacancyReference, putData);
             var applicationResult =
-                await _candidateApiClient.PutWithResponseCode<PutApplicationApiResponse>(putRequest);
+                await _candidateApiClient.PostWithResponseCode<PostApplicationApiResponse>(postRequest);
 
             applicationResult.EnsureSuccessStatusCode();
         }

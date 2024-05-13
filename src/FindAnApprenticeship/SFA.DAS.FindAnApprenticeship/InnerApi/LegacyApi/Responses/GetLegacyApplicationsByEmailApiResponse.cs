@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses.Enums;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses
 {
@@ -12,6 +12,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses
 
         public class Application
         {
+            public ApplicationStatus Status { get; set; }
             public Vacancy Vacancy { get; set; }
             public CandidateInformation CandidateInformation { get; set; }
         }
@@ -27,6 +28,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses
             public List<Qualification> Qualifications { get; set; } = null!;
             [JsonPropertyName("workExperience")]
             public List<WorkExperience> WorkExperiences { get; set; } = null!;
+            [JsonPropertyName("trainingCourses")]
+            public List<TrainingCourse> TrainingCourses { get; set; } = null!;
             [JsonPropertyName("aboutYou")]
             public AboutYou AboutYou { get; set; }
 

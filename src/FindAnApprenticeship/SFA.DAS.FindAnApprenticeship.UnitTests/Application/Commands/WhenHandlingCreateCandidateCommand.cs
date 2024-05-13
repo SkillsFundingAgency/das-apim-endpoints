@@ -233,7 +233,7 @@ public class WhenHandlingPostCandidateCommand
         PostCandidateApiResponse response,
         GetLegacyApplicationsByEmailApiResponse legacyApplicationsResponse,
         GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
-        PutApplicationApiResponse candidateApiResponse,
+        PostApplicationApiResponse candidateApiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
         CreateCandidateCommandHandler handler)
@@ -272,14 +272,14 @@ public class WhenHandlingPostCandidateCommand
             .ReturnsAsync(() => legacyApplicationsResponse);
 
         mockApiClient
-            .Setup(client => client.PutWithResponseCode<PutApplicationApiResponse>(
-                It.IsAny<PutApplicationApiRequest>()))
-            .ReturnsAsync(new ApiResponse<PutApplicationApiResponse>(candidateApiResponse, HttpStatusCode.OK, string.Empty));
+            .Setup(client => client.PostWithResponseCode<PostApplicationApiResponse>(
+                It.IsAny<PostApplicationApiRequest>(), true))
+            .ReturnsAsync(new ApiResponse<PostApplicationApiResponse>(candidateApiResponse, HttpStatusCode.OK, string.Empty));
 
         await handler.Handle(command, CancellationToken.None);
 
         mockApiClient.Verify(
-            x => x.PutWithResponseCode<PutApplicationApiResponse>(It.IsAny<PutApplicationApiRequest>()),
+            x => x.PostWithResponseCode<PostApplicationApiResponse>(It.IsAny<PostApplicationApiRequest>(), true),
             Times.Exactly(legacyApplicationsResponse.Applications.Count));
     }
 }

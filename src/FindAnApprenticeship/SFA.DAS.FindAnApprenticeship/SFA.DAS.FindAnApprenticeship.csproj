@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <Folder Include="Application\Commands\Apply\PatchApplicationDisabilityConfidence\" />
-    <Folder Include="InnerApi\LegacyApi\Responses\Enums\" />
   </ItemGroup>
 
 </Project>
