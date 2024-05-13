@@ -17,7 +17,7 @@ public class PatchRejectApprenticeshipStartDateChangeRequest : IPatchApiRequest<
 	}
 
 	public Guid ApprenticeshipKey { get; set; }
-	public string PatchUrl => $"{ApprenticeshipKey}/startDateChange/pending";
+	public string PatchUrl => $"{ApprenticeshipKey}/startDateChange/reject";
 	public RejectApprenticeshipStartDateChangeRequest Data { get; set; }
 }
 
