@@ -29,6 +29,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
         public List<GetWorkHistoryItemApiResponse> WorkHistory { get; set; } = [];
         public AboutYouItem AboutYou { get; set; }
         public GetCandidateApiResponse Candidate { get; set; }
+        public DateTime SubmittedDate { get; set; }
     }
 
     public class Question
