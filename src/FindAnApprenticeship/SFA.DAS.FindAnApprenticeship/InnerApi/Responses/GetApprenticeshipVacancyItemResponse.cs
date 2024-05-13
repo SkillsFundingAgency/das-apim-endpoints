@@ -95,6 +95,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonProperty("isClosed")]
         public bool IsClosed { get; set; }
 
+        [JsonProperty("closedDate")]
+        public DateTime? ClosedDate { get; }
     }
 
     public class VacancyQualification

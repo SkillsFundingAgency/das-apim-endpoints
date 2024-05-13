@@ -39,7 +39,7 @@ public class GetApplicationsQueryHandler(
                 VacancyReference = vacancy?.VacancyReference,
                 EmployerName = vacancy?.EmployerName,
                 Title = vacancy?.Title,
-                ClosingDate = vacancy!.ClosingDate,
+                ClosingDate = vacancy?.ClosedDate ?? vacancy!.ClosingDate,
                 CreatedDate = application.CreatedDate,
                 Status = request.Status,
                 SubmittedDate = application.SubmittedDate,

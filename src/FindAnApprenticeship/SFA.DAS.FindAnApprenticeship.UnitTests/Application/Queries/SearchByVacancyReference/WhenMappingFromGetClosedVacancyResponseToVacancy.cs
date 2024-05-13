@@ -9,28 +9,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
 public class WhenMappingFromGetClosedVacancyResponseToVacancy
 {
     [Test, AutoData]
-    public void Then_The_Fields_Are_Mapped_For_Closed(GetClosedVacancyResponse source)
+    public void Then_The_Fields_Are_Mapped_For_Closed_Vacancy(GetClosedVacancyResponse source)
     {
-        source.ViewType = "LiveVacancy";
-        
-        var actual = (GetApprenticeshipVacancyQueryResult.Vacancy)source;
-
-        actual.ClosingDate.Should().Be(source.ClosingDate);
-        AssertFields(source, actual);
-    }
-    [Test, AutoData]
-    public void Then_The_Fields_Are_Mapped_For_Closed_Early(GetClosedVacancyResponse source)
-    {
-        source.ViewType = "ClosedVacancy";
-        
         var actual = (GetApprenticeshipVacancyQueryResult.Vacancy)source;
         
-        actual.ClosingDate.Should().Be(source.LastUpdated);
-        AssertFields(source, actual);
-    }
-
-    private static void AssertFields(GetClosedVacancyResponse source, GetApprenticeshipVacancyQueryResult.Vacancy actual)
-    {
+        actual.ClosingDate.Should().Be(source.ClosedDate);
         actual.Id.Should().Be(source.VacancyReferenceNumeric.ToString());
         actual.VacancyReference.Should().Be(source.VacancyReference);
         actual.EmployerName.Should().Be(source.EmployerName);
@@ -43,4 +26,5 @@ public class WhenMappingFromGetClosedVacancyResponseToVacancy
         actual.Address.Postcode.Should().Be(source.EmployerLocation?.Postcode);
         actual.Ukprn.Should().Be(source.TrainingProvider.Ukprn.ToString());
     }
+
 }

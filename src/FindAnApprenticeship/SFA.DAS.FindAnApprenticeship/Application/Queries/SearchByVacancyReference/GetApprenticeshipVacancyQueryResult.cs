@@ -114,7 +114,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     VacancyReference = source.VacancyReference,
                     EmployerName = source.EmployerName,
                     Title = source.Title,
-                    ClosingDate = source.ViewType.Equals("LiveVacancy") ? source.ClosingDate : source.LastUpdated,
+                    ClosingDate = source.ClosedDate ?? source.ClosingDate,
                     IsClosed = true,
                     Address = new Address
                     {
