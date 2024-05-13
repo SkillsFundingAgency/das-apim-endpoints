@@ -18,7 +18,7 @@ public class WithdrawApplicationQueryHandler(
     public async Task<WithdrawApplicationQueryResult> Handle(WithdrawApplicationQuery request, CancellationToken cancellationToken)
     {
         var application = await candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
-        if (application is null || application.Status != "Submitted")
+        if (application is not { Status: "Submitted" })
         {
             return new WithdrawApplicationQueryResult();
         }
