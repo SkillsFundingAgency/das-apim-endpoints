@@ -25,11 +25,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         UpsertAboutYouEqualityQuestionsCommandHandler handler)
         {
-            var expectedRequest = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData());
+            var expectedRequest = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, apiResponse.AboutYou.Id, new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData());
 
             candidateApiClient
                 .Setup(client => client.PutWithResponseCode<PutUpsertAboutYouItemApiResponse>(
-                    It.Is<PutUpsertAboutYouItemApiRequest>(r => r.PutUrl.StartsWith(expectedRequest.PutUrl.Substring(0, 86)))))
+                    It.Is<PutUpsertAboutYouItemApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
                 .ReturnsAsync(new ApiResponse<PutUpsertAboutYouItemApiResponse>(createSkillsAndStrengthsApiResponse, HttpStatusCode.OK, string.Empty));
 
             var expectedApiRequest = new GetAboutYouItemApiRequest(command.ApplicationId, command.CandidateId);

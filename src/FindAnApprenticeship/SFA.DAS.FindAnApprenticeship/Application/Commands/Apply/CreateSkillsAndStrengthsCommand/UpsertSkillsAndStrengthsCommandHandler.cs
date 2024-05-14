@@ -42,6 +42,8 @@ public class UpsertSkillsAndStrengthsCommandHandler : IRequestHandler<UpsertSkil
 
         var aboutYouItem = await _apiClient.Get<GetAboutYouItemApiResponse>(new GetAboutYouItemApiRequest(command.ApplicationId, command.CandidateId));
 
+        aboutYouItem.AboutYou ??= new AboutYouItem();
+
         var requestBody = new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData
         {
             SkillsAndStrengths = command.SkillsAndStrengths,

@@ -43,6 +43,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string ApprenticeshipLevel { get; set; }
         public string WageText { get; set; }
         public bool IsDisabilityConfident { get; set; }
+        public double? Lon { get; set; }
+
+        public double? Lat { get; set; }
         public CandidateApplicationDetails? Application { get; set; }
 
         public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
@@ -71,8 +74,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 CourseLevel = source.CourseLevel,
                 IsDisabilityConfident = source.IsDisabilityConfident,
                 Application = source.Application,
+                Lat = source.Location.Lat,
+                Lon = source.Location.Lon,
             };
         }
+
+        
     }
 
     public class CandidateApplicationDetails

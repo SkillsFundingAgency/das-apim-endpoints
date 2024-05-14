@@ -59,7 +59,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     VacancyReference = vacancy.VacancyReference,
                     EmployerName = vacancy.EmployerName,
                     CreatedDate = application.CreatedDate,
-                    ClosingDate = vacancy.ClosingDate,
+                    ClosingDate = vacancy.ClosedDate ?? vacancy.ClosingDate,
                     SubmittedDate = application.SubmittedDate,
                     Status = query.Status,
                     ResponseDate = application.ResponseDate,
