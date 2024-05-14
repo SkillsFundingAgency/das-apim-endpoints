@@ -8,7 +8,7 @@ public class GetWithdrawnApplicationApiResponse
     public Guid ApplicationId { get; set; }
     public string AdvertTitle { get; set; }
     public string EmployerName { get; set; }
-    public DateTime SubmittedDate { get; set; }
+    public DateTime? SubmittedDate { get; set; }
     public DateTime ClosingDate { get; set; }
     
     public static implicit operator GetWithdrawnApplicationApiResponse(WithdrawApplicationQueryResult source)
