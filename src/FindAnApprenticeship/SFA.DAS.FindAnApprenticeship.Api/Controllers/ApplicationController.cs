@@ -12,6 +12,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationSt
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationDisabilityConfidence;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationTrainingCourses;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationVolunteeringAndWorkHistory;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.SubmitApplication;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplicationSubmitted;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
@@ -191,6 +192,29 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
 
             return Ok(result.Application);
+        }
+
+        [HttpPost("preview")]
+        public async Task<IActionResult> SubmitApplication(
+            [FromRoute] Guid applicationId,
+            [FromQuery] Guid candidateId)
+        {
+            try
+            {
+                await _mediator.Send(new SubmitApplicationCommand
+                {
+                    ApplicationId = applicationId,
+                    CandidateId = candidateId
+                });
+            
+                return Created();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error submitting submitted {applicationId}", applicationId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+            
         }
 
         [HttpGet("submitted")]

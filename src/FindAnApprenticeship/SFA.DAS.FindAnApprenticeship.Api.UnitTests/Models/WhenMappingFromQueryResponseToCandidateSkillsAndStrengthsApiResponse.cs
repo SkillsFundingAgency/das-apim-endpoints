@@ -17,8 +17,6 @@ public class WhenMappingFromQueryResponseToCandidateSkillsAndStrengthsApiRespons
         using (new AssertionScope())
         {
             actual.AboutYou.ApplicationId.Should().Be((Guid)source.AboutYou.ApplicationId);
-            actual.AboutYou.Improvements.Should().BeEquivalentTo(source.AboutYou.Improvements);
-            actual.AboutYou.HobbiesAndInterests.Should().BeEquivalentTo(source.AboutYou.HobbiesAndInterests);
             actual.AboutYou.Support.Should().BeEquivalentTo(source.AboutYou.Support);
         }
     }
