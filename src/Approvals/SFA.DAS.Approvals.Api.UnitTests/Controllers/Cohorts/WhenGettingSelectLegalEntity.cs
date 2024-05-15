@@ -21,7 +21,7 @@ public class WhenGettingSelectLegalEntity
     public async Task Then_Gets_Account_From_Mediator(
         long accountId,
         GetSelectLegalEntityQueryResult mediatorResult,
-        [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] Mock<ISender> mockMediator,
         [Greedy] CohortController controller)
     {
         mockMediator
