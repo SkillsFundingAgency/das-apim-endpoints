@@ -51,6 +51,7 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
             EmployerName = vacancy.EmployerName,
             ClosingDate = vacancy.ClosingDate,
             IsDisabilityConfident = vacancy.IsDisabilityConfident,
+            IsApplicationComplete = application.ApplicationAllSectionStatus.Equals("Completed", StringComparison.CurrentCultureIgnoreCase),
             EducationHistory = new GetIndexQueryResult.EducationHistorySection
             {
                 Qualifications = application.QualificationsStatus,
