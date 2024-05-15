@@ -28,6 +28,7 @@ namespace SFA.DAS.Approvals.Api.Models
         public long AccountLegalEntityId { get; set; }
         public string HashedAccountId { get; set; }
         public long LegalEntityId { get; set; }
+        public List<GetLegalEntityAgreementResponse> Agreements { get; set; }
         public static implicit operator GetLegalEntityResponse(GetLegalEntitiesForAccountResponseItem source)
         {
             return new GetLegalEntityResponse
@@ -38,8 +39,24 @@ namespace SFA.DAS.Approvals.Api.Models
                 AccountLegalEntityId = source.AccountLegalEntityId,
                 HashedAccountId = source.HashedAccountId,
                 LegalEntityId = source.LegalEntityId,
+                Agreements = source.Agreements.ConvertAll(a => (GetLegalEntityAgreementResponse)a),
                 HasLegalAgreement = source.Agreements.Any(a =>
                 a.Status == EmployerAgreementStatus.Signed)
+            };
+        }
+    }
+
+    public class GetLegalEntityAgreementResponse
+    {
+        public long Id { get; set; }
+        public EmployerAgreementStatus Status { get; set; }
+        
+        public static implicit operator GetLegalEntityAgreementResponse(Agreement source)
+        {
+            return new GetLegalEntityAgreementResponse
+            {
+                Id = source.Id,
+                Status = source.Status
             };
         }
     }
