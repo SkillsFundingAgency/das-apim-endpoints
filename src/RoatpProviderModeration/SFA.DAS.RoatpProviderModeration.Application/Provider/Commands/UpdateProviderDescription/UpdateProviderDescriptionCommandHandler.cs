@@ -1,31 +1,40 @@
 ﻿using MediatR;
+using SFA.DAS.RoatpProviderModeration.Application.Infrastructure;
 using SFA.DAS.RoatpProviderModeration.Application.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Web;
 
-namespace SFA.DAS.RoatpProviderModeration.Application.Provider.Commands.UpdateProviderDescription
+
+namespace SFA.DAS.RoatpProviderModeration.Application.Provider.Commands.UpdateProviderDescription;
+
+public class UpdateProviderDescriptionCommandHandler : IRequestHandler<UpdateProviderDescriptionCommand, Unit>
 {
-    public class UpdateProviderDescriptionCommandHandler : IRequestHandler<UpdateProviderDescriptionCommand, Unit>
+    private readonly IRoatpV2ApiClient _innerApiClient;
+    public UpdateProviderDescriptionCommandHandler(IRoatpV2ApiClient innerApiClient)
     {
-        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _innerApiClient;
-        public UpdateProviderDescriptionCommandHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> innerApiClient)
-        {
-            _innerApiClient = innerApiClient;
-        }
+        _innerApiClient = innerApiClient;
+    }
 
-        public async Task<Unit> Handle(UpdateProviderDescriptionCommand command, CancellationToken cancellationToken)
-        {
-            var patchUpdateProvider = new ProviderUpdateModel
-            {
-                Ukprn = command.Ukprn,
-                UserId = command.UserId,
-                UserDisplayName = command.UserDisplayName,
-                MarketingInfo = command.ProviderDescription
-            };
+    public async Task<Unit> Handle(UpdateProviderDescriptionCommand command, CancellationToken cancellationToken)
+    {
+        var patchOperations = BuildDataPatchFromModel(command.ProviderDescription);
 
-            var patchRequest = new PatchProviderRequest(patchUpdateProvider);
-            await _innerApiClient.PatchWithResponseCode(patchRequest);
-            return Unit.Value;
-        }
+        await _innerApiClient.UpdateProviderDescription(
+                command.Ukprn,
+                HttpUtility.UrlEncode(command.UserId),
+                HttpUtility.UrlEncode(command.UserDisplayName),
+                patchOperations,
+                cancellationToken);
+
+        return Unit.Value;
+    }
+
+    private List<PatchOperation> BuildDataPatchFromModel(string providerDescription)
+    {
+        var data = new List<PatchOperation>();
+
+        if (providerDescription != null)
+            data.Add(new PatchOperation { Path = "MarketingInfo", Value = providerDescription, Op = "replace" });
+
+        return data;
     }
 }

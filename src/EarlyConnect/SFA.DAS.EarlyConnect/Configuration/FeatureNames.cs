@@ -3,5 +3,7 @@
     public static class FeatureNames
     {
         public const string NorthEastDataSharing = nameof(NorthEastDataSharing);
+        public const string LancashireDataSharing = nameof(LancashireDataSharing);
+        public const string LondonDataSharing = nameof(LondonDataSharing);
     }
 }

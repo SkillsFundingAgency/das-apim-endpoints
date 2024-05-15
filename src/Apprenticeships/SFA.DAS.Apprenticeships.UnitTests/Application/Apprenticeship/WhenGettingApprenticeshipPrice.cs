@@ -13,6 +13,8 @@ using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 
 namespace SFA.DAS.Apprenticeships.UnitTests.Application.Apprenticeship;
 
@@ -42,7 +44,8 @@ public class WhenGettingApprenticeshipPrice
 				ApprenticeshipPlannedEndDate = expectedResponse.ApprenticeshipPlannedEndDate,
 				AssessmentPrice = expectedResponse.AssessmentPrice,
 				FundingBandMaximum = expectedResponse.FundingBandMaximum,
-				TrainingPrice = expectedResponse.TrainingPrice
+				TrainingPrice = expectedResponse.TrainingPrice,
+				UKPRN = 123
 			});
 
 		mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
@@ -57,7 +60,13 @@ public class WhenGettingApprenticeshipPrice
 			HardCloseDate = expectedResponse.EarliestEffectiveDate
 		});
 
-		var handler = new GetApprenticeshipPriceQueryHandler(_mocklogger.Object, mockApprenticeshipsApiClient.Object, mockCommitmentsV2ApiApiClient.Object, mockCollectionCalendarApiClient.Object);
+        mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetProviderResponse>(It.IsAny<GetProviderRequest>()))
+            .ReturnsAsync(new GetProviderResponse
+            {
+                Name = expectedResponse.ProviderName!
+            });
+
+        var handler = new GetApprenticeshipPriceQueryHandler(_mocklogger.Object, mockApprenticeshipsApiClient.Object, mockCommitmentsV2ApiApiClient.Object, mockCollectionCalendarApiClient.Object);
 
 		//  Act
 		var result = await handler.Handle(new GetApprenticeshipPriceQuery( Guid.NewGuid()), CancellationToken.None);

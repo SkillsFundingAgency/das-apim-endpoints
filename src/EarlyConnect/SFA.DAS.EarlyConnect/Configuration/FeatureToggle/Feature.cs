@@ -3,11 +3,16 @@
     public interface IEarlyConnectFeaturesConfiguration 
     {
         bool NorthEastDataSharing { get; set; }
+        bool LancashireDataSharing { get; set; }
+        bool LondonDataSharing { get; set; }
+        
     }
 
     public class EarlyConnectFeaturesConfiguration : IEarlyConnectFeaturesConfiguration
     {
         public bool NorthEastDataSharing { get; set; }
+        public bool LancashireDataSharing { get; set; }
+        public bool LondonDataSharing { get; set; }
     }
 
     public class Feature : IFeature
@@ -24,7 +29,14 @@
             { 
                 return _featuresConfig.NorthEastDataSharing;
             }
-            
+            if (feature.Equals("LancashireDataSharing"))
+            {
+                return _featuresConfig.LancashireDataSharing;
+            }
+            if (feature.Equals("LondonDataSharing"))
+            {
+                return _featuresConfig.LondonDataSharing;
+            }
             return false;
         }
     }

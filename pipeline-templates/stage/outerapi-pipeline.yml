@@ -1,6 +1,12 @@
 parameters:
   OuterApiName:
   SandboxEnabled: $False
+  AddXForwardedAuthorization: $False
+  SharedOuterApiProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi/SFA.DAS.SharedOuterApi.csproj'
+  SharedOuterApiTestProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj' 
+  AdditionalProjectPathToInclude: ''
+  AdditionalTestProjectPathToInclude: ''
+
 stages:
 - stage: Build
   jobs:
@@ -9,10 +15,14 @@ stages:
       SonarCloudProjectKey: SkillsFundingAgency_das-apim-endpoints_${{ parameters.OuterApiName }}
       TargetProjects: |
         src/${{ parameters.OuterApiName }}/**/*.csproj
-        src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj
+        ${{ parameters.SharedOuterApiProjectPathToInclude }}
+        ${{ parameters.SharedOuterApiTestProjectPathToInclude }}
+        ${{ parameters.AdditionalProjectPathToInclude }}
+        ${{ parameters.AdditionalTestProjectPathToInclude }}
       UnitTestProjects: |
         src/${{ parameters.OuterApiName }}/**/*UnitTests.csproj
-        src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj
+        ${{ parameters.SharedOuterApiTestProjectPathToInclude }}
+        ${{ parameters.AdditionalTestProjectPathToInclude }}
       AcceptanceTestProjects: 'src/${{ parameters.OuterApiName }}/**/*AcceptanceTests.csproj'
       PublishProject: 'src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.Api/SFA.DAS.${{ parameters.OuterApiName }}.Api.csproj'
 
@@ -43,6 +53,7 @@ stages:
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
+      AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -71,6 +82,7 @@ stages:
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
+      AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -99,6 +111,7 @@ stages:
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
+      AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
 
 - stage: Deploy_PP
   dependsOn: Build
@@ -127,6 +140,7 @@ stages:
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
+      AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
 
 - stage: Deploy_PROD
   dependsOn: Build
@@ -154,6 +168,7 @@ stages:
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
+      AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
 
 - stage: Deploy_MO
   dependsOn: Build
@@ -181,6 +196,7 @@ stages:
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
+      AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
 
 - stage: Deploy_DEMO
   dependsOn: Build
@@ -209,3 +225,4 @@ stages:
       ProductId: $(${{ parameters.OuterApiName }}ProductId)
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
+      AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}

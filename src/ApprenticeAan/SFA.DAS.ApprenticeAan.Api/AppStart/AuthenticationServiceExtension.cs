@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.SharedOuterApi.AppStart;
 
 
 namespace SFA.DAS.ApprenticeAan.Api.AppStart;

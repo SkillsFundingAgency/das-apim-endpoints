@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -6,10 +6,9 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    <PackageReference Include="RestEase" />
+    <PackageReference Include="RestEase.HttpClientFactory" />
+    <PackageReference Include="SFA.DAS.Api.Common" />
   </ItemGroup>
 
 </Project>

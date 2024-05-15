@@ -63,13 +63,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
-                })
-                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
+                });
 
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                    .AddCheck<LocationsApiHealthCheck>("Locations API health check");
+                    .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription);
             }
             
             if (_configuration.IsLocalOrDev())

@@ -7,12 +7,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
 public class GetTrainingCoursesApiResponse
 {
+    public bool? IsSectionCompleted { get; set; }
     public List<TrainingCourse> TrainingCourses { get; set; } = [];
 
     public static implicit operator GetTrainingCoursesApiResponse(GetTrainingCoursesQueryResult source)
     {
         return new GetTrainingCoursesApiResponse
         {
+            IsSectionCompleted = source.IsSectionCompleted,
             TrainingCourses = source.TrainingCourses.Select(x => (TrainingCourse)x).ToList()
         };
     }

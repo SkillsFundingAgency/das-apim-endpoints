@@ -5,12 +5,11 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetQualifications;
-using SFA.DAS.VacanciesManage.Configuration;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
-using SFA.DAS.VacanciesManage.Interfaces;
 
 namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Queries
 {

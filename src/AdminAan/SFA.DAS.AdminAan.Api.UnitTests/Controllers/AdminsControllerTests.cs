@@ -6,7 +6,7 @@ using Moq;
 using SFA.DAS.AdminAan.Api.Controllers;
 using SFA.DAS.AdminAan.Api.Models.Admins;
 using SFA.DAS.AdminAan.Application.Admins.Commands.Create;
-using SFA.DAS.AdminAan.Application.Admins.Queries.Lookup;
+using SFA.DAS.AdminAan.Application.Admins.Queries.GetAdminMember;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminAan.Api.UnitTests.Controllers;
@@ -16,15 +16,15 @@ public class AdminsControllerTests
     public async Task LookupMember_MemberExists_InvokesRequest(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] AdminsController sut,
-        LookupAdminMemberRequestModel requestModel,
-        LookupAdminMemberResult expected,
+        GetAdminMemberRequestModel requestModel,
+        GetAdminMemberResult expected,
         CancellationToken cancellationToken)
     {
-        mediatorMock.Setup(m => m.Send(It.Is<LookupAdminMemberRequest>(x => x.Email == requestModel.Email), cancellationToken)).ReturnsAsync(expected);
+        mediatorMock.Setup(m => m.Send(It.Is<GetAdminMemberRequest>(x => x.Email == requestModel.Email), cancellationToken)).ReturnsAsync(expected);
 
         var response = await sut.Lookup(requestModel, cancellationToken);
 
-        mediatorMock.Verify(m => m.Send(It.Is<LookupAdminMemberRequest>(x => x.Email == requestModel.Email), cancellationToken));
+        mediatorMock.Verify(m => m.Send(It.Is<GetAdminMemberRequest>(x => x.Email == requestModel.Email), cancellationToken));
         response.As<OkObjectResult>().Value.Should().Be(expected);
     }
 
@@ -32,22 +32,22 @@ public class AdminsControllerTests
     public async Task LookupMember_MemberDoesNotExist_InvokesCreateAdminMember(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] AdminsController sut,
-        LookupAdminMemberRequestModel lookupRequestModel,
+        GetAdminMemberRequestModel requestModel,
         CreateAdminMemberCommandResult createAdminMemberCommandResult,
         CancellationToken cancellationToken)
     {
-        mediatorMock.Setup(m => m.Send(It.IsAny<LookupAdminMemberRequest>(), cancellationToken)).ReturnsAsync((LookupAdminMemberResult?)null);
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetAdminMemberRequest>(), cancellationToken)).ReturnsAsync((GetAdminMemberResult?)null);
         mediatorMock.Setup(m => m.Send(It.Is<CreateAdminMemberCommand>(
-                r => r.Email == lookupRequestModel.Email
-                     && r.FirstName == lookupRequestModel.FirstName
-                     && r.LastName == lookupRequestModel.LastName),
+                r => r.Email == requestModel.Email
+                     && r.FirstName == requestModel.FirstName
+                     && r.LastName == requestModel.LastName),
             cancellationToken)).ReturnsAsync(createAdminMemberCommandResult);
 
-        var response = await sut.Lookup(lookupRequestModel, cancellationToken);
+        var response = await sut.Lookup(requestModel, cancellationToken);
 
-        mediatorMock.Verify(m => m.Send(It.Is<LookupAdminMemberRequest>(x => x.Email == lookupRequestModel.Email), cancellationToken));
+        mediatorMock.Verify(m => m.Send(It.Is<GetAdminMemberRequest>(x => x.Email == requestModel.Email), cancellationToken));
 
-        var expected = new LookupAdminMemberResult
+        var expected = new GetAdminMemberResult
         {
             MemberId = createAdminMemberCommandResult.MemberId,
             Status = AdminsController.LiveStatus

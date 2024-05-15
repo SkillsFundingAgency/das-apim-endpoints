@@ -5,23 +5,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="Application\Interfaces\**"/>
-        <Compile Remove="Application\Services\**"/>
-        <Compile Remove="Models\**"/>
-        <EmbeddedResource Remove="Application\Interfaces\**"/>
-        <EmbeddedResource Remove="Application\Services\**"/>
-        <EmbeddedResource Remove="Models\**"/>
-        <None Remove="Application\Interfaces\**"/>
-        <None Remove="Application\Services\**"/>
-        <None Remove="Models\**"/>
+        <Compile Remove="Application\Interfaces\**" />
+        <Compile Remove="Application\Services\**" />
+        <EmbeddedResource Remove="Application\Interfaces\**" />
+        <EmbeddedResource Remove="Application\Services\**" />
+        <None Remove="Application\Interfaces\**" />
+        <None Remove="Application\Services\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj"/>
+        <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="MediatR"/>
+        <PackageReference Include="MediatR" />
     </ItemGroup>
 
 </Project>

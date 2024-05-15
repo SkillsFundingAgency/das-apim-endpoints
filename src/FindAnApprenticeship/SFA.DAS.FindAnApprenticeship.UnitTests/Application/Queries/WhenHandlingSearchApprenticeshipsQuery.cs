@@ -4,12 +4,15 @@ using FluentAssertions.Execution;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
@@ -28,6 +31,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             SearchApprenticeshipsQueryHandler handler)
         {
             // Arrange
+            query.CandidateId = string.Empty;
             locationLookupService
                 .Setup(service => service.GetLocationInformation(
                     query.Location, default, default, false))
@@ -96,6 +100,75 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             Assert.That(result, Is.Not.Null);
             result.VacancyReference.Should().Be(query.SearchTerm);
 
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Services_Are_Called_And_Data_Returned_Based_On_Request_When_Candidate_Id_Given(
+            Guid candidateId,
+            SearchApprenticeshipsQuery query,
+            LocationItem locationInfo,
+            GetVacanciesResponse vacanciesResponse,
+            GetRoutesListResponse routesResponse,
+            GetApplicationsApiResponse getApplicationsApiResponse,
+            [Frozen] Mock<ICourseService> courseService,
+            [Frozen] Mock<ILocationLookupService> locationLookupService,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            SearchApprenticeshipsQueryHandler handler)
+        {
+            // Arrange
+            query.CandidateId = candidateId.ToString();
+            locationLookupService
+                .Setup(service => service.GetLocationInformation(
+                    query.Location, default, default, false))
+                .ReturnsAsync(locationInfo);
+            courseService.Setup(x => x.GetRoutes()).ReturnsAsync(routesResponse);
+
+            var expectedUrl = new GetApplicationsApiRequest(candidateId);
+            candidateApiClient.Setup(service =>
+                    service.Get<GetApplicationsApiResponse>(
+                        It.Is<GetApplicationsApiRequest>(r => r.GetUrl == expectedUrl.GetUrl)))
+                .ReturnsAsync(getApplicationsApiResponse);
+
+            var categories = routesResponse.Routes.Where(route => query.SelectedRouteIds != null && query.SelectedRouteIds.Contains(route.Id.ToString()))
+                .Select(route => route.Name).ToList();
+
+            // Pass locationInfo to the request
+            var vacancyRequest = new GetVacanciesRequest(
+                locationInfo.GeoPoint?.FirstOrDefault(),
+                locationInfo.GeoPoint?.LastOrDefault(),
+                query.Distance,
+                query.SearchTerm,
+                query.PageNumber,
+                query.PageSize,
+                categories,
+                query.SelectedLevelIds,
+                query.Sort,
+                query.DisabilityConfident);
+
+            apiClient
+                .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
+                .ReturnsAsync(vacanciesResponse);
+
+            var totalPages = (int)Math.Ceiling((double)vacanciesResponse.TotalFound / query.PageSize);
+
+            // Act
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                Assert.That(result, Is.Not.Null);
+                result.TotalApprenticeshipCount.Should().Be(vacanciesResponse.Total);
+                result.TotalFound.Should().Be(vacanciesResponse.TotalFound);
+                result.LocationItem.Should().BeEquivalentTo(locationInfo);
+                result.Routes.Should().BeEquivalentTo(routesResponse.Routes);
+                result.Vacancies.Should().BeEquivalentTo(vacanciesResponse.ApprenticeshipVacancies);
+                result.PageNumber.Should().Be(query.PageNumber);
+                result.PageSize.Should().Be(query.PageSize);
+                result.TotalPages.Should().Be(totalPages);
+                result.DisabilityConfident.Should().Be(query.DisabilityConfident);
+            }
         }
     }
 }

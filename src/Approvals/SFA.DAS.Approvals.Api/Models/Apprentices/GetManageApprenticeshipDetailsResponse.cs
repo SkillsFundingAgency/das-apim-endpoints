@@ -17,6 +17,8 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
         public IReadOnlyCollection<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequest { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public PendingPriceChangeDetails PendingPriceChange { get; set; }
+        public PendingStartDateChangeDetails PendingStartDateChange { get; set; }
+        public bool? CanActualStartDateBeChanged { get; set; }
 
 		public class ApprenticeshipDetails
         {
@@ -170,9 +172,20 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
 
         public class PendingPriceChangeDetails
         {
-	        public decimal Cost { get; set; }
-	        public decimal? TrainingPrice { get; set; }
-	        public decimal? EndPointAssessmentPrice { get; set; }
+            public decimal Cost { get; set; }
+            public decimal? TrainingPrice { get; set; }
+            public decimal? EndPointAssessmentPrice { get; set; }
+            public DateTime? ProviderApprovedDate { get; set; }
+            public DateTime? EmployerApprovedDate { get; set; }
+            public string Initiator { get; set; }
         }
-	}
+
+        public class PendingStartDateChangeDetails
+        {
+            public DateTime PendingActualStartDate { get; set; }
+            public string? Initiator { get; set; }
+            public DateTime? ProviderApprovedDate { get; set; }
+            public DateTime? EmployerApprovedDate { get; set; }
+        }
+    }
 }

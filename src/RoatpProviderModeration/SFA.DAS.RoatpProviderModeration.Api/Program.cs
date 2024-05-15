@@ -1,12 +1,12 @@
 using System.Text.Json.Serialization;
-using MediatR;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using NLog.Web;
+using SFA.DAS.RoatpProviderModeration.Api.AppStart;
+using SFA.DAS.RoatpProviderModeration.Api.HealthCheck;
 using SFA.DAS.RoatpProviderModeration.Application.Provider.Queries.GetProvider;
 using SFA.DAS.RoatpProviderModeration.OuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +19,7 @@ var configuration = builder.Configuration.BuildSharedConfiguration();
 builder.Services
     .AddConfigurationOptions(configuration)
     .AddApplicationInsightsTelemetry()
-    .AddServiceRegistration()
+    .AddServiceRegistration(configuration)
     .AddAuthentication(configuration)
     .AddEndpointsApiExplorer()
     .AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetProviderQuery).Assembly))
@@ -40,9 +40,9 @@ builder.Services
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
-builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecks().AddCheck<RoatpV2ApiHealthCheck>(nameof(RoatpV2ApiHealthCheck));
 
-builder.Services.AddServiceRegistration();
+builder.Services.AddServiceHealthChecks();
 
 var app = builder.Build();
 
