@@ -12,12 +12,12 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class EmployerRequestController : Controller
+    public class EmployerRequestsControllers : Controller
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<EmployerRequestController> _logger;
+        private readonly ILogger<EmployerRequestsControllers> _logger;
 
-        public EmployerRequestController(IMediator mediator, ILogger<EmployerRequestController> logger)
+        public EmployerRequestsControllers(IMediator mediator, ILogger<EmployerRequestsControllers> logger)
         {
             _mediator = mediator;
             _logger = logger;

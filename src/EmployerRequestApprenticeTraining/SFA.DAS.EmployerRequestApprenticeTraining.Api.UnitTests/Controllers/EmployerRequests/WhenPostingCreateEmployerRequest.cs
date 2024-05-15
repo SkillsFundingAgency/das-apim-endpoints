@@ -14,19 +14,19 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers
+namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.EmployerRequests
 {
     public class WhenPostingCreateEmployerRequest
     {
         private Mock<IMediator> _mockMediator;
-        private EmployerRequestController _controller;
+        private EmployerRequestsControllers _controller;
 
         [SetUp]
         public void Arrange()
         {
             _mockMediator = new Mock<IMediator>();
 
-            _controller = new EmployerRequestController(_mockMediator.Object, Mock.Of<ILogger<EmployerRequestController>>());
+            _controller = new EmployerRequestsControllers(_mockMediator.Object, Mock.Of<ILogger<EmployerRequestsControllers>>());
         }
 
         [Test, MoqAutoData]
@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers
             CreateEmployerRequestCommand command,
             CreateEmployerRequestResponse response,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] EmployerRequestController controller)
+            [Greedy] EmployerRequestsControllers controller)
         {
             // Arrange
             mockMediator
@@ -43,7 +43,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers
 
             // Act
             var actual = await controller.CreateEmployerRequest(command) as ObjectResult;
-            
+
             // Assert
             Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -54,7 +54,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             Guid employerRequestId,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestController controller)
+            [Greedy] EmployerRequestsControllers controller)
         {
             // Arrange
             mediator.Setup(x => x.Send(It.IsAny<GetEmployerRequestQuery>(), CancellationToken.None))

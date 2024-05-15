@@ -11,5 +11,18 @@ namespace SFA.DAS.SharedOuterApi.Models
         public int Level { get; set; }
         public string Route { get; set; }
         public IEnumerable<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
+
+        public static explicit operator Standard(InnerApi.Responses.Courses.StandardDetailResponse source)
+        {
+            return new Standard()
+            {
+                StandardUId = source.StandardUId,
+                LarsCode = source.LarsCode,
+                Title = source.Title,
+                Level = source.Level,
+                Route = source.Route,
+                ApprenticeshipFunding = source.ApprenticeshipFunding
+            };
+        }
     }
 }

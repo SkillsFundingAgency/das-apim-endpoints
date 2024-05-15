@@ -14,10 +14,12 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.AppStart
             services.AddOptions();
 
             services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsApiConfiguration"));
+            services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
             services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection(nameof(EmployerProfilesApiConfiguration)));
             services.Configure<RequestApprenticeTrainingApiConfiguration>(configuration.GetSection(nameof(RequestApprenticeTrainingApiConfiguration)));
 
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<RequestApprenticeTrainingApiConfiguration>>().Value);
         }

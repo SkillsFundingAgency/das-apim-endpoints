@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
+using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Enums;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateEmployerRequest
 {

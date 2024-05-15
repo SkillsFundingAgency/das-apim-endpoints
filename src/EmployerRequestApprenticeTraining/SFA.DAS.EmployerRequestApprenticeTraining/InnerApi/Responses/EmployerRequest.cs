@@ -1,8 +1,8 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
+﻿using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Enums;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining
+namespace SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Responses
 {
     [ExcludeFromCodeCoverage]
     public class EmployerRequest

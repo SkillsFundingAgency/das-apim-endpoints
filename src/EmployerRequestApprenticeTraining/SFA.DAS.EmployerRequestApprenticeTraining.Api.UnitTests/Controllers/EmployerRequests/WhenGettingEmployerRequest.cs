@@ -6,45 +6,44 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers
+namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.EmployerRequests
 {
-    public class WhenGettingEmployerRequests
+    public class WhenGettingEmployerRequest
     {
         [Test, MoqAutoData]
-        public async Task Then_The_EmployerRequests_Are_Returned_From_Mediator(
-            long accountId,
-            GetEmployerRequestsResult queryResult,
+        public async Task Then_The_EmployerRequest_Is_Returned_From_Mediator(
+            Guid employerRequestId,
+            GetEmployerRequestResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] EmployerRequestController controller)
+            [Greedy] EmployerRequestsControllers controller)
         {
             mockMediator
-                .Setup(x => x.Send(It.Is<GetEmployerRequestsQuery>(p => p.AccountId == accountId), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<GetEmployerRequestQuery>(p => p.EmployerRequestId == employerRequestId), CancellationToken.None))
                 .ReturnsAsync(queryResult);
 
-            var actual = await controller.GetEmployerRequests(accountId) as ObjectResult;
+            var actual = await controller.GetEmployerRequest(employerRequestId) as ObjectResult;
 
             Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().BeEquivalentTo(queryResult.EmployerRequests);
+            actual.Value.Should().BeEquivalentTo(queryResult.EmployerRequest);
         }
 
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
-            long accountId,
+            Guid employerRequestId,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestController controller)
+            [Greedy] EmployerRequestsControllers controller)
         {
-            mediator.Setup(x => x.Send(It.IsAny<GetEmployerRequestsQuery>(), CancellationToken.None))
+            mediator.Setup(x => x.Send(It.IsAny<GetEmployerRequestQuery>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
-            var actual = await controller.GetEmployerRequests(accountId) as StatusCodeResult;
+            var actual = await controller.GetEmployerRequest(employerRequestId) as StatusCodeResult;
 
             Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

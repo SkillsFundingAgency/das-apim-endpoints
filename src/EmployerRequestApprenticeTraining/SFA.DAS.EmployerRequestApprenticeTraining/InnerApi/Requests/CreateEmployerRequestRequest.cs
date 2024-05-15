@@ -1,7 +1,8 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Enums;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining
+namespace SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests
 {
     [ExcludeFromCodeCoverage]
     public class CreateEmployerRequestRequest : IPostApiRequest<CreateEmployerRequestData>
@@ -20,10 +21,5 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining
     public class CreateEmployerRequestData
     {
         public RequestType RequestType { get; set; }
-    }
-
-    public enum RequestType
-    {
-        Shortlist = 1
     }
 }

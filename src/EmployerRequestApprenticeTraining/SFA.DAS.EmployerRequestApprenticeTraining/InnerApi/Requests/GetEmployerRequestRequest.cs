@@ -2,7 +2,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining
+namespace SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests
 {
     [ExcludeFromCodeCoverage]
     public class GetEmployerRequestRequest : IGetApiRequest

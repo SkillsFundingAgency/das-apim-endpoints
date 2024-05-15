@@ -49,6 +49,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
             
                 services.AddHealthChecks()
                     .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription)
                     .AddCheck<EmployerProfilesApiHealthCheck>(EmployerProfilesApiHealthCheck.HealthCheckResultDescription)
                     .AddCheck<RequestApprenticeTrainingApiHealthCheck>(RequestApprenticeTrainingApiHealthCheck.HealthCheckResultDescription);
             }
