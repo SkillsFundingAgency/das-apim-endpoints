@@ -46,6 +46,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     {
                         Status = application.Status,
                         SubmittedDate = application.SubmittedDate,
+                        ApplicationId = application.Id
                     };
                 }
             }

@@ -18,6 +18,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
         public int CourseId => Convert.ToInt32(ProgrammeId);
         public Address EmployerLocation { get; set; }
         public TrainingProviderDetails TrainingProvider { get; set; }
+        public DateTime? ClosedDate { get; set; }
 
         public class Address
         {
