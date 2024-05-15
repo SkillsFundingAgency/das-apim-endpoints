@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -124,7 +122,10 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
                 continue;
             }
 
-            var data = PostApplicationApiRequest.PostApplicationApiRequestData.Map(legacyApplication, vacancy, candidateId);
+            var data = new PostApplicationApiRequest.PostApplicationApiRequestData
+            {
+                LegacyApplication = PostApplicationApiRequest.LegacyApplication.Map(legacyApplication, vacancy, candidateId)
+            };
             var postRequest = new PostApplicationApiRequest(data);
 
             var applicationResult =
@@ -133,6 +134,4 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
             applicationResult.EnsureSuccessStatusCode();
         }
     }
-
-    
 }
