@@ -236,7 +236,7 @@ public class CohortController(
     }
         
     [HttpGet]
-    [Route("{accountId}/add/legal-entity")]
+    [Route("{accountId}/cohort/{cohortId}/unapproved/add/legal-entity")]
     public async Task<IActionResult> SelectLegalEntity(long accountId)
     {
         try
