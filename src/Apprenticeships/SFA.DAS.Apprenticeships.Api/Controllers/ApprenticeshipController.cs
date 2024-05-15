@@ -1,5 +1,4 @@
-﻿using System.Net;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.Apprenticeship;
@@ -10,6 +9,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using CreateApprenticeshipPriceChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipPriceChangeRequest;
+using CreateApprenticeshipStartDateChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipStartDateChangeRequest;
 using GetProviderResponse = SFA.DAS.Apprenticeships.Api.Models.GetProviderResponse;
 
 namespace SFA.DAS.Apprenticeships.Api.Controllers
@@ -36,6 +36,13 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
 		}
 
         [HttpGet]
+        [Route("{apprenticeshipHashedId}/key")]
+        public async Task<ActionResult> GetApprenticeshipKey(string apprenticeshipHashedId)
+        {
+            return Ok(await _apiClient.Get<Guid>(new GetApprenticeshipKeyRequest { ApprenticeshipHashedId = apprenticeshipHashedId }));
+        }
+
+        [HttpGet]
         [Route("{apprenticeshipKey}/price")]
         public async Task<ActionResult> GetApprenticeshipPrice(Guid apprenticeshipKey)
         {
@@ -58,41 +65,77 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{apprenticeshipHashedId}/key")]
-        public async Task<ActionResult> GetApprenticeshipKey(string apprenticeshipHashedId)
+        [Route("{apprenticeshipKey}/startDate")]
+        public async Task<ActionResult> GetApprenticeshipStartDate(Guid apprenticeshipKey)
         {
-            return Ok(await _apiClient.Get<Guid>(new GetApprenticeshipKeyRequest { ApprenticeshipHashedId = apprenticeshipHashedId }));
+            try
+            {
+                var apprenticeshipStartDateResponse = await _mediator.Send(new GetApprenticeshipStartDateQuery(apprenticeshipKey));
+
+                if (apprenticeshipStartDateResponse == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(apprenticeshipStartDateResponse);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to get Apprenticeship Start Date");
+                return BadRequest();
+            }
         }
-        
+
         [HttpPost]
         [Route("{apprenticeshipKey}/priceHistory")]
         public async Task<ActionResult> CreateApprenticeshipPriceChange(Guid apprenticeshipKey,
             [FromBody] CreateApprenticeshipPriceChangeRequest request)
         {
-            var response = await _apiClient.PostWithResponseCode<object>(new PostCreateApprenticeshipPriceChangeRequest(
+            var response = await _apiClient.PostWithResponseCode<PostCreateApprenticeshipPriceChangeApiResponse>(new PostCreateApprenticeshipPriceChangeRequest(
             apprenticeshipKey,
-            request.Requester,
+            request.Initiator,
 				    request.UserId,
 				    request.TrainingPrice,
 				    request.AssessmentPrice,
 				    request.TotalPrice,
 				    request.Reason,
-				    request.EffectiveFromDate), false);
+				    request.EffectiveFromDate));
 
 			      if (string.IsNullOrEmpty(response.ErrorContent))
 			      {
-				        return Ok();
+				        return Ok(new PostCreateApprenticeshipPriceChangeResponse(response.Body.PriceChangeStatus));
 			      }
                
             _logger.LogError($"Error attempting to create apprenticeship price change. {response.StatusCode} returned from inner api.", response.StatusCode);
             return BadRequest();
-		    }
+		}
+
+        [HttpPost]
+        [Route("{apprenticeshipKey}/startDateChange")]
+        public async Task<ActionResult> CreateApprenticeshipStartDateChange(Guid apprenticeshipKey,
+            [FromBody] CreateApprenticeshipStartDateChangeRequest request)
+        {
+            var response = await _apiClient.PostWithResponseCode<object>(new PostCreateApprenticeshipStartDateChangeRequest(
+                apprenticeshipKey,
+                request.Initiator,
+                request.UserId,
+                request.ActualStartDate,
+                request.Reason), false);
+
+            if (string.IsNullOrEmpty(response.ErrorContent))
+            {
+                return Ok();
+            }
+
+            _logger.LogError($"Error attempting to create apprenticeship start date change. {response.StatusCode} returned from inner api.", response.StatusCode);
+            return BadRequest();
+        }
 
         [HttpGet]
         [Route("{apprenticeshipKey}/priceHistory/pending")]
         public async Task<ActionResult> GetPendingPriceChange(Guid apprenticeshipKey)
         {
-	          var response = await _apiClient.Get<GetPendingPriceChangeApiResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey));
+            var response = await _apiClient.Get<GetPendingPriceChangeApiResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey));
 
             if (response == null || response.PendingPriceChange == null)
             {
@@ -105,11 +148,51 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
 
             if (providerResponse == null || string.IsNullOrEmpty(providerResponse.Name))
             {
-                _logger.LogWarning($"No provider found for ukprn {ukprn}");
+                _logger.LogWarning($"No provider found for {nameof(ukprn)} {ukprn}");
                 return NotFound();
             }
 
-            return Ok(new GetPendingPriceChangeResponse(response, providerResponse.Name, apprenticeshipKey));
+            var accountLegalEntityId = response.PendingPriceChange.AccountLegalEntityId.GetValueOrDefault();
+            var employerResponse = await _apiCommitmentsClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
+            if (employerResponse == null || string.IsNullOrEmpty(employerResponse.AccountName))
+            {
+                _logger.LogWarning($"No employer found for {nameof(accountLegalEntityId)} {accountLegalEntityId}");
+                return NotFound();
+            }
+
+            return Ok(new GetPendingPriceChangeResponse(response, providerResponse.Name, apprenticeshipKey, employerResponse.AccountName));
+        }
+
+        [HttpGet]
+        [Route("{apprenticeshipKey}/startDateChange/pending")]
+        public async Task<ActionResult> GetPendingStartDateChange(Guid apprenticeshipKey)
+        {
+            var response = await _apiClient.Get<GetPendingStartDateChangeApiResponse>(new GetPendingStartDateChangeRequest(apprenticeshipKey));
+
+            if (response == null || response.PendingStartDateChange == null)
+            {
+                _logger.LogWarning($"No pending start date change found for apprenticeship {apprenticeshipKey}");
+                return NotFound();
+            }
+
+            var ukprn = response.PendingStartDateChange.Ukprn.GetValueOrDefault();
+            var providerResponse = await _apiCommitmentsClient.Get<GetProviderResponse>(new GetProviderRequest(ukprn));
+
+            if (providerResponse == null || string.IsNullOrEmpty(providerResponse.Name))
+            {
+                _logger.LogWarning($"No provider found for {nameof(ukprn)} {ukprn}");
+                return NotFound();
+            }
+
+            var accountLegalEntityId = response.PendingStartDateChange.AccountLegalEntityId.GetValueOrDefault();
+            var employerResponse = await _apiCommitmentsClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
+            if (employerResponse == null || string.IsNullOrEmpty(employerResponse.AccountName))
+            {
+                _logger.LogWarning($"No employer found for {nameof(accountLegalEntityId)} {accountLegalEntityId}");
+                return NotFound();
+            }
+
+            return Ok(new GetPendingStartDateChangeResponse(response, providerResponse.Name, apprenticeshipKey, employerResponse.AccountName));
         }
 
         [HttpDelete]
@@ -132,7 +215,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         [Route("{apprenticeshipKey}/priceHistory/pending/approve")]
         public async Task<ActionResult> ApprovePendingPriceChange(Guid apprenticeshipKey, [FromBody] ApprovePriceChangeRequest request)
         {
-            await _apiClient.Patch(new PatchApproveApprenticeshipPriceChangeRequest(apprenticeshipKey, request.UserId));
+            await _apiClient.Patch(new PatchApproveApprenticeshipPriceChangeRequest(apprenticeshipKey, request.UserId, request.TrainingPrice, request.AssessmentPrice));
             return Ok();
         }
     }

@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Authorization;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.RoatpOversight.Api.Extensions;
 

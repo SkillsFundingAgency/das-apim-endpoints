@@ -2,10 +2,11 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.RoatpOversight.Api.Extensions;
 using SFA.DAS.RoatpOversight.Api.HealthCheck;
 using SFA.DAS.RoatpOversight.Application.Commands.CreateProvider;
+using SFA.DAS.SharedOuterApi.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var configuration = builder.Configuration.BuildConfiguration();
+var configuration = builder.Configuration.BuildSharedConfiguration();
 
 // Add services to the container.
 

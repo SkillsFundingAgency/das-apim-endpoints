@@ -25,4 +25,8 @@
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.FindAnApprenticeship\SFA.DAS.FindAnApprenticeship.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Queries\Candidate\" />
+  </ItemGroup>
 </Project>

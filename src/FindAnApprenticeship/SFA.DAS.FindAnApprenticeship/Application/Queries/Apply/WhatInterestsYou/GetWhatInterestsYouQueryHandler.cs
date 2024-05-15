@@ -18,15 +18,16 @@ public class GetWhatInterestsYouQueryHandler(
 {
     public async Task<GetWhatInterestsYouQueryResult> Handle(GetWhatInterestsYouQuery request, CancellationToken cancellationToken)
     {
-        var applicationRequest = new GetApplicationApiRequest(request.CandidateId, request.ApplicationId);
+        var applicationRequest = new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false);
         var application = await candidateApiClient.Get<GetApplicationApiResponse>(applicationRequest);
 
-        var vacancyRequest = new GetVacancyRequest(application.VacancyReference);
+        var vacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
         var vacancy = await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(vacancyRequest);
 
         bool? isCompleted = application.InterestsStatus switch
         {
             Constants.SectionStatus.Incomplete => false,
+            Constants.SectionStatus.InProgress => false,
             Constants.SectionStatus.Completed => true,
             _ => null
         };

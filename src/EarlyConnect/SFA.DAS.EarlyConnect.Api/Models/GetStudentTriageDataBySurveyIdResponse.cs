@@ -6,6 +6,7 @@ namespace SFA.DAS.EarlyConnect.Api.Models
     public class GetStudentTriageDataBySurveyIdResponse
     {
         public int Id { get; set; }
+        public DateTime? LepDateSent { get; set; }
         public int? LepsId { get; set; }
         public string LepCode { get; set; }
         public int? LogId { get; set; }
@@ -26,6 +27,7 @@ namespace SFA.DAS.EarlyConnect.Api.Models
             return new GetStudentTriageDataBySurveyIdResponse
             {
                 Id = source.Id,
+                LepDateSent = source.LepDateSent,
                 LepsId = source.LepsId,
                 LepCode = source.LepCode,
                 LogId = source.LogId,

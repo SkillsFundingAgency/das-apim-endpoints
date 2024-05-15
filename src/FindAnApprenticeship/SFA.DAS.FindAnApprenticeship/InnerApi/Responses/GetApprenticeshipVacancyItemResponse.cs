@@ -1,10 +1,11 @@
 ﻿using Newtonsoft.Json;
+using SFA.DAS.FindAnApprenticeship.Services;
 using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 {
-    public class GetApprenticeshipVacancyItemResponse : GetVacanciesListItem
+    public class GetApprenticeshipVacancyItemResponse : GetVacanciesListItem, IVacancy
     {
         [JsonProperty("longDescription")]
         public string LongDescription { get; init; }
@@ -25,7 +26,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonProperty("hoursPerWeek")]
         public decimal? HoursPerWeek { get; init; }
         [JsonProperty("isDisabilityConfident")]
-        public bool IsDisabilityConfident { get; init; }
+        public bool IsDisabilityConfident { get; set; }
         [JsonProperty("isPositiveAboutDisability")]
         public bool IsPositiveAboutDisability { get; init; }
         [JsonProperty("isRecruitVacancy")]
@@ -86,11 +87,16 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public IEnumerable<VacancyQualification> Qualifications { get; init; }
 
         [JsonProperty("additionalQuestion1")]
-        public string AdditionalQuestion1 { get; init; }
+        public string AdditionalQuestion1 { get; set; }
 
         [JsonProperty("additionalQuestion2")]
-        public string AdditionalQuestion2 { get; init; }
+        public string AdditionalQuestion2 { get; set; }
 
+        [JsonProperty("isClosed")]
+        public bool IsClosed { get; set; }
+
+        [JsonProperty("closedDate")]
+        public DateTime? ClosedDate { get; }
     }
 
     public class VacancyQualification

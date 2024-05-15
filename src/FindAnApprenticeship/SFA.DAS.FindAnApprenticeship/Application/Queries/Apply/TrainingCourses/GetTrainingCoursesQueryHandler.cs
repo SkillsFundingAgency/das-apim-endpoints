@@ -19,7 +19,7 @@ public class GetTrainingCoursesQueryHandler : IRequestHandler<GetTrainingCourses
     }
     public async Task<GetTrainingCoursesQueryResult> Handle(GetTrainingCoursesQuery request, CancellationToken cancellationToken)
     {
-        var applicationTask = _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId));
+        var applicationTask = _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
         var trainingCoursesTask = _candidateApiClient.Get<GetTrainingCoursesApiResponse>(new GetTrainingCoursesApiRequest(request.ApplicationId, request.CandidateId));
 
         await Task.WhenAll(applicationTask, trainingCoursesTask);
