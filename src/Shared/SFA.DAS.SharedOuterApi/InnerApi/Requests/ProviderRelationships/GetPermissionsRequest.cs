@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
 
 public class GetPermissionsRequest : IGetApiRequest
 {
@@ -15,11 +15,4 @@ public class GetPermissionsRequest : IGetApiRequest
         Ukprn = ukprn;
         PublicHashedId = publicHashedId;
     }
-}
-
-public enum Operation : short
-{
-    CreateCohort = 0,
-    Recruitment = 1,
-    RecruitmentRequiresReview = 2
 }
