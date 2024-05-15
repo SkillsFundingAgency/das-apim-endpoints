@@ -26,9 +26,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
             public Guid CandidateId { get; set; }
             public string VacancyReference { get; set; }
             public ApplicationStatus Status { get; set; }
-            //public IEnumerable<string> AdditionalQuestions { get; set; }
-            //public short IsAdditionalQuestion1Complete { get; set; }
-            //public short IsAdditionalQuestion2Complete { get; set; }
 
             public bool HasAdditionalQuestion1 { get; set; }
             public bool HasAdditionalQuestion2 { get; set; }
@@ -39,6 +36,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
             public List<TrainingCourse> TrainingCourses { get; set; }
             public List<WorkExperienceItem> WorkExperience { get; set; }
             public string SkillsAndStrengths { get; set; }
+            public string Support { get; set; }
 
             public class Qualification
             {
@@ -105,6 +103,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
                             StringComparison.CurrentCultureIgnoreCase),
                     Status = ApplicationStatus.Draft, //todo: map this
                     SkillsAndStrengths = source.CandidateInformation.AboutYou.Strengths,
+                    Support = source.CandidateInformation.AboutYou.Support,
                     HasAdditionalQuestion1 = !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion1),
                     HasAdditionalQuestion2 = !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion2),
                     //AdditionalQuestions = additionalQuestions,
