@@ -8,6 +8,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Vacancies;
+using SFA.DAS.FindAnApprenticeship.Api.Telemetry;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Vacancies;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
@@ -18,11 +19,13 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly ILogger<VacanciesController> _logger;
+        private readonly FindAnApprenticeshipMetrics _metrics;
 
-        public VacanciesController(IMediator mediator, ILogger<VacanciesController> logger)
+        public VacanciesController(IMediator mediator, ILogger<VacanciesController> logger, FindAnApprenticeshipMetrics metrics)
         {
             _mediator = mediator;
             _logger = logger;
+            _metrics = metrics;
         }
 
         [HttpGet]
@@ -34,14 +37,19 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetApprenticeshipVacancyQuery { VacancyReference = vacancyReference, CandidateId = candidateId});
+                var result = await _mediator.Send(new GetApprenticeshipVacancyQuery
+                { VacancyReference = vacancyReference, CandidateId = candidateId });
                 if (result == null) return new StatusCodeResult((int)HttpStatusCode.NotFound);
                 return Ok((GetApprenticeshipVacancyApiResponse)result);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Error getting vacancy details by reference:{vacancyReference}", vacancyReference);
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            }
+            finally
+            {
+                _metrics.IncreaseVacancyViews(vacancyReference);
             }
         }
 

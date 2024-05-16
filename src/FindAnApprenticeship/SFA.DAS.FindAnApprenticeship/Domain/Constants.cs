@@ -20,5 +20,12 @@ namespace SFA.DAS.FindAnApprenticeship.Domain
 			public const string Incomplete = "Incomplete";
             public const string Completed = "Completed";
         }
+
+        public static class OpenTelemetry
+        {
+            public const string ServiceName = "FindAnApprenticeshipOuterApi";
+            public const string ServiceMeterName = "FindAnApprenticeship";
+            public const string VacancySearchViewsCounterName = "FindAnApprenticeship.vacancyReference.views";
+        }
     }
 }
