@@ -25,7 +25,7 @@ public class GetDisabilityConfidentDetailsQueryHandler(ICandidateApiClient<Candi
 {
     public async Task<GetDisabilityConfidentDetailsQueryResult> Handle(GetDisabilityConfidentDetailsQuery request, CancellationToken cancellationToken)
     {
-        var applicationRequest = new GetApplicationApiRequest(request.CandidateId, request.ApplicationId);
+        var applicationRequest = new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false);
         var application = await candidateApiClient.Get<GetApplicationApiResponse>(applicationRequest);
 
         if (application is null)

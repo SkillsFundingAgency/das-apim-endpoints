@@ -20,6 +20,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.AppStart
         [TestCase(typeof(IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>))]
         [TestCase(typeof(ILocationApiClient<LocationApiConfiguration>))]
         [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
+        [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
         [TestCase(typeof(ICourseService))]
         [TestCase(typeof(ILocationLookupService))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
@@ -49,7 +50,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.AppStart
                     new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:1"),
                     new KeyValuePair<string, string>("FindApprenticeshipApiConfiguration:url", "http://localhost:2"),
                     new KeyValuePair<string, string>("LocationApiConfiguration:url", "http://localhost:3"),
-                    new KeyValuePair<string, string>("FindApprenticeshipLegacyApiConfiguration:url", "http://localhost:4")
+                    new KeyValuePair<string, string>("FindApprenticeshipLegacyApiConfiguration:url", "http://localhost:4"),
+                    new KeyValuePair<string, string>("RecruitApiConfiguration:url", "http://localhost:5")
                 }
             };
 

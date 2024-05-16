@@ -61,5 +61,51 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
                     ItExpr.IsAny<CancellationToken>()
                 );
         }
+        
+        [Test, AutoData]
+        public async Task Then_The_Endpoint_Is_Called_And_Falls_Back_To_Authorisation_Header(
+            int id,
+            TestInternalApiConfiguration config)
+        {
+            //Arrange
+            var tokenValue = Guid.NewGuid().ToString();
+            var authToken = $"Bearer {tokenValue}";
+            var httpContextAccessor = new Mock<IHttpContextAccessor>();
+            httpContextAccessor.Setup(x => x.HttpContext.Request.Headers.Authorization).Returns(authToken);
+            config.Url = "https://test.local";
+            var response = new HttpResponseMessage
+            {
+                Content = new StringContent("\"test\""),
+                StatusCode = HttpStatusCode.Accepted
+            };
+            var getTestRequest = new GetTestRequest(id);
+            var expectedUrl = $"{config.Url}/{getTestRequest.GetUrl}";
+            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl);
+            var client = new HttpClient(httpMessageHandler.Object);
+            var clientFactory = new Mock<IHttpClientFactory>();
+            clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
+            var sut = new TokenPassThroughInternalApiClient<TestInternalApiConfiguration>(
+                clientFactory.Object, 
+                config, 
+                httpContextAccessor.Object, 
+                Mock.Of<ILogger<TokenPassThroughInternalApiClient<TestInternalApiConfiguration>>>());
+
+            //Act
+            await sut.Get<string>(getTestRequest);
+
+            //Assert
+            httpMessageHandler.Protected()
+                .Verify<Task<HttpResponseMessage>>(
+                    "SendAsync", Times.Once(),
+                    ItExpr.Is<HttpRequestMessage>(c =>
+                        c.Method.Equals(HttpMethod.Get)
+                        && c.RequestUri.AbsoluteUri.Equals(expectedUrl)
+                        && c.Headers.Authorization.Scheme.Equals("Bearer")
+                        && c.Headers.FirstOrDefault(h => h.Key.Equals("X-Version")).Value.FirstOrDefault() == "2.0"
+                        && c.Headers.Authorization.Parameter.Equals(tokenValue)
+                       ),
+                    ItExpr.IsAny<CancellationToken>()
+                );
+        }
     }
 }
