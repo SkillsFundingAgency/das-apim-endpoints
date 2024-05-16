@@ -27,12 +27,14 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
             public Guid CandidateId { get; set; }
             public string VacancyReference { get; set; }
             public ApplicationStatus Status { get; set; }
-
-            public bool HasAdditionalQuestion1 { get; set; }
-            public bool HasAdditionalQuestion2 { get; set; }
-
+            public DateTime? DateApplied { get; set; }
+            public DateTime? SuccessfulDateTime { get; set; }
+            public DateTime? UnsuccessfulDateTime { get; set; }
+            public string AdditionalQuestion1 { get; set; }
+            public string AdditionalQuestion2 { get; set; }
+            public string AdditionalQuestion1Answer { get; set; }
+            public string AdditionalQuestion2Answer { get; set; }
             public short IsDisabilityConfidenceComplete { get; set; }
-
             public List<Qualification> Qualifications { get; set; }
             public List<TrainingCourse> TrainingCourses { get; set; }
             public List<WorkExperienceItem> WorkExperience { get; set; }
@@ -92,10 +94,15 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
                         source.Vacancy.VacancyReference.Replace("VAC", "",
                             StringComparison.CurrentCultureIgnoreCase),
                     Status = source.Status.ToFaaApplicationStatus(),
+                    DateApplied = source.DateApplied,
+                    SuccessfulDateTime = source.SuccessfulDateTime,
+                    UnsuccessfulDateTime = source.UnsuccessfulDateTime,
                     SkillsAndStrengths = source.CandidateInformation.AboutYou.Strengths,
                     Support = source.CandidateInformation.AboutYou.Support,
-                    HasAdditionalQuestion1 = !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion1),
-                    HasAdditionalQuestion2 = !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion2),
+                    AdditionalQuestion1Answer = source.AdditionalQuestion1Answer,
+                    AdditionalQuestion2Answer = source.AdditionalQuestion2Answer,
+                    AdditionalQuestion1 = vacancy.AdditionalQuestion1,
+                    AdditionalQuestion2 = vacancy.AdditionalQuestion2,
                     IsDisabilityConfidenceComplete = vacancy.IsDisabilityConfident ? (short)0 : (short)4,
                     Qualifications = source.CandidateInformation.Qualifications.Select(x => new Qualification
                     {

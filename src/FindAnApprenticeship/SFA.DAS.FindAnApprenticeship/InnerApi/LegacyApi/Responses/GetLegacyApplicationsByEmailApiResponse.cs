@@ -13,6 +13,12 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses
         public class Application
         {
             public ApplicationStatus Status { get; set; }
+            public DateTime? DateApplied { get; set; }
+            public DateTime? SuccessfulDateTime { get; set; }
+            public DateTime? UnsuccessfulDateTime { get; set; }
+            public string AdditionalQuestion1Answer { get; set; }
+            public string AdditionalQuestion2Answer { get; set; }
+
             public Vacancy Vacancy { get; set; }
             public CandidateInformation CandidateInformation { get; set; }
         }
