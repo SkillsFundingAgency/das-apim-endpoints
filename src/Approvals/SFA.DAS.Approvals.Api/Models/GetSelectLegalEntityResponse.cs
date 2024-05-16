@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetSelectLegalEntity;
@@ -50,13 +51,25 @@ namespace SFA.DAS.Approvals.Api.Models
     {
         public long Id { get; set; }
         public EmployerAgreementStatus Status { get; set; }
+        public int AgreementType { get; set; }
+        public int TemplateVersionNumber { get; set; }
+        public long? SignedById { get; set; }
+        public string? SignedByName { get; set; }
+        public DateTime? SignedDate { get; set; }
+        public string? SignedByEmail { get; set; }
         
         public static implicit operator GetLegalEntityAgreementResponse(Agreement source)
         {
             return new GetLegalEntityAgreementResponse
             {
                 Id = source.Id,
-                Status = source.Status
+                Status = source.Status,
+                AgreementType = source.AgreementType,
+                TemplateVersionNumber = source.TemplateVersionNumber,
+                SignedById = source.SignedById,
+                SignedByName = source.SignedByName,
+                SignedDate = source.SignedDate,
+                SignedByEmail = source.SignedByEmail
             };
         }
     }
