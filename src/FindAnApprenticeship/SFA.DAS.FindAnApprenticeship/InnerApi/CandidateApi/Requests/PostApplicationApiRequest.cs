@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
+using SFA.DAS.FindAnApprenticeship.Extensions.LegacyApi;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Models;
@@ -90,7 +91,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
                     VacancyReference =
                         source.Vacancy.VacancyReference.Replace("VAC", "",
                             StringComparison.CurrentCultureIgnoreCase),
-                    Status = ApplicationStatus.Draft, //todo: map this
+                    Status = source.Status.ToFaaApplicationStatus(),
                     SkillsAndStrengths = source.CandidateInformation.AboutYou.Strengths,
                     Support = source.CandidateInformation.AboutYou.Support,
                     HasAdditionalQuestion1 = !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion1),

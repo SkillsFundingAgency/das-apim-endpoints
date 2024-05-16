@@ -9,6 +9,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses.Enums;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -241,6 +242,8 @@ public class WhenHandlingPostCandidateCommand
         command.GovUkIdentifier = govUkId;
         response.FirstName = legacyUserByEmailApiResponse.RegistrationDetails?.FirstName;
         response.LastName = legacyUserByEmailApiResponse.RegistrationDetails?.LastName;
+
+        legacyApplicationsResponse.Applications.ForEach(x => x.Status = ApplicationStatus.Draft);
 
         var expectedPostData = new PostCandidateApiRequestData
         {

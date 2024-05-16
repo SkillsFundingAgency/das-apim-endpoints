@@ -1,10 +1,11 @@
-﻿using SFA.DAS.FindAnApprenticeship.Models;
+﻿using System;
+using SFA.DAS.FindAnApprenticeship.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Extensions.LegacyApi
 {
     public static class ApplicationStatusExtensions
     {
-        public static ApplicationStatus ToFaaApplicationStatus(InnerApi.LegacyApi.Responses.Enums.ApplicationStatus source)
+        public static ApplicationStatus ToFaaApplicationStatus(this InnerApi.LegacyApi.Responses.Enums.ApplicationStatus source)
         {
             switch (source)
             {
@@ -17,7 +18,7 @@ namespace SFA.DAS.FindAnApprenticeship.Extensions.LegacyApi
                 case InnerApi.LegacyApi.Responses.Enums.ApplicationStatus.Unsuccessful:
                     return ApplicationStatus.UnSuccessful;
                 default:
-                    return ApplicationStatus.Withdrawn; //todo: finish this mapping
+                    throw new InvalidOperationException($"Unable to convert status {source} to FAA Application Status");
             }
         }
     }

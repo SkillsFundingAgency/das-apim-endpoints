@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +16,7 @@ using SFA.DAS.FindAnApprenticeship.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using ApplicationStatus = SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses.Enums.ApplicationStatus;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
 
@@ -23,6 +26,14 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
     private readonly IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> _legacyApiClient;
     private readonly IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> _findApprenticeshipApiClient;
     private readonly ILogger<CreateCandidateCommandHandler> _logger;
+
+    private static readonly List<ApplicationStatus> LegacyImportStatuses =
+    [
+        ApplicationStatus.Draft,
+        ApplicationStatus.Submitted,
+        ApplicationStatus.Successful,
+        ApplicationStatus.Unsuccessful
+    ];
 
     public CreateCandidateCommandHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
         IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> legacyApiClient,
@@ -111,7 +122,7 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
             return;
         }
 
-        foreach (var legacyApplication in legacyApplications.Applications)
+        foreach (var legacyApplication in legacyApplications.Applications.Where(x=> LegacyImportStatuses.Contains(x.Status)))
         {
             var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(
                     new GetVacancyRequest(legacyApplication.Vacancy.VacancyReference));
