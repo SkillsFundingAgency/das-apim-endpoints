@@ -4,7 +4,6 @@ using SFA.DAS.EmployerPR.Api.AppStart;
 using SFA.DAS.EmployerPR.Application.Queries.GetRoatpProviders;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
-using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,11 +32,6 @@ builder.Services
     .AddControllers(o =>
     {
         if (!configuration.IsLocalOrDev()) o.Filters.Add(new AuthorizeFilter("default"));
-    })
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
 builder.Services.AddHealthChecks();
