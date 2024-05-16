@@ -84,17 +84,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
             public static LegacyApplication Map(GetLegacyApplicationsByEmailApiResponse.Application source,
                 GetApprenticeshipVacancyItemResponse vacancy, Guid candidateId)
             {
-                var additionalQuestions = new List<string>();
-                if (vacancy.AdditionalQuestion1 != null)
-                {
-                    additionalQuestions.Add(vacancy.AdditionalQuestion1);
-                }
-
-                if (vacancy.AdditionalQuestion2 != null)
-                {
-                    additionalQuestions.Add(vacancy.AdditionalQuestion2);
-                }
-
                 return new LegacyApplication
                 {
                     CandidateId = candidateId,
@@ -106,11 +95,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
                     Support = source.CandidateInformation.AboutYou.Support,
                     HasAdditionalQuestion1 = !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion1),
                     HasAdditionalQuestion2 = !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion2),
-                    //AdditionalQuestions = additionalQuestions,
-                    //IsAdditionalQuestion1Complete =
-                    //    string.IsNullOrEmpty(vacancy.AdditionalQuestion1) ? (short)4 : (short)0,
-                    //IsAdditionalQuestion2Complete =
-                    //    string.IsNullOrEmpty(vacancy.AdditionalQuestion2) ? (short)4 : (short)0,
                     IsDisabilityConfidenceComplete = vacancy.IsDisabilityConfident ? (short)0 : (short)4,
                     Qualifications = source.CandidateInformation.Qualifications.Select(x => new Qualification
                     {

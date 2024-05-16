@@ -50,6 +50,7 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
             VacancyTitle = vacancy.Title,
             EmployerName = vacancy.EmployerName,
             ClosingDate = vacancy.ClosingDate,
+            IsMigrated = application.MigrationDate.HasValue,
             IsDisabilityConfident = vacancy.IsDisabilityConfident,
             EducationHistory = new GetIndexQueryResult.EducationHistorySection
             {
