@@ -17,6 +17,7 @@ public record GetApplicationViewApiResponse
     public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
     public DisabilityConfidenceSection DisabilityConfidence { get; set; }
     public WhatIsYourInterestSection WhatIsYourInterest { get; set; }
+    public string ApplicationStatus { get; set; }
 
     public static implicit operator GetApplicationViewApiResponse(GetApplicationViewQueryResult source)
     {
@@ -31,7 +32,8 @@ public record GetApplicationViewApiResponse
             WorkHistory = source.WorkHistory,
             WhatIsYourInterest = source.WhatIsYourInterest,
             AboutYou = source.AboutYou,
-            VacancyDetails = source.VacancyDetails
+            VacancyDetails = source.VacancyDetails,
+            ApplicationStatus = source.ApplicationStatus
         };
     }
 
