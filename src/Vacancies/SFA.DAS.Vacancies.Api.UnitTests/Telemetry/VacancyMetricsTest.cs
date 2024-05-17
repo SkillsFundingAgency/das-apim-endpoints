@@ -3,23 +3,22 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Api.Telemetry;
-using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.Vacancies.Api.Telemetry;
 using System;
 using System.Diagnostics.Metrics;
 
-namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Telemetry
+namespace SFA.DAS.Vacancies.Api.UnitTests.Telemetry
 {
     [TestFixture]
-    public class FindAnApprenticeshipMetricsTest
+    public class VacancyMetricsTest
     {
         [Test, MoqAutoData]
         public void WhenVacancyView_Increased_ThenTheTotalAmountOfVacancyVisit_RecordedSuccessfully(string vacancyReference)
         {
             //Arrange
             var services = CreateServiceProvider();
-            var metrics = services.GetRequiredService<FindAnApprenticeshipMetrics>();
+            var metrics = services.GetRequiredService<VacancyMetrics>();
             var meterFactory = services.GetRequiredService<IMeterFactory>();
             var collector = new MetricCollector<long>(meterFactory, Constants.OpenTelemetry.ServiceMeterName, Constants.OpenTelemetry.VacancySearchViewsCounterName);
 
@@ -39,7 +38,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Telemetry
             var config = CreateIConfiguration();
             serviceCollection.AddMetrics();
             serviceCollection.AddSingleton(config);
-            serviceCollection.AddSingleton<FindAnApprenticeshipMetrics>();
+            serviceCollection.AddSingleton<VacancyMetrics>();
             return serviceCollection.BuildServiceProvider();
         }
 

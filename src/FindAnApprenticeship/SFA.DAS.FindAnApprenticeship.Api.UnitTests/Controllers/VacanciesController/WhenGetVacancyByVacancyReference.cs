@@ -9,9 +9,11 @@ using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
 using SFA.DAS.Testing.AutoFixture;
 using System;
+using System.Diagnostics.Metrics;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Api.Telemetry;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesController
 {
@@ -21,6 +23,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
         public async Task Then_The_Query_Response_Is_Returned(
         string vacancyReference,
         GetApprenticeshipVacancyQueryResult result,
+        [Frozen] Mock<FindAnApprenticeshipMetrics> metrics,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.VacanciesController controller)
         {
@@ -44,6 +47,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
         [Test, MoqAutoData]
         public async Task Then_If_An_Exception_Is_Thrown_Then_Internal_Server_Error_Response_Returned(
             string vacancyReference,
+            [Frozen] Mock<FindAnApprenticeshipMetrics> metrics,
             [Frozen] Mock<ILogger<Api.Controllers.VacanciesController>> logger,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.VacanciesController controller)
@@ -66,6 +70,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
         [Test, MoqAutoData]
         public async Task Then_If_An_Null_Is_Returned_Then_Not_Found_Response_Returned(
             string vacancyReference,
+            [Frozen] Mock<FindAnApprenticeshipMetrics> metrics,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.VacanciesController controller)
         {
