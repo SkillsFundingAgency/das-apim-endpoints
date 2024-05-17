@@ -86,7 +86,7 @@ public static class Startup
         //todo obsolete, should use connectionstring instead https://github.com/microsoft/ApplicationInsights-dotnet/issues/2560
         //services.AddApplicationInsightsTelemetry(options => options.ConnectionString = configuration.GetConnectionString("ApplicationInsights"));
         services.AddApplicationInsightsTelemetry(configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
-        services.AddOpenTelemetryRegistration(configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+        services.AddOpenTelemetryRegistration(configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
         services.AddSwaggerGen(c =>
         {
