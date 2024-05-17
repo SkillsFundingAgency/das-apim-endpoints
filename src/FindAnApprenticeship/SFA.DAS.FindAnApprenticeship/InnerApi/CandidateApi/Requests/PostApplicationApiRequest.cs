@@ -6,6 +6,7 @@ using SFA.DAS.FindAnApprenticeship.Extensions.LegacyApi;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Models;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
@@ -34,7 +35,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
             public string AdditionalQuestion2 { get; set; }
             public string AdditionalQuestion1Answer { get; set; }
             public string AdditionalQuestion2Answer { get; set; }
-            public short IsDisabilityConfidenceComplete { get; set; }
+            public bool IsDisabilityConfident { get; set; }
             public List<Qualification> Qualifications { get; set; }
             public List<TrainingCourse> TrainingCourses { get; set; }
             public List<WorkExperienceItem> WorkExperience { get; set; }
@@ -85,7 +86,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
             }
 
             public static LegacyApplication Map(GetLegacyApplicationsByEmailApiResponse.Application source,
-                GetApprenticeshipVacancyItemResponse vacancy, Guid candidateId)
+                IVacancy vacancy, Guid candidateId)
             {
                 return new LegacyApplication
                 {
@@ -103,7 +104,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
                     AdditionalQuestion2Answer = source.AdditionalQuestion2Answer,
                     AdditionalQuestion1 = vacancy.AdditionalQuestion1,
                     AdditionalQuestion2 = vacancy.AdditionalQuestion2,
-                    IsDisabilityConfidenceComplete = vacancy.IsDisabilityConfident ? (short)0 : (short)4,
+                    IsDisabilityConfident = vacancy.IsDisabilityConfident,
                     Qualifications = source.CandidateInformation.Qualifications.Select(x => new Qualification
                     {
                         Grade = x.Grade,

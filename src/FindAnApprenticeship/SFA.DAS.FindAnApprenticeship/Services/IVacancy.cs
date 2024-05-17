@@ -9,4 +9,7 @@ public interface IVacancy
     public string Title { get; }
     public DateTime ClosingDate { get; }
     int CourseId { get; }
+    string AdditionalQuestion1 { get; }
+    string AdditionalQuestion2 { get; }
+    bool IsDisabilityConfident { get; }
 }

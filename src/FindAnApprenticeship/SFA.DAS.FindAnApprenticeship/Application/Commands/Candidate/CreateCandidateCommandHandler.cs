@@ -13,6 +13,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Models;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -25,6 +26,7 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
     private readonly ICandidateApiClient<CandidateApiConfiguration> _candidateApiClient;
     private readonly IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> _legacyApiClient;
     private readonly IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> _findApprenticeshipApiClient;
+    private readonly IVacancyService _vacancyService;
     private readonly ILogger<CreateCandidateCommandHandler> _logger;
 
     private static readonly List<ApplicationStatus> LegacyImportStatuses =
@@ -38,11 +40,13 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
     public CreateCandidateCommandHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
         IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> legacyApiClient,
         IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
+        IVacancyService vacancyService,
         ILogger<CreateCandidateCommandHandler> logger)
     {
         _candidateApiClient = candidateApiClient;
         _legacyApiClient = legacyApiClient;
         _findApprenticeshipApiClient = findApprenticeshipApiClient;
+        _vacancyService = vacancyService;
         _logger = logger;
     }
 
@@ -124,8 +128,7 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
 
         foreach (var legacyApplication in legacyApplications.Applications.Where(x=> LegacyImportStatuses.Contains(x.Status)))
         {
-            var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(
-                    new GetVacancyRequest(legacyApplication.Vacancy.VacancyReference));
+            var vacancy = await _vacancyService.GetVacancy(legacyApplication.Vacancy.VacancyReference);
 
             if (vacancy == null)
             {
