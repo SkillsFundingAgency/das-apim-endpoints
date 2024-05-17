@@ -30,11 +30,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         [ProducesResponseType(typeof(GetApprenticeshipVacancyApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> SearchByVacancyReference([FromRoute] string vacancyReference)
+        public async Task<IActionResult> SearchByVacancyReference([FromRoute] string vacancyReference, [FromQuery] Guid? candidateId = null)
         {
             try
             {
-                var result = await _mediator.Send(new GetApprenticeshipVacancyQuery { VacancyReference = vacancyReference });
+                var result = await _mediator.Send(new GetApprenticeshipVacancyQuery { VacancyReference = vacancyReference, CandidateId = candidateId});
                 if (result == null) return new StatusCodeResult((int)HttpStatusCode.NotFound);
                 return Ok((GetApprenticeshipVacancyApiResponse)result);
             }

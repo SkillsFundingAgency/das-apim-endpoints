@@ -13,7 +13,7 @@ public class GetInterviewAdjustmentsQueryHandler(ICandidateApiClient<CandidateAp
 {
     public async Task<GetInterviewAdjustmentsQueryResult> Handle(GetInterviewAdjustmentsQuery request, CancellationToken cancellationToken)
     {
-        var applicationTask = candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId));
+        var applicationTask = candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
         var interviewAdjustmentsTask = candidateApiClient.Get<GetAboutYouItemApiResponse>(new GetAboutYouItemApiRequest(request.ApplicationId, request.CandidateId));
 
         await Task.WhenAll(applicationTask, interviewAdjustmentsTask);
