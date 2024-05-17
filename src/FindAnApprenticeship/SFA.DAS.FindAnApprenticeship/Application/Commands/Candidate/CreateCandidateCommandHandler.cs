@@ -1,23 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using ApplicationStatus = SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses.Enums.ApplicationStatus;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
 
@@ -25,29 +19,15 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
 {
     private readonly ICandidateApiClient<CandidateApiConfiguration> _candidateApiClient;
     private readonly IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> _legacyApiClient;
-    private readonly IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> _findApprenticeshipApiClient;
-    private readonly IVacancyService _vacancyService;
-    private readonly ILogger<CreateCandidateCommandHandler> _logger;
-
-    private static readonly List<ApplicationStatus> LegacyImportStatuses =
-    [
-        ApplicationStatus.Draft,
-        ApplicationStatus.Submitted,
-        ApplicationStatus.Successful,
-        ApplicationStatus.Unsuccessful
-    ];
-
+    private readonly ILegacyApplicationMigrationService _legacyApplicationMigrationService;
+    
     public CreateCandidateCommandHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
         IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> legacyApiClient,
-        IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
-        IVacancyService vacancyService,
-        ILogger<CreateCandidateCommandHandler> logger)
+        ILegacyApplicationMigrationService legacyApplicationMigrationService)
     {
         _candidateApiClient = candidateApiClient;
         _legacyApiClient = legacyApiClient;
-        _findApprenticeshipApiClient = findApprenticeshipApiClient;
-        _vacancyService = vacancyService;
-        _logger = logger;
+        _legacyApplicationMigrationService = legacyApplicationMigrationService;
     }
 
     public async Task<CreateCandidateCommandResult> Handle(CreateCandidateCommand request, CancellationToken cancellationToken)
@@ -97,7 +77,7 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
 
         if (candidateResult is null) return null;
 
-        await MigrateLegacyApplications(candidateResult.Body.Id, request.Email);
+        await _legacyApplicationMigrationService.MigrateLegacyApplications(candidateResult.Body.Id, request.Email);
 
         return new CreateCandidateCommandResult
         {
@@ -110,42 +90,5 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
             DateOfBirth = registrationDetailsDateOfBirth,
             Status = UserStatus.Incomplete
         };
-    }
-
-    private async Task MigrateLegacyApplications(Guid candidateId, string emailAddress)
-    {
-        _logger.LogInformation($"Migrating applications for candidate [{candidateId}] using email address [{emailAddress}].");
-
-        var legacyApplications =
-            await _legacyApiClient.Get<GetLegacyApplicationsByEmailApiResponse>(
-                new GetLegacyApplicationsByEmailApiRequest(emailAddress));
-
-        if (legacyApplications?.Applications == null || legacyApplications.Applications.Count == 0)
-        {
-            _logger.LogInformation($"No legacy applications found for email address [{emailAddress}].");
-            return;
-        }
-
-        foreach (var legacyApplication in legacyApplications.Applications.Where(x=> LegacyImportStatuses.Contains(x.Status)))
-        {
-            var vacancy = await _vacancyService.GetVacancy(legacyApplication.Vacancy.VacancyReference);
-
-            if (vacancy == null)
-            {
-                _logger.LogError($"Unable to retrieve vacancy [{legacyApplication.Vacancy.VacancyReference}].");
-                continue;
-            }
-
-            var data = new PostApplicationApiRequest.PostApplicationApiRequestData
-            {
-                LegacyApplication = PostApplicationApiRequest.LegacyApplication.Map(legacyApplication, vacancy, candidateId)
-            };
-            var postRequest = new PostApplicationApiRequest(data);
-
-            var applicationResult =
-                await _candidateApiClient.PostWithResponseCode<PostApplicationApiResponse>(postRequest);
-
-            applicationResult.EnsureSuccessStatusCode();
-        }
     }
 }

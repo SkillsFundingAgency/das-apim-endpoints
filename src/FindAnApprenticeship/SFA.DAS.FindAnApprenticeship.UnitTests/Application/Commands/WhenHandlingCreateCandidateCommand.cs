@@ -10,6 +10,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses.Enums;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -232,18 +233,15 @@ public class WhenHandlingPostCandidateCommand
         CreateCandidateCommand command,
         string govUkId,
         PostCandidateApiResponse response,
-        GetLegacyApplicationsByEmailApiResponse legacyApplicationsResponse,
         GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
-        PostApplicationApiResponse candidateApiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
         [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
+        [Frozen] Mock<ILegacyApplicationMigrationService> legacyApplicationMigrationService,
         CreateCandidateCommandHandler handler)
     {
         command.GovUkIdentifier = govUkId;
         response.FirstName = legacyUserByEmailApiResponse.RegistrationDetails?.FirstName;
         response.LastName = legacyUserByEmailApiResponse.RegistrationDetails?.LastName;
-
-        legacyApplicationsResponse.Applications.ForEach(x => x.Status = ApplicationStatus.Draft);
 
         var expectedPostData = new PostCandidateApiRequestData
         {
@@ -268,21 +266,10 @@ public class WhenHandlingPostCandidateCommand
                 It.Is<GetLegacyUserByEmailApiRequest>(r => r.GetUrl == legacyGetRequest.GetUrl)))
             .ReturnsAsync(legacyUserByEmailApiResponse);
 
-        var legacyGetApplicationsRequest = new GetLegacyApplicationsByEmailApiRequest(command.Email);
-        mockLegacyApiClient
-            .Setup(client => client.Get<GetLegacyApplicationsByEmailApiResponse>(
-                It.Is<GetLegacyApplicationsByEmailApiRequest>(r => r.GetUrl == legacyGetApplicationsRequest.GetUrl)))
-            .ReturnsAsync(() => legacyApplicationsResponse);
-
-        mockApiClient
-            .Setup(client => client.PostWithResponseCode<PostApplicationApiResponse>(
-                It.IsAny<PostApplicationApiRequest>(), true))
-            .ReturnsAsync(new ApiResponse<PostApplicationApiResponse>(candidateApiResponse, HttpStatusCode.OK, string.Empty));
-
         await handler.Handle(command, CancellationToken.None);
 
-        mockApiClient.Verify(
-            x => x.PostWithResponseCode<PostApplicationApiResponse>(It.IsAny<PostApplicationApiRequest>(), true),
-            Times.Exactly(legacyApplicationsResponse.Applications.Count));
+        legacyApplicationMigrationService.Verify(
+            x => x.MigrateLegacyApplications(response.Id, command.Email), Times.Once);
+
     }
 }
