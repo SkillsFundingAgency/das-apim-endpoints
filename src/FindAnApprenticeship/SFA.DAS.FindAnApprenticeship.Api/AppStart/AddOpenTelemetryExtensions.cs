@@ -20,7 +20,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
                 })
                 // Configure metrics
                 .WithMetrics(opts => opts
-                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(Constants.OpenTelemetry.ServiceName))
+                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(
+                        Constants.OpenTelemetry.ServiceName,
+                        nameof(FindAnApprenticeship),
+                        "1.0"))
                     .AddMeter(Constants.OpenTelemetry.ServiceMeterName)
                     .AddHttpClientInstrumentation()
                     .AddAspNetCoreInstrumentation())

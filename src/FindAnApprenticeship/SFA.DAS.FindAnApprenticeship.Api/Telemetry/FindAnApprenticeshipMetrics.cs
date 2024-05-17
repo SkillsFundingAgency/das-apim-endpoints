@@ -18,7 +18,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Telemetry
         {
             VacancyViewsCounter.Add(1, 
                 new KeyValuePair<string, object>("vacancyReference", vacancyReference),
-                new KeyValuePair<string, object>("source", Constants.OpenTelemetry.ServiceName));
+                new KeyValuePair<string, object>("source", Constants.OpenTelemetry.RequestSourceName));
         }
     }
 }
