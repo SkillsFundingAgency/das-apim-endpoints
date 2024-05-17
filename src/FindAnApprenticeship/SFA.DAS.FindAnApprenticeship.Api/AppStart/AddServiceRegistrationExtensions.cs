@@ -28,6 +28,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
             services.AddTransient<IVacancyService, VacancyService>();
+            services.AddTransient<ILegacyApplicationMigrationService, LegacyApplicationMigrationService>();
         }
     }
 }
