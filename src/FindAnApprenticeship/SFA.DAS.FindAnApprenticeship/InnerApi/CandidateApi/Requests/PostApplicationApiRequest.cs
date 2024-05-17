@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Extensions.LegacyApi;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -83,52 +82,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
                 public DateTime FromDate { get; set; }
                 [JsonPropertyName("toDate")]
                 public DateTime ToDate { get; set; }
-            }
-
-            public static LegacyApplication Map(GetLegacyApplicationsByEmailApiResponse.Application source,
-                IVacancy vacancy, Guid candidateId)
-            {
-                return new LegacyApplication
-                {
-                    CandidateId = candidateId,
-                    VacancyReference =
-                        source.Vacancy.VacancyReference.Replace("VAC", "",
-                            StringComparison.CurrentCultureIgnoreCase),
-                    Status = source.Status.ToFaaApplicationStatus(),
-                    DateApplied = source.DateApplied,
-                    SuccessfulDateTime = source.SuccessfulDateTime,
-                    UnsuccessfulDateTime = source.UnsuccessfulDateTime,
-                    SkillsAndStrengths = source.CandidateInformation.AboutYou.Strengths,
-                    Support = source.CandidateInformation.AboutYou.Support,
-                    AdditionalQuestion1Answer = source.AdditionalQuestion1Answer,
-                    AdditionalQuestion2Answer = source.AdditionalQuestion2Answer,
-                    AdditionalQuestion1 = vacancy.AdditionalQuestion1,
-                    AdditionalQuestion2 = vacancy.AdditionalQuestion2,
-                    IsDisabilityConfident = vacancy.IsDisabilityConfident,
-                    Qualifications = source.CandidateInformation.Qualifications.Select(x => new Qualification
-                    {
-                        Grade = x.Grade,
-                        IsPredicted = x.IsPredicted,
-                        QualificationType = x.QualificationType,
-                        Subject = x.Subject,
-                        Year = x.Year
-                    }).ToList(),
-                    TrainingCourses = source.CandidateInformation.TrainingCourses.Select(x => new TrainingCourse
-                    {
-                        FromDate = x.FromDate,
-                        Provider = x.Provider,
-                        Title = x.Title,
-                        ToDate = x.ToDate
-                    }).ToList(),
-                    WorkExperience = source.CandidateInformation.WorkExperiences.Select(x => new WorkExperienceItem
-                    {
-                        Description = x.Description,
-                        Employer = x.Employer,
-                        FromDate = x.FromDate,
-                        ToDate = x.ToDate,
-                        JobTitle = x.JobTitle
-                    }).ToList()
-                };
             }
         }
     }

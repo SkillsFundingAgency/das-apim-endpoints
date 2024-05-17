@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Extensions.LegacyApi;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses.Enums;
 using SFA.DAS.SharedOuterApi.Extensions;
 
@@ -56,7 +57,7 @@ namespace SFA.DAS.FindAnApprenticeship.Services
 
                 var data = new PostApplicationApiRequest.PostApplicationApiRequestData
                 {
-                    LegacyApplication = PostApplicationApiRequest.LegacyApplication.Map(legacyApplication, vacancy, candidateId)
+                    LegacyApplication = Map(legacyApplication, vacancy, candidateId)
                 };
                 var postRequest = new PostApplicationApiRequest(data);
 
@@ -65,6 +66,52 @@ namespace SFA.DAS.FindAnApprenticeship.Services
 
                 applicationResult.EnsureSuccessStatusCode();
             }
+        }
+
+        public static PostApplicationApiRequest.LegacyApplication Map(GetLegacyApplicationsByEmailApiResponse.Application source,
+            IVacancy vacancy, Guid candidateId)
+        {
+            return new PostApplicationApiRequest.LegacyApplication
+            {
+                CandidateId = candidateId,
+                VacancyReference =
+                    source.Vacancy.VacancyReference.Replace("VAC", "",
+                        StringComparison.CurrentCultureIgnoreCase),
+                Status = source.Status.ToFaaApplicationStatus(),
+                DateApplied = source.DateApplied,
+                SuccessfulDateTime = source.SuccessfulDateTime,
+                UnsuccessfulDateTime = source.UnsuccessfulDateTime,
+                SkillsAndStrengths = source.CandidateInformation.AboutYou.Strengths,
+                Support = source.CandidateInformation.AboutYou.Support,
+                AdditionalQuestion1Answer = source.AdditionalQuestion1Answer,
+                AdditionalQuestion2Answer = source.AdditionalQuestion2Answer,
+                AdditionalQuestion1 = vacancy.AdditionalQuestion1,
+                AdditionalQuestion2 = vacancy.AdditionalQuestion2,
+                IsDisabilityConfident = vacancy.IsDisabilityConfident,
+                Qualifications = source.CandidateInformation.Qualifications.Select(x => new PostApplicationApiRequest.LegacyApplication.Qualification
+                {
+                    Grade = x.Grade,
+                    IsPredicted = x.IsPredicted,
+                    QualificationType = x.QualificationType,
+                    Subject = x.Subject,
+                    Year = x.Year
+                }).ToList(),
+                TrainingCourses = source.CandidateInformation.TrainingCourses.Select(x => new PostApplicationApiRequest.LegacyApplication.TrainingCourse
+                {
+                    FromDate = x.FromDate,
+                    Provider = x.Provider,
+                    Title = x.Title,
+                    ToDate = x.ToDate
+                }).ToList(),
+                WorkExperience = source.CandidateInformation.WorkExperiences.Select(x => new PostApplicationApiRequest.LegacyApplication.WorkExperienceItem
+                {
+                    Description = x.Description,
+                    Employer = x.Employer,
+                    FromDate = x.FromDate,
+                    ToDate = x.ToDate,
+                    JobTitle = x.JobTitle
+                }).ToList()
+            };
         }
     }
 }
