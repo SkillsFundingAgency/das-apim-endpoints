@@ -18,8 +18,7 @@ namespace SFA.DAS.Vacancies.Api.Telemetry
         {
             VacancyViewsCounter.Add(viewCount,
                 new KeyValuePair<string, object>("vacancy.reference", vacancyReference),
-                new KeyValuePair<string, object>("vacancy.source", Constants.OpenTelemetry.RequestSourceName),
-                new KeyValuePair<string, object>("vacancy.viewDate", DateTime.UtcNow));
+                new KeyValuePair<string, object>("vacancy.source", Constants.OpenTelemetry.RequestSourceName));
         }
     }
 }
