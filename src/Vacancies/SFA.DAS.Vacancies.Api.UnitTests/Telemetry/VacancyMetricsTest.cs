@@ -14,7 +14,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Telemetry
     public class VacancyMetricsTest
     {
         [Test, MoqAutoData]
-        public void WhenVacancyView_Increased_ThenTheTotalAmountOfVacancyVisit_RecordedSuccessfully(string vacancyReference)
+        public void WhenVacancyView_Increased_ThenTheTotalAmountOfVacancyVisit_RecordedSuccessfully(string vacancyReference, int viewCount)
         {
             //Arrange
             var services = CreateServiceProvider();
@@ -23,13 +23,11 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Telemetry
             var collector = new MetricCollector<long>(meterFactory, Constants.OpenTelemetry.ServiceMeterName, Constants.OpenTelemetry.VacancySearchViewsCounterName);
 
             // Act
-            metrics.IncreaseVacancyViews(vacancyReference);
-            metrics.IncreaseVacancyViews(vacancyReference);
-            metrics.IncreaseVacancyViews(vacancyReference);
+            metrics.IncreaseVacancyViews(vacancyReference, viewCount);
 
             // Assert
             var measurements = collector.GetMeasurementSnapshot();
-            measurements.EvaluateAsCounter().Should().Be(3);
+            measurements.EvaluateAsCounter().Should().Be(viewCount);
         }
 
         private static IServiceProvider CreateServiceProvider()

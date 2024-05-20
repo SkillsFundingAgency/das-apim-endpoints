@@ -19,9 +19,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly ILogger<VacanciesController> _logger;
-        private readonly FindAnApprenticeshipMetrics _metrics;
+        private readonly IMetrics _metrics;
 
-        public VacanciesController(IMediator mediator, ILogger<VacanciesController> logger, FindAnApprenticeshipMetrics metrics)
+        public VacanciesController(IMediator mediator, ILogger<VacanciesController> logger, IMetrics metrics)
         {
             _mediator = mediator;
             _logger = logger;

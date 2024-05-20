@@ -12,7 +12,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
         /// <summary>
         /// Add the OpenTelemetry telemetry service to the application.
         /// </summary>
-        /// <param name="services"></param>
+        /// <param name="services">Service Collection</param>
         /// <param name="appInsightsConnectionString">Azure app insights connection string.</param>
         public static void AddOpenTelemetryRegistration(this IServiceCollection services, string appInsightsConnectionString)
         {
@@ -27,7 +27,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
                         Constants.OpenTelemetry.ServiceName,
                         nameof(FindAnApprenticeship)))
                     .AddMeter(Constants.OpenTelemetry.ServiceMeterName));
-            services.AddSingleton<FindAnApprenticeshipMetrics>();
+            services.AddSingleton<IMetrics, FindAnApprenticeshipMetrics>();
         }
     }
 }

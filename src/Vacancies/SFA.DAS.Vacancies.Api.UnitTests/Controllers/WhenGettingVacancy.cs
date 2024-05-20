@@ -23,7 +23,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             string vacancyReference,
             GetVacancyQueryResult queryResult,
             int ukprn,
-            [Frozen] Mock<VacancyMetrics> metrics,
+            [Frozen] Mock<IMetrics> metrics,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
@@ -40,13 +40,15 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             var model = controllerResult.Value as GetVacancyResponse;
             Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo((GetVacancyResponse)queryResult);
+
+            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference, 1), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_If_No_Result_Then_Not_Found_Result_Returned(
             string vacancyReference,
             GetVacancyQueryResult queryResult,
-            [Frozen] Mock<VacancyMetrics> metrics,
+            [Frozen] Mock<IMetrics> metrics,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
@@ -59,13 +61,15 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+
+            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference, 1), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_If_Error_Then_Internal_Server_Error_Returned(
             string vacancyReference,
             GetVacancyQueryResult queryResult,
-            [Frozen] Mock<VacancyMetrics> metrics,
+            [Frozen] Mock<IMetrics> metrics,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
@@ -76,6 +80,8 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+
+            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference, 1), Times.Once);
         }
     }
 }

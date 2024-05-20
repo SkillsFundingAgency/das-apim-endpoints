@@ -11,7 +11,7 @@ namespace SFA.DAS.Vacancies.Api.AppStart
         /// <summary>
         /// Add the OpenTelemetry telemetry service to the application.
         /// </summary>
-        /// <param name="services"></param>
+        /// <param name="services">Service Collection</param>
         /// <param name="appInsightsConnectionString">Azure app insights connection string.</param>
         public static void AddOpenTelemetryRegistration(this IServiceCollection services, string appInsightsConnectionString)
         {
@@ -24,9 +24,9 @@ namespace SFA.DAS.Vacancies.Api.AppStart
             .WithMetrics(opts => opts
                 .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(
                     Constants.OpenTelemetry.ServiceName,
-                    nameof(Api)))
+                    nameof(Vacancies)))
                 .AddMeter(Constants.OpenTelemetry.ServiceMeterName));
-            services.AddSingleton<VacancyMetrics>();
+            services.AddSingleton<IMetrics, VacancyMetrics>();
         }
     }
 }

@@ -20,9 +20,9 @@ namespace SFA.DAS.Vacancies.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly ILogger<VacancyController> _logger;
-        private readonly VacancyMetrics _metrics;
+        private readonly IMetrics _metrics;
 
-        public VacancyController(IMediator mediator, ILogger<VacancyController> logger, VacancyMetrics metrics)
+        public VacancyController(IMediator mediator, ILogger<VacancyController> logger, IMetrics metrics)
         {
             _mediator = mediator;
             _logger = logger;
