@@ -81,6 +81,7 @@ namespace SFA.DAS.FindAnApprenticeship.Services
                 DateApplied = source.DateApplied,
                 SuccessfulDateTime = source.SuccessfulDateTime,
                 UnsuccessfulDateTime = source.UnsuccessfulDateTime,
+                UnsuccessfulReason = source.UnsuccessfulReason,
                 SkillsAndStrengths = source.CandidateInformation.AboutYou.Strengths,
                 Support = source.CandidateInformation.AboutYou.Support,
                 AdditionalQuestion1Answer = source.AdditionalQuestion1Answer,

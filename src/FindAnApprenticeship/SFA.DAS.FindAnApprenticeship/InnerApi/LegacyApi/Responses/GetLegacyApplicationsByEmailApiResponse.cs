@@ -16,6 +16,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses
             public DateTime? DateApplied { get; set; }
             public DateTime? SuccessfulDateTime { get; set; }
             public DateTime? UnsuccessfulDateTime { get; set; }
+            public string UnsuccessfulReason { get; set; }
             public string AdditionalQuestion1Answer { get; set; }
             public string AdditionalQuestion2Answer { get; set; }
 

@@ -30,6 +30,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
             public DateTime? DateApplied { get; set; }
             public DateTime? SuccessfulDateTime { get; set; }
             public DateTime? UnsuccessfulDateTime { get; set; }
+            public string UnsuccessfulReason { get; set; }
             public string AdditionalQuestion1 { get; set; }
             public string AdditionalQuestion2 { get; set; }
             public string AdditionalQuestion1Answer { get; set; }
