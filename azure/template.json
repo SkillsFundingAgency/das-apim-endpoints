@@ -61,10 +61,6 @@
         },
         "logAnalyticsWorkspaceName": {
             "type": "string"
-        },
-        "utcValue": {
-            "type": "string",
-            "defaultValue": "[utcNow()]"
         }
     },
     "variables": {
@@ -173,7 +169,7 @@
                             },
                             {
                               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                              "value": "[reference(concat(parameters('appServiceName'), '-application-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
+                              "value": "[reference(concat('api-application-insights-', parameters('appServiceName'))).outputs.ConnectionString.value]"
                             },
                             {
                               "name": "WEBSITE_LOAD_USER_PROFILE",
