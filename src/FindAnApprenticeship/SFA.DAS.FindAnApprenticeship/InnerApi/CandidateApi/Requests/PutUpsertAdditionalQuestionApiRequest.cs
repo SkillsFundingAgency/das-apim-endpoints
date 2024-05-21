@@ -16,7 +16,7 @@ public class PutUpsertAdditionalQuestionApiRequest : IPutApiRequest
         Data = data;
     }
 
-    public string PutUrl => $"candidates/{_candidateId}/applications/{_applicationId}/additional-question/{_id}";
+    public string PutUrl => $"api/candidates/{_candidateId}/applications/{_applicationId}/additional-question/{_id}";
     public object Data { get; set; }
 
     public class PutUpsertAdditionalQuestionApiRequestData
