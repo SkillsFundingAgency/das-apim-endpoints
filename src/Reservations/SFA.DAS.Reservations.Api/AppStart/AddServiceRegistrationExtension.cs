@@ -27,7 +27,10 @@ namespace SFA.DAS.Reservations.Api.AppStart
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
             services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
             services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
-            
+            services
+                .AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>,
+                    ProviderRelationshipsApiClient>();
+
         }
     }
 }

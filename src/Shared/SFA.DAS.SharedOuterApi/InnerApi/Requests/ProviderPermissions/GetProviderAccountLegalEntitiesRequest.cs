@@ -8,14 +8,18 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
     public class GetProviderAccountLegalEntitiesRequest : IGetApiRequest
     {
         private readonly int? _ukprn;
-        private List<Operation> _operations;
+        private readonly string _operations;
 
         public GetProviderAccountLegalEntitiesRequest(int? ukprn, List<Operation> operations)
         {
             _ukprn = ukprn;
-            _operations = operations.Any() ? operations : new List<Operation>();
+            if (operations.Any())
+                foreach (int operation in operations)
+                    _operations += $"&operations={operation}";
+            else
+                _operations = "&operations=";
         }
 
-        public string GetUrl => $"accountproviderlegalentities?ukprn={_ukprn}&operations={_operations}";
+        public string GetUrl => $"accountproviderlegalentities?ukprn={_ukprn}{_operations}";
     }
 }
