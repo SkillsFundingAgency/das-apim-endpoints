@@ -35,4 +35,3 @@ public class RoatpV2TrainingProviderService : IRoatpV2TrainingProviderService
         return ApiResponseErrorChecking.IsSuccessStatusCode(actual.StatusCode) ? actual.Body : null;
     }
 }
-
