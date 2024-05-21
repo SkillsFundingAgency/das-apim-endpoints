@@ -54,16 +54,20 @@
         },
         "configNames": {
             "type": "string"
+        },
+        "logAnalyticsSubscriptionId": {
+            "type": "string",
+            "defaultValue": "[subscription().subscriptionId]"
+        },
+        "logAnalyticsWorkspaceName": {
+            "type": "string"
         }
     },
     "variables": {
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
-        "appServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]",
-        "logAnalyticsWorkspaceProperties": {
-            "WorkspaceResourceId": "[parameters('logAnalyticsWorkspaceId')]"
-        }
+        "appServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]"
     },
     "resources": [
         {
@@ -107,6 +111,9 @@
                     },
                     "attachedService": {
                         "value": "[parameters('appServiceName')]"
+                    },
+                    "logAnalyticsWorkspaceId": {
+                        "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
                     }
                 }
             }
@@ -161,12 +168,8 @@
                               "value": "[parameters('configurationStorageConnectionString')]"
                             },
                             {
-                              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                              "value": "[reference(concat('api-application-insights-', parameters('appServiceName'))).outputs.InstrumentationKey.value]"
-                            },
-                            {
                               "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                              "value": "[parameters('configurationApplicationInsightsConnectionString')]"
+                              "value": "[reference(concat('api-application-insights-', parameters('appServiceName'))).outputs.ConnectionString.value]"
                             },
                             {
                               "name": "WEBSITE_LOAD_USER_PROFILE",
