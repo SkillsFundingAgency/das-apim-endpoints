@@ -234,5 +234,13 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
 	        await _apiClient.Patch(new PatchRejectApprenticeshipStartDateChangeRequest(apprenticeshipKey, request.Reason));
 	        return Ok();
         }
+
+        [HttpDelete]
+        [Route("{apprenticeshipKey}/startDateChange/pending")]
+        public async Task<ActionResult> CancelPendingStartDateChange(Guid apprenticeshipKey)
+        {
+	        await _apiClient.Delete(new CancelPendingStartDateChangeRequest(apprenticeshipKey));
+	        return Ok();
+        }
 	}
 }
