@@ -21,5 +21,6 @@ public class GetApplicationsQueryResult
         public DateTime? ResponseDate { get; set; }
         public string? ResponseNotes { get; set; }
         public ApplicationStatus Status { get; set; }
+        public DateTime? WithdrawnDate { get; set; }
     }
 }
