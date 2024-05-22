@@ -35,10 +35,10 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.AccountProviderLegalEnt
 
             var controllerResult = await controller.Get(ukprn, operations) as ObjectResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetProviderAccountLegalEntitiesResponse;
-            Assert.IsNotNull(model);
+            Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo(mediatorResult.AccountProviderLegalEntities);
         }
         [Test, MoqAutoData]
@@ -57,7 +57,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.AccountProviderLegalEnt
 
             var controllerResult = await controller.Get(ukprn, operations) as NotFoundResult;
 
-            Assert.IsNotNull(controllerResult);
+            Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
 
