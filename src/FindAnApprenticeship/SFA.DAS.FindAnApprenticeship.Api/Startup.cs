@@ -14,6 +14,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using Microsoft.Extensions.Logging;
+using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.FindAnApprenticeship.Api.AppStart;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetAddresses;
 using SFA.DAS.FindAnApprenticeship.Configuration;
@@ -22,6 +23,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api
 {
     public class Startup
     {
+        private const string EndpointName = "SFA.DAS.FindAnApprenticeship";
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
 
@@ -128,6 +130,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "FindAnApprenticeshipOuterApi");
                 c.RoutePrefix = string.Empty;
             });
+        }
+        
+        public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
+        {
+            serviceProvider.StartNServiceBus(_configuration, EndpointName).GetAwaiter().GetResult();
         }
     }
 }
