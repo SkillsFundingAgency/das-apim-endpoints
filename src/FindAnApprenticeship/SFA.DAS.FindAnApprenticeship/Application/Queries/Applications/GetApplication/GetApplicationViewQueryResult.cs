@@ -16,6 +16,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
         public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
         public DisabilityConfidenceSection DisabilityConfidence { get; set; }
         public WhatIsYourInterestSection WhatIsYourInterest { get; set; }
+        public string ApplicationStatus { get; set; }
 
         public record VacancyDetailsSection
         {
