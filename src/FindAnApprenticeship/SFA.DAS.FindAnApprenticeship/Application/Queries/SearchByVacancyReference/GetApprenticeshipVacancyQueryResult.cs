@@ -114,7 +114,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     VacancyReference = source.VacancyReference,
                     EmployerName = source.EmployerName,
                     Title = source.Title,
-                    ClosingDate = source.ClosingDate,
+                    ClosingDate = source.ClosedDate ?? source.ClosingDate,
                     IsClosed = true,
                     Address = new Address
                     {
@@ -211,6 +211,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
         {
             public string Status { get; set; }
             public DateTime? SubmittedDate { get; set; }
+            public DateTime? WithdrawnDate { get; set; }
+            public Guid ApplicationId { get; set; }
         }
     }
 }

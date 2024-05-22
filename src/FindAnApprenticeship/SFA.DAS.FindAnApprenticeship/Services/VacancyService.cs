@@ -20,7 +20,7 @@ namespace SFA.DAS.FindAnApprenticeship.Services
 
             if (result != null) return result;
 
-            var closedVacancy = await recruitApiClient.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(vacancyReference));
+            var closedVacancy = await recruitApiClient.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(vacancyReference.Replace("VAC","")));
 
             return closedVacancy;
         }

@@ -1,5 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
+using Microsoft.Azure.Amqp.Framing;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
@@ -46,10 +47,16 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options.Excluding(x => x.Application));
+            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => 
+                options
+                    .Excluding(x => x.Application)
+                    .Excluding(x=>x.ClosingDate)
+                    .Excluding(x=>x.ClosedDate)
+                );
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().BeNull();
+            result.ApprenticeshipVacancy.ClosingDate.Should().Be(vacancy.ClosedDate ?? vacancy.ClosingDate);
         }
 
         [Test, MoqAutoData]
@@ -87,10 +94,17 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options.Excluding(x => x.Application));
+            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options
+                .Excluding(x => x.Application)
+                .Excluding(x=>x.ClosingDate)
+                .Excluding(x=>x.ClosedDate));
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().NotBeNull();
+            result.Application.ApplicationId.Should().Be(applicationResponse.Id);
+            result.Application.Status.Should().Be(applicationResponse.Status);
+            result.Application.SubmittedDate.Should().Be(applicationResponse.SubmittedDate);
+            result.ApprenticeshipVacancy.ClosingDate.Should().Be(vacancy.ClosedDate ?? vacancy.ClosingDate);
         }
     }
 }

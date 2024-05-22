@@ -8,6 +8,7 @@ public interface IVacancy
     public string EmployerName { get; }
     public string Title { get; }
     public DateTime ClosingDate { get; }
+    public DateTime? ClosedDate { get;}
     int CourseId { get; }
     string AdditionalQuestion1 { get; }
     string AdditionalQuestion2 { get; }

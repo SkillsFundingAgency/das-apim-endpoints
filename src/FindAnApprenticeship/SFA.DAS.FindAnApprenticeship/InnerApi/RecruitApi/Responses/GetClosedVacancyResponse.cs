@@ -23,6 +23,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
         [JsonIgnore]
         public bool IsDisabilityConfident => DisabilityConfident == "Yes";
         public string DisabilityConfident { get; set; }
+		public DateTime? ClosedDate { get; set; }
 
         public class Address
         {
