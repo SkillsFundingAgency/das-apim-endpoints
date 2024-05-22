@@ -4,10 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
-using SFA.DAS.FindAnApprenticeship.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -35,7 +35,7 @@ public class SubmitApplicationCommandHandler(IRecruitApiClient<RecruitApiConfigu
             return false;
         }
         
-        var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
+        var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
         
         jsonPatchDocument.Replace(x => x.Status, ApplicationStatus.Submitted);
         

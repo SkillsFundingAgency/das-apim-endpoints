@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using SFA.DAS.FindAnApprenticeship.Models;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Domain
 {

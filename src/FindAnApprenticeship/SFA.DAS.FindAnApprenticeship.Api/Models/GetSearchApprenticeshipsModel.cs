@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.Domain;
-using SFA.DAS.FindAnApprenticeship.Models;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models
 {

@@ -17,7 +17,7 @@ using Microsoft.Extensions.Logging;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.FindAnApprenticeship.Api.AppStart;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetAddresses;
-using SFA.DAS.FindAnApprenticeship.Configuration;
+using SFA.DAS.FindAnApprenticeship.Domain.Configuration;
 
 namespace SFA.DAS.FindAnApprenticeship.Api
 {
