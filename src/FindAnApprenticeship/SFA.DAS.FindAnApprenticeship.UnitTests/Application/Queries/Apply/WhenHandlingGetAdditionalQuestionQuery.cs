@@ -39,7 +39,7 @@ public class WhenHandlingGetAdditionalQuestionQuery
                 It.Is<GetAdditionalQuestionApiRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
             .ReturnsAsync(questionResponse);
 
-        var expectedApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+        var expectedApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
 
         candidateApiClient
             .Setup(client => client.Get<GetApplicationApiResponse>(

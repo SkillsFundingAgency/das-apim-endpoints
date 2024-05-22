@@ -31,7 +31,7 @@ public class WhenHandlingGetVolunteeringAndWorkExperiencesQuery
                 It.Is<GetWorkHistoriesApiRequest>(r => r.GetUrl == expectedGetWorkHistoriesRequest.GetUrl)))
             .ReturnsAsync(workHistoriesApiResponse);
 
-        var expectedGetApplicationApiRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+        var expectedGetApplicationApiRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
 
         candidateApiClient.Setup(x => x.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedGetApplicationApiRequest.GetUrl)))
             .ReturnsAsync(applicationApiResponse);
