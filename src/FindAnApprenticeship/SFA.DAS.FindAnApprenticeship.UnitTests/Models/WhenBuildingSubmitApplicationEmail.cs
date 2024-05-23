@@ -1,10 +1,8 @@
-using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Domain.EmailTemplates;
 
-namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models;
+namespace SFA.DAS.FindAnApprenticeship.UnitTests.Models;
 
 public class WhenBuildingSubmitApplicationEmail
 {

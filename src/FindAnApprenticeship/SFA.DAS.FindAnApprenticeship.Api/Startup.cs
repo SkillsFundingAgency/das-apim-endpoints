@@ -53,7 +53,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api
             }
 
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAddressesQuery).Assembly));
-            services.AddServiceRegistration();
+            services.AddServiceRegistration(_configuration);
 
             services.Configure<RouteOptions>(options =>
                 {
