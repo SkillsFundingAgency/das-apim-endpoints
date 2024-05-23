@@ -3,12 +3,12 @@
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
 public class GetAccountLegalEntitiesRequest : IGetAllApiRequest
 {
-    private readonly string _hashedAccountId;
+    private readonly string _accountHashedId;
 
-    public GetAccountLegalEntitiesRequest(string hashedAccountId)
+    public GetAccountLegalEntitiesRequest(string accountHashedId)
     {
-        _hashedAccountId = hashedAccountId;
+        _accountHashedId = accountHashedId;
     }
 
-    public string GetAllUrl => $"api/accounts/{_hashedAccountId}/legalentities?includeDetails=true";
+    public string GetAllUrl => $"api/accounts/{_accountHashedId}/legalentities?includeDetails=true";
 }
