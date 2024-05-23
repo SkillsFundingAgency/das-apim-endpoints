@@ -37,7 +37,8 @@ namespace SFA.DAS.Reservations.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get AccountProviderLegalEntities, UKPRN: [{ukprn}] and Operations: [{operations}]");
+                var loggerData = ukprn.ToString().Replace('\n', '_').Replace('\r', '_');
+                _logger.LogError(e, $"Error attempting to get AccountProviderLegalEntities for UKPRN: {loggerData}");
                 return BadRequest();
             }
         }
