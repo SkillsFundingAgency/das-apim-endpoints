@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.Authorization.Queries;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Authorization;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
+using GetCohortAccessResponse = SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments.GetCohortAccessResponse;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
 
@@ -21,7 +22,7 @@ public class AuthorizationController(ISender mediator, ILogger<AuthorizationCont
         try
         {
             var result = await mediator.Send(new GetCohortAccessQuery(party, partyId, cohortId));
-            return Ok(new SharedOuterApi.InnerApi.Responses.Authorization.GetCohortAccessResponse { HasCohortAccess = result });
+            return Ok(new GetCohortAccessResponse { HasCohortAccess = result });
         }
         catch (Exception exception)
         {

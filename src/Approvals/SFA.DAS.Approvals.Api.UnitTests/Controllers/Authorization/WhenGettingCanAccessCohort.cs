@@ -33,7 +33,7 @@ public class WhenGettingCanAccessCohort
         var actual = await controller.CanAccessCohort(partyId, cohortId, party) as OkObjectResult;
 
         actual.Should().NotBeNull();
-        var actualModel = actual.Value as SharedOuterApi.InnerApi.Responses.Authorization.GetCohortAccessResponse;
+        var actualModel = actual.Value as GetCohortAccessResponse;
         actualModel.HasCohortAccess.Should().Be(result);
     }
 

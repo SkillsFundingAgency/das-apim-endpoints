@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Microsoft.IdentityModel.Tokens;
+using System.Linq;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
@@ -13,14 +13,8 @@ public class GetProviderAccountLegalEntitiesRequest : IGetApiRequest﻿
     public GetProviderAccountLegalEntitiesRequest(int? ukprn, List<Operation> operations)
     {
         _ukprn = ukprn;
-        if (!operations.IsNullOrEmpty())
-        {
-            foreach (Operation operation in operations)
-                this._operations += $"&operations={(int)operation}";
-        }
-        else
-            _operations = "&operations=";
+        _operations = string.Join('&', operations.Select(o => $"operations={(int)o}"));
     }
 
-    public string GetUrl => $"accountproviderlegalentities?ukprn={_ukprn}{_operations}";
+    public string GetUrl => $"accountproviderlegalentities?ukprn={_ukprn}&{_operations}";
 }

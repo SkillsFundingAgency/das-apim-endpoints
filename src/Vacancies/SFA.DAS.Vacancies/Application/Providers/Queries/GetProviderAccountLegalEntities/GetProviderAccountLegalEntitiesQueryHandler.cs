@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -5,6 +6,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
 namespace SFA.DAS.Vacancies.Application.Providers.Queries.GetProviderAccountLegalEntities
 {
@@ -20,7 +22,11 @@ namespace SFA.DAS.Vacancies.Application.Providers.Queries.GetProviderAccountLega
         {
             var response =
                 await _apiClient.Get<GetProviderAccountLegalEntitiesResponse>(
-                    new GetProviderAccountLegalEntitiesRequest(request.Ukprn, null));
+                    new GetProviderAccountLegalEntitiesRequest(request.Ukprn, new List<Operation>
+                        {
+                            Operation.Recruitment,
+                            Operation.RecruitmentRequiresReview
+                        }));
 
             return new GetProviderAccountLegalEntitiesQueryResponse
             {
