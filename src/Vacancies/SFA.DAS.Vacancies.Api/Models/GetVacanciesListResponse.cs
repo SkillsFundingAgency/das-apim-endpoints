@@ -100,6 +100,7 @@ namespace SFA.DAS.Vacancies.Api.Models
 
     public enum WageType
     {
+        Unknown = 0,
         ApprenticeshipMinimum = 2,
         NationalMinimum = 3,
         Custom = 4,
