@@ -12,6 +12,7 @@ using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Application.Authorization.Queries;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.Testing.AutoFixture;
+using GetCohortAccessResponse = SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments.GetCohortAccessResponse;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Authorization;
 
