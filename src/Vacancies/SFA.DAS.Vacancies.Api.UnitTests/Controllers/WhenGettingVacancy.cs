@@ -1,9 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using Azure.Core;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +7,12 @@ using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Api.Controllers;
 using SFA.DAS.Vacancies.Api.Models;
+using SFA.DAS.Vacancies.Api.Telemetry;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
+using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
 {
@@ -23,6 +23,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             string vacancyReference,
             GetVacancyQueryResult queryResult,
             int ukprn,
+            [Frozen] Mock<IMetrics> metrics,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
@@ -39,12 +40,15 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             var model = controllerResult.Value as GetVacancyResponse;
             Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo((GetVacancyResponse)queryResult);
+
+            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference, 1), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_If_No_Result_Then_Not_Found_Result_Returned(
             string vacancyReference,
             GetVacancyQueryResult queryResult,
+            [Frozen] Mock<IMetrics> metrics,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
@@ -57,12 +61,15 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+
+            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference, 1), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_If_Error_Then_Internal_Server_Error_Returned(
             string vacancyReference,
             GetVacancyQueryResult queryResult,
+            [Frozen] Mock<IMetrics> metrics,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
@@ -73,6 +80,8 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+
+            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference, 1), Times.Once);
         }
     }
 }
