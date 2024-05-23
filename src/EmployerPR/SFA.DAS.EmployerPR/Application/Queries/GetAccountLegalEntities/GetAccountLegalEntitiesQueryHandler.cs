@@ -17,7 +17,7 @@ public class GetAccountLegalEntitiesQueryHandler : IRequestHandler<GetAccountLeg
     {
         var accountLegalEntities =
             await _apiClient.GetAll<GetAccountLegalEntityResponse>(
-                new GetAccountLegalEntitiesRequest(request.HashedAccountId));
+                new GetAccountLegalEntitiesRequest(request.AccountHashedId));
 
         return new GetAccountLegalEntitiesQueryResult
         {
