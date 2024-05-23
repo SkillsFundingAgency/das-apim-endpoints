@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
+using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -27,7 +28,13 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetStandardQuery { StandardId = standardId });
-                return Ok(result.Standard);
+
+                if (result.Standard != null)
+                {
+                    return Ok(result.Standard);
+                }
+
+                return NotFound();
             }
             catch (Exception e)
             {

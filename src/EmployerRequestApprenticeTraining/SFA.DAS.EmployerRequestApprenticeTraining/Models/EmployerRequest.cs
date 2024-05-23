@@ -11,6 +11,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Models
 
         public static explicit operator EmployerRequest(InnerApi.Responses.EmployerRequest source)
         {
+            if (source == null) return null;
+
             return new EmployerRequest()
             {
                 Id = source.Id,

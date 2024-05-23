@@ -44,7 +44,13 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetEmployerRequestQuery { EmployerRequestId = employerRequestId });
-                return Ok(result.EmployerRequest);
+
+                if (result.EmployerRequest != null)
+                {
+                    return Ok(result.EmployerRequest);
+                }
+
+                return NotFound();
             }
             catch (Exception e)
             {
@@ -59,7 +65,13 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetEmployerRequestsQuery { AccountId = accountId });
-                return Ok(result.EmployerRequests);
+
+                if (result.EmployerRequests != null)
+                {
+                    return Ok(result.EmployerRequests);
+                }
+
+                return NotFound();
             }
             catch (Exception e)
             {
