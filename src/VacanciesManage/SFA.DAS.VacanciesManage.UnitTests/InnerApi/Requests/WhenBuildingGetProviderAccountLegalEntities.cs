@@ -12,7 +12,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.InnerApi.Requests
         {
             var actual = new GetProviderAccountLegalEntitiesRequest(ukprn, null);
 
-            actual.GetUrl.Should().Be($"accountproviderlegalentities?ukprn={ukprn}&operations=1&operations=2");
+            actual.GetUrl.Should().Be($"accountproviderlegalentities?ukprn={ukprn}&operations=");
         }
     }
 }
