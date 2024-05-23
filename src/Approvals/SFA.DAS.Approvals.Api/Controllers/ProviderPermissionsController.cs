@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.ProviderPermissions.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderPermissions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderRelationships;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
@@ -16,7 +15,7 @@ public class ProviderPermissionsController(ISender mediator, ILogger<ProviderPer
 {
     [HttpGet]
     [Route("has-permission")]
-    public async Task<IActionResult> HasPermission([FromQuery] long? ukPrn, [FromQuery] long? accountLegalEntityId, [FromQuery] Operation operation)
+    public async Task<IActionResult> HasPermission([FromQuery] long? ukPrn, [FromQuery] long? accountLegalEntityId, [FromQuery] SharedOuterApi.InnerApi.Requests.ProviderPermissions.Operation operation)
     {
         try
         {

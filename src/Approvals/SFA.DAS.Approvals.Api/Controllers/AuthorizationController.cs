@@ -21,7 +21,7 @@ public class AuthorizationController(ISender mediator, ILogger<AuthorizationCont
         try
         {
             var result = await mediator.Send(new GetCohortAccessQuery(party, partyId, cohortId));
-            return Ok(new GetCohortAccessResponse { HasCohortAccess = result });
+            return Ok(new SharedOuterApi.InnerApi.Responses.Authorization.GetCohortAccessResponse { HasCohortAccess = result });
         }
         catch (Exception exception)
         {

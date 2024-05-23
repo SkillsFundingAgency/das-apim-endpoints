@@ -12,7 +12,7 @@ namespace SFA.DAS.Vacancies.Application.Providers.Queries.GetProviderAccountLega
     {
         private readonly IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> _apiClient;
 
-        public GetProviderAccountLegalEntitiesQueryHandler (IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> apiClient)
+        public GetProviderAccountLegalEntitiesQueryHandler(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
@@ -20,7 +20,7 @@ namespace SFA.DAS.Vacancies.Application.Providers.Queries.GetProviderAccountLega
         {
             var response =
                 await _apiClient.Get<GetProviderAccountLegalEntitiesResponse>(
-                    new GetProviderAccountLegalEntitiesRequest(request.Ukprn));
+                    new GetProviderAccountLegalEntitiesRequest(request.Ukprn, null));
 
             return new GetProviderAccountLegalEntitiesQueryResponse
             {

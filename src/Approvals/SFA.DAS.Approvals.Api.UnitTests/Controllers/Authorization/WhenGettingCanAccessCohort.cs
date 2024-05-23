@@ -10,8 +10,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Application.Authorization.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Authorization;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Authorization;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -35,7 +33,7 @@ public class WhenGettingCanAccessCohort
         var actual = await controller.CanAccessCohort(partyId, cohortId, party) as OkObjectResult;
 
         actual.Should().NotBeNull();
-        var actualModel = actual.Value as GetCohortAccessResponse;
+        var actualModel = actual.Value as SharedOuterApi.InnerApi.Responses.Authorization.GetCohortAccessResponse;
         actualModel.HasCohortAccess.Should().Be(result);
     }
 
