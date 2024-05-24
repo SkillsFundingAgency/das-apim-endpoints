@@ -9,7 +9,6 @@ using SFA.DAS.Approvals.Application.SelectProvider.Queries;
 namespace SFA.DAS.Approvals.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]/")]
     public class SelectProviderController : Controller
     {
         private readonly IMediator _mediator;
@@ -22,7 +21,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("")]
+        [Route("{accountId}/unapproved/add/select-provider")]
         public async Task<IActionResult> Get([FromQuery]long accountLegalEntityId)
         {
             try
