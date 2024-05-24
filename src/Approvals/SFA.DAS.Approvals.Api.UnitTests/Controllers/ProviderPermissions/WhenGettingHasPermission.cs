@@ -13,7 +13,6 @@ using SFA.DAS.Approvals.Application.ProviderPermissions.Queries;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 using SFA.DAS.Testing.AutoFixture;
-using Operation = SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderPermissions.Operation;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.ProviderPermissions;
 
