@@ -23,7 +23,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> GetProviderStatus([FromQuery]long accountLegalEntityId)
+        public async Task<IActionResult> Get([FromQuery]long accountLegalEntityId)
         {
             try
             {
