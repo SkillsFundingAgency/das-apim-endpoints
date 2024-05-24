@@ -8,7 +8,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
 public class GetProviderAccountLegalEntitiesRequest : IGetApiRequest﻿
 {
     private readonly int? _ukprn;
-    private readonly string _operations = "";
+    private readonly string _operations;
 
     public GetProviderAccountLegalEntitiesRequest(int? ukprn, List<Operation> operations)
     {
