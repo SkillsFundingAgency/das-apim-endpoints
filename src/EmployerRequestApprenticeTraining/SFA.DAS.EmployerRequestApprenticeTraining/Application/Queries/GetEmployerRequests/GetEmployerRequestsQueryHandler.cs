@@ -1,13 +1,13 @@
 ﻿using MediatR;
-using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using EmployerRequest = SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Responses.EmployerRequest;
+using EmployerRequest = SFA.DAS.SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining.EmployerRequest;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequests
 {
@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmplo
 
             return new GetEmployerRequestsResult
             {
-                EmployerRequests = employerRequests.Select(employerRequest => (Models.EmployerRequest)employerRequest).ToList()
+                EmployerRequests = employerRequests.Select(employerRequest => (SharedOuterApi.Models.RequestApprenticeTraining.EmployerRequest)employerRequest).ToList()
             };
         }
     }

@@ -3,15 +3,16 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
-using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests;
-using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
+using EmployerRequest = SFA.DAS.SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining.EmployerRequest;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Queries
 {
@@ -33,7 +34,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Querie
             var actual = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            actual.EmployerRequests.Should().BeEquivalentTo(employerRequests.Select(s => (Models.EmployerRequest)s).ToList(), 
+            actual.EmployerRequests.Should().BeEquivalentTo(employerRequests.Select(s => (SharedOuterApi.Models.RequestApprenticeTraining.EmployerRequest)s).ToList(), 
                 options => options.ExcludingMissingMembers());
         }
     }
