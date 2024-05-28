@@ -15,6 +15,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>, PublicSectorOrganisationApiClient>();
+        services.AddTransient<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>, EducationalOrganisationApiClient>();
         return services;
     }
 }
