@@ -1,5 +1,8 @@
-﻿namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses
 {
+    [ExcludeFromCodeCoverage]
     public class EqaProviderResponse
     {
         public string Name { get; set; }

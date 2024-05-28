@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses
 {
+    [ExcludeFromCodeCoverage]
     public class StandardVersionDetailResponse
     {
         public DateTime? EarliestStartDate { get; set; }

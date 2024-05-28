@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses
 {
+    [ExcludeFromCodeCoverage]
     public class StandardDetailResponse : StandardApiResponseBase
     {
         public string StandardUId { get; set; }

@@ -1,8 +1,10 @@
 ﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.SharedOuterApi.Models
 {
+    [ExcludeFromCodeCoverage]
     public class Standard
     {
         public string StandardUId { get; set; }
