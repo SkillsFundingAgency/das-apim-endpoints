@@ -13,7 +13,7 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
         services.Configure<PublicSectorOrganisationApiConfiguration>(configuration.GetSection("PublicSectorOrganisationsInnerApi"));
         services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<PublicSectorOrganisationApiConfiguration>>().Value);
-        services.Configure<EducationalOrganisationApiConfiguration>(configuration.GetSection("EducationalOrganisationsApiConfiguration"));
+        services.Configure<EducationalOrganisationApiConfiguration>(configuration.GetSection("EducationalOrganisationsInnerApi"));
         services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<EducationalOrganisationApiConfiguration>>().Value);
     }
 }
