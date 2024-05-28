@@ -18,7 +18,7 @@ public class WhenMappingCandidateAddressFromApiResponse
     }
 
     [Test, AutoData]
-    public void Then_Education_The_Fields_Are_Mapped_To_EducationDetailsSection(GetTrainingCoursesApiResponse.TrainingCourseItem source)
+    public void Then_Education_The_Fields_Are_Mapped_To_EducationDetailsSection(GetTrainingCourseApiResponse source)
     {
         var actual = (EducationHistorySection.TrainingCourse)source;
 
@@ -26,7 +26,7 @@ public class WhenMappingCandidateAddressFromApiResponse
     }
 
     [Test, AutoData]
-    public void Then_Work_The_Fields_Are_Mapped_To_WorkDetailsSection(GetWorkHistoriesApiResponse.WorkHistoryItem source)
+    public void Then_Work_The_Fields_Are_Mapped_To_WorkDetailsSection(GetWorkHistoryItemApiResponse source)
     {
         var actual = (WorkHistorySection.Job)source;
 
@@ -37,7 +37,7 @@ public class WhenMappingCandidateAddressFromApiResponse
     }
 
     [Test, AutoData]
-    public void Then_Volunteering_The_Fields_Are_Mapped_To_WorkDetailsSection(GetWorkHistoriesApiResponse.WorkHistoryItem source)
+    public void Then_Volunteering_The_Fields_Are_Mapped_To_WorkDetailsSection(GetWorkHistoryItemApiResponse source)
     {
         var actual = (WorkHistorySection.VolunteeringAndWorkExperience)source;
 

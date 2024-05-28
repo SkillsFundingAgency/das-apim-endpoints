@@ -20,6 +20,6 @@ public class GetRoatpProvidersQueryHandlerTests
         var query = new GetRoatpProvidersQuery();
         trainingProviderService.Setup(x => x.GetProviders(cancellationToken)).ReturnsAsync(expected);
         var actual = await handler.Handle(query, cancellationToken);
-        actual.Should().Be(expected.RegisteredProviders.Select(provider => (RoatpProvider)provider));
+        actual.Providers.Should().BeEquivalentTo(expected.RegisteredProviders.Select(provider => (RoatpProvider)provider));
     }
 }

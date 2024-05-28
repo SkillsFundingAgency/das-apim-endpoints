@@ -24,8 +24,6 @@ public class PutUpsertAboutYouItemApiRequest : IPutApiRequest
     public class PutUpdateAboutYouItemApiRequestData
     {
         public string? SkillsAndStrengths { get; set; }
-        public string? HobbiesAndInterests { get; set; }
-        public string? Improvements { get; set; }
         public string? Support { get; set; }
         public GenderIdentity? Sex { get; set; }
         public EthnicGroup? EthnicGroup { get; set; }

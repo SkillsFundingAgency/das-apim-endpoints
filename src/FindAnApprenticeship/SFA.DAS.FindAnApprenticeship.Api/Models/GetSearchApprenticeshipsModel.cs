@@ -17,6 +17,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         [FromQuery] public string? SearchTerm { get; set; }
         [FromQuery] public VacancySort? Sort { get; set; }
         [FromQuery] public bool DisabilityConfident { get; set; }
+        [FromQuery] public string? CandidateId { get; set; }
         
 
         public static implicit operator SearchApprenticeshipsQuery(GetSearchApprenticeshipsModel model) => new()
@@ -30,6 +31,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
             SearchTerm = model.SearchTerm,
             SelectedLevelIds = model.LevelIds,
             DisabilityConfident = model.DisabilityConfident,
+            CandidateId = model.CandidateId
         };
     }
 }
