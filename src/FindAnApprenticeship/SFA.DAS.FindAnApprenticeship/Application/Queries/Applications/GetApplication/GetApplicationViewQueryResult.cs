@@ -17,6 +17,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
         public DisabilityConfidenceSection DisabilityConfidence { get; set; }
         public WhatIsYourInterestSection WhatIsYourInterest { get; set; }
         public string ApplicationStatus { get; set; }
+        public DateTime? WithdrawnDate { get; set; }
 
         public record VacancyDetailsSection
         {

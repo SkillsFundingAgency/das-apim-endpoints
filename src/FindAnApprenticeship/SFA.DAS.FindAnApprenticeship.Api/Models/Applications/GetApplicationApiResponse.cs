@@ -314,8 +314,6 @@ public record GetApplicationApiResponse
     public record AboutYouSection
     {
         public string SkillsAndStrengths { get; set; }
-        public string Improvements { get; set; }
-        public string HobbiesAndInterests { get; set; }
         public string Support { get; set; }
 
         public static implicit operator AboutYouSection(GetApplicationQueryResult.AboutYouSection source)
@@ -326,6 +324,5 @@ public record GetApplicationApiResponse
                 SkillsAndStrengths = source.SkillsAndStrengths
             };
         }
-
     }
 }

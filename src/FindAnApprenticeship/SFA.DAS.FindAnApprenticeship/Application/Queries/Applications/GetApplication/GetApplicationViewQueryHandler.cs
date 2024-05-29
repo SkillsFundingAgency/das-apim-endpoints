@@ -127,7 +127,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
                 {
                     WhatIsYourInterest = application.WhatIsYourInterest
                 },
-                ApplicationStatus = application.Status
+                ApplicationStatus = application.Status,
+                WithdrawnDate = application.WithdrawnDate,
             };
         }
     }

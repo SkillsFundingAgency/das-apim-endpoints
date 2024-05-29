@@ -30,6 +30,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
         public AboutYouItem AboutYou { get; set; }
         public GetCandidateApiResponse Candidate { get; set; }
         public DateTime? SubmittedDate { get; set; }
+        public DateTime? WithdrawnDate { get; set; }
     }
 
     public class Question
