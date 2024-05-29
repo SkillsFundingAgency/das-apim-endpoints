@@ -24,4 +24,14 @@
     <ProjectReference Include="..\SFA.DAS.ApprenticeApp.Api\SFA.DAS.ApprenticeApp.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Controllers\" />
+    <None Remove="Services\" />
+    <None Remove="Handlers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="Services\" />
+    <Folder Include="Handlers\" />
+  </ItemGroup>
 </Project>
