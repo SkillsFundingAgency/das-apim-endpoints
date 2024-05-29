@@ -8,12 +8,6 @@ public class GetEmployerRelationshipsResponse
     {
 
     }
-
-    public GetEmployerRelationshipsResponse(List<AccountLegalEntityPermissionsResponseModel> accountLegalEntities)
-    {
-        this.AccountLegalEntities = accountLegalEntities;
-    }
-
     public List<AccountLegalEntityPermissionsResponseModel> AccountLegalEntities { get; set; } = [];
 }
 
