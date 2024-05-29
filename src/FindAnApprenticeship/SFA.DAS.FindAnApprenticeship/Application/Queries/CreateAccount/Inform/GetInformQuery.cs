@@ -2,6 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.Inform
 {
@@ -15,11 +19,17 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.Inform
         public bool ShowAccountRecoveryBanner { get; set; }
     }
 
-    public class GetInformQueryHandler : IRequestHandler<GetInformQuery, GetInformQueryResult>
+    public class GetInformQueryHandler(ICandidateApiClient<CandidateApiConfiguration> apiClient) : IRequestHandler<GetInformQuery, GetInformQueryResult>
     {
-        public Task<GetInformQueryResult> Handle(GetInformQuery request, CancellationToken cancellationToken)
+        public async Task<GetInformQueryResult> Handle(GetInformQuery request, CancellationToken cancellationToken)
         {
-            throw new System.NotImplementedException();
+            var apiResponse =
+                await apiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId.ToString()));
+
+            return new GetInformQueryResult
+            {
+                ShowAccountRecoveryBanner = string.IsNullOrWhiteSpace(apiResponse.MigratedEmail)
+            };
         }
     }
 }
