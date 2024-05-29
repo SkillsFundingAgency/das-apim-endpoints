@@ -8,6 +8,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Models;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -18,12 +19,15 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
 {
     private readonly ICandidateApiClient<CandidateApiConfiguration> _candidateApiClient;
     private readonly IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> _legacyApiClient;
-
+    private readonly ILegacyApplicationMigrationService _legacyApplicationMigrationService;
+    
     public CreateCandidateCommandHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
-        IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> legacyApiClient)
+        IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> legacyApiClient,
+        ILegacyApplicationMigrationService legacyApplicationMigrationService)
     {
         _candidateApiClient = candidateApiClient;
         _legacyApiClient = legacyApiClient;
+        _legacyApplicationMigrationService = legacyApplicationMigrationService;
     }
 
     public async Task<CreateCandidateCommandResult> Handle(CreateCandidateCommand request, CancellationToken cancellationToken)
@@ -72,6 +76,8 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
         candidateResult.EnsureSuccessStatusCode();
 
         if (candidateResult is null) return null;
+
+        await _legacyApplicationMigrationService.MigrateLegacyApplications(candidateResult.Body.Id, request.Email);
 
         return new CreateCandidateCommandResult
         {

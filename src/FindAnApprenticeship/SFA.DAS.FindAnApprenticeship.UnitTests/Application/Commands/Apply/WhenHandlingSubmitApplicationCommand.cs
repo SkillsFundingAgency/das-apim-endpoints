@@ -48,8 +48,14 @@ public class WhenHandlingSubmitApplicationCommand
                     c.PostUrl.Contains(request.CandidateId.ToString())
                     && ((PostSubmitApplicationRequestData)c.Data).VacancyReference == vacancyReference
                 ), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
-        
-        
+
+        candidateApiClient.Setup(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
+            c.PatchUrl.Contains(request.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+            c.PatchUrl.Contains(request.CandidateId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+            c.Data.Operations[0].path == "/Status" &&
+            (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Submitted
+        ))).ReturnsAsync(() => new ApiResponse<string>("", HttpStatusCode.OK, ""));
+
         var actual = await handler.Handle(request, CancellationToken.None);
         
         actual.Should().BeTrue();
@@ -79,6 +85,14 @@ public class WhenHandlingSubmitApplicationCommand
                 It.Is<PostSubmitApplicationRequest>(c => 
                     c.PostUrl.Contains(request.CandidateId.ToString())
                 ), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
+
+        candidateApiClient.Setup(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
+            c.PatchUrl.Contains(request.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+            c.PatchUrl.Contains(request.CandidateId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+            c.Data.Operations[0].path == "/Status" &&
+            (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Submitted
+        ))).ReturnsAsync(() => new ApiResponse<string>("", HttpStatusCode.OK, ""));
+
 
         var actual = await handler.Handle(request, CancellationToken.None);
 

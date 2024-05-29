@@ -16,6 +16,9 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
             public DateTime ClosingDate { get; set; }
             public DateTime? ClosedDate { get; set; }
             public int CourseId { get; set; }
+            public string AdditionalQuestion1 { get; set; }
+            public string AdditionalQuestion2 { get; set; }
+            public bool IsDisabilityConfident { get; set; }
         }
     }
 }
