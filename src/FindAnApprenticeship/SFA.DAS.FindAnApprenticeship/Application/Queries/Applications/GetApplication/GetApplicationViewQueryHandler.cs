@@ -129,6 +129,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
                 },
                 ApplicationStatus = application.Status,
                 WithdrawnDate = application.WithdrawnDate,
+                MigrationDate = application.MigrationDate,
             };
         }
     }

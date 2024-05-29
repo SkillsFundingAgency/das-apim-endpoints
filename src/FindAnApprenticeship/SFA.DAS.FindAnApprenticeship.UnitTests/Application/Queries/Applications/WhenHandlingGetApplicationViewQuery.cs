@@ -57,6 +57,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
             result.VacancyDetails.Title.Should().Be(vacancyResponse.Title);
             result.ApplicationStatus.Should().Be(applicationApiResponse.Status);
             result.WithdrawnDate.Should().Be(applicationApiResponse.WithdrawnDate);
+            result.MigrationDate.Should().Be(applicationApiResponse.MigrationDate);
         }
     }
 }

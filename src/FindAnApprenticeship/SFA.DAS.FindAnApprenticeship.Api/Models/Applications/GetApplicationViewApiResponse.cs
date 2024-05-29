@@ -19,6 +19,7 @@ public record GetApplicationViewApiResponse
     public WhatIsYourInterestSection WhatIsYourInterest { get; set; }
     public string ApplicationStatus { get; set; }
     public DateTime? WithdrawnDate { get; set; }
+    public DateTime? MigrationDate { get; set; }
 
     public static implicit operator GetApplicationViewApiResponse(GetApplicationViewQueryResult source)
     {
@@ -35,7 +36,8 @@ public record GetApplicationViewApiResponse
             AboutYou = source.AboutYou,
             VacancyDetails = source.VacancyDetails,
             ApplicationStatus = source.ApplicationStatus,
-            WithdrawnDate = source.WithdrawnDate
+            WithdrawnDate = source.WithdrawnDate,
+            MigrationDate = source.MigrationDate,
         };
     }
 
