@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using Azure.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.Inform;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
@@ -20,6 +22,26 @@ public class CandidatesController : ControllerBase
     {
         _logger = logger;
         _mediator = mediator;
+    }
+
+    [HttpGet]
+    [Route("create-account")]
+    public async Task<IActionResult> GetCreateAccount([FromQuery] Guid candidateId)
+    {
+        try
+        {
+            var queryResponse = await _mediator.Send(new GetInformQuery
+            {
+                CandidateId = candidateId
+            });
+
+            return Ok(queryResponse);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error attempting to get create-account inform");
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
     }
 
     [HttpPut]
