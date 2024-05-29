@@ -1,4 +1,5 @@
 using System;
+using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
@@ -14,5 +15,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public UserStatus Status { get; set; }
+        public GetAddressApiResponse Address { get; set; }
     }
 }

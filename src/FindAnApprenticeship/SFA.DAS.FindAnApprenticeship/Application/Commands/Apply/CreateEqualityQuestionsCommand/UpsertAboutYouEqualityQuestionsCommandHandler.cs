@@ -20,8 +20,6 @@ public class UpsertAboutYouEqualityQuestionsCommandHandler(
         var requestBody = new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData
         {
             SkillsAndStrengths = aboutYouItem.AboutYou?.SkillsAndStrengths,
-            HobbiesAndInterests = aboutYouItem.AboutYou?.HobbiesAndInterests,
-            Improvements = aboutYouItem.AboutYou?.Improvements,
             Support = aboutYouItem.AboutYou?.Support,
             Sex = command.Sex,
             EthnicGroup = command.EthnicGroup,
@@ -29,7 +27,7 @@ public class UpsertAboutYouEqualityQuestionsCommandHandler(
             IsGenderIdentifySameSexAtBirth = command.IsGenderIdentifySameSexAtBirth,
             OtherEthnicSubGroupAnswer = command.OtherEthnicSubGroupAnswer,
         };
-        var request = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), requestBody);
+        var request = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, aboutYouItem.AboutYou?.Id ?? Guid.NewGuid(), requestBody);
 
         var putResult = await apiClient.PutWithResponseCode<PutUpsertAboutYouItemApiResponse>(request);
         putResult.EnsureSuccessStatusCode();

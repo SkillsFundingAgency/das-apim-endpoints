@@ -2,10 +2,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.VacanciesManage.Configuration;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
-using SFA.DAS.VacanciesManage.Interfaces;
 
 namespace SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetQualifications
 {
