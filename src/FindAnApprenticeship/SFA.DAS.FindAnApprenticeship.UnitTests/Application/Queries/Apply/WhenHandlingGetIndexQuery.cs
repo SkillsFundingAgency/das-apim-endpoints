@@ -26,13 +26,13 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             GetIndexQueryHandler handler)
         {
-            var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+            var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
             candidateApiClient
                 .Setup(client => client.Get<GetApplicationApiResponse>(
                     It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
                 .ReturnsAsync(applicationApiResponse);
 
-            var expectedGetVacancyRequest = new GetVacancyRequest(applicationApiResponse.VacancyReference);
+            var expectedGetVacancyRequest = new GetVacancyRequest(applicationApiResponse.VacancyReference.ToString());
             faaApiClient
                 .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(It.Is<GetVacancyRequest>(r => r.GetUrl == expectedGetVacancyRequest.GetUrl)))
                 .ReturnsAsync(vacancyApiResponse);

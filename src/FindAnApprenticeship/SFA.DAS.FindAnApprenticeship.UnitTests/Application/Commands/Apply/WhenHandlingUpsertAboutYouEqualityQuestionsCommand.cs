@@ -25,11 +25,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         UpsertAboutYouEqualityQuestionsCommandHandler handler)
         {
-            var expectedRequest = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData());
+            var expectedRequest = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, apiResponse.AboutYou.Id, new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData());
 
             candidateApiClient
                 .Setup(client => client.PutWithResponseCode<PutUpsertAboutYouItemApiResponse>(
-                    It.Is<PutUpsertAboutYouItemApiRequest>(r => r.PutUrl.StartsWith(expectedRequest.PutUrl.Substring(0, 86)))))
+                    It.Is<PutUpsertAboutYouItemApiRequest>(r => r.PutUrl == expectedRequest.PutUrl)))
                 .ReturnsAsync(new ApiResponse<PutUpsertAboutYouItemApiResponse>(createSkillsAndStrengthsApiResponse, HttpStatusCode.OK, string.Empty));
 
             var expectedApiRequest = new GetAboutYouItemApiRequest(command.ApplicationId, command.CandidateId);
@@ -51,15 +51,19 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
         [Test, MoqAutoData]
         public async Task Then_The_Update_Application_Status_Api_Response_NotFound_CommandResult_Is_Returned_As_Expected(
             UpsertAboutYouEqualityQuestionsCommand command,
+            GetAboutYouItemApiResponse apiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             [Frozen] UpsertAboutYouEqualityQuestionsCommandHandler handler)
         {
-            var expectedRequest = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData());
-
+            var expectedApiRequest = new GetAboutYouItemApiRequest(command.ApplicationId, command.CandidateId);
+            candidateApiClient
+                .Setup(client => client.Get<GetAboutYouItemApiResponse>(
+                    It.Is<GetAboutYouItemApiRequest>(r => r.GetUrl == expectedApiRequest.GetUrl)))
+                .ReturnsAsync(apiResponse);
             candidateApiClient
                 .Setup(client => client.PutWithResponseCode<PutUpsertAboutYouItemApiResponse>(
-                    It.Is<PutUpsertAboutYouItemApiRequest>(r => r.PutUrl.StartsWith(expectedRequest.PutUrl.Substring(0, 86)))))
-                 .ReturnsAsync((Func<ApiResponse<PutUpsertAboutYouItemApiResponse>>)null!);
+                    It.Is<PutUpsertAboutYouItemApiRequest>(r => r.PutUrl.Contains($"candidates/{command.CandidateId}/applications/{command.ApplicationId}/about-you/"))))
+                 .ReturnsAsync((ApiResponse<PutUpsertAboutYouItemApiResponse>)null!);
 
             Func<Task> act = async () => { await handler.Handle(command, CancellationToken.None); };
 

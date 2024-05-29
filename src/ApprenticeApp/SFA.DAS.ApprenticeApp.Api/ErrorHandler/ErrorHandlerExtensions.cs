@@ -8,12 +8,14 @@ using Newtonsoft.Json;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeApp.Api.ErrorHandler
 {
+    [ExcludeFromCodeCoverage]
     public static class ErrorHandlerExtensions
     {
         public static IApplicationBuilder UseApiGlobalExceptionHandler(this IApplicationBuilder app, ILogger logger)

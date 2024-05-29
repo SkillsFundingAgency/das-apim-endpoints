@@ -10,8 +10,6 @@ using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.VacanciesManage.Api.AppStart;
-using SFA.DAS.VacanciesManage.Configuration;
-using SFA.DAS.VacanciesManage.Interfaces;
 
 namespace SFA.DAS.VacanciesManage.Api.UnitTests.AppStart
 {
