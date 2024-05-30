@@ -19,4 +19,6 @@ public class Preference
 
     [JsonProperty("preferenceHint")]
     public string PreferenceHint { get; set; }
+    [JsonProperty("preferenceType")]
+    public string PreferenceType { get; set; }
 }
