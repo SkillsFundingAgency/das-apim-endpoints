@@ -55,4 +55,20 @@ public class LiveVacanciesController : ControllerBase
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
+
+    [HttpPost]
+    [Route("{vacancyReference}")]
+    public async Task<IActionResult> SendClosingSoonNotifications([FromRoute] long vacancyReference, [FromQuery]int daysUntilClosing)
+    {
+        try
+        {
+
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error sending closing soon notifications");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
 }
