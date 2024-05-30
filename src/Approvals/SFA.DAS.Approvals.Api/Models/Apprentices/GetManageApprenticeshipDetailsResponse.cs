@@ -19,6 +19,7 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
         public PendingPriceChangeDetails PendingPriceChange { get; set; }
         public PendingStartDateChangeDetails PendingStartDateChange { get; set; }
         public bool? CanActualStartDateBeChanged { get; set; }
+        public bool PaymentsFrozen { get; set; }
 
 		public class ApprenticeshipDetails
         {

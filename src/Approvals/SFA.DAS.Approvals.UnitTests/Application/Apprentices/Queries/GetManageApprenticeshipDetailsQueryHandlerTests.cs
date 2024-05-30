@@ -48,9 +48,10 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         private GetOverlappingTrainingDateResponse _overlappingTrainingDateResponse;
         private GetPendingPriceChangeResponse _pendingPriceChangeResponse;
         private GetPendingStartDateChangeApiResponse _pendingStartDateChangeResponse;
+        private GetPaymentStatusApiResponse _paymentStatusResponse;
 
 
-        [SetUp]
+		[SetUp]
         public void Setup()
         {
             var fixture = new Fixture();
@@ -71,8 +72,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _overlappingTrainingDateResponse = fixture.Create<GetOverlappingTrainingDateResponse>();
             _pendingPriceChangeResponse = fixture.Create<GetPendingPriceChangeResponse>();
             _pendingStartDateChangeResponse = fixture.Create<GetPendingStartDateChangeApiResponse>();
+            _paymentStatusResponse = fixture.Create<GetPaymentStatusApiResponse>();
 
-            _deliveryModels = fixture.Create<List<string>>();
+			_deliveryModels = fixture.Create<List<string>>();
 
             _apiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
 
@@ -118,8 +120,10 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
                 .ReturnsAsync(new ApiResponse<GetPendingPriceChangeResponse>(_pendingPriceChangeResponse, HttpStatusCode.OK, string.Empty));
             _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(It.Is<GetPendingStartDateChangeRequest>(r => r.ApprenticeshipKey == apprenticeshipKey)))
                 .ReturnsAsync(new ApiResponse<GetPendingStartDateChangeApiResponse>(_pendingStartDateChangeResponse, HttpStatusCode.OK, string.Empty));
+            _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPaymentStatusApiResponse>(It.Is<GetPaymentStatusRequest>(r => r.ApprenticeshipKey == apprenticeshipKey)))
+	            .ReturnsAsync(new ApiResponse<GetPaymentStatusApiResponse>(_paymentStatusResponse, HttpStatusCode.OK, string.Empty));
 
-            _collectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
+			_collectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
 
             _handler = new GetManageApprenticeshipDetailsQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters, _apprenticeshipsApiClient.Object, _collectionCalendarApiClient.Object);
         }
@@ -290,5 +294,14 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.That(result, Is.Null);
         }
-    }
+
+        [TestCase(true)]
+        [TestCase(false)]
+		public async Task When_apprenticeship_has_payments_frozen_then_correct_response_returned(bool paymentsFrozen)
+        {
+			_paymentStatusResponse.PaymentsFrozen = paymentsFrozen;
+			var result = await _handler.Handle(_query, CancellationToken.None);
+			result.PaymentsFrozen.Should().Be(paymentsFrozen);
+        }
+	}
 }
