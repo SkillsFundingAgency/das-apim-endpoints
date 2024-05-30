@@ -51,7 +51,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         private GetPaymentStatusApiResponse _paymentStatusResponse;
 
 
-		[SetUp]
+        [SetUp]
         public void Setup()
         {
             var fixture = new Fixture();
