@@ -19,6 +19,7 @@ public class WhenAddingServicesToTheContainer
     [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
     [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
     [TestCase(typeof(ILocationApiClient<LocationApiConfiguration>))]
+    [TestCase(typeof(ICandidateApiClient<CandidateApiConfiguration>))]
     [TestCase(typeof(INhsJobsApiClient))]
     [TestCase(typeof(ICourseService))]
     public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
@@ -48,6 +49,7 @@ public class WhenAddingServicesToTheContainer
                     new("RecruitApiConfiguration:url", "http://localhost:1"),
                     new("CoursesApiConfiguration:url", "http://localhost:2"),
                     new("LocationApiConfiguration:url", "http://localhost:3"),
+                    new("CandidateApiConfiguration:url", "http://localhost:4"),
                 }
         };
 

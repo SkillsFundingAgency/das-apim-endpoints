@@ -21,6 +21,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
+        services.AddTransient<ICandidateApiClient<CandidateApiConfiguration>, CandidateApiClient>();
         services.AddTransient<INhsJobsApiClient, NhsJobsApiClient>();
         services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
