@@ -12,6 +12,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
     <PackageReference Include="Microsoft.Extensions.Options" />
+    <PackageReference Include="SFA.DAS.NServiceBus" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
