@@ -8,9 +8,9 @@ public class GetPermissionsRequest : IGetApiRequest
 
     public long? Ukprn { get; }
 
-    public string? AccountLegalEntityId { get; set; }
+    public int? AccountLegalEntityId { get; set; }
 
-    public GetPermissionsRequest(long? ukprn, string? accountLegalEntityId)
+    public GetPermissionsRequest(long? ukprn, int? accountLegalEntityId)
     {
         Ukprn = ukprn;
         AccountLegalEntityId = accountLegalEntityId;
