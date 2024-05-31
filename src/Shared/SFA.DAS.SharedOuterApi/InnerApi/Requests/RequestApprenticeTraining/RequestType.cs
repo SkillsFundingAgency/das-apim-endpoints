@@ -2,6 +2,8 @@
 {
     public enum RequestType
     {
-        Shortlist = 1
+        Shortlist = 0,
+        CourseDetail = 1,
+        Providers = 2
     }
 }
