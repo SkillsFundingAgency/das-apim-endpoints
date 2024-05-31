@@ -17,20 +17,16 @@ public class ProcessApplicationReminderCommandHandler(
     public async Task<Unit> Handle(ProcessApplicationReminderCommand request, CancellationToken cancellationToken)
     {
         var preference = await candidateApiClient.Get<GetPreferencesApiResponse>(new GetCandidatePreferencesRequest());
-        if (preference.Preferences
-                .FirstOrDefault(c => c.PreferenceType.Equals("email", StringComparison.CurrentCultureIgnoreCase)) == null)
+        var emailPreference = preference.Preferences
+            .FirstOrDefault(c => c.PreferenceType.Equals("email", StringComparison.CurrentCultureIgnoreCase));
+        if (emailPreference == null)
         {
             return new Unit();
-            
         }
-        var preferenceId = preference.Preferences
-            .FirstOrDefault(c => c.PreferenceType.Equals("email", StringComparison.CurrentCultureIgnoreCase))!
-            .PreferenceId;
-        var vacancyTask =
-            recruitApiClient.Get<GetLiveVacancyApiResponse>(new GetLiveVacancyApiRequest(request.VacancyReference));
-        var candidatesTask =
-            candidateApiClient.Get<GetCandidateApplicationApiResponse>(
-                new GetCandidateApplicationsByVacancyRequest(request.VacancyReference.ToString(), preferenceId));
+        
+        var preferenceId = emailPreference.PreferenceId;
+        var vacancyTask = recruitApiClient.Get<GetLiveVacancyApiResponse>(new GetLiveVacancyApiRequest(request.VacancyReference));
+        var candidatesTask = candidateApiClient.Get<GetCandidateApplicationApiResponse>(new GetCandidateApplicationsByVacancyRequest(request.VacancyReference.ToString(), preferenceId));
 
         await Task.WhenAll(vacancyTask, candidatesTask);
 
