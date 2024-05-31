@@ -133,6 +133,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
             return new PendingStartDateChange
             {
                 PendingActualStartDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingActualStartDate,
+                PendingPlannedEndDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingPlannedEndDate,
                 ProviderApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate,
                 EmployerApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate,
                 Initiator = pendingStartDateChangeResponse.PendingStartDateChange.Initiator

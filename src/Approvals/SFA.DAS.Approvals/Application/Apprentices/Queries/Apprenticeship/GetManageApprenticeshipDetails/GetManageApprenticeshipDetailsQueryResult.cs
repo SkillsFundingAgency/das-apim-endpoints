@@ -39,6 +39,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
     public class PendingStartDateChange
     {
         public DateTime PendingActualStartDate { get; set; }
+        public DateTime PendingPlannedEndDate { get; set; }
         public string? Initiator { get; set; }
         public DateTime? ProviderApprovedDate { get; set; }
         public DateTime? EmployerApprovedDate { get; set; }
