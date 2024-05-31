@@ -1,12 +1,11 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
+namespace SFA.DAS.EmployerPR.Application.Queries.GetEmployerRelationships;
 
 #nullable enable
 
-public class GetEmployerRelationshipsRequest : IGetApiRequest
+public class GetEmployerRelationshipsRequest
 {
-    public string GetUrl => $"relationships/employeraccount/{AccountHashedId}?Ukprn={Ukprn}&AccountlegalentityPublicHashedId={AccountlegalentityPublicHashedId}";
     public string AccountHashedId { get; set; }
 
     public long? Ukprn { get; set; }

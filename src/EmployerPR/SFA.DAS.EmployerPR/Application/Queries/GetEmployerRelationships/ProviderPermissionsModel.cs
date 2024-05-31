@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderRelationships;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderPermissions;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EmployerPR.Application.Queries.GetEmployerRelationships;
 

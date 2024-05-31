@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderPermissions;
+using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderRelationships;
+namespace SFA.DAS.EmployerPR.Application.Queries.GetEmployerRelationships;
 
 public class GetEmployerRelationshipsResponse
 {
