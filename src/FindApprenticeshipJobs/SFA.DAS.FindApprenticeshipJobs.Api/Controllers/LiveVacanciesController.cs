@@ -21,13 +21,18 @@ public class LiveVacanciesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] uint pageSize, [FromQuery] uint pageNo, CancellationToken cancellationToken)
+    public async Task<IActionResult> Get([FromQuery] uint pageSize, [FromQuery] uint pageNo, [FromQuery]DateTime? closingDate, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get Live Vacancies invoked");
 
         try
         {
-            var result = await _mediator.Send(new GetLiveVacanciesQuery { PageNumber = (int)pageNo, PageSize = (int)pageSize }, cancellationToken);
+            var result = await _mediator.Send(new GetLiveVacanciesQuery
+            {
+                PageNumber = (int)pageNo, 
+                PageSize = (int)pageSize,
+                ClosingDate = closingDate
+            }, cancellationToken);
             var viewModel = (GetLiveVacanciesApiResponse)result;
             return Ok(viewModel);
         }
