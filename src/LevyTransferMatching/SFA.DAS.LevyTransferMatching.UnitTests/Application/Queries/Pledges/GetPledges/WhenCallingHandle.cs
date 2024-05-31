@@ -44,12 +44,40 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Pledges,Is.Not.Null);
+            Assert.That(result.TotalPledges, Is.EqualTo(_pledgeResponse.TotalPledges));
+            Assert.That(result.TotalPages, Is.EqualTo(_pledgeResponse.TotalPages));
+            Assert.That(result.Page, Is.EqualTo(_pledgeResponse.Page));
+            Assert.That(result.PageSize, Is.EqualTo(_pledgeResponse.PageSize));
             result.Pledges.Should().NotBeEmpty();
             Assert.That(!result.Pledges.Any(x => x.Id == 0));
             Assert.That(!result.Pledges.Any(x => x.Amount == 0));
             Assert.That(!result.Pledges.Any(x => x.RemainingAmount == 0));
             Assert.That(!result.Pledges.Any(x => x.ApplicationCount == 0));
             Assert.That(!result.Pledges.Any(x => x.Status == string.Empty));
+        }
+
+        [Test]
+        public async Task Verify_Query_Is_Mapped_With_Default_Values()
+        {
+            await _handler.Handle(_query, new CancellationToken());
+
+            _levyTransferMatchingService.Verify(x =>
+                x.GetPledges(It.Is<GetPledgesRequest>(p =>
+                    p.AccountId == _query.AccountId && p.GetUrl.Contains($"page={_query.Page}") &&
+                    !p.GetUrl.Contains("pageSize="))));
+        }
+
+        [Test]
+        public async Task Verify_Query_Is_Mapped_With_Explicit_Values()
+        {
+            _query.Page = 2;
+            _query.PageSize = 10;
+            await _handler.Handle(_query, new CancellationToken());
+
+            _levyTransferMatchingService.Verify(x =>
+                x.GetPledges(It.Is<GetPledgesRequest>(p =>
+                    p.AccountId == _query.AccountId && p.GetUrl.Contains($"page={_query.Page}") &&
+                    p.GetUrl.Contains($"pageSize={_query.PageSize}"))));
         }
     }
 }
