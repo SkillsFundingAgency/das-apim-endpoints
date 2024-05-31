@@ -2,6 +2,7 @@ using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindApprenticeshipJobs.Api.Models;
+using SFA.DAS.FindApprenticeshipJobs.Application.Commands;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers;
@@ -58,11 +59,15 @@ public class LiveVacanciesController : ControllerBase
 
     [HttpPost]
     [Route("{vacancyReference}")]
-    public async Task<IActionResult> SendClosingSoonNotifications([FromRoute] long vacancyReference, [FromQuery]int daysUntilClosing)
+    public async Task<IActionResult> PostSendClosingSoonNotifications([FromRoute] long vacancyReference, [FromQuery]int daysUntilClosing)
     {
         try
         {
-
+            await _mediator.Send(new ProcessApplicationReminderCommand
+            {
+                VacancyReference = vacancyReference,
+                DaysUntilClosing = daysUntilClosing
+            });
             return Ok();
         }
         catch (Exception ex)
