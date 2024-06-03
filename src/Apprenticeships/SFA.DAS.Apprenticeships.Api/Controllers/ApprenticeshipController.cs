@@ -218,5 +218,21 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
             await _apiClient.Patch(new PatchApproveApprenticeshipPriceChangeRequest(apprenticeshipKey, request.UserId, request.TrainingPrice, request.AssessmentPrice));
             return Ok();
         }
-    }
+
+        [HttpPatch]
+        [Route("{apprenticeshipKey}/startDateChange/pending/approve")]
+        public async Task<ActionResult> ApprovePendingStartDateChange(Guid apprenticeshipKey, [FromBody] ApproveStartDateChangeRequest request)
+        {
+            await _apiClient.Patch(new PatchApproveApprenticeshipStartDateChangeRequest(apprenticeshipKey, request.UserId));
+            return Ok();
+        }
+
+        [HttpPatch]
+        [Route("{apprenticeshipKey}/startDateChange/pending/reject")]
+        public async Task<ActionResult> RejectPendingStartDateChange(Guid apprenticeshipKey, [FromBody] RejectStartDateChangeRequest request)
+        {
+	        await _apiClient.Patch(new PatchRejectApprenticeshipStartDateChangeRequest(apprenticeshipKey, request.Reason));
+	        return Ok();
+        }
+	}
 }
