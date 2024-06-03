@@ -1,16 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Net;
-using System.Threading.Tasks;
-using System;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.MigrateLegacyApplications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetLegacyApplications;
 using SFA.DAS.FindAnApprenticeship.Models;
-using Azure.Core;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteJob;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.MigrateLegacyApplications;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
