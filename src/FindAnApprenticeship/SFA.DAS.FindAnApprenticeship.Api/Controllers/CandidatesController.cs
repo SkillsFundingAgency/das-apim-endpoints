@@ -85,7 +85,7 @@ public class CandidatesController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error attempting to post candidate");
+            _logger.LogError(e, "Error attempting to get sign into your old account");
             return StatusCode((int)HttpStatusCode.InternalServerError);
         }
     }
