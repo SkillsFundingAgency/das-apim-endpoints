@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderPermissions;
 
