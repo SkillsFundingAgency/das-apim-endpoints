@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +36,11 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
                     MaximumResults = maximumResults
                 });
 
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
                 var model = (SearchOrganisationsResponse)result;
 
                 return Ok(model.Organisations);
@@ -50,7 +54,7 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
 
         [HttpGet]
         [Route("review")]
-        public async Task<IActionResult> GetLatestDetails([FromQuery, Required] string identifier, [FromQuery, Required] OrganisationType organisationType)
+        public async Task<IActionResult> GetLatestDetails([FromQuery] string identifier, [FromQuery] OrganisationType organisationType)
         {
             var result = await _mediator.Send(new GetLatestDetailsQuery()
             {

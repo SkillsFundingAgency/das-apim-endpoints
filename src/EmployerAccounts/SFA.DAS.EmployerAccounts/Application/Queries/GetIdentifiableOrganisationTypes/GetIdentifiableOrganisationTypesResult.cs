@@ -1,7 +1,9 @@
-﻿namespace SFA.DAS.EmployerAccounts.Application.Queries.GetIdentifiableOrganisationTypes
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
+
+namespace SFA.DAS.EmployerAccounts.Application.Queries.GetIdentifiableOrganisationTypes
 {
     public class GetIdentifiableOrganisationTypesResult
     {
-        public string[] OrganisationTypes { get; set; }
+        public OrganisationType[] OrganisationTypes { get; set; }
     }
 }

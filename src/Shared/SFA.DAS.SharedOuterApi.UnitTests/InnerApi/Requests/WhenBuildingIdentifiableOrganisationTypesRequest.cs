@@ -1,7 +1,7 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EducationalOrganisations;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.ReferenceData;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
 {
@@ -12,7 +12,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         {
             var actual = new IdentifiableOrganisationTypesRequest();
 
-            var expected = "api/EducationalOrganisations/IdentifiableOrganisationTypes";
+            var expected = "api/organisations/IdentifiableOrganisationTypes";
 
             actual.GetUrl.Should().Be(expected);
         }
