@@ -4,6 +4,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetLegac
 {
     public record GetLegacyApplicationsQuery : IRequest<GetLegacyApplicationsQueryResult>
     {
-        public string EmailAddress { get; set; }
+        public required string EmailAddress { get; set; }
     }
 }

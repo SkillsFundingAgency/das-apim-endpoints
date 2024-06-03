@@ -8,6 +8,9 @@ using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetLegacyApplications;
 using SFA.DAS.FindAnApprenticeship.Models;
+using Azure.Core;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteJob;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.MigrateLegacyApplications;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -59,6 +62,26 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Get Legacy Applications : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost, Route("{candidateId}/migrate")]
+        public async Task<IActionResult> MigrateLegacyApplications([FromRoute] Guid candidateId, [FromQuery] string emailAddress)
+        {
+            try
+            {
+                var result = await _mediator.Send(new MigrateApplicationsCommand
+                {
+                    CandidateId = candidateId,
+                    EmailAddress = emailAddress
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Migrate Legacy Applications : An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
