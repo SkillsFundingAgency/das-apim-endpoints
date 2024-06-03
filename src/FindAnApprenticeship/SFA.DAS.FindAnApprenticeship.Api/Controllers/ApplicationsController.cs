@@ -4,7 +4,9 @@ using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Threading.Tasks;
 using System;
+using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetLegacyApplications;
 using SFA.DAS.FindAnApprenticeship.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
@@ -23,7 +25,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index ([FromQuery] Guid candidateId, [FromQuery] ApplicationStatus status)
+        public async Task<IActionResult> Index([FromQuery] Guid candidateId, [FromQuery] ApplicationStatus status)
         {
             try
             {
@@ -38,6 +40,25 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Get Applications : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet, Route("/applications/legacy")]
+        public async Task<IActionResult> GetLegacyApplication([FromQuery] string emailAddress)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetLegacyApplicationsQuery
+                {
+                    EmailAddress = emailAddress
+                });
+
+                return Ok((GetLegacyApplicationsApiResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Get Legacy Applications : An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
