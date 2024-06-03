@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.Inform;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.SignIntoYourOldAccount;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
@@ -59,6 +60,28 @@ public class CandidatesController : ControllerBase
             });
 
             return Ok((CandidateResponse)queryResponse);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error attempting to post candidate");
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpGet]
+    [Route("sign-in-to-your-old-account")]
+    public async Task<IActionResult> SignIntoYourOldAccount([FromQuery] Guid candidateId, [FromQuery] string email, [FromQuery] string password)
+    {
+        try
+        {
+            var queryResponse = await _mediator.Send(new GetSignIntoYourOldAccountQuery
+            {
+                CandidateId = candidateId,
+                Email = email,
+                Password = password
+            });
+
+            return Ok(queryResponse);
         }
         catch (Exception e)
         {
