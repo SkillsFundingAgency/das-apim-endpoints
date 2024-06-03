@@ -9,4 +9,7 @@ public class ApprenticeshipStartDateResponse
     public DateTime? EarliestStartDate { get; set; }
     public DateTime? LatestStartDate { get; set; }
     public DateTime LastFridayOfSchool { get; set; }
+    public StandardInfo Standard { get; set; } = null!;
+    public AcademicYearDetails CurrentAcademicYear { get; set; }
+    public AcademicYearDetails PreviousAcademicYear { get; set; }
 }
