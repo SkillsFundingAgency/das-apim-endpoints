@@ -120,6 +120,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
                 request.Initiator,
                 request.UserId,
                 request.ActualStartDate,
+                request.PlannedEndDate,
                 request.Reason), false);
 
             if (string.IsNullOrEmpty(response.ErrorContent))
