@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using GetLevelsListItem = SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses.GetLevelsListItem;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList
 {

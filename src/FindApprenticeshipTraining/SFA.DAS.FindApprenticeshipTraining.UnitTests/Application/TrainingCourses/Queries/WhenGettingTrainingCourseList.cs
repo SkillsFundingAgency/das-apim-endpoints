@@ -17,6 +17,8 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
+using GetLevelsListRequest = SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests.GetLevelsListRequest;
+using GetLevelsListResponse = SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses.GetLevelsListResponse;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCourses.Queries
 {

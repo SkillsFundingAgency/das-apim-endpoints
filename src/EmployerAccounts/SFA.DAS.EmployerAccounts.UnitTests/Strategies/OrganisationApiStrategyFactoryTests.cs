@@ -10,10 +10,10 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Strategies
     public class OrganisationApiStrategyFactoryTests
     {
         [Test, MoqAutoData]
-        public void CreateStrategy_ShouldReturnReferenceDataApiStrategy_ForCompanyCharityPublicSector(
+        public void CreateStrategy_ShouldReturnReferenceDataApiStrategy_ForCompanyCharity(
         OrganisationApiStrategyFactory factory)
         {
-            var organisationTypes = new[] { OrganisationType.Company, OrganisationType.Charity, OrganisationType.PublicSector };
+            var organisationTypes = new[] { OrganisationType.Company, OrganisationType.Charity };
 
             foreach (var orgType in organisationTypes)
             {
@@ -36,8 +36,21 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Strategies
 
             // Assert
             strategy.Should().BeOfType<EducationOrganisationApiStrategy>();
-
         }
+
+        [Test, MoqAutoData]
+        public void CreateStrategy_ShouldReturnPublicSectorOrganisationApiStrategy_ForPublicSectorOrganisation(
+            OrganisationApiStrategyFactory factory)
+        {
+            var orgType = OrganisationType.PublicSector;
+
+            // Act
+            var strategy = factory.CreateStrategy(orgType);
+
+            // Assert
+            strategy.Should().BeOfType<PublicSectorOrganisationApiStrategy>();
+        }
+
 
         [Test, MoqAutoData]
         public void CreateStrategy_ShouldThrowException_ForUnknownOrganisationType(
