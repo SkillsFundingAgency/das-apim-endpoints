@@ -65,14 +65,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPost, Route("{candidateId}/migrate")]
-        public async Task<IActionResult> MigrateLegacyApplications([FromRoute] Guid candidateId, [FromQuery] string emailAddress)
+        public async Task<IActionResult> MigrateLegacyApplications([FromRoute] Guid candidateId, [FromBody] PostMigrateLegacyApplicationsRequest request)
         {
             try
             {
                 var result = await _mediator.Send(new MigrateApplicationsCommand
                 {
                     CandidateId = candidateId,
-                    EmailAddress = emailAddress
+                    EmailAddress = request.EmailAddress
                 });
 
                 return Ok(result);
