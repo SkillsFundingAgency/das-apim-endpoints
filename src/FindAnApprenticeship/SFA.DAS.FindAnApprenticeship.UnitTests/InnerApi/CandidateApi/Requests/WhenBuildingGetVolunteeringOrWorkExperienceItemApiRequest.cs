@@ -15,6 +15,6 @@ public class WhenBuildingGetVolunteeringOrWorkExperienceItemApiRequest
     {
         var actual = new GetWorkHistoryItemApiRequest(applicationId, candidateId, id, WorkHistoryType.WorkExperience);
 
-        actual.GetUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/work-history/{id}?workHistoryType={WorkHistoryType.WorkExperience}");
+        actual.GetUrl.Should().Be($"api/candidates/{candidateId}/applications/{applicationId}/work-history/{id}?workHistoryType={WorkHistoryType.WorkExperience}");
     }
 }
