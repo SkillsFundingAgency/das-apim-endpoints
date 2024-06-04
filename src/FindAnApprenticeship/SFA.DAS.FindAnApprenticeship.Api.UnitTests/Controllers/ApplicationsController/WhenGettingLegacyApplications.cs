@@ -29,7 +29,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplicationsCon
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(queryResult);
 
-            var actual = await controller.GetLegacyApplication(email);
+            var actual = await controller.GetLegacyApplications(email);
 
             actual.Should().BeOfType<OkObjectResult>();
             var actualObject = ((OkObjectResult)actual).Value as GetLegacyApplicationsApiResponse;
@@ -48,7 +48,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplicationsCon
                     It.IsAny<CancellationToken>()))
                .ThrowsAsync(new InvalidOperationException());
 
-            var actual = await controller.GetLegacyApplication(email);
+            var actual = await controller.GetLegacyApplications(email);
 
             actual.As<StatusCodeResult>().StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.MigrateLegacyApplications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetLegacyApplications;
 using SFA.DAS.FindAnApprenticeship.Models;
@@ -41,12 +40,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Get Applications : An error occurred");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
         }
 
         [HttpGet, Route("/applications/legacy")]
-        public async Task<IActionResult> GetLegacyApplication([FromQuery] string emailAddress)
+        public async Task<IActionResult> GetLegacyApplications([FromQuery] string emailAddress)
         {
             try
             {
@@ -55,32 +54,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     EmailAddress = emailAddress
                 });
 
-                return Ok((GetLegacyApplicationsApiResponse)result);
+                return Ok((GetLegacyApplicationsApiResponse) result);
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Get Legacy Applications : An error occurred");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
-        }
-
-        [HttpPost, Route("{candidateId}/migrate")]
-        public async Task<IActionResult> MigrateLegacyApplications([FromRoute] Guid candidateId, [FromBody] PostMigrateLegacyApplicationsRequest request)
-        {
-            try
-            {
-                var result = await _mediator.Send(new MigrateApplicationsCommand
-                {
-                    CandidateId = candidateId,
-                    EmailAddress = request.EmailAddress
-                });
-
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Migrate Legacy Applications : An error occurred");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
         }
     }

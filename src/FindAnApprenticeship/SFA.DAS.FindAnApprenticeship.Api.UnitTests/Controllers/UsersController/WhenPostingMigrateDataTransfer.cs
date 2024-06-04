@@ -4,51 +4,51 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.MigrateLegacyApplications;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.MigrateData;
 
-namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplicationsController
+namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController
 {
     [TestFixture]
-    public class WhenPostingLegacyApplicationMigrate
+    public class WhenPostingMigrateDataTransfer
     {
         [Test, MoqAutoData]
         public async Task Then_The_Command_Response_Is_Returned(
-            PostMigrateLegacyApplicationsRequest request,
+            PostMigrateDataTransferApiRequest request,
             Guid candidateId,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] Api.Controllers.ApplicationsController controller)
+            [Greedy] Api.Controllers.UsersController controller)
         {
-            mediator.Setup(x => x.Send(It.Is<MigrateApplicationsCommand>(q =>
-                        q.EmailAddress == request.EmailAddress && 
+            mediator.Setup(x => x.Send(It.Is<MigrateDataCommand>(q =>
+                        q.EmailAddress == request.EmailAddress &&
                         q.CandidateId == candidateId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Unit());
 
-            var actual = await controller.MigrateLegacyApplications(candidateId, request);
+            var actual = await controller.MigrateDataTransfer(candidateId, request);
 
             actual.Should().BeOfType<OkObjectResult>();
         }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Is_Thrown_Then_Returns_InternalServerError(
-            PostMigrateLegacyApplicationsRequest request,
+            PostMigrateDataTransferApiRequest request,
             Guid candidateId,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] Api.Controllers.ApplicationsController controller)
+            [Greedy] Api.Controllers.UsersController controller)
         {
-            mediator.Setup(x => x.Send(It.Is<MigrateApplicationsCommand>(q =>
+            mediator.Setup(x => x.Send(It.Is<MigrateDataCommand>(q =>
                         q.EmailAddress == request.EmailAddress &&
                         q.CandidateId == candidateId),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new InvalidOperationException());
 
-            var actual = await controller.MigrateLegacyApplications(candidateId, request);
+            var actual = await controller.MigrateDataTransfer(candidateId, request);
 
             actual.As<StatusCodeResult>().StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }

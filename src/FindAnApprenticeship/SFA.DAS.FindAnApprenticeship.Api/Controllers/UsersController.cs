@@ -21,6 +21,8 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.CheckAnswer
 using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.PhoneNumber;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateName;
+using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.MigrateData;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -358,6 +360,26 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error posting candidate create account check answers");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost, Route("{candidateId}/migrate")]
+        public async Task<IActionResult> MigrateDataTransfer([FromRoute] Guid candidateId, [FromBody] PostMigrateDataTransferApiRequest request)
+        {
+            try
+            {
+                var result = await _mediator.Send(new MigrateDataCommand
+                {
+                    CandidateId = candidateId,
+                    EmailAddress = request.EmailAddress
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Migrate data transfer: An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
