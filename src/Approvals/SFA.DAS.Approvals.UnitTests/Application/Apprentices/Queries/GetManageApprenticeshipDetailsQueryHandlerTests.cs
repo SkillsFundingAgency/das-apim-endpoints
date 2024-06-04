@@ -295,40 +295,40 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             Assert.That(result, Is.Null);
         }
 
-        [TestCase(true)]
-        [TestCase(false)]
-		public async Task When_apprenticeship_has_payments_frozen_then_correct_response_returned(bool paymentsFrozen)
+        [Test]
+        public async Task When_apprenticeship_has_payments_frozen_then_correct_response_returned()
         {
             //  Arrange
-			_paymentStatusResponse.PaymentsFrozen = paymentsFrozen;
+            _paymentStatusResponse.PaymentsFrozen = true;
+            _paymentStatusResponse.ReasonFrozen = "Test reason";
+            _paymentStatusResponse.FrozenOn = DateTime.Now;
 
-            if(paymentsFrozen)
-            {
-                _paymentStatusResponse.ReasonFrozen = "Test reason";
-                _paymentStatusResponse.FrozenOn = DateTime.Now;
-            }
-            else
-            {
-                _paymentStatusResponse.ReasonFrozen = null;
-                _paymentStatusResponse.FrozenOn = null;
-            }
 
             //  Act
 			var result = await _handler.Handle(_query, CancellationToken.None);
 
             //  Assert
-			result.PaymentsStatus.PaymentsFrozen.Should().Be(paymentsFrozen);
+            result.PaymentsStatus.PaymentsFrozen.Should().BeTrue();
+            result.PaymentsStatus.ReasonFrozen.Should().Be(_paymentStatusResponse.ReasonFrozen);
+            result.PaymentsStatus.FrozenOn.Should().Be(_paymentStatusResponse.FrozenOn);
 
-            if (paymentsFrozen)
-            {
-                result.PaymentsStatus.ReasonFrozen.Should().Be(_paymentStatusResponse.ReasonFrozen);
-                result.PaymentsStatus.FrozenOn.Should().Be(_paymentStatusResponse.FrozenOn);
-            }
-            else
-            {
-                result.PaymentsStatus.ReasonFrozen.Should().BeNull();
-                result.PaymentsStatus.ReasonFrozen.Should().BeNull();
-            }
         }
+
+		[Test]
+		public async Task When_apprenticeship_has_payments_active_then_correct_response_returned()
+		{
+			//  Arrange
+			_paymentStatusResponse.PaymentsFrozen = false;
+            _paymentStatusResponse.ReasonFrozen = null;
+			_paymentStatusResponse.FrozenOn = null;
+
+			//  Act
+			var result = await _handler.Handle(_query, CancellationToken.None);
+
+			//  Assert
+			result.PaymentsStatus.PaymentsFrozen.Should().BeFalse();
+            result.PaymentsStatus.ReasonFrozen.Should().BeNull();
+			result.PaymentsStatus.ReasonFrozen.Should().BeNull();
+		}
 	}
 }

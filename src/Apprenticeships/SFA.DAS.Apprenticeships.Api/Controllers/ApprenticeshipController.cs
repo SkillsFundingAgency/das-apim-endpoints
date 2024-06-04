@@ -255,7 +255,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
                 return Ok();
             }
 
-            _logger.LogError("Error attempting to freeze apprenticeship payments. {statusCode} returned from inner api.", response.StatusCode);
+            _logger.LogError("Error attempting to freeze apprenticeship {apprenticeshipKey} payments. {statusCode} returned from inner api. {message}", apprenticeshipKey, response.StatusCode, response.ErrorContent);
             return BadRequest();
         }
     }
