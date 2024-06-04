@@ -32,7 +32,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
         public DateTime CreatedDate { get; set; }
         public DateTime? SubmittedDate { get; set; }
 		public Guid? PreviousAnswersSourceId { get; set; }
-        public DateTime? SubmittedDate { get; set; }
         public DateTime? MigrationDate { get; set; }
     }
 
