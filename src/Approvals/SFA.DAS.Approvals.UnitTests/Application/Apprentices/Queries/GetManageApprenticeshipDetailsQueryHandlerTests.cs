@@ -299,9 +299,36 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         [TestCase(false)]
 		public async Task When_apprenticeship_has_payments_frozen_then_correct_response_returned(bool paymentsFrozen)
         {
+            //  Arrange
 			_paymentStatusResponse.PaymentsFrozen = paymentsFrozen;
+
+            if(paymentsFrozen)
+            {
+                _paymentStatusResponse.ReasonFrozen = "Test reason";
+                _paymentStatusResponse.FrozenOn = DateTime.Now;
+            }
+            else
+            {
+                _paymentStatusResponse.ReasonFrozen = null;
+                _paymentStatusResponse.FrozenOn = null;
+            }
+
+            //  Act
 			var result = await _handler.Handle(_query, CancellationToken.None);
-			result.PaymentsFrozen.Should().Be(paymentsFrozen);
+
+            //  Assert
+			result.PaymentsStatus.PaymentsFrozen.Should().Be(paymentsFrozen);
+
+            if (paymentsFrozen)
+            {
+                result.PaymentsStatus.ReasonFrozen.Should().Be(_paymentStatusResponse.ReasonFrozen);
+                result.PaymentsStatus.FrozenOn.Should().Be(_paymentStatusResponse.FrozenOn);
+            }
+            else
+            {
+                result.PaymentsStatus.ReasonFrozen.Should().BeNull();
+                result.PaymentsStatus.ReasonFrozen.Should().BeNull();
+            }
         }
 	}
 }
