@@ -17,7 +17,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
             _workHistoryType = workHistoryType;
         }
 
-        public string GetUrl =>
-            $"candidates/{_candidateId}/applications/{_applicationId}/work-history?workHistoryType={_workHistoryType}";
+        public string GetUrl => $"api/candidates/{_candidateId}/applications/{_applicationId}/work-history?workHistoryType={_workHistoryType}";
     }
 }

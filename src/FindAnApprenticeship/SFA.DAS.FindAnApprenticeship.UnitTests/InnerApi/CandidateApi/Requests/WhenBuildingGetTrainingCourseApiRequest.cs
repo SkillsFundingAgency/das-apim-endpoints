@@ -14,6 +14,6 @@ public class WhenBuildingGetTrainingCourseApiRequest
     {
         var actual = new GetTrainingCourseApiRequest(applicationId, candidateId, trainingCourseId);
 
-        actual.GetUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/trainingcourses/{trainingCourseId}");
+        actual.GetUrl.Should().Be($"api/candidates/{candidateId}/applications/{applicationId}/trainingcourses/{trainingCourseId}");
     }
 }
