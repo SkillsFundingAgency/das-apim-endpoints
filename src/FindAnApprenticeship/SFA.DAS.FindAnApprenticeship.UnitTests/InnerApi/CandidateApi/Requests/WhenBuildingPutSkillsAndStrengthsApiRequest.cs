@@ -14,6 +14,6 @@ public class WhenBuildingPutSkillsAndStrengthsApiRequest
     {
         var actual = new PutUpsertAboutYouItemApiRequest(applicationId, candidateId, id, new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData());
 
-        actual.PutUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/about-you/{id}");
+        actual.PutUrl.Should().Be($"api/candidates/{candidateId}/applications/{applicationId}/about-you/{id}");
     }
 }

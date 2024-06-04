@@ -22,7 +22,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory
 
         public async Task<GetJobsQueryResult> Handle(GetJobsQuery request, CancellationToken cancellationToken)
         {
-            var applicationTask = _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId));
+            var applicationTask = _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
             var workHistoriesTask = _candidateApiClient.Get<GetWorkHistoriesApiResponse>(new GetWorkHistoriesApiRequest(request.ApplicationId, request.CandidateId, WorkHistoryType.Job));
             
             await Task.WhenAll(applicationTask, workHistoriesTask);

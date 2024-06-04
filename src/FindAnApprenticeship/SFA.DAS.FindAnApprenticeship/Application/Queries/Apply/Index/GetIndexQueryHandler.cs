@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -24,11 +25,22 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
 
     public async Task<GetIndexQueryResult> Handle(GetIndexQuery request, CancellationToken cancellationToken)
     {
-        var application = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId));
+        var application = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
         if (application == null) return null;
 
         var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference));
         if(vacancy == null) return null;
+
+        GetApplicationApiResponse previousApplication = null;
+        GetApprenticeshipVacancyItemResponse previousVacancy = null;
+        if (application.PreviousAnswersSourceId.HasValue)
+        {
+            previousApplication = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, application.PreviousAnswersSourceId.Value, false));
+            if (previousApplication == null) return null;
+
+            previousVacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(previousApplication.VacancyReference));
+            if (previousVacancy == null) return null;
+        }
 
         var additionalQuestions = application.AdditionalQuestions.ToList();
 
@@ -39,6 +51,7 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
             EmployerName = vacancy.EmployerName,
             ClosingDate = vacancy.ClosingDate,
             IsDisabilityConfident = vacancy.IsDisabilityConfident,
+            IsApplicationComplete = application.ApplicationAllSectionStatus.Equals("Completed", StringComparison.CurrentCultureIgnoreCase),
             EducationHistory = new GetIndexQueryResult.EducationHistorySection
             {
                 Qualifications = application.QualificationsStatus,
@@ -67,6 +80,12 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
             DisabilityConfidence = new GetIndexQueryResult.DisabilityConfidenceSection
             {
                 InterviewUnderDisabilityConfident = application.DisabilityConfidenceStatus,
+            },
+            PreviousApplication = previousVacancy == null ? null : new GetIndexQueryResult.PreviousApplicationDetails
+            {
+                EmployerName = previousVacancy.EmployerName,
+                SubmissionDate = previousApplication.SubmittedDate ?? DateTime.UtcNow,
+                VacancyTitle = previousVacancy.Title
             }
         };
     }

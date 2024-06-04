@@ -13,15 +13,12 @@ public class GetDeleteQualificationsQueryHandler(ICandidateApiClient<CandidateAp
 {
     public async Task<GetDeleteQualificationsQueryResult> Handle(GetDeleteQualificationsQuery request, CancellationToken cancellationToken)
     {
-        var applicationTask = candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId));
-
         var qualificationsTask = candidateApiClient.Get<GetQualificationsApiResponse>(new GetQualificationsApiRequest(request.ApplicationId, request.CandidateId, request.QualificationReference));
 
         var qualificationTypesTask = candidateApiClient.Get<GetQualificationReferenceTypesApiResponse>(new GetQualificationReferenceTypesApiRequest());
 
-        await Task.WhenAll(applicationTask, qualificationTypesTask, qualificationsTask);
+        await Task.WhenAll(qualificationTypesTask, qualificationsTask);
 
-        var application = applicationTask.Result;
         var qualifications = qualificationsTask.Result;
         var qualificationTypes = qualificationTypesTask.Result;
 

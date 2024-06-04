@@ -1,8 +1,8 @@
+using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
+using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models
 {
@@ -12,9 +12,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
 
         public static implicit operator GetVacanciesListResponse(SearchApprenticeshipsResult source)
         {
-            return new GetVacanciesListResponse()
+            return new GetVacanciesListResponse
             {
-                Vacancies = source.Vacancies.Select(c =>(GetVacanciesListResponseItem)c)
+                Vacancies = source.Vacancies.Select(c => (GetVacanciesListResponseItem)c)
             };
         }
 
@@ -40,36 +40,60 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public int CourseId { get; set; }
         public string CourseRoute { get; set; }
 
-       public string ApprenticeshipLevel { get ; set ; }
-       public string WageText { get; set; }
-       public bool IsDisabilityConfident { get; set; }
+        public string ApprenticeshipLevel { get; set; }
+        public string WageText { get; set; }
+        public bool IsDisabilityConfident { get; set; }
+        public double? Lon { get; set; }
 
-       public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
-       {
-           return new GetVacanciesListResponseItem
-           {
-               Id = source.Id,
-               ClosingDate = source.ClosingDate,
-               EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
-               PostedDate = source.PostedDate,
-               Title = source.Title,
-               VacancyReference = source.VacancyReference,
-               Distance = source.Distance,
-               ApprenticeshipLevel = source.ApprenticeshipLevel,
-               CourseTitle = source.CourseTitle,
-               CourseId = source.CourseId,
-               WageType = source.WageType,
-               WageAmount = source.WageAmount,
-               WageText = source.WageText,
-               AddressLine1 = source.Address.AddressLine1,
-               AddressLine2 = source.Address.AddressLine2,
-               AddressLine3 = source.Address.AddressLine3,
-               AddressLine4 = source.Address.AddressLine4,
-               PostCode = source.Address.Postcode,
-               CourseRoute = source.CourseRoute,
-               CourseLevel = source.CourseLevel,
-               IsDisabilityConfident = source.IsDisabilityConfident
-           };
-       }
+        public double? Lat { get; set; }
+        public CandidateApplicationDetails? Application { get; set; }
+
+        public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
+        {
+            return new GetVacanciesListResponseItem
+            {
+                Id = source.Id,
+                ClosingDate = source.ClosingDate,
+                EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
+                PostedDate = source.PostedDate,
+                Title = source.Title,
+                VacancyReference = source.VacancyReference,
+                Distance = source.Distance,
+                ApprenticeshipLevel = source.ApprenticeshipLevel,
+                CourseTitle = source.CourseTitle,
+                CourseId = source.CourseId,
+                WageType = source.WageType,
+                WageAmount = source.WageAmount,
+                WageText = source.WageText,
+                AddressLine1 = source.Address.AddressLine1,
+                AddressLine2 = source.Address.AddressLine2,
+                AddressLine3 = source.Address.AddressLine3,
+                AddressLine4 = source.Address.AddressLine4,
+                PostCode = source.Address.Postcode,
+                CourseRoute = source.CourseRoute,
+                CourseLevel = source.CourseLevel,
+                IsDisabilityConfident = source.IsDisabilityConfident,
+                Application = source.Application,
+                Lat = source.Location.Lat,
+                Lon = source.Location.Lon,
+            };
+        }
+
+        
+    }
+
+    public class CandidateApplicationDetails
+    {
+        public string Status { get; set; }
+
+        public static implicit operator CandidateApplicationDetails(GetVacanciesListItem.CandidateApplication source)
+        {
+            if (source is null) return null;
+
+            return new CandidateApplicationDetails
+            {
+                Status = source.Status
+            };
+        }
     }
 }
