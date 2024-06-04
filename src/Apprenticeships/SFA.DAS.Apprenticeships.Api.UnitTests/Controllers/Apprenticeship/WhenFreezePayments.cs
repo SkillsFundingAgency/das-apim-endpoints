@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Api.Controllers;
+using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -42,15 +43,16 @@ public class WhenFreezePayments
         var sut = new ApprenticeshipController(_mockLogger.Object, _mockApiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), Mock.Of<IMediator>());
 
         var apprenticeshipKey = Guid.NewGuid();
+        var request = _fixture.Create<FreezePaymentsRequest>();
 
         _mockApiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<IPostApiRequest>(), false))
             .ReturnsAsync(new ApiResponse<object>("", HttpStatusCode.OK, ""));
 
         // Act
-        var response = await sut.FreezeApprenticeshipPayments(apprenticeshipKey);
+        var response = await sut.FreezeApprenticeshipPayments(apprenticeshipKey, request);
 
         // Assert
-        _mockApiClient.Verify(x => x.PostWithResponseCode<object>(It.Is<FreezePaymentsRequest>(y =>
+        _mockApiClient.Verify(x => x.PostWithResponseCode<object>(It.Is<PostFreezePaymentsRequest>(y =>
             y.ApprenticeshipKey == apprenticeshipKey), false), Times.Once);
 
         response.Should().BeOfType<OkResult>();
@@ -63,12 +65,13 @@ public class WhenFreezePayments
         var sut = new ApprenticeshipController(_mockLogger.Object, _mockApiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), Mock.Of<IMediator>());
 
         var apprenticeshipKey = Guid.NewGuid();
+        var request = _fixture.Create<FreezePaymentsRequest>();
 
         _mockApiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<IPostApiRequest>(), false))
             .ReturnsAsync(new ApiResponse<object>("", HttpStatusCode.NotFound, "Has Error"));
 
         // Act
-        var response = await sut.FreezeApprenticeshipPayments(apprenticeshipKey);
+        var response = await sut.FreezeApprenticeshipPayments(apprenticeshipKey, request);
 
         // Assert
         response.Should().BeOfType<BadRequestResult>();

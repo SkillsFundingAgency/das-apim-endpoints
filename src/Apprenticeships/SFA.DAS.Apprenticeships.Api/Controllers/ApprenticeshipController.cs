@@ -246,9 +246,9 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
 
         [HttpPost]
         [Route("{apprenticeshipKey}/freeze")]
-        public async Task<ActionResult> FreezeApprenticeshipPayments(Guid apprenticeshipKey)
+        public async Task<ActionResult> FreezeApprenticeshipPayments(Guid apprenticeshipKey, [FromBody] FreezePaymentsRequest request)
         {
-            var response = await _apiClient.PostWithResponseCode<object>(new FreezePaymentsRequest(apprenticeshipKey), false);
+            var response = await _apiClient.PostWithResponseCode<object>(new PostFreezePaymentsRequest(apprenticeshipKey, request.Reason), false);
 
             if (string.IsNullOrEmpty(response.ErrorContent))
             {

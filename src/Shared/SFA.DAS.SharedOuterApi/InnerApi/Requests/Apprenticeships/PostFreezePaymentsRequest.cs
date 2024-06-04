@@ -3,15 +3,20 @@ using System;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 
-public class FreezePaymentsRequest : IPostApiRequest
+public class PostFreezePaymentsRequest : IPostApiRequest
 {
     public Guid ApprenticeshipKey { get; set; }
     public string PostUrl => $"{ApprenticeshipKey}/freeze";
     public object Data { get; set; }
 
-    public FreezePaymentsRequest(Guid apprenticeshipKey)
+    public PostFreezePaymentsRequest(Guid apprenticeshipKey, string reason)
     {
         ApprenticeshipKey = apprenticeshipKey;
-        Data = string.Empty;//no data required, apprenticeship key is in the url
+        Data = new FreezePaymentsRequestData { Reason = reason };
     }
+}
+
+public class FreezePaymentsRequestData
+{
+    public string Reason { get; set; }
 }
