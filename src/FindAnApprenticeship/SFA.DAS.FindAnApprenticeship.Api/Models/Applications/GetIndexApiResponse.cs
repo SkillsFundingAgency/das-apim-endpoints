@@ -10,12 +10,13 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
         public string EmployerName { get; set; }
         public DateTime ClosingDate { get; set; }
         public bool IsDisabilityConfident { get; set; }
-
+        public bool IsApplicationComplete { get; set; }
         public EducationHistorySection EducationHistory { get; set; }
         public WorkHistorySection WorkHistory { get; set; }
         public ApplicationQuestionsSection ApplicationQuestions { get; set; }
         public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
         public DisabilityConfidenceSection DisabilityConfidence { get; set; }
+        public PreviousApplicationDetails PreviousApplication { get; set; }
 
         public class EducationHistorySection
         {
@@ -108,12 +109,34 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
                 EmployerName = source.EmployerName,
                 ClosingDate = source.ClosingDate,
                 IsDisabilityConfident = source.IsDisabilityConfident,
+                IsApplicationComplete = source.IsApplicationComplete,
                 EducationHistory = source.EducationHistory,
                 WorkHistory = source.WorkHistory,
                 ApplicationQuestions = source.ApplicationQuestions,
                 InterviewAdjustments = source.InterviewAdjustments,
-                DisabilityConfidence = source.DisabilityConfidence
+                DisabilityConfidence = source.DisabilityConfidence,
+                PreviousApplication = source.PreviousApplication
             };
+        }
+
+        public class PreviousApplicationDetails
+        {
+            public string VacancyTitle { get; set; }
+            public string EmployerName { get; set; }
+            public DateTime SubmissionDate { get; set; }
+
+            public static implicit operator PreviousApplicationDetails(
+                GetIndexQueryResult.PreviousApplicationDetails source)
+            {
+                if (source == null) return null;
+
+                return new PreviousApplicationDetails
+                {
+                    EmployerName = source.EmployerName,
+                    SubmissionDate = source.SubmissionDate,
+                    VacancyTitle = source.VacancyTitle
+                };
+            }
         }
     }
 }
