@@ -3,7 +3,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetLegacyApplications;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.MigrateData;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.Testing.AutoFixture;
@@ -15,10 +15,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
     {
         [Test, MoqAutoData]
         public async Task Then_The_QueryResult_Is_Returned_As_Expected(
-            GetLegacyApplicationsQuery query,
+            MigrateDataQuery query,
             GetLegacyApplicationsByEmailApiResponse applicationsApiResponse,
             [Frozen] Mock<ILegacyApplicationMigrationService> vacancyMigrationService,
-            GetLegacyApplicationsQueryHandler handler)
+            MigrateDataQueryHandler handler)
         {  
             vacancyMigrationService.Setup(client => client.GetLegacyApplications(query.EmailAddress))
                 .ReturnsAsync(applicationsApiResponse);

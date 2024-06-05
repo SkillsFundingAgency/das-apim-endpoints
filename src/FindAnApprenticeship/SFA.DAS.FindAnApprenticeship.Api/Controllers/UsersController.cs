@@ -22,7 +22,8 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.PhoneNumber
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateName;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.MigrateData;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.MigrateData;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -364,6 +365,25 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 
+        [HttpGet, Route("migrate")]
+        public async Task<IActionResult> MigrateDataTransfer([FromQuery] string emailAddress)
+        {
+            try
+            {
+                var result = await _mediator.Send(new MigrateDataQuery
+                {
+                    EmailAddress = emailAddress
+                });
+
+                return Ok((GetMigrateDataTransferApiResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Get Migrate data transfer : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
         [HttpPost, Route("{candidateId}/migrate")]
         public async Task<IActionResult> MigrateDataTransfer([FromRoute] Guid candidateId, [FromBody] PostMigrateDataTransferApiRequest request)
         {
@@ -379,7 +399,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Migrate data transfer: An error occurred");
+                _logger.LogError(e, "Post Migrate data transfer: An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

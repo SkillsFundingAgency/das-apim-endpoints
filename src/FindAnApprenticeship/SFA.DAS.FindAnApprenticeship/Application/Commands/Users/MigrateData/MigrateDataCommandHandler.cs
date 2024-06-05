@@ -11,7 +11,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.MigrateData
+namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData
 {
     public record MigrateDataCommandHandler(
         ICandidateApiClient<CandidateApiConfiguration> CandidateApiClient,

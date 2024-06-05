@@ -1,7 +1,7 @@
 ﻿using System;
 using MediatR;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.MigrateData
+namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData
 {
     public record MigrateDataCommand : IRequest<Unit>
     {

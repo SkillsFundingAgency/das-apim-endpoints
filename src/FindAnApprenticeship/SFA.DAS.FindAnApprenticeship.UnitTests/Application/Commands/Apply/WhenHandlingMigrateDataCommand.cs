@@ -3,7 +3,7 @@ using FluentAssertions;
 using MediatR;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.MigrateData;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Requests;

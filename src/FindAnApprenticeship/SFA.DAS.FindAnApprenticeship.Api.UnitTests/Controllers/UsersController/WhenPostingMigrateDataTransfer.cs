@@ -10,7 +10,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.MigrateData;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController
 {
