@@ -12,6 +12,8 @@
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    <PackageReference Include="SFA.DAS.Notifications.Messages" />
+    <PackageReference Include="SFA.DAS.NServiceBus" />
   </ItemGroup>
 
   <ItemGroup>

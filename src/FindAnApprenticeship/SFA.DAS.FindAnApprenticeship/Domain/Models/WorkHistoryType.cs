@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.FindAnApprenticeship.Models
+﻿namespace SFA.DAS.FindAnApprenticeship.Domain.Models
 {
     public enum WorkHistoryType : short
     {

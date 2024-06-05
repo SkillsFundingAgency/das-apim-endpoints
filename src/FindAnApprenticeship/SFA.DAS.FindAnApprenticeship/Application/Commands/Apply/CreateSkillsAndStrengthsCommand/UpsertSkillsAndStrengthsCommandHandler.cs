@@ -26,7 +26,7 @@ public class UpsertSkillsAndStrengthsCommandHandler : IRequestHandler<UpsertSkil
 
     public async Task<UpsertSkillsAndStrengthsCommandResult> Handle(UpsertSkillsAndStrengthsCommand command, CancellationToken cancellationToken)
     {
-        var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
+        var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
         if (command.SkillsAndStrengthsSectionStatus > 0)
         {
             jsonPatchDocument.Replace(x => x.SkillsAndStrengthStatus, command.SkillsAndStrengthsSectionStatus);
@@ -64,7 +64,7 @@ public class UpsertSkillsAndStrengthsCommandHandler : IRequestHandler<UpsertSkil
         return new UpsertSkillsAndStrengthsCommandResult
         {
             Id = putResult.Body.Id,
-            Application = JsonConvert.DeserializeObject<Models.Application>(patchResult.Body)
+            Application = JsonConvert.DeserializeObject<Domain.Models.Application>(patchResult.Body)
         };
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace SFA.DAS.FindAnApprenticeship.Models
+namespace SFA.DAS.FindAnApprenticeship.Domain.Models
 {
     public class Application
     {
