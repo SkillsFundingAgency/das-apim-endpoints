@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.FindAnApprenticeship.Configuration;
+using SFA.DAS.FindAnApprenticeship.Domain.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.AppStart

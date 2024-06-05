@@ -6,6 +6,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
 {
     public class DeleteTrainingCourseRequest(Guid applicationId, Guid candidateId, Guid trainingCourseId) : IDeleteApiRequest
     {
-        public string DeleteUrl => $"candidates/{candidateId}/applications/{applicationId}/trainingcourses/{trainingCourseId}";
+        public string DeleteUrl => $"api/candidates/{candidateId}/applications/{applicationId}/trainingcourses/{trainingCourseId}";
     }
 }

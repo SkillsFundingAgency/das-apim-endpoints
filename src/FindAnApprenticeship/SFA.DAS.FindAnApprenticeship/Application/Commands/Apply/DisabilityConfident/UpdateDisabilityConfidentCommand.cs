@@ -22,7 +22,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DisabilityConf
     {
         public async Task Handle(UpdateDisabilityConfidentCommand request, CancellationToken cancellationToken)
         {
-            var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
+            var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
             
             jsonPatchDocument.Replace(x => x.ApplyUnderDisabilityConfidentScheme, request.ApplyUnderDisabilityConfidentScheme);
 

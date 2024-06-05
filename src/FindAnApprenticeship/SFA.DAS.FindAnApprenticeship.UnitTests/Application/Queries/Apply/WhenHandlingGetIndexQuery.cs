@@ -26,6 +26,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             GetIndexQueryHandler handler)
         {
+            applicationApiResponse.PreviousAnswersSourceId = null;
             var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
             candidateApiClient
                 .Setup(client => client.Get<GetApplicationApiResponse>(
