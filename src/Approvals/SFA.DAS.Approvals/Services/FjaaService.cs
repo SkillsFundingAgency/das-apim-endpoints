@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -32,11 +33,8 @@ public class FjaaService : IFjaaService
         _logger.LogInformation("Requesting AccountLegalEntity {Id} from Commitments v2 Api", accountLegalEntityId);
         var accountLegalEntity = await _commitmentsV2ApiClient.Get<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
 
-        if (accountLegalEntity == null)
-        {
-            _logger.LogWarning("The Commitments Api v2 returned NULL when requesting the AccountLegalEntity with id {Id}.", accountLegalEntityId);
-        }
-            
+        _logger.LogInformation("Requesting AccountLegalEntity {Id} response: {Response}", accountLegalEntityId, JsonConvert.SerializeObject(accountLegalEntity));
+
         _logger.LogInformation("Requesting fjaa agency for LegalEntityId {LegalEntityId}", accountLegalEntity.MaLegalEntityId);
         var agencyRequest = await _fjaaClient.GetWithResponseCode<GetAgencyResponse>(new GetAgencyRequest(accountLegalEntity.MaLegalEntityId));
 
@@ -46,6 +44,7 @@ public class FjaaService : IFjaaService
         }
 
         agencyRequest.EnsureSuccessStatusCode();
+        
         return true;
     }
 }
