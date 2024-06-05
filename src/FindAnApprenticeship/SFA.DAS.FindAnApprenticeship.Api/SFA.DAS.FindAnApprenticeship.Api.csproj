@@ -8,6 +8,12 @@
         <Content Update="nlog.config">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <TransformOnBuild>true</TransformOnBuild>
+        </Content>    
+        <Content Update="appsettings.json">
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
+        <Content Update="appsettings.Development.json">
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
         </Content>
     </ItemGroup>
 
@@ -40,6 +46,7 @@
         <PackageReference Include="SFA.DAS.Api.Common" />
         <PackageReference Include="SFA.DAS.NLog.Targets.Redis" />
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
+        <PackageReference Include="SFA.DAS.NServiceBus" />
         <PackageReference Include="Swashbuckle.AspNetCore" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     </ItemGroup>

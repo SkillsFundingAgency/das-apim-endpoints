@@ -22,7 +22,7 @@ public class WhenHandlingUpdateAdditionalQuestionCommand
     public async Task Then_The_AdditionalQuestion_Is_Updated(
         UpdateAdditionalQuestionCommand command,
         PutUpsertAdditionalQuestionApiResponse additionalQuestionApiResponse,
-        Models.Application updateApplicationResponse,
+        Domain.Models.Application updateApplicationResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         UpdateAdditionalQuestionCommandHandler handler)
     {
@@ -33,7 +33,7 @@ public class WhenHandlingUpdateAdditionalQuestionCommand
                         It.Is<PutUpsertAdditionalQuestionApiRequest>(r => r.PutUrl == expectedPostAdditionalQuestionRequest.PutUrl)))
                     .ReturnsAsync(new ApiResponse<PutUpsertAdditionalQuestionApiResponse>(additionalQuestionApiResponse, HttpStatusCode.OK, string.Empty));
 
-        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
+        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Domain.Models.Application>());
 
         candidateApiClient
                 .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
@@ -52,11 +52,11 @@ public class WhenHandlingUpdateAdditionalQuestionCommand
     public async Task Then_The_Update_Application_Status_Api_Response_NotFound_CommandResult_Is_Returned_As_Expected(
         UpdateAdditionalQuestionCommand command,
         PutUpsertAdditionalQuestionApiResponse additionalQuestionApiResponse,
-        Models.Application updateApplicationResponse,
+        Domain.Models.Application updateApplicationResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         UpdateAdditionalQuestionCommandHandler handler)
     {
-        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
+        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Domain.Models.Application>());
 
         candidateApiClient
             .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
