@@ -5,7 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
-using SFA.DAS.FindAnApprenticeship.Models;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {

@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using SFA.DAS.FindAnApprenticeship.Models;
 using System;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplication
 {

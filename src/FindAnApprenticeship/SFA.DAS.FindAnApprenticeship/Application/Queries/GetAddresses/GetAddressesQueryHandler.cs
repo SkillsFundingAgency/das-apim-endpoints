@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SFA.DAS.FindAnApprenticeship.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -8,6 +7,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using SFA.DAS.FindAnApprenticeship.Domain.Configuration;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetAddresses
 {

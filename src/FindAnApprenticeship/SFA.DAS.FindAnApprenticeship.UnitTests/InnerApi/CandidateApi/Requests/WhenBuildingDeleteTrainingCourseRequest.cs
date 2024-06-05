@@ -16,7 +16,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.InnerApi.CandidateApi.Requests
         {
             var actual = new DeleteTrainingCourseRequest(applicationId, candidateId, trainingCourseId);
 
-            actual.DeleteUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/trainingcourses/{trainingCourseId}");
+            actual.DeleteUrl.Should().Be($"api/candidates/{candidateId}/applications/{applicationId}/trainingcourses/{trainingCourseId}");
         }
     }
 }
