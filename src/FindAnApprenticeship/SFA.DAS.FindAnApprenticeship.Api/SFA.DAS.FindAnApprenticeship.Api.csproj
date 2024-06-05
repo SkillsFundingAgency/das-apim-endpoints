@@ -8,6 +8,12 @@
         <Content Update="nlog.config">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <TransformOnBuild>true</TransformOnBuild>
+        </Content>    
+        <Content Update="appsettings.json">
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
+        <Content Update="appsettings.Development.json">
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
         </Content>
     </ItemGroup>
 
