@@ -1,5 +1,5 @@
-﻿using SFA.DAS.FindAnApprenticeship.Models;
-using System;
+﻿using System;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 public class GetAboutYouItemApiResponse

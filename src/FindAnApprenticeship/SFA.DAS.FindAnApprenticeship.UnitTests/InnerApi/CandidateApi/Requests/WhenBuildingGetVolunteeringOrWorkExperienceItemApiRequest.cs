@@ -1,8 +1,8 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-using SFA.DAS.FindAnApprenticeship.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.InnerApi.CandidateApi.Requests;
 public class WhenBuildingGetVolunteeringOrWorkExperienceItemApiRequest

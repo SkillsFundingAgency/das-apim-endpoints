@@ -21,11 +21,11 @@ public class WhenHandlingPatchApplicationStatusCommand
     [Test, MoqAutoData]
     public async Task Then_The_CommandResult_Is_Returned_As_Expected(
             PatchApplicationStatusCommand command,
-            Models.Application candidateApiResponse,
+            Domain.Models.Application candidateApiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             PatchApplicationStatusCommandHandler handler)
     {
-        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
+        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Domain.Models.Application>());
 
         candidateApiClient
             .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
@@ -45,7 +45,7 @@ public class WhenHandlingPatchApplicationStatusCommand
         [Frozen] Mock<ILogger<PatchApplicationStatusCommandHandler>> loggerMock,
         PatchApplicationStatusCommandHandler handler)
     {
-        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
+        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Domain.Models.Application>());
 
         candidateApiClient
             .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
