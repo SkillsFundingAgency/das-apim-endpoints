@@ -15,6 +15,6 @@ public class WhenBuildingGetWorkHistoriesApiRequest
     {
         var actual = new GetWorkHistoriesApiRequest(applicationId, candidateId, WorkHistoryType.Job);
 
-        actual.GetUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/work-history?workHistoryType=Job");
+        actual.GetUrl.Should().Be($"api/candidates/{candidateId}/applications/{applicationId}/work-history?workHistoryType=Job");
     }
 }
