@@ -25,7 +25,7 @@ public record PatchApplicationDisabilityConfidenceCommandHandler : IRequestHandl
 
     public async Task<PatchApplicationDisabilityConfidenceCommandResponse> Handle(PatchApplicationDisabilityConfidenceCommand request, CancellationToken cancellationToken)
     {
-        var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
+        var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
         if (request.DisabilityConfidenceStatus > 0)
         {
             jsonPatchDocument.Replace(x => x.DisabilityConfidenceStatus, request.DisabilityConfidenceStatus);
@@ -36,7 +36,7 @@ public record PatchApplicationDisabilityConfidenceCommandHandler : IRequestHandl
         if (response.StatusCode == System.Net.HttpStatusCode.OK)
             return new PatchApplicationDisabilityConfidenceCommandResponse
             {
-                Application = JsonConvert.DeserializeObject<Models.Application>(response.Body)
+                Application = JsonConvert.DeserializeObject<Domain.Models.Application>(response.Body)
             };
 
         _logger.LogError("Unable to patch application for candidate Id {request.CandidateId}", request.CandidateId);
