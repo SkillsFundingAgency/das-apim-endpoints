@@ -41,17 +41,17 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var controllerResponse = await _controller.Pledges(_accountId);
 
             var okObjectResult = controllerResponse as OkObjectResult;
-            Assert.That(okObjectResult, Is.Not.Null);
+            okObjectResult.Should().NotBeNull();
             var response = okObjectResult.Value as GetPledgesResponse;
-            Assert.That(response, Is.Not.Null);
+            response.Should().NotBeNull();
 
-            Assert.That(response.Pledges, Is.Not.Null);
+            response.Pledges.Should().NotBeNull();
             response.Pledges.Should().NotBeEmpty();
-            Assert.That(!response.Pledges.Any(x => x.Id == 0));
-            Assert.That(!response.Pledges.Any(x => x.Amount == 0));
-            Assert.That(!response.Pledges.Any(x => x.RemainingAmount == 0));
-            Assert.That(!response.Pledges.Any(x => x.ApplicationCount == 0));
-            Assert.That(!response.Pledges.Any(x => x.Status == string.Empty));
+            response.Pledges.Any(x => x.Id == 0).Should().BeFalse();
+            response.Pledges.Any(x => x.Amount == 0).Should().BeFalse();
+            response.Pledges.Any(x => x.RemainingAmount == 0).Should().BeFalse();
+            response.Pledges.Any(x => x.ApplicationCount == 0).Should().BeFalse();
+            response.Pledges.Any(x => x.Status == string.Empty).Should().BeFalse();
         }
     }
 }

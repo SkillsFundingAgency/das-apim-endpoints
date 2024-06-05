@@ -42,14 +42,14 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         {
             var result = await _handler.Handle(_query, new CancellationToken());
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.Pledges,Is.Not.Null);
+            result.Should().NotBeNull();
+            result.Pledges.Should().NotBeNull();
             result.Pledges.Should().NotBeEmpty();
-            Assert.That(!result.Pledges.Any(x => x.Id == 0));
-            Assert.That(!result.Pledges.Any(x => x.Amount == 0));
-            Assert.That(!result.Pledges.Any(x => x.RemainingAmount == 0));
-            Assert.That(!result.Pledges.Any(x => x.ApplicationCount == 0));
-            Assert.That(!result.Pledges.Any(x => x.Status == string.Empty));
+            result.Pledges.Any(x => x.Id == 0).Should().BeFalse();
+            result.Pledges.Any(x => x.Amount == 0).Should().BeFalse();
+            result.Pledges.Any(x => x.RemainingAmount == 0).Should().BeFalse();
+            result.Pledges.Any(x => x.ApplicationCount == 0).Should().BeFalse();
+            result.Pledges.Any(x => x.Status == string.Empty).Should().BeFalse();
         }
     }
 }
