@@ -1,12 +1,8 @@
-﻿using System;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
-using SFA.DAS.FindAnApprenticeship.Extensions.LegacyApi;
-using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses;
-using SFA.DAS.FindAnApprenticeship.Models;
-using SFA.DAS.FindAnApprenticeship.Services;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
 {
