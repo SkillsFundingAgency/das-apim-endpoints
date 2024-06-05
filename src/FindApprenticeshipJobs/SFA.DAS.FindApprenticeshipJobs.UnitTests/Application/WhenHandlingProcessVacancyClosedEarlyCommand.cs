@@ -3,6 +3,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.Notifications.Messages.Commands;
@@ -19,7 +20,7 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
     [MoqInlineAutoData("address1","address2","address3",null,"address3")]
     [MoqInlineAutoData("address1","address2",null,null,"address2")]
     [MoqInlineAutoData("address1",null,null,null,"address1")]
-    public async Task Then_The_Candidates_Are_Found_And_Emails_Sent(
+    public async Task Then_The_Candidates_Are_Found_Emails_Sent_And_Application_Status_Updated(
         string address1,
         string address2,
         string address3,
@@ -29,6 +30,7 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
         Preference candidatePreference,
         Preference candidatePreference1,
         GetCandidateApplicationApiResponse candidateApiResponse,
+        GetCandidateApplicationApiResponse candidateApiResponseAll,
         GetLiveVacancyApiResponse recruitApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
@@ -41,11 +43,20 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
         recruitApiResponse.EmployerLocation.AddressLine3 = address3;
         recruitApiResponse.EmployerLocation.AddressLine4 = address4;
         candidatePreference.PreferenceType = "Email";
+        var candidateGetRequest =
+            new GetCandidateApplicationsByVacancyRequest(command.VacancyReference.ToString(), candidatePreference.PreferenceId,
+                true);
+        var candidateGetRequestAll =
+            new GetCandidateApplicationsByVacancyRequest(command.VacancyReference.ToString(), candidatePreference.PreferenceId,
+                false);
         candidateApiClient
             .Setup(x => x.Get<GetCandidateApplicationApiResponse>(
                 It.Is<GetCandidateApplicationsByVacancyRequest>(c =>
-                    c.GetUrl.Contains(command.VacancyReference.ToString())
-                    && c.GetUrl.Contains(candidatePreference.PreferenceId.ToString())))).ReturnsAsync(candidateApiResponse);
+                    c.GetUrl == candidateGetRequest.GetUrl))).ReturnsAsync(candidateApiResponse);
+        candidateApiClient
+            .Setup(x => x.Get<GetCandidateApplicationApiResponse>(
+                It.Is<GetCandidateApplicationsByVacancyRequest>(c =>
+                    c.GetUrl == candidateGetRequestAll.GetUrl))).ReturnsAsync(candidateApiResponseAll);
         candidateApiClient
             .Setup(x => x.Get<GetPreferencesApiResponse>(
                 It.IsAny<GetCandidatePreferencesRequest>())).ReturnsAsync(new GetPreferencesApiResponse{Preferences =
@@ -75,6 +86,17 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
                     && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
                 )
             ), Times.Once);
+        }
+
+        foreach (var candidate in candidateApiResponseAll.Candidates)
+        {
+            candidateApiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
+                    c.PatchUrl.Contains(candidate.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                    c.PatchUrl.Contains(candidate.Candidate.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                    c.Data.Operations[0].path == "/Status" &&
+                    (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Expired
+                )), Times.Once
+            );
         }
         
     }
@@ -113,6 +135,8 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
         notificationService.Verify(x=>x.Send(
             It.IsAny<SendEmailCommand>()
         ), Times.Never);
+        candidateApiClient.Verify(x => 
+                x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()), Times.Never);
         
     }
     

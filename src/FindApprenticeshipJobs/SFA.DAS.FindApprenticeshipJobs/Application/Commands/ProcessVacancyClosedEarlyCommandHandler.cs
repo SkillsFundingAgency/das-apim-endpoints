@@ -1,5 +1,7 @@
 using MediatR;
+using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.Notifications.Messages.Commands;
@@ -27,9 +29,11 @@ public class ProcessVacancyClosedEarlyCommandHandler(
         var preferenceId = emailPreference.PreferenceId;
         var vacancyTask = recruitApiClient.Get<GetLiveVacancyApiResponse>(new GetLiveVacancyApiRequest(request.VacancyReference));
         var candidatesTask = candidateApiClient.Get<GetCandidateApplicationApiResponse>(new GetCandidateApplicationsByVacancyRequest(request.VacancyReference.ToString(), preferenceId));
+        var allCandidateApplicationsTask = candidateApiClient.Get<GetCandidateApplicationApiResponse>(new GetCandidateApplicationsByVacancyRequest(request.VacancyReference.ToString(), preferenceId, false));
 
-        await Task.WhenAll(vacancyTask, candidatesTask);
+        await Task.WhenAll(vacancyTask, candidatesTask, allCandidateApplicationsTask);
 
+        var notificationTasks = new List<Task>();
         foreach (var candidate in candidatesTask.Result.Candidates)
         {
             var email = new SendVacancyClosedEarlyTemplate(
@@ -43,8 +47,22 @@ public class ProcessVacancyClosedEarlyCommandHandler(
                 vacancyTask.Result.EmployerLocation?.Postcode, 
                 candidate.ApplicationCreatedDate,
                 helper.SettingsUrl);
-            await notificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens));
+            notificationTasks.Add(notificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens)));
         }
+
+        await Task.WhenAll(notificationTasks);
+
+        var updateCandidate = new List<Task>();
+        foreach (var candidate in allCandidateApplicationsTask.Result.Candidates)
+        {
+            var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
+            jsonPatchDocument.Replace(x => x.Status, ApplicationStatus.Expired);
+            var patchRequest = new PatchApplicationApiRequest(candidate.ApplicationId, candidate.Candidate.Id, jsonPatchDocument);
+            updateCandidate.Add(candidateApiClient.PatchWithResponseCode(patchRequest));
+        }
+
+        await Task.WhenAll(updateCandidate);
+        
         
         return new Unit();
     }
