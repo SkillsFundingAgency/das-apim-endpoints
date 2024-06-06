@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using SFA.DAS.FindAnApprenticeship.Models;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Domain
 {
@@ -19,6 +19,14 @@ namespace SFA.DAS.FindAnApprenticeship.Domain
             public const string InProgress = "InProgress";
 			public const string Incomplete = "Incomplete";
             public const string Completed = "Completed";
+        }
+
+        public static class OpenTelemetry
+        {
+            public const string ServiceName = "FindAnApprenticeshipOuterApi";
+            public const string ServiceMeterName = "FindAnApprenticeship";
+            public const string RequestSourceName = "faav2ui-as";
+            public const string VacancySearchViewsCounterName = "FindAnApprenticeship.vacancyReference.views";
         }
     }
 }

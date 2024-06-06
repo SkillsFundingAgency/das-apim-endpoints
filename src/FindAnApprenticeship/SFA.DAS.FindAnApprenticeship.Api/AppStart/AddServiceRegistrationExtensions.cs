@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.Services;
@@ -11,7 +14,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
 {
     public static class AddServiceRegistrationExtensions
     {
-        public static void AddServiceRegistration(this IServiceCollection services)
+        public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpClient();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
@@ -21,9 +24,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
             services.AddTransient<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>, FindApprenticeshipLegacyApiClient>();
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<ICandidateApiClient<CandidateApiConfiguration>, CandidateApiClient>();
+            services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
+            services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
+            services.AddTransient<IVacancyService, VacancyService>();
+            services.AddTransient<INotificationService, NotificationService>();
+            services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
         }
     }
 }

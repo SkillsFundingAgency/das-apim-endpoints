@@ -5,9 +5,9 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.FindAnApprenticeship.Models;
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Domain;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory
 {
@@ -22,7 +22,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory
 
         public async Task<GetJobsQueryResult> Handle(GetJobsQuery request, CancellationToken cancellationToken)
         {
-            var applicationTask = _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId));
+            var applicationTask = _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
             var workHistoriesTask = _candidateApiClient.Get<GetWorkHistoriesApiResponse>(new GetWorkHistoriesApiRequest(request.ApplicationId, request.CandidateId, WorkHistoryType.Job));
             
             await Task.WhenAll(applicationTask, workHistoriesTask);

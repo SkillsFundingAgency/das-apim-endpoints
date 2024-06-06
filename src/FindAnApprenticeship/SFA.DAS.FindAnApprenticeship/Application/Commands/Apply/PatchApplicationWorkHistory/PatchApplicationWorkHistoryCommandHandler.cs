@@ -26,7 +26,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicati
 
         public async Task<PatchApplicationWorkHistoryCommandResponse> Handle(PatchApplicationWorkHistoryCommand request, CancellationToken cancellationToken)
         {
-            var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
+            var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
             if (request.WorkExperienceStatus > 0)
             {
                 //jsonPatchDocument.Replace(x => x.WorkExperienceStatus, request.WorkExperienceStatus);
@@ -38,7 +38,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicati
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 return new PatchApplicationWorkHistoryCommandResponse
                 {
-                    Application = JsonConvert.DeserializeObject<Models.Application>(response.Body)
+                    Application = JsonConvert.DeserializeObject<Domain.Models.Application>(response.Body)
                 };
 
             _logger.LogError($"Unable to patch application for candidate Id {request.CandidateId}");

@@ -14,6 +14,6 @@ public class WhenBuildingPutUpdateJobsApiRequest
     {
         var actual = new PutUpsertWorkHistoryApiRequest(applicationId, candidateId, jobId, new PutUpsertWorkHistoryApiRequest.PutUpsertWorkHistoryApiRequestData());
 
-        actual.PutUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/work-history/{jobId}");
+        actual.PutUrl.Should().Be($"api/candidates/{candidateId}/applications/{applicationId}/work-history/{jobId}");
     }
 }

@@ -11,7 +11,7 @@ using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.FindAnApprenticeship.Models;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplicationController;
 
@@ -35,7 +35,7 @@ public class WhenUpdatingDisabilityConfidence
             .ReturnsAsync(result);
 
         var actual = await controller.UpdateDisabilityConfidence(applicationId, candidateId, model, CancellationToken.None);
-        var actualObject = ((OkObjectResult)actual).Value as FindAnApprenticeship.Models.Application;
+        var actualObject = ((OkObjectResult)actual).Value as Domain.Models.Application;
 
         using (new AssertionScope())
         {
