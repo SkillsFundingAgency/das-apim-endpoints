@@ -19,7 +19,7 @@ public record PatchApplicationStatusCommandHandler(
 {
     public async Task<PatchApplicationStatusCommandResponse> Handle(PatchApplicationStatusCommand request, CancellationToken cancellationToken)
     {
-        var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
+        var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
         if (request.Status > 0)
         {
             jsonPatchDocument.Replace(x => x.Status, request.Status);
@@ -30,7 +30,7 @@ public record PatchApplicationStatusCommandHandler(
         if (response.StatusCode == System.Net.HttpStatusCode.OK)
             return new PatchApplicationStatusCommandResponse
             {
-                Application = JsonConvert.DeserializeObject<Models.Application>(response.Body)
+                Application = JsonConvert.DeserializeObject<Domain.Models.Application>(response.Body)
             };
 
         Logger.LogError("Unable to patch application for candidate Id {request.CandidateId}", request.CandidateId);

@@ -19,7 +19,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplicationSubmitted;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.WithdrawApplication;
-using SFA.DAS.FindAnApprenticeship.Models;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
