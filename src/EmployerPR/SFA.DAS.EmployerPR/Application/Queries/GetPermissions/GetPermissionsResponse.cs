@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderRelationships;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderPermissions;
 
 namespace SFA.DAS.EmployerPR.Application.Queries.GetPermissions;
 public class GetPermissionsResponse
