@@ -42,18 +42,18 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         {
             var result = await _handler.Handle(_query, new CancellationToken());
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.Pledges,Is.Not.Null);
-            Assert.That(result.TotalPledges, Is.EqualTo(_pledgeResponse.TotalPledges));
-            Assert.That(result.TotalPages, Is.EqualTo(_pledgeResponse.TotalPages));
-            Assert.That(result.Page, Is.EqualTo(_pledgeResponse.Page));
-            Assert.That(result.PageSize, Is.EqualTo(_pledgeResponse.PageSize));
+            result.Should().NotBeNull();
+            result.Pledges.Should().NotBeNull();
+            result.TotalPledges.Should().Be(_pledgeResponse.TotalPledges);
+            result.TotalPages.Should().Be(_pledgeResponse.TotalPages);
+            result.Page.Should().Be(_pledgeResponse.Page);
+            result.PageSize.Should().Be(_pledgeResponse.PageSize);
             result.Pledges.Should().NotBeEmpty();
-            Assert.That(!result.Pledges.Any(x => x.Id == 0));
-            Assert.That(!result.Pledges.Any(x => x.Amount == 0));
-            Assert.That(!result.Pledges.Any(x => x.RemainingAmount == 0));
-            Assert.That(!result.Pledges.Any(x => x.ApplicationCount == 0));
-            Assert.That(!result.Pledges.Any(x => x.Status == string.Empty));
+            result.Pledges.Any(x => x.Id == 0).Should().BeFalse();
+            result.Pledges.Any(x => x.Amount == 0).Should().BeFalse();
+            result.Pledges.Any(x => x.RemainingAmount == 0).Should().BeFalse();
+            result.Pledges.Any(x => x.ApplicationCount == 0).Should().BeFalse();
+            result.Pledges.Any(x => x.Status == string.Empty).Should().BeFalse();
         }
 
         [Test]
