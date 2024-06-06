@@ -16,7 +16,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.InnerApi.CandidateApi.Requests
         {
             var actual = new PostDeleteJobApiRequest(applicationId, candidateId, jobId);
 
-            actual.DeleteUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/work-history/{jobId}");
+            actual.DeleteUrl.Should().Be($"api/candidates/{candidateId}/applications/{applicationId}/work-history/{jobId}");
         }
     }
 }

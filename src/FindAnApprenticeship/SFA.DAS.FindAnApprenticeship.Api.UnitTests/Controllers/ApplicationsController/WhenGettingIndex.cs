@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
-using SFA.DAS.FindAnApprenticeship.Models;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplicationsController

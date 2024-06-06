@@ -2,5 +2,5 @@
 
 public record PatchApplicationStatusCommandResponse
 {
-    public Models.Application Application { get; set; }
+    public Domain.Models.Application Application { get; set; }
 }

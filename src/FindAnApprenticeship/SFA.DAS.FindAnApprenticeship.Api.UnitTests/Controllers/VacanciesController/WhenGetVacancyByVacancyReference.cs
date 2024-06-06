@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
+using SFA.DAS.FindAnApprenticeship.Api.Telemetry;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
 using SFA.DAS.Testing.AutoFixture;
 using System;
@@ -21,6 +22,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
         public async Task Then_The_Query_Response_Is_Returned(
         string vacancyReference,
         GetApprenticeshipVacancyQueryResult result,
+        [Frozen] Mock<IMetrics> metrics,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.VacanciesController controller)
         {
@@ -39,11 +41,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
             mediator.Verify(m => m.Send(It.Is<GetApprenticeshipVacancyQuery>(c =>
                     c.VacancyReference == vacancyReference),
                 CancellationToken.None));
+
+            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference, 1), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_If_An_Exception_Is_Thrown_Then_Internal_Server_Error_Response_Returned(
             string vacancyReference,
+            [Frozen] Mock<IMetrics> metrics,
             [Frozen] Mock<ILogger<Api.Controllers.VacanciesController>> logger,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.VacanciesController controller)
@@ -61,11 +66,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
             mediator.Verify(m => m.Send(It.Is<GetApprenticeshipVacancyQuery>(c =>
                     c.VacancyReference == vacancyReference),
                 CancellationToken.None));
+
+            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference, 1), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_If_An_Null_Is_Returned_Then_Not_Found_Response_Returned(
             string vacancyReference,
+            [Frozen] Mock<IMetrics> metrics,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.VacanciesController controller)
         {
@@ -82,6 +90,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
             mediator.Verify(m => m.Send(It.Is<GetApprenticeshipVacancyQuery>(c =>
                     c.VacancyReference == vacancyReference),
                 CancellationToken.None));
+
+            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference, 1), Times.Once);
         }
     }
 }

@@ -13,8 +13,9 @@ public class LegalEntitiesTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(sut.PublicHashedId, Is.EqualTo(source.AccountLegalEntityPublicHashedId));
-            Assert.That(sut.Name, Is.EqualTo(source.Name));
+            Assert.That(sut.AccountLegalEntityPublicHashedId, Is.EqualTo(source.AccountLegalEntityPublicHashedId));
+            Assert.That(sut.AccountLegalEntityName, Is.EqualTo(source.Name));
+            Assert.That(sut.AccountLegalEntityId, Is.EqualTo(source.AccountLegalEntityId));
         });
     }
 }

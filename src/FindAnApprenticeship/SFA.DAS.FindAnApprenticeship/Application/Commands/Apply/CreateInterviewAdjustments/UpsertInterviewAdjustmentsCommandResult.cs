@@ -4,5 +4,5 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateIntervie
 public class UpsertInterviewAdjustmentsCommandResult
 {
     public Guid Id { get; set; }
-    public Models.Application Application { get; set; }
+    public Domain.Models.Application Application { get; set; }
 }
