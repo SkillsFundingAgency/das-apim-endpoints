@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Azure.Core;
+using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Requests;
@@ -33,7 +34,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData
 
             var putRequest = new PutCandidateApiRequest(command.CandidateId, new PutCandidateApiRequestData
             {
-                Email = command.EmailAddress,
                 FirstName = userDetails?.RegistrationDetails?.FirstName,
                 LastName = userDetails?.RegistrationDetails?.LastName,
                 DateOfBirth = registrationDetailsDateOfBirth,
@@ -42,6 +42,23 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData
             var candidateResult = await CandidateApiClient.PutWithResponseCode<PutCandidateApiResponse>(putRequest);
 
             candidateResult.EnsureSuccessStatusCode();
+
+            //var postData = new PutCandidateAddressApiRequestData
+            //{
+            //    AddressLine1 = userDetails?.RegistrationDetails?.Address.AddressLine1,
+            //    AddressLine2 = userDetails?.RegistrationDetails?.Address.AddressLine2,
+            //    AddressLine3 = userDetails?.RegistrationDetails?.Address.Town,
+            //    AddressLine4 = userDetails?.RegistrationDetails?.Address.County,
+            //    Latitude = userDetails?.RegistrationDetails?.Address.GeoPoint.Latitude ?? default,
+            //    Longitude = userDetails?.RegistrationDetails?.Address.GeoPoint.Longitude ?? default,
+            //    Postcode = userDetails?.RegistrationDetails?.Address?.Postcode,
+            //};
+
+            //var postRequest = new PutCandidateAddressApiRequest(command.CandidateId, postData);
+
+            //var candidateAddressResponse = await CandidateApiClient.PutWithResponseCode<PostCandidateAddressApiResponse>(postRequest);
+
+            //candidateAddressResponse.EnsureSuccessStatusCode();
 
             await LegacyApplicationMigrationService.MigrateLegacyApplications(command.CandidateId, command.EmailAddress);
 
