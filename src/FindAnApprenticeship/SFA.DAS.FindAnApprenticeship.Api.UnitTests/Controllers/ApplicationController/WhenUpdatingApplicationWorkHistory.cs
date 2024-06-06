@@ -35,7 +35,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplicationCont
             var actual = await controller.UpdateApplicationWorkHistory(applicationId, candidateId, model, CancellationToken.None);
 
             actual.Should().BeOfType<OkObjectResult>();
-            var actualObject = ((OkObjectResult)actual).Value as FindAnApprenticeship.Models.Application;
+            var actualObject = ((OkObjectResult)actual).Value as Domain.Models.Application;
             actualObject.Should().NotBeNull();
             actualObject.Should().BeEquivalentTo(result.Application);
         }
