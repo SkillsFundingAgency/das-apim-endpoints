@@ -3,6 +3,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.VolunteeringOrWorkExperience.GetWorkExperience;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -19,7 +20,7 @@ public class WhenHandlingGetVolunteeringOrWorkExperienceItemQuery
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetVolunteeringOrWorkExperienceItemQueryHandler handler)
     {
-        var expectedGetDeleteJobRequest = new GetWorkHistoryItemApiRequest(query.ApplicationId, query.CandidateId, query.Id, Models.WorkHistoryType.WorkExperience);
+        var expectedGetDeleteJobRequest = new GetWorkHistoryItemApiRequest(query.ApplicationId, query.CandidateId, query.Id, WorkHistoryType.WorkExperience);
         candidateApiClient
             .Setup(client => client.Get<GetWorkHistoryItemApiResponse>(
                 It.Is<GetWorkHistoryItemApiRequest>(r => r.GetUrl == expectedGetDeleteJobRequest.GetUrl)))
