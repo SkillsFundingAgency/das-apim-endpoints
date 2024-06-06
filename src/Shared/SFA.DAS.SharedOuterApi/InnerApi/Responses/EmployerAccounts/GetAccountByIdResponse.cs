@@ -16,6 +16,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts
     public enum ApprenticeshipEmployerType
     {
         NonLevy = 0,
-        Levy = 1
+        Levy = 1,
+        Unknown = 2,
     }
 }

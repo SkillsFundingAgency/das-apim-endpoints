@@ -7,6 +7,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -40,7 +41,6 @@ namespace SFA.DAS.SharedOuterApi.Services
             var userResponse =
                 await _employerProfilesApiClient.GetWithResponseCode<EmployerProfileUsersApiResponse>(
                     new GetEmployerUserAccountRequest(employerProfile.UserId));
-            
             
             if (userResponse.StatusCode == HttpStatusCode.NotFound)
             {
@@ -78,14 +78,13 @@ namespace SFA.DAS.SharedOuterApi.Services
                 isSuspended = userResponse.Body.IsSuspended;
             }
             
-            var result =
-                await _accountsApiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(userId));
+            var userAccountsResponse = await _accountsApiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(userId));
 
-            
             var returnList = new List<EmployerAccountUser>();
-            foreach(var account in result)
+            
+            foreach(var userAccount in userAccountsResponse)
             {
-                var teamMember = await _accountsApiClient.GetAll<GetAccountTeamMembersResponse>(new GetAccountTeamMembersRequest(account.EncodedAccountId));
+                var teamMember = await _accountsApiClient.GetAll<GetAccountTeamMembersResponse>(new GetAccountTeamMembersRequest(userAccount.EncodedAccountId));
                 
                 var member = teamMember.FirstOrDefault(c=>c.UserRef.Equals(userId, StringComparison.CurrentCultureIgnoreCase));
                 
@@ -94,13 +93,14 @@ namespace SFA.DAS.SharedOuterApi.Services
                     returnList.Add(new EmployerAccountUser
                     {
                         Role = member.Role,
-                        DasAccountName = account.DasAccountName,
-                        EncodedAccountId = account.EncodedAccountId,
+                        DasAccountName = userAccount.DasAccountName,
+                        EncodedAccountId = userAccount.EncodedAccountId,
                         FirstName = firstName,
                         LastName = lastName,
                         UserId = userId,
                         DisplayName = displayName,
-                        IsSuspended = isSuspended
+                        IsSuspended = isSuspended,
+                        ApprenticeshipEmployerType = userAccount.EmployerType
                     });
                 }
             }
@@ -113,7 +113,8 @@ namespace SFA.DAS.SharedOuterApi.Services
                     LastName = lastName,
                     UserId = userId,
                     DisplayName = displayName,
-                    IsSuspended = isSuspended
+                    IsSuspended = isSuspended,
+                    ApprenticeshipEmployerType = ApprenticeshipEmployerType.Unknown
                 });
             }
 
