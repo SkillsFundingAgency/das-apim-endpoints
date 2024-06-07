@@ -330,5 +330,22 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             result.PaymentsStatus.ReasonFrozen.Should().BeNull();
 			result.PaymentsStatus.ReasonFrozen.Should().BeNull();
 		}
-	}
+
+        [Test]
+        public async Task When_apprenticeship_has_no_payment_status_then_correct_response_returned()
+        {
+            //  Arrange
+            _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPaymentStatusApiResponse>(It.IsAny<GetPaymentStatusRequest>()))
+                .ReturnsAsync(new ApiResponse<GetPaymentStatusApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
+
+            //  Act
+            var result = await _handler.Handle(_query, CancellationToken.None);
+
+            //  Assert
+            result.PaymentsStatus.PaymentsFrozen.Should().BeFalse();
+            result.PaymentsStatus.ReasonFrozen.Should().BeNull();
+            result.PaymentsStatus.FrozenOn.Should().BeNull();
+
+        }
+    }
 }

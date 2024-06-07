@@ -146,7 +146,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
 
         private PaymentsStatus ToResponse(GetPaymentStatusApiResponse source)
         {
-            if (source == null) return null;
+            if (source == null) return new PaymentsStatus { PaymentsFrozen = false };
 
             return new PaymentsStatus
             {
