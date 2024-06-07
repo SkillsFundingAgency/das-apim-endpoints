@@ -246,7 +246,7 @@ public class ApprenticeshipController : ControllerBase
 
     [HttpPost]
     [Route("{apprenticeshipKey}/unfreeze")]
-    public async Task<ActionResult> FreezeApprenticeshipPayments(Guid apprenticeshipKey)
+    public async Task<ActionResult> UnfreezeApprenticeshipPayments(Guid apprenticeshipKey)
     {
         var response = await _apiClient.PostWithResponseCode<object>(new PostUnfreezePaymentsRequest(apprenticeshipKey), false);
 
