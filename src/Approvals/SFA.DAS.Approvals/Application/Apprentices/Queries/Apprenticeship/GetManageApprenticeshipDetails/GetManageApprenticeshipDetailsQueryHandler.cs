@@ -112,8 +112,8 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                 PendingPriceChange = ToResponse(pendingPriceChangeResponse.Body),
                 CanActualStartDateBeChanged = canActualStartDateBeChanged,
                 PendingStartDateChange = ToResponse(pendingStartDateResponse.Body),
-                PaymentsFrozen = paymentStatusResponse.Body.PaymentsFrozen,
-			};
+                PaymentsFrozen = (paymentStatusResponse?.Body?.PaymentsFrozen).GetValueOrDefault(),
+            };
         }
 
         private PendingPriceChange ToResponse(GetPendingPriceChangeResponse pendingPriceChangeResponse)
