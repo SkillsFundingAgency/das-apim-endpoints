@@ -21,8 +21,9 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
         [JsonIgnore]
-        public bool IsDisabilityConfident => DisabilityConfident == "Yes";
-        public string DisabilityConfident { get; set; }
+        public bool IsDisabilityConfident => DisabilityConfident is "Yes";
+        [JsonPropertyName("disabilityConfident")]
+        public string? DisabilityConfident { get; set; }
 		public DateTime? ClosedDate { get; set; }
 
         public class Address
