@@ -39,26 +39,30 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData
                 DateOfBirth = registrationDetailsDateOfBirth,
             });
 
-            var candidateResult = await CandidateApiClient.PutWithResponseCode<PutCandidateApiResponse>(putRequest);
+            var candidateResponse = await CandidateApiClient.PutWithResponseCode<PutCandidateApiResponse>(putRequest);
 
-            candidateResult.EnsureSuccessStatusCode();
+            candidateResponse.EnsureSuccessStatusCode();
 
-            //var postData = new PutCandidateAddressApiRequestData
-            //{
-            //    AddressLine1 = userDetails?.RegistrationDetails?.Address.AddressLine1,
-            //    AddressLine2 = userDetails?.RegistrationDetails?.Address.AddressLine2,
-            //    AddressLine3 = userDetails?.RegistrationDetails?.Address.Town,
-            //    AddressLine4 = userDetails?.RegistrationDetails?.Address.County,
-            //    Latitude = userDetails?.RegistrationDetails?.Address.GeoPoint.Latitude ?? default,
-            //    Longitude = userDetails?.RegistrationDetails?.Address.GeoPoint.Longitude ?? default,
-            //    Postcode = userDetails?.RegistrationDetails?.Address?.Postcode,
-            //};
+            if (userDetails is {RegistrationDetails.Address: not null})
+            {
+                var postData = new PutCandidateAddressApiRequestData
+                {
+                    Email = candidateResponse.Body.Email,
+                    AddressLine1 = userDetails.RegistrationDetails?.Address?.AddressLine1,
+                    AddressLine2 = userDetails.RegistrationDetails?.Address?.AddressLine2,
+                    AddressLine3 = userDetails.RegistrationDetails?.Address?.Town,
+                    AddressLine4 = userDetails.RegistrationDetails?.Address?.County,
+                    Latitude = userDetails.RegistrationDetails?.Address?.GeoPoint?.Latitude ?? default,
+                    Longitude = userDetails.RegistrationDetails?.Address?.GeoPoint?.Longitude ?? default,
+                    Postcode = userDetails.RegistrationDetails?.Address?.Postcode,
+                };
 
-            //var postRequest = new PutCandidateAddressApiRequest(command.CandidateId, postData);
+                var postRequest = new PutCandidateAddressApiRequest(command.CandidateId, postData);
 
-            //var candidateAddressResponse = await CandidateApiClient.PutWithResponseCode<PostCandidateAddressApiResponse>(postRequest);
+                var candidateAddressResponse = await CandidateApiClient.PutWithResponseCode<PostCandidateAddressApiResponse>(postRequest);
 
-            //candidateAddressResponse.EnsureSuccessStatusCode();
+                candidateAddressResponse.EnsureSuccessStatusCode();
+            }
 
             await LegacyApplicationMigrationService.MigrateLegacyApplications(command.CandidateId, command.EmailAddress);
 

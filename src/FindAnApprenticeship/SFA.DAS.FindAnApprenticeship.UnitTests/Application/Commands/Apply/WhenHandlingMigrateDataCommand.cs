@@ -23,18 +23,25 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
         public async Task Then_The_CommandResult_Is_Returned_As_Expected(
             MigrateDataCommand command,
             PutCandidateApiResponse putCandidateApiResponse,
+            PostCandidateAddressApiResponse postCandidateAddressApiResponse,
             GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockCandidateApiClient,
             [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
             [Frozen] Mock<ILegacyApplicationMigrationService> vacancyMigrationService,
             MigrateDataCommandHandler handler)
         {
-            var expectedPutData = new PutCandidateApiRequestData
-            {
-                Email = command.EmailAddress,
-            };
+            var legacyGetRequest = new GetLegacyUserByEmailApiRequest(command.EmailAddress);
+            mockLegacyApiClient
+                .Setup(client => client.Get<GetLegacyUserByEmailApiResponse>(
+                    It.Is<GetLegacyUserByEmailApiRequest>(r => r.GetUrl == legacyGetRequest.GetUrl)))
+                .ReturnsAsync(legacyUserByEmailApiResponse);
 
-            var expectedRequest = new PutCandidateApiRequest(command.CandidateId, expectedPutData);
+            var expectedRequest = new PutCandidateApiRequest(command.CandidateId, new PutCandidateApiRequestData
+            {
+                FirstName = legacyUserByEmailApiResponse.RegistrationDetails?.FirstName,
+                LastName = legacyUserByEmailApiResponse.RegistrationDetails?.LastName,
+                DateOfBirth = legacyUserByEmailApiResponse.RegistrationDetails?.DateOfBirth,
+            });
 
             mockCandidateApiClient
                 .Setup(client => client.PutWithResponseCode<PutCandidateApiResponse>(
@@ -43,11 +50,24 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
                         && ((PutCandidateApiRequestData)c.Data).Email == command.EmailAddress)))
                 .ReturnsAsync(new ApiResponse<PutCandidateApiResponse>(putCandidateApiResponse, HttpStatusCode.OK, string.Empty));
 
-            var legacyGetRequest = new GetLegacyUserByEmailApiRequest(command.EmailAddress);
-            mockLegacyApiClient
-                .Setup(client => client.Get<GetLegacyUserByEmailApiResponse>(
-                    It.Is<GetLegacyUserByEmailApiRequest>(r => r.GetUrl == legacyGetRequest.GetUrl)))
-                .ReturnsAsync(legacyUserByEmailApiResponse);
+            var expectedPostRequest = new PutCandidateAddressApiRequest(command.CandidateId, new PutCandidateAddressApiRequestData
+            {
+                Email = putCandidateApiResponse.Email,
+                AddressLine1 = legacyUserByEmailApiResponse.RegistrationDetails?.Address?.AddressLine1,
+                AddressLine2 = legacyUserByEmailApiResponse.RegistrationDetails?.Address?.AddressLine2,
+                AddressLine3 = legacyUserByEmailApiResponse.RegistrationDetails?.Address?.Town,
+                AddressLine4 = legacyUserByEmailApiResponse.RegistrationDetails?.Address?.County,
+                Latitude = legacyUserByEmailApiResponse.RegistrationDetails?.Address?.GeoPoint?.Latitude ?? default,
+                Longitude = legacyUserByEmailApiResponse.RegistrationDetails?.Address?.GeoPoint?.Longitude ?? default,
+                Postcode = legacyUserByEmailApiResponse.RegistrationDetails?.Address?.Postcode,
+            });
+
+            mockCandidateApiClient
+                .Setup(client => client.PutWithResponseCode<PostCandidateAddressApiResponse>(
+                    It.Is<PutCandidateAddressApiRequest>(c =>
+                        c.PutUrl == expectedPostRequest.PutUrl
+                        && ((PutCandidateAddressApiRequestData)c.Data).Email == command.EmailAddress)))
+                .ReturnsAsync(new ApiResponse<PostCandidateAddressApiResponse>(postCandidateAddressApiResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(command, CancellationToken.None);
 
