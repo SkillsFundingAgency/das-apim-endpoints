@@ -2,5 +2,5 @@
 
 public class GetPaymentStatusApiResponse
 {
-	public bool PaymentsFrozen { get; set; }
+	public bool? PaymentsFrozen { get; set; }
 }
