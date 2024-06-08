@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Newtonsoft.Json.Converters;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
@@ -13,7 +14,8 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 
         [JsonPropertyName("Role")] 
         public string Role { get; set; }
-        
+
+        [JsonConverter(typeof(StringEnumConverter))]
         [JsonPropertyName("ApprenticeshipEmployerType")] 
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
     }
