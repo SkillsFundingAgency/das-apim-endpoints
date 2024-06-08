@@ -45,7 +45,6 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.AccountUsers
             actual.LastName.Should().Be(teamResponse.FirstOrDefault()?.LastName);
             actual.EmployerUserId.Should().Be(teamResponse.FirstOrDefault()?.UserId);
             actual.IsSuspended.Should().Be(teamResponse.FirstOrDefault()!.IsSuspended);
-            
         }
     }
 }
