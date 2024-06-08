@@ -14,11 +14,11 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
     {
         private readonly IMediator _mediator;
 
-        public AccountUsersController (IMediator mediator) => _mediator = mediator;
-        
+        public AccountUsersController(IMediator mediator) => _mediator = mediator;
+
         [HttpGet]
         [Route("{userId}/accounts")]
-        public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery]string email)
+        public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery] string email)
         {
             try
             {
@@ -28,12 +28,12 @@ namespace SFA.DAS.EmployerAccounts.Api.Controllers
                     Email = email
                 });
 
-                return Ok((UserAccountsApiResponse) result);
+                return Ok((UserAccountsApiResponse)result);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
     }

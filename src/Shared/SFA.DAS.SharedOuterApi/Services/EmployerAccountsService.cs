@@ -100,7 +100,6 @@ namespace SFA.DAS.SharedOuterApi.Services
                         UserId = userId,
                         DisplayName = displayName,
                         IsSuspended = isSuspended,
-                        ApprenticeshipEmployerType = userAccount.EmployerType
                     });
                 }
             }

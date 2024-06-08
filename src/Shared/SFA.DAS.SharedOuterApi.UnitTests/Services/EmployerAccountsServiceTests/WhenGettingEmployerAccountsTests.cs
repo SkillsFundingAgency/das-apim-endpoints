@@ -56,7 +56,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             actual.First().Role.Should().Be(teamResponse.Role);
             actual.First().DasAccountName.Should().Be(apiResponse.First().DasAccountName);
             actual.First().EncodedAccountId.Should().Be(apiResponse.First().EncodedAccountId);
-            actual.First().ApprenticeshipEmployerType.Should().Be(apiResponse.First().EmployerType);
             actual.TrueForAll(c => c.UserId.Equals(profileUserResponse.Id)).Should().BeTrue();
             actual.TrueForAll(c => c.FirstName.Equals(profileUserResponse.FirstName)).Should().BeTrue();
             actual.TrueForAll(c => c.LastName.Equals(profileUserResponse.LastName)).Should().BeTrue();
@@ -97,7 +96,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             actual.First().Role.Should().Be(teamResponse.Role);
             actual.First().DasAccountName.Should().Be(apiResponse.First().DasAccountName);
             actual.First().EncodedAccountId.Should().Be(apiResponse.First().EncodedAccountId);
-            actual.First().ApprenticeshipEmployerType.Should().Be(apiResponse.First().EmployerType);
             actual.TrueForAll(c => c.UserId.Equals(profileUserResponse.Id)).Should().BeTrue();
             actual.TrueForAll(c => c.FirstName.Equals(profileUserResponse.FirstName)).Should().BeTrue();
             actual.TrueForAll(c => c.LastName.Equals(profileUserResponse.LastName)).Should().BeTrue();
@@ -223,7 +221,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             actual.First().Role.Should().Be(teamResponse.Role);
             actual.First().DasAccountName.Should().Be(apiResponse.First().DasAccountName);
             actual.First().EncodedAccountId.Should().Be(apiResponse.First().EncodedAccountId);
-            actual.First().ApprenticeshipEmployerType.Should().Be(apiResponse.First().EmployerType);
             actual.TrueForAll(c => c.UserId.Equals(profileUserResponse.Id)).Should().BeTrue();
             actual.TrueForAll(c => c.FirstName.Equals(profileUserResponse.FirstName)).Should().BeTrue();
             actual.TrueForAll(c => c.LastName.Equals(profileUserResponse.LastName)).Should().BeTrue();
