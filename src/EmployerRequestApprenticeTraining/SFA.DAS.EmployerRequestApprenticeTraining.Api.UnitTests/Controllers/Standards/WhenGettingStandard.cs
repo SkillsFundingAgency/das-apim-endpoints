@@ -29,7 +29,7 @@ namespace SFA.DAS.WhenGettingStandard.Api.UnitTests.Controllers.Standards
 
             var actual = await controller.Get(standardId) as ObjectResult;
 
-            Assert.That(actual, Is.Not.Null);
+            actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
             actual.Value.Should().BeEquivalentTo(queryResult.Standard);
         }
@@ -45,7 +45,7 @@ namespace SFA.DAS.WhenGettingStandard.Api.UnitTests.Controllers.Standards
 
             var actual = await controller.Get(standardId) as StatusCodeResult;
 
-            Assert.That(actual, Is.Not.Null);
+            actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }
