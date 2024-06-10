@@ -27,7 +27,7 @@ public class UpdateAdditionalQuestionCommandHandler : IRequestHandler<UpdateAddi
 
     public async Task<UpdateAdditionalQuestionQueryResult> Handle(UpdateAdditionalQuestionCommand command, CancellationToken cancellationToken)
     {
-        var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
+        var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
 
         switch (command.UpdatedAdditionalQuestion)
         {
@@ -64,7 +64,7 @@ public class UpdateAdditionalQuestionCommandHandler : IRequestHandler<UpdateAddi
 
         return new UpdateAdditionalQuestionQueryResult
         {
-            Application = JsonConvert.DeserializeObject<Models.Application>(patchResult.Body),
+            Application = JsonConvert.DeserializeObject<Domain.Models.Application>(patchResult.Body),
             Id = upsertResult.Body.Id
         };
     }

@@ -22,7 +22,7 @@ public class WhenHandlingCreateInterviewAdjustmentsCommand
     [Test, MoqAutoData]
     public async Task Then_InterviewAdjustments_Is_Created(
         UpsertInterviewAdjustmentsCommand command,
-        Models.Application updateApplicationResponse,
+        Domain.Models.Application updateApplicationResponse,
         GetAboutYouItemApiResponse apiResponse,
         PutUpsertAboutYouItemApiResponse createdItemResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
@@ -36,7 +36,7 @@ public class WhenHandlingCreateInterviewAdjustmentsCommand
                 It.Is<PutUpsertAboutYouItemApiRequest>(r => r.PutUrl.StartsWith(expectedRequest.PutUrl.Substring(0, 86)))))
             .ReturnsAsync(new ApiResponse<PutUpsertAboutYouItemApiResponse>(createdItemResponse, HttpStatusCode.OK, string.Empty));
 
-        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
+        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Domain.Models.Application>());
 
         candidateApiClient
             .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
@@ -65,7 +65,7 @@ public class WhenHandlingCreateInterviewAdjustmentsCommand
         [Frozen] Mock<ILogger<UpsertInterviewAdjustmentsCommandHandler>> loggerMock,
         UpsertInterviewAdjustmentsCommandHandler handler)
     {
-        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
+        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Domain.Models.Application>());
 
         candidateApiClient
             .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))

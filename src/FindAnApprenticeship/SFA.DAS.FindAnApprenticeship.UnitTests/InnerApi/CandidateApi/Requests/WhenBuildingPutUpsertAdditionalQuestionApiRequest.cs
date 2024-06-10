@@ -14,6 +14,6 @@ public class WhenBuildingPutUpsertAdditionalQuestionApiRequest
     {
         var actual = new PutUpsertAdditionalQuestionApiRequest(applicationId, candidateId, id, new PutUpsertAdditionalQuestionApiRequest.PutUpsertAdditionalQuestionApiRequestData());
 
-        actual.PutUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/additional-question/{id}");
+        actual.PutUrl.Should().Be($"api/candidates/{candidateId}/applications/{applicationId}/additional-question/{id}");
     }
 }
