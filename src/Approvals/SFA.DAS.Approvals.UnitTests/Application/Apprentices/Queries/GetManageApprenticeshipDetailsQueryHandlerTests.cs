@@ -295,30 +295,56 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             Assert.That(result, Is.Null);
         }
 
-        [TestCase(true)]
-        [TestCase(false)]
-		public async Task When_apprenticeship_has_payments_frozen_then_correct_response_returned(bool paymentsFrozen)
+        [Test]
+        public async Task When_apprenticeship_has_payments_frozen_then_correct_response_returned()
         {
-			_paymentStatusResponse.PaymentsFrozen = paymentsFrozen;
+            //  Arrange
+            _paymentStatusResponse.PaymentsFrozen = true;
+            _paymentStatusResponse.ReasonFrozen = "Test reason";
+            _paymentStatusResponse.FrozenOn = DateTime.Now;
+
+
+            //  Act
 			var result = await _handler.Handle(_query, CancellationToken.None);
-			result.PaymentsFrozen.Should().Be(paymentsFrozen);
+
+            //  Assert
+            result.PaymentsStatus.PaymentsFrozen.Should().BeTrue();
+            result.PaymentsStatus.ReasonFrozen.Should().Be(_paymentStatusResponse.ReasonFrozen);
+            result.PaymentsStatus.FrozenOn.Should().Be(_paymentStatusResponse.FrozenOn);
+
         }
 
-        [Test]
-        public async Task When_apprenticeship_has_no_explicit_value_for_payments_frozen_then_correct_response_returned()
-        {
-            _paymentStatusResponse.PaymentsFrozen = null;
-            var result = await _handler.Handle(_query, CancellationToken.None);
-            result.PaymentsFrozen.Should().Be(false);
-        }
+		[Test]
+		public async Task When_apprenticeship_has_payments_active_then_correct_response_returned()
+		{
+			//  Arrange
+			_paymentStatusResponse.PaymentsFrozen = false;
+            _paymentStatusResponse.ReasonFrozen = null;
+			_paymentStatusResponse.FrozenOn = null;
+
+			//  Act
+			var result = await _handler.Handle(_query, CancellationToken.None);
+
+			//  Assert
+			result.PaymentsStatus.PaymentsFrozen.Should().BeFalse();
+            result.PaymentsStatus.ReasonFrozen.Should().BeNull();
+			result.PaymentsStatus.ReasonFrozen.Should().BeNull();
+		}
 
         [Test]
-        public async Task When_not_found_returned_when_getting_payments_status_then_correct_response_returned()
+        public async Task When_apprenticeship_has_no_payment_status_then_correct_response_returned()
         {
+            //  Arrange
             _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPaymentStatusApiResponse>(It.IsAny<GetPaymentStatusRequest>()))
                 .ReturnsAsync(new ApiResponse<GetPaymentStatusApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
+
+            //  Act
             var result = await _handler.Handle(_query, CancellationToken.None);
-            result.PaymentsFrozen.Should().Be(false);
+
+            //  Assert
+            result.PaymentsStatus.PaymentsFrozen.Should().BeFalse();
+            result.PaymentsStatus.ReasonFrozen.Should().BeNull();
+            result.PaymentsStatus.FrozenOn.Should().BeNull();
         }
     }
 }

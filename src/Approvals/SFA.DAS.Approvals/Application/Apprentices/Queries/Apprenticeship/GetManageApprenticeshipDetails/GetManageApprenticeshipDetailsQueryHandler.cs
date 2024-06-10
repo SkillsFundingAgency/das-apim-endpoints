@@ -112,8 +112,8 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                 PendingPriceChange = ToResponse(pendingPriceChangeResponse.Body),
                 CanActualStartDateBeChanged = canActualStartDateBeChanged,
                 PendingStartDateChange = ToResponse(pendingStartDateResponse.Body),
-                PaymentsFrozen = (paymentStatusResponse?.Body?.PaymentsFrozen).GetValueOrDefault(),
-            };
+                PaymentsStatus = ToResponse(paymentStatusResponse.Body),
+			};
         }
 
         private PendingPriceChange ToResponse(GetPendingPriceChangeResponse pendingPriceChangeResponse)
@@ -141,6 +141,18 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                 ProviderApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate,
                 EmployerApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate,
                 Initiator = pendingStartDateChangeResponse.PendingStartDateChange.Initiator
+            };
+        }
+
+        private PaymentsStatus ToResponse(GetPaymentStatusApiResponse source)
+        {
+            if (source == null) return new PaymentsStatus { PaymentsFrozen = false };
+
+            return new PaymentsStatus
+            {
+                FrozenOn = source.FrozenOn,
+                PaymentsFrozen = source.PaymentsFrozen,
+                ReasonFrozen = source.ReasonFrozen
             };
         }
 

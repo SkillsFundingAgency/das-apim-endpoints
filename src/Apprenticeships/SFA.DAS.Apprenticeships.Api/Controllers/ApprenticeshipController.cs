@@ -243,5 +243,20 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
 	        await _apiClient.Delete(new CancelPendingStartDateChangeRequest(apprenticeshipKey));
 	        return Ok();
         }
-	}
+
+        [HttpPost]
+        [Route("{apprenticeshipKey}/freeze")]
+        public async Task<ActionResult> FreezeApprenticeshipPayments(Guid apprenticeshipKey, [FromBody] FreezePaymentsRequest request)
+        {
+            var response = await _apiClient.PostWithResponseCode<object>(new PostFreezePaymentsRequest(apprenticeshipKey, request.Reason), false);
+
+            if (string.IsNullOrEmpty(response.ErrorContent))
+            {
+                return Ok();
+            }
+
+            _logger.LogError("Error attempting to freeze apprenticeship {apprenticeshipKey} payments. {statusCode} returned from inner api. {message}", apprenticeshipKey, response.StatusCode, response.ErrorContent);
+            return BadRequest();
+        }
+    }
 }
