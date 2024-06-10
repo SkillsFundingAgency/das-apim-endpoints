@@ -48,6 +48,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
                     .Excluding(p=>p.DateOfBirth)
                     .Excluding(p=>p.Status)
                     .Excluding(p=>p.Address)
+                    .Excluding(p=>p.MigratedEmail)
                 );
             result.IsApplicationComplete.Should().BeTrue();
         }
