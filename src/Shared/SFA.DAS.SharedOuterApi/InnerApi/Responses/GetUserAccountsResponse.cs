@@ -15,8 +15,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
         [JsonPropertyName("Role")] 
         public string Role { get; set; }
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        [JsonPropertyName("ApprenticeshipEmployerType")] 
+        [JsonPropertyName("EmployerType")] 
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
     }
 }
