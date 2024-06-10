@@ -1,4 +1,8 @@
-﻿using AutoFixture;
+﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture;
+using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -7,10 +11,6 @@ using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 {
@@ -46,12 +46,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             Assert.That(response, Is.Not.Null);
 
             Assert.That(response.Pledges, Is.Not.Null);
+            response.RemainingTransferAllowance.Should().Be(_queryResult.RemainingTransferAllowance);
             response.Pledges.Should().NotBeEmpty();
             Assert.That(!response.Pledges.Any(x => x.Id == 0));
             Assert.That(!response.Pledges.Any(x => x.Amount == 0));
             Assert.That(!response.Pledges.Any(x => x.RemainingAmount == 0));
             Assert.That(!response.Pledges.Any(x => x.ApplicationCount == 0));
             Assert.That(!response.Pledges.Any(x => x.Status == string.Empty));
+
         }
     }
 }
