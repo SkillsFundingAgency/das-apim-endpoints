@@ -21,6 +21,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.CheckAnswer
 using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.PhoneNumber;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateName;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetSettings;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -358,6 +359,26 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error posting candidate create account check answers");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+
+        [HttpGet("settings")]
+        public async Task<IActionResult> GetSettings([FromQuery] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetSettingsQuery
+                {
+                    CandidateId = candidateId
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting settings");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
