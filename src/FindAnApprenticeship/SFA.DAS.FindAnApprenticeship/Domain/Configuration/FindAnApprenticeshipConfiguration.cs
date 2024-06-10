@@ -1,4 +1,4 @@
-namespace SFA.DAS.FindAnApprenticeship.Configuration
+namespace SFA.DAS.FindAnApprenticeship.Domain.Configuration
 {
     public class FindAnApprenticeshipConfiguration
     {

@@ -28,7 +28,7 @@ public class UpsertInterviewAdjustmentsCommandHandler : IRequestHandler<UpsertIn
 
     public async Task<UpsertInterviewAdjustmentsCommandResult> Handle(UpsertInterviewAdjustmentsCommand command, CancellationToken cancellationToken)
     {
-        var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
+        var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
         if (command.InterviewAdjustmentsSectionStatus > 0)
         {
             jsonPatchDocument.Replace(x => x.InterviewAdjustmentsStatus, command.InterviewAdjustmentsSectionStatus);
@@ -64,7 +64,7 @@ public class UpsertInterviewAdjustmentsCommandHandler : IRequestHandler<UpsertIn
         return new UpsertInterviewAdjustmentsCommandResult
         {
             Id = putResult.Body.Id,
-            Application = JsonConvert.DeserializeObject<Models.Application>(patchResult.Body)
+            Application = JsonConvert.DeserializeObject<Domain.Models.Application>(patchResult.Body)
         };
     }
 }
