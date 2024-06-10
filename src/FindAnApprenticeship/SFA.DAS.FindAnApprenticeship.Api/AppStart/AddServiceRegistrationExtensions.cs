@@ -32,6 +32,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
             services.AddTransient<IVacancyService, VacancyService>();
             services.AddTransient<INotificationService, NotificationService>();
             services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
+            services.AddTransient<ILegacyApplicationMigrationService, LegacyApplicationMigrationService>();
         }
     }
 }
