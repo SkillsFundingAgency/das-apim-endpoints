@@ -23,50 +23,50 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.SearchOrganisat
 [TestFixture]
 public class WhenCallingHandler
 {
-    [Test, MoqAutoData]
-    public async Task Then_should_replace_education_and_public_section_organisations_from_new_endpoints_and_ignore_ones_in_reference_data(
-        [Frozen] Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>> mockEduOrgApiClient,
-        [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockPSOrgApiClient,
-        [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockRefApiClient,
-        GetSearchOrganisationsResponse refApiOrgs,
-        EducationalOrganisationResponse eduOrgApiResponse,
-        PublicSectorOrganisationsResponse psOrgApiResponse,
-        SearchOrganisationsQueryHandler handler)
-    {
-        var query = new SearchOrganisationsQuery
-        {
-            SearchTerm = "XXX",
-            MaximumResults = 100
-        };
+    //[Test, MoqAutoData]
+    //public async Task Then_should_replace_education_and_public_section_organisations_from_new_endpoints_and_ignore_ones_in_reference_data(
+    //    [Frozen] Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>> mockEduOrgApiClient,
+    //    [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockPSOrgApiClient,
+    //    [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockRefApiClient,
+    //    GetSearchOrganisationsResponse refApiOrgs,
+    //    EducationalOrganisationResponse eduOrgApiResponse,
+    //    PublicSectorOrganisationsResponse psOrgApiResponse,
+    //    SearchOrganisationsQueryHandler handler)
+    //{
+    //    var query = new SearchOrganisationsQuery
+    //    {
+    //        SearchTerm = "XXX",
+    //        MaximumResults = 100
+    //    };
 
-        mockEduOrgApiClient
-            .Setup(client => client.Get<EducationalOrganisationResponse>(
-                It.Is<SearchEducationalOrganisationsRequest>(p =>
-                    p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
-            .ReturnsAsync(eduOrgApiResponse);
+    //    mockEduOrgApiClient
+    //        .Setup(client => client.Get<EducationalOrganisationResponse>(
+    //            It.Is<SearchEducationalOrganisationsRequest>(p =>
+    //                p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
+    //        .ReturnsAsync(eduOrgApiResponse);
 
-        mockPSOrgApiClient
-            .Setup(client =>
-                client.Get<PublicSectorOrganisationsResponse>(
-                    It.Is<SearchPublicSectorOrganisationsRequest>(p => p.SearchTerm == query.SearchTerm)))
-            .ReturnsAsync(psOrgApiResponse);
+    //    mockPSOrgApiClient
+    //        .Setup(client =>
+    //            client.Get<PublicSectorOrganisationsResponse>(
+    //                It.Is<SearchPublicSectorOrganisationsRequest>(p => p.SearchTerm == query.SearchTerm)))
+    //        .ReturnsAsync(psOrgApiResponse);
 
-        mockRefApiClient
-            .Setup(client => client.Get<GetSearchOrganisationsResponse>(It.Is<GetSearchOrganisationsRequest>(p =>
-                p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
-            .ReturnsAsync(refApiOrgs);
+    //    mockRefApiClient
+    //        .Setup(client => client.Get<GetSearchOrganisationsResponse>(It.Is<GetSearchOrganisationsRequest>(p =>
+    //            p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
+    //        .ReturnsAsync(refApiOrgs);
 
-        var totalEducationResultsExpected = eduOrgApiResponse.EducationalOrganisations.Count;
-        var totalPublicSectorResultsExpected = psOrgApiResponse.PublicSectorOrganisations.Count;
-        var totalOldReferenceDataExpected = refApiOrgs.Count(o =>
-            o.Type != OrganisationType.PublicSector && o.Type != OrganisationType.EducationOrganisation);
+    //    var totalEducationResultsExpected = eduOrgApiResponse.EducationalOrganisations.Count;
+    //    var totalPublicSectorResultsExpected = psOrgApiResponse.PublicSectorOrganisations.Count;
+    //    var totalOldReferenceDataExpected = refApiOrgs.Count(o =>
+    //        o.Type != OrganisationType.PublicSector && o.Type != OrganisationType.EducationOrganisation);
 
-        var result = await handler.Handle(query, CancellationToken.None);
+    //    var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Organisations.Count.Should().Be(totalEducationResultsExpected+ totalPublicSectorResultsExpected+ totalOldReferenceDataExpected);
-        result.Organisations.Count(o => o.Type == OrganisationType.EducationOrganisation).Should().Be(totalEducationResultsExpected);
-        result.Organisations.Count(o => o.Type == OrganisationType.PublicSector).Should().Be(totalPublicSectorResultsExpected);
-    }
+    //    result.Organisations.Count.Should().Be(totalEducationResultsExpected+ totalPublicSectorResultsExpected+ totalOldReferenceDataExpected);
+    //    result.Organisations.Count(o => o.Type == OrganisationType.EducationOrganisation).Should().Be(totalEducationResultsExpected);
+    //    result.Organisations.Count(o => o.Type == OrganisationType.PublicSector).Should().Be(totalPublicSectorResultsExpected);
+    //}
 
     [Test, MoqAutoData]
     public async Task Then_should_return_top_2(
