@@ -5,9 +5,9 @@ using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplicationsByStatus
+namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApprovedAndAcceptedApplications
 {
-    public class GetApplicationsByStatusResult
+    public class GetApprovedAndAcceptedApplicationsResult
     {
         public IEnumerable<Application> Applications { get; set; }
         public class Application

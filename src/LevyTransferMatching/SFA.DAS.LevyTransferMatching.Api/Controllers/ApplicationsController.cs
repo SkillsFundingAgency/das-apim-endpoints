@@ -11,7 +11,7 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.WithdrawApplicationAfter
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAccepted;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplicationsByStatus;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApprovedAndAcceptedApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetDeclined;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetWithdrawalConfirmation;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetWithdrawn;
@@ -46,13 +46,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         }
 
         [HttpGet]
-        [Route("accounts/{accountId}/applications/status/{status}")]
-        public async Task<IActionResult> GetApplicationsByStatus(long accountId, string status)
+        [Route("accounts/{accountId}/applications/approved-accepted")]
+        public async Task<IActionResult> GetApprovedAndAcceptedApplications(long accountId)
         {
-            var result = await _mediator.Send(new GetApplicationsByStatusQuery
+            var result = await _mediator.Send(new GetApprovedAndAcceptedApplicationsQuery
             {
-                AccountId = accountId,
-                ApplicationStatus = status
+                AccountId = accountId
             });
 
             return Ok((GetApplicationsByStatusResponse)result);

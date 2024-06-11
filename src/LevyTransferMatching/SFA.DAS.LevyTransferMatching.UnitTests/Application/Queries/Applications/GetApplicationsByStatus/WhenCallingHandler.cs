@@ -5,23 +5,23 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplicationsByStatus;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApprovedAndAcceptedApplications;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Applications.GetApplicationsByStatus
+namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Applications.GetApprovedAndAcceptedApplications
 {
     [TestFixture]
     public class WhenCallingHandler
     {
         [Test, MoqAutoData]
-        public async Task Then_GetApplications_by_status(
-            GetApplicationsByStatusQuery query,
+        public async Task Then_GetApprovedAndAcceptedApplications(
+            GetApprovedAndAcceptedApplicationsQuery query,
             GetApplicationsResponse apiResponse,
             [Frozen] Mock<ILevyTransferMatchingService> _ltmService,
-            GetApplicationsByStatusQueryHandler handler)
+            GetApprovedAndAcceptedApplicationsQueryHandler handler)
         {
             _ltmService
                 .Setup(client => client.GetApplications(It.IsAny<GetApplicationsRequest>()))
@@ -30,7 +30,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Applications.Should().NotBeEmpty();
-            result.Applications.Count().Should().Be(apiResponse.Applications.Count());
+            result.Applications.Count().Should().Be(apiResponse.Applications.Count() * 2);
 
             result.Applications.First().Id.Should().Be(apiResponse.Applications.First().Id);
             result.Applications.First().PledgeId.Should().Be(apiResponse.Applications.First().PledgeId);

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplicationsByStatus;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApprovedAndAcceptedApplications;
 using SFA.DAS.LevyTransferMatching.Models;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
@@ -10,7 +10,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
     {
         public IEnumerable<Application> Applications { get; set; }
 
-        public static implicit operator GetApplicationsByStatusResponse(GetApplicationsByStatusResult source)
+        public static implicit operator GetApplicationsByStatusResponse(GetApprovedAndAcceptedApplicationsResult source)
         {
             return new GetApplicationsByStatusResponse
             {
@@ -54,7 +54,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
             public string AdditionalLocations { get; set; }
             public string SpecificLocation { get; set; }
 
-            public static implicit operator Application(GetApplicationsByStatusResult.Application x)
+            public static implicit operator Application(GetApprovedAndAcceptedApplicationsResult.Application x)
             {
                 return new Application
                 {

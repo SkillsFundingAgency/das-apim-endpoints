@@ -9,23 +9,23 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Applications;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplicationsByStatus;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApprovedAndAcceptedApplications;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTests
 {
-    public class WhenCallingGetApplicationsByStatus
+    public class WhenCallingGetApprovedAndAcceptedApplications
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_ApplicationsByStatus_From_Mediator(
-            GetApplicationsByStatusResult queryResult,
+            GetApprovedAndAcceptedApplicationsResult queryResult,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] ApplicationsController controller)
         {
-            mediator.Setup(o => o.Send(It.IsAny<GetApplicationsByStatusQuery>(), It.IsAny<CancellationToken>()))
+            mediator.Setup(o => o.Send(It.IsAny<GetApprovedAndAcceptedApplicationsQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(queryResult);
 
-            var controllerResult = await controller.GetApplicationsByStatus(1, "Approved") as OkObjectResult;
+            var controllerResult = await controller.GetApprovedAndAcceptedApplications(1) as OkObjectResult;
             var result = controllerResult.Value as GetApplicationsByStatusResponse;
 
             controllerResult.Should().NotBeNull();
