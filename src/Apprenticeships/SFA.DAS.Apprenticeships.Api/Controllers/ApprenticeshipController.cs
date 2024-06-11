@@ -245,6 +245,21 @@ public class ApprenticeshipController : ControllerBase
     }
 
     [HttpPost]
+    [Route("{apprenticeshipKey}/freeze")]
+    public async Task<ActionResult> FreezeApprenticeshipPayments(Guid apprenticeshipKey, [FromBody] FreezePaymentsRequest request)
+    {
+        var response = await _apiClient.PostWithResponseCode<object>(new PostFreezePaymentsRequest(apprenticeshipKey, request.Reason), false);
+
+        if (string.IsNullOrEmpty(response.ErrorContent))
+        {
+            return Ok();
+        }
+
+        _logger.LogError("Error attempting to freeze apprenticeship {apprenticeshipKey} payments. {statusCode} returned from inner api. {message}", apprenticeshipKey, response.StatusCode, response.ErrorContent);
+        return BadRequest();
+    }
+
+    [HttpPost]
     [Route("{apprenticeshipKey}/unfreeze")]
     public async Task<ActionResult> UnfreezeApprenticeshipPayments(Guid apprenticeshipKey)
     {

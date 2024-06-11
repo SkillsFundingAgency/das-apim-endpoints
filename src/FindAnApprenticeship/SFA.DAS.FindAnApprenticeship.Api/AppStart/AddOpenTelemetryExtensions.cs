@@ -16,18 +16,21 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
         /// <param name="appInsightsConnectionString">Azure app insights connection string.</param>
         public static void AddOpenTelemetryRegistration(this IServiceCollection services, string appInsightsConnectionString)
         {
-            // This service will collect and send telemetry data to Azure Monitor.
-            services.AddOpenTelemetry().UseAzureMonitor(options =>
-                {
-                    options.ConnectionString = appInsightsConnectionString;
-                })
-                // Configure metrics
-                .WithMetrics(opts => opts
-                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(
-                        Constants.OpenTelemetry.ServiceName,
-                        nameof(FindAnApprenticeship)))
-                    .AddMeter(Constants.OpenTelemetry.ServiceMeterName));
-            services.AddSingleton<IMetrics, FindAnApprenticeshipMetrics>();
+            if (!string.IsNullOrEmpty(appInsightsConnectionString))
+            {
+                // This service will collect and send telemetry data to Azure Monitor.
+                services.AddOpenTelemetry().UseAzureMonitor(options =>
+                    {
+                        options.ConnectionString = appInsightsConnectionString;
+                    })
+                    // Configure metrics
+                    .WithMetrics(opts => opts
+                        .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(
+                            Constants.OpenTelemetry.ServiceName,
+                            nameof(FindAnApprenticeship)))
+                        .AddMeter(Constants.OpenTelemetry.ServiceMeterName));
+                services.AddSingleton<IMetrics, FindAnApprenticeshipMetrics>();
+            }
         }
     }
 }
