@@ -31,10 +31,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
             services.AddTransient<IVacancyService, VacancyService>();
-            services.AddTransient<ILegacyApplicationMigrationService, LegacyApplicationMigrationService>();
+			services.AddTransient<ILegacyApplicationMigrationService, LegacyApplicationMigrationService>();
+			services.AddSingleton<IDateTimeService>(new DateTimeService());
             services.AddTransient<INotificationService, NotificationService>();
             services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
-            services.AddSingleton<IDateTimeService>(new DateTimeService());
         }
     }
 }
