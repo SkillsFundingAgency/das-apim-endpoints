@@ -54,7 +54,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 AccountId = accountId
             });
 
-            return Ok(result);
+            return Ok((GetApprovedAndAcceptedApplicationsResponse)result);
         }
 
         [HttpGet]

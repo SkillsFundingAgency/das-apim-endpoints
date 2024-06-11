@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 
@@ -33,7 +34,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetAppro
 
             return new GetApprovedAndAcceptedApplicationsResult
             {
-                Applications = applicationsResponse?.Select(x => (GetApprovedAndAcceptedApplicationsResult.Application)x)
+                Applications = applicationsResponse?.Select(x => (PledgeApplication)x)
             };
         }
     }

@@ -29,10 +29,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicatio
 
             await Task.WhenAll(applicationsTask, pledgeTask);
 
-            var result = new List<GetApplicationsQueryResult.Application>();
+            var result = new List<PledgeApplication>();
             foreach (var application in applicationsTask.Result.Applications)
             {
-                result.Add(GetApplicationsQueryResult.Application.BuildApplication(application, pledgeTask.Result));
+                result.Add(PledgeApplication.BuildApplication(application, pledgeTask.Result));
             }
 
             return new GetApplicationsQueryResult
