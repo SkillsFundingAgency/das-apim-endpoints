@@ -6,13 +6,13 @@ using SFA.DAS.LevyTransferMatching.Models;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
 {
-    public class GetApplicationsByStatusResponse
+    public class GetApprovedAndAcceptedApplicationsResponse
     {
         public IEnumerable<Application> Applications { get; set; }
 
-        public static implicit operator GetApplicationsByStatusResponse(GetApprovedAndAcceptedApplicationsResult source)
+        public static implicit operator GetApprovedAndAcceptedApplicationsResponse(GetApprovedAndAcceptedApplicationsResult source)
         {
-            return new GetApplicationsByStatusResponse
+            return new GetApprovedAndAcceptedApplicationsResponse
             {
                 Applications = source.Applications.Select(x => (Application)x)
             };

@@ -26,12 +26,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
                 .ReturnsAsync(queryResult);
 
             var controllerResult = await controller.GetApprovedAndAcceptedApplications(1) as OkObjectResult;
-            var result = controllerResult.Value as GetApplicationsByStatusResponse;
+            var result = controllerResult.Value as GetApprovedAndAcceptedApplicationsResponse;
 
             controllerResult.Should().NotBeNull();
             result.Should().NotBeNull();
 
-            var expected = (GetApplicationsByStatusResponse)queryResult;
+            var expected = (GetApprovedAndAcceptedApplicationsResponse)queryResult;
             var x = expected.Applications.First();
             var y = result.Applications.First();
 
