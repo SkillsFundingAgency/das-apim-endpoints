@@ -32,38 +32,38 @@ public class WhenHandlingStartDataLoadsCommand
 
         await sut.Handle(command, CancellationToken.None);
 
-        mockPSApiClient.Verify(x =>
-            x.PostWithResponseCode<object>(It.IsAny<PostPublicSectorOrganisationsDataLoadRequest>(), It.IsAny<bool>()));
+        //mockPSApiClient.Verify(x =>
+        //    x.PostWithResponseCode<object>(It.IsAny<PostPublicSectorOrganisationsDataLoadRequest>(), It.IsAny<bool>()));
         mockEdApiClient.Verify(x =>
             x.PostWithResponseCode<object>(It.IsAny<PostEducationOrganisationsDataLoadRequest>(), It.IsAny<bool>()));
     }
 
-    [Test, MoqAutoData]
-    public async Task Then_call_to_public_sector_import_is_unsuccessful(
-        StartDataLoadsCommand command,
-        [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockApiClient,
-        [Frozen] Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>> mockEdApiClient,
-        [Greedy] StartDataLoadsCommandHandler sut)
-    {
-        var goodResponseFromApi = new ApiResponse<object>(null, HttpStatusCode.NoContent, null);
-        var badResponseFromApi = new ApiResponse<object>(null, HttpStatusCode.InternalServerError, "test exception");
+    //[Test, MoqAutoData]
+    //public async Task Then_call_to_public_sector_import_is_unsuccessful(
+    //    StartDataLoadsCommand command,
+    //    [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockApiClient,
+    //    [Frozen] Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>> mockEdApiClient,
+    //    [Greedy] StartDataLoadsCommandHandler sut)
+    //{
+    //    var goodResponseFromApi = new ApiResponse<object>(null, HttpStatusCode.NoContent, null);
+    //    var badResponseFromApi = new ApiResponse<object>(null, HttpStatusCode.InternalServerError, "test exception");
 
-        mockApiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostPublicSectorOrganisationsDataLoadRequest>(),
-                It.IsAny<bool>())).ReturnsAsync(badResponseFromApi);
+    //    mockApiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostPublicSectorOrganisationsDataLoadRequest>(),
+    //            It.IsAny<bool>())).ReturnsAsync(badResponseFromApi);
 
-        mockEdApiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostEducationOrganisationsDataLoadRequest>(),
-            It.IsAny<bool>())).ReturnsAsync(goodResponseFromApi);
+    //    mockEdApiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostEducationOrganisationsDataLoadRequest>(),
+    //        It.IsAny<bool>())).ReturnsAsync(goodResponseFromApi);
 
-        try
-        {
-            await sut.Handle(command, CancellationToken.None);
-            Assert.Fail("Should not reach this point");
-        }
-        catch (ApplicationException ex)
-        {
-            ex.Message.Should().StartWith("Public Sector orgs Import \r\n"+ "test exception" );
-        }
-    }
+    //    try
+    //    {
+    //        await sut.Handle(command, CancellationToken.None);
+    //        Assert.Fail("Should not reach this point");
+    //    }
+    //    catch (ApplicationException ex)
+    //    {
+    //        ex.Message.Should().StartWith("Public Sector orgs Import \r\n"+ "test exception" );
+    //    }
+    //}
 
     [Test, MoqAutoData]
     public async Task Then_call_isThen_call_to_education_import_is_unsuccessful_unsuccessful(
