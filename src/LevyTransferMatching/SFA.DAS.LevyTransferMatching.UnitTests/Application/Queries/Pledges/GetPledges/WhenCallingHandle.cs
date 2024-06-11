@@ -11,7 +11,9 @@ using SFA.DAS.LevyTransferMatching.InnerApi.Responses.Finance;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.GetPledges
@@ -24,6 +26,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         private Mock<IFinanceApiClient<FinanceApiConfiguration>> _financeApiClient;
         private GetPledgesQuery _query;
         private GetPledgesResponse _pledgeResponse;
+        private GetApplicationsResponse _applicationsResponse;
         private GetTransferAllowanceResponse _fundingResponse;
         private Fixture _fixture;
 
@@ -34,6 +37,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
 
             _pledgeResponse = _fixture.Create<GetPledgesResponse>();
             _fundingResponse = _fixture.Create<GetTransferAllowanceResponse>();
+            _applicationsResponse = _fixture.Create<GetApplicationsResponse>();
 
             var accountId = _fixture.Create<int>();
             _query = new GetPledgesQuery(accountId);
@@ -41,6 +45,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
             _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
             _levyTransferMatchingService.Setup(x => x.GetPledges(It.IsAny<GetPledgesRequest>())).ReturnsAsync(_pledgeResponse);
 
+            _levyTransferMatchingService.Setup(x => x.GetApplications(It.IsAny<GetApplicationsRequest>())).ReturnsAsync(_applicationsResponse);
             _financeApiClient = new Mock<IFinanceApiClient<FinanceApiConfiguration>>();
             _financeApiClient
                  .Setup(x => x.Get<GetTransferAllowanceResponse>(It.IsAny<GetTransferAllowanceByAccountIdRequest>()))
@@ -63,6 +68,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
             Assert.That(!result.Pledges.Any(x => x.RemainingAmount == 0));
             Assert.That(!result.Pledges.Any(x => x.ApplicationCount == 0));
             Assert.That(!result.Pledges.Any(x => x.Status == string.Empty));
+            result.AcceptedAndApprovedApplications.Should().NotBeEmpty();
+            result.AcceptedAndApprovedApplications.Count().Should().Be(_applicationsResponse.Applications.Count() * 2);
         }
     }
 }

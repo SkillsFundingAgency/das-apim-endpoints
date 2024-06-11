@@ -52,6 +52,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 var response = new GetPledgesResponse
                 {
                     RemainingTransferAllowance = queryResult.RemainingTransferAllowance,
+                    AcceptedAndApprovedApplications = queryResult.AcceptedAndApprovedApplications,
                     Pledges = queryResult.Pledges.Select(x => new GetPledgesResponse.Pledge
                     {
                         Id = x.Id,
