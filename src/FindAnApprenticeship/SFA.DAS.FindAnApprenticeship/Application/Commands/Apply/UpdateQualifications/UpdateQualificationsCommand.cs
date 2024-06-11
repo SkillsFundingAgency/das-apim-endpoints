@@ -8,7 +8,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.FindAnApprenticeship.Models;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateQualifications
 {
@@ -32,7 +32,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateQualific
 
         public async Task Handle(UpdateQualificationsCommand request, CancellationToken cancellationToken)
         {
-            var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
+            var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
             jsonPatchDocument.Replace(x => x.QualificationsStatus, request.IsComplete ? SectionStatus.Completed : SectionStatus.Incomplete);
 
             var patchRequest = new PatchApplicationApiRequest(request.ApplicationId, request.CandidateId, jsonPatchDocument);

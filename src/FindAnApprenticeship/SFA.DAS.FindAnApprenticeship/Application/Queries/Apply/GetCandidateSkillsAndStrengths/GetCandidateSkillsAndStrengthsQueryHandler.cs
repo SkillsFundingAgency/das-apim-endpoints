@@ -1,7 +1,10 @@
-﻿using System.Threading;
+﻿using System;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -17,7 +20,18 @@ public class GetCandidateSkillsAndStrengthsQueryHandler : IRequestHandler<GetCan
 
     public async Task<GetCandidateSkillsAndStrengthsQueryResult> Handle(GetCandidateSkillsAndStrengthsQuery request, CancellationToken cancellationToken)
     {
-        return await _candidateApiClient.Get<GetAboutYouItemApiResponse>
-            (new GetAboutYouItemApiRequest(request.ApplicationId, request.CandidateId));
+
+        var response =
+            await _candidateApiClient.GetWithResponseCode<GetAboutYouItemApiResponse>(
+                new GetAboutYouItemApiRequest(request.ApplicationId, request.CandidateId));
+
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            return await _candidateApiClient.PutWithResponseCode<PutUpsertAboutYouItemApiResponse>
+            (new PutUpsertAboutYouItemApiRequest(request.ApplicationId, request.CandidateId, Guid.NewGuid(),
+                new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData()));
+        }
+        
+        return response;
     }
 }

@@ -15,6 +15,5 @@ public class GetAdditionalQuestionApiRequest : IGetApiRequest
         _id = id;
     }
 
-    public string GetUrl =>
-           $"candidates/{_candidateId}/applications/{_applicationId}/additional-question/{_id}";
+    public string GetUrl => $"api/candidates/{_candidateId}/applications/{_applicationId}/additional-question/{_id}";
 }

@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationTrainingCourses;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-using SFA.DAS.FindAnApprenticeship.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -35,7 +35,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateWhatInte
 
         public async Task Handle(UpdateWhatInterestsYouCommand request, CancellationToken cancellationToken)
         {
-            var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
+            var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
             jsonPatchDocument.Replace(x => x.InterestsStatus, request.IsComplete ? SectionStatus.Completed : SectionStatus.InProgress);
             jsonPatchDocument.Replace(x => x.WhatIsYourInterest, request.AnswerText);
 

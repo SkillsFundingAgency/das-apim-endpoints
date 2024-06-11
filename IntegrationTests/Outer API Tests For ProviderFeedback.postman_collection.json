@@ -1,0 +1,107 @@
+{
+	"info": {
+		"_postman_id": "a5c10858-9c56-4bbf-897e-8001dc593cb4",
+		"name": "SFA.DAS.ProviderFeedback.Api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21174429"
+	},
+	"item": [
+		{
+			"name": "Dummy",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://das-pp-apimendp-prvfbapi-as.azurewebsites.net/api/Dummy",
+					"protocol": "https",
+					"host": [
+						"das-pp-apimendp-prvfbapi-as",
+						"azurewebsites",
+						"net"
+					],
+					"path": [
+						"api",
+						"Dummy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProviderFeedback",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://test-apim-prvfb-api.apprenticeships.education.gov.uk/providerFeedback/10000528",
+					"protocol": "https",
+					"host": [
+						"test-apim-prvfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"providerFeedback",
+						"10000528"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProviderAccounts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://test-apim-prvfb-api.apprenticeships.education.gov.uk/ProviderAccounts/10000528",
+					"protocol": "https",
+					"host": [
+						"test-apim-prvfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"ProviderAccounts",
+						"10000528"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
