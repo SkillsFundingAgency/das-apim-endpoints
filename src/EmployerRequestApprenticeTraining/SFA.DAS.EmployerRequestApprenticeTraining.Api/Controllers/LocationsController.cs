@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocations;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -25,18 +27,18 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> GetByQuery([FromQuery]string searchTerm)
+        public async Task<IActionResult> Get([FromQuery]string searchTerm)
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetLocationsQuery {SearchTerm = searchTerm});
+                var result = await _mediator.Send(new GetLocationsQuery {SearchTerm = searchTerm});
 
-                var response = new GetLocationSearchResponse
+                if (result.Locations != null)
                 {
-                    Locations = queryResult.Locations
-                        .Select(c => (GetLocationSearchResponseItem)c),
-                };
-                return Ok(response);
+                    return Ok(result.Locations.Select(s => (LocationSearchResponse)s).ToList());
+                }
+
+                return Ok(new List<LocationSearchResponse>());
             }
             catch (Exception e)
             {

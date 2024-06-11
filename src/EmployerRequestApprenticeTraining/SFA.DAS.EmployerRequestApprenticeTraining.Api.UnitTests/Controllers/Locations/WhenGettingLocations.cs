@@ -6,10 +6,10 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocations;
 using SFA.DAS.Testing.AutoFixture;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
         [Test, MoqAutoData]
         public async Task Then_The_Locations_Are_Returned_From_Mediator(
             string searchTerm,
-            GetLocationsQueryResponse queryResult,
+            GetLocationsQueryResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] LocationsController controller)
         {
@@ -30,14 +30,14 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
                 .Setup(x => x.Send(It.Is<GetLocationsQuery>(p => p.SearchTerm == searchTerm), CancellationToken.None))
                 .ReturnsAsync(queryResult);
 
-            var actual = await controller.GetByQuery(searchTerm) as ObjectResult;
+            var actual = await controller.Get(searchTerm) as ObjectResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
 
-            var getLocationSearchResponse = actual.Value as GetLocationSearchResponse;
-            getLocationSearchResponse.Should().NotBeNull();
-            getLocationSearchResponse.Locations.Should().BeEquivalentTo(queryResult.Locations.Select(s => (GetLocationSearchResponseItem)s));
+            var locationSearchResponse = actual.Value as List<LocationSearchResponse>;
+            locationSearchResponse.Should().NotBeNull();
+            locationSearchResponse.Should().BeEquivalentTo(queryResult.Locations.Select(s => (LocationSearchResponse)s));
         }
 
         [Test, MoqAutoData]
@@ -49,7 +49,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             mediator.Setup(x => x.Send(It.IsAny<GetLocationsQuery>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
-            var actual = await controller.GetByQuery(searchTerm) as StatusCodeResult;
+            var actual = await controller.Get(searchTerm) as StatusCodeResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

@@ -3,8 +3,8 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocations
 {
-    public class GetLocationsQueryResponse
+    public class GetLocationsQueryResult
     {
-        public IEnumerable<GetLocationsListItem> Locations { get; set; }
+        public List<GetLocationsListItem> Locations { get; set; }
     }
 }
