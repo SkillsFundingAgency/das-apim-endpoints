@@ -25,12 +25,12 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> faaApiClient,
             GetWhatInterestsYouQueryHandler handler)
         {
-            var expectedGetApplicationApiRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+            var expectedGetApplicationApiRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
 
             candidateApiClient.Setup(x => x.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedGetApplicationApiRequest.GetUrl)))
                 .ReturnsAsync(applicationApiResponse);
             
-            var expectedVacancyApiRequest = new GetVacancyRequest(applicationApiResponse.VacancyReference);
+            var expectedVacancyApiRequest = new GetVacancyRequest(applicationApiResponse.VacancyReference.ToString());
 
             faaApiClient
                 .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(
@@ -59,13 +59,13 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> faaApiClient,
             GetWhatInterestsYouQueryHandler handler)
         {
-            var expectedGetApplicationApiRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
+            var expectedGetApplicationApiRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
             applicationApiResponse.InterestsStatus = status;
 
             candidateApiClient.Setup(x => x.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedGetApplicationApiRequest.GetUrl)))
                 .ReturnsAsync(applicationApiResponse);
             
-            var expectedVacancyApiRequest = new GetVacancyRequest(applicationApiResponse.VacancyReference);
+            var expectedVacancyApiRequest = new GetVacancyRequest(applicationApiResponse.VacancyReference.ToString());
 
             faaApiClient
                 .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(

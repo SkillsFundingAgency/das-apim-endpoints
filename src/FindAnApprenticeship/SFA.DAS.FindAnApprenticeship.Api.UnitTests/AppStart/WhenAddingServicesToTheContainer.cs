@@ -8,6 +8,8 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.FindAnApprenticeship.Api.AppStart;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -20,8 +22,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.AppStart
         [TestCase(typeof(IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>))]
         [TestCase(typeof(ILocationApiClient<LocationApiConfiguration>))]
         [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
+        [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
         [TestCase(typeof(ICourseService))]
         [TestCase(typeof(ILocationLookupService))]
+        [TestCase(typeof(IVacancyService))]
+        [TestCase(typeof(EmailEnvironmentHelper))]
         public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
         {
             var hostEnvironment = new Mock<IWebHostEnvironment>();
@@ -32,7 +37,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.AppStart
             serviceCollection.AddSingleton(Mock.Of<IConfiguration>());
             serviceCollection.AddConfigurationOptions(configuration);
             serviceCollection.AddDistributedMemoryCache();
-            serviceCollection.AddServiceRegistration();
+            serviceCollection.AddServiceRegistration(configuration);
             
             var provider = serviceCollection.BuildServiceProvider();
 
@@ -49,7 +54,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.AppStart
                     new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:1"),
                     new KeyValuePair<string, string>("FindApprenticeshipApiConfiguration:url", "http://localhost:2"),
                     new KeyValuePair<string, string>("LocationApiConfiguration:url", "http://localhost:3"),
-                    new KeyValuePair<string, string>("FindApprenticeshipLegacyApiConfiguration:url", "http://localhost:4")
+                    new KeyValuePair<string, string>("FindApprenticeshipLegacyApiConfiguration:url", "http://localhost:4"),
+                    new KeyValuePair<string, string>("RecruitApiConfiguration:url", "http://localhost:5"),
+                    new KeyValuePair<string, string>("ResourceEnvironmentName", "DEV")
                 }
             };
 

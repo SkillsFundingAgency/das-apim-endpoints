@@ -19,7 +19,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         { 
             var result = await _mediator.Send(new GetApprenticeDetailsQuery { ApprenticeId = id });
 
-            if (result.ApprenticeDetails.Apprentice == null)
+            if (result.ApprenticeDetails?.Apprentice == null)
                 return NotFound();            
 
             return Ok(result.ApprenticeDetails);

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
-using SFA.DAS.FindAnApprenticeship.Models;
 using System;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
 {

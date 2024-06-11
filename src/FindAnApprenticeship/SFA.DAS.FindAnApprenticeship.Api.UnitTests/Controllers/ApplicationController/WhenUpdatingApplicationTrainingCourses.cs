@@ -32,7 +32,7 @@ public class WhenUpdatingApplicationTrainingCourses
             .ReturnsAsync(result);
 
         var actual = await controller.UpdateApplicationTrainingCourses(applicationId, candidateId, model, CancellationToken.None);
-        var actualObject = ((OkObjectResult)actual).Value as FindAnApprenticeship.Models.Application;
+        var actualObject = ((OkObjectResult)actual).Value as Domain.Models.Application;
 
         using (new AssertionScope())
         {

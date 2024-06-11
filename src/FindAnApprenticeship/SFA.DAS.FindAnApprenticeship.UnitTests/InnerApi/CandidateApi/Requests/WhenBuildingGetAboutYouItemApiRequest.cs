@@ -13,6 +13,6 @@ public class WhenBuildingGetAboutYouItemApiRequest
     {
         var actual = new GetAboutYouItemApiRequest(applicationId, candidateId);
 
-        actual.GetUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/about-you");
+        actual.GetUrl.Should().Be($"api/candidates/{candidateId}/applications/{applicationId}/about-you");
     }
 }
