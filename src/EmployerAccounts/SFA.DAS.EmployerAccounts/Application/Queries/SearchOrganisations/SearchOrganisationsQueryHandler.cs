@@ -27,12 +27,12 @@ public class SearchOrganisationsQueryHandler : IRequestHandler<SearchOrganisatio
     public SearchOrganisationsQueryHandler(ILogger<SearchOrganisationsQueryHandler> logger,
         IReferenceDataApiClient<ReferenceDataApiConfiguration> referenceDataApiClient,
         IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration> educationalOrganisationClient,
-        IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration> publicSectotOrganisationApiClient)
+        IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration> publicSectorOrganisationApiClient)
     {
         _logger = logger;
         _refDataApi = referenceDataApiClient;
         _eduOrgApi = educationalOrganisationClient;
-        _psOrgApi = publicSectotOrganisationApiClient;
+        _psOrgApi = publicSectorOrganisationApiClient;
 
     }
 
@@ -42,26 +42,25 @@ public class SearchOrganisationsQueryHandler : IRequestHandler<SearchOrganisatio
 
         var refApiOrganisationsTask = _refDataApi.Get<GetSearchOrganisationsResponse>(new GetSearchOrganisationsRequest(request.SearchTerm, request.MaximumResults));
         var educationalOrganisationsTask = _eduOrgApi.Get<EducationalOrganisationResponse>(new SearchEducationalOrganisationsRequest(request.SearchTerm, request.MaximumResults));
-        //var publicSectorOrganisationsTask = _psOrgApi.Get<PublicSectorOrganisationsResponse>(new SearchPublicSectorOrganisationsRequest(request.SearchTerm));
+        var publicSectorOrganisationsTask = _psOrgApi.Get<PublicSectorOrganisationsResponse>(new SearchPublicSectorOrganisationsRequest(request.SearchTerm));
 
         await Task.WhenAll(refApiOrganisationsTask, educationalOrganisationsTask); //, publicSectorOrganisationsTask);
         var refApiOrganisations = await refApiOrganisationsTask;
         var educationalOrganisations = await educationalOrganisationsTask;
-        //var publicSectorOrganisations = await publicSectorOrganisationsTask;
+        var publicSectorOrganisations = await publicSectorOrganisationsTask;
 
         var result = CombineMatches(refApiOrganisations.Where(o => o.Type != OrganisationType.EducationOrganisation),
-            educationalOrganisations.EducationalOrganisations, request.MaximumResults);
-            //publicSectorOrganisations.PublicSectorOrganisations, request.MaximumResults);
+            educationalOrganisations.EducationalOrganisations, publicSectorOrganisations.PublicSectorOrganisations, request.MaximumResults);
 
         return result;
     }
 
     private static SearchOrganisationsResult CombineMatches(IEnumerable<Organisation> refApiOrganisations, IEnumerable<EducationalOrganisation> educationalOrganisations,
-        /*IEnumerable<PublicSectorOrganisation> psOrganisations, */ int maxResults)
+        IEnumerable<PublicSectorOrganisation> psOrganisations, int maxResults)
     {
         var allOrganisations = refApiOrganisations.Select(o=> (OrganisationResult)o)
-                .Concat(educationalOrganisations.Select(o=> (OrganisationResult)o));
-                //.Concat(psOrganisations.Select(o=> (OrganisationResult)o));
+                .Concat(educationalOrganisations.Select(o=> (OrganisationResult)o))
+                .Concat(psOrganisations.Select(o=> (OrganisationResult)o));
 
         return new SearchOrganisationsResult
         {
