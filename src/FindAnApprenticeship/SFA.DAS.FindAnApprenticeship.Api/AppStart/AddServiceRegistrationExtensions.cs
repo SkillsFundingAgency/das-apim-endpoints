@@ -36,7 +36,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
 			services.AddSingleton<IDateTimeService>(new DateTimeService());
             services.AddTransient<INotificationService, NotificationService>();
             services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
-            services.AddSingleton<IMetrics, FindAnApprenticeshipMetrics>();
+
         }
     }
 }
