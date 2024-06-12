@@ -8,7 +8,7 @@ public class GetPermissionsHandler(IProviderRelationshipsApiRestClient _provider
     public async Task<GetPermissionsResponse> Handle(GetPermissionsQuery query, CancellationToken cancellationToken)
     {
         var response =
-            await _providerRelationshipsApiRestClient.GetPermissions(query.Ukprn, query.PublicHashedId, cancellationToken);
+            await _providerRelationshipsApiRestClient.GetPermissions(query.Ukprn, query.AccountLegalEntityId, cancellationToken);
 
         return response;
     }
