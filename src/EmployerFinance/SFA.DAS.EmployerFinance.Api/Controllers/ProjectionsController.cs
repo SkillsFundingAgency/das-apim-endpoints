@@ -40,5 +40,25 @@ namespace SFA.DAS.EmployerFinance.Api.Controllers
                 return BadRequest();
             }
         }
+
+        [HttpGet]
+        [Route("finance/{accountId}")]
+        public async Task<IActionResult> GetAccountProjectionSummaryFromFinance(long accountId)
+        {
+            try
+            {
+                var response = await _mediator.Send(new GetAccountProjectionSummaryQuery
+                {
+                    AccountId = accountId,
+                });
+
+                return Ok((GetAccountProjectionSummaryResponse)response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting projections");
+                return BadRequest();
+            }
+        }
     }
 }
