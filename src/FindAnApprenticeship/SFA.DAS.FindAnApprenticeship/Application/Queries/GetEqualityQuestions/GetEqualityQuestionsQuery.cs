@@ -31,11 +31,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetEqualityQuestions
 
             return new GetEqualityQuestionsQueryResult
             {
-                Sex = aboutYouResponse.AboutYou.Sex,
-                EthnicGroup = aboutYouResponse.AboutYou.EthnicGroup,
-                EthnicSubGroup = aboutYouResponse.AboutYou.EthnicSubGroup,
-                IsGenderIdentifySameSexAtBirth = aboutYouResponse.AboutYou.IsGenderIdentifySameSexAtBirth,
-                OtherEthnicSubGroupAnswer = aboutYouResponse.AboutYou.OtherEthnicSubGroupAnswer
+                Sex = aboutYouResponse?.AboutYou?.Sex,
+                EthnicGroup = aboutYouResponse?.AboutYou?.EthnicGroup,
+                EthnicSubGroup = aboutYouResponse?.AboutYou?.EthnicSubGroup,
+                IsGenderIdentifySameSexAtBirth = aboutYouResponse?.AboutYou?.IsGenderIdentifySameSexAtBirth,
+                OtherEthnicSubGroupAnswer = aboutYouResponse?.AboutYou?.OtherEthnicSubGroupAnswer
             };
         }
     }

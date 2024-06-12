@@ -17,12 +17,14 @@ public class GetSettingsQueryHandler(ICandidateApiClient<CandidateApiConfigurati
         var candidateTask = apiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId.ToString()));
         var preferencesTask = apiClient.Get<GetCandidatePreferencesApiResponse>(new GetCandidatePreferencesApiRequest(request.CandidateId));
         var addressTask = apiClient.Get<GetCandidateAddressApiResponse>(new GetCandidateAddressApiRequest(request.CandidateId));
+        var aboutYouTask = apiClient.Get<GetAboutYouItemApiResponse>(new GetAboutYouItemApiRequest(request.CandidateId));
 
-        await Task.WhenAll(candidateTask, preferencesTask, addressTask);
+        await Task.WhenAll(candidateTask, preferencesTask, addressTask, aboutYouTask);
 
         var candidate = candidateTask.Result;
         var preferences = preferencesTask.Result;
         var address = addressTask.Result;
+        var aboutYou = aboutYouTask.Result;
 
         address ??= new GetCandidateAddressApiResponse();
 
@@ -40,6 +42,7 @@ public class GetSettingsQueryHandler(ICandidateApiClient<CandidateApiConfigurati
             Postcode = address.Postcode,
             PhoneNumber = candidate.PhoneNumber,
             Email = candidate.Email,
+            HasAnsweredEqualityQuestions = aboutYou?.AboutYou != null,
             CandidatePreferences = preferences.CandidatePreferences == null
                 ? new List<GetSettingsQueryResult.CandidatePreference>()
                 : preferences.CandidatePreferences.Select(cp => new GetSettingsQueryResult.CandidatePreference

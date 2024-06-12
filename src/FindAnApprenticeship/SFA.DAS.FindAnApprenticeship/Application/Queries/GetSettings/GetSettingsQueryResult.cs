@@ -17,6 +17,7 @@ public class GetSettingsQueryResult
     public string Postcode { get; set; }
     public string PhoneNumber { get; set; }
     public string Email { get; set; }
+    public bool HasAnsweredEqualityQuestions { get; set; }
     public List<CandidatePreference> CandidatePreferences { get; set; }
 
     public class CandidatePreference
