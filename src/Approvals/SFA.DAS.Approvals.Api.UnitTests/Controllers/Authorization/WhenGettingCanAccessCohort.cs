@@ -14,6 +14,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.Authorization;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Authorization;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.Testing.AutoFixture;
+using GetCohortAccessResponse = SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments.GetCohortAccessResponse;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Authorization;
 

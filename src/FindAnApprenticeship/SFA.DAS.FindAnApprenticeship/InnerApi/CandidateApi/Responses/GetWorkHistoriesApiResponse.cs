@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SFA.DAS.FindAnApprenticeship.Models;
 using System;
 using System.Collections.Generic;
 
