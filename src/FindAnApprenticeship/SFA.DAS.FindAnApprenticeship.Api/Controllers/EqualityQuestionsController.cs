@@ -6,15 +6,36 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateEqualityQues
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetEqualityQuestions;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
 [ApiController]
-[Route("applications/{applicationId}/[controller]")]
 public class EqualityQuestionsController(IMediator mediator, ILogger<EqualityQuestionsController> logger)
     : Controller
 {
+    [HttpGet]
+    [Route("[controller]")]
+    public async Task<IActionResult> Get([FromQuery] Guid candidateId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetEqualityQuestionsQuery
+            {
+                CandidateId = candidateId
+            });
+
+            return Ok((GetEqualityQuestionsApiResponse)result);
+        }
+        catch(Exception ex)
+        {
+            logger.LogError(ex, $"Error getting equality questions for candidate {candidateId}");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
     [HttpPost]
+    [Route("applications/{applicationId}/[controller]")]
     public async Task<IActionResult> Post([FromRoute] Guid applicationId, [FromBody] PostEqualityQuestionsApiRequest request)
     {
         try
