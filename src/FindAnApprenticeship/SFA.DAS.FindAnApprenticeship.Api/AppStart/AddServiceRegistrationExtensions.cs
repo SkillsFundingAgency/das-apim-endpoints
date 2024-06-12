@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
@@ -30,6 +30,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
             services.AddTransient<IVacancyService, VacancyService>();
+            services.AddTransient<ILegacyApplicationMigrationService, LegacyApplicationMigrationService>();
             services.AddTransient<INotificationService, NotificationService>();
             services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
         }
