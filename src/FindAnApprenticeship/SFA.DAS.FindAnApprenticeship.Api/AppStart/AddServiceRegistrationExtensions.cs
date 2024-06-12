@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.FindAnApprenticeship.Api.Telemetry;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.NServiceBus.Services;
@@ -35,6 +36,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
 			services.AddSingleton<IDateTimeService>(new DateTimeService());
             services.AddTransient<INotificationService, NotificationService>();
             services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
+            services.AddSingleton<IMetrics, FindAnApprenticeshipMetrics>();
         }
     }
 }
