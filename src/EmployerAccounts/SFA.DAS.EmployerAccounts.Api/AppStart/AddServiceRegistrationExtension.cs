@@ -18,7 +18,6 @@ namespace SFA.DAS.EmployerAccounts.Api.AppStart
         {
             services.AddHttpClient();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
-            services.AddTransient<IOrganisationApiStrategyFactory, OrganisationApiStrategyFactory>();
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();

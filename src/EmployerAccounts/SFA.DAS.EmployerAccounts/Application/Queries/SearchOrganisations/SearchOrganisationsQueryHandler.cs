@@ -44,7 +44,7 @@ public class SearchOrganisationsQueryHandler : IRequestHandler<SearchOrganisatio
         var educationalOrganisationsTask = _eduOrgApi.Get<EducationalOrganisationResponse>(new SearchEducationalOrganisationsRequest(request.SearchTerm, request.MaximumResults));
         var publicSectorOrganisationsTask = _psOrgApi.Get<PublicSectorOrganisationsResponse>(new SearchPublicSectorOrganisationsRequest(request.SearchTerm));
 
-        await Task.WhenAll(refApiOrganisationsTask, educationalOrganisationsTask); //, publicSectorOrganisationsTask);
+        await Task.WhenAll(refApiOrganisationsTask, educationalOrganisationsTask, publicSectorOrganisationsTask);
         var refApiOrganisations = await refApiOrganisationsTask;
         var educationalOrganisations = await educationalOrganisationsTask;
         var publicSectorOrganisations = await publicSectorOrganisationsTask;

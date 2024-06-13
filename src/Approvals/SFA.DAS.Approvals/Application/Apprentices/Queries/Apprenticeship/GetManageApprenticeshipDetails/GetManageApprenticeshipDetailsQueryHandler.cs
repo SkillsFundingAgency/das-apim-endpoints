@@ -70,8 +70,9 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
             var pendingPriceChangeTask = _apprenticeshipsApiClient.GetWithResponseCode<GetPendingPriceChangeResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey.Body));
             var canActualStartDateBeChangedTask = CanActualStartDateBeChanged(apprenticeship.ActualStartDate);
             var pendingStartDateChangeTask = _apprenticeshipsApiClient.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(new GetPendingStartDateChangeRequest(apprenticeshipKey.Body));
+            var paymentStatusTask = _apprenticeshipsApiClient.GetWithResponseCode<GetPaymentStatusApiResponse>(new GetPaymentStatusRequest(apprenticeshipKey.Body));
 
-            await Task.WhenAll(priceEpisodesResponseTask, 
+			await Task.WhenAll(priceEpisodesResponseTask, 
                 apprenticeshipUpdatesResponseTask,
                 apprenticeshipDataLockStatusResponseTask,
                 changeOfPartyRequestsResponseTask, 
@@ -81,7 +82,8 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                 deliveryModelTask,
                 pendingPriceChangeTask,
                 canActualStartDateBeChangedTask,
-                pendingStartDateChangeTask);
+                pendingStartDateChangeTask,
+                paymentStatusTask);
 
             var priceEpisodesResponse = priceEpisodesResponseTask.Result;
             var apprenticeshipUpdatesResponse = apprenticeshipUpdatesResponseTask.Result;
@@ -94,6 +96,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
             var pendingPriceChangeResponse = pendingPriceChangeTask.Result;
             var canActualStartDateBeChanged = canActualStartDateBeChangedTask.Result;
             var pendingStartDateResponse = pendingStartDateChangeTask.Result;
+            var paymentStatusResponse = paymentStatusTask.Result;
 
             return new GetManageApprenticeshipDetailsQueryResult
             {
@@ -108,7 +111,8 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
                 HasMultipleDeliveryModelOptions = deliveryModel.Count > 1,
                 PendingPriceChange = ToResponse(pendingPriceChangeResponse.Body),
                 CanActualStartDateBeChanged = canActualStartDateBeChanged,
-                PendingStartDateChange = ToResponse(pendingStartDateResponse.Body)
+                PendingStartDateChange = ToResponse(pendingStartDateResponse.Body),
+                PaymentsFrozen = (paymentStatusResponse?.Body?.PaymentsFrozen).GetValueOrDefault(),
             };
         }
 
@@ -133,6 +137,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
             return new PendingStartDateChange
             {
                 PendingActualStartDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingActualStartDate,
+                PendingPlannedEndDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingPlannedEndDate,
                 ProviderApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate,
                 EmployerApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate,
                 Initiator = pendingStartDateChangeResponse.PendingStartDateChange.Initiator
