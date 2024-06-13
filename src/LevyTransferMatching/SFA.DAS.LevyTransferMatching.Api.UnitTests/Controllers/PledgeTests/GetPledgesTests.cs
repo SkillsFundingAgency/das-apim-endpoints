@@ -45,21 +45,21 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var controllerResponse = await _controller.Pledges(_accountId);
 
             var okObjectResult = controllerResponse as OkObjectResult;
-            Assert.That(okObjectResult, Is.Not.Null);
+            okObjectResult.Should().NotBeNull();
             var response = okObjectResult.Value as GetPledgesResponse;
-            Assert.That(response, Is.Not.Null);
-            Assert.That(response.TotalPledges, Is.EqualTo(_queryResult.TotalPledges));
-            Assert.That(response.TotalPages, Is.EqualTo(_queryResult.TotalPages));
-            Assert.That(response.Page, Is.EqualTo(_queryResult.Page));
-            Assert.That(response.PageSize, Is.EqualTo(_queryResult.PageSize));
+            response.Should().NotBeNull();
+            response.TotalPledges.Should().Be(_queryResult.TotalPledges);
+            response.TotalPages.Should().Be(_queryResult.TotalPages);
+            response.Page.Should().Be(_queryResult.Page);
+            response.PageSize.Should().Be(_queryResult.PageSize);
 
-            Assert.That(response.Pledges, Is.Not.Null);
+            response.Pledges.Should().NotBeNull();
             response.Pledges.Should().NotBeEmpty();
-            Assert.That(!response.Pledges.Any(x => x.Id == 0));
-            Assert.That(!response.Pledges.Any(x => x.Amount == 0));
-            Assert.That(!response.Pledges.Any(x => x.RemainingAmount == 0));
-            Assert.That(!response.Pledges.Any(x => x.ApplicationCount == 0));
-            Assert.That(!response.Pledges.Any(x => x.Status == string.Empty));
+            response.Pledges.Any(x => x.Id == 0).Should().BeFalse();
+            response.Pledges.Any(x => x.Amount == 0).Should().BeFalse();
+            response.Pledges.Any(x => x.RemainingAmount == 0).Should().BeFalse();
+            response.Pledges.Any(x => x.ApplicationCount == 0).Should().BeFalse();
+            response.Pledges.Any(x => x.Status == string.Empty).Should().BeFalse();
         }
 
         [Test]
