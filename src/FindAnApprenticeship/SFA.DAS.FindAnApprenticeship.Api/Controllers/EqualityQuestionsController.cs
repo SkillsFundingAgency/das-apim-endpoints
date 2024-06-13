@@ -35,15 +35,14 @@ public class EqualityQuestionsController(IMediator mediator, ILogger<EqualityQue
     }
 
     [HttpPost]
-    [Route("applications/{applicationId}/[controller]")]
-    public async Task<IActionResult> Post([FromRoute] Guid applicationId, [FromBody] PostEqualityQuestionsApiRequest request)
+    [Route("[controller]")]
+    public async Task<IActionResult> Post([FromQuery] Guid candidateId, [FromBody] PostEqualityQuestionsApiRequest request)
     {
         try
         {
             var result = await mediator.Send(new UpsertAboutYouEqualityQuestionsCommand
             {
-                ApplicationId = applicationId,
-                CandidateId = request.CandidateId,
+                CandidateId = candidateId,
                 EthnicGroup = request.EthnicGroup,
                 EthnicSubGroup = request.EthnicSubGroup,
                 Sex = request.Sex,
@@ -60,7 +59,7 @@ public class EqualityQuestionsController(IMediator mediator, ILogger<EqualityQue
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error posting equality questions application {applicationId}", applicationId);
+            logger.LogError(ex, $"Error posting equality questions for candidate {candidateId}");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
