@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
+    
     <PackageReference Include="SFA.DAS.Api.Common" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
     <PackageReference Include="SFA.DAS.Notifications.Messages" />
@@ -18,7 +19,13 @@
     <PackageReference Include="System.Net.Http.Json" />
     <PackageReference Include="SFA.DAS.NServiceBus" />
   </ItemGroup>
-
+  
+  <!--Transitive Packages-->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Identity.Client" />
+  </ItemGroup>
+  <!--Transitive Packages-->
+  
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
   </ItemGroup>
