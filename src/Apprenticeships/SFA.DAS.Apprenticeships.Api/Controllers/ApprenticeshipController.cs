@@ -120,6 +120,7 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
                 request.Initiator,
                 request.UserId,
                 request.ActualStartDate,
+                request.PlannedEndDate,
                 request.Reason), false);
 
             if (string.IsNullOrEmpty(response.ErrorContent))
@@ -232,6 +233,14 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers
         public async Task<ActionResult> RejectPendingStartDateChange(Guid apprenticeshipKey, [FromBody] RejectStartDateChangeRequest request)
         {
 	        await _apiClient.Patch(new PatchRejectApprenticeshipStartDateChangeRequest(apprenticeshipKey, request.Reason));
+	        return Ok();
+        }
+
+        [HttpDelete]
+        [Route("{apprenticeshipKey}/startDateChange/pending")]
+        public async Task<ActionResult> CancelPendingStartDateChange(Guid apprenticeshipKey)
+        {
+	        await _apiClient.Delete(new CancelPendingStartDateChangeRequest(apprenticeshipKey));
 	        return Ok();
         }
 	}
