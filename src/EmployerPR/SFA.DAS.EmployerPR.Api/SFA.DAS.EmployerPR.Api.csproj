@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>  
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />  
+    <PackageReference Include="RestEase" />  
+    <PackageReference Include="RestEase.HttpClientFactory" />
     <PackageReference Include="SFA.DAS.Api.Common" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
