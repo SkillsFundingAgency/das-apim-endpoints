@@ -1,4 +1,5 @@
 ﻿namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderRelationships;
+
 public enum Operation : short
 {
     CreateCohort = 0,

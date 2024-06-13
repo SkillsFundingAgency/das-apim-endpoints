@@ -14,6 +14,7 @@
     <PackageReference Include="AutoFixture.NUnit3" />
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.Extensions.Options" />
+    
     <PackageReference Include="Moq" />
     <PackageReference Include="nunit" />
     <PackageReference Include="NUnit3TestAdapter" />
@@ -23,6 +24,12 @@
     <PackageReference Include="SFA.DAS.Api.Common" />
   </ItemGroup>
 
+  <!--Transitive Packages-->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Identity.Client" />
+  </ItemGroup>
+  <!--Transitive Packages-->
+  
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     <ProjectReference Include="..\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj" />

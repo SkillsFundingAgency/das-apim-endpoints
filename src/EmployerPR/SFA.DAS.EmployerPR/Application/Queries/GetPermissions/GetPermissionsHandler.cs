@@ -1,22 +1,14 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.EmployerPR.Infrastructure;
 
 namespace SFA.DAS.EmployerPR.Application.Queries.GetPermissions;
 
-public class GetPermissionsHandler : IRequestHandler<GetPermissionsQuery, GetPermissionsResponse>
+public class GetPermissionsHandler(IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient) : IRequestHandler<GetPermissionsQuery, GetPermissionsResponse>
 {
-    private readonly IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> _apiClient;
-
-    public GetPermissionsHandler(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> apiClient)
-    {
-        _apiClient = apiClient;
-    }
     public async Task<GetPermissionsResponse> Handle(GetPermissionsQuery query, CancellationToken cancellationToken)
     {
         var response =
-            await _apiClient.Get<GetPermissionsResponse>(new GetPermissionsRequest(query.Ukprn, query.PublicHashedId));
+            await _providerRelationshipsApiRestClient.GetPermissions(query.Ukprn, query.PublicHashedId, cancellationToken);
 
         return response;
     }

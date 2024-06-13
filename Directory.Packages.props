@@ -38,6 +38,7 @@
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.Testing" Version="8.5.0" />
+    <PackageVersion Include="Microsoft.Identity.Client" Version="4.61.1" />
     <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.3.1" />
     <PackageVersion Include="Moq" Version="4.20.70" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
