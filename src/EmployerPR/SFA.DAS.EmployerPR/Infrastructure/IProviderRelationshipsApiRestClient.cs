@@ -7,8 +7,8 @@ namespace SFA.DAS.EmployerPR.Infrastructure;
 public interface IProviderRelationshipsApiRestClient
 {
     [Get("permissions")]
-    Task<GetPermissionsResponse> GetPermissions([Query] long? ukprn, [Query] string? PublicHashedId, CancellationToken cancellationToken);
+    Task<GetPermissionsResponse> GetPermissions([Query] long? ukprn, [Query] int? AccountLegalEntityId, CancellationToken cancellationToken);
 
     [Get("relationships/employeraccount/{AccountHashedId}")]
-    Task<GetEmployerRelationshipsResponse> GetEmployerRelationships([Path]string AccountHashedId, [Query]long? Ukprn, [Query]string? AccountlegalentityPublicHashedId, CancellationToken cancellationToken);
+    Task<GetEmployerRelationshipsResponse> GetEmployerRelationships([Path] string AccountHashedId, [Query] long? Ukprn, [Query] string? AccountlegalentityPublicHashedId, CancellationToken cancellationToken);
 }
