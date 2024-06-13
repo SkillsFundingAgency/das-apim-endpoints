@@ -39,6 +39,6 @@ namespace SFA.DAS.EmployerFinance.Api.Controllers
                 _logger.LogError(e, "Error getting projections");
                 return BadRequest();
             }
-        }      
+        }
     }
 }
