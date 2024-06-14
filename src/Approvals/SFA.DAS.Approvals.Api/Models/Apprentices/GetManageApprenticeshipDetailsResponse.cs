@@ -19,6 +19,7 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
         public PendingPriceChangeDetails PendingPriceChange { get; set; }
         public PendingStartDateChangeDetails PendingStartDateChange { get; set; }
         public bool? CanActualStartDateBeChanged { get; set; }
+        public bool PaymentsFrozen { get; set; }
 
 		public class ApprenticeshipDetails
         {
@@ -183,6 +184,7 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
         public class PendingStartDateChangeDetails
         {
             public DateTime PendingActualStartDate { get; set; }
+            public DateTime PendingPlannedEndDate { get; set; }
             public string? Initiator { get; set; }
             public DateTime? ProviderApprovedDate { get; set; }
             public DateTime? EmployerApprovedDate { get; set; }
