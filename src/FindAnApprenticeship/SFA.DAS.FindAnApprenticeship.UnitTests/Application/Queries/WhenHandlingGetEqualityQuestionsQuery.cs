@@ -28,7 +28,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Should().BeEquivalentTo(apiResponse.AboutYou, config => config.Excluding(x => x.Id));
+            result.EqualityQuestions.Should().BeEquivalentTo(apiResponse.AboutYou, config => config.Excluding(x => x.Id));
         }
     }
 }
