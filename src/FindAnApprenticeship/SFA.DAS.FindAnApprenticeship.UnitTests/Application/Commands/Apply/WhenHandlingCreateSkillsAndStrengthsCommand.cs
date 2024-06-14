@@ -22,7 +22,7 @@ public class WhenHandlingCreateSkillsAndStrengthsCommand
     [Test, MoqAutoData]
     public async Task Then_The_SkillsAndStrengths_Is_Created(
         UpsertSkillsAndStrengthsCommand command,
-        Models.Application updateApplicationResponse,
+        Domain.Models.Application updateApplicationResponse,
         GetAboutYouItemApiResponse apiResponse,
         PutUpsertAboutYouItemApiResponse createSkillsAndStrengthsApiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
@@ -36,7 +36,7 @@ public class WhenHandlingCreateSkillsAndStrengthsCommand
                 It.Is<PutUpsertAboutYouItemApiRequest>(r => r.PutUrl.StartsWith(expectedRequest.PutUrl.Substring(0, 86)))))
             .ReturnsAsync(new ApiResponse<PutUpsertAboutYouItemApiResponse>(createSkillsAndStrengthsApiResponse, HttpStatusCode.OK, string.Empty));
 
-        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
+        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Domain.Models.Application>());
 
         candidateApiClient
             .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
@@ -65,7 +65,7 @@ public class WhenHandlingCreateSkillsAndStrengthsCommand
         [Frozen] Mock<ILogger<UpsertSkillsAndStrengthsCommandHandler>> loggerMock,
         [Frozen] UpsertSkillsAndStrengthsCommandHandler handler)
     {
-        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
+        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Domain.Models.Application>());
 
         candidateApiClient
             .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))

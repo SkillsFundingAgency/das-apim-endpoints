@@ -18,7 +18,13 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
         public int CourseId => Convert.ToInt32(ProgrammeId);
         public Address EmployerLocation { get; set; }
         public TrainingProviderDetails TrainingProvider { get; set; }
-        public DateTime? ClosedDate { get; set; }
+        public string AdditionalQuestion1 { get; set; }
+        public string AdditionalQuestion2 { get; set; }
+        [JsonIgnore]
+        public bool IsDisabilityConfident => DisabilityConfident is "Yes";
+        [JsonPropertyName("disabilityConfident")]
+        public dynamic DisabilityConfident { get; set; }
+		public DateTime? ClosedDate { get; set; }
 
         public class Address
         {
