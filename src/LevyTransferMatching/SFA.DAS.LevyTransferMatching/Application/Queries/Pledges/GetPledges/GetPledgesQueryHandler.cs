@@ -53,7 +53,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
 
             return new GetPledgesQueryResult
             {
-                RemainingTransferAllowance = fundingResponse.RemainingTransferAllowance ?? 0,
+                StartingTransferAllowance = fundingResponse.StartingTransferAllowance ?? 0,
                 AcceptedAndApprovedApplications = applicationsResponse?.Select(x => (PledgeApplication)x),
                 Pledges = ltmResponse.Pledges.Select(x => new GetPledgesQueryResult.Pledge
                 {

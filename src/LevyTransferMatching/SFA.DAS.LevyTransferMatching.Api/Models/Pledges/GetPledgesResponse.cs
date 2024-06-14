@@ -8,7 +8,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
     public class GetPledgesResponse
     {
         public IEnumerable<Pledge> Pledges { get; set; }
-        public decimal? RemainingTransferAllowance { get; set; }
+        public decimal? StartingTransferAllowance { get; set; }
         public IEnumerable<PledgeApplication> AcceptedAndApprovedApplications { get; set; }
 
         public static implicit operator GetPledgesResponse(GetPledgesQueryResult source)

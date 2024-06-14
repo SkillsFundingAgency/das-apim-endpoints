@@ -46,7 +46,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             Assert.That(response, Is.Not.Null);
 
             Assert.That(response.Pledges, Is.Not.Null);
-            response.RemainingTransferAllowance.Should().Be(_queryResult.RemainingTransferAllowance);
+            response.StartingTransferAllowance.Should().Be(_queryResult.StartingTransferAllowance);
             response.Pledges.Should().NotBeEmpty();
             Assert.That(!response.Pledges.Any(x => x.Id == 0));
             Assert.That(!response.Pledges.Any(x => x.Amount == 0));

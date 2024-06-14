@@ -6,7 +6,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
     public class GetPledgesQueryResult
     {
         public IEnumerable<Pledge> Pledges { get; set; }
-        public decimal? RemainingTransferAllowance { get; set; }
+        public decimal? StartingTransferAllowance { get; set; }
         public IEnumerable<PledgeApplication> AcceptedAndApprovedApplications { get; set; }
 
         public class Pledge
