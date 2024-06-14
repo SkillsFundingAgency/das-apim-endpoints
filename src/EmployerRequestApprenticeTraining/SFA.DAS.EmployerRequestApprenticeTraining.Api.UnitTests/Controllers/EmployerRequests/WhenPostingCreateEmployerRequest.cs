@@ -19,14 +19,14 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
     public class WhenPostingCreateEmployerRequest
     {
         private Mock<IMediator> _mockMediator;
-        private EmployerRequestsControllers _controller;
+        private EmployerRequestsController _controller;
 
         [SetUp]
         public void Arrange()
         {
             _mockMediator = new Mock<IMediator>();
 
-            _controller = new EmployerRequestsControllers(_mockMediator.Object, Mock.Of<ILogger<EmployerRequestsControllers>>());
+            _controller = new EmployerRequestsController(_mockMediator.Object, Mock.Of<ILogger<EmployerRequestsController>>());
         }
 
         [Test, MoqAutoData]
@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             CreateEmployerRequestCommand command,
             CreateEmployerRequestResponse response,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] EmployerRequestsControllers controller)
+            [Greedy] EmployerRequestsController controller)
         {
             // Arrange
             mockMediator
@@ -45,7 +45,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             var actual = await controller.CreateEmployerRequest(command) as ObjectResult;
 
             // Assert
-            Assert.That(actual, Is.Not.Null);
+            actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
             actual.Value.Should().BeEquivalentTo(response.EmployerRequestId);
         }
@@ -54,7 +54,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             Guid employerRequestId,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestsControllers controller)
+            [Greedy] EmployerRequestsController controller)
         {
             // Arrange
             mediator.Setup(x => x.Send(It.IsAny<GetEmployerRequestQuery>(), CancellationToken.None))
@@ -64,7 +64,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             var actual = await controller.GetEmployerRequest(employerRequestId) as StatusCodeResult;
 
             // Assert
-            Assert.That(actual, Is.Not.Null);
+            actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }
