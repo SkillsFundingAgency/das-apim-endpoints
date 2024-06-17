@@ -1,3 +1,4 @@
+using System.Net;
 using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
@@ -9,6 +10,7 @@ using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application;
@@ -43,6 +45,10 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
         recruitApiResponse.EmployerLocation.AddressLine3 = address3;
         recruitApiResponse.EmployerLocation.AddressLine4 = address4;
         candidatePreference.PreferenceType = "Email";
+        candidateApiClient.Setup(x => 
+                x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
+        
         var candidateGetRequest =
             new GetCandidateApplicationsByVacancyRequest(command.VacancyReference.ToString(), candidatePreference.PreferenceId,
                 true);
