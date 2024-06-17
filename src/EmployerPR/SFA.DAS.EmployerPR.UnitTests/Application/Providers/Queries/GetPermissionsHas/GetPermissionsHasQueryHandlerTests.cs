@@ -2,9 +2,7 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerPR.Application.Queries.GetPermissions;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.EmployerPR.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerPR.UnitTests.Application.Providers.Queries.GetPermissionsHas;
@@ -13,17 +11,23 @@ public class GetPermissionsQueryHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_ReturnPermissions(
         GetPermissionsResponse expected,
-        CancellationToken cancellationToken)
+        GetPermissionsQuery query,
+        CancellationToken cancellationToken
+    )
     {
-        Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> apiClient =
-            new Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>>();
+        Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClient =
+            new Mock<IProviderRelationshipsApiRestClient>();
 
-        var query = new GetPermissionsQuery();
+        providerRelationshipsApiRestClient.Setup(x =>
+            x.GetPermissions(
+                It.IsAny<long>(),
+                It.IsAny<int>(),
+                It.IsAny<CancellationToken>()
+            )
+        )
+        .ReturnsAsync(expected);
 
-        apiClient.Setup(x => x.Get<GetPermissionsResponse>(It.IsAny<GetPermissionsRequest>()))
-            .ReturnsAsync(expected);
-
-        GetPermissionsHandler handler = new GetPermissionsHandler(apiClient.Object);
+        GetPermissionsHandler handler = new GetPermissionsHandler(providerRelationshipsApiRestClient.Object);
 
         var actual = await handler.Handle(query, cancellationToken);
         actual.Operations.Should().BeEquivalentTo(expected.Operations);

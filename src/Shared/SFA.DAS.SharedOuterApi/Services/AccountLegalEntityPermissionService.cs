@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -6,6 +7,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
@@ -14,7 +16,7 @@ namespace SFA.DAS.SharedOuterApi.Services
         private readonly IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> _providerRelationshipsApiClient;
         private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
 
-        public AccountLegalEntityPermissionService (IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> providerRelationshipsApiClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient)
+        public AccountLegalEntityPermissionService(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> providerRelationshipsApiClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient)
         {
             _providerRelationshipsApiClient = providerRelationshipsApiClient;
             _accountsApiClient = accountsApiClient;
@@ -26,17 +28,17 @@ namespace SFA.DAS.SharedOuterApi.Services
                 case AccountType.Provider:
                     var providerResponse =
                         await _providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
-                            new GetProviderAccountLegalEntitiesRequest(accountIdentifier.Ukprn));
-                    
+                            new GetProviderAccountLegalEntitiesRequest(accountIdentifier.Ukprn, new List<Operation>()));
+
                     if (providerResponse == null)
                     {
                         return null;
                     }
-                    
+
                     var legalEntityItem = providerResponse.AccountProviderLegalEntities
                         .FirstOrDefault(c => c.AccountLegalEntityPublicHashedId.Equals(
                             accountLegalEntityPublicHashedId, StringComparison.CurrentCultureIgnoreCase));
-                    
+
                     if (legalEntityItem != null)
                     {
                         return new AccountLegalEntityItem
@@ -58,13 +60,13 @@ namespace SFA.DAS.SharedOuterApi.Services
                     {
                         return null;
                     }
-                    
+
                     foreach (var legalEntity in resourceListResponse.LegalEntities)
                     {
                         var legalEntityResponse =
                             await _accountsApiClient.Get<GetEmployerAccountLegalEntityItem>(
                                 new GetEmployerAccountLegalEntityRequest(legalEntity.Href));
-                        
+
                         if (legalEntityResponse.AccountLegalEntityPublicHashedId.Equals(accountLegalEntityPublicHashedId, StringComparison.CurrentCultureIgnoreCase))
                         {
                             return new AccountLegalEntityItem

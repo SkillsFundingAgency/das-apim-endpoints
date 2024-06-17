@@ -22,7 +22,9 @@ public class GetPendingStartDateChangeResponse
             EmployerApprovedDate = apiResponse.PendingStartDateChange.EmployerApprovedDate,
             Initiator = apiResponse.PendingStartDateChange.Initiator!,
             OriginalActualStartDate = apiResponse.PendingStartDateChange.OriginalActualStartDate,
-            PendingActualStartDate = apiResponse.PendingStartDateChange.PendingActualStartDate
+            PendingActualStartDate = apiResponse.PendingStartDateChange.PendingActualStartDate,
+            OriginalPlannedEndDate = apiResponse.PendingStartDateChange.OriginalPlannedEndDate,
+            PendingPlannedEndDate = apiResponse.PendingStartDateChange.PendingPlannedEndDate
         } : null;
         ProviderName = providerName;
         EmployerName = employerName;
