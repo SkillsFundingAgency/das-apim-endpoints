@@ -73,6 +73,7 @@ namespace SFA.DAS.FindAnApprenticeship.Services
         {
             return new PostApplicationApiRequest.LegacyApplication
             {
+                Id = source.Id,
                 CandidateId = candidateId,
                 VacancyReference =
                     source.Vacancy.VacancyReference.Replace("VAC", "",
