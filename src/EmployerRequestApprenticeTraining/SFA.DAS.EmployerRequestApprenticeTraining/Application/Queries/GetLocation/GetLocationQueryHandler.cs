@@ -20,13 +20,24 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocat
 
         public async Task<GetLocationQueryResult> Handle(GetLocationQuery request, CancellationToken cancellationToken)
         {
-            if (!string.IsNullOrEmpty(request.ExactMatch) && request.ExactMatch.Length >= 3)
+            if (string.IsNullOrEmpty(request.ExactSearchTerm) || request.ExactSearchTerm.Length < 3)
             {
-                // using the first 3 letters only attempt to make an exact match to a verify a location
-                // as the full string will not be returned if it includes the district
-                var result = await _apiClient.Get<GetLocationsListResponse>(new GetLocationsQueryRequest(request.ExactMatch[..3]));
+                return new GetLocationQueryResult();
+            }
 
-                var matchingLocation = result?.Locations?.FirstOrDefault(p => p.DisplayName == request.ExactMatch);
+            for (int i = 3; i <= request.ExactSearchTerm.Length; i++)
+            {
+                // starting at the minimum number of characters that will match a location string, search for exact matches
+                // narrowing down the search by increasing the number of characters until an extact match is found, or there
+                // are no more characters in the string or there are no results are found
+                var result = await _apiClient.Get<GetLocationsListResponse>(new GetLocationsQueryRequest(request.ExactSearchTerm[..i]));
+
+                if (result?.Locations == null || !result.Locations.Any())
+                {
+                    break;
+                }
+
+                var matchingLocation = result.Locations.FirstOrDefault(p => p.DisplayName == request.ExactSearchTerm);
                 if (matchingLocation != null)
                 {
                     return new GetLocationQueryResult
@@ -35,7 +46,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocat
                     };
                 }
             }
-            
+
             return new GetLocationQueryResult();
         }
     }

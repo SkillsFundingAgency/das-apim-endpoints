@@ -33,7 +33,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
                 GeoPoint = [1.0, 2.0]
             };
             mockMediator
-                .Setup(x => x.Send(It.Is<GetLocationQuery>(p => p.ExactMatch == submitCommand.SingleLocation), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<GetLocationQuery>(p => p.ExactSearchTerm == submitCommand.SingleLocation), CancellationToken.None))
                 .ReturnsAsync(locationResult);
             mockMediator
                 .Setup(x => x.Send(It.IsAny<CreateEmployerRequestCommand>(), CancellationToken.None))
@@ -57,7 +57,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             // Arrange
             var locationResult = new GetLocationQueryResult { Location = null };
             mockMediator
-                .Setup(x => x.Send(It.Is<GetLocationQuery>(p => p.ExactMatch == submitCommand.SingleLocation), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<GetLocationQuery>(p => p.ExactSearchTerm == submitCommand.SingleLocation), CancellationToken.None))
                 .ReturnsAsync(locationResult);
 
             // Act

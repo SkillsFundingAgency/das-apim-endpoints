@@ -4,6 +4,6 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocat
 {
     public class GetLocationQuery : IRequest<GetLocationQueryResult>
     {
-        public string ExactMatch { get; set; }
+        public string ExactSearchTerm { get; set; }
     }
 }

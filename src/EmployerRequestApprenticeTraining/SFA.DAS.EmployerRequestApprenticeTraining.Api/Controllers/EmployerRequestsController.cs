@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
         {
             try
             {
-                var locationResult = await _mediator.Send(new GetLocationQuery { ExactMatch = submitCommand.SingleLocation });
+                var locationResult = await _mediator.Send(new GetLocationQuery { ExactSearchTerm = submitCommand.SingleLocation });
                 if (locationResult.Location != null)
                 {
                     var createCommand = new CreateEmployerRequestCommand
