@@ -2,9 +2,9 @@
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using System;
 
-namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateEmployerRequest
+namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Models
 {
-    public class CreateEmployerRequestCommand : IRequest<CreateEmployerRequestResponse>
+    public class SubmitEmployerRequestCommand
     {
         public string OriginalLocation { get; set; }
         public RequestType RequestType { get; set; }
@@ -12,8 +12,6 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateE
         public string StandardReference { get; set; }
         public int NumberOfApprentices { get; set; }
         public string SingleLocation { get; set; }
-        public double SingleLocationLatitude { get; set; }
-        public double SingleLocationLongitude { get; set; }
         public bool AtApprenticesWorkplace { get; set; }
         public bool DayRelease { get; set; }
         public bool BlockRelease { get; set; }
