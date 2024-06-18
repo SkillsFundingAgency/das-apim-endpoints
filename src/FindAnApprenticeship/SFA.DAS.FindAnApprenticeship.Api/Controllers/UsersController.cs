@@ -21,6 +21,10 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.CheckAnswer
 using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.PhoneNumber;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateName;
+using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
+using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.MigrateData;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetSettings;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
@@ -379,6 +383,45 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error getting settings");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+		
+		[HttpGet, Route("migrate")]
+        public async Task<IActionResult> MigrateDataTransfer([FromQuery] string emailAddress)
+        {
+            try
+            {
+                var result = await _mediator.Send(new MigrateDataQuery
+                {
+                    EmailAddress = emailAddress
+                });
+
+                return Ok((GetMigrateDataTransferApiResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Get Migrate data transfer : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost, Route("{candidateId}/migrate")]
+        public async Task<IActionResult> MigrateDataTransfer([FromRoute] Guid candidateId, [FromBody] PostMigrateDataTransferApiRequest request)
+        {
+            try
+            {
+                var result = await _mediator.Send(new MigrateDataCommand
+                {
+                    CandidateId = candidateId,
+                    EmailAddress = request.EmailAddress
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Post Migrate data transfer: An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

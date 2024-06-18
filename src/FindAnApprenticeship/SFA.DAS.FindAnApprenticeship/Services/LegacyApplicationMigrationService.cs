@@ -17,6 +17,7 @@ namespace SFA.DAS.FindAnApprenticeship.Services
 {
     public interface ILegacyApplicationMigrationService
     {
+        Task<GetLegacyApplicationsByEmailApiResponse> GetLegacyApplications(string emailAddress);
         Task MigrateLegacyApplications(Guid candidateId, string emailAddress);
     }
 
@@ -30,6 +31,23 @@ namespace SFA.DAS.FindAnApprenticeship.Services
             ApplicationStatus.Successful,
             ApplicationStatus.Unsuccessful
         ];
+
+        public async Task<GetLegacyApplicationsByEmailApiResponse> GetLegacyApplications(string emailAddress)
+        {
+            logger.LogInformation("Fetching applications for candidate [using email address [{emailAddress}].", emailAddress);
+
+            var legacyApplications =
+                await legacyApiClient.Get<GetLegacyApplicationsByEmailApiResponse>(
+                    new GetLegacyApplicationsByEmailApiRequest(emailAddress));
+
+            if (legacyApplications?.Applications == null || legacyApplications.Applications.Count == 0)
+            {
+                logger.LogInformation("No legacy applications found for email address [{emailAddress}].", emailAddress);
+                return new GetLegacyApplicationsByEmailApiResponse();
+            }
+
+            return legacyApplications;
+        }
 
         public async Task MigrateLegacyApplications(Guid candidateId, string emailAddress)
         {
