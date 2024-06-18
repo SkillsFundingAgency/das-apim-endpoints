@@ -1,6 +1,5 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerPR.Application.Commands.PostPermissions;
