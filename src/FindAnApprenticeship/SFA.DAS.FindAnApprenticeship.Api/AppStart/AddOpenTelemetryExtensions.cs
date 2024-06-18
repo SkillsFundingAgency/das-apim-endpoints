@@ -31,6 +31,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
                         .AddMeter(Constants.OpenTelemetry.ServiceMeterName));
                 services.AddSingleton<IMetrics, FindAnApprenticeshipMetrics>();
             }
+            else
+            {
+                services.AddSingleton<IMetrics, StubFindAnApprenticeshipMetrics>();
+            }
         }
     }
 }
