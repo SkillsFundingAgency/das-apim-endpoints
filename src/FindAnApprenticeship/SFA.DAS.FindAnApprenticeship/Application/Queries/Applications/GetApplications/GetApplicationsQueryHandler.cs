@@ -19,11 +19,15 @@ public class GetApplicationsQueryHandler(
 {
     public async Task<GetApplicationsQueryResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
     {
-        var applications =
-            await candidateApiClient.Get<GetApplicationsApiResponse>(
+        var candidateApiResponseTask =
+            candidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId.ToString()));
+
+        var applicationsTask =
+            candidateApiClient.Get<GetApplicationsApiResponse>(
                 new GetApplicationsApiRequest(request.CandidateId, request.Status));
 
-        var applicationList = applications.Applications;
+        var candidateApiResponse = candidateApiResponseTask.Result;
+        var applicationList = applicationsTask.Result.Applications;
 
         if (request.Status == ApplicationStatus.Submitted)
         {
@@ -39,7 +43,10 @@ public class GetApplicationsQueryHandler(
         
         var vacancies = await vacancyService.GetVacancies(vacancyReferences);
 
-        var result = new GetApplicationsQueryResult();
+        var result = new GetApplicationsQueryResult
+        {
+            ShowAccountRecoveryBanner = string.IsNullOrWhiteSpace(candidateApiResponse.MigratedEmail) && applicationList.Count == 0
+        };
 
         foreach (var application in applicationList)
         {

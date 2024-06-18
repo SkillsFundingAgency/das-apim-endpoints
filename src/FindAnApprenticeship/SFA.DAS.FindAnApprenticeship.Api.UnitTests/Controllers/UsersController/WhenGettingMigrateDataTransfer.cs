@@ -35,6 +35,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController
             var actualObject = ((OkObjectResult)actual).Value as GetMigrateDataTransferApiResponse;
             actualObject.Should().NotBeNull();
             actualObject!.Applications.Should().BeEquivalentTo(queryResult.Applications, options => options
+                .Excluding(fil => fil.Id)
                 .Excluding(fil => fil.AdditionalQuestion1Answer)
                 .Excluding(fil => fil.AdditionalQuestion2Answer)
                 .Excluding(fil => fil.CandidateInformation)
