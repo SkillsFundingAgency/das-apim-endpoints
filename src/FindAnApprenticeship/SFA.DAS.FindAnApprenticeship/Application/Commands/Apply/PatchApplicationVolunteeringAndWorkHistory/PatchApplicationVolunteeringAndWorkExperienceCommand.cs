@@ -1,6 +1,6 @@
 ﻿using System;
 using MediatR;
-using SFA.DAS.FindAnApprenticeship.Models;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PatchApplicationVolunteeringAndWorkHistory;
 public class PatchApplicationVolunteeringAndWorkExperienceCommand : IRequest<PatchApplicationVolunteeringAndWorkExperienceCommandResponse>

@@ -23,7 +23,7 @@ public class PatchApplicationVolunteeringAndWorkExperienceCommandHandler : IRequ
 
     public async Task<PatchApplicationVolunteeringAndWorkExperienceCommandResponse> Handle(PatchApplicationVolunteeringAndWorkExperienceCommand request, CancellationToken cancellationToken)
     {
-        var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
+        var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
         if (request.VolunteeringAndWorkExperienceStatus > 0)
         {
             jsonPatchDocument.Replace(x => x.WorkExperienceStatus, request.VolunteeringAndWorkExperienceStatus);
@@ -34,7 +34,7 @@ public class PatchApplicationVolunteeringAndWorkExperienceCommandHandler : IRequ
         if (response.StatusCode == System.Net.HttpStatusCode.OK)
             return new PatchApplicationVolunteeringAndWorkExperienceCommandResponse
             {
-                Application = JsonConvert.DeserializeObject<Models.Application>(response.Body)
+                Application = JsonConvert.DeserializeObject<Domain.Models.Application>(response.Body)
             };
 
         _logger.LogError($"Unable to patch application for candidate Id {request.CandidateId}");

@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.ProviderPermissions.Queries;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderRelationships;
-using Operation = SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderPermissions.Operation;
+using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/")]
-public class ProviderPermissionsController(ISender mediator, ILogger<ProviderPermissionsController> logger) : Controller
+public class ProviderPermissionsController(ISender mediator, ILogger<ProviderPermissionsController> logger) : Controller﻿
 {
     [HttpGet]
     [Route("has-permission")]
