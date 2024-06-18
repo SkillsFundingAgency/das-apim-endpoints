@@ -22,6 +22,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
 
         public class LegacyApplication
         {
+            public Guid Id { get; set; }
             public Guid CandidateId { get; set; }
             public string VacancyReference { get; set; }
             public ApplicationStatus Status { get; set; }

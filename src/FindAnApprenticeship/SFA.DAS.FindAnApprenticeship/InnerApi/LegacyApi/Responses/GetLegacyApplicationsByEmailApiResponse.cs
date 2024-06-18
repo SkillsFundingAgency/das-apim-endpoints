@@ -11,6 +11,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses
 
         public class Application
         {
+            public Guid Id { get; set; }
             public ApplicationStatus Status { get; set; }
             public DateTime? DateApplied { get; set; }
             public DateTime? SuccessfulDateTime { get; set; }
