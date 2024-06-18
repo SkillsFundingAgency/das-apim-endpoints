@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
 {
@@ -7,7 +6,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
     {
         public IEnumerable<Pledge> Pledges { get; set; }
         public decimal? StartingTransferAllowance { get; set; }
-        public IEnumerable<PledgeApplication> AcceptedAndApprovedApplications { get; set; }
+        public decimal CurrentYearEstimatedCommittedSpend { get; set; }
 
         public class Pledge
         {

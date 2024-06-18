@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
@@ -9,15 +7,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
     {
         public IEnumerable<Pledge> Pledges { get; set; }
         public decimal? StartingTransferAllowance { get; set; }
-        public IEnumerable<PledgeApplication> AcceptedAndApprovedApplications { get; set; }
-
-        public static implicit operator GetPledgesResponse(GetPledgesQueryResult source)
-        {
-            return new GetPledgesResponse
-            {
-                AcceptedAndApprovedApplications = source.AcceptedAndApprovedApplications
-            };
-        }
+        public decimal CurrentYearEstimatedCommittedSpend { get; set; }     
 
         public class Pledge
         {

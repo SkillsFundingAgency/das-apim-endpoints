@@ -1,14 +1,15 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Finance;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses.Finance;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
@@ -17,12 +18,15 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly IFinanceApiClient<FinanceApiConfiguration> _financeApiClient;
+        private readonly IForecastingApiClient<ForecastingApiConfiguration> _forecastingApiClient;
 
-
-        public GetPledgesQueryHandler(ILevyTransferMatchingService levyTransferMatchingService, IFinanceApiClient<FinanceApiConfiguration> financeApiClient)
+        public GetPledgesQueryHandler(ILevyTransferMatchingService levyTransferMatchingService,
+            IForecastingApiClient<ForecastingApiConfiguration> forecastingApiClient,
+            IFinanceApiClient<FinanceApiConfiguration> financeApiClient)
         {
             _levyTransferMatchingService = levyTransferMatchingService;
             _financeApiClient = financeApiClient;
+            _forecastingApiClient = forecastingApiClient;
         }
 
         public async Task<GetPledgesQueryResult> Handle(GetPledgesQuery request, CancellationToken cancellationToken)
@@ -31,30 +35,19 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
 
             var fundingTask = _financeApiClient.Get<GetTransferAllowanceResponse>(new GetTransferAllowanceByAccountIdRequest(request.AccountId));
 
-            var approvedTask = _levyTransferMatchingService.GetApplications(new GetApplicationsRequest
-            {
-                SenderAccountId = request.AccountId,
-                ApplicationStatusFilter = ApplicationStatus.Approved
-            });
-            var acceptedTask = _levyTransferMatchingService.GetApplications(new GetApplicationsRequest
-            {
-                SenderAccountId = request.AccountId,
-                ApplicationStatusFilter = ApplicationStatus.Accepted
-            });
+            var breakdownTask = _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
+               (new GetTransferFinancialBreakdownRequest(request.AccountId, DateTime.UtcNow));
 
-            await Task.WhenAll(ltmTask, fundingTask, approvedTask, acceptedTask);
+            await Task.WhenAll(ltmTask, fundingTask, breakdownTask);
 
             var ltmResponse = await ltmTask;
             var fundingResponse = await fundingTask;
-            var approvedResponse = await approvedTask;
-            var acceptedResponse = await acceptedTask;
-
-            var applicationsResponse = approvedResponse.Applications.Concat(acceptedResponse.Applications);
+            var breakdownResponse = await breakdownTask;
 
             return new GetPledgesQueryResult
             {
                 StartingTransferAllowance = fundingResponse.StartingTransferAllowance ?? 0,
-                AcceptedAndApprovedApplications = applicationsResponse?.Select(x => (PledgeApplication)x),
+                CurrentYearEstimatedCommittedSpend = CalculateEstimatedCommittedSpend(breakdownResponse.Breakdown),
                 Pledges = ltmResponse.Pledges.Select(x => new GetPledgesQueryResult.Pledge
                 {
                     Id = x.Id,
@@ -64,6 +57,14 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
                     Status = x.Status
                 })
             };
+        }
+
+        private decimal CalculateEstimatedCommittedSpend(List<GetTransferFinancialBreakdownResponse.BreakdownDetails> breakdown)
+        {
+            return breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
+                   breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) +
+                   breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments) +
+                   breakdown.Sum(x => x.FundsOut.TransferConnections);
         }
     }
 }

@@ -53,8 +53,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             Assert.That(!response.Pledges.Any(x => x.RemainingAmount == 0));
             Assert.That(!response.Pledges.Any(x => x.ApplicationCount == 0));
             Assert.That(!response.Pledges.Any(x => x.Status == string.Empty));
-            response.AcceptedAndApprovedApplications.Should().NotBeEmpty();
-            response.AcceptedAndApprovedApplications.Count().Should().Be(_queryResult.AcceptedAndApprovedApplications.Count());
+            response.CurrentYearEstimatedCommittedSpend.Should().Be(_queryResult.CurrentYearEstimatedCommittedSpend);
 
         }
     }
