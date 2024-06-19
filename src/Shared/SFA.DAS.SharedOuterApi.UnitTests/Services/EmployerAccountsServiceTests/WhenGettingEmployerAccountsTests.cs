@@ -103,6 +103,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             actual.TrueForAll(c => c.DisplayName.Equals(profileUserResponse.DisplayName)).Should().BeTrue();
             actual.TrueForAll(c => c.IsSuspended.Equals(profileUserResponse.IsSuspended)).Should().BeTrue();
         }
+
         [Test, MoqAutoData]
         public async Task Then_If_The_Id_Is_Not_A_Guid_And_A_Existing_User_With_Different_Email_Then_User_Upserted_And_User_Information_Returned(
             Guid userId,
@@ -189,9 +190,87 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             actualRecord.DasAccountName.Should().BeNullOrEmpty();
             actualRecord.EncodedAccountId.Should().BeNullOrEmpty();
             actualRecord.Role.Should().BeNullOrEmpty();
-            
         }
-        
+
+        [Test, MoqAutoData]
+        public async Task Then_If_The_Id_Is_A_Guid_And_A_No_User_Name_With_No_Accounts_Then_User_Upserted_And_User_Information_Returned(
+             EmployerProfile employerProfile,
+             EmployerProfileUsersApiResponse profileUserResponse,
+             [Frozen] Mock<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>> employerProfilesApiClient,
+             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+             EmployerAccountsService handler)
+        {
+            employerProfile.UserId = Guid.NewGuid().ToString();
+
+            accountsApiClient
+                .Setup(x => x.GetAll<GetUserAccountsResponse>(
+                    It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"user/{profileUserResponse.Id}/accounts"))))
+                .ReturnsAsync(new List<GetUserAccountsResponse>());
+            accountsApiClient
+                .Setup(x => x.GetAll<GetAccountTeamMembersResponse>(
+                    It.IsAny<GetAccountTeamMembersRequest>()))
+                .ReturnsAsync(new List<GetAccountTeamMembersResponse>());
+            employerProfilesApiClient.Setup(x => x.GetWithResponseCode<EmployerProfileUsersApiResponse>(
+                    It.Is<GetEmployerUserAccountRequest>(c =>
+                        c.GetUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}"))))
+                .ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(null, HttpStatusCode.NotFound, "Not Found"));
+
+            var actual = (await handler.GetEmployerAccounts(employerProfile)).ToList();
+
+            actual.Count.Should().Be(1);
+            var actualRecord = actual.First();
+            actualRecord.UserId.Should().Be(employerProfile.UserId);
+            actualRecord.FirstName.Should().Be("Unknown");
+            actualRecord.LastName.Should().Be("Unknown");
+            actualRecord.IsSuspended.Should().BeFalse();
+            actualRecord.DasAccountName.Should().BeNullOrEmpty();
+            actualRecord.EncodedAccountId.Should().BeNullOrEmpty();
+            actualRecord.Role.Should().BeNullOrEmpty();
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_The_Id_Is_Not_A_Guid_And_A_No_User_Name_With_No_Accounts_Then_User_Upserted_And_User_Information_Returned(
+             EmployerProfile employerProfile,
+             EmployerProfileUsersApiResponse profileUserResponse,
+             [Frozen] Mock<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>> employerProfilesApiClient,
+             [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+             EmployerAccountsService handler)
+        {
+            employerProfile.LastName = null;
+            employerProfile.FirstName = null;
+            profileUserResponse.LastName = null;
+            profileUserResponse.FirstName = null;
+
+            accountsApiClient
+                .Setup(x => x.GetAll<GetUserAccountsResponse>(
+                    It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"user/{profileUserResponse.Id}/accounts"))))
+                .ReturnsAsync(new List<GetUserAccountsResponse>());
+            accountsApiClient
+                .Setup(x => x.GetAll<GetAccountTeamMembersResponse>(
+                    It.IsAny<GetAccountTeamMembersRequest>()))
+                .ReturnsAsync(new List<GetAccountTeamMembersResponse>());
+            employerProfilesApiClient.Setup(x => x.GetWithResponseCode<EmployerProfileUsersApiResponse>(
+                    It.Is<GetEmployerUserAccountRequest>(c =>
+                        c.GetUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}"))))
+                .ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(null, HttpStatusCode.NotFound, "Not Found"));
+            employerProfilesApiClient.Setup(x => x.PutWithResponseCode<EmployerProfileUsersApiResponse>(
+                    It.Is<PutUpsertEmployerUserAccountRequest>(c =>
+                        c.PutUrl.Contains($"api/users/"))))
+                .ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(profileUserResponse, HttpStatusCode.Created, ""));
+
+            var actual = (await handler.GetEmployerAccounts(employerProfile)).ToList();
+
+            actual.Count.Should().Be(1);
+            var actualRecord = actual.First();
+            actualRecord.UserId.Should().Be(profileUserResponse.Id);
+            actualRecord.FirstName.Should().Be("Unknown");
+            actualRecord.LastName.Should().Be("Unknown");
+            actualRecord.IsSuspended.Should().Be(profileUserResponse.IsSuspended);
+            actualRecord.DasAccountName.Should().BeNullOrEmpty();
+            actualRecord.EncodedAccountId.Should().BeNullOrEmpty();
+            actualRecord.Role.Should().BeNullOrEmpty();
+        }
+
         [Test, MoqAutoData]
         public async Task Then_If_The_Id_Is_A_Guid_Then_User_Account_Found_And_Not_Upserted(
             EmployerProfile employerProfile,
