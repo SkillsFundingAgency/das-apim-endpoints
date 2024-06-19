@@ -134,21 +134,18 @@ public class GetManageApprenticeshipDetailsQueryHandler : IRequestHandler<GetMan
         return pendingPriceChange;
     }
 
-    private static PendingStartDateChange ToResponse(GetPendingStartDateChangeApiResponse pendingStartDateChangeResponse)
+    private PendingStartDateChange ToResponse(GetPendingStartDateChangeApiResponse pendingStartDateChangeResponse)
     {
-        if (pendingStartDateChangeResponse == null || !pendingStartDateChangeResponse.HasPendingStartDateChange)
+        if (pendingStartDateChangeResponse == null || !pendingStartDateChangeResponse.HasPendingStartDateChange) return null;
+
+        return new PendingStartDateChange
         {
-            return null;
-        }
-
-        var pendingStartDateChange = new PendingStartDateChange();
-
-        pendingStartDateChange.PendingActualStartDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingActualStartDate;
-        pendingStartDateChange.ProviderApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate;
-        pendingStartDateChange.EmployerApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate;
-        pendingStartDateChange.Initiator = pendingStartDateChangeResponse.PendingStartDateChange.Initiator;
-
-        return pendingStartDateChange;
+            PendingActualStartDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingActualStartDate,
+            PendingPlannedEndDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingPlannedEndDate,
+            ProviderApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate,
+            EmployerApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate,
+            Initiator = pendingStartDateChangeResponse.PendingStartDateChange.Initiator
+        };
     }
 
     private async Task<bool?> CanActualStartDateBeChanged(DateTime? actualStartDate)

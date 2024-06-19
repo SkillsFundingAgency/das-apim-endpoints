@@ -9,6 +9,8 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses.Enums;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -224,5 +226,50 @@ public class WhenHandlingPostCandidateCommand
             result.FirstName.Should().BeNull();
             result.LastName.Should().BeNull();
         }
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Legacy_Applications_Are_Migrated(
+        CreateCandidateCommand command,
+        string govUkId,
+        PostCandidateApiResponse response,
+        GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
+        [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
+        [Frozen] Mock<ILegacyApplicationMigrationService> legacyApplicationMigrationService,
+        CreateCandidateCommandHandler handler)
+    {
+        command.GovUkIdentifier = govUkId;
+        response.FirstName = legacyUserByEmailApiResponse.RegistrationDetails?.FirstName;
+        response.LastName = legacyUserByEmailApiResponse.RegistrationDetails?.LastName;
+
+        var expectedPostData = new PostCandidateApiRequestData
+        {
+            Email = command.Email
+        };
+
+        var expectedGetCandidateRequest = new GetCandidateApiRequest(govUkId);
+        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(
+                It.Is<GetCandidateApiRequest>(r => r.GetUrl == expectedGetCandidateRequest.GetUrl)))
+                .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
+
+        var expectedRequest = new PostCandidateApiRequest(command.GovUkIdentifier, expectedPostData);
+
+        mockApiClient
+                .Setup(client => client.PostWithResponseCode<PostCandidateApiResponse>(
+                    It.Is<PostCandidateApiRequest>(r => r.PostUrl == expectedRequest.PostUrl), true))
+                .ReturnsAsync(new ApiResponse<PostCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
+
+        var legacyGetRequest = new GetLegacyUserByEmailApiRequest(command.Email);
+        mockLegacyApiClient
+            .Setup(client => client.Get<GetLegacyUserByEmailApiResponse>(
+                It.Is<GetLegacyUserByEmailApiRequest>(r => r.GetUrl == legacyGetRequest.GetUrl)))
+            .ReturnsAsync(legacyUserByEmailApiResponse);
+
+        await handler.Handle(command, CancellationToken.None);
+
+        legacyApplicationMigrationService.Verify(
+            x => x.MigrateLegacyApplications(response.Id, command.Email), Times.Once);
+
     }
 }
