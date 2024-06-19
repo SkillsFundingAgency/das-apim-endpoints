@@ -34,6 +34,7 @@ namespace SFA.DAS.EmployerAccounts.Api.AppStart
             services.AddTransient<IReferenceDataApiClient<ReferenceDataApiConfiguration>, ReferenceDataApiClient>();
             services.AddTransient<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>, EducationalOrganisationApiClient>();
             services.AddTransient<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>, PublicSectorOrganisationApiClient>();
+            services.AddTransient<ICharitiesApiClient<CharitiesApiConfiguration>, CharitiesApiClient>();
         }
     }
 }

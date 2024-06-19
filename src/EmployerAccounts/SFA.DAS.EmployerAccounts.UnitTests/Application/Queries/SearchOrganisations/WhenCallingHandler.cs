@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -9,9 +7,12 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Charities;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EducationalOrganisations;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.PublicSectorOrganisations;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.ReferenceData;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Charities;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.PublicSectorOrganisation;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
@@ -73,9 +74,11 @@ public class WhenCallingHandler
     [Frozen] Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>> mockEduOrgApiClient,
     [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockPSOrgApiClient,
     [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockRefApiClient,
+    [Frozen] Mock<ICharitiesApiClient<CharitiesApiConfiguration>> mockCharitiesApiClient,
     GetSearchOrganisationsResponse refApiOrgs,
     EducationalOrganisationResponse eduOrgApiResponse,
     PublicSectorOrganisationsResponse psOrgApiResponse,
+    SearchCharitiesResponse charitiesResponse,
     SearchOrganisationsQueryHandler handler)
     {
         var query = new SearchOrganisationsQuery
@@ -101,8 +104,107 @@ public class WhenCallingHandler
                 p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
             .ReturnsAsync(refApiOrgs);
 
+        mockCharitiesApiClient
+            .Setup(client => client.Get<SearchCharitiesResponse>(It.Is<SearchCharitiesRequest>(p =>
+                p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
+            .ReturnsAsync(charitiesResponse);
+
+
         var result = await handler.Handle(query, CancellationToken.None);
 
         result.Organisations.Count.Should().Be(query.MaximumResults);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_RegistrationNumber_Should_Return_One_Charity(
+    [Frozen] Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>> mockEduOrgApiClient,
+    [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockPSOrgApiClient,
+    [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockRefApiClient,
+    [Frozen] Mock<ICharitiesApiClient<CharitiesApiConfiguration>> mockCharitiesApiClient,
+    GetSearchOrganisationsResponse refApiOrgs,
+    EducationalOrganisationResponse eduOrgApiResponse,
+    PublicSectorOrganisationsResponse psOrgApiResponse,
+    GetCharityResponse charitiesResponse,
+    SearchOrganisationsQueryHandler handler)
+    {
+        var query = new SearchOrganisationsQuery
+        {
+            SearchTerm = "123",
+            MaximumResults = 100
+        };
+
+        mockEduOrgApiClient
+            .Setup(client => client.Get<EducationalOrganisationResponse>(
+                It.Is<SearchEducationalOrganisationsRequest>(p =>
+                    p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
+            .ReturnsAsync(eduOrgApiResponse);
+
+        mockPSOrgApiClient
+            .Setup(client =>
+                client.Get<PublicSectorOrganisationsResponse>(
+                    It.Is<SearchPublicSectorOrganisationsRequest>(p => p.SearchTerm == query.SearchTerm)))
+            .ReturnsAsync(psOrgApiResponse);
+
+        mockRefApiClient
+            .Setup(client => client.Get<GetSearchOrganisationsResponse>(It.Is<GetSearchOrganisationsRequest>(p =>
+                p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
+            .ReturnsAsync(refApiOrgs);
+
+        mockCharitiesApiClient
+            .Setup(client => client.Get<GetCharityResponse>(It.Is<GetCharityByRegistrationNumberRequest>(p =>
+                p.RegistrationNumber == int.Parse(query.SearchTerm))))
+            .ReturnsAsync(charitiesResponse);
+
+
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        result.Organisations.Where(x => x.Type == OrganisationType.Charity).Count().Should().Be(1);
+    }
+
+
+    [Test, MoqAutoData]
+    public async Task Then_StringSearchTerm_Should_Search_For_Multiple_Charities(
+    [Frozen] Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>> mockEduOrgApiClient,
+    [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockPSOrgApiClient,
+    [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockRefApiClient,
+    [Frozen] Mock<ICharitiesApiClient<CharitiesApiConfiguration>> mockCharitiesApiClient,
+    GetSearchOrganisationsResponse refApiOrgs,
+    EducationalOrganisationResponse eduOrgApiResponse,
+    PublicSectorOrganisationsResponse psOrgApiResponse,
+    SearchCharitiesResponse charitiesResponse,
+    SearchOrganisationsQueryHandler handler)
+    {
+        var query = new SearchOrganisationsQuery
+        {
+            SearchTerm = "Organisation Name",
+            MaximumResults = 100
+        };
+
+        mockEduOrgApiClient
+            .Setup(client => client.Get<EducationalOrganisationResponse>(
+                It.Is<SearchEducationalOrganisationsRequest>(p =>
+                    p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
+            .ReturnsAsync(eduOrgApiResponse);
+
+        mockPSOrgApiClient
+            .Setup(client =>
+                client.Get<PublicSectorOrganisationsResponse>(
+                    It.Is<SearchPublicSectorOrganisationsRequest>(p => p.SearchTerm == query.SearchTerm)))
+            .ReturnsAsync(psOrgApiResponse);
+
+        mockRefApiClient
+            .Setup(client => client.Get<GetSearchOrganisationsResponse>(It.Is<GetSearchOrganisationsRequest>(p =>
+                p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
+            .ReturnsAsync(refApiOrgs);
+
+        mockCharitiesApiClient
+            .Setup(client => client.Get<SearchCharitiesResponse>(It.Is<SearchCharitiesRequest>(p =>
+                p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
+            .ReturnsAsync(charitiesResponse);
+
+
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        result.Organisations.Where(x => x.Type == OrganisationType.Charity).Count().Should().Be(charitiesResponse.Count);
     }
 }
