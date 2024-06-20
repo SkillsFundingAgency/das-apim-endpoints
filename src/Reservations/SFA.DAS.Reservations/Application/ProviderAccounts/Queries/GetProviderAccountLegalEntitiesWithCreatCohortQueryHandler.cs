@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderPermissions;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
@@ -14,6 +14,6 @@ public class GetProviderAccountLegalEntitiesWithCreatCohortQueryHandler(IProvide
 {
     public async Task<GetProviderAccountLegalEntitiesWithCreateCohortResult> Handle(GetProviderAccountLegalEntitiesWithCreatCohortQuery request, CancellationToken cancellationToken)
     {
-        return await apiClient.Get<GetProviderAccountLegalEntitiesWithCreateCohortResult>(new GetProviderAccountLegalEntitiesWithCreatCohortRequest(request.Ukprn, new List<Operation> { Operation.CreateCohort }));
+        return await apiClient.Get<GetProviderAccountLegalEntitiesWithCreateCohortResult>(new GetProviderAccountLegalEntitiesRequest(request.Ukprn, new List<Operation> { Operation.CreateCohort }));
     }
 }

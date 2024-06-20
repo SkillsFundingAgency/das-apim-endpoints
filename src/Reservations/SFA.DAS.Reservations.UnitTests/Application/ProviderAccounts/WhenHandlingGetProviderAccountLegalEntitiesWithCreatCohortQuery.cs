@@ -6,7 +6,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Reservations.Application.ProviderAccounts.Queries;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderPermissions;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -23,9 +23,9 @@ public class WhenHandlingGetProviderAccountLegalEntitiesWithCreatCohortQuery
     {
         apiClient.Setup(x =>
                 x.Get<GetProviderAccountLegalEntitiesWithCreateCohortResult>(
-                    It.Is<GetProviderAccountLegalEntitiesWithCreatCohortRequest>(c => c.GetUrl.Contains($"ukprn={withCreatCohortQuery.Ukprn}"))))
+                    It.Is<GetProviderAccountLegalEntitiesRequest>(c => c.GetUrl.Contains($"ukprn={withCreatCohortQuery.Ukprn}"))))
             .ReturnsAsync(apiQueryResponse);
-            
+
         var actual = await handler.Handle(withCreatCohortQuery, CancellationToken.None);
 
         actual.AccountProviderLegalEntities.Should().BeEquivalentTo(apiQueryResponse.AccountProviderLegalEntities);
