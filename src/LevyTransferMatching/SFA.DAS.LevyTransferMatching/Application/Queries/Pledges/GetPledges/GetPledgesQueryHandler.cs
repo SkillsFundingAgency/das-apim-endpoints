@@ -56,10 +56,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
                     ApplicationCount = x.ApplicationCount,
                     Status = x.Status
                 }),
-                TotalPledges = response.TotalPledges,
-                TotalPages = response.TotalPages,
-                Page = response.Page,
-                PageSize = response.PageSize
+                TotalPledges = ltmResponse.TotalPledges,
+                TotalPages = ltmResponse.TotalPages,
+                Page = ltmResponse.Page,
+                PageSize = ltmResponse.PageSize
             };
         }
 
