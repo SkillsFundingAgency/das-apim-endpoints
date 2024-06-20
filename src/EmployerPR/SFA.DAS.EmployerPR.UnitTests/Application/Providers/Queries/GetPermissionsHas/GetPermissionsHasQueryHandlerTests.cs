@@ -18,10 +18,10 @@ public class GetPermissionsQueryHandlerTests
         Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClient =
             new Mock<IProviderRelationshipsApiRestClient>();
 
-        providerRelationshipsApiRestClient.Setup(x => 
+        providerRelationshipsApiRestClient.Setup(x =>
             x.GetPermissions(
-                It.IsAny<long>(), 
-                It.IsAny<string>(), 
+                It.IsAny<long>(),
+                It.IsAny<int>(),
                 It.IsAny<CancellationToken>()
             )
         )

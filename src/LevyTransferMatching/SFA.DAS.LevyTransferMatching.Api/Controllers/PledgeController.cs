@@ -43,11 +43,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("accounts/{accountId}/pledges")]
-        public async Task<IActionResult> Pledges(long accountId)
+        public async Task<IActionResult> Pledges(long accountId, [FromQuery] int? page = null, [FromQuery] int? pageSize = null)
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetPledgesQuery(accountId));
+                var queryResult = await _mediator.Send(new GetPledgesQuery(accountId, page ?? 1, pageSize));
 
                 var response = new GetPledgesResponse
                 {
@@ -60,7 +60,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                         RemainingAmount = x.RemainingAmount,
                         ApplicationCount = x.ApplicationCount,
                         Status = x.Status
-                    })
+                    }),
+                    Page = queryResult.Page,
+                    PageSize = queryResult.PageSize,
+                    TotalPages = queryResult.TotalPages,
+                    TotalPledges = queryResult.TotalPledges
                 };
 
                 return Ok(response);

@@ -31,7 +31,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
 
         public async Task<GetPledgesQueryResult> Handle(GetPledgesQuery request, CancellationToken cancellationToken)
         {
-            var ltmTask = _levyTransferMatchingService.GetPledges(new GetPledgesRequest(request.AccountId));
+            var ltmTask = _levyTransferMatchingService.GetPledges(new GetPledgesRequest(request.AccountId, page: request.Page, pageSize: request.PageSize));
 
             var fundingTask = _financeApiClient.Get<GetTransferAllowanceResponse>(new GetTransferAllowanceByAccountIdRequest(request.AccountId));
 
@@ -55,7 +55,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
                     RemainingAmount = x.RemainingAmount,
                     ApplicationCount = x.ApplicationCount,
                     Status = x.Status
-                })
+                }),
+                TotalPledges = response.TotalPledges,
+                TotalPages = response.TotalPages,
+                Page = response.Page,
+                PageSize = response.PageSize
             };
         }
 
