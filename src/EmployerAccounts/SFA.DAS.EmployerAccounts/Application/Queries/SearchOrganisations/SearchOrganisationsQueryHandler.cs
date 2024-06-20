@@ -45,33 +45,13 @@ public class SearchOrganisationsQueryHandler : IRequestHandler<SearchOrganisatio
         var refApiOrganisationsTask = _refDataApi.Get<GetSearchOrganisationsResponse>(new GetSearchOrganisationsRequest(request.SearchTerm, request.MaximumResults));
         var educationalOrganisationsTask = _eduOrgApi.Get<EducationalOrganisationResponse>(new SearchEducationalOrganisationsRequest(request.SearchTerm, request.MaximumResults));
         //var publicSectorOrganisationsTask = _psOrgApi.Get<PublicSectorOrganisationsResponse>(new SearchPublicSectorOrganisationsRequest(request.SearchTerm));
-
-        Task charitiesSearchTask;
-
-        if (int.TryParse(request.SearchTerm, out int registrationNumber))
-        {
-            charitiesSearchTask = _charitiesApi.Get<GetCharityResponse>(new GetCharityByRegistrationNumberRequest(registrationNumber));
-        }
-        else
-        {
-            charitiesSearchTask = _charitiesApi.Get<SearchCharitiesResponse>(new SearchCharitiesRequest(request.SearchTerm, request.MaximumResults));
-        }
+        var charitiesSearchTask = GetCharitiesSearchTask(request.SearchTerm, request.MaximumResults);
 
         await Task.WhenAll(refApiOrganisationsTask, educationalOrganisationsTask, charitiesSearchTask); //, publicSectorOrganisationsTask);
         var refApiOrganisations = await refApiOrganisationsTask;
         var educationalOrganisations = await educationalOrganisationsTask;
 
-        IEnumerable<OrganisationResult> charityResults;
-        if (charitiesSearchTask is Task<GetCharityResponse> singleCharitySearchTask)
-        {
-            var charityResponse = await singleCharitySearchTask;
-            charityResults = [(OrganisationResult)charityResponse];
-        }
-        else
-        {
-            var charityResponse = await (Task<SearchCharitiesResponse>)charitiesSearchTask;
-            charityResults = charityResponse != null ? charityResponse?.Select(c => (OrganisationResult)c) : [];
-        }
+        var charityResults = await ProcessCharitiesSearchTask(charitiesSearchTask);
 
         //var publicSectorOrganisations = await publicSectorOrganisationsTask;
 
@@ -100,6 +80,29 @@ public class SearchOrganisationsQueryHandler : IRequestHandler<SearchOrganisatio
         return new SearchOrganisationsResult
         {
             Organisations = allOrganisations.OrderBy(o => o.Name).Take(maxResults).ToList()
+        };
+    }
+
+    private Task<object> GetCharitiesSearchTask(string searchTerm, int maximumResults)
+    {
+        if (int.TryParse(searchTerm, out int registrationNumber))
+        {
+            return _charitiesApi.Get<GetCharityResponse>(new GetCharityByRegistrationNumberRequest(registrationNumber)).ContinueWith(t => (object)t.Result);
+        }
+        else
+        {
+            return _charitiesApi.Get<SearchCharitiesResponse>(new SearchCharitiesRequest(searchTerm, maximumResults)).ContinueWith(t => (object)t.Result);
+        }
+    }
+
+    private static async Task<IEnumerable<OrganisationResult>> ProcessCharitiesSearchTask(Task<object> charitiesSearchTask)
+    {
+        var result = await charitiesSearchTask;
+        return result switch
+        {
+            GetCharityResponse singleCharity => new List<OrganisationResult> { singleCharity },
+            SearchCharitiesResponse multipleCharities => multipleCharities.Select(c => (OrganisationResult)c),
+            _ => []
         };
     }
 }
