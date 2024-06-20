@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships
 {
     public class GetAccountProvidersRequest : IGetApiRequest
     {
@@ -9,7 +9,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
         {
             _accountId = accountId;
         }
-        
+
         public string GetUrl => $"accounts/{_accountId}/providers";
     }
 }
