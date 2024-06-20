@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
+using System;
 using System.Net;
 using System.Threading.Tasks;
-using System;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
@@ -23,7 +23,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index ([FromQuery] Guid candidateId, [FromQuery] ApplicationStatus status)
+        public async Task<IActionResult> Index([FromQuery] Guid candidateId, [FromQuery] ApplicationStatus status)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Get Applications : An error occurred");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
         }
     }

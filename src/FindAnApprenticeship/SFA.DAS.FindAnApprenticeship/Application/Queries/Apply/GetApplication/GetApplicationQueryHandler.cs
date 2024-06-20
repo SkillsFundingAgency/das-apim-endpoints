@@ -101,7 +101,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                 InterviewAdjustments = new GetApplicationQueryResult.InterviewAdjustmentsSection
                 {
                     RequestAdjustmentsStatus = application.InterviewAdjustmentsStatus,
-                    InterviewAdjustmentsDescription = otherDetails?.Support,
+                    InterviewAdjustmentsDescription = application.Support,
                 },
                 DisabilityConfidence = new GetApplicationQueryResult.DisabilityConfidenceSection
                 {
@@ -121,8 +121,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                 },
                 AboutYou = new GetApplicationQueryResult.AboutYouSection
                 {
-                    SkillsAndStrengths = otherDetails?.SkillsAndStrengths,
-                    Support = otherDetails?.Support
+                    SkillsAndStrengths = application.Strengths,
+                    Support = application.Support,
                 },
                 WhatIsYourInterest = new GetApplicationQueryResult.WhatIsYourInterestSection
                 {
