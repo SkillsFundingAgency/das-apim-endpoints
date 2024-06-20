@@ -18,24 +18,21 @@ public class ProcessVacancyClosedEarlyCommandHandler(
 {
     public async Task<Unit> Handle(ProcessVacancyClosedEarlyCommand request, CancellationToken cancellationToken)
     {
-        var preference = await candidateApiClient.Get<GetPreferencesApiResponse>(new GetCandidatePreferencesRequest());
-        var emailPreference = preference.Preferences
-            .FirstOrDefault(c => c.PreferenceType.Equals("closing", StringComparison.CurrentCultureIgnoreCase));
-        if (emailPreference == null)
-        {
-            return new Unit();
-        }
-        
-        var preferenceId = emailPreference.PreferenceId;
         var vacancyTask = recruitApiClient.Get<GetLiveVacancyApiResponse>(new GetLiveVacancyApiRequest(request.VacancyReference));
-        var candidatesTask = candidateApiClient.Get<GetCandidateApplicationApiResponse>(new GetCandidateApplicationsByVacancyRequest(request.VacancyReference.ToString(), preferenceId));
-        var allCandidateApplicationsTask = candidateApiClient.Get<GetCandidateApplicationApiResponse>(new GetCandidateApplicationsByVacancyRequest(request.VacancyReference.ToString(), preferenceId, false));
+        
+        var allCandidateApplicationsTask = candidateApiClient.Get<GetCandidateApplicationApiResponse>(new GetCandidateApplicationsByVacancyRequest(request.VacancyReference.ToString(), null, false));
 
-        await Task.WhenAll(vacancyTask, candidatesTask, allCandidateApplicationsTask);
+        await Task.WhenAll(vacancyTask, allCandidateApplicationsTask);
 
         var notificationTasks = new List<Task>();
-        foreach (var candidate in candidatesTask.Result.Candidates)
+        var updateCandidate = new List<Task>();
+        
+        foreach (var candidate in allCandidateApplicationsTask.Result.Candidates)
         {
+            var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
+            jsonPatchDocument.Replace(x => x.Status, ApplicationStatus.Expired);
+            var patchRequest = new PatchApplicationApiRequest(candidate.ApplicationId, candidate.Candidate.Id, jsonPatchDocument);
+            updateCandidate.Add(candidateApiClient.PatchWithResponseCode(patchRequest));
             var email = new SendVacancyClosedEarlyTemplate(
                 helper.VacancyClosedEarlyTemplateId,
                 candidate.Candidate.Email,
@@ -51,16 +48,6 @@ public class ProcessVacancyClosedEarlyCommandHandler(
         }
 
         await Task.WhenAll(notificationTasks);
-
-        var updateCandidate = new List<Task>();
-        foreach (var candidate in allCandidateApplicationsTask.Result.Candidates)
-        {
-            var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
-            jsonPatchDocument.Replace(x => x.Status, ApplicationStatus.Expired);
-            var patchRequest = new PatchApplicationApiRequest(candidate.ApplicationId, candidate.Candidate.Id, jsonPatchDocument);
-            updateCandidate.Add(candidateApiClient.PatchWithResponseCode(patchRequest));
-        }
-
         await Task.WhenAll(updateCandidate);
         
         
