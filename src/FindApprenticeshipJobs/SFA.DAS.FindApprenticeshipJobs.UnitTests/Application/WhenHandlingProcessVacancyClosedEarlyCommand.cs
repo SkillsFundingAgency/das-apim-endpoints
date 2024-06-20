@@ -44,7 +44,7 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
         recruitApiResponse.EmployerLocation.AddressLine2 = address2;
         recruitApiResponse.EmployerLocation.AddressLine3 = address3;
         recruitApiResponse.EmployerLocation.AddressLine4 = address4;
-        candidatePreference.PreferenceType = "Email";
+        candidatePreference.PreferenceType = "CLosing";
         candidateApiClient.Setup(x => 
                 x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()))
             .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
