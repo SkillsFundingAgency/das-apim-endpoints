@@ -8,6 +8,7 @@ using SFA.DAS.Reservations.Application.ProviderAccounts.Queries;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Reservations.UnitTests.Application.ProviderAccounts;
@@ -23,7 +24,7 @@ public class WhenHandlingGetProviderAccountLegalEntitiesWithCreatCohortQuery
     {
         apiClient.Setup(x =>
                 x.Get<GetProviderAccountLegalEntitiesWithCreateCohortResult>(
-                    It.Is<GetProviderAccountLegalEntitiesRequest>(c => c.GetUrl.Contains($"ukprn={withCreatCohortQuery.Ukprn}"))))
+                    It.Is<GetProviderAccountLegalEntitiesRequest>(c => c.GetUrl.Contains($"ukprn={withCreatCohortQuery.Ukprn}&operations={(int)Operation.CreateCohort}"))))
             .ReturnsAsync(apiQueryResponse);
 
         var actual = await handler.Handle(withCreatCohortQuery, CancellationToken.None);
