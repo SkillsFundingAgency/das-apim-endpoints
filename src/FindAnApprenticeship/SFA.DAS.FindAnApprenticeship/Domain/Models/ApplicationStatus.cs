@@ -7,5 +7,6 @@ namespace SFA.DAS.FindAnApprenticeship.Domain.Models
         Withdrawn = 2,
         Successful = 3,
         UnSuccessful = 4,
+        Expired = 5
     }
 }

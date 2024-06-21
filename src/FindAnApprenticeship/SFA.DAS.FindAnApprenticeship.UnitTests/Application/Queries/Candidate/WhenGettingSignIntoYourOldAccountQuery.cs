@@ -43,6 +43,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
             [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> candidateAccountApiClient,
             GetSignIntoYourOldAccountQueryHandler handler)
         {
+            apiResponse.IsValid = false;
             dateTimeService.Setup(x => x.UtcNow).Returns(now);
 
             var cacheItem = new GetSignIntoYourOldAccountQueryHandler.SignInAttemptHistory();
@@ -52,6 +53,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
                     x.RetrieveFromCache<GetSignIntoYourOldAccountQueryHandler.SignInAttemptHistory>(It.Is<string>(key =>
                         key == expectedCacheKey)))
                 .ReturnsAsync(cacheItem);
+            candidateAccountApiClient.Setup(x =>
+                x.Get<GetLegacyValidateCredentialsApiResponse>(
+                    It.IsAny<GetLegacyValidateCredentialsApiRequest>())).ReturnsAsync(apiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 

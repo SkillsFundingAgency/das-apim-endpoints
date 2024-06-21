@@ -21,6 +21,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
         [Test, MoqAutoData]
         public async Task Then_The_QueryResult_Is_Returned_As_Expected(
             GetApplicationsQuery query,
+            GetCandidateApiResponse candidateResponse,
             GetApplicationsApiResponse applicationApiResponse,
             List<ApprenticeshipVacancy> vacancies,
             [Frozen] Mock<IVacancyService> vacancyService,
@@ -37,6 +38,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                 .Setup(client => client.Get<GetApplicationsApiResponse>(
                     It.Is<GetApplicationsApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
                 .ReturnsAsync(applicationApiResponse);
+            
+            candidateApiClient
+                .Setup(x => x.Get<GetCandidateApiResponse>(
+                    It.Is<GetCandidateApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
+                .ReturnsAsync(candidateResponse);
 
             vacancyService.Setup(x => x.GetVacancies(It.IsAny<List<string>>()))
                 .ReturnsAsync(vacancies.Select(x => (IVacancy)x).ToList());
@@ -73,6 +79,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
         
         [Test, MoqAutoData]
         public async Task Then_The_If_Submitted_Applications_Retrieved_Then_Withdrawn_Also_Returned(
+            GetCandidateApiResponse candidateResponse,
             GetApplicationsQuery query,
             GetApplicationsApiResponse applicationApiResponse,
             GetApplicationsApiResponse withdrawnApplicationApiResponse,
@@ -101,6 +108,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                 .Setup(client => client.Get<GetApplicationsApiResponse>(
                     It.Is<GetApplicationsApiRequest>(r => r.GetUrl == expectedWithdrawGetApplicationRequest.GetUrl)))
                 .ReturnsAsync(withdrawnApplicationApiResponse);
+            candidateApiClient
+                .Setup(x => x.Get<GetCandidateApiResponse>(
+                    It.Is<GetCandidateApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
+                .ReturnsAsync(candidateResponse);
 
             vacancyService.Setup(x => x.GetVacancies(It.IsAny<List<string>>()))
                 .ReturnsAsync(vacancies.Select(x => (IVacancy)x).ToList());
