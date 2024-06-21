@@ -9,7 +9,7 @@ namespace SFA.DAS.EmployerAccounts.ExternalApi.Requests
 
         public GetCompanyInformationRequest(string id)
         {
-            Id = id;
+            Id = !string.IsNullOrEmpty(id) ? id.ToUpper() : "";
         }
 
         public string GetUrl => $"company/{Id}";

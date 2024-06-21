@@ -15,7 +15,7 @@ namespace SFA.DAS.EmployerAccounts.ExternalApi
 
         protected override async Task AddAuthenticationHeader(HttpRequestMessage httpRequestMessage)
         {
-            httpRequestMessage.Headers.Add("Authorization", $"Bearer {Convert.ToBase64String(Encoding.UTF8.GetBytes(Configuration.ApiKey))}");
+            httpRequestMessage.Headers.Add("Authorization", $"Basic {Convert.ToBase64String(Encoding.UTF8.GetBytes(Configuration.ApiKey))}");
         }
     }
 }

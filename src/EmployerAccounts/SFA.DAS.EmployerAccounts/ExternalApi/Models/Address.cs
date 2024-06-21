@@ -1,31 +1,31 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace SFA.DAS.EmployerAccounts.ExternalApi.Models
 {
     public class Address
     {
-        [JsonProperty("premises")]
+        [JsonPropertyName("premises")]
         public string Premises { get; set; }
 
-        [JsonProperty("address_line_1")]
+        [JsonPropertyName("address_line_1")]
         public string CompaniesHouseLine1 { get; set; }
 
         public string Line1 => !string.IsNullOrEmpty(Premises) ? Premises : CompaniesHouseLine1;
 
-        [JsonProperty("address_line_2")]
+        [JsonPropertyName("address_line_2")]
         public string CompaniesHouseLine2 { get; set; }
 
         public string Line2 => !string.IsNullOrEmpty(Premises) ? CompaniesHouseLine1 : CompaniesHouseLine2;
 
         public string Line3 => !string.IsNullOrEmpty(Premises) ? CompaniesHouseLine2 : null;
 
-        [JsonProperty("locality")]
+        [JsonPropertyName("locality")]
         public string TownOrCity { get; set; }
 
-        [JsonProperty("region")]
+        [JsonPropertyName("region")]
         public string County { get; set; }
 
-        [JsonProperty("postal_code")]
+        [JsonPropertyName("postal_code")]
         public string PostCode { get; set; }
     }
 }

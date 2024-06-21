@@ -74,7 +74,8 @@ public class SearchOrganisationsQueryHandler : IRequestHandler<SearchOrganisatio
         /*IEnumerable<PublicSectorOrganisation> psOrganisations, */ int maxResults)
     {
         var allOrganisations = refApiOrganisations.Select(o=> (OrganisationResult)o)
-                .Concat(educationalOrganisations.Select(o=> (OrganisationResult)o));
+                .Concat(educationalOrganisations.Select(o=> (OrganisationResult)o))
+                .Concat(companiesResults);
                 //.Concat(psOrganisations.Select(o=> (OrganisationResult)o));
 
         return new SearchOrganisationsResult

@@ -10,7 +10,7 @@ namespace SFA.DAS.EmployerAccounts.ExternalApi.Requests
 
         public SearchCompanyInformationRequest(string searchTerm, int maximumResults)
         {
-            SearchTerm = searchTerm;
+            SearchTerm = string.IsNullOrEmpty(searchTerm) ? string.Empty : searchTerm.ToUpper();
             MaximumResults = maximumResults;
         }
 
