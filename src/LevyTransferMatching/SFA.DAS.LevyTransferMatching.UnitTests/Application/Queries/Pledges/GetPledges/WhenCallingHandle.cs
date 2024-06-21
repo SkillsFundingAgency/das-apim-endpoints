@@ -42,14 +42,42 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.Get
         {
             var result = await _handler.Handle(_query, new CancellationToken());
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.Pledges,Is.Not.Null);
+            result.Should().NotBeNull();
+            result.Pledges.Should().NotBeNull();
+            result.TotalPledges.Should().Be(_pledgeResponse.TotalPledges);
+            result.TotalPages.Should().Be(_pledgeResponse.TotalPages);
+            result.Page.Should().Be(_pledgeResponse.Page);
+            result.PageSize.Should().Be(_pledgeResponse.PageSize);
             result.Pledges.Should().NotBeEmpty();
-            Assert.That(!result.Pledges.Any(x => x.Id == 0));
-            Assert.That(!result.Pledges.Any(x => x.Amount == 0));
-            Assert.That(!result.Pledges.Any(x => x.RemainingAmount == 0));
-            Assert.That(!result.Pledges.Any(x => x.ApplicationCount == 0));
-            Assert.That(!result.Pledges.Any(x => x.Status == string.Empty));
+            result.Pledges.Any(x => x.Id == 0).Should().BeFalse();
+            result.Pledges.Any(x => x.Amount == 0).Should().BeFalse();
+            result.Pledges.Any(x => x.RemainingAmount == 0).Should().BeFalse();
+            result.Pledges.Any(x => x.ApplicationCount == 0).Should().BeFalse();
+            result.Pledges.Any(x => x.Status == string.Empty).Should().BeFalse();
+        }
+
+        [Test]
+        public async Task Verify_Query_Is_Mapped_With_Default_Values()
+        {
+            await _handler.Handle(_query, new CancellationToken());
+
+            _levyTransferMatchingService.Verify(x =>
+                x.GetPledges(It.Is<GetPledgesRequest>(p =>
+                    p.AccountId == _query.AccountId && p.GetUrl.Contains($"page={_query.Page}") &&
+                    !p.GetUrl.Contains("pageSize="))));
+        }
+
+        [Test]
+        public async Task Verify_Query_Is_Mapped_With_Explicit_Values()
+        {
+            _query.Page = 2;
+            _query.PageSize = 10;
+            await _handler.Handle(_query, new CancellationToken());
+
+            _levyTransferMatchingService.Verify(x =>
+                x.GetPledges(It.Is<GetPledgesRequest>(p =>
+                    p.AccountId == _query.AccountId && p.GetUrl.Contains($"page={_query.Page}") &&
+                    p.GetUrl.Contains($"pageSize={_query.PageSize}"))));
         }
     }
 }

@@ -93,14 +93,13 @@ namespace SFA.DAS.Approvals.Services
             var deliveryModels = new List<string> { DeliveryModelStringTypes.Regular };
             if (string.IsNullOrWhiteSpace(trainingCode))
             {
-                _logger.LogInformation($"Defaulting DeliveryModels to Regular because code is blank");
+                _logger.LogInformation("Defaulting DeliveryModels to Regular because code is blank");
                 return deliveryModels;
             }
 
             _logger.LogInformation($"Requesting DeliveryModels for Provider {providerId} and course { trainingCode}");
             var result = await _apiClient.Get<GetHasPortableFlexiJobOptionResponse>(new GetDeliveryModelsRequest(providerId, trainingCode));
          
-
             if (result == null)
             {
                 _logger.LogInformation($"No information found for Provider {providerId} and Course {trainingCode}");
