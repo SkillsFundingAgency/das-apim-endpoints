@@ -1,4 +1,6 @@
-using MediatR;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -7,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.ApprenticeApp.Api.AppStart;
@@ -14,15 +17,15 @@ using SFA.DAS.ApprenticeApp.Api.ErrorHandler;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SFA.DAS.ApprenticeApp.Api
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
+        private const string EndpointName = "SFA.DAS.ApprenticeApp";
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
@@ -116,6 +119,11 @@ namespace SFA.DAS.ApprenticeApp.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApprenticePoralOuterApi");
                 c.RoutePrefix = string.Empty;
             });
+        }
+
+        public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
+        {
+            serviceProvider.StartServiceBus(_configuration).GetAwaiter().GetResult();
         }
     }
 }

@@ -9,6 +9,7 @@
     
   <ItemGroup>
     <PackageReference Include="MediatR" />
+    <PackageReference Include="RestEase" />
     <PackageReference Include="SFA.DAS.Api.Common" />
   </ItemGroup>
 

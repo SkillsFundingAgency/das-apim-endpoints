@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.FindAnApprenticeship.Configuration;
+using SFA.DAS.FindAnApprenticeship.Domain.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
@@ -26,6 +26,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
             services.Configure<FindApprenticeshipLegacyApiConfiguration>(configuration.GetSection(nameof(FindApprenticeshipLegacyApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipLegacyApiConfiguration>>().Value);
+            services.Configure<RecruitApiConfiguration>(configuration.GetSection(nameof(RecruitApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiConfiguration>>().Value);
+
         }
     }
 }

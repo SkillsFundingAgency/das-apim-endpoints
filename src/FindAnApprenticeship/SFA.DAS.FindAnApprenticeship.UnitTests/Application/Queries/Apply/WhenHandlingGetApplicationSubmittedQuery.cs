@@ -25,8 +25,8 @@ public class WhenHandlingGetApplicationSubmittedQuery
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetApplicationSubmittedQueryHandler handler)
     {
-        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
-        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference);
+        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
+        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
 
         candidateApiClient
             .Setup(client => client.Get<GetApplicationApiResponse>(
@@ -60,8 +60,8 @@ public class WhenHandlingGetApplicationSubmittedQuery
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetApplicationSubmittedQueryHandler handler)
     {
-        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
-        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference);
+        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
+        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
 
         candidateApiClient
             .Setup(client => client.Get<GetApplicationApiResponse>(
@@ -87,8 +87,8 @@ public class WhenHandlingGetApplicationSubmittedQuery
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetApplicationSubmittedQueryHandler handler)
     {
-        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId);
-        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference);
+        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
+        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
 
         candidateApiClient
             .Setup(client => client.Get<GetApplicationApiResponse>(

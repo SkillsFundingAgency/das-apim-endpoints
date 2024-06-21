@@ -26,7 +26,7 @@ public class UpsertSkillsAndStrengthsCommandHandler : IRequestHandler<UpsertSkil
 
     public async Task<UpsertSkillsAndStrengthsCommandResult> Handle(UpsertSkillsAndStrengthsCommand command, CancellationToken cancellationToken)
     {
-        var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
+        var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
         if (command.SkillsAndStrengthsSectionStatus > 0)
         {
             jsonPatchDocument.Replace(x => x.SkillsAndStrengthStatus, command.SkillsAndStrengthsSectionStatus);
@@ -47,16 +47,14 @@ public class UpsertSkillsAndStrengthsCommandHandler : IRequestHandler<UpsertSkil
         var requestBody = new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData
         {
             SkillsAndStrengths = command.SkillsAndStrengths,
-            HobbiesAndInterests = aboutYouItem.AboutYou?.HobbiesAndInterests,
-            Improvements = aboutYouItem.AboutYou?.Improvements,
-            Support = aboutYouItem.AboutYou?.Support,
-            Sex = aboutYouItem.AboutYou?.Sex,
-            EthnicGroup = aboutYouItem.AboutYou?.EthnicGroup,
-            EthnicSubGroup = aboutYouItem.AboutYou?.EthnicSubGroup,
-            IsGenderIdentifySameSexAtBirth = aboutYouItem.AboutYou?.IsGenderIdentifySameSexAtBirth,
-            OtherEthnicSubGroupAnswer = aboutYouItem.AboutYou?.OtherEthnicSubGroupAnswer,
+            Support = aboutYouItem?.AboutYou?.Support,
+            Sex = aboutYouItem?.AboutYou?.Sex,
+            EthnicGroup = aboutYouItem?.AboutYou?.EthnicGroup,
+            EthnicSubGroup = aboutYouItem?.AboutYou?.EthnicSubGroup,
+            IsGenderIdentifySameSexAtBirth = aboutYouItem?.AboutYou?.IsGenderIdentifySameSexAtBirth,
+            OtherEthnicSubGroupAnswer = aboutYouItem?.AboutYou?.OtherEthnicSubGroupAnswer,
         };
-        var request = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), requestBody);
+        var request = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, aboutYouItem?.AboutYou?.Id ?? Guid.NewGuid(), requestBody);
 
         var putResult = await _apiClient.PutWithResponseCode<PutUpsertAboutYouItemApiResponse>(request);
         putResult.EnsureSuccessStatusCode();
@@ -66,7 +64,7 @@ public class UpsertSkillsAndStrengthsCommandHandler : IRequestHandler<UpsertSkil
         return new UpsertSkillsAndStrengthsCommandResult
         {
             Id = putResult.Body.Id,
-            Application = JsonConvert.DeserializeObject<Models.Application>(patchResult.Body)
+            Application = JsonConvert.DeserializeObject<Domain.Models.Application>(patchResult.Body)
         };
     }
 }

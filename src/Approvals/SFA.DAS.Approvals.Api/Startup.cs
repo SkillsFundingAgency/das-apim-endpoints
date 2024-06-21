@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
@@ -29,10 +30,16 @@ namespace SFA.DAS.Approvals.Api
             _env = env;
             _configuration = configuration.BuildSharedConfiguration();
         }
-        
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(_env);
+            
+            services.AddLogging(builder =>
+            {
+                builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
+                builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
+            });
 
             services.AddConfigurationOptions(_configuration);
 
@@ -41,9 +48,10 @@ namespace SFA.DAS.Approvals.Api
                 var azureAdConfiguration = _configuration
                     .GetSection("AzureAd")
                     .Get<AzureActiveDirectoryConfiguration>();
+                
                 var policies = new Dictionary<string, string>
                 {
-                    {"default", "APIM"}
+                    { "default", "APIM" }
                 };
 
                 services.AddAuthentication(azureAdConfiguration, policies);
@@ -75,12 +83,13 @@ namespace SFA.DAS.Approvals.Api
                     .AddCheck<ProviderCoursesApiHealthCheck>(ProviderCoursesApiHealthCheck.HealthCheckResultDescription);
             }
 
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
-
             services.AddSwaggerGen(c =>
             {
+                c.CustomSchemaIds(type => type.ToString());
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApprovalsOuterApi", Version = "v1" });
             });
+            
+            services.AddApplicationInsightsTelemetry();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,7 +101,7 @@ namespace SFA.DAS.Approvals.Api
             }
 
             app.UseAuthentication();
-            
+
             app.UseRouting();
             app.UseApiGlobalExceptionHandler(loggerFactory.CreateLogger("Startup"));
             app.UseEndpoints(endpoints =>
@@ -101,8 +110,9 @@ namespace SFA.DAS.Approvals.Api
                     name: "default",
                     pattern: "api/{controller=TrainingCourses}/{action=GetList}/{id?}");
             });
-        
+
             app.UseSwagger();
+
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApprovalsOuterApi");

@@ -18,6 +18,7 @@ public class WhenGettingLiveVacancies
     public async Task Then_Live_Vacancies_Returned_From_Mediator(
         uint mockPageSize,
         uint mockPageNo,
+        DateTime closingDate,
         GetLiveVacanciesQueryResult mockQueryResult,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] LiveVacanciesController sut)
@@ -25,7 +26,7 @@ public class WhenGettingLiveVacancies
         mockQueryResult.Vacancies.ToList().ForEach(x => x.IsRecruitVacancy = true);
         mockMediator.Setup(x => x.Send(It.IsAny<GetLiveVacanciesQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
 
-        var actual = await sut.Get(mockPageSize, mockPageNo, It.IsAny<CancellationToken>()) as ObjectResult;
+        var actual = await sut.Get(mockPageSize, mockPageNo, closingDate,It.IsAny<CancellationToken>()) as ObjectResult;
         var actualValue = actual!.Value as GetLiveVacanciesApiResponse;
 
         using (new AssertionScope())
@@ -45,12 +46,13 @@ public class WhenGettingLiveVacancies
     public async Task And_Exception_Returned_Then_Returns_Internal_Server_Error(
         uint mockPageSize,
         uint mockPageNo,
+        DateTime closingDate,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] LiveVacanciesController sut)
     {
         mockMediator.Setup(x => x.Send(It.IsAny<GetLiveVacanciesQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException());
 
-        var actual = await sut.Get(mockPageSize, mockPageNo, It.IsAny<CancellationToken>()) as StatusCodeResult;
+        var actual = await sut.Get(mockPageSize, mockPageNo, closingDate, It.IsAny<CancellationToken>()) as StatusCodeResult;
 
         actual!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }

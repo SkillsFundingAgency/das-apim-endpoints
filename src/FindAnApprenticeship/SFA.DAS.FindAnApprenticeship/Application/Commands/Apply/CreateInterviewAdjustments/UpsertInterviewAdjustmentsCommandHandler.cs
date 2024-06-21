@@ -28,7 +28,7 @@ public class UpsertInterviewAdjustmentsCommandHandler : IRequestHandler<UpsertIn
 
     public async Task<UpsertInterviewAdjustmentsCommandResult> Handle(UpsertInterviewAdjustmentsCommand command, CancellationToken cancellationToken)
     {
-        var jsonPatchDocument = new JsonPatchDocument<Models.Application>();
+        var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
         if (command.InterviewAdjustmentsSectionStatus > 0)
         {
             jsonPatchDocument.Replace(x => x.InterviewAdjustmentsStatus, command.InterviewAdjustmentsSectionStatus);
@@ -47,8 +47,6 @@ public class UpsertInterviewAdjustmentsCommandHandler : IRequestHandler<UpsertIn
         var requestBody = new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData
         {
             SkillsAndStrengths = aboutYouItem.AboutYou?.SkillsAndStrengths,
-            HobbiesAndInterests = aboutYouItem.AboutYou?.HobbiesAndInterests,
-            Improvements = aboutYouItem.AboutYou?.Improvements,
             Sex = aboutYouItem.AboutYou?.Sex,
             EthnicGroup = aboutYouItem.AboutYou?.EthnicGroup,
             EthnicSubGroup = aboutYouItem.AboutYou?.EthnicSubGroup,
@@ -56,7 +54,7 @@ public class UpsertInterviewAdjustmentsCommandHandler : IRequestHandler<UpsertIn
             OtherEthnicSubGroupAnswer = aboutYouItem.AboutYou?.OtherEthnicSubGroupAnswer,
             Support = command.InterviewAdjustmentsDescription,
         };
-        var request = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), requestBody);
+        var request = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, aboutYouItem.AboutYou?.Id ?? Guid.NewGuid(), requestBody);
 
         var putResult = await _apiClient.PutWithResponseCode<PutUpsertAboutYouItemApiResponse>(request);
         putResult.EnsureSuccessStatusCode();
@@ -66,7 +64,7 @@ public class UpsertInterviewAdjustmentsCommandHandler : IRequestHandler<UpsertIn
         return new UpsertInterviewAdjustmentsCommandResult
         {
             Id = putResult.Body.Id,
-            Application = JsonConvert.DeserializeObject<Models.Application>(patchResult.Body)
+            Application = JsonConvert.DeserializeObject<Domain.Models.Application>(patchResult.Body)
         };
     }
 }

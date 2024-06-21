@@ -29,7 +29,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 	private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
 	private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
 
-	public GetApprenticeshipStartDateQueryHandler(
+    public GetApprenticeshipStartDateQueryHandler(
 		ILogger<GetApprenticeshipStartDateQueryHandler> logger,
 		IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient,
 		ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient,
@@ -39,7 +39,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 		_apprenticeshipsApiClient = apprenticeshipsApiClient;
 		_apiCommitmentsClient = apiCommitmentsClient;
 		_collectionCalendarApiClient = collectionCalendarApiClient;
-	}
+    }
 
 	public async Task<ApprenticeshipStartDateResponse?> Handle(GetApprenticeshipStartDateQuery request, CancellationToken cancellationToken)
 	{
@@ -47,34 +47,52 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 
 		if (apprenticeStartDateInnerModel == null)
 		{
-			_logger.LogWarning($"No ApprenticeshipStartDate returned from innerApi for apprenticeshipKey:{request.ApprenticeshipKey}");
-			return null;
+			_logger.LogWarning("No ApprenticeshipStartDate returned from innerApi for apprenticeshipKey:{key}", request.ApprenticeshipKey);
+			return null; 
 		}
 
-		string? employerName = await GetEmployerName(apprenticeStartDateInnerModel);
+        var standard = await _apiCommitmentsClient.Get<GetTrainingProgrammeVersionsResponse>(new GetTrainingProgrammeVersionsRequest(apprenticeStartDateInnerModel.CourseCode));
+
+        string? employerName = await GetEmployerName(apprenticeStartDateInnerModel);
 
 		var providerName = await GetProviderName(apprenticeStartDateInnerModel);
 
-		var apprenticeshipStartDateOuterModel = new ApprenticeshipStartDateResponse
+		var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now));
+        var previousAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now.AddYears(-1)));
+
+        var apprenticeshipStartDateOuterModel = new ApprenticeshipStartDateResponse
 		{
-			ApprenticeshipKey = apprenticeStartDateInnerModel!.ApprenticeshipKey,
+			ApprenticeshipKey = apprenticeStartDateInnerModel.ApprenticeshipKey,
 			ActualStartDate = apprenticeStartDateInnerModel.ActualStartDate,
 			PlannedEndDate = apprenticeStartDateInnerModel.PlannedEndDate,
 			EmployerName = employerName,
 			ProviderName = providerName,
 			EarliestStartDate = await GetEarliestNewStartDate(apprenticeStartDateInnerModel.ActualStartDate),
 			LatestStartDate = await GetLatestNewStartDate(apprenticeStartDateInnerModel.ActualStartDate),
-			LastFridayOfSchool = apprenticeStartDateInnerModel.ApprenticeDateOfBirth.GetLastFridayInJuneOfSchoolYearApprenticeTurned16()
+			LastFridayOfSchool = apprenticeStartDateInnerModel.ApprenticeDateOfBirth.GetLastFridayInJuneOfSchoolYearApprenticeTurned16(),
+			Standard = ToStandardInfo(standard, apprenticeStartDateInnerModel.CourseVersion),
+            CurrentAcademicYear = ToAcademicYearDetails(currentAcademicYear),
+            PreviousAcademicYear = ToAcademicYearDetails(previousAcademicYear)
         };
 
-		return apprenticeshipStartDateOuterModel;
+        if (apprenticeshipStartDateOuterModel.Standard.CourseCode == null)
+        {
+            _logger.LogWarning("No course/standard data available for apprenticeshipKey:{key}", request.ApprenticeshipKey);
+        }
+
+        if (apprenticeshipStartDateOuterModel.Standard.StandardVersion == null)
+        {
+            _logger.LogWarning("No standard version data available for apprenticeshipKey:{key}", request.ApprenticeshipKey);
+        }
+
+        return apprenticeshipStartDateOuterModel;
 	}
 
 	private async Task<string?> GetEmployerName(GetApprenticeshipStartDateResponse apprenticeStartDateInnerModel)
 	{
 		if (!apprenticeStartDateInnerModel.AccountLegalEntityId.HasValue)
 		{
-			_logger.LogError($"No AccountLegalEntityId returned from innerApi for apprenticeshipKey:{apprenticeStartDateInnerModel.ApprenticeshipKey}");
+			_logger.LogError("No AccountLegalEntityId returned from innerApi for apprenticeshipKey:{key}", apprenticeStartDateInnerModel.ApprenticeshipKey);
 			return null;
 		}
 
@@ -82,7 +100,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 		
 		if(employer == null)
 		{
-			_logger.LogError($"No AccountLegalEntity returned from innerApi for apprenticeshipKey:{apprenticeStartDateInnerModel.ApprenticeshipKey}");
+			_logger.LogError("No AccountLegalEntity returned from innerApi for apprenticeshipKey:{key}", apprenticeStartDateInnerModel.ApprenticeshipKey);
 			return null;
 		}
 
@@ -93,7 +111,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 	{
 		if (apprenticeStartDateInnerModel.UKPRN < 1)
 		{
-			_logger.LogError($"Invalid UKPRN '{apprenticeStartDateInnerModel.UKPRN}' returned from innerApi for apprenticeshipKey:{apprenticeStartDateInnerModel.ApprenticeshipKey}");
+			_logger.LogError("Invalid UKPRN '{UKPRN}' returned from innerApi for apprenticeshipKey:{key}", apprenticeStartDateInnerModel.UKPRN, apprenticeStartDateInnerModel.ApprenticeshipKey);
 			return null;
 		}
 
@@ -101,12 +119,39 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 
 		if (provider == null)
 		{
-			_logger.LogError($"No provider returned from CommitmentsClient for UKPRN:{apprenticeStartDateInnerModel.UKPRN}");
+			_logger.LogError("No provider returned from CommitmentsClient for UKPRN:{UKPRN}", apprenticeStartDateInnerModel.UKPRN);
 			return null;
 		}
 
 		return provider.Name;
 	}
+
+    private static StandardInfo ToStandardInfo(GetTrainingProgrammeVersionsResponse response, string courseVersion)
+    {
+        return new StandardInfo
+        {
+			 CourseCode = response.TrainingProgrammeVersions.FirstOrDefault(x => x.Version == courseVersion)?.CourseCode,
+			 EffectiveFrom = response.TrainingProgrammeVersions.Any(x => x.EffectiveFrom == null) ? null : response.TrainingProgrammeVersions.MinBy(x => x.EffectiveFrom)?.EffectiveFrom,
+             EffectiveTo = response.TrainingProgrammeVersions.Any(x => x.EffectiveTo == null) ? null : response.TrainingProgrammeVersions.MaxBy(x => x.EffectiveTo)?.EffectiveTo,
+			 StandardVersion = response.TrainingProgrammeVersions.Select(x => new StandardVersionInfo
+             {
+                 VersionEarliestStartDate = x.VersionEarliestStartDate,
+                 VersionLatestStartDate = x.VersionLatestStartDate,
+                 Version = x.Version
+             }).FirstOrDefault(x => x.Version == courseVersion)
+        };
+    }
+
+    private static AcademicYearDetails ToAcademicYearDetails(GetAcademicYearsResponse response)
+    {
+        return new AcademicYearDetails
+        {
+            AcademicYear = response.AcademicYear,
+            StartDate = response.StartDate,
+            EndDate = response.EndDate,
+            HardCloseDate = response.HardCloseDate
+        };
+    }
 
     private async Task<DateTime?> GetEarliestNewStartDate(DateTime? currentActualStartDate)
     {

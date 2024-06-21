@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "4ce09a16-01ca-4e1c-a300-69e24220e1fa",
+		"_postman_id": "0ba91a0e-2638-4f21-9e8b-a4fc301974d6",
 		"name": "EarlyConnect-OuterApi",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "809985"
+		"_exporter_id": "21174429"
 	},
 	"item": [
 		{
@@ -56,6 +56,55 @@
 						"early-connect",
 						"student-data",
 						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Student Survey Reminder",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"lepsCode\": null\r\n}"
+				},
+				"url": {
+					"raw": "https://test-apim-erlycon-api.apprenticeships.education.gov.uk/early-connect/student-triage-data/reminder",
+					"protocol": "https",
+					"host": [
+						"test-apim-erlycon-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"early-connect",
+						"student-triage-data",
+						"reminder"
 					]
 				}
 			},
