@@ -2,7 +2,7 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
 namespace SFA.DAS.VacanciesManage.UnitTests.InnerApi.Requests
@@ -14,7 +14,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.InnerApi.Requests
         {
             var actual = new GetProviderAccountLegalEntitiesRequest(ukprn, new List<Operation> { Operation.Recruitment, Operation.RecruitmentRequiresReview });
 
-            actual.GetUrl.Should().Be($"accountproviderlegalentities?ukprn={ukprn}&operations=1&operations=2");
+            actual.GetUrl.Should().Be($"accountproviderlegalentities?ukprn={ukprn}&accounthashedid=&operations=1&operations=2");
         }
     }
 }

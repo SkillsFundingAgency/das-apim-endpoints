@@ -5,7 +5,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
@@ -26,7 +26,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Providers.Queries
                     x.Get<GetProviderAccountLegalEntitiesResponse>(
                         It.Is<GetProviderAccountLegalEntitiesRequest>(c => c.GetUrl.Contains($"ukprn={query.Ukprn}"))))
                 .ReturnsAsync(apiQueryResponse);
-            
+
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.ProviderAccountLegalEntities.Should().BeEquivalentTo(apiQueryResponse.AccountProviderLegalEntities);
