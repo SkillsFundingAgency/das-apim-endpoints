@@ -9,7 +9,7 @@ namespace SFA.DAS.EmployerPR.Api.UnitTests.Controllers.PingControllerTests;
 public class GetPingTests
 {
     [Test, MoqAutoData]
-    public async Task GetPing_ReturnsExpectedResponse(
+    public void GetPing_ReturnsExpectedResponse(
         [Greedy] PingController sut)
     {
         var result = sut.Get();
