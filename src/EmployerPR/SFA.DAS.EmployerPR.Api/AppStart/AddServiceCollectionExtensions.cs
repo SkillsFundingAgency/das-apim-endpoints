@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
+using RestEase.HttpClientFactory;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.EmployerPR.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -11,8 +13,6 @@ using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 using System.Diagnostics.CodeAnalysis;
-using RestEase.HttpClientFactory;
-using SFA.DAS.EmployerPR.Infrastructure;
 
 namespace SFA.DAS.EmployerPR.Api.AppStart;
 
@@ -61,7 +61,7 @@ public static class AddServiceCollectionExtensions
             .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
                 tags: new[] { Ready })
-        .AddCheck<EmployerProfilesApiHealthCheck>(EmployerProfilesApiHealthCheck.HealthCheckResultDescription,
+            .AddCheck<EmployerProfilesApiHealthCheck>(EmployerProfilesApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
                 tags: new[] { Ready });
 
