@@ -9,6 +9,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -18,6 +19,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
         IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
         ILocationLookupService locationLookupService,
         ICourseService courseService,
+        IMetrics metrics,
         ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
         : IRequestHandler<SearchApprenticeshipsQuery, SearchApprenticeshipsResult>
     {
@@ -98,7 +100,12 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             {
                 apprenticeshipVacancies = vacancyResult.ApprenticeshipVacancies.ToList();
             }
-            
+
+            // increase the count of vacancy appearing in search results counter metrics.
+            foreach (var apprenticeshipVacancy in apprenticeshipVacancies)
+            {
+                metrics.IncreaseVacancySearchResultViews(apprenticeshipVacancy.Id);
+            }
 
             return new SearchApprenticeshipsResult
             {
