@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.AppStart;
@@ -21,6 +22,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
     [ExcludeFromCodeCoverage]
     public class Startup
     {
+        private const string EndpointName = "SFA.DAS.EmployerRequestApprenticeTraining";
+
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
 
@@ -152,7 +155,11 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
                     name: "default",
                     pattern: "api/{controller=Account}/{action=index}/{id?}");
             });
+        }
 
+        public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
+        {
+            serviceProvider.StartNServiceBus(_configuration, EndpointName).GetAwaiter().GetResult();
         }
     }
 }

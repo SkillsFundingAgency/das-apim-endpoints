@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocation;
@@ -34,31 +35,34 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
         {
             try
             {
+                var employerProfileUserResult = await _mediator.Send(new GetEmployerProfileUserQuery { UserId = submitCommand.RequestedBy });
+                
                 var locationResult = await _mediator.Send(new GetLocationQuery { ExactSearchTerm = submitCommand.SingleLocation });
-                if (locationResult.Location != null)
+                if (locationResult.Location == null)
                 {
-                    var createCommand = new CreateEmployerRequestCommand
-                    {
-                        OriginalLocation = submitCommand.OriginalLocation,
-                        RequestType = submitCommand.RequestType,
-                        AccountId = submitCommand.AccountId,
-                        StandardReference = submitCommand.StandardReference,
-                        NumberOfApprentices = submitCommand.NumberOfApprentices,
-                        SingleLocation = submitCommand.SingleLocation,
-                        SingleLocationLatitude = locationResult.Location.Location.GeoPoint[0],
-                        SingleLocationLongitude = locationResult.Location.Location.GeoPoint[1],
-                        AtApprenticesWorkplace = submitCommand.AtApprenticesWorkplace,
-                        DayRelease = submitCommand.DayRelease,
-                        BlockRelease = submitCommand.BlockRelease,
-                        RequestedBy = submitCommand.RequestedBy,
-                        ModifiedBy = submitCommand.ModifiedBy
-                    };
-
-                    var result = await _mediator.Send(createCommand);
-                    return Ok(result.EmployerRequestId);
+                    return BadRequest($"Unable to submit employer request as the specified location {submitCommand.SingleLocation} cannot be found");
                 }
 
-                return BadRequest($"Unable to submit employer request as the specified location {submitCommand.SingleLocation} cannot be found");
+                var createCommand = new CreateEmployerRequestCommand
+                {
+                    OriginalLocation = submitCommand.OriginalLocation,
+                    RequestType = submitCommand.RequestType,
+                    AccountId = submitCommand.AccountId,
+                    StandardReference = submitCommand.StandardReference,
+                    NumberOfApprentices = submitCommand.NumberOfApprentices,
+                    SingleLocation = submitCommand.SingleLocation,
+                    SingleLocationLatitude = locationResult.Location.Location.GeoPoint[0],
+                    SingleLocationLongitude = locationResult.Location.Location.GeoPoint[1],
+                    AtApprenticesWorkplace = submitCommand.AtApprenticesWorkplace,
+                    DayRelease = submitCommand.DayRelease,
+                    BlockRelease = submitCommand.BlockRelease,
+                    RequestedBy = submitCommand.RequestedBy,
+                    RequestedByEmail = employerProfileUserResult.Email,
+                    ModifiedBy = submitCommand.ModifiedBy
+                };
+
+                var result = await _mediator.Send(createCommand);
+                return Ok(result.EmployerRequestId);
             }
             catch (Exception e)
             {

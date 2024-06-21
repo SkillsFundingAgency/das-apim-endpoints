@@ -18,6 +18,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateE
         public bool DayRelease { get; set; }
         public bool BlockRelease { get; set; }
         public Guid RequestedBy { get; set; }
+        public string RequestedByEmail { get; set; }
         public Guid ModifiedBy { get; set; }
     }
 }

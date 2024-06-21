@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -21,9 +22,11 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStand
         public async Task<GetStandardResult> Handle(GetStandardQuery request, CancellationToken cancellationToken)
         {
             var response = await _coursesApiClient.
-                Get<StandardDetailResponse>(new GetStandardDetailsByIdRequest(request.StandardId));
+                GetWithResponseCode<StandardDetailResponse>(new GetStandardDetailsByIdRequest(request.StandardId));
 
-            return new GetStandardResult { Standard = (Standard)response };
+            response.EnsureSuccessStatusCode();
+
+            return new GetStandardResult { Standard = (Standard)response.Body };
         }
     }
 }

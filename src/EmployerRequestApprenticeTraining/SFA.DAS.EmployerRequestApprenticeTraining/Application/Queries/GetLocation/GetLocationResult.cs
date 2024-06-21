@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocation
 {
-    public class GetLocationQueryResult
+    public class GetLocationResult
     {
         public GetLocationsListItem Location { get; set; }
     }

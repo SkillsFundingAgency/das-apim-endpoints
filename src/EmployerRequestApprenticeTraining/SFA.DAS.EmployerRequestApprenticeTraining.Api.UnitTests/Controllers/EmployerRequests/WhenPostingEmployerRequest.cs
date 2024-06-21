@@ -7,7 +7,9 @@ using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocation;
+using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 using System;
@@ -23,7 +25,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
         public async Task Then_The_EmployerRequestId_Is_Returned(
             SubmitEmployerRequestCommand submitCommand,
             CreateEmployerRequestResponse response,
-            GetLocationQueryResult locationResult,
+            GetLocationResult locationResult,
+            GetEmployerProfileUserResult employerProfileUserResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerRequestsController controller)
         {
@@ -35,6 +38,9 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             mockMediator
                 .Setup(x => x.Send(It.Is<GetLocationQuery>(p => p.ExactSearchTerm == submitCommand.SingleLocation), CancellationToken.None))
                 .ReturnsAsync(locationResult);
+            mockMediator
+                .Setup(x => x.Send(It.Is<GetEmployerProfileUserQuery>(p => p.UserId == submitCommand.RequestedBy), CancellationToken.None))
+                .ReturnsAsync(employerProfileUserResult);
             mockMediator
                 .Setup(x => x.Send(It.IsAny<CreateEmployerRequestCommand>(), CancellationToken.None))
                 .ReturnsAsync(response);
@@ -55,7 +61,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             [Greedy] EmployerRequestsController controller)
         {
             // Arrange
-            var locationResult = new GetLocationQueryResult { Location = null };
+            var locationResult = new GetLocationResult { Location = null };
             mockMediator
                 .Setup(x => x.Send(It.Is<GetLocationQuery>(p => p.ExactSearchTerm == submitCommand.SingleLocation), CancellationToken.None))
                 .ReturnsAsync(locationResult);
@@ -85,6 +91,35 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+        }
+
+        [Test, MoqAutoData]
+        public void Then_Exception_Is_Thrown_If_EmployerProfileUser_Not_Found(
+            SubmitEmployerRequestCommand submitCommand,
+            GetLocationResult locationResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] EmployerRequestsController controller)
+        {
+            // Arrange
+            locationResult.Location = new GetLocationsListItem
+            {
+                Location = new GetLocationsListItem.Coordinates
+                {
+                    GeoPoint = [1.0, 2.0]
+                }
+            };
+            mockMediator
+                .Setup(x => x.Send(It.Is<GetLocationQuery>(p => p.ExactSearchTerm == submitCommand.SingleLocation), CancellationToken.None))
+                .ReturnsAsync(locationResult);
+
+            mockMediator
+                .Setup(x => x.Send(It.Is<GetEmployerProfileUserQuery>(p => p.UserId == submitCommand.RequestedBy), CancellationToken.None))
+                .ThrowsAsync(new ApiResponseException(HttpStatusCode.NotFound, string.Empty));
+
+            // Act & Assert
+            Func<Task> act = async () => await controller.SubmitEmployerRequest(submitCommand);
+            act.Should().ThrowAsync<ApiResponseException>()
+                .Where(e => e.Status == HttpStatusCode.NotFound);
         }
     }
 }
