@@ -102,10 +102,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             }
 
             // increase the count of vacancy appearing in search results counter metrics.
-            foreach (var apprenticeshipVacancy in apprenticeshipVacancies)
-            {
-                metrics.IncreaseVacancySearchResultViews(apprenticeshipVacancy.Id);
-            }
+            apprenticeshipVacancies.ForEach(vacancy => metrics.IncreaseVacancySearchResultViews(vacancy.Id));
 
             return new SearchApprenticeshipsResult
             {
