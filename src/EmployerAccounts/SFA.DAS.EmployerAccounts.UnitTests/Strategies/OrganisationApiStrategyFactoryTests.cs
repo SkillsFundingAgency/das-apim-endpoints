@@ -9,21 +9,34 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Strategies
 {
     public class OrganisationApiStrategyFactoryTests
     {
+
         [Test, MoqAutoData]
-        public void CreateStrategy_ShouldReturnReferenceDataApiStrategy_ForCompanyCharity(
+        public void CreateStrategy_ShouldReturnCompaniesHouseApiStrategy_ForCompany(
         OrganisationApiStrategyFactory factory)
         {
-            var organisationTypes = new[] { OrganisationType.Company, OrganisationType.Charity };
+            var orgType = OrganisationType.Company;
 
-            foreach (var orgType in organisationTypes)
-            {
-                // Act
-                var strategy = factory.CreateStrategy(orgType);
+            // Act
+            var strategy = factory.CreateStrategy(orgType);
 
-                // Assert
-                strategy.Should().BeOfType<ReferenceDataApiStrategy>();
-            }
+            // Assert
+            strategy.Should().BeOfType<CompaniesHouseApiStrategy>();
         }
+
+
+        [Test, MoqAutoData]
+        public void CreateStrategy_ShouldReturnReferenceDataApiStrategy_ForCharity(
+        OrganisationApiStrategyFactory factory)
+        {
+            var orgType = OrganisationType.Charity;
+
+            // Act
+            var strategy = factory.CreateStrategy(orgType);
+
+            // Assert
+            strategy.Should().BeOfType<ReferenceDataApiStrategy>();
+        }
+
 
         [Test, MoqAutoData]
         public void CreateStrategy_ShouldReturnEducationOrganisationApiStrategy_ForEducationOrganisation(
