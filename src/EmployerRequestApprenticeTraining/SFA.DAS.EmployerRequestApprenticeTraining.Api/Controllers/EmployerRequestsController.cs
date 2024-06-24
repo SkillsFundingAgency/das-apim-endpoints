@@ -1,17 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Amqp.Framing;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Client;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocation;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
 using System;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -109,6 +106,48 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to retrieve employer requests for AccoundId: {accountId}");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{employerRequestId}/submit-confirmation")]
+        public async Task<IActionResult> GetSubmitEmployerRequestConfirmation(Guid employerRequestId)
+        {
+            try
+            {
+                var employerRequestResult = await _mediator.Send(new GetEmployerRequestQuery { EmployerRequestId = employerRequestId });
+
+                if (employerRequestResult.EmployerRequest != null)
+                {
+                    var employerRequest = employerRequestResult.EmployerRequest;
+
+                    var standardTask = _mediator.Send(new GetStandardQuery { StandardId = employerRequest.StandardReference });
+                    var employerProfileUserTask = _mediator.Send(new GetEmployerProfileUserQuery { UserId = employerRequest.RequestedBy });
+
+                    await Task.WhenAll(standardTask, employerProfileUserTask);
+
+                    var standardResult = await standardTask;
+                    var employerProfileUser = await employerProfileUserTask;
+
+                    return Ok(new SubmitEmployerRequestConfirmation
+                    {
+                        EmployerRequestId = employerRequest.Id,
+                        StandardTitle = standardResult.Standard.Title,
+                        StandardLevel = standardResult.Standard.Level,
+                        NumberOfApprentices = employerRequest.NumberOfApprentices,
+                        SingleLocation = employerRequest.SingleLocation,
+                        AtApprenticesWorkplace = employerRequest.AtApprenticesWorkplace,
+                        DayRelease = employerRequest.DayRelease,
+                        BlockRelease = employerRequest.BlockRelease,
+                        RequestedByEmail = employerProfileUser.Email
+                    });
+                }
+
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to retrieve submit employer request confirmation for EmployerRequestId: {employerRequestId}");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
