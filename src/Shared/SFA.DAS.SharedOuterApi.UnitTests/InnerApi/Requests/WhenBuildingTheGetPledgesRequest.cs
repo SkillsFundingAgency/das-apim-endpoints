@@ -1,4 +1,5 @@
 ﻿using AutoFixture.NUnit3;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
@@ -11,7 +12,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         {
             var actual = new GetPledgesRequest();
 
-            Assert.That($"pledges", Is.EqualTo(actual.GetUrl));
+            "pledges?page=1".Should().Be(actual.GetUrl);
         }
 
         [Test, AutoData]
@@ -19,7 +20,23 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         {
             var actual = new GetPledgesRequest(accountId: accountId);
 
-            Assert.That($"pledges?accountId={accountId}", Is.EqualTo(actual.GetUrl));
+            $"pledges?accountId={accountId}&page=1".Should().Be(actual.GetUrl);
+        }
+
+        [Test, AutoData]
+        public void And_The_Page_Supplied_Then_The_GetUrl_Is_Correctly_Built(int page)
+        {
+            var actual = new GetPledgesRequest(page: page);
+
+            $"pledges?page={page}".Should().Be(actual.GetUrl);
+        }
+
+        [Test, AutoData]
+        public void And_The_PageSize_Supplied_Then_The_GetUrl_Is_Correctly_Built(int pageSize)
+        {
+            var actual = new GetPledgesRequest(pageSize: pageSize);
+
+            $"pledges?page=1&pageSize={pageSize}".Should().Be(actual.GetUrl);
         }
     }
 }

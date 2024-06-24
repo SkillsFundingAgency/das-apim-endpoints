@@ -13,6 +13,5 @@ public class GetAboutYouItemApiRequest : IGetApiRequest
         _candidateId = candidateId;
     }
 
-    public string GetUrl =>
-           $"candidates/{_candidateId}/applications/{_applicationId}/about-you";
+    public string GetUrl => $"api/candidates/{_candidateId}/applications/{_applicationId}/about-you";
 }

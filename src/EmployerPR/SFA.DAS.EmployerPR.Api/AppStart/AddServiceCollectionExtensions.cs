@@ -11,6 +11,8 @@ using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 using System.Diagnostics.CodeAnalysis;
+using RestEase.HttpClientFactory;
+using SFA.DAS.EmployerPR.Infrastructure;
 
 namespace SFA.DAS.EmployerPR.Api.AppStart;
 
@@ -47,6 +49,9 @@ public static class AddServiceCollectionExtensions
         services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
+
+        AddProviderRelationshipsApiClient(services, configuration);
+
         return services;
     }
 
@@ -76,4 +81,15 @@ public static class AddServiceCollectionExtensions
         services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>()!.Value);
         return services;
     }
+
+    private static void AddProviderRelationshipsApiClient(IServiceCollection services, IConfiguration configuration)
+    {
+        var apiConfig = GetApiConfiguration(configuration, "ProviderRelationshipsApiConfiguration");
+
+        services.AddRestEaseClient<IProviderRelationshipsApiRestClient>(apiConfig.Url)
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+    }
+
+    private static InnerApiConfiguration GetApiConfiguration(IConfiguration configuration, string configurationName)
+        => configuration.GetSection(configurationName).Get<InnerApiConfiguration>()!;
 }

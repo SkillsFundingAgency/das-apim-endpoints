@@ -2,6 +2,6 @@
 {
     public class PatchApplicationWorkHistoryCommandResponse
     {
-        public Models.Application Application { get; set; }
+        public Domain.Models.Application Application { get; set; }
     }
 }

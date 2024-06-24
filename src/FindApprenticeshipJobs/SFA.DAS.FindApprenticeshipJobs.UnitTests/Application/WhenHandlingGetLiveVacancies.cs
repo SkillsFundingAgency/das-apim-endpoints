@@ -25,7 +25,8 @@ public class WhenHandlingGetLiveVacancies
         [Frozen] Mock<ILiveVacancyMapper> mockLiveVacancyMapper,
         GetLiveVacanciesQueryHandler sut)
     {
-        mockApiClient.Setup(client => client.GetWithResponseCode<GetLiveVacanciesApiResponse>(It.IsAny<GetLiveVacanciesApiRequest>())).ReturnsAsync(mockApiResponse);
+        var expectedUrl = new GetLiveVacanciesApiRequest(mockQuery.PageNumber, mockQuery.PageSize, mockQuery.ClosingDate);
+        mockApiClient.Setup(client => client.GetWithResponseCode<GetLiveVacanciesApiResponse>(It.Is<GetLiveVacanciesApiRequest>(c=>c.GetUrl == expectedUrl.GetUrl))).ReturnsAsync(mockApiResponse);
         courseService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
             .ReturnsAsync(getStandardsListResponse);
 
