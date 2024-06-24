@@ -18,7 +18,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
         public async Task Then_Result_Is_Mapped_From_Candidates_Api_Responses(
          GetSettingsQuery query,
          GetCandidateApiResponse apiResponse,
-         GetCandidateAddressApiResponse addressApiResponse,
          GetCandidatePreferencesApiResponse candidatePreferencesApiResponse,
          [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
          GetSettingsQueryHandler handler)
@@ -27,11 +26,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 .Setup(client => client.Get<GetCandidateApiResponse>(
                     It.Is<GetCandidateApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
                 .ReturnsAsync(apiResponse);
-
-            mockApiClient
-                .Setup(client => client.Get<GetCandidateAddressApiResponse>(
-                    It.Is<GetCandidateAddressApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
-                .ReturnsAsync(addressApiResponse);
 
             mockApiClient
                 .Setup(client => client.Get<GetCandidatePreferencesApiResponse>(
@@ -44,11 +38,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             result.LastName.Should().Be(apiResponse.LastName);
             result.MiddleNames.Should().Be(apiResponse.MiddleNames);
             result.DateOfBirth.Should().Be(apiResponse.DateOfBirth);
-            result.AddressLine1.Should().Be(addressApiResponse.AddressLine1);
-            result.AddressLine2.Should().Be(addressApiResponse.AddressLine2);
-            result.Town.Should().Be(addressApiResponse.Town);
-            result.County.Should().Be(addressApiResponse.County);
-            result.Postcode.Should().Be(addressApiResponse.Postcode);
+            result.AddressLine1.Should().Be(apiResponse.Address.AddressLine1);
+            result.AddressLine2.Should().Be(apiResponse.Address.AddressLine2);
+            result.Town.Should().Be(apiResponse.Address.Town);
+            result.County.Should().Be(apiResponse.Address.County);
+            result.Postcode.Should().Be(apiResponse.Address.Postcode);
 
             var expectedPreferences = candidatePreferencesApiResponse.CandidatePreferences == null
                 ? new List<GetSettingsQueryResult.CandidatePreference>()
