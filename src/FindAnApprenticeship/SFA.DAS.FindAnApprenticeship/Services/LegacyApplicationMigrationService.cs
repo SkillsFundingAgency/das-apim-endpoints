@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Extensions.LegacyApi;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses.Enums;
 using SFA.DAS.SharedOuterApi.Extensions;
+using static SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests.PutSavedVacancyApiRequest;
 
 namespace SFA.DAS.FindAnApprenticeship.Services
 {
@@ -81,6 +82,35 @@ namespace SFA.DAS.FindAnApprenticeship.Services
 
                 var applicationResult =
                     await candidateApiClient.PostWithResponseCode<PostApplicationApiResponse>(postRequest);
+
+                applicationResult.EnsureSuccessStatusCode();
+            }
+
+            foreach (var legacyApplication in legacyApplications.Applications.Where(x => x.Status == ApplicationStatus.Saved))
+            {
+                var vacancy = await vacancyService.GetVacancy(legacyApplication.Vacancy.VacancyReference);
+
+                if (vacancy == null)
+                {
+                    logger.LogError($"Unable to retrieve vacancy [{legacyApplication.Vacancy.VacancyReference}].");
+                    continue;
+                }
+
+                if (vacancy.ClosingDate < DateTime.UtcNow)
+                {
+                    logger.LogError($"Ignoring saved vacancy reference [{legacyApplication.Vacancy.VacancyReference}] as closing date has passed.");
+                    continue;
+                }
+                
+                var data = new PostSavedVacancyApiRequestData
+                {
+                    VacancyReference = legacyApplication.Vacancy.VacancyReference,
+                    CreatedOn = legacyApplication.DateCreated ?? DateTime.UtcNow
+                };
+                var postRequest = new PutSavedVacancyApiRequest(candidateId, data);
+
+                var applicationResult =
+                    await candidateApiClient.PutWithResponseCode<PutSavedVacancyApiResponse>(postRequest);
 
                 applicationResult.EnsureSuccessStatusCode();
             }
