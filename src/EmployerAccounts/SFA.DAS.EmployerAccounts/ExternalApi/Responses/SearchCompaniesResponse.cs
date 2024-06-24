@@ -5,7 +5,7 @@ using SFA.DAS.EmployerAccounts.ExternalApi.Models;
 
 namespace SFA.DAS.EmployerAccounts.ExternalApi.Responses
 {
-    public class SearchCharitiesResponse
+    public class SearchCompaniesResponse
     {
         [JsonPropertyName("items")]
         public IEnumerable<CompanySearchResultsItem> Companies { get; set; }

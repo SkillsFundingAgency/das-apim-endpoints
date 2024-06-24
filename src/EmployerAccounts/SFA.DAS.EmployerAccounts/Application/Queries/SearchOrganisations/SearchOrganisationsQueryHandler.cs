@@ -12,10 +12,8 @@ using SFA.DAS.EmployerAccounts.ExternalApi.Responses;
 using SFA.DAS.EmployerAccounts.Helpers;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EducationalOrganisations;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.PublicSectorOrganisations;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.ReferenceData;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.PublicSectorOrganisation;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -62,21 +60,21 @@ public class SearchOrganisationsQueryHandler : IRequestHandler<SearchOrganisatio
             educationalOrganisations.EducationalOrganisations,
             companies,
             request.MaximumResults);
-            //publicSectorOrganisations.PublicSectorOrganisations, request.MaximumResults);
+        //publicSectorOrganisations.PublicSectorOrganisations, request.MaximumResults);
 
         return result;
     }
 
     private static SearchOrganisationsResult CombineMatches(
-        IEnumerable<Organisation> refApiOrganisations, 
+        IEnumerable<Organisation> refApiOrganisations,
         IEnumerable<EducationalOrganisation> educationalOrganisations,
         IEnumerable<OrganisationResult> companiesResults,
         /*IEnumerable<PublicSectorOrganisation> psOrganisations, */ int maxResults)
     {
-        var allOrganisations = refApiOrganisations.Select(o=> (OrganisationResult)o)
-                .Concat(educationalOrganisations.Select(o=> (OrganisationResult)o))
+        var allOrganisations = refApiOrganisations.Select(o => (OrganisationResult)o)
+                .Concat(educationalOrganisations.Select(o => (OrganisationResult)o))
                 .Concat(companiesResults);
-                //.Concat(psOrganisations.Select(o=> (OrganisationResult)o));
+        //.Concat(psOrganisations.Select(o=> (OrganisationResult)o));
 
         return new SearchOrganisationsResult
         {
@@ -91,8 +89,8 @@ public class SearchOrganisationsQueryHandler : IRequestHandler<SearchOrganisatio
             return _companiesHouseApi.Get<GetCompanyInfoResponse>(new GetCompanyInformationRequest(searchTerm)).ContinueWith(t => (object)t.Result);
         }
         else
-        {         
-            return _companiesHouseApi.Get<SearchCharitiesResponse>(new SearchCompanyInformationRequest(searchTerm, maximumResults)).ContinueWith(t => (object)t.Result);
+        {
+            return _companiesHouseApi.Get<SearchCompaniesResponse>(new SearchCompanyInformationRequest(searchTerm, maximumResults)).ContinueWith(t => (object)t.Result);
         }
     }
 
@@ -102,7 +100,7 @@ public class SearchOrganisationsQueryHandler : IRequestHandler<SearchOrganisatio
         return result switch
         {
             GetCompanyInfoResponse singleCompany => new List<OrganisationResult> { singleCompany },
-            SearchCharitiesResponse multipleCompanies => multipleCompanies?.Companies.Select(c => (OrganisationResult)c),
+            SearchCompaniesResponse multipleCompanies => multipleCompanies?.Companies.Select(c => (OrganisationResult)c),
             _ => []
         };
     }
