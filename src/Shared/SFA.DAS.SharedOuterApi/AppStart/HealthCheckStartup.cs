@@ -13,11 +13,11 @@ namespace SFA.DAS.SharedOuterApi.AppStart
             {
                 ResponseWriter = HealthCheckResponseWriter.WriteJsonResponse
             });
-
+            
             app.UseHealthChecks("/ping", new HealthCheckOptions
             {
                 Predicate = (_) => false,
-                ResponseWriter = (context, report) =>
+                ResponseWriter = (context, report) => 
                 {
                     context.Response.ContentType = "application/json";
                     return context.Response.WriteAsync("");
