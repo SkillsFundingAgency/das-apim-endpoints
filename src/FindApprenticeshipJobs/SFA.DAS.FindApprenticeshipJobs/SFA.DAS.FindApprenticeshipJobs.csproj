@@ -6,6 +6,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" />
+    <PackageReference Include="SFA.DAS.Notifications.Messages" />
+    <PackageReference Include="SFA.DAS.NServiceBus" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />

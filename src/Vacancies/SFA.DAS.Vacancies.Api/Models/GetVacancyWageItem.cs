@@ -17,7 +17,7 @@ namespace SFA.DAS.Vacancies.Api.Models
             return new GetVacancyWageItem
             {
                 WageAmount = source.WageAmount,
-                WageType = (WageType)source.WageType,
+                WageType = source.WageType == 0 ? WageType.Custom : (WageType)source.WageType,
                 WageAdditionalInformation = source.WageText,
                 WorkingWeekDescription = source.WorkingWeek,
                 WageAmountLowerBound = source.WageAmountLowerBound,
