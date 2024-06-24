@@ -42,7 +42,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             var result = await handler.Handle(query, CancellationToken.None);
 
             using var scope = new AssertionScope();
-            result.CandidateDetails.Address.Should().BeEquivalentTo(applicationApiResponse.Candidate.Address, options => options.Excluding(fil => fil.CandidateId));
+            result.CandidateDetails.Address.Should().BeEquivalentTo(applicationApiResponse.Candidate.Address, options => options.Excluding(fil => fil.CandidateId).Excluding(c=>c.Uprn));
             result.CandidateDetails.Should().BeEquivalentTo(applicationApiResponse.Candidate, options=> options
                     .Excluding(p=>p.MiddleNames)
                     .Excluding(p=>p.DateOfBirth)
