@@ -116,7 +116,7 @@ namespace SFA.DAS.ApprenticeApp.Api
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApprenticePoralOuterApi");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApprenticeAppOuterApi");
                 c.RoutePrefix = string.Empty;
             });
         }
