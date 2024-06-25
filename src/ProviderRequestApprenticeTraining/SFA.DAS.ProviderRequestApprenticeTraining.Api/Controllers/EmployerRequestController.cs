@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
 using System;
 using System.Net;
@@ -51,5 +52,16 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+
+        [HttpGet("aggregatedemployerrequests")]
+        public async Task<IActionResult> GetAggregatedEmployerRequests()
+        {
+            _logger.LogDebug($"Begin Get Aggregated Employer Requests");
+
+            var result = await _mediator.Send(new GetAggregatedEmployerRequestsQuery());
+            _logger.LogDebug($"End Get Aggregated Employer Requests");
+            return Ok(result.AggregatedEmployerRequests);   
+        }
+
     }
 }
