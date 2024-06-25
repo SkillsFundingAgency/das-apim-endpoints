@@ -5,6 +5,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests
 {
     public class GetAggregatedEmployerRequestsRequest : IGetApiRequest
     {
-        public string GetUrl => $"api/employerrequest/aggregatedrequests";
+        public string GetUrl => $"api/employerrequest/aggregated-employer-requests";
     }
 }
