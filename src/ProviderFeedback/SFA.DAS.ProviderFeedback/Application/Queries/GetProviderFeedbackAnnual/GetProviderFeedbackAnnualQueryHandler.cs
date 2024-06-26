@@ -26,8 +26,6 @@ namespace SFA.DAS.ProviderFeedback.Application.Queries.GetProviderFeedbackAnnual
 
             await Task.WhenAll(apprenticeFeedbackTask, employerFeedbackTask);
 
-            await Task.WhenAll(apprenticeFeedbackTask);
-
             GetProviderStandardAnnualItem providerDetails = new GetProviderStandardAnnualItem();
 
             providerDetails.Ukprn = request.ProviderId;
