@@ -101,10 +101,12 @@ namespace SFA.DAS.FindAnApprenticeship.Services
                     logger.LogError($"Ignoring saved vacancy reference [{legacyApplication.Vacancy.VacancyReference}] as closing date has passed.");
                     continue;
                 }
-                
+
+                var vacancyReference = legacyApplication.Vacancy.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
                 var data = new PostSavedVacancyApiRequestData
                 {
-                    VacancyReference = legacyApplication.Vacancy.VacancyReference,
+
+                    VacancyReference =  vacancyReference,
                     CreatedOn = legacyApplication.DateCreated ?? DateTime.UtcNow
                 };
                 var postRequest = new PutSavedVacancyApiRequest(candidateId, data);
