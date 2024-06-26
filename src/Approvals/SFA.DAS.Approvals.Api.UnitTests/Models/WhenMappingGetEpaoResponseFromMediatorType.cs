@@ -13,7 +13,8 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Models
         {
             var actual = (GetEpaoResponse) source;
             
-            actual.Should().BeEquivalentTo(source);
+            actual.Id.Should().Be(source.EndPointAssessorOrganisationId);
+            actual.Name.Should().Be(source.EndPointAssessorName);
         }
     }
 }
