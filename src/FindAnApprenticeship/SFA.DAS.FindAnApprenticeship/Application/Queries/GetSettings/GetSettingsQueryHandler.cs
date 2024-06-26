@@ -16,17 +16,16 @@ public class GetSettingsQueryHandler(ICandidateApiClient<CandidateApiConfigurati
     {
         var candidateTask = apiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId.ToString()));
         var preferencesTask = apiClient.Get<GetCandidatePreferencesApiResponse>(new GetCandidatePreferencesApiRequest(request.CandidateId));
-        var addressTask = apiClient.Get<GetCandidateAddressApiResponse>(new GetCandidateAddressApiRequest(request.CandidateId));
         var aboutYouTask = apiClient.Get<GetAboutYouItemApiResponse>(new GetAboutYouItemApiRequest(request.CandidateId));
 
-        await Task.WhenAll(candidateTask, preferencesTask, addressTask, aboutYouTask);
+        await Task.WhenAll(candidateTask, preferencesTask,  aboutYouTask);
 
         var candidate = candidateTask.Result;
         var preferences = preferencesTask.Result;
-        var address = addressTask.Result;
+        var address = candidate.Address;
         var aboutYou = aboutYouTask.Result;
 
-        address ??= new GetCandidateAddressApiResponse();
+        address ??= new GetAddressApiResponse();
 
         return new GetSettingsQueryResult
         {

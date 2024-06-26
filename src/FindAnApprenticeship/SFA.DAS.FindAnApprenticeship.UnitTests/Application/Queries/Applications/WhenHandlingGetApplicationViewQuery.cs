@@ -46,7 +46,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
             var result = await handler.Handle(query, CancellationToken.None);
 
             using var scope = new AssertionScope();
-            result.CandidateDetails.Address.Should().BeEquivalentTo(applicationApiResponse.Candidate.Address, options => options.Excluding(fil => fil.CandidateId));
+            result.CandidateDetails.Address.Should().BeEquivalentTo(applicationApiResponse.Candidate.Address, options => 
+                options.Excluding(fil => fil.CandidateId).Excluding(c=>c.Uprn));
             result.CandidateDetails.Should().BeEquivalentTo(applicationApiResponse.Candidate, options=> options
                     .Excluding(p=>p.MiddleNames)
                     .Excluding(p=>p.DateOfBirth)
@@ -59,6 +60,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
             result.ApplicationStatus.Should().Be(applicationApiResponse.Status);
             result.WithdrawnDate.Should().Be(applicationApiResponse.WithdrawnDate);
             result.MigrationDate.Should().Be(applicationApiResponse.MigrationDate);
+            
         }
     }
 }
