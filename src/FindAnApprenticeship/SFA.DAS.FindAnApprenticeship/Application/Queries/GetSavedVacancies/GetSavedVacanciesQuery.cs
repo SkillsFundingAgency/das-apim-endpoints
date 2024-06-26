@@ -29,6 +29,10 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
             public string EmployerName { get; set; }
             public DateTime CreatedDate { get; set; }
             public DateTime ClosingDate { get; set; }
+            public string City { get; set; }
+            public string Postcode { get; set; }
+            public bool IsExternalVacancy { get; set; }
+            public string ExternalVacancyUrl { get; set; }
         }
     }
 
@@ -64,11 +68,15 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
                 result.SavedVacancies.Add(new GetSavedVacanciesQueryResult.SavedVacancy
                 {
                     Id = application.Id,
-                    VacancyReference = vacancy?.VacancyReference,
-                    EmployerName = vacancy?.EmployerName,
-                    Title = vacancy?.Title,
-                    ClosingDate = vacancy?.ClosedDate ?? vacancy!.ClosingDate,
+                    VacancyReference = vacancy!.VacancyReference,
+                    EmployerName = vacancy!.EmployerName,
+                    Title = vacancy!.Title,
+                    ClosingDate = vacancy!.ClosedDate ?? vacancy!.ClosingDate,
                     CreatedDate = application.CreatedOn,
+                    City = vacancy!.City,
+                    Postcode = vacancy!.Postcode,
+                    IsExternalVacancy = vacancy!.IsExternalVacancy,
+                    ExternalVacancyUrl = vacancy!.ExternalVacancyUrl
                 });
             }
 

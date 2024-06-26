@@ -19,6 +19,11 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
             public string AdditionalQuestion1 { get; set; }
             public string AdditionalQuestion2 { get; set; }
             public bool IsDisabilityConfident { get; set; }
+            public string City { get; set; }
+            public string Postcode { get; set; }
+            public string ApplicationUrl { get; set; }
+            public string ExternalVacancyUrl => ApplicationUrl;
+            public bool IsExternalVacancy => !string.IsNullOrWhiteSpace(ApplicationUrl);
         }
     }
 }
