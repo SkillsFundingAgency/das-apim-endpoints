@@ -1,11 +1,11 @@
-﻿using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
+﻿using SFA.DAS.LevyTransferMatching.Infrastructure;
+using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex
 {
-    public class GetIndexQueryResult
+    public class GetIndexQueryResult : PagedQueryResult<GetIndexQueryResult.Opportunity>
     {
-        public IEnumerable<Opportunity> Opportunities { get; set; }
         public IEnumerable<ReferenceDataItem> Sectors { get; set; }
         public IEnumerable<ReferenceDataItem> JobRoles { get; set; }
         public IEnumerable<ReferenceDataItem> Levels { get; set; }
