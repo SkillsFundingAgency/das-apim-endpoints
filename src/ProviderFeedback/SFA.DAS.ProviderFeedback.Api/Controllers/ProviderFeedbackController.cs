@@ -88,11 +88,7 @@ namespace SFA.DAS.ProviderFeedback.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetProviderFeedbackForAcademicYearQuery
-                {
-                    ProviderId = ukprn,
-                    Year = year,
-                });
+                var result = GetProviderMockData.GetProviderFeedbackForAcademicYearResultMock();
 
                 if (result.ProviderStandard == null)
                 {
