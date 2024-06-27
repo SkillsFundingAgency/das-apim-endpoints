@@ -6,6 +6,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Opportunity
     public class GetIndexResponse
     {
         public IEnumerable<Opportunity> Opportunities { get; set; }
+        public int TotalOpportunities { get; set; }
+        public int Page { get; set; }
+        public int TotalPages { get; set; }
+        public int PageSize { get; set; }
         public IEnumerable<ReferenceDataItem> Sectors { get; set; }
         public IEnumerable<ReferenceDataItem> JobRoles { get; set; }
         public IEnumerable<ReferenceDataItem> Levels { get; set; }
