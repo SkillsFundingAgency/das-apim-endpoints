@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.ProviderFeedback.Api.MockResponse;
 using SFA.DAS.ProviderFeedback.Api.Models;
 using SFA.DAS.ProviderFeedback.Application.Queries.GetProviderFeedback;
 using SFA.DAS.ProviderFeedback.Application.Queries.GetProviderFeedbackAnnual;
@@ -88,7 +89,7 @@ namespace SFA.DAS.ProviderFeedback.Api.Controllers
         {
             try
             {
-                var result = GetProviderMockData.GetProviderFeedbackForAcademicYearResultMock();
+                var result = GetProviderFeedbackMockData.GetProviderFeedbackForAcademicYearResultMock();
 
                 if (result.ProviderStandard == null)
                 {
