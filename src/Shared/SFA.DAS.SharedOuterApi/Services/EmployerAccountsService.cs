@@ -120,7 +120,6 @@ namespace SFA.DAS.SharedOuterApi.Services
             return returnList.ToList();
         }
 
-
         /// <summary>
         /// Method to insert/update the user information.
         /// </summary>
