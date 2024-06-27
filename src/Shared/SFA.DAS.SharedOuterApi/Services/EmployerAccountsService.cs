@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -36,12 +37,11 @@ namespace SFA.DAS.SharedOuterApi.Services
             var lastName = string.Empty;
             var displayName = string.Empty;
             var isSuspended = false;
-            
+
             var userResponse =
                 await _employerProfilesApiClient.GetWithResponseCode<EmployerProfileUsersApiResponse>(
                     new GetEmployerUserAccountRequest(employerProfile.UserId));
-            
-            
+
             if (userResponse.StatusCode == HttpStatusCode.NotFound)
             {
                 if (!Guid.TryParse(employerProfile.UserId, out _))
@@ -60,8 +60,6 @@ namespace SFA.DAS.SharedOuterApi.Services
             }
             else
             {
-                // logic to check if the email address is the different/changed for the user account.
-                // if true then update the EmployerAccount with latest information.
                 if (!Guid.TryParse(employerProfile.UserId, out _) && userResponse.Body.Email != employerProfile.Email)
                 {
                     employerProfile.UserId = userResponse.Body.Id;
@@ -77,35 +75,37 @@ namespace SFA.DAS.SharedOuterApi.Services
                 displayName = userResponse.Body.DisplayName;
                 isSuspended = userResponse.Body.IsSuspended;
             }
-            
-            var result =
-                await _accountsApiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(userId));
 
-            
-            var returnList = new List<EmployerAccountUser>();
-            foreach(var account in result)
-            {
-                var teamMember = await _accountsApiClient.GetAll<GetAccountTeamMembersResponse>(new GetAccountTeamMembersRequest(account.EncodedAccountId));
-                
-                var member = teamMember.FirstOrDefault(c=>c.UserRef.Equals(userId, StringComparison.CurrentCultureIgnoreCase));
-                
-                if(member != null)
+            var result = await _accountsApiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(userId));
+
+            var returnList = new ConcurrentBag<EmployerAccountUser>();
+
+            await Parallel.ForEachAsync(result, new ParallelOptions { MaxDegreeOfParallelism = 10 },
+                async (account, _) =>
                 {
-                    returnList.Add(new EmployerAccountUser
-                    {
-                        Role = member.Role,
-                        DasAccountName = account.DasAccountName,
-                        EncodedAccountId = account.EncodedAccountId,
-                        FirstName = firstName,
-                        LastName = lastName,
-                        UserId = userId,
-                        DisplayName = displayName,
-                        IsSuspended = isSuspended
-                    });
-                }
-            }
+                    var teamMembers =
+                        await _accountsApiClient.GetAll<GetAccountTeamMembersResponse>(
+                            new GetAccountTeamMembersRequest(account.EncodedAccountId));
+                    var member = teamMembers.FirstOrDefault(c =>
+                        c.UserRef.Equals(userId, StringComparison.CurrentCultureIgnoreCase));
 
-            if (returnList.Count == 0)
+                    if (member != null)
+                    {
+                        returnList.Add(new EmployerAccountUser
+                        {
+                            Role = member.Role,
+                            DasAccountName = account.DasAccountName,
+                            EncodedAccountId = account.EncodedAccountId,
+                            FirstName = firstName,
+                            LastName = lastName,
+                            UserId = userId,
+                            DisplayName = displayName,
+                            IsSuspended = isSuspended
+                        });
+                    }
+                });
+
+            if (returnList.IsEmpty)
             {
                 returnList.Add(new EmployerAccountUser
                 {
@@ -117,8 +117,9 @@ namespace SFA.DAS.SharedOuterApi.Services
                 });
             }
 
-            return returnList;
+            return returnList.ToList();
         }
+
 
         /// <summary>
         /// Method to insert/update the user information.
