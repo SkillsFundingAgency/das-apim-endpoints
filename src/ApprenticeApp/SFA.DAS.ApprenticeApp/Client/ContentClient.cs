@@ -28,7 +28,6 @@ namespace SFA.DAS.ApprenticeApp.Client
         public async Task<List<T>> GetEntries<T>(string contentType, string field, string value) where T : IEntity
         {
             var queryBuilder = QueryBuilder<T>.New.ContentTypeIs(contentType).FieldEquals(field, value);
-                //.Include(_appSettings.ContentfulOptions.IncludeLevel);
 
             var items = await _contentfulClient.GetEntries(queryBuilder);
 
@@ -65,7 +64,6 @@ namespace SFA.DAS.ApprenticeApp.Client
 
         public async Task<ContentfulCollection<T>> GetPagesByContentType<T>(string contentType) where T : IEntity
         {
-            //var contentTypes = await _contentfulClient.GetContentTypes();
             var entries = await _contentfulClient.GetEntriesByType<T>(contentType);
             return entries;
         }

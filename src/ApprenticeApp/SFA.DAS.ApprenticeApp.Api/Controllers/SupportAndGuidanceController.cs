@@ -53,7 +53,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 EntryId = entryId
             });
 
-            //return Ok(queryResult.Item.Title);
             return Ok();
         }
 
@@ -90,29 +89,5 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             public bool? IsSaved { get; set; }
             public bool? LikeStatus { get; set; }
         }
-
-
-
-
-
-
-
-
-        // probs dont need this
-        [HttpGet]
-        [Route("/content/getentrybyidandchildren/{entryId}")]
-        public async Task<IActionResult> GetEntryByIdAndChildren(string entryId)
-        {
-            var queryResult = await _mediator.Send(new GetContentByEntityIdAndChildrenQuery
-            {
-                EntryId = entryId
-            });
-
-
-            return Ok(queryResult);
-        }
-
-
-
     }
 }
