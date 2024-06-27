@@ -11,6 +11,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Vacancies;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Vacancies;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesController
@@ -23,6 +24,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
         string vacancyReference,
         PostApplyApiRequest apiRequest,
         ApplyCommandResponse result,
+        [Frozen] Mock<IMetrics> metricsService,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.VacanciesController controller)
         {
@@ -41,12 +43,15 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
             mediator.Verify(m => m.Send(It.Is<ApplyCommand>(c =>
                     c.VacancyReference == vacancyReference && c.CandidateId == apiRequest.CandidateId),
                 CancellationToken.None));
+            
+            metricsService.Verify(x => x.IncreaseVacancyStarted(It.IsAny<string>(), 1), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_If_An_Exception_Is_Thrown_Then_Internal_Server_Error_Response_Returned(
             string vacancyReference,
             PostApplyApiRequest apiRequest,
+            [Frozen] Mock<IMetrics> metricsService,
             [Frozen] Mock<ILogger<Api.Controllers.VacanciesController>> logger,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.VacanciesController controller)
@@ -60,12 +65,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
 
             Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+            metricsService.Verify(x => x.IncreaseVacancyStarted(It.IsAny<string>(), 1), Times.Never);
         }
 
         [Test, MoqAutoData]
         public async Task Then_If_An_Null_Is_Returned_Then_Not_Found_Response_Returned(
             string vacancyReference,
             PostApplyApiRequest apiRequest,
+            [Frozen] Mock<IMetrics> metricsService,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.VacanciesController controller)
         {
@@ -78,6 +85,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
 
             Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+            metricsService.Verify(x => x.IncreaseVacancyStarted(It.IsAny<string>(), 1), Times.Never);
         }
     }
 }

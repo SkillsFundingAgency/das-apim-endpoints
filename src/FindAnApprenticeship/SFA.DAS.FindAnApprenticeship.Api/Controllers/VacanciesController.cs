@@ -8,8 +8,8 @@ using System.Net;
 using System.Threading.Tasks;
 using System;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Vacancies;
-using SFA.DAS.FindAnApprenticeship.Api.Telemetry;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Vacancies;
+using SFA.DAS.FindAnApprenticeship.Services;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -63,9 +63,13 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new ApplyCommand
-                    { CandidateId = request.CandidateId, VacancyReference = vacancyReference });
+                { CandidateId = request.CandidateId, VacancyReference = vacancyReference });
 
                 if (result == null) return new StatusCodeResult((int)HttpStatusCode.NotFound);
+
+                // increase the count of vacancy started counter metrics.
+                _metrics.IncreaseVacancyStarted(vacancyReference);
+                
                 return Created(result.ApplicationId.ToString(),(PostApplyApiResponse)result);
             }
             catch (Exception e)

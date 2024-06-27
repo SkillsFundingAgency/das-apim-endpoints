@@ -23,6 +23,7 @@ public class SubmitApplicationCommandHandler(
     ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
     IVacancyService vacancyService,
     INotificationService notificationService,
+    IMetrics metrics,
     EmailEnvironmentHelper helper) 
     : IRequestHandler<SubmitApplicationCommand, bool>
 {
@@ -50,18 +51,21 @@ public class SubmitApplicationCommandHandler(
             helper.SubmitApplicationEmailTemplateId,
             application.Candidate.Email,
             application.Candidate.FirstName,
-            vacancy?.Title, vacancy?.EmployerName, 
-            vacancy?.Address.AddressLine4 ?? vacancy?.Address.AddressLine3 ?? vacancy?.Address.AddressLine2 ?? vacancy?.Address.AddressLine1, 
-            vacancy?.Address.Postcode, 
+            vacancy?.Title, vacancy?.EmployerName,
+            vacancy?.Address.AddressLine4 ?? vacancy?.Address.AddressLine3 ?? vacancy?.Address.AddressLine2 ?? vacancy?.Address.AddressLine1,
+            vacancy?.Address.Postcode,
             helper.CandidateApplicationUrl);
         await notificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens));
         var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
-        
+
         jsonPatchDocument.Replace(x => x.Status, ApplicationStatus.Submitted);
-        
+
         var patchRequest = new PatchApplicationApiRequest(request.ApplicationId, request.CandidateId, jsonPatchDocument);
         await candidateApiClient.PatchWithResponseCode(patchRequest);
-        
+
+        // increase the count of vacancy submitted counter metrics.
+        metrics.IncreaseVacancySubmitted(application.VacancyReference);
+
         return true;
     }
 }

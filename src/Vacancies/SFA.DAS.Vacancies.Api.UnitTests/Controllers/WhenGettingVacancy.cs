@@ -7,12 +7,12 @@ using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Api.Controllers;
 using SFA.DAS.Vacancies.Api.Models;
-using SFA.DAS.Vacancies.Api.Telemetry;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Vacancies.Services;
 
 namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
 {
