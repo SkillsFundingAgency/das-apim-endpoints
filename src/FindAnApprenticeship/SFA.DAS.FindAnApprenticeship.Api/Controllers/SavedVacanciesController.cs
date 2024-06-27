@@ -9,7 +9,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies;
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("saved-vacancies")]
     public class SavedVacanciesController(IMediator mediator, ILogger<ApplicationsController> logger) : Controller
     {
         [HttpGet]
