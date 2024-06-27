@@ -41,7 +41,13 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
             mockCandidateApiClient
                 .Setup(client => client.PutWithResponseCode<PutCandidateApiResponse>(
                     It.Is<PutCandidateApiRequest>(c =>
-                        c.PutUrl == expectedRequest.PutUrl)))
+                        c.PutUrl == expectedRequest.PutUrl
+                        && ((PutCandidateApiRequestData)c.Data).MigratedEmail == legacyUserByEmailApiResponse.RegistrationDetails!.EmailAddress
+                        && ((PutCandidateApiRequestData)c.Data).FirstName == legacyUserByEmailApiResponse.RegistrationDetails!.FirstName
+                        && ((PutCandidateApiRequestData)c.Data).LastName == legacyUserByEmailApiResponse.RegistrationDetails!.LastName
+                        && ((PutCandidateApiRequestData)c.Data).DateOfBirth == legacyUserByEmailApiResponse.RegistrationDetails!.DateOfBirth
+                        && ((PutCandidateApiRequestData)c.Data).PhoneNumber == legacyUserByEmailApiResponse.RegistrationDetails!.PhoneNumber
+                        )))
                 .ReturnsAsync(new ApiResponse<PutCandidateApiResponse>(putCandidateApiResponse, HttpStatusCode.OK, string.Empty));
 
             var expectedPostRequest = new PutCandidateAddressApiRequest(command.CandidateId, new PutCandidateAddressApiRequestData());
