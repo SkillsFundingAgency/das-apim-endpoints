@@ -6,25 +6,24 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.Approvals.Application.Cohorts.Queries
+namespace SFA.DAS.Approvals.Application.Cohorts.Queries;
+
+public class GetCohortQueryHandler : IRequestHandler<GetCohortQuery, GetCohortResult>
 {
-    public class GetCohortQueryHandler : IRequestHandler<GetCohortQuery, GetCohortResult>
+    private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
+
+    public GetCohortQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
     {
-        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
+        _apiClient = apiClient;
+    }
 
-        public GetCohortQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
-        {
-            _apiClient = apiClient;
-        }
+    public async Task<GetCohortResult> Handle(GetCohortQuery request, CancellationToken cancellationToken)
+    {
+        var result = await _apiClient.Get<GetCohortResponse>(new GetCohortRequest(request.CohortId));
 
-        public async Task<GetCohortResult> Handle(GetCohortQuery request, CancellationToken cancellationToken)
-        {
-            var result = await _apiClient.Get<GetCohortResponse>(new GetCohortRequest(request.CohortId));
+        if (result == null)
+            return null;
 
-            if (result == null)
-                return null;
-
-            return (GetCohortResult)result;
-        }
+        return (GetCohortResult)result;
     }
 }

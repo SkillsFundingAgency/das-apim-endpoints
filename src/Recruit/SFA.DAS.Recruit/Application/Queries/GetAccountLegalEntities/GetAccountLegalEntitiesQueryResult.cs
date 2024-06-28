@@ -6,6 +6,5 @@ namespace SFA.DAS.Recruit.Application.Queries.GetAccountLegalEntities
     public class GetAccountLegalEntitiesQueryResult
     {
         public List<GetAccountLegalEntityResponseItem> AccountLegalEntities { get; set; }
-        
     }
 }

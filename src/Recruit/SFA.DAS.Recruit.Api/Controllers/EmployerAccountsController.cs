@@ -45,12 +45,12 @@ namespace SFA.DAS.Recruit.Api.Controllers
         }
 
         [HttpGet]
-        [Route("{hashedAccountId}/legalentities")]
-        public async Task<IActionResult> GetAccountLegalEntities(string hashedAccountId)
+        [Route("{accountId}/legalentities")]
+        public async Task<IActionResult> GetAccountLegalEntities(long accountId)
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetAccountLegalEntitiesQuery {HashedAccountId = hashedAccountId});
+                var queryResult = await _mediator.Send(new GetAccountLegalEntitiesQuery { AccountId = accountId });
 
                 return Ok((GetAccountLegalEntitiesResponse)queryResult);
             }

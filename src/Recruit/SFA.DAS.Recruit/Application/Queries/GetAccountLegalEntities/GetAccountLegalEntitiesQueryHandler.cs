@@ -21,7 +21,7 @@ namespace SFA.DAS.Recruit.Application.Queries.GetAccountLegalEntities
         {
             var response =
                 await _apiClient.GetAll<GetAccountLegalEntityResponseItem>(
-                    new GetAccountLegalEntitiesRequest(request.HashedAccountId));
+                    new GetAccountLegalEntitiesRequest(request.AccountId));
 
             if (response == null)
             {

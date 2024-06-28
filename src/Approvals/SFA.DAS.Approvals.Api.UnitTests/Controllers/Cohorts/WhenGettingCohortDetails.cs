@@ -13,76 +13,75 @@ using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.Cohorts;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 
-namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
+namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts;
+
+[TestFixture]
+public class WhenGettingCohortDetails
 {
-    [TestFixture]
-    public class WhenGettingCohortDetails
+    private CohortController _controller;
+    private Mock<IMediator> _mediator;
+    private GetCohortDetailsQueryResult _queryResult;
+
+    private long _cohortId;
+
+    [SetUp]
+    public void Setup()
     {
-        private CohortController _controller;
-        private Mock<IMediator> _mediator;
-        private GetCohortDetailsQueryResult _queryResult;
+        var fixture = new Fixture();
+        _queryResult = fixture.Create<GetCohortDetailsQueryResult>();
 
-        private long _cohortId;
+        _cohortId = fixture.Create<long>();
 
-        [SetUp]
-        public void Setup()
-        {
-            var fixture = new Fixture();
-            _queryResult = fixture.Create<GetCohortDetailsQueryResult>();
+        _mediator = new Mock<IMediator>();
+        _mediator.Setup(x => x.Send(It.Is<GetCohortDetailsQuery>(q =>
+                    q.CohortId == _cohortId),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_queryResult);
 
-            _cohortId = fixture.Create<long>();
+        _controller = new CohortController(Mock.Of<ILogger<DraftApprenticeshipController>>(), _mediator.Object);
+    }
 
-            _mediator = new Mock<IMediator>();
-            _mediator.Setup(x => x.Send(It.Is<GetCohortDetailsQuery>(q =>
-                        q.CohortId == _cohortId),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_queryResult);
+    [Test]
+    public async Task GetCohortDetailsResponseIsReturned()
+    {
+        var result = await _controller.GetCohortDetails(_cohortId);
 
-            _controller = new CohortController(Mock.Of<ILogger<DraftApprenticeshipController>>(), _mediator.Object);
-        }
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        var okObjectResult = (OkObjectResult)result;
+        Assert.That(okObjectResult.Value, Is.InstanceOf<GetCohortDetailsResponse>());
+        var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
 
-        [Test]
-        public async Task GetCohortDetailsResponseIsReturned()
-        {
-            var result = await _controller.GetCohortDetails(_cohortId);
+        var compare = new CompareLogic(new ComparisonConfig { MembersToIgnore = new List<string> { "DraftApprenticeships", "ApprenticeshipEmailOverlaps" }, IgnoreObjectTypes = true });
 
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
-            var okObjectResult = (OkObjectResult)result;
-            Assert.That(okObjectResult.Value, Is.InstanceOf<GetCohortDetailsResponse>());
-            var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
+        var comparisonResult = compare.Compare(_queryResult, objectResult);
+        Assert.That(comparisonResult.AreEqual, Is.True);
+    }
 
-            var compare = new CompareLogic(new ComparisonConfig { MembersToIgnore = new List<string> { "DraftApprenticeships", "ApprenticeshipEmailOverlaps" }, IgnoreObjectTypes = true });
+    [Test]
+    public async Task GetCohortDetailsResponseWithCorrectlyMappedDraftApprenticeshipsIsReturned()
+    {
+        var result = await _controller.GetCohortDetails(_cohortId);
 
-            var comparisonResult = compare.Compare(_queryResult, objectResult);
-            Assert.That(comparisonResult.AreEqual, Is.True);
-        }
+        var okObjectResult = (OkObjectResult)result;
+        var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
 
-        [Test]
-        public async Task GetCohortDetailsResponseWithCorrectlyMappedDraftApprenticeshipsIsReturned()
-        {
-            var result = await _controller.GetCohortDetails(_cohortId);
+        var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
 
-            var okObjectResult = (OkObjectResult)result;
-            var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
+        var comparisonResult = compare.Compare(_queryResult.DraftApprenticeships.Last(), objectResult.DraftApprenticeships.Last());
+        Assert.That(comparisonResult.AreEqual, Is.True);
+    }
 
-            var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
+    [Test]
+    public async Task GetCohortDetailsResponseWithCorrectlyMappedApprenticeshipEmailOverlapsIsReturned()
+    {
+        var result = await _controller.GetCohortDetails(_cohortId);
 
-            var comparisonResult = compare.Compare(_queryResult.DraftApprenticeships.Last(), objectResult.DraftApprenticeships.Last());
-            Assert.That(comparisonResult.AreEqual, Is.True);
-        }
+        var okObjectResult = (OkObjectResult)result;
+        var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
 
-        [Test]
-        public async Task GetCohortDetailsResponseWithCorrectlyMappedApprenticeshipEmailOverlapsIsReturned()
-        {
-            var result = await _controller.GetCohortDetails(_cohortId);
+        var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
 
-            var okObjectResult = (OkObjectResult)result;
-            var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
-
-            var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
-
-            var comparisonResult = compare.Compare(_queryResult.ApprenticeshipEmailOverlaps.Last(), objectResult.ApprenticeshipEmailOverlaps.Last());
-            Assert.That(comparisonResult.AreEqual, Is.True);
-        }
+        var comparisonResult = compare.Compare(_queryResult.ApprenticeshipEmailOverlaps.Last(), objectResult.ApprenticeshipEmailOverlaps.Last());
+        Assert.That(comparisonResult.AreEqual, Is.True);
     }
 }
