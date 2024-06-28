@@ -29,7 +29,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggre
             var aggregatedEmployerRequests = await _requestApprenticeshipTrainingApiClient.
                 Get<List<GetAggregatedEmployerRequestsResponse>>(new GetAggregatedEmployerRequestsRequest());
 
-            _logger.LogDebug($"End GetAggregatedEmployerRequestsHandler");
             return new GetAggregatedEmployerRequestsResult
             {
                 AggregatedEmployerRequests = aggregatedEmployerRequests.ToList()

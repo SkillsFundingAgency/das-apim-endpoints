@@ -55,7 +55,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api
 
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEmployerRequestQuery).Assembly));
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRoatpV2ProviderQuery).Assembly));
-            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAggregatedEmployerRequestsQuery).Assembly));
 
             services.AddServiceRegistration();
 
