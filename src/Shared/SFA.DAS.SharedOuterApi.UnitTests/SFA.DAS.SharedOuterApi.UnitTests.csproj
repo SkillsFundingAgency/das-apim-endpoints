@@ -24,7 +24,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\ProviderRequestApprenticeTraining\SFA.DAS.ProviderRequestApprenticeTraining\SFA.DAS.ProviderRequestApprenticeTraining.csproj" />
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 </Project>
