@@ -1,11 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.ProviderRequestApprenticeTraining.Api.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
 {
@@ -51,5 +54,23 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+
+        [HttpGet("aggregated-employer-requests")]
+        public async Task<IActionResult> GetAggregatedEmployerRequests()
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetAggregatedEmployerRequestsQuery());
+
+                var model = result.AggregatedEmployerRequests.Select(request => (AggregatedEmployerRequest)request).ToList();
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to retrieve aggregated employer requests");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
     }
 }
