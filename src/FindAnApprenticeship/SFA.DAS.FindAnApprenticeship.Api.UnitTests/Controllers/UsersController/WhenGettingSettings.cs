@@ -17,13 +17,14 @@ public class WhenGettingSettings
     [Test, MoqAutoData]
     public async Task And_An_Exception_Is_Thrown_Then_Returns_InternalServerError(
         Guid candidateId,
+        string email,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.UsersController controller)
     {
-        mediator.Setup(x => x.Send(It.Is<GetSettingsQuery>(x => x.CandidateId == candidateId), CancellationToken.None))
+        mediator.Setup(x => x.Send(It.Is<GetSettingsQuery>(x => x.CandidateId == candidateId && x.Email == email), CancellationToken.None))
             .ThrowsAsync(new Exception());
 
-        var actual = await controller.GetSettings(candidateId) as StatusCodeResult;
+        var actual = await controller.GetSettings(candidateId, email) as StatusCodeResult;
 
         actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }
@@ -31,14 +32,15 @@ public class WhenGettingSettings
     [Test, MoqAutoData]
     public async Task Then_Returns_Ok_Result(
         Guid candidateId,
+        string email,
         GetSettingsQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.UsersController controller)
     {
-        mediator.Setup(x => x.Send(It.Is<GetSettingsQuery>(x => x.CandidateId == candidateId), CancellationToken.None))
+        mediator.Setup(x => x.Send(It.Is<GetSettingsQuery>(x => x.CandidateId == candidateId && x.Email == email), CancellationToken.None))
             .ReturnsAsync(queryResult);
 
-        var actual = await controller.GetSettings(candidateId);
+        var actual = await controller.GetSettings(candidateId, email);
 
         actual.Should().BeOfType<OkObjectResult>();
     }
