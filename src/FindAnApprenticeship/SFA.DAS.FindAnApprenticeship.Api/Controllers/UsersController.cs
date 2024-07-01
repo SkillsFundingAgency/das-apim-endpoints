@@ -130,8 +130,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
-        [Route("create-account/postcode")]
-        public async Task<IActionResult> GetCandidatePostcode([FromQuery] Guid candidateId)
+        [Route("{candidateId}/create-account/postcode")]
+        public async Task<IActionResult> GetCandidatePostcode([FromRoute] Guid candidateId)
         {
             try
             {
