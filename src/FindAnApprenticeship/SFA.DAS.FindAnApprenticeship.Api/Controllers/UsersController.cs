@@ -394,13 +394,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 
 
         [HttpGet("settings")]
-        public async Task<IActionResult> GetSettings([FromQuery] Guid candidateId)
+        public async Task<IActionResult> GetSettings([FromQuery] Guid candidateId, [FromQuery] string email)
         {
             try
             {
                 var result = await _mediator.Send(new GetSettingsQuery
                 {
-                    CandidateId = candidateId
+                    CandidateId = candidateId,
+                    Email = email
                 });
 
                 return Ok(result);

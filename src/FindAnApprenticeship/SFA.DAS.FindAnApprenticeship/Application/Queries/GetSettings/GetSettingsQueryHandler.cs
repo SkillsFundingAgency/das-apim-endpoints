@@ -14,6 +14,12 @@ public class GetSettingsQueryHandler(ICandidateApiClient<CandidateApiConfigurati
 {
     public async Task<GetSettingsQueryResult> Handle(GetSettingsQuery request, CancellationToken cancellationToken)
     {
+        var postRequest = new PutCandidateApiRequest(request.CandidateId, new PutCandidateApiRequestData
+        {
+            Email = request.Email
+        });
+
+        await apiClient.PutWithResponseCode<PutCandidateApiResponse>(postRequest);
         var candidateTask = apiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId.ToString()));
         var preferencesTask = apiClient.Get<GetCandidatePreferencesApiResponse>(new GetCandidatePreferencesApiRequest(request.CandidateId));
         var aboutYouTask = apiClient.Get<GetAboutYouItemApiResponse>(new GetAboutYouItemApiRequest(request.CandidateId));
