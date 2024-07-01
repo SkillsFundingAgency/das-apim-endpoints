@@ -9,6 +9,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.BusinessMetrics
         DateTime StartDateTime,
         DateTime EndDateTime) : IGetApiRequest
     {
-        public string GetUrl => $"api/vacancy/{ServiceName}/metrics/{VacancyReference}?startDate={StartDateTime:O}&endDate={EndDateTime:O}";
+        public string GetUrl => $"api/vacancies/{ServiceName}/metrics/{VacancyReference}?startDate={StartDateTime:O}&endDate={EndDateTime:O}";
     }
 }

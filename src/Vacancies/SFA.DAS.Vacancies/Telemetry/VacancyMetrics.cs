@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using SFA.DAS.Vacancies.Services;
 
@@ -19,14 +20,14 @@ namespace SFA.DAS.Vacancies.Telemetry
         public void IncreaseVacancyViews(string vacancyReference, int viewCount = 1)
         {
             VacancyViewsCounter.Add(viewCount,
-                new KeyValuePair<string, object>("vacancy.reference", vacancyReference),
+                new KeyValuePair<string, object>("vacancy.reference", vacancyReference.Replace("VAC", string.Empty, StringComparison.CurrentCultureIgnoreCase)),
                 new KeyValuePair<string, object>("vacancy.source", Constants.OpenTelemetry.RequestSourceName));
         }
 
         public void IncreaseVacancySearchResultViews(string vacancyReference, int viewCount = 1)
         {
             VacancySearchResultViewCounter.Add(viewCount,
-                new KeyValuePair<string, object>("vacancy.reference", vacancyReference),
+                new KeyValuePair<string, object>("vacancy.reference", vacancyReference.Replace("VAC", string.Empty, StringComparison.CurrentCultureIgnoreCase)),
                 new KeyValuePair<string, object>("vacancy.source", Constants.OpenTelemetry.RequestSourceName));
         }
     }
