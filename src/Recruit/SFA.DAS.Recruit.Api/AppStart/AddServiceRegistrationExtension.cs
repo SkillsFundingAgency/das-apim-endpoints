@@ -28,6 +28,7 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
             services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
             services.AddTransient<ICandidateApiClient<CandidateApiConfiguration>, CandidateApiClient>();
+            services.AddTransient<IBusinessMetricsApiClient<BusinessMetricsConfiguration>, BusinessMetricsApiClient>();
         }
     }
 }
