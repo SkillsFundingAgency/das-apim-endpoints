@@ -28,7 +28,8 @@ namespace SFA.DAS.SharedOuterApi.Services
                 case AccountType.Provider:
                     var providerResponse =
                         await _providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
-                            new GetProviderAccountLegalEntitiesRequest(accountIdentifier.Ukprn, new List<Operation>()));
+                            new GetProviderAccountLegalEntitiesRequest(accountIdentifier.Ukprn,
+                                [Operation.Recruitment, Operation.RecruitmentRequiresReview]));
 
                     if (providerResponse == null)
                     {
