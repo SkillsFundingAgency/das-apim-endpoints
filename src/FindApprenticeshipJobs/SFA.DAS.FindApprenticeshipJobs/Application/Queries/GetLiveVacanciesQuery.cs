@@ -5,4 +5,5 @@ public class GetLiveVacanciesQuery : IRequest<GetLiveVacanciesQueryResult>
 {
     public int PageSize { get; set; }
     public int PageNumber { get; set; }
+    public DateTime? ClosingDate { get; set; }
 }
