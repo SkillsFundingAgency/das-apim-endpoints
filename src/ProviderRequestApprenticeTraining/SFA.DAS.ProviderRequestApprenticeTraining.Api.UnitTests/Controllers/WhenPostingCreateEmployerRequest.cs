@@ -23,7 +23,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
             CreateEmployerRequestCommand command,
             CreateEmployerRequestResponse response,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] EmployerRequestController controller)
+            [Greedy] EmployerRequestsController controller)
         {
             // Arrange
             mockMediator
@@ -43,7 +43,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             CreateEmployerRequestCommand command,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestController controller)
+            [Greedy] EmployerRequestsController controller)
         {
             // Arrange
             mediator.Setup(x => x.Send(It.IsAny<CreateEmployerRequestCommand>(), CancellationToken.None))

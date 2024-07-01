@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using SFA.DAS.Testing.AutoFixture;
 using System;
@@ -13,7 +12,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers
+namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.EmployerRequests
 {
     public class WhenGettingEmployerRequests
     {
@@ -22,7 +21,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers
             long accountId,
             GetEmployerRequestsResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] EmployerRequestController controller)
+            [Greedy] EmployerRequestsController controller)
         {
             mockMediator
                 .Setup(x => x.Send(It.Is<GetEmployerRequestsQuery>(p => p.AccountId == accountId), CancellationToken.None))
@@ -30,7 +29,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers
 
             var actual = await controller.GetEmployerRequests(accountId) as ObjectResult;
 
-            Assert.That(actual, Is.Not.Null);
+            actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
             actual.Value.Should().BeEquivalentTo(queryResult.EmployerRequests);
         }
@@ -39,14 +38,14 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             long accountId,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestController controller)
+            [Greedy] EmployerRequestsController controller)
         {
             mediator.Setup(x => x.Send(It.IsAny<GetEmployerRequestsQuery>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
             var actual = await controller.GetEmployerRequests(accountId) as StatusCodeResult;
 
-            Assert.That(actual, Is.Not.Null);
+            actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }

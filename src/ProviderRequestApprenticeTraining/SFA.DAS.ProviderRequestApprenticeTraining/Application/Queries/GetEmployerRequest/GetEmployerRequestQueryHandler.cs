@@ -25,7 +25,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmplo
 
             return new GetEmployerRequestResult
             {
-                EmployerRequest = (Models.EmployerRequest)employerRequest
+                EmployerRequest = (SharedOuterApi.Models.RequestApprenticeTraining.EmployerRequest)employerRequest
             };
         }
     }

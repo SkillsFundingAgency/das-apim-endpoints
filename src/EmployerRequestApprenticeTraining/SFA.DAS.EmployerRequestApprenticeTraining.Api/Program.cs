@@ -2,11 +2,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using NLog.Web;
 using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
 {
     [ExcludeFromCodeCoverage]
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -19,6 +20,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
                 {
                     webBuilder.UseStartup<Startup>();
                 })
-                .UseNLog();
+                .UseNLog()
+                .UseNServiceBusContainer();
     }
 }
