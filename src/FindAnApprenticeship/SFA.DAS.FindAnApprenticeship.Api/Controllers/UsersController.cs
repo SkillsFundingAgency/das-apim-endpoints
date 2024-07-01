@@ -388,13 +388,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 		
 		[HttpGet, Route("migrate")]
-        public async Task<IActionResult> MigrateDataTransfer([FromQuery] string emailAddress)
+        public async Task<IActionResult> MigrateDataTransfer([FromQuery] string emailAddress, [FromQuery] Guid candidateId)
         {
             try
             {
                 var result = await _mediator.Send(new MigrateDataQuery
                 {
-                    EmailAddress = emailAddress
+                    EmailAddress = emailAddress,
+                    CandidateId = candidateId
                 });
 
                 return Ok((GetMigrateDataTransferApiResponse)result);
