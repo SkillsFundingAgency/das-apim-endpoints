@@ -24,6 +24,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateName;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePostcode;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.MigrateData;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetSettings;
 
@@ -128,6 +129,30 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("create-account/postcode")]
+        public async Task<IActionResult> GetCandidatePostcode([FromQuery] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCandidatePostcodeQuery
+                {
+                    CandidateId = candidateId
+
+                });
+                if (string.IsNullOrEmpty(result.Postcode))
+                {
+                    return NotFound();
+                }
+                return Ok(new { result.Postcode });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting candidates Postcode");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+        
         [HttpGet]
         [Route("create-account/postcode-address")]
         public async Task<IActionResult> PostcodeAddress([FromQuery] string postcode)
