@@ -16,14 +16,14 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.EmployerRequests
+namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Locations
 {
     public class WhenGettingLocations
     {
         [Test, MoqAutoData]
         public async Task Then_The_Locations_Are_Returned_From_Mediator(
             string searchTerm,
-            GetLocationsQueryResult queryResult,
+            GetLocationsResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] LocationsController controller)
         {
@@ -44,7 +44,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
         [Test, MoqAutoData]
         public async Task Then_Exact_Location_Is_Returned_From_Mediator_When_ExactMatch_Is_True(
             string searchTerm,
-            GetLocationQueryResult queryResult,
+            GetLocationResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] LocationsController controller)
         {

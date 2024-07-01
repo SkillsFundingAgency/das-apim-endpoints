@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
@@ -21,11 +22,13 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmplo
         public async Task<GetEmployerRequestResult> Handle(GetEmployerRequestQuery request, CancellationToken cancellationToken)
         {
             var employerRequest = await _requestApprenticeTrainingApiClient.
-                Get<EmployerRequest>(new GetEmployerRequestRequest(request.EmployerRequestId));
+                GetWithResponseCode<EmployerRequest>(new GetEmployerRequestRequest(request.EmployerRequestId));
+
+            employerRequest.EnsureSuccessStatusCode();
 
             return new GetEmployerRequestResult
             {
-                EmployerRequest = (SharedOuterApi.Models.RequestApprenticeTraining.EmployerRequest)employerRequest
+                EmployerRequest = (SharedOuterApi.Models.RequestApprenticeTraining.EmployerRequest)employerRequest.Body
             };
         }
     }

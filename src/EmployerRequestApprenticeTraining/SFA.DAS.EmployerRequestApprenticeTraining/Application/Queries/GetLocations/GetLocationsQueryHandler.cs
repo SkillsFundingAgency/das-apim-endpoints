@@ -3,13 +3,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocations
 {
-    public class GetLocationsQueryHandler : IRequestHandler<GetLocationsQuery, GetLocationsQueryResult>
+    public class GetLocationsQueryHandler : IRequestHandler<GetLocationsQuery, GetLocationsResult>
     {
         private readonly ILocationApiClient<LocationApiConfiguration> _apiClient;
 
@@ -18,13 +19,14 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocat
             _apiClient = apiClient;
         }
 
-        public async Task<GetLocationsQueryResult> Handle(GetLocationsQuery request, CancellationToken cancellationToken)
+        public async Task<GetLocationsResult> Handle(GetLocationsQuery request, CancellationToken cancellationToken)
         {
-            var result = await _apiClient.Get<GetLocationsListResponse>(new GetLocationsQueryRequest(request.SearchTerm));
+            var result = await _apiClient.GetWithResponseCode<GetLocationsListResponse>(new GetLocationsQueryRequest(request.SearchTerm));
+            result.EnsureSuccessStatusCode();
 
-            return new GetLocationsQueryResult
+            return new GetLocationsResult
             {
-                Locations = result.Locations.ToList()
+                Locations = result.Body.Locations.ToList()
             };
         }
     }
