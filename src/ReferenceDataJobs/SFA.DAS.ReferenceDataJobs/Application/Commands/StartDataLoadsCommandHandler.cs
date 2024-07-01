@@ -24,18 +24,18 @@ public class StartDataLoadsCommandHandler : IRequestHandler<StartDataLoadsComman
     public async Task Handle(StartDataLoadsCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Calling Client to Starting ImportData");
-        //var psImportTask = _psoApiClient.PostWithResponseCode<object>(new PostPublicSectorOrganisationsDataLoadRequest(), false);
+        var psImportTask = _psoApiClient.PostWithResponseCode<object>(new PostPublicSectorOrganisationsDataLoadRequest(), false);
         var edImportTask = _educationalOrganisationApiClient.PostWithResponseCode<object>(new PostEducationOrganisationsDataLoadRequest(), false);
-        //Task.WhenAll(edImportTask, psImportTask);
+        Task.WhenAll(edImportTask, psImportTask);
 
-        //var psResult = await psImportTask;
+        var psResult = await psImportTask;
         var edResult = await edImportTask;
 
         string errors = "";
-        //if (!string.IsNullOrWhiteSpace(psResult.ErrorContent))
-        //{
-        //    errors = "Public Sector orgs Import \r\n" + psResult.ErrorContent + "\r\n";
-        //}
+        if (!string.IsNullOrWhiteSpace(psResult.ErrorContent))
+        {
+            errors = "Public Sector orgs Import \r\n" + psResult.ErrorContent + "\r\n";
+        }
         if (!string.IsNullOrWhiteSpace(edResult.ErrorContent))
         {
             errors += "Education orgs Import \r\n" + edResult.ErrorContent;
