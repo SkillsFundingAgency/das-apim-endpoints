@@ -38,6 +38,17 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
 
         if (existingUser.StatusCode != HttpStatusCode.NotFound)
         {
+            if (existingUser.Body.Email != request.Email)
+            {
+                var updateEmailRequest = new PutCandidateApiRequest(existingUser.Body.Id, new PutCandidateApiRequestData
+                {
+                    Email = request.Email
+                });
+
+                await _candidateApiClient.PutWithResponseCode<PutCandidateApiResponse>(updateEmailRequest);    
+            }
+            
+            
             return new CreateCandidateCommandResult
             {
                 Id = existingUser.Body.Id,
@@ -76,7 +87,10 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
 
         candidateResult.EnsureSuccessStatusCode();
 
-        if (candidateResult is null) return null;
+        if (candidateResult is null)
+        {
+            return null;
+        }
 
         await _legacyApplicationMigrationService.MigrateLegacyApplications(candidateResult.Body.Id, request.Email);
 
