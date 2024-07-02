@@ -76,7 +76,7 @@ public class WhenHandlingPostCandidateCommand
         using (new AssertionScope())
         {
             result.GovUkIdentifier.Should().BeEquivalentTo(candidate.GovUkIdentifier);
-            result.Email.Should().BeEquivalentTo(candidate.Email);
+            result.Email.Should().BeEquivalentTo(command.Email);
             result.FirstName.Should().BeEquivalentTo(candidate.FirstName);
             result.LastName.Should().BeEquivalentTo(candidate.LastName);
             result.Id.Should().Be(candidate.Id);

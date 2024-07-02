@@ -53,7 +53,7 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
             {
                 Id = existingUser.Body.Id,
                 GovUkIdentifier = existingUser.Body.GovUkIdentifier,
-                Email = existingUser.Body.Email,
+                Email = request.Email,
                 FirstName = existingUser.Body.FirstName,
                 LastName = existingUser.Body.LastName,
                 PhoneNumber = existingUser.Body.PhoneNumber,
