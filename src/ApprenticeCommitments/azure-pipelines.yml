@@ -6,8 +6,11 @@ trigger:
   paths:
     include:
     - azure
-    - pipeline-templates     
+    - pipeline-templates
     - src/ApprenticeCommitments
+    exclude:
+    - azure/shared-infrastructure-template.json
+    - pipeline-templates/job/shared-arm-deploy.yml
 
 pr:
   autoCancel: true
@@ -17,8 +20,11 @@ pr:
   paths:
     include:
     - azure
-    - pipeline-templates     
+    - pipeline-templates
     - src/ApprenticeCommitments
+    exclude:
+    - azure/shared-infrastructure-template.json
+    - pipeline-templates/job/shared-arm-deploy.yml
 
 variables:
 - group: Release Management Resources
