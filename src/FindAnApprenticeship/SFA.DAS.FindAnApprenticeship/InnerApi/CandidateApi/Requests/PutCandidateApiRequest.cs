@@ -17,4 +17,5 @@ public class PutCandidateApiRequestData
     public string LastName { get; set; }
     public string PhoneNumber { get; set; }
     public UserStatus Status { get; set; }
+    public string MigratedEmail { get; set; }
 }

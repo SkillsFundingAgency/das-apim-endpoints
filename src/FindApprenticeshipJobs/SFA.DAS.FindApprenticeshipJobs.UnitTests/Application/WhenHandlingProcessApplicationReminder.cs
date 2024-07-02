@@ -40,7 +40,7 @@ public class WhenHandlingProcessApplicationReminder
         recruitApiResponse.EmployerLocation.AddressLine2 = address2;
         recruitApiResponse.EmployerLocation.AddressLine3 = address3;
         recruitApiResponse.EmployerLocation.AddressLine4 = address4;
-        candidatePreference.PreferenceType = "Email";
+        candidatePreference.PreferenceType = "Closing";
         candidateApiClient
             .Setup(x => x.Get<GetCandidateApplicationApiResponse>(
                 It.Is<GetCandidateApplicationsByVacancyRequest>(c =>
@@ -93,7 +93,7 @@ public class WhenHandlingProcessApplicationReminder
         [Frozen] Mock<INotificationService> notificationService,
         ProcessApplicationReminderCommandHandler handler)
     {
-        candidatePreference.PreferenceType = "Email";
+        candidatePreference.PreferenceType = "CLOSING";
         candidateApiClient
             .Setup(x => x.Get<GetCandidateApplicationApiResponse>(
                 It.Is<GetCandidateApplicationsByVacancyRequest>(c =>

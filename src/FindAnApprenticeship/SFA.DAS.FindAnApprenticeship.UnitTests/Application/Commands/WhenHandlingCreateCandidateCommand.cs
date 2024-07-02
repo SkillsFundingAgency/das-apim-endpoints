@@ -31,6 +31,7 @@ public class WhenHandlingPostCandidateCommand
         CreateCandidateCommandHandler handler)
     {
         command.GovUkIdentifier = govUkId;
+        command.Email = candidate.Email;
 
         var expectedGetCandidateRequest = new GetCandidateApiRequest(govUkId);
         mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(
@@ -48,6 +49,41 @@ public class WhenHandlingPostCandidateCommand
             result.Id.Should().Be(candidate.Id);
             result.Status.Should().Be(candidate.Status);
         }
+    }
+    [Test, MoqAutoData]
+    public async Task Then_If_Candidate_Already_Exists_And_Email_Is_Different_Then_Updated_And_Details_Are_Returned(
+        CreateCandidateCommand command,
+        string govUkId,
+        GetCandidateApiResponse candidate,
+        PostCandidateApiResponse response,
+        GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
+        [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
+        CreateCandidateCommandHandler handler)
+    {
+        command.GovUkIdentifier = govUkId;
+
+        var expectedGetCandidateRequest = new GetCandidateApiRequest(govUkId);
+        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(
+                It.Is<GetCandidateApiRequest>(r => r.GetUrl == expectedGetCandidateRequest.GetUrl)))
+            .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(candidate, HttpStatusCode.OK, string.Empty));
+        mockApiClient.Setup(x => x.PutWithResponseCode<PutCandidateApiResponse>(
+                It.Is<PutCandidateApiRequest>(r => r.PutUrl.Contains(candidate.Id.ToString()))))
+            .ReturnsAsync(new ApiResponse<PutCandidateApiResponse>(null, HttpStatusCode.OK, string.Empty));
+
+        var result = await handler.Handle(command, CancellationToken.None);
+
+        using (new AssertionScope())
+        {
+            result.GovUkIdentifier.Should().BeEquivalentTo(candidate.GovUkIdentifier);
+            result.Email.Should().BeEquivalentTo(command.Email);
+            result.FirstName.Should().BeEquivalentTo(candidate.FirstName);
+            result.LastName.Should().BeEquivalentTo(candidate.LastName);
+            result.Id.Should().Be(candidate.Id);
+            result.Status.Should().Be(candidate.Status);
+        }
+        mockApiClient.Verify(x => x.PutWithResponseCode<PutCandidateApiResponse>(
+                It.Is<PutCandidateApiRequest>(r => r.PutUrl.Contains(candidate.Id.ToString()) && ((PutCandidateApiRequestData)r.Data).Email == command.Email)), Times.Once());
     }
 
     [Test, MoqAutoData]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts
 {
@@ -13,9 +14,11 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
     }
 
-    public enum ApprenticeshipEmployerType
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum ApprenticeshipEmployerType : byte
     {
         NonLevy = 0,
-        Levy = 1
+        Levy = 1,
+        Unknown = 2,
     }
 }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.EmployerAccounts.Application.Queries.AccountUsers;
 using SFA.DAS.EmployerAccounts.Application.Queries.AccountUsers.Queries;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 
 namespace SFA.DAS.EmployerAccounts.Api.Models
 {
@@ -36,6 +37,7 @@ namespace SFA.DAS.EmployerAccounts.Api.Models
         public string EncodedAccountId { get ; set ; }
         public string DasAccountName { get ; set ; }
         public string Role { get ; set ; }
+        public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
 
         public static implicit operator UserAccountsApiResponseItem(AccountUser source)
         {
@@ -43,7 +45,8 @@ namespace SFA.DAS.EmployerAccounts.Api.Models
             {
                 DasAccountName = source.DasAccountName,
                 EncodedAccountId = source.EncodedAccountId,
-                Role = source.Role
+                Role = source.Role,
+                ApprenticeshipEmployerType = source.ApprenticeshipEmployerType
             };
         }
     }
