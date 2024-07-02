@@ -1,9 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture.NUnit3;
+using Azure.Core;
 using FluentAssertions;
+using Moq;
 using NUnit.Framework;
+using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
+using SFA.DAS.ApprenticeApp.InnerApi.ApprenticeAccounts.Requests;
+using SFA.DAS.ApprenticeApp.Models;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
@@ -35,5 +45,13 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
 
             sut.Should().NotBeNull();
         }
+
+
+
+
+
+
+
+
     }
 }

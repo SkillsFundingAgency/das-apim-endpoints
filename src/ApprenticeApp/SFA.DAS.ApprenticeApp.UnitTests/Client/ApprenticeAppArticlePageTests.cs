@@ -5,7 +5,6 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Client
 {
     public class ApprenticeAppArticlePageTests
     {
-
         [Test]
         public void ApprenticeAppArticlePageTests_PropsMatch()
         {
@@ -26,9 +25,6 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Client
             Assert.That(sut.ParentPageEntityId, Is.EqualTo("1234"));
             Assert.That(sut.Slug, Is.EqualTo("slug"));
             Assert.That(sut.ParentPageTitle, Is.EqualTo("title"));
-
         }
-
-
     }
 }
