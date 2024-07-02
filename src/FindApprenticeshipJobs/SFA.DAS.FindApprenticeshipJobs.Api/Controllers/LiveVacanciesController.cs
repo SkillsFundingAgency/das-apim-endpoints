@@ -81,4 +81,23 @@ public class LiveVacanciesController : ControllerBase
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
+    
+    [HttpPost]
+    [Route("{vacancyReference}/close")]
+    public async Task<IActionResult> PostVacancyClosed([FromRoute] long vacancyReference)
+    {
+        try
+        {
+            await _mediator.Send(new ProcessVacancyClosedEarlyCommand
+            {
+                VacancyReference = vacancyReference
+            });
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error closing vacancy");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
 }
