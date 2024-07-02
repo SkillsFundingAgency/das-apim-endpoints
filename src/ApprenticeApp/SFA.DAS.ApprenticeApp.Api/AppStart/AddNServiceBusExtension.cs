@@ -16,6 +16,8 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
     [ExcludeFromCodeCoverage]
     public static class AddNServiceBusExtension
     {
+        public const string endpointName = "SFA.DAS.PushNotifications";
+
         public static async Task<UpdateableServiceProvider> StartServiceBus
         (
             this UpdateableServiceProvider serviceProvider,
@@ -25,9 +27,6 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
             var config = configuration
             .GetSection("NServiceBusConfiguration")
             .Get<NServiceBusConfiguration>();
-
-            string endpointName = configuration["NServiceBusConfiguration:NServiceBusEndpointName"];
-            if (string.IsNullOrEmpty(endpointName)) { endpointName = "SFA.DAS.ApprenticeApp"; }
 
             var endpointConfiguration = new EndpointConfiguration(endpointName)
                 .UseErrorQueue($"{endpointName}-errors")
