@@ -9,6 +9,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using System.Linq;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
 {
@@ -71,6 +72,28 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+
+        [HttpGet("select-employer-requests")]
+        public async Task<IActionResult> GetSelectEmployerRequests(string standardReference, int ukprn)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetSelectEmployerRequestsQuery() 
+                {
+                    StandardReference = standardReference,
+                    Ukprn = ukprn
+                });
+
+                var model = (SelectEmployerRequests)result;
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to retrieve aggregated employer requests");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
 
     }
 }
