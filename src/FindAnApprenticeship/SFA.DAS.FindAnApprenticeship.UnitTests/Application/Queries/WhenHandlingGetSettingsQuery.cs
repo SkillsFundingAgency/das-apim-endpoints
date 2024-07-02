@@ -1,4 +1,5 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Net;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -7,6 +8,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
@@ -26,6 +28,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 .Setup(client => client.Get<GetCandidateApiResponse>(
                     It.Is<GetCandidateApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
                 .ReturnsAsync(apiResponse);
+            
+            mockApiClient
+                .Setup(client => client.PutWithResponseCode<PutCandidateApiResponse>(
+                    It.Is<PutCandidateApiRequest>(c => c.PutUrl.Contains(query.CandidateId.ToString()))))
+                .ReturnsAsync(new ApiResponse<PutCandidateApiResponse>(null,HttpStatusCode.Accepted,""));
 
             mockApiClient
                 .Setup(client => client.Get<GetCandidatePreferencesApiResponse>(
