@@ -14,5 +14,7 @@
     public class ApplicationStatus
     {
         public static readonly string Pending = "Pending";
+        public static readonly string Accepted = "Accepted";
+        public static readonly string Approved = "Approved";
     }
 }

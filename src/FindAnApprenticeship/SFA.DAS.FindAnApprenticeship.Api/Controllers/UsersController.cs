@@ -21,6 +21,12 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.CheckAnswer
 using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.PhoneNumber;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateName;
+using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
+using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePostcode;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.MigrateData;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetSettings;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -123,6 +129,30 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("{candidateId}/create-account/postcode")]
+        public async Task<IActionResult> GetCandidatePostcode([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCandidatePostcodeQuery
+                {
+                    CandidateId = candidateId
+
+                });
+                if (string.IsNullOrEmpty(result.Postcode))
+                {
+                    return NotFound();
+                }
+                return Ok(new { result.Postcode });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting candidates Postcode");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+        
         [HttpGet]
         [Route("create-account/postcode-address")]
         public async Task<IActionResult> PostcodeAddress([FromQuery] string postcode)
@@ -358,6 +388,67 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error posting candidate create account check answers");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+
+        [HttpGet("settings")]
+        public async Task<IActionResult> GetSettings([FromQuery] Guid candidateId, [FromQuery] string email)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetSettingsQuery
+                {
+                    CandidateId = candidateId,
+                    Email = email
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error getting settings");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+		
+		[HttpGet, Route("migrate")]
+        public async Task<IActionResult> MigrateDataTransfer([FromQuery] string emailAddress, [FromQuery] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new MigrateDataQuery
+                {
+                    EmailAddress = emailAddress,
+                    CandidateId = candidateId
+                });
+
+                return Ok((GetMigrateDataTransferApiResponse)result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Get Migrate data transfer : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost, Route("{candidateId}/migrate")]
+        public async Task<IActionResult> MigrateDataTransfer([FromRoute] Guid candidateId, [FromBody] PostMigrateDataTransferApiRequest request)
+        {
+            try
+            {
+                var result = await _mediator.Send(new MigrateDataCommand
+                {
+                    CandidateId = candidateId,
+                    EmailAddress = request.EmailAddress
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Post Migrate data transfer: An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

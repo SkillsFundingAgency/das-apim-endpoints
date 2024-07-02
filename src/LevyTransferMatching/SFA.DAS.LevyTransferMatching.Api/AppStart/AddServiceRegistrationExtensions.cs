@@ -29,6 +29,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
             services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
             services.AddTransient<IEmployerAccountsApiClient<EmployerAccountsConfiguration>, EmployerAccountsApiClient>();
+            services.AddTransient<IFinanceApiClient<FinanceApiConfiguration>, FinanceApiClient>();
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<IAccountsService, AccountsService>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
@@ -38,6 +39,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
             services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
             services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
+            services.AddTransient<IForecastingApiClient<ForecastingApiConfiguration>, ForecastingApiClient>();
+
         }
     }
 }

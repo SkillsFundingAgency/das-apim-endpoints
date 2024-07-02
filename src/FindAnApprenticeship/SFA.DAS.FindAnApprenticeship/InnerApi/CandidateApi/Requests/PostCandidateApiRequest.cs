@@ -15,4 +15,5 @@ public class PostCandidateApiRequestData
     public DateTime? DateOfBirth { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    public string MigratedEmail { get; set; }
 }

@@ -10,7 +10,6 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplicationSubmmitted;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplicationSubmitted;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply;
@@ -21,12 +20,14 @@ public class WhenHandlingGetApplicationSubmittedQuery
         GetApplicationSubmittedQuery query,
         GetApplicationApiResponse application,
         GetApprenticeshipVacancyItemResponse vacancy,
+        GetAboutYouItemApiResponse aboutYou,
         [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetApplicationSubmittedQueryHandler handler)
     {
         var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
         var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
+        var expectedAboutYouRequest = new GetAboutYouItemApiRequest(query.CandidateId);
 
         candidateApiClient
             .Setup(client => client.Get<GetApplicationApiResponse>(
@@ -38,6 +39,11 @@ public class WhenHandlingGetApplicationSubmittedQuery
                 It.Is<GetVacancyRequest>(r => r.GetUrl == expectedGetVacancyRequest.GetUrl)))
             .ReturnsAsync(vacancy);
 
+        candidateApiClient
+            .Setup(client => client.Get<GetAboutYouItemApiResponse>(
+                It.Is<GetAboutYouItemApiRequest>(r => r.GetUrl == expectedAboutYouRequest.GetUrl)))
+            .ReturnsAsync(aboutYou);
+
         var result = await handler.Handle(query, CancellationToken.None);
 
         using (new AssertionScope())
@@ -48,7 +54,43 @@ public class WhenHandlingGetApplicationSubmittedQuery
             findApprenticeshipApiClient.Verify(p => p.Get<GetApprenticeshipVacancyItemResponse>(It.Is<GetVacancyRequest>(x => x.GetUrl == expectedGetVacancyRequest.GetUrl)), Times.Once);
             result.EmployerName.Should().BeEquivalentTo(vacancy.EmployerName);
             result.VacancyTitle.Should().BeEquivalentTo(vacancy.Title);
+            result.HasAnsweredEqualityQuestions.Should().Be(aboutYou.AboutYou != null);
         }
+    }
+
+    [Test, MoqAutoData]
+    public async Task When_AboutYou_Is_Null_Then_HasCompletedEqualityQuestions_Is_False(
+        GetApplicationSubmittedQuery query,
+        GetApplicationApiResponse application,
+        GetApprenticeshipVacancyItemResponse vacancy,
+        GetAboutYouItemApiResponse aboutYou,
+        [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+        GetApplicationSubmittedQueryHandler handler)
+    {
+        var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
+        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
+        var expectedAboutYouRequest = new GetAboutYouItemApiRequest(query.CandidateId);
+
+        candidateApiClient
+            .Setup(client => client.Get<GetApplicationApiResponse>(
+                It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
+            .ReturnsAsync(application);
+
+        findApprenticeshipApiClient
+            .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(
+                It.Is<GetVacancyRequest>(r => r.GetUrl == expectedGetVacancyRequest.GetUrl)))
+            .ReturnsAsync(vacancy);
+
+        aboutYou.AboutYou = null;
+        candidateApiClient
+            .Setup(client => client.Get<GetAboutYouItemApiResponse>(
+                It.Is<GetAboutYouItemApiRequest>(r => r.GetUrl == expectedAboutYouRequest.GetUrl)))
+            .ReturnsAsync(aboutYou);
+
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        result.HasAnsweredEqualityQuestions.Should().Be(false);
     }
 
     [Test, MoqAutoData]
