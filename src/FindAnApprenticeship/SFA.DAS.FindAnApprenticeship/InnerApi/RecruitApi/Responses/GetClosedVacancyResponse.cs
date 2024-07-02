@@ -25,6 +25,10 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
         [JsonPropertyName("disabilityConfident")]
         public dynamic DisabilityConfident { get; set; }
 		public DateTime? ClosedDate { get; set; }
+        public string City => EmployerLocation.AddressLine4;
+        public string Postcode => EmployerLocation.Postcode;
+        public bool IsExternalVacancy => false;
+        public string ExternalVacancyUrl => string.Empty;
 
         public class Address
         {
