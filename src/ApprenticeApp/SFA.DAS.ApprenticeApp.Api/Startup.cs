@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Contentful.Core.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -61,6 +62,9 @@ namespace SFA.DAS.ApprenticeApp.Api
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetApprenticeDetailsQuery).Assembly));
 
             services.AddServiceRegistration();
+
+            services.AddSingleton<IContentTypeResolver, ContentfulEntityResolver>();
+            services.AddContentfulServices(_configuration);
 
             services
                 .AddMvc(o =>

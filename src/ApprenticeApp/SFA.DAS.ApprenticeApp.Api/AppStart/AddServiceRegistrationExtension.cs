@@ -25,6 +25,7 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
             services.AddTransient<TrainingProviderService>();
             services.AddTransient<CoursesService>();
             services.AddTransient<SubscriptionService>();
+            services.AddTransient<ContentService>();
         }
     }
 }
