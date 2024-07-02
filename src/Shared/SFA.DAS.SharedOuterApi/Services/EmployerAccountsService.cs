@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -22,11 +23,13 @@ namespace SFA.DAS.SharedOuterApi.Services
     {
         private readonly IEmployerProfilesApiClient<EmployerProfilesApiConfiguration> _employerProfilesApiClient;
         private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
+        private readonly ILogger<EmployerAccountsService> _logger;
 
-        public EmployerAccountsService(IEmployerProfilesApiClient<EmployerProfilesApiConfiguration> employerProfilesApiClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient)
+        public EmployerAccountsService(IEmployerProfilesApiClient<EmployerProfilesApiConfiguration> employerProfilesApiClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient, ILogger<EmployerAccountsService> logger)
         {
             _employerProfilesApiClient = employerProfilesApiClient;
             _accountsApiClient = accountsApiClient;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<EmployerAccountUser>> GetEmployerAccounts(EmployerProfile employerProfile)
@@ -40,7 +43,6 @@ namespace SFA.DAS.SharedOuterApi.Services
             var userResponse =
                 await _employerProfilesApiClient.GetWithResponseCode<EmployerProfileUsersApiResponse>(
                     new GetEmployerUserAccountRequest(employerProfile.UserId));
-            
             
             if (userResponse.StatusCode == HttpStatusCode.NotFound)
             {
@@ -56,6 +58,18 @@ namespace SFA.DAS.SharedOuterApi.Services
                     lastName = employerUserResponse.Body.LastName;
                     displayName = employerUserResponse.Body.DisplayName;
                     isSuspended = employerUserResponse.Body.IsSuspended;
+
+                    // TODO Review this 
+                    // It is possible that the name is missing when this function is called,
+                    // this logging should help identify this
+                    _logger.LogInformation("UserId {0} added to Employer Profile:  Is Lastname blank {1}",
+                        employerProfile.UserId, string.IsNullOrWhiteSpace(lastName));
+                }
+                else
+                {
+                    // TODO Review this
+                    // It may be called when the if user id is a valid guid name will be blank
+                    _logger.LogInformation("UserId {0} is a guid: Lastname will be blank", employerProfile.UserId);
                 }
             }
             else
@@ -109,8 +123,8 @@ namespace SFA.DAS.SharedOuterApi.Services
             {
                 returnList.Add(new EmployerAccountUser
                 {
-                    FirstName = firstName,
-                    LastName = lastName,
+                    FirstName = string.IsNullOrWhiteSpace(firstName) ? "Unknown" : firstName,
+                    LastName = string.IsNullOrWhiteSpace(lastName) ? "Unknown" : lastName,
                     UserId = userId,
                     DisplayName = displayName,
                     IsSuspended = isSuspended

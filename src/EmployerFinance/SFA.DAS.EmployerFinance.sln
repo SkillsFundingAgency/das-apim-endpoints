@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31424.327
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{988FB7FC-2B13-4611-AB77-A1B16C964505}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerFinance.Api.UnitTests", "SFA.DAS.EmployerFinance.Api.UnitTests\SFA.DAS.EmployerFinance.Api.UnitTests.csproj", "{13A11EDA-F91B-4800-9F57-EDEDCE4EB0A4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerFinance.UnitTests", "SFA.DAS.EmployerFinance.UnitTests\SFA.DAS.EmployerFinance.UnitTests.csproj", "{EF8844A9-7309-4E8B-9306-8B4A805B5C7B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{9F5BF86B-5F9F-42FB-A2E2-7E5AF73618F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{EF8844A9-7309-4E8B-9306-8B4A805B5C7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF8844A9-7309-4E8B-9306-8B4A805B5C7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF8844A9-7309-4E8B-9306-8B4A805B5C7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F5BF86B-5F9F-42FB-A2E2-7E5AF73618F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F5BF86B-5F9F-42FB-A2E2-7E5AF73618F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F5BF86B-5F9F-42FB-A2E2-7E5AF73618F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F5BF86B-5F9F-42FB-A2E2-7E5AF73618F7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
