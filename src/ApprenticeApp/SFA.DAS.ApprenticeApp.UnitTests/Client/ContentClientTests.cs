@@ -41,6 +41,5 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Client
             _contentfulClient.Verify(x => x.GetEntries(It.IsAny<QueryBuilder<TestPage>>(), default));
         }
 
-
     }
 }
