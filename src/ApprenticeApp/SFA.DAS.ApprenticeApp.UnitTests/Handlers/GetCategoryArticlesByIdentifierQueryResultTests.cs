@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeSubscriptions;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
-using SFA.DAS.ApprenticeApp.Models;
-using SFA.DAS.ApprenticeApp.Models.Contentful;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
