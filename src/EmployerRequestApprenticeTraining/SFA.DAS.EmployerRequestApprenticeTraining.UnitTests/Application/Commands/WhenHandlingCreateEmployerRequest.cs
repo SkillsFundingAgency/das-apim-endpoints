@@ -24,7 +24,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
     {
         private Mock<IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration>> _mockApiClient;
         private Mock<INotificationService> _mockNotificationsService;
-        private Mock<IOptions<RequestApprenticeTrainingConfiguration>> _mockOptions;
+        private Mock<IOptions<EmployerRequestApprenticeTrainingConfiguration>> _mockOptions;
         private CreateEmployerRequestCommandHandler _handler;
 
         [SetUp]
@@ -32,9 +32,9 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
         {
             _mockApiClient = new Mock<IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration>>();
             _mockNotificationsService = new Mock<INotificationService>();
-            _mockOptions = new Mock<IOptions<RequestApprenticeTrainingConfiguration>>();
+            _mockOptions = new Mock<IOptions<EmployerRequestApprenticeTrainingConfiguration>>();
 
-            var notificationTemplates = new RequestApprenticeTrainingConfiguration
+            var notificationTemplates = new EmployerRequestApprenticeTrainingConfiguration
             {
                 NotificationTemplates = new List<NotificationTemplate>
                 {
@@ -131,7 +131,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
             _mockApiClient.Setup(c => c.PostWithResponseCode<CreateEmployerRequestData, CreateEmployerRequestResponse>(It.IsAny<CreateEmployerRequestRequest>(), It.IsAny<bool>()))
                 .ReturnsAsync(apiResponse);
 
-            var emptyNotificationTemplates = new RequestApprenticeTrainingConfiguration
+            var emptyNotificationTemplates = new EmployerRequestApprenticeTrainingConfiguration
             {
                 NotificationTemplates = new List<NotificationTemplate>()
             };

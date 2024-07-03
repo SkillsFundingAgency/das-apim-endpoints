@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.AppStart
             services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection(nameof(EmployerProfilesApiConfiguration)));
             services.Configure<RequestApprenticeTrainingApiConfiguration>(configuration.GetSection(nameof(RequestApprenticeTrainingApiConfiguration)));
             services.Configure<NServiceBusConfiguration>(configuration.GetSection(nameof(NServiceBusConfiguration)));
-            services.Configure<RequestApprenticeTrainingConfiguration>(configuration.GetSection(nameof(RequestApprenticeTrainingConfiguration)));
+            services.Configure<EmployerRequestApprenticeTrainingConfiguration>(configuration.GetSection(nameof(EmployerRequestApprenticeTrainingConfiguration)));
 
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<RequestApprenticeTrainingApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<NServiceBusConfiguration>>().Value);
-            services.AddSingleton(cfg => cfg.GetService<IOptions<RequestApprenticeTrainingConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerRequestApprenticeTrainingConfiguration>>().Value);
         }
     }
 }
