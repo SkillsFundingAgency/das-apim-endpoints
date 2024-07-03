@@ -73,16 +73,16 @@ public class EmployerAccountsService(
             isSuspended = userResponse.Body.IsSuspended;
         }
 
-        var result = await accountsApiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(userId));
+        var userAccountsResponse = await accountsApiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(userId));
 
         var returnList = new ConcurrentBag<EmployerAccountUser>();
 
-        await Parallel.ForEachAsync(result, new ParallelOptions { MaxDegreeOfParallelism = 10 },
-            async (account, _) =>
+        await Parallel.ForEachAsync(userAccountsResponse, new ParallelOptions { MaxDegreeOfParallelism = 10 },
+            async (userAccount, _) =>
             {
                 var teamMembers =
                     await accountsApiClient.GetAll<GetAccountTeamMembersResponse>(
-                        new GetAccountTeamMembersRequest(account.EncodedAccountId));
+                        new GetAccountTeamMembersRequest(userAccount.EncodedAccountId));
                 var member = teamMembers.FirstOrDefault(c =>
                     c.UserRef.Equals(userId, StringComparison.CurrentCultureIgnoreCase));
 
@@ -91,13 +91,14 @@ public class EmployerAccountsService(
                     returnList.Add(new EmployerAccountUser
                     {
                         Role = member.Role,
-                        DasAccountName = account.DasAccountName,
-                        EncodedAccountId = account.EncodedAccountId,
+                        DasAccountName = userAccount.DasAccountName,
+                        EncodedAccountId = userAccount.EncodedAccountId,
                         FirstName = firstName,
                         LastName = lastName,
                         UserId = userId,
                         DisplayName = displayName,
-                        IsSuspended = isSuspended
+                        IsSuspended = isSuspended,
+                        ApprenticeshipEmployerType = userAccount.ApprenticeshipEmployerType
                     });
                 }
             });
