@@ -25,7 +25,6 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
             _accountsApiClient = accountsApiClient;
         }
 
-
         public async Task<GetCategoryArticlesByIdentifierQueryResult> Handle(GetCategoryArticlesByIdentifierQuery request, CancellationToken cancellationToken)
         {
             var categoryPage = await _contentService.GetCategoryArticlesByIdentifier(request.Slug);
@@ -53,6 +52,5 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
                 ApprenticeArticles = apprenticeSavedArticles
             };
         }
-
     }
 }

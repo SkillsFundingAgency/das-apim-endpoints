@@ -33,12 +33,15 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
 
             List<Page> articles = new();
 
-            foreach (string entryId in result.ApprenticeArticles.Where(x => x.IsSaved == true).Select(x => x.EntryId))
+            if (result.ApprenticeArticles != null)
             {
-                var page = await _contentService.GetPageById(entryId);
-                if (page != null)
+                foreach (string entryId in result.ApprenticeArticles.Where(x => x.IsSaved == true).Select(x => x.EntryId))
                 {
-                    articles.Add(page);
+                    var page = await _contentService.GetPageById(entryId);
+                    if (page != null)
+                    {
+                        articles.Add(page);
+                    }
                 }
             }
 
