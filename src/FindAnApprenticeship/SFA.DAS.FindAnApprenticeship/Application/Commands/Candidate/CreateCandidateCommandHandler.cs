@@ -78,7 +78,8 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
             FirstName = userDetails?.RegistrationDetails?.FirstName,
             LastName = userDetails?.RegistrationDetails?.LastName,
             DateOfBirth = registrationDetailsDateOfBirth,
-            MigratedEmail = userDetails == null ? null : request.Email
+            MigratedEmail = userDetails == null ? null : request.Email,
+            MigratedCandidateId = userDetails?.Id
         };
 
         var postRequest = new PostCandidateApiRequest(request.GovUkIdentifier, postData);
