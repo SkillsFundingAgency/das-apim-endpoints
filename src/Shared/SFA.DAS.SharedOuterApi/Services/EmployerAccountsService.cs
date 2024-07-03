@@ -55,6 +55,8 @@ public class EmployerAccountsService(
         }
         else
         {
+            // logic to check if the email address is the different/changed for the user account.
+            // if true then update the EmployerAccount with latest information.
             if (!Guid.TryParse(employerProfile.UserId, out _) && userResponse.Body.Email != employerProfile.Email)
             {
                 employerProfile.UserId = userResponse.Body.Id;
