@@ -7,13 +7,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.InnerApi.CandidateApi.Requests;
 public class WhenBuildingPutSkillsAndStrengthsApiRequest
 {
     [Test, AutoData]
-    public void Then_The_Request_Url_Is_Correctly_Built(
-        Guid applicationId,
-        Guid candidateId,
-        Guid id)
+    public void Then_The_Request_Url_Is_Correctly_Built(Guid candidateId)
     {
-        var actual = new PutUpsertAboutYouItemApiRequest(applicationId, candidateId, id, new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData());
+        var actual = new PutUpsertAboutYouItemApiRequest(candidateId, new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData());
 
-        actual.PutUrl.Should().Be($"api/candidates/{candidateId}/applications/{applicationId}/about-you/{id}");
+        actual.PutUrl.Should().Be($"api/candidates/{candidateId}/about-you");
     }
 }

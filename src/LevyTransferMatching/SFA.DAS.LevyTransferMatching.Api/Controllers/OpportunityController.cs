@@ -36,15 +36,15 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("opportunities")]
-        public async Task<IActionResult> GetIndex([FromQuery] IEnumerable<string> sectors = null)
+        public async Task<IActionResult> GetIndex([FromQuery] IEnumerable<string> sectors = null, int page = 1, int? pagesize = null)
         {
             try
             {
-                var result = await _mediator.Send(new GetIndexQuery() { Sectors = sectors });
+                var result = await _mediator.Send(new GetIndexQuery() { Sectors = sectors, Page = page, PageSize = pagesize });
 
                 var response = new GetIndexResponse
                 {
-                    Opportunities = result.Opportunities.Select(x => new GetIndexResponse.Opportunity
+                    Opportunities = result.Items.Select(x => new GetIndexResponse.Opportunity
                     {
                         Id = x.Id,
                         Amount = x.Amount,
@@ -55,6 +55,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                         Levels = x.Levels,
                         Locations = x.Locations
                     }),
+                    TotalOpportunities = result.TotalItems,
+                    TotalPages = result.TotalPages,
+                    PageSize = result.PageSize,
+                    Page = result.Page,
                     Sectors = result.Sectors,
                     JobRoles = result.JobRoles,
                     Levels = result.Levels,
