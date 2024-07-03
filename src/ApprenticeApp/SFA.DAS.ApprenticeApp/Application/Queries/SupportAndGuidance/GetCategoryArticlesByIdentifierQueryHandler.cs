@@ -28,6 +28,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
         public async Task<GetCategoryArticlesByIdentifierQueryResult> Handle(GetCategoryArticlesByIdentifierQuery request, CancellationToken cancellationToken)
         {
             var categoryPage = await _contentService.GetCategoryArticlesByIdentifier(request.Slug);
+
             var apprenticeSavedArticles = new ApprenticeArticleCollection();
 
             if (request.Id != null)
