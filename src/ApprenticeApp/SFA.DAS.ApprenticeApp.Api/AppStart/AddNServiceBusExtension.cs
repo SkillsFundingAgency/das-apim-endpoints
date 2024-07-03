@@ -16,12 +16,11 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
     [ExcludeFromCodeCoverage]
     public static class AddNServiceBusExtension
     {
-        public const string endpointName = "SFA.DAS.PushNotifications";
-
         public static async Task<UpdateableServiceProvider> StartServiceBus
         (
             this UpdateableServiceProvider serviceProvider,
-            IConfiguration configuration
+            IConfiguration configuration,
+            string endpointName
         )
         {
             var config = configuration
