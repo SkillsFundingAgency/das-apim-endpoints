@@ -1,20 +1,14 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
 using AutoFixture.NUnit3;
-using Contentful.Core.Models;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Client;
-using SFA.DAS.ApprenticeApp.Models.Contentful;
 using SFA.DAS.ApprenticeApp.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
@@ -33,7 +27,6 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
         {
             contentClient.Setup(x =>
                                x.GetBySlugWithChildren("type").Result);
-
             await sut.Handle(query, cancellationToken);
             sut.Should().NotBeNull();
         } 

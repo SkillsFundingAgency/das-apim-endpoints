@@ -35,7 +35,6 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             return Task.CompletedTask;
         }
 
-
         [Test, MoqAutoData]
         public Task Get_Category_Articles_By_Identifier_Test(ContentService service)
         {
@@ -44,6 +43,5 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             result.Should().NotBeNull();
             return Task.CompletedTask;
         }
-
     }
 }

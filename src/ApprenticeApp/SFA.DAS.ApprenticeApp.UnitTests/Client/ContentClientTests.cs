@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using System.Threading.Tasks;
 using Contentful.Core;
 using Contentful.Core.Models;
@@ -22,9 +21,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Client
         public void Setup()
         {
             _contentfulClient = new Mock<IContentfulClient>();
-
             _configuration = new Mock<IConfiguration>();
-
             _contentClient = new ContentClient(new TestEntityResolver(), _contentfulClient.Object,
                  _configuration.Object);
         }
@@ -36,12 +33,9 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Client
 
             _contentfulClient.Setup(x => x.GetEntries(It.IsAny<QueryBuilder<TestPage>>(), default))
                 .ReturnsAsync(new ContentfulCollection<TestPage> { Items = items });
-
             var result = await _contentClient.GetEntries<TestPage>("", "", "");
-
             _contentfulClient.Verify(x => x.GetEntries(It.IsAny<QueryBuilder<TestPage>>(), default));
         }
-
 
         [Test]
         public async Task GetAllPages()
@@ -92,6 +86,5 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Client
             var result = await _contentClient.GetPagesByContentType<TestPage>("123");
             result.Should().BeNull();
         }
-
     }
 }

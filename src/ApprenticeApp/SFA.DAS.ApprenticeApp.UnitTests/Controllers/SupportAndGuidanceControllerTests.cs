@@ -6,16 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Api.Controllers;
-using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.Testing.AutoFixture;
-using static SFA.DAS.ApprenticeApp.Api.Controllers.ApprenticeController;
 using static SFA.DAS.ApprenticeApp.Api.Controllers.SupportAndGuidanceController;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests
 {
     public class SupportAndGuidanceControllerTests
     {
-
         [Test, MoqAutoData]
         public async Task Get_Categories_Test(
             [Greedy] SupportAndGuidanceController controller)
@@ -83,7 +80,6 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkObjectResult));
         }
 
-
         [Test, MoqAutoData]
         public async Task Add_Update_Apprentice_Article_Test(
             [Greedy] SupportAndGuidanceController controller)
@@ -102,8 +98,5 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             var result = await controller.AddUpdateApprenticeArticle(id, articleIdentifier, request) as OkResult;
             result.Should().BeOfType(typeof(OkResult));
         }
-
-
-
     }
 }

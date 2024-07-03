@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeSubscriptions;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
-using static SFA.DAS.ApprenticeApp.Api.Controllers.ApprenticeController;
 
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
 {
@@ -56,7 +55,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok();
         }
 
-        // saved articles
         [HttpGet]
         [Route("/supportguidance/savedarticles/{id}")]
         public async Task<IActionResult> GetSavedArticles(Guid id)
@@ -69,7 +67,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok(queryResult);
         }
 
-        // add or update saved apprentice article
         [HttpPost("/apprentices/{id}/articles/{articleIdentifier}")]
         public async Task<IActionResult> AddUpdateApprenticeArticle(Guid id, string articleIdentifier, [FromBody] ApprenticeArticleRequest request)
         {
