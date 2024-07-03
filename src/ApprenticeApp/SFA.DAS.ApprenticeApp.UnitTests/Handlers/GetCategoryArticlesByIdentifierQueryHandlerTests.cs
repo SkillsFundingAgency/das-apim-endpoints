@@ -2,21 +2,26 @@
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.NUnit3;
+using Contentful.Core.Models;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Client;
+using SFA.DAS.ApprenticeApp.Models.Contentful;
 using SFA.DAS.ApprenticeApp.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
 {
     public class GetCategoryArticlesByIdentifierQueryHandlerTests
     {
-       /* [Test, MoqAutoData]
+        [Test, MoqAutoData]
         public async Task GetCategoryArticlesByIdentifierQueryHandlerTestsCheck(
             [Frozen] Mock<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>> client,
             [Frozen] Mock<IContentService> contentService,
@@ -26,8 +31,11 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             CancellationToken cancellationToken
         )
         {
+            contentClient.Setup(x =>
+                               x.GetBySlugWithChildren("type").Result);
+
             await sut.Handle(query, cancellationToken);
             sut.Should().NotBeNull();
-        } */
+        } 
     }
 }

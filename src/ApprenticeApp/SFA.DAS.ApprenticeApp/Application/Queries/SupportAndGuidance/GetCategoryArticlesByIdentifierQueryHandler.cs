@@ -38,12 +38,15 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
 
             List<ApprenticeAppArticlePage> articles = new();
 
-            foreach (var childPage in categoryPage.IncludedEntries)
+            if (categoryPage != null)
             {
-                ApprenticeAppArticlePage p = childPage.Fields.ToObject<ApprenticeAppArticlePage>();
-                p.Id = childPage.SystemProperties.Id;
-                p.ParentPageEntityId = categoryPage.SystemProperties.Id;
-                articles.Add(p);
+                foreach (var childPage in categoryPage.IncludedEntries)
+                {
+                    ApprenticeAppArticlePage p = childPage.Fields.ToObject<ApprenticeAppArticlePage>();
+                    p.Id = childPage.SystemProperties.Id;
+                    p.ParentPageEntityId = categoryPage.SystemProperties.Id;
+                    articles.Add(p);
+                }
             }
 
             return new GetCategoryArticlesByIdentifierQueryResult

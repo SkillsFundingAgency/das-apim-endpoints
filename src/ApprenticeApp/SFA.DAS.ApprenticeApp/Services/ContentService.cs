@@ -105,8 +105,8 @@ namespace SFA.DAS.ApprenticeApp.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unable to process contentful GetPageBySlugWithChildren");
-                throw;
             }
+            return null;
         }
     }
 }
