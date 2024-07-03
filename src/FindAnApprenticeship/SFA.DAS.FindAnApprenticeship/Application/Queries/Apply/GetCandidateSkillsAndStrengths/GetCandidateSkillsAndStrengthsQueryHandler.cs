@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
@@ -22,16 +20,12 @@ public class GetCandidateSkillsAndStrengthsQueryHandler : IRequestHandler<GetCan
     {
 
         var response =
-            await _candidateApiClient.GetWithResponseCode<GetAboutYouItemApiResponse>(
-                new GetAboutYouItemApiRequest(request.ApplicationId, request.CandidateId));
+            await _candidateApiClient.GetWithResponseCode<GetApplicationApiResponse>(
+                new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
 
-        if (response.StatusCode == HttpStatusCode.NotFound)
+        return new GetCandidateSkillsAndStrengthsQueryResult
         {
-            return await _candidateApiClient.PutWithResponseCode<PutUpsertAboutYouItemApiResponse>
-            (new PutUpsertAboutYouItemApiRequest(request.ApplicationId, request.CandidateId, Guid.NewGuid(),
-                new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData()));
-        }
-        
-        return response;
+            Strengths = response.Body.Strengths
+        };
     }
 }

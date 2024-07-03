@@ -18,7 +18,7 @@ public class ProcessApplicationReminderCommandHandler(
     {
         var preference = await candidateApiClient.Get<GetPreferencesApiResponse>(new GetCandidatePreferencesRequest());
         var emailPreference = preference.Preferences
-            .FirstOrDefault(c => c.PreferenceType.Equals("email", StringComparison.CurrentCultureIgnoreCase));
+            .FirstOrDefault(c => c.PreferenceType.Equals("closing", StringComparison.CurrentCultureIgnoreCase));
         if (emailPreference == null)
         {
             return new Unit();

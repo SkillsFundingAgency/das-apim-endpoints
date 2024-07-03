@@ -19,18 +19,12 @@ public class WhenHandlingGetInterviewAdjustmentsQuery
         bool isSectionCompleted,
         string sectionStatus,
         GetInterviewAdjustmentsQuery query,
-        GetAboutYouItemApiResponse interviewAdjustmentsApiResponse,
         GetApplicationApiResponse applicationApiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetInterviewAdjustmentsQueryHandler handler)
     {
         applicationApiResponse.InterviewAdjustmentsStatus = sectionStatus;
-        var expectedGetInterviewAdjustmentsRequest = new GetAboutYouItemApiRequest(query.ApplicationId, query.CandidateId);
-        candidateApiClient
-            .Setup(client => client.Get<GetAboutYouItemApiResponse>(
-                It.Is<GetAboutYouItemApiRequest>(r => r.GetUrl == expectedGetInterviewAdjustmentsRequest.GetUrl)))
-            .ReturnsAsync(interviewAdjustmentsApiResponse);
-
+        
         var expectedApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
         candidateApiClient.Setup(client =>
                 client.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedApplicationRequest.GetUrl)))
@@ -41,7 +35,7 @@ public class WhenHandlingGetInterviewAdjustmentsQuery
         result.Should().BeEquivalentTo(new GetInterviewAdjustmentsQueryResult
         {
             IsSectionCompleted = isSectionCompleted,
-            InterviewAdjustmentsDescription = interviewAdjustmentsApiResponse.AboutYou.Support,
+            InterviewAdjustmentsDescription = applicationApiResponse.Support,
             ApplicationId = applicationApiResponse.Id
         });
     }

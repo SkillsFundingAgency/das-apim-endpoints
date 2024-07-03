@@ -38,11 +38,22 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
 
         if (existingUser.StatusCode != HttpStatusCode.NotFound)
         {
+            if (existingUser.Body.Email != request.Email)
+            {
+                var updateEmailRequest = new PutCandidateApiRequest(existingUser.Body.Id, new PutCandidateApiRequestData
+                {
+                    Email = request.Email
+                });
+
+                await _candidateApiClient.PutWithResponseCode<PutCandidateApiResponse>(updateEmailRequest);    
+            }
+            
+            
             return new CreateCandidateCommandResult
             {
                 Id = existingUser.Body.Id,
                 GovUkIdentifier = existingUser.Body.GovUkIdentifier,
-                Email = existingUser.Body.Email,
+                Email = request.Email,
                 FirstName = existingUser.Body.FirstName,
                 LastName = existingUser.Body.LastName,
                 PhoneNumber = existingUser.Body.PhoneNumber,
@@ -67,6 +78,7 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
             FirstName = userDetails?.RegistrationDetails?.FirstName,
             LastName = userDetails?.RegistrationDetails?.LastName,
             DateOfBirth = registrationDetailsDateOfBirth,
+            MigratedEmail = userDetails == null ? null : request.Email
         };
 
         var postRequest = new PostCandidateApiRequest(request.GovUkIdentifier, postData);
@@ -75,7 +87,10 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
 
         candidateResult.EnsureSuccessStatusCode();
 
-        if (candidateResult is null) return null;
+        if (candidateResult is null)
+        {
+            return null;
+        }
 
         await _legacyApplicationMigrationService.MigrateLegacyApplications(candidateResult.Body.Id, request.Email);
 

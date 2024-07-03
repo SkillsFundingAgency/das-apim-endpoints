@@ -15,19 +15,15 @@ public class UpsertAboutYouEqualityQuestionsCommandHandler(
 {
     public async Task<UpsertAboutYouEqualityQuestionsCommandResult> Handle(UpsertAboutYouEqualityQuestionsCommand command, CancellationToken cancellationToken)
     {
-        var aboutYouItem = await apiClient.Get<GetAboutYouItemApiResponse>(new GetAboutYouItemApiRequest(command.ApplicationId, command.CandidateId));
-
         var requestBody = new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData
         {
-            SkillsAndStrengths = aboutYouItem.AboutYou?.SkillsAndStrengths,
-            Support = aboutYouItem.AboutYou?.Support,
             Sex = command.Sex,
             EthnicGroup = command.EthnicGroup,
             EthnicSubGroup = command.EthnicSubGroup,
             IsGenderIdentifySameSexAtBirth = command.IsGenderIdentifySameSexAtBirth,
             OtherEthnicSubGroupAnswer = command.OtherEthnicSubGroupAnswer,
         };
-        var request = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, aboutYouItem.AboutYou?.Id ?? Guid.NewGuid(), requestBody);
+        var request = new PutUpsertAboutYouItemApiRequest(command.CandidateId, requestBody);
 
         var putResult = await apiClient.PutWithResponseCode<PutUpsertAboutYouItemApiResponse>(request);
         putResult.EnsureSuccessStatusCode();

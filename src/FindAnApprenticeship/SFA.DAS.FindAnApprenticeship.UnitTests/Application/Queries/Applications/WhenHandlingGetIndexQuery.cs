@@ -19,8 +19,64 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
     public class WhenHandlingGetIndexQuery
     {
         [Test, MoqAutoData]
+        public async Task Then_If_No_Applications_And_No_MigratedEmail_ShowBanner_Is_True(
+            GetApplicationsQuery query,
+            GetCandidateApiResponse candidateResponse,
+            GetApplicationsApiResponse applicationApiResponse,
+            List<ApprenticeshipVacancy> vacancies,
+            [Frozen] Mock<IVacancyService> vacancyService,
+            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            GetApplicationsQueryHandler handler)
+        {
+            var expectedGetApplicationRequest = new GetApplicationsApiRequest(query.CandidateId, query.Status);
+            candidateApiClient
+                .Setup(client => client.Get<GetApplicationsApiResponse>(
+                    It.Is<GetApplicationsApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
+                .ReturnsAsync(new GetApplicationsApiResponse
+                {
+                    Applications = []
+                });
+            candidateResponse.MigratedEmail = string.Empty;
+            candidateApiClient
+                .Setup(x => x.Get<GetCandidateApiResponse>(
+                    It.Is<GetCandidateApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
+                .ReturnsAsync(candidateResponse);
+            
+            var result = await handler.Handle(query, CancellationToken.None);
+            
+            result.ShowAccountRecoveryBanner.Should().BeTrue();
+        }
+        [Test, MoqAutoData]
+        public async Task Then_If_No_Applications_And_MigratedEmail_ShowBanner_Is_False(
+            GetApplicationsQuery query,
+            GetCandidateApiResponse candidateResponse,
+            GetApplicationsApiResponse applicationApiResponse,
+            List<ApprenticeshipVacancy> vacancies,
+            [Frozen] Mock<IVacancyService> vacancyService,
+            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            GetApplicationsQueryHandler handler)
+        {
+            var expectedGetApplicationRequest = new GetApplicationsApiRequest(query.CandidateId, query.Status);
+            candidateApiClient
+                .Setup(client => client.Get<GetApplicationsApiResponse>(
+                    It.Is<GetApplicationsApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
+                .ReturnsAsync(new GetApplicationsApiResponse
+                {
+                    Applications = []
+                });
+            candidateApiClient
+                .Setup(x => x.Get<GetCandidateApiResponse>(
+                    It.Is<GetCandidateApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
+                .ReturnsAsync(candidateResponse);
+            
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.ShowAccountRecoveryBanner.Should().BeFalse();
+        }
+        [Test, MoqAutoData]
         public async Task Then_The_QueryResult_Is_Returned_As_Expected(
             GetApplicationsQuery query,
+            GetCandidateApiResponse candidateResponse,
             GetApplicationsApiResponse applicationApiResponse,
             List<ApprenticeshipVacancy> vacancies,
             [Frozen] Mock<IVacancyService> vacancyService,
@@ -37,6 +93,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                 .Setup(client => client.Get<GetApplicationsApiResponse>(
                     It.Is<GetApplicationsApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
                 .ReturnsAsync(applicationApiResponse);
+            
+            candidateApiClient
+                .Setup(x => x.Get<GetCandidateApiResponse>(
+                    It.Is<GetCandidateApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
+                .ReturnsAsync(candidateResponse);
 
             vacancyService.Setup(x => x.GetVacancies(It.IsAny<List<string>>()))
                 .ReturnsAsync(vacancies.Select(x => (IVacancy)x).ToList());
@@ -73,6 +134,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
         
         [Test, MoqAutoData]
         public async Task Then_The_If_Submitted_Applications_Retrieved_Then_Withdrawn_Also_Returned(
+            GetCandidateApiResponse candidateResponse,
             GetApplicationsQuery query,
             GetApplicationsApiResponse applicationApiResponse,
             GetApplicationsApiResponse withdrawnApplicationApiResponse,
@@ -101,6 +163,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                 .Setup(client => client.Get<GetApplicationsApiResponse>(
                     It.Is<GetApplicationsApiRequest>(r => r.GetUrl == expectedWithdrawGetApplicationRequest.GetUrl)))
                 .ReturnsAsync(withdrawnApplicationApiResponse);
+            candidateApiClient
+                .Setup(x => x.Get<GetCandidateApiResponse>(
+                    It.Is<GetCandidateApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
+                .ReturnsAsync(candidateResponse);
 
             vacancyService.Setup(x => x.GetVacancies(It.IsAny<List<string>>()))
                 .ReturnsAsync(vacancies.Select(x => (IVacancy)x).ToList());

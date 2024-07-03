@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -8,6 +9,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -41,7 +43,11 @@ namespace SFA.DAS.SharedOuterApi.Services
             var userResponse =
                 await _employerProfilesApiClient.GetWithResponseCode<EmployerProfileUsersApiResponse>(
                     new GetEmployerUserAccountRequest(employerProfile.UserId));
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> master
             if (userResponse.StatusCode == HttpStatusCode.NotFound)
             {
                 if (!Guid.TryParse(employerProfile.UserId, out _))
@@ -75,6 +81,7 @@ namespace SFA.DAS.SharedOuterApi.Services
                 displayName = userResponse.Body.DisplayName;
                 isSuspended = userResponse.Body.IsSuspended;
             }
+<<<<<<< HEAD
 
             var result = await _accountsApiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(userId));
 
@@ -88,6 +95,35 @@ namespace SFA.DAS.SharedOuterApi.Services
                             new GetAccountTeamMembersRequest(account.EncodedAccountId));
                     var member = teamMembers.FirstOrDefault(c =>
                         c.UserRef.Equals(userId, StringComparison.CurrentCultureIgnoreCase));
+=======
+            
+            var userAccountsResponse = await _accountsApiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(userId));
+
+            var returnList = new List<EmployerAccountUser>();
+            
+            foreach(var userAccount in userAccountsResponse)
+            {
+                var teamMember = await _accountsApiClient.GetAll<GetAccountTeamMembersResponse>(new GetAccountTeamMembersRequest(userAccount.EncodedAccountId));
+                
+                var member = teamMember.FirstOrDefault(c=>c.UserRef.Equals(userId, StringComparison.CurrentCultureIgnoreCase));
+                
+                if(member != null)
+                {
+                    returnList.Add(new EmployerAccountUser
+                    {
+                        Role = member.Role,
+                        DasAccountName = userAccount.DasAccountName,
+                        EncodedAccountId = userAccount.EncodedAccountId,
+                        FirstName = firstName,
+                        LastName = lastName,
+                        UserId = userId,
+                        DisplayName = displayName,
+                        IsSuspended = isSuspended,
+                        ApprenticeshipEmployerType = userAccount.ApprenticeshipEmployerType
+                    });
+                }
+            }
+>>>>>>> master
 
                     if (member != null)
                     {
@@ -113,11 +149,42 @@ namespace SFA.DAS.SharedOuterApi.Services
                     LastName = lastName,
                     UserId = userId,
                     DisplayName = displayName,
-                    IsSuspended = isSuspended
+                    IsSuspended = isSuspended,
+                    ApprenticeshipEmployerType = ApprenticeshipEmployerType.Unknown
                 });
             }
 
             return returnList.ToList();
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
+            
+            
+            var userAccountsResponse = await _accountsApiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(userId));
+            var returnList = new List<EmployerAccountUser>();
+            
+            foreach(var userAccount in userAccountsResponse)
+            {
+                var teamMember = await _accountsApiClient.GetAll<GetAccountTeamMembersResponse>(new GetAccountTeamMembersRequest(userAccount.EncodedAccountId));
+                
+                var member = teamMember.FirstOrDefault(c=>c.UserRef.Equals(userId, StringComparison.CurrentCultureIgnoreCase));
+                
+                if(member != null)
+                {
+                    returnList.Add(new EmployerAccountUser
+                    {
+                        Role = member.Role,
+                        DasAccountName = userAccount.DasAccountName,
+                        EncodedAccountId = userAccount.EncodedAccountId,
+                        FirstName = firstName,
+                        LastName = lastName,
+                        UserId = userId,
+                        DisplayName = displayName,
+                        IsSuspended = isSuspended,
+                        ApprenticeshipEmployerType = userAccount.ApprenticeshipEmployerType
+                    });
+                }
+            }
+                    IsSuspended = isSuspended,
+                    ApprenticeshipEmployerType = ApprenticeshipEmployerType.Unknown
         }
 
         /// <summary>
