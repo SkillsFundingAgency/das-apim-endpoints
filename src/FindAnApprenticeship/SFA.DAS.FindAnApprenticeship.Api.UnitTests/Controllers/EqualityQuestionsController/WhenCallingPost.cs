@@ -19,19 +19,18 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.EqualityQuestio
     {
         [Test, MoqAutoData]
         public async Task Then_The_Command_Response_Is_Returned(
-        Guid applicationId,
+        Guid candidateId,
         UpsertAboutYouEqualityQuestionsCommandResult commandResult,
         PostEqualityQuestionsApiRequest apiRequest,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.EqualityQuestionsController controller)
         {
             mediator.Setup(x => x.Send(It.Is<UpsertAboutYouEqualityQuestionsCommand>(c =>
-                c.CandidateId.Equals(apiRequest.CandidateId)
-                && c.ApplicationId == applicationId),
+                c.CandidateId.Equals(candidateId)),
                 CancellationToken.None))
                 .ReturnsAsync(commandResult);
 
-            var actual = await controller.Post(applicationId, apiRequest);
+            var actual = await controller.Post(candidateId, apiRequest);
             var actualModel = actual.As<CreatedResult>().Value as PostEqualityQuestionsApiResponse;
 
             using (new AssertionScope())
@@ -43,18 +42,17 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.EqualityQuestio
 
         [Test, MoqAutoData]
         public async Task And_Command_Response_Is_Null_Then_NotFound_Returned(
-            Guid applicationId,
+            Guid candidateId,
             PostEqualityQuestionsApiRequest apiRequest,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] Api.Controllers.EqualityQuestionsController controller)
         {
             mediator.Setup(x => x.Send(It.Is<UpsertAboutYouEqualityQuestionsCommand>(c =>
-                c.CandidateId.Equals(apiRequest.CandidateId)
-                && c.ApplicationId == applicationId),
+                c.CandidateId.Equals(candidateId)),
                 CancellationToken.None))
                 .ReturnsAsync(() => null);
 
-            var actual = await controller.Post(applicationId, apiRequest);
+            var actual = await controller.Post(candidateId, apiRequest);
 
             using (new AssertionScope())
             {
