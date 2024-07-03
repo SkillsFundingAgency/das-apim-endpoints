@@ -40,7 +40,8 @@ public class WhenHandlingCandidateApplicationStatusCommand
         );
     }
     [Test, MoqAutoData]
-    public async Task Then_If_The_Application_Id_Is_Empty_The_Application_Is_Looked_Up_By_CandidateId_And_VacancyReference(
+    public async Task Then_If_The_Application_Id_Is_Empty_The_Candidate_Is_Looked_Up_And_Application_Is_Looked_Up_By_CandidateId_And_VacancyReference(
+        GetCandidateApiResponse apiCandidateResponse,
         GetApplicationByReferenceApiResponse apiResponse,
         CandidateApplicationStatusCommand request,
         [Frozen]Mock<ICandidateApiClient<CandidateApiConfiguration>> apiClient,
@@ -48,7 +49,12 @@ public class WhenHandlingCandidateApplicationStatusCommand
     {
         request.ApplicationId = Guid.Empty;
         request.Outcome = "successful";
-        var expectedGetRequest = new GetApplicationByReferenceApiRequest(request.CandidateId, request.VacancyReference);
+        var expectedGetRequestMigratedCandidate = new GetCandidateByMigratedCandidateIdApiRequest(request.CandidateId);
+        apiClient.Setup(x =>
+                x.GetWithResponseCode<GetCandidateApiResponse>(
+                    It.Is<GetCandidateByMigratedCandidateIdApiRequest>(c => c.GetUrl == expectedGetRequestMigratedCandidate.GetUrl)))
+            .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(apiCandidateResponse, HttpStatusCode.OK, ""));
+        var expectedGetRequest = new GetApplicationByReferenceApiRequest(apiCandidateResponse.Id, request.VacancyReference);
         apiClient.Setup(x =>
                 x.GetWithResponseCode<GetApplicationByReferenceApiResponse>(
                     It.Is<GetApplicationByReferenceApiRequest>(c => c.GetUrl == expectedGetRequest.GetUrl)))
@@ -66,6 +72,27 @@ public class WhenHandlingCandidateApplicationStatusCommand
                 c.Data.Operations[1].path == "/Status" &&
                 ((ApplicationStatus)c.Data.Operations[1].value) == ApplicationStatus.Successful
             )), Times.Once
+        );
+    }
+    [Test, MoqAutoData]
+    public async Task Then_If_The_Application_Id_Is_Empty_The_Candidate_Is_Looked_Up_And_If_Not_Found_Then_Nothing_Updated(
+        GetCandidateApiResponse apiCandidateResponse,
+        GetApplicationByReferenceApiResponse apiResponse,
+        CandidateApplicationStatusCommand request,
+        [Frozen]Mock<ICandidateApiClient<CandidateApiConfiguration>> apiClient,
+        CandidateApplicationStatusCommandHandler handler)
+    {
+        request.ApplicationId = Guid.Empty;
+        var expectedGetRequestMigratedCandidate = new GetCandidateByMigratedCandidateIdApiRequest(request.CandidateId);
+        apiClient.Setup(x =>
+                x.GetWithResponseCode<GetCandidateApiResponse>(
+                    It.Is<GetCandidateByMigratedCandidateIdApiRequest>(c => c.GetUrl == expectedGetRequestMigratedCandidate.GetUrl)))
+            .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null, HttpStatusCode.NotFound, ""));
+        
+        await handler.Handle(request, CancellationToken.None);
+        
+        apiClient.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>(
+            )), Times.Never
         );
     }
 }

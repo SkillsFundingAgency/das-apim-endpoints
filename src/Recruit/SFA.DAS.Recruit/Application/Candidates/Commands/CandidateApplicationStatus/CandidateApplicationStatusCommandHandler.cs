@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -23,8 +24,15 @@ public class CandidateApplicationStatusCommandHandler : IRequestHandler<Candidat
     {
         if (request.ApplicationId == Guid.Empty)
         {
+            var migratedCandidateRequest = new GetCandidateByMigratedCandidateIdApiRequest(request.CandidateId);
+            var candidate =
+                await _candidateApiClient.GetWithResponseCode<GetCandidateApiResponse>(migratedCandidateRequest);
+            if (candidate.StatusCode == HttpStatusCode.NotFound)
+            {
+                return new Unit();
+            }
             var applicationRequest =
-                new GetApplicationByReferenceApiRequest(request.CandidateId, request.VacancyReference);
+                new GetApplicationByReferenceApiRequest(candidate.Body.Id, request.VacancyReference);
             var application = await
                 _candidateApiClient.GetWithResponseCode<GetApplicationByReferenceApiResponse>(applicationRequest);
             request.ApplicationId = application.Body.Id;
