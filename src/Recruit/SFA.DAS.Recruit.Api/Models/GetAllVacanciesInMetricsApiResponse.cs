@@ -7,13 +7,13 @@ namespace SFA.DAS.Recruit.Api.Models
 {
     public record GetAllVacanciesInMetricsApiResponse
     {
-        public List<string> Vacancies { get; set; } = [];
+        public List<long> Vacancies { get; set; } = [];
 
         public static implicit operator GetAllVacanciesInMetricsApiResponse(GetAllVacanciesInMetricsQueryResult source)
         {
             return new GetAllVacanciesInMetricsApiResponse
             {
-                Vacancies = source.Vacancies.Select(c=>c.Replace("VAC","", StringComparison.CurrentCultureIgnoreCase)).Distinct().ToList()
+                Vacancies = source.Vacancies.Select(c=>Convert.ToInt64(c.Replace("VAC","", StringComparison.CurrentCultureIgnoreCase))).Distinct().ToList()
             };
         }
     }
