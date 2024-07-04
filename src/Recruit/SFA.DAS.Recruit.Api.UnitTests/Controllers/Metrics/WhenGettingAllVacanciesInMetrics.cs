@@ -9,6 +9,8 @@ using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.Queries.GetAllVacanciesInMetrics;
 using SFA.DAS.Testing.AutoFixture;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,10 +23,14 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Metrics
         public async Task Then_Gets_All_Vacancy_References_From_Mediator(
             DateTime startDate,
             DateTime endDate,
-            GetAllVacanciesInMetricsQueryResult mediatorResult,
+            List<long> vacancies,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] MetricsController controller)
         {
+            var mediatorResult = new GetAllVacanciesInMetricsQueryResult
+            {
+                Vacancies = vacancies.Select(c=>$"VAC{c}").ToList()
+            };
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetAllVacanciesInMetricsQuery>(c => c.StartDate.Equals(startDate)
@@ -38,7 +44,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Metrics
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetAllVacanciesInMetricsApiResponse;
             Assert.That(model, Is.Not.Null);
-            model.Should().BeEquivalentTo(mediatorResult);
+            model.Vacancies.Should().BeEquivalentTo(vacancies);
         }
 
         [Test, MoqAutoData]
