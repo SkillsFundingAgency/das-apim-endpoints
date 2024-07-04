@@ -39,6 +39,7 @@ namespace SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.UnitTests.Application.Queri
                     .Excluding(c => c.UserId)
                     .Excluding(x => x.IsSuspended)
                     .Excluding(x => x.DisplayName)
+                    .Excluding(c => c.ApprenticeshipEmployerType)
             );
             actual.FirstName.Should().Be(teamResponse.FirstOrDefault().FirstName);
             actual.LastName.Should().Be(teamResponse.FirstOrDefault().LastName);

@@ -39,6 +39,7 @@ namespace SFA.DAS.PublicSectorReporting.UnitTests.Application.AccountUsers
                     .Excluding(c => c.UserId)
                     .Excluding(c => c.IsSuspended)
                     .Excluding(c => c.DisplayName)
+                    .Excluding(c => c.ApprenticeshipEmployerType)
             );
             actual.FirstName.Should().Be(teamResponse.FirstOrDefault().FirstName);
             actual.LastName.Should().Be(teamResponse.FirstOrDefault().LastName);
