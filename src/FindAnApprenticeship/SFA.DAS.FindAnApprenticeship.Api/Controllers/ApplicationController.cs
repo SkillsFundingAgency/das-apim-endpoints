@@ -44,6 +44,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 var result = await _mediator.Send(new GetIndexQuery
                 { CandidateId = candidateId, ApplicationId = applicationId });
 
+                if (result == null) return NotFound();
+
                 return Ok((GetIndexApiResponse)result);
             }
             catch (Exception e)
