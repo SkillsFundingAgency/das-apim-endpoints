@@ -167,8 +167,6 @@ public class EmployerAccountsService(
             };
         }
 
-        ;
-
         return null;
     }
 }
