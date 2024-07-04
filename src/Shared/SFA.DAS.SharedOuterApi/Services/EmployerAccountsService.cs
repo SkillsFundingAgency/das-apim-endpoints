@@ -18,6 +18,7 @@ public interface IEmployerAccountsService
 {
     Task<IEnumerable<EmployerAccountUser>> GetEmployerAccounts(EmployerProfile employerProfile);
     Task<EmployerProfile> PutEmployerAccount(EmployerProfile employerProfile);
+    Task<IEnumerable<TeamMember>> GetAccountUsers(long accountId);
 }
 
 public class EmployerAccountsService(
@@ -25,6 +26,21 @@ public class EmployerAccountsService(
     IAccountsApiClient<AccountsConfiguration> accountsApiClient)
     : IEmployerAccountsService
 {
+    public async Task<IEnumerable<TeamMember>> GetAccountUsers(long accountId)
+    {
+        var response = await accountsApiClient.Get<IEnumerable<GetUsersResponse>>(new GetAccountUsersRequest(accountId));
+
+        return response.Select(usersResponse => new TeamMember
+        {
+            Email = usersResponse.Email,
+            Role = usersResponse.Role,
+            Name = usersResponse.Name,
+            UserRef = usersResponse.UserRef,
+            Status = usersResponse.Status,
+            CanReceiveNotifications = usersResponse.CanReceiveNotifications
+        });
+    }
+
     public async Task<IEnumerable<EmployerAccountUser>> GetEmployerAccounts(EmployerProfile employerProfile)
     {
         var userId = employerProfile.UserId;
@@ -133,7 +149,7 @@ public class EmployerAccountsService(
                 employerProfile.Email,
                 employerProfile.FirstName,
                 employerProfile.LastName));
-            
+
         if (employerUserResponse?.Body != null)
         {
             // external api call to update the employer_account repo with latest information.
@@ -151,7 +167,9 @@ public class EmployerAccountsService(
                 LastName = employerUserResponse.Body.LastName,
                 UserId = employerUserResponse.Body.GovUkIdentifier
             };
-        };
+        }
+
+        ;
 
         return null;
     }
