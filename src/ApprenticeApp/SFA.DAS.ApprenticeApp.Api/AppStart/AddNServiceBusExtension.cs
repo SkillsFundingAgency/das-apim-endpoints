@@ -53,7 +53,7 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
                     routing.AddRouting(endpointName);
                 }
 
-                var endpoint = Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
+                var endpoint = await Endpoint.Start(endpointConfiguration).ConfigureAwait(false);
 
                 serviceProvider.AddSingleton(p => endpoint)
                     .AddSingleton<IMessageSession>(p => p.GetService<IEndpointInstance>())
