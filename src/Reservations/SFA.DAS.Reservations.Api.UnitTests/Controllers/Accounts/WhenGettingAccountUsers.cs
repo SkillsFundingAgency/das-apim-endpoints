@@ -33,7 +33,9 @@ public class WhenGettingAccountUsers
 
         controllerResult.Should().NotBeNull();
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        
         var model = controllerResult.Value as GetAccountUsersApiResponse;
+        
         model.Should().NotBeNull();
         model.Should().BeEquivalentTo((GetAccountUsersApiResponse)result);
     }
