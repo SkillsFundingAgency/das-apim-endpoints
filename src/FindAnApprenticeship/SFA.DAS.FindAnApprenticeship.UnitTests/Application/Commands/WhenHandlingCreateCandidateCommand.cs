@@ -183,7 +183,10 @@ public class WhenHandlingPostCandidateCommand
             .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
 
         var expectedRequest = new PostCandidateApiRequest(command.GovUkIdentifier, expectedPostData);
-
+        mockApiClient
+            .Setup(x => x.PutWithResponseCode<PostCandidateAddressApiResponse>(
+                It.Is<PutCandidateAddressApiRequest>(c => c.PutUrl.Contains(response.Id.ToString()))))
+            .ReturnsAsync(new ApiResponse<PostCandidateAddressApiResponse>(null, HttpStatusCode.Accepted, ""));
         mockApiClient
                 .Setup(client => client.PostWithResponseCode<PostCandidateApiResponse>(
                     It.Is<PostCandidateApiRequest>(r => 
@@ -317,7 +320,10 @@ public class WhenHandlingPostCandidateCommand
                 .Setup(client => client.PostWithResponseCode<PostCandidateApiResponse>(
                     It.Is<PostCandidateApiRequest>(r => r.PostUrl == expectedRequest.PostUrl), true))
                 .ReturnsAsync(new ApiResponse<PostCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
-
+        mockApiClient
+            .Setup(x => x.PutWithResponseCode<PostCandidateAddressApiResponse>(
+                It.Is<PutCandidateAddressApiRequest>(c => c.PutUrl.Contains(response.Id.ToString()))))
+            .ReturnsAsync(new ApiResponse<PostCandidateAddressApiResponse>(null, HttpStatusCode.Accepted, ""));
         var legacyGetRequest = new GetLegacyUserByEmailApiRequest(command.Email);
         mockLegacyApiClient
             .Setup(client => client.Get<GetLegacyUserByEmailApiResponse>(
