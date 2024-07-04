@@ -98,7 +98,7 @@ namespace SFA.DAS.FindAnApprenticeship.Services
 
                 if (vacancy.ClosingDate < DateTime.UtcNow)
                 {
-                    logger.LogError($"Ignoring saved vacancy reference [{legacyApplication.Vacancy.VacancyReference}] as closing date has passed.");
+                    logger.LogWarning($"Ignoring saved vacancy reference [{legacyApplication.Vacancy.VacancyReference}] as closing date has passed.");
                     continue;
                 }
 
