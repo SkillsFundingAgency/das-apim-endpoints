@@ -19,9 +19,9 @@ public class AccountsController(IMediator mediator, ILogger<AccountsController> 
     {
         try
         {
-            var result = await mediator.Send(new GetUsersQuery(accountId));
+            var result = await mediator.Send(new GetAccountUsersQuery(accountId));
 
-            return Ok((GetAccountUserApiResponse)result);
+            return Ok((GetAccountUsersApiResponse)result);
         }
         catch (Exception e)
         {

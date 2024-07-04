@@ -28,15 +28,13 @@ public class EmployerAccountsService(
 {
     public async Task<IEnumerable<TeamMember>> GetAccountUsers(long accountId)
     {
-        var response = await accountsApiClient.Get<IEnumerable<GetUsersResponse>>(new GetAccountUsersRequest(accountId));
-
+        var response = await accountsApiClient.GetAll<GetAccountTeamMembersResponse>(new GetAccountTeamMembersRequest(accountId));
+        
         return response.Select(usersResponse => new TeamMember
         {
             Email = usersResponse.Email,
             Role = usersResponse.Role,
-            Name = usersResponse.Name,
             UserRef = usersResponse.UserRef,
-            Status = usersResponse.Status,
             CanReceiveNotifications = usersResponse.CanReceiveNotifications
         });
     }

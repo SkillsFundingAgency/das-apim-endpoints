@@ -7,27 +7,25 @@ using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.Reservations.Application.Accounts.Queries;
 
-public record GetUsersQuery(long AccountId) : IRequest<GetUsersQueryResult> { }
+public record GetAccountUsersQuery(long AccountId) : IRequest<GetAccountUsersQueryResult> { }
 
-public record GetUsersQueryResult
+public record GetAccountUsersQueryResult
 {
     public IEnumerable<User> AccountUsersResponse { get; init; }
 }
 
-public class GetUsersQueryHandler(IEmployerAccountsService employerAccountsService) : IRequestHandler<GetUsersQuery, GetUsersQueryResult>
+public class GetAccountUsersQueryHandler(IEmployerAccountsService employerAccountsService) : IRequestHandler<GetAccountUsersQuery, GetAccountUsersQueryResult>
 {
-    public async Task<GetUsersQueryResult> Handle(GetUsersQuery request, CancellationToken cancellationToken)
+    public async Task<GetAccountUsersQueryResult> Handle(GetAccountUsersQuery request, CancellationToken cancellationToken)
     {
         var accountUsers = await employerAccountsService.GetAccountUsers(request.AccountId);
 
-        return new GetUsersQueryResult
+        return new GetAccountUsersQueryResult
         {
             AccountUsersResponse = accountUsers.Select(user => new User
             {
                 Email = user.Email,
-                Name = user.Name,
                 Role = user.Role,
-                Status = user.Status,
                 UserRef = user.UserRef,
                 CanReceiveNotifications = user.CanReceiveNotifications
             })
