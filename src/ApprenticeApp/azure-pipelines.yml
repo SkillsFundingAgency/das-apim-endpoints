@@ -41,7 +41,7 @@ resources:
   - pipeline: das-employer-config
     project: Digital Apprenticeship Service
     source: das-employer-config
-    branch: DASD-11139
+    branch: AAD-339_test_updated_config_for_notifications
 
 stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
