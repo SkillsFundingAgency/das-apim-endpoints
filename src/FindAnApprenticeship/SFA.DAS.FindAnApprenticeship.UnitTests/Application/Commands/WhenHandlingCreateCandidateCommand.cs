@@ -87,7 +87,7 @@ public class WhenHandlingPostCandidateCommand
     }
 
     [Test, MoqAutoData]
-    public async Task Then_The_Post_Is_Sent_And_Data_Returned(
+    public async Task Then_If_Legacy_User_Exists_Details_Are_Migrated_With_Address(
         CreateCandidateCommand command,
         string govUkId,
         PostCandidateApiResponse response,
@@ -97,8 +97,6 @@ public class WhenHandlingPostCandidateCommand
         CreateCandidateCommandHandler handler)
     {
         command.GovUkIdentifier = govUkId;
-        response.FirstName = legacyUserByEmailApiResponse.RegistrationDetails?.FirstName;
-        response.LastName = legacyUserByEmailApiResponse.RegistrationDetails?.LastName;
 
         var expectedPostData = new PostCandidateApiRequestData
         {
@@ -114,9 +112,21 @@ public class WhenHandlingPostCandidateCommand
 
         mockApiClient
                 .Setup(client => client.PostWithResponseCode<PostCandidateApiResponse>(
-                    It.Is<PostCandidateApiRequest>(r => r.PostUrl == expectedRequest.PostUrl), true))
+                    It.Is<PostCandidateApiRequest>(r => r.PostUrl == expectedRequest.PostUrl
+                    && ((PostCandidateApiRequestData)r.Data).FirstName == legacyUserByEmailApiResponse.RegistrationDetails!.FirstName
+                    && ((PostCandidateApiRequestData)r.Data).LastName == legacyUserByEmailApiResponse.RegistrationDetails!.LastName
+                    && ((PostCandidateApiRequestData)r.Data).DateOfBirth == legacyUserByEmailApiResponse.RegistrationDetails!.DateOfBirth
+                    && ((PostCandidateApiRequestData)r.Data).PhoneNumber == legacyUserByEmailApiResponse.RegistrationDetails!.PhoneNumber
+                    && ((PostCandidateApiRequestData)r.Data).MigratedEmail == command.Email
+                    && ((PostCandidateApiRequestData)r.Data).MigratedCandidateId == legacyUserByEmailApiResponse.Id
+                    ), true))
                 .ReturnsAsync(new ApiResponse<PostCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
 
+        mockApiClient
+            .Setup(x => x.PutWithResponseCode<PostCandidateAddressApiResponse>(
+                It.Is<PutCandidateAddressApiRequest>(c => c.PutUrl.Contains(response.Id.ToString()))))
+            .ReturnsAsync(new ApiResponse<PostCandidateAddressApiResponse>(null, HttpStatusCode.Accepted, ""));
+        
         var legacyGetRequest = new GetLegacyUserByEmailApiRequest(command.Email);
         mockLegacyApiClient
             .Setup(client => client.Get<GetLegacyUserByEmailApiResponse>(
@@ -129,8 +139,20 @@ public class WhenHandlingPostCandidateCommand
         {
             result.GovUkIdentifier.Should().BeEquivalentTo(response.GovUkIdentifier);
             result.Email.Should().BeEquivalentTo(response.Email);
-            result.FirstName.Should().BeEquivalentTo(legacyUserByEmailApiResponse.RegistrationDetails?.FirstName);
-            result.LastName.Should().BeEquivalentTo(legacyUserByEmailApiResponse.RegistrationDetails?.LastName);
+            result.FirstName.Should().BeEquivalentTo(response.FirstName);
+            result.LastName.Should().BeEquivalentTo(response.LastName);
+            mockApiClient
+                .Verify(x => x.PutWithResponseCode<PostCandidateAddressApiResponse>(
+                    It.Is<PutCandidateAddressApiRequest>(c => c.PutUrl.Contains(response.Id.ToString())
+                    && ((PutCandidateAddressApiRequestData)c.Data).AddressLine1 == legacyUserByEmailApiResponse.RegistrationDetails!.Address.AddressLine1
+                    && ((PutCandidateAddressApiRequestData)c.Data).AddressLine2 == legacyUserByEmailApiResponse.RegistrationDetails!.Address.AddressLine2
+                    && ((PutCandidateAddressApiRequestData)c.Data).AddressLine3 == legacyUserByEmailApiResponse.RegistrationDetails!.Address.AddressLine3
+                    && ((PutCandidateAddressApiRequestData)c.Data).AddressLine4 == legacyUserByEmailApiResponse.RegistrationDetails!.Address.AddressLine4
+                    && ((PutCandidateAddressApiRequestData)c.Data).Latitude == legacyUserByEmailApiResponse.RegistrationDetails!.Address.GeoPoint.Latitude
+                    && ((PutCandidateAddressApiRequestData)c.Data).Longitude == legacyUserByEmailApiResponse.RegistrationDetails!.Address.GeoPoint.Longitude
+                    && ((PutCandidateAddressApiRequestData)c.Data).Postcode == legacyUserByEmailApiResponse.RegistrationDetails!.Address.Postcode
+                    && ((PutCandidateAddressApiRequestData)c.Data).Uprn == legacyUserByEmailApiResponse.RegistrationDetails!.Address.Uprn
+                    )), Times.Once);
         }
     }
 
