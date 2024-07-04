@@ -26,7 +26,7 @@ public class PostPermissionsTests
     }
 
     [Test, MoqAutoData]
-    public async Task PostPermissions_HandlerReturnsData_ReturnsExpectedResponse(
+    public async Task PostPermissions_HandlerReturnsData_ReturnsNoContent(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] PermissionsController sut,
         PostPermissionsCommand command,
@@ -34,11 +34,10 @@ public class PostPermissionsTests
         CancellationToken cancellationToken
     )
     {
-        mediatorMock.Setup(m => m.Send(command, It.IsAny<CancellationToken>())).ReturnsAsync(postPermissionsCommandResult);
+        mediatorMock.Setup(m => m.Send(command, It.IsAny<CancellationToken>()));
 
         var result = await sut.PostPermissions(command, cancellationToken);
 
-        result.As<OkObjectResult>().Should().NotBeNull();
-        result.As<OkObjectResult>().Value.Should().Be(postPermissionsCommandResult);
+        result.As<NoContentResult>().Should().NotBeNull();
     }
 }

@@ -3,10 +3,18 @@ using SFA.DAS.EmployerPR.Infrastructure;
 
 namespace SFA.DAS.EmployerPR.Application.Commands.PostPermissions;
 
-public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient) : IRequestHandler<PostPermissionsCommand, PostPermissionsCommandResult>
+public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient) : IRequestHandler<PostPermissionsCommand, Unit>
 {
-    public async Task<PostPermissionsCommandResult> Handle(PostPermissionsCommand command, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(PostPermissionsCommand command,
+        CancellationToken cancellationToken)
     {
-        return await _providerRelationshipsApiRestClient.PostPermissions(command, cancellationToken);
+        if (command.Operations.Count > 0)
+        {
+            await _providerRelationshipsApiRestClient.PostPermissions(command, cancellationToken);
+            return Unit.Value;
+        }
+
+        await _providerRelationshipsApiRestClient.RemovePermissions(command.UserRef, command.Ukprn!.Value, command.AccountLegalEntityId, cancellationToken);
+        return Unit.Value;
     }
 }
