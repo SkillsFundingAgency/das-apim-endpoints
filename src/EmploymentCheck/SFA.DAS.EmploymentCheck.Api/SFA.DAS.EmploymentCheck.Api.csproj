@@ -8,7 +8,6 @@
         <PackageReference Include="MediatR"  />
         <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
-        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a5c10858-9c56-4bbf-897e-8001dc593cb4",
+		"_postman_id": "e3a5e411-a97d-45ba-ae86-c4c8a5454933",
 		"name": "SFA.DAS.ProviderFeedback.Api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "21174429"
@@ -98,6 +98,69 @@
 					"path": [
 						"ProviderAccounts",
 						"10000528"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ProviderFeedbackAnnual",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7101/providerFeedback/10000528/annual",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7101",
+					"path": [
+						"providerFeedback",
+						"10000528",
+						"annual"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "providerFeedbackForAcademicYear",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://localhost:7101/providerFeedback/10000528/annual/AY2324",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "7101",
+					"path": [
+						"providerFeedback",
+						"10000528",
+						"annual",
+						"AY2324"
 					]
 				}
 			},

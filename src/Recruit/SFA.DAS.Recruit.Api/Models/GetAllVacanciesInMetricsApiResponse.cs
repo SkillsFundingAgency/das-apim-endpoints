@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Recruit.Application.Queries.GetAllVacanciesInMetrics;
 
 namespace SFA.DAS.Recruit.Api.Models
@@ -11,7 +13,7 @@ namespace SFA.DAS.Recruit.Api.Models
         {
             return new GetAllVacanciesInMetricsApiResponse
             {
-                Vacancies = source.Vacancies
+                Vacancies = source.Vacancies.Select(c=>c.Replace("VAC","", StringComparison.CurrentCultureIgnoreCase)).Distinct().ToList()
             };
         }
     }

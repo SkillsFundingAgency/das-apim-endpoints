@@ -7,12 +7,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.InnerApi.CandidateApi.Requests;
 public class WhenBuildingGetAboutYouItemApiRequest
 {
     [Test, AutoData]
-    public void Then_The_Request_Url_Is_Correctly_Built(
-        Guid applicationId,
-        Guid candidateId)
+    public void Then_The_Request_Url_Is_Correctly_Built(Guid candidateId)
     {
-        var actual = new GetAboutYouItemApiRequest(applicationId, candidateId);
+        var actual = new GetAboutYouItemApiRequest(candidateId);
 
-        actual.GetUrl.Should().Be($"api/candidates/{candidateId}/applications/{applicationId}/about-you");
+        actual.GetUrl.Should().Be($"api/candidates/{candidateId}/about-you");
     }
 }

@@ -23,7 +23,7 @@ namespace SFA.DAS.Vacancies.Api.Models
             }
             return new GetVacancyResponse
             {
-                ClosingDate = source.Vacancy.ClosingDate,
+                ClosingDate = source.Vacancy.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)),
                 Description = source.Vacancy.Description,
                 EmployerName = source.Vacancy.IsEmployerAnonymous ? source.Vacancy.AnonymousEmployerName : source.Vacancy.EmployerName,
                 HoursPerWeek = source.Vacancy.HoursPerWeek,
