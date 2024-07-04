@@ -36,8 +36,14 @@ public class GetApplicationsQueryHandler(
                     new GetApplicationsApiRequest(request.CandidateId, ApplicationStatus.Withdrawn));
             applicationList.AddRange(withdrawnApplications.Applications);
         }
-        
-        if (applicationList.Count == 0)  { return new GetApplicationsQueryResult(); }
+
+        if (applicationList.Count == 0)
+        {
+            return new GetApplicationsQueryResult
+            {
+                ShowAccountRecoveryBanner = string.IsNullOrWhiteSpace(candidateApiResponse.MigratedEmail)
+            };
+        }
 
         var vacancyReferences = applicationList.Select(x => $"{x.VacancyReference}").ToList();
         

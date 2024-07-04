@@ -9,12 +9,15 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
     public class GetMigrateDataTransferApiResponse
     {
         public List<Application> Applications { get; set; }
-
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public static implicit operator GetMigrateDataTransferApiResponse(MigrateDataQueryResult source)
         {
             return new GetMigrateDataTransferApiResponse
             {
-                Applications = source.Applications.Select(x => (Application)x).ToList()
+                Applications = source.Applications.Select(x => (Application)x).ToList(),
+                FirstName = source.CandidateDetail.FirstName ?? source.LegacyUserDetail.FirstName,
+                LastName = source.CandidateDetail.LastName ?? source.LegacyUserDetail.LastName,
             };
         }
 

@@ -36,6 +36,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData
                 FirstName = userDetails?.RegistrationDetails?.FirstName,
                 LastName = userDetails?.RegistrationDetails?.LastName,
                 DateOfBirth = registrationDetailsDateOfBirth,
+                PhoneNumber = userDetails?.RegistrationDetails?.PhoneNumber,
+                MigratedEmail = userDetails?.RegistrationDetails?.EmailAddress
             });
 
             var candidateResponse = await CandidateApiClient.PutWithResponseCode<PutCandidateApiResponse>(putRequest);
@@ -49,11 +51,12 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData
                     Email = candidateResponse.Body.Email,
                     AddressLine1 = userDetails.RegistrationDetails?.Address?.AddressLine1,
                     AddressLine2 = userDetails.RegistrationDetails?.Address?.AddressLine2,
-                    AddressLine3 = userDetails.RegistrationDetails?.Address?.Town,
-                    AddressLine4 = userDetails.RegistrationDetails?.Address?.County,
+                    AddressLine3 = userDetails.RegistrationDetails?.Address?.AddressLine3,
+                    AddressLine4 = userDetails.RegistrationDetails?.Address?.AddressLine4,
                     Latitude = userDetails.RegistrationDetails?.Address?.GeoPoint?.Latitude ?? default,
                     Longitude = userDetails.RegistrationDetails?.Address?.GeoPoint?.Longitude ?? default,
                     Postcode = userDetails.RegistrationDetails?.Address?.Postcode,
+                    Uprn = userDetails.RegistrationDetails?.Address?.Uprn
                 };
 
                 var postRequest = new PutCandidateAddressApiRequest(command.CandidateId, postData);
