@@ -2,7 +2,6 @@
 using System.Linq;
 using SFA.DAS.Reservations.Application.Accounts;
 using SFA.DAS.Reservations.Application.Accounts.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.Reservations.Api.Models;
 
@@ -12,13 +11,13 @@ public record GetAccountUsersApiResponse
 
     public static implicit operator GetAccountUsersApiResponse(GetAccountUsersQueryResult source)
     {
-        var users = source.AccountUsersResponse == null
+        var accountUsers = source.AccountUsersResponse == null
             ? []
             : source.AccountUsersResponse.Select(x => (AccountUsersApiResponseItem)x).ToList();
 
         return new GetAccountUsersApiResponse
         {
-            AccountUsers = users
+            AccountUsers = accountUsers
         };
     }
     
