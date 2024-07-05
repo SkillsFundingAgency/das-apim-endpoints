@@ -38,6 +38,7 @@ public class WhenGettingAccounts
             .Excluding(c=>c.LastName)
             .Excluding(x => x.DisplayName)
             .Excluding(x => x.IsSuspended)
+            .Excluding(c => c.ApprenticeshipEmployerType)
         );
         actual.UserId.Should().Be(teamResponse.FirstOrDefault()?.UserId);
         actual.IsSuspended.Should().Be(teamResponse.FirstOrDefault().IsSuspended);
