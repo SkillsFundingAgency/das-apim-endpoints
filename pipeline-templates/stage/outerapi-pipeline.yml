@@ -3,7 +3,7 @@ parameters:
   SandboxEnabled: $False
   AddXForwardedAuthorization: $False
   SharedOuterApiProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi/SFA.DAS.SharedOuterApi.csproj'
-  SharedOuterApiTestProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj' 
+  SharedOuterApiTestProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj'
   AdditionalProjectPathToInclude: ''
   AdditionalTestProjectPathToInclude: ''
 

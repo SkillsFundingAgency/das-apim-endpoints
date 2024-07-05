@@ -22,4 +22,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Telemetry
                 new KeyValuePair<string, object>("vacancy.source", Constants.OpenTelemetry.RequestSourceName));
         }
     }
+
+    public class StubMetrics : IMetrics
+    {
+        public void IncreaseVacancyViews(string vacancyReference, int viewCount = 1)
+        {
+                
+        }
+    }
 }

@@ -10,4 +10,5 @@ public record GetAddressApiResponse
     public string? County { get; set; }
     public string Postcode { get; set; }
     public Guid CandidateId { get; set; }
+    public string? Uprn { get; set; }
 }
