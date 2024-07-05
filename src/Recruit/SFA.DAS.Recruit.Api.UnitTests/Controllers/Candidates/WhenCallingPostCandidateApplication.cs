@@ -34,6 +34,7 @@ public class WhenCallingPostCandidateApplication
                 && c.CandidateId == candidateId
                 && c.Feedback == request.CandidateFeedback
                 && c.Outcome == request.Status
+                && c.VacancyReference == request.VacancyReference
             ), CancellationToken.None), Times.Once);
     }
     [Test, MoqAutoData]

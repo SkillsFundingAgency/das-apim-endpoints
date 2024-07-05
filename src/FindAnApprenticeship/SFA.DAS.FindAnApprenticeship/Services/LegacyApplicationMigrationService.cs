@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Requests;
@@ -64,6 +64,8 @@ namespace SFA.DAS.FindAnApprenticeship.Services
                 return;
             }
 
+            var applicationsToSubmit = new List<Task>();
+            
             foreach (var legacyApplication in legacyApplications.Applications.Where(x => LegacyImportStatuses.Contains(x.Status)))
             {
                 var vacancy = await vacancyService.GetVacancy(legacyApplication.Vacancy.VacancyReference);
@@ -80,11 +82,12 @@ namespace SFA.DAS.FindAnApprenticeship.Services
                 };
                 var postRequest = new PostApplicationApiRequest(data);
 
-                var applicationResult =
-                    await candidateApiClient.PostWithResponseCode<PostApplicationApiResponse>(postRequest);
+                applicationsToSubmit.Add(candidateApiClient.PostWithResponseCode<PostApplicationApiResponse>(postRequest));
 
-                applicationResult.EnsureSuccessStatusCode();
+                //applicationResult.EnsureSuccessStatusCode();
             }
+
+            await Task.WhenAll(applicationsToSubmit);
 
             foreach (var legacyApplication in legacyApplications.Applications.Where(x => x.Status == ApplicationStatus.Saved))
             {
