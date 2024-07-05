@@ -64,7 +64,7 @@ public class PostSubmitApplicationRequestData
             AddressLine3 = source.Candidate.Address.Town,
             AddressLine4 = source.Candidate.Address.County,
             Postcode = source.Candidate.Address.Postcode,
-            Strengths = source.AboutYou.SkillsAndStrengths,
+            Strengths = source.Strengths,
             WhatIsYourInterest = source.WhatIsYourInterest,
             ApplicationDate = DateTime.UtcNow,
             AdditionalQuestion1 = source.AdditionalQuestions?.FirstOrDefault() != null ? new AdditionalQuestion
@@ -77,7 +77,7 @@ public class PostSubmitApplicationRequestData
                 AnswerText = source.AdditionalQuestions.LastOrDefault().Answer,
                 QuestionText = source.AdditionalQuestions.LastOrDefault().QuestionText,
             } : null,
-            Support = source.AboutYou.Support,
+            Support = source.Support,
             DisabilityConfidenceStatus = source.DisabilityConfidenceStatus
         };
     }

@@ -37,6 +37,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.AccountUsers
                     .Excluding(c=>c.UserId)
                     .Excluding(c => c.IsSuspended)
                     .Excluding(c => c.DisplayName)
+                    .Excluding(c => c.ApprenticeshipEmployerType)
                 );
             actual.IsSuspended.Should().Be(teamResponse.FirstOrDefault().IsSuspended);
             actual.UserId.Should().Be(teamResponse.FirstOrDefault().UserId);
