@@ -55,6 +55,8 @@ public class SkillsAndStrengthsController : Controller
                 CandidateId = candidateId
             });
 
+            if (result is null) return NotFound();
+
             return Ok((GetExpectedSkillsAndStrengthsApiResponse)result);
         }
         catch (Exception e)

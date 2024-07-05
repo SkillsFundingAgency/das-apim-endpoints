@@ -27,10 +27,10 @@ public class GetExpectedSkillsAndStrengthsQueryHandler : IRequestHandler<GetExpe
     public async Task<GetExpectedSkillsAndStrengthsQueryResult> Handle(GetExpectedSkillsAndStrengthsQuery request, CancellationToken cancellationToken)
     {
         var application = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
-        if (application is null) throw new InvalidOperationException($"Application is null");
+        if (application is null) return null;
 
         var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference.ToString()));
-        if (vacancy is null) throw new InvalidOperationException($"Vacancy is null");
+        if (vacancy is null) return null;
 
         bool? isCompleted = application.SkillsAndStrengthStatus switch
         {
