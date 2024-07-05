@@ -28,9 +28,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex
 
             await Task.WhenAll(opportunitiesTask, sectorsTask, jobRolesTask, levelsTask);
 
-            return new GetIndexQueryResult
-            {
-                Opportunities = opportunitiesTask.Result.Pledges.Where(p => p.Status != PledgeStatus.Closed).Select(x => new GetIndexQueryResult.Opportunity
+            var opportunities = opportunitiesTask.Result.Pledges.Where(p => p.Status != PledgeStatus.Closed)
+                .Select(x => new GetIndexQueryResult.Opportunity
                 {
                     Id = x.Id,
                     Amount = x.RemainingAmount,
@@ -40,7 +39,14 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex
                     JobRoles = x.JobRoles,
                     Levels = x.Levels,
                     Locations = x.Locations?.Select(x => x.Name)
-                }),
+                }).ToList();
+
+            return new GetIndexQueryResult
+            {
+                Items = opportunities.Skip(request.Offset).Take(request.Limit).ToList(),
+                TotalItems = opportunities.Count(),
+                PageSize = request.PageSize ?? int.MaxValue,
+                Page = request.Page,
                 Sectors = sectorsTask.Result,
                 JobRoles = jobRolesTask.Result,
                 Levels = levelsTask.Result
