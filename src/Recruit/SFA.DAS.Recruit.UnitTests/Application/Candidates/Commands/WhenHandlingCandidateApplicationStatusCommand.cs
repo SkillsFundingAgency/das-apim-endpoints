@@ -66,7 +66,7 @@ public class WhenHandlingCandidateApplicationStatusCommand
         
         apiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
                 c.PatchUrl.Contains(apiResponse.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
-                c.PatchUrl.Contains(request.CandidateId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                c.PatchUrl.Contains(apiResponse.CandidateId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
                 c.Data.Operations[0].path == "/ResponseNotes" &&
                 c.Data.Operations[0].value.ToString() == request.Feedback &&
                 c.Data.Operations[1].path == "/Status" &&
