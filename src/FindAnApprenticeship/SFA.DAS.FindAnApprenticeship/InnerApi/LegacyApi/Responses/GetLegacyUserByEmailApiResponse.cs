@@ -6,6 +6,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses
 {
     public record GetLegacyUserByEmailApiResponse
     {
+        public Guid Id { get; set; }
         public string Username { get; init; } = null!;
 
         public UserStatuses Status { get; init; }
