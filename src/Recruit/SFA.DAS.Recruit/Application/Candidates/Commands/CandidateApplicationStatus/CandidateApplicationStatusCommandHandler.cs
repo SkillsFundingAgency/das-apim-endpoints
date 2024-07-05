@@ -36,6 +36,7 @@ public class CandidateApplicationStatusCommandHandler : IRequestHandler<Candidat
             var application = await
                 _candidateApiClient.GetWithResponseCode<GetApplicationByReferenceApiResponse>(applicationRequest);
             request.ApplicationId = application.Body.Id;
+            request.CandidateId = application.Body.CandidateId;
         }
         var jsonPatchDocument = new JsonPatchDocument<InnerApi.Requests.Application>();
 
