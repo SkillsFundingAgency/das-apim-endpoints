@@ -28,7 +28,7 @@ public class WhenGettingEmployerAccountUsers
                 It.Is<GetAccountTeamMembersRequest>(c => c.GetAllUrl.Contains($"accounts/internal/{accountId}/users"))))
             .ReturnsAsync(new List<GetAccountTeamMembersResponse> { teamResponse });
 
-        var actual = (await sut.GetAccountUsers(accountId)).ToList();
+        var actual = (await sut.GetTeamMembers(accountId)).ToList();
 
         accountsApiClient
             .Verify(x => x.GetAll<GetAccountTeamMembersResponse>(It.Is<GetAccountTeamMembersRequest>(c => c.GetAllUrl.Contains($"accounts/internal/{accountId}/users")))

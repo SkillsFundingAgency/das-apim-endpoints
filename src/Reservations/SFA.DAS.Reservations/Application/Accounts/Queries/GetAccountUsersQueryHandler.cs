@@ -11,18 +11,18 @@ public record GetAccountUsersQuery(long AccountId) : IRequest<GetAccountUsersQue
 
 public record GetAccountUsersQueryResult
 {
-    public IEnumerable<User> AccountUsersResponse { get; init; }
+    public IEnumerable<TeamMember> TeamMembers { get; init; }
 }
 
 public class GetAccountUsersQueryHandler(IEmployerAccountsService employerAccountsService) : IRequestHandler<GetAccountUsersQuery, GetAccountUsersQueryResult>
 {
     public async Task<GetAccountUsersQueryResult> Handle(GetAccountUsersQuery request, CancellationToken cancellationToken)
     {
-        var accountUsers = await employerAccountsService.GetAccountUsers(request.AccountId);
+        var teamMembers = await employerAccountsService.GetTeamMembers(request.AccountId);
 
         return new GetAccountUsersQueryResult
         {
-            AccountUsersResponse = accountUsers.Select(user => new User
+            TeamMembers = teamMembers.Select(user => new TeamMember
             {
                 Email = user.Email,
                 Role = user.Role,

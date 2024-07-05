@@ -22,12 +22,12 @@ public class WhenHandlingGetAccountUsersQuery
         GetAccountUsersQueryHandler sut
         )
     {
-        service.Setup(x => x.GetAccountUsers(query.AccountId)).ReturnsAsync(teamResponse);
+        service.Setup(x => x.GetTeamMembers(query.AccountId)).ReturnsAsync(teamResponse);
 
         var actual = await sut.Handle(query, CancellationToken.None);
 
-        service.Verify(x => x.GetAccountUsers(query.AccountId), Times.Once);
+        service.Verify(x => x.GetTeamMembers(query.AccountId), Times.Once);
         
-        actual.AccountUsersResponse.Should().BeEquivalentTo(teamResponse);
+        actual.TeamMembers.Should().BeEquivalentTo(teamResponse);
     }
 }

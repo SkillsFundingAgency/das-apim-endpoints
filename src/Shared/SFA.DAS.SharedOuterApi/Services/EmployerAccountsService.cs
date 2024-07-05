@@ -18,7 +18,7 @@ public interface IEmployerAccountsService
 {
     Task<IEnumerable<EmployerAccountUser>> GetEmployerAccounts(EmployerProfile employerProfile);
     Task<EmployerProfile> PutEmployerAccount(EmployerProfile employerProfile);
-    Task<IEnumerable<TeamMember>> GetAccountUsers(long accountId);
+    Task<IEnumerable<TeamMember>> GetTeamMembers(long accountId);
 }
 
 public class EmployerAccountsService(
@@ -26,7 +26,7 @@ public class EmployerAccountsService(
     IAccountsApiClient<AccountsConfiguration> accountsApiClient)
     : IEmployerAccountsService
 {
-    public async Task<IEnumerable<TeamMember>> GetAccountUsers(long accountId)
+    public async Task<IEnumerable<TeamMember>> GetTeamMembers(long accountId)
     {
         var response = await accountsApiClient.GetAll<GetAccountTeamMembersResponse>(new GetAccountTeamMembersRequest(accountId));
         

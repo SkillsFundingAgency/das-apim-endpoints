@@ -11,9 +11,9 @@ public record GetAccountUsersApiResponse
 
     public static implicit operator GetAccountUsersApiResponse(GetAccountUsersQueryResult source)
     {
-        var accountUsers = source.AccountUsersResponse == null
+        var accountUsers = source.TeamMembers == null
             ? []
-            : source.AccountUsersResponse.Select(x => (AccountUsersApiResponseItem)x).ToList();
+            : source.TeamMembers.Select(x => (AccountUsersApiResponseItem)x).ToList();
 
         return new GetAccountUsersApiResponse
         {
@@ -28,7 +28,7 @@ public record GetAccountUsersApiResponse
         public string Role { get; set; }
         public bool CanReceiveNotifications { get; set; }
 
-        public static implicit operator AccountUsersApiResponseItem(User source)
+        public static implicit operator AccountUsersApiResponseItem(TeamMember source)
         {
             return new AccountUsersApiResponseItem
             {
