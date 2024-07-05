@@ -29,7 +29,7 @@ public class GetExpectedSkillsAndStrengthsQueryHandler : IRequestHandler<GetExpe
         var application = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
         if (application is null) return null;
 
-        var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference.ToString()));
+        var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference));
         if (vacancy is null) return null;
 
         bool? isCompleted = application.SkillsAndStrengthStatus switch
@@ -44,7 +44,8 @@ public class GetExpectedSkillsAndStrengthsQueryHandler : IRequestHandler<GetExpe
             ApplicationId = application.Id,
             Employer = vacancy.EmployerName,
             ExpectedSkillsAndStrengths = vacancy.Skills,
-            IsSectionCompleted = isCompleted
+            IsSectionCompleted = isCompleted,
+            Strengths = application.Strengths
         };
     }
 }
