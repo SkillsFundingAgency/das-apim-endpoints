@@ -32,7 +32,7 @@ public class SubmitApplicationCommandHandler(
             await candidateApiClient.Get<GetApplicationApiResponse>(
                 new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true));
 
-        if (application == null || application.Status == "Submitted")
+        if (application == null || application.Status == ApplicationStatus.Submitted)
         {
             return false;
         }

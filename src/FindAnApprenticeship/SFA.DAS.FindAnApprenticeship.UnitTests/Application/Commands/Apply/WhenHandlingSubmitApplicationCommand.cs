@@ -199,7 +199,7 @@ public class WhenHandlingSubmitApplicationCommand
         [Frozen] Mock<INotificationService> notificationService,
         SubmitApplicationCommandHandler handler)
     {
-        applicationApiResponse.Status = "Submitted";
+        applicationApiResponse.Status = ApplicationStatus.Submitted;
         var expectedGetApplicationRequest =
             new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true);
         candidateApiClient

@@ -3,6 +3,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.WithdrawApplication;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
@@ -24,7 +25,7 @@ public class WhenHandlingWithdrawApplicationQuery
         [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
         WithdrawApplicationQueryHandler handler)
     {
-        getApplicationApiResponse.Status = "Submitted";
+        getApplicationApiResponse.Status = ApplicationStatus.Submitted;
         candidateApiClient.Setup(x => x.Get<GetApplicationApiResponse>(
                 It.Is<GetApplicationApiRequest>(x => 
                     x.GetUrl.Contains(query.ApplicationId.ToString())
@@ -68,7 +69,7 @@ public class WhenHandlingWithdrawApplicationQuery
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         WithdrawApplicationQueryHandler handler)
     {
-        getApplicationApiResponse.Status = "Something";
+        getApplicationApiResponse.Status = ApplicationStatus.Draft;
         candidateApiClient.Setup(x => x.Get<GetApplicationApiResponse>(
                 It.Is<GetApplicationApiRequest>(x => 
                     x.GetUrl.Contains(query.ApplicationId.ToString())
