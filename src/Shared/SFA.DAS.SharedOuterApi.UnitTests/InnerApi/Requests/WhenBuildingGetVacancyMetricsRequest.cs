@@ -13,7 +13,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         {
             var actual = new GetVacancyMetricsRequest(serviceName, vacancyReference, startDate, endDate);
 
-            actual.GetUrl.Should().Be($"api/vacancy/{serviceName}/metrics/{vacancyReference}?startDate={startDate:O}&endDate={endDate:O}");
+            actual.GetUrl.Should().Be($"api/vacancies/{serviceName}/metrics/{vacancyReference}?startDate={startDate:O}&endDate={endDate:O}");
         }
     }
 }
