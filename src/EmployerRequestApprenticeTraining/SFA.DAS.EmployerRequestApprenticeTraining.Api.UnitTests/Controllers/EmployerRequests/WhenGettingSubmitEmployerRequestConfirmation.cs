@@ -51,11 +51,13 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
                 StandardTitle = standardResult.Standard.Title,
                 StandardLevel = standardResult.Standard.Level,
                 NumberOfApprentices = queryResult.EmployerRequest.NumberOfApprentices,
+                SameLocation = queryResult.EmployerRequest.SameLocation,
                 SingleLocation = queryResult.EmployerRequest.SingleLocation,
                 AtApprenticesWorkplace = queryResult.EmployerRequest.AtApprenticesWorkplace,
                 DayRelease = queryResult.EmployerRequest.DayRelease,
                 BlockRelease = queryResult.EmployerRequest.BlockRelease,
-                RequestedByEmail = profileUserResult.Email
+                RequestedByEmail = profileUserResult.Email,
+                Regions = queryResult.EmployerRequest.Regions
             });
         }
 

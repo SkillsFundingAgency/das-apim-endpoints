@@ -55,7 +55,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
         }
 
         [Test, MoqAutoData]
-        public async Task Then_BadRequest_Is_Returned_If_Location_Not_Found(
+        public async Task Then_BadRequest_Is_Returned_If_SameLocation_Is_Yes_And_Location_Not_Found(
             SubmitEmployerRequestCommand submitCommand,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerRequestsController controller)
@@ -65,6 +65,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             mockMediator
                 .Setup(x => x.Send(It.Is<GetLocationQuery>(p => p.ExactSearchTerm == submitCommand.SingleLocation), CancellationToken.None))
                 .ReturnsAsync(locationResult);
+
+            submitCommand.SameLocation = "Yes";
 
             // Act
             var actual = await controller.SubmitEmployerRequest(submitCommand) as BadRequestObjectResult;
@@ -76,7 +78,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
         }
 
         [Test, MoqAutoData]
-        public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
+        public async Task Then_InternalServerError_Returned_If_Same_Location_Is_Yes_And_Exception_Is_Thrown_Getting_Location(
             SubmitEmployerRequestCommand submitCommand,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerRequestsController controller)
@@ -84,6 +86,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             // Arrange
             mockMediator.Setup(x => x.Send(It.IsAny<GetLocationQuery>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
+
+            submitCommand.SameLocation = "Yes";
 
             // Act
             var actual = await controller.SubmitEmployerRequest(submitCommand) as StatusCodeResult;
