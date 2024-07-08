@@ -5,6 +5,9 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 {
     public class GetUserAccountsResponse
     {
+        [JsonPropertyName("AccountId")] 
+        public long AccountId { get; set; }
+        
         [JsonPropertyName("HashedAccountId")] 
         public string EncodedAccountId { get; set; }
 

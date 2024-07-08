@@ -96,7 +96,8 @@ public class EmployerAccountsService(
             {
                 var teamMembers =
                     await accountsApiClient.GetAll<GetAccountTeamMembersResponse>(
-                        new GetAccountTeamMembersRequest(userAccount.EncodedAccountId));
+                        new GetAccountTeamMembersRequest(userAccount.AccountId));
+                
                 var member = teamMembers.FirstOrDefault(c =>
                     c.UserRef.Equals(userId, StringComparison.CurrentCultureIgnoreCase));
 
