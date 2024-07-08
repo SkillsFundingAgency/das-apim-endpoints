@@ -26,5 +26,7 @@ namespace SFA.DAS.FindAnApprenticeship.Domain.Models
         public SectionStatus DisabilityConfidenceSectionStatus { get; set; }
         public string WhatIsYourInterest { get; set; }
         public bool? ApplyUnderDisabilityConfidentScheme { get; set; }
+        public string Strengths { get; set; }
+        public string Support { get; set; }
     }
 }

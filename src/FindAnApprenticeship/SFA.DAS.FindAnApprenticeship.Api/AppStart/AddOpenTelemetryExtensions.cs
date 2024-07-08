@@ -1,4 +1,4 @@
-﻿using Azure.Monitor.OpenTelemetry.AspNetCore;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -31,6 +31,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
                             nameof(FindAnApprenticeship)))
                         .AddMeter(Constants.OpenTelemetry.ServiceMeterName));
                 services.AddSingleton<IMetrics, FindAnApprenticeshipMetrics>();
+            }
+            else
+            {
+                services.AddSingleton<IMetrics, StubFindAnApprenticeshipMetrics>();
             }
         }
     }

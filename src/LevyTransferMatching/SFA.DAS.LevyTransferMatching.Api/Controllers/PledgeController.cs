@@ -1,4 +1,8 @@
-﻿using MediatR;
+﻿using System;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -7,26 +11,21 @@ using SFA.DAS.LevyTransferMatching.Api.Models;
 using SFA.DAS.LevyTransferMatching.Api.Models.Pledges;
 using SFA.DAS.LevyTransferMatching.Application.Commands.ClosePledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreatePledge;
+using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplications;
+using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprovalOptions;
+using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
 using SFA.DAS.LevyTransferMatching.Application.Queries.GetApplication;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetAmount;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApprovalOptions;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApproved;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetCreate;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetJobRole;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetLevel;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetSector;
-using System;
-using System.Linq;
-using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationApprovalOptions;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplicationApprovalOptions;
-using System.Net;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Azure;
-using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplications;
-using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
-using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetOrganisationName;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications;
+using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetSector;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -52,7 +51,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
                 var response = new GetPledgesResponse
                 {
-                    Pledges = queryResult.Pledges.Select(x => new GetPledgesResponse.Pledge 
+                    StartingTransferAllowance = queryResult.StartingTransferAllowance,
+                    CurrentYearEstimatedCommittedSpend = queryResult.CurrentYearEstimatedCommittedSpend,
+                    Pledges = queryResult.Pledges.Select(x => new GetPledgesResponse.Pledge
                     {
                         Id = x.Id,
                         Amount = x.Amount,
@@ -101,7 +102,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpPost]
         [Route("accounts/{accountId}/pledges/create")]
-        public async Task<IActionResult> CreatePledge(long accountId, [FromBody]CreatePledgeRequest request)
+        public async Task<IActionResult> CreatePledge(long accountId, [FromBody] CreatePledgeRequest request)
         {
             var commandResult = await _mediator.Send(new CreatePledgeCommand
             {
@@ -132,14 +133,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new ClosePledgeCommand 
-                { 
+                var result = await _mediator.Send(new ClosePledgeCommand
+                {
                     PledgeId = pledgeId,
                     UserId = request.UserId,
                     UserDisplayName = request.UserDisplayName
                 });
 
-                if(result.StatusCode == HttpStatusCode.NotFound)
+                if (result.StatusCode == HttpStatusCode.NotFound)
                 {
                     return NotFound();
                 }
@@ -188,7 +189,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetAmountQuery{EncodedAccountId = accountId });
+                var queryResult = await _mediator.Send(new GetAmountQuery { EncodedAccountId = accountId });
 
                 var response = new GetAmountResponse
                 {
@@ -299,7 +300,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications")]
         public async Task<IActionResult> PledgeApplications(int pledgeId, string sortOrder, string sortDirection)
         {
-            var queryResult = await _mediator.Send(new GetApplicationsQuery { PledgeId = pledgeId, SortOrder= sortOrder, SortDirection = sortDirection });
+            var queryResult = await _mediator.Send(new GetApplicationsQuery { PledgeId = pledgeId, SortOrder = sortOrder, SortDirection = sortDirection });
 
             return Ok((GetApplicationsResponse)queryResult);
         }
@@ -345,7 +346,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 await _mediator.Send(new SetApplicationOutcomeCommand
                 {
                     ApplicationId = applicationId,
-                    PledgeId = pledgeId, 
+                    PledgeId = pledgeId,
                     UserId = outcomeRequest.UserId,
                     UserDisplayName = outcomeRequest.UserDisplayName,
                     Outcome = outcomeRequest.Outcome

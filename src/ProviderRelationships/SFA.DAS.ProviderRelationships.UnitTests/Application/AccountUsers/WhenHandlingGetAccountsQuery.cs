@@ -33,6 +33,7 @@ public class WhenHandlingGetAccountsQuery
                 .Excluding(c => c.UserId)
                 .Excluding(c => c.DisplayName)
                 .Excluding(c => c.IsSuspended)
+                .Excluding(c => c.ApprenticeshipEmployerType)
         );
         actual.FirstName.Should().Be(teamResponse.FirstOrDefault().FirstName);
         actual.LastName.Should().Be(teamResponse.FirstOrDefault().LastName);
