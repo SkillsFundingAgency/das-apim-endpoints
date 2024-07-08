@@ -43,6 +43,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
                     It.Is<PutCandidateApiRequest>(c =>
                         c.PutUrl == expectedRequest.PutUrl
                         && ((PutCandidateApiRequestData)c.Data).MigratedEmail == legacyUserByEmailApiResponse.RegistrationDetails!.EmailAddress
+                        && ((PutCandidateApiRequestData)c.Data).MigratedCandidateId == legacyUserByEmailApiResponse.Id
                         && ((PutCandidateApiRequestData)c.Data).FirstName == legacyUserByEmailApiResponse.RegistrationDetails!.FirstName
                         && ((PutCandidateApiRequestData)c.Data).LastName == legacyUserByEmailApiResponse.RegistrationDetails!.LastName
                         && ((PutCandidateApiRequestData)c.Data).DateOfBirth == legacyUserByEmailApiResponse.RegistrationDetails!.DateOfBirth
