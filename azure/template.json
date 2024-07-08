@@ -11,6 +11,10 @@
         "serviceName": {
             "type": "string"
         },
+        "appServicePlanName": {
+            "type": "string",
+            "defaultValue": ""
+        },
         "appServiceAllowedIPs": {
             "type": "array",
             "defaultValue": []
@@ -34,10 +38,6 @@
             "type": "securestring"
         },
         "loggingRedisKey": {
-            "type": "string"
-        },
-        "logAnalyticsWorkspaceId": {
-            "defaultValue": "",
             "type": "string"
         },
         "configurationStorageConnectionString": {
@@ -67,18 +67,19 @@
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
-        "appServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]"
+        "appServicePlanName": "[if(empty(parameters('appServicePlanName')), concat(variables('resourceNamePrefix'), '-asp'), parameters('appServicePlanName'))]"
+
     },
     "resources": [
         {
-            "apiVersion": "2021-04-01",
+            "apiVersion": "2022-09-01",
             "name": "[concat('cert-', parameters('appServiceName'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-certificate.json')]",
+                    "uri": "[uri(variables('deploymentUrlBase'),'app-service-certificate.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -95,14 +96,14 @@
             }
         },
         {
-            "apiVersion": "2021-04-01",
+            "apiVersion": "2022-09-01",
             "name": "[concat('api-application-insights-', parameters('appServiceName'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
+                    "uri": "[uri(variables('deploymentUrlBase'),'application-insights.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -119,7 +120,7 @@
             }
         },
         {
-            "apiVersion": "2021-04-01",
+            "apiVersion": "2022-09-01",
             "name": "[concat('api-app-service-', parameters('appServiceName'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
@@ -127,7 +128,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-v2.json')]",
+                    "uri": "[uri(variables('deploymentUrlBase'),'app-service-v2.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -166,7 +167,7 @@
                             {
                                 "name": "ResourceEnvironmentName",
                                 "value": "[parameters('resourceEnvironmentName')]"
-                            },                              
+                            },
                             {
                               "name": "ConfigurationStorageConnectionString",
                               "value": "[parameters('configurationStorageConnectionString')]"
@@ -198,14 +199,14 @@
             }
         },
         {
-            "apiVersion": "2021-04-01",
+            "apiVersion": "2022-09-01",
             "name": "[concat('role-assignment-', parameters('appServiceName'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'role-assignments/role-assignment-service-bus.json')]",
+                    "uri": "[uri(variables('deploymentUrlBase'),'role-assignments/role-assignment-service-bus.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -222,14 +223,14 @@
             }
         },
         {
-            "apiVersion": "2021-04-01",
+            "apiVersion": "2022-09-01",
             "name": "[concat('role-assignment-staging-', parameters('appServiceName'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'role-assignments/role-assignment-service-bus.json')]",
+                    "uri": "[uri(variables('deploymentUrlBase'),'role-assignments/role-assignment-service-bus.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
