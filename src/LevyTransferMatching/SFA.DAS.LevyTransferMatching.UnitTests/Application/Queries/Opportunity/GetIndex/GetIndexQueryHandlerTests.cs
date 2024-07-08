@@ -36,7 +36,9 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
             _sectors = _autoFixture.Create<List<ReferenceDataItem>>();
             _jobRoles = _autoFixture.Create<List<ReferenceDataItem>>();
             _levels = _autoFixture.Create<List<ReferenceDataItem>>();
-            _query = _autoFixture.Create<GetIndexQuery>();
+            _query = _autoFixture.Build<GetIndexQuery>()
+                .Without(p => p.PageSize)
+                .With(p => p.Page, 1).Create();
             _pledges = _autoFixture.Create<GetPledgesResponse>();
 
             _referenceDataService = new Mock<IReferenceDataService>();
@@ -55,7 +57,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            result.Opportunities.Select(x => x.Id).Should().BeEquivalentTo(_pledges.Pledges.Select(x => x.Id));
+            result.Items.Select(x => x.Id).Should().BeEquivalentTo(_pledges.Pledges.Select(x => x.Id));
         }
 
         [Test]
@@ -89,7 +91,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
 
             var result = await _handler.Handle(_query, CancellationToken.None);
 
-            CollectionAssert.AreEqual(result.Opportunities, Enumerable.Empty<Pledge>());
+            CollectionAssert.AreEqual(result.Items, Enumerable.Empty<Pledge>());
         }
     }
 }
