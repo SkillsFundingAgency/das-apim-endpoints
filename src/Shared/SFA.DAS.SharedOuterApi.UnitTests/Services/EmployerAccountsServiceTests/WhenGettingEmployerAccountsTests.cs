@@ -203,14 +203,17 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests
             employerProfile.UserId = Guid.NewGuid().ToString();
             profileUserResponse.Id = employerProfile.UserId;
             teamResponse.UserRef = employerProfile.UserId;
+            
             accountsApiClient
                 .Setup(x => x.GetAll<GetUserAccountsResponse>(
                     It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"user/{employerProfile.UserId}/accounts"))))
                 .ReturnsAsync(apiResponse);
+            
             accountsApiClient
                 .Setup(x => x.GetAll<GetAccountTeamMembersResponse>(
-                    It.Is<GetAccountTeamMembersRequest>(c => c.GetAllUrl.Contains($"accounts/{apiResponse.First().EncodedAccountId}/users"))))
+                    It.Is<GetAccountTeamMembersRequest>(c => c.GetAllUrl.Contains($"accounts/internal/{apiResponse.First().AccountId}/users"))))
                 .ReturnsAsync(new List<GetAccountTeamMembersResponse> { teamResponse });
+            
             employerProfilesApiClient.Setup(x => x.GetWithResponseCode<EmployerProfileUsersApiResponse>(
                     It.Is<GetEmployerUserAccountRequest>(c =>
                         c.GetUrl.Contains($"api/users/{HttpUtility.UrlEncode(employerProfile.UserId)}"))))
