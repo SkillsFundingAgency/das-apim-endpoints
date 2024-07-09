@@ -24,7 +24,8 @@ public class CandidatesController(IMediator mediator, ILogger<CandidatesControll
                 Feedback = request.CandidateFeedback,
                 Outcome = request.Status,
                 ApplicationId = applicationId,
-                CandidateId = candidateId
+                CandidateId = candidateId,
+                VacancyReference = request.VacancyReference
             });
             return NoContent();
         }

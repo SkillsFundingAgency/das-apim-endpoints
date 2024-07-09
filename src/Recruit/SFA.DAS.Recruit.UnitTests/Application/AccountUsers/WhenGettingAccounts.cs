@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -38,7 +38,7 @@ public class WhenGettingAccounts
             .Excluding(c=>c.LastName)
             .Excluding(x => x.DisplayName)
             .Excluding(x => x.IsSuspended)
-            .Excluding(c => c.ApprenticeshipEmployerType)
+            .Excluding(x => x.ApprenticeshipEmployerType)
         );
         actual.UserId.Should().Be(teamResponse.FirstOrDefault()?.UserId);
         actual.IsSuspended.Should().Be(teamResponse.FirstOrDefault().IsSuspended);
