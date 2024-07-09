@@ -66,6 +66,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             GetStandardsListItemResponse courseResponse,
             GetCourseLevelsListResponse courseLevelsResponse,
             GetApplicationByReferenceApiResponse applicationResponse,
+            GetCandidateAddressApiResponse candidateAddressApiResponse,
             [Frozen] Mock<IVacancyService> vacancyService,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> courseApiClient,
             [Frozen] Mock<ICourseService> courseService,
@@ -84,11 +85,21 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
 
             courseService.Setup(x => x.GetLevels()).ReturnsAsync(courseLevelsResponse);
 
+            var expectedGetCandidateApplicationRequest =
+                new GetApplicationByReferenceApiRequest(query.CandidateId.Value, query.VacancyReference.Replace("VAC","", StringComparison.CurrentCultureIgnoreCase));
             candidateApiClient
                 .Setup(client =>
                     client.Get<GetApplicationByReferenceApiResponse>(
-                        It.IsAny<GetApplicationByReferenceApiRequest>()))
+                        It.Is<GetApplicationByReferenceApiRequest>(c=>c.GetUrl == expectedGetCandidateApplicationRequest.GetUrl)))
                 .ReturnsAsync(applicationResponse);
+            
+            var expectedGetCandidateAddressRequest =
+                new GetCandidateAddressApiRequest(query.CandidateId.Value);
+            candidateApiClient
+                .Setup(client =>
+                    client.Get<GetCandidateAddressApiResponse>(
+                        It.Is<GetCandidateAddressApiRequest>(c=>c.GetUrl == expectedGetCandidateAddressRequest.GetUrl)))
+                .ReturnsAsync(candidateAddressApiResponse);
 
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
@@ -105,6 +116,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             result.Application.Status.Should().Be(applicationResponse.Status);
             result.Application.SubmittedDate.Should().Be(applicationResponse.SubmittedDate);
             result.ApprenticeshipVacancy.ClosingDate.Should().Be(vacancy.ClosedDate ?? vacancy.ClosingDate);
+            result.CandidatePostcode.Should().Be(candidateAddressApiResponse.Postcode);
         }
     }
 }
