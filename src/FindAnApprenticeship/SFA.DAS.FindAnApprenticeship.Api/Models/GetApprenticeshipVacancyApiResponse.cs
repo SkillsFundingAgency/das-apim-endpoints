@@ -88,6 +88,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         [JsonProperty("levels")] public List<GetCourseLevelsListItem> Levels { get; set; }
        
         public CandidateApplication Application { get; set; }
+        public string CandidatePostcode { get; set; }
 
 
         public static implicit operator GetApprenticeshipVacancyApiResponse(GetApprenticeshipVacancyQueryResult source)
@@ -156,7 +157,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 CourseSkills = source.CourseDetail.Skills,
                 Levels = source.Levels,
                 Application = (CandidateApplication)source.Application,
-				IsClosed = source.ApprenticeshipVacancy.IsClosed
+				IsClosed = source.ApprenticeshipVacancy.IsClosed,
+                CandidatePostcode = source.CandidatePostcode
             };
         }
     }
