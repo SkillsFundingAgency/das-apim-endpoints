@@ -126,6 +126,16 @@ public class OrganisationResult
             return null;
         }
 
+        var address = source.Address != null ? new Address
+        {
+            Line1 = source.Address.Line1,
+            Line2 = source.Address.Line2,
+            Line3 = source.Address.Line3,
+            Line4 = source.Address.TownOrCity,
+            Line5 = source.Address.County,
+            Postcode = source.Address.PostCode
+        } : new Address();
+
         return new OrganisationResult
         {
             Name = source.CompanyName,
@@ -133,15 +143,7 @@ public class OrganisationResult
             SubType = OrganisationSubType.None,
             Code = source.CompanyNumber,
             RegistrationDate = source.DateOfIncorporation,
-            Address = new Address
-            {
-                Line1 = source.Address.Line1,
-                Line2 = source.Address.Line2,
-                Line3 = source.Address.Line3,
-                Line4 = source.Address.TownOrCity,
-                Line5 = source.Address.County,
-                Postcode = source.Address.PostCode
-            },
+            Address = address,
             Sector = null,
             OrganisationStatus = MapCompanyToOrganisationStatus(source.CompanyStatus)
         };
