@@ -52,7 +52,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 EntryId = entryId
             });
 
-            return Ok();
+            return Ok(queryResult);
         }
 
         [HttpGet]
