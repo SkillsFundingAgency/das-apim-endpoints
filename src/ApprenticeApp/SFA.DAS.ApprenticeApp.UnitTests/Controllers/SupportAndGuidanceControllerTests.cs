@@ -61,7 +61,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             };
 
             var result = await controller.GetOneByEntryId(entryId);
-            result.Should().BeOfType(typeof(OkResult));
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkObjectResult));
         }
 
         [Test, MoqAutoData]
