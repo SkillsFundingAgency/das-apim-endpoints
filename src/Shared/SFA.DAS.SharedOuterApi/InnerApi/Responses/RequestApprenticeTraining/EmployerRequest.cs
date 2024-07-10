@@ -13,6 +13,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining
         public long AccountId { get; set; }
         public string StandardReference { get; set; }
         public int NumberOfApprentices { get; set; }
+        public string SameLocation { get; set; }
         public string SingleLocation { get; set; }
         public bool AtApprenticesWorkplace { get; set; }
         public bool DayRelease { get; set; }

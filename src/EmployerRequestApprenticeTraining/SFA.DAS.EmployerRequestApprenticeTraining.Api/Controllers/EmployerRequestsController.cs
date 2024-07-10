@@ -33,11 +33,15 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             try
             {
                 var employerProfileUserResult = await _mediator.Send(new GetEmployerProfileUserQuery { UserId = submitCommand.RequestedBy });
-                
-                var locationResult = await _mediator.Send(new GetLocationQuery { ExactSearchTerm = submitCommand.SingleLocation });
-                if (locationResult.Location == null)
+
+                GetLocationResult locationResult = null;
+                if (string.IsNullOrEmpty(submitCommand.SameLocation) || submitCommand.SameLocation == "Yes")
                 {
-                    return BadRequest($"Unable to submit employer request as the specified location {submitCommand.SingleLocation} cannot be found");
+                    locationResult = await _mediator.Send(new GetLocationQuery { ExactSearchTerm = submitCommand.SingleLocation });
+                    if (locationResult.Location == null)
+                    {
+                        return BadRequest($"Unable to submit employer request as the specified location {submitCommand.SingleLocation} cannot be found");
+                    }
                 }
 
                 var createCommand = new CreateEmployerRequestCommand
@@ -47,9 +51,11 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                     AccountId = submitCommand.AccountId,
                     StandardReference = submitCommand.StandardReference,
                     NumberOfApprentices = submitCommand.NumberOfApprentices,
+                    SameLocation = submitCommand.SameLocation,
                     SingleLocation = submitCommand.SingleLocation,
-                    SingleLocationLatitude = locationResult.Location.Location.GeoPoint[0],
-                    SingleLocationLongitude = locationResult.Location.Location.GeoPoint[1],
+                    SingleLocationLatitude = locationResult?.Location.Location.GeoPoint[0] ?? 0.0,
+                    SingleLocationLongitude = locationResult?.Location.Location.GeoPoint[1] ?? 0.0,
+                    MultipleLocations = submitCommand.MultipleLocations,
                     AtApprenticesWorkplace = submitCommand.AtApprenticesWorkplace,
                     DayRelease = submitCommand.DayRelease,
                     BlockRelease = submitCommand.BlockRelease,
@@ -135,11 +141,13 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                         StandardTitle = standardResult.Standard.Title,
                         StandardLevel = standardResult.Standard.Level,
                         NumberOfApprentices = employerRequest.NumberOfApprentices,
+                        SameLocation = employerRequest.SameLocation,
                         SingleLocation = employerRequest.SingleLocation,
                         AtApprenticesWorkplace = employerRequest.AtApprenticesWorkplace,
                         DayRelease = employerRequest.DayRelease,
                         BlockRelease = employerRequest.BlockRelease,
-                        RequestedByEmail = employerProfileUser.Email
+                        RequestedByEmail = employerProfileUser.Email,
+                        Regions = employerRequest.Regions
                     });
                 }
 

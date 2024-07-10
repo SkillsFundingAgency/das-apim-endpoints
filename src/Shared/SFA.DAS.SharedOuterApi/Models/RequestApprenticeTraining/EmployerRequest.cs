@@ -12,6 +12,7 @@ namespace SFA.DAS.SharedOuterApi.Models.RequestApprenticeTraining
         public long AccountId { get; set; }
         public string StandardReference { get; set; }
         public int NumberOfApprentices { get; set; }
+        public string SameLocation { get; set; }
         public string SingleLocation { get; set; }
         public bool AtApprenticesWorkplace { get; set; }
         public bool DayRelease { get; set; }
@@ -33,6 +34,7 @@ namespace SFA.DAS.SharedOuterApi.Models.RequestApprenticeTraining
                 AccountId = source.AccountId,
                 StandardReference = source.StandardReference,
                 NumberOfApprentices = source.NumberOfApprentices,
+                SameLocation = source.SameLocation,
                 SingleLocation = source.SingleLocation,
                 AtApprenticesWorkplace = source.AtApprenticesWorkplace,
                 DayRelease = source.DayRelease,
