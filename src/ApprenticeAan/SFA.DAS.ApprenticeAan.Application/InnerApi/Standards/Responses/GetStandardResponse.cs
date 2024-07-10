@@ -1,6 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Models;
-
-namespace SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Responses;
+﻿namespace SFA.DAS.ApprenticeAan.Application.InnerApi.Standards.Responses;
 
 public class GetStandardResponse
 {

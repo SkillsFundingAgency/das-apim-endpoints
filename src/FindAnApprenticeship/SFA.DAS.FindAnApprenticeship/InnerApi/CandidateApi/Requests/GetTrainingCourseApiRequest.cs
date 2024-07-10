@@ -15,6 +15,5 @@ public class GetTrainingCourseApiRequest : IGetApiRequest
         _trainingCourseId = trainingCourseId;
     }
 
-    public string GetUrl =>
-        $"candidates/{_candidateId}/applications/{_applicationId}/trainingcourses/{_trainingCourseId}";
+    public string GetUrl => $"api/candidates/{_candidateId}/applications/{_applicationId}/trainingcourses/{_trainingCourseId}";
 }

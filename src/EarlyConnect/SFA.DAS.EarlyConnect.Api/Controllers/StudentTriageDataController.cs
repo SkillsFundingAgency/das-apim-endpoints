@@ -9,6 +9,8 @@ using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId;
 using SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData;
 using SFA.DAS.EarlyConnect.Application.Commands.CreateLogData;
 using SFA.DAS.EarlyConnect.Application.Commands.UpdateLogData;
+using SendReminderEmailRequest = SFA.DAS.EarlyConnect.Api.Models.SendReminderEmailRequest;
+using SFA.DAS.EarlyConnect.Application.Commands.SendReminderEmail;
 
 namespace SFA.DAS.EarlyConnect.Api.Controllers
 {
@@ -24,6 +26,43 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
         {
             _mediator = mediator;
             _logger = logger;
+        }
+
+        [HttpPost]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [Route("reminder")]
+        public async Task<IActionResult> StudentSurveyEmailReminder(SendReminderEmailRequest request)
+        {
+            try
+            {
+                var response = await _mediator.Send(new SendReminderEmailCommand
+                {
+                    EmailReminder = new ReminderEmail
+                    {
+                        LepsCode = request.LepsCode
+                    }
+                });
+
+                var model = new SendReminderEmailResponse()
+                {
+                    Message = response.Message
+                };
+
+
+                return CreatedAtAction(nameof(CreateStudentTriageData), model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error sending reminder email");
+
+                var apiException = (e as SharedOuterApi.Exceptions.ApiResponseException);
+                var status = apiException?.Status;
+                var errorMessage = apiException?.Error;
+
+                return BadRequest(errorMessage);
+
+            }
         }
 
         [HttpPost]
@@ -135,6 +174,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                 RequestSource = request.DataSource,
                 RequestIP = ipAddress,
                 Payload = String.Empty,
+                FileName = $"StudentId-{request.Id}|StudentSurveyId-{(request.StudentSurvey?.Id != null ? request.StudentSurvey.Id.ToString() : "")}",
                 Status = status.ToString()
             };
 

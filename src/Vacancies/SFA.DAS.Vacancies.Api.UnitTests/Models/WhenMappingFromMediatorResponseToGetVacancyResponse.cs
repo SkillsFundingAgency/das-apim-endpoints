@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
@@ -10,10 +11,12 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
     public class WhenMappingFromMediatorResponseToGetVacancyResponse
     {
         [Test, AutoData]
-        public void Then_The_Fields_Are_Mapped(GetVacancyQueryResult source)
+        public void Then_The_Fields_Are_Mapped(GetVacancyQueryResult source, int ukprn)
         {
+            source.Vacancy.Ukprn = ukprn.ToString();
             source.Vacancy.WageType = 3;
             source.Vacancy.WageUnit = 1;
+            source.Vacancy.VacancyReference = $"VAC{source.Vacancy.VacancyReference}";
             
             var actual = (GetVacancyResponse)source;
             
@@ -42,6 +45,9 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(c=>c.WorkingWeek)
                 .Excluding(c=>c.Score)
                 .Excluding(c=>c.IsPositiveAboutDisability)
+                .Excluding(c => c.ClosingDate)
+                .Excluding(item => item.Ukprn)
+                .Excluding(item => item.VacancyReference)
             );
             actual.FullDescription.Should().Be(source.Vacancy.LongDescription);
             actual.Qualifications.Should().BeEquivalentTo(source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());
@@ -57,11 +63,15 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.Wage.WageAdditionalInformation.Should().Be(source.Vacancy.WageText);
             actual.Wage.WageAmountLowerBound.Should().Be(source.Vacancy.WageAmountLowerBound);
             actual.Wage.WageAmountUpperBound.Should().Be(source.Vacancy.WageAmountUpperBound);
+            actual.Ukprn.Should().Be(ukprn);
+            actual.VacancyReference.Should().Be(source.Vacancy.VacancyReference.Replace("VAC", ""));
+            actual.ClosingDate.Should().Be(source.Vacancy.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)));
         }
 
         [Test, AutoData]
-        public void Then_If_Anonymous_Then_Anon_Values_Mapped(GetVacancyQueryResult source)
+        public void Then_If_Anonymous_Then_Anon_Values_Mapped(GetVacancyQueryResult source, int ukprn)
         {
+            source.Vacancy.Ukprn = ukprn.ToString();
             source.Vacancy.IsEmployerAnonymous = true;
             source.Vacancy.VacancyLocationType = "nATIonal";
             
@@ -73,6 +83,8 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(item => item.CourseTitle)
                 .Excluding(item => item.CourseLevel)
                 .Excluding(item => item.Location)
+                .Excluding(item => item.Ukprn)
+                .Excluding(item => item.ClosingDate)
             );
             actual.EmployerName.Should().Be(source.Vacancy.AnonymousEmployerName);
             actual.Location.Should().BeNull();

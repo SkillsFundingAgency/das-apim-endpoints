@@ -10,9 +10,7 @@ using SFA.DAS.Telemetry.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 // Add services to the container.
-
 var configuration = builder.Configuration.BuildSharedConfiguration();
 
 builder.Services

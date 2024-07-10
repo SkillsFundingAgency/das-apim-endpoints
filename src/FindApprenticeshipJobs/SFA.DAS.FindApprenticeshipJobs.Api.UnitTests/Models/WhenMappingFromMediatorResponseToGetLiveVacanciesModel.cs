@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using AutoFixture.NUnit3;
+using FluentAssertions;
 using FluentAssertions.Execution;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Api.Models;
@@ -23,5 +24,18 @@ public class WhenMappingFromMediatorResponseToGetLiveVacanciesModel
             actual.TotalLiveVacancies.Should().Be(source.TotalLiveVacancies);
             actual.TotalPages.Should().Be(source.TotalPages);
         }
+    }
+
+    [Test, AutoData]
+    public void Then_The_Fields_Are_Mapped_For_Nhs_Vacancies(GetNhsJobsQueryResult source)
+    {
+        var actual = (GetLiveVacanciesApiResponse)source;
+        actual.Vacancies.Should().BeEquivalentTo(source.NhsVacancies);
+        actual.TotalPages.Should().Be(1);
+        actual.PageNo.Should().Be(1);
+        actual.TotalLiveVacanciesReturned.Should().Be(source.NhsVacancies.Count);
+        actual.PageSize.Should().Be(source.NhsVacancies.Count);
+        actual.TotalLiveVacancies.Should().Be(source.NhsVacancies.Count);
+        
     }
 }

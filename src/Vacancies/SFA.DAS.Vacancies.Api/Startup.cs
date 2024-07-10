@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json.Serialization;
-using MediatR;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
@@ -17,6 +12,10 @@ using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.Vacancies.Api.AppStart;
 using SFA.DAS.Vacancies.Application.TrainingCourses.Queries;
 using SFA.DAS.Vacancies.Configuration;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.Vacancies.Api;
 
@@ -65,7 +64,7 @@ public static class Startup
         if (configuration["Environment"] != "DEV")
         {
             services.AddHealthChecks()
-                .AddCheck<CoursesApiHealthCheck>("Courses API health check");
+                .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription);
         }
 
         if (configuration.IsLocalOrDev())
@@ -87,6 +86,7 @@ public static class Startup
         //todo obsolete, should use connectionstring instead https://github.com/microsoft/ApplicationInsights-dotnet/issues/2560
         //services.AddApplicationInsightsTelemetry(options => options.ConnectionString = configuration.GetConnectionString("ApplicationInsights"));
         services.AddApplicationInsightsTelemetry(configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+        services.AddOpenTelemetryRegistration(configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
         services.AddSwaggerGen(c =>
         {

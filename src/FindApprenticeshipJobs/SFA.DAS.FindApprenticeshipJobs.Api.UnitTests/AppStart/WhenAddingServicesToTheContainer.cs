@@ -8,6 +8,7 @@ using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using FluentAssertions;
+using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -18,7 +19,11 @@ public class WhenAddingServicesToTheContainer
     [TestCase(typeof(IAzureClientCredentialHelper))]
     [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
     [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
+    [TestCase(typeof(ILocationApiClient<LocationApiConfiguration>))]
+    [TestCase(typeof(ICandidateApiClient<CandidateApiConfiguration>))]
+    [TestCase(typeof(INhsJobsApiClient))]
     [TestCase(typeof(ICourseService))]
+    [TestCase(typeof(EmailEnvironmentHelper))]
     public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
     {
         var hostEnvironment = new Mock<IWebHostEnvironment>();
@@ -45,6 +50,9 @@ public class WhenAddingServicesToTheContainer
                 {
                     new("RecruitApiConfiguration:url", "http://localhost:1"),
                     new("CoursesApiConfiguration:url", "http://localhost:2"),
+                    new("LocationApiConfiguration:url", "http://localhost:3"),
+                    new("CandidateApiConfiguration:url", "http://localhost:4"),
+                    new("ResourceEnvironmentName", "TEST"),
                 }
         };
 

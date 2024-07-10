@@ -1,38 +1,39 @@
-﻿using System;
+﻿using MediatR;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.Roatp.Infrastructure;
+using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Roatp.Application.Charities.Queries
+namespace SFA.DAS.Roatp.Application.Charities.Queries;
+
+public class GetCharityQueryHandler : IRequestHandler<GetCharityQuery, GetCharityResult>
 {
-    public class GetCharityQueryHandler : IRequestHandler<GetCharityQuery, GetCharityResult>
-    {
-        private readonly ICharitiesApiClient<CharitiesApiConfiguration> _charityClient;
-        private readonly ILogger<GetCharityQueryHandler> _logger;
+    private readonly ICharitiesRestApiClient _charityClient;
+    private readonly ILogger<GetCharityQueryHandler> _logger;
 
-        public GetCharityQueryHandler(ICharitiesApiClient<CharitiesApiConfiguration> charityClient, ILogger<GetCharityQueryHandler> logger)
+    public GetCharityQueryHandler(ICharitiesRestApiClient charityClient, ILogger<GetCharityQueryHandler> logger)
+    {
+        _charityClient = charityClient;
+        _logger = logger;
+    }
+    public async Task<GetCharityResult> Handle(GetCharityQuery request, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Get charity request received for registration number {registrationNumber}", request.RegistrationNumber);
+
+        var response = await _charityClient.GetCharities(request.RegistrationNumber, cancellationToken);
+        switch (response.ResponseMessage.StatusCode)
         {
-            _charityClient = charityClient;
-            _logger = logger;
-        }
-        public async Task<GetCharityResult> Handle(GetCharityQuery request, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Get charity request received for registration number {registrationNumber}", request.RegistrationNumber);
-            try
-            {
-                var charity = await _charityClient.Get<GetCharityResponse>(new GetCharityRequest(request.RegistrationNumber));
-                return new GetCharityResult(charity);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Error occurred trying to retrieve charity for registration number {request.RegistrationNumber}");
-                throw;
-            }
+            case HttpStatusCode.OK:
+                {
+                    return new GetCharityResult(response.GetContent());
+                }
+            case HttpStatusCode.NotFound:
+                return null;
+            default:
+                throw new InvalidOperationException(
+                    $"Invalid operation occurred trying to retrieve charity for registration number {request.RegistrationNumber}");
         }
     }
 }

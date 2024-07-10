@@ -9,13 +9,15 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
         public string VacancyTitle { get; set; }
         public string EmployerName { get; set; }
         public DateTime ClosingDate { get; set; }
+        public bool IsMigrated { get; set; }
         public bool IsDisabilityConfident { get; set; }
-
+        public bool IsApplicationComplete { get; set; }
         public EducationHistorySection EducationHistory { get; set; }
         public WorkHistorySection WorkHistory { get; set; }
         public ApplicationQuestionsSection ApplicationQuestions { get; set; }
         public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
         public DisabilityConfidenceSection DisabilityConfidence { get; set; }
+        public PreviousApplicationDetails PreviousApplication { get; set; }
 
         public class EducationHistorySection
         {
@@ -53,8 +55,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
             public string WhatInterestsYou { get; set; }
             public string AdditionalQuestion1 { get; set; }
             public string AdditionalQuestion2 { get; set; }
-            public string AdditionalQuestion1Label { get; set; }
-            public string AdditionalQuestion2Label { get; set; }
+            public string? AdditionalQuestion1Label { get; set; }
+            public string? AdditionalQuestion2Label { get; set; }
+            public Guid? AdditionalQuestion1Id { get; set; }
+            public Guid? AdditionalQuestion2Id { get; set; }
 
             public static implicit operator ApplicationQuestionsSection(GetIndexQueryResult.ApplicationQuestionsSection source)
             {
@@ -65,7 +69,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
                     AdditionalQuestion1 = source.AdditionalQuestion1,
                     AdditionalQuestion2 = source.AdditionalQuestion2,
                     AdditionalQuestion1Label = source.AdditionalQuestion1Label,
-                    AdditionalQuestion2Label = source.AdditionalQuestion2Label
+                    AdditionalQuestion2Label = source.AdditionalQuestion2Label,
+                    AdditionalQuestion1Id = source.AdditionalQuestion1Id,
+                    AdditionalQuestion2Id = source.AdditionalQuestion2Id
                 };
             }
         }
@@ -103,13 +109,36 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
                 VacancyTitle = source.VacancyTitle,
                 EmployerName = source.EmployerName,
                 ClosingDate = source.ClosingDate,
+                IsMigrated = source.IsMigrated,
                 IsDisabilityConfident = source.IsDisabilityConfident,
+                IsApplicationComplete = source.IsApplicationComplete,
                 EducationHistory = source.EducationHistory,
                 WorkHistory = source.WorkHistory,
                 ApplicationQuestions = source.ApplicationQuestions,
                 InterviewAdjustments = source.InterviewAdjustments,
-                DisabilityConfidence = source.DisabilityConfidence
+                DisabilityConfidence = source.DisabilityConfidence,
+                PreviousApplication = source.PreviousApplication
             };
+        }
+
+        public class PreviousApplicationDetails
+        {
+            public string VacancyTitle { get; set; }
+            public string EmployerName { get; set; }
+            public DateTime SubmissionDate { get; set; }
+
+            public static implicit operator PreviousApplicationDetails(
+                GetIndexQueryResult.PreviousApplicationDetails source)
+            {
+                if (source == null) return null;
+
+                return new PreviousApplicationDetails
+                {
+                    EmployerName = source.EmployerName,
+                    SubmissionDate = source.SubmissionDate,
+                    VacancyTitle = source.VacancyTitle
+                };
+            }
         }
     }
 }

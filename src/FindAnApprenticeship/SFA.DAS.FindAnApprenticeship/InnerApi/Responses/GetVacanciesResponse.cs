@@ -69,6 +69,15 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 
         [JsonPropertyName("isDisabilityConfident")]
         public bool IsDisabilityConfident { get; set; }
+
+        public CandidateApplication? Application { get; set; } = null;
+        
+        public Location Location { get; set; }
+
+        public class CandidateApplication
+        {
+            public string Status { get; set; }
+        }
     }
 
     public class Address
@@ -83,6 +92,12 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public string AddressLine4 { get; set; }
         [JsonPropertyName("postcode")]
         public string Postcode { get; set; }
+    }
+
+    public class Location
+    {
+        public double? Lat { get; set; }
+        public double? Lon { get; set; }
     }
 
 }

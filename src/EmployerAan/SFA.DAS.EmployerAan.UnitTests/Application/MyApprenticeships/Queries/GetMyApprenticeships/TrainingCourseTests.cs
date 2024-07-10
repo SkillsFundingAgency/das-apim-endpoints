@@ -1,7 +1,9 @@
 ﻿using AutoFixture.NUnit3;
 using SFA.DAS.EmployerAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
+using GetFrameworkResponse = SFA.DAS.EmployerAan.InnerApi.Standards.Responses.GetFrameworkResponse;
+using GetStandardResponse = SFA.DAS.EmployerAan.InnerApi.Standards.Responses.GetStandardResponse;
 
-namespace SFA.DAS.EmployerAan.Application.UnitTests.MyApprenticeships.Queries.GetMyApprenticeships;
+namespace SFA.DAS.EmployerAan.UnitTests.Application.MyApprenticeships.Queries.GetMyApprenticeships;
 
 public class TrainingCourseTests
 {

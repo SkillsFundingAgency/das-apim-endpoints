@@ -23,11 +23,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
         [Test, MoqAutoData]
         public async Task Then_The_CommandResult_Is_Returned_As_Expected(
             PatchApplicationWorkHistoryCommand command,
-            Models.Application candidateApiResponse,
+            Domain.Models.Application candidateApiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             PatchApplicationWorkHistoryCommandHandler handler)
         {
-            var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
+            var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Domain.Models.Application>());
 
             candidateApiClient
                 .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
@@ -47,7 +47,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply
             [Frozen] Mock<ILogger<PatchApplicationWorkHistoryCommandHandler>> loggerMock,
             PatchApplicationWorkHistoryCommandHandler handler)
         {
-            var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Models.Application>());
+            var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Domain.Models.Application>());
 
             candidateApiClient
                 .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))

@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Net;
 using System.Security;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Vacancies.Api.Models;
+using SFA.DAS.Vacancies.Api.Telemetry;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 
 
@@ -18,11 +20,13 @@ namespace SFA.DAS.Vacancies.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly ILogger<VacancyController> _logger;
+        private readonly IMetrics _metrics;
 
-        public VacancyController(IMediator mediator, ILogger<VacancyController> logger)
+        public VacancyController(IMediator mediator, ILogger<VacancyController> logger, IMetrics metrics)
         {
             _mediator = mediator;
             _logger = logger;
+            _metrics = metrics;
         }
 
         /// <summary>
@@ -74,7 +78,8 @@ namespace SFA.DAS.Vacancies.Api.Controllers
                     DistanceInMiles = request.DistanceInMiles,
                     NationWideOnly = request.NationWideOnly,
                     StandardLarsCode = request.StandardLarsCode,
-                    PostedInLastNumberOfDays = request.PostedInLastNumberOfDays
+                    PostedInLastNumberOfDays = request.PostedInLastNumberOfDays,
+                    AdditionalDataSources = request.AdditionalDataSources?.Select(x => x.ToString()).ToList()
                 });
 
                 return Ok((GetVacanciesListResponse)queryResponse);
@@ -116,6 +121,7 @@ namespace SFA.DAS.Vacancies.Api.Controllers
                 {
                     return NotFound();
                 }
+
                 return Ok(response);
             }
             catch (Exception e)
@@ -123,7 +129,10 @@ namespace SFA.DAS.Vacancies.Api.Controllers
                 _logger.LogError(e, "Error attempting to get vacancy");
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
+            finally
+            {
+                _metrics.IncreaseVacancyViews(vacancyReference);
+            }
         }
-        
     }
 }

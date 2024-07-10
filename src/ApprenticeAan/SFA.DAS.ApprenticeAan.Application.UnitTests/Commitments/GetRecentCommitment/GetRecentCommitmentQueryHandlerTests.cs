@@ -4,8 +4,8 @@ using FluentAssertions;
 using Moq;
 using SFA.DAS.ApprenticeAan.Application.Commitments.GetRecentCommitment;
 using SFA.DAS.ApprenticeAan.Application.Extensions;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.ApprenticeshipsValidate;
-using SFA.DAS.ApprenticeAan.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Commitments.GetRecentCommitment;

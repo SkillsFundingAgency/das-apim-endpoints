@@ -20,8 +20,9 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
         private readonly List<string> _categories;
         private readonly uint? _postedInLastNumberOfDays;
         private readonly string _sort;
+        private readonly List<string> _additionalDataSources;
 
-        public GetVacanciesRequest(int pageNumber, int pageSize, string accountLegalEntityPublicHashedId = "", int? ukprn = null, string accountPublicHashedId = "", List<int> standardLarsCode = null, bool? nationwideOnly = null, double? lat = null, double? lon = null, uint? distanceInMiles = null, List<string> categories = null, uint? postedInLastNumberOfDays = null, string sort = "")
+        public GetVacanciesRequest(int pageNumber, int pageSize, string accountLegalEntityPublicHashedId = "", int? ukprn = null, string accountPublicHashedId = "", List<int> standardLarsCode = null, bool? nationwideOnly = null, double? lat = null, double? lon = null, uint? distanceInMiles = null, List<string> categories = null, uint? postedInLastNumberOfDays = null, List<string> additionalDataSources = null, string sort = "")
         {
             _pageNumber = pageNumber;
             _pageSize = pageSize;
@@ -35,10 +36,12 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             _distanceInMiles = distanceInMiles;
             _categories = categories;
             _postedInLastNumberOfDays = postedInLastNumberOfDays;
+            _additionalDataSources = additionalDataSources;
             _sort = sort;
         }
 
         public string GetUrl => BuildGetUrl();
+        public string Version => "2.0";
 
         private string BuildGetUrl()
         {
@@ -88,10 +91,12 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
             {
                 url += $"&postedInLastNumberOfDays={_postedInLastNumberOfDays}";
             }
-
+            if (_additionalDataSources != null && _additionalDataSources.Any())
+            {
+                url += $"&additionalDataSources={string.Join("&additionalDataSources=", _additionalDataSources)}";
+            }
 
             return url;
-            
         }
     }
 }

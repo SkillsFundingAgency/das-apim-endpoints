@@ -7,12 +7,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
 {
     public class GetJobsApiResponse
     {
+        public bool? IsSectionCompleted { get; set; }
         public List<Job> Jobs { get; set; } = [];
 
         public static implicit operator GetJobsApiResponse(GetJobsQueryResult source)
         {
             return new GetJobsApiResponse
             {
+                IsSectionCompleted = source.IsSectionCompleted,
                 Jobs = source.Jobs.Select(x => (Job)x).ToList()
             };
         }

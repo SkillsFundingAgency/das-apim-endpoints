@@ -8,6 +8,9 @@ trigger:
     - azure
     - pipeline-templates
     - src/FindAnApprenticeship
+    exclude:
+    - azure/shared-infrastructure-template.json
+    - pipeline-templates/job/shared-arm-deploy.yml
 
 pr:
   autoCancel: true
@@ -19,10 +22,14 @@ pr:
     - azure
     - pipeline-templates
     - src/FindAnApprenticeship
+    exclude:
+    - azure/shared-infrastructure-template.json
+    - pipeline-templates/job/shared-arm-deploy.yml
 
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
+- group: RELEASE das-apim-endpoints-FindAnApprenticeship
 
 resources:
   repositories:
@@ -35,7 +42,7 @@ resources:
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/5.0.2
+    ref: refs/tags/5.1.7
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-employer-config

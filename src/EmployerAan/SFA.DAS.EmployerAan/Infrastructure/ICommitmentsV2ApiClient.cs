@@ -3,7 +3,7 @@ using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMemberSummary;
 
 namespace SFA.DAS.EmployerAan.Infrastructure;
 
-public interface ICommitmentsV2ApiClient
+public interface ICommitmentsV2ApiClient : IHealthChecker
 {
     [Get("/api/accounts/{employerAccountId}/summary")]
     Task<AccountsSummary?> GetEmployerAccountSummary([Path] long employerAccountId, CancellationToken cancellationToken);

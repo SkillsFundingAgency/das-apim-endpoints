@@ -51,7 +51,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.TrainingCourses
 
             var actual = await controller.PostDeleteTrainingCourse(applicationId, trainingCourseId, request) as StatusCodeResult;
 
-            Assert.That(actual, Is.Not.Null);
+            actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
     }

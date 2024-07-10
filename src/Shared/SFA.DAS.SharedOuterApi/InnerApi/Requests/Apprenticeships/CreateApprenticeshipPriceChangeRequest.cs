@@ -7,8 +7,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships
     {
         public PostCreateApprenticeshipPriceChangeRequest(
             Guid apprenticeshipKey,
-            long? providerId,
-            long? employerId,
+            string initiator,
             string userId,
             decimal? trainingPrice,
             decimal? assessmentPrice,
@@ -19,8 +18,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships
             ApprenticeshipKey = apprenticeshipKey;
             Data = new CreateApprenticeshipPriceChangeRequest
             {
-                ProviderId = providerId,
-                EmployerId = employerId,
+                Initiator = initiator,
                 UserId = userId,
                 TrainingPrice = trainingPrice,
                 AssessmentPrice = assessmentPrice,
@@ -37,8 +35,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships
 
     public class CreateApprenticeshipPriceChangeRequest
     {
-        public long? ProviderId { get; set; }
-        public long? EmployerId { get; set; }
+        public string Initiator { get; set; }
         public string UserId { get; set; }
         public decimal? TrainingPrice { get; set; }
         public decimal? AssessmentPrice { get; set; }

@@ -59,19 +59,19 @@ namespace SFA.DAS.Vacancies.Api.Models
        {
            return new GetVacanciesListResponseItem
            {
-               ClosingDate = source.ClosingDate,
+               ClosingDate = source.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)),
                Description = source.Description,
                EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
                HoursPerWeek = source.HoursPerWeek,
                IsDisabilityConfident = source.IsDisabilityConfident,
-               IsNationalVacancy = source.VacancyLocationType.Equals("National", StringComparison.CurrentCultureIgnoreCase),
+               IsNationalVacancy = source.VacancyLocationType != null && source.VacancyLocationType.Equals("National", StringComparison.CurrentCultureIgnoreCase),
                NumberOfPositions = source.NumberOfPositions,
                PostedDate = source.PostedDate,
                ProviderName = source.ProviderName,
                StartDate = source.StartDate,
                Title = source.Title,
-               Ukprn = source.Ukprn,
-               VacancyReference = source.VacancyReference,
+               Ukprn = int.Parse(source.Ukprn),
+               VacancyReference = source.VacancyReference.Replace("VAC",""),
                VacancyUrl = source.VacancyUrl,
                Course = source,
                Wage = source,

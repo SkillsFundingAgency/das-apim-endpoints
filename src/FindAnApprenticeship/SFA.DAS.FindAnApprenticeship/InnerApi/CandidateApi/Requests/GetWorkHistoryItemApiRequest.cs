@@ -1,5 +1,5 @@
 ﻿using System;
-using SFA.DAS.FindAnApprenticeship.Models;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
@@ -18,7 +18,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
             _workHistoryType = workHistoryType;
             _workHistoryItemId = workHistoryItemId;
         }
-        public string GetUrl =>
-            $"candidates/{_candidateId}/applications/{_applicationId}/work-history/{_workHistoryItemId}?workHistoryType={_workHistoryType}";
+        public string GetUrl => $"api/candidates/{_candidateId}/applications/{_applicationId}/work-history/{_workHistoryItemId}?workHistoryType={_workHistoryType}";
     }
 }

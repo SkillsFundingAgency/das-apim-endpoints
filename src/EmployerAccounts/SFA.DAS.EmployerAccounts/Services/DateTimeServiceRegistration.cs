@@ -12,7 +12,7 @@ namespace SFA.DAS.EmployerAccounts.Services
 
             if (!DateTime.TryParse(cloudCurrentTime, out var currentDateTime))
             {
-                currentDateTime = DateTime.Now;
+                currentDateTime = DateTime.UtcNow;
             }
 
             services.AddSingleton<ICurrentDateTime>(_ => new CurrentDateTime(currentDateTime));

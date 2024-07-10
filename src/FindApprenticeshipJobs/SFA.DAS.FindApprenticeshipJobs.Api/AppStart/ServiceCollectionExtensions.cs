@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.FindApprenticeshipJobs.Configuration;
+using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.FindApprenticeshipJobs.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -20,9 +21,14 @@ public static class ServiceCollectionExtensions
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+        services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
+        services.AddTransient<ICandidateApiClient<CandidateApiConfiguration>, CandidateApiClient>();
+        services.AddTransient<INhsJobsApiClient, NhsJobsApiClient>();
         services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<ILiveVacancyMapper, LiveVacancyMapper>();
+        services.AddTransient<INotificationService, NotificationService>();
+        services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
         return services;
     }
 }

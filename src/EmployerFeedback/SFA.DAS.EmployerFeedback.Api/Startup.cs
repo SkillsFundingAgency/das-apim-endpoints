@@ -66,7 +66,7 @@ namespace SFA.DAS.EmployerFeedback.Api
             if (_configuration["Environment"] != "DEV")
             {
                 services.AddHealthChecks()
-                     .AddCheck<AccountsApiHealthCheck>("Accounts API health check");
+                     .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription);
             }
             
             services.AddApplicationInsightsTelemetry();

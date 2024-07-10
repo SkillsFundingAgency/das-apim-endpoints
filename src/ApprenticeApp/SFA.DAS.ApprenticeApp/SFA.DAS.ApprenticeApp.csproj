@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="MediatR" />
+	<PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
+    <PackageReference Include="SFA.DAS.Common.Domain" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    <ProjectReference Include="..\SFA.DAS.PushNotifications.Messages\SFA.DAS.PushNotifications.Messages.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Application\Commands\ApprenticeSubscriptions\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Application\Commands\ApprenticeSubscriptions\" />
+  </ItemGroup>
+</Project>

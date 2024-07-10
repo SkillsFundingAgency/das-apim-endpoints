@@ -1,46 +1,39 @@
-﻿using System.Net;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using SFA.DAS.RoatpOversight.Application.Commands.CreateProvider;
-using SFA.DAS.RoatpOversight.Application.Providers.Commands.CreateProvider;
-using SFA.DAS.RoatpOversight.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.RoatpOversight.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.RoatpOversight.UnitTests.Commands.CreateProvider;
 public class CreateProviderCommandHandlerTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handler_InvokesApi(
-        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
+        [Frozen] Mock<IRoatpV2ApiClient> apiClientMock,
         CreateProviderCommandHandler sut,
         CreateProviderCommand command,
         CancellationToken cancellationToken)
     {
-        ApiResponse<int> apiResponse = new(1, HttpStatusCode.Created, null);
-
-        apiClientMock.Setup(c => c.PostWithResponseCode<int>(It.IsAny<CreateProviderRequest>(), It.IsAny<bool>())).ReturnsAsync(apiResponse);
+        apiClientMock.Setup(c => c.CreateProvider(command.UserId, command.UserDisplayName, command, cancellationToken))
+            .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.Created, Version = new Version() });
 
         await sut.Handle(command, cancellationToken);
 
-        apiClientMock.Verify(c => c.PostWithResponseCode<int>(It.Is<CreateProviderRequest>(r => r.Data == command), true));
+        apiClientMock.Verify(c => c.CreateProvider(command.UserId, command.UserDisplayName, command, cancellationToken), Times.Once);
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handler_UnexpectedApiResponse_ThrowsInvalidOperation(
-        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
+        [Frozen] Mock<IRoatpV2ApiClient> apiClientMock,
         CreateProviderCommandHandler sut,
         CreateProviderCommand command,
         CancellationToken cancellationToken)
     {
-        ApiResponse<int> apiResponse = new(1, HttpStatusCode.BadRequest, null);
+        apiClientMock.Setup(c => c.CreateProvider(command.UserId, command.UserDisplayName, command, cancellationToken))
+            .ReturnsAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.BadRequest, Version = new Version() });
 
-        apiClientMock.Setup(c => c.PostWithResponseCode<int>(It.IsAny<CreateProviderRequest>(), It.IsAny<bool>())).ReturnsAsync(apiResponse);
 
         Func<Task> action = () => sut.Handle(command, cancellationToken);
 

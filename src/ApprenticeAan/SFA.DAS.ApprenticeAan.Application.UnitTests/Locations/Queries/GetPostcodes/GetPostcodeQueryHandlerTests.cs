@@ -1,46 +1,44 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.Locations.Queries.GetPostcodes;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Application.UnitTests.Locations.Queries.GetPostcodes;
 
 public class GetPostcodeQueryHandlerTests
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_ReturnsCoordinatesFromTheFirstAddress(
-        GetPostcodeQuery query,
-        [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
+        string postCode,
+        [Frozen] Mock<ILocationApiClient> apiClient,
         [Frozen(Matching.ImplementedInterfaces)] GetPostcodeQueryHandler handler,
         GetAddressesListResponse apiResponse)
     {
+        var query = new GetPostcodeQuery(postCode);
+
         apiClient
-            .Setup(x => x.Get<GetAddressesListResponse>(It.IsAny<GetAddressesQueryRequest>()))
+            .Setup(x => x.GetAddresses(postCode, It.IsAny<double>()))
             .ReturnsAsync(apiResponse);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
         result!.Longitude.Should().Be(apiResponse.Addresses.First().Longitude);
         result!.Latitude.Should().Be(apiResponse.Addresses.First().Latitude);
-
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_PostcodesNotFound_ReturnsEmptyResult(
-        GetPostcodeQuery query,
-        [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
+        string postCode,
+        [Frozen] Mock<ILocationApiClient> apiClient,
         [Frozen(Matching.ImplementedInterfaces)] GetPostcodeQueryHandler handler)
     {
+        var query = new GetPostcodeQuery(postCode);
+
         var apiResponse = new GetAddressesListResponse { Addresses = Enumerable.Empty<GetAddressesListItem>() };
         apiClient
-            .Setup(x => x.Get<GetAddressesListResponse>(It.IsAny<GetAddressesQueryRequest>()))
+            .Setup(x => x.GetAddresses(postCode, It.IsAny<double>()))
             .ReturnsAsync(apiResponse);
 
         var result = await handler.Handle(query, CancellationToken.None);
@@ -48,19 +46,22 @@ public class GetPostcodeQueryHandlerTests
         result.Should().BeNull();
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_PostcodesFoundWithLatitudeNull_ReturnsEmptyResult(
-        GetPostcodeQuery query,
-        [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
+        string postCode,
+        [Frozen] Mock<ILocationApiClient> apiClient,
         [Frozen(Matching.ImplementedInterfaces)] GetPostcodeQueryHandler handler)
     {
-        var addressess = new List<GetAddressesListItem>();
-        addressess.Add(new GetAddressesListItem { Postcode = Guid.NewGuid().ToString(), Latitude = null, Longitude = double.MinValue });
+        var query = new GetPostcodeQuery(postCode);
 
-        var apiResponse = new GetAddressesListResponse { Addresses = addressess };
+        var addresses = new List<GetAddressesListItem>
+        {
+            new() { Postcode = postCode, Latitude = null, Longitude = double.MinValue }
+        };
+
+        var apiResponse = new GetAddressesListResponse { Addresses = addresses };
         apiClient
-            .Setup(x => x.Get<GetAddressesListResponse>(It.IsAny<GetAddressesQueryRequest>()))
+            .Setup(x => x.GetAddresses(postCode, It.IsAny<double>()))
             .ReturnsAsync(apiResponse);
 
         var result = await handler.Handle(query, CancellationToken.None);
@@ -68,19 +69,22 @@ public class GetPostcodeQueryHandlerTests
         result.Should().BeNull();
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_PostcodesFoundWithLongitudeNull_ReturnsEmptyResult(
-        GetPostcodeQuery query,
-        [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
+        string postCode,
+        [Frozen] Mock<ILocationApiClient> apiClient,
         [Frozen(Matching.ImplementedInterfaces)] GetPostcodeQueryHandler handler)
     {
-        var addressess = new List<GetAddressesListItem>();
-        addressess.Add(new GetAddressesListItem { Postcode = Guid.NewGuid().ToString(), Latitude = double.MinValue, Longitude = null });
+        var query = new GetPostcodeQuery(postCode);
 
-        var apiResponse = new GetAddressesListResponse { Addresses = addressess };
+        var addresses = new List<GetAddressesListItem>
+        {
+            new() { Postcode = postCode, Latitude = double.MinValue, Longitude = null }
+        };
+
+        var apiResponse = new GetAddressesListResponse { Addresses = addresses };
         apiClient
-            .Setup(x => x.Get<GetAddressesListResponse>(It.IsAny<GetAddressesQueryRequest>()))
+            .Setup(x => x.GetAddresses(postCode, It.IsAny<double>()))
             .ReturnsAsync(apiResponse);
 
         var result = await handler.Handle(query, CancellationToken.None);

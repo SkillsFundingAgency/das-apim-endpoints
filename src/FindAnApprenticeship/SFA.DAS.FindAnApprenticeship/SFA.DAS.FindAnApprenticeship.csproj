@@ -12,10 +12,12 @@
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    <PackageReference Include="SFA.DAS.Notifications.Messages" />
+    <PackageReference Include="SFA.DAS.NServiceBus" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="InnerApi\LegacyApi\Responses\Enums\" />
+    <Folder Include="Application\Commands\Apply\PatchApplicationDisabilityConfidence\" />
   </ItemGroup>
 
 </Project>

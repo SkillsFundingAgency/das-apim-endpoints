@@ -14,6 +14,6 @@ public class WhenBuildingPutUpdateTrainingCourseApiRequest
     {
         var actual = new PutUpsertTrainingCourseApiRequest(applicationId, candidateId, trainingCourseId, new PutUpsertTrainingCourseApiRequest.PutUpdateTrainingCourseApiRequestData());
 
-        actual.PutUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}/trainingcourses/{trainingCourseId}");
+        actual.PutUrl.Should().Be($"api/candidates/{candidateId}/applications/{applicationId}/trainingcourses/{trainingCourseId}");
     }
 }

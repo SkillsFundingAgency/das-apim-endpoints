@@ -19,7 +19,7 @@ using SFA.DAS.EmployerAan.Models;
 
 namespace SFA.DAS.EmployerAan.Infrastructure;
 
-public interface IAanHubRestApiClient
+public interface IAanHubRestApiClient : IHealthChecker
 {
     public const string RequestedByMemberId = Constants.ApiHeaders.RequestedByMemberIdHeader;
 

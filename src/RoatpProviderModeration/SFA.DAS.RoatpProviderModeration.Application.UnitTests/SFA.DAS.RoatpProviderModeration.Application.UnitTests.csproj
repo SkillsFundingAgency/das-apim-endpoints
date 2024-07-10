@@ -25,4 +25,8 @@
     <ProjectReference Include="..\SFA.DAS.RoatpProviderModeration.Application\SFA.DAS.RoatpProviderModeration.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="InnerApi\" />
+  </ItemGroup>
+
 </Project>

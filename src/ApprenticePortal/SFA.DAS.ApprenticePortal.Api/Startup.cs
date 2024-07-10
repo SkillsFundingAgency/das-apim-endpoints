@@ -51,10 +51,10 @@ namespace SFA.DAS.ApprenticePortal.Api
             }
 
             services.AddHealthChecks()
-                .AddCheck<ApprenticeAccountsApiHealthCheck>(nameof(ApprenticeAccountsApiHealthCheck))
-                .AddCheck<CommitmentsV2HealthCheck>(nameof(CommitmentsV2HealthCheck))
-                .AddCheck<CoursesApiHealthCheck>(nameof(CoursesApiHealthCheck))
-                .AddCheck<ApprenticeCommitmentsApiHealthCheck>(nameof(ApprenticeCommitmentsApiHealthCheck));
+                .AddCheck<ApprenticeAccountsApiHealthCheck>(ApprenticeAccountsApiHealthCheck.HealthCheckResultDescription)
+                .AddCheck<CommitmentsV2ApiHealthCheck>(CommitmentsV2ApiHealthCheck.HealthCheckResultDescription)
+                .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription)
+                .AddCheck<ApprenticeCommitmentsApiHealthCheck>(ApprenticeCommitmentsApiHealthCheck.HealthCheckResultDescription);
 
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetApprenticeHomepageQuery).Assembly));
 

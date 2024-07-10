@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using SFA.DAS.ApprenticeAan.Application.Extensions;
-using SFA.DAS.ApprenticeAan.Infrastructure;
+using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 
 namespace SFA.DAS.ApprenticeAan.Application.Commitments.GetRecentCommitment;
 

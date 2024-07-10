@@ -20,5 +20,6 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
         public List<string> Routes { get ; set ; }
         public uint? PostedInLastNumberOfDays { get ; set ; }
         public string Sort { get ; set ; }
+        public List<string> AdditionalDataSources { get; set; }
     }
 }
