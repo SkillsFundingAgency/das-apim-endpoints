@@ -50,7 +50,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public bool IsDisabilityConfident { get; init; }
         public bool IsPositiveAboutDisability { get; init; }
         public bool IsRecruitVacancy { get; init; }
-        public GeoPoint Location { get; init; }
+        public Location Location { get; init; }
         public int NumberOfPositions { get; init; }
         public string ProviderName { get; init; }
         public int? StandardLarsCode { get; init; }
