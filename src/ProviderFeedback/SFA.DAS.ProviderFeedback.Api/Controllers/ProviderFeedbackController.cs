@@ -59,7 +59,10 @@ namespace SFA.DAS.ProviderFeedback.Api.Controllers
         {
             try
             {
-                var result = GetProviderFeedbackMockData.GetProviderFeedbackAnnualResultMock();
+                var result = await _mediator.Send(new GetProviderFeedbackAnnualQuery
+                {
+                    ProviderId = ukprn,
+                });
 
                 if (result.ProviderStandard == null)
                 {
@@ -86,7 +89,11 @@ namespace SFA.DAS.ProviderFeedback.Api.Controllers
         {
             try
             {
-                var result = GetProviderFeedbackMockData.GetProviderFeedbackForAcademicYearResultMock();
+                var result = await _mediator.Send(new GetProviderFeedbackForAcademicYearQuery
+                {
+                    ProviderId = ukprn,
+                    Year = year,
+                });
 
                 if (result.ProviderStandard == null)
                 {
