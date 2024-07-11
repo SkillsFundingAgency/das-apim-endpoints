@@ -4,6 +4,8 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using SFA.DAS.FindAnApprenticeship.Api.Telemetry;
 using SFA.DAS.FindAnApprenticeship.Domain;
+using SFA.DAS.FindAnApprenticeship.Services;
+using SFA.DAS.FindAnApprenticeship.Telemetry;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
 {
