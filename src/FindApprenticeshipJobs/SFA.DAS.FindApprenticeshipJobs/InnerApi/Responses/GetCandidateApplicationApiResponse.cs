@@ -15,6 +15,9 @@ public class CandidateElement
 
     [JsonProperty("candidate")]
     public CandidateCandidate Candidate { get; set; }
+
+    [JsonProperty("applicationCreatedDate")]
+    public DateTime ApplicationCreatedDate { get; set; }
 }
 
 public class CandidateCandidate

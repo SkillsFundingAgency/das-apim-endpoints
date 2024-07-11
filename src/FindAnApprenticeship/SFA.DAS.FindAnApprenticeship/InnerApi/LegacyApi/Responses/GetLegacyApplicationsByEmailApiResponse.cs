@@ -7,11 +7,11 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses
 {
     public class GetLegacyApplicationsByEmailApiResponse
     {
-        [JsonPropertyName("apprenticeships")]
-        public List<Application> Applications { get; set; }
+        [JsonPropertyName("apprenticeships")] public List<Application> Applications { get; set; } = [];
 
         public class Application
         {
+            public Guid Id { get; set; }
             public ApplicationStatus Status { get; set; }
             public DateTime? DateApplied { get; set; }
             public DateTime? SuccessfulDateTime { get; set; }

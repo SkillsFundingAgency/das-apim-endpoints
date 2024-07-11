@@ -1,9 +1,11 @@
-﻿using Azure.Monitor.OpenTelemetry.AspNetCore;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using SFA.DAS.FindAnApprenticeship.Api.Telemetry;
 using SFA.DAS.FindAnApprenticeship.Domain;
+using SFA.DAS.FindAnApprenticeship.Services;
+using SFA.DAS.FindAnApprenticeship.Telemetry;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
 {
@@ -30,6 +32,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
                             nameof(FindAnApprenticeship)))
                         .AddMeter(Constants.OpenTelemetry.ServiceMeterName));
                 services.AddSingleton<IMetrics, FindAnApprenticeshipMetrics>();
+            }
+            else
+            {
+                services.AddSingleton<IMetrics, StubFindAnApprenticeshipMetrics>();
             }
         }
     }

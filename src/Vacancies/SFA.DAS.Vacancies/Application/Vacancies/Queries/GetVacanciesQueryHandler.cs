@@ -11,6 +11,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Vacancies.InnerApi.Responses;
+using SFA.DAS.Vacancies.Services;
 
 namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
 {
@@ -19,16 +20,19 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
         private readonly IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> _findApprenticeshipApiClient;
         private readonly IAccountLegalEntityPermissionService _accountLegalEntityPermissionService;
         private readonly ICourseService _courseService;
+        private readonly IMetrics _metrics;
         private readonly VacanciesConfiguration _vacanciesConfiguration;
 
         public GetVacanciesQueryHandler(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient, 
             IAccountLegalEntityPermissionService accountLegalEntityPermissionService, 
             ICourseService courseService,
-            IOptions<VacanciesConfiguration> vacanciesConfiguration)
+            IOptions<VacanciesConfiguration> vacanciesConfiguration,
+            IMetrics metrics)
         {
             _findApprenticeshipApiClient = findApprenticeshipApiClient;
             _accountLegalEntityPermissionService = accountLegalEntityPermissionService;
             _courseService = courseService;
+            _metrics = metrics;
             _vacanciesConfiguration = vacanciesConfiguration.Value;
         }
 
@@ -84,6 +88,9 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 }
 
                 vacanciesItem.VacancyUrl = $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacanciesItem.VacancyReference}";
+
+                // increase the count of vacancy appearing in search results counter metrics.
+                _metrics.IncreaseVacancySearchResultViews(vacanciesItem.Id);
             }
             
             return new GetVacanciesQueryResult()

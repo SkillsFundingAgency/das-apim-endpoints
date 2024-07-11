@@ -14,7 +14,7 @@ public class WhenMappingCandidateAddressFromApiResponse
     {
         var actual = (CandidateAddress)source;
 
-        actual.Should().BeEquivalentTo(source, options => options.Excluding(fil => fil.CandidateId));
+        actual.Should().BeEquivalentTo(source, options => options.Excluding(fil => fil.CandidateId).Excluding(c=>c.Uprn));
     }
 
     [Test, AutoData]
