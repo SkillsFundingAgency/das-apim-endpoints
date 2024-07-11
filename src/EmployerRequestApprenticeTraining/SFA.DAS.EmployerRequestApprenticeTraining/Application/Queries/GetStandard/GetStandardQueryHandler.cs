@@ -24,7 +24,10 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStand
             var response = await _coursesApiClient.
                 GetWithResponseCode<StandardDetailResponse>(new GetStandardDetailsByIdRequest(request.StandardId));
 
-            response.EnsureSuccessStatusCode();
+            if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
+            {
+                response.EnsureSuccessStatusCode();
+            }
 
             return new GetStandardResult { Standard = (Standard)response.Body };
         }

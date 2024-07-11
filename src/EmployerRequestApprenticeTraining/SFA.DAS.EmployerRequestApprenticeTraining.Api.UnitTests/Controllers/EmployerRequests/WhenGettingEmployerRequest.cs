@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
     public class WhenGettingEmployerRequest
     {
         [Test, MoqAutoData]
-        public async Task Then_The_EmployerRequest_Is_Returned_From_Mediator(
+        public async Task Then_The_EmployerRequest_ByEmployerRequestId_Is_Returned_From_Mediator(
             Guid employerRequestId,
             GetEmployerRequestResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -28,6 +28,25 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
                 .ReturnsAsync(queryResult);
 
             var actual = await controller.GetEmployerRequest(employerRequestId) as ObjectResult;
+
+            actual.Should().NotBeNull();
+            actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            actual.Value.Should().BeEquivalentTo(queryResult.EmployerRequest);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_EmployerRequest_ByAccountId_And_StandardReference_Is_Returned_From_Mediator(
+           long accountId,
+           string standardReference,
+           GetEmployerRequestResult queryResult,
+           [Frozen] Mock<IMediator> mockMediator,
+           [Greedy] EmployerRequestsController controller)
+        {
+            mockMediator
+                .Setup(x => x.Send(It.Is<GetEmployerRequestQuery>(p => p.AccountId == accountId && p.StandardReference == standardReference), CancellationToken.None))
+                .ReturnsAsync(queryResult);
+
+            var actual = await controller.GetEmployerRequest(accountId, standardReference) as ObjectResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);

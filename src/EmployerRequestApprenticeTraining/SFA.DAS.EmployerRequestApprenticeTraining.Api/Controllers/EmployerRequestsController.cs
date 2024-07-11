@@ -95,19 +95,28 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
         }
 
+        [HttpGet("account/{accountId}/standard/{standardReference}")]
+        public async Task<IActionResult> GetEmployerRequest(long accountId, string standardReference)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetEmployerRequestQuery { AccountId = accountId, StandardReference = standardReference });
+                return Ok(result.EmployerRequest);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to retrieve employer request for AccountId: {accountId} and standardReference: {standardReference}");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
         [HttpGet("account/{accountId}")]
         public async Task<IActionResult> GetEmployerRequests(long accountId)
         {
             try
             {
                 var result = await _mediator.Send(new GetEmployerRequestsQuery { AccountId = accountId });
-
-                if (result.EmployerRequests != null)
-                {
-                    return Ok(result.EmployerRequests);
-                }
-
-                return NotFound();
+                return Ok(result.EmployerRequests);
             }
             catch (Exception e)
             {
