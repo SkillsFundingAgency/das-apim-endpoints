@@ -14,12 +14,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class EmployerRequestController : Controller
+    public class EmployerRequestsController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<EmployerRequestController> _logger;
+        private readonly ILogger<EmployerRequestsController> _logger;
 
-        public EmployerRequestController(IMediator mediator, ILogger<EmployerRequestController> logger)
+        public EmployerRequestsController(IMediator mediator, ILogger<EmployerRequestsController> logger)
         {
             _mediator = mediator;
             _logger = logger;
@@ -46,7 +46,13 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetEmployerRequestQuery { EmployerRequestId = employerRequestId });
-                return Ok(result.EmployerRequest);
+
+                if (result.EmployerRequest != null)
+                {
+                    return Ok(result.EmployerRequest);
+                }
+
+                return NotFound();
             }
             catch (Exception e)
             {
