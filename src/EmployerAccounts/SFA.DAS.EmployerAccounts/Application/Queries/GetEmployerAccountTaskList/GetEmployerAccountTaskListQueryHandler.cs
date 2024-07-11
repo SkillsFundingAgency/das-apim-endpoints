@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -29,11 +30,11 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskLis
             {
                 return new GetEmployerAccountTaskListQueryResult();
             }
-            
+
             var providerRelationshipResponse =
                 await _providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
                     new GetEmployerAccountProviderPermissionsRequest(request.HashedAccountId));
-            
+
             var employerAlePermissions = providerRelationshipResponse.AccountProviderLegalEntities.Select(aple => new AccountLegalEntityItem
             {
                 Name = aple.AccountLegalEntityName,
