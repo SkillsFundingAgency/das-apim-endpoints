@@ -26,7 +26,11 @@ namespace SFA.DAS.FindAnApprenticeship.Domain
             public const string ServiceName = "FindAnApprenticeshipOuterApi";
             public const string ServiceMeterName = "FindAnApprenticeship";
             public const string RequestSourceName = "faav2ui-as";
+            public const string CounterUnitName = "vacancy";
             public const string VacancySearchViewsCounterName = "FindAnApprenticeship.vacancyReference.views";
+            public const string VacancyStartedCounterName = "FindAnApprenticeship.vacancyReference.started";
+            public const string VacancySubmittedCounterName = "FindAnApprenticeship.vacancyReference.submitted";
+            public const string VacancySearchResultCounterName = "FindAnApprenticeship.vacancyReference.search";
         }
     }
 }
