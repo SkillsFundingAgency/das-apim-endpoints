@@ -20,12 +20,12 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
             public string AdditionalQuestion2 { get; set; }
             public bool IsDisabilityConfident { get; set; }
             public string City =>
-                !string.IsNullOrEmpty(Address.AddressLine4) ? Address.AddressLine4 :
-                !string.IsNullOrEmpty(Address.AddressLine3) ? Address.AddressLine3 :
-                !string.IsNullOrEmpty(Address.AddressLine2) ? Address.AddressLine2 :
-                !string.IsNullOrEmpty(Address.AddressLine1) ? Address.AddressLine1 :
+                !string.IsNullOrEmpty(Address?.AddressLine4) ? Address.AddressLine4 :
+                !string.IsNullOrEmpty(Address?.AddressLine3) ? Address.AddressLine3 :
+                !string.IsNullOrEmpty(Address?.AddressLine2) ? Address.AddressLine2 :
+                !string.IsNullOrEmpty(Address?.AddressLine1) ? Address.AddressLine1 :
                 string.Empty;
-            public string Postcode => Address.Postcode;
+            public string Postcode => Address?.Postcode ?? string.Empty;
             public Address Address { get; set; }
             public string ApplicationUrl { get; set; }
             public string ExternalVacancyUrl => ApplicationUrl;

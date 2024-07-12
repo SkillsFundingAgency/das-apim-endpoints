@@ -70,6 +70,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonPropertyName("isDisabilityConfident")]
         public bool IsDisabilityConfident { get; set; }
 
+        [JsonPropertyName("applicationUrl")]
+        public string ApplicationUrl { get; set; }
         public CandidateApplication? Application { get; set; } = null;
         
         public Location Location { get; set; }
