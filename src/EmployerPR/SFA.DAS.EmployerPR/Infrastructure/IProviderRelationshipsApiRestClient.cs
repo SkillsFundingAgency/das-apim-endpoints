@@ -20,7 +20,7 @@ public interface IProviderRelationshipsApiRestClient
     Task<PostPermissionsCommandResult> PostPermissions([Body] PostPermissionsCommand command, CancellationToken cancellationToken);
 
     [Post("notifications")]
-    Task PostNotifications([FromBody] PostNotificationsCommand command, CancellationToken cancellationToken);
+    Task PostNotifications([Body] PostNotificationsCommand command, CancellationToken cancellationToken);
 
     [Delete("permissions")]
     Task RemovePermissions([Query] Guid userRef, [Query] long ukprn, [Query] long accountLegalEntityId, CancellationToken cancellationToken);
