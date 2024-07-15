@@ -320,27 +320,36 @@ namespace SFA.DAS.Approvals.Api.Controllers
         [Route("/employer/{accountId}/apprenticeships/{apprenticeshipId}/details")]
         public async Task<IActionResult> ManageApprenticeshipDetails(long apprenticeshipId)
         {
+            _logger.LogInformation("GET ManageApprenticeshipDetails starting for apprenticeshipId: {Id}", apprenticeshipId);
+            
             try
             {
                 var result = await _mediator.Send(new GetManageApprenticeshipDetailsQuery
-                { ApprenticeshipId = apprenticeshipId });
+                {
+                    ApprenticeshipId = apprenticeshipId
+                });
 
                 if (result == null)
                 {
+                    _logger.LogWarning("GET ManageApprenticeshipDetails apprenticeshipId with the id not found: {Id}", apprenticeshipId);
+                    
                     return NotFound();
                 }
 
                 var response = _mapper.Map<GetManageApprenticeshipDetailsResponse>(result);
+                
+                _logger.LogInformation("GET ManageApprenticeshipDetails returning OK for apprenticeshipId: {Id}", apprenticeshipId);
+                
                 return Ok(response);
             }
             catch (UnauthorizedAccessException ue)
             {
-                _logger.LogError(ue, $"Permission denied when accessing Apprenticeship {apprenticeshipId}");
+                _logger.LogError(ue, "Permission denied when accessing Apprenticeship {Id}", apprenticeshipId);
                 return Unauthorized();
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                _logger.LogError(e, $"Error in GetManageApprenticeship {apprenticeshipId}");
+                _logger.LogError(exception, "Error in GetManageApprenticeship {Id}", apprenticeshipId);
                 return BadRequest();
             }
         }
