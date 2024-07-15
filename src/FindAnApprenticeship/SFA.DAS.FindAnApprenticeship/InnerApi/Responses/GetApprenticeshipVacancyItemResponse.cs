@@ -32,7 +32,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonProperty("isRecruitVacancy")]
         public bool IsRecruitVacancy { get; init; }
         [JsonProperty("location")]
-        public GeoPoint Location { get; init; }
+        public Location Location { get; init; }
         [JsonProperty("numberOfPositions")]
         public int NumberOfPositions { get; init; }
         [JsonProperty("providerName")]

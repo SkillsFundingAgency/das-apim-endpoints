@@ -40,7 +40,7 @@ public class WhenHandlingCandidateApplicationStatusCommand
         );
     }
     [Test, MoqAutoData]
-    public async Task Then_If_The_Application_Id_Is_Empty_The_Candidate_Is_Looked_Up_And_Application_Is_Looked_Up_By_CandidateId_And_VacancyReference(
+    public async Task Then_If_The_Application_Id_Is_Empty_The_Candidate_Is_Looked_Up_And_Application_Is_Looked_Up_By_CandidateId_And_VacancyReference_And_Submitted_Application_ReSubmitted(
         GetCandidateApiResponse apiCandidateResponse,
         GetApplicationByReferenceApiResponse apiResponse,
         CandidateApplicationStatusCommand request,
