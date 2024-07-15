@@ -18,6 +18,7 @@ using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Configuration;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 using SFA.DAS.Vacancies.InnerApi.Responses;
+using SFA.DAS.Vacancies.Services;
 
 namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
 {
@@ -28,6 +29,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetVacanciesQuery query,
             GetVacanciesResponse apiResponse,
             GetStandardsListItem courseResponse,
+            [Frozen] Mock<IMetrics> metricsService,
             [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             GetVacanciesQueryHandler handler)
@@ -48,11 +50,13 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             actual.Total.Should().Be(apiResponse.Total);
             actual.TotalFiltered.Should().Be(apiResponse.TotalFound);
             actual.TotalPages.Should().Be((int)Math.Ceiling((decimal)apiResponse.TotalFound / query.PageSize));
+            metricsService.Verify(x => x.IncreaseVacancySearchResultViews(It.IsAny<string>(), 1), Times.Exactly(apiResponse.ApprenticeshipVacancies.Count()));
         }
 
         [Test, MoqAutoData]
         public async Task Then_If_No_Results_From_Zero_Page_Size_Then_Response_Returned(
             GetVacanciesQuery query,
+            [Frozen] Mock<IMetrics> metricsService,
             [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             GetVacanciesQueryHandler handler)
@@ -78,6 +82,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             actual.Total.Should().Be(0);
             actual.TotalFiltered.Should().Be(0);
             actual.TotalPages.Should().Be(0);
+            metricsService.Verify(x => x.IncreaseVacancySearchResultViews(It.IsAny<string>(), 1), Times.Never());
         }
 
         [Test, MoqAutoData]
@@ -85,6 +90,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetVacanciesQuery query,
             GetVacanciesResponse apiResponse,
             GetStandardsListItem courseResponse,
+            [Frozen] Mock<IMetrics> metricsService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<IOptions<VacanciesConfiguration>> vacanciesConfiguration,
@@ -109,6 +115,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             actual.Total.Should().Be(apiResponse.Total);
             actual.TotalFiltered.Should().Be(apiResponse.TotalFound);
             actual.TotalPages.Should().Be((int)Math.Ceiling((decimal)apiResponse.TotalFound / query.PageSize));
+            metricsService.Verify(x => x.IncreaseVacancySearchResultViews(It.IsAny<string>(), 1), Times.Exactly(apiResponse.ApprenticeshipVacancies.Count(c => c.StandardLarsCode != null)));
         }
         
         [Test, MoqAutoData]
@@ -188,6 +195,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetVacanciesResponse apiResponse, 
             AccountLegalEntityItem accountLegalEntityItem,
             GetStandardsListResponse courses,
+            [Frozen] Mock<IMetrics> metricsService,
             [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,

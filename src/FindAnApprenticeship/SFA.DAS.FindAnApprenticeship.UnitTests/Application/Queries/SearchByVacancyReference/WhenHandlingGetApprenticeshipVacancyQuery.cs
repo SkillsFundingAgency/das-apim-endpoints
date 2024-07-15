@@ -52,6 +52,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                     .Excluding(x => x.Application)
                     .Excluding(x=>x.ClosingDate)
                     .Excluding(x=>x.ClosedDate)
+                    .Excluding(x => x.ExternalVacancyUrl)
+                    .Excluding(x => x.IsExternalVacancy)
+                    .Excluding(x => x.City)
+                    .Excluding(x => x.Postcode)
+                    .Excluding(x => x.ApplicationUrl)
                 );
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
@@ -106,9 +111,16 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
 
             // Assert
             result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options
-                .Excluding(x => x.Application)
-                .Excluding(x=>x.ClosingDate)
-                .Excluding(x=>x.ClosedDate));
+                    .Excluding(x => x.Application)
+                    .Excluding(x => x.ClosingDate)
+                    .Excluding(x => x.ClosedDate)
+                    .Excluding(x => x.ExternalVacancyUrl)
+                    .Excluding(x => x.IsExternalVacancy)
+                    .Excluding(x => x.City)
+                    .Excluding(x => x.Postcode)
+                    .Excluding(x => x.ApplicationUrl)
+                );
+
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().NotBeNull();

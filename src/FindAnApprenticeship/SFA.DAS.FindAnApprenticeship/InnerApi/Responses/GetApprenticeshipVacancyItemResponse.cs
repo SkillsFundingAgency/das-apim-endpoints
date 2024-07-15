@@ -97,6 +97,12 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 
         [JsonProperty("closedDate")]
         public DateTime? ClosedDate { get; }
+
+        public string Postcode => Address.Postcode;
+        public string City => Address.AddressLine4;
+        public string ApplicationUrl { get; set; }
+        public bool IsExternalVacancy => !string.IsNullOrWhiteSpace(ApplicationUrl);
+        public string ExternalVacancyUrl => ApplicationUrl;
     }
 
     public class VacancyQualification
