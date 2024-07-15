@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.Enums;
+using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.Extensions;
 using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
@@ -21,30 +22,17 @@ using GetPendingPriceChangeRequest = SFA.DAS.Approvals.InnerApi.ApprenticeshipsA
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 
-public class GetManageApprenticeshipDetailsQueryHandler : IRequestHandler<GetManageApprenticeshipDetailsQuery, GetManageApprenticeshipDetailsQueryResult>
+public class GetManageApprenticeshipDetailsQueryHandler(
+    ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
+    IDeliveryModelService deliveryModelService,
+    ServiceParameters serviceParameters,
+    IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient,
+    ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
+    : IRequestHandler<GetManageApprenticeshipDetailsQuery, GetManageApprenticeshipDetailsQueryResult>
 {
-    private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-    private readonly IDeliveryModelService _deliveryModelService;
-    private readonly ServiceParameters _serviceParameters;
-    private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apprenticeshipsApiClient;
-    private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
-
-    public GetManageApprenticeshipDetailsQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
-        IDeliveryModelService deliveryModelService,
-        ServiceParameters serviceParameters,
-        IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient,
-        ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
-    {
-        _apiClient = apiClient;
-        _deliveryModelService = deliveryModelService;
-        _serviceParameters = serviceParameters;
-        _apprenticeshipsApiClient = apprenticeshipsApiClient;
-        _collectionCalendarApiClient = collectionCalendarApiClient;
-    }
-
     public async Task<GetManageApprenticeshipDetailsQueryResult> Handle(GetManageApprenticeshipDetailsQuery request, CancellationToken cancellationToken)
     {
-        var apprenticeshipResponse = await _apiClient.GetWithResponseCode<GetApprenticeshipResponse>(new GetApprenticeshipRequest(request.ApprenticeshipId));
+        var apprenticeshipResponse = await apiClient.GetWithResponseCode<GetApprenticeshipResponse>(new GetApprenticeshipRequest(request.ApprenticeshipId));
 
         if (apprenticeshipResponse.StatusCode == HttpStatusCode.NotFound)
         {
@@ -52,27 +40,33 @@ public class GetManageApprenticeshipDetailsQueryHandler : IRequestHandler<GetMan
         }
 
         apprenticeshipResponse.EnsureSuccessStatusCode();
+        
         var apprenticeship = apprenticeshipResponse.Body;
 
-        if (!apprenticeship.CheckParty(_serviceParameters))
+        if (apprenticeship == null)
+        {
+            throw new ResourceNotFoundException();
+        }
+
+        if (!apprenticeship.CheckParty(serviceParameters))
         {
             throw new UnauthorizedAccessException($"You do not permissions to access apprenticeship {request.ApprenticeshipId}");
         }
 
-        var apprenticeshipKey = await _apprenticeshipsApiClient.GetWithResponseCode<Guid>(new GetApprenticeshipKeyRequest(request.ApprenticeshipId));
+        var apprenticeshipKey = await apprenticeshipsApiClient.GetWithResponseCode<Guid>(new GetApprenticeshipKeyRequest(request.ApprenticeshipId));
 
-        var priceEpisodesResponseTask = _apiClient.GetWithResponseCode<GetPriceEpisodesResponse>(new GetPriceEpisodesRequest(apprenticeship.Id));
-        var apprenticeshipUpdatesResponseTask = _apiClient.GetWithResponseCode<GetApprenticeshipUpdatesResponse>(new GetApprenticeshipUpdatesRequest(apprenticeship.Id, ApprenticeshipUpdateStatus.Pending));
-        var apprenticeshipDataLockStatusResponseTask = _apiClient.GetWithResponseCode<GetDataLocksResponse>(new GetDataLocksRequest(apprenticeship.Id));
-        var changeOfPartyRequestsResponseTask = _apiClient.GetWithResponseCode<GetChangeOfPartyRequestsResponse>(new GetChangeOfPartyRequestsRequest(apprenticeship.Id));
-        var changeOfProviderChainResponseTask = _apiClient.GetWithResponseCode<GetChangeOfProviderChainResponse>(new GetChangeOfProviderChainRequest(apprenticeship.Id));
-        var changeOfEmployerChainResponseTask = _apiClient.GetWithResponseCode<GetChangeOfEmployerChainResponse>(new GetChangeOfEmployerChainRequest(apprenticeship.Id));
-        var overlappingTrainingDateResponseTask = _apiClient.GetWithResponseCode<GetOverlappingTrainingDateResponse>(new GetOverlappingTrainingDateRequest(apprenticeship.Id));
-        var deliveryModelTask = _deliveryModelService.GetDeliveryModels(apprenticeship.ProviderId, apprenticeship.CourseCode, apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
-        var pendingPriceChangeTask = _apprenticeshipsApiClient.GetWithResponseCode<GetPendingPriceChangeResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey.Body));
+        var priceEpisodesResponseTask = apiClient.GetWithResponseCode<GetPriceEpisodesResponse>(new GetPriceEpisodesRequest(apprenticeship.Id));
+        var apprenticeshipUpdatesResponseTask = apiClient.GetWithResponseCode<GetApprenticeshipUpdatesResponse>(new GetApprenticeshipUpdatesRequest(apprenticeship.Id, ApprenticeshipUpdateStatus.Pending));
+        var apprenticeshipDataLockStatusResponseTask = apiClient.GetWithResponseCode<GetDataLocksResponse>(new GetDataLocksRequest(apprenticeship.Id));
+        var changeOfPartyRequestsResponseTask = apiClient.GetWithResponseCode<GetChangeOfPartyRequestsResponse>(new GetChangeOfPartyRequestsRequest(apprenticeship.Id));
+        var changeOfProviderChainResponseTask = apiClient.GetWithResponseCode<GetChangeOfProviderChainResponse>(new GetChangeOfProviderChainRequest(apprenticeship.Id));
+        var changeOfEmployerChainResponseTask = apiClient.GetWithResponseCode<GetChangeOfEmployerChainResponse>(new GetChangeOfEmployerChainRequest(apprenticeship.Id));
+        var overlappingTrainingDateResponseTask = apiClient.GetWithResponseCode<GetOverlappingTrainingDateResponse>(new GetOverlappingTrainingDateRequest(apprenticeship.Id));
+        var deliveryModelTask = deliveryModelService.GetDeliveryModels(apprenticeship.ProviderId, apprenticeship.CourseCode, apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
+        var pendingPriceChangeTask = apprenticeshipsApiClient.GetWithResponseCode<GetPendingPriceChangeResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey.Body));
         var canActualStartDateBeChangedTask = CanActualStartDateBeChanged(apprenticeship.ActualStartDate);
-        var pendingStartDateChangeTask = _apprenticeshipsApiClient.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(new GetPendingStartDateChangeRequest(apprenticeshipKey.Body));
-        var paymentStatusTask = _apprenticeshipsApiClient.GetWithResponseCode<GetPaymentStatusApiResponse>(new GetPaymentStatusRequest(apprenticeshipKey.Body));
+        var pendingStartDateChangeTask = apprenticeshipsApiClient.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(new GetPendingStartDateChangeRequest(apprenticeshipKey.Body));
+        var paymentStatusTask = apprenticeshipsApiClient.GetWithResponseCode<GetPaymentStatusApiResponse>(new GetPaymentStatusRequest(apprenticeshipKey.Body));
         
         await Task.WhenAll(priceEpisodesResponseTask,
             apprenticeshipUpdatesResponseTask,
@@ -100,22 +94,23 @@ public class GetManageApprenticeshipDetailsQueryHandler : IRequestHandler<GetMan
         var pendingStartDateResponse = pendingStartDateChangeTask.Result;
         var paymentStatusResponse = paymentStatusTask.Result;
 
-        return new GetManageApprenticeshipDetailsQueryResult
-        {
-            Apprenticeship = apprenticeship,
-            PriceEpisodes = priceEpisodesResponse.Body.PriceEpisodes,
-            ApprenticeshipUpdates = apprenticeshipUpdatesResponse.Body.ApprenticeshipUpdates,
-            DataLocks = apprenticeshipDataLockStatusResponse.Body.DataLocks,
-            ChangeOfPartyRequests = changeOfPartyRequestsResponse.Body.ChangeOfPartyRequests,
-            ChangeOfProviderChain = changeOfProviderChainResponse.Body.ChangeOfProviderChain,
-            ChangeOfEmployerChain = changeOfEmployerChainResponse.Body.ChangeOfEmployerChain,
-            OverlappingTrainingDateRequest = overlappingTrainingDateResponse.Body.OverlappingTrainingDateRequest,
-            HasMultipleDeliveryModelOptions = deliveryModel.Count > 1,
-            PendingPriceChange = ToResponse(pendingPriceChangeResponse.Body),
-            CanActualStartDateBeChanged = canActualStartDateBeChanged,
-            PendingStartDateChange = ToResponse(pendingStartDateResponse.Body),
-            PaymentsFrozen = (paymentStatusResponse?.Body?.PaymentsFrozen).GetValueOrDefault(),
-        };
+        var result = new GetManageApprenticeshipDetailsQueryResult();
+        
+        result.Apprenticeship = apprenticeship;
+        result.PriceEpisodes = priceEpisodesResponse.Body?.PriceEpisodes;
+        result.ApprenticeshipUpdates = apprenticeshipUpdatesResponse.Body?.ApprenticeshipUpdates;
+        result.DataLocks = apprenticeshipDataLockStatusResponse.Body?.DataLocks;
+        result.ChangeOfPartyRequests = changeOfPartyRequestsResponse.Body?.ChangeOfPartyRequests;
+        result.ChangeOfProviderChain = changeOfProviderChainResponse.Body?.ChangeOfProviderChain;
+        result.ChangeOfEmployerChain = changeOfEmployerChainResponse.Body?.ChangeOfEmployerChain;
+        result.OverlappingTrainingDateRequest = overlappingTrainingDateResponse.Body?.OverlappingTrainingDateRequest;
+        result.HasMultipleDeliveryModelOptions = deliveryModel?.Count > 1;
+        result.PendingPriceChange = ToResponse(pendingPriceChangeResponse.Body);
+        result.CanActualStartDateBeChanged = canActualStartDateBeChanged;
+        result.PendingStartDateChange = ToResponse(pendingStartDateResponse.Body);
+        result.PaymentsFrozen = (paymentStatusResponse?.Body?.PaymentsFrozen).GetValueOrDefault();
+        
+        return result;
     }
 
     private static PendingPriceChange ToResponse(GetPendingPriceChangeResponse pendingPriceChangeResponse)
@@ -137,18 +132,19 @@ public class GetManageApprenticeshipDetailsQueryHandler : IRequestHandler<GetMan
         return pendingPriceChange;
     }
 
-    private PendingStartDateChange ToResponse(GetPendingStartDateChangeApiResponse pendingStartDateChangeResponse)
+    private static PendingStartDateChange ToResponse(GetPendingStartDateChangeApiResponse pendingStartDateChangeResponse)
     {
         if (pendingStartDateChangeResponse == null || !pendingStartDateChangeResponse.HasPendingStartDateChange) return null;
 
-        return new PendingStartDateChange
-        {
-            PendingActualStartDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingActualStartDate,
-            PendingPlannedEndDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingPlannedEndDate,
-            ProviderApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate,
-            EmployerApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate,
-            Initiator = pendingStartDateChangeResponse.PendingStartDateChange.Initiator
-        };
+        var pendingStartDateChange = new PendingStartDateChange();
+        
+        pendingStartDateChange.PendingActualStartDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingActualStartDate;
+        pendingStartDateChange.PendingPlannedEndDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingPlannedEndDate;
+        pendingStartDateChange.ProviderApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate;
+        pendingStartDateChange.EmployerApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate;
+        pendingStartDateChange.Initiator = pendingStartDateChangeResponse.PendingStartDateChange.Initiator;
+        
+        return pendingStartDateChange;
     }
 
     private async Task<bool?> CanActualStartDateBeChanged(DateTime? actualStartDate)
@@ -158,14 +154,14 @@ public class GetManageApprenticeshipDetailsQueryHandler : IRequestHandler<GetMan
             return null;
         }
 
-        var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now));
+        var currentAcademicYear = await collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now));
 
         if (currentAcademicYear.StartDate <= actualStartDate)
         {
             return true;
         }
 
-        var previousAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now.AddYears(-1)));
+        var previousAcademicYear = await collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now.AddYears(-1)));
 
         if (previousAcademicYear.StartDate <= actualStartDate && previousAcademicYear.HardCloseDate > DateTime.Now)
         {
