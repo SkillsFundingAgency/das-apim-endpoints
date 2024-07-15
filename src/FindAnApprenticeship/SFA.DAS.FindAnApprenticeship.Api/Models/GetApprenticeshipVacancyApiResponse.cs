@@ -89,7 +89,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
        
         public CandidateApplication Application { get; set; }
 
-
+        public string ApplicationUrl { get; set; }
+        
         public static implicit operator GetApprenticeshipVacancyApiResponse(GetApprenticeshipVacancyQueryResult source)
         {
             return new GetApprenticeshipVacancyApiResponse
@@ -156,7 +157,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 CourseSkills = source.CourseDetail.Skills,
                 Levels = source.Levels,
                 Application = (CandidateApplication)source.Application,
-				IsClosed = source.ApprenticeshipVacancy.IsClosed
+				IsClosed = source.ApprenticeshipVacancy.IsClosed,
+                ApplicationUrl = source.ApprenticeshipVacancy.ApplicationUrl
             };
         }
     }

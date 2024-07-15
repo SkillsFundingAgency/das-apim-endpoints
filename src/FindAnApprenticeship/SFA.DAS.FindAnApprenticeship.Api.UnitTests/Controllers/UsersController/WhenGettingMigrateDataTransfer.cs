@@ -47,6 +47,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController
                 .Excluding(fil => fil.UnsuccessfulDateTime)
                 .Excluding(fil => fil.Vacancy)
                 .Excluding(fil => fil.UnsuccessfulReason)
+                .Excluding(fil => fil.DateCreated)
             );
             actualObject!.FirstName.Should().Be(queryResult.LegacyUserDetail.FirstName);
             actualObject!.LastName.Should().Be(queryResult.LegacyUserDetail.LastName);
@@ -79,6 +80,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController
                 .Excluding(fil => fil.UnsuccessfulDateTime)
                 .Excluding(fil => fil.Vacancy)
                 .Excluding(fil => fil.UnsuccessfulReason)
+                .Excluding(fil => fil.DateCreated)
             );
             actualObject!.FirstName.Should().Be(queryResult.CandidateDetail.FirstName);
             actualObject!.LastName.Should().Be(queryResult.CandidateDetail.LastName);

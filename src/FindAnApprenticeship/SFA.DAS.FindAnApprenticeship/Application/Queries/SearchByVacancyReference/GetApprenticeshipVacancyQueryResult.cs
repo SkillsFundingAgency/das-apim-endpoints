@@ -94,7 +94,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string AdditionalQuestion2 { get; init; }
 
             public bool IsClosed { get; set; }
-
+            public string ApplicationUrl { get; set; }
 
             public static Vacancy FromIVacancy(IVacancy source)
             {
@@ -194,7 +194,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     }),
                     AdditionalQuestion1 = source.AdditionalQuestion1,
                     AdditionalQuestion2 = source.AdditionalQuestion2,
-                    IsClosed = false
+                    IsClosed = false,
+                    ApplicationUrl = source.ApplicationUrl
                 };
             }
         }
