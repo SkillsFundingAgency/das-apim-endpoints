@@ -76,7 +76,7 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
     {
         NotificationModel notification = new NotificationModel()
         {
-            NotificationType = "Provider",
+            NotificationType = nameof(NotificationType.Provider),
             TemplateName = templateType.ToString(),
             Ukprn = command.Ukprn,
             AccountLegalEntityId = command.AccountLegalEntityId,
