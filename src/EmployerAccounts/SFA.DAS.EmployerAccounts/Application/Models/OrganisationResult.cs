@@ -1,8 +1,9 @@
 ﻿using System;
+using SFA.DAS.EmployerAccounts.ExternalApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.PublicSectorOrganisation;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.EmployerAccounts.Application.Models;
 
@@ -91,6 +92,64 @@ public class OrganisationResult
         };
     }
 
+    public static implicit operator OrganisationResult(GetCompanyInfoResponse source)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        return new OrganisationResult
+        {
+            Name = source.CompanyName,
+            Type = OrganisationType.Company,
+            SubType = OrganisationSubType.None,
+            Code = source.CompanyNumber,
+            RegistrationDate = source.DateOfIncorporation,
+            Address = new Address
+            {
+                Line1 = source.RegisteredAddress.Line1,
+                Line2 = source.RegisteredAddress.Line2,
+                Line3 = source.RegisteredAddress.Line3,
+                Line4 = source.RegisteredAddress.TownOrCity,
+                Line5 = source.RegisteredAddress.County,
+                Postcode = source.RegisteredAddress.PostCode
+            },
+            Sector = null,
+            OrganisationStatus = MapCompanyToOrganisationStatus(source.CompanyStatus)
+        };
+    }
+
+    public static implicit operator OrganisationResult(CompanySearchResultsItem source)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        var address = source.Address != null ? new Address
+        {
+            Line1 = source.Address.Line1,
+            Line2 = source.Address.Line2,
+            Line3 = source.Address.Line3,
+            Line4 = source.Address.TownOrCity,
+            Line5 = source.Address.County,
+            Postcode = source.Address.PostCode
+        } : new Address();
+
+        return new OrganisationResult
+        {
+            Name = source.CompanyName,
+            Type = OrganisationType.Company,
+            SubType = OrganisationSubType.None,
+            Code = source.CompanyNumber,
+            RegistrationDate = source.DateOfIncorporation,
+            Address = address,
+            Sector = null,
+            OrganisationStatus = MapCompanyToOrganisationStatus(source.CompanyStatus)
+        };
+    }
+
     public static implicit operator OrganisationResult(GetCharityResponse source)
     {
         if (source == null)
@@ -119,7 +178,6 @@ public class OrganisationResult
         };
     }
 
-
     public static OrganisationSubType MapToOrganisationSubType(string value)
     {
         return value switch
@@ -129,5 +187,11 @@ public class OrganisationResult
             "Ons" => OrganisationSubType.Ons,
             _ => OrganisationSubType.None
         };
+    }
+    private static OrganisationStatus MapCompanyToOrganisationStatus(string companiesHouseStatus)
+    {
+        Enum.TryParse(companiesHouseStatus?.Replace("-", string.Empty), true, out OrganisationStatus organisationStatus);
+
+        return organisationStatus;
     }
 }
