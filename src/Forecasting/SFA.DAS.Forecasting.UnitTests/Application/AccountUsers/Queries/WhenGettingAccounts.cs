@@ -38,6 +38,7 @@ namespace SFA.DAS.Forecasting.UnitTests.Application.AccountUsers.Queries
                 .Excluding(c=>c.UserId)
                 .Excluding(c=>c.IsSuspended)
                 .Excluding(c=>c.DisplayName)
+                .Excluding(c => c.ApprenticeshipEmployerType)
             );
             actual.Email.Should().BeEquivalentTo(query.Email);
             actual.FirstName.Should().BeEquivalentTo(teamResponse.First().FirstName);

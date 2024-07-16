@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Requests;
@@ -12,11 +12,13 @@ using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Extensions.LegacyApi;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses.Enums;
 using SFA.DAS.SharedOuterApi.Extensions;
+using static SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests.PutSavedVacancyApiRequest;
 
 namespace SFA.DAS.FindAnApprenticeship.Services
 {
     public interface ILegacyApplicationMigrationService
     {
+        Task<GetLegacyApplicationsByEmailApiResponse> GetLegacyApplications(string emailAddress);
         Task MigrateLegacyApplications(Guid candidateId, string emailAddress);
     }
 
@@ -30,6 +32,23 @@ namespace SFA.DAS.FindAnApprenticeship.Services
             ApplicationStatus.Successful,
             ApplicationStatus.Unsuccessful
         ];
+
+        public async Task<GetLegacyApplicationsByEmailApiResponse> GetLegacyApplications(string emailAddress)
+        {
+            logger.LogInformation("Fetching applications for candidate [using email address [{emailAddress}].", emailAddress);
+
+            var legacyApplications =
+                await legacyApiClient.Get<GetLegacyApplicationsByEmailApiResponse>(
+                    new GetLegacyApplicationsByEmailApiRequest(emailAddress));
+
+            if (legacyApplications?.Applications == null || legacyApplications.Applications.Count == 0)
+            {
+                logger.LogInformation("No legacy applications found for email address [{emailAddress}].", emailAddress);
+                return new GetLegacyApplicationsByEmailApiResponse();
+            }
+
+            return legacyApplications;
+        }
 
         public async Task MigrateLegacyApplications(Guid candidateId, string emailAddress)
         {
@@ -45,6 +64,8 @@ namespace SFA.DAS.FindAnApprenticeship.Services
                 return;
             }
 
+            var applicationsToSubmit = new List<Task>();
+            
             foreach (var legacyApplication in legacyApplications.Applications.Where(x => LegacyImportStatuses.Contains(x.Status)))
             {
                 var vacancy = await vacancyService.GetVacancy(legacyApplication.Vacancy.VacancyReference);
@@ -61,8 +82,40 @@ namespace SFA.DAS.FindAnApprenticeship.Services
                 };
                 var postRequest = new PostApplicationApiRequest(data);
 
+                applicationsToSubmit.Add(candidateApiClient.PostWithResponseCode<PostApplicationApiResponse>(postRequest));
+
+                //applicationResult.EnsureSuccessStatusCode();
+            }
+
+            await Task.WhenAll(applicationsToSubmit);
+
+            foreach (var legacyApplication in legacyApplications.Applications.Where(x => x.Status == ApplicationStatus.Saved))
+            {
+                var vacancy = await vacancyService.GetVacancy(legacyApplication.Vacancy.VacancyReference);
+
+                if (vacancy == null)
+                {
+                    logger.LogError($"Unable to retrieve vacancy [{legacyApplication.Vacancy.VacancyReference}].");
+                    continue;
+                }
+
+                if (vacancy.ClosingDate < DateTime.UtcNow)
+                {
+                    logger.LogWarning($"Ignoring saved vacancy reference [{legacyApplication.Vacancy.VacancyReference}] as closing date has passed.");
+                    continue;
+                }
+
+                var vacancyReference = legacyApplication.Vacancy.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
+                var data = new PostSavedVacancyApiRequestData
+                {
+
+                    VacancyReference =  vacancyReference,
+                    CreatedOn = legacyApplication.DateCreated ?? DateTime.UtcNow
+                };
+                var postRequest = new PutSavedVacancyApiRequest(candidateId, data);
+
                 var applicationResult =
-                    await candidateApiClient.PostWithResponseCode<PostApplicationApiResponse>(postRequest);
+                    await candidateApiClient.PutWithResponseCode<PutSavedVacancyApiResponse>(postRequest);
 
                 applicationResult.EnsureSuccessStatusCode();
             }
@@ -73,6 +126,7 @@ namespace SFA.DAS.FindAnApprenticeship.Services
         {
             return new PostApplicationApiRequest.LegacyApplication
             {
+                Id = source.Id,
                 CandidateId = candidateId,
                 VacancyReference =
                     source.Vacancy.VacancyReference.Replace("VAC", "",

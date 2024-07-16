@@ -8,10 +8,12 @@ using SFA.DAS.EmployerAccounts.Application.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Charities;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EducationalOrganisations;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.PublicSectorOrganisations;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.ReferenceData;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Charities;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.PublicSectorOrganisation;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations;
@@ -44,38 +46,37 @@ public class SearchOrganisationsQueryHandler : IRequestHandler<SearchOrganisatio
 
         var refApiOrganisationsTask = _refDataApi.Get<GetSearchOrganisationsResponse>(new GetSearchOrganisationsRequest(request.SearchTerm, request.MaximumResults));
         var educationalOrganisationsTask = _eduOrgApi.Get<EducationalOrganisationResponse>(new SearchEducationalOrganisationsRequest(request.SearchTerm, request.MaximumResults));
-        //var publicSectorOrganisationsTask = _psOrgApi.Get<PublicSectorOrganisationsResponse>(new SearchPublicSectorOrganisationsRequest(request.SearchTerm));
+        var publicSectorOrganisationsTask = _psOrgApi.Get<PublicSectorOrganisationsResponse>(new SearchPublicSectorOrganisationsRequest(request.SearchTerm));
         var charitiesSearchTask = GetCharitiesSearchTask(request.SearchTerm, request.MaximumResults);
 
-        await Task.WhenAll(refApiOrganisationsTask, educationalOrganisationsTask, charitiesSearchTask); //, publicSectorOrganisationsTask);
+        await Task.WhenAll(refApiOrganisationsTask, educationalOrganisationsTask, charitiesSearchTask, publicSectorOrganisationsTask);
         var refApiOrganisations = await refApiOrganisationsTask;
         var educationalOrganisations = await educationalOrganisationsTask;
-
         var charityResults = await ProcessCharitiesSearchTask(charitiesSearchTask);
-
-        //var publicSectorOrganisations = await publicSectorOrganisationsTask;
+        var publicSectorOrganisations = await publicSectorOrganisationsTask;
 
         var result = CombineMatches(
             refApiOrganisations.Where(o => o.Type != OrganisationType.EducationOrganisation && o.Type != OrganisationType.Charity),
             educationalOrganisations?.EducationalOrganisations,
             charityResults,
+            publicSectorOrganisations.PublicSectorOrganisations,
             request.MaximumResults);
-        //publicSectorOrganisations.PublicSectorOrganisations, request.MaximumResults);
 
         return result;
     }
 
-    private static SearchOrganisationsResult CombineMatches(IEnumerable<Organisation> refApiOrganisations,
+    private static SearchOrganisationsResult CombineMatches(
+        IEnumerable<Organisation> refApiOrganisations,
         IEnumerable<EducationalOrganisation> educationalOrganisations,
         IEnumerable<OrganisationResult> charityResults,
-         /*IEnumerable<PublicSectorOrganisation> psOrganisations, */
+         IEnumerable<PublicSectorOrganisation> psOrganisations,
          int maxResults)
     {
         var allOrganisations = refApiOrganisations.Select(o => (OrganisationResult)o)
                 .Concat(educationalOrganisations.Select(o => (OrganisationResult)o))
+                .Concat(psOrganisations.Select(o => (OrganisationResult)o))
                 .Concat(charityResults);
 
-        //.Concat(psOrganisations.Select(o=> (OrganisationResult)o));
 
         return new SearchOrganisationsResult
         {

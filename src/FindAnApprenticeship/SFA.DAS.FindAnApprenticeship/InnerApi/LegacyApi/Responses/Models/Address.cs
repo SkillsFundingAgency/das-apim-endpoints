@@ -9,7 +9,5 @@
         public string Postcode { get; set; }
         public string Uprn { get; set; }
         public GeoPoint GeoPoint { get; set; }
-        public string Town { get; set; }
-        public string County { get; set; }
     }
 }
