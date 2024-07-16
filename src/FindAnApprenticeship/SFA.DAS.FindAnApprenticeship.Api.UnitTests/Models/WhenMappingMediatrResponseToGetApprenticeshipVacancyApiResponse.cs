@@ -77,6 +77,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
                 result.CourseCoreDuties.Should().BeEquivalentTo(source.CourseDetail.CoreDuties);
                 result.CourseOverviewOfRole.Should().Be(source.CourseDetail.OverviewOfRole);
                 result.StandardPageUrl.Should().Be(source.CourseDetail.StandardPageUrl);
+                result.CandidatePostcode.Should().Be(source.CandidatePostcode);
             }
         }
     }

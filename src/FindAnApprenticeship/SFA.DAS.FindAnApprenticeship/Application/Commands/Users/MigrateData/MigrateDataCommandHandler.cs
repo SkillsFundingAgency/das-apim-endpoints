@@ -37,7 +37,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData
                 LastName = userDetails?.RegistrationDetails?.LastName,
                 DateOfBirth = registrationDetailsDateOfBirth,
                 PhoneNumber = userDetails?.RegistrationDetails?.PhoneNumber,
-                MigratedEmail = userDetails?.RegistrationDetails?.EmailAddress
+                MigratedEmail = userDetails?.RegistrationDetails?.EmailAddress,
+                MigratedCandidateId = userDetails?.Id
             });
 
             var candidateResponse = await CandidateApiClient.PutWithResponseCode<PutCandidateApiResponse>(putRequest);

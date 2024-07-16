@@ -78,7 +78,9 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
             FirstName = userDetails?.RegistrationDetails?.FirstName,
             LastName = userDetails?.RegistrationDetails?.LastName,
             DateOfBirth = registrationDetailsDateOfBirth,
-            MigratedEmail = userDetails == null ? null : request.Email
+            MigratedEmail = userDetails == null ? null : request.Email,
+            MigratedCandidateId = userDetails?.Id,
+            PhoneNumber = userDetails?.RegistrationDetails?.PhoneNumber,
         };
 
         var postRequest = new PostCandidateApiRequest(request.GovUkIdentifier, postData);
@@ -91,6 +93,29 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
         {
             return null;
         }
+        
+        if (userDetails is {RegistrationDetails.Address: not null})
+        {
+            var postAddressData = new PutCandidateAddressApiRequestData
+            {
+                Email = request.Email,
+                AddressLine1 = userDetails.RegistrationDetails?.Address?.AddressLine1,
+                AddressLine2 = userDetails.RegistrationDetails?.Address?.AddressLine2,
+                AddressLine3 = userDetails.RegistrationDetails?.Address?.AddressLine3,
+                AddressLine4 = userDetails.RegistrationDetails?.Address?.AddressLine4,
+                Latitude = userDetails.RegistrationDetails?.Address?.GeoPoint?.Latitude ?? default,
+                Longitude = userDetails.RegistrationDetails?.Address?.GeoPoint?.Longitude ?? default,
+                Postcode = userDetails.RegistrationDetails?.Address?.Postcode,
+                Uprn = userDetails.RegistrationDetails?.Address?.Uprn
+            };
+
+            var postAddressRequest = new PutCandidateAddressApiRequest(candidateResult.Body.Id, postAddressData);
+
+            var candidateAddressResponse = await _candidateApiClient.PutWithResponseCode<PostCandidateAddressApiResponse>(postAddressRequest);
+
+            candidateAddressResponse.EnsureSuccessStatusCode();
+        }
+        
 
         await _legacyApplicationMigrationService.MigrateLegacyApplications(candidateResult.Body.Id, request.Email);
 

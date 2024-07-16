@@ -14,6 +14,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
         public GetStandardsListItemResponse CourseDetail { get; init; }
         public List<GetCourseLevelsListItem> Levels { get; init; }
         public CandidateApplication Application { get; init; }
+        public string CandidatePostcode { get; set; }
 
         public class Vacancy
         {
@@ -46,7 +47,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public bool IsDisabilityConfident { get; init; }
             public bool IsPositiveAboutDisability { get; init; }
             public bool IsRecruitVacancy { get; init; }
-            public GeoPoint Location { get; init; }
+            public Location Location { get; init; }
             public int NumberOfPositions { get; init; }
             public string ProviderName { get; init; }
             public DateTime StartDate { get; init; }
@@ -94,7 +95,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string AdditionalQuestion2 { get; init; }
 
             public bool IsClosed { get; set; }
-
+            public string ApplicationUrl { get; set; }
 
             public static Vacancy FromIVacancy(IVacancy source)
             {
@@ -194,7 +195,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     }),
                     AdditionalQuestion1 = source.AdditionalQuestion1,
                     AdditionalQuestion2 = source.AdditionalQuestion2,
-                    IsClosed = false
+                    IsClosed = false,
+                    ApplicationUrl = source.ApplicationUrl
                 };
             }
         }
