@@ -23,7 +23,7 @@ public class GetPermissionsQueryHandlerTests
         providerRelationshipsApiRestClient.Setup(x =>
             x.GetPermissions(
                 It.IsAny<long>(),
-                It.IsAny<int>(),
+                It.IsAny<long>(),
                 It.IsAny<CancellationToken>()
             )
         )
@@ -49,7 +49,7 @@ public class GetPermissionsQueryHandlerTests
         providerRelationshipsApiRestClient.Setup(x =>
                 x.GetPermissions(
                     It.IsAny<long>(),
-                    It.IsAny<int>(),
+                    It.IsAny<long>(),
                     It.IsAny<CancellationToken>()
                 )
             )
@@ -73,7 +73,7 @@ public class GetPermissionsQueryHandlerTests
         providerRelationshipsApiRestClient.Setup(x =>
                 x.GetPermissions(
                     It.IsAny<long>(),
-                    It.IsAny<int>(),
+                    It.IsAny<long>(),
                     It.IsAny<CancellationToken>()
                 )
             )
