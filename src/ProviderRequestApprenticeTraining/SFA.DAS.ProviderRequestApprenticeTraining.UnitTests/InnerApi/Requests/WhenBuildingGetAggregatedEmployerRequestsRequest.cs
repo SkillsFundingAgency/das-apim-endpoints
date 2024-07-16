@@ -12,7 +12,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.InnerApi.Requests
         {
             var actual = new GetAggregatedEmployerRequestsRequest();
 
-            var expected = "api/employerrequest/aggregated-employer-requests";
+            var expected = "api/employerrequest/aggregated";
 
             actual.GetUrl.Should().Be(expected);
         }
