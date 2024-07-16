@@ -77,9 +77,9 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
         return Unit.Value;
     }
 
-    private bool NoUpdatesRequired(List<Operation> requestedPermissions, List<Operation> currentPermissions)
+    private static bool NoUpdatesRequired(List<Operation> requestedPermissions, List<Operation> currentPermissions)
     {
-        return (requestedPermissions.Count == 0 && !currentPermissions.Any()) || IdenticalPermissions(requestedPermissions, currentPermissions);
+        return (requestedPermissions.Count == 0 && currentPermissions.Count == 0) || IdenticalPermissions(requestedPermissions, currentPermissions);
     }
 
     private static bool IdenticalPermissions(List<Operation> requestedPermissions, List<Operation> currentPermissions)
