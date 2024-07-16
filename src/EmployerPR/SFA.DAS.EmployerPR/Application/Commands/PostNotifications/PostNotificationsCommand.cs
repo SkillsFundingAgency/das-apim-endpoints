@@ -7,5 +7,5 @@ public class PostNotificationsCommand
         Notifications = notifications;
     }
 
-    public NotificationModel[] Notifications { get; set; } = [];
+    public NotificationModel[] Notifications { get; set; }
 }

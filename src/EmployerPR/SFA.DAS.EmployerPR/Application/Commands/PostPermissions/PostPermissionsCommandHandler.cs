@@ -51,7 +51,7 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
 
         PermissionEmailTemplateType templateType = default;
 
-        if (!command.Operations.Any())
+        if (command.Operations.Count == 0)
         {
             await _providerRelationshipsApiRestClient.RemovePermissions(
                 command.UserRef, 
@@ -79,19 +79,19 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
 
     private bool NoUpdatesRequired(List<Operation> requestedPermissions, List<Operation> currentPermissions)
     {
-        return (!requestedPermissions.Any() && !currentPermissions.Any()) || IdenticalPermissions(requestedPermissions, currentPermissions);
+        return (requestedPermissions.Count == 0 && !currentPermissions.Any()) || IdenticalPermissions(requestedPermissions, currentPermissions);
     }
 
-    private bool IdenticalPermissions(List<Operation> requestedPermissions, List<Operation> currentPermissions)
+    private static bool IdenticalPermissions(List<Operation> requestedPermissions, List<Operation> currentPermissions)
     {
         return currentPermissions.OrderBy(a => (int)a).SequenceEqual(requestedPermissions.OrderBy(a => (int)a));
     }
 
-    private PermissionEmailTemplateType GetTemplateType(List<Operation> operations)
+    private static PermissionEmailTemplateType GetTemplateType(List<Operation> operations)
     {
-        return operations.Any() ?
-            PermissionEmailTemplateType.PermissionsUpdated : 
-            PermissionEmailTemplateType.PermissionsCreated;
+        return operations.Count == 0 ?
+            PermissionEmailTemplateType.PermissionsCreated :
+            PermissionEmailTemplateType.PermissionsUpdated;
     }
 
     private async Task PostNotification(PostPermissionsCommand command, PermissionEmailTemplateType templateType, CancellationToken cancellationToken)
@@ -113,7 +113,7 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
         );
     }
 
-    private int SetPermitsApproval(List<Operation> operations)
+    private static int SetPermitsApproval(List<Operation> operations)
     {
         if(operations.Contains(Operation.CreateCohort))
         {
@@ -125,7 +125,7 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
         }
     }
 
-    private int SetPermitsRecruit(List<Operation> operations)
+    private static int SetPermitsRecruit(List<Operation> operations)
     {
         if(operations.Contains(Operation.Recruitment))
         {
