@@ -20,7 +20,7 @@ public class PostPermissionsCommandHandlerTests
 {
     [Test]
     [MoqAutoData]
-    public async Task PostPermissionsCommandHandler_Handle_Requires_No_Action(
+    public async Task Handle_NoRequestedAndExistingOperations_NoAction(
         [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClient,
         PostPermissionsCommandHandler sut,
         PostPermissionsCommandResult result,
@@ -72,7 +72,7 @@ public class PostPermissionsCommandHandlerTests
 
     [Test]
     [MoqAutoData]
-    public void PostPermissionsCommandHandler_Handle_Throws_InvalidOperationException(
+    public void Handle_UnexpectedResponseOnExistingPermission_ThrowsException(
         [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClient,
         PostPermissionsCommandHandler sut,
         PostPermissionsCommandResult result,
@@ -116,7 +116,7 @@ public class PostPermissionsCommandHandlerTests
 
     [Test]
     [MoqAutoData]
-    public async Task PostPermissionsCommandHandler_Handle_Requires_Permissions_Removed(
+    public async Task Handle_NoOperationsRequestedWithExistingPermissions_RemovesExistingPermissions(
         [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClient,
         PostPermissionsCommandHandler sut,
         PostPermissionsCommandResult result,

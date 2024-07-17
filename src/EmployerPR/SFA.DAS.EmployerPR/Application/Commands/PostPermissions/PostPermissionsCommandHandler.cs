@@ -40,7 +40,7 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
                 break;
             default:
                 {
-                    throw new InvalidOperationException($"Invalid operation occurred trying to retrieve permissions for ukprn {command.Ukprn} and AccountLegalEntityId {command.AccountLegalEntityId}");
+                    throw new InvalidOperationException($"Unexpected response code {permissionsResponse.ResponseMessage.StatusCode} when trying to retrieve permissions for ukprn {command.Ukprn} and AccountLegalEntityId {command.AccountLegalEntityId}");
                 }
         }
 
@@ -79,17 +79,17 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
 
     private static bool NoUpdatesRequired(List<Operation> requestedPermissions, List<Operation> currentPermissions)
     {
-        return (requestedPermissions.Count == 0 && currentPermissions.Count == 0) || IdenticalPermissions(requestedPermissions, currentPermissions);
+        return (requestedPermissions.Count == 0 && currentPermissions.Count == 0) || HasIdenticalPermissions(requestedPermissions, currentPermissions);
     }
 
-    private static bool IdenticalPermissions(List<Operation> requestedPermissions, List<Operation> currentPermissions)
+    private static bool HasIdenticalPermissions(List<Operation> requestedPermissions, List<Operation> currentPermissions)
     {
         return currentPermissions.OrderBy(a => (int)a).SequenceEqual(requestedPermissions.OrderBy(a => (int)a));
     }
 
-    private static PermissionEmailTemplateType GetTemplateType(List<Operation> operations)
+    private static PermissionEmailTemplateType GetTemplateType(List<Operation> existingOperations)
     {
-        return operations.Count == 0 ?
+        return existingOperations.Count == 0 ?
             PermissionEmailTemplateType.PermissionsCreated :
             PermissionEmailTemplateType.PermissionsUpdated;
     }
