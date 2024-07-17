@@ -19,7 +19,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining
         public bool DayRelease { get; set; }
         public bool BlockRelease { get; set; }
         public Guid RequestedBy { get; set; }
-        public Status Status { get; set; }
+        public RequestStatus Status { get; set; }
         public Guid ModifiedBy { get; set; }
 
         public List<Region> Regions { get; set; }

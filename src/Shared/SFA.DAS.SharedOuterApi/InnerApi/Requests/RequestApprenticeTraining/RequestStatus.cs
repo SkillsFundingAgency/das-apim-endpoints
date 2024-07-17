@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining
 {
-    public enum Status
+    public enum RequestStatus
     {
         Active = 0
     }
