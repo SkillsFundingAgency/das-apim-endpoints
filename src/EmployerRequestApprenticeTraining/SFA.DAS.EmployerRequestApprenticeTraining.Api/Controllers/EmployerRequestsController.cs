@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.EmployerRequestApprenticeTraining.Api.Extensions;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
@@ -105,7 +106,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to retrieve employer request for AccountId: {accountId} and standardReference: {standardReference}");
+                _logger.LogError(e, $"Error attempting to retrieve employer request for AccountId: {accountId} and standardReference: {standardReference.SanitizeLogData()}");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
