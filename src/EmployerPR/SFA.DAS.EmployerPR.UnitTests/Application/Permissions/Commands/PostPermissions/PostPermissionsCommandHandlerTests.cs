@@ -69,6 +69,58 @@ public class PostPermissionsCommandHandlerTests
             ),
         Times.Never);
     }
+    [Test]
+    [MoqAutoData]
+    public async Task Handle_IdenticalRequestedAndExistingOperations_NoAction(
+        [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClient,
+        PostPermissionsCommandHandler sut,
+        PostPermissionsCommandResult result,
+        PostPermissionsCommand command
+    )
+    {
+        command.Operations = [Operation.CreateCohort];
+
+        var responseObject = new GetPermissionsResponse()
+        {
+            Operations = [Operation.CreateCohort]
+        };
+
+        var responseString = JsonSerializer.Serialize(responseObject);
+
+        providerRelationshipsApiRestClient.Setup(x =>
+            x.GetPermissions(
+                It.IsAny<long>(),
+                It.IsAny<long>(),
+                CancellationToken.None
+            )
+        ).ReturnsAsync(
+            new Response<GetPermissionsResponse>(
+                responseString,
+                new(HttpStatusCode.OK),
+                () => JsonSerializer.Deserialize<GetPermissionsResponse>(responseString)!
+            )
+        );
+
+        var actual = await sut.Handle(command, CancellationToken.None);
+        actual.Should().Be(Unit.Value);
+
+        providerRelationshipsApiRestClient.Verify(x =>
+            x.RemovePermissions(
+                It.IsAny<Guid>(),
+                It.IsAny<long>(),
+                It.IsAny<long>(),
+                It.IsAny<CancellationToken>()
+            ),
+        Times.Never);
+
+        providerRelationshipsApiRestClient.Verify(x =>
+            x.PostPermissions(
+                It.IsAny<PostPermissionsCommand>(),
+                It.IsAny<CancellationToken>()
+            ),
+        Times.Never);
+    }
+
 
     [Test]
     [MoqAutoData]
