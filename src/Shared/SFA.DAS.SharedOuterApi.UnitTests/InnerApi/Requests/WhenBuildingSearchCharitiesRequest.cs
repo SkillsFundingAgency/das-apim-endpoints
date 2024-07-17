@@ -13,7 +13,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         {
             var actual = new SearchCharitiesRequest(searchTerm, maximumResults);
 
-            var expected = $"/api/Charities/search/{HttpUtility.UrlEncode(searchTerm)}&maximumResults={maximumResults}";
+            var expected = $"/api/Charities/search?searchTerm={HttpUtility.UrlEncode(searchTerm)}&maximumResults={maximumResults}";
 
             actual.GetUrl.Should().Be(expected);
         }

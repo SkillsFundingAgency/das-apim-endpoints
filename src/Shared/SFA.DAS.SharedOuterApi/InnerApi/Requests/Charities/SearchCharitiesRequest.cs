@@ -14,6 +14,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Charities
             MaximumResults = maximumResults;
         }
 
-        public string GetUrl => $"/api/Charities/search/{HttpUtility.UrlEncode(SearchTerm)}&maximumResults={MaximumResults}";
+        public string GetUrl => $"/api/Charities/search?searchTerm={HttpUtility.UrlEncode(SearchTerm)}&maximumResults={MaximumResults}";
     }
 }
