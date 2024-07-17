@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SFA.DAS.EmployerPR.Infrastructure;
+using System.Net;
 
 namespace SFA.DAS.EmployerPR.Application.Queries.GetPermissions;
 
@@ -10,6 +11,17 @@ public class GetPermissionsHandler(IProviderRelationshipsApiRestClient _provider
         var response =
             await _providerRelationshipsApiRestClient.GetPermissions(query.Ukprn, query.AccountLegalEntityId, cancellationToken);
 
-        return response;
+        switch (response.ResponseMessage.StatusCode)
+        {
+            case HttpStatusCode.OK:
+                {
+                    return response.GetContent();
+                }
+            case HttpStatusCode.NotFound:
+                return null!;
+            default:
+                throw new InvalidOperationException(
+                    $"Invalid operation occurred trying to retrieve permissions for ukprn {query.Ukprn} and AccountLegalEntityId {query.AccountLegalEntityId}");
+        }
     }
 }

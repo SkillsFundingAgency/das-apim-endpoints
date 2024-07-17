@@ -34,6 +34,9 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
 		public Guid? PreviousAnswersSourceId { get; set; }
         public DateTime? MigrationDate { get; set; }
         public DateTime? WithdrawnDate { get; set; }
+        public string Strengths { get; set; }
+        public string Support { get; set; }
+
     }
 
     public class Question

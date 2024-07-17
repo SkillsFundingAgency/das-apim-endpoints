@@ -19,27 +19,36 @@ public class GetApplicationsQueryHandler(
 {
     public async Task<GetApplicationsQueryResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
     {
-        var applications =
-            await candidateApiClient.Get<GetApplicationsApiResponse>(
-                new GetApplicationsApiRequest(request.CandidateId, request.Status));
+        var candidateApiResponseTask =
+            candidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId.ToString()));
 
-        var applicationList = applications.Applications;
+        var applicationsTask =
+            candidateApiClient.Get<GetApplicationsApiResponse>(
+                new GetApplicationsApiRequest(request.CandidateId));
 
-        if (request.Status == ApplicationStatus.Submitted)
+        var candidateApiResponse = candidateApiResponseTask.Result;
+        var totalApplicationCount = applicationsTask.Result.Applications.Count;
+        var applicationList = applicationsTask.Result.Applications.Where(x =>
+            x.Status == request.Status.ToString()
+            || (request.Status == ApplicationStatus.Submitted && x.Status == ApplicationStatus.Withdrawn.ToString()))
+            .ToList();
+
+        if (totalApplicationCount == 0)
         {
-            var withdrawnApplications =
-                await candidateApiClient.Get<GetApplicationsApiResponse>(
-                    new GetApplicationsApiRequest(request.CandidateId, ApplicationStatus.Withdrawn));
-            applicationList.AddRange(withdrawnApplications.Applications);
+            return new GetApplicationsQueryResult
+            {
+                ShowAccountRecoveryBanner = string.IsNullOrWhiteSpace(candidateApiResponse.MigratedEmail)
+            };
         }
-        
-        if (applicationList.Count == 0)  { return new GetApplicationsQueryResult(); }
 
         var vacancyReferences = applicationList.Select(x => $"{x.VacancyReference}").ToList();
         
         var vacancies = await vacancyService.GetVacancies(vacancyReferences);
 
-        var result = new GetApplicationsQueryResult();
+        var result = new GetApplicationsQueryResult
+        {
+            ShowAccountRecoveryBanner = false
+        };
 
         foreach (var application in applicationList)
         {

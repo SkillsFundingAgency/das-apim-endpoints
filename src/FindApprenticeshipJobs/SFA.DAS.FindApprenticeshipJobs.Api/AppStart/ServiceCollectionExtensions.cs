@@ -27,6 +27,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<ILiveVacancyMapper, LiveVacancyMapper>();
+        services.AddTransient<INotificationService, NotificationService>();
         services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
         return services;
     }
