@@ -2,8 +2,7 @@ using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndex;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -18,13 +17,12 @@ public class WhenHandlingSearchIndexQuery
         long totalApprenticeshipsAvailable,
         LocationItem locationItem,
         [Frozen] Mock<ILocationLookupService> locationService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> apiClient,
+        [Frozen] Mock<ITotalPositionsAvailableService> totalPositionsAvailableService,
         SearchIndexQueryHandler handler)
     {
         // Arrange
-        var expectedRequest = new GetTotalPositionsAvailableRequest();
-        apiClient
-            .Setup(client => client.Get<long>(It.Is<GetTotalPositionsAvailableRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
+        totalPositionsAvailableService
+            .Setup(x => x.GetTotalPositionsAvailable())
             .ReturnsAsync(totalApprenticeshipsAvailable);
         locationService.Setup(x => x.GetLocationInformation(query.LocationSearchTerm,0,0,false)).ReturnsAsync(locationItem);
 

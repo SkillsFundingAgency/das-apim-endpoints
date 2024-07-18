@@ -17,6 +17,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 {
     public class SearchApprenticeshipsQueryHandler(
         IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
+        ITotalPositionsAvailableService totalPositionsAvailableService,
         ILocationLookupService locationLookupService,
         ICourseService courseService,
         IMetrics metrics,
@@ -28,11 +29,14 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var locationTask = locationLookupService.GetLocationInformation(request.Location, default, default, false);
             var routesTask = courseService.GetRoutes();
             var courseLevelsTask = courseService.GetLevels();
-            await Task.WhenAll(locationTask, routesTask, courseLevelsTask);
+            var totalPositionsAvailableTask = totalPositionsAvailableService.GetTotalPositionsAvailable();
+
+            await Task.WhenAll(locationTask, routesTask, courseLevelsTask, totalPositionsAvailableTask);
 
             var location = locationTask.Result;
             var routes = routesTask.Result;
             var courseLevels = courseLevelsTask.Result;
+            var totalPositionsAvailable = totalPositionsAvailableTask.Result;
 
             if (request.SearchTerm != null && Regex.IsMatch(request.SearchTerm, @"^VAC\d{10}$", RegexOptions.None, TimeSpan.FromSeconds(3)))
             {
@@ -106,7 +110,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 
             return new SearchApprenticeshipsResult
             {
-                TotalApprenticeshipCount = vacancyResult.Total,
+                TotalApprenticeshipCount = totalPositionsAvailable,
                 TotalFound = vacancyResult.TotalFound,
                 LocationItem = location,
                 Routes = routes.Routes.ToList(),
