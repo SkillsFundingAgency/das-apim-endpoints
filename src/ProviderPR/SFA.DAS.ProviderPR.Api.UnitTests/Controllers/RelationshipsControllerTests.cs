@@ -15,7 +15,7 @@ public class RelationshipsControllerTests
     [Test, AutoData]
     public async Task GetRelationships_InvokesInnerApi_WithQueryString(long ukprn, CancellationToken cancellationToken)
     {
-        const string queryString = "?page=1";
+        const string queryString = "?pageNumber=1";
         var httpContext = new DefaultHttpContext();
         httpContext.Request.QueryString = new(queryString);
 

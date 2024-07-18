@@ -16,7 +16,7 @@ public class RelationshipsController(IProviderRelationshipsApiRestClient _prApiC
     {
         _logger.LogInformation("Get relationships invoked for {Ukprn} with query parameters {Params}", ukprn, JsonSerializer.Serialize(request));
 
-        var result = await _prApiClient.GetProviderRelationships(ukprn, Request.QueryString.ToString(), cancellationToken);
+        GetProviderRelationshipsResponse result = await _prApiClient.GetProviderRelationships(ukprn, Request.QueryString.ToString(), cancellationToken);
 
         return Ok(result);
     }
