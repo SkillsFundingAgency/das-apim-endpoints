@@ -25,13 +25,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             SearchApprenticeshipsQuery query,
             LocationItem locationInfo,
             GetVacanciesResponse vacanciesResponse,
-            long totalPositionsAvailable,
             GetRoutesListResponse routesResponse,
             [Frozen] Mock<IMetrics> metricsService,
             [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<ILocationLookupService> locationLookupService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
-            [Frozen] Mock<ITotalPositionsAvailableService> totalPositionsAvailableService,
             SearchApprenticeshipsQueryHandler handler)
         {
             // Arrange
@@ -62,9 +60,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
                 .ReturnsAsync(vacanciesResponse);
 
-            totalPositionsAvailableService.Setup(x => x.GetTotalPositionsAvailable())
-                .ReturnsAsync(totalPositionsAvailable);
-
             var totalPages = (int)Math.Ceiling((double)vacanciesResponse.TotalFound / query.PageSize);
 
             // Act
@@ -74,7 +69,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             using (new AssertionScope())
             {
                 Assert.That(result, Is.Not.Null);
-                result.TotalApprenticeshipCount.Should().Be(totalPositionsAvailable);
+                result.TotalApprenticeshipCount.Should().Be(vacanciesResponse.Total);
                 result.TotalFound.Should().Be(vacanciesResponse.TotalFound);
                 result.LocationItem.Should().BeEquivalentTo(locationInfo);
                 result.Routes.Should().BeEquivalentTo(routesResponse.Routes);
