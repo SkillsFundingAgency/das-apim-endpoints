@@ -110,6 +110,9 @@ public class VolunteeringOrWorkExperienceController(
                 ApplicationId = applicationId,
                 Id = id
             });
+
+            if (result is null) return NotFound();
+
             return Ok((GetVolunteeringOrWorkExperienceItemApiResponse)result);
         }
         catch (Exception e)
