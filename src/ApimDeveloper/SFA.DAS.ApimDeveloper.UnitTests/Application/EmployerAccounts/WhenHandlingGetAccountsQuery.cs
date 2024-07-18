@@ -38,6 +38,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.EmployerAccounts
                 .Excluding(x => x.DisplayName)
                 .Excluding(x => x.UserId)
                 .Excluding(x => x.IsSuspended)
+                .Excluding(x => x.ApprenticeshipEmployerType)
             );
             actual.FirstName.Should().Be(teamResponse.FirstOrDefault().FirstName);
             actual.LastName.Should().Be(teamResponse.FirstOrDefault().LastName);

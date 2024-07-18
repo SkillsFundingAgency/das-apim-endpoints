@@ -24,20 +24,16 @@ public class GetApplicationsQueryHandler(
 
         var applicationsTask =
             candidateApiClient.Get<GetApplicationsApiResponse>(
-                new GetApplicationsApiRequest(request.CandidateId, request.Status));
+                new GetApplicationsApiRequest(request.CandidateId));
 
         var candidateApiResponse = candidateApiResponseTask.Result;
-        var applicationList = applicationsTask.Result.Applications;
+        var totalApplicationCount = applicationsTask.Result.Applications.Count;
+        var applicationList = applicationsTask.Result.Applications.Where(x =>
+            x.Status == request.Status.ToString()
+            || (request.Status == ApplicationStatus.Submitted && x.Status == ApplicationStatus.Withdrawn.ToString()))
+            .ToList();
 
-        if (request.Status == ApplicationStatus.Submitted)
-        {
-            var withdrawnApplications =
-                await candidateApiClient.Get<GetApplicationsApiResponse>(
-                    new GetApplicationsApiRequest(request.CandidateId, ApplicationStatus.Withdrawn));
-            applicationList.AddRange(withdrawnApplications.Applications);
-        }
-
-        if (applicationList.Count == 0)
+        if (totalApplicationCount == 0)
         {
             return new GetApplicationsQueryResult
             {
@@ -51,7 +47,7 @@ public class GetApplicationsQueryHandler(
 
         var result = new GetApplicationsQueryResult
         {
-            ShowAccountRecoveryBanner = string.IsNullOrWhiteSpace(candidateApiResponse.MigratedEmail) && applicationList.Count == 0
+            ShowAccountRecoveryBanner = false
         };
 
         foreach (var application in applicationList)
