@@ -260,5 +260,5 @@
             "type": "bool",
             "value": "[greater(length(parameters('appServicePlanSkus')), 5)]"
         }
-    }
+    } 
 }
