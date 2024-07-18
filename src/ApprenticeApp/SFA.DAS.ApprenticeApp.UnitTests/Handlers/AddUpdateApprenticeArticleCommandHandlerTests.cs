@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
@@ -8,15 +7,15 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
 {
-    public class AddApprenticeSubscriptionCommandHandlerTests
+    public class AddUpdateApprenticeArticleCommandHandlerTests
     {
         [Test, MoqAutoData]
         public async Task AddAppSubCommandHandlerTest(
-            AddApprenticeSubscriptionCommandHandler sut,
-            AddApprenticeSubscriptionCommand command,
+            AddUpdateApprenticeArticleCommandHandler sut,
+            AddUpdateApprenticeArticleCommand command,
             CancellationToken cancellationToken)
         {
-            command.ApprenticeId = new Guid();
+            command.EntryId = "123";
             await sut.Handle(command, cancellationToken);
             sut.Should().NotBeNull();
         }
