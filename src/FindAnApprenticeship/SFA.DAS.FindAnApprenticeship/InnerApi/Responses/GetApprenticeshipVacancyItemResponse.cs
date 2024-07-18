@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using SFA.DAS.FindAnApprenticeship.Services;
 using System;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonProperty("isRecruitVacancy")]
         public bool IsRecruitVacancy { get; init; }
         [JsonProperty("location")]
-        public GeoPoint Location { get; init; }
+        public Location Location { get; init; }
         [JsonProperty("numberOfPositions")]
         public int NumberOfPositions { get; init; }
         [JsonProperty("providerName")]
@@ -97,6 +97,12 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 
         [JsonProperty("closedDate")]
         public DateTime? ClosedDate { get; }
+
+        public string Postcode => Address.Postcode;
+        public string City => Address.AddressLine4;
+        public string ApplicationUrl { get; set; }
+        public bool IsExternalVacancy => !string.IsNullOrWhiteSpace(ApplicationUrl);
+        public string ExternalVacancyUrl => ApplicationUrl;
         public string? CompanyBenefitsInformation { get; set; }
         public string? AdditionalTrainingDescription { get; set; }
     }
