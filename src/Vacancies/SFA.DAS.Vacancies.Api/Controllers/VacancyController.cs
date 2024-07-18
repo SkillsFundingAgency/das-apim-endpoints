@@ -8,8 +8,8 @@ using System.Security;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Vacancies.Api.Models;
-using SFA.DAS.Vacancies.Api.Telemetry;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
+using SFA.DAS.Vacancies.Services;
 
 
 namespace SFA.DAS.Vacancies.Api.Controllers
