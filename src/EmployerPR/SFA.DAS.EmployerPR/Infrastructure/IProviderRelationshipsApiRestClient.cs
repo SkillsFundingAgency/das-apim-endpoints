@@ -1,4 +1,5 @@
 ﻿using RestEase;
+using SFA.DAS.EmployerPR.Application.Commands.PostNotifications;
 using SFA.DAS.EmployerPR.Application.Commands.PostPermissions;
 using SFA.DAS.EmployerPR.Application.Queries.GetEmployerRelationships;
 using SFA.DAS.EmployerPR.Application.Queries.GetPermissions;
@@ -10,7 +11,7 @@ public interface IProviderRelationshipsApiRestClient
 {
     [Get("permissions")]
     [AllowAnyStatusCode]
-    Task<Response<GetPermissionsResponse>> GetPermissions([Query] long? ukprn, [Query] int? AccountLegalEntityId, CancellationToken cancellationToken);
+    Task<Response<GetPermissionsResponse>> GetPermissions([Query] long? ukprn, [Query] long? AccountLegalEntityId, CancellationToken cancellationToken);
 
     [Get("relationships")]
     Task<GetRelationshipsResponse> GetRelationships([Query] long? ukprn, [Query] int? accountLegalEntityId, CancellationToken cancellationToken);
@@ -20,4 +21,10 @@ public interface IProviderRelationshipsApiRestClient
 
     [Post("permissions")]
     Task<PostPermissionsCommandResult> PostPermissions([Body] PostPermissionsCommand command, CancellationToken cancellationToken);
+
+    [Post("notifications")]
+    Task PostNotifications([Body] PostNotificationsCommand command, CancellationToken cancellationToken);
+
+    [Delete("permissions")]
+    Task RemovePermissions([Query] Guid userRef, [Query] long ukprn, [Query] long accountLegalEntityId, CancellationToken cancellationToken);
 }

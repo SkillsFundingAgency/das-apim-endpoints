@@ -8,7 +8,9 @@
 	<PackageReference Include="MediatR" />
 	<PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
     <PackageReference Include="SFA.DAS.Common.Domain" />
-  </ItemGroup>
+    <PackageReference Include="contentful.csharp" />
+    <PackageReference Include="contentful.aspnetcore" />
+</ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
@@ -17,8 +19,16 @@
 
   <ItemGroup>
     <None Remove="Application\Commands\ApprenticeSubscriptions\" />
+    <None Remove="Models\Contentful\" />
+    <None Remove="Client\" />
+    <None Remove="Application\Queries\SupportAndGuidance\" />
+    <None Remove="Application\Commands\SupportAndGuidance\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\Commands\ApprenticeSubscriptions\" />
+    <Folder Include="Models\Contentful\" />
+    <Folder Include="Client\" />
+    <Folder Include="Application\Queries\SupportAndGuidance\" />
+    <Folder Include="Application\Commands\SupportAndGuidance\" />
   </ItemGroup>
 </Project>
