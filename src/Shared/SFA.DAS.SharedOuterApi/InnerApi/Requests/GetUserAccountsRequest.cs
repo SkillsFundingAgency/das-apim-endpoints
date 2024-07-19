@@ -1,17 +1,9 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
+
+public class GetUserAccountsRequest(string userRef) : IGetAllApiRequest
 {
-    public class GetUserAccountsRequest : IGetAllApiRequest
-    {
-        private readonly string _userId;
-
-        public GetUserAccountsRequest(string userId)
-        {
-            _userId = userId;
-        }
-
-        public string GetAllUrl => $"api/user/{_userId}/accounts";
+    public string GetAllUrl => $"api/user/{userRef}/accounts";
     
-    }
 }
