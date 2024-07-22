@@ -1,7 +1,9 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoMapper;
+using FluentAssertions;
 using KellermanSoftware.CompareNetObjects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -12,55 +14,82 @@ using SFA.DAS.Approvals.Api.AppStart;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
+using SFA.DAS.Approvals.Exceptions;
 
-namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
+namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices;
+
+[TestFixture]
+public class WhenGettingManageApprenticeshipDetails
 {
-    [TestFixture]
-    public class WhenGettingManageApprenticeshipDetails
+    private ApprenticesController _controller;
+    private Mock<IMediator> _mediator;
+    private GetManageApprenticeshipDetailsQueryResult _queryResult;
+
+    private long _apprenticeshipId;
+
+    [SetUp]
+    public void Setup()
     {
-        private ApprenticesController _controller;
-        private Mock<IMediator> _mediator;
-        private GetManageApprenticeshipDetailsQueryResult _queryResult;
+        var fixture = new Fixture();
+        _queryResult = fixture.Create<GetManageApprenticeshipDetailsQueryResult>();
 
-        private long _apprenticeshipId;
+        _apprenticeshipId = fixture.Create<long>();
 
-        [SetUp]
-        public void Setup()
-        {
-            var fixture = new Fixture();
-            _queryResult = fixture.Create<GetManageApprenticeshipDetailsQueryResult>();
+        _mediator = new Mock<IMediator>();
+        _mediator.Setup(x => x.Send(It.Is<GetManageApprenticeshipDetailsQuery>(q =>
+                    q.ApprenticeshipId == _apprenticeshipId),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_queryResult);
 
-            _apprenticeshipId = fixture.Create<long>();
+        var mappingConfig = new MapperConfiguration(mc => { mc.AddProfile(new MappingProfile()); });
+        var mapper = mappingConfig.CreateMapper();
 
-            _mediator = new Mock<IMediator>();
-            _mediator.Setup(x => x.Send(It.Is<GetManageApprenticeshipDetailsQuery>(q =>
-                        q.ApprenticeshipId == _apprenticeshipId),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(_queryResult);
+        _controller = new ApprenticesController(Mock.Of<ILogger<ApprenticesController>>(), _mediator.Object, mapper);
+    }
 
-            var mappingConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new MappingProfile());
-            });
-            var mapper = mappingConfig.CreateMapper();
+    [Test]
+    public async Task GetManageApprenticeshipDetailsResponseIsReturned()
+    {
+        var result = await _controller.ManageApprenticeshipDetails(_apprenticeshipId);
 
-            _controller = new ApprenticesController(Mock.Of<ILogger<ApprenticesController>>(), _mediator.Object, mapper);
-        }
+        result.Should().BeOfType<OkObjectResult>();
 
-        [Test]
-        public async Task GetManageApprenticeshipDetailsResponseIsReturned()
-        {
-            var result = await _controller.ManageApprenticeshipDetails( _apprenticeshipId);
+        var okObjectResult = (OkObjectResult)result;
 
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
-            var okObjectResult = (OkObjectResult)result;
-            Assert.That(okObjectResult.Value, Is.InstanceOf<GetManageApprenticeshipDetailsResponse>());
-            var objectResult = (GetManageApprenticeshipDetailsResponse)okObjectResult.Value;
+        okObjectResult.Value.Should().BeOfType<GetManageApprenticeshipDetailsResponse>();
 
-            var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
+        var objectResult = (GetManageApprenticeshipDetailsResponse)okObjectResult.Value;
 
-            var comparisonResult = compare.Compare(_queryResult, objectResult);
-            Assert.That(comparisonResult.AreEqual, Is.True);
-        }
+        var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
+
+        var comparisonResult = compare.Compare(_queryResult, objectResult);
+
+        comparisonResult.AreEqual.Should().BeTrue();
+    }
+
+    [Test]
+    public async Task NotFoundIsReturnedWhenApprenticeshipNotFound()
+    {
+        _mediator.Setup(x => x.Send(It.Is<GetManageApprenticeshipDetailsQuery>(q =>
+                    q.ApprenticeshipId == _apprenticeshipId),
+                It.IsAny<CancellationToken>()))
+            .Throws<ResourceNotFoundException>();
+
+        var result = await _controller.ManageApprenticeshipDetails(_apprenticeshipId);
+
+        result.Should().BeOfType<NotFoundResult>();
+    }
+    
+    [Test]
+    public async Task UnauthorizedIsReturnedWhenNotAuthorized()
+    {
+        _mediator.Setup(x => x.Send(It.Is<GetManageApprenticeshipDetailsQuery>(q =>
+                    q.ApprenticeshipId == _apprenticeshipId),
+                It.IsAny<CancellationToken>()))
+            .Throws<UnauthorizedAccessException>();
+
+        var result = await _controller.ManageApprenticeshipDetails(_apprenticeshipId);
+
+        result.Should().BeOfType<UnauthorizedResult>();
     }
 }
