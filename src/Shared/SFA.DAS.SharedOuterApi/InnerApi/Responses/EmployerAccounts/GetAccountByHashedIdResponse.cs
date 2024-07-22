@@ -17,6 +17,10 @@ public class GetAccountByHashedIdResponse
     public DateTime DateRegistered { get; set; }
     [JsonProperty(nameof(OwnerEmail))]
     public string OwnerEmail { get; set; }
+    [JsonProperty(nameof(NameConfirmed))]
+    public bool NameConfirmed { get; set; }
     [JsonProperty(nameof(ApprenticeshipEmployerType))]
     public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
+
+    public bool AddTrainingProviderAcknowledged { get; set; }
 }
