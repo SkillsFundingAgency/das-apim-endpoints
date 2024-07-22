@@ -7,10 +7,8 @@ trigger:
     include:
     - azure
     - pipeline-templates
+    - deployments
     - src/LevyTransferMatching
-    exclude:
-    - azure/shared-infrastructure-template.json
-    - pipeline-templates/job/shared-arm-deploy.yml
 
 pr:
   autoCancel: true
@@ -21,10 +19,8 @@ pr:
     include:
     - azure
     - pipeline-templates
+    - deployments
     - src/LevyTransferMatching
-    exclude:
-    - azure/shared-infrastructure-template.json
-    - pipeline-templates/job/shared-arm-deploy.yml
 
 variables:
 - group: Release Management Resources

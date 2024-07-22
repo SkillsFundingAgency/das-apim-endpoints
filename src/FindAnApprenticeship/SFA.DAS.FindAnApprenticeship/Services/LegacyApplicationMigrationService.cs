@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Requests;
@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Extensions.LegacyApi;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses.Enums;
 using SFA.DAS.SharedOuterApi.Extensions;
+using static SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests.PutSavedVacancyApiRequest;
 
 namespace SFA.DAS.FindAnApprenticeship.Services
 {
@@ -87,6 +88,37 @@ namespace SFA.DAS.FindAnApprenticeship.Services
             }
 
             await Task.WhenAll(applicationsToSubmit);
+
+            foreach (var legacyApplication in legacyApplications.Applications.Where(x => x.Status == ApplicationStatus.Saved))
+            {
+                var vacancy = await vacancyService.GetVacancy(legacyApplication.Vacancy.VacancyReference);
+
+                if (vacancy == null)
+                {
+                    logger.LogError($"Unable to retrieve vacancy [{legacyApplication.Vacancy.VacancyReference}].");
+                    continue;
+                }
+
+                if (vacancy.ClosingDate < DateTime.UtcNow)
+                {
+                    logger.LogWarning($"Ignoring saved vacancy reference [{legacyApplication.Vacancy.VacancyReference}] as closing date has passed.");
+                    continue;
+                }
+
+                var vacancyReference = legacyApplication.Vacancy.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
+                var data = new PostSavedVacancyApiRequestData
+                {
+
+                    VacancyReference =  vacancyReference,
+                    CreatedOn = legacyApplication.DateCreated ?? DateTime.UtcNow
+                };
+                var postRequest = new PutSavedVacancyApiRequest(candidateId, data);
+
+                var applicationResult =
+                    await candidateApiClient.PutWithResponseCode<PutSavedVacancyApiResponse>(postRequest);
+
+                applicationResult.EnsureSuccessStatusCode();
+            }
         }
 
         public static PostApplicationApiRequest.LegacyApplication Map(GetLegacyApplicationsByEmailApiResponse.Application source,
