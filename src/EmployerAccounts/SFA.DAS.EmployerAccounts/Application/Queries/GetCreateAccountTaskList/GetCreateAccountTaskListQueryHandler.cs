@@ -11,12 +11,14 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAgreements;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.GetEmployerAccountTaskList;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.PayeSchemes;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.User;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAgreements;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerRegistration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.GetEmployerAccountTaskList;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.PayeSchemes;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.User;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerAccounts.Application.Queries.GetCreateAccountTaskList;
@@ -28,11 +30,21 @@ public class GetCreateAccountTaskListQueryHandler(
     public async Task<GetCreateAccountTaskListQueryResponse> Handle(GetCreateAccountTaskListQuery request, CancellationToken cancellationToken)
     {
         logger.LogInformation("{HandlerName}: Processing started for request: {Request}.", nameof(GetCreateAccountTaskListQueryHandler), JsonSerializer.Serialize(request));
+
+        GetCreateAccountTaskListQueryResponse response;
+            
+        var userResponse = await accountsApiClient.Get<GetUserByRefResponse>(new GetUserByRefRequest(request.UserRef));
         
         if (string.IsNullOrEmpty(request.HashedAccountId))
         {
             logger.LogInformation("{HandlerName}: HashedAccountId IsNullOrEmpty. Creating response from newest account.", nameof(GetCreateAccountTaskListQueryHandler));
-            return await CreateResponseFromNewestAccountFor(request.UserRef);
+            
+            response =  await CreateResponseFromNewestAccountFor(request.UserRef);
+            
+            response.UserFirstName = userResponse.FirstName;
+            response.UserLastName = userResponse.LastName;
+            
+            return response;
         }
 
         logger.LogInformation("{HandlerName}: Retrieving data.", nameof(GetCreateAccountTaskListQueryHandler));
@@ -56,11 +68,12 @@ public class GetCreateAccountTaskListQueryHandler(
 
         logger.LogInformation("{HandlerName}: Building Response.", nameof(GetCreateAccountTaskListQueryHandler));
         
-        var response = BuildResponse(request,
+        response = BuildResponse(request,
             payeSchemes,
             accountResponse,
             agreement,
-            taskListResponse);
+            taskListResponse,
+            userResponse);
 
         await AcknowledgeTrainingProviderTaskIfRequired(request, agreement, response);
 
@@ -126,12 +139,11 @@ public class GetCreateAccountTaskListQueryHandler(
         };
     }
 
-    private static GetCreateAccountTaskListQueryResponse BuildResponse(
-        GetCreateAccountTaskListQuery request,
+    private static GetCreateAccountTaskListQueryResponse BuildResponse(GetCreateAccountTaskListQuery request,
         IEnumerable<GetAccountPayeSchemesResponse> payeSchemes,
         GetAccountByHashedIdResponse accountResponse,
         GetEmployerAgreementsResponse agreement,
-        GetEmployerAccountTaskListResponse employerAccountTaskListResponse)
+        GetEmployerAccountTaskListResponse employerAccountTaskListResponse, GetUserByRefResponse userResponse)
     {
         var hasAgreement = agreement != null;
 
@@ -141,7 +153,9 @@ public class GetCreateAccountTaskListQueryHandler(
             HasPayeScheme = payeSchemes.Any(),
             NameConfirmed = accountResponse.NameConfirmed,
             PendingAgreementId = hasAgreement ? agreement.Id : null,
-            AddTrainingProviderAcknowledged = accountResponse.AddTrainingProviderAcknowledged
+            AddTrainingProviderAcknowledged = accountResponse.AddTrainingProviderAcknowledged,
+            UserFirstName = userResponse.FirstName,
+            UserLastName = userResponse.LastName,
         };
 
         if (!hasAgreement)
