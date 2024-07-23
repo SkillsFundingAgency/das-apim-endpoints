@@ -12,6 +12,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests
             Ukprn = ukprn;
         }
 
-        public string GetUrl => $"api/employerrequest/{Ukprn}/aggregated";
+        public string GetUrl => $"api/employerrequest/provider/{Ukprn}/aggregated";
     }
 }
