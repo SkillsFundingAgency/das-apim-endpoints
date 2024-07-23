@@ -146,7 +146,7 @@ public class AccountsController(IMediator mediator, ILogger<AccountsController> 
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"Error getting tasks for account {accountId}");
+            logger.LogError(e, "Error getting tasks for account {Id}", accountId);
             return BadRequest();
         }
     }
