@@ -25,5 +25,5 @@ public class GetUserAccountsResponse
     public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
 
     [JsonPropertyName(nameof(NameConfirmed))] 
-    public bool NameConfirmed { get; set; }
+    public bool? NameConfirmed { get; set; }
 }
