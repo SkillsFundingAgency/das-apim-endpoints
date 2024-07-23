@@ -20,13 +20,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
         public async Task Then_The_AggregatedEmployerRequests_Are_Returned_From_Mediator(
             GetAggregatedEmployerRequestsResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] EmployerRequestsController controller)
+            [Greedy] EmployerRequestsController controller,
+            long ukprn)
         {
             mockMediator
                 .Setup(x => x.Send(It.IsAny<GetAggregatedEmployerRequestsQuery>(), CancellationToken.None))
                 .ReturnsAsync(queryResult);
 
-            var actual = await controller.GetAggregatedEmployerRequests() as ObjectResult;
+            var actual = await controller.GetAggregatedEmployerRequests(ukprn) as ObjectResult;
 
             Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -37,12 +38,13 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             Guid employerRequestId,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestsController controller)
+            [Greedy] EmployerRequestsController controller,
+            long ukprn)
         {
             mediator.Setup(x => x.Send(It.IsAny<GetAggregatedEmployerRequestsQuery>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
-            var actual = await controller.GetAggregatedEmployerRequests() as StatusCodeResult;
+            var actual = await controller.GetAggregatedEmployerRequests(ukprn) as StatusCodeResult;
 
             Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

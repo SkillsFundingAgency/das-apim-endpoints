@@ -8,11 +8,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.InnerApi.Requests
     public class WhenBuildingGetAggregatedEmployerRequestsRequest
     {
         [Test, AutoData]
-        public void Then_The_Request_Is_Correctly_Build()
+        public void Then_The_Request_Is_Correctly_Build(long ukprn)
         {
-            var actual = new GetAggregatedEmployerRequestsRequest();
+            var actual = new GetAggregatedEmployerRequestsRequest(ukprn);
 
-            var expected = "api/employerrequest/aggregated";
+            var expected = $"api/employerrequest/provider/{ukprn}/aggregated";
 
             actual.GetUrl.Should().Be(expected);
         }
