@@ -13,6 +13,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
         public int NumberOfApprentices { get; set; }
         public int NumberOfEmployers { get; set; }
 
+        public bool IsNew { get; set; }
+
         public static implicit operator AggregatedEmployerRequest(GetAggregatedEmployerRequestsResponse source)
         {
             return new AggregatedEmployerRequest
@@ -22,7 +24,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
                 StandardLevel = source.StandardLevel,
                 StandardSector = source.StandardSector,
                 NumberOfApprentices = source.NumberOfApprentices,
-                NumberOfEmployers = source.NumberOfEmployers
+                NumberOfEmployers = source.NumberOfEmployers,
+                IsNew = source.IsNew,
                 
             };
         }

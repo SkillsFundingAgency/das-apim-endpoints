@@ -61,12 +61,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             }
         }
 
-        [HttpGet("aggregated")]
-        public async Task<IActionResult> GetAggregatedEmployerRequests()
+        [HttpGet("{ukprn}/aggregated")]
+        public async Task<IActionResult> GetAggregatedEmployerRequests(long ukprn)
         {
             try
             {
-                var result = await _mediator.Send(new GetAggregatedEmployerRequestsQuery());
+                var result = await _mediator.Send(new GetAggregatedEmployerRequestsQuery(ukprn));
 
                 var model = result.AggregatedEmployerRequests.Select(request => (AggregatedEmployerRequest)request).ToList();
                 return Ok(model);

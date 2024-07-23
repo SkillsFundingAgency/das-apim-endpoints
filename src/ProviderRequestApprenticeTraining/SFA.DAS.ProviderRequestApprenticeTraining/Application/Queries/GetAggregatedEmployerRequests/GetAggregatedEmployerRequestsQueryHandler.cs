@@ -27,7 +27,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggre
         public async Task<GetAggregatedEmployerRequestsResult> Handle(GetAggregatedEmployerRequestsQuery request, CancellationToken cancellationToken)
         {
             var aggregatedEmployerRequests = await _requestApprenticeshipTrainingApiClient.
-                Get<List<GetAggregatedEmployerRequestsResponse>>(new GetAggregatedEmployerRequestsRequest());
+                Get<List<GetAggregatedEmployerRequestsResponse>>(new GetAggregatedEmployerRequestsRequest(request.Ukprn));
 
             return new GetAggregatedEmployerRequestsResult
             {

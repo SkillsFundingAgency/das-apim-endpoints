@@ -5,5 +5,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggre
 {
     public class GetAggregatedEmployerRequestsQuery : IRequest<GetAggregatedEmployerRequestsResult>
     {
+        public long Ukprn { get; set; }
+
+        public GetAggregatedEmployerRequestsQuery(long ukprn)
+        {
+            Ukprn = ukprn;
+        }
     }
 }
