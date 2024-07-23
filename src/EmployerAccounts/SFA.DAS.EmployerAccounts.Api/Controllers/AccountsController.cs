@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerAccounts.Api.Models;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetCreateAccountTaskList;
+using SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskList;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionHistory;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetTasks;
@@ -91,6 +92,34 @@ public class AccountsController(IMediator mediator, ILogger<AccountsController> 
         catch (Exception e)
         {
             logger.LogError(e, "Error getting create account task list");
+            return BadRequest();
+        }
+    }
+    
+    [HttpGet]
+    [Route("{accountId}/account-task-list")]
+    public async Task<IActionResult> GetEmployerAccountTaskList([FromRoute] long accountId, [FromQuery] string hashedAccountId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetEmployerAccountTaskListQuery
+            {
+                AccountId = accountId,
+                HashedAccountId = hashedAccountId
+            });
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            var model = (GetEmployerAccountTaskListResponse)result;
+
+            return Ok(model);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error getting account task list");
             return BadRequest();
         }
     }
