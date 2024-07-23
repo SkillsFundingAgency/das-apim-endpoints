@@ -17,6 +17,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.User;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAgreements;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerRegistration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.GetEmployerAccountTaskList;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.PayeSchemes;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.User;
@@ -28,7 +29,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetCreateAccoun
 public class WhenHandlingGetCreateAccountTaskListQuery
 {
     [Test, MoqAutoData]
-    public async Task When_HashedAccountId_Is_Null_And_No_Accounts_Returned_From_InnerApi_Then_Appropriate_Response_Is_Created(
+    public async Task When_HashedAccountId_Is_Null_And_No_Accounts_Returned_From_InnerApi_Then_Null_Response_Is_Returned(
         long accountId,
         string userRef,
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
@@ -38,23 +39,20 @@ public class WhenHandlingGetCreateAccountTaskListQuery
     {
         accountsApiClient
             .Setup(x =>
-                x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c => c.GetUrl.Equals($"api/user/by-ref/{userRef}"))))
+                x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c =>
+                    c.GetUrl.Equals($"api/user/by-ref/{userRef}"))))
             .ReturnsAsync(userResponse);
 
         var query = new GetCreateAccountTaskListQuery(accountId, null, userRef);
 
         var actual = await sut.Handle(query, CancellationToken.None);
 
-        actual.Should().NotBeNull();
-        actual.UserFirstName.Should().Be(userResponse.FirstName);
-        actual.UserLastName.Should().Be(userResponse.LastName);
-        actual.HashedAccountId.Should().BeNullOrEmpty();
-        actual.HasPayeScheme.Should().BeFalse();
-        actual.NameConfirmed.Should().BeFalse();
+        actual.Should().BeNull();
 
         accountsApiClient
             .Verify(x =>
-                x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c => c.GetUrl.Equals($"api/user/by-ref/{userRef}"))), Times.Once);
+                x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c =>
+                    c.GetUrl.Equals($"api/user/by-ref/{userRef}"))), Times.Once);
 
         accountsApiClient
             .Verify(x =>
@@ -76,17 +74,20 @@ public class WhenHandlingGetCreateAccountTaskListQuery
 
         accountsApiClient
             .Setup(x =>
-                x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c => c.GetUrl.Equals($"api/user/by-ref/{userRef}"))))
+                x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c =>
+                    c.GetUrl.Equals($"api/user/by-ref/{userRef}"))))
             .ReturnsAsync(userResponse);
 
         accountsApiClient
             .Setup(x =>
-                x.GetAll<GetUserAccountsResponse>(It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Equals($"api/user/{userRef}/accounts"))))
+                x.GetAll<GetUserAccountsResponse>(It.Is<GetUserAccountsRequest>(c =>
+                    c.GetAllUrl.Equals($"api/user/{userRef}/accounts"))))
             .ReturnsAsync(accountsResponse);
 
         accountsApiClient
             .Setup(x =>
-                x.GetAll<GetAccountPayeSchemesResponse>(It.Is<GetAccountPayeSchemesRequest>(c => c.GetAllUrl.Equals($"api/accounts/{firstAccount.EncodedAccountId}/payeschemes"))))
+                x.GetAll<GetAccountPayeSchemesResponse>(It.Is<GetAccountPayeSchemesRequest>(c =>
+                    c.GetAllUrl.Equals($"api/accounts/{firstAccount.EncodedAccountId}/payeschemes"))))
             .ReturnsAsync(payeSchemesResponse);
 
         var query = new GetCreateAccountTaskListQuery(accountId, null, userRef);
@@ -103,12 +104,14 @@ public class WhenHandlingGetCreateAccountTaskListQuery
 
         accountsApiClient
             .Verify(x =>
-                x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c => c.GetUrl.Equals($"api/user/by-ref/{userRef}"))
+                x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c =>
+                    c.GetUrl.Equals($"api/user/by-ref/{userRef}"))
                 ), Times.Once);
 
         accountsApiClient
             .Verify(x =>
-                x.GetAll<GetAccountPayeSchemesResponse>(It.Is<GetAccountPayeSchemesRequest>(c => c.GetAllUrl.Equals($"api/accounts/{firstAccount.EncodedAccountId}/payeschemes"))
+                x.GetAll<GetAccountPayeSchemesResponse>(It.Is<GetAccountPayeSchemesRequest>(c =>
+                    c.GetAllUrl.Equals($"api/accounts/{firstAccount.EncodedAccountId}/payeschemes"))
                 ), Times.Once);
     }
 
@@ -117,31 +120,33 @@ public class WhenHandlingGetCreateAccountTaskListQuery
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
         GetUserByRefResponse userResponse,
         GetCreateAccountTaskListQuery query,
-        List<GetAccountPayeSchemesResponse> payeSchemesResponse,
         GetEmployerAccountTaskListResponse taskListResponse,
-        //GetAccountByHashedIdResponse accountResponse,
         List<GetEmployerAgreementsResponse> employerAgreementsResponse,
         GetCreateAccountTaskListQueryHandler sut
     )
     {
         accountsApiClient
             .Setup(x =>
-                x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c => c.GetUrl.Equals($"api/user/by-ref/{query.UserRef}"))))
+                x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c =>
+                    c.GetUrl.Equals($"api/user/by-ref/{query.UserRef}"))))
             .ReturnsAsync(userResponse);
 
         accountsApiClient
             .Setup(x =>
-                x.Get<GetEmployerAccountTaskListResponse>(It.Is<GetEmployerAccountTaskListRequest>(c => c.GetUrl.Equals($"accounts/{query.AccountId}/account-task-list?hashedAccountId={query.HashedAccountId}"))))
+                x.Get<GetEmployerAccountTaskListResponse>(It.Is<GetEmployerAccountTaskListRequest>(c =>
+                    c.GetUrl.Equals($"accounts/{query.AccountId}/account-task-list?hashedAccountId={query.HashedAccountId}"))))
             .ReturnsAsync(taskListResponse);
 
         accountsApiClient
             .Setup(x =>
-                x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c => c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}"))))
+                x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c =>
+                    c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}"))))
             .ReturnsAsync(() => null);
 
         accountsApiClient
             .Setup(x =>
-                x.GetAll<GetEmployerAgreementsResponse>(It.Is<GetEmployerAgreementsRequest>(c => c.GetAllUrl.Equals($"api/accounts/{query.AccountId}/agreements"))))
+                x.GetAll<GetEmployerAgreementsResponse>(It.Is<GetEmployerAgreementsRequest>(c =>
+                    c.GetAllUrl.Equals($"api/accounts/{query.AccountId}/agreements"))))
             .ReturnsAsync(employerAgreementsResponse);
 
         var actual = await sut.Handle(query, CancellationToken.None);
@@ -150,34 +155,36 @@ public class WhenHandlingGetCreateAccountTaskListQuery
 
         accountsApiClient
             .Verify(x =>
-                    x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c => c.GetUrl.Equals($"api/user/by-ref/{query.UserRef}")))
+                    x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c =>
+                        c.GetUrl.Equals($"api/user/by-ref/{query.UserRef}")))
                 , Times.Once());
 
         accountsApiClient
             .Verify(x =>
-                    x.Get<GetEmployerAccountTaskListResponse>(It.Is<GetEmployerAccountTaskListRequest>(c => c.GetUrl.Equals($"accounts/{query.AccountId}/account-task-list?hashedAccountId={query.HashedAccountId}")))
+                    x.Get<GetEmployerAccountTaskListResponse>(It.Is<GetEmployerAccountTaskListRequest>(c =>
+                        c.GetUrl.Equals($"accounts/{query.AccountId}/account-task-list?hashedAccountId={query.HashedAccountId}")))
                 , Times.Once());
 
         accountsApiClient
             .Verify(x =>
-                    x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c => c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}")))
+                    x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c =>
+                        c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}")))
                 , Times.Once());
 
         accountsApiClient
             .Verify(x =>
-                    x.GetAll<GetEmployerAgreementsResponse>(It.Is<GetEmployerAgreementsRequest>(c => c.GetAllUrl.Equals($"api/accounts/{query.AccountId}/agreements")))
+                    x.GetAll<GetEmployerAgreementsResponse>(It.Is<GetEmployerAgreementsRequest>(c =>
+                        c.GetAllUrl.Equals($"api/accounts/{query.AccountId}/agreements")))
                 , Times.Once());
     }
 
     [Test, MoqAutoData]
-    public async Task When_HashedAccountId_Is_Not_Null_And_There_Are_No_Agreements_Then_Null_Response_Is_Returned(
+    public async Task When_There_Are_No_Agreements_Then_Null_Response_Is_Returned(
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
         GetUserByRefResponse userResponse,
         GetCreateAccountTaskListQuery query,
-        List<GetAccountPayeSchemesResponse> payeSchemesResponse,
         GetEmployerAccountTaskListResponse taskListResponse,
         GetAccountByHashedIdResponse accountResponse,
-        List<GetEmployerAgreementsResponse> employerAgreementsResponse,
         GetCreateAccountTaskListQueryHandler sut
     )
     {
@@ -207,22 +214,232 @@ public class WhenHandlingGetCreateAccountTaskListQuery
 
         accountsApiClient
             .Verify(x =>
-                    x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c => c.GetUrl.Equals($"api/user/by-ref/{query.UserRef}")))
+                    x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c =>
+                        c.GetUrl.Equals($"api/user/by-ref/{query.UserRef}")))
                 , Times.Once());
 
         accountsApiClient
             .Verify(x =>
-                    x.Get<GetEmployerAccountTaskListResponse>(It.Is<GetEmployerAccountTaskListRequest>(c => c.GetUrl.Equals($"accounts/{query.AccountId}/account-task-list?hashedAccountId={query.HashedAccountId}")))
+                    x.Get<GetEmployerAccountTaskListResponse>(It.Is<GetEmployerAccountTaskListRequest>(c =>
+                        c.GetUrl.Equals($"accounts/{query.AccountId}/account-task-list?hashedAccountId={query.HashedAccountId}")))
                 , Times.Once());
 
         accountsApiClient
             .Verify(x =>
-                    x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c => c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}")))
+                    x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c =>
+                        c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}")))
                 , Times.Once());
 
         accountsApiClient
             .Verify(x =>
-                    x.GetAll<GetEmployerAgreementsResponse>(It.Is<GetEmployerAgreementsRequest>(c => c.GetAllUrl.Equals($"api/accounts/{query.AccountId}/agreements")))
+                    x.GetAll<GetEmployerAgreementsResponse>(It.Is<GetEmployerAgreementsRequest>(c =>
+                        c.GetAllUrl.Equals($"api/accounts/{query.AccountId}/agreements")))
                 , Times.Once());
+    }
+
+    [Test, MoqAutoData]
+    public async Task When_The_Data_Is_Populated_A_Response_Is_Returned(
+        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+        GetUserByRefResponse userResponse,
+        GetCreateAccountTaskListQuery query,
+        List<GetAccountPayeSchemesResponse> payeSchemesResponse,
+        GetEmployerAccountTaskListResponse taskListResponse,
+        GetAccountByHashedIdResponse accountResponse,
+        List<GetEmployerAgreementsResponse> employerAgreementsResponse,
+        GetCreateAccountTaskListQueryHandler sut
+    )
+    {
+        accountsApiClient
+            .Setup(x =>
+                x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c =>
+                    c.GetUrl.Equals($"api/user/by-ref/{query.UserRef}"))))
+            .ReturnsAsync(userResponse);
+
+        accountsApiClient
+            .Setup(x =>
+                x.Get<GetEmployerAccountTaskListResponse>(It.Is<GetEmployerAccountTaskListRequest>(c =>
+                    c.GetUrl.Equals($"accounts/{query.AccountId}/account-task-list?hashedAccountId={query.HashedAccountId}"))))
+            .ReturnsAsync(taskListResponse);
+
+        accountsApiClient
+            .Setup(x =>
+                x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c =>
+                    c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}"))))
+            .ReturnsAsync(accountResponse);
+
+        accountsApiClient
+            .Setup(x =>
+                x.GetAll<GetEmployerAgreementsResponse>(It.Is<GetEmployerAgreementsRequest>(c =>
+                    c.GetAllUrl.Equals($"api/accounts/{query.AccountId}/agreements"))))
+            .ReturnsAsync(employerAgreementsResponse);
+
+        accountsApiClient
+            .Setup(x =>
+                x.GetAll<GetAccountPayeSchemesResponse>(It.Is<GetAccountPayeSchemesRequest>(c =>
+                    c.GetAllUrl.Equals($"api/accounts/{query.HashedAccountId}/payeschemes"))))
+            .ReturnsAsync(payeSchemesResponse);
+
+        var actual = await sut.Handle(query, CancellationToken.None);
+
+        var firstAgreement = employerAgreementsResponse.FirstOrDefault();
+
+        actual.Should().NotBeNull();
+        actual.HashedAccountId.Should().Be(query.HashedAccountId);
+        actual.HasPayeScheme.Should().Be(payeSchemesResponse.Count != 0);
+        actual.NameConfirmed.Should().Be(accountResponse.NameConfirmed);
+        actual.PendingAgreementId.Should().NotBeNull();
+        actual.AddTrainingProviderAcknowledged.Should().Be(accountResponse.AddTrainingProviderAcknowledged);
+        actual.UserFirstName.Should().Be(userResponse.FirstName);
+        actual.UserLastName.Should().Be(userResponse.LastName);
+        actual.AgreementAcknowledged.Should().Be(firstAgreement.Acknowledged ?? true);
+        actual.HasSignedAgreement.Should().Be(firstAgreement.SignedDate.HasValue);
+        actual.HasProviders.Should().Be(taskListResponse.HasProviders);
+        actual.HasProviderPermissions.Should().Be(taskListResponse.HasPermissions);
+
+        accountsApiClient
+            .Verify(x =>
+                    x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c =>
+                        c.GetUrl.Equals($"api/user/by-ref/{query.UserRef}")))
+                , Times.Once());
+
+        accountsApiClient
+            .Verify(x =>
+                    x.Get<GetEmployerAccountTaskListResponse>(It.Is<GetEmployerAccountTaskListRequest>(c =>
+                        c.GetUrl.Equals($"accounts/{query.AccountId}/account-task-list?hashedAccountId={query.HashedAccountId}")))
+                , Times.Once());
+
+        accountsApiClient
+            .Verify(x =>
+                    x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c =>
+                        c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}")))
+                , Times.Once());
+
+        accountsApiClient
+            .Verify(x =>
+                    x.GetAll<GetEmployerAgreementsResponse>(It.Is<GetEmployerAgreementsRequest>(c =>
+                        c.GetAllUrl.Equals($"api/accounts/{query.AccountId}/agreements")))
+                , Times.Once());
+
+        accountsApiClient
+            .Verify(x =>
+                    x.GetAll<GetAccountPayeSchemesResponse>(It.Is<GetAccountPayeSchemesRequest>(c =>
+                        c.GetAllUrl.Equals($"api/accounts/{query.HashedAccountId}/payeschemes")))
+                , Times.Once());
+    }
+
+    [Test, MoqAutoData]
+    public async Task When_AcknowledgeTrainingProviderTask_Is_Outstanding_Then_It_Is_Updated(
+        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+        GetUserByRefResponse userResponse,
+        GetCreateAccountTaskListQuery query,
+        List<GetAccountPayeSchemesResponse> payeSchemesResponse,
+        GetEmployerAccountTaskListResponse taskListResponse,
+        GetAccountByHashedIdResponse accountResponse,
+        List<GetEmployerAgreementsResponse> employerAgreementsResponse,
+        GetCreateAccountTaskListQueryHandler sut
+    )
+    {
+        accountResponse.AddTrainingProviderAcknowledged = false;
+        taskListResponse.HasPermissions = true;
+        taskListResponse.HasPermissions = true;
+
+        accountsApiClient
+            .Setup(x =>
+                x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c =>
+                    c.GetUrl.Equals($"api/user/by-ref/{query.UserRef}"))))
+            .ReturnsAsync(userResponse);
+
+        accountsApiClient
+            .Setup(x =>
+                x.Get<GetEmployerAccountTaskListResponse>(It.Is<GetEmployerAccountTaskListRequest>(c =>
+                    c.GetUrl.Equals($"accounts/{query.AccountId}/account-task-list?hashedAccountId={query.HashedAccountId}"))))
+            .ReturnsAsync(taskListResponse);
+
+        accountsApiClient
+            .Setup(x =>
+                x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c =>
+                    c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}"))))
+            .ReturnsAsync(accountResponse);
+
+        accountsApiClient
+            .Setup(x =>
+                x.GetAll<GetEmployerAgreementsResponse>(It.Is<GetEmployerAgreementsRequest>(c =>
+                    c.GetAllUrl.Equals($"api/accounts/{query.AccountId}/agreements"))))
+            .ReturnsAsync(employerAgreementsResponse);
+
+        accountsApiClient
+            .Setup(x =>
+                x.GetAll<GetAccountPayeSchemesResponse>(It.Is<GetAccountPayeSchemesRequest>(c =>
+                    c.GetAllUrl.Equals($"api/accounts/{query.HashedAccountId}/payeschemes"))))
+            .ReturnsAsync(payeSchemesResponse);
+
+        var actual = await sut.Handle(query, CancellationToken.None);
+
+        actual.Should().NotBeNull();
+
+        accountsApiClient.Verify(x =>
+                x.Patch(It.Is<AcknowledgeTrainingProviderTaskRequest>(
+                    c =>
+                        c.PatchUrl.Equals("api/acknowledge-training-provider-task")
+                        && c.Data.Equals(new AcknowledgeTrainingProviderTaskData(query.AccountId))
+                ))
+            , Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task When_AcknowledgeTrainingProviderTask_Is_Not_Outstanding_Then_It_Is_Not_Updated(
+        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+        GetUserByRefResponse userResponse,
+        GetCreateAccountTaskListQuery query,
+        List<GetAccountPayeSchemesResponse> payeSchemesResponse,
+        GetEmployerAccountTaskListResponse taskListResponse,
+        GetAccountByHashedIdResponse accountResponse,
+        List<GetEmployerAgreementsResponse> employerAgreementsResponse,
+        GetCreateAccountTaskListQueryHandler sut
+    )
+    {
+        accountResponse.AddTrainingProviderAcknowledged = true;
+
+        accountsApiClient
+            .Setup(x =>
+                x.Get<GetUserByRefResponse>(It.Is<GetUserByRefRequest>(c =>
+                    c.GetUrl.Equals($"api/user/by-ref/{query.UserRef}"))))
+            .ReturnsAsync(userResponse);
+
+        accountsApiClient
+            .Setup(x =>
+                x.Get<GetEmployerAccountTaskListResponse>(It.Is<GetEmployerAccountTaskListRequest>(c =>
+                    c.GetUrl.Equals($"accounts/{query.AccountId}/account-task-list?hashedAccountId={query.HashedAccountId}"))))
+            .ReturnsAsync(taskListResponse);
+
+        accountsApiClient
+            .Setup(x =>
+                x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c =>
+                    c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}"))))
+            .ReturnsAsync(accountResponse);
+
+        accountsApiClient
+            .Setup(x =>
+                x.GetAll<GetEmployerAgreementsResponse>(It.Is<GetEmployerAgreementsRequest>(c =>
+                    c.GetAllUrl.Equals($"api/accounts/{query.AccountId}/agreements"))))
+            .ReturnsAsync(employerAgreementsResponse);
+
+        accountsApiClient
+            .Setup(x =>
+                x.GetAll<GetAccountPayeSchemesResponse>(It.Is<GetAccountPayeSchemesRequest>(c =>
+                    c.GetAllUrl.Equals($"api/accounts/{query.HashedAccountId}/payeschemes"))))
+            .ReturnsAsync(payeSchemesResponse);
+
+        var actual = await sut.Handle(query, CancellationToken.None);
+
+        actual.Should().NotBeNull();
+
+        accountsApiClient.Verify(x =>
+                x.Patch(It.Is<AcknowledgeTrainingProviderTaskRequest>(
+                    c =>
+                        c.PatchUrl.Equals("api/acknowledge-training-provider-task")
+                        && c.Data.Equals(new AcknowledgeTrainingProviderTaskData(query.AccountId))
+                ))
+            , Times.Never);
     }
 }

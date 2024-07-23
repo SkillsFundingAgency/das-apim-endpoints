@@ -2,9 +2,9 @@
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerRegistration;
 
-public record AcknowledgeTrainingProviderTaskRequest : IPatchApiRequest<AcknowledgeTrainingProviderTaskData>
+public record AcknowledgeTrainingProviderTaskRequest(AcknowledgeTrainingProviderTaskData Data) : IPatchApiRequest<AcknowledgeTrainingProviderTaskData>
 {
-    public AcknowledgeTrainingProviderTaskData Data { get; set; }
+    public AcknowledgeTrainingProviderTaskData Data { get; set; } = Data;
     public string PatchUrl => "api/acknowledge-training-provider-task";
 }
 

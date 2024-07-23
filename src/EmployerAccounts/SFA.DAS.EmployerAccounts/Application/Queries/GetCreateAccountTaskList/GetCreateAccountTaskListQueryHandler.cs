@@ -40,10 +40,15 @@ public class GetCreateAccountTaskListQueryHandler(
             logger.LogInformation("{HandlerName}: HashedAccountId IsNullOrEmpty. Creating response from newest account.", nameof(GetCreateAccountTaskListQueryHandler));
             
             response =  await CreateResponseFromNewestAccountFor(request.UserRef);
+
+            if (response == null)
+            {
+                return null;
+            }
             
             response.UserFirstName = userResponse.FirstName;
             response.UserLastName = userResponse.LastName;
-            
+
             return response;
         }
 
@@ -62,8 +67,8 @@ public class GetCreateAccountTaskListQueryHandler(
         }
 
         logger.LogInformation("{HandlerName}: Retrieving PAYE Schemes.", nameof(GetCreateAccountTaskListQueryHandler));
+        
         var payeSchemes = await accountsApiClient.GetAll<GetAccountPayeSchemesResponse>(new GetAccountPayeSchemesRequest(request.HashedAccountId));
-
         var agreement = accountAgreementsResponse.FirstOrDefault();
 
         logger.LogInformation("{HandlerName}: Building Response.", nameof(GetCreateAccountTaskListQueryHandler));
@@ -75,21 +80,18 @@ public class GetCreateAccountTaskListQueryHandler(
             taskListResponse,
             userResponse);
 
-        await AcknowledgeTrainingProviderTaskIfRequired(request, agreement, response);
+        await AcknowledgeTrainingProviderTaskIfOutstanding(request, response);
 
         return response;
     }
 
-    private async Task AcknowledgeTrainingProviderTaskIfRequired(GetCreateAccountTaskListQuery request, GetEmployerAgreementsResponse agreement, GetCreateAccountTaskListQueryResponse response)
+    private async Task AcknowledgeTrainingProviderTaskIfOutstanding(GetCreateAccountTaskListQuery request, GetCreateAccountTaskListQueryResponse taskListResponse)
     {
-        if (agreement != null && !response.AddTrainingProviderAcknowledged && response.HasProviders && response.HasProviderPermissions)
+        if (!taskListResponse.AddTrainingProviderAcknowledged && taskListResponse.HasProviders && taskListResponse.HasProviderPermissions)
         {
             logger.LogInformation("{HandlerName}: Executing AcknowledgeTrainingProviderTaskRequest.", nameof(GetCreateAccountTaskListQueryHandler));
             
-            await accountsApiClient.Patch(new AcknowledgeTrainingProviderTaskRequest
-            {
-                Data = new AcknowledgeTrainingProviderTaskData(request.AccountId)
-            });
+            await accountsApiClient.Patch(new AcknowledgeTrainingProviderTaskRequest(new AcknowledgeTrainingProviderTaskData(request.AccountId)));
         }
     }
 
@@ -115,7 +117,7 @@ public class GetCreateAccountTaskListQueryHandler(
 
     private async Task<GetCreateAccountTaskListQueryResponse> CreateResponseFromNewestAccountFor(string userRef)
     {
-        logger.LogInformation("{HandlerName}: Processing {Request}.", nameof(GetCreateAccountTaskListQueryHandler), nameof(GetUserAccountsRequest));
+        logger.LogInformation("{HandlerName}: Processing {MethodName}.", nameof(GetCreateAccountTaskListQueryHandler), nameof(CreateResponseFromNewestAccountFor));
         
         var userAccounts = (await accountsApiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(userRef))).ToList();
 
@@ -123,19 +125,21 @@ public class GetCreateAccountTaskListQueryHandler(
             ? null
             : userAccounts.MinBy(x => x.DateRegistered);
 
-        var payeSchemes = new List<GetAccountPayeSchemesResponse>();
-
-        if (firstAccount != null)
+        if (firstAccount == null)
         {
-            logger.LogInformation("{HandlerName}: Processing {Request}.", nameof(GetCreateAccountTaskListQueryHandler), nameof(GetAccountPayeSchemesRequest));
-            payeSchemes = (await accountsApiClient.GetAll<GetAccountPayeSchemesResponse>(new GetAccountPayeSchemesRequest(firstAccount.EncodedAccountId))).ToList();
+            logger.LogInformation("{HandlerName}: No account found. Returning null.", nameof(GetCreateAccountTaskListQueryHandler));
+            return null;
         }
+        
+        logger.LogInformation("{HandlerName}: Account found, retrieving PAYE Schemes.", nameof(GetCreateAccountTaskListQueryHandler));
 
+        var payeSchemes = await accountsApiClient.GetAll<GetAccountPayeSchemesResponse>(new GetAccountPayeSchemesRequest(firstAccount.EncodedAccountId));
+            
         return new GetCreateAccountTaskListQueryResponse
         {
-            HashedAccountId = firstAccount?.EncodedAccountId,
-            HasPayeScheme = payeSchemes.Count > 0,
-            NameConfirmed = firstAccount?.NameConfirmed ?? false
+            HashedAccountId = firstAccount.EncodedAccountId,
+            HasPayeScheme = payeSchemes.Any(),
+            NameConfirmed = firstAccount.NameConfirmed
         };
     }
 
@@ -145,29 +149,19 @@ public class GetCreateAccountTaskListQueryHandler(
         GetEmployerAgreementsResponse agreement,
         GetEmployerAccountTaskListResponse employerAccountTaskListResponse, GetUserByRefResponse userResponse)
     {
-        var hasAgreement = agreement != null;
-
-        var response = new GetCreateAccountTaskListQueryResponse
+        return new GetCreateAccountTaskListQueryResponse
         {
             HashedAccountId = request.HashedAccountId,
             HasPayeScheme = payeSchemes.Any(),
             NameConfirmed = accountResponse.NameConfirmed,
-            PendingAgreementId = hasAgreement ? agreement.Id : null,
+            PendingAgreementId = agreement.Id,
             AddTrainingProviderAcknowledged = accountResponse.AddTrainingProviderAcknowledged,
             UserFirstName = userResponse.FirstName,
             UserLastName = userResponse.LastName,
+            AgreementAcknowledged = agreement.Acknowledged ?? true,
+            HasSignedAgreement = agreement.SignedDate.HasValue,
+            HasProviders = employerAccountTaskListResponse?.HasProviders ?? false,
+            HasProviderPermissions = employerAccountTaskListResponse?.HasPermissions ?? false
         };
-
-        if (!hasAgreement)
-        {
-            return response;
-        }
-
-        response.AgreementAcknowledged = agreement.Acknowledged ?? true;
-        response.HasSignedAgreement = agreement.SignedDate.HasValue;
-        response.HasProviders = employerAccountTaskListResponse?.HasProviders ?? false;
-        response.HasProviderPermissions = employerAccountTaskListResponse?.HasPermissions ?? false;
-
-        return response;
     }
 }
