@@ -18,7 +18,7 @@ public class GetAccountByHashedIdResponse
     [JsonProperty(nameof(OwnerEmail))]
     public string OwnerEmail { get; set; }
     [JsonProperty(nameof(NameConfirmed))]
-    public bool NameConfirmed { get; set; }
+    public bool? NameConfirmed { get; set; }
     [JsonProperty(nameof(ApprenticeshipEmployerType))]
     public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
 
