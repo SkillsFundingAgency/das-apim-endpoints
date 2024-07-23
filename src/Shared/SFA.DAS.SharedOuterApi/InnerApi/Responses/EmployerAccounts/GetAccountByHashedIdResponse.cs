@@ -22,5 +22,5 @@ public class GetAccountByHashedIdResponse
     [JsonProperty(nameof(ApprenticeshipEmployerType))]
     public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
 
-    public bool AddTrainingProviderAcknowledged { get; set; }
+    public bool? AddTrainingProviderAcknowledged { get; set; }
 }

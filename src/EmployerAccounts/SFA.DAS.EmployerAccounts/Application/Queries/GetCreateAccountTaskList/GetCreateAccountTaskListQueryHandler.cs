@@ -87,7 +87,7 @@ public class GetCreateAccountTaskListQueryHandler(
 
     private async Task AcknowledgeTrainingProviderTaskIfOutstanding(GetCreateAccountTaskListQuery request, GetCreateAccountTaskListQueryResponse taskListResponse)
     {
-        if (!taskListResponse.AddTrainingProviderAcknowledged && taskListResponse.HasProviders && taskListResponse.HasProviderPermissions)
+        if (!taskListResponse.AddTrainingProviderAcknowledged.GetValueOrDefault() && taskListResponse.HasProviders && taskListResponse.HasProviderPermissions)
         {
             logger.LogInformation("{HandlerName}: Executing AcknowledgeTrainingProviderTaskRequest.", nameof(GetCreateAccountTaskListQueryHandler));
             

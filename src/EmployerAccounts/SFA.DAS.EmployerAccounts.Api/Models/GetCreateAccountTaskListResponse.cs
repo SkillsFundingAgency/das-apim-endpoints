@@ -26,7 +26,7 @@ public record GetCreateAccountTaskListResponse
         {
             HashedAccountId = source.HashedAccountId,
             HasProviders = source.HasProviders,
-            AddTrainingProviderAcknowledged = source.AddTrainingProviderAcknowledged,
+            AddTrainingProviderAcknowledged = source.AddTrainingProviderAcknowledged.GetValueOrDefault(),
             AgreementAcknowledged = source.AgreementAcknowledged,
             NameConfirmed = source.NameConfirmed.GetValueOrDefault(),
             HasPayeScheme = source.HasPayeScheme,
