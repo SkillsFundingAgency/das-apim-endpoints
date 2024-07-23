@@ -21,14 +21,15 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
         public async Task Then_Get_AggregatedEmployerRequests_From_The_Api(
            GetAggregatedEmployerRequestsResult requests,
            [Frozen] Mock<IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration>> mockRequestApprenticeTrainingClient,
-           GetAggregatedEmployerRequestsQueryHandler handler)
+           GetAggregatedEmployerRequestsQueryHandler handler,
+           long ukprn)
         {
             // Arrange
             mockRequestApprenticeTrainingClient.Setup(client => client.Get<List<GetAggregatedEmployerRequestsResponse>>(It.IsAny<GetAggregatedEmployerRequestsRequest>()))
                 .ReturnsAsync(requests.AggregatedEmployerRequests.ToList());
 
             // Act
-            var actual = await handler.Handle(new GetAggregatedEmployerRequestsQuery(), CancellationToken.None);
+            var actual = await handler.Handle(new GetAggregatedEmployerRequestsQuery(ukprn), CancellationToken.None);
             
             // Assert
             actual.AggregatedEmployerRequests.Should().BeEquivalentTo(requests.AggregatedEmployerRequests);
