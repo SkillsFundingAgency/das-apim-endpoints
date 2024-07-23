@@ -229,7 +229,8 @@ public class GetEasUserByEmailQueryHandlerTests
             HasUserAccount = true,
             HasOneEmployerAccount = true,
             HasOneLegalEntity = true,
-            AccountId = accountId
+            AccountId = accountId,
+            AccountLegalEntityId = new long()
         };
 
         actual.Should().BeEquivalentTo(expectedResponse);
