@@ -9,12 +9,12 @@ namespace SFA.DAS.EmployerPR.Api.Controllers;
 public class EmployerAccountsController(IMediator _mediator) : ControllerBase
 {
     [HttpGet]
-    [Route("{accountHashedId}/LegalEntities")]
+    [Route("{accountId}/LegalEntities")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(GetAccountLegalEntitiesQueryResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAccountLegalEntities(string accountHashedId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAccountLegalEntities(long accountId, CancellationToken cancellationToken)
     {
-        var queryResult = await _mediator.Send(new GetAccountLegalEntitiesQuery { AccountHashedId = accountHashedId }, cancellationToken);
+        var queryResult = await _mediator.Send(new GetAccountLegalEntitiesQuery { AccountId = accountId }, cancellationToken);
         return Ok(queryResult);
     }
 }
