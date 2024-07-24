@@ -20,7 +20,7 @@
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="NUnit.Analyzers" />
     <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
-    <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
+    <PackageReference Include="coverlet.collector" />
     <PackageReference Include="FluentAssertions" />
   </ItemGroup>
 

@@ -26,7 +26,7 @@ public class RelationshipsController(IProviderRelationshipsApiRestClient _prApiC
     
     [HttpGet("employeraccount/email/{email}")]
     [ProducesResponseType(typeof(GetEasUserByEmailQueryResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetEasUserByEmail(string email, [FromQuery] long ukprn, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetEasUserByEmail([FromRoute] string email, [FromQuery] long ukprn, CancellationToken cancellationToken)
     {
         var query = new GetEasUserByEmailQuery(email, ukprn);
         GetEasUserByEmailQueryResult result = await _mediator.Send(query, cancellationToken);

@@ -16,8 +16,18 @@ public class GetEasUserByEmailTests
         [Greedy] RelationshipsController sut,
         string email,
         long ukprn,
+        bool hasUserAccount,
+        bool hasOneEmployerAccount,
+        long? accountId,
+        bool hasOneLegalEntity,
         CancellationToken cancellationToken)
     {
+
+        GetEasUserByEmailQueryResult queryResult =
+            new GetEasUserByEmailQueryResult(hasUserAccount, hasOneEmployerAccount, accountId, hasOneLegalEntity);
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetEasUserByEmailQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(queryResult);
+
         await sut.GetEasUserByEmail(email, ukprn, cancellationToken);
 
         mediatorMock.Verify(
@@ -31,11 +41,16 @@ public class GetEasUserByEmailTests
         [Greedy] RelationshipsController sut,
         string email,
         long ukprn,
-        GetEasUserByEmailQueryResult queryResult,
+        bool hasUserAccount,
+        bool hasOneEmployerAccount,
+        long? accountId,
+        bool hasOneLegalEntity,
         CancellationToken cancellationToken)
     {
+        GetEasUserByEmailQueryResult queryResult =
+            new GetEasUserByEmailQueryResult(hasUserAccount, hasOneEmployerAccount, accountId, hasOneLegalEntity);
         mediatorMock.Setup(m => m.Send(It.IsAny<GetEasUserByEmailQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(queryResult);
+        .ReturnsAsync(queryResult);
 
         var result = await sut.GetEasUserByEmail(email, ukprn, cancellationToken);
 

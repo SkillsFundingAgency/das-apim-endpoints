@@ -1,7 +1,6 @@
 ﻿using RestEase.HttpClientFactory;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.ProviderPR.Application.Queries.GetEasUserByEmail;
 using SFA.DAS.ProviderPR.Application.Queries.GetRelationships;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -20,7 +19,6 @@ public static class AddServiceRegistrationsExtension
     {
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRoatpV2ProviderQuery).Assembly));
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRelationshipsQuery).Assembly));
-        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEasUserByEmailQuery).Assembly));
 
         services.AddHttpClient();
 

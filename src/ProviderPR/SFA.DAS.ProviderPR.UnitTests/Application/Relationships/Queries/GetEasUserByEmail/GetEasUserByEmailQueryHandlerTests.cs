@@ -30,72 +30,12 @@ public class GetEasUserByEmailQueryHandlerTests
 
         var actual = await handler.Handle(request, new CancellationToken());
 
-        var expectedResponse = new GetEasUserByEmailQueryResult
-        {
-            HasUserAccount = false
-        };
+        var expectedResponse = new GetEasUserByEmailQueryResult(false, false, null, false);
 
         actual.Should().BeEquivalentTo(expectedResponse);
         accountsApiClient.Verify(r => r.Get<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
         accountsApiClient.Verify(r => r.GetAll<GetUserAccountsResponse>(It.IsAny<GetUserAccountsRequest>()), Times.Never);
         accountsApiClient.Verify(r => r.GetAll<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntitiesRequest>()), Times.Never);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Handle_GetsRefNullFromApi_ReturnsHasUserAccountFalse(
-        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
-        string email,
-        long ukprn,
-        GetEasUserByEmailQueryHandler handler
-    )
-    {
-        var request = new GetEasUserByEmailQuery(email, ukprn);
-
-        accountsApiClient
-            .Setup(x => x.Get<GetUserByEmailResponse>(
-                It.Is<GetUserByEmailRequest>(c => c.GetUrl.Contains($"api/user?email={email}"))))!
-            .ReturnsAsync(new GetUserByEmailResponse { Ref = null });
-
-        var actual = await handler.Handle(request, new CancellationToken());
-
-        var expectedResponse = new GetEasUserByEmailQueryResult
-        {
-            HasUserAccount = false
-        };
-
-        actual.Should().BeEquivalentTo(expectedResponse);
-        accountsApiClient.Verify(r => r.Get<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
-        accountsApiClient.Verify(r => r.GetAll<GetUserAccountsResponse>(It.IsAny<GetUserAccountsRequest>()), Times.Never);
-        accountsApiClient.Verify(r => r.GetAll<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntitiesRequest>()), Times.Never);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Handle_GetsEmptyUserRefFromApi_ReturnsHasUserAccountFalse(
-        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
-        string email,
-        long ukprn,
-        GetEasUserByEmailQueryHandler handler
-    )
-    {
-        var request = new GetEasUserByEmailQuery(email, ukprn);
-
-        accountsApiClient
-            .Setup(x => x.Get<GetUserByEmailResponse>(
-                It.Is<GetUserByEmailRequest>(c => c.GetUrl.Contains($"api/user?email={email}"))))!
-            .ReturnsAsync(new GetUserByEmailResponse { Ref = Guid.Empty });
-
-        var actual = await handler.Handle(request, new CancellationToken());
-
-        var expectedResponse = new GetEasUserByEmailQueryResult
-        {
-            HasUserAccount = false
-        };
-
-        actual.Should().BeEquivalentTo(expectedResponse);
-        accountsApiClient.Verify(r => r.Get<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
-        accountsApiClient.Verify(r => r.GetAll<GetUserAccountsResponse>(It.IsAny<GetUserAccountsRequest>()), Times.Never);
-        accountsApiClient.Verify(r => r.GetAll<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntitiesRequest>()), Times.Never);
-
     }
 
     [Test, MoqAutoData]
@@ -125,11 +65,7 @@ public class GetEasUserByEmailQueryHandlerTests
 
         var actual = await handler.Handle(request, new CancellationToken());
 
-        var expectedResponse = new GetEasUserByEmailQueryResult
-        {
-            HasUserAccount = true,
-            HasOneEmployerAccount = false
-        };
+        var expectedResponse = new GetEasUserByEmailQueryResult(true, false, null, false);
 
         actual.Should().BeEquivalentTo(expectedResponse);
         accountsApiClient.Verify(r => r.Get<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
@@ -174,13 +110,7 @@ public class GetEasUserByEmailQueryHandlerTests
 
         var actual = await handler.Handle(request, new CancellationToken());
 
-        var expectedResponse = new GetEasUserByEmailQueryResult
-        {
-            HasUserAccount = true,
-            HasOneEmployerAccount = true,
-            HasOneLegalEntity = false,
-            AccountId = accountId
-        };
+        var expectedResponse = new GetEasUserByEmailQueryResult(true, true, accountId, false);
 
         actual.Should().BeEquivalentTo(expectedResponse);
         accountsApiClient.Verify(r => r.Get<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
@@ -216,7 +146,7 @@ public class GetEasUserByEmailQueryHandlerTests
 
         accountsApiClient
             .Setup(x => x.GetAll<GetAccountLegalEntityResponse>(
-                It.Is<GetAccountLegalEntitiesRequest>(c => c.GetAllUrl.Contains($"api/accounts/{encodedAccountId}/legalentities?includeDetails=true"))))!
+                It.Is<GetAccountLegalEntitiesRequest>(c => c.GetAllUrl.Contains($"api/accounts/{accountId}/legalentities?includeDetails=true"))))!
             .ReturnsAsync(new List<GetAccountLegalEntityResponse>
             {
                 new()
@@ -224,13 +154,7 @@ public class GetEasUserByEmailQueryHandlerTests
 
         var actual = await handler.Handle(request, new CancellationToken());
 
-        var expectedResponse = new GetEasUserByEmailQueryResult
-        {
-            HasUserAccount = true,
-            HasOneEmployerAccount = true,
-            HasOneLegalEntity = true,
-            AccountId = accountId
-        };
+        var expectedResponse = new GetEasUserByEmailQueryResult(true, true, accountId, true);
 
         actual.Should().BeEquivalentTo(expectedResponse);
         accountsApiClient.Verify(r => r.Get<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
