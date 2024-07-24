@@ -9,32 +9,31 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 namespace SFA.DAS.ProviderPR.Application.Queries.GetEasUserByEmail;
 public class GetEasUserByEmailQueryHandler(IAccountsApiClient<AccountsConfiguration> apiClient) : IRequestHandler<GetEasUserByEmailQuery, GetEasUserByEmailQueryResult>
 {
-
     public async Task<GetEasUserByEmailQueryResult> Handle(GetEasUserByEmailQuery request, CancellationToken cancellationToken)
     {
         var result = await apiClient.Get<GetUserByEmailResponse>(new GetUserByEmailRequest(request.Email));
 
-        var userRef = result?.Ref;
-
-        if (userRef == null || userRef == Guid.Empty)
+        if (result == null)
         {
-            return new GetEasUserByEmailQueryResult { HasUserAccount = false };
+            return new GetEasUserByEmailQueryResult(false, false, null, false);
         }
+
+        var userRef = result.Ref;
 
         var accounts = await apiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(userRef.ToString()));
 
-        if (accounts.Count() != 1)
+        if (accounts.Count() > 1)
         {
-            return new GetEasUserByEmailQueryResult { HasUserAccount = true, HasOneEmployerAccount = false };
+            return new GetEasUserByEmailQueryResult(true, false, null, false);
         }
 
-        var account = accounts.FirstOrDefault();
-        var hashedId = account!.EncodedAccountId;
+        var account = accounts.First();
+        var hashedId = account!.AccountId;
 
         var accountLegalEntities = await apiClient.GetAll<GetAccountLegalEntityResponse>(new GetAccountLegalEntitiesRequest(hashedId));
 
         var hasOneLegalEntity = accountLegalEntities.Count() == 1;
 
-        return new GetEasUserByEmailQueryResult { HasUserAccount = true, AccountId = account.AccountId, HasOneEmployerAccount = true, HasOneLegalEntity = hasOneLegalEntity };
+        return new GetEasUserByEmailQueryResult(true, true, account.AccountId, hasOneLegalEntity);
     }
 }
