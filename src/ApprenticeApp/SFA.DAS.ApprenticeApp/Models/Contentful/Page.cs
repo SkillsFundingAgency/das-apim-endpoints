@@ -10,6 +10,7 @@ namespace SFA.DAS.ApprenticeApp.Models.Contentful
         public string Slug { get; set; }
         public string Heading { get; set; }
         public string Content { get; set; }
+        public int Order { get; set; }
 
         public static explicit operator Page(Entry<dynamic> v)
         {

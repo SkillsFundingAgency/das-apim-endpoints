@@ -35,12 +35,15 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
 
             if (result.ApprenticeArticles != null)
             {
-                foreach (string entryId in result.ApprenticeArticles.Where(x => x.IsSaved == true).Select(x => x.EntryId))
+                int orderId = 0;
+                foreach (string entryId in result.ApprenticeArticles.Where(x => x.IsSaved == true).OrderByDescending(x => x.SaveTime).Select(x => x.EntryId))
                 {
                     var page = await _contentService.GetPageById(entryId);
                     if (page != null)
                     {
+                        page.Order = orderId;
                         articles.Add(page);
+                        orderId++;
                     }
                 }
             }
