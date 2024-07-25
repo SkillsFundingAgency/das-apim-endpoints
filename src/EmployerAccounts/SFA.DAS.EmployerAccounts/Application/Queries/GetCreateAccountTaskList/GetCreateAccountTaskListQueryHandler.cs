@@ -108,8 +108,11 @@ public class GetCreateAccountTaskListQueryHandler(
 
         logger.LogInformation("{HandlerName}: Awaiting GetData tasks.", nameof(GetCreateAccountTaskListQueryHandler));
 
-        await Task.WhenAll(taskListTask, accountResponseTask, accountAgreementsResponseTask);
-
+        //await Task.WhenAll(taskListTask, accountResponseTask, accountAgreementsResponseTask);
+        await accountAgreementsResponseTask;
+        await taskListTask;
+        await accountResponseTask;
+        
         logger.LogInformation("{HandlerName}: GetData tasks completed.", nameof(GetCreateAccountTaskListQueryHandler));
 
         return (taskListTask.Result,
