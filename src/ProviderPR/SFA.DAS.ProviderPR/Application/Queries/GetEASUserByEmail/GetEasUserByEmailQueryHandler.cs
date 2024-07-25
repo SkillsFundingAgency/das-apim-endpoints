@@ -28,9 +28,9 @@ public class GetEasUserByEmailQueryHandler(IAccountsApiClient<AccountsConfigurat
         }
 
         var account = accounts.First();
-        var hashedId = account!.AccountId;
+        var accountId = account!.AccountId;
 
-        var accountLegalEntities = await apiClient.GetAll<GetAccountLegalEntityResponse>(new GetAccountLegalEntitiesRequest(hashedId));
+        var accountLegalEntities = await apiClient.GetAll<GetAccountLegalEntityResponse>(new GetAccountLegalEntitiesRequest(accountId));
 
         var hasOneLegalEntity = accountLegalEntities.Count() == 1;
 
