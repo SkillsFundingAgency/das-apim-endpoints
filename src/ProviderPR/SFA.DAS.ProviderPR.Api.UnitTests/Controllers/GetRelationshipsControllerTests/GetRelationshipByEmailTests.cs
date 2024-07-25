@@ -4,11 +4,11 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.ProviderPR.Api.Controllers;
-using SFA.DAS.ProviderPR.Application.Queries.GetEasUserByEmail;
+using SFA.DAS.ProviderPR.Application.Queries.GetRelationshipByEmail;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderPR.Api.UnitTests.Controllers.GetRelationshipsControllerTests;
-public class GetEasUserByEmailTests
+public class GetRelationshipByEmailTests
 {
     [Test, MoqAutoData]
     public async Task Get_InvokesQueryHandler(
@@ -23,15 +23,15 @@ public class GetEasUserByEmailTests
         CancellationToken cancellationToken)
     {
 
-        GetEasUserByEmailQueryResult queryResult =
-            new GetEasUserByEmailQueryResult(hasUserAccount, hasOneEmployerAccount, accountId, hasOneLegalEntity);
-        mediatorMock.Setup(m => m.Send(It.IsAny<GetEasUserByEmailQuery>(), It.IsAny<CancellationToken>()))
+        GetRelationshipByEmailQueryResult queryResult =
+            new GetRelationshipByEmailQueryResult(hasUserAccount, hasOneEmployerAccount, accountId, hasOneLegalEntity);
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetRelationshipByEmailQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(queryResult);
 
-        await sut.GetEasUserByEmail(email, ukprn, cancellationToken);
+        await sut.GetRelationshipByEmail(email, ukprn, cancellationToken);
 
         mediatorMock.Verify(
-            m => m.Send(It.Is<GetEasUserByEmailQuery>(x => x.Ukprn == ukprn && x.Email == email),
+            m => m.Send(It.Is<GetRelationshipByEmailQuery>(x => x.Ukprn == ukprn && x.Email == email),
                 It.IsAny<CancellationToken>()));
     }
 
@@ -47,12 +47,12 @@ public class GetEasUserByEmailTests
         bool hasOneLegalEntity,
         CancellationToken cancellationToken)
     {
-        GetEasUserByEmailQueryResult queryResult =
-            new GetEasUserByEmailQueryResult(hasUserAccount, hasOneEmployerAccount, accountId, hasOneLegalEntity);
-        mediatorMock.Setup(m => m.Send(It.IsAny<GetEasUserByEmailQuery>(), It.IsAny<CancellationToken>()))
+        GetRelationshipByEmailQueryResult queryResult =
+            new GetRelationshipByEmailQueryResult(hasUserAccount, hasOneEmployerAccount, accountId, hasOneLegalEntity);
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetRelationshipByEmailQuery>(), It.IsAny<CancellationToken>()))
         .ReturnsAsync(queryResult);
 
-        var result = await sut.GetEasUserByEmail(email, ukprn, cancellationToken);
+        var result = await sut.GetRelationshipByEmail(email, ukprn, cancellationToken);
 
         result.As<OkObjectResult>().Should().NotBeNull();
         result.As<OkObjectResult>().Value.Should().Be(queryResult);
