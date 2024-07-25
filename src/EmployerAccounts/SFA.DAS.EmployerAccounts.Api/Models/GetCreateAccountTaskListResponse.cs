@@ -19,6 +19,8 @@ public record GetCreateAccountTaskListResponse
     public bool HasProviders { get; set; }
     public bool HasProviderPermissions { get; set; }
     public bool TaskListComplete => HasProviderPermissions || AddTrainingProviderAcknowledged;
+    public string UserFirstName { get; set; }
+    public string UserLastName { get; set; }
 
     public static implicit operator GetCreateAccountTaskListResponse(GetCreateAccountTaskListQueryResponse source)
     {
@@ -32,7 +34,9 @@ public record GetCreateAccountTaskListResponse
             HasPayeScheme = source.HasPayeScheme,
             HasProviderPermissions = source.HasProviderPermissions,
             HasSignedAgreement = source.HasSignedAgreement,
-            PendingAgreementId = source.PendingAgreementId
+            PendingAgreementId = source.PendingAgreementId,
+            UserFirstName = source.UserFirstName,
+            UserLastName = source.UserLastName
         };
     }
 }
