@@ -56,13 +56,15 @@ public class GetCreateAccountTaskListQueryHandler(
         logger.LogInformation("{HandlerName}: Retrieving data.", nameof(GetCreateAccountTaskListQueryHandler));
 
         var (taskListResponse, accountResponse, accountAgreementsResponse) = await GetData(request);
+        
+        var agreement = accountAgreementsResponse.FirstOrDefault();
 
-        if (accountResponse == null || accountAgreementsResponse.Count == 0)
+        if (accountResponse == null || agreement == null)
         {
-            logger.LogWarning("{HandlerName}: Returning null. Account Response null: {AccountIsNull}. Account Agreements Count == 0: {CountIsZero}",
+            logger.LogWarning("{HandlerName}: Returning null. Account Response null: {AccountIsNull}. Agreement null: {CountIsZero}",
                 nameof(GetCreateAccountTaskListQueryHandler),
                 accountResponse == null,
-                accountAgreementsResponse.Count == 0);
+                agreement == null);
 
             return null;
         }
@@ -70,8 +72,7 @@ public class GetCreateAccountTaskListQueryHandler(
         logger.LogInformation("{HandlerName}: Retrieving PAYE Schemes.", nameof(GetCreateAccountTaskListQueryHandler));
 
         var payeSchemes = await accountsApiClient.GetAll<GetAccountPayeSchemesResponse>(new GetAccountPayeSchemesRequest(request.HashedAccountId));
-        var agreement = accountAgreementsResponse.FirstOrDefault();
-
+        
         logger.LogInformation("{HandlerName}: Building Response.", nameof(GetCreateAccountTaskListQueryHandler));
 
         response = BuildResponse(request,
@@ -99,7 +100,7 @@ public class GetCreateAccountTaskListQueryHandler(
 
     private async Task<((bool hasProviders, bool hasPermissions),
             GetAccountByHashedIdResponse accountResponse,
-            List<GetEmployerAgreementsResponse> accountAgreementsResponse)>
+            IEnumerable<GetEmployerAgreementsResponse> accountAgreementsResponse)>
         GetData(GetCreateAccountTaskListQuery request)
     {
         var taskListTask = GetTaskList(request.AccountId, request.HashedAccountId);
@@ -108,16 +109,13 @@ public class GetCreateAccountTaskListQueryHandler(
 
         logger.LogInformation("{HandlerName}: Awaiting GetData tasks.", nameof(GetCreateAccountTaskListQueryHandler));
 
-        //await Task.WhenAll(taskListTask, accountResponseTask, accountAgreementsResponseTask);
-        await accountAgreementsResponseTask;
-        await taskListTask;
-        await accountResponseTask;
+        await Task.WhenAll(taskListTask, accountResponseTask, accountAgreementsResponseTask);
         
         logger.LogInformation("{HandlerName}: GetData tasks completed.", nameof(GetCreateAccountTaskListQueryHandler));
 
         return (taskListTask.Result,
             accountResponseTask.Result,
-            accountAgreementsResponseTask.Result.ToList());
+            accountAgreementsResponseTask.Result);
     }
 
     private async Task<GetCreateAccountTaskListQueryResponse> CreateResponseFromNewestAccountFor(string userRef)
