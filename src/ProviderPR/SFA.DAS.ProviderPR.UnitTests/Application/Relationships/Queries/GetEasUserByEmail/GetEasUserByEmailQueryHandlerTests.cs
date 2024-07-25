@@ -8,13 +8,15 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.ProviderPR.UnitTests.Application.Relationships.Queries.GetEasUserByEmail;
 public class GetEasUserByEmailQueryHandlerTests
 {
     [Test, MoqAutoData]
-    public async Task Handle_GetsNullFromApi_ReturnsHasUserAccountFalse(
+    public async Task Handle_GetsNotOkFromApi_ReturnsHasUserAccountFalse(
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
         string email,
         long ukprn,
@@ -23,20 +25,56 @@ public class GetEasUserByEmailQueryHandlerTests
     {
         var request = new GetEasUserByEmailQuery(email, ukprn);
 
+        var response = new ApiResponse<GetUserByEmailResponse>((GetUserByEmailResponse)null, HttpStatusCode.NotFound, "");
+
         accountsApiClient
-            .Setup(x => x.Get<GetUserByEmailResponse>(
+            .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
                 It.Is<GetUserByEmailRequest>(c => c.GetUrl.Contains($"api/user?email={email}"))))!
-            .ReturnsAsync((GetUserByEmailResponse)null!);
+            .ReturnsAsync(response);
 
         var actual = await handler.Handle(request, new CancellationToken());
 
-        var expectedResponse = new GetEasUserByEmailQueryResult(false, false, null, false);
+        var expectedResponse = new GetEasUserByEmailQueryResult(false, null, null, null);
 
         actual.Should().BeEquivalentTo(expectedResponse);
-        accountsApiClient.Verify(r => r.Get<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
+        accountsApiClient.Verify(r => r.GetWithResponseCode<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
         accountsApiClient.Verify(r => r.GetAll<GetUserAccountsResponse>(It.IsAny<GetUserAccountsRequest>()), Times.Never);
         accountsApiClient.Verify(r => r.GetAll<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntitiesRequest>()), Times.Never);
     }
+
+    [Test, MoqAutoData]
+    public async Task Handle_GetsNoAccountsFromApi_ReturnsHasUserAccountFalse(
+        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+        string email,
+        long ukprn,
+        Guid userRef,
+        GetEasUserByEmailQueryHandler handler
+    )
+    {
+        var request = new GetEasUserByEmailQuery(email, ukprn);
+
+        var response = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
+
+        accountsApiClient
+            .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
+                It.IsAny<GetUserByEmailRequest>()))!
+            .ReturnsAsync(response);
+
+        accountsApiClient
+            .Setup(x => x.GetAll<GetUserAccountsResponse>(
+                It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"api/user/{userRef}/accounts"))))!
+            .ReturnsAsync(new List<GetUserAccountsResponse>());
+
+        var actual = await handler.Handle(request, new CancellationToken());
+
+        var expectedResponse = new GetEasUserByEmailQueryResult(false, null, null, null);
+
+        actual.Should().BeEquivalentTo(expectedResponse);
+        accountsApiClient.Verify(r => r.GetWithResponseCode<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
+        accountsApiClient.Verify(r => r.GetAll<GetUserAccountsResponse>(It.IsAny<GetUserAccountsRequest>()), Times.Once);
+        accountsApiClient.Verify(r => r.GetAll<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntitiesRequest>()), Times.Never);
+    }
+
 
     [Test, MoqAutoData]
     public async Task Handle_GetsMoreThanOneAccount_ReturnsHaOneEmployerAccountFalse(
@@ -49,10 +87,12 @@ public class GetEasUserByEmailQueryHandlerTests
     {
         var request = new GetEasUserByEmailQuery(email, ukprn);
 
+        var response = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
+
         accountsApiClient
-            .Setup(x => x.Get<GetUserByEmailResponse>(
-                It.Is<GetUserByEmailRequest>(c => c.GetUrl.Contains($"api/user?email={email}"))))!
-            .ReturnsAsync(new GetUserByEmailResponse { Ref = userRef });
+            .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
+                It.IsAny<GetUserByEmailRequest>()))!
+            .ReturnsAsync(response);
 
         accountsApiClient
             .Setup(x => x.GetAll<GetUserAccountsResponse>(
@@ -65,10 +105,10 @@ public class GetEasUserByEmailQueryHandlerTests
 
         var actual = await handler.Handle(request, new CancellationToken());
 
-        var expectedResponse = new GetEasUserByEmailQueryResult(true, false, null, false);
+        var expectedResponse = new GetEasUserByEmailQueryResult(true, false, null, null);
 
         actual.Should().BeEquivalentTo(expectedResponse);
-        accountsApiClient.Verify(r => r.Get<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
+        accountsApiClient.Verify(r => r.GetWithResponseCode<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
         accountsApiClient.Verify(r => r.GetAll<GetUserAccountsResponse>(It.IsAny<GetUserAccountsRequest>()), Times.Once);
         accountsApiClient.Verify(r => r.GetAll<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntitiesRequest>()), Times.Never);
     }
@@ -86,10 +126,12 @@ public class GetEasUserByEmailQueryHandlerTests
     {
         var request = new GetEasUserByEmailQuery(email, ukprn);
 
+        var response = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
+
         accountsApiClient
-            .Setup(x => x.Get<GetUserByEmailResponse>(
-                It.Is<GetUserByEmailRequest>(c => c.GetUrl.Contains($"api/user?email={email}"))))!
-            .ReturnsAsync(new GetUserByEmailResponse { Ref = userRef });
+            .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
+                It.IsAny<GetUserByEmailRequest>()))!
+            .ReturnsAsync(response);
 
         accountsApiClient
             .Setup(x => x.GetAll<GetUserAccountsResponse>(
@@ -113,7 +155,7 @@ public class GetEasUserByEmailQueryHandlerTests
         var expectedResponse = new GetEasUserByEmailQueryResult(true, true, accountId, false);
 
         actual.Should().BeEquivalentTo(expectedResponse);
-        accountsApiClient.Verify(r => r.Get<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
+        accountsApiClient.Verify(r => r.GetWithResponseCode<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
         accountsApiClient.Verify(r => r.GetAll<GetUserAccountsResponse>(It.IsAny<GetUserAccountsRequest>()), Times.Once);
         accountsApiClient.Verify(r => r.GetAll<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntitiesRequest>()), Times.Once);
     }
@@ -131,10 +173,12 @@ public class GetEasUserByEmailQueryHandlerTests
     {
         var request = new GetEasUserByEmailQuery(email, ukprn);
 
+        var response = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
+
         accountsApiClient
-            .Setup(x => x.Get<GetUserByEmailResponse>(
-                It.Is<GetUserByEmailRequest>(c => c.GetUrl.Contains($"api/user?email={email}"))))!
-            .ReturnsAsync(new GetUserByEmailResponse { Ref = userRef });
+            .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
+                It.IsAny<GetUserByEmailRequest>()))!
+            .ReturnsAsync(response);
 
         accountsApiClient
             .Setup(x => x.GetAll<GetUserAccountsResponse>(
@@ -157,7 +201,7 @@ public class GetEasUserByEmailQueryHandlerTests
         var expectedResponse = new GetEasUserByEmailQueryResult(true, true, accountId, true);
 
         actual.Should().BeEquivalentTo(expectedResponse);
-        accountsApiClient.Verify(r => r.Get<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
+        accountsApiClient.Verify(r => r.GetWithResponseCode<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
         accountsApiClient.Verify(r => r.GetAll<GetUserAccountsResponse>(It.IsAny<GetUserAccountsRequest>()), Times.Once);
         accountsApiClient.Verify(r => r.GetAll<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntitiesRequest>()), Times.Once);
     }
