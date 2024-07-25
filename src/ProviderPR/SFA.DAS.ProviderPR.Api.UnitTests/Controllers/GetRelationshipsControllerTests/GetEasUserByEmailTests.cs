@@ -7,7 +7,7 @@ using SFA.DAS.ProviderPR.Api.Controllers;
 using SFA.DAS.ProviderPR.Application.Queries.GetEasUserByEmail;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.ProviderPR.Api.UnitTests.Controllers.RelationshipsControllerTests;
+namespace SFA.DAS.ProviderPR.Api.UnitTests.Controllers.GetRelationshipsControllerTests;
 public class GetEasUserByEmailTests
 {
     [Test, MoqAutoData]

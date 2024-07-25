@@ -1,17 +1,16 @@
-﻿using System.Text.Json;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.Application.Queries.GetEasUserByEmail;
+using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Requests;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationships;
+using System.Text.Json;
 
 namespace SFA.DAS.ProviderPR.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class RelationshipsController(IProviderRelationshipsApiRestClient _prApiClient, ILogger<RelationshipsController> _logger) : ControllerBase
+public class RelationshipsController(IMediator _mediator, IProviderRelationshipsApiRestClient _prApiClient, ILogger<RelationshipsController> _logger) : ControllerBase
 {
     [HttpGet("{ukprn:long}")]
     [ProducesResponseType(typeof(GetProviderRelationshipsResponse), StatusCodes.Status200OK)]
@@ -23,7 +22,7 @@ public class RelationshipsController(IProviderRelationshipsApiRestClient _prApiC
 
         return Ok(result);
     }
-    
+
     [HttpGet("employeraccount/email/{email}")]
     [ProducesResponseType(typeof(GetEasUserByEmailQueryResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetEasUserByEmail([FromRoute] string email, [FromQuery] long ukprn, CancellationToken cancellationToken)
