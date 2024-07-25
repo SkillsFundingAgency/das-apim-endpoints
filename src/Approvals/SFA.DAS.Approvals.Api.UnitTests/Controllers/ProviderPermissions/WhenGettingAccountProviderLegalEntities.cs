@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,7 +22,7 @@ public class WhenGettingAccountProviderLegalEntities
         int? ukprn,
         string accountHashedId,
         Operation[] operations,
-        List<GetProviderAccountLegalEntityItem> result,
+        GetProviderAccountLegalEntitiesResponse result,
         [Frozen] Mock<ISender> mediator,
         [Greedy] ProviderPermissionsController controller)
     {
@@ -35,7 +34,7 @@ public class WhenGettingAccountProviderLegalEntities
 
         actual.Should().NotBeNull();
         var actualModel = actual.Value as GetProviderAccountLegalEntitiesResponse;
-        actualModel.AccountProviderLegalEntities.Should().BeEquivalentTo(result);
+        actualModel.AccountProviderLegalEntities.Should().BeEquivalentTo(result.AccountProviderLegalEntities);
     }
 
     [Test, MoqAutoData]
@@ -43,7 +42,7 @@ public class WhenGettingAccountProviderLegalEntities
         int? ukprn,
         string accountHashedId,
         Operation[] operations,
-        List<GetProviderAccountLegalEntityItem> result,
+        GetProviderAccountLegalEntitiesResponse result,
         [Frozen] Mock<ISender> mediator,
         [Greedy] ProviderPermissionsController controller)
     {

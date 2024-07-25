@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.ProviderPermissions.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
@@ -40,7 +39,7 @@ public class ProviderPermissionsController(ISender mediator, ILogger<ProviderPer
         {
             var result =
                 await mediator.Send(new GetAccountProviderLegalEntitiesQuery(ukprn, operations, accountHashedId));
-            return Ok(new GetProviderAccountLegalEntitiesResponse { AccountProviderLegalEntities = result });
+            return Ok(result);
         }
         catch (Exception exception)
         {

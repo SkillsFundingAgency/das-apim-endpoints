@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -9,12 +8,12 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.ProviderPermissions.Queries;
-public class GetAccountProviderLegalEntitiesQueryHandler(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> apiClient) : IRequestHandler<GetAccountProviderLegalEntitiesQuery, List<GetProviderAccountLegalEntityItem>>
+public class GetAccountProviderLegalEntitiesQueryHandler(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> apiClient) : IRequestHandler<GetAccountProviderLegalEntitiesQuery, GetProviderAccountLegalEntitiesResponse>
 {
-    public async Task<List<GetProviderAccountLegalEntityItem>> Handle(GetAccountProviderLegalEntitiesQuery request, CancellationToken cancellationToken)
+    public async Task<GetProviderAccountLegalEntitiesResponse> Handle(GetAccountProviderLegalEntitiesQuery request, CancellationToken cancellationToken)
     {
         var apiRequest = new GetProviderAccountLegalEntitiesRequest(request.Ukprn, request.Operations.ToList());
 
-        return await apiClient.Get<List<GetProviderAccountLegalEntityItem>>(apiRequest);
+        return await apiClient.Get<GetProviderAccountLegalEntitiesResponse>(apiRequest);
     }
 }
