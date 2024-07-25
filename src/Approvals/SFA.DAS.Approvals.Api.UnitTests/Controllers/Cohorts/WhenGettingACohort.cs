@@ -20,7 +20,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
         public async Task Then_Gets_Cohort_From_Mediator(
                     long cohortId,
                     GetCohortResult mediatorResult,
-                    [Frozen] Mock<IMediator> mockMediator,
+                    [Frozen] Mock<ISender> mockMediator,
                     [Greedy] CohortController controller)
         {
             mockMediator
@@ -41,7 +41,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
         [Test, MoqAutoData]
         public async Task And_Then_No_Cohort_Is_Returned_From_Mediator(
             long cohortId,
-            [Frozen] Mock<IMediator> mockMediator,
+            [Frozen] Mock<ISender> mockMediator,
             [Greedy] CohortController controller)
         {
             mockMediator
@@ -58,7 +58,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Cohorts
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             long cohortId,
-            [Frozen] Mock<IMediator> mockMediator,
+            [Frozen] Mock<ISender> mockMediator,
             [Greedy] CohortController controller)
         {
             mockMediator
