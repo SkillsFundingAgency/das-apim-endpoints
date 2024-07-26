@@ -10,6 +10,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Linq;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.UpdateProviderResponseStatus;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
 {
@@ -79,8 +80,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             }
         }
 
-        [HttpGet("select-employer-requests")]
-        public async Task<IActionResult> GetSelectEmployerRequests(string standardReference, int ukprn)
+        [HttpGet("provider/{ukprn}/selectrequests/{standardReference}")]
+        public async Task<IActionResult> GetSelectEmployerRequests(string standardReference, long ukprn)
         {
             try
             {
@@ -96,6 +97,21 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to retrieve aggregated employer requests");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("provider/responsestatus")]
+        public async Task<IActionResult> UpdateProviderResponseStatus(UpdateProviderResponseStatusCommand command)
+        {
+            try
+            {
+                var result = await _mediator.Send(command);
+                return Ok(result.Result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to update provider response status for Employer Requests ");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

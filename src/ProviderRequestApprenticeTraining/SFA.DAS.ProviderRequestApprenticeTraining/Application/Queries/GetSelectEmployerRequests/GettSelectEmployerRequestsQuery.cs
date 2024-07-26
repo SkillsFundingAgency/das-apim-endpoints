@@ -6,6 +6,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelec
     public class GetSelectEmployerRequestsQuery : IRequest<GetSelectEmployerRequestsResult>
     {
         public string StandardReference { get; set; }
-        public int Ukprn { get; set; }
+        public long Ukprn { get; set; }
     }
 }
