@@ -24,25 +24,16 @@ public class WhenHandlingCreateInterviewAdjustmentsCommand
         UpsertInterviewAdjustmentsCommand command,
         Domain.Models.Application updateApplicationResponse,
         GetAboutYouItemApiResponse apiResponse,
-        PutUpsertAboutYouItemApiResponse createdItemResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        [Frozen] Mock<ILogger<UpsertInterviewAdjustmentsCommandHandler>> loggerMock,
         UpsertInterviewAdjustmentsCommandHandler handler)
     {
-        var expectedRequest = new PutUpsertAboutYouItemApiRequest(command.ApplicationId, command.CandidateId, Guid.NewGuid(), new PutUpsertAboutYouItemApiRequest.PutUpdateAboutYouItemApiRequestData());
-
-        candidateApiClient
-            .Setup(client => client.PutWithResponseCode<PutUpsertAboutYouItemApiResponse>(
-                It.Is<PutUpsertAboutYouItemApiRequest>(r => r.PutUrl.StartsWith(expectedRequest.PutUrl.Substring(0, 86)))))
-            .ReturnsAsync(new ApiResponse<PutUpsertAboutYouItemApiResponse>(createdItemResponse, HttpStatusCode.OK, string.Empty));
-
         var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Domain.Models.Application>());
 
         candidateApiClient
             .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
             .ReturnsAsync(new ApiResponse<string>(JsonConvert.SerializeObject(updateApplicationResponse), HttpStatusCode.OK, string.Empty));
 
-        var expectedApiRequest = new GetAboutYouItemApiRequest(command.ApplicationId, command.CandidateId);
+        var expectedApiRequest = new GetAboutYouItemApiRequest(command.CandidateId);
         candidateApiClient
             .Setup(client => client.Get<GetAboutYouItemApiResponse>(
                 It.Is<GetAboutYouItemApiRequest>(r => r.GetUrl == expectedApiRequest.GetUrl)))

@@ -33,7 +33,8 @@ namespace SFA.DAS.EmployerProfiles.Application.AccountUsers.Queries
                 {
                     DasAccountName = c.DasAccountName,
                     EncodedAccountId = c.EncodedAccountId,
-                    Role = c.Role
+                    Role = c.Role,
+                    ApprenticeshipEmployerType = c.ApprenticeshipEmployerType
                 })
             };
         }

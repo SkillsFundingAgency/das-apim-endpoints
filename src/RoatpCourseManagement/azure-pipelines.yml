@@ -5,9 +5,11 @@ trigger:
       - "master"
   paths:
     include:
+    - src/RoatpCourseManagement
+    exclude:
     - azure
     - pipeline-templates
-    - src/RoatpCourseManagement
+    - deployments
 
 pr:
   autoCancel: true
@@ -16,9 +18,11 @@ pr:
       - "master"
   paths:
     include:
+    - src/RoatpCourseManagement
+    exclude:
     - azure
     - pipeline-templates
-    - src/RoatpCourseManagement
+    - deployments
 
 variables:
 - group: Release Management Resources

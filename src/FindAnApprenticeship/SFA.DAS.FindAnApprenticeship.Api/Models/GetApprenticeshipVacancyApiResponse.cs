@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
@@ -50,7 +50,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public bool IsDisabilityConfident { get; init; }
         public bool IsPositiveAboutDisability { get; init; }
         public bool IsRecruitVacancy { get; init; }
-        public GeoPoint Location { get; init; }
+        public Location Location { get; init; }
         public int NumberOfPositions { get; init; }
         public string ProviderName { get; init; }
         public int? StandardLarsCode { get; init; }
@@ -88,8 +88,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         [JsonProperty("levels")] public List<GetCourseLevelsListItem> Levels { get; set; }
        
         public CandidateApplication Application { get; set; }
+        public string CandidatePostcode { get; set; }
 
-
+        public string ApplicationUrl { get; set; }
+        
         public static implicit operator GetApprenticeshipVacancyApiResponse(GetApprenticeshipVacancyQueryResult source)
         {
             return new GetApprenticeshipVacancyApiResponse
@@ -156,7 +158,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 CourseSkills = source.CourseDetail.Skills,
                 Levels = source.Levels,
                 Application = (CandidateApplication)source.Application,
-				IsClosed = source.ApprenticeshipVacancy.IsClosed
+				IsClosed = source.ApprenticeshipVacancy.IsClosed,
+                CandidatePostcode = source.CandidatePostcode,
+                ApplicationUrl = source.ApprenticeshipVacancy.ApplicationUrl
             };
         }
     }

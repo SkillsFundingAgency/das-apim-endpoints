@@ -5,9 +5,11 @@ trigger:
       - "master"
   paths:
     include:
+    - src/ProviderPR
+    exclude:
     - azure
     - pipeline-templates
-    - src/ProviderPR
+    - deployments
 
 pr:
   autoCancel: true
@@ -16,9 +18,11 @@ pr:
       - "master"
   paths:
     include:
+    - src/ProviderPR
+    exclude:
     - azure
     - pipeline-templates
-    - src/ProviderPR
+    - deployments
 
 variables:
 - group: Release Management Resources

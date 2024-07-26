@@ -5,9 +5,11 @@ trigger:
       - "master"
   paths:
     include:
+    - src/AparRegister
+    exclude:
     - azure
     - pipeline-templates
-    - src/AparRegister
+    - deployments
 
 pr:
   autoCancel: true
@@ -16,9 +18,11 @@ pr:
       - "master"
   paths:
     include:
+    - src/AparRegister
+    exclude:
     - azure
     - pipeline-templates
-    - src/AparRegister
+    - deployments
 
 variables:
 - group: Release Management Resources
