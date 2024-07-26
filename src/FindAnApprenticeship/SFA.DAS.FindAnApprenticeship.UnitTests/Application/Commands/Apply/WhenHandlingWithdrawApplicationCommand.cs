@@ -28,7 +28,7 @@ public class WhenHandlingWithdrawApplicationCommand
         WithdrawApplicationCommandHandler handler)
     {
         applicationApiResponse.VacancyReference = $"VAC{vacancyRef}";
-        applicationApiResponse.Status = "Submitted";
+        applicationApiResponse.Status = ApplicationStatus.Submitted;
         var expectedGetApplicationRequest =
             new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false);
         candidateApiClient
@@ -69,7 +69,7 @@ public class WhenHandlingWithdrawApplicationCommand
         WithdrawApplicationCommandHandler handler)
     {
         applicationApiResponse.VacancyReference = $"VAC{vacancyRef}";
-        applicationApiResponse.Status = "Withdrawn";
+        applicationApiResponse.Status = ApplicationStatus.Withdrawn;
         var expectedGetApplicationRequest =
             new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false);
         candidateApiClient
@@ -124,7 +124,7 @@ public class WhenHandlingWithdrawApplicationCommand
         WithdrawApplicationCommandHandler handler)
     {
         applicationApiResponse.VacancyReference = $"VAC{vacancyRef}";
-        applicationApiResponse.Status = "Submitted";
+        applicationApiResponse.Status = ApplicationStatus.Submitted;
         var expectedGetApplicationRequest =
             new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false);
         candidateApiClient
