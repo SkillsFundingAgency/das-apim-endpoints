@@ -23,6 +23,8 @@
     <None Remove="Client\" />
     <None Remove="Application\Queries\SupportAndGuidance\" />
     <None Remove="Application\Commands\SupportAndGuidance\" />
+    <None Remove="InnerApi\ApprenticeProgress\" />
+    <None Remove="Application\Queries\Tasks\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\Commands\ApprenticeSubscriptions\" />
@@ -30,5 +32,7 @@
     <Folder Include="Client\" />
     <Folder Include="Application\Queries\SupportAndGuidance\" />
     <Folder Include="Application\Commands\SupportAndGuidance\" />
+    <Folder Include="InnerApi\ApprenticeProgress\" />
+    <Folder Include="Application\Queries\Tasks\" />
   </ItemGroup>
 </Project>
