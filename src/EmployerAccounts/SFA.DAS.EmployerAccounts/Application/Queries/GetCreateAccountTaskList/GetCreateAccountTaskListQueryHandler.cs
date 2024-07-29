@@ -95,6 +95,8 @@ public class GetCreateAccountTaskListQueryHandler(
             logger.LogInformation("{HandlerName}: Executing AcknowledgeTrainingProviderTaskRequest.", nameof(GetCreateAccountTaskListQueryHandler));
 
             await accountsApiClient.Patch(new AcknowledgeTrainingProviderTaskRequest(new AcknowledgeTrainingProviderTaskData(request.AccountId)));
+            
+            taskListResponse.AddTrainingProviderAcknowledged = true;
         }
     }
 

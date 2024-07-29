@@ -364,7 +364,7 @@ public class WhenHandlingGetCreateAccountTaskListQuery
     }
 
     [Test, MoqAutoData]
-    public async Task When_AcknowledgeTrainingProviderTask_Is_Outstanding_Then_It_Is_Updated(
+    public async Task When_AcknowledgeTrainingProviderTask_Is_Outstanding_Then_It_Is_Updated_And_Returns_True_For_Property(
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
         [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipsApiClient,
         GetUserByRefResponse userResponse,
@@ -418,6 +418,7 @@ public class WhenHandlingGetCreateAccountTaskListQuery
         var actual = await sut.Handle(query, CancellationToken.None);
 
         actual.Should().NotBeNull();
+        actual.AddTrainingProviderAcknowledged.Should().BeTrue();
 
         accountsApiClient.Verify(x =>
                 x.Patch(It.Is<AcknowledgeTrainingProviderTaskRequest>(
