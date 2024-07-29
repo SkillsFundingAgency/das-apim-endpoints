@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.PayeSchemes;
 
-public record GetAccountPayeSchemesRequest(string hashedAccountId) : IGetAllApiRequest
+public record GetAccountPayeSchemesRequest(long AccountId) : IGetAllApiRequest
 {
-    public string GetAllUrl => $"api/accounts/{hashedAccountId}/payeschemes";
+    public string GetAllUrl => $"api/accounts/{AccountId}/payeschemes";
 }

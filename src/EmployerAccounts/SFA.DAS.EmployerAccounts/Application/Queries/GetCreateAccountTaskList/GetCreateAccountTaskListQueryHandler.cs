@@ -56,7 +56,7 @@ public class GetCreateAccountTaskListQueryHandler(
         logger.LogInformation("{HandlerName}: Retrieving data.", nameof(GetCreateAccountTaskListQueryHandler));
 
         var (taskListResponse, accountResponse, accountAgreementsResponse) = await GetData(request);
-        
+
         var agreement = accountAgreementsResponse.FirstOrDefault();
 
         if (accountResponse == null || agreement == null)
@@ -71,8 +71,8 @@ public class GetCreateAccountTaskListQueryHandler(
 
         logger.LogInformation("{HandlerName}: Retrieving PAYE Schemes.", nameof(GetCreateAccountTaskListQueryHandler));
 
-        var payeSchemes = await accountsApiClient.GetAll<GetAccountPayeSchemesResponse>(new GetAccountPayeSchemesRequest(request.HashedAccountId));
-        
+        var payeSchemes = (await accountsApiClient.GetAll<GetAccountPayeSchemesResponse>(new GetAccountPayeSchemesRequest(request.AccountId))).ToList();
+
         logger.LogInformation("{HandlerName}: Building Response.", nameof(GetCreateAccountTaskListQueryHandler));
 
         response = BuildResponse(request,
@@ -110,7 +110,7 @@ public class GetCreateAccountTaskListQueryHandler(
         logger.LogInformation("{HandlerName}: Awaiting GetData tasks.", nameof(GetCreateAccountTaskListQueryHandler));
 
         await Task.WhenAll(taskListTask, accountResponseTask, accountAgreementsResponseTask);
-        
+
         logger.LogInformation("{HandlerName}: GetData tasks completed.", nameof(GetCreateAccountTaskListQueryHandler));
 
         return (taskListTask.Result,
@@ -136,7 +136,7 @@ public class GetCreateAccountTaskListQueryHandler(
 
         logger.LogInformation("{HandlerName}: Account found, retrieving PAYE Schemes.", nameof(GetCreateAccountTaskListQueryHandler));
 
-        var payeSchemes = await accountsApiClient.GetAll<GetAccountPayeSchemesResponse>(new GetAccountPayeSchemesRequest(firstAccount.EncodedAccountId));
+        var payeSchemes = await accountsApiClient.GetAll<GetAccountPayeSchemesResponse>(new GetAccountPayeSchemesRequest(firstAccount.AccountId));
 
         return new GetCreateAccountTaskListQueryResponse
         {

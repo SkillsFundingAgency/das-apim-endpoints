@@ -86,7 +86,7 @@ public class WhenHandlingGetCreateAccountTaskListQuery
         accountsApiClient
             .Setup(x =>
                 x.GetAll<GetAccountPayeSchemesResponse>(It.Is<GetAccountPayeSchemesRequest>(c =>
-                    c.GetAllUrl.Equals($"api/accounts/{firstAccount.EncodedAccountId}/payeschemes"))))
+                    c.GetAllUrl.Equals($"api/accounts/{firstAccount.AccountId}/payeschemes"))))
             .ReturnsAsync(payeSchemesResponse);
 
         var query = new GetCreateAccountTaskListQuery(accountId, null, userRef);
@@ -110,7 +110,7 @@ public class WhenHandlingGetCreateAccountTaskListQuery
         accountsApiClient
             .Verify(x =>
                 x.GetAll<GetAccountPayeSchemesResponse>(It.Is<GetAccountPayeSchemesRequest>(c =>
-                    c.GetAllUrl.Equals($"api/accounts/{firstAccount.EncodedAccountId}/payeschemes"))
+                    c.GetAllUrl.Equals($"api/accounts/{firstAccount.AccountId}/payeschemes"))
                 ), Times.Once);
     }
 
@@ -306,7 +306,7 @@ public class WhenHandlingGetCreateAccountTaskListQuery
         accountsApiClient
             .Setup(x =>
                 x.GetAll<GetAccountPayeSchemesResponse>(It.Is<GetAccountPayeSchemesRequest>(c =>
-                    c.GetAllUrl.Equals($"api/accounts/{query.HashedAccountId}/payeschemes"))))
+                    c.GetAllUrl.Equals($"api/accounts/{query.AccountId}/payeschemes"))))
             .ReturnsAsync(payeSchemesResponse);
 
         var actual = await sut.Handle(query, CancellationToken.None);
@@ -359,7 +359,7 @@ public class WhenHandlingGetCreateAccountTaskListQuery
         accountsApiClient
             .Verify(x =>
                     x.GetAll<GetAccountPayeSchemesResponse>(It.Is<GetAccountPayeSchemesRequest>(c =>
-                        c.GetAllUrl.Equals($"api/accounts/{query.HashedAccountId}/payeschemes")))
+                        c.GetAllUrl.Equals($"api/accounts/{query.AccountId}/payeschemes")))
                 , Times.Once());
     }
 

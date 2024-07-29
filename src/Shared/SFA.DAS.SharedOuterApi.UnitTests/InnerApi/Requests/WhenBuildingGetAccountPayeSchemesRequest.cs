@@ -8,10 +8,10 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
 public class WhenBuildingGetAccountPayeSchemesRequest
 {
     [Test, AutoData]
-    public void Then_The_Url_Is_Correctly_Constructed(string hashedAccountId)
+    public void Then_The_Url_Is_Correctly_Constructed(long accountId)
     {
-        var actual = new GetAccountPayeSchemesRequest(hashedAccountId);
+        var actual = new GetAccountPayeSchemesRequest(accountId);
 
-        actual.GetAllUrl.Should().Be($"api/accounts/{hashedAccountId}/payeschemes");
+        actual.GetAllUrl.Should().Be($"api/accounts/{accountId}/payeschemes");
     }
 }
