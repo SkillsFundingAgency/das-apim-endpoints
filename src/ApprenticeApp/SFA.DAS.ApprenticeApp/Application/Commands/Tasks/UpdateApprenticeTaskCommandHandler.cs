@@ -7,22 +7,22 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts
 {
-    public class AddOrUpdateApprenticeTaskCommandHandler : IRequestHandler<AddOrUpdateApprenticeTaskCommand, Unit>
+    public class UpdateApprenticeTaskCommandHandler : IRequestHandler<UpdateApprenticeTaskCommand, Unit>
     {
         private readonly IApprenticeProgressApiClient<ApprenticeProgressApiConfiguration> _progressApi;
 
-        public AddOrUpdateApprenticeTaskCommandHandler(IApprenticeProgressApiClient<ApprenticeProgressApiConfiguration> progressApi)
+        public UpdateApprenticeTaskCommandHandler(IApprenticeProgressApiClient<ApprenticeProgressApiConfiguration> progressApi)
         {
             _progressApi = progressApi;
         }
 
-        public async Task<Unit> Handle(AddOrUpdateApprenticeTaskCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateApprenticeTaskCommand request, CancellationToken cancellationToken)
         {
             var apiResponse =
-                await _progressApi.PostWithResponseCode<PostApprenticeTaskRequest>(new PostApprenticeTaskRequest(request.ApprenticeshipId, request.Data));
+                await _progressApi.PostWithResponseCode<PatchApprenticeTaskRequest>(new PatchApprenticeTaskRequest(request.ApprenticeshipId, request.TaskId, request.Data));
 
             return Unit.Value;
         }
-  
+
     }
 }
