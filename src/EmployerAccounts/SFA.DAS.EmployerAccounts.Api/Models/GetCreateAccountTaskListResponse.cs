@@ -18,7 +18,6 @@ public record GetCreateAccountTaskListResponse
     public bool HasSignedAgreement { get; set; }
     public bool HasProviders { get; set; }
     public bool HasProviderPermissions { get; set; }
-    public bool TaskListComplete => HasProviderPermissions || AddTrainingProviderAcknowledged;
     public string UserFirstName { get; set; }
     public string UserLastName { get; set; }
 
