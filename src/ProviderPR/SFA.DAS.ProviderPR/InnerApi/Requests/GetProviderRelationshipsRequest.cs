@@ -2,7 +2,7 @@
 
 public class GetProviderRelationshipsRequest
 {
-    public string? EmployerName { get; set; }
+    public string? SearchTerm { get; set; }
     public bool? HasCreateCohortPermission { get; set; }
     public bool? HasRecruitmentPermission { get; set; }
     public bool? HasRecruitmentWithReviewPermission { get; set; }
