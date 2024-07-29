@@ -378,8 +378,6 @@ public class WhenHandlingGetCreateAccountTaskListQuery
     )
     {
         accountResponse.AddTrainingProviderAcknowledged = false;
-        // taskListResponse.HasPermissions = true;
-        // taskListResponse.HasPermissions = true;
         
         providerRelationshipsApiClient
             .Setup(x =>
@@ -424,7 +422,7 @@ public class WhenHandlingGetCreateAccountTaskListQuery
         accountsApiClient.Verify(x =>
                 x.Patch(It.Is<AcknowledgeTrainingProviderTaskRequest>(
                     c =>
-                        c.PatchUrl.Equals("api/acknowledge-training-provider-task")
+                        c.PatchUrl.Equals("api/accounts/acknowledge-training-provider-task")
                         && c.Data.Equals(new AcknowledgeTrainingProviderTaskData(query.AccountId))
                 ))
             , Times.Once);
