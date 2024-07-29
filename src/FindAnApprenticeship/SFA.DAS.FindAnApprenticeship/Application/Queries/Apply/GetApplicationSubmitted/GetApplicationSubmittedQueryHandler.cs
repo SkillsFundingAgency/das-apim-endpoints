@@ -33,10 +33,10 @@ public class GetApplicationSubmittedQueryHandler : IRequestHandler<GetApplicatio
         var application = applicationTask.Result;
         var aboutYou = aboutYouTask.Result;
 
-        if (application is null) throw new InvalidOperationException($"Application is null");
+        if (application is null) return null;
 
         var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference.ToString()));
-        if (vacancy is null) throw new InvalidOperationException($"Vacancy is null");
+        if (vacancy is null) return null;
 
         return new GetApplicationSubmittedQueryResult
         {

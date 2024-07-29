@@ -24,26 +24,6 @@ public class SkillsAndStrengthsController : Controller
         _logger = logger;
     }
 
-    [HttpGet("candidate")]
-    public async Task<IActionResult> GetCandidateSkillsAndStrengths([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
-    {
-        try
-        {
-            var result = await _mediator.Send(new GetCandidateSkillsAndStrengthsQuery
-            {
-                ApplicationId = applicationId,
-                CandidateId = candidateId
-            });
-
-            return Ok((GetCandidateSkillsAndStrengthsApiResponse)result);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Get Candidate Skills and Strengths : An error occurred");
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-        }
-    }
-
     [HttpGet("expected")]
     public async Task<IActionResult> GetExpectedSkillsAndStrengths([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
     {
@@ -54,6 +34,8 @@ public class SkillsAndStrengthsController : Controller
                 ApplicationId = applicationId,
                 CandidateId = candidateId
             });
+
+            if (result is null) return NotFound();
 
             return Ok((GetExpectedSkillsAndStrengthsApiResponse)result);
         }
