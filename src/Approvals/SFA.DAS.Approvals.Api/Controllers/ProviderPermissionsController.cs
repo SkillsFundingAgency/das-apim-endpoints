@@ -15,17 +15,17 @@ namespace SFA.DAS.Approvals.Api.Controllers;
 public class ProviderPermissionsController(ISender mediator, ILogger<ProviderPermissionsController> logger) : Controller﻿
 {
     [HttpGet]
-    [Route("has-permission")]
-    public async Task<IActionResult> HasPermission([FromQuery] long? ukPrn, [FromQuery] long? accountLegalEntityId, [FromQuery] Operation operation)
+    [Route("has-relationship-with-permission")]
+    public async Task<IActionResult> HasRelationshipWithPermission([FromQuery] long? ukPrn, [FromQuery] Operation operation)
     {
         try
         {
-            var result = await mediator.Send(new GetHasPermissionQuery(ukPrn, accountLegalEntityId, operation));
-            return Ok(new GetHasPermissionResponse { HasPermission = result });
+            var result = await mediator.Send(new GetHasRelationshipWithPermissionQuery(ukPrn, operation));
+            return Ok(new GetHasRelationshipWithPermissionResponse { HasPermission = result });
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "{method} threw an exception.", nameof(HasPermission));
+            logger.LogError(exception, "{method} threw an exception.", nameof(HasRelationshipWithPermission));
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
