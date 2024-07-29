@@ -101,12 +101,12 @@ public class GetCreateAccountTaskListQueryHandler(
     }
 
     private async Task<((bool hasProviders, bool hasPermissions),
-            GetAccountByHashedIdResponse accountResponse,
+            GetAccountByIdResponse accountResponse,
             IEnumerable<GetEmployerAgreementsResponse> accountAgreementsResponse)>
         GetData(GetCreateAccountTaskListQuery request)
     {
         var taskListTask = GetTaskList(request.AccountId, request.HashedAccountId);
-        var accountResponseTask = accountsApiClient.Get<GetAccountByHashedIdResponse>(new GetAccountByHashedIdRequest(request.HashedAccountId));
+        var accountResponseTask = accountsApiClient.Get<GetAccountByIdResponse>(new GetAccountByIdRequest(request.AccountId));
         var accountAgreementsResponseTask = accountsApiClient.GetAll<GetEmployerAgreementsResponse>(new GetEmployerAgreementsRequest(request.AccountId));
 
         logger.LogInformation("{HandlerName}: Awaiting GetData tasks.", nameof(GetCreateAccountTaskListQueryHandler));
@@ -181,7 +181,7 @@ public class GetCreateAccountTaskListQueryHandler(
 
     private static GetCreateAccountTaskListQueryResponse BuildResponse(GetCreateAccountTaskListQuery request,
         IEnumerable<GetAccountPayeSchemesResponse> payeSchemes,
-        GetAccountByHashedIdResponse accountResponse,
+        GetAccountByIdResponse accountResponse,
         GetEmployerAgreementsResponse agreement,
         GetUserByRefResponse userResponse,
         bool hasProviders,

@@ -146,8 +146,8 @@ public class WhenHandlingGetCreateAccountTaskListQuery
 
         accountsApiClient
             .Setup(x =>
-                x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c =>
-                    c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}"))))
+                x.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(c =>
+                    c.GetUrl.Equals($"api/accounts/{query.AccountId}"))))
             .ReturnsAsync(() => null);
 
         accountsApiClient
@@ -180,8 +180,8 @@ public class WhenHandlingGetCreateAccountTaskListQuery
         
         accountsApiClient
             .Verify(x =>
-                    x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c =>
-                        c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}")))
+                    x.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(c =>
+                        c.GetUrl.Equals($"api/accounts/{query.AccountId}")))
                 , Times.Once());
 
         accountsApiClient
@@ -198,7 +198,7 @@ public class WhenHandlingGetCreateAccountTaskListQuery
         GetUserByRefResponse userResponse,
         GetCreateAccountTaskListQuery query,
         GetAccountProvidersResponse accountProvidersResponse,
-        GetAccountByHashedIdResponse accountResponse,
+        GetAccountByIdResponse accountResponse,
         GetProviderAccountLegalEntitiesResponse providerRelationshipResponse,
         GetCreateAccountTaskListQueryHandler sut
     )
@@ -222,7 +222,7 @@ public class WhenHandlingGetCreateAccountTaskListQuery
 
         accountsApiClient
             .Setup(x =>
-                x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c => c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}"))))
+                x.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(c => c.GetUrl.Equals($"api/accounts/{query.AccountId}"))))
             .ReturnsAsync(accountResponse);
 
         accountsApiClient
@@ -248,8 +248,8 @@ public class WhenHandlingGetCreateAccountTaskListQuery
 
         accountsApiClient
             .Verify(x =>
-                    x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c =>
-                        c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}")))
+                    x.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(c =>
+                        c.GetUrl.Equals($"api/accounts/{query.AccountId}")))
                 , Times.Once());
 
         accountsApiClient
@@ -268,11 +268,13 @@ public class WhenHandlingGetCreateAccountTaskListQuery
         List<GetAccountPayeSchemesResponse> payeSchemesResponse,
         GetAccountProvidersResponse accountProvidersResponse,
         GetProviderAccountLegalEntitiesResponse providerRelationshipResponse,
-        GetAccountByHashedIdResponse accountResponse,
+        GetAccountByIdResponse accountResponse,
         List<GetEmployerAgreementsResponse> employerAgreementsResponse,
         GetCreateAccountTaskListQueryHandler sut
     )
     {
+        accountResponse.AddTrainingProviderAcknowledged = true;
+            
         providerRelationshipsApiClient
             .Setup(x =>
                 x.Get<GetAccountProvidersResponse>(It.Is<GetAccountProvidersRequest>(c =>
@@ -293,8 +295,8 @@ public class WhenHandlingGetCreateAccountTaskListQuery
 
         accountsApiClient
             .Setup(x =>
-                x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c =>
-                    c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}"))))
+                x.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(c =>
+                    c.GetUrl.Equals($"api/accounts/{query.AccountId}"))))
             .ReturnsAsync(accountResponse);
 
         accountsApiClient
@@ -346,8 +348,8 @@ public class WhenHandlingGetCreateAccountTaskListQuery
 
         accountsApiClient
             .Verify(x =>
-                    x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c =>
-                        c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}")))
+                    x.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(c =>
+                        c.GetUrl.Equals($"api/accounts/{query.AccountId}")))
                 , Times.Once());
 
         accountsApiClient
@@ -372,7 +374,7 @@ public class WhenHandlingGetCreateAccountTaskListQuery
         List<GetAccountPayeSchemesResponse> payeSchemesResponse,
         GetAccountProvidersResponse accountProvidersResponse,
         GetProviderAccountLegalEntitiesResponse providerRelationshipResponse,
-        GetAccountByHashedIdResponse accountResponse,
+        GetAccountByIdResponse accountResponse,
         List<GetEmployerAgreementsResponse> employerAgreementsResponse,
         GetCreateAccountTaskListQueryHandler sut
     )
@@ -399,8 +401,8 @@ public class WhenHandlingGetCreateAccountTaskListQuery
 
         accountsApiClient
             .Setup(x =>
-                x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c =>
-                    c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}"))))
+                x.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(c =>
+                    c.GetUrl.Equals($"api/accounts/{query.AccountId}"))))
             .ReturnsAsync(accountResponse);
 
         accountsApiClient
@@ -437,7 +439,7 @@ public class WhenHandlingGetCreateAccountTaskListQuery
         GetCreateAccountTaskListQuery query,
         List<GetAccountPayeSchemesResponse> payeSchemesResponse,
         GetProviderAccountLegalEntitiesResponse providerRelationshipResponse,
-        GetAccountByHashedIdResponse accountResponse,
+        GetAccountByIdResponse accountResponse,
         List<GetEmployerAgreementsResponse> employerAgreementsResponse,
         GetAccountProvidersResponse accountProvidersResponse,
         GetCreateAccountTaskListQueryHandler sut
@@ -465,8 +467,8 @@ public class WhenHandlingGetCreateAccountTaskListQuery
 
         accountsApiClient
             .Setup(x =>
-                x.Get<GetAccountByHashedIdResponse>(It.Is<GetAccountByHashedIdRequest>(c =>
-                    c.GetUrl.Equals($"api/accounts/{query.HashedAccountId}"))))
+                x.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(c =>
+                    c.GetUrl.Equals($"api/accounts/{query.AccountId}"))))
             .ReturnsAsync(accountResponse);
 
         accountsApiClient

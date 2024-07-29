@@ -11,4 +11,6 @@ public class GetAccountByIdResponse
     public DateTime DateRegistered { get; set; }
     public string OwnerEmail { get; set; }
     public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
+    public bool? NameConfirmed { get; set; }
+    public bool? AddTrainingProviderAcknowledged { get; set; }
 }
