@@ -25,6 +25,8 @@
     <None Remove="Application\Commands\SupportAndGuidance\" />
     <None Remove="InnerApi\ApprenticeProgress\" />
     <None Remove="Application\Queries\Tasks\" />
+    <None Remove="Application\Commands\Tasks\" />
+    <None Remove="InnerApi\ApprenticeProgress\Responses\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\Commands\ApprenticeSubscriptions\" />
@@ -34,5 +36,7 @@
     <Folder Include="Application\Commands\SupportAndGuidance\" />
     <Folder Include="InnerApi\ApprenticeProgress\" />
     <Folder Include="Application\Queries\Tasks\" />
+    <Folder Include="Application\Commands\Tasks\" />
+    <Folder Include="InnerApi\ApprenticeProgress\Responses\" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts;
+using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeSubscriptions;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
+using SFA.DAS.ApprenticeApp.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -50,22 +53,24 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         [HttpGet("/apprentices/{id}/progress/tasks")]
         public async Task<IActionResult> GetTasks(Guid apprenticeshipId, int status, DateTime? fromDate, DateTime? toDate)
         {
-
             var result = await _mediator.Send(new GetTasksByApprenticeshipIdQuery { ApprenticeshipId = apprenticeshipId, Status = status, FromDate = fromDate, ToDate = toDate });
 
-            //if (result.ApprenticeDetails?.Apprentice == null)
-          //      return NotFound();
+            if (result.Tasks == null)
+               return NotFound();
             return Ok();
         }
 
         // add a new tasks
         [HttpPost("/apprentices/{id}/progress/tasks")]
-        public async Task<IActionResult> AddTasks(Guid id)
+        public async Task<IActionResult> AddTasks(Guid id, ApprenticeTaskData data)
         {
-            var result = await _mediator.Send(new GetApprenticeDetailsQuery { ApprenticeId = id });
-            if (result.ApprenticeDetails?.Apprentice == null)
-                return NotFound();
-            return Ok(result.ApprenticeDetails);
+            await _mediator.Send(new AddOrUpdateApprenticeTaskCommand
+            {
+               ApprenticeshipId = id,
+               Data = data
+            });
+
+            return Ok();
         }
 
 

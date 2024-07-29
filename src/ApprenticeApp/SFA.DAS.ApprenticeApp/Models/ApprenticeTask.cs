@@ -19,8 +19,6 @@ namespace SFA.DAS.ApprenticeApp.Models
         public List<TaskReminder>? TaskReminders { get; set; }
         public List<TaskKSBs>? TaskLinkedKsbs { get; set; }
         public List<ApprenticeshipCategory>? ApprenticeshipCategory { get; set; }
-
-
     }
 
     public class ApprenticeshipCategory
@@ -29,13 +27,19 @@ namespace SFA.DAS.ApprenticeApp.Models
         public string Title { get; set; }
     }
 
-    public class TaskFile
+    public class TaskKSBs
     {
         public int TaskId { get; set; }
+        public int? KSBProgressId { get; set; }
+    }
+
+    public class TaskFile
+    {
+        public int? TaskId { get; set; }
         public int? TaskFileId { get; set; }
         public string FileType { get; set; }
         public string FileName { get; set; }
-        public byte[] FileContents { get; set; }
+        public string FileContents { get; set; }
     }
 
     public class TaskReminder
@@ -46,7 +50,6 @@ namespace SFA.DAS.ApprenticeApp.Models
         public ReminderUnit? ReminderUnit { get; set; }
         public ReminderStatus? Status { get; set; }
     }
-
 
     [Flags]
     public enum ReminderUnit
@@ -71,13 +74,6 @@ namespace SFA.DAS.ApprenticeApp.Models
         Todo = 0,
         Done = 1
     }
-
-    public class TaskKSBs
-    {
-        public int TaskId { get; set; }
-        public int? KSBProgressId { get; set; }
-    }
-
 
     public class ApprenticeTasksCollection
     {

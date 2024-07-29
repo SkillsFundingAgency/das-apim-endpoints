@@ -4,15 +4,16 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApprenticeApp.InnerApi.ApprenticeProgress.Requests
 {
-    public class PostApprenticeTaskRequest : IPostApiRequest<MyApprenticeshipData>
+    public class PostApprenticeTaskRequest : IPostApiRequest
     {
-        private readonly Guid _apprenticeId;
-        public string PostUrl => $"/apprentices/{_apprenticeId}/myapprenticeship";
-        public MyApprenticeshipData Data { get; set; }
+        private readonly Guid _apprenticeshipId;
+        public string PostUrl => $"/apprenticeships/{_apprenticeshipId}/tasks";
+        public object Data { get; set; }
 
-        public PostApprenticeTaskRequest(Guid apprenticeId)
+        public PostApprenticeTaskRequest(Guid apprenticeshipId, ApprenticeTaskData data)
         {
-            _apprenticeId = apprenticeId;
+            _apprenticeshipId = apprenticeshipId;
+            Data = data;
         }
     }
 }
