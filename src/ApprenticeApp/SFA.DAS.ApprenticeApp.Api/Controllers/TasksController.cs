@@ -1,15 +1,10 @@
-﻿using Contentful.Core.Models.Management;
+﻿using System;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Amqp.Framing;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts;
-using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeSubscriptions;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Models;
-using System;
-using System.Net.NetworkInformation;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
 {
