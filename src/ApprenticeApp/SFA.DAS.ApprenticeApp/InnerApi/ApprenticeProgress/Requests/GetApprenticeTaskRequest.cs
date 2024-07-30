@@ -6,19 +6,14 @@ namespace SFA.DAS.ApprenticeApp.InnerApi.ApprenticeProgress.Requests
     public class GetApprenticeTaskRequest : IGetApiRequest
     {
         public Guid ApprenticeshipId;
-        public int Status;
-        public string FromDate;
-        public string ToDate;
-        
+        public int TaskId;        
 
-        public GetApprenticeTaskRequest(Guid apprenticeshipId, int status, string fromDate, string toDate)
+        public GetApprenticeTaskRequest(Guid apprenticeshipId, int taskId)
         {
             ApprenticeshipId = apprenticeshipId;
-            Status = status;
-            FromDate = fromDate;
-            ToDate = toDate;
+            TaskId = taskId;
         }
 
-        public string GetUrl => $"apprenticeships/{ApprenticeshipId}/fromDate/{FromDate}/toDate/{ToDate}/status/{Status}";
+        public string GetUrl => $"apprenticeships/{ApprenticeshipId}/tasks/{TaskId}/";
     }
 }

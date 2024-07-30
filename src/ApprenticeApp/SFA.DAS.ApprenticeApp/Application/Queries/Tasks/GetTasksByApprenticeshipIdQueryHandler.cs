@@ -21,7 +21,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
 
         public async Task<GetTasksByApprenticeshipIdQueryResult> Handle(GetTasksByApprenticeshipIdQuery request, CancellationToken cancellationToken)
         {
-            var  apprenticeSavedArticles = await _progressApiClient.Get<ApprenticeTasksCollection>(new GetApprenticeTaskRequest(request.ApprenticeshipId, request.Status, request.FromDate.GetValueOrDefault().ToString("MM-dd-yy"), request.ToDate.GetValueOrDefault().ToString("MM-dd-yy")));
+            var  apprenticeSavedArticles = await _progressApiClient.Get<ApprenticeTasksCollection>(new GetApprenticeTasksRequest(request.ApprenticeshipId, request.Status, request.FromDate.GetValueOrDefault().ToString("MM-dd-yy"), request.ToDate.GetValueOrDefault().ToString("MM-dd-yy")));
         
             return new GetTasksByApprenticeshipIdQueryResult
             {

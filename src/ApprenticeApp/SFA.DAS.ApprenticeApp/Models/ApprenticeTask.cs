@@ -7,18 +7,18 @@ namespace SFA.DAS.ApprenticeApp.Models
     {
         public int TaskId { get; set; }
         public Guid ApprenticeshipId { get; set; }
-        public DateTime? DueDate { get; set; }
-        public string Title { get; set; }
-        public int? ApprenticeshipCategoryId { get; set; }
-        public string Note { get; set; }
-        public DateTime? CompletionDateTime { get; set; }
-        public DateTime? CreatedDateTime { get; set; }
-        public TaskStatus? Status { get; set; }
+        public DateTime? DueDate { get; set; } = null!;
+        public string Title { get; set; } = null!;
+        public int? ApprenticeshipCategoryId { get; set; } = null!;
+        public string Note { get; set; } = null!;
+        public DateTime? CompletionDateTime { get; set; } = null!;
+        public DateTime? CreatedDateTime { get; set; } = null!;
+        public TaskStatus? Status { get; set; } = null!;
 
-        public List<TaskFile>? TaskFiles { get; set; }
-        public List<TaskReminder>? TaskReminders { get; set; }
-        public List<TaskKSBs>? TaskLinkedKsbs { get; set; }
-        public List<ApprenticeshipCategory>? ApprenticeshipCategory { get; set; }
+        public List<TaskFile>? TaskFiles { get; set; } = null!;
+        public List<TaskReminder>? TaskReminders { get; set; } = null!;
+        public List<TaskKSBs>? TaskLinkedKsbs { get; set; } = null!;
+        public List<ApprenticeshipCategory>? ApprenticeshipCategory { get; set; } = null!;
     }
 
     public class ApprenticeshipCategory
