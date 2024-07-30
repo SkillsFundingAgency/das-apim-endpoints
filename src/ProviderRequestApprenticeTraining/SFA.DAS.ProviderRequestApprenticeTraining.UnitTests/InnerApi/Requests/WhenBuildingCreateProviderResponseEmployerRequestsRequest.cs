@@ -8,17 +8,16 @@ using System;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.InnerApi.Requests
 {
-    public class WhenBuildingUpdateProviderResponseStatusRequest
+    public class WhenBuildingCreateProviderResponseEmployerRequestsRequest
     {
         [Test, AutoData]
-        public void Then_The_Request_Is_Correctly_Build(UpdateProviderResponseStatusData data)
+        public void Then_The_Request_Is_Correctly_Build(CreateEmployerResponseEmployerRequestData data)
         {
-            var actual = new UpdateProviderResponseStatusRequest(data);
+            var actual = new CreateProviderResponseEmployerRequestRequest(data);
 
-            actual.PostUrl.Should().Be("api/employerrequest/provider/responsestatus");
+            actual.PostUrl.Should().Be("api/employerrequest/provider/responses");
             actual.Data.GetType().GetProperty("EmployerRequestIds")!.GetValue(actual.Data, null).Should().BeEquivalentTo(data.EmployerRequestIds);
             actual.Data.GetType().GetProperty("Ukprn")!.GetValue(actual.Data, null).Should().Be(data.Ukprn);
-            actual.Data.GetType().GetProperty("ProviderResponseStatus")!.GetValue(actual.Data, null).Should().Be(data.ProviderResponseStatus);
         }
     }
 }

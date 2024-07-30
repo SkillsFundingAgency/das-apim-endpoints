@@ -2,13 +2,10 @@
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.UpdateProviderResponseStatus;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
@@ -21,14 +18,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
     {
         [Test, MoqAutoData]
         public async Task Then_True_Is_Returned_From_Mediator(
-            UpdateProviderResponseStatusCommand command,
-            UpdateProviderResponseStatusResponse response,
+            CreateProviderResponseEmployerRequestCommand command,
+            CreateProviderResponseEmployerRequestResponse response,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerRequestsController controller)
         {
             // Arrange
             mockMediator
-                .Setup(x => x.Send(It.IsAny<UpdateProviderResponseStatusCommand>(), CancellationToken.None)).ReturnsAsync(response);
+                .Setup(x => x.Send(It.IsAny<CreateProviderResponseEmployerRequestCommand>(), CancellationToken.None)).ReturnsAsync(response);
 
             // Act
             var actual = await controller.UpdateProviderResponseStatus(command) as ObjectResult;
@@ -41,12 +38,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
-            UpdateProviderResponseStatusCommand command,
+            CreateProviderResponseEmployerRequestCommand command,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] EmployerRequestsController controller)
         {
             // Arrange
-            mediator.Setup(x => x.Send(It.IsAny<UpdateProviderResponseStatusCommand>(), CancellationToken.None))
+            mediator.Setup(x => x.Send(It.IsAny<CreateProviderResponseEmployerRequestCommand>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
             // Act

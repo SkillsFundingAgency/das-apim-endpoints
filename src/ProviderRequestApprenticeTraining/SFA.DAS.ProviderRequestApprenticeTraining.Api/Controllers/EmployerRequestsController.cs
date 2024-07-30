@@ -10,7 +10,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Linq;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.UpdateProviderResponseStatus;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
 {
@@ -101,8 +101,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             }
         }
 
-        [HttpPost("provider/responsestatus")]
-        public async Task<IActionResult> UpdateProviderResponseStatus(UpdateProviderResponseStatusCommand command)
+        [HttpPost("provider/responses")]
+        public async Task<IActionResult> UpdateProviderResponseStatus(CreateProviderResponseEmployerRequestCommand command)
         {
             try
             {
@@ -111,7 +111,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to update provider response status for Employer Requests ");
+                _logger.LogError(e, $"Error attempting to save provider response for Employer Requests ");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
