@@ -143,7 +143,7 @@ public class GetCreateAccountTaskListQueryHandler(
         return new GetCreateAccountTaskListQueryResponse
         {
             HashedAccountId = firstAccount.EncodedAccountId,
-            HasPayeScheme = payeSchemes.Any(),
+            HasPayeScheme = payeSchemes != null && payeSchemes.Any(),
             NameConfirmed = firstAccount.NameConfirmed
         };
     }
@@ -154,7 +154,7 @@ public class GetCreateAccountTaskListQueryHandler(
             await providerRelationshipsApiClient.Get<GetAccountProvidersResponse>(
                 new GetAccountProvidersRequest(accountId));
 
-        if (accountProvidersResponse.AccountProviders.Count == 0)
+        if (accountProvidersResponse?.AccountProviders?.Count == 0)
         {
             return (
                 hasProviders: false,
@@ -166,7 +166,7 @@ public class GetCreateAccountTaskListQueryHandler(
             await providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
                 new GetEmployerAccountProviderPermissionsRequest(hashedAccountId));
 
-        var employerAlePermissions = providerRelationshipResponse.AccountProviderLegalEntities.Select(legalEntityItem => new AccountLegalEntityItem
+        var employerAlePermissions = providerRelationshipResponse?.AccountProviderLegalEntities?.Select(legalEntityItem => new AccountLegalEntityItem
         {
             Name = legalEntityItem.AccountLegalEntityName,
             AccountLegalEntityPublicHashedId = legalEntityItem.AccountLegalEntityPublicHashedId,
@@ -175,7 +175,7 @@ public class GetCreateAccountTaskListQueryHandler(
 
         return (
             hasProviders: true,
-            hasPermissions: employerAlePermissions.Any()
+            hasPermissions: employerAlePermissions != null && employerAlePermissions.Any()
         );
     }
 
