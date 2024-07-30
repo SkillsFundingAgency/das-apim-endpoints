@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Amqp.Framing;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Models;
@@ -78,6 +79,18 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok();
         }
 
+        // Delete a task by id
+        [HttpDelete("/apprentices/{id}/progress/tasks/{taskId}")]
+        public async Task<IActionResult> DeleteTaskById(Guid id, int taskId)
+        {
+            await _mediator.Send(new DeleteApprenticeTaskCommand
+            {
+                ApprenticeshipId = id,
+                TaskId = taskId
+            });
+
+            return Ok();
+        }
 
 
         /// <summary>
@@ -111,20 +124,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
 
 
 
-
-
-
-
-
-        // Delete a task by id
-        [HttpDelete("/apprentices/{id}/progress/tasks/{taskId}")]
-        public async Task<IActionResult> DeleteTaskById(Guid id, int taskId)
-        {
-            var result = await _mediator.Send(new GetApprenticeDetailsQuery { ApprenticeId = id });
-            if (result.ApprenticeDetails?.Apprentice == null)
-                return NotFound();
-            return Ok(result.ApprenticeDetails);
-        }
 
 
 
