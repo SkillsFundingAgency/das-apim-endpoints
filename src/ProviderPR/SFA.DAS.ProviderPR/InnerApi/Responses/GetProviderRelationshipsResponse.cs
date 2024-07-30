@@ -5,6 +5,7 @@ public class GetProviderRelationshipsResponse
     public int PageSize { get; set; }
     public int PageNumber { get; set; }
     public int TotalCount { get; set; }
+    public bool HasAnyRelationships { get; set; }
     public IEnumerable<ProviderRelationshipModel> Employers { get; set; } = [];
 }
 
