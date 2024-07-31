@@ -14,13 +14,23 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
 
         public static implicit operator SelectEmployerRequests(GetSelectEmployerRequestsResult source)
         {
-            return new SelectEmployerRequests
+            if (source.SelectEmployerRequests.Any())
             {
-                StandardReference = source.SelectEmployerRequests.FirstOrDefault().StandardReference,
-                StandardTitle = source.SelectEmployerRequests.FirstOrDefault().StandardTitle,
-                StandardLevel = source.SelectEmployerRequests.FirstOrDefault().StandardLevel,
-                EmployerRequests = source.SelectEmployerRequests.Select(request => (SelectEmployerRequest)request).ToList()
-            };
+                return new SelectEmployerRequests
+                {
+                    StandardReference = source.SelectEmployerRequests.FirstOrDefault().StandardReference,
+                    StandardTitle = source.SelectEmployerRequests.FirstOrDefault().StandardTitle,
+                    StandardLevel = source.SelectEmployerRequests.FirstOrDefault().StandardLevel,
+                    EmployerRequests = source.SelectEmployerRequests.Select(request => (SelectEmployerRequest)request).ToList()
+                };
+            }
+            else
+            {
+                return new SelectEmployerRequests 
+                {
+                    EmployerRequests = new List<SelectEmployerRequest>()
+                };
+            }
         }
     }
 }

@@ -19,21 +19,37 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
     {
         [Test, MoqAutoData]
         public async Task Then_Get_AggregatedEmployerRequests_From_The_Api(
-           GetSelectEmployerRequestsResult requests,
+           GetSelectEmployerRequestsResult result,
            [Frozen] Mock<IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration>> mockRequestApprenticeTrainingClient,
            GetSelectEmployerRequestsQueryHandler handler,
-           long ukprn,
-           string standardReference)
+           GetSelectEmployerRequestsQuery query)
         {
             // Arrange
             mockRequestApprenticeTrainingClient.Setup(client => client.Get<List<GetSelectEmployerRequestsResponse>>(It.IsAny<GetSelectEmployerRequestsRequest>()))
-                .ReturnsAsync(requests.SelectEmployerRequests.ToList());
+                .ReturnsAsync(result.SelectEmployerRequests.ToList());
 
             // Act
-            var actual = await handler.Handle(new GetSelectEmployerRequestsQuery { Ukprn = ukprn, StandardReference = standardReference}, CancellationToken.None);
+            var actual = await handler.Handle(query, CancellationToken.None);
             
             // Assert
-            actual.SelectEmployerRequests.Should().BeEquivalentTo(requests.SelectEmployerRequests);
+            actual.SelectEmployerRequests.Should().BeEquivalentTo(result.SelectEmployerRequests);
+        }
+
+        [Test, MoqAutoData]
+        public async Task AndNoneExist_Then_Get_AggregatedEmployerRequests_ReturnsEmptySelectEmployerRequests_WithUkprn(
+           [Frozen] Mock<IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration>> mockRequestApprenticeTrainingClient,
+           GetSelectEmployerRequestsQueryHandler handler,
+           GetSelectEmployerRequestsQuery query)
+        {
+            //Arrange
+            mockRequestApprenticeTrainingClient.Setup(client => client.Get<List<GetSelectEmployerRequestsResponse>>(It.IsAny<GetSelectEmployerRequestsRequest>()))
+                .ReturnsAsync(new List<GetSelectEmployerRequestsResponse>());
+
+           //Act
+           var actual = await handler.Handle(query, CancellationToken.None);
+
+            //Assert
+            actual.SelectEmployerRequests.Should().BeEmpty();
         }
     }
 }

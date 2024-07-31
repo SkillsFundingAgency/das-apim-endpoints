@@ -96,7 +96,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to retrieve aggregated employer requests");
+                _logger.LogError(e, $"Error attempting to retrieve select employer requests");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
