@@ -11,7 +11,7 @@ public class WhenBuildingGetCandidateByIdRequest
     [Test, AutoData]
     public void Then_The_Url_Is_Constructed(Guid candidateId)
     {
-        var actual = new GetCandidateByIdRequest(candidateId);
+        var actual = new GetCandidateByIdApiRequest(candidateId);
 
         actual.GetUrl.Should().Be($"api/candidates/{candidateId}");
     }
