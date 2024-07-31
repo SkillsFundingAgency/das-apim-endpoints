@@ -24,7 +24,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetAccountLegalEntities
             GetAccountLegalEntitiesQueryHandler handler)
         {
             //Arrange
-            var expectedGet = new GetAccountLegalEntitiesRequest(query.HashedAccountId);
+            var expectedGet = new GetAccountLegalEntitiesRequest(query.AccountId);
             accountApiClient
                 .Setup(x => x.GetAll<GetAccountLegalEntityResponseItem>(
                     It.Is<GetAccountLegalEntitiesRequest>(c => c.GetAllUrl.Equals(expectedGet.GetAllUrl))))

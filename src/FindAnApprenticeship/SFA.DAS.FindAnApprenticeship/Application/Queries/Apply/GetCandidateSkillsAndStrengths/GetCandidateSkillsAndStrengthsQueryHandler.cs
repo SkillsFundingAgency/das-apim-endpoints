@@ -18,10 +18,11 @@ public class GetCandidateSkillsAndStrengthsQueryHandler : IRequestHandler<GetCan
 
     public async Task<GetCandidateSkillsAndStrengthsQueryResult> Handle(GetCandidateSkillsAndStrengthsQuery request, CancellationToken cancellationToken)
     {
-
         var response =
             await _candidateApiClient.GetWithResponseCode<GetApplicationApiResponse>(
                 new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
+
+        if (response == null) return null;
 
         return new GetCandidateSkillsAndStrengthsQueryResult
         {

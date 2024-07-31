@@ -2,9 +2,7 @@ using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndex;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -16,17 +14,16 @@ public class WhenHandlingSearchIndexQuery
     [Test, MoqAutoData]
     public async Task Then_The_Query_Is_Handled_And_Data_Returned(
         SearchIndexQuery query,
-        GetApprenticeshipCountResponse apiResponse,
+        long totalApprenticeshipsAvailable,
         LocationItem locationItem,
         [Frozen] Mock<ILocationLookupService> locationService,
-        [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+        [Frozen] Mock<ITotalPositionsAvailableService> totalPositionsAvailableService,
         SearchIndexQueryHandler handler)
     {
         // Arrange
-        var expectedRequest = new GetApprenticeshipCountRequest();
-        apiClient
-            .Setup(client => client.Get<GetApprenticeshipCountResponse>(It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
-            .ReturnsAsync(apiResponse);
+        totalPositionsAvailableService
+            .Setup(x => x.GetTotalPositionsAvailable())
+            .ReturnsAsync(totalApprenticeshipsAvailable);
         locationService.Setup(x => x.GetLocationInformation(query.LocationSearchTerm,0,0,false)).ReturnsAsync(locationItem);
 
         // Act
@@ -34,7 +31,7 @@ public class WhenHandlingSearchIndexQuery
 
         // Assert
         Assert.That(result, Is.Not.Null);
-        Assert.That(apiResponse.TotalVacancies, Is.EqualTo(result.TotalApprenticeshipCount));
+        Assert.That(totalApprenticeshipsAvailable, Is.EqualTo(result.TotalApprenticeshipCount));
         Assert.That(result.LocationSearched, Is.True);
         Assert.That(locationItem, Is.EqualTo(result.LocationItem));
     }

@@ -1,14 +1,7 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
-public class GetAccountLegalEntitiesRequest : IGetAllApiRequest
+public class GetAccountLegalEntitiesRequest(long accountId) : IGetAllApiRequest
 {
-    private readonly string _accountHashedId;
-
-    public GetAccountLegalEntitiesRequest(string accountHashedId)
-    {
-        _accountHashedId = accountHashedId;
-    }
-
-    public string GetAllUrl => $"api/accounts/{_accountHashedId}/legalentities?includeDetails=true";
+    public string GetAllUrl => $"api/accounts/{accountId}/legalentities?includeDetails=true";
 }
