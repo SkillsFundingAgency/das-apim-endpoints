@@ -9,5 +9,6 @@ namespace SFA.DAS.ApprenticeApp.Models
         public Guid KSBId { get; set; }
         public string KsbKey { get; set; }
         public int CurrentStatus { get; set; }
+        public string Note { get; set; }
     }
 }
