@@ -8,4 +8,5 @@ public class GetCandidateApiResponse
     public string GovUkIdentifier { get; set; }
     public string FirstName { get; set; }
     public string MiddleNames { get; set; }
+    public DateTime? DateOfBirth { get; set; }
 }
