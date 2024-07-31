@@ -48,7 +48,6 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
                 await _candidateApiClient.PutWithResponseCode<PutCandidateApiResponse>(updateEmailRequest);    
             }
             
-            
             return new CreateCandidateCommandResult
             {
                 Id = existingUser.Body.Id,
@@ -59,6 +58,18 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
                 PhoneNumber = existingUser.Body.PhoneNumber,
                 DateOfBirth = existingUser.Body.DateOfBirth,
                 Status = existingUser.Body.Status
+            };
+        }
+
+        var userWithMigratedEmail =
+            await _candidateApiClient.GetWithResponseCode<GetCandidateByMigratedEmailApiResponse>(
+                new GetCandidateByMigratedEmailApiRequest(request.Email));
+
+        if (userWithMigratedEmail.StatusCode != HttpStatusCode.NotFound)
+        {
+            return new CreateCandidateCommandResult
+            {
+                IsEmailAddressMigrated = true
             };
         }
 
