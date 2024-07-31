@@ -28,6 +28,20 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok();
         }
 
+        // gets the ksb types
+        [HttpDelete("/apprentices/{id}/ksbs/{ksbProgressId}/taskid/{taskId}")]
+        public async Task<IActionResult> RemoveTaskToKsbProgress(Guid id, int ksbProgressId, int taskId)
+        {
+            await _mediator.Send(new RemoveTaskToKsbProgressCommand
+            {
+                TaskId = taskId,
+                KsbProgressId = ksbProgressId,
+                ApprenticeshipId = id
+            });
+
+            return Ok();
+        }
+
 
 
 
