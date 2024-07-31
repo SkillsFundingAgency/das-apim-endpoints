@@ -26,6 +26,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     CandidateId = candidateId
                 });
 
+                if (result is null) return NotFound();
+
                 return Ok((GetWhatInterestsYouApiResponse)result);
             }
             catch (Exception e)

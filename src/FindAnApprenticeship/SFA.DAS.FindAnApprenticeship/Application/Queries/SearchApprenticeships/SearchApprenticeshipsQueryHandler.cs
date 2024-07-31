@@ -28,6 +28,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var locationTask = locationLookupService.GetLocationInformation(request.Location, default, default, false);
             var routesTask = courseService.GetRoutes();
             var courseLevelsTask = courseService.GetLevels();
+
             await Task.WhenAll(locationTask, routesTask, courseLevelsTask);
 
             var location = locationTask.Result;
