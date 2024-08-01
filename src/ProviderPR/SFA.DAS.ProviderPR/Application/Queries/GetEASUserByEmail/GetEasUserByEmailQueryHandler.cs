@@ -14,9 +14,14 @@ public class GetEasUserByEmailQueryHandler(IAccountsApiClient<AccountsConfigurat
     {
         var result = await apiClient.GetWithResponseCode<GetUserByEmailResponse>(new GetUserByEmailRequest(request.Email));
 
-        if (result.StatusCode != HttpStatusCode.OK)
+        if (result.StatusCode == HttpStatusCode.NotFound)
         {
             return new GetEasUserByEmailQueryResult(false, null, null, null);
+        }
+
+        if (result.StatusCode != HttpStatusCode.OK)
+        {
+            throw new InvalidOperationException($"Error calling get user by email for {request.Email}");
         }
 
         var userRef = result.Body.Ref;

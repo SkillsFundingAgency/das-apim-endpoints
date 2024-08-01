@@ -16,7 +16,7 @@ namespace SFA.DAS.ProviderPR.UnitTests.Application.Relationships.Queries.GetEasU
 public class GetEasUserByEmailQueryHandlerTests
 {
     [Test, MoqAutoData]
-    public async Task Handle_GetsNotOkFromApi_ReturnsHasUserAccountFalse(
+    public async Task Handle_GetsNotFoundFromApi_ReturnsHasUserAccountFalse(
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
         string email,
         long ukprn,
@@ -40,6 +40,28 @@ public class GetEasUserByEmailQueryHandlerTests
         accountsApiClient.Verify(r => r.GetWithResponseCode<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
         accountsApiClient.Verify(r => r.GetAll<GetUserAccountsResponse>(It.IsAny<GetUserAccountsRequest>()), Times.Never);
         accountsApiClient.Verify(r => r.GetAll<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntitiesRequest>()), Times.Never);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_GetsNotOKFromApi_ThrowsException(
+        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+        string email,
+        long ukprn,
+        GetEasUserByEmailQueryHandler handler
+    )
+    {
+        var request = new GetEasUserByEmailQuery(email, ukprn);
+
+        var response = new ApiResponse<GetUserByEmailResponse>((GetUserByEmailResponse)null, HttpStatusCode.InternalServerError, "");
+
+        accountsApiClient
+            .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
+                It.Is<GetUserByEmailRequest>(c => c.GetUrl.Contains($"api/user?email={email}"))))!
+            .ReturnsAsync(response);
+
+        Func<Task> act = async () => await handler.Handle(request, new CancellationToken()); ;
+
+        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage($"Error calling get user by email for {request.Email}");
     }
 
     [Test, MoqAutoData]
