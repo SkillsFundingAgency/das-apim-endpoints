@@ -3,7 +3,7 @@ using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
 namespace SFA.DAS.EmployerPR.Application.Commands.PostPermissions;
 
-public class PostPermissionsCommand : IRequest<PostPermissionsCommandResult>
+public class PostPermissionsCommand : IRequest<Unit>
 {
     public required Guid UserRef { get; set; }
 

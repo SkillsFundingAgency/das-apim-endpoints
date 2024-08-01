@@ -44,6 +44,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 var result = await _mediator.Send(new GetIndexQuery
                 { CandidateId = candidateId, ApplicationId = applicationId });
 
+                if (result == null) return NotFound();
+
                 return Ok((GetIndexApiResponse)result);
             }
             catch (Exception e)
@@ -61,6 +63,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 var result = await _mediator.Send(new GetApplicationQuery
                     { CandidateId = candidateId, ApplicationId = applicationId });
 
+                if (result == null) return NotFound();
+
                 return Ok((GetApplicationApiResponse)result);
             }
             catch (Exception e)
@@ -77,6 +81,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             {
                 var result = await _mediator.Send(new GetApplicationViewQuery
                 { CandidateId = candidateId, ApplicationId = applicationId });
+
+                if (result == null) return NotFound();
 
                 return Ok((GetApplicationViewApiResponse)result);
             }
@@ -248,6 +254,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     CandidateId = candidateId
                 });
 
+                if (result == null) return NotFound();
+
                 return Ok(result);
             }
             catch (Exception ex)
@@ -265,7 +273,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 var result = await _mediator.Send(new WithdrawApplicationQuery
                     { ApplicationId = applicationId, CandidateId = candidateId });
 
-                if (result.ApplicationId == Guid.Empty)
+                if (result == null || result.ApplicationId == Guid.Empty)
                 {
                     return NotFound();
                 }

@@ -4,5 +4,5 @@ namespace SFA.DAS.EmployerPR.Application.Queries.GetAccountLegalEntities;
 
 public class GetAccountLegalEntitiesQuery : IRequest<GetAccountLegalEntitiesQueryResult>
 {
-    public string AccountHashedId { get; set; }
+    public long AccountId { get; set; }
 }

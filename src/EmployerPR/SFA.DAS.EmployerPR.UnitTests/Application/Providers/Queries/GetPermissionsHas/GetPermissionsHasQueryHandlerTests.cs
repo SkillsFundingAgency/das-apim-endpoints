@@ -11,7 +11,7 @@ namespace SFA.DAS.EmployerPR.UnitTests.Application.Providers.Queries.GetPermissi
 public class GetPermissionsQueryHandlerTests
 {
     [Test, MoqAutoData]
-    public async Task Handle_ReturnPermissions(
+    public async Task Handle_ReturnPermissionsAndNames(
         GetPermissionsResponse expected,
         GetPermissionsQuery query,
         CancellationToken cancellationToken
@@ -23,7 +23,7 @@ public class GetPermissionsQueryHandlerTests
         providerRelationshipsApiRestClient.Setup(x =>
             x.GetPermissions(
                 It.IsAny<long>(),
-                It.IsAny<int>(),
+                It.IsAny<long>(),
                 It.IsAny<CancellationToken>()
             )
         )
@@ -33,6 +33,8 @@ public class GetPermissionsQueryHandlerTests
 
         var actual = await handler.Handle(query, cancellationToken);
         actual!.Operations.Should().BeEquivalentTo(expected.Operations);
+        actual.ProviderName.Should().Be(expected.ProviderName);
+        actual.AccountLegalEntityName.Should().Be(expected.AccountLegalEntityName);
     }
 
 
@@ -49,7 +51,7 @@ public class GetPermissionsQueryHandlerTests
         providerRelationshipsApiRestClient.Setup(x =>
                 x.GetPermissions(
                     It.IsAny<long>(),
-                    It.IsAny<int>(),
+                    It.IsAny<long>(),
                     It.IsAny<CancellationToken>()
                 )
             )
@@ -73,7 +75,7 @@ public class GetPermissionsQueryHandlerTests
         providerRelationshipsApiRestClient.Setup(x =>
                 x.GetPermissions(
                     It.IsAny<long>(),
-                    It.IsAny<int>(),
+                    It.IsAny<long>(),
                     It.IsAny<CancellationToken>()
                 )
             )

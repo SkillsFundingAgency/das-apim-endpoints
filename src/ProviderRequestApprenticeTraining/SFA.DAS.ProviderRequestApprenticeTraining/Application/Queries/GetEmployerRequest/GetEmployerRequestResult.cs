@@ -1,4 +1,4 @@
-﻿using SFA.DAS.ProviderRequestApprenticeTraining.Models;
+﻿using SFA.DAS.SharedOuterApi.Models.RequestApprenticeTraining;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequest
 {
