@@ -39,7 +39,7 @@ public class GetEasUserByEmailQueryHandler(IAccountsApiClient<AccountsConfigurat
         }
 
         var account = accounts.First();
-        var accountId = account!.AccountId;
+        var accountId = account.AccountId;
 
         var accountLegalEntities = await apiClient.GetAll<GetAccountLegalEntityResponse>(new GetAccountLegalEntitiesRequest(accountId));
 
