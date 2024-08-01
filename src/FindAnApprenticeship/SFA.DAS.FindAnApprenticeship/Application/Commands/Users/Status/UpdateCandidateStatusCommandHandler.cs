@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Status
 {
-    public record UpdateCandidateStatusCommandHandler(ICandidateApiClient<CandidateApiConfiguration> CandidateApiClient) : IRequestHandler<UpdateCandidateStatusCommand, Unit>
+    public class UpdateCandidateStatusCommandHandler(ICandidateApiClient<CandidateApiConfiguration> CandidateApiClient) : IRequestHandler<UpdateCandidateStatusCommand, Unit>
     {
         public async Task<Unit> Handle(UpdateCandidateStatusCommand request,
             CancellationToken cancellationToken)
