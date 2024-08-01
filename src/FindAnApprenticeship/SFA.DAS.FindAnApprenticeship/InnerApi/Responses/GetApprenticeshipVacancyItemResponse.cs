@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using SFA.DAS.FindAnApprenticeship.Services;
 using System;
 using System.Collections.Generic;
@@ -103,6 +103,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public string ApplicationUrl { get; set; }
         public bool IsExternalVacancy => !string.IsNullOrWhiteSpace(ApplicationUrl);
         public string ExternalVacancyUrl => ApplicationUrl;
+        public string? CompanyBenefitsInformation { get; set; }
+        public string? AdditionalTrainingDescription { get; set; }
     }
 
     public class VacancyQualification

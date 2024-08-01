@@ -85,6 +85,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public List<string> CourseCoreDuties { get; set; }
         public string CourseOverviewOfRole { get; set; }
         public string StandardPageUrl { get; set; }
+        public string? CompanyBenefitsInformation { get; set; }
+        public string? AdditionalTrainingDescription { get; set; }
+
         [JsonProperty("levels")] public List<GetCourseLevelsListItem> Levels { get; set; }
        
         public CandidateApplication Application { get; set; }
@@ -160,7 +163,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 Application = (CandidateApplication)source.Application,
 				IsClosed = source.ApprenticeshipVacancy.IsClosed,
                 CandidatePostcode = source.CandidatePostcode,
-                ApplicationUrl = source.ApprenticeshipVacancy.ApplicationUrl
+                ApplicationUrl = source.ApprenticeshipVacancy.ApplicationUrl,
+                CompanyBenefitsInformation = source.ApprenticeshipVacancy.CompanyBenefitsInformation,
+                AdditionalTrainingDescription = source.ApprenticeshipVacancy.AdditionalTrainingDescription
             };
         }
     }

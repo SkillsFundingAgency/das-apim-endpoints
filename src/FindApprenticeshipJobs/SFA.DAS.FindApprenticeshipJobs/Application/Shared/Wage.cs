@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+﻿using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
+
+namespace SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 
 public class Wage
 {
@@ -15,4 +17,5 @@ public class Wage
     public decimal? Between21AndUnder25NationalMinimumWage { get; set; }
     public decimal? Over25NationalMinimumWage { get; set; }
     public string WageText { get; set; } = null!;
+    public string? CompanyBenefitsInformation { get; set; }
 }
