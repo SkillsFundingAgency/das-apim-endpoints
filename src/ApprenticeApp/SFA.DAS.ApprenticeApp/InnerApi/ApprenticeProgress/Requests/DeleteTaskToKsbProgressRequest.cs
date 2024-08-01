@@ -13,7 +13,7 @@ namespace SFA.DAS.ApprenticeApp.InnerApi.ApprenticeProgress.Requests
         {
             KsbProgressId = ksbProgressId;
             TaskId = taskId;
-            apprenticeshipId = ApprenticeshipId;
+            ApprenticeshipId = apprenticeshipId;
         }
 
         public string DeleteUrl => $"apprenticeships/{ApprenticeshipId}/ksbs/{KsbProgressId}/taskid/{TaskId}";

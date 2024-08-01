@@ -18,7 +18,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts
 
         public async Task<Unit> Handle(RemoveTaskToKsbProgressCommand request, CancellationToken cancellationToken)
         {
-            await _progressApi.Delete(new DeleteTaskToKsbProgressRequest(request.ApprenticeshipId, request.KsbProgressId, request.TaskId));
+            await _progressApi.Delete(new DeleteTaskToKsbProgressRequest(request.ApprenticeshipId, request.TaskId, request.KsbProgressId));
             return Unit.Value;
         }
     }

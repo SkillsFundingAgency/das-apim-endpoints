@@ -28,7 +28,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok();
         }
 
-        // gets the ksb types
+        // remove the ksb to task association
         [HttpDelete("/apprentices/{id}/ksbs/{ksbProgressId}/taskid/{taskId}")]
         public async Task<IActionResult> RemoveTaskToKsbProgress(Guid id, int ksbProgressId, int taskId)
         {
