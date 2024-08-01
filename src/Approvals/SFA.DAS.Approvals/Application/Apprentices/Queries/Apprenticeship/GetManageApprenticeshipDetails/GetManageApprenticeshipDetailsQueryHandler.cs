@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.Enums;
 using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.Extensions;

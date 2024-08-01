@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Types;
-using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
-using SFA.DAS.SharedOuterApi.Models;
+using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Approvals.Api.Models.Apprentices
 {

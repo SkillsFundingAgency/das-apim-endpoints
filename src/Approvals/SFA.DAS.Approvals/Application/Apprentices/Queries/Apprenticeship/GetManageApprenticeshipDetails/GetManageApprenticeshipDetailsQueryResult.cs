@@ -8,6 +8,7 @@ using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetChangeOfEm
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetOverlappingTrainingDateResponse;
 using System;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apprenticeships.Types;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails
 {

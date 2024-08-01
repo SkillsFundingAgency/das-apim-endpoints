@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Models;
+﻿using SFA.DAS.Apprenticeships.Types;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 
