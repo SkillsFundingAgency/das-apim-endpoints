@@ -1,5 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -8,9 +9,9 @@ using SFA.DAS.ProviderPR.Api.Controllers;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
 
-namespace SFA.DAS.ProviderPR.Api.UnitTests.Controllers;
+namespace SFA.DAS.ProviderPR.Api.UnitTests.Controllers.GetRelationshipsControllerTests;
 
-public class RelationshipsControllerTests
+public class GetRelationshipsTests
 {
     [Test, AutoData]
     public async Task GetRelationships_InvokesInnerApi_WithQueryString(long ukprn, CancellationToken cancellationToken)
@@ -21,7 +22,7 @@ public class RelationshipsControllerTests
 
         Mock<IProviderRelationshipsApiRestClient> clientMock = new();
 
-        RelationshipsController sut = new(clientMock.Object, Mock.Of<ILogger<RelationshipsController>>())
+        RelationshipsController sut = new(Mock.Of<IMediator>(), clientMock.Object, Mock.Of<ILogger<RelationshipsController>>())
         {
             ControllerContext = new ControllerContext() { HttpContext = httpContext }
         };
@@ -37,7 +38,7 @@ public class RelationshipsControllerTests
         Mock<IProviderRelationshipsApiRestClient> clientMock = new();
         clientMock.Setup(c => c.GetProviderRelationships(ukprn, It.IsAny<string>(), cancellationToken)).ReturnsAsync(response);
 
-        RelationshipsController sut = new(clientMock.Object, Mock.Of<ILogger<RelationshipsController>>())
+        RelationshipsController sut = new(Mock.Of<IMediator>(), clientMock.Object, Mock.Of<ILogger<RelationshipsController>>())
         {
             ControllerContext = new ControllerContext() { HttpContext = new DefaultHttpContext() }
         };
