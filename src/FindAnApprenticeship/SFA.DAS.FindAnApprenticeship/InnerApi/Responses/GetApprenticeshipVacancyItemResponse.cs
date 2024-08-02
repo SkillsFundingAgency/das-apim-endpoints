@@ -53,6 +53,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public string WageText { get; init; }
         [JsonProperty("wageUnit")]
         public int WageUnit { get; init; }
+        [JsonProperty("wageAdditionalInformation")]
+        public string WageAdditionalInformation { get; init; }
         [JsonProperty("workingWeek")]
         public string WorkingWeek { get; init; }
         [JsonProperty("expectedDuration")]
