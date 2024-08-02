@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,7 +11,6 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.AccountUsers
@@ -28,8 +26,6 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.AccountUsers
             [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipApiClient,
             GetEmployerAccountTaskListQueryHandler handler)
         {
-            query.Operations = new List<Operation> { Operation.Recruitment, Operation.RecruitmentRequiresReview };
-
             providerRelationshipApiClient
                 .Setup(x =>
                     x.Get<GetAccountProvidersResponse>(It.Is<GetAccountProvidersRequest>(
@@ -59,7 +55,6 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.AccountUsers
             [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipApiClient,
             GetEmployerAccountTaskListQueryHandler handler)
         {
-            query.Operations = new List<Operation> { Operation.Recruitment, Operation.RecruitmentRequiresReview };
             providerRelationshipResponse.AccountProviderLegalEntities = Array.Empty<GetProviderAccountLegalEntityItem>().ToList();
 
             providerRelationshipApiClient
@@ -92,7 +87,6 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.AccountUsers
             [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipApiClient,
             GetEmployerAccountTaskListQueryHandler handler)
         {
-            query.Operations = new List<Operation> { Operation.Recruitment, Operation.RecruitmentRequiresReview };
             providerRelationshipResponse.AccountProviderLegalEntities = Array.Empty<GetProviderAccountLegalEntityItem>().ToList();
             accountProvidersResponse.AccountProviders = Array.Empty<AccountProviderResponse>().ToList();
 

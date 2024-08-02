@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using MediatR;
-using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
+﻿using MediatR;
 
 namespace SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskList
 {
@@ -8,6 +6,5 @@ namespace SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskLis
     {
         public string HashedAccountId { get; set; }
         public long AccountId { get; set; }
-        public List<Operation> Operations { get; set; } = new List<Operation> { Operation.Recruitment, Operation.RecruitmentRequiresReview };
     }
 }
