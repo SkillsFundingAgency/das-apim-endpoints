@@ -16,7 +16,7 @@
     <PackageVersion Include="Azure.Security.KeyVault.Certificates" Version="4.6.0" />
     <PackageVersion Include="CompareNETObjects" Version="4.83.0" />
     <PackageVersion Include="coverlet.collector" Version="6.0.1" />
-    <PackageVersion Include="coverlet.msbuild" Version="6.0.1" />
+    <PackageVersion Include="coverlet.msbuild" Version="6.0.2" />
     <PackageVersion Include="CsvHelper" Version="28.0.1" />
     <PackageVersion Include="Faker.Net" Version="2.0.163" />
     <PackageVersion Include="FluentValidation" Version="11.9.0" />
@@ -43,7 +43,7 @@
     <PackageVersion Include="Moq" Version="4.20.70" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="NLog.Web.AspNetCore" Version="5.3.8" />
-    <PackageVersion Include="NUnit" Version="4.1.0" />
+    <PackageVersion Include="NUnit" Version="4.0.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="4.5.0" />
     <PackageVersion Include="NUnit.Analyzers" Version="4.2.0" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.8.1" />
@@ -59,7 +59,7 @@
     <PackageVersion Include="SFA.DAS.Notifications.Messages" Version="3.0.0" />
     <PackageVersion Include="SFA.DAS.Telemetry" Version="17.1.70" />
     <PackageVersion Include="SFA.DAS.Testing" Version="3.0.169" />
-    <PackageVersion Include="SFA.DAS.Testing.AutoFixture" Version="3.0.169" />
+    <PackageVersion Include="SFA.DAS.Testing.AutoFixture" Version="17.1.103" />
     <PackageVersion Include="SpecFlow" Version="3.9.74" />
     <PackageVersion Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
     <PackageVersion Include="SpecFlow.NUnit" Version="3.9.74" />
@@ -76,7 +76,6 @@
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="FluentAssertions.Web" Version="1.2.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.JsonPatch" Version="8.0.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />

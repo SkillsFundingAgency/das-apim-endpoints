@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -75,6 +76,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public CandidateApplication? Application { get; set; } = null;
         [JsonPropertyName("location")]
         public Location Location { get; set; }
+        public string? CompanyBenefitsInformation { get; set; }
+        public string? AdditionalTrainingDescription { get; set; }
 
         public class CandidateApplication
         {

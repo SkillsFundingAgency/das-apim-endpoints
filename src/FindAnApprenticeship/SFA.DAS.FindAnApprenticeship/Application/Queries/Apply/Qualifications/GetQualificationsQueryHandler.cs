@@ -24,6 +24,8 @@ public class GetQualificationsQueryHandler(ICandidateApiClient<CandidateApiConfi
         var qualifications = qualificationsTask.Result;
         var qualificationTypes = qualificationTypesTask.Result;
 
+        if (application == null) return null;
+
         bool? isCompleted = application.QualificationsStatus switch
         {
             Constants.SectionStatus.Incomplete => false,

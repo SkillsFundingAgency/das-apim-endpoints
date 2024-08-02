@@ -19,18 +19,18 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Account_From_Mediator(
-            string hashedAccountId,
+            long accountId,
             GetAccountLegalEntitiesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerAccountsController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetAccountLegalEntitiesQuery>(c=>c.HashedAccountId.Equals(hashedAccountId)),
+                    It.Is<GetAccountLegalEntitiesQuery>(c=>c.AccountId.Equals(accountId)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetAccountLegalEntities(hashedAccountId) as ObjectResult;
+            var controllerResult = await controller.GetAccountLegalEntities(accountId) as ObjectResult;
 
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -41,7 +41,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
-            string hashedAccountId,
+            long accountId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerAccountsController controller)
         {
@@ -51,7 +51,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetAccountLegalEntities(hashedAccountId) as BadRequestResult;
+            var controllerResult = await controller.GetAccountLegalEntities(accountId) as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }

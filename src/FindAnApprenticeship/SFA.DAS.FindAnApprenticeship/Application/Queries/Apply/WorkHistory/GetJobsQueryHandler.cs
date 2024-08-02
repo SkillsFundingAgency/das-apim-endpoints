@@ -29,7 +29,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.WorkHistory
             
             var application = applicationTask.Result;
             var workHistories = workHistoriesTask.Result;
-            
+
+            if (application == null) return null;
+
             bool? isCompleted = application.JobsStatus switch
             {
                 Constants.SectionStatus.Incomplete => false,

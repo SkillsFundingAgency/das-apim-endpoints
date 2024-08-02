@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.ApprenticeApp.Models
 {
@@ -7,6 +8,7 @@ namespace SFA.DAS.ApprenticeApp.Models
         public string? EntryId { get; set; }
         public bool? IsSaved { get; set; }
         public bool? LikeStatus { get; set; }
+        public DateTime? SaveTime { get; set; }
     }
 
     public class ApprenticeArticleCollection
