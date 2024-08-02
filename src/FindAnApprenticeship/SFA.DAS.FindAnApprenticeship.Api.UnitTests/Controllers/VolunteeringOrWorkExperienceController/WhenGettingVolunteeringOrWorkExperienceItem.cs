@@ -35,4 +35,23 @@ public class WhenGettingVolunteeringOrWorkExperienceItem
         actualObject.Should().NotBeNull();
         actualObject.Should().BeEquivalentTo((GetVolunteeringOrWorkExperienceItemApiResponse)queryResult);
     }
+    
+    [Test, MoqAutoData]
+    public async Task Then_If_Query_Result_Is_Null_Then_NotFound_Result_Returned(
+        Guid candidateId,
+        Guid id,
+        Guid applicationId,
+        GetVolunteeringOrWorkExperienceItemQueryResult queryResult,
+        [Frozen] Mock<IMediator> mediator,
+        [Greedy] Api.Controllers.VolunteeringOrWorkExperienceController controller)
+    {
+        mediator.Setup(x => x.Send(It.Is<GetVolunteeringOrWorkExperienceItemQuery>(q =>
+                    q.CandidateId == candidateId && q.ApplicationId == applicationId && q.Id == id),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new GetVolunteeringOrWorkExperienceItemQueryResult());
+
+        var actual = await controller.GetDelete(applicationId, candidateId, id);
+
+        actual.Should().BeOfType<NotFoundResult>();
+    }
 }
