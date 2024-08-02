@@ -19,15 +19,13 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
         public static async Task<UpdateableServiceProvider> StartServiceBus
         (
             this UpdateableServiceProvider serviceProvider,
-            IConfiguration configuration
+            IConfiguration configuration,
+            string endpointName
         )
         {
             var config = configuration
             .GetSection("NServiceBusConfiguration")
             .Get<NServiceBusConfiguration>();
-
-            string endpointName = configuration["NServiceBusConfiguration:NServiceBusEndpointName"];
-            if (string.IsNullOrEmpty(endpointName)) { endpointName = "SFA.DAS.ApprenticeApp"; }
 
             var endpointConfiguration = new EndpointConfiguration(endpointName)
                 .UseErrorQueue($"{endpointName}-errors")
@@ -41,8 +39,6 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
                 {
                     endpointConfiguration.UseLicense(config.NServiceBusLicense);
                 }
-
-                endpointConfiguration.SendOnly();
 
                 if (config.NServiceBusConnectionString.Equals("UseLearningEndpoint=true", StringComparison.CurrentCultureIgnoreCase) || string.IsNullOrEmpty(config.NServiceBusConnectionString))
                 {

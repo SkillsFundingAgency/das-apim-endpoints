@@ -7,6 +7,7 @@ trigger:
     include:
     - azure
     - pipeline-templates
+    - deployments
     - src/EmployerFinance
 
 pr:
@@ -18,6 +19,7 @@ pr:
     include:
     - azure
     - pipeline-templates
+    - deployments
     - src/EmployerFinance
 
 variables:

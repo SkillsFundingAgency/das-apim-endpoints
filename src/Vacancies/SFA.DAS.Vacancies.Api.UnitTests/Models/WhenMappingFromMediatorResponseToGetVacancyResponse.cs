@@ -45,6 +45,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(c=>c.WorkingWeek)
                 .Excluding(c=>c.Score)
                 .Excluding(c=>c.IsPositiveAboutDisability)
+                .Excluding(c => c.ClosingDate)
                 .Excluding(item => item.Ukprn)
                 .Excluding(item => item.VacancyReference)
             );
@@ -64,6 +65,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.Wage.WageAmountUpperBound.Should().Be(source.Vacancy.WageAmountUpperBound);
             actual.Ukprn.Should().Be(ukprn);
             actual.VacancyReference.Should().Be(source.Vacancy.VacancyReference.Replace("VAC", ""));
+            actual.ClosingDate.Should().Be(source.Vacancy.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)));
         }
 
         [Test, AutoData]
@@ -82,6 +84,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(item => item.CourseLevel)
                 .Excluding(item => item.Location)
                 .Excluding(item => item.Ukprn)
+                .Excluding(item => item.ClosingDate)
             );
             actual.EmployerName.Should().Be(source.Vacancy.AnonymousEmployerName);
             actual.Location.Should().BeNull();

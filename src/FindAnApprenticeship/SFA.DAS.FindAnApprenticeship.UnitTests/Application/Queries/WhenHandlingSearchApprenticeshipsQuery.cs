@@ -8,6 +8,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -25,6 +26,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             LocationItem locationInfo,
             GetVacanciesResponse vacanciesResponse,
             GetRoutesListResponse routesResponse,
+            [Frozen] Mock<IMetrics> metricsService,
             [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<ILocationLookupService> locationLookupService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
@@ -76,6 +78,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 result.PageSize.Should().Be(query.PageSize);
                 result.TotalPages.Should().Be(totalPages);
                 result.DisabilityConfident.Should().Be(query.DisabilityConfident);
+                metricsService.Verify(x => x.IncreaseVacancySearchResultViews(It.IsAny<string>(), 1), Times.Exactly(vacanciesResponse.ApprenticeshipVacancies.Count()));
             }
         }
 
@@ -110,6 +113,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             GetVacanciesResponse vacanciesResponse,
             GetRoutesListResponse routesResponse,
             GetApplicationsApiResponse getApplicationsApiResponse,
+            [Frozen] Mock<IMetrics> metricsService,
             [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<ILocationLookupService> locationLookupService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
@@ -159,7 +163,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             using (new AssertionScope())
             {
                 Assert.That(result, Is.Not.Null);
-                result.TotalApprenticeshipCount.Should().Be(vacanciesResponse.Total);
                 result.TotalFound.Should().Be(vacanciesResponse.TotalFound);
                 result.LocationItem.Should().BeEquivalentTo(locationInfo);
                 result.Routes.Should().BeEquivalentTo(routesResponse.Routes);
@@ -168,6 +171,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 result.PageSize.Should().Be(query.PageSize);
                 result.TotalPages.Should().Be(totalPages);
                 result.DisabilityConfident.Should().Be(query.DisabilityConfident);
+                metricsService.Verify(x => x.IncreaseVacancySearchResultViews(It.IsAny<string>(), 1), Times.Exactly(vacanciesResponse.ApprenticeshipVacancies.Count()));
             }
         }
     }

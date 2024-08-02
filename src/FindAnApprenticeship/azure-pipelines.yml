@@ -7,6 +7,7 @@ trigger:
     include:
     - azure
     - pipeline-templates
+    - deployments
     - src/FindAnApprenticeship
 
 pr:
@@ -18,11 +19,13 @@ pr:
     include:
     - azure
     - pipeline-templates
+    - deployments
     - src/FindAnApprenticeship
 
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
+- group: RELEASE das-apim-endpoints-FindAnApprenticeship
 
 resources:
   repositories:

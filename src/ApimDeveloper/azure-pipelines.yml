@@ -5,9 +5,11 @@ trigger:
       - "master"
   paths:
     include:
+    - src/ApimDeveloper
+    exclude:
     - azure
     - pipeline-templates
-    - src/ApimDeveloper
+    - deployments
 
 pr:
   autoCancel: true
@@ -16,9 +18,11 @@ pr:
       - "master"
   paths:
     include:
+    - src/ApimDeveloper
+    exclude:
     - azure
     - pipeline-templates
-    - src/ApimDeveloper
+    - deployments
 
 variables:
 - group: Release Management Resources

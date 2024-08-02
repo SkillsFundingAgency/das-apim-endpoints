@@ -5,9 +5,11 @@ trigger:
       - "master"
   paths:
     include:
+    - src/TrackProgressInternal
+    exclude:
     - azure
     - pipeline-templates
-    - src/TrackProgressInternal
+    - deployments
 
 pr:
   branches:
@@ -15,9 +17,11 @@ pr:
       - "master"
   paths:
     include:
+    - src/TrackProgressInternal
+    exclude:
     - azure
     - pipeline-templates
-    - src/TrackProgressInternal
+    - deployments
 
 variables:
 - group: Release Management Resources

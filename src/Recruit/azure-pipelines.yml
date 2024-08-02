@@ -5,9 +5,11 @@ trigger:
       - "master"
   paths:
     include:
+    - src/Recruit
+    exclude:
     - azure
     - pipeline-templates
-    - src/Recruit
+    - deployments
 
 pr:
   branches:
@@ -15,10 +17,11 @@ pr:
       - "master"
   paths:
     include:
+    - src/Recruit
+    exclude:
     - azure
     - pipeline-templates
-    - src/Recruit
-
+    - deployments
 
 variables:
 - group: Release Management Resources

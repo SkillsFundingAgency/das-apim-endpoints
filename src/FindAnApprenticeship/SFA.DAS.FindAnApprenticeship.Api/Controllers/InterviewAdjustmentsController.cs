@@ -34,6 +34,8 @@ public class InterviewAdjustmentsController : Controller
                 CandidateId = candidateId
             });
 
+            if (result is null) return NotFound();
+
             return Ok((GetInterviewAdjustmentsApiResponse)result);
         }
         catch (Exception e)

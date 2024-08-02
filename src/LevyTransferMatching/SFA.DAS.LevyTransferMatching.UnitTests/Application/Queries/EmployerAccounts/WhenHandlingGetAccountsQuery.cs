@@ -37,8 +37,9 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.EmployerAcc
                     .Excluding(c => c.FirstName)
                     .Excluding(c => c.LastName)
                     .Excluding(c => c.UserId)
-                    .Excluding(x => x.IsSuspended)
-                    .Excluding(x => x.DisplayName)
+                    .Excluding(c => c.IsSuspended)
+                    .Excluding(c => c.DisplayName)
+                    .Excluding(c => c.ApprenticeshipEmployerType)
             );
             actual.FirstName.Should().Be(teamResponse.FirstOrDefault().FirstName);
             actual.LastName.Should().Be(teamResponse.FirstOrDefault().LastName);

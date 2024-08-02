@@ -9,9 +9,9 @@ public class LevelApiResponse
         return new LevelApiResponse
         {
             Name = source.Name,
-            Id = source.Code
+            Code = source.Code
         };
     }
     public string Name { get; set; }
-    public int Id { get; set; }
+    public int Code { get; set; }
 }

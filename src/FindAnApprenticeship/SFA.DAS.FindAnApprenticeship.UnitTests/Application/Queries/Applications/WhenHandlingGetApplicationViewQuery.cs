@@ -46,18 +46,21 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
             var result = await handler.Handle(query, CancellationToken.None);
 
             using var scope = new AssertionScope();
-            result.CandidateDetails.Address.Should().BeEquivalentTo(applicationApiResponse.Candidate.Address, options => options.Excluding(fil => fil.CandidateId));
+            result.CandidateDetails.Address.Should().BeEquivalentTo(applicationApiResponse.Candidate.Address, options => 
+                options.Excluding(fil => fil.CandidateId).Excluding(c=>c.Uprn));
             result.CandidateDetails.Should().BeEquivalentTo(applicationApiResponse.Candidate, options=> options
                     .Excluding(p=>p.MiddleNames)
                     .Excluding(p=>p.DateOfBirth)
                     .Excluding(p=>p.Status)
                     .Excluding(p=>p.Address)
+                    .Excluding(p=>p.MigratedEmail)
                 );
             result.VacancyDetails.EmployerName.Should().Be(vacancyResponse.EmployerName);
             result.VacancyDetails.Title.Should().Be(vacancyResponse.Title);
-            result.ApplicationStatus.Should().Be(applicationApiResponse.Status);
+            result.ApplicationStatus.Should().Be(applicationApiResponse.Status.ToString());
             result.WithdrawnDate.Should().Be(applicationApiResponse.WithdrawnDate);
             result.MigrationDate.Should().Be(applicationApiResponse.MigrationDate);
+            
         }
     }
 }

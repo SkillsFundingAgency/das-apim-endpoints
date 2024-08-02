@@ -9,4 +9,5 @@ public class CandidateApplicationStatusCommand : IRequest<Unit>
     public Guid CandidateId { get; set; }
     public string Feedback { get; set; }
     public string Outcome { get; set; }
+    public long VacancyReference { get; set; }
 }

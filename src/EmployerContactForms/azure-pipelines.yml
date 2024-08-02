@@ -5,9 +5,11 @@ trigger:
       - "master"
   paths:
     include:
+    - src/EmployerContactForms
+    exclude:
     - azure
     - pipeline-templates
-    - src/EmployerContactForms
+    - deployments
 
 pr:
   autoCancel: true
@@ -16,9 +18,11 @@ pr:
       - "master"
   paths:
     include:
+    - src/EmployerContactForms
+    exclude:
     - azure
     - pipeline-templates
-    - src/EmployerContactForms
+    - deployments
 
 variables:
 - group: Release Management Resources

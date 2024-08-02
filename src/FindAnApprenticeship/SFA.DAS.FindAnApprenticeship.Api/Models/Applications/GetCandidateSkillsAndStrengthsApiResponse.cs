@@ -1,36 +1,18 @@
-﻿using System;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetCandidateSkillsAndStrengths;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetCandidateSkillsAndStrengths;
 
-namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-
-public class GetCandidateSkillsAndStrengthsApiResponse
+namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
 {
-    public AboutYouItem AboutYou { get; set; }
-
-    public static implicit operator GetCandidateSkillsAndStrengthsApiResponse(GetCandidateSkillsAndStrengthsQueryResult source)
+    public class GetCandidateSkillsAndStrengthsApiResponse
     {
-        if (source.AboutYou is null) return new GetCandidateSkillsAndStrengthsApiResponse();
+        public string Strengths { get; set; }
 
-        return new GetCandidateSkillsAndStrengthsApiResponse
+        public static implicit operator GetCandidateSkillsAndStrengthsApiResponse(
+            GetCandidateSkillsAndStrengthsQueryResult source)
         {
-            AboutYou = (AboutYouItem)source
-        };
-    }
-}
-
-public class AboutYouItem
-{
-    public string SkillsAndStrengths { get; set; }
-    public string Support { get; set; }
-    public Guid ApplicationId { get; set; }
-
-    public static implicit operator AboutYouItem(GetCandidateSkillsAndStrengthsQueryResult source)
-    {
-        return new AboutYouItem
-        {
-            SkillsAndStrengths = source.AboutYou.SkillsAndStrengths,
-            Support = source.AboutYou.Support,
-            ApplicationId = (Guid)source.AboutYou.ApplicationId
-        };
+            return new GetCandidateSkillsAndStrengthsApiResponse
+            {
+                Strengths = source.Strengths
+            };
+        }
     }
 }

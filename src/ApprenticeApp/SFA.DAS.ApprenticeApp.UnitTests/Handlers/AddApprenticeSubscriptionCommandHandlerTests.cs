@@ -17,9 +17,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             CancellationToken cancellationToken)
         {
             command.ApprenticeId = new Guid();
-
             await sut.Handle(command, cancellationToken);
-
             sut.Should().NotBeNull();
         }
     }

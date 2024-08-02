@@ -13,4 +13,8 @@ public interface IVacancy
     string AdditionalQuestion1 { get; }
     string AdditionalQuestion2 { get; }
     bool IsDisabilityConfident { get; }
+    string City { get; }
+    string Postcode { get; }
+    bool IsExternalVacancy { get; }
+    string ExternalVacancyUrl { get; }
 }
