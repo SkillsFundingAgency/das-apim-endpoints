@@ -1,5 +1,6 @@
 ﻿using System;
 using SFA.DAS.EmployerAccounts.ExternalApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.PublicSectorOrganisation;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
@@ -146,6 +147,34 @@ public class OrganisationResult
             Address = address,
             Sector = null,
             OrganisationStatus = MapCompanyToOrganisationStatus(source.CompanyStatus)
+        };
+    }
+
+    public static implicit operator OrganisationResult(GetCharityResponse source)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        return new OrganisationResult
+        {
+            Name = source.Name,
+            Type = OrganisationType.Charity,
+            SubType = OrganisationSubType.None,
+            Code = source.RegistrationNumber.ToString(),
+            RegistrationDate = source.RegistrationDate,
+            Address = new Address
+            {
+                Line1 = source.AddressLine1,
+                Line2 = source.AddressLine2,
+                Line3 = source.AddressLine3,
+                Line4 = source.AddressLine4,
+                Line5 = source.AddressLine5,
+                Postcode = source.Postcode
+            },
+            Sector = null,
+            OrganisationStatus = OrganisationStatus.None
         };
     }
 
