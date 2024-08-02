@@ -96,7 +96,8 @@ public class GetLiveVacanciesApiResponse
                 ApplicationUrl = source.ApplicationUrl,
                 TypicalJobTitles = source.TypicalJobTitles,
                 AdditionalQuestion1 = source.AdditionalQuestion1,
-                AdditionalQuestion2 = source.AdditionalQuestion2
+                AdditionalQuestion2 = source.AdditionalQuestion2,
+                AdditionalTrainingDescription = source.AdditionalTrainingDescription
             };
         }
 
@@ -151,6 +152,7 @@ public class GetLiveVacanciesApiResponse
         public string? AdditionalQuestion1 { get; set; }
         public string? AdditionalQuestion2 { get; set; }
         public string? OwnerType { get; set; }
+        public string? AdditionalTrainingDescription { get; set; }
 
     }
 
@@ -194,6 +196,7 @@ public class GetLiveVacanciesApiResponse
         public decimal? Between21AndUnder25NationalMinimumWage { get; set; }
         public decimal? Over25NationalMinimumWage { get; set; }
         public string WageText { get; set; } = null!;
+        public string? CompanyBenefitsInformation { get; set; }
 
         public static implicit operator Wage(Application.Shared.Wage source)
         {
@@ -211,7 +214,8 @@ public class GetLiveVacanciesApiResponse
                 Between18AndUnder21NationalMinimumWage = source.Between18AndUnder21NationalMinimumWage,
                 Between21AndUnder25NationalMinimumWage = source.Between21AndUnder25NationalMinimumWage,
                 Over25NationalMinimumWage = source.Over25NationalMinimumWage,
-                WageText = source.WageText
+                WageText = source.WageText,
+                CompanyBenefitsInformation = source.CompanyBenefitsInformation
             };
         }
     }
