@@ -32,6 +32,11 @@ public class EarningsController : ControllerBase
     /// <returns></returns>
     private FM36Learner[] GetLearners(long ukprn)
     {
+        if (ukprn == 9999999999)
+        {
+            return [];
+        }
+
         Fixture fixture = new Fixture();
 
         return new[]
