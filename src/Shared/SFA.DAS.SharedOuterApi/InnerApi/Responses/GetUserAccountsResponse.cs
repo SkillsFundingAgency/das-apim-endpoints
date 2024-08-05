@@ -1,11 +1,14 @@
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using System.Text.Json.Serialization;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 {
     public class GetUserAccountsResponse
     {
-        [JsonPropertyName("HashedAccountId")]
+        [JsonPropertyName("AccountId")] 
+        public long AccountId { get; set; }
+        
+        [JsonPropertyName("HashedAccountId")] 
         public string EncodedAccountId { get; set; }
 
         [JsonPropertyName("DasAccountName")]
@@ -16,8 +19,5 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 
         [JsonPropertyName("EmployerType")]
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
-
-        [JsonPropertyName("AccountId")]
-        public long AccountId { get; set; }
     }
 }
