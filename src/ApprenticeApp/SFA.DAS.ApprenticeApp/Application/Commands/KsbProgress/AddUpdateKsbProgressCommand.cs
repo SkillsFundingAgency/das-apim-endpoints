@@ -2,7 +2,7 @@
 using MediatR;
 using SFA.DAS.ApprenticeApp.Models;
 
-namespace SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts
+namespace SFA.DAS.ApprenticeApp.Application.Commands
 {
     public class AddUpdateKsbProgressCommand : IRequest<Unit>
     {

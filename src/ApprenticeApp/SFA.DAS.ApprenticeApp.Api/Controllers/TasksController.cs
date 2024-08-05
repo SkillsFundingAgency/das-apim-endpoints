@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts;
+using SFA.DAS.ApprenticeApp.Application.Commands;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Models;
 
