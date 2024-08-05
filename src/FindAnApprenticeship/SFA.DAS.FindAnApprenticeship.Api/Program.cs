@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using NLog.Web;
 using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
 
 namespace SFA.DAS.FindAnApprenticeship.Api
@@ -17,8 +16,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseApplicationInsights()
-                        .UseStartup<Startup>()
-                        .UseNLog();
+                        .UseStartup<Startup>();
                 }).UseNServiceBusContainer();
     }
 }

@@ -11,13 +11,13 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
         [JsonPropertyName("HashedAccountId")] 
         public string EncodedAccountId { get; set; }
 
-        [JsonPropertyName("DasAccountName")] 
+        [JsonPropertyName("DasAccountName")]
         public string DasAccountName { get; set; }
 
-        [JsonPropertyName("Role")] 
+        [JsonPropertyName("Role")]
         public string Role { get; set; }
 
-        [JsonPropertyName("EmployerType")] 
+        [JsonPropertyName("EmployerType")]
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
     }
 }

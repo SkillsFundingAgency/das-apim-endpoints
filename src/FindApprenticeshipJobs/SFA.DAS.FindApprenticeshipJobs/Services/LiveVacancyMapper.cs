@@ -45,7 +45,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Between18AndUnder21NationalMinimumWage = source.Wage.Between18AndUnder21NationalMinimumWage,
                     Between21AndUnder25NationalMinimumWage = source.Wage.Between21AndUnder25NationalMinimumWage,
                     Over25NationalMinimumWage = source.Wage.Over25NationalMinimumWage,
-                    WageText = source.Wage.WageText
+                    WageText = source.Wage.WageText,
+                    CompanyBenefitsInformation = source.Wage.CompanyBenefitsInformation
                 },
                 AnonymousEmployerName = source.IsAnonymous ? source.EmployerName: null,
                 IsDisabilityConfident = source.DisabilityConfident == DisabilityConfident.Yes,
@@ -96,7 +97,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 IsRecruitVacancy = true,
                 TypicalJobTitles = getStandardsListItem.TypicalJobTitles == null ? "" : SortTypicalJobTitles(getStandardsListItem.TypicalJobTitles),
                 AdditionalQuestion1 = source.AdditionalQuestion1,
-                AdditionalQuestion2 = source.AdditionalQuestion2
+                AdditionalQuestion2 = source.AdditionalQuestion2,
+                AdditionalTrainingDescription = source.AdditionalTrainingDescription
             };
         }
 

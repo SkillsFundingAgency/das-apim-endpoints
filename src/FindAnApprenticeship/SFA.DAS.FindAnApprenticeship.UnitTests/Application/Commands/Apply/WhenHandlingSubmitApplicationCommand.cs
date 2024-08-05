@@ -1,7 +1,5 @@
-using System.Net;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestPlatform.CoreUtilities.Helpers;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.SubmitApplication;
@@ -17,6 +15,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply;
 
@@ -27,6 +26,7 @@ public class WhenHandlingSubmitApplicationCommand
         string vacancyReference,
         SubmitApplicationCommand request,
         GetApplicationApiResponse applicationApiResponse,
+        [Frozen] Mock<IMetrics> metricsService,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         SubmitApplicationCommandHandler handler)
@@ -63,6 +63,7 @@ public class WhenHandlingSubmitApplicationCommand
         var actual = await handler.Handle(request, CancellationToken.None);
         
         actual.Should().BeTrue();
+        metricsService.Verify(x => x.IncreaseVacancySubmitted(It.IsAny<string>(), 1), Times.Once);
     }
     
     [Test]
@@ -80,6 +81,7 @@ public class WhenHandlingSubmitApplicationCommand
         GetApplicationApiResponse applicationApiResponse,
         GetApprenticeshipVacancyItemResponse vacancyResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
+        [Frozen] Mock<IMetrics> metricsService,
         [Frozen] Mock<IVacancyService> vacancyService,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
@@ -132,6 +134,7 @@ public class WhenHandlingSubmitApplicationCommand
                 && !string.IsNullOrEmpty(c.Tokens["yourApplicationsURL"])
                 )
             ), Times.Once);
+        metricsService.Verify(x => x.IncreaseVacancySubmitted(It.IsAny<string>(), 1), Times.Once);
     }
     
     [Test, MoqAutoData]
@@ -139,6 +142,7 @@ public class WhenHandlingSubmitApplicationCommand
         string vacancyReference,
         SubmitApplicationCommand request,
         GetApplicationApiResponse applicationApiResponse,
+        [Frozen] Mock<IMetrics> metricsService,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
@@ -164,11 +168,13 @@ public class WhenHandlingSubmitApplicationCommand
         actual.Should().BeFalse();
         notificationService.Verify(x => x.Send(
             It.IsAny<SendEmailCommand>()), Times.Never());
+        metricsService.Verify(x => x.IncreaseVacancySubmitted(It.IsAny<string>(), 1), Times.Never);
     }
     
     [Test, MoqAutoData]
     public async Task Then_The_ApplicationStatus_Is_Not_Updated_And_Not_Submitted_To_Recruit_If_Application_Is_Not_Found(
         SubmitApplicationCommand request,
+        [Frozen] Mock<IMetrics> metricsService,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
@@ -188,18 +194,20 @@ public class WhenHandlingSubmitApplicationCommand
         actual.Should().BeFalse();
         notificationService.Verify(x => x.Send(
             It.IsAny<SendEmailCommand>()), Times.Never());
+        metricsService.Verify(x => x.IncreaseVacancySubmitted(It.IsAny<string>(), 1), Times.Never);
     }
     
     [Test, MoqAutoData]
     public async Task Then_The_Application_Is_Not_Submitted_To_Recruit_If_Application_Is_Already_Submitted(
         GetApplicationApiResponse applicationApiResponse,
         SubmitApplicationCommand request,
+        [Frozen] Mock<IMetrics> metricsService,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         SubmitApplicationCommandHandler handler)
     {
-        applicationApiResponse.Status = "Submitted";
+        applicationApiResponse.Status = ApplicationStatus.Submitted;
         var expectedGetApplicationRequest =
             new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true);
         candidateApiClient
@@ -218,5 +226,6 @@ public class WhenHandlingSubmitApplicationCommand
         actual.Should().BeFalse();
         notificationService.Verify(x => x.Send(
             It.IsAny<SendEmailCommand>()), Times.Never());
+        metricsService.Verify(x => x.IncreaseVacancySubmitted(It.IsAny<string>(), 1), Times.Never);
     }
 }
