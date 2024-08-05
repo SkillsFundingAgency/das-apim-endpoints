@@ -1,5 +1,4 @@
 ﻿using RestEase;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationship;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
 
 namespace SFA.DAS.ProviderPR.Infrastructure;

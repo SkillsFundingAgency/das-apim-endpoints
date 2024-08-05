@@ -2,9 +2,9 @@
 using FluentAssertions;
 using Moq;
 using RestEase;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationship;
 using SFA.DAS.ProviderPR.Application.Queries.GetRelationshipByEmail;
 using SFA.DAS.ProviderPR.Infrastructure;
+using SFA.DAS.ProviderPR.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
