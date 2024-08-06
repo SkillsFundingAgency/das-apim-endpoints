@@ -4,6 +4,5 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateP
 {
     public class CreateProviderResponseEmployerRequestResponse
     {
-        public bool Result { get; set; }
     }
 }

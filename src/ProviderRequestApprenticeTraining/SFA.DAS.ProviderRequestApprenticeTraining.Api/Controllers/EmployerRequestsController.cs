@@ -102,12 +102,12 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
         }
 
         [HttpPost("provider/responses")]
-        public async Task<IActionResult> UpdateProviderResponseStatus(CreateProviderResponseEmployerRequestCommand command)
+        public async Task<IActionResult> CreateProviderResponse(CreateProviderResponseEmployerRequestCommand command)
         {
             try
             {
-                var result = await _mediator.Send(command);
-                return Ok(result.Result);
+                await _mediator.Send(command);
+                return Ok();
             }
             catch (Exception e)
             {
