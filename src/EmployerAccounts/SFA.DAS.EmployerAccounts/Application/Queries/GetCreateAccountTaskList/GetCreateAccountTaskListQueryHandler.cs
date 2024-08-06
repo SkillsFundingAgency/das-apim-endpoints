@@ -44,6 +44,7 @@ public class GetCreateAccountTaskListQueryHandler(
 
             if (response == null)
             {
+                logger.LogInformation("{HandlerName}: Result from {MethodName} is null. Returning null.", nameof(GetCreateAccountTaskListQueryHandler), nameof(CreateResponseFromNewestAccountFor));
                 return null;
             }
 
