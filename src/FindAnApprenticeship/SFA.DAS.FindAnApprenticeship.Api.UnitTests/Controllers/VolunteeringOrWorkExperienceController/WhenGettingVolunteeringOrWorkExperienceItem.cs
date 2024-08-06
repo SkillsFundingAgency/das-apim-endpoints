@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit3;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +37,6 @@ public class WhenGettingVolunteeringOrWorkExperienceItem
         actualObject.Should().BeEquivalentTo((GetVolunteeringOrWorkExperienceItemApiResponse)queryResult);
     }
 
-
     [Test, MoqAutoData]
     public async Task Then_Mediator_Returns_Null_Response_So_NotFound_Is_Returned(
         Guid candidateId,
@@ -50,7 +49,7 @@ public class WhenGettingVolunteeringOrWorkExperienceItem
         mediator.Setup(x => x.Send(It.Is<GetVolunteeringOrWorkExperienceItemQuery>(q =>
                     q.CandidateId == candidateId && q.ApplicationId == applicationId && q.Id == id),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(() => null);
+            .ReturnsAsync(new GetVolunteeringOrWorkExperienceItemQueryResult());
 
         var actual = await controller.GetDelete(applicationId, candidateId, id);
 

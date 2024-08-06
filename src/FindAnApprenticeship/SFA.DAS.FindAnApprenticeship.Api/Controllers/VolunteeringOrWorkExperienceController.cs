@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
@@ -110,9 +110,10 @@ public class VolunteeringOrWorkExperienceController(
                 ApplicationId = applicationId,
                 Id = id
             });
-
-            if (result is null) return NotFound();
-
+            if (result.Id == Guid.Empty)
+            {
+                return NotFound();
+            }
             return Ok((GetVolunteeringOrWorkExperienceItemApiResponse)result);
         }
         catch (Exception e)
