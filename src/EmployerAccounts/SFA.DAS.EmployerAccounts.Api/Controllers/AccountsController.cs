@@ -97,34 +97,6 @@ public class AccountsController(IMediator mediator, ILogger<AccountsController> 
     }
     
     [HttpGet]
-    [Route("{accountId}/account-task-list")]
-    public async Task<IActionResult> GetEmployerAccountTaskList([FromRoute] long accountId, [FromQuery] string hashedAccountId)
-    {
-        try
-        {
-            var result = await mediator.Send(new GetEmployerAccountTaskListQuery
-            {
-                AccountId = accountId,
-                HashedAccountId = hashedAccountId
-            });
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            var model = (GetEmployerAccountTaskListResponse)result;
-
-            return Ok(model);
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Error getting account task list");
-            return BadRequest();
-        }
-    }
-    
-    [HttpGet]
     [Route("{accountId}/teams")]
     public async Task<IActionResult> GetTeams([FromRoute] long accountId)
     {
