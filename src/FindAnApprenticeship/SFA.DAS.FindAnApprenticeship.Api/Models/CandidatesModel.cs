@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models;
 
@@ -60,4 +61,9 @@ public class CandidatePreferencesModel : CandidatesModel
 public class CandidatesPhoneNumberModel : CandidatesModel
 {
     public string PhoneNumber { get; set; }
+}
+
+public class CandidateStatus : CandidatesModel
+{
+    public UserStatus Status { get; set; }
 }

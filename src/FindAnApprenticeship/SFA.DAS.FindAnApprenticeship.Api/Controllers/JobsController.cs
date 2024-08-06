@@ -138,6 +138,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     ApplicationId = applicationId,
                     JobId = jobId
                 });
+
+                if (result is null) return NotFound();
+
                 return Ok((GetDeleteJobApiResponse)result);
             }
             catch (Exception e)
