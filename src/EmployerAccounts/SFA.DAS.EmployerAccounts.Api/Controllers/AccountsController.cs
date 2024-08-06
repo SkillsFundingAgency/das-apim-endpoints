@@ -82,7 +82,6 @@ public class AccountsController(IMediator mediator, ILogger<AccountsController> 
 
             if (result == null)
             {
-                logger.LogWarning("Returning Ok with null response.");
                 return Ok(null);
             }
 
@@ -90,9 +89,9 @@ public class AccountsController(IMediator mediator, ILogger<AccountsController> 
 
             return Ok(model);
         }
-        catch (Exception e)
+        catch (Exception exception)
         {
-            logger.LogError(e, "Error getting create account task list.");
+            logger.LogError(exception, "Error getting create account task list.");
             return BadRequest();
         }
     }

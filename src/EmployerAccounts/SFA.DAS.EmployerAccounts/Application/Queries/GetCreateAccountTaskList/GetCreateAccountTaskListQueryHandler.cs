@@ -38,8 +38,6 @@ public class GetCreateAccountTaskListQueryHandler(
 
         if (string.IsNullOrEmpty(request.HashedAccountId))
         {
-            logger.LogInformation("{HandlerName}: HashedAccountId IsNullOrEmpty. Creating response from newest account.", nameof(GetCreateAccountTaskListQueryHandler));
-
             response = await CreateResponseFromNewestAccountFor(request.UserRef);
 
             if (response == null)
@@ -69,13 +67,9 @@ public class GetCreateAccountTaskListQueryHandler(
 
             return null;
         }
-
-        logger.LogInformation("{HandlerName}: Retrieving PAYE Schemes.", nameof(GetCreateAccountTaskListQueryHandler));
-
+        
         var payeSchemes = (await accountsApiClient.GetAll<GetAccountPayeSchemesResponse>(new GetAccountPayeSchemesRequest(request.AccountId))).ToList();
-
-        logger.LogInformation("{HandlerName}: Building Response.", nameof(GetCreateAccountTaskListQueryHandler));
-
+        
         response = BuildResponse(request,
             payeSchemes,
             accountResponse,
@@ -110,12 +104,8 @@ public class GetCreateAccountTaskListQueryHandler(
         var accountResponseTask = accountsApiClient.Get<GetAccountByIdResponse>(new GetAccountByIdRequest(request.AccountId));
         var accountAgreementsResponseTask = accountsApiClient.GetAll<GetEmployerAgreementsResponse>(new GetEmployerAgreementsRequest(request.AccountId));
 
-        logger.LogInformation("{HandlerName}: Awaiting GetData tasks.", nameof(GetCreateAccountTaskListQueryHandler));
-
         await Task.WhenAll(taskListTask, accountResponseTask, accountAgreementsResponseTask);
-
-        logger.LogInformation("{HandlerName}: GetData tasks completed.", nameof(GetCreateAccountTaskListQueryHandler));
-
+        
         return (taskListTask.Result,
             accountResponseTask.Result,
             accountAgreementsResponseTask.Result);
@@ -136,9 +126,7 @@ public class GetCreateAccountTaskListQueryHandler(
             logger.LogInformation("{HandlerName}: No account found. Returning null.", nameof(GetCreateAccountTaskListQueryHandler));
             return null;
         }
-
-        logger.LogInformation("{HandlerName}: Account found, retrieving PAYE Schemes.", nameof(GetCreateAccountTaskListQueryHandler));
-
+        
         var payeSchemes = await accountsApiClient.GetAll<GetAccountPayeSchemesResponse>(new GetAccountPayeSchemesRequest(firstAccount.AccountId));
 
         return new GetCreateAccountTaskListQueryResponse
