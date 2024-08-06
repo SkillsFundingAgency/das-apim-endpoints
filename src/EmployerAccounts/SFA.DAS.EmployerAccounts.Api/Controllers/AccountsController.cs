@@ -82,8 +82,8 @@ public class AccountsController(IMediator mediator, ILogger<AccountsController> 
 
             if (result == null)
             {
-                logger.LogWarning("Returning not found for create account task list.");
-                return NotFound();
+                logger.LogWarning("Returning Ok with null response.");
+                return Ok(null);
             }
 
             var model = (GetCreateAccountTaskListResponse)result;
