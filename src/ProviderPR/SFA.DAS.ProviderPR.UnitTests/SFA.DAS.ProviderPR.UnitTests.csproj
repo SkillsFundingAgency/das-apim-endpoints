@@ -19,8 +19,13 @@
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="NUnit.Analyzers" />
-    <PackageReference Include="coverlet.collector" />
     <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
+    <PackageReference Include="coverlet.collector" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    <ProjectReference Include="..\SFA.DAS.ProviderPR\SFA.DAS.ProviderPR.csproj" />
   </ItemGroup>
 
 </Project>
