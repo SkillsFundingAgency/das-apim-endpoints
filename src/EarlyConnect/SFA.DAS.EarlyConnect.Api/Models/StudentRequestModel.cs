@@ -22,7 +22,7 @@ namespace SFA.DAS.EarlyConnect.Api.Models
         [RegularExpression(@"^[\w\s]+$", ErrorMessage = "Invalid Telephone")]
         public string Telephone { get; set; }
 
-        [RegularExpression(@"^[\w\s]+$", ErrorMessage = "Invalid SchoolName")]
+        [RegularExpression(@"^[\w\s']+$", ErrorMessage = "Invalid SchoolName")]
         public string SchoolName { get; set; }
 
         [Required]
