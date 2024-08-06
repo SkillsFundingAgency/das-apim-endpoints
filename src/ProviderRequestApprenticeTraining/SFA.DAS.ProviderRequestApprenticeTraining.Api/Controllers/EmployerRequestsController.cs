@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmailAddresses;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
 {
@@ -116,6 +117,25 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             }
         }
 
+        [HttpGet("provider/{ukprn}/emails")]
+        public async Task<IActionResult> GetProviderEmailAddresses(long ukprn)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetProviderEmailAddressesQuery()
+                {
+                    Ukprn = ukprn
+                });
+
+                var model = (ProviderEmailAddresses)result;
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to retrieve provider email addresses");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
 
     }
 }

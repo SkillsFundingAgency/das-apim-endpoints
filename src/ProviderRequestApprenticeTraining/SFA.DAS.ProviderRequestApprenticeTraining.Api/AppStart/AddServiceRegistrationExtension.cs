@@ -20,6 +20,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.AppStart
 
             services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
             services.AddTransient<IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration>, RequestApprenticeTrainingApiClient>();
+            services.AddTransient<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>, ProviderCoursesApiClient>();
 
             services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         }
