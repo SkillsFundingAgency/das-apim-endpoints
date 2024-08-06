@@ -53,7 +53,7 @@ public class CreateCandidateCommandHandler(
         }
 
         var userWithMigratedEmail =
-            await _candidateApiClient.GetWithResponseCode<GetCandidateByMigratedEmailApiResponse>(
+            await candidateApiClient.GetWithResponseCode<GetCandidateByMigratedEmailApiResponse>(
                 new GetCandidateByMigratedEmailApiRequest(request.Email));
 
         if (userWithMigratedEmail.StatusCode != HttpStatusCode.NotFound)
@@ -64,8 +64,10 @@ public class CreateCandidateCommandHandler(
             };
         }
 
+        var userMigrationStatus = UserStatus.Incomplete;
+
         var userDetails =
-            await _legacyApiClient.Get<GetLegacyUserByEmailApiResponse>(
+            await legacyApiClient.Get<GetLegacyUserByEmailApiResponse>(
                 new GetLegacyUserByEmailApiRequest(request.Email));
 
         if (userDetails != null && Guid.TryParse(userDetails.Id.ToString(), out _))

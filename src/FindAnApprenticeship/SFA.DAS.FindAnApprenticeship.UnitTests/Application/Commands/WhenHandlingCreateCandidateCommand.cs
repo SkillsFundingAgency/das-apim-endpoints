@@ -426,6 +426,11 @@ public class WhenHandlingPostCandidateCommand
                 It.Is<GetCandidateApiRequest>(r => r.GetUrl == expectedGetCandidateRequest.GetUrl)))
                 .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
 
+        var expectedGetMigratedCandidateRequest = new GetCandidateByMigratedEmailApiRequest(command.Email);
+        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateByMigratedEmailApiResponse>(
+                It.Is<GetCandidateByMigratedEmailApiRequest>(r => r.GetUrl == expectedGetMigratedCandidateRequest.GetUrl)))
+            .ReturnsAsync(new ApiResponse<GetCandidateByMigratedEmailApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
+
         var expectedRequest = new PostCandidateApiRequest(command.GovUkIdentifier, expectedPostData);
 
         mockApiClient
