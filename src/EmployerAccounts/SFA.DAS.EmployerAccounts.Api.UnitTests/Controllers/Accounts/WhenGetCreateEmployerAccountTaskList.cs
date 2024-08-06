@@ -56,9 +56,10 @@ public class WhenGetCreateEmployerAccountTaskList
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(() => null);
 
-        var controllerResult = await controller.GetCreateAccountTaskList(accountId, hashedAccountId, userRef) as NotFoundResult;
+        var controllerResult = await controller.GetCreateAccountTaskList(accountId, hashedAccountId, userRef) as OkObjectResult;
 
-        controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        controllerResult.Value.Should().BeNull();
     }
 
     [Test, MoqAutoData]
