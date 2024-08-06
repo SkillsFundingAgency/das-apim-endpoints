@@ -18,6 +18,7 @@ public interface IEmployerAccountsService
 {
     Task<IEnumerable<EmployerAccountUser>> GetEmployerAccounts(EmployerProfile employerProfile);
     Task<EmployerProfile> PutEmployerAccount(EmployerProfile employerProfile);
+    Task<IEnumerable<TeamMember>> GetTeamMembers(long accountId);
 }
 
 public class EmployerAccountsService(
@@ -25,6 +26,19 @@ public class EmployerAccountsService(
     IAccountsApiClient<AccountsConfiguration> accountsApiClient)
     : IEmployerAccountsService
 {
+    public async Task<IEnumerable<TeamMember>> GetTeamMembers(long accountId)
+    {
+        var response = await accountsApiClient.GetAll<GetAccountTeamMembersResponse>(new GetAccountTeamMembersRequest(accountId));
+        
+        return response.Select(usersResponse => new TeamMember
+        {
+            Email = usersResponse.Email,
+            Role = usersResponse.Role,
+            UserRef = usersResponse.UserRef,
+            CanReceiveNotifications = usersResponse.CanReceiveNotifications
+        });
+    }
+
     public async Task<IEnumerable<EmployerAccountUser>> GetEmployerAccounts(EmployerProfile employerProfile)
     {
         var userId = employerProfile.UserId;
@@ -82,7 +96,8 @@ public class EmployerAccountsService(
             {
                 var teamMembers =
                     await accountsApiClient.GetAll<GetAccountTeamMembersResponse>(
-                        new GetAccountTeamMembersRequest(userAccount.EncodedAccountId));
+                        new GetAccountTeamMembersRequest(userAccount.AccountId));
+                
                 var member = teamMembers.FirstOrDefault(c =>
                     c.UserRef.Equals(userId, StringComparison.CurrentCultureIgnoreCase));
 
@@ -133,7 +148,7 @@ public class EmployerAccountsService(
                 employerProfile.Email,
                 employerProfile.FirstName,
                 employerProfile.LastName));
-            
+
         if (employerUserResponse?.Body != null)
         {
             // external api call to update the employer_account repo with latest information.
@@ -151,7 +166,7 @@ public class EmployerAccountsService(
                 LastName = employerUserResponse.Body.LastName,
                 UserId = employerUserResponse.Body.GovUkIdentifier
             };
-        };
+        }
 
         return null;
     }
