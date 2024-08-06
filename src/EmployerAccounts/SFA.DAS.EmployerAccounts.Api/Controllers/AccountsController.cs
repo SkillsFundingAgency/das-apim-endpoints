@@ -82,6 +82,7 @@ public class AccountsController(IMediator mediator, ILogger<AccountsController> 
 
             if (result == null)
             {
+                logger.LogWarning("Returning not found for create account task list.");
                 return NotFound();
             }
 
@@ -91,7 +92,7 @@ public class AccountsController(IMediator mediator, ILogger<AccountsController> 
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Error getting create account task list");
+            logger.LogError(e, "Error getting create account task list.");
             return BadRequest();
         }
     }
