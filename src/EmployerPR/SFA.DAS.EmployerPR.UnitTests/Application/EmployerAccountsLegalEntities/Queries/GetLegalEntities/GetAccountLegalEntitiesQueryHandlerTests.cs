@@ -16,10 +16,10 @@ public class GetAccountLegalEntitiesQueryHandlerTests
     public async Task Handle_ReturnCalendarEvents(
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
         GetAccountLegalEntitiesQueryHandler handler,
-        string accountHashedId,
+        long accountId,
         List<GetAccountLegalEntityResponse> expected)
     {
-        var query = new GetAccountLegalEntitiesQuery { AccountHashedId = accountHashedId };
+        var query = new GetAccountLegalEntitiesQuery { AccountId = accountId };
 
         accountsApiClient.Setup(x =>
             x.GetAll<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntitiesRequest>())).ReturnsAsync(expected);

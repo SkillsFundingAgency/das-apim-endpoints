@@ -28,11 +28,10 @@ public class PermissionsController(IMediator _mediator) : ControllerBase
 
     [HttpPost]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(PostPermissionsCommandResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Unit), StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PostPermissions([FromBody] PostPermissionsCommand command, CancellationToken cancellationToken)
     {
-        var result = await _mediator.Send(command, cancellationToken);
-
-        return Ok(result);
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
     }
 }

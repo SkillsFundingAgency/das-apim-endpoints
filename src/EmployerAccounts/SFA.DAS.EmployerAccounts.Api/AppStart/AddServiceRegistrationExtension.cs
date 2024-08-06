@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.EmployerAccounts.Configuration;
+using SFA.DAS.EmployerAccounts.ExternalApi;
 using SFA.DAS.EmployerAccounts.Strategies;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -34,6 +36,8 @@ namespace SFA.DAS.EmployerAccounts.Api.AppStart
             services.AddTransient<IReferenceDataApiClient<ReferenceDataApiConfiguration>, ReferenceDataApiClient>();
             services.AddTransient<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>, EducationalOrganisationApiClient>();
             services.AddTransient<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>, PublicSectorOrganisationApiClient>();
+            services.AddTransient<ICompaniesHouseApiClient<CompaniesHouseApiConfiguration>, CompaniesHouseApiClient<CompaniesHouseApiConfiguration>>();
+            services.AddTransient<ICharitiesApiClient<CharitiesApiConfiguration>, CharitiesApiClient>();
         }
     }
 }
