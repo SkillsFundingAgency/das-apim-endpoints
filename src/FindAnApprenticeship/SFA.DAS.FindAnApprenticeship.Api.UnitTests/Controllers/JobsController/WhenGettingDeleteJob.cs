@@ -40,7 +40,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.JobsController
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Mediator_Returns_Null_Response_So_NotFound_Is_Returned(
+        public async Task Then_Mediator_Returns_Empty_Response_NotFound_Is_Returned(
             Guid candidateId,
             Guid jobId,
             Guid applicationId,
@@ -51,7 +51,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.JobsController
             mediator.Setup(x => x.Send(It.Is<GetDeleteJobQuery>(q =>
                         q.CandidateId == candidateId && q.ApplicationId == applicationId && q.JobId == jobId),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => null);
+                .ReturnsAsync(() => new GetDeleteJobQueryResult());
 
             var actual = await controller.GetDeleteJob(applicationId, candidateId, jobId);
 
