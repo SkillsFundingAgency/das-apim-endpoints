@@ -10,29 +10,30 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmailAddresses
+namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers
 {
-    public class GetProviderEmailAddressesQueryHandler : IRequestHandler<GetProviderEmailAddressesQuery, GetProviderEmailAddressesResult>
+    public class GetProviderPhoneNumbersQueryHandler : IRequestHandler<GetProviderPhoneNumbersQuery, GetProviderPhoneNumbersResult>
     {
         private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _providerCoursesApiClient;
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient;
 
-        private readonly ILogger<GetProviderEmailAddressesQueryHandler> _logger;
+        private readonly ILogger<GetProviderPhoneNumbersQueryHandler> _logger;
 
-        public GetProviderEmailAddressesQueryHandler(
+        public GetProviderPhoneNumbersQueryHandler(
             IProviderCoursesApiClient<ProviderCoursesApiConfiguration> providerCoursesApiClient,
             IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient,
-            ILogger<GetProviderEmailAddressesQueryHandler> logger)
+            ILogger<GetProviderPhoneNumbersQueryHandler> logger)
         {
             _providerCoursesApiClient = providerCoursesApiClient;
             _roatpCourseManagementApiClient = roatpCourseManagementApiClient;
             _logger = logger;
         }
 
-        public async Task<GetProviderEmailAddressesResult> Handle(GetProviderEmailAddressesQuery request, CancellationToken cancellationToken)
+        public async Task<GetProviderPhoneNumbersResult> Handle(GetProviderPhoneNumbersQuery request, CancellationToken cancellationToken)
         {
             var providerCourses = await _providerCoursesApiClient.
                 Get<List<ProviderCourse>>(new GetProviderCoursesRequest(
@@ -42,17 +43,17 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProvi
                 Get<GetProviderSummaryResponse>(new GetRoatpProviderRequest(
                     Convert.ToInt32(request.Ukprn)));
 
-            var emailAddresses = (providerCourses?.Where(pc => !string.IsNullOrWhiteSpace(pc.ContactUsEmail))
-                .Select(pc => pc.ContactUsEmail.RemoveWhitespace()) ?? Enumerable.Empty<string>())
-                .Append(providerSummary?.Email?.RemoveWhitespace() ?? string.Empty)
-                .Where(email => !string.IsNullOrWhiteSpace(email))
+            var phoneNumbers = (providerCourses?.Where(pc => !string.IsNullOrWhiteSpace(pc.ContactUsPhoneNumber))
+                .Select(pc => pc.ContactUsPhoneNumber.RemoveWhitespace()) ?? Enumerable.Empty<string>())
+                .Append(providerSummary?.Phone?.RemoveWhitespace() ?? string.Empty)
+                .Where(phone => !string.IsNullOrWhiteSpace(phone))
                 .Distinct()
                 .Order()
                 .ToList();
 
-            return new GetProviderEmailAddressesResult
+            return new GetProviderPhoneNumbersResult
             {
-                EmailAddresses = emailAddresses
+                PhoneNumbers = phoneNumbers
             };
         }
     }
