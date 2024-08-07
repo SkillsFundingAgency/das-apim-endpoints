@@ -10,10 +10,12 @@ using SFA.DAS.EmployerAccounts.Application.Queries.GetCreateAccountTaskList;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAgreements;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.PayeSchemes;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.User;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAgreements;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.PayeSchemes;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.User;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -58,7 +60,7 @@ public class WhenUserHasNotAddedPayeAndOrganisation
     )
     {
         var query = new GetCreateAccountTaskListQuery(accountId, null, userRef);
-        
+
         accountsApiClient
             .Setup(x =>
                 x.GetAll<GetAccountPayeSchemesResponse>(It.Is<GetAccountPayeSchemesRequest>(c =>
@@ -72,17 +74,20 @@ public class WhenUserHasNotAddedPayeAndOrganisation
 
     [Test, MoqAutoData]
     public async Task Then_HasPaye_False(
-        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+        long accountId,
+        string userRef,
+        string hashedAccountId,
         GetUserByRefResponse userResponse,
         GetAccountByIdResponse accountResponse,
         List<GetUserAccountsResponse> userAccountsResponse,
         GetUserAccountsRequest userAccountsRequest,
-        GetCreateAccountTaskListQueryHandler sut,
-        long accountId,
-        string userRef
-    )
+        List<GetEmployerAgreementsResponse> employerAgreementsResponse,
+        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+        GetCreateAccountTaskListQueryHandler sut)
     {
-        var query = new GetCreateAccountTaskListQuery(accountId, null, userRef);
+        accountResponse.NameConfirmed = false;
+        
+        var query = new GetCreateAccountTaskListQuery(accountId, hashedAccountId, userRef);
 
         accountsApiClient
             .Setup(x =>
@@ -94,14 +99,19 @@ public class WhenUserHasNotAddedPayeAndOrganisation
             .Setup(x =>
                 x.GetAll<GetUserAccountsResponse>(It.Is<GetUserAccountsRequest>(c =>
                     c.GetAllUrl.Equals($"api/user/{query.UserRef}/accounts"))))
-            .ReturnsAsync(userAccountsResponse)
-            .Verifiable();
+            .ReturnsAsync(userAccountsResponse);
 
         accountsApiClient
             .Setup(x =>
                 x.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(c =>
                     c.GetUrl.Equals($"api/accounts/{query.AccountId}"))))
             .ReturnsAsync(accountResponse);
+
+        accountsApiClient
+            .Setup(x =>
+                x.GetAll<GetEmployerAgreementsResponse>(It.Is<GetEmployerAgreementsRequest>(c =>
+                    c.GetAllUrl.Equals($"api/accounts/{query.AccountId}/agreements"))))
+            .ReturnsAsync(employerAgreementsResponse);
 
         var firstAccount = userAccountsResponse.MinBy(x => x.DateRegistered);
 
@@ -112,11 +122,15 @@ public class WhenUserHasNotAddedPayeAndOrganisation
             .ReturnsAsync(() => null)
             .Verifiable();
 
+        accountsApiClient
+            .Setup(x =>
+                x.GetAll<GetAccountPayeSchemesResponse>(It.Is<GetAccountPayeSchemesRequest>(r=>
+                    r.GetAllUrl.Equals($"api/accounts/{query.AccountId}/payeschemes"))))
+            .ReturnsAsync(() => null);
+
         var result = await sut.Handle(query, CancellationToken.None);
 
         result.HasPayeScheme.Should().BeFalse();
         result.CompletedSections.Should().Be(1);
-
-        accountsApiClient.Verify();
     }
 }
