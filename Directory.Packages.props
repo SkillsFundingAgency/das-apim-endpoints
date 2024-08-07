@@ -8,6 +8,7 @@
     <PackageVersion Include="AutoFixture" Version="4.18.1" />
     <PackageVersion Include="AutoFixture.AutoMoq" Version="4.18.1" />
     <PackageVersion Include="AutoFixture.NUnit3" Version="4.18.1" />
+    <PackageVersion Include="SFA.DAS.Apprenticeships.Types" Version="6.8.5-prerelease-73" />
     <PackageVersion Include="System.Text.Json" Version="8.0.4" />
     <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageVersion Include="Azure.Identity" Version="1.12.0" />
@@ -38,7 +39,7 @@
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.Testing" Version="8.5.0" />
-    <PackageVersion Include="Microsoft.Identity.Client" Version="4.61.3" />
+    <PackageVersion Include="Microsoft.Identity.Client" Version="4.62.0" />
     <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="7.3.1" />
     <PackageVersion Include="Moq" Version="4.20.70" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />

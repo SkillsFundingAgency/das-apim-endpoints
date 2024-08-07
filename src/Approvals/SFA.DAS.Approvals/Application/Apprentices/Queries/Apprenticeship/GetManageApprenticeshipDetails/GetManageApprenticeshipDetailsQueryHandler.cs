@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.Enums;
 using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.Extensions;
@@ -17,6 +18,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using GetApprenticeshipKeyRequest = SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetApprenticeshipKey.GetApprenticeshipKeyRequest;
 using GetPendingPriceChangeRequest = SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange.GetPendingPriceChangeRequest;
 
@@ -67,7 +69,8 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         var canActualStartDateBeChangedTask = CanActualStartDateBeChanged(apprenticeship.ActualStartDate);
         var pendingStartDateChangeTask = apprenticeshipsApiClient.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(new GetPendingStartDateChangeRequest(apprenticeshipKey.Body));
         var paymentStatusTask = apprenticeshipsApiClient.GetWithResponseCode<GetPaymentStatusApiResponse>(new GetPaymentStatusRequest(apprenticeshipKey.Body));
-        
+        var learnerStatusTask = apprenticeshipsApiClient.GetWithResponseCode<GetLearnerStatusResponse>(new GetLearnerStatusRequest(apprenticeshipKey.Body));
+
         await Task.WhenAll(priceEpisodesResponseTask,
             apprenticeshipUpdatesResponseTask,
             apprenticeshipDataLockStatusResponseTask,
@@ -79,7 +82,8 @@ public class GetManageApprenticeshipDetailsQueryHandler(
             pendingPriceChangeTask,
             canActualStartDateBeChangedTask,
             pendingStartDateChangeTask,
-            paymentStatusTask);
+            paymentStatusTask,
+            learnerStatusTask);
 
         var priceEpisodesResponse = priceEpisodesResponseTask.Result;
         var apprenticeshipUpdatesResponse = apprenticeshipUpdatesResponseTask.Result;
@@ -93,6 +97,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         var canActualStartDateBeChanged = canActualStartDateBeChangedTask.Result;
         var pendingStartDateResponse = pendingStartDateChangeTask.Result;
         var paymentStatusResponse = paymentStatusTask.Result;
+        var learnerStatusResponse = learnerStatusTask.Result;
 
         var result = new GetManageApprenticeshipDetailsQueryResult();
         
@@ -109,6 +114,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         result.CanActualStartDateBeChanged = canActualStartDateBeChanged;
         result.PendingStartDateChange = ToResponse(pendingStartDateResponse.Body);
         result.PaymentsStatus = ToResponse(paymentStatusResponse.Body);
+        result.LearnerStatus = ToResponse(learnerStatusResponse.Body);
 
         return result;
     }
@@ -157,6 +163,13 @@ public class GetManageApprenticeshipDetailsQueryHandler(
             PaymentsFrozen = source.PaymentsFrozen,
             ReasonFrozen = source.ReasonFrozen
         };
+    }
+
+    private LearnerStatus ToResponse(GetLearnerStatusResponse source)
+    {
+        if (source == null) return LearnerStatus.None;
+
+        return source.LearnerStatus;
     }
 
     private async Task<bool?> CanActualStartDateBeChanged(DateTime? actualStartDate)
