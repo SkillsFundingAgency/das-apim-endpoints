@@ -8,7 +8,9 @@ parameters:
 jobs:
 - job: CodeBuild
   pool:
-    name: DAS - Continuous Integration Agents
+    name: DAS - Continuous Integration Beta
+    demands:
+    - Agent.OS -equals Linux
   variables:
   - group: ESFA - SonarCloud
   - name: buildConfiguration
@@ -17,6 +19,16 @@ jobs:
     clean: all
   steps:
   - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
+
+  - task: NuGetCommand@2
+    displayName: Nuget Restore
+    inputs:
+      command: restore
+      projects: ${{ parameters.TargetProjects }}
+      noCache: true
+      feedsToUse: 'select'
+      vstsFeed: 'dct-pkg'
+      includeNuGetOrg: true
 
   - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
     parameters:
