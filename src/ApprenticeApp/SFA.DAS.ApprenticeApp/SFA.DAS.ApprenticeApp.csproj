@@ -32,7 +32,6 @@
   <ItemGroup>
     <Folder Include="Application\Commands\ApprenticeSubscriptions\" />
     <Folder Include="Models\Contentful\" />
-    <Folder Include="Client\" />
     <Folder Include="Application\Queries\SupportAndGuidance\" />
     <Folder Include="Application\Commands\SupportAndGuidance\" />
     <Folder Include="InnerApi\ApprenticeProgress\" />
