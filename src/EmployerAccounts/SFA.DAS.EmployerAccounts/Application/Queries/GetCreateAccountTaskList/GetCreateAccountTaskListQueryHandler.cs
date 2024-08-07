@@ -61,7 +61,7 @@ public class GetCreateAccountTaskListQueryHandler(
 
         if (accountResponse == null || agreement == null)
         {
-            logger.LogWarning("{HandlerName}: Returning null. Account Response null: {AccountIsNull}. Agreement null: {CountIsZero}",
+            logger.LogWarning("{HandlerName}: Returning null. Account Response null: {AccountIsNull}. Agreement null: {AgreementIsNull}",
                 nameof(GetCreateAccountTaskListQueryHandler),
                 accountResponse == null,
                 agreement == null);
@@ -69,7 +69,7 @@ public class GetCreateAccountTaskListQueryHandler(
             return null;
         }
         
-        var payeSchemes = (await accountsApiClient.GetAll<GetAccountPayeSchemesResponse>(new GetAccountPayeSchemesRequest(request.AccountId))).ToList();
+        var payeSchemes = (await accountsApiClient.GetAll<GetAccountPayeSchemesResponse>(new GetAccountPayeSchemesRequest(request.AccountId)))?.ToList();
         
         response = BuildResponse(request,
             payeSchemes,
@@ -180,7 +180,7 @@ public class GetCreateAccountTaskListQueryHandler(
         return new GetCreateAccountTaskListQueryResponse
         {
             HashedAccountId = request.HashedAccountId,
-            HasPayeScheme = payeSchemes.Any(),
+            HasPayeScheme = payeSchemes != null && payeSchemes.Any(),
             NameConfirmed = accountResponse.NameConfirmed,
             PendingAgreementId = agreement.Id,
             AddTrainingProviderAcknowledged = accountResponse.AddTrainingProviderAcknowledged,
