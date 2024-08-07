@@ -1,7 +1,7 @@
 ﻿using System;
 using MediatR;
 
-namespace SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts
+namespace SFA.DAS.ApprenticeApp.Application.Commands
 {
     public class RemoveTaskToKsbProgressCommand : IRequest<Unit>
     {
