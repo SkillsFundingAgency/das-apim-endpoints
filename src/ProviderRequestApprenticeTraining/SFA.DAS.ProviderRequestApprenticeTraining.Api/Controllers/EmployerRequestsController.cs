@@ -118,8 +118,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             }
         }
 
-        [HttpGet("provider/{ukprn}/email-addresses/{userEmailAddress}")]
-        public async Task<IActionResult> GetProviderEmailAddresses(long ukprn, string userEmailAddress)
+        [HttpGet("provider/{ukprn}/email-addresses")]
+        public async Task<IActionResult> GetProviderEmailAddresses(long ukprn,[FromQuery]string userEmailAddress)
         {
             try
             {
