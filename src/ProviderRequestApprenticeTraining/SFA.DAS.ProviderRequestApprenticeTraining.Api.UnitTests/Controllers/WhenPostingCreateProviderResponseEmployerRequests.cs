@@ -14,26 +14,19 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
 {
-    public class WhenUpdatingProviderResponseStatus
+    public class WhenCreatingProviderResponse
     {
         [Test, MoqAutoData]
-        public async Task Then_True_Is_Returned_From_Mediator(
+        public async Task Then_Status_Code_Is_Ok_From_Mediator(
             CreateProviderResponseEmployerRequestCommand command,
-            CreateProviderResponseEmployerRequestResponse response,
-            [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerRequestsController controller)
         {
-            // Arrange
-            mockMediator
-                .Setup(x => x.Send(It.IsAny<CreateProviderResponseEmployerRequestCommand>(), CancellationToken.None)).ReturnsAsync(response);
-
             // Act
-            var actual = await controller.UpdateProviderResponseStatus(command) as ObjectResult;
+            var actual = await controller.CreateProviderResponse(command) as StatusCodeResult;
             
             // Assert
             Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().Be(true);
         }
 
         [Test, MoqAutoData]
@@ -47,7 +40,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
                 .ThrowsAsync(new Exception());
 
             // Act
-            var actual = await controller.UpdateProviderResponseStatus(command) as StatusCodeResult;
+            var actual = await controller.CreateProviderResponse(command) as StatusCodeResult;
 
             // Assert
             Assert.That(actual, Is.Not.Null);

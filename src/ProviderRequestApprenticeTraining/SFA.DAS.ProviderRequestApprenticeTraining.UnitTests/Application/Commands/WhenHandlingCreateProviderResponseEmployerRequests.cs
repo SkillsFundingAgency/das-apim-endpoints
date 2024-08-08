@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using Azure.Core;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
@@ -8,6 +9,7 @@ using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
@@ -77,8 +79,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Comman
         {
             var response = new ApiResponse<CreateProviderResponseEmployerRequestResponse>(null, statusCode, errorContent);
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateEmployerResponseEmployerRequestData, CreateProviderResponseEmployerRequestResponse>(It.IsAny<CreateProviderResponseEmployerRequestRequest>(), true))
-                .ReturnsAsync(response);
+            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateEmployerResponseEmployerRequestData, CreateProviderResponseEmployerRequestResponse>(It.IsAny<CreateProviderResponseEmployerRequestRequest>(), false))
+            .ReturnsAsync(response);
 
             Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
 
