@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Extensions
-{    public static class StringExtensions
+{
+    public static class StringExtensions
     {
         public static string RemoveWhitespace(this string value)
         {
@@ -15,3 +16,4 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Extensions
         }
     }
 }
+

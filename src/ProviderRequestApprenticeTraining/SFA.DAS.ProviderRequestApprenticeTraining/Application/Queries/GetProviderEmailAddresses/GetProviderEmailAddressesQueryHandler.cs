@@ -17,30 +17,31 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProvi
 {
     public class GetProviderEmailAddressesQueryHandler : IRequestHandler<GetProviderEmailAddressesQuery, GetProviderEmailAddressesResult>
     {
-        private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _providerCoursesApiClient;
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient;
 
         private readonly ILogger<GetProviderEmailAddressesQueryHandler> _logger;
 
         public GetProviderEmailAddressesQueryHandler(
-            IProviderCoursesApiClient<ProviderCoursesApiConfiguration> providerCoursesApiClient,
             IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient,
             ILogger<GetProviderEmailAddressesQueryHandler> logger)
         {
-            _providerCoursesApiClient = providerCoursesApiClient;
             _roatpCourseManagementApiClient = roatpCourseManagementApiClient;
             _logger = logger;
         }
 
         public async Task<GetProviderEmailAddressesResult> Handle(GetProviderEmailAddressesQuery request, CancellationToken cancellationToken)
         {
-            var providerCourses = await _providerCoursesApiClient.
+            var providerCourses = await _roatpCourseManagementApiClient.
                 Get<List<ProviderCourse>>(new GetProviderCoursesRequest(
                     request.Ukprn));
 
-            var providerSummary = await _roatpCourseManagementApiClient.
-                Get<GetProviderSummaryResponse>(new GetRoatpProviderRequest(
-                    Convert.ToInt32(request.Ukprn)));
+            var emailAddresses = (providerCourses?.Where(pc => !string.IsNullOrWhiteSpace(pc.ContactUsEmail))
+                .Select(pc => pc.ContactUsEmail.RemoveWhitespace()) ?? Enumerable.Empty<string>())
+                .Append(request.UserEmailAddress.RemoveWhitespace() ?? string.Empty)
+                .Where(phone => !string.IsNullOrWhiteSpace(phone))
+                .Distinct()
+                .Order()
+                .ToList();
 
             var emailAddresses = (providerCourses?.Where(pc => !string.IsNullOrWhiteSpace(pc.ContactUsEmail))
                 .Select(pc => pc.ContactUsEmail.RemoveWhitespace()) ?? Enumerable.Empty<string>())
