@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,7 +36,8 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Epaos
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetEpaosListResponse;
             Assert.That(model, Is.Not.Null);
-            model.Epaos.Should().BeEquivalentTo(mediatorResult.Epaos);
+            model.Epaos.Should().BeEquivalentTo(mediatorResult.Epaos.Select(x =>
+                new {Id = x.EndPointAssessorOrganisationId, Name = x.EndPointAssessorName}));
         }
 
         [Test, MoqAutoData]
