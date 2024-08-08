@@ -24,13 +24,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
             GetProviderEmailAddressesResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerRequestsController controller,
-            long ukprn)
+            long ukprn,
+            string userEmailAddress)
         {
             mockMediator
                 .Setup(x => x.Send(It.IsAny<GetProviderEmailAddressesQuery>(), CancellationToken.None))
                 .ReturnsAsync(queryResult);
 
-            var actual = await controller.GetProviderEmailAddresses(ukprn) as ObjectResult;
+            var actual = await controller.GetProviderEmailAddresses(ukprn, userEmailAddress) as ObjectResult;
 
             Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -43,12 +44,13 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             [Frozen] Mock<IMediator> mediator,
             [Greedy] EmployerRequestsController controller,
-            long ukprn)
+            long ukprn,
+            string userEmailAddress)
         {
             mediator.Setup(x => x.Send(It.IsAny<GetProviderEmailAddressesQuery>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
-            var actual = await controller.GetProviderEmailAddresses(ukprn) as StatusCodeResult;
+            var actual = await controller.GetProviderEmailAddresses(ukprn, userEmailAddress) as StatusCodeResult;
 
             Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

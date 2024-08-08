@@ -12,6 +12,7 @@ using System.Linq;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmailAddresses;
+using Microsoft.Identity.Client;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
 {
@@ -117,14 +118,15 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             }
         }
 
-        [HttpGet("provider/{ukprn}/emails")]
-        public async Task<IActionResult> GetProviderEmailAddresses(long ukprn)
+        [HttpGet("provider/{ukprn}/email-addresses/{userEmailAddress}")]
+        public async Task<IActionResult> GetProviderEmailAddresses(long ukprn, string userEmailAddress)
         {
             try
             {
                 var result = await _mediator.Send(new GetProviderEmailAddressesQuery()
                 {
-                    Ukprn = ukprn
+                    Ukprn = ukprn,
+                    UserEmailAddress = userEmailAddress,
                 });
 
                 var model = (ProviderEmailAddresses)result;
