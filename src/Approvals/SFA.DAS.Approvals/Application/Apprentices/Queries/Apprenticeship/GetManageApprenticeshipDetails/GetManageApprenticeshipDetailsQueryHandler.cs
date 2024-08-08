@@ -108,8 +108,8 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         result.PendingPriceChange = ToResponse(pendingPriceChangeResponse.Body);
         result.CanActualStartDateBeChanged = canActualStartDateBeChanged;
         result.PendingStartDateChange = ToResponse(pendingStartDateResponse.Body);
-        result.PaymentsFrozen = (paymentStatusResponse?.Body?.PaymentsFrozen).GetValueOrDefault();
-        
+        result.PaymentsStatus = ToResponse(paymentStatusResponse.Body);
+
         return result;
     }
 
@@ -143,8 +143,20 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         pendingStartDateChange.ProviderApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate;
         pendingStartDateChange.EmployerApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate;
         pendingStartDateChange.Initiator = pendingStartDateChangeResponse.PendingStartDateChange.Initiator;
-        
+
         return pendingStartDateChange;
+    }
+
+    private PaymentsStatus ToResponse(GetPaymentStatusApiResponse source)
+    {
+        if (source == null) return new PaymentsStatus { PaymentsFrozen = false };
+
+        return new PaymentsStatus
+        {
+            FrozenOn = source.FrozenOn,
+            PaymentsFrozen = source.PaymentsFrozen,
+            ReasonFrozen = source.ReasonFrozen
+        };
     }
 
     private async Task<bool?> CanActualStartDateBeChanged(DateTime? actualStartDate)

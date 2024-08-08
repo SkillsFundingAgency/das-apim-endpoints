@@ -51,3 +51,4 @@ stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
     OuterApiName: Funding
+    AddXForwardedAuthorization: $True
