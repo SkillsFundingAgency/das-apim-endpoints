@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using Azure.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Status;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.Inform;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.SignIntoYourOldAccount;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
@@ -20,6 +24,26 @@ public class CandidatesController : ControllerBase
     {
         _logger = logger;
         _mediator = mediator;
+    }
+
+    [HttpGet]
+    [Route("create-account")]
+    public async Task<IActionResult> GetCreateAccount([FromQuery] Guid candidateId)
+    {
+        try
+        {
+            var queryResponse = await _mediator.Send(new GetInformQuery
+            {
+                CandidateId = candidateId
+            });
+
+            return Ok(queryResponse);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error attempting to get create-account inform");
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
     }
 
     [HttpPut]
@@ -41,6 +65,52 @@ public class CandidatesController : ControllerBase
         catch (Exception e)
         {
             _logger.LogError(e, "Error attempting to post candidate");
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpPost]
+    [Route("{govIdentifier}/status")]
+    public async Task<IActionResult> UpdateStatus(
+        [FromRoute] string govIdentifier,
+        [FromBody] CandidateStatus request)
+    {
+        try
+        {
+            var commandResponse = await _mediator.Send(new UpdateCandidateStatusCommand
+            {
+                GovUkIdentifier = govIdentifier,
+                Email = request.Email,
+                Status = request.Status
+            });
+
+            return Ok(commandResponse);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error attempting to update candidate status");
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpGet]
+    [Route("sign-in-to-your-old-account")]
+    public async Task<IActionResult> SignIntoYourOldAccount([FromQuery] Guid candidateId, [FromQuery] string email, [FromQuery] string password)
+    {
+        try
+        {
+            var queryResponse = await _mediator.Send(new GetSignIntoYourOldAccountQuery
+            {
+                CandidateId = candidateId,
+                Email = email,
+                Password = password
+            });
+
+            return Ok(queryResponse);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error attempting to get sign into your old account");
             return StatusCode((int)HttpStatusCode.InternalServerError);
         }
     }

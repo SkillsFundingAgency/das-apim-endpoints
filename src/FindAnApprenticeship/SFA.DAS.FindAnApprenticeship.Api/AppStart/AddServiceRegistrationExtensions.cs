@@ -1,9 +1,11 @@
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.FindAnApprenticeship.Api.Telemetry;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
+using SFA.DAS.NServiceBus.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.Services;
@@ -31,8 +33,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
             services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
             services.AddTransient<IVacancyService, VacancyService>();
             services.AddTransient<ILegacyApplicationMigrationService, LegacyApplicationMigrationService>();
+			services.AddSingleton<IDateTimeService>(new DateTimeService());
             services.AddTransient<INotificationService, NotificationService>();
             services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
+            services.AddTransient<ILegacyApplicationMigrationService, LegacyApplicationMigrationService>();
+            services.AddTransient<ITotalPositionsAvailableService, TotalPositionsAvailableService>();
         }
     }
 }

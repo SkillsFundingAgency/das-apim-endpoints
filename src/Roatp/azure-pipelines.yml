@@ -5,9 +5,11 @@ trigger:
       - "master"
   paths:
     include:
+    - src/Roatp
+    exclude:
     - azure
     - pipeline-templates
-    - src/Roatp
+    - deployments
 
 pr:
   branches:
@@ -15,9 +17,11 @@ pr:
       - "master"
   paths:
     include:
+    - src/Roatp
+    exclude:
     - azure
     - pipeline-templates
-    - src/Roatp
+    - deployments
 
 variables:
 - group: Release Management Resources

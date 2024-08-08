@@ -23,8 +23,6 @@ namespace SFA.DAS.Reservations.Api.Models
                 UserAccounts = accounts
             };
         }
-
-        
     }
 
     public class UserAccountsApiResponseItem

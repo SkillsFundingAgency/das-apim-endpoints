@@ -1,8 +1,8 @@
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
 {
@@ -20,6 +20,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
 
         public class LegacyApplication
         {
+            public Guid Id { get; set; }
             public Guid CandidateId { get; set; }
             public string VacancyReference { get; set; }
             public ApplicationStatus Status { get; set; }

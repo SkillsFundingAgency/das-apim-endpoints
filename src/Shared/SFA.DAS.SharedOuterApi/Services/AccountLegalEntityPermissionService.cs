@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -28,7 +29,8 @@ namespace SFA.DAS.SharedOuterApi.Services
                 case AccountType.Provider:
                     var providerResponse =
                         await _providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
-                            new GetProviderAccountLegalEntitiesRequest(accountIdentifier.Ukprn, new List<Operation>()));
+                            new GetProviderAccountLegalEntitiesRequest(accountIdentifier.Ukprn,
+                                [Operation.Recruitment, Operation.RecruitmentRequiresReview]));
 
                     if (providerResponse == null)
                     {

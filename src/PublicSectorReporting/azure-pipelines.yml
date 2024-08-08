@@ -5,9 +5,11 @@ trigger:
       - "master"
   paths:
     include:
+    - src/PublicSectorReporting
+    exclude:
     - azure
     - pipeline-templates
-    - src/PublicSectorReporting
+    - deployments
 
 pr:
   autoCancel: true
@@ -16,9 +18,11 @@ pr:
       - "master"
   paths:
     include:
+    - src/PublicSectorReporting
+    exclude:
     - azure
     - pipeline-templates
-    - src/PublicSectorReporting
+    - deployments
 
 variables:
 - group: Release Management Resources

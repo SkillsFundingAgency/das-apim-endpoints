@@ -5,9 +5,11 @@ trigger:
       - "master"
   paths:
     include:
+    - src/RoatpProviderModeration
+    exclude:
     - azure
     - pipeline-templates
-    - src/RoatpProviderModeration
+    - deployments
 
 pr:
   autoCancel: true
@@ -16,9 +18,11 @@ pr:
       - "master"
   paths:
     include:
+    - src/RoatpProviderModeration
+    exclude:
     - azure
     - pipeline-templates
-    - src/RoatpProviderModeration
+    - deployments
 
 variables:
 - group: Release Management Resources

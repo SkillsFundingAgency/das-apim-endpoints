@@ -5,9 +5,11 @@ trigger:
       - "master"
   paths:
     include:
+    - src/EmployerFeedback
+    exclude:
     - azure
     - pipeline-templates
-    - src/EmployerFeedback
+    - deployments
 
 pr:
   autoCancel: true
@@ -16,9 +18,11 @@ pr:
       - "master"
   paths:
     include:
+    - src/EmployerFeedback
+    exclude:
     - azure
     - pipeline-templates
-    - src/EmployerFeedback
+    - deployments
 
 variables:
 - group: Release Management Resources

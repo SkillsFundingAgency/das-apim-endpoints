@@ -45,6 +45,27 @@ public class WhenCallingGetAdditionalQuestion
     }
 
     [Test, MoqAutoData]
+    public async Task Then_Mediator_Returns_Null_Response_So_NotFound_Is_Returned(
+        Guid candidateId,
+        Guid applicationId,
+        Guid questionId,
+        int additionalQuestion,
+        [Frozen] Mock<IMediator> mediator,
+        [Greedy] Api.Controllers.AdditionalQuestionsController controller)
+    {
+        mediator.Setup(x => x.Send(It.Is<GetAdditionalQuestionQuery>(q =>
+                    q.CandidateId == candidateId
+                    && q.ApplicationId == applicationId
+                    && q.Id == questionId),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(() => null);
+
+        var actual = await controller.Get(applicationId, candidateId, questionId, additionalQuestion);
+
+        actual.As<StatusCodeResult>().StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+    }
+
+    [Test, MoqAutoData]
     public async Task And_Exception_Is_Thrown_Then_Returns_InternalServerError(
        Guid candidateId,
        Guid applicationId,

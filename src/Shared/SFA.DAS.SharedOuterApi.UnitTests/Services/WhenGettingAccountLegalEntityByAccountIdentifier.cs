@@ -7,9 +7,11 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -118,9 +120,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
         {
             var accountIdentifier = new AccountIdentifier($"Provider-{ukprn}-Product");
             response.AccountProviderLegalEntities.First().AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId;
+            var expectedGetRequest = new GetProviderAccountLegalEntitiesRequest(accountIdentifier.Ukprn,
+                [Operation.Recruitment, Operation.RecruitmentRequiresReview]);
             providerRelationshipsApiClient.Setup(x =>
                 x.Get<GetProviderAccountLegalEntitiesResponse>(It.Is<GetProviderAccountLegalEntitiesRequest>(c =>
-                    c.GetUrl.Contains(accountIdentifier.Ukprn.ToString())))).ReturnsAsync(response);
+                    c.GetUrl == expectedGetRequest.GetUrl))).ReturnsAsync(response);
 
             var actual = await service.GetAccountLegalEntity(accountIdentifier, accountLegalEntityPublicHashedId);
             
@@ -138,9 +142,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             AccountLegalEntityPermissionService service)
         {
             var accountIdentifier = new AccountIdentifier($"Provider-{ukprn}-Product");
+            var expectedGetRequest = new GetProviderAccountLegalEntitiesRequest(accountIdentifier.Ukprn,
+                [Operation.Recruitment, Operation.RecruitmentRequiresReview]);
             providerRelationshipsApiClient.Setup(x =>
                 x.Get<GetProviderAccountLegalEntitiesResponse>(It.Is<GetProviderAccountLegalEntitiesRequest>(c =>
-                    c.GetUrl.Contains(accountIdentifier.Ukprn.ToString())))).ReturnsAsync(response);
+                    c.GetUrl == expectedGetRequest.GetUrl))).ReturnsAsync(response);
 
             var actual = await service.GetAccountLegalEntity(accountIdentifier, accountLegalEntityPublicHashedId);
             

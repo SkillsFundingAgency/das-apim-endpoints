@@ -46,8 +46,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public double? Lon { get; set; }
 
         public double? Lat { get; set; }
+        public string? CompanyBenefitsInformation { get; set; }
+        public string? AdditionalTrainingDescription { get; set; }
+
         public CandidateApplicationDetails? Application { get; set; }
 
+        public string ApplicationUrl { get; set; }
         public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
         {
             return new GetVacanciesListResponseItem
@@ -76,10 +80,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 Application = source.Application,
                 Lat = source.Location.Lat,
                 Lon = source.Location.Lon,
+                ApplicationUrl = source.ApplicationUrl,
+                CompanyBenefitsInformation = source.CompanyBenefitsInformation,
+                AdditionalTrainingDescription = source.AdditionalTrainingDescription
             };
         }
 
-        
     }
 
     public class CandidateApplicationDetails

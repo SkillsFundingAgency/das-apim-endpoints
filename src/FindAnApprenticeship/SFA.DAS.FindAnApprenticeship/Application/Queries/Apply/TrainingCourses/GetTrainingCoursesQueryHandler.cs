@@ -27,6 +27,8 @@ public class GetTrainingCoursesQueryHandler : IRequestHandler<GetTrainingCourses
         var application = applicationTask.Result;
         var trainingCourses = trainingCoursesTask.Result;
 
+        if (application == null) return null;
+
         bool? isCompleted = application.TrainingCoursesStatus switch
         {
             Constants.SectionStatus.Incomplete => false,

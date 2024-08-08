@@ -5,9 +5,11 @@ trigger:
       - "master"
   paths:
     include:
+    - src/Campaign
+    exclude:
     - azure
     - pipeline-templates
-    - src/Campaign
+    - deployments
 
 pr:
   autoCancel: true
@@ -16,9 +18,11 @@ pr:
       - "master"
   paths:
     include:
+    - src/Campaign
+    exclude:
     - azure
     - pipeline-templates
-    - src/Campaign
+    - deployments
 
 variables:
 - group: Release Management Resources

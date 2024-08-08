@@ -5,9 +5,11 @@ trigger:
       - "master"
   paths:
     include:
+    - src/FindEpao
+    exclude:
     - azure
     - pipeline-templates
-    - src/FindEpao
+    - deployments
 
 pr:
   autoCancel: true
@@ -16,9 +18,11 @@ pr:
       - "master"
   paths:
     include:
+    - src/FindEpao
+    exclude:
     - azure
     - pipeline-templates
-    - src/FindEpao
+    - deployments
 
 variables:
 - group: Release Management Resources

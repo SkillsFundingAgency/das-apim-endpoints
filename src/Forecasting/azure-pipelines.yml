@@ -5,9 +5,11 @@ trigger:
       - "master"
   paths:
     include:
+    - src/Forecasting
+    exclude:
     - azure
     - pipeline-templates
-    - src/Forecasting
+    - deployments
 
 pr:
   autoCancel: true
@@ -16,10 +18,11 @@ pr:
       - "master"
   paths:
     include:
+    - src/Forecasting
+    exclude:
     - azure
     - pipeline-templates
-    - src/Forecasting
-
+    - deployments
 
 variables:
 - group: Release Management Resources

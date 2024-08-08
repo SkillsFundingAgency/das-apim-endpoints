@@ -59,12 +59,13 @@ public class PostSubmitApplicationRequestData
             LastName = source.Candidate.LastName,
             Email = source.Candidate.Email,
             Phone = source.Candidate.PhoneNumber,
+            DateOfBirth = source.Candidate.DateOfBirth,
             AddressLine1 = source.Candidate.Address.AddressLine1,
             AddressLine2 = source.Candidate.Address.AddressLine2,
             AddressLine3 = source.Candidate.Address.Town,
             AddressLine4 = source.Candidate.Address.County,
             Postcode = source.Candidate.Address.Postcode,
-            Strengths = source.AboutYou.SkillsAndStrengths,
+            Strengths = source.Strengths,
             WhatIsYourInterest = source.WhatIsYourInterest,
             ApplicationDate = DateTime.UtcNow,
             AdditionalQuestion1 = source.AdditionalQuestions?.FirstOrDefault() != null ? new AdditionalQuestion
@@ -77,7 +78,7 @@ public class PostSubmitApplicationRequestData
                 AnswerText = source.AdditionalQuestions.LastOrDefault().Answer,
                 QuestionText = source.AdditionalQuestions.LastOrDefault().QuestionText,
             } : null,
-            Support = source.AboutYou.Support,
+            Support = source.Support,
             DisabilityConfidenceStatus = source.DisabilityConfidenceStatus
         };
     }
@@ -97,6 +98,7 @@ public class PostSubmitApplicationRequestData
     public string WhatIsYourInterest { get; set; }
     
     public string Phone { get; set; }
+    public DateTime? DateOfBirth { get; set; }
     
     public List<ApplicationQualification> Qualifications { get; set; }
     public string Strengths { get; set; }

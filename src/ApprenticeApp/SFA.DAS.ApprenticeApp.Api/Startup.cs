@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Contentful.Core.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -25,7 +26,7 @@ namespace SFA.DAS.ApprenticeApp.Api
     {
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
-        private const string EndpointName = "SFA.DAS.ApprenticeApp";
+        private const string EndpointName = "SFA.DAS.PushNotifications";
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
@@ -38,7 +39,9 @@ namespace SFA.DAS.ApprenticeApp.Api
         {
             services.AddSingleton(_env);
 
-            services.AddConfigurationOptions(_configuration);           
+            services.AddConfigurationOptions(_configuration);
+
+            ContentfulConfigMapping();
 
             if (!_configuration.IsLocalOrDev())
             {
@@ -61,6 +64,9 @@ namespace SFA.DAS.ApprenticeApp.Api
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetApprenticeDetailsQuery).Assembly));
 
             services.AddServiceRegistration();
+
+            services.AddSingleton<IContentTypeResolver, ContentfulEntityResolver>();
+            services.AddContentfulServices(_configuration);
 
             services
                 .AddMvc(o =>
@@ -116,14 +122,23 @@ namespace SFA.DAS.ApprenticeApp.Api
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApprenticePoralOuterApi");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApprenticeAppOuterApi");
                 c.RoutePrefix = string.Empty;
             });
         }
 
         public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
         {
-            serviceProvider.StartServiceBus(_configuration).GetAwaiter().GetResult();
+            serviceProvider.StartServiceBus(_configuration, EndpointName).GetAwaiter().GetResult();
+        }
+
+        public void ContentfulConfigMapping()
+        {
+            _configuration["ContentfulOptions:DeliveryApiKey"] = _configuration["ApprenticeAppContentfulOptions:ApprenticeAppDeliveryApiKey"];
+            _configuration["ContentfulOptions:PreviewApiKey"] = _configuration["ApprenticeAppContentfulOptions:ApprenticeAppPreviewApiKey"];
+            _configuration["ContentfulOptions:SpaceId"] = _configuration["ApprenticeAppContentfulOptions:ApprenticeAppSpaceId"];
+            _configuration["ContentfulOptions:UsePreviewApi"] = _configuration["ApprenticeAppContentfulOptions:ApprenticeAppUsePreviewApi"];
+            _configuration["ContentfulOptions:MaxNumberOfRateLimitRetries"] = _configuration["ApprenticeAppContentfulOptions:ApprenticeAppMaxNumberOfRateLimitRetries"];
         }
     }
 }
