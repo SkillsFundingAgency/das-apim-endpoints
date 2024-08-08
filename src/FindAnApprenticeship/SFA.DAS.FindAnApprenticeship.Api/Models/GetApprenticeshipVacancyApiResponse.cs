@@ -30,6 +30,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public decimal? WageAmountUpperBound { get; init; }
         public string WageText { get; init; }
         public int WageUnit { get; init; }
+        public string WageAdditionalInformation { get; init; }
 
         public decimal? Distance { get; init; }
 
@@ -140,6 +141,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 WageAmountUpperBound = source.ApprenticeshipVacancy.WageAmountUpperBound,
                 WageText = source.ApprenticeshipVacancy.WageText,
                 WageUnit = source.ApprenticeshipVacancy.WageUnit,
+                WageAdditionalInformation = source.ApprenticeshipVacancy.WageAdditionalInformation,
                 WorkingWeek = source.ApprenticeshipVacancy.WorkingWeek,
                 ExpectedDuration = source.ApprenticeshipVacancy.ExpectedDuration,
                 Score = source.ApprenticeshipVacancy.Score,
