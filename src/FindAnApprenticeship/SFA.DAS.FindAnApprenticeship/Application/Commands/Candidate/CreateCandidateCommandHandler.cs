@@ -39,7 +39,6 @@ public class CreateCandidateCommandHandler(
                 await candidateApiClient.PutWithResponseCode<PutCandidateApiResponse>(updateEmailRequest);    
             }
             
-            
             return new CreateCandidateCommandResult
             {
                 Id = existingUser.Body.Id,
@@ -53,8 +52,20 @@ public class CreateCandidateCommandHandler(
             };
         }
 
+        var userWithMigratedEmail =
+            await candidateApiClient.GetWithResponseCode<GetCandidateByMigratedEmailApiResponse>(
+                new GetCandidateByMigratedEmailApiRequest(request.Email));
+
+        if (userWithMigratedEmail.StatusCode != HttpStatusCode.NotFound)
+        {
+            return new CreateCandidateCommandResult
+            {
+                IsEmailAddressMigrated = true
+            };
+        }
+
         var userMigrationStatus = UserStatus.Incomplete;
-        
+
         var userDetails =
             await legacyApiClient.Get<GetLegacyUserByEmailApiResponse>(
                 new GetLegacyUserByEmailApiRequest(request.Email));
