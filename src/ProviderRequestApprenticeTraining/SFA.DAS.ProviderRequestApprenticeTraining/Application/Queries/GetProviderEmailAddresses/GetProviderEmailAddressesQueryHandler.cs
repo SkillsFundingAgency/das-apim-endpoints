@@ -43,14 +43,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProvi
                 .Order()
                 .ToList();
 
-            var emailAddresses = (providerCourses?.Where(pc => !string.IsNullOrWhiteSpace(pc.ContactUsEmail))
-                .Select(pc => pc.ContactUsEmail.RemoveWhitespace()) ?? Enumerable.Empty<string>())
-                .Append(providerSummary?.Email?.RemoveWhitespace() ?? string.Empty)
-                .Where(email => !string.IsNullOrWhiteSpace(email))
-                .Distinct()
-                .Order()
-                .ToList();
-
             return new GetProviderEmailAddressesResult
             {
                 EmailAddresses = emailAddresses
