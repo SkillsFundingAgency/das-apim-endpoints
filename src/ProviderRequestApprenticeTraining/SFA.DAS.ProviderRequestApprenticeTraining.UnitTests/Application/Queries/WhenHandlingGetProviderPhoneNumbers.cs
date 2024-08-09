@@ -1,13 +1,10 @@
 ﻿using AutoFixture.NUnit3;
-using Azure.Core;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmailAddresses;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderCoursesService;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderCoursesService;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -28,50 +25,38 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
         public async Task Then_Get_ProviderPhoneNumbers_From_The_Api(
             List<ProviderCourse> providerCourseResult,
             GetProviderSummaryResponse providerSummaryResponse, 
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> mockProviderCoursesApiClient,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
             GetProviderPhoneNumbersQueryHandler handler,
             GetProviderPhoneNumbersQuery query)
         {
 
             // Arrange
-            mockProviderCoursesApiClient.Setup(client => client.Get<List<ProviderCourse>>(It.IsAny<GetProviderCoursesRequest>()))
+            mockRoatpCourseManagementApiClient.Setup(client => client.Get<List<ProviderCourse>>(It.IsAny<GetProviderCoursesRequest>()))
                     .ReturnsAsync(providerCourseResult);
-
-            mockRoatpCourseManagementApiClient.Setup(client => client.Get<GetProviderSummaryResponse>(It.IsAny<GetRoatpProviderRequest>()))
-                    .ReturnsAsync(providerSummaryResponse);
 
             // Act
             var actual = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            actual.PhoneNumbers.Should().Contain(providerSummaryResponse.Phone);
             actual.PhoneNumbers.Should().Contain(providerCourseResult.Select(x => x.ContactUsPhoneNumber));
 
         }
 
         [Test, MoqAutoData]
-        public async Task AndNoProviderCoursesExist_Then_Get_ProviderPhoneNumbers_ReturnsPhoneNumberFromProviderSummary(
-            List<ProviderCourse> providerCourseResult,
-            GetProviderSummaryResponse providerSummaryResponse,
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> mockProviderCoursesApiClient,
+        public async Task AndNoProviderCoursesExist_Then_Get_ProviderPhoneNumbers_ReturnsEmptyList(
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
             GetProviderPhoneNumbersQueryHandler handler,
             GetProviderPhoneNumbersQuery query)
         {
             //Arrange
-                mockProviderCoursesApiClient.Setup(client => client.Get<List<ProviderCourse>>(It.IsAny<GetProviderCoursesRequest>()))
+            mockRoatpCourseManagementApiClient.Setup(client => client.Get<List<ProviderCourse>>(It.IsAny<GetProviderCoursesRequest>()))
                         .ReturnsAsync(new List<ProviderCourse>());
-
-            mockRoatpCourseManagementApiClient.Setup(client => client.Get<GetProviderSummaryResponse>(It.IsAny<GetRoatpProviderRequest>()))
-                    .ReturnsAsync(providerSummaryResponse);
 
             //Act
             var actual = await handler.Handle(query, CancellationToken.None);
 
             //Assert
-            actual.PhoneNumbers.Should().HaveCount(1);
-            actual.PhoneNumbers.Should().Contain(providerSummaryResponse.Phone);
+            actual.PhoneNumbers.Should().HaveCount(0);
         }
     }
 }
