@@ -52,6 +52,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis
                         .WithPing()
                         .WithMyApprenticeship(apprentice, myApprenticeship)
                         .WithApprentice(apprentice)
+                        .WithPutApprentice(apprentice)
                         .WithPostMyApprenticeship(apprentice);
                 }
 
