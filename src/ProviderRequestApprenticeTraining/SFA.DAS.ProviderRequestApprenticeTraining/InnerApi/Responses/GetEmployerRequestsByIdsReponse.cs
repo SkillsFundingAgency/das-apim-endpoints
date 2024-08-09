@@ -9,7 +9,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses
         public string StandardReference { get; set; }
         public string StandardTitle { get; set; }
         public int StandardLevel { get; set; }
-        public string StandardSector { get; set; }
         public string SingleLocation { get; set; }
         public DateTime DateOfRequest { get; set; }
         public int NumberOfApprentices { get; set; }
