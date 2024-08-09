@@ -30,6 +30,20 @@ namespace SFA.DAS.ApprenticePortal.Api.Controllers
 
             return Ok(queryResult.Apprentice);
         }
+        
+        [HttpPut]
+        [Route("/apprentices")]
+        public async Task<IActionResult> PutApprentice([FromBody] UpsertApprenticeRequest request)
+        {
+            var queryResult = await _mediator.Send(new UpsertApprenticeCommand
+            {
+                GovUkIdentifier = request.GovUkIdentifier,
+                Email = request.Email
+            });
+
+            
+            return Ok(queryResult.Apprentice);
+        }
 
         [HttpPatch("/apprentices/{apprenticeId}")]
         public async Task<IActionResult> UpdateApprentice([Path] Guid apprenticeId, [Body] object patch)
@@ -43,5 +57,11 @@ namespace SFA.DAS.ApprenticePortal.Api.Controllers
             return NoContent();
         }
 
+    }
+
+    public class UpsertApprenticeRequest
+    {
+        public string GovUkIdentifier { get; set; }
+        public string Email { get; set; }
     }
 }

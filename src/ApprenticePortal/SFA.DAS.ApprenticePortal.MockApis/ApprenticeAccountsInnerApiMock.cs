@@ -41,6 +41,22 @@ namespace SFA.DAS.ApprenticePortal.MockApis
                 )
                 .RespondWith(
                     Response.Create()
+                        .WithStatusCode(HttpStatusCode.OK)
+                        .WithBodyAsJson(apprentice)
+                );
+            return this;
+        }
+        
+        public ApprenticeAccountsInnerApiMock WithPutApprentice(Apprentice apprentice)
+        {
+            MockServer
+                .Given(
+                    Request.Create()
+                        .WithPath("/apprentices")
+                        .UsingPut()
+                )
+                .RespondWith(
+                    Response.Create()
                         .WithBodyAsJson(apprentice)
                 );
             return this;

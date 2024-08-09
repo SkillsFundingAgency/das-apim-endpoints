@@ -19,9 +19,11 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests
             return await client.PostAsync(url, data.GetStringContent());
         }
 
-        public static async Task<HttpResponseMessage> PutValueAsync<T>(this HttpClient client, string url, T data)
+        public static async Task<(HttpStatusCode, string)> PutValueAsync<T>(this HttpClient client, string url, T data)
         {
-            return await client.PutAsync(url, data.GetStringContent());
+            var response =  await client.PutAsync(url, data.GetStringContent());
+            var content = await response.Content.ReadAsStringAsync();
+            return (response.StatusCode, content);
         }
 
         public static async Task<HttpResponseMessage> PatchValueAsync<T>(this HttpClient client, string url, T data)

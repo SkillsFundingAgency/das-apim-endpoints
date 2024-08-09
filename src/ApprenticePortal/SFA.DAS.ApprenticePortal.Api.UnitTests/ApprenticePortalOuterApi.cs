@@ -8,6 +8,7 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests
     {
         public HttpClient Client { get; private set; }
         public HttpResponseMessage Response { get; set; }
+        public object ReturnValue { get; set; }
         public Uri BaseAddress { get; private set; }
         private bool isDisposed;
 
@@ -24,7 +25,8 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests
 
         public async Task Put<T>(string url, T data)
         {
-            Response = await Client.PutValueAsync(url, data);
+            var result = await Client.PutValueAsync(url, data);
+            ReturnValue = result.Item2;
         }
 
         public async Task Patch<T>(string url, T data)
