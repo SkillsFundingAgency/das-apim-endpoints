@@ -12,6 +12,7 @@ using System.Linq;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmailAddresses;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
 using Microsoft.Identity.Client;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
@@ -135,6 +136,26 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to retrieve provider email addresses");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("provider/{ukprn}/phonenumbers")]
+        public async Task<IActionResult> GetProviderPhoneNumbers(long ukprn)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetProviderPhoneNumbersQuery()
+                {
+                    Ukprn = ukprn
+                });
+
+                var model = (ProviderPhoneNumbers)result;
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to retrieve provider phone numbers");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
