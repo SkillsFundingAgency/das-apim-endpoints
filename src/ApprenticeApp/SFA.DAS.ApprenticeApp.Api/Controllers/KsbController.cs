@@ -2,6 +2,8 @@
 using MediatR;
 using System.Threading.Tasks;
 using SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs;
+using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
+using System;
 
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
 {
@@ -16,7 +18,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/Ksb/{id}/options/{option}/ksbs")]
+        [Route("/ksb/{id}/options/{option}/ksbs")]
 
         public async Task<IActionResult> GetKsbs(string id, string option)
         {

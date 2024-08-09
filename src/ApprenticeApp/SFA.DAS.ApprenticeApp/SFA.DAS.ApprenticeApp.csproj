@@ -34,7 +34,6 @@
     <Folder Include="Models\Contentful\" />
     <Folder Include="Application\Queries\SupportAndGuidance\" />
     <Folder Include="Application\Commands\SupportAndGuidance\" />
-    <Folder Include="InnerApi\ApprenticeProgress\" />
     <Folder Include="Application\Queries\Tasks\" />
     <Folder Include="Application\Commands\Tasks\" />
     <Folder Include="InnerApi\ApprenticeProgress\Responses\" />

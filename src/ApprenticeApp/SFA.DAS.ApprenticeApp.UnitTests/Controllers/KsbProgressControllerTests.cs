@@ -1,14 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Amqp.Framing;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Api.Controllers;
 using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests
 {
@@ -24,10 +23,10 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             ApprenticeKsbProgressData data = new()
             {
                 ApprenticeshipId = new Guid(),
-                CurrentStatus = 1,
+                CurrentStatus = KSBStatus.InProgress,
                 KSBId = new Guid(),
                 KsbKey = "key",
-                KSBProgressType = 1,
+                KSBProgressType = KSBProgressType.Behaviour,
                 Note = "note"
             };
 
@@ -58,5 +57,21 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
         }
 
+        [Test, MoqAutoData]
+        public async Task GetTaskKsbProgress(
+           [Greedy] KsbProgressController controller)
+        {
+            var httpContext = new DefaultHttpContext();
+            var apprenticeId = Guid.NewGuid();
+            Guid[] guids = { Guid.NewGuid() };
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = await controller.GetKsbsByApprenticeshipIdAndGuidListQuery(apprenticeId, guids);
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkObjectResult));
+        }
     }
 }
