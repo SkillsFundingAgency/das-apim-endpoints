@@ -5,9 +5,9 @@ using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
-namespace SFA.DAS.VacanciesManage.UnitTests.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
 {
-    public class WhenBuildingGetProviderAccountLegalEntities
+    public class WhenBuildingGetProviderAccountLegalEntitiesRequest
     {
         [Test, AutoData]
         public void Then_The_Request_Is_Correctly_Build(int ukprn)
