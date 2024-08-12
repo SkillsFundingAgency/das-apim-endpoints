@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 using SFA.DAS.ApprenticeApp.Models;
+using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
 {
@@ -77,6 +78,24 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
 
             ClassicAssert.AreEqual(1, sut.CategoryId);
             ClassicAssert.AreEqual("title", sut.Title);
+
+        }
+
+        [Test]
+        public void Ksb_model_test()
+        {
+            var sut = new Ksb
+            {
+                Type = KsbType.Behaviour,
+                Id = new Guid("9D2B0228-4D0D-4C23-8B49-01A698857709"),
+                Key = "key",
+                Detail = "detail"
+            };
+
+            ClassicAssert.AreEqual(KsbType.Behaviour, sut.Type);
+            ClassicAssert.AreEqual(new Guid("9D2B0228-4D0D-4C23-8B49-01A698857709"), sut.Id);
+            ClassicAssert.AreEqual("key", sut.Key);
+            ClassicAssert.AreEqual("detail", sut.Detail);
 
         }
     }
