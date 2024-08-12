@@ -22,6 +22,8 @@ public class GetVolunteeringAndWorkExperiencesQueryHandler(ICandidateApiClient<C
         var workExperience = await candidateApiClient.Get<GetWorkHistoriesApiResponse>(
             new GetWorkHistoriesApiRequest(request.ApplicationId, request.CandidateId, WorkHistoryType.WorkExperience));
 
+        if (application == null) return null;
+
         bool? isCompleted = application.WorkExperienceStatus switch
         {
             Constants.SectionStatus.Incomplete => false,

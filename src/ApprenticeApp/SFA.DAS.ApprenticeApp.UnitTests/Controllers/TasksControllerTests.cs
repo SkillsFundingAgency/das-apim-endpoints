@@ -99,5 +99,23 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             var result = await controller.DeleteTaskById(apprenticeId, taskId);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
         }
+
+
+        [Test, MoqAutoData]
+        public async Task Add_task_test(
+            [Greedy] TasksController controller)
+        {
+            var httpContext = new DefaultHttpContext();
+            var apprenticeId = Guid.NewGuid();
+            var ApprenticeTaskData = new ApprenticeTaskData();
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = await controller.AddTask(apprenticeId, ApprenticeTaskData);
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
+        }
+
     }
 }

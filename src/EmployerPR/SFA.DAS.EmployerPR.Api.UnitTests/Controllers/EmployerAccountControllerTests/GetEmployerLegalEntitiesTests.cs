@@ -15,13 +15,13 @@ public class GetEmployerLegalEntitiesTests
     public async Task Get_InvokesQueryHandler(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] EmployerAccountsController sut,
-        string accountHashedId,
+        long accountId,
         CancellationToken cancellationToken)
     {
-        await sut.GetAccountLegalEntities(accountHashedId, cancellationToken);
+        await sut.GetAccountLegalEntities(accountId, cancellationToken);
 
         mediatorMock.Verify(
-            m => m.Send(It.Is<GetAccountLegalEntitiesQuery>(x => x.AccountHashedId == accountHashedId),
+            m => m.Send(It.Is<GetAccountLegalEntitiesQuery>(x => x.AccountId == accountId),
                 It.IsAny<CancellationToken>()));
     }
 
@@ -29,14 +29,14 @@ public class GetEmployerLegalEntitiesTests
     public async Task Get_HandlerReturnsData_ReturnsOkResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] EmployerAccountsController sut,
-        string accountHashedId,
+        long accountId,
         GetAccountLegalEntitiesQueryResult queryResult,
         CancellationToken cancellationToken)
     {
         mediatorMock.Setup(m => m.Send(It.IsAny<GetAccountLegalEntitiesQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(queryResult);
 
-        var result = await sut.GetAccountLegalEntities(accountHashedId, cancellationToken);
+        var result = await sut.GetAccountLegalEntities(accountId, cancellationToken);
 
         result.As<OkObjectResult>().Should().NotBeNull();
         result.As<OkObjectResult>().Value.Should().Be(queryResult);

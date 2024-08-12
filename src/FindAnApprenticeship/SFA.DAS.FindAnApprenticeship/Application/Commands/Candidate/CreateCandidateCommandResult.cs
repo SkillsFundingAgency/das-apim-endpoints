@@ -13,4 +13,5 @@ public class CreateCandidateCommandResult
     public DateTime? DateOfBirth { get; set; }
     public string PhoneNumber { get; set; }
     public UserStatus Status { get; set; }
+    public bool IsEmailAddressMigrated { get; set; }
 }

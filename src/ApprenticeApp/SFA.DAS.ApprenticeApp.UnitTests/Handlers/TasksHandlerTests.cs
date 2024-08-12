@@ -4,6 +4,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Application.Commands;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
+using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
@@ -61,5 +62,6 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             await sut.Handle(query, cancellationToken);
             sut.Should().NotBeNull();
         }
+        
     }
 }

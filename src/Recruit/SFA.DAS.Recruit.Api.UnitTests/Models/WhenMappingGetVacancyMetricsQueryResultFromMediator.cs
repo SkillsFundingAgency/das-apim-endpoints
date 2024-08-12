@@ -13,10 +13,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Models
         {
             var actual = (GetVacancyMetricsResponse)source;
 
-            actual.SearchResultsCount.Should().Be(source.SearchResultsCount);
-            actual.ViewsCount.Should().Be(source.ViewsCount);
-            actual.ApplicationStartedCount.Should().Be(source.ApplicationStartedCount);
-            actual.ApplicationSubmittedCount.Should().Be(source.ApplicationSubmittedCount);
+            actual.VacancyMetrics.Should().BeEquivalentTo(source.VacancyMetrics);
         }
     }
 }

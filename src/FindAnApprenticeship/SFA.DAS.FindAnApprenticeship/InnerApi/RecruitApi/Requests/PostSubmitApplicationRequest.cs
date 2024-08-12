@@ -59,6 +59,7 @@ public class PostSubmitApplicationRequestData
             LastName = source.Candidate.LastName,
             Email = source.Candidate.Email,
             Phone = source.Candidate.PhoneNumber,
+            DateOfBirth = source.Candidate.DateOfBirth,
             AddressLine1 = source.Candidate.Address.AddressLine1,
             AddressLine2 = source.Candidate.Address.AddressLine2,
             AddressLine3 = source.Candidate.Address.Town,
@@ -97,6 +98,7 @@ public class PostSubmitApplicationRequestData
     public string WhatIsYourInterest { get; set; }
     
     public string Phone { get; set; }
+    public DateTime? DateOfBirth { get; set; }
     
     public List<ApplicationQualification> Qualifications { get; set; }
     public string Strengths { get; set; }
