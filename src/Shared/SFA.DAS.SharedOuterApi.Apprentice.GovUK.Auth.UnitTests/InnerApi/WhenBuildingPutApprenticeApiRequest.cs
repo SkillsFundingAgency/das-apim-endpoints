@@ -1,11 +1,11 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests;
+using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.InnerApi;
 
-namespace SFA.DAS.ApprenticePortal.UnitTests.InnerApi.ApprenticeAccounts.Requests;
+namespace SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.UnitTests.InnerApi;
 
-public class PutApprenticeApiRequestTests
+public class WhenBuildingPutApprenticeApiRequest
 {
     [Test, AutoData]
     public void Then_The_Url_And_Data_Is_Set(PutApprenticeApiRequestData requestData)

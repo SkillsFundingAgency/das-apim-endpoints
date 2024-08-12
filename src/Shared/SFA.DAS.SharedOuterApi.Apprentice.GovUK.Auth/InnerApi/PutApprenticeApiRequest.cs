@@ -1,6 +1,6 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests;
+namespace SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.InnerApi;
 
 public class PutApprenticeApiRequest(PutApprenticeApiRequestData requestData) : IPutApiRequest
 {
@@ -10,6 +10,6 @@ public class PutApprenticeApiRequest(PutApprenticeApiRequestData requestData) : 
 
 public class PutApprenticeApiRequestData
 {
-    public string Email { get; set; }
-    public string GovUkIdentifier { get; set; }
+    public required string Email { get; set; }
+    public required string GovUkIdentifier { get; set; }
 }

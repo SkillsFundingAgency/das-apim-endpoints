@@ -1,18 +1,15 @@
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests;
-using SFA.DAS.ApprenticePortal.Models;
+using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.InnerApi;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeAccounts;
+namespace SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
 
 public class UpsertApprenticeCommandHandler(IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> accountsApiClient) : IRequestHandler<UpsertApprenticeCommand, UpsertApprenticeCommandResult>
 {
     public async Task<UpsertApprenticeCommandResult> Handle(UpsertApprenticeCommand request, CancellationToken cancellationToken)
     {
-        var result = await accountsApiClient.PutWithResponseCode<Apprentice>(new PutApprenticeApiRequest(
+        var result = await accountsApiClient.PutWithResponseCode<Models.Apprentice>(new PutApprenticeApiRequest(
             new PutApprenticeApiRequestData
             {
                 Email = request.Email,

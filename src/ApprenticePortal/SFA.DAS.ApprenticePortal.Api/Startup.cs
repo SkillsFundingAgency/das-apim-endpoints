@@ -16,6 +16,7 @@ using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
 
 namespace SFA.DAS.ApprenticePortal.Api
 {
@@ -57,6 +58,7 @@ namespace SFA.DAS.ApprenticePortal.Api
                 .AddCheck<ApprenticeCommitmentsApiHealthCheck>(ApprenticeCommitmentsApiHealthCheck.HealthCheckResultDescription);
 
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetApprenticeHomepageQuery).Assembly));
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(UpsertApprenticeCommand).Assembly));
 
             services.AddServiceRegistration();
 

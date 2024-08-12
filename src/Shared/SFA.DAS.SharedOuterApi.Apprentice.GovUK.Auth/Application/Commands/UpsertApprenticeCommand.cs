@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeAccounts;
+namespace SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
 
 public class UpsertApprenticeCommand : IRequest<UpsertApprenticeCommandResult>
 {
