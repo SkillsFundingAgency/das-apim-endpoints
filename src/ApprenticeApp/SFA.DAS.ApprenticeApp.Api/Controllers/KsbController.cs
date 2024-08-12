@@ -43,22 +43,27 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 Id = standardUid,
                 Option = option
             });
-            var ksbProgressResult = await _mediator.Send(new GetKsbsByApprenticeshipIdQuery { ApprenticeshipId = apprenticeAccountId });
 
-            var apprenticeKsbs = new List<ApprenticeKsb>();
-                    foreach (var ksb in ksbQueryResult.KsbsResult.Ksbs)
+            if (ksbQueryResult.KsbsResult != null && ksbQueryResult.KsbsResult.Ksbs.Count > 0)
+            {
+                var ksbProgressResult = await _mediator.Send(new GetKsbsByApprenticeshipIdQuery { ApprenticeshipId = apprenticeAccountId });
+
+                var apprenticeKsbs = new List<ApprenticeKsb>();
+                foreach (var ksb in ksbQueryResult.KsbsResult.Ksbs)
+                {
+                    var apprenticeKsb = new ApprenticeKsb
                     {
-                        var apprenticeKsb = new ApprenticeKsb
-                        {
-                            Id = ksb.Id,
-                            Type = ksb.Type,
-                            Key = ksb.Key,
-                            Detail = ksb.Detail,
-                            Status = ksbProgressResult.KSBProgresses.Where(x => x.KSBId == ksb.Id).Select(x => x.CurrentStatus).DefaultIfEmpty(KSBStatus.NotStarted).First()
-                        };
-                        apprenticeKsbs.Add(apprenticeKsb);
-                    }
-                    return Ok(apprenticeKsbs);
+                        Id = ksb.Id,
+                        Type = ksb.Type,
+                        Key = ksb.Key,
+                        Detail = ksb.Detail,
+                        Status = ksbProgressResult.KSBProgresses.Where(x => x.KSBId == ksb.Id).Select(x => x.CurrentStatus).DefaultIfEmpty(KSBStatus.NotStarted).First()
+                    };
+                    apprenticeKsbs.Add(apprenticeKsb);
+                }
+                return Ok(apprenticeKsbs);
+            }
+            return Ok();
         }
     }
 }
