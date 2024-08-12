@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Commands;
+using SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
 using SFA.DAS.ApprenticeApp.Models;
 
@@ -63,6 +66,38 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             });
 
             return Ok(queryResult.KSBProgresses);
+        }
+
+        [HttpGet]
+        [Route("/apprentices/{apprenticeAccountId}/apprenticeship/{standardUid}/options/{option}/ksbs")]
+        public async Task<IActionResult> GetApprenticeshipKsbs(Guid apprenticeAccountId, string standardUid, string option)
+        {
+            var ksbQueryResult = await _mediator.Send(new GetStandardOptionKsbsQuery
+            {
+                Id = standardUid,
+                Option = option
+            });
+
+            if (ksbQueryResult.KsbsResult != null && ksbQueryResult.KsbsResult.Ksbs.Count > 0)
+            {
+                var ksbProgressResult = await _mediator.Send(new GetKsbsByApprenticeshipIdQuery { ApprenticeshipId = apprenticeAccountId });
+
+                var apprenticeKsbs = new List<ApprenticeKsb>();
+                foreach (var ksb in ksbQueryResult.KsbsResult.Ksbs)
+                {
+                    var apprenticeKsb = new ApprenticeKsb
+                    {
+                        Id = ksb.Id,
+                        Type = ksb.Type,
+                        Key = ksb.Key,
+                        Detail = ksb.Detail,
+                        Status = ksbProgressResult.KSBProgresses.Where(x => x.KSBId == ksb.Id).Select(x => x.CurrentStatus).DefaultIfEmpty(KSBStatus.NotStarted).First()
+                    };
+                    apprenticeKsbs.Add(apprenticeKsb);
+                }
+                return Ok(apprenticeKsbs);
+            }
+            return Ok();
         }
     }
 }

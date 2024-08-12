@@ -73,5 +73,23 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             var result = await controller.GetKsbsByApprenticeshipIdAndGuidListQuery(apprenticeId, guids);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkObjectResult));
         }
+
+        [Test, MoqAutoData]
+        public async Task Get_ApprenticeKsbs_NoKsbs_Test(
+          [Greedy] KsbProgressController controller)
+        {
+            var httpContext = new DefaultHttpContext();
+            var apprenticeshipId = Guid.NewGuid();
+            string standardUid = "TestStandardUid";
+            string option = "core";
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = await controller.GetApprenticeshipKsbs(apprenticeshipId, standardUid, option);
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
+        }
     }
 }
