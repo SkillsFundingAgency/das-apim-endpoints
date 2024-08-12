@@ -1,7 +1,8 @@
 ﻿using RestEase.HttpClientFactory;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationships;
+using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationships;
+using SFA.DAS.ProviderPR.Application.Requests.Commands;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -43,6 +44,7 @@ public static class AddServiceRegistrationsExtension
     {
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
+        services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
 
         services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
