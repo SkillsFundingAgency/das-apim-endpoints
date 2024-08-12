@@ -1,8 +1,6 @@
 ﻿using System;
-using AutoFixture.NUnit3;
-using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.ApprenticeApp.InnerApi.ApprenticeAccounts.Requests;
+using NUnit.Framework.Legacy;
 using SFA.DAS.ApprenticeApp.Models;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
@@ -26,15 +24,15 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
                 Status = TaskStatus.Done,
             };
 
-            Assert.Equals(1, sut.TaskId);
-            Assert.Equals(new Guid("9D2B0228-4D0D-4C23-8B49-01A698857709"), sut.ApprenticeshipId);
-            Assert.Equals(new DateTime(2019, 05, 09), sut.DueDate);
-            Assert.Equals("title", sut.Title);
-            Assert.Equals(0, sut.ApprenticeshipCategoryId);
-            Assert.Equals("note", sut.Note);
-            Assert.Equals(new DateTime(2019, 05, 09), sut.CompletionDateTime);
-            Assert.Equals(new DateTime(2019, 05, 09), sut.CreatedDateTime);
-            Assert.Equals(TaskStatus.Done, sut.Status);
+            ClassicAssert.AreEqual(1, sut.TaskId);
+            ClassicAssert.AreEqual(new Guid("9D2B0228-4D0D-4C23-8B49-01A698857709"), sut.ApprenticeshipId);
+            ClassicAssert.AreEqual(new DateTime(2019, 05, 09), sut.DueDate);
+            ClassicAssert.AreEqual("title", sut.Title);
+            ClassicAssert.AreEqual(0, sut.ApprenticeshipCategoryId);
+            ClassicAssert.AreEqual("note", sut.Note);
+            ClassicAssert.AreEqual(new DateTime(2019, 05, 09), sut.CompletionDateTime);
+            ClassicAssert.AreEqual(new DateTime(2019, 05, 09), sut.CreatedDateTime);
+            ClassicAssert.AreEqual(TaskStatus.Done, sut.Status);
 
         }
 
@@ -55,16 +53,16 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
                 CategoryId = 1
             };
 
-            Assert.Equals(1, sut.TaskId);
-            Assert.Equals(new Guid("9D2B0228-4D0D-4C23-8B49-01A698857709"), sut.ApprenticeshipId);
-            Assert.Equals(new DateTime(2019, 05, 09), sut.DueDate);
-            Assert.Equals("title", sut.Title);
-            Assert.Equals(0, sut.ApprenticeshipCategoryId);
-            Assert.Equals("note", sut.Note);
-            Assert.Equals(new DateTime(2019, 05, 09), sut.CompletionDateTime);
-            Assert.Equals(new DateTime(2019, 05, 09), sut.CreatedDateTime);
-            Assert.Equals(1, sut.Status);
-            Assert.Equals(1, sut.CategoryId);
+            ClassicAssert.AreEqual(1, sut.TaskId);
+            ClassicAssert.AreEqual(new Guid("9D2B0228-4D0D-4C23-8B49-01A698857709"), sut.ApprenticeshipId);
+            ClassicAssert.AreEqual(new DateTime(2019, 05, 09), sut.DueDate);
+            ClassicAssert.AreEqual("title", sut.Title);
+            ClassicAssert.AreEqual(0, sut.ApprenticeshipCategoryId);
+            ClassicAssert.AreEqual("note", sut.Note);
+            ClassicAssert.AreEqual(new DateTime(2019, 05, 09), sut.CompletionDateTime);
+            ClassicAssert.AreEqual(new DateTime(2019, 05, 09), sut.CreatedDateTime);
+            ClassicAssert.AreEqual(1, sut.Status);
+            ClassicAssert.AreEqual(1, sut.CategoryId);
 
         }
 
@@ -77,8 +75,8 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
                 Title = "title"
             };
 
-            Assert.Equals(1, sut.CategoryId);
-            Assert.Equals("title", sut.Title);
+            ClassicAssert.AreEqual(1, sut.CategoryId);
+            ClassicAssert.AreEqual("title", sut.Title);
 
         }
     }
