@@ -93,7 +93,7 @@ public class AddAccountRequestCommandHandler(
         return member.Role == nameof(Role.Owner);
     }
 
-    private NotificationModel CreateAddAccountOwnerInvitationNotification(AddAccountRequestCommand command, TeamMember member)
+    private static NotificationModel CreateAddAccountOwnerInvitationNotification(AddAccountRequestCommand command, TeamMember member)
     {
         return CreateNotification(NotificationConstants.AddAccountOwnerInvitationTemplateName, command, member);
     }
