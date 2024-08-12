@@ -14,8 +14,15 @@ namespace SFA.DAS.ProviderPR.UnitTests.Application.Requests.Commands;
 
 public class AddAccountRequestCommandHandlerTests
 {
-    private Mock<IProviderRelationshipsApiRestClient> _providerRelationshipsApiRestClient = new Mock<IProviderRelationshipsApiRestClient>();
-    private Mock<IAccountsApiClient<AccountsConfiguration>> _accountsApiClient = new Mock<IAccountsApiClient<AccountsConfiguration>>();
+    private Mock<IProviderRelationshipsApiRestClient> _providerRelationshipsApiRestClient;
+    private Mock<IAccountsApiClient<AccountsConfiguration>> _accountsApiClient;
+
+    [SetUp]
+    public void SetUp()
+    {
+        _providerRelationshipsApiRestClient = new Mock<IProviderRelationshipsApiRestClient>();
+        _accountsApiClient = new Mock<IAccountsApiClient<AccountsConfiguration>>();
+    }
 
     [Test]
     [AutoData]
