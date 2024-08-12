@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.VisualBasic.FileIO;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
 using SFA.DAS.ApprenticeApp.Models;
@@ -34,7 +35,71 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
             ClassicAssert.AreEqual(new DateTime(2019, 05, 09), sut.CompletionDateTime);
             ClassicAssert.AreEqual(new DateTime(2019, 05, 09), sut.CreatedDateTime);
             ClassicAssert.AreEqual(TaskStatus.Done, sut.Status);
+        }
 
+        [Test]
+        public void ApprenticeshipCategory_model_test()
+        {
+            var sut = new ApprenticeshipCategory
+            {
+                CategoryId = 1,
+                Title = "title"
+            };
+
+            ClassicAssert.AreEqual(1, sut.CategoryId);
+            ClassicAssert.AreEqual("title", sut.Title);
+        }
+
+        [Test]
+        public void TaskKSBs_model_test()
+        {
+            var sut = new TaskKSBs
+            {
+                TaskId = 1,
+                KSBProgressId = 2
+            };
+
+            ClassicAssert.AreEqual(1, sut.TaskId);
+            ClassicAssert.AreEqual(2, sut.KSBProgressId);
+        }
+
+        [Test]
+        public void TaskFile_model_test()
+        {
+            var sut = new TaskFile
+            {
+                TaskId = 1,
+                TaskFileId = 2,
+                FileType = "type",
+                FileName = "name",
+                FileContents = "contents"
+            };
+
+            ClassicAssert.AreEqual(1, sut.TaskId);
+            ClassicAssert.AreEqual(2, sut.TaskFileId);
+            ClassicAssert.AreEqual("type", sut.FileType);
+            ClassicAssert.AreEqual("name", sut.FileName);
+            ClassicAssert.AreEqual("contents", sut.FileContents);
+        }
+
+
+        [Test]
+        public void TaskReminder_model_test()
+        {
+            var sut = new TaskReminder
+            {
+                TaskId = 1,
+                ReminderId = 2,
+                ReminderValue = 1,
+                ReminderUnit = ReminderUnit.Days,
+                Status = ReminderStatus.Dismissed
+            };
+
+            ClassicAssert.AreEqual(1, sut.TaskId);
+            ClassicAssert.AreEqual(2, sut.ReminderId);
+            ClassicAssert.AreEqual(1, sut.ReminderValue);
+            ClassicAssert.AreEqual(ReminderUnit.Days, sut.ReminderUnit);
+            ClassicAssert.AreEqual(ReminderStatus.Dismissed, sut.Status);
         }
 
         [Test]
