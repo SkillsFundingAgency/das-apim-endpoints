@@ -23,4 +23,7 @@ public interface IProviderRelationshipsApiRestClient
     [Get("relationships")]
     [AllowAnyStatusCode]
     Task<Response<GetRelationshipResponse>> GetRelationship(long ukprn, long accountLegalEntityId, CancellationToken cancellationToken);
+
+    [Get("requests/{requestId}")]
+    Task<GetRequestResponse?> GetRequest([Path] Guid requestId, CancellationToken cancellationToken);
 }

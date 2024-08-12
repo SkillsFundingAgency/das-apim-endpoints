@@ -8,7 +8,7 @@ namespace SFA.DAS.ProviderPR.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class RequestsController(IMediator _mediator) : ControllerBase
+public class RequestsController(IMediator _mediator, IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient) : ControllerBase
 {
     [HttpPost("addaccount")]
     [ProducesResponseType(typeof(AddAccountRequestCommandResult), StatusCodes.Status200OK)]
@@ -16,6 +16,22 @@ public class RequestsController(IMediator _mediator) : ControllerBase
     public async Task<IActionResult> AddAccount([FromBody] AddAccountRequestCommand command, CancellationToken cancellationToken)
     {
         AddAccountRequestCommandResult result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
+
+
+    [HttpGet("{requestId:guid}")]
+    [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetRequest([FromRoute] Guid requestId, CancellationToken cancellationToken)
+    {
+        GetRequestResponse? result = await _providerRelationshipsApiRestClient.GetRequest(requestId, cancellationToken);
+        
+        if(result is null)
+        {
+            return NotFound();
+        }
+        
         return Ok(result);
     }
 }
