@@ -57,17 +57,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok(queryResult.KSBProgresses);
         }
 
-        [HttpGet("/apprentices/{apprenticeshipIdentifier}/ksbs")]
-        public async Task<IActionResult> GetKsbsByApprenticeshipId(Guid apprenticeshipIdentifier)
-        {
-            var queryResult = await _mediator.Send(new GetKsbsByApprenticeshipIdQuery
-            {
-                ApprenticeshipId = apprenticeshipIdentifier
-            });
-
-            return Ok(queryResult.KSBProgresses);
-        }
-
         [HttpGet]
         [Route("/apprentices/{apprenticeAccountId}/apprenticeship/{standardUid}/options/{option}/ksbs")]
         public async Task<IActionResult> GetApprenticeshipKsbs(Guid apprenticeAccountId, string standardUid, string option)

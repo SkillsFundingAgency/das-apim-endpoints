@@ -9,6 +9,13 @@ using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading.Tasks;
 
+using SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs;
+using Contentful.Core.Models;
+using Moq;
+using MediatR;
+using StackExchange.Redis;
+using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
+
 namespace SFA.DAS.ApprenticeApp.UnitTests
 {
     public class KsbProgressControllerTests
@@ -76,12 +83,38 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
 
         [Test, MoqAutoData]
         public async Task Get_ApprenticeKsbs_NoKsbs_Test(
-          [Greedy] KsbProgressController controller)
+            Mock<IMediator> mockMediator)
         {
             var httpContext = new DefaultHttpContext();
             var apprenticeshipId = Guid.NewGuid();
             string standardUid = "TestStandardUid";
             string option = "core";
+
+            var ksbQueryResult = (new GetStandardOptionKsbsQueryResult
+            {
+                KsbsResult = new GetStandardOptionKsbsResult { Ksbs = new System.Collections.Generic.List<Ksb>() }
+            });
+
+            var testKsb = new Ksb
+            {
+                Id = Guid.NewGuid(),
+                Type = KsbType.Knowledge,
+                Key = "K1",
+                Detail = "TestKnowledgeKsb"
+            };
+
+            ksbQueryResult.KsbsResult.Ksbs.Add(testKsb);
+
+            var ksbProgressResult = new GetKsbsByApprenticeshipIdQueryResult
+            {
+                KSBProgresses = new System.Collections.Generic.List<ApprenticeKsbProgressData>()
+            };
+
+
+            mockMediator.Setup(m => m.Send(It.IsAny<GetStandardOptionKsbsQuery>(), default)).ReturnsAsync(ksbQueryResult);
+            mockMediator.Setup(m => m.Send(It.IsAny<GetKsbsByApprenticeshipIdQuery>(), default)).ReturnsAsync(ksbProgressResult);
+
+            var controller = new KsbProgressController(mockMediator.Object);
 
             controller.ControllerContext = new ControllerContext
             {
@@ -89,7 +122,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             };
 
             var result = await controller.GetApprenticeshipKsbs(apprenticeshipId, standardUid, option);
-            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkObjectResult));
         }
     }
 }
