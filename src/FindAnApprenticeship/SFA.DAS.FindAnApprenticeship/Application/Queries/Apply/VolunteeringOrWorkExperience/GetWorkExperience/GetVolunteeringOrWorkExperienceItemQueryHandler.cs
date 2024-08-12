@@ -13,6 +13,7 @@ public class GetVolunteeringOrWorkExperienceItemQueryHandler (ICandidateApiClien
 {
     public async Task<GetVolunteeringOrWorkExperienceItemQueryResult> Handle(GetVolunteeringOrWorkExperienceItemQuery request, CancellationToken cancellationToken)
     {
-        return await apiClient.Get<GetWorkHistoryItemApiResponse>(new GetWorkHistoryItemApiRequest(request.ApplicationId, request.CandidateId, request.Id, WorkHistoryType.WorkExperience));
+        var getVolunteeringOrWorkExperienceItemQueryResult = await apiClient.Get<GetWorkHistoryItemApiResponse>(new GetWorkHistoryItemApiRequest(request.ApplicationId, request.CandidateId, request.Id, WorkHistoryType.WorkExperience));
+        return getVolunteeringOrWorkExperienceItemQueryResult ?? new GetVolunteeringOrWorkExperienceItemQueryResult();
     }
 }

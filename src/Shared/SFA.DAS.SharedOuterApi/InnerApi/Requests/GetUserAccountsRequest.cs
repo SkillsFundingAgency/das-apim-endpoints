@@ -12,6 +12,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
         }
 
         public string GetAllUrl => $"api/user/{_userId}/accounts";
-    
+
     }
 }
