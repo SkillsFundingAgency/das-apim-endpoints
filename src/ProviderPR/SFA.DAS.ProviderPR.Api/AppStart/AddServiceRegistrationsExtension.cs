@@ -1,25 +1,24 @@
 ﻿using RestEase.HttpClientFactory;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationships;
+using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationships;
+using SFA.DAS.ProviderPR.Application.Requests.Commands;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.Application.Queries.ProviderAccounts;
 using SFA.DAS.SharedOuterApi.Services;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.ProviderPR.Api.AppStart;
 
-[ExcludeFromCodeCoverage]
 public static class AddServiceRegistrationsExtension
 {
     public static IServiceCollection AddServiceRegistration(this IServiceCollection services, IConfigurationRoot configuration)
     {
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRoatpV2ProviderQuery).Assembly));
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRelationshipsQuery).Assembly));
-        services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
+
         services.AddHttpClient();
 
         AddProviderRelationshipsApiClient(services, configuration);
@@ -43,9 +42,9 @@ public static class AddServiceRegistrationsExtension
     {
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
+        services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
 
         services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
-        services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
     }
 }
