@@ -28,8 +28,10 @@
     <None Remove="Controllers\" />
     <None Remove="Services\" />
     <None Remove="Handlers\" />
+    <None Remove="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 </Project>
