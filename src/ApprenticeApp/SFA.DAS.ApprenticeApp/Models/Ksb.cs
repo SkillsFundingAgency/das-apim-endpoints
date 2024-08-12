@@ -19,6 +19,14 @@ namespace SFA.DAS.ApprenticeApp.Models
 
     public class ApprenticeKsbCollection
     {
-        public Ksb[] ApprenticeKsbs { get; set; }
+        public ApprenticeKsb[] ApprenticeKsbs { get; set; }
     }
+    public class ApprenticeKsb : Ksb
+    {
+        public int? TaskId { get; set; }
+        public KSBStatus? Status { get; set; }
+    }
+
+
+      
 }

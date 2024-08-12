@@ -16,7 +16,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         public KsbProgressController(IMediator mediator)
             => _mediator = mediator;
 
-        // gets the ksb types
         [HttpPost("/apprentices/{id}/ksbs")]
         public async Task<IActionResult> AddUpdateKsbProgress(Guid id, ApprenticeKsbProgressData data)
         {
@@ -50,6 +49,17 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             {
                 ApprenticeshipId = apprenticeshipIdentifier,
                 Guids = guids
+            });
+
+            return Ok(queryResult.KSBProgresses);
+        }
+
+        [HttpGet("/apprentices/{apprenticeshipIdentifier}/ksbs")]
+        public async Task<IActionResult> GetKsbsByApprenticeshipId(Guid apprenticeshipIdentifier)
+        {
+            var queryResult = await _mediator.Send(new GetKsbsByApprenticeshipIdQuery
+            {
+                ApprenticeshipId = apprenticeshipIdentifier
             });
 
             return Ok(queryResult.KSBProgresses);
