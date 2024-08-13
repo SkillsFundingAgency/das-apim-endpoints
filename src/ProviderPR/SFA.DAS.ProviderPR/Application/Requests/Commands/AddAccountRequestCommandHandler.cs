@@ -13,7 +13,7 @@ namespace SFA.DAS.ProviderPR.Application.Requests.Commands;
 public enum Role { Owner }
 
 public class AddAccountRequestCommandHandler(
-    IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient, 
+    IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient,
     IAccountsApiClient<AccountsConfiguration> _accountsApiClient
 ) : IRequestHandler<AddAccountRequestCommand, AddAccountRequestCommandResult>
 {
@@ -23,7 +23,7 @@ public class AddAccountRequestCommandHandler(
 
         var teamMembers = await _accountsApiClient.GetAll<TeamMember>(new GetAccountTeamMembersByInternalAccountIdRequest(command.AccountId));
 
-        if(!teamMembers.Any())
+        if (!teamMembers.Any())
         {
             return new AddAccountRequestCommandResult(addAccountResponse.RequestId);
         }
@@ -34,51 +34,60 @@ public class AddAccountRequestCommandHandler(
 
         if (string.IsNullOrWhiteSpace(command.EmployerContactEmail))
         {
-            foreach (TeamMember ownerMember in teamMembers.Where(IsAcceptedOwnerWithNotifications))
+            CreateNotificationsForMembers(ref notificationCommand, command, teamMembers);
+
+            await SendNotifications(notificationCommand, cancellationToken);
+
+            return new(addAccountResponse.RequestId);
+        }
+
+        // EmployerContactEmail is not null, therefore we must check for a team member associated with the provided EmployerContactEmail.
+        // If a user matches the provided email then we must create a 'AddAccountInformation' notification for this team member.
+
+        TeamMember? associatedTeamMember = teamMembers.FirstOrDefault(a => a.Email == command.EmployerContactEmail);
+
+        if (associatedTeamMember is not null && associatedTeamMember.CanReceiveNotifications)
+        {
+            notificationCommand.Notifications.Add(CreateAddAccountInformationNotification(command, associatedTeamMember));
+        }
+
+        // Where "EmployerContactEmail" is not null and is for an 'Owner' of the employer account, we will send a 'AddAccountInvitation' notification to
+        // invite the team member, ONLY if notifications are allowed.
+
+        if (associatedTeamMember is not null && IsOwner(associatedTeamMember))
+        {
+            if (associatedTeamMember.CanReceiveNotifications)
             {
-                notificationCommand.Notifications.Add(CreateAddAccountOwnerInvitationNotification(command, ownerMember));
+                notificationCommand.Notifications.Add(CreateAddAccountInvitationNotification(command, associatedTeamMember, addAccountResponse.RequestId));
             }
         }
         else
         {
-            // EmployerContactEmail is not null, therefore we must check for a team member associated with the provided EmployerContactEmail.
-            // If a user matches the provided email then we must create a 'AddAccountInformation' notification for this team member.
+            // Alternatively, if the team member is not an account owner,
+            // an 'AddAccountOwnerInvitation' notification will be sent to the account Owner(s) that allow notifications.
 
-            TeamMember? associatedTeamMember = teamMembers.FirstOrDefault(a => a.Email == command.EmployerContactEmail);
-
-            if (associatedTeamMember is not null && associatedTeamMember.CanReceiveNotifications)
-            {
-                notificationCommand.Notifications.Add(CreateAddAccountInformationNotification(command, associatedTeamMember));
-            }
-
-            // Where "EmployerContactEmail" is not null and is for an 'Owner' of the employer account, we will send a 'AddAccountInvitation' notification to
-            // invite the team member, ONLY if notifications are allowed.
-
-            if (associatedTeamMember is not null && IsOwner(associatedTeamMember))
-            {
-                if (associatedTeamMember.CanReceiveNotifications)
-                {
-                    notificationCommand.Notifications.Add(CreateAddAccountInvitationNotification(command, associatedTeamMember, addAccountResponse.RequestId));
-                }
-            }
-            else
-            {
-                // Alternatively, if the team member is not an account owner,
-                // an 'AddAccountOwnerInvitation' notification will be sent to the account Owner(s) that allow notifications.
-
-                foreach(TeamMember ownerMember in teamMembers.Where(IsAcceptedOwnerWithNotifications))
-                {
-                    notificationCommand.Notifications.Add(CreateAddAccountOwnerInvitationNotification(command, ownerMember));
-                }
-            }
+            CreateNotificationsForMembers(ref notificationCommand, command, teamMembers);
         }
 
-        if(notificationCommand.Notifications.Any())
+        await SendNotifications(notificationCommand, cancellationToken);
+
+        return new(addAccountResponse.RequestId);
+    }
+
+    private void CreateNotificationsForMembers(ref PostNotificationsCommand notificationCommand, AddAccountRequestCommand command, IEnumerable<TeamMember> teamMembers)
+    {
+        foreach (TeamMember ownerMember in teamMembers.Where(IsAcceptedOwnerWithNotifications))
+        {
+            notificationCommand.Notifications.Add(CreateAddAccountOwnerInvitationNotification(command, ownerMember));
+        }
+    }
+
+    private async Task SendNotifications(PostNotificationsCommand notificationCommand, CancellationToken cancellationToken)
+    {
+        if (notificationCommand.Notifications.Any())
         {
             await _providerRelationshipsApiRestClient.PostNotifications(notificationCommand, cancellationToken);
         }
-
-        return new(addAccountResponse.RequestId);
     }
 
     private static bool IsAcceptedOwnerWithNotifications(TeamMember member)
