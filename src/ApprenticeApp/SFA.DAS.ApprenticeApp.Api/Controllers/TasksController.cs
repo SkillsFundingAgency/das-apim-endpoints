@@ -41,9 +41,9 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
 
         // gets the tasks based on dates and status
         [HttpGet("/apprentices/{id}/progress/tasks")]
-        public async Task<IActionResult> GetTasks(Guid apprenticeshipId, int status, DateTime? fromDate, DateTime? toDate)
+        public async Task<IActionResult> GetTasks(Guid id, int status, DateTime? fromDate, DateTime? toDate)
         {
-            var result = await _mediator.Send(new GetTasksByApprenticeshipIdQuery { ApprenticeshipId = apprenticeshipId, Status = status, FromDate = fromDate, ToDate = toDate });
+            var result = await _mediator.Send(new GetTasksByApprenticeshipIdQuery { ApprenticeshipId = id, Status = status, FromDate = fromDate, ToDate = toDate });
             if (result.Tasks == null)
                 return NotFound();
             return Ok(result);
