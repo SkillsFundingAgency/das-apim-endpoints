@@ -8,11 +8,11 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CollectionCalendar : ControllerBase
+public class CollectionCalendarController : ControllerBase
 {
     private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
 
-    public CollectionCalendar(ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
+    public CollectionCalendarController(ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
     {
         _collectionCalendarApiClient = collectionCalendarApiClient;
     }
