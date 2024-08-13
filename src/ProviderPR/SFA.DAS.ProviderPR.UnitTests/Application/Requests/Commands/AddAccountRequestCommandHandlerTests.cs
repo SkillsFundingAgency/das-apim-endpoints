@@ -1,6 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using Moq;
-using SFA.DAS.ProviderPR.Application.Requests.Commands;
+using SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccountRequest;
 using SFA.DAS.ProviderPR.Common;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Notifications.Commands;

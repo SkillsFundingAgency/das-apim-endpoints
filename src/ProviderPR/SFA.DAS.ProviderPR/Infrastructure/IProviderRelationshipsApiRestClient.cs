@@ -1,5 +1,6 @@
 ﻿using RestEase;
-using SFA.DAS.ProviderPR.Application.Requests.Commands;
+using SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccount;
+using SFA.DAS.ProviderPR.Application.Requests.Commands.CreatePermissions;
 using SFA.DAS.ProviderPR.InnerApi.Notifications.Commands;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
 
@@ -26,4 +27,7 @@ public interface IProviderRelationshipsApiRestClient
 
     [Get("requests/{requestId}")]
     Task<GetRequestResponse?> GetRequest([Path] Guid requestId, CancellationToken cancellationToken);
+
+    [Post("requests/permissions")]
+    Task<GetRequestResponse?> CreatePermissionsRequest([Body] CreatePermissionRequestCommand command, CancellationToken cancellationToken);
 }

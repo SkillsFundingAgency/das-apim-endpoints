@@ -8,12 +8,12 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetAccountTeamMembersWhichReceiveNotificationsResponse;
 
-namespace SFA.DAS.ProviderPR.Application.Requests.Commands;
+namespace SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccount;
 
 public enum Role { Owner }
 
 public class AddAccountRequestCommandHandler(
-    IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient, 
+    IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient,
     IAccountsApiClient<AccountsConfiguration> _accountsApiClient
 ) : IRequestHandler<AddAccountRequestCommand, AddAccountRequestCommandResult>
 {
@@ -23,7 +23,7 @@ public class AddAccountRequestCommandHandler(
 
         var teamMembers = await _accountsApiClient.GetAll<TeamMember>(new GetAccountTeamMembersByInternalAccountIdRequest(command.AccountId));
 
-        if(!teamMembers.Any())
+        if (!teamMembers.Any())
         {
             return new AddAccountRequestCommandResult(addAccountResponse.RequestId);
         }
@@ -66,14 +66,14 @@ public class AddAccountRequestCommandHandler(
                 // Alternatively, if the team member is not an account owner,
                 // an 'AddAccountOwnerInvitation' notification will be sent to the account Owner(s) that allow notifications.
 
-                foreach(TeamMember ownerMember in teamMembers.Where(IsAcceptedOwnerWithNotifications))
+                foreach (TeamMember ownerMember in teamMembers.Where(IsAcceptedOwnerWithNotifications))
                 {
                     notificationCommand.Notifications.Add(CreateAddAccountOwnerInvitationNotification(command, ownerMember));
                 }
             }
         }
 
-        if(notificationCommand.Notifications.Any())
+        if (notificationCommand.Notifications.Any())
         {
             await _providerRelationshipsApiRestClient.PostNotifications(notificationCommand, cancellationToken);
         }

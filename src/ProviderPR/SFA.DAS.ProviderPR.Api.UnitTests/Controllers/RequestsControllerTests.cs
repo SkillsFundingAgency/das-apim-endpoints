@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.ProviderPR.Api.Controllers;
-using SFA.DAS.ProviderPR.Application.Requests.Commands;
+using SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccountRequest;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
 

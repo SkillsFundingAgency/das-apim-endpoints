@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ProviderPR.Application.Requests.Commands;
+using SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccountRequest;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
 
@@ -19,7 +19,6 @@ public class RequestsController(IMediator _mediator, IProviderRelationshipsApiRe
         return Ok(result);
     }
 
-
     [HttpGet("{requestId:guid}")]
     [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -34,4 +33,14 @@ public class RequestsController(IMediator _mediator, IProviderRelationshipsApiRe
         
         return Ok(result);
     }
+
+    [HttpPost("permission")]
+    [ProducesResponseType(typeof(AddAccountRequestCommandResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CreatePermissions([FromBody] CreatePermissionRequestCommand command, CancellationToken cancellationToken)
+    {
+        AddAccountRequestCommandResult result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
+    //CreatePermissionRequestCommand
 }
