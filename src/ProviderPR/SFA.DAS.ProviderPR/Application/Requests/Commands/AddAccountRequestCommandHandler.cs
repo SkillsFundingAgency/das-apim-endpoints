@@ -74,7 +74,7 @@ public class AddAccountRequestCommandHandler(
         return new(addAccountResponse.RequestId);
     }
 
-    private void CreateNotificationsForMembers(ref PostNotificationsCommand notificationCommand, AddAccountRequestCommand command, IEnumerable<TeamMember> teamMembers)
+    private static void CreateNotificationsForMembers(ref PostNotificationsCommand notificationCommand, AddAccountRequestCommand command, IEnumerable<TeamMember> teamMembers)
     {
         foreach (TeamMember ownerMember in teamMembers.Where(IsAcceptedOwnerWithNotifications))
         {
