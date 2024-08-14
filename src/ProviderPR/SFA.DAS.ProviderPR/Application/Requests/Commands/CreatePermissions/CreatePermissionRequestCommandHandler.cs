@@ -39,6 +39,11 @@ public class CreatePermissionRequestCommandHandler(
             );
         }
 
+        if(notificationCommand.Notifications.Any())
+        {
+            await _providerRelationshipsApiRestClient.PostNotifications(notificationCommand, cancellationToken);
+        }
+
         return new CreatePermissionRequestCommandResult(createPermissionsResponse.RequestId);
     }
 

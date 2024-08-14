@@ -28,6 +28,6 @@ public interface IProviderRelationshipsApiRestClient
     [Get("requests/{requestId}")]
     Task<GetRequestResponse?> GetRequest([Path] Guid requestId, CancellationToken cancellationToken);
 
-    [Post("requests/permissions")]
+    [Post("requests/permission")]
     Task<CreatePermissionRequestCommandResult> CreatePermissionsRequest([Body] CreatePermissionRequestCommand command, CancellationToken cancellationToken);
 }
