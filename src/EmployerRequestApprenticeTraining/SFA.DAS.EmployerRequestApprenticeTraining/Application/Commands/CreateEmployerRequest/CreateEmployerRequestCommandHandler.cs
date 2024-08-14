@@ -6,6 +6,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,7 +57,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateE
             var templateId = _options.Value.NotificationTemplates.FirstOrDefault(p => p.TemplateName == "SubmitEmployerRequest")?.TemplateId;
             if (templateId != null)
             {
-                await _notificationService.Send(new SendEmailCommand(templateId.ToString(), command.RequestedByEmail, null));
+                await _notificationService.Send(new SendEmailCommand(templateId.ToString(), command.RequestedByEmail, new Dictionary<string, string>()));
             }
 
             return employerRequestResponse.Body;
