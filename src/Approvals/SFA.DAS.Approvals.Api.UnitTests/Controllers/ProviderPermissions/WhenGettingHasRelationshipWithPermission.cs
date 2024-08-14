@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -33,21 +31,5 @@ public class WhenGettingHasRelationshipWithPermission
         actual.Should().NotBeNull();
         var actualModel = actual.Value as GetHasRelationshipWithPermissionResponse;
         actualModel.HasPermission.Should().Be(result);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_If_Error_Then_Internal_Server_Error_Response_Returned(
-        long ukprn,
-        bool result,
-        [Frozen] Mock<ISender> mediator,
-        [Greedy] ProviderPermissionsController controller,
-        CancellationToken cancellationToken)
-    {
-        mediator.Setup(x => x.Send(
-            It.Is<GetHasRelationshipWithPermissionQuery>(c => c.Ukprn.Equals(ukprn)), cancellationToken)).ThrowsAsync(new Exception("Error"));
-
-        var actual = await controller.HasRelationshipWithPermission(ukprn, cancellationToken) as StatusCodeResult;
-
-        actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }
 }

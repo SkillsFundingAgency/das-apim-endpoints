@@ -21,6 +21,7 @@ namespace SFA.DAS.Approvals.Api.AppStart
             CreateMap<PendingPriceChange, GetManageApprenticeshipDetailsResponse.PendingPriceChangeDetails>();
             CreateMap<PendingStartDateChange, GetManageApprenticeshipDetailsResponse.PendingStartDateChangeDetails>();
             CreateMap<GetManageApprenticeshipDetailsQueryResult, GetManageApprenticeshipDetailsResponse>();
+            CreateMap<PaymentsStatus, GetManageApprenticeshipDetailsResponse.PaymentsStatusDetails>();
         }
     }
 }
