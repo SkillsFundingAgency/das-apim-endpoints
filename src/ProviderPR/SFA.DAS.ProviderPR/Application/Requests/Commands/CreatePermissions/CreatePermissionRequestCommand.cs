@@ -12,4 +12,6 @@ public class CreatePermissionRequestCommand : IRequest<CreatePermissionRequestCo
     public required long AccountLegalEntityId { get; set; }
 
     public required List<Operation> Operations { get; set; } = [];
+
+    public required long AccountId { get; set; }
 }

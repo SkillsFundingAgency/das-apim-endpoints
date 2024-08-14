@@ -1,8 +1,10 @@
 ﻿using MediatR;
-using SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccount;
+using SFA.DAS.ProviderPR.Common;
 using SFA.DAS.ProviderPR.Infrastructure;
+using SFA.DAS.ProviderPR.InnerApi.Notifications.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetAccountTeamMembersWhichReceiveNotificationsResponse;
 
@@ -21,7 +23,37 @@ public class CreatePermissionRequestCommandHandler(
 
         if (!teamMembers.Any())
         {
-            return new AddAccountRequestCommandResult(createPermissionsResponse.RequestId);
+            return new CreatePermissionRequestCommandResult(createPermissionsResponse.RequestId);
         }
+
+        PostNotificationsCommand notificationCommand = new();
+
+        foreach (TeamMember owner in teamMembers.Where(t => t.IsAcceptedOwnerWithNotifications()))
+        {
+            notificationCommand.Notifications.Add(
+                CreatePermissionRequestNotification(
+                    command, 
+                    owner,
+                    createPermissionsResponse.RequestId
+                )
+            );
+        }
+
+        return new CreatePermissionRequestCommandResult(createPermissionsResponse.RequestId);
+    }
+
+    private static NotificationModel CreatePermissionRequestNotification(CreatePermissionRequestCommand command, TeamMember owner, Guid requestId)
+    {
+        return new NotificationModel()
+        {
+            TemplateName = NotificationConstants.PermissionRequestInvitationTemplateName,
+            NotificationType = NotificationConstants.EmployerNotificationType,
+            Ukprn = command.Ukprn,
+            EmailAddress = owner.Email,
+            Contact = owner.Name,
+            AccountLegalEntityId = command.AccountLegalEntityId,
+            CreatedBy = command.RequestedBy,
+            RequestId = requestId
+        };
     }
 }
