@@ -5,11 +5,11 @@ namespace SFA.DAS.ApprenticeApp.InnerApi.ApprenticeProgress.Requests
 {
     public class DeleteTaskToKsbProgressRequest : IDeleteApiRequest
     {
-        public Guid ApprenticeshipId;
+        public long ApprenticeshipId;
         public int KsbProgressId;
         public int TaskId;
 
-        public DeleteTaskToKsbProgressRequest(Guid apprenticeshipId, int taskId, int ksbProgressId)
+        public DeleteTaskToKsbProgressRequest(long apprenticeshipId, int taskId, int ksbProgressId)
         {
             KsbProgressId = ksbProgressId;
             TaskId = taskId;

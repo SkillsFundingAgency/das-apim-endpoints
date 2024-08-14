@@ -19,12 +19,12 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         public KsbProgressController(IMediator mediator)
             => _mediator = mediator;
 
-        [HttpPost("/apprentices/{id}/ksbs")]
-        public async Task<IActionResult> AddUpdateKsbProgress(Guid id, ApprenticeKsbProgressData data)
+        [HttpPost("/apprentices/{apprenticeshipId}/ksbs")]
+        public async Task<IActionResult> AddUpdateKsbProgress(long apprenticeshipId, ApprenticeKsbProgressData data)
         {
             await _mediator.Send(new AddUpdateKsbProgressCommand
             {
-                ApprenticeshipId = id,
+                ApprenticeshipId = apprenticeshipId,
                 Data = data
             });
 
@@ -32,25 +32,25 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         }
 
         // remove the ksb to task association
-        [HttpDelete("/apprentices/{id}/ksbs/{ksbProgressId}/taskid/{taskId}")]
-        public async Task<IActionResult> RemoveTaskToKsbProgress(Guid id, int ksbProgressId, int taskId)
+        [HttpDelete("/apprentices/{apprenticeshipId}/ksbs/{ksbProgressId}/taskid/{taskId}")]
+        public async Task<IActionResult> RemoveTaskToKsbProgress(long apprenticeshipId, int ksbProgressId, int taskId)
         {
             await _mediator.Send(new RemoveTaskToKsbProgressCommand
             {
                 TaskId = taskId,
                 KsbProgressId = ksbProgressId,
-                ApprenticeshipId = id
+                ApprenticeshipId = apprenticeshipId
             });
 
             return Ok();
         }
 
-        [HttpGet("/apprentices/{apprenticeshipIdentifier}/ksbs")]
-        public async Task<IActionResult> GetKsbsByApprenticeshipIdAndGuidListQuery(Guid apprenticeshipIdentifier, [FromQuery] Guid[] guids)
+        [HttpGet("/apprentices/{apprenticeshipId}/ksbs")]
+        public async Task<IActionResult> GetKsbsByApprenticeshipIdAndGuidListQuery(long apprenticeshipId, [FromQuery] Guid[] guids)
         {
             var queryResult = await _mediator.Send(new GetKsbsByApprenticeshipIdAndGuidListQuery
             {
-                ApprenticeshipId = apprenticeshipIdentifier,
+                ApprenticeshipId = apprenticeshipId,
                 Guids = guids
             });
 
@@ -58,8 +58,8 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/apprentices/{apprenticeAccountId}/apprenticeship/{standardUid}/options/{option}/ksbs")]
-        public async Task<IActionResult> GetApprenticeshipKsbs(Guid apprenticeAccountId, string standardUid, string option)
+        [Route("/apprentices/{apprenticeshipId}/apprenticeship/{standardUid}/options/{option}/ksbs")]
+        public async Task<IActionResult> GetApprenticeshipKsbs(long apprenticeshipId, string standardUid, string option)
         {
             var ksbQueryResult = await _mediator.Send(new GetStandardOptionKsbsQuery
             {
@@ -69,7 +69,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
 
             if (ksbQueryResult.KsbsResult != null && ksbQueryResult.KsbsResult.Ksbs.Count > 0)
             {
-                var ksbProgressResult = await _mediator.Send(new GetKsbsByApprenticeshipIdQuery { ApprenticeshipId = apprenticeAccountId });
+                var ksbProgressResult = await _mediator.Send(new GetKsbsByApprenticeshipIdQuery { ApprenticeshipId = apprenticeshipId });
 
                 var apprenticeKsbs = new List<ApprenticeKsb>();
                 foreach (var ksb in ksbQueryResult.KsbsResult.Ksbs)

@@ -6,7 +6,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands
 {
     public class AddUpdateKsbProgressCommand : IRequest<Unit>
     {
-        public Guid ApprenticeshipId { get; set; }
+        public long ApprenticeshipId { get; set; }
         public ApprenticeKsbProgressData Data { get; set; }
     }
 }

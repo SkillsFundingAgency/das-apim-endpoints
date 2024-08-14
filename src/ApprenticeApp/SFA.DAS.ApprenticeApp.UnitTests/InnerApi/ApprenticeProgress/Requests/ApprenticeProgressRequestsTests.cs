@@ -12,83 +12,83 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
         [Test, AutoData]
         public void PatchApprenticeTaskRequestTestUrlIsCorrectlyBuilt()
         {
-            var apprenticeId = new Guid("8e5482b2-1c77-4143-80a5-ee3ddc751075");
+            var apprenticeshipId = 1;
             var taskId = 1;
             ApprenticeTaskData data = new ApprenticeTaskData();
 
-            var instance = new PatchApprenticeTaskRequest(apprenticeId, 1, data);
+            var instance = new PatchApprenticeTaskRequest(apprenticeshipId, 1, data);
 
-            instance.PostUrl.Should().Be($"/apprenticeships/8e5482b2-1c77-4143-80a5-ee3ddc751075/tasks/1");
+            instance.PostUrl.Should().Be($"/apprenticeships/1/tasks/1");
         }
 
 
         [Test, AutoData]
         public void GetTaskCategoriesRequestTestUrlIsCorrectlyBuilt()
         {
-            var apprenticeId = new Guid("8e5482b2-1c77-4143-80a5-ee3ddc751075");
+            var apprenticeshipId = 1;
 
-            var instance = new GetTaskCategoriesRequest(apprenticeId);
+            var instance = new GetTaskCategoriesRequest(apprenticeshipId);
 
-            instance.GetUrl.Should().Be($"apprenticeships/8e5482b2-1c77-4143-80a5-ee3ddc751075/taskCategories");
+            instance.GetUrl.Should().Be($"apprenticeships/1/taskCategories");
         }
 
         [Test, AutoData]
         public void GetApprenticeTaskRequestTestUrlIsCorrectlyBuilt()
         {
-            var apprenticeId = new Guid("8e5482b2-1c77-4143-80a5-ee3ddc751075");
+            var apprenticeshipId = 1;
             var taskId = 1;
 
-            var instance = new GetApprenticeTaskRequest(apprenticeId, taskId);
+            var instance = new GetApprenticeTaskRequest(apprenticeshipId, taskId);
 
-            instance.GetUrl.Should().Be($"apprenticeships/8e5482b2-1c77-4143-80a5-ee3ddc751075/tasks/1/");
+            instance.GetUrl.Should().Be($"apprenticeships/1/tasks/1/");
         }
 
         [Test, AutoData]
         public void GetApprenticeTasksRequestTestUrlIsCorrectlyBuilt()
         {
-            var apprenticeId = new Guid("8e5482b2-1c77-4143-80a5-ee3ddc751075");
+            var apprenticeshipId = 1;
             var statusId = 1;
             var fromDate = "1-1-2020";
             var toDate = "1-1-2030";
-            var instance = new GetApprenticeTasksRequest(apprenticeId, statusId, fromDate, toDate);
-            instance.GetUrl.Should().Be($"apprenticeships/8e5482b2-1c77-4143-80a5-ee3ddc751075/fromDate/1-1-2020/toDate/1-1-2030/status/1");
+            var instance = new GetApprenticeTasksRequest(apprenticeshipId, statusId, fromDate, toDate);
+            instance.GetUrl.Should().Be($"apprenticeships/1/fromDate/1-1-2020/toDate/1-1-2030/status/1");
         }
 
 
         [Test, AutoData]
         public void DeleteApprenticeTaskRequestTestUrlIsCorrectlyBuilt()
         {
-            var apprenticeId = new Guid("8e5482b2-1c77-4143-80a5-ee3ddc751075");
+            var apprenticeshipId = 1;
             var taskId = 1;
-            var instance = new DeleteApprenticeTaskRequest(apprenticeId, taskId);
-            instance.DeleteUrl.Should().Be($"apprenticeships/8e5482b2-1c77-4143-80a5-ee3ddc751075/tasks/1/");
+            var instance = new DeleteApprenticeTaskRequest(apprenticeshipId, taskId);
+            instance.DeleteUrl.Should().Be($"apprenticeships/1/tasks/1/");
         }
 
 
         [Test, AutoData]
         public void DeleteTaskToKsbProgressRequestTestUrlIsCorrectlyBuilt()
         {
-            var apprenticeId = new Guid("8e5482b2-1c77-4143-80a5-ee3ddc751075");
+            var apprenticeshipId = 1;
             var taskId = 1;
             var ksbProgressId = 2;
-            var instance = new DeleteTaskToKsbProgressRequest(apprenticeId, taskId, ksbProgressId);
-            instance.DeleteUrl.Should().Be($"apprenticeships/8e5482b2-1c77-4143-80a5-ee3ddc751075/ksbs/2/taskid/1");
+            var instance = new DeleteTaskToKsbProgressRequest(apprenticeshipId, taskId, ksbProgressId);
+            instance.DeleteUrl.Should().Be($"apprenticeships/1/ksbs/2/taskid/1");
         }
 
         [Test, AutoData]
         public void PostApprenticeTaskRequestTestUrlIsCorrectlyBuilt()
         {
-            var apprenticeshipId = new Guid("8e5482b2-1c77-4143-80a5-ee3ddc751075");
+            var apprenticeshipId = 1;
             var instance = new PostApprenticeTaskRequest(apprenticeshipId, new ApprenticeTaskData());
-            instance.PostUrl.Should().Be($"/apprenticeships/8e5482b2-1c77-4143-80a5-ee3ddc751075/tasks");
+            instance.PostUrl.Should().Be($"/apprenticeships/1/tasks");
         }
 
         [Test, AutoData]
         public void PostKsbProgressRequestTestUrlIsCorrectlyBuilt()
         {
-            var apprenticeshipId = new Guid("8e5482b2-1c77-4143-80a5-ee3ddc751075");
+            var apprenticeshipId = 1;
             var instance = new PostKsbProgressRequest(apprenticeshipId, new ApprenticeKsbProgressData());
-            instance.PostUrl.Should().Be($"/apprenticeships/8e5482b2-1c77-4143-80a5-ee3ddc751075/ksbs");
+            instance.PostUrl.Should().Be($"/apprenticeships/1/ksbs");
         }
     }
 }

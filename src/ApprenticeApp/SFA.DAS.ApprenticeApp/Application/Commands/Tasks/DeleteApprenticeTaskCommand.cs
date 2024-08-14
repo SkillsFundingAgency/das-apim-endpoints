@@ -5,7 +5,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands
 {
     public class DeleteApprenticeTaskCommand : IRequest<Unit>
     {
-        public Guid ApprenticeshipId { get; set; }
+        public long ApprenticeshipId { get; set; }
         public int TaskId { get; set; }
     }
 }

@@ -19,14 +19,14 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             [Greedy] TasksController controller)
         {
             var httpContext = new DefaultHttpContext();
-            var apprenticeId = Guid.NewGuid();
+            var apprenticeshipId = 1;
 
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
             };
 
-            var result = await controller.GetTaskCategories(apprenticeId);
+            var result = await controller.GetTaskCategories(apprenticeshipId);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.NotFoundResult));
         }
 
@@ -35,7 +35,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             [Greedy] TasksController controller)
         {
             var httpContext = new DefaultHttpContext();
-            var apprenticeId = Guid.NewGuid();
+            var apprenticeshipId = 1;
             var dateFrom = new DateTime();
             var dateTo = new DateTime();
             int status = 1;
@@ -45,7 +45,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
                 HttpContext = httpContext
             };
 
-            var result = await controller.GetTasks(apprenticeId, status, dateFrom, dateTo);
+            var result = await controller.GetTasks(apprenticeshipId, status, dateFrom, dateTo);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.NotFoundResult));
         }
 
@@ -54,7 +54,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
              [Greedy] TasksController controller)
         {
             var httpContext = new DefaultHttpContext();
-            var apprenticeId = Guid.NewGuid();
+            var apprenticeshipId = 1;
             int taskId = 1;
 
             controller.ControllerContext = new ControllerContext
@@ -62,7 +62,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
                 HttpContext = httpContext
             };
 
-            var result = await controller.GetTaskById(apprenticeId, taskId);
+            var result = await controller.GetTaskById(apprenticeshipId, taskId);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.NotFoundResult));
         }
 
@@ -71,7 +71,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             [Greedy] TasksController controller)
         {
             var httpContext = new DefaultHttpContext();
-            var apprenticeId = Guid.NewGuid();
+            var apprenticeshipId = 1;
             var ApprenticeTaskData = new ApprenticeTaskData();
             var taskId = 1;
             controller.ControllerContext = new ControllerContext
@@ -79,7 +79,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
                 HttpContext = httpContext
             };
 
-            var result = await controller.UpdateTaskById(apprenticeId, taskId, ApprenticeTaskData);
+            var result = await controller.UpdateTaskById(apprenticeshipId, taskId, ApprenticeTaskData);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
         }
 
@@ -88,7 +88,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             [Greedy] TasksController controller)
         {
             var httpContext = new DefaultHttpContext();
-            var apprenticeId = Guid.NewGuid();
+            var apprenticeshipId = 1;
             var ApprenticeTaskData = new ApprenticeTaskData();
             var taskId = 1;
             controller.ControllerContext = new ControllerContext
@@ -96,7 +96,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
                 HttpContext = httpContext
             };
 
-            var result = await controller.DeleteTaskById(apprenticeId, taskId);
+            var result = await controller.DeleteTaskById(apprenticeshipId, taskId);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
         }
 
@@ -106,14 +106,14 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             [Greedy] TasksController controller)
         {
             var httpContext = new DefaultHttpContext();
-            var apprenticeId = Guid.NewGuid();
+            var apprenticeshipId = 1;
             var ApprenticeTaskData = new ApprenticeTaskData();
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
             };
 
-            var result = await controller.AddTask(apprenticeId, ApprenticeTaskData);
+            var result = await controller.AddTask(apprenticeshipId, ApprenticeTaskData);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
         }
 

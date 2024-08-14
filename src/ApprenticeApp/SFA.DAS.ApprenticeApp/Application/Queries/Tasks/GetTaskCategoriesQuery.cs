@@ -5,6 +5,6 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
 {
     public class GetTaskCategoriesQuery : IRequest<GetTaskCategoriesQueryResult>
     {
-        public Guid ApprenticeshipId { get; set; }
+        public long ApprenticeshipId { get; set; }
     }
 }

@@ -17,22 +17,22 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             => _mediator = mediator;
 
         // gets the task categories
-        [HttpGet("/apprentices/{id}/progress/taskCategories")]
-        public async Task<IActionResult> GetTaskCategories(Guid id)
+        [HttpGet("/apprentices/{apprenticeshipId}/progress/taskCategories")]
+        public async Task<IActionResult> GetTaskCategories(long apprenticeshipId)
         {
-            var result = await _mediator.Send(new GetTaskCategoriesQuery { ApprenticeshipId = id });
+            var result = await _mediator.Send(new GetTaskCategoriesQuery { ApprenticeshipId = apprenticeshipId });
             if (result.TaskCategories == null)
                 return NotFound();
             return Ok(result);
         }
 
         // add a new tasks
-        [HttpPost("/apprentices/{id}/progress/tasks")]
-        public async Task<IActionResult> AddTask(Guid id, ApprenticeTaskData data)
+        [HttpPost("/apprentices/{apprenticeshipId}/progress/tasks")]
+        public async Task<IActionResult> AddTask(long apprenticeshipId, ApprenticeTaskData data)
         {
             await _mediator.Send(new AddApprenticeTaskCommand
             {
-                ApprenticeshipId = id,
+                ApprenticeshipId = apprenticeshipId,
                 Data = data
             });
 
@@ -40,32 +40,32 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         }
 
         // gets the tasks based on dates and status
-        [HttpGet("/apprentices/{id}/progress/tasks")]
-        public async Task<IActionResult> GetTasks(Guid id, int status, DateTime? fromDate, DateTime? toDate)
+        [HttpGet("/apprentices/{apprenticeshipId}/progress/tasks")]
+        public async Task<IActionResult> GetTasks(long apprenticeshipId, int status, DateTime? fromDate, DateTime? toDate)
         {
-            var result = await _mediator.Send(new GetTasksByApprenticeshipIdQuery { ApprenticeshipId = id, Status = status, FromDate = fromDate, ToDate = toDate });
+            var result = await _mediator.Send(new GetTasksByApprenticeshipIdQuery { ApprenticeshipId = apprenticeshipId, Status = status, FromDate = fromDate, ToDate = toDate });
             if (result.Tasks == null)
                 return NotFound();
             return Ok(result);
         }
 
         // get a task by id
-        [HttpGet("/apprentices/{id}/progress/tasks/{taskId}")]
-        public async Task<IActionResult> GetTaskById(Guid id, int taskId)
+        [HttpGet("/apprentices/{apprenticeshipId}/progress/tasks/{taskId}")]
+        public async Task<IActionResult> GetTaskById(long apprenticeshipId, int taskId)
         {
-            var result = await _mediator.Send(new GetTaskByTaskIdQuery { ApprenticeshipId = id, TaskId = taskId });
+            var result = await _mediator.Send(new GetTaskByTaskIdQuery { ApprenticeshipId = apprenticeshipId, TaskId = taskId });
             if (result.Tasks == null)
                 return NotFound();
             return Ok(result);
         }
 
         // update a task by id
-        [HttpPut("/apprentices/{id}/progress/tasks/{taskId}")]
-        public async Task<IActionResult> UpdateTaskById(Guid id, int taskId, ApprenticeTaskData data)
+        [HttpPut("/apprentices/{apprenticeshipId}/progress/tasks/{taskId}")]
+        public async Task<IActionResult> UpdateTaskById(long apprenticeshipId, int taskId, ApprenticeTaskData data)
         {
             await _mediator.Send(new UpdateApprenticeTaskCommand
             {
-                ApprenticeshipId = id,
+                ApprenticeshipId = apprenticeshipId,
                 TaskId = taskId,
                 Data = data
             });
@@ -74,12 +74,12 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         }
 
         // Delete a task by id
-        [HttpDelete("/apprentices/{id}/progress/tasks/{taskId}")]
-        public async Task<IActionResult> DeleteTaskById(Guid id, int taskId)
+        [HttpDelete("/apprentices/{apprenticeshipId}/progress/tasks/{taskId}")]
+        public async Task<IActionResult> DeleteTaskById(long apprenticeshipId, int taskId)
         {
             await _mediator.Send(new DeleteApprenticeTaskCommand
             {
-                ApprenticeshipId = id,
+                ApprenticeshipId = apprenticeshipId,
                 TaskId = taskId
             });
 

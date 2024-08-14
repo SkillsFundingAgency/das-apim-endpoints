@@ -18,7 +18,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             CancellationToken cancellationToken)
         {
             query.TaskId = 1;
-            query.ApprenticeshipId = new System.Guid();
+            query.ApprenticeshipId = 1;
 
             await sut.Handle(query, cancellationToken);
             sut.Should().NotBeNull();
@@ -30,7 +30,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             GetTaskCategoriesQuery query,
             CancellationToken cancellationToken)
         {
-            query.ApprenticeshipId = new System.Guid();
+            query.ApprenticeshipId = 1;
             await sut.Handle(query, cancellationToken);
             sut.Should().NotBeNull();
         }
@@ -41,7 +41,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             GetTasksByApprenticeshipIdQuery query,
             CancellationToken cancellationToken)
         {
-            query.ApprenticeshipId = new System.Guid();
+            query.ApprenticeshipId = 1;
             query.FromDate = new System.DateTime();
             query.ToDate = new System.DateTime();
             query.Status = 1;
@@ -56,7 +56,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
           DeleteApprenticeTaskCommand query,
           CancellationToken cancellationToken)
         {
-            query.ApprenticeshipId = new System.Guid();
+            query.ApprenticeshipId = 1;
             query.TaskId = 1;
 
             await sut.Handle(query, cancellationToken);

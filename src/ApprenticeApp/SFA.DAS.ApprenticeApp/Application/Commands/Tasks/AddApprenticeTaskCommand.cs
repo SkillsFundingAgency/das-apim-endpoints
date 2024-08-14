@@ -6,7 +6,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands
 {
     public class AddApprenticeTaskCommand : IRequest<Unit>
     {
-        public Guid ApprenticeshipId { get; set; }
+        public long ApprenticeshipId { get; set; }
         public ApprenticeTaskData Data { get; set; }
     }
 }

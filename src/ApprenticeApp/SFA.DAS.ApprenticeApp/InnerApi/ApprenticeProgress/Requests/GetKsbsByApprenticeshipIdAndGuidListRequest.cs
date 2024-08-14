@@ -5,10 +5,10 @@ namespace SFA.DAS.ApprenticeApp.InnerApi.ApprenticeProgress.Requests
 {
     public class GetKsbsByApprenticeshipIdAndGuidListRequest : IGetApiRequest
     {
-        public Guid ApprenticeshipId;
+        public long ApprenticeshipId;
         public string Ksbs;
 
-        public GetKsbsByApprenticeshipIdAndGuidListRequest(Guid apprenticeshipId, Guid[] ksbGuids)
+        public GetKsbsByApprenticeshipIdAndGuidListRequest(long apprenticeshipId, Guid[] ksbGuids)
         {
             ApprenticeshipId = apprenticeshipId;
             foreach (var ksb in ksbGuids)

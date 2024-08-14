@@ -17,7 +17,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             CancellationToken cancellationToken)
         {
             query.TaskId = 1;
-            query.ApprenticeshipId = new System.Guid();
+            query.ApprenticeshipId = 1;
 
             await sut.Handle(query, cancellationToken);
             sut.Should().NotBeNull();

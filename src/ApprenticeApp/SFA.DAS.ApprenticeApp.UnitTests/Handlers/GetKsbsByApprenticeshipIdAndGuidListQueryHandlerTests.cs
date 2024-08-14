@@ -16,7 +16,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
            GetKsbsByApprenticeshipIdAndGuidListQuery query,
            CancellationToken cancellationToken)
         {
-            query.ApprenticeshipId = Guid.Empty;
+            query.ApprenticeshipId = 1;
             query.Guids = new Guid[] { Guid.Empty };
 
             await sut.Handle(query, cancellationToken);

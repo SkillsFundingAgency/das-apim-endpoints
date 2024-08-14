@@ -26,10 +26,10 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             [Greedy] KsbProgressController controller)
         {
             var httpContext = new DefaultHttpContext();
-            var apprenticeId = Guid.NewGuid();
+            var apprenticeshipId = 1;
             ApprenticeKsbProgressData data = new()
             {
-                ApprenticeshipId = new Guid(),
+                ApprenticeshipId = 1,
                 CurrentStatus = KSBStatus.InProgress,
                 KSBId = new Guid(),
                 KsbKey = "key",
@@ -42,7 +42,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
                 HttpContext = httpContext
             };
 
-            var result = await controller.AddUpdateKsbProgress(apprenticeId, data);
+            var result = await controller.AddUpdateKsbProgress(apprenticeshipId, data);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
         }
 
@@ -51,7 +51,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             [Greedy] KsbProgressController controller)
         {
             var httpContext = new DefaultHttpContext();
-            var apprenticeId = Guid.NewGuid();
+            var apprenticeshipId = 1;
             int ksbProgressId = 1;
             int taskId = 2;
 
@@ -60,7 +60,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
                 HttpContext = httpContext
             };
 
-            var result = await controller.RemoveTaskToKsbProgress(apprenticeId, ksbProgressId, taskId);
+            var result = await controller.RemoveTaskToKsbProgress(apprenticeshipId, ksbProgressId, taskId);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
         }
 
@@ -69,7 +69,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
            [Greedy] KsbProgressController controller)
         {
             var httpContext = new DefaultHttpContext();
-            var apprenticeId = Guid.NewGuid();
+            var apprenticeshipId = 1;
             Guid[] guids = { Guid.NewGuid() };
 
             controller.ControllerContext = new ControllerContext
@@ -77,7 +77,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
                 HttpContext = httpContext
             };
 
-            var result = await controller.GetKsbsByApprenticeshipIdAndGuidListQuery(apprenticeId, guids);
+            var result = await controller.GetKsbsByApprenticeshipIdAndGuidListQuery(apprenticeshipId, guids);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkObjectResult));
         }
 
@@ -86,7 +86,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             Mock<IMediator> mockMediator)
         {
             var httpContext = new DefaultHttpContext();
-            var apprenticeshipId = Guid.NewGuid();
+            var apprenticeshipId = 1;
             string standardUid = "TestStandardUid";
             string option = "core";
 

@@ -5,9 +5,9 @@ namespace SFA.DAS.ApprenticeApp.InnerApi.ApprenticeProgress.Requests
 {
     public class GetTaskCategoriesRequest : IGetApiRequest
     {
-        public Guid ApprenticeshipId;     
+        public long ApprenticeshipId;     
 
-        public GetTaskCategoriesRequest(Guid apprenticeshipId)
+        public GetTaskCategoriesRequest(long apprenticeshipId)
         {
             ApprenticeshipId = apprenticeshipId;
         }

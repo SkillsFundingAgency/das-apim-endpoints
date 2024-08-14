@@ -6,12 +6,12 @@ namespace SFA.DAS.ApprenticeApp.InnerApi.ApprenticeProgress.Requests
 {
     public class PatchApprenticeTaskRequest : IPostApiRequest
     {
-        private readonly Guid _apprenticeshipId;
+        private readonly long _apprenticeshipId;
         public int _taskId;
         public string PostUrl => $"/apprenticeships/{_apprenticeshipId}/tasks/{_taskId}";
         public object Data { get; set; }
 
-        public PatchApprenticeTaskRequest(Guid apprenticeshipId, int taskId, ApprenticeTaskData data)
+        public PatchApprenticeTaskRequest(long apprenticeshipId, int taskId, ApprenticeTaskData data)
         {
             _apprenticeshipId = apprenticeshipId;
             _taskId = taskId;
