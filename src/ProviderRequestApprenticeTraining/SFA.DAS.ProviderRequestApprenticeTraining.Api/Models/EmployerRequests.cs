@@ -40,7 +40,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
     {
         public Guid EmployerRequestId { get; set; }
         public List<string> Locations { get; set; }
-        public List<string> DeliveryMethods { get; set; }
+        public bool DayRelease { get; set; }
+        public bool AtApprenticesWorkplace { get; set; }
+        public bool BlockRelease { get; set; }
         public string DateOfRequest { get; set; }
         public int NumberOfApprentices { get; set; }
 
@@ -52,27 +54,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
                 DateOfRequest = source.DateOfRequest.ToString("d MMMM yyyy"),
                 NumberOfApprentices = source.NumberOfApprentices,
                 Locations = source.Locations,
-                DeliveryMethods = GetDeliveryMethods(source),
+                AtApprenticesWorkplace = source.AtApprenticesWorkplace,
+                BlockRelease = source.BlockRelease,
+                DayRelease = source.DayRelease,
             };
-        }
-
-        private static List<string> GetDeliveryMethods(GetEmployerRequestsByIdsResponse response)
-        {
-            var methods = new List<string>();
-
-            if (response.AtApprenticesWorkplace)
-            {
-                methods.Add("At Apprentices Workplace");
-            }
-            if (response.BlockRelease)
-            {
-                methods.Add("Block Release");
-            }
-            if (response.DayRelease)
-            {
-                methods.Add("Day Release");
-            }
-            return methods;
-        }
+        } 
     }
 }
