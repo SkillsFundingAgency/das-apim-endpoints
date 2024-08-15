@@ -36,12 +36,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProvi
                 Get<List<ProviderCourse>>(new GetProviderCoursesRequest(
                     request.Ukprn));
 
-            var phoneNumbers = (providerCourses?.Where(pc => !string.IsNullOrWhiteSpace(pc.ContactUsPhoneNumber))
-                .Select(pc => pc.ContactUsPhoneNumber.RemoveWhitespace()) ?? Enumerable.Empty<string>())
-                .Where(phone => !string.IsNullOrWhiteSpace(phone))
+            var phoneNumbers = (providerCourses?
+                .Select(pc => pc.ContactUsPhoneNumber) ?? Enumerable.Empty<string>())
+                .Select(phone => phone.RemoveWhitespace())
+                .Where(phone => !string.IsNullOrEmpty(phone))
                 .Distinct()
                 .Order()
                 .ToList();
+
 
             return new GetProviderPhoneNumbersResult
             {

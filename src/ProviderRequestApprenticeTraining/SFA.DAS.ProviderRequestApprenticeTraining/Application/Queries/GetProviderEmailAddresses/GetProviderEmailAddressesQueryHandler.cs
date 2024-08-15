@@ -35,10 +35,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProvi
                 Get<List<ProviderCourse>>(new GetProviderCoursesRequest(
                     request.Ukprn));
 
-            var emailAddresses = (providerCourses?.Where(pc => !string.IsNullOrWhiteSpace(pc.ContactUsEmail))
-                .Select(pc => pc.ContactUsEmail.RemoveWhitespace()) ?? Enumerable.Empty<string>())
-                .Append(request.UserEmailAddress.RemoveWhitespace() ?? string.Empty)
-                .Where(email => !string.IsNullOrWhiteSpace(email))
+            var emailAddresses = (providerCourses?
+                .Select(pc => pc.ContactUsEmail) ?? Enumerable.Empty<string>())
+                .Append(request.UserEmailAddress)
+                .Select(email => email.RemoveWhitespace())
+                .Where(email => !string.IsNullOrEmpty(email))
                 .Distinct()
                 .Order()
                 .ToList();

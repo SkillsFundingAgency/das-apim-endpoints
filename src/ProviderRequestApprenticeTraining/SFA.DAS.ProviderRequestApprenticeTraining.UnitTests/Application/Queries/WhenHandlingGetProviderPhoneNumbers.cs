@@ -1,13 +1,10 @@
 ﻿using AutoFixture.NUnit3;
-using Azure.Core;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmailAddresses;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderCoursesService;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderCoursesService;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
