@@ -329,19 +329,16 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     {
         _paymentStatusResponse.PaymentsFrozen = paymentsFrozen;
         
-        var result = await _handler.Handle(_query, CancellationToken.None);
-        
-        result.PaymentsFrozen.Should().Be(paymentsFrozen);
-    }
+            _paymentStatusResponse.ReasonFrozen = "Test reason";
+            _paymentStatusResponse.FrozenOn = DateTime.Now;
 
-    [Test]
-    public async Task When_apprenticeship_has_no_explicit_value_for_payments_frozen_then_correct_response_returned()
-    {
-        _paymentStatusResponse.PaymentsFrozen = null;
-        
+
+        //  Act
         var result = await _handler.Handle(_query, CancellationToken.None);
         
-        result.PaymentsFrozen.Should().Be(false);
+        result.PaymentsStatus.PaymentsFrozen.Should().Be(paymentsFrozen);
+        result.PaymentsStatus.ReasonFrozen.Should().Be(_paymentStatusResponse.ReasonFrozen);
+        result.PaymentsStatus.FrozenOn.Should().Be(_paymentStatusResponse.FrozenOn);
     }
     
     [Test]
@@ -532,11 +529,15 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     [Test]
     public async Task When_not_found_returned_when_getting_payments_status_then_correct_response_returned()
     {
+        //  Arrange
         _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPaymentStatusApiResponse>(It.IsAny<GetPaymentStatusRequest>()))
             .ReturnsAsync(new ApiResponse<GetPaymentStatusApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
        
+        //  Act
         var result = await _handler.Handle(_query, CancellationToken.None);
         
-        result.PaymentsFrozen.Should().Be(false);
+        result.PaymentsStatus.PaymentsFrozen.Should().BeFalse();
+        result.PaymentsStatus.ReasonFrozen.Should().BeNull();
+        result.PaymentsStatus.FrozenOn.Should().BeNull();
     }
 }
