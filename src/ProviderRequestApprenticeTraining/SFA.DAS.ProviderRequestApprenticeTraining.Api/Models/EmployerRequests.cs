@@ -20,9 +20,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
             {
                 return new EmployerRequests
                 {
-                    StandardReference = source.EmployerRequests.FirstOrDefault().StandardReference,
-                    StandardTitle = source.EmployerRequests.FirstOrDefault().StandardTitle,
-                    StandardLevel = source.EmployerRequests.FirstOrDefault().StandardLevel,
+                    StandardReference = source.EmployerRequests.First().StandardReference,
+                    StandardTitle = source.EmployerRequests.First().StandardTitle,
+                    StandardLevel = source.EmployerRequests.First().StandardLevel,
                     Requests = source.EmployerRequests.Select(request => (EmployerRequest)request).ToList()
                 };
             }
