@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.ApprenticeApp.Models
 {
@@ -10,6 +11,7 @@ namespace SFA.DAS.ApprenticeApp.Models
         public string KsbKey { get; set; }
         public KSBStatus? CurrentStatus { get; set; }
         public string Note { get; set; }
+        public List<ApprenticeTask>? Tasks { get; set; }
     }
 
     [Flags]
