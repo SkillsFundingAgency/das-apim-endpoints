@@ -32,51 +32,39 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
         [Test, MoqAutoData]
         public async Task Then_Get_ProviderEmails_From_The_Api(
             List<ProviderCourse> providerCourseResult,
-            GetProviderSummaryResponse providerSummaryResponse, 
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> mockProviderCoursesApiClient,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
             GetProviderEmailAddressesQueryHandler handler,
             GetProviderEmailAddressesQuery query)
         {
 
             // Arrange
-            mockProviderCoursesApiClient.Setup(client => client.Get<List<ProviderCourse>>(It.IsAny<GetProviderCoursesRequest>()))
+            mockRoatpCourseManagementApiClient.Setup(client => client.Get<List<ProviderCourse>>(It.IsAny<GetProviderCoursesRequest>()))
                     .ReturnsAsync(providerCourseResult);
-
-            mockRoatpCourseManagementApiClient.Setup(client => client.Get<GetProviderSummaryResponse>(It.IsAny<GetRoatpProviderRequest>()))
-                    .ReturnsAsync(providerSummaryResponse);
 
             // Act
             var actual = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            actual.EmailAddresses.Should().Contain(providerSummaryResponse.Email);
+            actual.EmailAddresses.Should().Contain(query.UserEmailAddress);
             actual.EmailAddresses.Should().Contain(providerCourseResult.Select(x => x.ContactUsEmail));
-
         }
 
         [Test, MoqAutoData]
-        public async Task AndNoProviderCoursesExist_Then_Get_ProviderEmails_ReturnsEmailFromProviderSummary(
-            List<ProviderCourse> providerCourseResult,
-            GetProviderSummaryResponse providerSummaryResponse,
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> mockProviderCoursesApiClient,
+        public async Task AndNoProviderCoursesExist_Then_Get_ProviderEmails_ReturnsEmailFromCurrentLoggedInUser(
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
             GetProviderEmailAddressesQueryHandler handler,
             GetProviderEmailAddressesQuery query)
         {
             //Arrange
-                mockProviderCoursesApiClient.Setup(client => client.Get<List<ProviderCourse>>(It.IsAny<GetProviderCoursesRequest>()))
+            mockRoatpCourseManagementApiClient.Setup(client => client.Get<List<ProviderCourse>>(It.IsAny<GetProviderCoursesRequest>()))
                         .ReturnsAsync(new List<ProviderCourse>());
-
-            mockRoatpCourseManagementApiClient.Setup(client => client.Get<GetProviderSummaryResponse>(It.IsAny<GetRoatpProviderRequest>()))
-                    .ReturnsAsync(providerSummaryResponse);
 
             //Act
             var actual = await handler.Handle(query, CancellationToken.None);
 
             //Assert
             actual.EmailAddresses.Should().HaveCount(1);
-            actual.EmailAddresses.Should().Contain(providerSummaryResponse.Email);
+            actual.EmailAddresses.Should().Contain(query.UserEmailAddress);
         }
     }
 }
