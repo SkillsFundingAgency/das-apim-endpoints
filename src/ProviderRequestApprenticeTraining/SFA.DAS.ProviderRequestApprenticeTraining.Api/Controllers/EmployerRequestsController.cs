@@ -9,6 +9,8 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using System.Linq;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
 {
@@ -77,6 +79,43 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+
+        [HttpGet("provider/{ukprn}/selectrequests/{standardReference}")]
+        public async Task<IActionResult> GetSelectEmployerRequests(string standardReference, long ukprn)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetSelectEmployerRequestsQuery() 
+                {
+                    StandardReference = standardReference,
+                    Ukprn = ukprn
+                });
+
+                var model = (SelectEmployerRequests)result;
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to retrieve select employer requests");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("provider/responses")]
+        public async Task<IActionResult> CreateProviderResponse(CreateProviderResponseEmployerRequestCommand command)
+        {
+            try
+            {
+                await _mediator.Send(command);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to save provider response for Employer Requests ");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
 
     }
 }
