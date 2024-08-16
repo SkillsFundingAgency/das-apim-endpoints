@@ -129,6 +129,9 @@ public class TrainingCoursesController : Controller
                 ApplicationId = applicationId,
                 TrainingCourseId = trainingCourseId
             });
+
+            if (result is null) return NotFound();
+
             return Ok((Models.Applications.GetTrainingCourseApiResponse)result.Course);
         }
         catch (Exception e)

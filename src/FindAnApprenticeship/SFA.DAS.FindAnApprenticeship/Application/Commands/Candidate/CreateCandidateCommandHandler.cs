@@ -15,25 +15,16 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
 
-public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateCommand, CreateCandidateCommandResult>
+public class CreateCandidateCommandHandler(
+    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
+    IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> legacyApiClient,
+    ILegacyApplicationMigrationService legacyApplicationMigrationService)
+    : IRequestHandler<CreateCandidateCommand, CreateCandidateCommandResult>
 {
-    private readonly ICandidateApiClient<CandidateApiConfiguration> _candidateApiClient;
-    private readonly IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> _legacyApiClient;
-    private readonly ILegacyApplicationMigrationService _legacyApplicationMigrationService;
-    
-    public CreateCandidateCommandHandler(ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
-        IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration> legacyApiClient,
-        ILegacyApplicationMigrationService legacyApplicationMigrationService)
-    {
-        _candidateApiClient = candidateApiClient;
-        _legacyApiClient = legacyApiClient;
-        _legacyApplicationMigrationService = legacyApplicationMigrationService;
-    }
-
     public async Task<CreateCandidateCommandResult> Handle(CreateCandidateCommand request, CancellationToken cancellationToken)
     {
         var existingUser =
-            await _candidateApiClient.GetWithResponseCode<GetCandidateApiResponse>(
+            await candidateApiClient.GetWithResponseCode<GetCandidateApiResponse>(
                 new GetCandidateApiRequest(request.GovUkIdentifier));
 
         if (existingUser.StatusCode != HttpStatusCode.NotFound)
@@ -45,9 +36,8 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
                     Email = request.Email
                 });
 
-                await _candidateApiClient.PutWithResponseCode<PutCandidateApiResponse>(updateEmailRequest);    
+                await candidateApiClient.PutWithResponseCode<PutCandidateApiResponse>(updateEmailRequest);    
             }
-            
             
             return new CreateCandidateCommandResult
             {
@@ -62,10 +52,28 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
             };
         }
 
+        var userWithMigratedEmail =
+            await candidateApiClient.GetWithResponseCode<GetCandidateByMigratedEmailApiResponse>(
+                new GetCandidateByMigratedEmailApiRequest(request.Email));
+
+        if (userWithMigratedEmail.StatusCode != HttpStatusCode.NotFound)
+        {
+            return new CreateCandidateCommandResult
+            {
+                IsEmailAddressMigrated = true
+            };
+        }
+
+        var userMigrationStatus = UserStatus.Incomplete;
+
         var userDetails =
-            await _legacyApiClient.Get<GetLegacyUserByEmailApiResponse>(
+            await legacyApiClient.Get<GetLegacyUserByEmailApiResponse>(
                 new GetLegacyUserByEmailApiRequest(request.Email));
 
+        if (userDetails != null && Guid.TryParse(userDetails.Id.ToString(), out _))
+        {
+            userMigrationStatus = UserStatus.InProgress;
+        }
         var registrationDetailsDateOfBirth = userDetails?.RegistrationDetails?.DateOfBirth;
         if (registrationDetailsDateOfBirth == DateTime.MinValue)
         {
@@ -85,7 +93,7 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
 
         var postRequest = new PostCandidateApiRequest(request.GovUkIdentifier, postData);
 
-        var candidateResult = await _candidateApiClient.PostWithResponseCode<PostCandidateApiResponse>(postRequest);
+        var candidateResult = await candidateApiClient.PostWithResponseCode<PostCandidateApiResponse>(postRequest);
 
         candidateResult.EnsureSuccessStatusCode();
 
@@ -111,13 +119,13 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
 
             var postAddressRequest = new PutCandidateAddressApiRequest(candidateResult.Body.Id, postAddressData);
 
-            var candidateAddressResponse = await _candidateApiClient.PutWithResponseCode<PostCandidateAddressApiResponse>(postAddressRequest);
+            var candidateAddressResponse = await candidateApiClient.PutWithResponseCode<PostCandidateAddressApiResponse>(postAddressRequest);
 
             candidateAddressResponse.EnsureSuccessStatusCode();
         }
         
 
-        await _legacyApplicationMigrationService.MigrateLegacyApplications(candidateResult.Body.Id, request.Email);
+        await legacyApplicationMigrationService.MigrateLegacyApplications(candidateResult.Body.Id, request.Email);
 
         return new CreateCandidateCommandResult
         {
@@ -128,7 +136,7 @@ public class CreateCandidateCommandHandler : IRequestHandler<CreateCandidateComm
             LastName = candidateResult.Body.LastName,
             PhoneNumber = candidateResult.Body.PhoneNumber,
             DateOfBirth = registrationDetailsDateOfBirth,
-            Status = UserStatus.Incomplete
+            Status = userMigrationStatus
         };
     }
 }

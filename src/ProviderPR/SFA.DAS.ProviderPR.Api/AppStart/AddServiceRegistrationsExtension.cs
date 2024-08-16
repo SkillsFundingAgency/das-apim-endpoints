@@ -19,7 +19,7 @@ public static class AddServiceRegistrationsExtension
     {
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRoatpV2ProviderQuery).Assembly));
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRelationshipsQuery).Assembly));
-
+        services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
         services.AddHttpClient();
 
         AddProviderRelationshipsApiClient(services, configuration);
