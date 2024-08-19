@@ -185,6 +185,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         }
 
         [Test]
+        public async Task Handle_OriginalStartDate_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.That(_draftApprenticeship.OriginalStartDate, Is.EqualTo(result.OriginalStartDate));
+        }
+
+        [Test]
         public async Task Handle_StartDate_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
