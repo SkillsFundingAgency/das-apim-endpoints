@@ -9,7 +9,7 @@ using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Controllers;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
-[Route("[controller]")]
+[Route("apprentices")]
 public class ApprenticesController : ApprenticeControllerBase
 {
     private readonly IMediator _mediator;
