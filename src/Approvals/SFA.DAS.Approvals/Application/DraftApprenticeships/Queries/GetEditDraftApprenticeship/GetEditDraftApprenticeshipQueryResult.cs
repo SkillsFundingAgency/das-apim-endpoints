@@ -40,6 +40,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
         public string LegalEntityName { get; set; }
 
         public bool IsContinuation { get; set; }
+        public DateTime? OriginalStartDate { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public bool HasUnavailableDeliveryModel { get; set; }
         public bool? RecognisePriorLearning { get; set; }
