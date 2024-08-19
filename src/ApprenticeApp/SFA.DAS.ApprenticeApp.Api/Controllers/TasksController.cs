@@ -46,7 +46,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             var result = await _mediator.Send(new GetTasksByApprenticeshipIdQuery { ApprenticeshipId = apprenticeshipId, Status = status, FromDate = fromDate, ToDate = toDate });
             if (result.Tasks == null)
                 return NotFound();
-            return Ok(result);
+            return Ok(result.Tasks);
         }
 
         // get a task by id
