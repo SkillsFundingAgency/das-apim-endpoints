@@ -19,7 +19,12 @@ public class WhenMappingGetVacancyPreviewQueryResultToApiResponse
     [Test, AutoData]
     public void Then_If_Null_Then_Null_Is_Returned()
     {
-        var actual = (GetVacancyPreviewApiResponse)((GetVacancyPreviewQueryResult)null!);
+        var source = new GetVacancyPreviewQueryResult
+        {
+            Course = null
+        };
+        
+        var actual = (GetVacancyPreviewApiResponse)source;
         
         actual.Should().BeNull();
     }

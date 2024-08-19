@@ -9,10 +9,12 @@ public class GetVacancyPreviewApiResponse
     public List<string> Skills { get; set; }
     public List<string> CoreDuties { get; set; }
     public string StandardPageUrl { get; set; }
+    public int Level { get; set; }
+    public string Title { get; set; }
     
     public static implicit operator GetVacancyPreviewApiResponse(GetVacancyPreviewQueryResult source)
     {
-        if (source == null)
+        if (source.Course == null)
         {
             return null;
         }
@@ -22,7 +24,9 @@ public class GetVacancyPreviewApiResponse
             OverviewOfRole = source.Course.OverviewOfRole,
             StandardPageUrl = source.Course.StandardPageUrl,
             CoreDuties = source.Course.CoreDuties,
-            Skills = source.Course.Skills
+            Skills = source.Course.Skills,
+            Level = source.Course.Level,
+            Title = source.Course.Title
         };
     }
 }
