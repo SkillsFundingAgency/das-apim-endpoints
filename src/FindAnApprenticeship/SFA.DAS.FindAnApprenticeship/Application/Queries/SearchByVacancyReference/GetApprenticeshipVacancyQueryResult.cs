@@ -62,7 +62,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string WageText { get; init; }
             
             public int WageUnit { get; init; }
-            
+            public string WageAdditionalInformation { get; set; }
+
             public string WorkingWeek { get; init; }
             
             public string ExpectedDuration { get; init; }
@@ -175,6 +176,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     WageAmountUpperBound = source.WageAmountUpperBound,
                     WageText = source.WageText,
                     WageUnit = source.WageUnit,
+                    WageAdditionalInformation = source.WageAdditionalInformation,
                     WorkingWeek = source.WorkingWeek,
                     ExpectedDuration = source.ExpectedDuration,
                     Score = source.Score,
