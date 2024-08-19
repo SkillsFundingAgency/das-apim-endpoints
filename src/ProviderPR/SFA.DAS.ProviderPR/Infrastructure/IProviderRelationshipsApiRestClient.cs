@@ -1,4 +1,5 @@
 ﻿using RestEase;
+using SFA.DAS.ProviderPR.Application.Requests.Commands.AccountInvitation;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccount;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.CreatePermissions;
 using SFA.DAS.ProviderPR.InnerApi.Notifications.Commands;
@@ -34,4 +35,7 @@ public interface IProviderRelationshipsApiRestClient
     [Get("requests")]
     [AllowAnyStatusCode]
     Task<Response<GetRequestByUkprnAndPayeResponse?>> GetRequestByUkprnAndPaye([Query] long ukprn, [Query] string paye, CancellationToken cancellationToken);
+
+    [Post("requests/createaccount")]
+    Task<CreateAccountInvitationRequestCommandResult> CreateAccountInvitationRequest([Body] CreateAccountInvitationRequestCommand command, CancellationToken cancellationToken);
 }
