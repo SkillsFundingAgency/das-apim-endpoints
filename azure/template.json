@@ -34,6 +34,10 @@
         "sharedServiceBusName": {
             "type": "string"
         },
+        "serviceBusRoleAssignmentType": {
+            "type": "string",
+            "defaultValue": "ServiceBusSender"
+        },
         "loggingRedisConnectionString": {
             "type": "securestring"
         },
@@ -214,7 +218,7 @@
                         "value": "[reference(concat('api-app-service-', parameters('appServiceName'))).outputs.managedServiceIdentityId.value]"
                     },
                     "assignmentType": {
-                        "value": "ServiceBusSender"
+                        "value": "[parameters('serviceBusRoleAssignmentType')]"
                     },
                     "resourceName": {
                         "value": "[parameters('sharedServiceBusName')]"
@@ -238,7 +242,7 @@
                         "value": "[reference(concat('api-app-service-', parameters('appServiceName'))).outputs.stagingManagedServiceIdentityId.value]"
                     },
                     "assignmentType": {
-                        "value": "ServiceBusSender"
+                        "value": "[parameters('serviceBusRoleAssignmentType')]"
                     },
                     "resourceName": {
                         "value": "[parameters('sharedServiceBusName')]"

@@ -27,6 +27,8 @@ pr:
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
+- name: serviceBusRoleAssignmentType
+  value: 'ServiceBusOwner'
 
 resources:
   repositories:
