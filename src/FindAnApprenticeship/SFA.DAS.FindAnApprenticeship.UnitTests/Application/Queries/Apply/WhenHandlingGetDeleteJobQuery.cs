@@ -34,5 +34,24 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             using var scope = new AssertionScope();
             result.Should().BeEquivalentTo((GetDeleteJobQueryResult)deleteJobApiResponse);
         }
+        
+        [Test, MoqAutoData]
+        public async Task Then_An_Empty_QueryResult_Is_Returned_If_Not_Found(
+            GetDeleteJobQuery query,
+            GetWorkHistoryItemApiResponse deleteJobApiResponse,
+            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            GetDeleteJobQueryHandler handler)
+        {
+            var expectedGetDeleteJobRequest = new GetWorkHistoryItemApiRequest(query.ApplicationId, query.CandidateId, query.JobId, WorkHistoryType.Job);
+            candidateApiClient
+                .Setup(client => client.Get<GetWorkHistoryItemApiResponse>(
+                    It.Is<GetWorkHistoryItemApiRequest>(r => r.GetUrl == expectedGetDeleteJobRequest.GetUrl)))
+                .ReturnsAsync((GetWorkHistoryItemApiResponse)null!);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            using var scope = new AssertionScope();
+            result.Should().BeEquivalentTo(new GetDeleteJobQueryResult());
+        }
     }
 }

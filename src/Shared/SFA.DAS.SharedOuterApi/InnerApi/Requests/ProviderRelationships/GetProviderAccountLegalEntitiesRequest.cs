@@ -3,12 +3,13 @@ using System.Linq;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
 
 public class GetProviderAccountLegalEntitiesRequest : IGetApiRequest﻿
 {
     private readonly int? _ukprn;
     private readonly string _operations;
+    private readonly string _accountHashedId;
 
     public GetProviderAccountLegalEntitiesRequest(int? ukprn, List<Operation> operations)
     {
@@ -16,5 +17,11 @@ public class GetProviderAccountLegalEntitiesRequest : IGetApiRequest﻿
         _operations = string.Join('&', operations.Select(o => $"operations={(int)o}"));
     }
 
-    public string GetUrl => $"accountproviderlegalentities?ukprn={_ukprn}&{_operations}";
+    public GetProviderAccountLegalEntitiesRequest(string accountHashedId, List<Operation> operations)
+    {
+        _accountHashedId = accountHashedId;
+        _operations = string.Join('&', operations.Select(o => $"operations={(int)o}"));
+    }
+
+    public string GetUrl => $"accountproviderlegalentities?ukprn={_ukprn}&accounthashedid={_accountHashedId}&{_operations}";
 }
