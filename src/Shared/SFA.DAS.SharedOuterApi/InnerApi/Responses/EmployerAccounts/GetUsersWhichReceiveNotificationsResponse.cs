@@ -30,9 +30,12 @@ public enum InvitationStatus
     Deleted = 4
 }
 
-public enum Role 
+public enum Role
 {
-    Owner 
+    None = 0,
+    Owner = 1,
+    Transactor = 2,
+    Viewer = 3
 }
 
 public static class TeamMemberExtensions
@@ -40,7 +43,12 @@ public static class TeamMemberExtensions
     public static bool IsAcceptedOwnerWithNotifications(this TeamMember member)
     {
         return member.Status == InvitationStatus.Accepted &&
-               member.Role == nameof(Role.Owner) &&
+               member.Role == Role.Owner.ToString("D") &&
                member.CanReceiveNotifications;
+    }
+
+    public static bool IsAccountOwner(this TeamMember member)
+    {
+        return member.Role == Role.Owner.ToString("D");
     }
 }

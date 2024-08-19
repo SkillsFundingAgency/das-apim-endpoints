@@ -52,7 +52,7 @@ public class AddAccountRequestCommandHandler(
             // Where "EmployerContactEmail" is not null and is for an 'Owner' of the employer account, we will send a 'AddAccountInvitation' notification to
             // invite the team member, ONLY if notifications are allowed.
 
-            if (associatedTeamMember is not null && IsOwner(associatedTeamMember))
+            if (associatedTeamMember is not null && associatedTeamMember.IsAccountOwner())
             {
                 if (associatedTeamMember.CanReceiveNotifications)
                 {
@@ -77,11 +77,6 @@ public class AddAccountRequestCommandHandler(
         }
 
         return new(addAccountResponse.RequestId);
-    }
-
-    private static bool IsOwner(TeamMember member)
-    {
-        return member.Role == nameof(Role.Owner);
     }
 
     private static NotificationModel CreateAddAccountOwnerInvitationNotification(AddAccountRequestCommand command, TeamMember member)

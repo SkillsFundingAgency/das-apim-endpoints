@@ -65,7 +65,7 @@ public class AddAccountRequestCommandHandlerTests
     )
     {
         teamMember.CanReceiveNotifications = true;
-        teamMember.Role = nameof(Role.Owner);
+        teamMember.Role = Role.Owner.ToString("D");
         teamMember.Status = InvitationStatus.Accepted;
         command.EmployerContactEmail = null;
 
@@ -102,14 +102,14 @@ public class AddAccountRequestCommandHandlerTests
 
     [Test]
     [AutoData]
-    public async Task Handle_AddAccountRequestRequest_TeamMemberAssociatedWithEmployerContactEmail_MultipleNotifications(
+    public async Task Handle_AddAccountRequest_TeamMemberAssociatedWithEmployerContactEmail_MultipleNotifications(
         AddAccountRequestCommand command,
         AddAccountRequestCommandResult response,
         TeamMember teamMember
     )
     {
         teamMember.CanReceiveNotifications = true;
-        teamMember.Role = nameof(Role.Owner);
+        teamMember.Role = Role.Owner.ToString("D");
         teamMember.Status = InvitationStatus.Accepted;
         teamMember.Email = command.EmployerContactEmail;
 
@@ -161,7 +161,7 @@ public class AddAccountRequestCommandHandlerTests
     )
     {
         teamMember.CanReceiveNotifications = true;
-        teamMember.Role = nameof(Role.Owner);
+        teamMember.Role = Role.Owner.ToString("D");
         teamMember.Status = InvitationStatus.Accepted;
         teamMember.Email = $"{command.EmployerContactEmail}1";
 

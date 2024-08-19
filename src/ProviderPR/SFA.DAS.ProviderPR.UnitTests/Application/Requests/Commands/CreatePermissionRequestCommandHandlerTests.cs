@@ -63,7 +63,7 @@ public class CreatePermissionRequestCommandHandlerTests
         TeamMember teamMember
     )
     {
-        teamMember.Role = nameof(Role.Owner);
+        teamMember.Role = Role.Owner.ToString("D");
         teamMember.Status = InvitationStatus.Accepted;
         teamMember.CanReceiveNotifications = true;
 
@@ -137,7 +137,7 @@ public class CreatePermissionRequestCommandHandlerTests
         TeamMember teamMember
     )
     {
-        teamMember.Role = nameof(Role.Owner);
+        teamMember.Role = Role.Owner.ToString("D");
         teamMember.Status = InvitationStatus.Pending;
         teamMember.CanReceiveNotifications = true;
 
@@ -174,7 +174,7 @@ public class CreatePermissionRequestCommandHandlerTests
         TeamMember teamMember
     )
     {
-        teamMember.Role = nameof(Role.Owner);
+        teamMember.Role = Role.Owner.ToString("D");
         teamMember.Status = InvitationStatus.Accepted;
         teamMember.CanReceiveNotifications = false;
 
