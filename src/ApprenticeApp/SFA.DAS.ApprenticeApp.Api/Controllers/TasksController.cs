@@ -23,7 +23,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             var result = await _mediator.Send(new GetTaskCategoriesQuery { ApprenticeshipId = apprenticeshipId });
             if (result.TaskCategories == null)
                 return NotFound();
-            return Ok(result);
+            return Ok(result.TaskCategories);
         }
 
         // add a new tasks
