@@ -63,7 +63,7 @@ public class CreatePermissionRequestCommandHandlerTests
         TeamMember teamMember
     )
     {
-        teamMember.Role = Role.Owner.ToString("D");
+        teamMember.Role = nameof(Role.Owner);
         teamMember.Status = InvitationStatus.Accepted;
         teamMember.CanReceiveNotifications = true;
 
