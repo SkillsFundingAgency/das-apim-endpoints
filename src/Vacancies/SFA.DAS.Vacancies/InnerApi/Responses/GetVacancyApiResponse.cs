@@ -25,6 +25,12 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
 
         [JsonPropertyName("qualifications")]
         public List<GetVacancyQualificationResponseItem> Qualifications { get; set; }
+
+        [JsonPropertyName("companyBenefitsInformation")]
+        public string CompanyBenefitsInformation { get; set; }
+
+        [JsonPropertyName("additionalTrainingDescription")]
+        public string AdditionalTrainingDescription { get; set; }
     }
 
     public class GetVacancyQualificationResponseItem
