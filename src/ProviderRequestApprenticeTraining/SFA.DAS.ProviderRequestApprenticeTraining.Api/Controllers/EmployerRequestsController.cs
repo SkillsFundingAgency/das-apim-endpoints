@@ -16,6 +16,9 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderP
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
 using System.Collections.Generic;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequestsByIds;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitProviderResponse;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderResponseConfirmation;
+using System.ComponentModel.DataAnnotations;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
 {
@@ -202,5 +205,40 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             }
         }
 
+        [HttpPost("provider/submit-response")]
+        public async Task<IActionResult> SubmitProviderResponse(SubmitProviderResponseCommand command)
+        {
+            try
+            {
+                var result = await _mediator.Send(command);
+                var model = (SubmitProviderResponse)result;
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to save provider response for Employer Requests ");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{providerResponseId:guid}/confirmation")]
+        public async Task<IActionResult> GetProviderResponseConfirmation(Guid providerResponseId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetProviderResponseConfirmationQuery
+                {
+                    ProviderResponseId = providerResponseId
+                });
+
+                var model = (ProviderResponseConfirmation)result;
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to retrieve provider response confirmation");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }
