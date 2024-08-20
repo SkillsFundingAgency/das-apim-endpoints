@@ -28,7 +28,7 @@ variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
 - name: NServiceBusConnectionString
-  vale: $(ServiceBusConnectionString)
+  value: $(ServiceBusConnectionString)
 resources:
   repositories:
   - repository: self
