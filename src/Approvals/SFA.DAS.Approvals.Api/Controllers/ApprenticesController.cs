@@ -362,7 +362,7 @@ public class ApprenticesController(
         {
             logger.LogInformation("GetApprenticeshipsCSV starting for providerId {Id}", providerId);
 
-            var command = new GetApprenticeshipsCSVQuery
+            var query = new GetApprenticeshipsCSVQuery
             {
                 ProviderId = providerId,
                 SearchTerm = request.SearchTerm,
@@ -376,7 +376,7 @@ public class ApprenticesController(
                 DeliveryModel = request.DeliveryModel
             };
 
-            var apprenticesData = await mediator.Send(command);
+            var apprenticesData = await mediator.Send(query);
 
             if (apprenticesData == null)
             {
