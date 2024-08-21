@@ -1,10 +1,8 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining
 {
-    [ExcludeFromCodeCoverage]
     public class CreateEmployerRequestRequest : IPostApiRequest<CreateEmployerRequestData>
     {
         public string PostUrl => "api/employerrequest";
@@ -17,7 +15,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining
         }
     }
 
-    [ExcludeFromCodeCoverage]
     public class CreateEmployerRequestData
     {
         public string OriginalLocation { get; set; }

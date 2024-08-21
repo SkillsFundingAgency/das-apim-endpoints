@@ -1,0 +1,53 @@
+﻿using AutoFixture.NUnit3;
+using FluentAssertions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using NUnit.Framework;
+using SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
+using SFA.DAS.Testing.AutoFixture;
+using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.EmployerRequests
+{
+    public class WhenGettingAggregatedEmployerRequests
+    {
+        [Test, MoqAutoData]
+        public async Task Then_The_AggregatedEmployerRequests_Are_Returned_From_Mediator(
+            GetAggregatedEmployerRequestsResult queryResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] EmployerRequestsController controller,
+            long ukprn)
+        {
+            mockMediator
+                .Setup(x => x.Send(It.IsAny<GetAggregatedEmployerRequestsQuery>(), CancellationToken.None))
+                .ReturnsAsync(queryResult);
+
+            var actual = await controller.GetAggregatedEmployerRequests(ukprn) as ObjectResult;
+
+            Assert.That(actual, Is.Not.Null);
+            actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            actual.Value.Should().BeEquivalentTo(queryResult.AggregatedEmployerRequests);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
+            Guid employerRequestId,
+            [Frozen] Mock<IMediator> mediator,
+            [Greedy] EmployerRequestsController controller,
+            long ukprn)
+        {
+            mediator.Setup(x => x.Send(It.IsAny<GetAggregatedEmployerRequestsQuery>(), CancellationToken.None))
+                .ThrowsAsync(new Exception());
+
+            var actual = await controller.GetAggregatedEmployerRequests(ukprn) as StatusCodeResult;
+
+            Assert.That(actual, Is.Not.Null);
+            actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+        }
+    }
+}

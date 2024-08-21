@@ -3,13 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Extensions;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.AcknowledgeProviderResponses;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocation;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -17,7 +20,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class EmployerRequestsController : Controller
+    public class EmployerRequestsController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly ILogger<EmployerRequestsController> _logger;
@@ -70,7 +73,28 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to submit employer request for RequestType: {submitCommand.RequestType}");
+                _logger.LogError(e, "Error attempting to submit employer request for {RequestType}", submitCommand.RequestType);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPut("{employerRequestId}/acknowledge-provider-responses")]
+        public async Task<IActionResult> AcknowledgeProviderResponses(Guid employerRequestId, [FromQuery] Guid acknowledgedBy)
+        {
+            try
+            {
+                var command = new AcknowledgeProviderResponsesCommand
+                {
+                    EmployerRequestId = employerRequestId,
+                    AcknowledgedBy = acknowledgedBy
+                };
+
+                await _mediator.Send(command);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to acknowledge provider responses for {EmployerRequestId}", employerRequestId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -91,7 +115,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to retrieve employer request for EmployerRequestId: {employerRequestId}");
+                _logger.LogError(e, "Error attempting to retrieve employer request for {EmployerRequestId}", employerRequestId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -106,7 +130,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to retrieve employer request for AccountId: {accountId} and standardReference: {standardReference.SanitizeLogData()}");
+                _logger.LogError(e, "Error attempting to retrieve employer request for {AccountId} and {StandardReference}", accountId, standardReference.SanitizeLogData());
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -121,7 +145,24 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to retrieve employer requests for AccoundId: {accountId}");
+                _logger.LogError(e, "Error attempting to retrieve employer requests for {AccountId}", accountId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("account/{accountId}/aggregated")]
+        public async Task<IActionResult> GetAggregatedEmployerRequests(long accountId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetAggregatedEmployerRequestsQuery(accountId));
+
+                var model = result.AggregatedEmployerRequests.Select(request => (AggregatedEmployerRequest)request).ToList();
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve aggregated employer requests");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -165,7 +206,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to retrieve submit employer request confirmation for EmployerRequestId: {employerRequestId}");
+                _logger.LogError(e, "Error attempting to retrieve submit employer request confirmation for {EmployerRequestId}", employerRequestId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

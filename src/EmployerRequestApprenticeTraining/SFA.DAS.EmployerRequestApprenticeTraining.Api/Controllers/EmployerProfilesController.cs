@@ -3,12 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocation;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocations;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -38,7 +33,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get user profile user, user id: {userId}");
+                _logger.LogError(e, "Error attempting to retrieve user profile for {UserId}", userId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

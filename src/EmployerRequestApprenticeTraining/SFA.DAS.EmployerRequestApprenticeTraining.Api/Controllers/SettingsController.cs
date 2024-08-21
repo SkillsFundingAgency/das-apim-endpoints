@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetSettings;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -10,34 +10,34 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class StandardsController : ControllerBase
+    public class SettingsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<StandardsController> _logger;
+        private readonly ILogger<SettingsController> _logger;
 
-        public StandardsController(IMediator mediator, ILogger<StandardsController> logger)
+        public SettingsController(IMediator mediator, ILogger<SettingsController> logger)
         {
             _mediator = mediator;
             _logger = logger;
         }
 
-        [HttpGet("{standardId}")]
-        public async Task<IActionResult> Get(string standardId)
+        [HttpGet("")]
+        public async Task<IActionResult> Get()
         {
             try
             {
-                var result = await _mediator.Send(new GetStandardQuery { StandardId = standardId });
+                var result = await _mediator.Send(new GetSettingsQuery());
 
-                if (result.Standard != null)
+                if (result != null)
                 {
-                    return Ok(result.Standard);
+                    return Ok(result);
                 }
 
                 return NotFound();
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to retrieve standard for {StandardId}", standardId);
+                _logger.LogError(e, $"Error attempting to retrieve settings");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

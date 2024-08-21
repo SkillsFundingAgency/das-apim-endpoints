@@ -2,8 +2,8 @@
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining
 {
-    public class GetRegionsRequest : IGetApiRequest
+    public class GetSettingsRequest : IGetApiRequest
     {
-        public string GetUrl => $"api/regions";
+        public string GetUrl => $"api/settings";
     }
 }
