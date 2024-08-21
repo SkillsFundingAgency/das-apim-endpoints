@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using SFA.DAS.Recruit.Application.Queries.GetVacancyPreview;
+using SFA.DAS.Recruit.Domain;
 
 namespace SFA.DAS.Recruit.Api.Models;
 
@@ -11,6 +12,9 @@ public class GetVacancyPreviewApiResponse
     public string StandardPageUrl { get; set; }
     public int Level { get; set; }
     public string Title { get; set; }
+    public int EducationLevelNumber { get; set; }
+    public ApprenticeshipLevel ApprenticeshipLevel { get; set; }
+    public TrainingType ApprenticeshipType { get; set; }
     
     public static implicit operator GetVacancyPreviewApiResponse(GetVacancyPreviewQueryResult source)
     {
@@ -26,7 +30,12 @@ public class GetVacancyPreviewApiResponse
             CoreDuties = source.Course.CoreDuties,
             Skills = source.Course.Skills,
             Level = source.Course.Level,
-            Title = source.Course.Title
+            Title = source.Course.Title,
+            ApprenticeshipLevel = ApprenticeshipLevelMapper.RemapFromInt(source.Course.Level),
+            EducationLevelNumber = source.Course.Level,
+            ApprenticeshipType = TrainingType.Standard
         };
     }
+
+    
 }
