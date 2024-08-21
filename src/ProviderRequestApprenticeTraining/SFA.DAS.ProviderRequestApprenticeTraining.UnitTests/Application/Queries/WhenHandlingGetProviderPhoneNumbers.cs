@@ -18,9 +18,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
 {
     public class WhenHandlingGetProviderPhoneNumbers
     {
-        private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _providerCoursesApiClient;
-        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient;
-
         [Test, MoqAutoData]
         public async Task Then_Get_ProviderPhoneNumbers_From_The_Api(
             List<ProviderCourse> providerCourseResult,
