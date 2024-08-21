@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
-public class GetAccountTeamMembersByInternalAccountIdRequest : IGetAllApiRequest
+public class GetAccountTeamMembersByInternalAccountIdRequest : IGetAllApiRequest, IGetApiRequest
 {
     private readonly long _accountId;
 
@@ -12,17 +12,6 @@ public class GetAccountTeamMembersByInternalAccountIdRequest : IGetAllApiRequest
     }
 
     public string GetAllUrl => $"api/accounts/internal/{_accountId}/users";
-}
-
-
-public class GetAccountTeamMembersByInternalAccountIdRequest2 : IGetApiRequest
-{
-    private readonly long _accountId;
-
-    public GetAccountTeamMembersByInternalAccountIdRequest2(long accountId)
-    {
-        _accountId = accountId;
-    }
 
     public string GetUrl => $"api/accounts/internal/{_accountId}/users";
 }

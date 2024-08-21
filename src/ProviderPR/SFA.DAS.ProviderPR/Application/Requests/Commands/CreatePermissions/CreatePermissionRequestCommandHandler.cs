@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccount;
 using SFA.DAS.ProviderPR.Common;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Notifications.Commands;
@@ -19,14 +20,16 @@ public class CreatePermissionRequestCommandHandler(
     {
         var createPermissionsResponse = await _providerRelationshipsApiRestClient.CreatePermissionsRequest(command, cancellationToken);
 
-        var teamMembers = await _accountsApiClient.GetAll<TeamMember>(new GetAccountTeamMembersByInternalAccountIdRequest(command.AccountId));
+        var teamMembersResponse = await _accountsApiClient.GetWithResponseCode<List<TeamMember>>(new GetAccountTeamMembersByInternalAccountIdRequest(command.AccountId));
 
-        if (!teamMembers.Any())
+        if (teamMembersResponse.StatusCode != System.Net.HttpStatusCode.OK || !teamMembersResponse.Body.Any())
         {
             return new CreatePermissionRequestCommandResult(createPermissionsResponse.RequestId);
         }
 
         PostNotificationsCommand notificationCommand = new();
+
+        IReadOnlyList<TeamMember> teamMembers = teamMembersResponse.Body;
 
         foreach (TeamMember owner in teamMembers.Where(t => t.IsAcceptedOwnerWithNotifications()))
         {

@@ -8,7 +8,9 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetAccountTeamMembersWhichReceiveNotificationsResponse;
+using SFA.DAS.SharedOuterApi.Models;
+using System.Net;
+using TeamMember = SFA.DAS.SharedOuterApi.InnerApi.Responses.GetAccountTeamMembersWhichReceiveNotificationsResponse.TeamMember;
 
 namespace SFA.DAS.ProviderPR.UnitTests.Application.Requests.Commands;
 
@@ -38,11 +40,13 @@ public class AddAccountRequestCommandHandlerTests
             )
         ).ReturnsAsync(response);
 
+        var apiResponse = new ApiResponse<List<TeamMember>>([], HttpStatusCode.OK, string.Empty);
+
         _accountsApiClient.Setup(x =>
-            x.GetAll<TeamMember>(
+            x.GetWithResponseCode<List<TeamMember>>(
                 It.IsAny<GetAccountTeamMembersByInternalAccountIdRequest>()
             )
-        ).ReturnsAsync([]);
+        ).ReturnsAsync(apiResponse);
 
         AddAccountRequestCommandHandler sut = new(_providerRelationshipsApiRestClient.Object, _accountsApiClient.Object);
         var result = await sut.Handle(command, CancellationToken.None);
@@ -76,11 +80,13 @@ public class AddAccountRequestCommandHandlerTests
             )
         ).ReturnsAsync(response);
 
+        var apiResponse = new ApiResponse<List<TeamMember>>([teamMember], HttpStatusCode.OK, string.Empty);
+
         _accountsApiClient.Setup(x =>
-            x.GetAll<TeamMember>(
+            x.GetWithResponseCode<List<TeamMember>>(
                 It.IsAny<GetAccountTeamMembersByInternalAccountIdRequest>()
             )
-        ).ReturnsAsync([teamMember]);
+        ).ReturnsAsync(apiResponse);
 
         AddAccountRequestCommandHandler sut = new(_providerRelationshipsApiRestClient.Object, _accountsApiClient.Object);
         var result = await sut.Handle(command, CancellationToken.None);
@@ -120,11 +126,13 @@ public class AddAccountRequestCommandHandlerTests
             )
         ).ReturnsAsync(response);
 
+        var apiResponse = new ApiResponse<List<TeamMember>>([teamMember], HttpStatusCode.OK, string.Empty);
+
         _accountsApiClient.Setup(x =>
-            x.GetAll<TeamMember>(
+            x.GetWithResponseCode<List<TeamMember>>(
                 It.IsAny<GetAccountTeamMembersByInternalAccountIdRequest>()
             )
-        ).ReturnsAsync([teamMember]);
+        ).ReturnsAsync(apiResponse);
 
         AddAccountRequestCommandHandler sut = new(_providerRelationshipsApiRestClient.Object, _accountsApiClient.Object);
         var result = await sut.Handle(command, CancellationToken.None);
@@ -172,11 +180,13 @@ public class AddAccountRequestCommandHandlerTests
             )
         ).ReturnsAsync(response);
 
+        var apiResponse = new ApiResponse<List<TeamMember>>([teamMember], HttpStatusCode.OK, string.Empty);
+
         _accountsApiClient.Setup(x =>
-            x.GetAll<TeamMember>(
+            x.GetWithResponseCode<List<TeamMember>>(
                 It.IsAny<GetAccountTeamMembersByInternalAccountIdRequest>()
             )
-        ).ReturnsAsync([teamMember]);
+        ).ReturnsAsync(apiResponse);
 
         AddAccountRequestCommandHandler sut = new(_providerRelationshipsApiRestClient.Object, _accountsApiClient.Object);
         var result = await sut.Handle(command, CancellationToken.None);

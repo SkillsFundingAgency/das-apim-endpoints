@@ -7,7 +7,9 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetAccountTeamMembersWhichReceiveNotificationsResponse;
+using SFA.DAS.SharedOuterApi.Models;
+using System.Net;
+using TeamMember = SFA.DAS.SharedOuterApi.InnerApi.Responses.GetAccountTeamMembersWhichReceiveNotificationsResponse.TeamMember;
 
 namespace SFA.DAS.ProviderPR.UnitTests.Application.Requests.Commands;
 
@@ -37,11 +39,13 @@ public class CreatePermissionRequestCommandHandlerTests
             )
         ).ReturnsAsync(response);
 
+        var apiResponse = new ApiResponse<List<TeamMember>>([], HttpStatusCode.OK, string.Empty);
+
         _accountsApiClient.Setup(x =>
-            x.GetAll<TeamMember>(
+            x.GetWithResponseCode<List<TeamMember>>(
                 It.IsAny<GetAccountTeamMembersByInternalAccountIdRequest>()
             )
-        ).ReturnsAsync([]);
+        ).ReturnsAsync(apiResponse);
 
         CreatePermissionRequestCommandHandler sut = CreateHandler();
         var result = await sut.Handle(command, CancellationToken.None);
@@ -74,11 +78,13 @@ public class CreatePermissionRequestCommandHandlerTests
             )
         ).ReturnsAsync(response);
 
+        var apiResponse = new ApiResponse<List<TeamMember>>([teamMember], HttpStatusCode.OK, string.Empty);
+
         _accountsApiClient.Setup(x =>
-            x.GetAll<TeamMember>(
+            x.GetWithResponseCode<List<TeamMember>>(
                 It.IsAny<GetAccountTeamMembersByInternalAccountIdRequest>()
             )
-        ).ReturnsAsync([teamMember]);
+        ).ReturnsAsync(apiResponse);
 
         CreatePermissionRequestCommandHandler sut = CreateHandler();
         var result = await sut.Handle(command, CancellationToken.None);
@@ -111,11 +117,13 @@ public class CreatePermissionRequestCommandHandlerTests
             )
         ).ReturnsAsync(response);
 
+        var apiResponse = new ApiResponse<List<TeamMember>>([teamMember], HttpStatusCode.OK, string.Empty);
+
         _accountsApiClient.Setup(x =>
-            x.GetAll<TeamMember>(
+            x.GetWithResponseCode<List<TeamMember>>(
                 It.IsAny<GetAccountTeamMembersByInternalAccountIdRequest>()
             )
-        ).ReturnsAsync([teamMember]);
+        ).ReturnsAsync(apiResponse);
 
         CreatePermissionRequestCommandHandler sut = CreateHandler();
         var result = await sut.Handle(command, CancellationToken.None);
@@ -148,11 +156,13 @@ public class CreatePermissionRequestCommandHandlerTests
             )
         ).ReturnsAsync(response);
 
+        var apiResponse = new ApiResponse<List<TeamMember>>([teamMember], HttpStatusCode.OK, string.Empty);
+
         _accountsApiClient.Setup(x =>
-            x.GetAll<TeamMember>(
+            x.GetWithResponseCode<List<TeamMember>>(
                 It.IsAny<GetAccountTeamMembersByInternalAccountIdRequest>()
             )
-        ).ReturnsAsync([teamMember]);
+        ).ReturnsAsync(apiResponse);
 
         CreatePermissionRequestCommandHandler sut = CreateHandler();
         var result = await sut.Handle(command, CancellationToken.None);
@@ -185,11 +195,13 @@ public class CreatePermissionRequestCommandHandlerTests
             )
         ).ReturnsAsync(response);
 
+        var apiResponse = new ApiResponse<List<TeamMember>>([teamMember], HttpStatusCode.OK, string.Empty);
+
         _accountsApiClient.Setup(x =>
-            x.GetAll<TeamMember>(
+            x.GetWithResponseCode<List<TeamMember>>(
                 It.IsAny<GetAccountTeamMembersByInternalAccountIdRequest>()
             )
-        ).ReturnsAsync([teamMember]);
+        ).ReturnsAsync(apiResponse);
 
         CreatePermissionRequestCommandHandler sut = CreateHandler();
         var result = await sut.Handle(command, CancellationToken.None);

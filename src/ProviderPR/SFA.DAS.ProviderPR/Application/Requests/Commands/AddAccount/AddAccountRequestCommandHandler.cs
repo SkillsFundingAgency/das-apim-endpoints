@@ -19,7 +19,7 @@ public class AddAccountRequestCommandHandler(
     {
         var addAccountResponse = await _providerRelationshipsApiRestClient.CreateAddAccountRequest(command, cancellationToken);
 
-        var teamMembersResponse = await _accountsApiClient.GetWithResponseCode<List<TeamMember>>(new GetAccountTeamMembersByInternalAccountIdRequest2(command.AccountId));
+        var teamMembersResponse = await _accountsApiClient.GetWithResponseCode<List<TeamMember>>(new GetAccountTeamMembersByInternalAccountIdRequest(command.AccountId));
 
         if(teamMembersResponse.StatusCode != System.Net.HttpStatusCode.OK || !teamMembersResponse.Body.Any())
         {
