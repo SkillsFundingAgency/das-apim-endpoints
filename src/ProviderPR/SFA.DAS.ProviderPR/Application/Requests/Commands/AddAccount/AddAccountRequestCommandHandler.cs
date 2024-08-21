@@ -19,14 +19,16 @@ public class AddAccountRequestCommandHandler(
     {
         var addAccountResponse = await _providerRelationshipsApiRestClient.CreateAddAccountRequest(command, cancellationToken);
 
-        var teamMembers = await _accountsApiClient.GetAll<TeamMember>(new GetAccountTeamMembersByInternalAccountIdRequest(command.AccountId));
+        var teamMembersResponse = await _accountsApiClient.GetWithResponseCode<List<TeamMember>>(new GetAccountTeamMembersByInternalAccountIdRequest2(command.AccountId));
 
-        if (!teamMembers.Any())
+        if(teamMembersResponse.StatusCode != System.Net.HttpStatusCode.OK || !teamMembersResponse.Body.Any())
         {
             return new AddAccountRequestCommandResult(addAccountResponse.RequestId);
         }
 
         PostNotificationsCommand notificationCommand = new();
+
+        IReadOnlyList<TeamMember> teamMembers = teamMembersResponse.Body;
 
         // If the provided EmployerContactEmail is null - then we must run through each account owner and send out the 'AddAccountOwnerInvitation' notification.
 
