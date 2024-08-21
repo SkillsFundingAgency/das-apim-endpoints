@@ -5,12 +5,11 @@ trigger:
       - "master"
   paths:
     include:
-    - azure
-    - pipeline-templates
     - src/Funding
     exclude:
-    - azure/shared-infrastructure-template.json
-    - pipeline-templates/job/shared-arm-deploy.yml
+    - azure
+    - pipeline-templates
+    - deployments
 
 pr:
   autoCancel: true
@@ -19,12 +18,11 @@ pr:
       - "master"
   paths:
     include:
-    - azure
-    - pipeline-templates
     - src/Funding
     exclude:
-    - azure/shared-infrastructure-template.json
-    - pipeline-templates/job/shared-arm-deploy.yml
+    - azure
+    - pipeline-templates
+    - deployments
 
 variables:
 - group: Release Management Resources
@@ -53,3 +51,4 @@ stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
     OuterApiName: Funding
+    AddXForwardedAuthorization: $True

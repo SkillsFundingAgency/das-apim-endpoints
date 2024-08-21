@@ -1,6 +1,5 @@
 using System;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
-using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models;
@@ -18,7 +17,8 @@ public class CandidateResponse
             LastName = source.LastName,
             PhoneNumber = source.PhoneNumber,
             Status = source.Status,
-            DateOfBirth = source.DateOfBirth
+            DateOfBirth = source.DateOfBirth,
+            IsEmailAddressMigrated = source.IsEmailAddressMigrated
         };
     }
 
@@ -30,4 +30,5 @@ public class CandidateResponse
     public string PhoneNumber { get; set; }
     public UserStatus Status { get; set; }
     public DateTime? DateOfBirth { get; set; }
+    public bool IsEmailAddressMigrated { get; set; }
 }

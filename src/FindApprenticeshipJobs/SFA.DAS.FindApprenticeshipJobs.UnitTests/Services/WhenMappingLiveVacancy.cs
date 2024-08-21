@@ -106,7 +106,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                     Between18AndUnder21NationalMinimumWage = source.Wage.Between18AndUnder21NationalMinimumWage,
                     Between21AndUnder25NationalMinimumWage = source.Wage.Between21AndUnder25NationalMinimumWage,
                     Over25NationalMinimumWage = source.Wage.Over25NationalMinimumWage,
-                    WageText = source.Wage.WageText
+                    WageText = source.Wage.WageText,
+                    CompanyBenefitsInformation = source.Wage.CompanyBenefitsInformation
                 },
                 AnonymousEmployerName = source.IsAnonymous ? source.EmployerName: null,
                 IsDisabilityConfident = source.DisabilityConfident == DisabilityConfident.Yes,
@@ -140,7 +141,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                     Longitude = source.EmployerLocation?.Longitude ?? 0,
                 },
                 source.AdditionalQuestion1,
-                source.AdditionalQuestion2
+                source.AdditionalQuestion2,
+                source.AdditionalTrainingDescription
             };
 
             actual.Should().BeEquivalentTo(expectedResult);

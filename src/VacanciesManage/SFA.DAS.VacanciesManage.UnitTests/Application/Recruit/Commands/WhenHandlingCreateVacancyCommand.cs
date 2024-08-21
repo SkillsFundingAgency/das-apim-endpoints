@@ -10,14 +10,13 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
-
 namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
 {
     public class WhenHandlingCreateVacancyCommand
@@ -38,24 +37,24 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var apiResponse = new ApiResponse<long?>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient.Setup(x =>
                 x.PostWithResponseCode<long?>(
-                    It.Is<PostVacancyRequest>(c => 
+                    It.Is<PostVacancyRequest>(c =>
                         c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail=")
                         && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
                         && ((PostVacancyRequestData)c.Data).LegalEntityName.Equals(accountLegalEntityItem.Name)
                         && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(command.PostVacancyRequestData.EmployerAccountId)
-                        ),true))
+                        ), true))
                 .ReturnsAsync(apiResponse);
             accountLegalEntityPermissionService
                 .Setup(x => x.GetAccountLegalEntity(It.Is<AccountIdentifier>(c => c.Equals(command.AccountIdentifier)),
                     command.PostVacancyRequestData.AccountLegalEntityPublicHashedId))
                 .ReturnsAsync(accountLegalEntityItem);
-            
+
             //Act
             var result = await handler.Handle(command, CancellationToken.None);
 
             //Assert
             result.VacancyReference.Should().Be(apiResponse.Body.ToString());
-            mockRecruitApiClient.Verify(client => client.PostWithResponseCode<long?>(It.IsAny<PostValidateVacancyRequest>(),true), 
+            mockRecruitApiClient.Verify(client => client.PostWithResponseCode<long?>(It.IsAny<PostValidateVacancyRequest>(), true),
                 Times.Never);
         }
         [Test, MoqAutoData]
@@ -74,24 +73,24 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var apiResponse = new ApiResponse<long?>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient.Setup(x =>
                 x.PostWithResponseCode<long?>(
-                    It.Is<PostVacancyRequest>(c => 
+                    It.Is<PostVacancyRequest>(c =>
                         c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail=")
                         && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
                         && ((PostVacancyRequestData)c.Data).LegalEntityName.Equals(accountLegalEntityItem.Name)
                         && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(accountLegalEntityItem.AccountHashedId)
-                        ),true))
+                        ), true))
                 .ReturnsAsync(apiResponse);
             accountLegalEntityPermissionService
                 .Setup(x => x.GetAccountLegalEntity(It.Is<AccountIdentifier>(c => c.Equals(command.AccountIdentifier)),
                     command.PostVacancyRequestData.AccountLegalEntityPublicHashedId))
                 .ReturnsAsync(accountLegalEntityItem);
-            
+
             //Act
             var result = await handler.Handle(command, CancellationToken.None);
 
             //Assert
             result.VacancyReference.Should().Be(apiResponse.Body.ToString());
-            mockRecruitApiClient.Verify(client => client.PostWithResponseCode<string>(It.IsAny<PostValidateVacancyRequest>(),true), 
+            mockRecruitApiClient.Verify(client => client.PostWithResponseCode<string>(It.IsAny<PostValidateVacancyRequest>(), true),
                 Times.Never);
         }
 
@@ -112,26 +111,26 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var apiResponse = new ApiResponse<long?>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient.Setup(x =>
                     x.PostWithResponseCode<long?>(
-                        It.Is<PostVacancyRequest>(c => 
+                        It.Is<PostVacancyRequest>(c =>
                             c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail=")
                             && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
                             && ((PostVacancyRequestData)c.Data).LegalEntityName.Equals(accountLegalEntityItem.Name)
                             && ((PostVacancyRequestData)c.Data).EmployerName.Equals(accountLegalEntityItem.Name)
                             && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(accountLegalEntityItem.AccountHashedId)
-                        ),true))
+                        ), true))
                 .ReturnsAsync(apiResponse);
             accountLegalEntityPermissionService
                 .Setup(x => x.GetAccountLegalEntity(It.Is<AccountIdentifier>(c => c.Equals(command.AccountIdentifier)),
                     command.PostVacancyRequestData.AccountLegalEntityPublicHashedId))
                 .ReturnsAsync(accountLegalEntityItem);
-            
+
             //Act
             var result = await handler.Handle(command, CancellationToken.None);
 
             //Assert
             result.VacancyReference.Should().Be(apiResponse.Body.ToString());
         }
-        
+
         [Test, MoqAutoData]
         public async Task And_IsSandbox_Then_Api_Called_To_Validate_Request(
             long responseValue,
@@ -145,11 +144,11 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             mockRecruitApiClient
                 .Setup(x =>
                     x.PostWithResponseCode<long?>(
-                        It.Is<PostValidateVacancyRequest>(c => 
+                        It.Is<PostValidateVacancyRequest>(c =>
                             c.PostUrl.Contains($"{command.Id.ToString()}/validate?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail={command.PostVacancyRequestData.User.Email}")
                             && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
                             && ((PostVacancyRequestData)c.Data).AccountType.Equals(command.PostVacancyRequestData.AccountType)
-                        ),true))
+                        ), true))
                 .ReturnsAsync(apiResponse);
 
             //Act
@@ -157,7 +156,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
 
             //Assert
             result.VacancyReference.Should().Be(apiResponse.Body.ToString());
-            mockRecruitApiClient.Verify(client => client.PostWithResponseCode<long?>(It.IsAny<PostVacancyRequest>(),true), 
+            mockRecruitApiClient.Verify(client => client.PostWithResponseCode<long?>(It.IsAny<PostVacancyRequest>(), true),
                 Times.Never);
         }
 
@@ -175,15 +174,15 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             accountLegalEntityPermissionService
                 .Setup(x => x.GetAccountLegalEntity(It.IsAny<AccountIdentifier>(), It.IsAny<string>()))
                 .ReturnsAsync((AccountLegalEntityItem)null);
-            
+
             //Act
-            Assert.ThrowsAsync<SecurityException>(()=> handler.Handle(command, CancellationToken.None));
-            
+            Assert.ThrowsAsync<SecurityException>(() => handler.Handle(command, CancellationToken.None));
+
             recruitApiClient.Verify(x =>
                 x.PostWithResponseCode<long?>(
-                    It.IsAny<PostVacancyRequest>(),true), Times.Never);
+                    It.IsAny<PostVacancyRequest>(), true), Times.Never);
         }
-        
+
         [Test, MoqAutoData]
         public void Then_If_There_Is_A_Bad_Request_Error_From_The_Api_A_Exception_Is_Returned(
             string errorContent,
@@ -199,19 +198,19 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             command.IsSandbox = false;
             var apiResponse = new ApiResponse<long?>(null, HttpStatusCode.BadRequest, errorContent);
             recruitApiClient
-                .Setup(client => client.PostWithResponseCode<long?>(It.IsAny<PostVacancyRequest>(),true))
+                .Setup(client => client.PostWithResponseCode<long?>(It.IsAny<PostVacancyRequest>(), true))
                 .ReturnsAsync(apiResponse);
             providerRelationshipsApiClient.Setup(x =>
                 x.Get<GetProviderAccountLegalEntitiesResponse>(It.IsAny<GetProviderAccountLegalEntitiesRequest>())).ReturnsAsync(response);
-            
+
             //Act
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
-            
+
             //Assert
             act.Should().ThrowAsync<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})")
                 .Result.Which.ErrorContent.Should().Be(errorContent);
         }
-        
+
         [Test, MoqAutoData]
         public void Then_If_There_Is_An_Error_From_The_Api_A_Exception_Is_Returned(
             string errorContent,
@@ -227,14 +226,14 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             command.IsSandbox = false;
             var apiResponse = new ApiResponse<long?>(null, HttpStatusCode.InternalServerError, errorContent);
             recruitApiClient
-                .Setup(client => client.PostWithResponseCode<long?>(It.IsAny<PostVacancyRequest>(),true))
+                .Setup(client => client.PostWithResponseCode<long?>(It.IsAny<PostVacancyRequest>(), true))
                 .ReturnsAsync(apiResponse);
             providerRelationshipsApiClient.Setup(x =>
                 x.Get<GetProviderAccountLegalEntitiesResponse>(It.IsAny<GetProviderAccountLegalEntitiesRequest>())).ReturnsAsync(response);
-            
+
             //Act
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
-            
+
             //Assert
             act.Should().ThrowAsync<Exception>()
                 .WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.InternalServerError} ({HttpStatusCode.InternalServerError})");

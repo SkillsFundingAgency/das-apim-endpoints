@@ -30,4 +30,21 @@ public class WhenHandlingGetVolunteeringOrWorkExperienceItemQuery
 
         result.Should().BeEquivalentTo((GetVolunteeringOrWorkExperienceItemQueryResult)apiResponse);
     }
+    [Test, MoqAutoData]
+    public async Task Then_If_The_Item_Is_Not_Found_Then_New_QueryResult_Is_Returned(
+        GetVolunteeringOrWorkExperienceItemQuery query,
+        GetWorkHistoryItemApiResponse apiResponse,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+        GetVolunteeringOrWorkExperienceItemQueryHandler handler)
+    {
+        var expectedGetDeleteJobRequest = new GetWorkHistoryItemApiRequest(query.ApplicationId, query.CandidateId, query.Id, WorkHistoryType.WorkExperience);
+        candidateApiClient
+            .Setup(client => client.Get<GetWorkHistoryItemApiResponse>(
+                It.Is<GetWorkHistoryItemApiRequest>(r => r.GetUrl == expectedGetDeleteJobRequest.GetUrl)))
+            .ReturnsAsync((GetWorkHistoryItemApiResponse)null!);
+
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        result.Should().BeEquivalentTo(new GetVolunteeringOrWorkExperienceItemQueryResult());
+    }
 }

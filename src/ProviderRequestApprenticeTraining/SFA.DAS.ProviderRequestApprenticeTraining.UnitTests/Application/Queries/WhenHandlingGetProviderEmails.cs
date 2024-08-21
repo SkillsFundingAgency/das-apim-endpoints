@@ -17,13 +17,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
 {
     public class WhenHandlingGetProviderEmails
     {
-        private readonly IProviderCoursesApiClient<ProviderCoursesApiConfiguration> _providerCoursesApiClient;
-        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient;
-
         [Test, MoqAutoData]
         public async Task Then_Get_ProviderEmails_From_The_Api(
             List<ProviderCourse> providerCourseResult,
-            [Frozen] Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> mockProviderCoursesApiClient,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
             GetProviderEmailAddressesQueryHandler handler,
             GetProviderEmailAddressesQuery query)
@@ -39,11 +35,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
             // Assert
             actual.EmailAddresses.Should().Contain(query.UserEmailAddress);
             actual.EmailAddresses.Should().Contain(providerCourseResult.Select(x => x.ContactUsEmail));
-
         }
 
         [Test, MoqAutoData]
-        public async Task AndNoProviderCoursesExist_Then_Get_ProviderEmails_ReturnsUserEmailAddress(
+        public async Task AndNoProviderCoursesExist_Then_Get_ProviderEmails_ReturnsEmailFromCurrentLoggedInUser(
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
             GetProviderEmailAddressesQueryHandler handler,
             GetProviderEmailAddressesQuery query)
