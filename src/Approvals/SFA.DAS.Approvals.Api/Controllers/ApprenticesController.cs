@@ -16,6 +16,7 @@ using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Apprentic
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Inform;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeshipsCSV;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprenticeshipUpdates;
 using SFA.DAS.Approvals.Exceptions;
 
@@ -351,5 +352,46 @@ public class ApprenticesController(
             logger.LogError(exception, "GET ManageApprenticeshipDetails exception caught for apprenticeshipId {Id}", apprenticeshipId);
             return BadRequest();
         }
+    }
+
+    [HttpPost]
+    [Route("/provider/{providerId}/apprenticeships/download")]
+    public async Task<IActionResult> GetApprenticeshipsCSV(long providerId, [FromBody] PostApprenticeshipsCSVRequest request)
+    {
+        try
+        {
+            logger.LogInformation("GetApprenticeshipsCSV starting for providerId {Id}", providerId);
+
+            var command = new GetApprenticeshipsCSVQuery
+            {
+                ProviderId = providerId,
+                SearchTerm = request.SearchTerm,
+                EmployerName = request.EmployerName,
+                CourseName = request.CourseName,
+                Status = request.Status,
+                StartDate = request.StartDate,
+                EndDate = request.EndDate,
+                Alert = request.Alert,
+                ApprenticeConfirmationStatus = request.ApprenticeConfirmationStatus,
+                DeliveryModel = request.DeliveryModel
+            };
+
+            var apprenticesData = await mediator.Send(command);
+
+            if (apprenticesData == null)
+            {
+                return NotFound();
+            }
+
+            var response = mapper.Map<PostApprenticeshipsCSVResponse>(apprenticesData);
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error in GetApprenticeshipsCSV for provider Id: {providerId}", providerId);
+            return BadRequest();
+        }
+       
     }
 }
