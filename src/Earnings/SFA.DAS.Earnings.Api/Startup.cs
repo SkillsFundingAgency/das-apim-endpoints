@@ -88,13 +88,12 @@ public class Startup
         app.UseHealthChecks();
 
         app.UseRouting();
-        //todo
-        // app.UseEndpoints(endpoints =>
-        // {
-            // endpoints.MapControllerRoute(
-                // name: "default",
-                // pattern: "api/{controller=Earnings}");
-        // });
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "api/{controller=Earnings}/{action=index}/{id?}");
+        });
 
         app.UseSwagger();
         app.UseSwaggerUI(c =>

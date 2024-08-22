@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace SFA.DAS.Earnings.Api.Controllers;
 
 [ApiController]
-[Route("[controller]/")]
+[Route("")]
 public class EarningsController : ControllerBase
 {
     private readonly IMediator _mediator;
