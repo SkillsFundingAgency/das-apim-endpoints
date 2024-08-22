@@ -56,7 +56,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             var result = await _mediator.Send(new GetTaskByTaskIdQuery { ApprenticeshipId = apprenticeshipId, TaskId = taskId });
             if (result.Tasks == null)
                 return NotFound();
-            return Ok(result);
+            return Ok(result.Tasks);
         }
 
         // update a task by id
@@ -81,6 +81,20 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             {
                 ApprenticeshipId = apprenticeshipId,
                 TaskId = taskId
+            });
+
+            return Ok();
+        }
+
+        // update a task status
+        [HttpPost("/apprentices/{apprenticeshipId}/progress/tasks/{taskId}/status/{statusId}")]
+        public async Task<IActionResult> UpdateTaskStatus(long apprenticeshipId, int taskId, int statusId)
+        {
+            await _mediator.Send(new UpdateApprenticeTaskStatusCommand
+            {
+                ApprenticeshipId = apprenticeshipId,
+                TaskId = taskId,
+                StatusId = statusId
             });
 
             return Ok();

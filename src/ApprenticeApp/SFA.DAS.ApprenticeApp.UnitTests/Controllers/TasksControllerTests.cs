@@ -117,5 +117,23 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
         }
 
+
+        [Test, MoqAutoData]
+        public async Task Update_task_status(
+             [Greedy] TasksController controller)
+        {
+            var httpContext = new DefaultHttpContext();
+            var apprenticeshipId = 1;
+            var ApprenticeTaskData = new ApprenticeTaskData();
+            var taskId = 1;
+            var statusId = 1;
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = await controller.UpdateTaskStatus(apprenticeshipId, taskId, statusId);
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
+        }
     }
 }

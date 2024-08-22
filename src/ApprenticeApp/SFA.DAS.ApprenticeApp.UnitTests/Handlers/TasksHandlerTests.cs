@@ -62,6 +62,6 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             await sut.Handle(query, cancellationToken);
             sut.Should().NotBeNull();
         }
-        
+
     }
 }

@@ -90,5 +90,15 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
             var instance = new PostKsbProgressRequest(apprenticeshipId, new ApprenticeKsbProgressData());
             instance.PostUrl.Should().Be($"/apprenticeships/1/ksbs");
         }
+
+        [Test, AutoData]
+        public void UpdateTaskStatusTestUrlIsCorrectlyBuilt()
+        {
+            var apprenticeshipId = 1;
+            var taskId = 1;
+            var statusId = 1;
+            var instance = new PatchApprenticeTaskStatusRequest(apprenticeshipId, taskId, statusId, new ApprenticeTaskData());
+            instance.PostUrl.Should().Be($"/apprenticeships/1/tasks/1/changestatus/1/");
+        }
     }
 }
