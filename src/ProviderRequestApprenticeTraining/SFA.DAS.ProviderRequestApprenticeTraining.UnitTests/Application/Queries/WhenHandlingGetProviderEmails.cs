@@ -68,7 +68,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
             {
                 new ProviderCourse{ ContactUsEmail = "USER@HOTMAIL.COM"},
                 new ProviderCourse{ ContactUsEmail = " user@hotmail.com"},
-                new ProviderCourse{ ContactUsEmail = "user@hotmail.com "},
+                new ProviderCourse{ ContactUsEmail = "user@Hotmail.com "},
                 new ProviderCourse{ ContactUsEmail = "user@h otmail.com"},
             };
             

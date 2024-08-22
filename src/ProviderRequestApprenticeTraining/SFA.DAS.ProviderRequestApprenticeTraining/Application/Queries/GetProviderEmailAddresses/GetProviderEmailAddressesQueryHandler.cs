@@ -38,9 +38,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProvi
             var emailAddresses = (providerCourses?
                 .Select(pc => pc.ContactUsEmail) ?? Enumerable.Empty<string>())
                 .Append(request.UserEmailAddress)
-                .Select(email => email.RemoveWhitespace().ToLower())
+                .Select(email => email.RemoveWhitespace())
                 .Where(email => !string.IsNullOrEmpty(email))
-                .Distinct()
+                .Distinct(StringComparer.CurrentCultureIgnoreCase)
                 .Order()
                 .ToList();
 
