@@ -22,7 +22,12 @@ public class CreatePermissionRequestCommandHandler(
 
         var teamMembersResponse = await _accountsApiClient.GetWithResponseCode<List<TeamMember>>(new GetAccountTeamMembersByInternalAccountIdRequest(command.AccountId));
 
-        if (teamMembersResponse.StatusCode != System.Net.HttpStatusCode.OK || !teamMembersResponse.Body.Any())
+        if (teamMembersResponse.StatusCode != System.Net.HttpStatusCode.OK)
+        {
+            throw new Exception(teamMembersResponse.ErrorContent);
+        }
+
+        if (!teamMembersResponse.Body.Any())
         {
             return new CreatePermissionRequestCommandResult(createPermissionsResponse.RequestId);
         }

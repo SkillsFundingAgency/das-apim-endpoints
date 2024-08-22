@@ -21,7 +21,12 @@ public class AddAccountRequestCommandHandler(
 
         var teamMembersResponse = await _accountsApiClient.GetWithResponseCode<List<TeamMember>>(new GetAccountTeamMembersByInternalAccountIdRequest(command.AccountId));
 
-        if(teamMembersResponse.StatusCode != System.Net.HttpStatusCode.OK || !teamMembersResponse.Body.Any())
+        if(teamMembersResponse.StatusCode != System.Net.HttpStatusCode.OK)
+        {
+            throw new Exception(teamMembersResponse.ErrorContent);
+        }
+
+        if (!teamMembersResponse.Body.Any())
         {
             return new AddAccountRequestCommandResult(addAccountResponse.RequestId);
         }
