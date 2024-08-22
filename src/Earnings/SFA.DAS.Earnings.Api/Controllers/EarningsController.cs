@@ -19,8 +19,8 @@ public class EarningsController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{ukprn}")]
-    public async Task<IActionResult> GetEarnings(long ukprn)
+    [Route("{collectionPeriod}/{ukprn}")]
+    public async Task<IActionResult> GetEarnings(string collectionPeriod, long ukprn)
     {
         return Ok(GetLearners(ukprn));
     }
@@ -32,7 +32,7 @@ public class EarningsController : ControllerBase
     /// <returns></returns>
     private FM36Learner[] GetLearners(long ukprn)
     {
-        if (ukprn == 9999999999)
+        if (ukprn == 99999999)
         {
             return [];
         }
