@@ -39,7 +39,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitP
                 Website = command.Website,
                 Email = command.Email,
                 Phone = command.Phone,
-
+                RespondedBy = command.RespondedBy,
             });
 
             var response = await _requestApprenticeTrainingApiClient
