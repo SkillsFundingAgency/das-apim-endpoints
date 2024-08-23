@@ -10,43 +10,44 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmailAddresses
+namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers
 {
-    public class GetProviderEmailAddressesQueryHandler : IRequestHandler<GetProviderEmailAddressesQuery, GetProviderEmailAddressesResult>
+    public class GetProviderPhoneNumbersQueryHandler : IRequestHandler<GetProviderPhoneNumbersQuery, GetProviderPhoneNumbersResult>
     {
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient;
+        private readonly ILogger<GetProviderPhoneNumbersQueryHandler> _logger;
 
-        private readonly ILogger<GetProviderEmailAddressesQueryHandler> _logger;
+        public GetProviderPhoneNumbersQueryHandler(
 
-        public GetProviderEmailAddressesQueryHandler(
             IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient,
-            ILogger<GetProviderEmailAddressesQueryHandler> logger)
+            ILogger<GetProviderPhoneNumbersQueryHandler> logger)
         {
             _roatpCourseManagementApiClient = roatpCourseManagementApiClient;
             _logger = logger;
         }
 
-        public async Task<GetProviderEmailAddressesResult> Handle(GetProviderEmailAddressesQuery request, CancellationToken cancellationToken)
+        public async Task<GetProviderPhoneNumbersResult> Handle(GetProviderPhoneNumbersQuery request, CancellationToken cancellationToken)
         {
             var providerCourses = await _roatpCourseManagementApiClient.
                 Get<List<ProviderCourse>>(new GetProviderCoursesRequest(
                     request.Ukprn));
 
-            var emailAddresses = (providerCourses?
-                .Select(pc => pc.ContactUsEmail) ?? Enumerable.Empty<string>())
-                .Append(request.UserEmailAddress)
-                .Select(email => email.RemoveWhitespace())
-                .Where(email => !string.IsNullOrEmpty(email))
-                .Distinct(StringComparer.OrdinalIgnoreCase)
+            var phoneNumbers = (providerCourses?
+                .Select(pc => pc.ContactUsPhoneNumber) ?? Enumerable.Empty<string>())
+                .Select(phone => phone.RemoveWhitespace())
+                .Where(phone => !string.IsNullOrEmpty(phone))
+                .Distinct()
                 .Order()
                 .ToList();
 
-            return new GetProviderEmailAddressesResult
+
+            return new GetProviderPhoneNumbersResult
             {
-                EmailAddresses = emailAddresses
+                PhoneNumbers = phoneNumbers
             };
         }
     }
