@@ -10,6 +10,7 @@ using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerP
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocation;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetSettings;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
 using System;
 using System.Linq;
@@ -150,19 +151,30 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
         }
 
-        [HttpGet("account/{accountId}/aggregated")]
-        public async Task<IActionResult> GetAggregatedEmployerRequests(long accountId)
+        [HttpGet("account/{accountId}/dashboard")]
+        public async Task<IActionResult> GetDashboard(long accountId)
         {
             try
             {
-                var result = await _mediator.Send(new GetAggregatedEmployerRequestsQuery(accountId));
+                var aggregatedEmployerRequestsTask = _mediator.Send(new GetAggregatedEmployerRequestsQuery(accountId));
+                var settingsTask = _mediator.Send(new GetSettingsQuery());
 
-                var model = result.AggregatedEmployerRequests.Select(request => (AggregatedEmployerRequest)request).ToList();
-                return Ok(model);
+                await Task.WhenAll(aggregatedEmployerRequestsTask, settingsTask);
+
+                var aggregatedEmployerRequestsResults = await aggregatedEmployerRequestsTask;
+                var settingsResult = await settingsTask;
+
+                var result = new Dashboard
+                {
+                    AggregatedEmployerRequests = aggregatedEmployerRequestsResults.AggregatedEmployerRequests.Select(request => (AggregatedEmployerRequest)request).ToList(),
+                    ExpiryAfterMonths = settingsResult.ExpiryAfterMonths
+                };
+
+                return Ok(result);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to retrieve aggregated employer requests");
+                _logger.LogError(e, "Error attempting to retrieve dashboard");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -180,11 +192,13 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
 
                     var standardTask = _mediator.Send(new GetStandardQuery { StandardId = employerRequest.StandardReference });
                     var employerProfileUserTask = _mediator.Send(new GetEmployerProfileUserQuery { UserId = employerRequest.RequestedBy });
+                    var settingsTask = _mediator.Send(new GetSettingsQuery());
 
-                    await Task.WhenAll(standardTask, employerProfileUserTask);
+                    await Task.WhenAll(standardTask, employerProfileUserTask, settingsTask);
 
                     var standardResult = await standardTask;
                     var employerProfileUser = await employerProfileUserTask;
+                    var settings = await settingsTask;
 
                     return Ok(new SubmitEmployerRequestConfirmation
                     {
@@ -198,6 +212,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                         DayRelease = employerRequest.DayRelease,
                         BlockRelease = employerRequest.BlockRelease,
                         RequestedByEmail = employerProfileUser.Email,
+                        ExpiryAfterMonths = settings.ExpiryAfterMonths,
                         Regions = employerRequest.Regions
                     });
                 }

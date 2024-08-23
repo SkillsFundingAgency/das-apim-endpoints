@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers;
+using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetSettings;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
@@ -14,24 +16,34 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.EmployerRequests
 {
-    public class WhenGettingAggregatedEmployerRequests
+    public class WhenGettingDashboard
     {
         [Test, MoqAutoData]
         public async Task Then_The_AggregatedEmployerRequests_Are_Returned_From_Mediator(
-            GetAggregatedEmployerRequestsResult queryResult,
+            GetAggregatedEmployerRequestsResult queryAggregatedEmployerRequestsResult,
+            GetSettingsResult querySettingsResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerRequestsController controller,
             long ukprn)
         {
             mockMediator
                 .Setup(x => x.Send(It.IsAny<GetAggregatedEmployerRequestsQuery>(), CancellationToken.None))
-                .ReturnsAsync(queryResult);
+                .ReturnsAsync(queryAggregatedEmployerRequestsResult);
 
-            var actual = await controller.GetAggregatedEmployerRequests(ukprn) as ObjectResult;
+            mockMediator
+                .Setup(x => x.Send(It.IsAny<GetSettingsQuery>(), CancellationToken.None))
+                .ReturnsAsync(querySettingsResult);
+
+            var actual = await controller.GetDashboard(ukprn) as ObjectResult;
 
             Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().BeEquivalentTo(queryResult.AggregatedEmployerRequests);
+
+            var dashboard = actual.Value as Dashboard;
+            Assert.That(dashboard, Is.Not.Null);
+
+            dashboard.AggregatedEmployerRequests.Should().BeEquivalentTo(queryAggregatedEmployerRequestsResult.AggregatedEmployerRequests);
+            dashboard.ExpiryAfterMonths.Should().Be(querySettingsResult.ExpiryAfterMonths);
         }
 
         [Test, MoqAutoData]
@@ -44,7 +56,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             mediator.Setup(x => x.Send(It.IsAny<GetAggregatedEmployerRequestsQuery>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
-            var actual = await controller.GetAggregatedEmployerRequests(ukprn) as StatusCodeResult;
+            var actual = await controller.GetDashboard(ukprn) as StatusCodeResult;
 
             Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

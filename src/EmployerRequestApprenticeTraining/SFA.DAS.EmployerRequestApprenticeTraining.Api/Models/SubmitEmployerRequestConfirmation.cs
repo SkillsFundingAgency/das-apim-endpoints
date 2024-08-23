@@ -16,6 +16,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Models
         public bool DayRelease { get; set; }
         public bool BlockRelease { get; set; }
         public string RequestedByEmail { get; set; }
+        public int ExpiryAfterMonths { get; set; }
 
         public List<Region> Regions { get; set; }
     }
