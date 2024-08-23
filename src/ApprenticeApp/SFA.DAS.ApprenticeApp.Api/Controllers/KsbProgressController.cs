@@ -71,22 +71,15 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             {
                 var ksbProgressResult = await _mediator.Send(new GetKsbsByApprenticeshipIdQuery { ApprenticeshipId = apprenticeshipId });
 
-                var apprenticeKsbs = new List<ApprenticeKsb>();
-                foreach (var ksb in ksbQueryResult.KsbsResult.Ksbs)
+                var apprenticeKsbs = new ApprenticeKsbs
                 {
-                    var apprenticeKsb = new ApprenticeKsb
-                    {
-                        Id = ksb.Id,
-                        Type = ksb.Type,
-                        Key = ksb.Key,
-                        Detail = ksb.Detail,
-                        Status = ksbProgressResult.KSBProgresses.Where(x => x.KSBId == ksb.Id).Select(x => x.CurrentStatus).DefaultIfEmpty(KSBStatus.NotStarted).First()
-                    };
-                    apprenticeKsbs.Add(apprenticeKsb);
-                }
+                    AllKsbs = ksbQueryResult.KsbsResult.Ksbs,
+                    KsbProgresses = ksbProgressResult.KSBProgresses
+                };
                 return Ok(apprenticeKsbs);
             }
             return Ok();
         }
+
     }
 }
