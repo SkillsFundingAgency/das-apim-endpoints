@@ -15,7 +15,7 @@ using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 
-namespace SFA.DAS.ProviderPR.UnitTests.Application.Relationships.Queries.GetRelationshipByEmail;
+namespace SFA.DAS.ProviderPR.UnitTests.Application.Queries.GetRelationshipByEmail;
 public class GetRelationshipByEmailQueryHandlerTests
 {
     [Test, MoqAutoData]

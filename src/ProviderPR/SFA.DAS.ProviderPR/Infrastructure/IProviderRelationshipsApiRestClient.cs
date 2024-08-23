@@ -30,4 +30,10 @@ public interface IProviderRelationshipsApiRestClient
 
     [Post("requests/permission")]
     Task<CreatePermissionRequestCommandResult> CreatePermissionsRequest([Body] CreatePermissionRequestCommand command, CancellationToken cancellationToken);
+    
+    [Get("requests")]
+    [AllowAnyStatusCode]
+    Task<Response<GetRequestResponse?>> GetRequestByUkprnAndPaye([Query] long ukprn, [Query] string paye, CancellationToken cancellationToken);
+
+
 }
