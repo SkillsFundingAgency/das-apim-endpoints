@@ -22,6 +22,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.InnerApi.Requests
             actual.Data.GetType().GetProperty("Phone")!.GetValue(actual.Data, null).Should().Be(data.Phone);
             actual.Data.GetType().GetProperty("Website")!.GetValue(actual.Data, null).Should().Be(data.Website);
             actual.Data.GetType().GetProperty("RespondedBy")!.GetValue(actual.Data, null).Should().Be(data.RespondedBy);
+            actual.Data.GetType().GetProperty("ContactName")!.GetValue(actual.Data, null).Should().Be(data.ContactName);
         }
     }
 }

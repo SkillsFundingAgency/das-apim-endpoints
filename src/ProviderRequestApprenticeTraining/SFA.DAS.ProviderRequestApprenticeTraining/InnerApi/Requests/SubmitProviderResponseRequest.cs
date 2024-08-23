@@ -19,9 +19,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests
     {
         public long Ukprn { get; set; }
         public List<Guid> EmployerRequestIds { get; set; } = new List<Guid>();
+        public string ContactName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Website { get; set; }
-        public string RespondedBy { get; set; }
+        public Guid RespondedBy { get; set; }
     }
 }
