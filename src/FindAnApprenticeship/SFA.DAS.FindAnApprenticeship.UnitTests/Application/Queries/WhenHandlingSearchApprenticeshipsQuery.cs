@@ -163,7 +163,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             using (new AssertionScope())
             {
                 Assert.That(result, Is.Not.Null);
-                result.TotalApprenticeshipCount.Should().Be(vacanciesResponse.Total);
                 result.TotalFound.Should().Be(vacanciesResponse.TotalFound);
                 result.LocationItem.Should().BeEquivalentTo(locationInfo);
                 result.Routes.Should().BeEquivalentTo(routesResponse.Routes);
