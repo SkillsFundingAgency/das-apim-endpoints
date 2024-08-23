@@ -70,6 +70,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
                 new ProviderCourse{ ContactUsEmail = " user@hotmail.com"},
                 new ProviderCourse{ ContactUsEmail = "user@Hotmail.com "},
                 new ProviderCourse{ ContactUsEmail = "user@h otmail.com"},
+                new ProviderCourse{ ContactUsEmail = "First.middle-last@education.gov.uk"},
+                new ProviderCourse{ ContactUsEmail = "First.MIDDLE-LAST@education.gov.uk"},
             };
             
             mockRoatpCourseManagementApiClient.Setup(client => client.Get<List<ProviderCourse>>(It.IsAny<GetProviderCoursesRequest>()))
@@ -79,7 +81,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
             var actual = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            actual.EmailAddresses.Count().Should().Be(1);
+            actual.EmailAddresses.Count().Should().Be(2);
         }
     }
 }

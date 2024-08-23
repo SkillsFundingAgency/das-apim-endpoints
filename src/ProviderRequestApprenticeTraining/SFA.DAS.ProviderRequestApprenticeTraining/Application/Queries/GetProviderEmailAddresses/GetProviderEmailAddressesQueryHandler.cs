@@ -40,7 +40,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProvi
                 .Append(request.UserEmailAddress)
                 .Select(email => email.RemoveWhitespace())
                 .Where(email => !string.IsNullOrEmpty(email))
-                .Distinct(StringComparer.CurrentCultureIgnoreCase)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
                 .Order()
                 .ToList();
 
