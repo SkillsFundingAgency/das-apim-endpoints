@@ -8,6 +8,8 @@ namespace SFA.DAS.ApprenticeApp.Models
         public Guid Id { get; set; }
         public string Key { get; set; }
         public string Detail { get; set; }
+
+
     }
 
     public enum KsbType
@@ -24,7 +26,6 @@ namespace SFA.DAS.ApprenticeApp.Models
 
     public class ApprenticeKsb : Ksb
     {
-        public string Note { get; set; }
-        public KSBStatus? Status { get; set; }
+        public ApprenticeKsbProgressData? Progress { get; set; }
     }
 }

@@ -6,6 +6,7 @@ namespace SFA.DAS.ApprenticeApp.Models
     public class ApprenticeKsbProgressData
     {
         public long ApprenticeshipId { get; set; }
+        public int KsbProgressId { get; set; }
         public KSBProgressType? KSBProgressType { get; set; }
         public Guid KSBId { get; set; }
         public string KsbKey { get; set; }
@@ -30,4 +31,5 @@ namespace SFA.DAS.ApprenticeApp.Models
         ReadyForReview = 2,
         Completed = 3
     }
+        
 }
