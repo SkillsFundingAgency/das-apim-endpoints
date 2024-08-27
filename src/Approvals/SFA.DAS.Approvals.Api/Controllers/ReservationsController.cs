@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Approvals.Application.Accounts.Queries.GetAccountQuery;
 using System.Threading.Tasks;
 using System;
 using SFA.DAS.Approvals.Application.Reservations.Queries;
@@ -24,7 +23,7 @@ public class ReservationsController : ControllerBase
 
     [HttpGet]
     [Route("accounts/{accountId}/status")]
-    public async Task<IActionResult> Get(long accountId, [FromQuery] long? transferSenderId)
+    public async Task<IActionResult> GetStatus(long accountId, [FromQuery] long? transferSenderId)
     {
         try
         {
