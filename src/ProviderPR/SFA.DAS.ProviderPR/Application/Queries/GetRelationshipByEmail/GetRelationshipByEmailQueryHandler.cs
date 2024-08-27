@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using RestEase;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
@@ -8,17 +9,16 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Net;
 
 namespace SFA.DAS.ProviderPR.Application.Queries.GetRelationshipByEmail;
-public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfiguration> accountsApiClient, IProviderRelationshipsApiRestClient providerRelationshipsApiClient) : IRequestHandler<GetRelationshipByEmailQuery, GetRelationshipByEmailQueryResult>
+public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfiguration> _accountsApiClient, IProviderRelationshipsApiRestClient _providerRelationshipsApiClient) : IRequestHandler<GetRelationshipByEmailQuery, GetRelationshipByEmailQueryResult>
 {
     public async Task<GetRelationshipByEmailQueryResult> Handle(GetRelationshipByEmailQuery request, CancellationToken cancellationToken)
     {
         var queryResult =
             new GetRelationshipByEmailQueryResult();
 
-        var result = await accountsApiClient.GetWithResponseCode<GetUserByEmailResponse>(new GetUserByEmailRequest(request.Email));
+        var result = await _accountsApiClient.GetWithResponseCode<GetUserByEmailResponse>(new GetUserByEmailRequest(request.Email));
 
         if (result.StatusCode == HttpStatusCode.NotFound)
         {
@@ -32,7 +32,7 @@ public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfi
 
         var userRef = result.Body.Ref;
 
-        var accounts = await accountsApiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(userRef.ToString()));
+        var accounts = await _accountsApiClient.GetAll<GetUserAccountsResponse>(new GetUserAccountsRequest(userRef.ToString()));
 
         if (!accounts.Any())
         {
@@ -52,7 +52,7 @@ public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfi
         var account = accounts.First();
         queryResult.AccountId = account.AccountId;
 
-        var accountLegalEntities = await accountsApiClient.GetAll<GetAccountLegalEntityResponse>(new GetAccountLegalEntitiesRequest(queryResult.AccountId.Value));
+        var accountLegalEntities = await _accountsApiClient.GetAll<GetAccountLegalEntityResponse>(new GetAccountLegalEntitiesRequest(queryResult.AccountId.Value));
 
         queryResult.HasOneLegalEntity = accountLegalEntities.Count() == 1;
 
@@ -68,7 +68,7 @@ public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfi
         queryResult.AccountLegalEntityName = legalEntity.Name;
         queryResult.HasRelationship = false;
 
-        Response<GetRelationshipResponse> relationshipResponse = await providerRelationshipsApiClient.GetRelationship(request.Ukprn, queryResult.AccountLegalEntityId.Value, cancellationToken);
+        Response<GetRelationshipResponse> relationshipResponse = await _providerRelationshipsApiClient.GetRelationship(request.Ukprn, queryResult.AccountLegalEntityId.Value, cancellationToken);
 
         if (relationshipResponse.ResponseMessage.StatusCode == HttpStatusCode.OK)
         {
