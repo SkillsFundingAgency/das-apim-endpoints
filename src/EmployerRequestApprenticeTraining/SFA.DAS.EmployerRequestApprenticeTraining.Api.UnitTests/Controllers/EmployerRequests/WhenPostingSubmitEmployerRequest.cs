@@ -6,7 +6,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SubmitEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocation;
 using SFA.DAS.SharedOuterApi.Exceptions;
@@ -19,12 +19,13 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.EmployerRequests
 {
-    public class WhenPostingEmployerRequest
+    public class WhenPostingSubmitEmployerRequest
     {
         [Test, MoqAutoData]
         public async Task Then_The_EmployerRequestId_Is_Returned(
-            SubmitEmployerRequestCommand submitCommand,
-            CreateEmployerRequestResponse response,
+            long accountId,
+            SubmitEmployerRequestRequest submitRequest,
+            SubmitEmployerRequestResponse response,
             GetLocationResult locationResult,
             GetEmployerProfileUserResult employerProfileUserResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -36,17 +37,17 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
                 GeoPoint = [1.0, 2.0]
             };
             mockMediator
-                .Setup(x => x.Send(It.Is<GetLocationQuery>(p => p.ExactSearchTerm == submitCommand.SingleLocation), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<GetLocationQuery>(p => p.ExactSearchTerm == submitRequest.SingleLocation), CancellationToken.None))
                 .ReturnsAsync(locationResult);
             mockMediator
-                .Setup(x => x.Send(It.Is<GetEmployerProfileUserQuery>(p => p.UserId == submitCommand.RequestedBy), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<GetEmployerProfileUserQuery>(p => p.UserId == submitRequest.RequestedBy), CancellationToken.None))
                 .ReturnsAsync(employerProfileUserResult);
             mockMediator
-                .Setup(x => x.Send(It.IsAny<CreateEmployerRequestCommand>(), CancellationToken.None))
+                .Setup(x => x.Send(It.IsAny<SubmitEmployerRequestCommand>(), CancellationToken.None))
                 .ReturnsAsync(response);
 
             // Act
-            var actual = await controller.SubmitEmployerRequest(submitCommand) as ObjectResult;
+            var actual = await controller.SubmitEmployerRequest(accountId, submitRequest) as ObjectResult;
 
             // Assert
             actual.Should().NotBeNull();
@@ -56,7 +57,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
 
         [Test, MoqAutoData]
         public async Task Then_BadRequest_Is_Returned_If_SameLocation_Is_Yes_And_Location_Not_Found(
-            SubmitEmployerRequestCommand submitCommand,
+            long accountId,
+            SubmitEmployerRequestRequest submitCommand,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerRequestsController controller)
         {
@@ -69,7 +71,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             submitCommand.SameLocation = "Yes";
 
             // Act
-            var actual = await controller.SubmitEmployerRequest(submitCommand) as BadRequestObjectResult;
+            var actual = await controller.SubmitEmployerRequest(accountId, submitCommand) as BadRequestObjectResult;
 
             // Assert
             actual.Should().NotBeNull();
@@ -79,7 +81,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
 
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_Same_Location_Is_Yes_And_Exception_Is_Thrown_Getting_Location(
-            SubmitEmployerRequestCommand submitCommand,
+            long accountId,
+            SubmitEmployerRequestRequest submitCommand,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerRequestsController controller)
         {
@@ -90,7 +93,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             submitCommand.SameLocation = "Yes";
 
             // Act
-            var actual = await controller.SubmitEmployerRequest(submitCommand) as StatusCodeResult;
+            var actual = await controller.SubmitEmployerRequest(accountId, submitCommand) as StatusCodeResult;
 
             // Assert
             actual.Should().NotBeNull();
@@ -99,7 +102,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
 
         [Test, MoqAutoData]
         public void Then_Exception_Is_Thrown_If_EmployerProfileUser_Not_Found(
-            SubmitEmployerRequestCommand submitCommand,
+            long accountId,
+            SubmitEmployerRequestRequest submitCommand,
             GetLocationResult locationResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerRequestsController controller)
@@ -121,7 +125,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
                 .ThrowsAsync(new ApiResponseException(HttpStatusCode.NotFound, string.Empty));
 
             // Act & Assert
-            Func<Task> act = async () => await controller.SubmitEmployerRequest(submitCommand);
+            Func<Task> act = async () => await controller.SubmitEmployerRequest(accountId, submitCommand);
             act.Should().ThrowAsync<ApiResponseException>()
                 .Where(e => e.Status == HttpStatusCode.NotFound);
         }

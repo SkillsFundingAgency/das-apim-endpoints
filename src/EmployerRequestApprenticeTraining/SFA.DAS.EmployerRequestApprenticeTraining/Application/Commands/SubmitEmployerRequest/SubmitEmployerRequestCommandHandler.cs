@@ -10,17 +10,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining.SubmitEmployerRequestRequest;
 
-namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateEmployerRequest
+namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SubmitEmployerRequest
 {
-    public class CreateEmployerRequestCommandHandler : IRequestHandler<CreateEmployerRequestCommand, CreateEmployerRequestResponse>
+    public class SubmitEmployerRequestCommandHandler : IRequestHandler<SubmitEmployerRequestCommand, SubmitEmployerRequestResponse>
     {
         private readonly IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration> _requestApprenticeTrainingApiClient;
         private readonly INotificationService _notificationService;
         private readonly IOptions<EmployerRequestApprenticeTrainingConfiguration> _options;
 
 
-        public CreateEmployerRequestCommandHandler(IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration> requestApprenticeTrainingApiClient, 
+        public SubmitEmployerRequestCommandHandler(IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration> requestApprenticeTrainingApiClient, 
             INotificationService notificationService, IOptions<EmployerRequestApprenticeTrainingConfiguration> options)
         {
             _requestApprenticeTrainingApiClient = requestApprenticeTrainingApiClient;
@@ -28,13 +29,12 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateE
             _options = options;
         }
 
-        public async Task<CreateEmployerRequestResponse> Handle(CreateEmployerRequestCommand command, CancellationToken cancellationToken)
+        public async Task<SubmitEmployerRequestResponse> Handle(SubmitEmployerRequestCommand command, CancellationToken cancellationToken)
         {
-            var request = new CreateEmployerRequestRequest(new CreateEmployerRequestData
+            var request = new SubmitEmployerRequestRequest(command.AccountId, new SubmitEmployerRequestData
             {
                 OriginalLocation = command.OriginalLocation,
                 RequestType = command.RequestType,
-                AccountId = command.AccountId,
                 StandardReference = command.StandardReference,
                 NumberOfApprentices = command.NumberOfApprentices,
                 SameLocation = command.SameLocation,
@@ -50,7 +50,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateE
             });
 
             var employerRequestResponse = await _requestApprenticeTrainingApiClient
-                .PostWithResponseCode<CreateEmployerRequestData, CreateEmployerRequestResponse>(request);
+                .PostWithResponseCode<SubmitEmployerRequestData, SubmitEmployerRequestResponse>(request);
 
             employerRequestResponse.EnsureSuccessStatusCode();
 

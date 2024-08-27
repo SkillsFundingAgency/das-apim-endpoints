@@ -1,21 +1,10 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using MediatR;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using System;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining
+namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SubmitEmployerRequest
 {
-    public class CreateEmployerRequestRequest : IPostApiRequest<CreateEmployerRequestData>
-    {
-        public string PostUrl => "api/employerrequest";
-
-        public CreateEmployerRequestData Data { get; set; }
-
-        public CreateEmployerRequestRequest(CreateEmployerRequestData data)
-        {
-            Data = data;
-        }
-    }
-
-    public class CreateEmployerRequestData
+    public class SubmitEmployerRequestCommand : IRequest<SubmitEmployerRequestResponse>
     {
         public string OriginalLocation { get; set; }
         public RequestType RequestType { get; set; }
@@ -31,6 +20,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining
         public bool DayRelease { get; set; }
         public bool BlockRelease { get; set; }
         public Guid RequestedBy { get; set; }
+        public string RequestedByEmail { get; set; }
         public Guid ModifiedBy { get; set; }
     }
 }

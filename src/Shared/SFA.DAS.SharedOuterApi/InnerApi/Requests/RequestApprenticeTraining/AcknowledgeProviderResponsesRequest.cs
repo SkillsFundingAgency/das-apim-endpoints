@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining
 {
-    [ExcludeFromCodeCoverage]
     public class AcknowledgeProviderResponsesRequest : IPutApiRequest<AcknowledgeProviderResponsesRequestData>
     {
         public Guid EmployerRequestId { get; set; }
@@ -17,10 +16,9 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining
             Data = data;
         }
 
-        public string PutUrl => $"api/employerrequest/{EmployerRequestId}/acknowledge-responses";
+        public string PutUrl => $"api/employerrequest/{EmployerRequestId}/acknowledge-provider-responses";
     }
 
-    [ExcludeFromCodeCoverage]
     public class AcknowledgeProviderResponsesRequestData
     {
         public Guid AcknowledgedBy { get; set; }

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SubmitEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Configuration;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -17,15 +17,16 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using static SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining.SubmitEmployerRequestRequest;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Commands
 {
-    public class WhenHandlingCreateEmployerRequest
+    public class WhenHandlingSubmitEmployerRequest
     {
         private Mock<IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration>> _mockApiClient;
         private Mock<INotificationService> _mockNotificationsService;
         private Mock<IOptions<EmployerRequestApprenticeTrainingConfiguration>> _mockOptions;
-        private CreateEmployerRequestCommandHandler _handler;
+        private SubmitEmployerRequestCommandHandler _handler;
 
         [SetUp]
         public void Arrange()
@@ -47,34 +48,34 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
             };
             _mockOptions.Setup(o => o.Value).Returns(notificationTemplates);
 
-            _handler = new CreateEmployerRequestCommandHandler(_mockApiClient.Object, _mockNotificationsService.Object, _mockOptions.Object);
+            _handler = new SubmitEmployerRequestCommandHandler(_mockApiClient.Object, _mockNotificationsService.Object, _mockOptions.Object);
         }
 
         [Test, MoqAutoData]
-        public async Task Then_PostRequestIsSent(CreateEmployerRequestCommand command, string errorContent)
+        public async Task Then_PostRequestIsSent(SubmitEmployerRequestCommand command, string errorContent)
         {
             // Arrange
-            var response = new ApiResponse<CreateEmployerRequestResponse>(new CreateEmployerRequestResponse(), HttpStatusCode.Created, errorContent);
+            var response = new ApiResponse<SubmitEmployerRequestResponse>(new SubmitEmployerRequestResponse(), HttpStatusCode.Created, errorContent);
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateEmployerRequestData, CreateEmployerRequestResponse>(It.IsAny<CreateEmployerRequestRequest>(), It.IsAny<bool>()))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<SubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<SubmitEmployerRequestRequest>(), It.IsAny<bool>()))
                 .ReturnsAsync(response);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _mockApiClient.Verify(c => c.PostWithResponseCode<CreateEmployerRequestData, CreateEmployerRequestResponse>(It.IsAny<CreateEmployerRequestRequest>(), It.IsAny<bool>()), Times.Once);
+            _mockApiClient.Verify(c => c.PostWithResponseCode<SubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<SubmitEmployerRequestRequest>(), It.IsAny<bool>()), Times.Once);
         }
 
         [Test, MoqAutoData]
-        public async Task Then_PostRequestSentIsCommand(CreateEmployerRequestCommand command, string errorContent)
+        public async Task Then_PostRequestSentIsCommand(SubmitEmployerRequestCommand command, string errorContent)
         {
             // Arrange
-            var response = new ApiResponse<CreateEmployerRequestResponse>(new CreateEmployerRequestResponse(), HttpStatusCode.Created, errorContent);
-            IPostApiRequest<CreateEmployerRequestData> submittedRequest = null;
+            var response = new ApiResponse<SubmitEmployerRequestResponse>(new SubmitEmployerRequestResponse(), HttpStatusCode.Created, errorContent);
+            IPostApiRequest<SubmitEmployerRequestData> submittedRequest = null;
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateEmployerRequestData, CreateEmployerRequestResponse>(It.IsAny<CreateEmployerRequestRequest>(), It.IsAny<bool>()))
-                .Callback<IPostApiRequest<CreateEmployerRequestData>, bool>((x, y) => submittedRequest = x)
+            _mockApiClient.Setup(c => c.PostWithResponseCode<SubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<SubmitEmployerRequestRequest>(), It.IsAny<bool>()))
+                .Callback<IPostApiRequest<SubmitEmployerRequestData>, bool>((x, y) => submittedRequest = x)
                 .ReturnsAsync(response);
 
             // Act
@@ -93,12 +94,12 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
         [MoqInlineAutoData(HttpStatusCode.NotFound)]
         public async Task And_ApiDoesNotReturnSuccess_Then_ThrowApiResponseException(
             HttpStatusCode statusCode,
-            CreateEmployerRequestCommand command,
+            SubmitEmployerRequestCommand command,
             string errorContent)
         {
-            var response = new ApiResponse<CreateEmployerRequestResponse>(null, statusCode, errorContent);
+            var response = new ApiResponse<SubmitEmployerRequestResponse>(null, statusCode, errorContent);
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateEmployerRequestData, CreateEmployerRequestResponse>(It.IsAny<CreateEmployerRequestRequest>(), true))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<SubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<SubmitEmployerRequestRequest>(), true))
                 .ReturnsAsync(response);
 
             Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
@@ -107,11 +108,11 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Notification_Is_Sent_If_Template_Found(CreateEmployerRequestCommand command, CreateEmployerRequestResponse response, string errorContent)
+        public async Task Then_Notification_Is_Sent_If_Template_Found(SubmitEmployerRequestCommand command, SubmitEmployerRequestResponse response, string errorContent)
         {
             // Arrange
-            var apiResponse = new ApiResponse<CreateEmployerRequestResponse>(response, HttpStatusCode.Created, errorContent);
-            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateEmployerRequestData, CreateEmployerRequestResponse>(It.IsAny<CreateEmployerRequestRequest>(), It.IsAny<bool>()))
+            var apiResponse = new ApiResponse<SubmitEmployerRequestResponse>(response, HttpStatusCode.Created, errorContent);
+            _mockApiClient.Setup(c => c.PostWithResponseCode<SubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<SubmitEmployerRequestRequest>(), It.IsAny<bool>()))
                 .ReturnsAsync(apiResponse);
 
             var templateId = _mockOptions.Object.Value.NotificationTemplates.First().TemplateId.ToString();
@@ -124,11 +125,11 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Notification_Is_Not_Sent_If_Template_Not_Found(CreateEmployerRequestCommand command, CreateEmployerRequestResponse response, string errorContent)
+        public async Task Then_Notification_Is_Not_Sent_If_Template_Not_Found(SubmitEmployerRequestCommand command, SubmitEmployerRequestResponse response, string errorContent)
         {
             // Arrange
-            var apiResponse = new ApiResponse<CreateEmployerRequestResponse>(response, HttpStatusCode.Created, errorContent);
-            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateEmployerRequestData, CreateEmployerRequestResponse>(It.IsAny<CreateEmployerRequestRequest>(), It.IsAny<bool>()))
+            var apiResponse = new ApiResponse<SubmitEmployerRequestResponse>(response, HttpStatusCode.Created, errorContent);
+            _mockApiClient.Setup(c => c.PostWithResponseCode<SubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<SubmitEmployerRequestRequest>(), It.IsAny<bool>()))
                 .ReturnsAsync(apiResponse);
 
             var emptyNotificationTemplates = new EmployerRequestApprenticeTrainingConfiguration
