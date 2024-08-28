@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Api.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitProviderResponse;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
@@ -17,11 +18,11 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
 {
-    public class WhenpostingSubmitproviderresponseConfirmation
+    public class WhenPostingSubmitproviderresponseConfirmation
     {
         [Test, MoqAutoData]
         public async Task Then_Status_Code_Is_Ok_From_Mediator(
-            SubmitProviderResponseCommand command,
+            SubmitProviderResponseParameters param,
             SubmitProviderResponseResponse response,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] EmployerRequestsController controller)
@@ -31,7 +32,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
             .ReturnsAsync(response);
 
             // Act
-            var actual = await controller.SubmitProviderResponse(command) as ObjectResult;
+            var actual = await controller.SubmitProviderResponse(12346,param) as ObjectResult;
 
             Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -42,7 +43,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
-            SubmitProviderResponseCommand command,
+            SubmitProviderResponseParameters param,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] EmployerRequestsController controller)
         {
@@ -51,7 +52,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
                 .ThrowsAsync(new Exception());
 
             // Act
-            var actual = await controller.SubmitProviderResponse(command) as StatusCodeResult;
+            var actual = await controller.SubmitProviderResponse(123789, param) as StatusCodeResult;
 
             // Assert
             Assert.That(actual, Is.Not.Null);

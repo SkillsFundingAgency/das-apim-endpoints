@@ -12,6 +12,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests
             ProviderResponseId = providerResponseId;
         }
 
-        public string GetUrl => $"api/employerrequest/{ProviderResponseId}/confirmation";
+        public string GetUrl => $"api/employerrequest/providerresponse/{ProviderResponseId}/confirmation";
     }
 }

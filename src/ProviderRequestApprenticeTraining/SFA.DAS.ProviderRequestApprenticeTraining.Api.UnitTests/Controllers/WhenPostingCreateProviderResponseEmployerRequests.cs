@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers;
+using SFA.DAS.ProviderRequestApprenticeTraining.Api.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
 using SFA.DAS.Testing.AutoFixture;
 using System;
@@ -18,11 +19,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
     {
         [Test, MoqAutoData]
         public async Task Then_Status_Code_Is_Ok_From_Mediator(
-            CreateProviderResponseEmployerRequestCommand command,
+            AcknowledgeRequestsParameters param,
             [Greedy] EmployerRequestsController controller)
         {
             // Act
-            var actual = await controller.CreateProviderResponse(command) as StatusCodeResult;
+            var actual = await controller.CreateProviderResponse(123456,param) as StatusCodeResult;
             
             // Assert
             Assert.That(actual, Is.Not.Null);
@@ -31,7 +32,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
-            CreateProviderResponseEmployerRequestCommand command,
+            AcknowledgeRequestsParameters param,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] EmployerRequestsController controller)
         {
@@ -40,7 +41,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
                 .ThrowsAsync(new Exception());
 
             // Act
-            var actual = await controller.CreateProviderResponse(command) as StatusCodeResult;
+            var actual = await controller.CreateProviderResponse(123456, param) as StatusCodeResult;
 
             // Assert
             Assert.That(actual, Is.Not.Null);
