@@ -16,7 +16,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining
             Data = data;
         }
 
-        public string PutUrl => $"api/employerrequest/{EmployerRequestId}/acknowledge-provider-responses";
+        public string PutUrl => $"api/employerrequest/{EmployerRequestId}/acknowledge-responses";
     }
 
     public class AcknowledgeProviderResponsesRequestData

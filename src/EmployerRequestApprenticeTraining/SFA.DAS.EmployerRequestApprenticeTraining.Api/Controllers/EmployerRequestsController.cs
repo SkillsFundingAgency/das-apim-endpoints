@@ -158,7 +158,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
         }
 
-        [HttpPut("{employerRequestId}/acknowledge-provider-responses")]
+        [HttpPut("{employerRequestId}/acknowledge-responses")]
         public async Task<IActionResult> AcknowledgeProviderResponses([FromRoute] Guid employerRequestId, [FromQuery] Guid acknowledgedBy)
         {
             try
