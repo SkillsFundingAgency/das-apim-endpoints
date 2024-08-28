@@ -9,7 +9,7 @@ public class WhenCreatingEmailEnvironmentHelper
     [Test]
     public void Then_When_Prod_Environment_Template_And_ApplicationUrl_Are_Set()
     {
-        var actual = new EmailEnvironmentHelper("PrOd");
+        var actual = new EmailEnvironmentHelper("PRd");
 
         actual.ApplicationReminderEmailTemplateId.Should().Be("970d86cf-a80f-4012-81e5-eff719d2f1b0");
         actual.VacancyClosedEarlyTemplateId.Should().Be("8eed4437-9b7d-422b-be3b-dd943c64e0b6");
