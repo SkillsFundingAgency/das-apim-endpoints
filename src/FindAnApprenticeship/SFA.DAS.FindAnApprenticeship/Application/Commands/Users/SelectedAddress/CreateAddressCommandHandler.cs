@@ -31,8 +31,8 @@ public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand,
             AddressLine2 = request.AddressLine2,
             AddressLine3 = request.AddressLine3,
             AddressLine4 = request.AddressLine4,
-            Latitude = geoPoint.GeoPoint[0],
-            Longitude = geoPoint.GeoPoint[1],
+            Latitude = geoPoint is not null ? geoPoint.GeoPoint[0] : 0,
+            Longitude = geoPoint is not null ? geoPoint.GeoPoint[1] : 0,
             Postcode = request.Postcode
         };
 
