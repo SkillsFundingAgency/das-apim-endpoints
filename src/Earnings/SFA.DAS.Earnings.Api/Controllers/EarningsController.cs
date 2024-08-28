@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Earnings.Application.Earnings;
 
 namespace SFA.DAS.Earnings.Api.Controllers;
 
@@ -16,10 +17,26 @@ public class EarningsController : ControllerBase
         _logger = logger;
     }
 
+    /// <summary>
+    /// Gets all earnings data.
+    /// </summary>
+    /// <returns>All earnings data in the format of an FM36Learner array.</returns>
     [HttpGet]
-    [Route("")]
-    public async Task<IActionResult> GetEarnings()
+    [Route("GetAll/{ukprn}")]
+    public async Task<IActionResult> GetAll(long ukprn)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var queryResult = await _mediator.Send(new GetAllEarningsQuery{ Ukprn = ukprn });
+
+            var model = queryResult.FM36Learners;
+
+            return Ok(model);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error attempting to get all earnings");
+            return BadRequest();
+        }
     }
 }
