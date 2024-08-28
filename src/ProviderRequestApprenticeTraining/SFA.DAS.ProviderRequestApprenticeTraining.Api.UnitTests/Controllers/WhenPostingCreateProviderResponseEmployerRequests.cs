@@ -6,7 +6,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Api.Models;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.AcknowledgeEmployerRequests;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
@@ -23,7 +23,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
             [Greedy] EmployerRequestsController controller)
         {
             // Act
-            var actual = await controller.CreateProviderResponse(123456,param) as StatusCodeResult;
+            var actual = await controller.AcknowledgeEmployerRequests(123456,param) as StatusCodeResult;
             
             // Assert
             Assert.That(actual, Is.Not.Null);
@@ -37,11 +37,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
             [Greedy] EmployerRequestsController controller)
         {
             // Arrange
-            mediator.Setup(x => x.Send(It.IsAny<CreateProviderResponseEmployerRequestCommand>(), CancellationToken.None))
+            mediator.Setup(x => x.Send(It.IsAny<AcknowledgeEmployerRequestsCommand>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
             // Act
-            var actual = await controller.CreateProviderResponse(123456, param) as StatusCodeResult;
+            var actual = await controller.AcknowledgeEmployerRequests(123456, param) as StatusCodeResult;
 
             // Assert
             Assert.That(actual, Is.Not.Null);

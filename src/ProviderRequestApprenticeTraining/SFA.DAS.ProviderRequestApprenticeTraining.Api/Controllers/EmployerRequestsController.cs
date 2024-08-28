@@ -10,7 +10,6 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Linq;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmailAddresses;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
@@ -18,6 +17,7 @@ using System.Collections.Generic;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequestsByIds;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitProviderResponse;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderResponseConfirmation;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.AcknowledgeEmployerRequests;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
 {
@@ -109,11 +109,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
         }
 
         [HttpPost("provider/{ukprn}/acknowledge-requests")]
-        public async Task<IActionResult> CreateProviderResponse(long ukprn, AcknowledgeRequestsParameters parameters)
+        public async Task<IActionResult> AcknowledgeEmployerRequests(long ukprn, AcknowledgeRequestsParameters parameters)
         {
             try
             {
-                await _mediator.Send(new CreateProviderResponseEmployerRequestCommand
+                await _mediator.Send(new AcknowledgeEmployerRequestsCommand
                 { 
                     Ukprn = ukprn,
                     EmployerRequestIds = parameters.EmployerRequestIds,
