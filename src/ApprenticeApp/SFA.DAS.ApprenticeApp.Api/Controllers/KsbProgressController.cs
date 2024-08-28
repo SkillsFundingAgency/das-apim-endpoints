@@ -97,7 +97,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
 
 
 
-        [HttpGet("/apprentices/{apprenticeshipId}/ksbs/taskid/{taskId")]
+        [HttpGet("/apprentices/{apprenticeshipId}/ksbs/taskid/{taskId}")]
         public async Task<IActionResult> GetKsbProgressForTask(long apprenticeshipId, [FromQuery] int taskId)
         {
             var queryResult = await _mediator.Send(new GetKsbProgressForTaskQuery
