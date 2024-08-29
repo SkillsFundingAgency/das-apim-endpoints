@@ -95,10 +95,8 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok();
         }
 
-
-
         [HttpGet("/apprentices/{apprenticeshipId}/ksbs/taskid/{taskId}")]
-        public async Task<IActionResult> GetKsbProgressForTask(long apprenticeshipId, [FromQuery] int taskId)
+        public async Task<IActionResult> GetKsbProgressForTask(long apprenticeshipId, int taskId)
         {
             var queryResult = await _mediator.Send(new GetKsbProgressForTaskQuery
             {
@@ -106,8 +104,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 TaskId = taskId
             });
 
-            return Ok(queryResult.KSBProgresses);
+            return Ok(queryResult.KSBProgress);
         }
-
     }
 }

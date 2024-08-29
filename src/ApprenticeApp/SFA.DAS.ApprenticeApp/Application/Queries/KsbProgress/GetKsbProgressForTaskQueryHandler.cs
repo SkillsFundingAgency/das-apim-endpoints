@@ -22,7 +22,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress
 
             return new GetKsbProgressForTaskQueryResult
             {
-                KSBProgresses = task.KSBProgresses
+                KSBProgress = task.KSBProgress
             };
         }
     }

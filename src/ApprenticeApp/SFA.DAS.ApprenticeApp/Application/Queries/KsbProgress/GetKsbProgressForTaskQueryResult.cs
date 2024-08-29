@@ -5,6 +5,6 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress
 {
     public class GetKsbProgressForTaskQueryResult
     {
-        public List<ApprenticeKsbProgressData> KSBProgresses { get; set; }
+        public List<ApprenticeKsbProgressData> KSBProgress { get; set; }
     }
 }
