@@ -7,18 +7,19 @@ using System.Linq;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
 {
-    public class EmployerRequests
+    public class CheckYourAnswers
     {
         public string StandardReference { get; set; }
         public string StandardTitle { get; set; }
         public int StandardLevel { get; set; }
         public List<EmployerRequest> Requests { get; set; }
+        public string Website { get; set; }
 
-        public static implicit operator EmployerRequests(GetEmployerRequestsByIdsResult source)
+        public static implicit operator CheckYourAnswers(GetEmployerRequestsByIdsResult source)
         {
             if (source.EmployerRequests.Any())
             {
-                return new EmployerRequests
+                return new CheckYourAnswers
                 {
                     StandardReference = source.EmployerRequests.First().StandardReference,
                     StandardTitle = source.EmployerRequests.First().StandardTitle,
@@ -28,7 +29,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
             }
             else
             {
-                return new EmployerRequests 
+                return new CheckYourAnswers 
                 {
                     Requests = new List<EmployerRequest>()
                 };

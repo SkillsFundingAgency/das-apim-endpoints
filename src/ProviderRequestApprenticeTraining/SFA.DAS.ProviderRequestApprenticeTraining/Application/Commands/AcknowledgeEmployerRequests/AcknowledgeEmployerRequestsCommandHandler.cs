@@ -6,18 +6,18 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest
+namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.AcknowledgeEmployerRequests
 {
-    public class CreateProviderResponseEmployerRequestCommandHandler : IRequestHandler<CreateProviderResponseEmployerRequestCommand>
+    public class AcknowledgeEmployerRequestsCommandHandler : IRequestHandler<AcknowledgeEmployerRequestsCommand>
     {
         private readonly IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration> _requestApprenticeTrainingApiClient;
 
-        public CreateProviderResponseEmployerRequestCommandHandler(IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration> requestApprenticeTrainingApiClient)
+        public AcknowledgeEmployerRequestsCommandHandler(IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration> requestApprenticeTrainingApiClient)
         {
             _requestApprenticeTrainingApiClient = requestApprenticeTrainingApiClient;
         }
 
-        public async Task Handle(CreateProviderResponseEmployerRequestCommand command, CancellationToken cancellationToken)
+        public async Task Handle(AcknowledgeEmployerRequestsCommand command, CancellationToken cancellationToken)
         {
             var request = new CreateProviderResponseEmployerRequestRequest(new CreateEmployerResponseEmployerRequestData
             {
@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateP
             });
 
             var response = await _requestApprenticeTrainingApiClient
-                .PostWithResponseCode<CreateEmployerResponseEmployerRequestData, CreateProviderResponseEmployerRequestResponse>(request, false);
+                .PostWithResponseCode<CreateEmployerResponseEmployerRequestData, AcknowledgeEmployerRequestsResponse>(request, false);
 
             response.EnsureSuccessStatusCode();
         }

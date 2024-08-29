@@ -8,7 +8,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests
     {
         public CreateEmployerResponseEmployerRequestData Data { get; set; }
 
-        public string PostUrl => $"api/employerrequest/provider/responses";
+        public string PostUrl => $"api/employerrequest/provider/{Data.Ukprn}/acknowledge-requests";
 
         public CreateProviderResponseEmployerRequestRequest(CreateEmployerResponseEmployerRequestData data)
         {

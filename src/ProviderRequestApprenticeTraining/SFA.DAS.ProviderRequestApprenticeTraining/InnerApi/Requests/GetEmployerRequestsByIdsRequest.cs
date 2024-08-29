@@ -6,7 +6,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests
 {
     public class GetEmployerRequestsByIdsRequest : IGetApiRequest
     {
-        public string GetUrl => GenerateUrl($"api/employerrequest", EmployerRequestIds);
+        public string GetUrl => GenerateUrl($"api/employerrequest/list", EmployerRequestIds);
         public List<Guid> EmployerRequestIds { get; set; }
 
         public GetEmployerRequestsByIdsRequest(List<Guid> employerRequestIds)
