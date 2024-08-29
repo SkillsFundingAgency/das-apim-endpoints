@@ -38,7 +38,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
         }
 
         [Test, MoqAutoData]
-        public async Task AndNoProviderCoursesExist_Then_Get_ProviderEmails_ReturnsEmailFromCurrentLoggedInUser(
+        public async Task AndNoProviderCoursesExist_Then_Get_ProviderEmails_ReturnsCurrentUserEmail(
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
             GetProviderEmailAddressesQueryHandler handler,
             GetProviderEmailAddressesQuery query)
@@ -46,7 +46,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
             //Arrange
             mockRoatpCourseManagementApiClient.Setup(client => client.Get<List<ProviderCourse>>(It.IsAny<GetProviderCoursesRequest>()))
                         .ReturnsAsync(new List<ProviderCourse>());
-
             //Act
             var actual = await handler.Handle(query, CancellationToken.None);
 
