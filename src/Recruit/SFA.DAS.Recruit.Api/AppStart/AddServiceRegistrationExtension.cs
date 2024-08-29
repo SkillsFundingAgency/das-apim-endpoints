@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.Recruit.Domain;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.Services;
@@ -11,7 +13,7 @@ namespace SFA.DAS.Recruit.Api.AppStart
 {
     public static class AddServiceRegistrationExtension
     {
-        public static void AddServiceRegistration(this IServiceCollection services)
+        public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpClient();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
@@ -29,6 +31,7 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
             services.AddTransient<ICandidateApiClient<CandidateApiConfiguration>, CandidateApiClient>();
             services.AddTransient<IBusinessMetricsApiClient<BusinessMetricsConfiguration>, BusinessMetricsApiClient>();
+            services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
         }
     }
 }
