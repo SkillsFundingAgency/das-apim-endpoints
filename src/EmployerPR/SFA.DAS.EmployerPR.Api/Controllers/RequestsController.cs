@@ -4,6 +4,8 @@ using SFA.DAS.EmployerPR.Infrastructure;
 
 namespace SFA.DAS.EmployerPR.Api.Controllers;
 
+[ApiController]
+[Route("[controller]")]
 public class RequestsController(IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient) : ControllerBase
 {
     [HttpGet("{requestId:guid}")]
