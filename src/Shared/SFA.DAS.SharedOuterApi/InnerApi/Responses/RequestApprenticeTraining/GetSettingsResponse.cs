@@ -6,8 +6,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining
     public class GetSettingsResponse 
     {
         public int ExpiryAfterMonths { get; set; }
-        public int EmployerRemovedAfterExpiryNoResponsesMonths { get; set; }
-        public int EmployerRemovedAfterExpiryResponsesMonths { get; set; }
+        public int RemovedAfterExpiryMonths { get; set; }
     }
 }
-    
