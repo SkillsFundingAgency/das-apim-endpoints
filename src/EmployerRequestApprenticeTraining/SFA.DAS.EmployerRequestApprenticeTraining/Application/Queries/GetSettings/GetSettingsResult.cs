@@ -3,6 +3,6 @@
     public class GetSettingsResult
     {
         public int ExpiryAfterMonths { get; set; }
-        public int RemovedAfterExpiryMonths { get; set; }
+        public int EmployerRemovedAfterExpiryMonths { get; set; }
     }
 }

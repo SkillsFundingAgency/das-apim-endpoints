@@ -6,5 +6,6 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Models
     {
         public List<AggregatedEmployerRequest> AggregatedEmployerRequests { get; set; }
         public int ExpiryAfterMonths { get; set; }
+        public int RemovedAfterExpiryMonths { get; set; }
     }
 }
