@@ -19,6 +19,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerR
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitProviderResponse;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderResponseConfirmation;
 using System.ComponentModel.DataAnnotations;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.ExpireEmployerRequests;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
 {
@@ -237,6 +238,21 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to retrieve provider response confirmation");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("expire-requests")]
+        public async Task<IActionResult> ExpireEmployerRequests()
+        {
+            try
+            {
+                await _mediator.Send(new ExpireEmployerRequestsCommand());
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to expire employer requests");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
