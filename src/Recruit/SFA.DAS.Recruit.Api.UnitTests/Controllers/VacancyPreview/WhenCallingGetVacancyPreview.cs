@@ -24,6 +24,7 @@ public class WhenCallingGetVacancyPreview
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyPreviewController controller)
     {
+        mediatorResult.Course.Level = 5;
         mediator.Setup(x =>
                 x.Send(It.Is<GetVacancyPreviewQuery>(c => c.StandardId == standardId), CancellationToken.None))
             .ReturnsAsync(mediatorResult);
