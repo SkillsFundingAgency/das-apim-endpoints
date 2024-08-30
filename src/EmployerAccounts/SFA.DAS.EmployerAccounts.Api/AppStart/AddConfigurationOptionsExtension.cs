@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.EmployerAccounts.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.EmployerAccounts.Api.AppStart;
@@ -35,5 +36,9 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<EducationalOrganisationApiConfiguration>>().Value);
         services.Configure<PublicSectorOrganisationApiConfiguration>(configuration.GetSection(nameof(PublicSectorOrganisationApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<PublicSectorOrganisationApiConfiguration>>().Value);
+        services.Configure<CharitiesApiConfiguration>(configuration.GetSection(nameof(CharitiesApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<CharitiesApiConfiguration>>().Value);
+        services.Configure<CompaniesHouseApiConfiguration>(configuration.GetSection(nameof(CompaniesHouseApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<CompaniesHouseApiConfiguration>>().Value);
     }
 }

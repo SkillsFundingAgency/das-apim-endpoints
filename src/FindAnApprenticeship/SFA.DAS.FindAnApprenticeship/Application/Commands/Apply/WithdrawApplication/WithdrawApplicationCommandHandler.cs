@@ -24,7 +24,7 @@ public class WithdrawApplicationCommandHandler(
             await candidateApiClient.Get<GetApplicationApiResponse>(
                 new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
 
-        if (application is not { Status: "Submitted" })
+        if (application is not { Status: ApplicationStatus.Submitted })
         {
             return false;
         }

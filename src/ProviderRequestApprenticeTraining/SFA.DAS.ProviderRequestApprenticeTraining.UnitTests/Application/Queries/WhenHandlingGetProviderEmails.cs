@@ -35,7 +35,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
             // Assert
             actual.EmailAddresses.Should().Contain(query.UserEmailAddress);
             actual.EmailAddresses.Should().Contain(providerCourseResult.Select(x => x.ContactUsEmail));
-
         }
 
         [Test, MoqAutoData]
@@ -53,6 +52,35 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
             //Assert
             actual.EmailAddresses.Should().HaveCount(1);
             actual.EmailAddresses.Should().Contain(query.UserEmailAddress);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Get_ProviderEmails_From_The_Api_ShouldNOtIncludeDuplicates(
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
+            GetProviderEmailAddressesQueryHandler handler,
+            GetProviderEmailAddressesQuery query)
+        {
+
+            // Arrange
+            query.UserEmailAddress = "user@hotmail.com";
+            List<ProviderCourse> courses = new List<ProviderCourse>
+            {
+                new ProviderCourse{ ContactUsEmail = "USER@HOTMAIL.COM"},
+                new ProviderCourse{ ContactUsEmail = " user@hotmail.com"},
+                new ProviderCourse{ ContactUsEmail = "user@Hotmail.com "},
+                new ProviderCourse{ ContactUsEmail = "user@h otmail.com"},
+                new ProviderCourse{ ContactUsEmail = "First.middle-last@education.gov.uk"},
+                new ProviderCourse{ ContactUsEmail = "First.MIDDLE-LAST@education.gov.uk"},
+            };
+            
+            mockRoatpCourseManagementApiClient.Setup(client => client.Get<List<ProviderCourse>>(It.IsAny<GetProviderCoursesRequest>()))
+                    .ReturnsAsync(courses);
+
+            // Act
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            actual.EmailAddresses.Count().Should().Be(2);
         }
     }
 }

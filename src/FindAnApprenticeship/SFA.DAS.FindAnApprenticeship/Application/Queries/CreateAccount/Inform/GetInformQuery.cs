@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -17,6 +18,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.Inform
     public class GetInformQueryResult
     {
         public bool ShowAccountRecoveryBanner { get; set; }
+        public bool IsAccountCreated { get; set; }
     }
 
     public class GetInformQueryHandler(ICandidateApiClient<CandidateApiConfiguration> apiClient) : IRequestHandler<GetInformQuery, GetInformQueryResult>
@@ -28,7 +30,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.Inform
 
             return new GetInformQueryResult
             {
-                ShowAccountRecoveryBanner = string.IsNullOrWhiteSpace(apiResponse.MigratedEmail)
+                ShowAccountRecoveryBanner = string.IsNullOrWhiteSpace(apiResponse.MigratedEmail),
+                IsAccountCreated = apiResponse.Status == UserStatus.Completed
             };
         }
     }
