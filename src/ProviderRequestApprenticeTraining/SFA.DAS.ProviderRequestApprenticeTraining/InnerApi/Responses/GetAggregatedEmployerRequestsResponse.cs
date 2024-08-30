@@ -14,4 +14,3 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses
         public bool IsNew { get; set; }
     }
 }
-    
