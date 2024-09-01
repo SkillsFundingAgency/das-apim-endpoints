@@ -2,14 +2,17 @@
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Api.Controllers;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
 using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.Testing.AutoFixture;
+using StackExchange.Redis;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests
 {
@@ -17,7 +20,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
     {
 
         [Test, MoqAutoData]
-        public async Task Get_Task_Categories_Tests(
+        public async Task Get_Task_NoCategories_Tests(
             [Greedy] TasksController controller)
         {
             var httpContext = new DefaultHttpContext();
@@ -33,7 +36,26 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
         }
 
         [Test, MoqAutoData]
-        public async Task Get_Tasks_Tests(
+        public async Task Get_Task_Categories_Tests(
+              [Frozen] Mock<IMediator> mediator,
+            [Frozen] GetTaskCategoriesQueryResult categoriesResult,
+            [Greedy] TasksController controller)
+        {
+            var httpContext = new DefaultHttpContext();
+            var apprenticeshipId = 1;
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            mediator.Setup(x => x.Send(It.IsAny<GetTaskCategoriesQuery>(), default)).ReturnsAsync(categoriesResult);
+            var result = await controller.GetTaskCategories(apprenticeshipId);
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkObjectResult));
+        }
+
+        [Test, MoqAutoData]
+        public async Task Get_Tasks_NoTasks_Tests(
             [Greedy] TasksController controller)
         {
             var httpContext = new DefaultHttpContext();
@@ -51,8 +73,31 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.NotFoundResult));
         }
 
+
         [Test, MoqAutoData]
-        public async Task Get_TaskBy_Id_Test(
+        public async Task Get_Tasks_Tests(
+            [Frozen] Mock<IMediator> mediator,
+            [Frozen] GetTasksByApprenticeshipIdQueryResult tasksResult,
+            [Greedy] TasksController controller)
+        {
+            var httpContext = new DefaultHttpContext();
+            var apprenticeshipId = 1;
+            var dateFrom = new DateTime();
+            var dateTo = new DateTime();
+            int status = 1;
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            mediator.Setup(x => x.Send(It.IsAny<GetTasksByApprenticeshipIdQuery>(), default)).ReturnsAsync(tasksResult);
+            var result = await controller.GetTasks(apprenticeshipId, status, dateFrom, dateTo);
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkObjectResult));
+        }
+
+        [Test, MoqAutoData]
+        public async Task Get_TaskBy_Id_No_Task(
              [Greedy] TasksController controller)
         {
             var httpContext = new DefaultHttpContext();
@@ -66,6 +111,27 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
 
             var result = await controller.GetTaskById(apprenticeshipId, taskId);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.NotFoundResult));
+        }
+
+        [Test, MoqAutoData]
+        public async Task Get_TaskBy_Id_Test(
+            [Frozen] Mock<IMediator> mediator,
+            [Frozen] GetTaskByTaskIdQueryResult taskResult,
+            [Greedy] TasksController controller)
+        {
+            var httpContext = new DefaultHttpContext();
+            var apprenticeshipId = 1;
+            int taskId = 1;
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            mediator.Setup(x => x.Send(It.IsAny<GetTaskByTaskIdQuery>(), default)).ReturnsAsync(taskResult);
+            taskResult.Tasks = new ApprenticeTasksCollection() { Tasks = new System.Collections.Generic.List<ApprenticeTask>() };
+            var result = await controller.GetTaskById(apprenticeshipId, taskId);
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkObjectResult));
         }
 
         [Test, MoqAutoData]
@@ -138,10 +204,8 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
         }
 
-
-
         [Test, MoqAutoData]
-        public async Task Get_task_viewdata(
+        public async Task Get_task_viewdata_no_task(
              [Greedy] TasksController controller)
         {
             var httpContext = new DefaultHttpContext();
@@ -155,5 +219,51 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             var result = await controller.GetTaskViewData(apprenticeshipId, taskId);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.NotFoundResult));
         }
+
+        
+        [Test, MoqAutoData]
+        public async Task Get_task_viewdata_no_categories(
+            [Frozen] Mock<IMediator> mediator,
+            [Frozen] GetTaskByTaskIdQueryResult taskResult,
+            [Greedy] TasksController controller)
+        {
+            var httpContext = new DefaultHttpContext();
+            var apprenticeshipId = 1;
+            var taskId = 1;
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            mediator.Setup(x => x.Send(It.IsAny<GetTaskByTaskIdQuery>(), default)).ReturnsAsync(taskResult);
+            taskResult.Tasks = new ApprenticeTasksCollection() { Tasks = new System.Collections.Generic.List<ApprenticeTask>() };
+            var result = await controller.GetTaskViewData(apprenticeshipId, taskId);
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.NotFoundResult));
+        }
+
+        [Test, MoqAutoData]
+        public async Task Get_task_viewdata(
+           [Frozen] Mock<IMediator> mediator,
+           [Frozen] GetTaskByTaskIdQueryResult taskResult,
+           [Frozen] GetTaskCategoriesQueryResult categoriesResult,
+           [Greedy] TasksController controller)
+        {
+            var httpContext = new DefaultHttpContext();
+            var apprenticeshipId = 1;
+            var taskId = 1;
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            mediator.Setup(x => x.Send(It.IsAny<GetTaskByTaskIdQuery>(), default)).ReturnsAsync(taskResult);
+            taskResult.Tasks = new ApprenticeTasksCollection() { Tasks = new System.Collections.Generic.List<ApprenticeTask>() };
+            mediator.Setup(x => x.Send(It.IsAny<GetTaskCategoriesQuery>(), default)).ReturnsAsync(categoriesResult);
+            categoriesResult.TaskCategories = new ApprenticeTaskCategoriesCollection() { TaskCategories = new System.Collections.Generic.List<ApprenticeTaskCategories>() };
+            var result = await controller.GetTaskViewData(apprenticeshipId, taskId);
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkObjectResult));
+        }
+
+
     }
 }
