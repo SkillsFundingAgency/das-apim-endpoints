@@ -107,17 +107,18 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         public async Task<IActionResult> GetTaskViewData(long apprenticeshipId, int taskId)
         {
             var taskResult = await _mediator.Send(new GetTaskByTaskIdQuery { ApprenticeshipId = apprenticeshipId, TaskId = taskId });
-            if (taskResult.Tasks == null)
-                return NotFound();
+            
             var categoriesResult = await _mediator.Send(new GetTaskCategoriesQuery { ApprenticeshipId = apprenticeshipId });
-            if (categoriesResult.TaskCategories == null)
-                return NotFound();
+            
             var ksbProgressResult = await _mediator.Send(new GetKsbProgressForTaskQuery
                 {
                     ApprenticeshipId = apprenticeshipId,
                     TaskId = taskId
                 });
-            
+
+            if (taskResult.Tasks == null || categoriesResult.TaskCategories == null)
+                return NotFound();
+
             var getTaskViewDataResult = new ApprenticeTaskModelData()
             {
                 Task = taskResult.Tasks.Tasks.FirstOrDefault(),

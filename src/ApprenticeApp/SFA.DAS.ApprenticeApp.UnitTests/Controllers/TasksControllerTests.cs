@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Api.Controllers;
+using SFA.DAS.ApprenticeApp.Application.Queries.Details;
+using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
 using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -136,13 +138,14 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
         }
 
+
+
         [Test, MoqAutoData]
         public async Task Get_task_viewdata(
              [Greedy] TasksController controller)
         {
             var httpContext = new DefaultHttpContext();
             var apprenticeshipId = 1;
-            var ApprenticeTaskData = new ApprenticeTaskData();
             var taskId = 1;
             controller.ControllerContext = new ControllerContext
             {
