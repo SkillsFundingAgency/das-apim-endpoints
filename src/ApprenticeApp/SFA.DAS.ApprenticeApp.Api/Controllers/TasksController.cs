@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Commands;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
+using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
 using SFA.DAS.ApprenticeApp.Models;
 
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
@@ -98,6 +100,31 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             });
 
             return Ok();
+        }
+        
+        //Build viewmodel data for pwa
+        [HttpGet("/apprentices/{apprenticeshipId}/progress/taskCategories/tasks/{taskId}")]
+        public async Task<IActionResult> GetTaskViewData(long apprenticeshipId, int taskId)
+        {
+            var taskResult = await _mediator.Send(new GetTaskByTaskIdQuery { ApprenticeshipId = apprenticeshipId, TaskId = taskId });
+            if (taskResult.Tasks == null)
+                return NotFound();
+            var categoriesResult = await _mediator.Send(new GetTaskCategoriesQuery { ApprenticeshipId = apprenticeshipId });
+            if (categoriesResult.TaskCategories == null)
+                return NotFound();
+            var ksbProgressResult = await _mediator.Send(new GetKsbProgressForTaskQuery
+                {
+                    ApprenticeshipId = apprenticeshipId,
+                    TaskId = taskId
+                });
+            
+            var getTaskViewDataResult = new ApprenticeTaskModelData()
+            {
+                Task = taskResult.Tasks.Tasks.FirstOrDefault(),
+                KSBProgress = ksbProgressResult.KSBProgress,
+                TaskCategories = categoriesResult.TaskCategories
+            };
+            return Ok(getTaskViewDataResult);
         }
     }
 }
