@@ -12,6 +12,8 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using Apprenticeship = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Apprenticeship;
+using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
 {
@@ -172,7 +174,81 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
 
         private GetApprenticeshipsResponse BuildApprenticeshipsResponse(long ukprn)
         {
-            var response = _fixture.Create<GetApprenticeshipsResponse>();
+            var response = new GetApprenticeshipsResponse
+            {
+                Ukprn = ukprn,
+                Apprenticeships = new List<Apprenticeship>
+                {
+                    //Simple apprenticeship, spans an academic year boundary,
+                    // so we can use this to test that a new price episode is created in the fm36 when a new academic year starts
+                    new Apprenticeship
+                    {
+                        Uln = _fixture.Create<int>().ToString(),
+                        Key = Guid.NewGuid(),
+                        Episodes = new List<Episode>
+                        {
+                            new Episode
+                            {
+                                Key = Guid.NewGuid(),
+                                TrainingCode = _fixture.Create<int>().ToString(),
+                                Prices = new List<EpisodePrice>
+                                {
+                                    new EpisodePrice
+                                    {
+                                        StartDate = new DateTime(2020,1,1),
+                                        EndDate = new DateTime(2021,1,1),
+                                        TrainingPrice = 14000,
+                                        EndPointAssessmentPrice = 1000,
+                                        TotalPrice = 15000,
+                                        FundingBandMaximum = 19000
+                                    }
+                                }
+                            }
+                        },
+                        StartDate = new DateTime(2020,1,1),
+                        PlannedEndDate = new DateTime(2021,1,1),
+                        AgeAtStartOfApprenticeship = 18
+                    },
+                    //Apprenticeship with a price change
+                    new Apprenticeship
+                    {
+                        Uln = _fixture.Create<int>().ToString(),
+                        Key = Guid.NewGuid(),
+                        Episodes = new List<Episode>
+                        {
+                            new Episode
+                            {
+                                Key = Guid.NewGuid(),
+                                TrainingCode = _fixture.Create<int>().ToString(),
+                                Prices = new List<EpisodePrice>
+                                {
+                                    new EpisodePrice
+                                    {
+                                        StartDate = new DateTime(2020,8,1),
+                                        EndDate = new DateTime(2021,5,2),
+                                        TrainingPrice = 21000,
+                                        EndPointAssessmentPrice = 1500,
+                                        TotalPrice = 22500,
+                                        FundingBandMaximum = 30000
+                                    },
+                                    new EpisodePrice
+                                    {
+                                        StartDate = new DateTime(2021,5,3),
+                                        EndDate = new DateTime(2021,7,31),
+                                        TrainingPrice = 28500,
+                                        EndPointAssessmentPrice = 1500,
+                                        TotalPrice = 30000,
+                                        FundingBandMaximum = 30000
+                                    }
+                                }
+                            }
+                        },
+                        StartDate = new DateTime(2020,8,1),
+                        PlannedEndDate = new DateTime(2021,7,31),
+                        AgeAtStartOfApprenticeship = 19
+                    }
+                }
+            };
             response.Ukprn = ukprn;
             response.Apprenticeships.ForEach(x => x.Uln = _fixture.Create<long>().ToString());
             return response;
@@ -180,7 +256,71 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
 
         private GetFm36DataResponse BuildEarningsResponse(GetApprenticeshipsResponse apprenticeshipsResponse)
         {
-            var response = _fixture.Create<GetFm36DataResponse>();
+            var response = new GetFm36DataResponse
+            {
+                new SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship
+                {
+                    Key = apprenticeshipsResponse.Apprenticeships[0].Key,
+                    Ukprn = apprenticeshipsResponse.Ukprn,
+                    FundingLineType = _fixture.Create<string>(),
+                    Episodes = new List<SharedOuterApi.InnerApi.Responses.Earnings.Episode>
+                    {
+                        new SharedOuterApi.InnerApi.Responses.Earnings.Episode
+                        {
+                            Key = Guid.NewGuid(),
+                            NumberOfInstalments = 12,
+                            CompletionPayment = 3000,
+                            OnProgramTotal = 12000,
+                            Instalments = new List<Instalment>
+                            {
+                                new Instalment{ AcademicYear = 1920, DeliveryPeriod = 6, Amount = 1000 },
+                                new Instalment{ AcademicYear = 1920, DeliveryPeriod = 7, Amount = 1000 },
+                                new Instalment{ AcademicYear = 1920, DeliveryPeriod = 8, Amount = 1000 },
+                                new Instalment{ AcademicYear = 1920, DeliveryPeriod = 9, Amount = 1000 },
+                                new Instalment{ AcademicYear = 1920, DeliveryPeriod = 10, Amount = 1000 },
+                                new Instalment{ AcademicYear = 1920, DeliveryPeriod = 11, Amount = 1000 },
+                                new Instalment{ AcademicYear = 1920, DeliveryPeriod = 12, Amount = 1000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 1000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 1000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 1000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 1000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 1000 }
+                            }
+                        }
+                    }
+                },
+                new SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship
+                {
+                    Key = apprenticeshipsResponse.Apprenticeships[1].Key,
+                    Ukprn = apprenticeshipsResponse.Ukprn,
+                    FundingLineType = _fixture.Create<string>(),
+                    Episodes = new List<SharedOuterApi.InnerApi.Responses.Earnings.Episode>
+                    {
+                        new SharedOuterApi.InnerApi.Responses.Earnings.Episode
+                        {
+                            Key = Guid.NewGuid(),
+                            NumberOfInstalments = 12,
+                            CompletionPayment = 6000,
+                            OnProgramTotal = 24000,
+                            Instalments = new List<Instalment>
+                            {
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 2000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 2000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 2000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 2000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 2000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 6, Amount = 2000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 2000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 8, Amount = 2000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 9, Amount = 2000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 10, Amount = 2000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 11, Amount = 2000 },
+                                new Instalment{ AcademicYear = 2021, DeliveryPeriod = 12, Amount = 2000 }
+                            }
+                        }
+                    }
+                }
+            };
             response.ForEach(x => x.Ukprn = apprenticeshipsResponse.Ukprn);
             return response;
         }
