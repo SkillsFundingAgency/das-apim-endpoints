@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Application\Commands\**" />
+    <EmbeddedResource Remove="Application\Commands\**" />
+    <None Remove="Application\Commands\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MediatR" />
     <PackageReference Include="RestEase" />
     <PackageReference Include="RestEase.HttpClientFactory" />
@@ -14,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Commands\" />
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>
