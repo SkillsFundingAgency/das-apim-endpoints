@@ -32,8 +32,8 @@ public class CreateManuallyEnteredAddressCommandHandler : IRequestHandler<Create
             AddressLine2 = request.AddressLine2,
             AddressLine3 = request.TownOrCity,
             AddressLine4 = request.County,
-            Latitude = geoPoint.GeoPoint[0],
-            Longitude = geoPoint.GeoPoint[1],
+            Latitude = geoPoint is not null ? geoPoint.GeoPoint[0] : 0,
+            Longitude = geoPoint is not null ? geoPoint.GeoPoint[1] : 0,
             Postcode = request.Postcode
         };
 
