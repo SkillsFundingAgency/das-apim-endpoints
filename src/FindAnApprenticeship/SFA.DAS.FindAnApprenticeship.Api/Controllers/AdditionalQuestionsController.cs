@@ -36,6 +36,8 @@ public class AdditionalQuestionsController : Controller
                 AdditionalQuestion = additionalQuestion
             });
 
+            if (result is null) return NotFound();
+
             return Ok((GetAdditionalQuestionApiResponse)result);
         }
         catch (Exception e)

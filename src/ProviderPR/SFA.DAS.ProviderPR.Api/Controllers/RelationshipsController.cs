@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using System.Text.Json;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ProviderPR.Application.Queries.GetEasUserByEmail;
+using SFA.DAS.ProviderPR.Application.Queries.GetRelationship;
+using SFA.DAS.ProviderPR.Application.Queries.GetRelationshipByEmail;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Requests;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
-using System.Text.Json;
 
 namespace SFA.DAS.ProviderPR.Api.Controllers;
 
@@ -24,11 +25,24 @@ public class RelationshipsController(IMediator _mediator, IProviderRelationships
     }
 
     [HttpGet("employeraccount/email/{email}")]
-    [ProducesResponseType(typeof(GetEasUserByEmailQueryResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetEasUserByEmail([FromRoute] string email, [FromQuery] long ukprn, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(GetRelationshipByEmailQueryResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetRelationshipByEmail([FromRoute] string email, [FromQuery] long ukprn, CancellationToken cancellationToken)
     {
-        var query = new GetEasUserByEmailQuery(email, ukprn);
-        GetEasUserByEmailQueryResult result = await _mediator.Send(query, cancellationToken);
+        var query = new GetRelationshipByEmailQuery(email, ukprn);
+
+        GetRelationshipByEmailQueryResult result = await _mediator.Send(query, cancellationToken);
+
+        return Ok(result);
+    }
+
+    [HttpGet]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(GetRelationshipResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetRelationship([FromQuery] long ukprn, [FromQuery] long accountLegalEntityId, CancellationToken cancellationToken)
+    {
+        GetRelationshipQuery query = new(ukprn, accountLegalEntityId);
+
+        GetRelationshipResponse result = await _mediator.Send(query, cancellationToken);
 
         return Ok(result);
     }

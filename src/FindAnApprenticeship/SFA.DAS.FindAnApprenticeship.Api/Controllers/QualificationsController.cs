@@ -154,6 +154,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                         Id = id.Value
                     });
 
+                    if (singleQuery is null) return NotFound();
+
                     return Ok((GetDeleteQualificationsApiResponse)singleQuery);
                 }
                 
@@ -163,6 +165,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     CandidateId = candidateId,
                     QualificationReference = qualificationReferenceId
                 });
+
+                if (multipleQuery is null) return NotFound();
 
                 return Ok((GetDeleteQualificationsApiResponse)multipleQuery);
             }
