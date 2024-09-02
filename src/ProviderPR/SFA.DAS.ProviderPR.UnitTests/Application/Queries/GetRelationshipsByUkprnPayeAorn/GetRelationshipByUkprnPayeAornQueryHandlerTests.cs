@@ -25,7 +25,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
        long ukprn,
        string paye,
        string aorn,
-       GetRequestResponse expected,
+       GetRequestByUkprnAndPayeResponse expected,
        CancellationToken cancellationToken
     )
     {
@@ -38,7 +38,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
                 cancellationToken
             )
         )!.ReturnsAsync(
-            new Response<GetRequestResponse>(
+            new Response<GetRequestByUkprnAndPayeResponse>(
                 string.Empty,
                 new(HttpStatusCode.OK),
                 () => expected
@@ -63,7 +63,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
         long ukprn,
         string paye,
         string aorn,
-        GetRequestResponse expected,
+        GetRequestByUkprnAndPayeResponse expected,
         CancellationToken cancellationToken
     )
     {
@@ -104,7 +104,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
      long ukprn,
      string paye,
      string aorn,
-     GetRequestResponse expected,
+     GetRequestByUkprnAndPayeResponse expected,
      CancellationToken cancellationToken
  )
     {
@@ -151,7 +151,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
      string paye,
      string aorn,
      GetPensionRegulatorOrganisationResponse pensionOrganisationResponse,
-     GetRequestResponse expected,
+     GetRequestByUkprnAndPayeResponse expected,
      CancellationToken cancellationToken
  )
     {
@@ -203,7 +203,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
      string paye,
      string aorn,
      GetPensionRegulatorOrganisationResponse pensionOrganisationResponse,
-     GetRequestResponse expected,
+     GetRequestByUkprnAndPayeResponse expected,
      AccountHistory accountHistory,
      CancellationToken cancellationToken
      )
@@ -271,7 +271,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
     string paye,
     string aorn,
     GetPensionRegulatorOrganisationResponse pensionOrganisationResponse,
-    GetRequestResponse expected,
+    GetRequestByUkprnAndPayeResponse expected,
     AccountHistory accountHistory,
     GetAccountLegalEntityResponse legalEntityResponse,
     CancellationToken cancellationToken
@@ -355,7 +355,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
    string paye,
    string aorn,
    GetPensionRegulatorOrganisationResponse pensionOrganisationResponse,
-   GetRequestResponse expected,
+   GetRequestByUkprnAndPayeResponse expected,
    AccountHistory accountHistory,
    GetAccountLegalEntityResponse legalEntityResponse,
    GetRelationshipResponse relationshipResponse,
@@ -469,7 +469,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
             );
     }
 
-    private static void SetupPrMockForGetRequestByUkprnAndPaye(Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock, long ukprn, GetRequestResponse expected,
+    private static void SetupPrMockForGetRequestByUkprnAndPaye(Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock, long ukprn, GetRequestByUkprnAndPayeResponse expected,
         string encodedPaye, CancellationToken cancellationToken)
     {
         providerRelationshipsApiRestClientMock.Setup(x =>
@@ -479,7 +479,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
                 cancellationToken
             )
         )!.ReturnsAsync(
-            new Response<GetRequestResponse>(
+            new Response<GetRequestByUkprnAndPayeResponse>(
                 string.Empty,
                 new(HttpStatusCode.NotFound),
                 () => expected

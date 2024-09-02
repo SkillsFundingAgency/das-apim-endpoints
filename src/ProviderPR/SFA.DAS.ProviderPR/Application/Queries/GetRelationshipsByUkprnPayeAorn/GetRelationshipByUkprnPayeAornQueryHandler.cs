@@ -18,12 +18,15 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
     {
         var encodedPaye = Uri.EscapeDataString(request.Paye);
 
-        var res = await providerRelationshipsApiClient.GetRequestByUkprnAndPaye(request.Ukprn, request.Paye, cancellationToken);
-
         var queryResult =
             new GetRelationshipsByUkprnPayeAornResult();
 
-        if (res.ResponseMessage.StatusCode == HttpStatusCode.OK)
+        var res = await providerRelationshipsApiClient.GetRequestByUkprnAndPaye(request.Ukprn, request.Paye,
+            cancellationToken);
+
+        var isRequestPresent = IsRequestPresent(res!, request.Ukprn, request.Paye);
+
+        if (isRequestPresent)
         {
             queryResult.HasActiveRequest = true;
             return queryResult;
@@ -56,12 +59,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
 
         var accountId = accountDetails.AccountId;
 
-        queryResult.Account = new AccountDetails
-        {
-            AccountId = accountDetails.AccountId,
-            AddedDate = accountDetails.AddedDate,
-            RemovedDate = accountDetails.RemovedDate
-        };
+        queryResult.Account = BuildAccountDetails(accountDetails);
 
         queryResult.HasOneLegalEntity = false;
 
@@ -69,15 +67,11 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
 
         if (accountLegalEntities.Count() != 1) return queryResult;
 
-        queryResult.HasOneLegalEntity = true;
-        var legalEntity = accountLegalEntities.First();
-        queryResult.AccountLegalEntityId = legalEntity.AccountLegalEntityId;
-        queryResult.AccountLegalEntityName = legalEntity.Name;
-        queryResult.HasRelationship = false;
+        UpdateSingleLegalEntityDetails(queryResult, accountLegalEntities);
 
         Response<GetRelationshipResponse> relationshipResponse =
             await providerRelationshipsApiClient.GetRelationship(request.Ukprn,
-                queryResult.AccountLegalEntityId.Value, cancellationToken);
+                queryResult.AccountLegalEntityId!.Value, cancellationToken);
 
         if (relationshipResponse.ResponseMessage.StatusCode == HttpStatusCode.OK)
         {
@@ -86,6 +80,43 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
         }
 
         return queryResult;
+    }
+
+    private static void UpdateSingleLegalEntityDetails(GetRelationshipsByUkprnPayeAornResult queryResult,
+        IEnumerable<GetAccountLegalEntityResponse> accountLegalEntities)
+    {
+        queryResult.HasOneLegalEntity = true;
+        var legalEntity = accountLegalEntities.First();
+        queryResult.AccountLegalEntityId = legalEntity.AccountLegalEntityId;
+        queryResult.AccountLegalEntityName = legalEntity.Name;
+        queryResult.HasRelationship = false;
+    }
+
+    private static AccountDetails BuildAccountDetails(AccountHistory accountDetails)
+    {
+        return new AccountDetails
+        {
+            AccountId = accountDetails.AccountId,
+            AddedDate = accountDetails.AddedDate,
+            RemovedDate = accountDetails.RemovedDate
+        };
+    }
+
+    private static bool IsRequestPresent(Response<GetRequestByUkprnAndPayeResponse>? res, long ukprn, string paye)
+    {
+        if (res != null)
+        {
+            switch (res.ResponseMessage.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return true;
+                case HttpStatusCode.NotFound:
+                    return false;
+            }
+        }
+
+        throw new InvalidOperationException(
+            $"Pensions regulator API threw unexpected response for ukprn {ukprn} and paye {paye}");
     }
 
     private static OrganisationDetails? GetPensionRegulatorOrganisationDetails(List<GetPensionRegulatorOrganisationResponse> pensionRegulatorOrganisations)
