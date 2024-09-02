@@ -41,4 +41,19 @@ public class GetPermissionsTests
         result.As<OkObjectResult>().Should().NotBeNull();
         result.As<OkObjectResult>().Value.Should().Be(queryResponse);
     }
+
+    [Test, MoqAutoData]
+    public async Task GetPermissions_HandlerReturnsNull_Returns404(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] PermissionsController sut,
+        GetPermissionsQuery query,
+        CancellationToken cancellationToken)
+    {
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetPermissionsQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((GetPermissionsResponse)null!);
+
+        var result = await sut.GetPermissions(query, cancellationToken);
+
+        result.As<NotFoundResult>().Should().NotBeNull();
+    }
 }

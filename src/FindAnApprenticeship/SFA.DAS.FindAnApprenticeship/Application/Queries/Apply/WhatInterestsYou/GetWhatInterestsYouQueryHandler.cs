@@ -21,6 +21,8 @@ public class GetWhatInterestsYouQueryHandler(
         var applicationRequest = new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false);
         var application = await candidateApiClient.Get<GetApplicationApiResponse>(applicationRequest);
 
+        if (application == null) return null;
+
         var vacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
         var vacancy = await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(vacancyRequest);
 
