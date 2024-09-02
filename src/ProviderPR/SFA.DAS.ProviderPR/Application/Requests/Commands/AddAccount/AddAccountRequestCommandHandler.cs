@@ -23,7 +23,7 @@ public class AddAccountRequestCommandHandler(
 
         if(teamMembersResponse.StatusCode != System.Net.HttpStatusCode.OK)
         {
-            throw new Exception(teamMembersResponse.ErrorContent);
+            throw new InvalidOperationException(teamMembersResponse.ErrorContent);
         }
 
         if (!teamMembersResponse.Body.Any())
