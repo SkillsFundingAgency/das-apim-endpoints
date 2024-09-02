@@ -34,12 +34,13 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitP
         {
             var submitProviderResponseRequest = new SubmitProviderResponseRequest(new SubmitProviderResponseRequestData
             {
-                EmployerRequestIds = command.EmployerRequestIds,
+                ContactName = command.ContactName,
+                Email = command.Email,
+                EmployerRequestIds = command.EmployerRequestIds,    
+                Phone = command.Phone,
+                RespondedBy = command.RespondedBy,
                 Ukprn = command.Ukprn,
                 Website = command.Website,
-                Email = command.Email,
-                Phone = command.Phone,
-
             });
 
             var response = await _requestApprenticeTrainingApiClient

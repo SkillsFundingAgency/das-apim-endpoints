@@ -8,7 +8,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests
     {
         public SubmitProviderResponseRequestData Data { get; set; }
 
-        public string PostUrl => $"api/employerrequest/provider/submit-response";
+        public string PostUrl => $"api/employerrequest/provider/{Data.Ukprn}/submit-response";
 
         public SubmitProviderResponseRequest(SubmitProviderResponseRequestData data)
         {
@@ -19,8 +19,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests
     {
         public long Ukprn { get; set; }
         public List<Guid> EmployerRequestIds { get; set; } = new List<Guid>();
+        public string ContactName { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Website { get; set; }
+        public Guid RespondedBy { get; set; }
     }
 }
