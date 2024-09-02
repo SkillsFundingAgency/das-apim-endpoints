@@ -21,13 +21,13 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
             GetAggregatedEmployerRequestsResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerRequestsController controller,
-            long ukprn)
+            GetAggregatedEmployerRequestsQuery query)
         {
             mockMediator
                 .Setup(x => x.Send(It.IsAny<GetAggregatedEmployerRequestsQuery>(), CancellationToken.None))
                 .ReturnsAsync(queryResult);
 
-            var actual = await controller.GetAggregatedEmployerRequests(ukprn) as ObjectResult;
+            var actual = await controller.GetAggregatedEmployerRequests(query.Ukprn) as ObjectResult;
 
             Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
