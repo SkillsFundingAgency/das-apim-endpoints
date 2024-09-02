@@ -2,7 +2,11 @@
 using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 
@@ -21,25 +25,52 @@ public class GetAllEarningsQueryResult
 public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, GetAllEarningsQueryResult>
 {
     private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apprenticeshipsApiClient;
+    private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
+    private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
 
-    public GetAllEarningsQueryHandler(IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient)
+    public GetAllEarningsQueryHandler(IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient,
+        IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+        ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
     {
         _apprenticeshipsApiClient = apprenticeshipsApiClient;
+        _earningsApiClient = earningsApiClient;
+        _collectionCalendarApiClient = collectionCalendarApiClient;
     }
 
     public async Task<GetAllEarningsQueryResult> Handle(GetAllEarningsQuery request, CancellationToken cancellationToken)
     {
         var apprenticeshipInnerModel = await _apprenticeshipsApiClient.Get<GetApprenticeshipsResponse>(new GetApprenticeshipsRequest { Ukprn = request.Ukprn });
+        var earningsInnerModel = await _earningsApiClient.Get<GetFm36DataResponse>(new GetFm36DataRequest(request.Ukprn));
+        var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now)); //todo will we want to be able to time travel in test scenarios here?
 
-        //todo later story call earnings inner when needed to get more values to build the result below
+        //todo this line just to enable testing prior to refactor of earnings inner api/removal of durable entities
+        for (int i = 0; i < earningsInnerModel.Count; i++) earningsInnerModel[i].Key = apprenticeshipInnerModel.Apprenticeships[i].Key;
         
-        return new GetAllEarningsQueryResult
+        var result = new GetAllEarningsQueryResult
         {
-            FM36Learners = apprenticeshipInnerModel.Apprenticeships.Select(x => new FM36Learner
+            FM36Learners = apprenticeshipInnerModel.Apprenticeships.Select(apprenticeship => new FM36Learner
             {
-                ULN = long.Parse(x.Uln),
-                LearnRefNumber = EarningsFM36Constants.LearnRefNumber
+                ULN = long.Parse(apprenticeship.Uln),
+                LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
+                PriceEpisodes = apprenticeship.Episodes.SelectMany(episode => episode.Prices, (episode, price) => new PriceEpisode
+                {
+                    PriceEpisodeIdentifier = $"25-{episode.TrainingCode}-{price.StartDate:dd/MM/yyyy}",
+                    PriceEpisodeValues = new PriceEpisodeValues
+                    {
+                        EpisodeStartDate = price.StartDate
+                    }
+                }).ToList(),
+                //PriceEpisodes = apprenticeship.Episodes.Select(episode => new PriceEpisode
+                //{
+                //    PriceEpisodeIdentifier = $"25-{episode.TrainingCode}-{episode.Prices.Min(price => price.StartDate):dd/MM/yyyy}",
+                //    PriceEpisodeValues = new PriceEpisodeValues
+                //    {
+                //        //EpisodeStartDate = episode.
+                //    }
+                //}).ToList()
             }).ToArray()
         };
+
+        return result;
     }
 }
