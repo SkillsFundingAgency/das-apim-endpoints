@@ -11,12 +11,13 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
     {
         public Guid EmployerRequestId { get; set; }
         public List<string> Locations { get; set; }
+        public bool AtApprenticesWorkplace { get; set; }
+        public bool DayRelease { get; set; }
+        public bool BlockRelease { get; set; }
         public string DateOfRequest { get; set; }
         public int NumberOfApprentices { get; set; }
-        public bool AtApprenticesWorkplace { get; set; }
-        public bool BlockRelease { get; set; }
-        public bool DayRelease { get; set; }
         public bool IsNew { get; set; }
+        public string DateContacted { get; set; }
         public bool IsContacted { get; set; }
 
         public static implicit operator SelectEmployerRequest(GetSelectEmployerRequestsResponse source)
@@ -26,12 +27,13 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
                 EmployerRequestId = source.EmployerRequestId,
                 DateOfRequest = source.DateOfRequest.ToString("d MMMM yyyy"),
                 IsContacted = source.IsContacted,
+                DateContacted = source.DateContacted.HasValue ? source.DateOfRequest.ToString("d MMMM yyyy") : string.Empty,
                 IsNew = source.IsNew,
                 NumberOfApprentices = source.NumberOfApprentices,   
                 Locations = source.Locations,
                 AtApprenticesWorkplace = source.AtApprenticesWorkplace,
-                BlockRelease = source.BlockRelease,
                 DayRelease = source.DayRelease,
+                BlockRelease = source.BlockRelease,
             };
         }
     }
