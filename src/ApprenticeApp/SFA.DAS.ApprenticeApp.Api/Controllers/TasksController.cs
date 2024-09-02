@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Commands;
+using SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
 using SFA.DAS.ApprenticeApp.Models;
@@ -103,8 +105,8 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         }
         
         //Build viewmodel data for pwa
-        [HttpGet("/apprentices/{apprenticeshipId}/progress/taskCategories/tasks/{taskId}")]
-        public async Task<IActionResult> GetTaskViewData(long apprenticeshipId, int taskId)
+        [HttpGet("/apprentices/{apprenticeshipId}/progress/taskCategories/tasks/{taskId}/courses/{standardUid}/options/{option}/ksbs")]
+        public async Task<IActionResult> GetTaskViewData(long apprenticeshipId, int taskId, string standardUid, string option)
         {
             var taskResult = await _mediator.Send(new GetTaskByTaskIdQuery { ApprenticeshipId = apprenticeshipId, TaskId = taskId });
             if (taskResult.Tasks == null)
@@ -115,16 +117,46 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             if (categoriesResult.TaskCategories == null)
                 return NotFound();
 
+            var ksbResult = await _mediator.Send(new GetStandardOptionKsbsQuery { Id = standardUid, Option = option });
+
+            if (ksbResult.KsbsResult == null)
+                return NotFound();
+
             var ksbProgressResult = await _mediator.Send(new GetKsbProgressForTaskQuery
                 {
                     ApprenticeshipId = apprenticeshipId,
                     TaskId = taskId
-                });
+            });
 
+            var ksbData = new List<ApprenticeKsbData>();
+            if (ksbProgressResult.KSBProgress != null)
+            { 
+                foreach(var ksbProgress in ksbProgressResult.KSBProgress)
+                {
+                    var ksb = ksbResult.KsbsResult.Ksbs.First(x => x.Id == ksbProgress.KSBId);
+                    if (ksb != null)
+                    {
+                        var apprenticeKsb = new ApprenticeKsbData()
+                        {
+                            ApprenticeshipId = ksbProgress.ApprenticeshipId,
+                            KsbProgressId = ksbProgress.KsbProgressId,
+                            KSBId = ksbProgress.KSBId,
+                            KsbKey = ksb.Key,
+                            CurrentStatus = ksbProgress.CurrentStatus,
+                            Detail = ksb.Detail
+                        };
+                        ksbData.Add(apprenticeKsb);
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+            }
             var getTaskViewDataResult = new ApprenticeTaskModelData()
             {
                 Task = taskResult.Tasks.Tasks.FirstOrDefault(),
-                KSBProgress = ksbProgressResult.KSBProgress,
+                KSBProgress = ksbData,
                 TaskCategories = categoriesResult.TaskCategories
             };
 

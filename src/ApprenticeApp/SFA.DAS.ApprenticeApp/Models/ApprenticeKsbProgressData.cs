@@ -31,5 +31,9 @@ namespace SFA.DAS.ApprenticeApp.Models
         ReadyForReview = 2,
         Completed = 3
     }
-        
+
+    public class ApprenticeKsbData : ApprenticeKsbProgressData
+    {
+        public string Detail { get; set; }
+    }
 }
