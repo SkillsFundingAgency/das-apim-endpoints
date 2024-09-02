@@ -11,8 +11,8 @@ namespace SFA.DAS.Approvals.Api.Models
         {
             return new GetEpaoResponse
             {
-                Id = source.Id,
-                Name = source.Name
+                Id = source.EndPointAssessorOrganisationId,
+                Name = source.EndPointAssessorName
             };
         }
     }

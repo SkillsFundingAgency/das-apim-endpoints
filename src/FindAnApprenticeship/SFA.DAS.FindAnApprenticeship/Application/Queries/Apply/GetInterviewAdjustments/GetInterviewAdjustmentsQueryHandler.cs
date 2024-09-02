@@ -15,6 +15,8 @@ public class GetInterviewAdjustmentsQueryHandler(ICandidateApiClient<CandidateAp
     {
         var application = await candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
 
+        if (application == null) return null;
+
         bool? isCompleted = application.InterviewAdjustmentsStatus switch
         {
             Constants.SectionStatus.Incomplete => false,

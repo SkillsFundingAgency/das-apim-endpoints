@@ -4,7 +4,6 @@ using System;
 namespace SFA.DAS.Recruit.Application.Queries.GetVacancyMetrics
 {
     public record GetVacancyMetricsQuery(
-        string VacancyReference,
         DateTime StartDate,
         DateTime EndDate) : IRequest<GetVacancyMetricsQueryResult>;
 }

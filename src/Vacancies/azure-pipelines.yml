@@ -5,12 +5,11 @@ trigger:
       - "master"
   paths:
     include:
-    - azure
-    - pipeline-templates
     - src/Vacancies
     exclude:
-    - azure/shared-infrastructure-template.json
-    - pipeline-templates/job/shared-arm-deploy.yml
+    - azure
+    - pipeline-templates
+    - deployments
 
 pr:
   autoCancel: true
@@ -19,12 +18,11 @@ pr:
       - "master"
   paths:
     include:
-    - azure
-    - pipeline-templates
     - src/Vacancies
     exclude:
-    - azure/shared-infrastructure-template.json
-    - pipeline-templates/job/shared-arm-deploy.yml
+    - azure
+    - pipeline-templates
+    - deployments
 
 variables:
 - group: Release Management Resources
@@ -36,7 +34,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/1.0.5
+    ref: refs/heads/AppRoleConditionRemoval1.0.5
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github

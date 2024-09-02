@@ -47,6 +47,7 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
                 AdditionalQuestion1 = source.AdditionalQuestion1,
                 AdditionalQuestion2 = source.AdditionalQuestion2,
+                AdditionalTrainingDescription = source.AdditionalTrainingDescription,
             };
         }
 
@@ -133,6 +134,11 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         [JsonPropertyName("trainingDescription")]
         [Required]
         public string TrainingDescription { get ; set ; }
+        /// <summary>
+        /// Further information about an apprentice’s training, such as details about the training provider or how the course will be structured. Must not exceed 4000 characters.
+        /// </summary>
+        [JsonPropertyName("additionalTrainingDescription")]
+        public string AdditionalTrainingDescription { get; set; }
         /// <summary>
         /// Where the apprenticeship will be based, this could be a different location to the organisation address. Use the place the apprentice will spend most of their time.
         /// </summary>
@@ -283,7 +289,8 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 WorkingWeekDescription = source.WorkingWeekDescription,
                 FixedWageYearlyAmount = source.WageType == WageType.FixedWage ?  source.FixedWageYearlyAmount : null,
                 DurationUnit = (InnerApi.Requests.DurationUnit)durationUnit,
-                WageType = (InnerApi.Requests.WageType)wageType
+                WageType = (InnerApi.Requests.WageType)wageType,
+                CompanyBenefitsInformation = source.CompanyBenefitsInformation,
             };
         }
         /// <summary>
@@ -325,6 +332,11 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         [JsonPropertyName("durationUnit")]
         [Required]
         public DurationUnit DurationUnit { get; set; }
+        /// <summary>
+        /// Describe benefits your company offers. Must not exceed 250 characters.
+        /// </summary>
+        [JsonPropertyName("CompanyBenefitsInformation")]
+        public string CompanyBenefitsInformation { get; set; }
     }
 
     public class CreateVacancyQualification
@@ -338,7 +350,8 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 QualificationType = source.QualificationType,
                 Grade = source.Grade,
                 Subject = source.Subject,
-                Weighting = (InnerApi.Requests.QualificationWeighting)weighting
+                Weighting = (InnerApi.Requests.QualificationWeighting)weighting,
+                Level = source.Level,
             };
         }
         /// <summary>
@@ -361,6 +374,11 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         /// </summary>
         [JsonPropertyName("weighting")]
         public QualificationWeighting Weighting { get; set; }
+        /// <summary>
+        /// If qualificationType is BTEC, you must tell us what level of BTEC you’re looking for.
+        /// </summary>
+        [JsonPropertyName("level")]
+        public int? Level { get; set; }
     }
 
     public class SubmitterContactDetails
