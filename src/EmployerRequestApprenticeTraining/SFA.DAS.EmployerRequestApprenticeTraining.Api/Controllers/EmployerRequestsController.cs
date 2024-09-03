@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Extensions;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.ExpireEmployerRequests;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
@@ -166,6 +167,21 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to retrieve submit employer request confirmation for EmployerRequestId: {employerRequestId}");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("expire-requests")]
+        public async Task<IActionResult> ExpireEmployerRequests()
+        {
+            try
+            {
+                await _mediator.Send(new ExpireEmployerRequestsCommand());
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to expire employer requests");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
