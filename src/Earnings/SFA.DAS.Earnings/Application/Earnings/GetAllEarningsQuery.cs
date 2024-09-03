@@ -60,7 +60,31 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                         EpisodeStartDate = price.StartDate
                     }
                 }).ToList(),
-                //LearningDeliveries = 
+                LearningDeliveries = new List<LearningDelivery>
+                {
+                    new LearningDelivery
+                    {
+                        AimSeqNumber = 1,
+                        LearningDeliveryValues = new LearningDeliveryValues
+                        {
+                            ActualDaysIL = EarningsFM36Constants.ActualDaysIL,
+                            AdjStartDate = apprenticeship.StartDate,
+                            AgeAtProgStart = apprenticeship.AgeAtStartOfApprenticeship,
+                            AppAdjLearnStartDate = apprenticeship.StartDate,
+                            ApplicCompDate = EarningsFM36Constants.ApplicCompDate,
+                            CombinedAdjProp = EarningsFM36Constants.CombinedAdjProp,
+                            Completed = EarningsFM36Constants.Completed,
+                            FundStart = EarningsFM36Constants.FundStart,
+                            LDApplic1618FrameworkUpliftTotalActEarnings = EarningsFM36Constants.LDApplic1618FrameworkUpliftTotalActEarnings,
+                            LearnAimRef = EarningsFM36Constants.LearnAimRef,
+                            LearnStartDate = apprenticeship.StartDate,
+                            LearnDel1618AtStart = apprenticeship.AgeAtStartOfApprenticeship < 19,
+                            LearnDelAppAccDaysIL = ((apprenticeship.PlannedEndDate < currentAcademicYear.EndDate
+                                ? apprenticeship.PlannedEndDate
+                                : currentAcademicYear.EndDate) - apprenticeship.StartDate).Days
+        }
+                    }
+                }
                 //PriceEpisodes = apprenticeship.Episodes.Select(episode => new PriceEpisode
                 //{
                 //    PriceEpisodeIdentifier = $"25-{episode.TrainingCode}-{episode.Prices.Min(price => price.StartDate):dd/MM/yyyy}",

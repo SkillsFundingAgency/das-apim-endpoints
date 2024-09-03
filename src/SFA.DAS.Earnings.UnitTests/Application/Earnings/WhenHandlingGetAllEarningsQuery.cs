@@ -110,7 +110,7 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
         }
 
         [Test]
-        public async Task AndAPriceEpisodeIsCreatedForEachPrice()
+        public async Task ThenAPriceEpisodeIsCreatedForEachPrice()
         {
             // Act
             _result = await _handler.Handle(_query, CancellationToken.None);
@@ -125,6 +125,57 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
 
                 fm36Learner.PriceEpisodes.Count.Should().Be(apprenticeship.Episodes.SelectMany(episode => episode.Prices).Count());
             }
+        }
+
+        [Test]
+        public async Task ThenALearningDeliveryIsCreatedForEachApprenticeship()
+        {
+            // Act
+            _result = await _handler.Handle(_query, CancellationToken.None);
+
+            // Assert
+            _result.Should().NotBeNull();
+
+            _result.FM36Learners.Length.Should().Be(_apprenticeshipsResponse.Apprenticeships.Count);
+            _result.FM36Learners.SelectMany(learner => learner.LearningDeliveries).Count().Should().Be(_apprenticeshipsResponse.Apprenticeships.Count);
+        }
+
+        [Test]
+        public async Task ThenReturnsLearningDeliveryValuesForEachApprenticeship()
+        {
+            // Act
+            _result = await _handler.Handle(_query, CancellationToken.None);
+
+            // Assert
+            _result.Should().NotBeNull();
+
+            foreach (var apprenticeship in _apprenticeshipsResponse.Apprenticeships)
+            {
+                var learningDelivery = _result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+                learningDelivery.Should().NotBeNull();
+                learningDelivery.AimSeqNumber.Should().Be(1);
+                learningDelivery.LearningDeliveryValues.ActualDaysIL.Should().Be(0);
+                learningDelivery.LearningDeliveryValues.ActualNumInstalm.Should().BeNull();
+                learningDelivery.LearningDeliveryValues.AdjStartDate.Should().Be(apprenticeship.StartDate);
+                learningDelivery.LearningDeliveryValues.AgeAtProgStart.Should().Be(apprenticeship.AgeAtStartOfApprenticeship);
+                learningDelivery.LearningDeliveryValues.AppAdjLearnStartDate.Should().Be(apprenticeship.StartDate);
+                learningDelivery.LearningDeliveryValues.ApplicCompDate.Should().Be(new DateTime(9999, 9, 9));
+                learningDelivery.LearningDeliveryValues.CombinedAdjProp.Should().Be(1);
+                learningDelivery.LearningDeliveryValues.Completed.Should().BeFalse();
+                learningDelivery.LearningDeliveryValues.FirstIncentiveThresholdDate.Should().BeNull();
+                learningDelivery.LearningDeliveryValues.FundStart.Should().BeTrue();
+                learningDelivery.LearningDeliveryValues.LDApplic1618FrameworkUpliftTotalActEarnings.Should().Be(0);
+                learningDelivery.LearningDeliveryValues.LearnAimRef.Should().Be("ZPROG001");
+                learningDelivery.LearningDeliveryValues.LearnStartDate.Should().Be(apprenticeship.StartDate);
+                learningDelivery.LearningDeliveryValues.LearnDel1618AtStart.Should().Be(apprenticeship.AgeAtStartOfApprenticeship < 19);
+                learningDelivery.LearningDeliveryValues.LearnDelAppAccDaysIL.Should().Be(
+                    ((apprenticeship.PlannedEndDate < _collectionCalendarResponse.EndDate
+                        ? apprenticeship.PlannedEndDate
+                        : _collectionCalendarResponse.EndDate) - apprenticeship.StartDate).Days);
+            }
+
+            DateTime minim;
+            minim = _collectionCalendarResponse.EndDate < DateTime.Now ? _collectionCalendarResponse.EndDate : DateTime.Now;
         }
 
         //[Test]
