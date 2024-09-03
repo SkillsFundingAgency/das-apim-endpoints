@@ -1,3 +1,5 @@
+using AutoFixture;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Earnings.Application.Earnings;
@@ -5,7 +7,7 @@ using SFA.DAS.Earnings.Application.Earnings;
 namespace SFA.DAS.Earnings.Api.Controllers;
 
 [ApiController]
-[Route("[controller]/")]
+[Route("")]
 public class EarningsController : ControllerBase
 {
     private readonly IMediator _mediator;
