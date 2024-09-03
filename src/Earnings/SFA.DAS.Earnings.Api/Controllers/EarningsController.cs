@@ -22,8 +22,8 @@ public class EarningsController : ControllerBase
     /// </summary>
     /// <returns>All earnings data in the format of an FM36Learner array.</returns>
     [HttpGet]
-    [Route("GetAll/{ukprn}")]
-    public async Task<IActionResult> GetAll(long ukprn)
+    [Route("{collectionPeriod}/{ukprn}")]
+    public async Task<IActionResult> GetAll(byte collectionPeriod, long ukprn)
     {
         try
         {
