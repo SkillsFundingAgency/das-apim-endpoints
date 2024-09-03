@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.ExpireEmployerRequests
 {
-    public class ExpireEmployerRequestsCommandHandler : IRequestHandler<ExpireEmployerRequestsCommand, ExpireEmployerRequestsResponse>
+    public class ExpireEmployerRequestsCommandHandler : IRequestHandler<ExpireEmployerRequestsCommand, Unit>
     {
         private readonly IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration> _requestApprenticeTrainingApiClient;
 
@@ -17,13 +17,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.ExpireE
             _requestApprenticeTrainingApiClient = requestApprenticeTrainingApiClient;
         }
 
-        public async Task<ExpireEmployerRequestsResponse> Handle(ExpireEmployerRequestsCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ExpireEmployerRequestsCommand command, CancellationToken cancellationToken)
         {
             var response = await _requestApprenticeTrainingApiClient
-               .PostWithResponseCode<ExpireEmployerRequestsData, ExpireEmployerRequestsResponse>(new ExpireEmployerRequestsRequest(), false);
+               .PostWithResponseCode<ExpireEmployerRequestsData, object>(new ExpireEmployerRequestsRequest(), false);
 
             response.EnsureSuccessStatusCode();
-            return response.Body;
+
+            return Unit.Value;
         }
     }
 }

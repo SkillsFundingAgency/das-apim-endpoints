@@ -32,26 +32,26 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Comman
         public async Task Then_PostRequestIsSent(CreateProviderResponseEmployerRequestCommand command, string errorContent)
         {
             // Arrange
-            var response = new ApiResponse<CreateProviderResponseEmployerRequestResponse>(new CreateProviderResponseEmployerRequestResponse(), HttpStatusCode.Created, errorContent);
+            var response = new ApiResponse<object>(new object(), HttpStatusCode.Created, errorContent);
         
-            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateEmployerResponseEmployerRequestData, CreateProviderResponseEmployerRequestResponse>(It.IsAny<CreateProviderResponseEmployerRequestRequest>(), It.IsAny<bool>()))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateEmployerResponseEmployerRequestData, object>(It.IsAny<CreateProviderResponseEmployerRequestRequest>(), It.IsAny<bool>()))
                 .ReturnsAsync(response);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _mockApiClient.Verify(c => c.PostWithResponseCode<CreateEmployerResponseEmployerRequestData, CreateProviderResponseEmployerRequestResponse>(It.IsAny<CreateProviderResponseEmployerRequestRequest>(), It.IsAny<bool>()), Times.Once);
+            _mockApiClient.Verify(c => c.PostWithResponseCode<CreateEmployerResponseEmployerRequestData, object>(It.IsAny<CreateProviderResponseEmployerRequestRequest>(), It.IsAny<bool>()), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_PostRequestSentIsCommand(CreateProviderResponseEmployerRequestCommand command, string errorContent)
         {
             // Arrange
-            var response = new ApiResponse<CreateProviderResponseEmployerRequestResponse>(new CreateProviderResponseEmployerRequestResponse(), HttpStatusCode.Created, errorContent);
+            var response = new ApiResponse<object>(new object(), HttpStatusCode.Created, errorContent);
             IPostApiRequest<CreateEmployerResponseEmployerRequestData> submittedRequest = null;
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateEmployerResponseEmployerRequestData, CreateProviderResponseEmployerRequestResponse>(It.IsAny<CreateProviderResponseEmployerRequestRequest>(), It.IsAny<bool>()))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateEmployerResponseEmployerRequestData, object>(It.IsAny<CreateProviderResponseEmployerRequestRequest>(), It.IsAny<bool>()))
                 .Callback<IPostApiRequest<CreateEmployerResponseEmployerRequestData>, bool>((x, y) => submittedRequest = x)
                 .ReturnsAsync(response);
 
@@ -74,9 +74,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Comman
             CreateProviderResponseEmployerRequestCommand command,
             string errorContent)
         {
-            var response = new ApiResponse<CreateProviderResponseEmployerRequestResponse>(null, statusCode, errorContent);
+            var response = new ApiResponse<object>(null, statusCode, errorContent);
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateEmployerResponseEmployerRequestData, CreateProviderResponseEmployerRequestResponse>(It.IsAny<CreateProviderResponseEmployerRequestRequest>(), false))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<CreateEmployerResponseEmployerRequestData, object>(It.IsAny<CreateProviderResponseEmployerRequestRequest>(), false))
             .ReturnsAsync(response);
 
             Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);

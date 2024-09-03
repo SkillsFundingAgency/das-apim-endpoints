@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest
 {
-    public class CreateProviderResponseEmployerRequestCommandHandler : IRequestHandler<CreateProviderResponseEmployerRequestCommand>
+    public class CreateProviderResponseEmployerRequestCommandHandler : IRequestHandler<CreateProviderResponseEmployerRequestCommand,Unit>
     {
         private readonly IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration> _requestApprenticeTrainingApiClient;
 
@@ -17,7 +17,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateP
             _requestApprenticeTrainingApiClient = requestApprenticeTrainingApiClient;
         }
 
-        public async Task Handle(CreateProviderResponseEmployerRequestCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateProviderResponseEmployerRequestCommand command, CancellationToken cancellationToken)
         {
             var request = new CreateProviderResponseEmployerRequestRequest(new CreateEmployerResponseEmployerRequestData
             {
@@ -26,9 +26,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateP
             });
 
             var response = await _requestApprenticeTrainingApiClient
-                .PostWithResponseCode<CreateEmployerResponseEmployerRequestData, CreateProviderResponseEmployerRequestResponse>(request, false);
+                .PostWithResponseCode<CreateEmployerResponseEmployerRequestData, object>(request, false);
 
             response.EnsureSuccessStatusCode();
+            return Unit.Value;
         }
     }
 }

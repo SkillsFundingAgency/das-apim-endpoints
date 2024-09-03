@@ -5,7 +5,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.ExpireEmployerRequests
 {
-    public class ExpireEmployerRequestsCommand : IRequest<ExpireEmployerRequestsResponse>
+    public class ExpireEmployerRequestsCommand : IRequest<Unit>
     {
         
     }
