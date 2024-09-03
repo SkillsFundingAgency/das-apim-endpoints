@@ -28,6 +28,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses
             response.AtApprenticesWorkplace.Should().BeFalse();
             response.IsNew.Should().BeFalse();
             response.IsContacted.Should().BeFalse();
+            response.DateContacted.Should().BeNull();
             response.Locations.Should().BeNull();
     }
     }
