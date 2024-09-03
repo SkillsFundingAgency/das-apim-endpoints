@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.AcknowledgeEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
@@ -18,18 +18,18 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Comman
     public class WhenHandlingCreateProviderResponseEmployerRequests
     {
         private Mock<IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration>> _mockApiClient;
-        private CreateProviderResponseEmployerRequestCommandHandler _handler;
+        private AcknowledgeEmployerRequestsCommandHandler _handler;
 
         [SetUp]
         public void Arrange()
         {
             _mockApiClient = new Mock<IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration>>();
 
-            _handler = new CreateProviderResponseEmployerRequestCommandHandler(_mockApiClient.Object);
+            _handler = new AcknowledgeEmployerRequestsCommandHandler(_mockApiClient.Object);
         }
 
         [Test, MoqAutoData]
-        public async Task Then_PostRequestIsSent(CreateProviderResponseEmployerRequestCommand command, string errorContent)
+        public async Task Then_PostRequestIsSent(AcknowledgeEmployerRequestsCommand command, string errorContent)
         {
             // Arrange
             var response = new ApiResponse<object>(new object(), HttpStatusCode.Created, errorContent);
@@ -45,7 +45,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Comman
         }
 
         [Test, MoqAutoData]
-        public async Task Then_PostRequestSentIsCommand(CreateProviderResponseEmployerRequestCommand command, string errorContent)
+        public async Task Then_PostRequestSentIsCommand(AcknowledgeEmployerRequestsCommand command, string errorContent)
         {
             // Arrange
             var response = new ApiResponse<object>(new object(), HttpStatusCode.Created, errorContent);
@@ -71,7 +71,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Comman
         [MoqInlineAutoData(HttpStatusCode.NotFound)]
         public async Task And_ApiDoesNotReturnSuccess_Then_ThrowApiResponseException(
             HttpStatusCode statusCode,
-            CreateProviderResponseEmployerRequestCommand command,
+            AcknowledgeEmployerRequestsCommand command,
             string errorContent)
         {
             var response = new ApiResponse<object>(null, statusCode, errorContent);

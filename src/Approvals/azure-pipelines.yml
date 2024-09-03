@@ -7,10 +7,8 @@ trigger:
     include:
     - azure
     - pipeline-templates
+    - deployments
     - src/Approvals
-    exclude:
-    - azure/shared-infrastructure-template.json
-    - pipeline-templates/job/shared-arm-deploy.yml
 
 pr:
   autoCancel: true
@@ -21,10 +19,8 @@ pr:
     include:
     - azure
     - pipeline-templates
+    - deployments
     - src/Approvals
-    exclude:
-    - azure/shared-infrastructure-template.json
-    - pipeline-templates/job/shared-arm-deploy.yml
 
 variables:
 - group: Release Management Resources
@@ -36,7 +32,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/1.0.5
+    ref: refs/heads/AppRoleConditionRemoval1.0.5
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github

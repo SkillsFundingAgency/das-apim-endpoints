@@ -14,6 +14,8 @@ namespace SFA.DAS.Vacancies.Api.Models
         public List<string> Skills { get ; set ; }
         public List<GetVacancyQualification> Qualifications { get ; set ; }
         public string ThingsToConsider { get; set; }
+        public string CompanyBenefitsInformation { get; set; }
+        public string AdditionalTrainingDescription { get; set; }
 
         public static implicit operator GetVacancyResponse(GetVacancyQueryResult source)
         {
@@ -58,7 +60,9 @@ namespace SFA.DAS.Vacancies.Api.Models
                 {
                     Lat = source.Vacancy.Location.Lat,
                     Lon = source.Vacancy.Location.Lon
-                } : null
+                } : null,
+                AdditionalTrainingDescription = source.Vacancy.AdditionalTrainingDescription,
+                CompanyBenefitsInformation = source.Vacancy.CompanyBenefitsInformation,
             };
         }
     }

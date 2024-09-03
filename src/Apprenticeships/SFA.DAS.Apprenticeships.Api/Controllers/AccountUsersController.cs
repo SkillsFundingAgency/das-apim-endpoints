@@ -4,40 +4,39 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.AccountUsers.Queries;
 
-namespace SFA.DAS.Apprenticeships.Api.Controllers
+namespace SFA.DAS.Apprenticeships.Api.Controllers;
+
+[ApiController]
+[Route("[controller]/")]
+public class AccountUsersController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]/")]
-    public class AccountUsersController : ControllerBase
+    private readonly IMediator _mediator;
+    private readonly ILogger<TrainingCoursesController> _logger;
+
+    public AccountUsersController(IMediator mediator, ILogger<TrainingCoursesController> logger)
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<TrainingCoursesController> _logger;
+        _mediator = mediator;
+        _logger = logger;
+    }
 
-        public AccountUsersController(IMediator mediator, ILogger<TrainingCoursesController> logger)
+    [HttpGet]
+    [Route("{userId}/accounts")]
+    public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery] string email)
+    {
+        try
         {
-            _mediator = mediator;
-            _logger = logger;
+            var result = await _mediator.Send(new GetAccountsQuery
+            {
+                UserId = userId,
+                Email = email
+            });
+
+            return Ok((UserAccountsApiResponse)result);
         }
-
-        [HttpGet]
-        [Route("{userId}/accounts")]
-        public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery] string email)
+        catch (Exception e)
         {
-            try
-            {
-                var result = await _mediator.Send(new GetAccountsQuery
-                {
-                    UserId = userId,
-                    Email = email
-                });
-
-                return Ok((UserAccountsApiResponse)result);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error attempting to get user accounts");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
+            _logger.LogError(e, "Error attempting to get user accounts");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 }

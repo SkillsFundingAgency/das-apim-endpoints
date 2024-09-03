@@ -30,15 +30,13 @@ public class PostPermissionsTests
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] PermissionsController sut,
         PostPermissionsCommand command,
-        PostPermissionsCommandResult postPermissionsCommandResult,
         CancellationToken cancellationToken
     )
     {
-        mediatorMock.Setup(m => m.Send(command, It.IsAny<CancellationToken>())).ReturnsAsync(postPermissionsCommandResult);
+        mediatorMock.Setup(m => m.Send(command, It.IsAny<CancellationToken>())).ReturnsAsync(Unit.Value);
 
         var result = await sut.PostPermissions(command, cancellationToken);
 
-        result.As<OkObjectResult>().Should().NotBeNull();
-        result.As<OkObjectResult>().Value.Should().Be(postPermissionsCommandResult);
+        result.As<NoContentResult>().Should().NotBeNull();
     }
 }

@@ -73,6 +73,8 @@ namespace SFA.DAS.VacanciesManage.InnerApi.Requests
         public string AdditionalQuestion1 { get; set; }
         [JsonPropertyName("additionalQuestion2")]
         public string AdditionalQuestion2 { get; set; }
+        [JsonPropertyName("additionalTrainingDescription")]
+        public string AdditionalTrainingDescription { get; set; }
     }
     
     public class PostVacancyUserData
@@ -117,6 +119,8 @@ namespace SFA.DAS.VacanciesManage.InnerApi.Requests
         public WageType WageType { get; set; }
         [JsonPropertyName("durationUnit")]
         public DurationUnit DurationUnit { get; set; }
+        [JsonPropertyName("CompanyBenefitsInformation")]
+        public string CompanyBenefitsInformation { get; set; }
     }
 
     public class PostCreateVacancyQualificationData
@@ -129,6 +133,8 @@ namespace SFA.DAS.VacanciesManage.InnerApi.Requests
         public string Grade { get; set; }
         [JsonPropertyName("weighting")]
         public QualificationWeighting Weighting { get; set; }
+        [JsonPropertyName("level")]
+        public int? Level { get; set; }
     }
 
     public class ContactDetails
