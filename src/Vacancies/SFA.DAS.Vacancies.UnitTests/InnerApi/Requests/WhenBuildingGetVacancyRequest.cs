@@ -15,6 +15,7 @@ namespace SFA.DAS.Vacancies.UnitTests.InnerApi.Requests
             
             //Assert
             actual.GetUrl.Should().Be($"api/Vacancies/{vacancyReference}");
-        }
+            actual.Version.Should().Be("2.0");
+		}
     }
 }

@@ -92,7 +92,7 @@ public class Startup
         {
             endpoints.MapControllerRoute(
                 name: "default",
-                pattern: "api/{controller=Earnings}");
+                pattern: "api/{controller=Earnings}/{action=index}/{id?}");
         });
 
         app.UseSwagger();

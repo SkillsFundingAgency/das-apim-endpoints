@@ -1,7 +1,7 @@
 ﻿using RestEase.HttpClientFactory;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationships;
+using SFA.DAS.ProviderPR.Application.Queries.GetRelationship;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -18,8 +18,8 @@ public static class AddServiceRegistrationsExtension
     public static IServiceCollection AddServiceRegistration(this IServiceCollection services, IConfigurationRoot configuration)
     {
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRoatpV2ProviderQuery).Assembly));
-        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRelationshipsQuery).Assembly));
-
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRelationshipQuery).Assembly));
+        services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
         services.AddHttpClient();
 
         AddProviderRelationshipsApiClient(services, configuration);
