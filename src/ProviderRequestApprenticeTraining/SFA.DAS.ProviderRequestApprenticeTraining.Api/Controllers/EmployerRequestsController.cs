@@ -10,12 +10,14 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Linq;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateProviderResponseEmployerRequest;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmailAddresses;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
 using System.Collections.Generic;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequestsByIds;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitProviderResponse;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderResponseConfirmation;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.AcknowledgeEmployerRequests;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
 {
@@ -68,7 +70,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             }
         }
 
-        [HttpGet("provider/{ukprn}/aggregated")]
+        [HttpGet("provider/{ukprn}/active")]
         public async Task<IActionResult> GetAggregatedEmployerRequests(long ukprn)
         {
             try
@@ -106,12 +108,16 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             }
         }
 
-        [HttpPost("provider/responses")]
-        public async Task<IActionResult> CreateProviderResponse(CreateProviderResponseEmployerRequestCommand command)
+        [HttpPost("provider/{ukprn}/acknowledge-requests")]
+        public async Task<IActionResult> AcknowledgeEmployerRequests(long ukprn, AcknowledgeRequestsParameters parameters)
         {
             try
             {
-                await _mediator.Send(command);
+                await _mediator.Send(new AcknowledgeEmployerRequestsCommand
+                { 
+                    Ukprn = ukprn,
+                    EmployerRequestIds = parameters.EmployerRequestIds,
+                });
                 return Ok();
             }
             catch (Exception e)
@@ -162,45 +168,74 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
             }
         }
 
-        [HttpGet("provider/{ukprn}/website")]
-        public async Task<IActionResult> GetProviderWebsite(long ukprn)
+        [HttpGet("provider/{ukprn}/check-answers")]
+        public async Task<IActionResult> GetCheckYourAnswers(long ukprn, [FromQuery]List<Guid> employerRequestIds)
         {
             try
             {
-                var result = await _mediator.Send(new GetProviderWebsiteQuery()
-                {
-                    Ukprn = ukprn
-                });
-
-                var model = (ProviderWebsite)result;
-                return Ok(model);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error attempting to retrieve provider website");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
-        }
-
-        [HttpGet("")]
-        public async Task<IActionResult> GetEmployerRequestsByIds([FromQuery]List<Guid> employerRequestIds)
-        {
-            try
-            {
-                var result = await _mediator.Send(new GetEmployerRequestsByIdsQuery()
+                var requestsResult = await _mediator.Send(new GetEmployerRequestsByIdsQuery()
                 {
                     EmployerRequestIds = employerRequestIds,
                 });
 
-                var model = (EmployerRequests)result;
+                var websiteResult = await _mediator.Send(new GetProviderWebsiteQuery()
+                {
+                    Ukprn = ukprn
+                });
+
+                var model = (CheckYourAnswers)requestsResult;
+                model.Website = websiteResult.Website;
                 return Ok(model);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to retrieve employer requests by ids");
+                _logger.LogError(e, $"Error attempting to retrieve Check Your Answers");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
 
+        [HttpPost("provider/{ukprn}/submit-response")]
+        public async Task<IActionResult> SubmitProviderResponse(long ukprn, SubmitProviderResponseParameters parameters)
+        {
+            try
+            {
+                var result = await _mediator.Send(new SubmitProviderResponseCommand 
+                { 
+                    Ukprn = ukprn,
+                    CurrentUserEmail = parameters.CurrentUserEmail,
+                    Email = parameters.Email,
+                    EmployerRequestIds=parameters.EmployerRequestIds,
+                    Phone = parameters.Phone,
+                    Website = parameters.Website,
+                });
+                var model = (SubmitProviderResponse)result;
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to save provider response for Employer Requests ");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("providerresponse/{providerResponseId:guid}/confirmation")]
+        public async Task<IActionResult> GetProviderResponseConfirmation(Guid providerResponseId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetProviderResponseConfirmationQuery
+                {
+                    ProviderResponseId = providerResponseId
+                });
+
+                var model = (ProviderResponseConfirmation)result;
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to retrieve provider response confirmation");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }
