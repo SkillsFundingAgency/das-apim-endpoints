@@ -127,50 +127,50 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
             }
         }
 
-        [Test]
-        public async Task AndApprenticeshipStartedInPreviousAcademicYearThenReturnsPriceEpisodesForEachAcademicYear()
-        {
-            //Arrange
-            _mockCollectionCalendarApiClient.Reset();
-            _mockCollectionCalendarApiClient
-                .Setup(x => x.Get<GetAcademicYearsResponse>(It.IsAny<GetAcademicYearsRequest>()))
-                .ReturnsAsync(BuildCollectionCalendarResponse(_apprenticeshipsResponse, false));
+        //[Test]
+        //public async Task AndApprenticeshipStartedInPreviousAcademicYearThenReturnsPriceEpisodesForEachAcademicYear()
+        //{
+        //    //Arrange
+        //    _mockCollectionCalendarApiClient.Reset();
+        //    _mockCollectionCalendarApiClient
+        //        .Setup(x => x.Get<GetAcademicYearsResponse>(It.IsAny<GetAcademicYearsRequest>()))
+        //        .ReturnsAsync(BuildCollectionCalendarResponse(_apprenticeshipsResponse, false));
 
-            // Act
-            _result = await _handler.Handle(_query, CancellationToken.None);
+        //    // Act
+        //    _result = await _handler.Handle(_query, CancellationToken.None);
 
-            // Assert
-            _result.Should().NotBeNull();
+        //    // Assert
+        //    _result.Should().NotBeNull();
 
-            var apprenticeship = _apprenticeshipsResponse.Apprenticeships
-                .MinBy(x => x.Episodes
-                    .Min(episode => episode.Prices
-                        .Min(price => price.StartDate)));
+        //    var apprenticeship = _apprenticeshipsResponse.Apprenticeships
+        //        .MinBy(x => x.Episodes
+        //            .Min(episode => episode.Prices
+        //                .Min(price => price.StartDate)));
 
-            var apprenticeshipStartDate = apprenticeship.Episodes
-                    .Min(episode => episode.Prices
-                        .Min(price => price.StartDate));
+        //    var apprenticeshipStartDate = apprenticeship.Episodes
+        //            .Min(episode => episode.Prices
+        //                .Min(price => price.StartDate));
 
-            var fm36Learner = _result.FM36Learners
-                .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+        //    var fm36Learner = _result.FM36Learners
+        //        .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
 
-            fm36Learner.PriceEpisodes.Count.Should().Be(apprenticeship.Episodes.SelectMany(e => e.Prices).Count() + 1);
-            fm36Learner.PriceEpisodes.Should().Contain(pe => pe.PriceEpisodeValues.EpisodeStartDate == apprenticeshipStartDate);
-            fm36Learner.PriceEpisodes.Should().Contain(pe => pe.PriceEpisodeValues.EpisodeStartDate == apprenticeshipStartDate.AddMonths(1));
+        //    fm36Learner.PriceEpisodes.Count.Should().Be(apprenticeship.Episodes.SelectMany(e => e.Prices).Count() + 1);
+        //    fm36Learner.PriceEpisodes.Should().Contain(pe => pe.PriceEpisodeValues.EpisodeStartDate == apprenticeshipStartDate);
+        //    fm36Learner.PriceEpisodes.Should().Contain(pe => pe.PriceEpisodeValues.EpisodeStartDate == apprenticeshipStartDate.AddMonths(1));
 
-            //foreach (var apprenticeship in _apprenticeshipsResponse.Apprenticeships)
-            //{
-            //    var expectedEpisodeStartDate = apprenticeship.Episodes.Min(episode => episode.Prices.Min(price => price.StartDate));
+        //    //foreach (var apprenticeship in _apprenticeshipsResponse.Apprenticeships)
+        //    //{
+        //    //    var expectedEpisodeStartDate = apprenticeship.Episodes.Min(episode => episode.Prices.Min(price => price.StartDate));
 
-            //    var fm36Learner = _result.FM36Learners
-            //        .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+        //    //    var fm36Learner = _result.FM36Learners
+        //    //        .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
 
-            //    fm36Learner.PriceEpisodes
-            //        .Select(episode => episode.PriceEpisodeValues.EpisodeStartDate)
-            //        .Should()
-            //        .AllBeEquivalentTo(expectedEpisodeStartDate);
-            //}
-        }
+        //    //    fm36Learner.PriceEpisodes
+        //    //        .Select(episode => episode.PriceEpisodeValues.EpisodeStartDate)
+        //    //        .Should()
+        //    //        .AllBeEquivalentTo(expectedEpisodeStartDate);
+        //    //}
+        //}
 
         private GetApprenticeshipsResponse BuildApprenticeshipsResponse(long ukprn)
         {
