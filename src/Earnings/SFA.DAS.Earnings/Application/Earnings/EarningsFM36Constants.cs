@@ -16,4 +16,12 @@ public class EarningsFM36Constants
     public const bool FundStart = true;
     public const int LDApplic1618FrameworkUpliftTotalActEarnings = 0;
     public const string LearnAimRef = "ZPROG001";
+    public const int LearnDelApplicDisadvAmount = 0;
+    public const int LearnDelApplicEmp1618Incentive = 0;
+    public const int LearnDelApplicProv1618FrameworkUplift = 0;
+    public const int LearnDelApplicProv1618Incentive = 0;
+    public const int LearnDelDisadAmount = 0;
+    public const bool LearnDelEligDisadvPayment = false;
+    public static int? LearnDelEmpIdFirstAdditionalPaymentThreshold = null;
+    public static int? LearnDelEmpIdSecondAdditionalPaymentThreshold = null;
 }

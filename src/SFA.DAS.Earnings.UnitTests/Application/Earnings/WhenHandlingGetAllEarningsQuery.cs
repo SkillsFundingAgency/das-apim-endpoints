@@ -151,6 +151,9 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
 
             foreach (var apprenticeship in _apprenticeshipsResponse.Apprenticeships)
             {
+                var expectedPriceEpisodeStartDate = apprenticeship.StartDate > _collectionCalendarResponse.StartDate ? apprenticeship.StartDate : _collectionCalendarResponse.StartDate;
+                var expectedPriceEpisodeEndDate = apprenticeship.PlannedEndDate < _collectionCalendarResponse.EndDate ? apprenticeship.PlannedEndDate : _collectionCalendarResponse.EndDate;
+
                 var learningDelivery = _result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
                 learningDelivery.Should().NotBeNull();
                 learningDelivery.AimSeqNumber.Should().Be(1);
@@ -168,14 +171,23 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
                 learningDelivery.LearningDeliveryValues.LearnAimRef.Should().Be("ZPROG001");
                 learningDelivery.LearningDeliveryValues.LearnStartDate.Should().Be(apprenticeship.StartDate);
                 learningDelivery.LearningDeliveryValues.LearnDel1618AtStart.Should().Be(apprenticeship.AgeAtStartOfApprenticeship < 19);
-                learningDelivery.LearningDeliveryValues.LearnDelAppAccDaysIL.Should().Be(
-                    ((apprenticeship.PlannedEndDate < _collectionCalendarResponse.EndDate
-                        ? apprenticeship.PlannedEndDate
-                        : _collectionCalendarResponse.EndDate) - apprenticeship.StartDate).Days);
+                learningDelivery.LearningDeliveryValues.LearnDelAppAccDaysIL.Should().Be((expectedPriceEpisodeEndDate - apprenticeship.StartDate).Days);
+                learningDelivery.LearningDeliveryValues.LearnDelApplicDisadvAmount.Should().Be(0);
+                learningDelivery.LearningDeliveryValues.LearnDelApplicEmp1618Incentive.Should().Be(0);
+                learningDelivery.LearningDeliveryValues.LearnDelApplicEmpDate.Should().BeNull(); //TODO
+                learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618FrameworkUplift.Should().Be(0);
+                learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618Incentive.Should().Be(0);
+                learningDelivery.LearningDeliveryValues.LearnDelAppPrevAccDaysIL.Should().Be((expectedPriceEpisodeEndDate - expectedPriceEpisodeStartDate).Days);
+                learningDelivery.LearningDeliveryValues.LearnDelDisadAmount.Should().Be(0);
+                learningDelivery.LearningDeliveryValues.LearnDelEligDisadvPayment.Should().BeFalse();
+                learningDelivery.LearningDeliveryValues.LearnDelEmpIdFirstAdditionalPaymentThreshold.Should().BeNull();
+                learningDelivery.LearningDeliveryValues.LearnDelEmpIdSecondAdditionalPaymentThreshold.Should().BeNull();
+                learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().Be((DateTime.Now - expectedPriceEpisodeStartDate).Days);
+                //learningDelivery.LearningDeliveryValues.LearnDelHistProgEarnings
             }
 
-            DateTime minim;
-            minim = _collectionCalendarResponse.EndDate < DateTime.Now ? _collectionCalendarResponse.EndDate : DateTime.Now;
+            
+
         }
 
         //[Test]
@@ -378,6 +390,12 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
 
         private GetAcademicYearsResponse BuildCollectionCalendarResponse(GetApprenticeshipsResponse apprenticeshipsResponse, bool apprenticeshipStartedInCurrentAcademicYear = true)
         {
+            return new GetAcademicYearsResponse
+            {
+                StartDate = new DateTime(2020, 8, 1),
+                EndDate = new DateTime(2021, 7, 31)
+            };
+
             var earliestApprenticeshipStartDate = apprenticeshipsResponse.Apprenticeships
                 .Min(x => x.Episodes
                     .Min(episode => episode.Prices

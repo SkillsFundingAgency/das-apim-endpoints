@@ -81,8 +81,30 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                             LearnDel1618AtStart = apprenticeship.AgeAtStartOfApprenticeship < 19,
                             LearnDelAppAccDaysIL = ((apprenticeship.PlannedEndDate < currentAcademicYear.EndDate
                                 ? apprenticeship.PlannedEndDate
-                                : currentAcademicYear.EndDate) - apprenticeship.StartDate).Days
-        }
+                                : currentAcademicYear.EndDate) - apprenticeship.StartDate).Days,
+                            LearnDelApplicDisadvAmount = EarningsFM36Constants.LearnDelApplicDisadvAmount,
+                            LearnDelApplicEmp1618Incentive = EarningsFM36Constants.LearnDelApplicEmp1618Incentive,
+                            LearnDelApplicProv1618FrameworkUplift = EarningsFM36Constants.LearnDelApplicProv1618FrameworkUplift,
+                            LearnDelApplicProv1618Incentive = EarningsFM36Constants.LearnDelApplicProv1618Incentive,
+                            LearnDelAppPrevAccDaysIL = 
+                                ((apprenticeship.PlannedEndDate < currentAcademicYear.EndDate
+                                    ? apprenticeship.PlannedEndDate
+                                    : currentAcademicYear.EndDate)
+                                - (apprenticeship.StartDate > currentAcademicYear.StartDate
+                                    ? apprenticeship.StartDate
+                                    : currentAcademicYear.StartDate)).Days,
+                            LearnDelDisadAmount = EarningsFM36Constants.LearnDelDisadAmount,
+                            LearnDelEligDisadvPayment = EarningsFM36Constants.LearnDelEligDisadvPayment,
+                            LearnDelEmpIdFirstAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdFirstAdditionalPaymentThreshold,
+                            LearnDelEmpIdSecondAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdSecondAdditionalPaymentThreshold,
+
+                            //the below two values assume days in learning & amounts for previous academic years (any provider) are 0 for our beta learners as per FLP-862
+                            //but this logic will need expanding in the future
+                            LearnDelHistDaysThisApp = (DateTime.Now - (apprenticeship.StartDate > currentAcademicYear.StartDate //todo this will need updating if we want to time travel as above
+                                ? apprenticeship.StartDate
+                                : currentAcademicYear.StartDate)).Days
+                            //Learn
+                        }
                     }
                 }
                 //PriceEpisodes = apprenticeship.Episodes.Select(episode => new PriceEpisode
