@@ -29,7 +29,7 @@ public class WithdrawApplicationCommandHandler(
     {
         var application =
             await candidateApiClient.Get<GetApplicationApiResponse>(
-                new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
+                new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true));
 
         if (application is not { Status: ApplicationStatus.Submitted })
         {

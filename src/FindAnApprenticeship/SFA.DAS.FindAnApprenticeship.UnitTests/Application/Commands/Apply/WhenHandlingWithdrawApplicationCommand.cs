@@ -50,7 +50,7 @@ public class WhenHandlingWithdrawApplicationCommand
         applicationApiResponse.VacancyReference = $"VAC{vacancyRef}";
         applicationApiResponse.Status = ApplicationStatus.Submitted;
         var expectedGetApplicationRequest =
-            new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false);
+            new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true);
         candidateApiClient
             .Setup(x => x.Get<GetApplicationApiResponse>(
                 It.Is<GetApplicationApiRequest>(c => 
@@ -104,7 +104,7 @@ public class WhenHandlingWithdrawApplicationCommand
         applicationApiResponse.VacancyReference = $"VAC{vacancyRef}";
         applicationApiResponse.Status = ApplicationStatus.Withdrawn;
         var expectedGetApplicationRequest =
-            new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false);
+            new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true);
         candidateApiClient
             .Setup(x => x.Get<GetApplicationApiResponse>(
                 It.Is<GetApplicationApiRequest>(c => 
@@ -133,7 +133,7 @@ public class WhenHandlingWithdrawApplicationCommand
         WithdrawApplicationCommandHandler handler)
     {
         var expectedGetApplicationRequest =
-            new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false);
+            new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true);
         candidateApiClient
             .Setup(x => x.Get<GetApplicationApiResponse>(
                 It.Is<GetApplicationApiRequest>(c => 
@@ -165,7 +165,7 @@ public class WhenHandlingWithdrawApplicationCommand
         applicationApiResponse.VacancyReference = $"VAC{vacancyRef}";
         applicationApiResponse.Status = ApplicationStatus.Submitted;
         var expectedGetApplicationRequest =
-            new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false);
+            new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true);
         candidateApiClient
             .Setup(x => x.Get<GetApplicationApiResponse>(
                 It.Is<GetApplicationApiRequest>(c => 
