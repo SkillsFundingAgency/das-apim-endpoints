@@ -27,13 +27,9 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<ITrainingProviderService, TrainingProviderService>();
         services.AddTransient<IProviderService, ProviderService>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
-        services.AddTransient<IRoatpServiceApiClient<RoatpConfiguration>, RoatpServiceApiClient>();
 
         services.Configure<TrainingProviderConfiguration>(configuration.GetSection("TrainingProviderApi"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<TrainingProviderConfiguration>>().Value);
-
-        services.Configure<RoatpConfiguration>(configuration.GetSection("TrainingProviderApi"));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpConfiguration>>().Value);
     }
 }
 
