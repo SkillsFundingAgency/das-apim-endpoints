@@ -218,9 +218,67 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
                 learningDelivery.LearningDeliveryValues.LearnDelRedCode.Should().Be(0);
                 learningDelivery.LearningDeliveryValues.LearnDelRedStartDate.Should().Be(new DateTime(9999, 9, 9));
             }
+        }
 
-            
+        [Test]
+        public async Task ThenReturnsLearningDeliveryPeriodisedValuesForEachApprenticeship()
+        {
+            // Act
+            _result = await _handler.Handle(_query, CancellationToken.None);
 
+            // Assert
+            _result.Should().NotBeNull();
+
+            foreach (var apprenticeship in _apprenticeshipsResponse.Apprenticeships)
+            {
+                var expectedPriceEpisodeStartDate = apprenticeship.StartDate > _collectionCalendarResponse.StartDate ? apprenticeship.StartDate : _collectionCalendarResponse.StartDate;
+                var expectedPriceEpisodeEndDate = apprenticeship.PlannedEndDate < _collectionCalendarResponse.EndDate ? apprenticeship.PlannedEndDate : _collectionCalendarResponse.EndDate;
+                var earningApprenticeship = _earningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key);
+                var earningEpisode = _earningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+
+                var learningDelivery = _result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+                learningDelivery.Should().NotBeNull();
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "DisadvFirstPayment" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "DisadvSecondPayment" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "InstPerPeriod" && x.AllValuesAreSetToZero());//todo
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "LDApplic1618FrameworkUpliftBalancingPayment" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "LDApplic1618FrameworkUpliftCompletionPayment" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "LDApplic1618FrameworkUpliftOnProgPayment" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "LearnDelFirstEmp1618Pay" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "LearnDelFirstProv1618Pay" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "LearnDelLearnAddPayment" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "LearnDelLevyNonPayInd" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "LearnDelSecondEmp1618Pay" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "LearnDelSecondProv1618Pay" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "LearnDelSEMContWaiver" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "LearnDelESFAContribPct" && x.AllValuesAreSetTo(0.95m));
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "LearnSuppFund" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "LearnSuppFundCash" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "MathEngBalPayment" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "MathEngOnProgPayment" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "ProgrammeAimBalPayment" && x.AllValuesAreSetToZero());
+                learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "ProgrammeAimCompletionPayment" && x.AllValuesAreSetToZero());
+            }
         }
 
         //[Test]

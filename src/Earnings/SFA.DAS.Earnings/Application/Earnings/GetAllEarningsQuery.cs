@@ -132,6 +132,35 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                             LearnDelLearnerAddPayThresholdDate = EarningsFM36Constants.LearnDelLearnerAddPayThresholdDate,
                             LearnDelRedCode = EarningsFM36Constants.LearnDelRedCode,
                             LearnDelRedStartDate = EarningsFM36Constants.LearnDelRedStartDate
+                        },
+                        LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>
+                        {
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("DisadvFirstPayment", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("DisadvSecondPayment", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("InstPerPeriod", 0),//todo
+                            //new LearningDeliveryPeriodisedValues
+                            //{
+                            //    AttributeName = "InstPerPeriod",
+                            //    Period1 = model.earningsApprenticeship.Episodes.SelectMany(episode => episode.Instalments).Any(i => i.AcademicYear == int.Parse(currentAcademicYear.AcademicYear) && i.DeliveryPeriod == 1 && i.Amount != 0) ? 1 : 0,
+
+                            //},
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LDApplic1618FrameworkUpliftBalancingPayment", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LDApplic1618FrameworkUpliftCompletionPayment", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LDApplic1618FrameworkUpliftOnProgPayment", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LearnDelFirstEmp1618Pay", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LearnDelFirstProv1618Pay", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LearnDelLearnAddPayment", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LearnDelLevyNonPayInd", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LearnDelSecondEmp1618Pay", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LearnDelSecondProv1618Pay", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LearnDelSEMContWaiver", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LearnDelESFAContribPct", 0.95m),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LearnSuppFund", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LearnSuppFundCash", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("MathEngBalPayment", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("MathEngOnProgPayment", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("ProgrammeAimBalPayment", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("ProgrammeAimCompletionPayment", 0),
                         }
                     }
                 }
