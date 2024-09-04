@@ -102,8 +102,8 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                             //but this logic will need expanding in the future
                             LearnDelHistDaysThisApp = (DateTime.Now - (apprenticeship.StartDate > currentAcademicYear.StartDate //todo this will need updating if we want to time travel as above
                                 ? apprenticeship.StartDate
-                                : currentAcademicYear.StartDate)).Days
-                            //Learn
+                                : currentAcademicYear.StartDate)).Days,
+                            //LearnDelHistProgEarnings = earningsInnerModel
                         }
                     }
                 }
