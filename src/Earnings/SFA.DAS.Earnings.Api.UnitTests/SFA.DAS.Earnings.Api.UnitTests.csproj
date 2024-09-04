@@ -16,6 +16,7 @@
 	  <PackageReference Include="NUnit" />
 	  <PackageReference Include="NUnit3TestAdapter" />
 	  <PackageReference Include="coverlet.collector" />
+	  <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +25,10 @@
 
   <ItemGroup>
     <Using Include="NUnit.Framework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
