@@ -176,7 +176,6 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
                 learningDelivery.LearningDeliveryValues.LearnDelAppAccDaysIL.Should().Be((expectedPriceEpisodeEndDate - apprenticeship.StartDate).Days);
                 learningDelivery.LearningDeliveryValues.LearnDelApplicDisadvAmount.Should().Be(0);
                 learningDelivery.LearningDeliveryValues.LearnDelApplicEmp1618Incentive.Should().Be(0);
-                learningDelivery.LearningDeliveryValues.LearnDelApplicEmpDate.Should().BeNull(); //TODO
                 learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618FrameworkUplift.Should().Be(0);
                 learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618Incentive.Should().Be(0);
                 learningDelivery.LearningDeliveryValues.LearnDelAppPrevAccDaysIL.Should().Be((expectedPriceEpisodeEndDate - expectedPriceEpisodeStartDate).Days);
@@ -194,7 +193,30 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
                 learningDelivery.LearningDeliveryValues.LearnDelNonLevyProcured.Should().BeFalse();
                 learningDelivery.LearningDeliveryValues.MathEngAimValue.Should().Be(0);
                 learningDelivery.LearningDeliveryValues.OutstandNumOnProgInstalm.Should().BeNull();
-                //learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm.Should().Be();
+
+                var expectedPlannedTotalDays = (apprenticeship.PlannedEndDate - apprenticeship.StartDate).Days;
+                var expectedPlannedOnProgInstalments = 0;
+                for (var i = 0; i < expectedPlannedTotalDays; i++)
+                {
+                    if (apprenticeship.StartDate.AddDays(i).Day == DateTime.DaysInMonth(
+                            apprenticeship.StartDate.AddDays(i).Year, apprenticeship.StartDate.AddDays(i).Month))
+                        expectedPlannedOnProgInstalments++;
+                }
+
+                learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm.Should().Be(expectedPlannedOnProgInstalments);
+                learningDelivery.LearningDeliveryValues.PlannedTotalDaysIL.Should().Be(expectedPlannedTotalDays);
+                learningDelivery.LearningDeliveryValues.ProgType.Should().Be(25);
+                learningDelivery.LearningDeliveryValues.PwayCode.Should().BeNull();
+                learningDelivery.LearningDeliveryValues.SecondIncentiveThresholdDate.Should().BeNull();
+                learningDelivery.LearningDeliveryValues.StdCode.Should().Be(int.Parse(apprenticeship.Episodes.Single().TrainingCode));
+                learningDelivery.LearningDeliveryValues.ThresholdDays.Should().Be(42);
+                learningDelivery.LearningDeliveryValues.LearnDelApplicCareLeaverIncentive.Should().Be(0);
+                learningDelivery.LearningDeliveryValues.LearnDelHistDaysCareLeavers.Should().Be(0);
+                learningDelivery.LearningDeliveryValues.LearnDelAccDaysILCareLeavers.Should().Be(0);
+                learningDelivery.LearningDeliveryValues.LearnDelPrevAccDaysILCareLeavers.Should().Be(0);
+                learningDelivery.LearningDeliveryValues.LearnDelLearnerAddPayThresholdDate.Should().BeNull();
+                learningDelivery.LearningDeliveryValues.LearnDelRedCode.Should().Be(0);
+                learningDelivery.LearningDeliveryValues.LearnDelRedStartDate.Should().Be(new DateTime(9999, 9, 9));
             }
 
             

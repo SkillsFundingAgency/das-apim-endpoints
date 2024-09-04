@@ -1,5 +1,6 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using MediatR;
+using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
@@ -116,7 +117,21 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                             LearnDelProgEarliestACT2Date = EarningsFM36Constants.LearnDelProgEarliestACT2Date,
                             LearnDelNonLevyProcured = EarningsFM36Constants.LearnDelNonLevyProcured,
                             MathEngAimValue = EarningsFM36Constants.MathEngAimValue,
-                            OutstandNumOnProgInstalm = EarningsFM36Constants.OutstandNumOnProgInstalm
+                            OutstandNumOnProgInstalm = EarningsFM36Constants.OutstandNumOnProgInstalm,
+                            PlannedNumOnProgInstalm = model.apprenticeship.StartDate.GetNumberOfIncludedCensusDatesUntil(model.apprenticeship.PlannedEndDate),
+                            PlannedTotalDaysIL = (model.apprenticeship.PlannedEndDate - model.apprenticeship.StartDate).Days,
+                            ProgType = EarningsFM36Constants.ProgType,
+                            PwayCode = EarningsFM36Constants.PwayCode,
+                            SecondIncentiveThresholdDate = EarningsFM36Constants.SecondIncentiveThresholdDate,
+                            StdCode = int.TryParse(model.apprenticeship.Episodes.MinBy(x => x.Prices.Min(price => price.StartDate))?.TrainingCode, out int parsedTrainingCode) ? parsedTrainingCode : null,
+                            ThresholdDays = EarningsFM36Constants.ThresholdDays,
+                            LearnDelApplicCareLeaverIncentive = EarningsFM36Constants.LearnDelApplicCareLeaverIncentive,
+                            LearnDelHistDaysCareLeavers = EarningsFM36Constants.LearnDelHistDaysCareLeavers,
+                            LearnDelAccDaysILCareLeavers = EarningsFM36Constants.LearnDelAccDaysILCareLeavers,
+                            LearnDelPrevAccDaysILCareLeavers = EarningsFM36Constants.LearnDelPrevAccDaysILCareLeavers,
+                            LearnDelLearnerAddPayThresholdDate = EarningsFM36Constants.LearnDelLearnerAddPayThresholdDate,
+                            LearnDelRedCode = EarningsFM36Constants.LearnDelRedCode,
+                            LearnDelRedStartDate = EarningsFM36Constants.LearnDelRedStartDate
                         }
                     }
                 }

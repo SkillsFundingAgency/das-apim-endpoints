@@ -29,4 +29,15 @@ public class EarningsFM36Constants
     public const bool LearnDelNonLevyProcured = false;
     public const decimal MathEngAimValue = 0;
     public static int? OutstandNumOnProgInstalm = null;
+    public const int ProgType = 25;
+    public static int? PwayCode = null;
+    public static DateTime? SecondIncentiveThresholdDate = null;
+    public const int ThresholdDays = 42;
+    public const decimal LearnDelApplicCareLeaverIncentive = 0;
+    public const int LearnDelHistDaysCareLeavers = 0;
+    public const int LearnDelAccDaysILCareLeavers = 0;
+    public const int LearnDelPrevAccDaysILCareLeavers = 0;
+    public static DateTime? LearnDelLearnerAddPayThresholdDate = null;
+    public const int LearnDelRedCode = 0;
+    public static DateTime? LearnDelRedStartDate = new DateTime(9999, 9, 9);
 }
