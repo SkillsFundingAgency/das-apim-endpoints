@@ -173,8 +173,12 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                             LearningDeliveryPeriodisedValuesBuilder.BuildCoInvestmentValues(
                                 model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), "ProgrammeAimProgFundIndMinCoInvest", EarningsFM36Constants.CoInvestSfaMultiplier),
                             LearningDeliveryPeriodisedValuesBuilder.BuildInstallmentAmountValues(
-                                model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), "ProgrammeAimTotProgFund"),
-
+                                model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), "ProgrammeAimTotProgFund")
+                        },
+                        LearningDeliveryPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>
+                        {
+                            LearningDeliveryPeriodisedTextValuesBuilder.BuildWithSameValues("FundLineType", model.earningsApprenticeship.FundingLineType),
+                            LearningDeliveryPeriodisedTextValuesBuilder.BuildWithSameValues("LearnDelContType", EarningsFM36Constants.LearnDelContType)
                         }
                     }
                 }

@@ -450,6 +450,29 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
             }
         }
 
+        [Test]
+        public async Task ThenReturnsLearningDeliveryPeriodisedTextValuesForEachApprenticeship()
+        {
+            // Act
+            _result = await _handler.Handle(_query, CancellationToken.None);
+
+            // Assert
+            _result.Should().NotBeNull();
+
+            foreach (var apprenticeship in _apprenticeshipsResponse.Apprenticeships)
+            {
+                var earningsApprenticeship = _earningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key);
+
+                var learningDelivery = _result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+                learningDelivery.Should().NotBeNull();
+                learningDelivery.LearningDeliveryPeriodisedTextValues.Should().NotBeNull();
+                learningDelivery.LearningDeliveryPeriodisedTextValues.Should().Contain(x =>
+                    x.AttributeName == "FundLineType" && x.AllValuesAreSetTo(earningsApprenticeship.FundingLineType));
+                learningDelivery.LearningDeliveryPeriodisedTextValues.Should().Contain(x =>
+                    x.AttributeName == "LearnDelContType" && x.AllValuesAreSetTo("ACT1"));
+            }
+        }
+
         //[Test]
         //public async Task AndApprenticeshipStartedInPreviousAcademicYearThenReturnsPriceEpisodesForEachAcademicYear()
         //{

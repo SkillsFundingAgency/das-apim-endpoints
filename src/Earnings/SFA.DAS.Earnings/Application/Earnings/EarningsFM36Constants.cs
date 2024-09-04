@@ -41,6 +41,9 @@ public class EarningsFM36Constants
     public const int LearnDelRedCode = 0;
     public static DateTime? LearnDelRedStartDate = new DateTime(9999, 9, 9);
 
+    //LearningDeliveryPeriodisedTextValues
+    public const string LearnDelContType = "ACT1";
+
     //CoInvestment Multipliers
     public const decimal CoInvestEmployerMultiplier = 0.05m;
     public const decimal CoInvestSfaMultiplier = 0.95m;
