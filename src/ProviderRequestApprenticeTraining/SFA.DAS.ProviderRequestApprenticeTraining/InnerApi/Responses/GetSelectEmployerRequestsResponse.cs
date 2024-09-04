@@ -18,6 +18,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses
         public bool AtApprenticesWorkplace { get; set; }
         public bool IsNew { get; set; }
         public bool IsContacted { get; set; }
+        public DateTime? DateContacted { get; set; }
         public List<string> Locations { get; set; }
     }
 }
