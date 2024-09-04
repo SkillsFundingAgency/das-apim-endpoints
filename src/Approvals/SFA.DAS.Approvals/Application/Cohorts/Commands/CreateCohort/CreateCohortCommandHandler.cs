@@ -11,14 +11,24 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
     public class CreateCohortCommandHandler : IRequestHandler<CreateCohortCommand, CreateCohortResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        
-        public CreateCohortCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
+        private readonly IReservationApiClient<ReservationApiConfiguration> _reservationsApiClient;
+
+        public CreateCohortCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, IReservationApiClient<ReservationApiConfiguration> reservationsApiClient)
         {
             _apiClient = apiClient;
+            _reservationsApiClient = reservationsApiClient;
         }
 
         public async Task<CreateCohortResult> Handle(CreateCohortCommand request, CancellationToken cancellationToken)
         {
+
+            if (!request.ReservationId.HasValue)
+            {
+
+            }
+
+
+
             var createCohortRequest = new CreateCohortRequest
             {
                 AccountId = request.AccountId,
