@@ -153,6 +153,7 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
             {
                 var expectedPriceEpisodeStartDate = apprenticeship.StartDate > _collectionCalendarResponse.StartDate ? apprenticeship.StartDate : _collectionCalendarResponse.StartDate;
                 var expectedPriceEpisodeEndDate = apprenticeship.PlannedEndDate < _collectionCalendarResponse.EndDate ? apprenticeship.PlannedEndDate : _collectionCalendarResponse.EndDate;
+                var earningApprenticeship = _earningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key);
                 var earningEpisode = _earningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
 
                 var learningDelivery = _result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
@@ -184,9 +185,16 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
                 learningDelivery.LearningDeliveryValues.LearnDelEmpIdFirstAdditionalPaymentThreshold.Should().BeNull();
                 learningDelivery.LearningDeliveryValues.LearnDelEmpIdSecondAdditionalPaymentThreshold.Should().BeNull();
                 learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().Be((DateTime.Now - expectedPriceEpisodeStartDate).Days);
-                //learningDelivery.LearningDeliveryValues.LearnDelHistProgEarnings.Should().Be(earningEpisode.Instalments
-                //    .Where(i => i.AcademicYear == short.Parse(_collectionCalendarResponse.AcademicYear))
-                //    .Sum(i => i.Amount));
+                learningDelivery.LearningDeliveryValues.LearnDelHistProgEarnings.Should().Be(earningEpisode.Instalments
+                    .Where(i => i.AcademicYear == short.Parse(_collectionCalendarResponse.AcademicYear))
+                    .Sum(i => i.Amount));
+                learningDelivery.LearningDeliveryValues.LearnDelInitialFundLineType.Should().Be(earningApprenticeship.FundingLineType);
+                learningDelivery.LearningDeliveryValues.LearnDelMathEng.Should().BeFalse();
+                learningDelivery.LearningDeliveryValues.LearnDelProgEarliestACT2Date.Should().BeNull();
+                learningDelivery.LearningDeliveryValues.LearnDelNonLevyProcured.Should().BeFalse();
+                learningDelivery.LearningDeliveryValues.MathEngAimValue.Should().Be(0);
+                learningDelivery.LearningDeliveryValues.OutstandNumOnProgInstalm.Should().BeNull();
+                //learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm.Should().Be();
             }
 
             

@@ -24,4 +24,9 @@ public class EarningsFM36Constants
     public const bool LearnDelEligDisadvPayment = false;
     public static int? LearnDelEmpIdFirstAdditionalPaymentThreshold = null;
     public static int? LearnDelEmpIdSecondAdditionalPaymentThreshold = null;
+    public const bool LearnDelMathEng = false;
+    public static DateTime? LearnDelProgEarliestACT2Date = null;
+    public const bool LearnDelNonLevyProcured = false;
+    public const decimal MathEngAimValue = 0;
+    public static int? OutstandNumOnProgInstalm = null;
 }

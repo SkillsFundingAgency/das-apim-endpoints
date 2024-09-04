@@ -8,6 +8,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using Apprenticeship = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Apprenticeship;
 
 
 namespace SFA.DAS.Earnings.Application.Earnings;
@@ -48,11 +49,13 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
         
         var result = new GetAllEarningsQueryResult
         {
-            FM36Learners = apprenticeshipInnerModel.Apprenticeships.Select(apprenticeship => new FM36Learner
+            FM36Learners = apprenticeshipInnerModel.Apprenticeships
+                .Join(earningsInnerModel, a => a.Key, e => e.Key, (apprenticeship,earningsApprenticeship) => new { apprenticeship, earningsApprenticeship })
+                .Select(model => new FM36Learner
             {
-                ULN = long.Parse(apprenticeship.Uln),
+                ULN = long.Parse(model.apprenticeship.Uln),
                 LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
-                PriceEpisodes = apprenticeship.Episodes.SelectMany(episode => episode.Prices, (episode, price) => new PriceEpisode
+                PriceEpisodes = model.apprenticeship.Episodes.SelectMany(episode => episode.Prices, (episode, price) => new PriceEpisode
                 {
                     PriceEpisodeIdentifier = $"25-{episode.TrainingCode}-{price.StartDate:dd/MM/yyyy}",
                     PriceEpisodeValues = new PriceEpisodeValues
@@ -68,30 +71,30 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                         LearningDeliveryValues = new LearningDeliveryValues
                         {
                             ActualDaysIL = EarningsFM36Constants.ActualDaysIL,
-                            AdjStartDate = apprenticeship.StartDate,
-                            AgeAtProgStart = apprenticeship.AgeAtStartOfApprenticeship,
-                            AppAdjLearnStartDate = apprenticeship.StartDate,
+                            AdjStartDate = model.apprenticeship.StartDate,
+                            AgeAtProgStart = model.apprenticeship.AgeAtStartOfApprenticeship,
+                            AppAdjLearnStartDate = model.apprenticeship.StartDate,
                             ApplicCompDate = EarningsFM36Constants.ApplicCompDate,
                             CombinedAdjProp = EarningsFM36Constants.CombinedAdjProp,
                             Completed = EarningsFM36Constants.Completed,
                             FundStart = EarningsFM36Constants.FundStart,
                             LDApplic1618FrameworkUpliftTotalActEarnings = EarningsFM36Constants.LDApplic1618FrameworkUpliftTotalActEarnings,
                             LearnAimRef = EarningsFM36Constants.LearnAimRef,
-                            LearnStartDate = apprenticeship.StartDate,
-                            LearnDel1618AtStart = apprenticeship.AgeAtStartOfApprenticeship < 19,
-                            LearnDelAppAccDaysIL = ((apprenticeship.PlannedEndDate < currentAcademicYear.EndDate
-                                ? apprenticeship.PlannedEndDate
-                                : currentAcademicYear.EndDate) - apprenticeship.StartDate).Days,
+                            LearnStartDate = model.apprenticeship.StartDate,
+                            LearnDel1618AtStart = model.apprenticeship.AgeAtStartOfApprenticeship < 19,
+                            LearnDelAppAccDaysIL = ((model.apprenticeship.PlannedEndDate < currentAcademicYear.EndDate
+                                ? model.apprenticeship.PlannedEndDate
+                                : currentAcademicYear.EndDate) - model.apprenticeship.StartDate).Days,
                             LearnDelApplicDisadvAmount = EarningsFM36Constants.LearnDelApplicDisadvAmount,
                             LearnDelApplicEmp1618Incentive = EarningsFM36Constants.LearnDelApplicEmp1618Incentive,
                             LearnDelApplicProv1618FrameworkUplift = EarningsFM36Constants.LearnDelApplicProv1618FrameworkUplift,
                             LearnDelApplicProv1618Incentive = EarningsFM36Constants.LearnDelApplicProv1618Incentive,
                             LearnDelAppPrevAccDaysIL = 
-                                ((apprenticeship.PlannedEndDate < currentAcademicYear.EndDate
-                                    ? apprenticeship.PlannedEndDate
+                                ((model.apprenticeship.PlannedEndDate < currentAcademicYear.EndDate
+                                    ? model.apprenticeship.PlannedEndDate
                                     : currentAcademicYear.EndDate)
-                                - (apprenticeship.StartDate > currentAcademicYear.StartDate
-                                    ? apprenticeship.StartDate
+                                - (model.apprenticeship.StartDate > currentAcademicYear.StartDate
+                                    ? model.apprenticeship.StartDate
                                     : currentAcademicYear.StartDate)).Days,
                             LearnDelDisadAmount = EarningsFM36Constants.LearnDelDisadAmount,
                             LearnDelEligDisadvPayment = EarningsFM36Constants.LearnDelEligDisadvPayment,
@@ -100,10 +103,20 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
 
                             //the below two values assume days in learning & amounts for previous academic years (any provider) are 0 for our beta learners as per FLP-862
                             //but this logic will need expanding in the future
-                            LearnDelHistDaysThisApp = (DateTime.Now - (apprenticeship.StartDate > currentAcademicYear.StartDate //todo this will need updating if we want to time travel as above
-                                ? apprenticeship.StartDate
+                            LearnDelHistDaysThisApp = (DateTime.Now - (model.apprenticeship.StartDate > currentAcademicYear.StartDate //todo this will need updating if we want to time travel as above
+                                ? model.apprenticeship.StartDate
                                 : currentAcademicYear.StartDate)).Days,
-                            //LearnDelHistProgEarnings = earningsInnerModel
+                            LearnDelHistProgEarnings = model.earningsApprenticeship.Episodes
+                                .SelectMany(episode => episode.Instalments)
+                                .Where(instalment => instalment.AcademicYear == short.Parse(currentAcademicYear.AcademicYear))
+                                .Sum(instalment => instalment.Amount),
+
+                            LearnDelInitialFundLineType = model.earningsApprenticeship.FundingLineType,
+                            LearnDelMathEng = EarningsFM36Constants.LearnDelMathEng,
+                            LearnDelProgEarliestACT2Date = EarningsFM36Constants.LearnDelProgEarliestACT2Date,
+                            LearnDelNonLevyProcured = EarningsFM36Constants.LearnDelNonLevyProcured,
+                            MathEngAimValue = EarningsFM36Constants.MathEngAimValue,
+                            OutstandNumOnProgInstalm = EarningsFM36Constants.OutstandNumOnProgInstalm
                         }
                     }
                 }
