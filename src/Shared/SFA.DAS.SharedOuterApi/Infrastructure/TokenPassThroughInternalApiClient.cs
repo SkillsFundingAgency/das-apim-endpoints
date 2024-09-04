@@ -34,8 +34,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
                              _httpContextAccessor.HttpContext.Request.Headers.Authorization.FirstOrDefault();
             if (authHeader != null)
             {
-                //todo do not merge this line
-                _logger.LogWarning("TokenPassThroughInternalApiClient authHeader - {0}", authHeader);
                 httpRequestMessage.Headers.Add("Authorization", authHeader);
             }
             else
