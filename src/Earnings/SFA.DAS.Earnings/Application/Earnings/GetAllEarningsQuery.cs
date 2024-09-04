@@ -24,6 +24,17 @@ public class GetAllEarningsQueryResult
     public FM36Learner[] FM36Learners { get; set; }
 }
 
+public static class GetAcademicYearsResponseExtensions
+{
+    public static short GetShortAcademicYear(this GetAcademicYearsResponse response)
+    {
+        if (!short.TryParse(response.AcademicYear, out var result))
+            throw new ArgumentException("Failed to parse year from academic year response", nameof(response));
+
+        return result;
+    }
+}
+
 public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, GetAllEarningsQueryResult>
 {
     private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apprenticeshipsApiClient;
@@ -109,7 +120,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                                 : currentAcademicYear.StartDate)).Days,
                             LearnDelHistProgEarnings = model.earningsApprenticeship.Episodes
                                 .SelectMany(episode => episode.Instalments)
-                                .Where(instalment => instalment.AcademicYear == short.Parse(currentAcademicYear.AcademicYear))
+                                .Where(instalment => instalment.AcademicYear == currentAcademicYear.GetShortAcademicYear())
                                 .Sum(instalment => instalment.Amount),
 
                             LearnDelInitialFundLineType = model.earningsApprenticeship.FundingLineType,
@@ -137,13 +148,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                         {
                             LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("DisadvFirstPayment", 0),
                             LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("DisadvSecondPayment", 0),
-                            LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("InstPerPeriod", 0),//todo
-                            //new LearningDeliveryPeriodisedValues
-                            //{
-                            //    AttributeName = "InstPerPeriod",
-                            //    Period1 = model.earningsApprenticeship.Episodes.SelectMany(episode => episode.Instalments).Any(i => i.AcademicYear == int.Parse(currentAcademicYear.AcademicYear) && i.DeliveryPeriod == 1 && i.Amount != 0) ? 1 : 0,
-
-                            //},
+                            LearningDeliveryPeriodisedValuesBuilder.BuildInstPerPeriodValues(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear()),
                             LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LDApplic1618FrameworkUpliftBalancingPayment", 0),
                             LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LDApplic1618FrameworkUpliftCompletionPayment", 0),
                             LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("LDApplic1618FrameworkUpliftOnProgPayment", 0),
@@ -161,6 +166,15 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                             LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("MathEngOnProgPayment", 0),
                             LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("ProgrammeAimBalPayment", 0),
                             LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues("ProgrammeAimCompletionPayment", 0),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildInstallmentAmountValues(
+                                model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), "ProgrammeAimOnProgPayment"),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildCoInvestmentValues(
+                                model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), "ProgrammeAimProgFundIndMaxEmpCont", EarningsFM36Constants.CoInvestEmployerMultiplier),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildCoInvestmentValues(
+                                model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), "ProgrammeAimProgFundIndMinCoInvest", EarningsFM36Constants.CoInvestSfaMultiplier),
+                            LearningDeliveryPeriodisedValuesBuilder.BuildInstallmentAmountValues(
+                                model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), "ProgrammeAimTotProgFund"),
+
                         }
                     }
                 }

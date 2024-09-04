@@ -221,7 +221,7 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
         }
 
         [Test]
-        public async Task ThenReturnsLearningDeliveryPeriodisedValuesForEachApprenticeship()
+        public async Task ThenReturnsDefaultedLearningDeliveryPeriodisedValuesForEachApprenticeship()
         {
             // Act
             _result = await _handler.Handle(_query, CancellationToken.None);
@@ -231,19 +231,12 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
 
             foreach (var apprenticeship in _apprenticeshipsResponse.Apprenticeships)
             {
-                var expectedPriceEpisodeStartDate = apprenticeship.StartDate > _collectionCalendarResponse.StartDate ? apprenticeship.StartDate : _collectionCalendarResponse.StartDate;
-                var expectedPriceEpisodeEndDate = apprenticeship.PlannedEndDate < _collectionCalendarResponse.EndDate ? apprenticeship.PlannedEndDate : _collectionCalendarResponse.EndDate;
-                var earningApprenticeship = _earningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key);
-                var earningEpisode = _earningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
-
                 var learningDelivery = _result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
                 learningDelivery.Should().NotBeNull();
                 learningDelivery.LearningDeliveryPeriodisedValues.Should()
                     .Contain(x => x.AttributeName == "DisadvFirstPayment" && x.AllValuesAreSetToZero());
                 learningDelivery.LearningDeliveryPeriodisedValues.Should()
                     .Contain(x => x.AttributeName == "DisadvSecondPayment" && x.AllValuesAreSetToZero());
-                learningDelivery.LearningDeliveryPeriodisedValues.Should()
-                    .Contain(x => x.AttributeName == "InstPerPeriod" && x.AllValuesAreSetToZero());//todo
                 learningDelivery.LearningDeliveryPeriodisedValues.Should()
                     .Contain(x => x.AttributeName == "LDApplic1618FrameworkUpliftBalancingPayment" && x.AllValuesAreSetToZero());
                 learningDelivery.LearningDeliveryPeriodisedValues.Should()
@@ -278,6 +271,182 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
                     .Contain(x => x.AttributeName == "ProgrammeAimBalPayment" && x.AllValuesAreSetToZero());
                 learningDelivery.LearningDeliveryPeriodisedValues.Should()
                     .Contain(x => x.AttributeName == "ProgrammeAimCompletionPayment" && x.AllValuesAreSetToZero());
+            }
+        }
+
+        [Test]
+        public async Task ThenReturnsInstPerPeriodValuesForEachApprenticeship()
+        {
+            // Act
+            _result = await _handler.Handle(_query, CancellationToken.None);
+
+            // Assert
+            _result.Should().NotBeNull();
+
+            foreach (var apprenticeship in _apprenticeshipsResponse.Apprenticeships)
+            {
+                var earningEpisode = _earningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+                var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(_collectionCalendarResponse.AcademicYear)).ToList();
+
+                var learningDelivery = _result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+                learningDelivery.Should().NotBeNull();
+                learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
+                var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "InstPerPeriod");
+                result.Should().NotBeNull();
+                result.Period1.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 1 && i.Amount != 0) ? 1 : 0);
+                result.Period2.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 2 && i.Amount != 0) ? 1 : 0);
+                result.Period3.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 3 && i.Amount != 0) ? 1 : 0);
+                result.Period4.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 4 && i.Amount != 0) ? 1 : 0);
+                result.Period5.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 5 && i.Amount != 0) ? 1 : 0);
+                result.Period6.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 6 && i.Amount != 0) ? 1 : 0);
+                result.Period7.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 7 && i.Amount != 0) ? 1 : 0);
+                result.Period8.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 8 && i.Amount != 0) ? 1 : 0);
+                result.Period9.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 9 && i.Amount != 0) ? 1 : 0);
+                result.Period10.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 10 && i.Amount != 0) ? 1 : 0);
+                result.Period11.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 11 && i.Amount != 0) ? 1 : 0);
+                result.Period12.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 12 && i.Amount != 0) ? 1 : 0);
+            }
+        }
+
+        [Test]
+        public async Task ThenReturnsProgrammeAimOnProgPaymentValuesForEachApprenticeship()
+        {
+            // Act
+            _result = await _handler.Handle(_query, CancellationToken.None);
+
+            // Assert
+            _result.Should().NotBeNull();
+
+            foreach (var apprenticeship in _apprenticeshipsResponse.Apprenticeships)
+            {
+                var earningEpisode = _earningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+                var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(_collectionCalendarResponse.AcademicYear)).ToList();
+
+                var learningDelivery = _result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+                learningDelivery.Should().NotBeNull();
+                learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
+                var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimOnProgPayment");
+                result.Should().NotBeNull();
+                result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault());
+                result.Period2.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount).GetValueOrDefault());
+                result.Period3.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount).GetValueOrDefault());
+                result.Period4.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount).GetValueOrDefault());
+                result.Period5.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount).GetValueOrDefault());
+                result.Period6.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount).GetValueOrDefault());
+                result.Period7.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount).GetValueOrDefault());
+                result.Period8.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount).GetValueOrDefault());
+                result.Period9.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount).GetValueOrDefault());
+                result.Period10.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount).GetValueOrDefault());
+                result.Period11.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount).GetValueOrDefault());
+                result.Period12.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount).GetValueOrDefault());
+            }
+        }
+
+        [Test]
+        public async Task ThenReturnsProgrammeAimProgFundIndMaxEmpContValuesForEachApprenticeship()
+        {
+            // Act
+            _result = await _handler.Handle(_query, CancellationToken.None);
+
+            // Assert
+            _result.Should().NotBeNull();
+
+            foreach (var apprenticeship in _apprenticeshipsResponse.Apprenticeships)
+            {
+                var earningEpisode = _earningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+                var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(_collectionCalendarResponse.AcademicYear)).ToList();
+
+                var learningDelivery = _result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+                learningDelivery.Should().NotBeNull();
+                learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
+                var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimProgFundIndMaxEmpCont");
+                result.Should().NotBeNull();
+
+                var expectedCoInvestEmployerPercentage = 0.05m;
+
+                result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+                result.Period2.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+                result.Period3.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+                result.Period4.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+                result.Period5.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+                result.Period6.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+                result.Period7.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+                result.Period8.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+                result.Period9.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+                result.Period10.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+                result.Period11.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+                result.Period12.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+            }
+        }
+
+        [Test]
+        public async Task ThenReturnsProgrammeAimProgFundIndMinCoInvestValuesForEachApprenticeship()
+        {
+            // Act
+            _result = await _handler.Handle(_query, CancellationToken.None);
+
+            // Assert
+            _result.Should().NotBeNull();
+
+            foreach (var apprenticeship in _apprenticeshipsResponse.Apprenticeships)
+            {
+                var earningEpisode = _earningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+                var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(_collectionCalendarResponse.AcademicYear)).ToList();
+
+                var learningDelivery = _result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+                learningDelivery.Should().NotBeNull();
+                learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
+                var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimProgFundIndMinCoInvest");
+                result.Should().NotBeNull();
+
+                var expectedCoInvestSfaPercentage = 0.95m;
+
+                result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+                result.Period2.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+                result.Period3.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+                result.Period4.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+                result.Period5.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+                result.Period6.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+                result.Period7.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+                result.Period8.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+                result.Period9.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+                result.Period10.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+                result.Period11.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+                result.Period12.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+            }
+        }
+
+        [Test]
+        public async Task ThenReturnsProgrammeAimTotProgFundValuesForEachApprenticeship()
+        {
+            // Act
+            _result = await _handler.Handle(_query, CancellationToken.None);
+
+            // Assert
+            _result.Should().NotBeNull();
+
+            foreach (var apprenticeship in _apprenticeshipsResponse.Apprenticeships)
+            {
+                var earningEpisode = _earningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+                var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(_collectionCalendarResponse.AcademicYear)).ToList();
+
+                var learningDelivery = _result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+                learningDelivery.Should().NotBeNull();
+                learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
+                var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimTotProgFund");
+                result.Should().NotBeNull();
+                result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault());
+                result.Period2.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount).GetValueOrDefault());
+                result.Period3.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount).GetValueOrDefault());
+                result.Period4.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount).GetValueOrDefault());
+                result.Period5.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount).GetValueOrDefault());
+                result.Period6.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount).GetValueOrDefault());
+                result.Period7.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount).GetValueOrDefault());
+                result.Period8.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount).GetValueOrDefault());
+                result.Period9.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount).GetValueOrDefault());
+                result.Period10.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount).GetValueOrDefault());
+                result.Period11.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount).GetValueOrDefault());
+                result.Period12.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount).GetValueOrDefault());
             }
         }
 
