@@ -3,8 +3,10 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.ProviderFeedback.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 
@@ -22,6 +24,16 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>, EmployerFeedbackApiClient>();
         services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
+        services.AddTransient<ITrainingProviderService, TrainingProviderService>();
+        services.AddTransient<IProviderService, ProviderService>();
+        services.AddTransient<ICacheStorageService, CacheStorageService>();
+        services.AddTransient<IRoatpServiceApiClient<RoatpConfiguration>, RoatpServiceApiClient>();
+
+        services.Configure<TrainingProviderConfiguration>(configuration.GetSection("TrainingProviderApi"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<TrainingProviderConfiguration>>().Value);
+
+        services.Configure<RoatpConfiguration>(configuration.GetSection("TrainingProviderApi"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpConfiguration>>().Value);
     }
 }
 
