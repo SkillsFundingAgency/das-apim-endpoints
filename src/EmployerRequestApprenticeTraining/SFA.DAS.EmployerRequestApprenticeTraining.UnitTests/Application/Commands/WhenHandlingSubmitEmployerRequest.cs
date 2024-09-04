@@ -4,10 +4,10 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SubmitEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Configuration;
+using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -17,7 +17,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using static SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining.SubmitEmployerRequestRequest;
+using static SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests.PostSubmitEmployerRequestRequest;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Commands
 {
@@ -57,14 +57,14 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
             // Arrange
             var response = new ApiResponse<SubmitEmployerRequestResponse>(new SubmitEmployerRequestResponse(), HttpStatusCode.Created, errorContent);
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<SubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<SubmitEmployerRequestRequest>(), It.IsAny<bool>()))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<PostSubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<PostSubmitEmployerRequestRequest>(), It.IsAny<bool>()))
                 .ReturnsAsync(response);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _mockApiClient.Verify(c => c.PostWithResponseCode<SubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<SubmitEmployerRequestRequest>(), It.IsAny<bool>()), Times.Once);
+            _mockApiClient.Verify(c => c.PostWithResponseCode<PostSubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<PostSubmitEmployerRequestRequest>(), It.IsAny<bool>()), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -72,10 +72,10 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
         {
             // Arrange
             var response = new ApiResponse<SubmitEmployerRequestResponse>(new SubmitEmployerRequestResponse(), HttpStatusCode.Created, errorContent);
-            IPostApiRequest<SubmitEmployerRequestData> submittedRequest = null;
+            IPostApiRequest<PostSubmitEmployerRequestData> submittedRequest = null;
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<SubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<SubmitEmployerRequestRequest>(), It.IsAny<bool>()))
-                .Callback<IPostApiRequest<SubmitEmployerRequestData>, bool>((x, y) => submittedRequest = x)
+            _mockApiClient.Setup(c => c.PostWithResponseCode<PostSubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<PostSubmitEmployerRequestRequest>(), It.IsAny<bool>()))
+                .Callback<IPostApiRequest<PostSubmitEmployerRequestData>, bool>((x, y) => submittedRequest = x)
                 .ReturnsAsync(response);
 
             // Act
@@ -99,7 +99,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
         {
             var response = new ApiResponse<SubmitEmployerRequestResponse>(null, statusCode, errorContent);
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<SubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<SubmitEmployerRequestRequest>(), true))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<PostSubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<PostSubmitEmployerRequestRequest>(), true))
                 .ReturnsAsync(response);
 
             Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
@@ -112,7 +112,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
         {
             // Arrange
             var apiResponse = new ApiResponse<SubmitEmployerRequestResponse>(response, HttpStatusCode.Created, errorContent);
-            _mockApiClient.Setup(c => c.PostWithResponseCode<SubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<SubmitEmployerRequestRequest>(), It.IsAny<bool>()))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<PostSubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<PostSubmitEmployerRequestRequest>(), It.IsAny<bool>()))
                 .ReturnsAsync(apiResponse);
 
             var templateId = _mockOptions.Object.Value.NotificationTemplates.First().TemplateId.ToString();
@@ -129,7 +129,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
         {
             // Arrange
             var apiResponse = new ApiResponse<SubmitEmployerRequestResponse>(response, HttpStatusCode.Created, errorContent);
-            _mockApiClient.Setup(c => c.PostWithResponseCode<SubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<SubmitEmployerRequestRequest>(), It.IsAny<bool>()))
+            _mockApiClient.Setup(c => c.PostWithResponseCode<PostSubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<PostSubmitEmployerRequestRequest>(), It.IsAny<bool>()))
                 .ReturnsAsync(apiResponse);
 
             var emptyNotificationTemplates = new EmployerRequestApprenticeTrainingConfiguration

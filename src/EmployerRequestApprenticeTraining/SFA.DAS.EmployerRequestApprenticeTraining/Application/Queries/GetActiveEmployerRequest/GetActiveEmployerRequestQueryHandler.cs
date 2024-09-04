@@ -10,28 +10,28 @@ using System.Threading.Tasks;
 
 using EmployerRequest = SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Responses.EmployerRequest;
 
-namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest
+namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetActiveEmployerRequest
 {
-    public class GetEmployerRequestQueryHandler : IRequestHandler<GetEmployerRequestQuery, GetEmployerRequestResult>
+    public class GetActiveEmployerRequestQueryHandler : IRequestHandler<GetActiveEmployerRequestQuery, GetActiveEmployerRequestResult>
     {
         private readonly IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration> _requestApprenticeTrainingApiClient;
 
-        public GetEmployerRequestQueryHandler(IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration> requestApprenticeTrainingApiClient)
+        public GetActiveEmployerRequestQueryHandler(IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration> requestApprenticeTrainingApiClient)
         {
             _requestApprenticeTrainingApiClient = requestApprenticeTrainingApiClient;
         }
 
-        public async Task<GetEmployerRequestResult> Handle(GetEmployerRequestQuery request, CancellationToken cancellationToken)
+        public async Task<GetActiveEmployerRequestResult> Handle(GetActiveEmployerRequestQuery request, CancellationToken cancellationToken)
         {
             ApiResponse<EmployerRequest> employerRequest = await _requestApprenticeTrainingApiClient.
-                GetWithResponseCode<EmployerRequest>(new GetEmployerRequestRequest(request.EmployerRequestId.Value));
-            
+                GetWithResponseCode<EmployerRequest>(new GetActiveEmployerRequestRequest(request.AccountId.Value, request.StandardReference));
+
             if (employerRequest?.StatusCode != System.Net.HttpStatusCode.NotFound)
             {
                 employerRequest.EnsureSuccessStatusCode();
             }
 
-            return new GetEmployerRequestResult
+            return new GetActiveEmployerRequestResult
             {
                 EmployerRequest = (Models.EmployerRequest)employerRequest?.Body
             };

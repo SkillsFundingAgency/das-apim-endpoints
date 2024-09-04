@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining;
+﻿using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Responses;
 using System.Collections.Generic;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests

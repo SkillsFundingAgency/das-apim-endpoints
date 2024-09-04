@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocation;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocations;
+using SFA.DAS.EmployerRequestApprenticeTraining.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
