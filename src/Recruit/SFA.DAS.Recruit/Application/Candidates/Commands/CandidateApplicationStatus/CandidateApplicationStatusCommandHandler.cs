@@ -61,16 +61,31 @@ public class CandidateApplicationStatusCommandHandler : IRequestHandler<Candidat
         jsonPatchDocument.Replace(x => x.Status, applicationStatus);
         
         var patchRequest = new PatchApplicationApiRequest(request.ApplicationId, request.CandidateId, jsonPatchDocument);
+        SendEmailCommand sendEmailCommand;
+        if (applicationStatus == ApplicationStatus.Successful)
+        {
+            var email = new ApplicationResponseSuccessEmailTemplate(
+                _emailEnvironmentHelper.SuccessfulApplicationEmailTemplateId, 
+                candidate.Body.Email,
+                candidate.Body.FirstName, request.VacancyTitle, request.VacancyEmployerName,
+                request.VacancyCity,
+                request.VacancyPostcode);
+            sendEmailCommand = new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens);
+        }
+        else
+        {
+            var unsuccessfulEmail = new ApplicationResponseUnsuccessfulEmailTemplate(
+                _emailEnvironmentHelper.UnsuccessfulApplicationEmailTemplateId,
+                candidate.Body.Email,
+                candidate.Body.FirstName, request.VacancyTitle, request.VacancyEmployerName,
+                request.VacancyCity,
+                request.VacancyPostcode,
+                request.Feedback, _emailEnvironmentHelper.CandidateApplicationUrl);
+            sendEmailCommand = new SendEmailCommand(unsuccessfulEmail.TemplateId, unsuccessfulEmail.RecipientAddress, unsuccessfulEmail.Tokens);
+        }
         
-        var email = new ApplicationResponseEmailTemplate(
-            applicationStatus == ApplicationStatus.Successful
-                ? _emailEnvironmentHelper.SuccessfulApplicationEmailTemplateId
-                : _emailEnvironmentHelper.UnsuccessfulApplicationEmailTemplateId, candidate.Body.Email,
-            candidate.Body.FirstName, request.VacancyTitle, request.VacancyEmployerName,
-            request.VacancyCity,
-            request.VacancyPostcode);
         
-        await Task.WhenAll(_notificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens)), _candidateApiClient.PatchWithResponseCode(patchRequest));
+        await Task.WhenAll(_notificationService.Send(sendEmailCommand), _candidateApiClient.PatchWithResponseCode(patchRequest));
         
         return new Unit();
     }

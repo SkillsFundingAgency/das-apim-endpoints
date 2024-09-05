@@ -6,7 +6,7 @@ using SFA.DAS.Recruit.Domain.EmailTemplates;
 
 namespace SFA.DAS.Recruit.UnitTests.Domain.EmailTemplates;
 
-public class WhenBuildingApplicationResponseEmailTemplate
+public class WhenBuildingApplicationResponseSuccessEmailTemplate
 {
     [Test, AutoData]
     public void Then_The_Values_Are_Set_Correctly(string templateId,string recipientEmail, string firstName, string vacancy, string employer, string city, string postcode)
@@ -20,7 +20,7 @@ public class WhenBuildingApplicationResponseEmailTemplate
             {"postcode", postcode }
         };
         
-        var actual = new ApplicationResponseEmailTemplate(templateId, recipientEmail, firstName, vacancy, employer, city, postcode);
+        var actual = new ApplicationResponseSuccessEmailTemplate(templateId, recipientEmail, firstName, vacancy, employer, city, postcode);
         
         actual.TemplateId.Should().Be(templateId);
         actual.Tokens.Should().BeEquivalentTo(expectedTokens);
