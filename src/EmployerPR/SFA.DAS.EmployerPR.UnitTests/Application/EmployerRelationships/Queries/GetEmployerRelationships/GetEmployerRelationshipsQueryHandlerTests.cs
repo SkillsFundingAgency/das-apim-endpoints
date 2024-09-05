@@ -21,7 +21,7 @@ public class GetEmployerRelationshipsQueryHandlerTests
     {
         providerRelationshipsApiRestClient.Setup(x =>
             x.GetEmployerRelationships(
-                query.AccountHashedId, 
+                query.AccountId, 
                 query.Ukprn, 
                 query.AccountlegalentityPublicHashedId,
                 CancellationToken.None

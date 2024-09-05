@@ -9,7 +9,7 @@ public class GetEmployerRelationshipsQueryHandler(IProviderRelationshipsApiRestC
     {
         var response =
             await _providerRelationshipsApiRestClient.GetEmployerRelationships(
-                query.AccountHashedId, 
+                query.AccountId, 
                 query.Ukprn, 
                 query.AccountlegalentityPublicHashedId, 
                 cancellationToken

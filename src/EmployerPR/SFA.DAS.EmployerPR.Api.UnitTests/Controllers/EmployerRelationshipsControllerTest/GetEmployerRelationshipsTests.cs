@@ -17,18 +17,18 @@ public class GetEmployerRelationshipsTests
     public async Task GetEmployerRelationships_InvokesQueryHandler(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] EmployerRelationshipsController sut,
-        string accountHashedId,
+        long accountId,
         long? ukprn,
         string accountlegalentityPublicHashedId,
         CancellationToken cancellationToken
     )
     {
-        await sut.GetEmployerRelationships(accountHashedId, ukprn, accountlegalentityPublicHashedId, cancellationToken);
+        await sut.GetEmployerRelationships(accountId, ukprn, accountlegalentityPublicHashedId, cancellationToken);
 
         mediatorMock.Verify(
             m => m.Send(
                 It.Is<GetEmployerRelationshipsQuery>(x => 
-                    x.AccountHashedId == accountHashedId &&
+                    x.AccountId == accountId &&
                     x.Ukprn == ukprn &&
                     x.AccountlegalentityPublicHashedId == accountlegalentityPublicHashedId
                 ),
@@ -41,7 +41,7 @@ public class GetEmployerRelationshipsTests
     public async Task GetEmployerRelationships_HandlerReturnsData_ReturnsOkResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] EmployerRelationshipsController sut,
-        string accountHashedId,
+        long accountId,
         long? ukprn,
         string accountlegalentityPublicHashedId,
         GetEmployerRelationshipsQueryResult queryResult,
@@ -50,7 +50,7 @@ public class GetEmployerRelationshipsTests
         mediatorMock.Setup(m =>
             m.Send(
                 It.Is<GetEmployerRelationshipsQuery>(x => 
-                    x.AccountHashedId == accountHashedId &&
+                    x.AccountId == accountId &&
                     x.Ukprn == ukprn && 
                     x.AccountlegalentityPublicHashedId == accountlegalentityPublicHashedId
                 ),
@@ -59,7 +59,7 @@ public class GetEmployerRelationshipsTests
         )
         .ReturnsAsync(queryResult);
 
-        var result = await sut.GetEmployerRelationships(accountHashedId, ukprn, accountlegalentityPublicHashedId, cancellationToken);
+        var result = await sut.GetEmployerRelationships(accountId, ukprn, accountlegalentityPublicHashedId, cancellationToken);
 
         result.As<OkObjectResult>().Should().NotBeNull();
         result.As<OkObjectResult>().Value.Should().Be(queryResult);

@@ -17,8 +17,8 @@ public interface IProviderRelationshipsApiRestClient
     [Get("relationships")]
     Task<GetRelationshipsResponse> GetRelationships([Query] long? ukprn, [Query] int? accountLegalEntityId, CancellationToken cancellationToken);
 
-    [Get("relationships/employeraccount/{AccountHashedId}")]
-    Task<GetEmployerRelationshipsResponse> GetEmployerRelationships([Path] string AccountHashedId, [Query] long? Ukprn, [Query] string? AccountlegalentityPublicHashedId, CancellationToken cancellationToken);
+    [Get("relationships/employeraccount/{accountId}")]
+    Task<GetEmployerRelationshipsResponse> GetEmployerRelationships([Path] long accountId, [Query] long? Ukprn, [Query] string? AccountlegalentityPublicHashedId, CancellationToken cancellationToken);
 
     [Post("permissions")]
     Task<PostPermissionsCommandResult> PostPermissions([Body] PostPermissionsCommand command, CancellationToken cancellationToken);
