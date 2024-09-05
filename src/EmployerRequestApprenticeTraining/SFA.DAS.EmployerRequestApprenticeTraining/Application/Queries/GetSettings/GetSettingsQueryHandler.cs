@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetSetti
             return new GetSettingsResult
             {
                 ExpiryAfterMonths = settings.ExpiryAfterMonths,
-                EmployerRemovedAfterExpiryMonths = settings.EmployerRemovedAfterExpiryMonths
+                RemovedAfterExpiryMonths = settings.EmployerRemovedAfterExpiryMonths
             };
         }
     }
