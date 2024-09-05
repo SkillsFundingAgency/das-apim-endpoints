@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Commands;
 using SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
 using SFA.DAS.ApprenticeApp.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
 {
@@ -105,6 +105,42 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             });
 
             return Ok(queryResult.KSBProgress);
+        }
+
+        [HttpGet]
+        [Route("/apprentices/{apprenticeshipId}/apprenticeship/{standardUid}/options/{option}/ksb/{ksbId}")]
+        public async Task<IActionResult> GetApprenticeshipKsbProgress(long apprenticeshipId, string standardUid, string option, Guid ksbId)
+        {
+            var ksbQueryResult = await _mediator.Send(new GetStandardOptionKsbsQuery
+            {
+                Id = standardUid,
+                Option = option
+            });
+
+            if (ksbQueryResult.KsbsResult != null && ksbQueryResult.KsbsResult.Ksbs.Count > 0)
+            {
+                var ksbProgressResult = await _mediator.Send(new GetKsbsByApprenticeshipIdQuery { ApprenticeshipId = apprenticeshipId });
+
+                var ksb = ksbQueryResult.KsbsResult.Ksbs.Where(k => k.Id == ksbId).FirstOrDefault();
+                if(ksb != null)
+                    {
+                        var apprenticeKsb = new ApprenticeKsb()
+                        {
+                            Id = ksb.Id,
+                            Key = ksb.Key,
+                            Detail = ksb.Detail,
+                            Type = ksb.Type
+                        };
+
+                        var ksbProgress = ksbProgressResult.KSBProgresses.FirstOrDefault(x => x.KSBId == ksb.Id);
+                        if (ksbProgress != null)
+                        {
+                            apprenticeKsb.Progress = ksbProgress;
+                        }
+                        return Ok(apprenticeKsb);
+                    }
+            }
+            return Ok();
         }
     }
 }
