@@ -170,7 +170,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                         Status = employerRequest.Status,
                         ExpiredAt = employerRequest.ExpiredAt,
                         ExpiryAt = employerRequest.RequestedAt.AddMonths(settings.ExpiryAfterMonths),
-                        RemoveAt = employerRequest.RequestedAt.AddMonths(settings.ExpiryAfterMonths + settings.EmployerRemovedAfterExpiryMonths),
+                        RemoveAt = employerRequest.RequestedAt.AddMonths(settings.ExpiryAfterMonths + settings.RemovedAfterExpiryMonths),
                         Regions = employerRequest.Regions,
                         ProviderResponses = providerResponses.ToList()
                     };
