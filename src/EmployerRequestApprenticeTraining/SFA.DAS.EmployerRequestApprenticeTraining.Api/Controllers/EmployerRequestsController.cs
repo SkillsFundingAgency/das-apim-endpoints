@@ -147,7 +147,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                 {
                     AggregatedEmployerRequests = aggregatedEmployerRequestsResults.AggregatedEmployerRequests.Select(request => (AggregatedEmployerRequest)request).ToList(),
                     ExpiryAfterMonths = settingsResult.ExpiryAfterMonths,
-                    RemovedAfterExpiryMonths = settingsResult.EmployerRemovedAfterExpiryMonths
+                    RemovedAfterExpiryMonths = settingsResult.RemovedAfterExpiryMonths
                 };
 
                 return Ok(result);
