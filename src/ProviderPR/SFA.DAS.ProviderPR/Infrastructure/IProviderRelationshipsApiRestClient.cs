@@ -13,7 +13,7 @@ public interface IProviderRelationshipsApiRestClient
     [AllowAnyStatusCode]
     Task<HttpResponseMessage> GetHealth(CancellationToken cancellationToken);
 
-    [Get("relationships/providers/{ukprn}")]
+    [Get("providers/{ukprn}/relationships")]
     Task<GetProviderRelationshipsResponse> GetProviderRelationships([Path] long ukprn, [RawQueryString] string queryString, CancellationToken cancellationToken);
 
     [Post("requests/addaccount")]
