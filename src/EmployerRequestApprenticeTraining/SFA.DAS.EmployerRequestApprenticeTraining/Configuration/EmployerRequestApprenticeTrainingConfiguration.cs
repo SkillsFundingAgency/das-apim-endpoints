@@ -7,5 +7,6 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Configuration
     public class EmployerRequestApprenticeTrainingConfiguration
     {
         public List<NotificationTemplate> NotificationTemplates { get; set; }
+        public string EmployerRequestApprenticeshipTrainingWebBaseUrl { get; set; }
     }
 }

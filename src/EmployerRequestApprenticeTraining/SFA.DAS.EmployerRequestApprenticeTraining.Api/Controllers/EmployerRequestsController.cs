@@ -4,12 +4,15 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Extensions;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SendResponseNotification;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequestsForResponseNotification;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocation;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -166,6 +169,47 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error attempting to retrieve submit employer request confirmation for EmployerRequestId: {employerRequestId}");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("requests-for-response-notification")]
+        public async Task<IActionResult> GetEmployerRequestsForResponseNotification()
+        {
+            try
+            {
+                var employerRequestResult = await _mediator.Send(new GetEmployerRequestsForResponseNotificationQuery());
+                return Ok(employerRequestResult.EmployerRequests);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to retrieve employer requests for response notification");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("send-notifications")]
+        public async Task<IActionResult> SendEmployerRequestResponseNotifications(SendResponseNotificationEmailParameters parameters)
+        {
+            try
+            {
+                await _mediator.Send(new SendResponseNotificationCommand()
+                { 
+                    AccountId = parameters.AccountId,
+                    RequestedBy = parameters.RequestedBy,
+                    Standards = parameters.Standards.Select(e => 
+                    new Application.Commands.SendResponseNotification.StandardDetails 
+                    { 
+                        StandardLevel = e.StandardLevel,
+                        StandardTitle = e.StandardTitle,
+                    }).ToList(),
+                });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to send employer request response notification for : {0}", parameters.AccountId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
