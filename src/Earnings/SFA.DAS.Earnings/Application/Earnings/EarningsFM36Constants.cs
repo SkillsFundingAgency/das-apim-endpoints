@@ -47,4 +47,33 @@ public class EarningsFM36Constants
     //CoInvestment Multipliers
     public const decimal CoInvestEmployerMultiplier = 0.05m;
     public const decimal CoInvestSfaMultiplier = 0.95m;
+
+    public static class PeriodisedAttributes
+    {
+        public const string DisadvFirstPayment = "DisadvFirstPayment";
+        public const string DisadvSecondPayment = "DisadvSecondPayment";
+        public const string LDApplic1618FrameworkUpliftBalancingPayment = "LDApplic1618FrameworkUpliftBalancingPayment";
+        public const string LDApplic1618FrameworkUpliftCompletionPayment = "LDApplic1618FrameworkUpliftCompletionPayment";
+        public const string LDApplic1618FrameworkUpliftOnProgPayment = "LDApplic1618FrameworkUpliftOnProgPayment";
+        public const string LearnDelFirstEmp1618Pay = "LearnDelFirstEmp1618Pay";
+        public const string LearnDelFirstProv1618Pay = "LearnDelFirstProv1618Pay";
+        public const string LearnDelLearnAddPayment = "LearnDelLearnAddPayment";
+        public const string LearnDelLevyNonPayInd = "LearnDelLevyNonPayInd";
+        public const string LearnDelSecondEmp1618Pay = "LearnDelSecondEmp1618Pay";
+        public const string LearnDelSecondProv1618Pay = "LearnDelSecondProv1618Pay";
+        public const string LearnDelSEMContWaiver = "LearnDelSEMContWaiver";
+        public const string LearnDelESFAContribPct = "LearnDelESFAContribPct";
+        public const string LearnSuppFund = "LearnSuppFund";
+        public const string LearnSuppFundCash = "LearnSuppFundCash";
+        public const string MathEngBalPayment = "MathEngBalPayment";
+        public const string MathEngOnProgPayment = "MathEngOnProgPayment";
+        public const string ProgrammeAimBalPayment = "ProgrammeAimBalPayment";
+        public const string ProgrammeAimCompletionPayment = "ProgrammeAimCompletionPayment";
+        public const string ProgrammeAimOnProgPayment = "ProgrammeAimOnProgPayment";
+        public const string ProgrammeAimProgFundIndMaxEmpCont = "ProgrammeAimProgFundIndMaxEmpCont";
+        public const string ProgrammeAimProgFundIndMinCoInvest = "ProgrammeAimProgFundIndMinCoInvest";
+        public const string ProgrammeAimTotProgFund = "ProgrammeAimTotProgFund";
+        public const string FundLineType = "FundLineType";
+        public const string LearnDelContType = "LearnDelContType";
+    }
 }
