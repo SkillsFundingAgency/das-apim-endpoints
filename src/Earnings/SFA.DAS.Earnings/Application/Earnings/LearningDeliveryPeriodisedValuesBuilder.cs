@@ -1,5 +1,4 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using System.Reflection;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 
 namespace SFA.DAS.Earnings.Application.Earnings;
@@ -53,27 +52,7 @@ public static class LearningDeliveryPeriodisedValuesBuilder
 
     public static LearningDeliveryPeriodisedValues BuildInstallmentAmountValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName)
     {
-        var instalments = earningsApprenticeship.Episodes
-            .SelectMany(episode => episode.Instalments)
-            .Where(i => i.AcademicYear == academicYear)
-            .ToList();
-
-        return new LearningDeliveryPeriodisedValues
-        {
-            AttributeName = attributeName,
-            Period1 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault(),
-            Period2 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount).GetValueOrDefault(),
-            Period3 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount).GetValueOrDefault(),
-            Period4 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount).GetValueOrDefault(),
-            Period5 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount).GetValueOrDefault(),
-            Period6 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount).GetValueOrDefault(),
-            Period7 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount).GetValueOrDefault(),
-            Period8 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount).GetValueOrDefault(),
-            Period9 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount).GetValueOrDefault(),
-            Period10 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount).GetValueOrDefault(),
-            Period11 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount).GetValueOrDefault(),
-            Period12 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount).GetValueOrDefault()
-        };
+        return BuildCoInvestmentValues(earningsApprenticeship, academicYear, attributeName, 1);
     }
 
     public static LearningDeliveryPeriodisedValues BuildCoInvestmentValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName, decimal multiplier)
