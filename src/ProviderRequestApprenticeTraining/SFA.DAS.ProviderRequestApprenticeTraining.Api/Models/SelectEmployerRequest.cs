@@ -17,6 +17,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
         public string DateOfRequest { get; set; }
         public int NumberOfApprentices { get; set; }
         public bool IsNew { get; set; }
+        public string DateContacted { get; set; }
         public bool IsContacted { get; set; }
 
         public static implicit operator SelectEmployerRequest(GetSelectEmployerRequestsResponse source)
@@ -26,6 +27,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
                 EmployerRequestId = source.EmployerRequestId,
                 DateOfRequest = source.DateOfRequest.ToString("d MMMM yyyy"),
                 IsContacted = source.IsContacted,
+                DateContacted = source.DateContacted.HasValue ? source.DateOfRequest.ToString("d MMMM yyyy") : string.Empty,
                 IsNew = source.IsNew,
                 NumberOfApprentices = source.NumberOfApprentices,   
                 Locations = source.Locations,
