@@ -34,7 +34,7 @@ public static class LearningDeliveryPeriodisedValuesBuilder
 
         return new LearningDeliveryPeriodisedValues
         {
-            AttributeName = "InstPerPeriod",
+            AttributeName = EarningsFM36Constants.PeriodisedAttributes.InstPerPeriod,
             Period1 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault() != 0 ? 1 : 0,
             Period2 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount).GetValueOrDefault() != 0 ? 1 : 0,
             Period3 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount).GetValueOrDefault() != 0 ? 1 : 0,

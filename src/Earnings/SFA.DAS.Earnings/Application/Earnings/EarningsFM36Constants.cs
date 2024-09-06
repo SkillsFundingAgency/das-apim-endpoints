@@ -50,6 +50,7 @@ public class EarningsFM36Constants
 
     public static class PeriodisedAttributes
     {
+        public const string InstPerPeriod = "InstPerPeriod";
         public const string DisadvFirstPayment = "DisadvFirstPayment";
         public const string DisadvSecondPayment = "DisadvSecondPayment";
         public const string LDApplic1618FrameworkUpliftBalancingPayment = "LDApplic1618FrameworkUpliftBalancingPayment";
