@@ -6,6 +6,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using System;
 using System.Net;
 using System.Net.Http;
+using SFA.DAS.Approvals.Exceptions;
 
 namespace SFA.DAS.Approvals.Api.Clients
 {
