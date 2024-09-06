@@ -13,8 +13,10 @@ public static class AddConfigurationOptionsExtension
 
         services.Configure<ApprenticeshipsApiConfiguration>(configuration.GetSection(nameof(ApprenticeshipsApiConfiguration)));
         services.Configure<EarningsApiConfiguration>(configuration.GetSection(nameof(EarningsApiConfiguration)));
+        services.Configure<CollectionCalendarApiConfiguration>(configuration.GetSection(nameof(CollectionCalendarApiConfiguration)));
 
         services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeshipsApiConfiguration>>()!.Value);
         services.AddSingleton(cfg => cfg.GetService<IOptions<EarningsApiConfiguration>>()!.Value);
+        services.AddSingleton(cfg => cfg.GetService<IOptions<CollectionCalendarApiConfiguration>>()!.Value);
     }
 }

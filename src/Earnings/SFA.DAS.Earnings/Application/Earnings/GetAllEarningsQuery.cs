@@ -54,10 +54,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
     {
         var apprenticeshipInnerModel = await _apprenticeshipsApiClient.Get<GetApprenticeshipsResponse>(new GetApprenticeshipsRequest { Ukprn = request.Ukprn });
         var earningsInnerModel = await _earningsApiClient.Get<GetFm36DataResponse>(new GetFm36DataRequest(request.Ukprn));
-        var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now)); //todo will we want to be able to time travel in test scenarios here?
-
-        //todo this line just to enable testing prior to refactor of earnings inner api/removal of durable entities
-        for (int i = 0; i < earningsInnerModel.Count; i++) earningsInnerModel[i].Key = apprenticeshipInnerModel.Apprenticeships[i].Key;
+        var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now));
         
         var result = new GetAllEarningsQueryResult
         {
@@ -115,7 +112,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
 
                             //the below two values assume days in learning & amounts for previous academic years (any provider) are 0 for our beta learners as per FLP-862
                             //but this logic will need expanding in the future
-                            LearnDelHistDaysThisApp = (DateTime.Now - (model.apprenticeship.StartDate > currentAcademicYear.StartDate //todo this will need updating if we want to time travel as above
+                            LearnDelHistDaysThisApp = (DateTime.Now - (model.apprenticeship.StartDate > currentAcademicYear.StartDate
                                 ? model.apprenticeship.StartDate
                                 : currentAcademicYear.StartDate)).Days,
                             LearnDelHistProgEarnings = model.earningsApprenticeship.Episodes
@@ -182,31 +179,8 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                         }
                     }
                 }
-                //PriceEpisodes = apprenticeship.Episodes.Select(episode => new PriceEpisode
-                //{
-                //    PriceEpisodeIdentifier = $"25-{episode.TrainingCode}-{episode.Prices.Min(price => price.StartDate):dd/MM/yyyy}",
-                //    PriceEpisodeValues = new PriceEpisodeValues
-                //    {
-                //        //EpisodeStartDate = episode.
-                //    }
-                //}).ToList()
-            }).ToArray()
+                }).ToArray()
         };
-
-        //foreach (var apprenticeship in apprenticeshipInnerModel.Apprenticeships)
-        //{
-        //    var learner = new FM36Learner
-        //    {
-        //        ULN = long.Parse(apprenticeship.Uln),
-        //        LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
-        //        PriceEpisodes = new List<PriceEpisode>()
-        //    };
-
-        //    foreach (var apprenticeshipEpisodePrice in apprenticeship.Episodes.SelectMany(e => e.Prices, (episode, price) => new { episode, price }))
-        //    {
-        //        if(apprenticeshipEpisodePrice.price.StartDate)
-        //    }
-        //}
 
         return result;
     }
