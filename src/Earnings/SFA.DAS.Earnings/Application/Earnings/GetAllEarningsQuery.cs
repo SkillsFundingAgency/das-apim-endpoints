@@ -24,17 +24,6 @@ public class GetAllEarningsQueryResult
     public FM36Learner[] FM36Learners { get; set; }
 }
 
-public static class GetAcademicYearsResponseExtensions
-{
-    public static short GetShortAcademicYear(this GetAcademicYearsResponse response)
-    {
-        if (!short.TryParse(response.AcademicYear, out var result))
-            throw new ArgumentException("Failed to parse year from academic year response", nameof(response));
-
-        return result;
-    }
-}
-
 public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, GetAllEarningsQueryResult>
 {
     private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apprenticeshipsApiClient;
