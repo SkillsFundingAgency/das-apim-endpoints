@@ -281,3 +281,4 @@ src/**/appsettings.Development.json
 src/.learningtransport/
 #nservicebus
 *.learningtransport*
+src/ApprenticeApp/SFA.DAS.ApprenticeApp.Api/appsettings.json
