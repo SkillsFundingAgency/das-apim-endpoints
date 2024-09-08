@@ -4,10 +4,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
+using SFA.DAS.FindAnApprenticeship.Domain.EmailTemplates;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
+using SFA.DAS.FindAnApprenticeship.Services;
+using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -16,7 +20,10 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.WithdrawApplic
 
 public class WithdrawApplicationCommandHandler(
     ICandidateApiClient<CandidateApiConfiguration> candidateApiClient, 
-    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient) : IRequestHandler<WithdrawApplicationCommand, bool>
+    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+    INotificationService notificationService,
+    IVacancyService vacancyService,
+    EmailEnvironmentHelper emailEnvironmentHelper) : IRequestHandler<WithdrawApplicationCommand, bool>
 {
     public async Task<bool> Handle(WithdrawApplicationCommand request, CancellationToken cancellationToken)
     {
@@ -39,9 +46,22 @@ public class WithdrawApplicationCommandHandler(
         var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
         
         jsonPatchDocument.Replace(x => x.Status, ApplicationStatus.Withdrawn);
+
+        var vacancy = await vacancyService.GetVacancy(application.VacancyReference) as GetApprenticeshipVacancyItemResponse;
         
         var patchRequest = new PatchApplicationApiRequest(request.ApplicationId, request.CandidateId, jsonPatchDocument);
-        await candidateApiClient.PatchWithResponseCode(patchRequest);
+        var email = new WithdrawApplicationEmail(
+            emailEnvironmentHelper.WithdrawApplicationEmailTemplateId,
+            application.Candidate.Email,
+            application.Candidate.FirstName,
+            vacancy?.Title, vacancy?.EmployerName,
+            vacancy?.Address.AddressLine4 ?? vacancy?.Address.AddressLine3 ?? vacancy?.Address.AddressLine2 ?? vacancy?.Address.AddressLine1,
+            vacancy?.Address.Postcode);
+        
+        await Task.WhenAll(
+            candidateApiClient.PatchWithResponseCode(patchRequest)
+            , notificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens))
+            );
         
         return true;
     }
