@@ -27,10 +27,7 @@ public static class LearningDeliveryPeriodisedValuesBuilder
 
     public static LearningDeliveryPeriodisedValues BuildInstPerPeriodValues(Apprenticeship earningsApprenticeship, short academicYear)
     {
-        var instalments = earningsApprenticeship.Episodes
-            .SelectMany(episode => episode.Instalments)
-            .Where(i => i.AcademicYear == academicYear)
-            .ToList();
+        var instalments = GetInstalmentsForAcademicYear(earningsApprenticeship, academicYear);
 
         return new LearningDeliveryPeriodisedValues
         {
@@ -57,10 +54,7 @@ public static class LearningDeliveryPeriodisedValuesBuilder
 
     public static LearningDeliveryPeriodisedValues BuildCoInvestmentValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName, decimal multiplier)
     {
-        var instalments = earningsApprenticeship.Episodes
-            .SelectMany(episode => episode.Instalments)
-            .Where(i => i.AcademicYear == academicYear)
-            .ToList();
+        var instalments = GetInstalmentsForAcademicYear(earningsApprenticeship, academicYear);
 
         return new LearningDeliveryPeriodisedValues
         {
@@ -78,5 +72,13 @@ public static class LearningDeliveryPeriodisedValuesBuilder
             Period11 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount * multiplier).GetValueOrDefault(),
             Period12 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount * multiplier).GetValueOrDefault()
         };
+    }
+
+    private static List<Instalment> GetInstalmentsForAcademicYear(Apprenticeship earningsApprenticeship, short academicYear)
+    {
+        return earningsApprenticeship.Episodes
+            .SelectMany(episode => episode.Instalments)
+            .Where(i => i.AcademicYear == academicYear)
+            .ToList();
     }
 }

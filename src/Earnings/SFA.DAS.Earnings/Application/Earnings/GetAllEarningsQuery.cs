@@ -41,14 +41,14 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
 
     public async Task<GetAllEarningsQueryResult> Handle(GetAllEarningsQuery request, CancellationToken cancellationToken)
     {
-        var apprenticeshipInnerModel = await _apprenticeshipsApiClient.Get<GetApprenticeshipsResponse>(new GetApprenticeshipsRequest { Ukprn = request.Ukprn });
-        var earningsInnerModel = await _earningsApiClient.Get<GetFm36DataResponse>(new GetFm36DataRequest(request.Ukprn));
+        var apprenticeshipsData = await _apprenticeshipsApiClient.Get<GetApprenticeshipsResponse>(new GetApprenticeshipsRequest { Ukprn = request.Ukprn });
+        var earningsData = await _earningsApiClient.Get<GetFm36DataResponse>(new GetFm36DataRequest(request.Ukprn));
         var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now));
         
         var result = new GetAllEarningsQueryResult
         {
-            FM36Learners = apprenticeshipInnerModel.Apprenticeships
-                .Join(earningsInnerModel, a => a.Key, e => e.Key, (apprenticeship,earningsApprenticeship) => new { apprenticeship, earningsApprenticeship })
+            FM36Learners = apprenticeshipsData.Apprenticeships
+                .Join(earningsData, a => a.Key, e => e.Key, (apprenticeship,earningsApprenticeship) => new { apprenticeship, earningsApprenticeship })
                 .Select(model => new FM36Learner
             {
                 ULN = long.Parse(model.apprenticeship.Uln),
@@ -99,14 +99,11 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                             LearnDelEmpIdFirstAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdFirstAdditionalPaymentThreshold,
                             LearnDelEmpIdSecondAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdSecondAdditionalPaymentThreshold,
 
-                            //the below two values assume days in learning & amounts for previous academic years (any provider) are 0 for our beta learners as per FLP-862
+                            //the below two values assume days in learning & amounts for previous apprenticeships (with any provider) in previous academic years are 0 for our beta learners as per FLP-862
                             //but this logic will need expanding in the future
-                            LearnDelHistDaysThisApp = (DateTime.Now - (model.apprenticeship.StartDate > currentAcademicYear.StartDate
-                                ? model.apprenticeship.StartDate
-                                : currentAcademicYear.StartDate)).Days,
+                            LearnDelHistDaysThisApp = (currentAcademicYear.EndDate - model.apprenticeship.StartDate).Days,
                             LearnDelHistProgEarnings = model.earningsApprenticeship.Episodes
                                 .SelectMany(episode => episode.Instalments)
-                                .Where(instalment => instalment.AcademicYear == currentAcademicYear.GetShortAcademicYear())
                                 .Sum(instalment => instalment.Amount),
 
                             LearnDelInitialFundLineType = model.earningsApprenticeship.FundingLineType,
