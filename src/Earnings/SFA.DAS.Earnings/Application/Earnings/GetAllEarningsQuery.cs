@@ -98,14 +98,10 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                             LearnDelEligDisadvPayment = EarningsFM36Constants.LearnDelEligDisadvPayment,
                             LearnDelEmpIdFirstAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdFirstAdditionalPaymentThreshold,
                             LearnDelEmpIdSecondAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdSecondAdditionalPaymentThreshold,
-
-                            //the below two values assume days in learning & amounts for previous apprenticeships (with any provider) in previous academic years are 0 for our beta learners as per FLP-862
-                            //but this logic will need expanding in the future
                             LearnDelHistDaysThisApp = (currentAcademicYear.EndDate - model.apprenticeship.StartDate).Days,
                             LearnDelHistProgEarnings = model.earningsApprenticeship.Episodes
                                 .SelectMany(episode => episode.Instalments)
                                 .Sum(instalment => instalment.Amount),
-
                             LearnDelInitialFundLineType = model.earningsApprenticeship.FundingLineType,
                             LearnDelMathEng = EarningsFM36Constants.LearnDelMathEng,
                             LearnDelProgEarliestACT2Date = EarningsFM36Constants.LearnDelProgEarliestACT2Date,
