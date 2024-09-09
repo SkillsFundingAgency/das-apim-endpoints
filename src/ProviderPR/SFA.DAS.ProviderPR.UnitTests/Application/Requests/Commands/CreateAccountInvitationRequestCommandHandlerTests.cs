@@ -1,10 +1,10 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Net;
+using AutoFixture.NUnit3;
 using Moq;
 using RestEase;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.AccountInvitation;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Notifications.Commands;
-using System.Net;
 
 namespace SFA.DAS.ProviderPR.UnitTests.Application.Requests.Commands;
 
@@ -46,7 +46,7 @@ public class CreateAccountInvitationRequestCommandHandlerTests
 
     [Test]
     [AutoData]
-    public async Task Handle_CreateAccount_ThrowsException_NoNotificationSent(
+    public void Handle_CreateAccount_ThrowsException_NoNotificationSent(
         CreateAccountInvitationRequestCommand command,
         CreateAccountInvitationRequestCommandResult response
     )
