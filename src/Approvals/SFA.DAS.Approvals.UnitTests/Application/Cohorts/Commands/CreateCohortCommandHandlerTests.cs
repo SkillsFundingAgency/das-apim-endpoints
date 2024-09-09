@@ -9,7 +9,6 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Threading;
 using FluentAssertions;
-using Microsoft.Azure.Amqp;
 using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -84,8 +83,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
         {
             var reservationId = Guid.NewGuid();
             _request.ReservationId = null;
+            _request.TransferSenderId = null;
 
-            _autoReservationService.Setup(x => x.CreateReservation(It.IsAny<CreateCohortCommand>()))
+            _autoReservationService.Setup(x => x.CreateReservation(It.IsAny<AutoReservation>()))
                 .ReturnsAsync(reservationId);
 
             var expectedResponse = _fixture.Create<CreateCohortResponse>();
@@ -105,8 +105,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
         {
             var reservationId = Guid.NewGuid();
             _request.ReservationId = null;
+            _request.TransferSenderId = null;
 
-            _autoReservationService.Setup(x => x.CreateReservation(It.IsAny<CreateCohortCommand>()))
+            _autoReservationService.Setup(x => x.CreateReservation(It.IsAny<AutoReservation>()))
                 .ReturnsAsync(reservationId);
 
             var expectedResponse = _fixture.Create<CreateCohortResponse>();
@@ -116,15 +117,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
                 ), true
             )).ThrowsAsync(new Exception("Some Error"));
 
-            try
-            {
-                await _handler.Handle(_request, CancellationToken.None);
-                Assert.Fail("Should not reach this point");
-            }
-            catch
-            {
-
-            }
+            var act = async () => await _handler.Handle(_request, CancellationToken.None);
+            await act.Should().ThrowAsync<Exception>();
             _autoReservationService.Verify(x=>x.DeleteReservation(reservationId));
         }
 
@@ -139,17 +133,20 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
                 ), true
             )).ThrowsAsync(new Exception("Some Error"));
 
-
-            try
-            {
-                await _handler.Handle(_request, CancellationToken.None);
-                Assert.Fail("Should not reach this point");
-            }
-            catch
-            {
-
-            }
+            var act = async () => await _handler.Handle(_request, CancellationToken.None);
+            await act.Should().ThrowAsync<Exception>();
             _autoReservationService.Verify(x => x.DeleteReservation(It.IsAny<Guid>()), Times.Never);
         }
+
+        [Test]
+        public async Task Throw_ApplicationException_When_No_ReservationID_In_Request_But_TransferSenderId_Is_Present()
+        {
+            _request.ReservationId = null;
+
+            var act = async () => await _handler.Handle(_request, CancellationToken.None);
+            act.Should().ThrowAsync<ApplicationException>().WithMessage("When creating a auto reservation, the TransferSenderId must be null");
+            _autoReservationService.Verify(x => x.CreateReservation(It.IsAny<AutoReservation>()), Times.Never);
+        }
+
     }
 }

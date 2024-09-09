@@ -1,9 +1,11 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
+using SFA.DAS.NServiceBus;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -28,7 +30,21 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
 
             if (!request.ReservationId.HasValue)
             {
-                request.ReservationId = await _autoReservationService.CreateReservation(request);
+                if (request.TransferSenderId != null)
+                {
+                    throw new ApplicationException("When creating a auto reservation, the TransferSenderId must be null");
+                }
+
+                request.ReservationId = await _autoReservationService.CreateReservation(new AutoReservation
+                {
+                    AccountId = request.AccountId,
+                    AccountLegalEntityId = request.AccountLegalEntityId,
+                    CourseCode = request.CourseCode,
+                    ProviderId = request.ProviderId,
+                    StartDate = request.StartDate,
+                    UserInfo = request.UserInfo
+
+                });
                 autoReservationCreated = true;
             }
 
