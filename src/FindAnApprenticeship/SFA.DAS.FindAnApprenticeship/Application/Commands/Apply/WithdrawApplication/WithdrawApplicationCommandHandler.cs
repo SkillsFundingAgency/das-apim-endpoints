@@ -29,7 +29,7 @@ public class WithdrawApplicationCommandHandler(
     {
         var application =
             await candidateApiClient.Get<GetApplicationApiResponse>(
-                new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
+                new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true));
 
         if (application is not { Status: ApplicationStatus.Submitted })
         {
@@ -55,7 +55,7 @@ public class WithdrawApplicationCommandHandler(
             application.Candidate.Email,
             application.Candidate.FirstName,
             vacancy?.Title, vacancy?.EmployerName,
-            vacancy?.Address.AddressLine4 ?? vacancy?.Address.AddressLine3 ?? vacancy?.Address.AddressLine2 ?? vacancy?.Address.AddressLine1,
+            vacancy?.Address.AddressLine4 ?? vacancy?.Address.AddressLine3 ?? vacancy?.Address.AddressLine2 ?? vacancy?.Address.AddressLine1 ?? "Unknown",
             vacancy?.Address.Postcode);
         
         await Task.WhenAll(
