@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RestEase;
 using SFA.DAS.ProviderPR.Api.Controllers;
+using SFA.DAS.ProviderPR.Application.Requests.Commands.AccountInvitation;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccount;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.CreatePermissions;
 using SFA.DAS.ProviderPR.Infrastructure;
@@ -109,5 +110,48 @@ public class RequestsControllerTests
         RequestsController sut = new(mediator.Object, new Mock<IProviderRelationshipsApiRestClient>().Object);
 
         Assert.ThrowsAsync<ApiException>(async () => await sut.CreatePermissions(command, CancellationToken.None));
+    }
+
+    [Test]
+    [AutoData]
+    public async Task RequestsController_CreateAccount_ReturnsOkResponse(
+        CreateAccountInvitationRequestCommand command,
+        CreateAccountInvitationRequestCommandResult response
+    )
+    {
+        Mock<IProviderRelationshipsApiRestClient> client = new();
+        client.Setup(c => c.CreateAccountInvitationRequest(It.IsAny<CreateAccountInvitationRequestCommand>(), CancellationToken.None)).ReturnsAsync(response);
+
+        RequestsController sut = new(new Mock<IMediator>().Object, client.Object);
+
+        var result = await sut.CreateAccount(command, CancellationToken.None);
+
+        result.Should().BeOfType<OkObjectResult>();
+    }
+
+    [Test]
+    [AutoData]
+    public void RequestsController_CreateAccount_ReturnsBadRequest(
+        CreateAccountInvitationRequestCommand command,
+        CreatePermissionRequestCommandResult response
+    )
+    {
+        Mock<IMediator> mediator = new Mock<IMediator>();
+        mediator.Setup(a =>
+            a.Send(
+                    It.IsAny<CreateAccountInvitationRequestCommand>(),
+                    It.IsAny<CancellationToken>()
+                )
+            ).ThrowsAsync(
+                new ApiException(
+                    new HttpRequestMessage(),
+                    new HttpResponseMessage(HttpStatusCode.BadRequest),
+                    "RestEase.ApiException: POST failed because response status code does not indicate success: 400(Bad Request)."
+                )
+        );
+
+        RequestsController sut = new(mediator.Object, new Mock<IProviderRelationshipsApiRestClient>().Object);
+
+        Assert.ThrowsAsync<ApiException>(async () => await sut.CreateAccount(command, CancellationToken.None));
     }
 }
