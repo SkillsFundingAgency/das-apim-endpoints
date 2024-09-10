@@ -8,9 +8,13 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SendRes
 {
     public class SendResponseNotificationCommand : IRequest<Unit>
     {
-        public Guid RequestedBy { get; set; }
+        public string EmailAddress { get; set; }
+        public string FirstName { get; set; }
         public long AccountId { get; set; }
+        public Guid RequestedBy { get; set; }
         public List<StandardDetails> Standards{ get; set; }
+        public string EmployerAccountsBaseUrl { get; set; }
+        public string EmployerRequestApprenticeshipTrainingBaseUrl { get; set; }
     }
     public class StandardDetails
     {

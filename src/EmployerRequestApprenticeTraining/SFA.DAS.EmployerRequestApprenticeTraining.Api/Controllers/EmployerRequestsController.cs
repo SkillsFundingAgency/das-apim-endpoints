@@ -5,6 +5,7 @@ using SFA.DAS.EmployerRequestApprenticeTraining.Api.Extensions;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SendResponseNotification;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.CanUserReceiveNotifications;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
@@ -193,18 +194,26 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
         {
             try
             {
-                await _mediator.Send(new SendResponseNotificationCommand()
-                { 
-                    AccountId = parameters.AccountId,
-                    RequestedBy = parameters.RequestedBy,
-                    Standards = parameters.Standards.Select(e => 
-                    new Application.Commands.SendResponseNotification.StandardDetails 
-                    { 
-                        StandardLevel = e.StandardLevel,
-                        StandardTitle = e.StandardTitle,
-                    }).ToList(),
-                });
+                var employerProfileUserResult = await _mediator.Send(new GetEmployerProfileUserQuery { UserId = parameters.RequestedBy });
 
+                bool canUserReceiveNotifications = await _mediator.Send(new CanUserReceiveNotificationsQuery { UserId = parameters.RequestedBy, AccountId = parameters.AccountId });
+
+                if(canUserReceiveNotifications) 
+                {
+                    await _mediator.Send(new SendResponseNotificationCommand()
+                    {
+                        EmailAddress = employerProfileUserResult.Email,
+                        FirstName = employerProfileUserResult.FirstName,
+                        RequestedBy = parameters.RequestedBy,
+                        AccountId = parameters.AccountId,
+                        Standards = parameters.Standards.Select(e =>
+                        new Application.Commands.SendResponseNotification.StandardDetails
+                        {
+                            StandardLevel = e.StandardLevel,
+                            StandardTitle = e.StandardTitle,
+                        }).ToList(),
+                    });
+                }
                 return Ok();
             }
             catch (Exception e)

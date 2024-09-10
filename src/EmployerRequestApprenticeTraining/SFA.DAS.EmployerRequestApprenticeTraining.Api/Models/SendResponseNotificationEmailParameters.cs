@@ -8,7 +8,9 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Models
     {
         public Guid RequestedBy { get; set; }
         public long AccountId { get; set; }
-        public List<StandardDetails> Standards { get; set; } 
+        public List<StandardDetails> Standards { get; set; }
+        public string EmployerAccountsBaseUrl { get; set; }
+        public string EmployerRequestApprenticeshipTrainingBaseUrl { get; set; }
     }
     public class StandardDetails
     {
