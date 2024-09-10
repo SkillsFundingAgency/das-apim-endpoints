@@ -49,18 +49,18 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SubmitE
                 ModifiedBy = command.ModifiedBy
             });
 
-            var employerRequestResponse = await _requestApprenticeTrainingApiClient
+            var response = await _requestApprenticeTrainingApiClient
                 .PostWithResponseCode<PostSubmitEmployerRequestData, SubmitEmployerRequestResponse>(request);
 
-            employerRequestResponse.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode();
 
-            var templateId = _options.Value.NotificationTemplates.FirstOrDefault(p => p.TemplateName == "SubmitEmployerRequest")?.TemplateId;
+            var templateId = _options.Value.NotificationTemplates.FirstOrDefault(p => p.TemplateName == "RATEmployerRequestConfirmation")?.TemplateId;
             if (templateId != null)
             {
                 await _notificationService.Send(new SendEmailCommand(templateId.ToString(), command.RequestedByEmail, new Dictionary<string, string>()));
             }
 
-            return employerRequestResponse.Body;
+            return response.Body;
         }
     }
 }
