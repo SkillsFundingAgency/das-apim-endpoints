@@ -47,7 +47,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SendRes
             var courseList = new StringBuilder();
             foreach (var course in command.Standards)
             {
-                courseList.Append($"{course.StandardTitle} level({course.StandardLevel})\n");
+                courseList.Append($"{course.StandardTitle} (level{course.StandardLevel})\n");
             }
 
             var encodedAccountId = _encodingService.Encode(command.AccountId, EncodingType.AccountId);
