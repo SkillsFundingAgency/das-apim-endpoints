@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
         }
 
         [HttpGet("account/{accountId}/standard/{standardReference}/existing")]
-        public async Task<IActionResult> GetActiveEmployerRequest([FromRoute] long accountId, [FromRoute] string standardReference)
+        public async Task<IActionResult> HasExistingEmployerRequest([FromRoute] long accountId, [FromRoute] string standardReference)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error checking existing active employer request for {AccountId} and {StandardReference}", accountId, standardReference.SanitizeLogData());
+                _logger.LogError(e, "Error checking for existing employer request for {AccountId} and {StandardReference}", accountId, standardReference.SanitizeLogData());
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
