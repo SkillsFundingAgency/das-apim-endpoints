@@ -101,7 +101,6 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             response.Should().BeEquivalentTo(expectedResponse);
         }
 
-
         [Test]
         public async Task Throw_ApplicationException_When_No_ReservationID_In_Request_But_TransferSenderId_Is_Present()
         {
