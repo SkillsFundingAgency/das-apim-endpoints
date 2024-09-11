@@ -47,20 +47,20 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SendRes
             var courseList = new StringBuilder();
             foreach (var course in command.Standards)
             {
-                courseList.Append($"{course.StandardTitle} (level{course.StandardLevel})\n");
+                courseList.Append($"* {course.StandardTitle} (level{course.StandardLevel})\n");
             }
 
             var encodedAccountId = _encodingService.Encode(command.AccountId, EncodingType.AccountId);
-            var manageRequestsLink = $"{command.EmployerRequestApprenticeshipTrainingBaseUrl}{encodedAccountId}/dashboard";
+            var manageRequestsLink = string.Format(command.ManageRequestsLink, encodedAccountId);
             
-            var unsubscribeLink = $"{command.EmployerAccountsBaseUrl}settings/notifications";
+            var manageNotificationSettingsLink = $"{command.ManageNotificationSettingsLink}";
 
             return new Dictionary<string, string>
             {
                 { "user_name",  command.FirstName},
                 { "course_level_bullet_points", courseList.ToString()},
                 { "dashboard_url", manageRequestsLink },
-                { "unsubscribe_url", unsubscribeLink }
+                { "unsubscribe_url", manageNotificationSettingsLink }
             };
         }
     }

@@ -212,6 +212,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                             StandardLevel = e.StandardLevel,
                             StandardTitle = e.StandardTitle,
                         }).ToList(),
+                        ManageRequestsLink = parameters.ManageRequestsLink,
+                        ManageNotificationSettingsLink = parameters.ManageNotificationSettingsLink,
                     });
                 }
                 return Ok();

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using System;
@@ -13,12 +14,14 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SendRes
         public long AccountId { get; set; }
         public Guid RequestedBy { get; set; }
         public List<StandardDetails> Standards{ get; set; }
-        public string EmployerAccountsBaseUrl { get; set; }
-        public string EmployerRequestApprenticeshipTrainingBaseUrl { get; set; }
+        public string ManageNotificationSettingsLink { get; set; }
+        public string ManageRequestsLink { get; set; }
     }
     public class StandardDetails
     {
         public string StandardTitle { get; set; }
         public int StandardLevel { get; set; }
     }
+
+    
 }
