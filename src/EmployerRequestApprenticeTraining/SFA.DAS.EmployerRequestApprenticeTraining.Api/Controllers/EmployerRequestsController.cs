@@ -239,7 +239,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                         CancelledByEmail = employerProfileResult.Email,
                         CancelledByFirstName = employerProfileResult.FirstName,
                         CourseLevel = $"{standardResult.Standard.Title} (level {standardResult.Standard.Level})",
-                        DashboardUrl = cancelRequest.DashbaordUrl
+                        DashboardUrl = cancelRequest.DashboardUrl
                     };
 
                     await _mediator.Send(command);
