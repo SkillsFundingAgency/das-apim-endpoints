@@ -59,8 +59,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitP
             return new Dictionary<string, string>
             {
                 { "user_name",  command.CurrentUserFirstName},
-                { "course_name",  command.StandardTitle},
-                { "course_level", command.StandardLevel.ToString()},
+                { "course_level",  string.Format("{0} (level {1})", command.StandardTitle, command.StandardLevel)},
             };
         }
     }
