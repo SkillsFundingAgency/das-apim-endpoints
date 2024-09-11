@@ -209,6 +209,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
                     Website = parameters.Website,
                     RespondedBy = parameters.RespondedBy,
                     ContactName = parameters.ContactName,
+                    CurrentUserFirstName = parameters.CurrentUserFirstName,
+                    StandardLevel = parameters.StandardLevel,
+                    StandardTitle = parameters.StandardTitle,
                 });
                 var model = (SubmitProviderResponse)result;
                 return Ok(model);

@@ -3,12 +3,9 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.ProviderRequestApprenticeTraining.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests;
-using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -51,10 +48,20 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitP
             var templateId = _options.Value.NotificationTemplates.FirstOrDefault(p => p.TemplateName == "RATProviderResponseConfirmation")?.TemplateId;
             if (templateId != null)
             {
-                await _notificationService.Send(new SendEmailCommand(templateId.ToString(), command.CurrentUserEmail, new Dictionary<string, string>()));
+                await _notificationService.Send(new SendEmailCommand(templateId.ToString(), command.CurrentUserEmail, GetResponseEmailData(command)));
             }
 
             return response.Body;
+        }
+
+        public Dictionary<string, string> GetResponseEmailData(SubmitProviderResponseCommand command)
+        {
+            return new Dictionary<string, string>
+            {
+                { "user_name",  command.CurrentUserFirstName},
+                { "course_name",  command.StandardTitle},
+                { "course_level", command.StandardLevel.ToString()},
+            };
         }
     }
 }

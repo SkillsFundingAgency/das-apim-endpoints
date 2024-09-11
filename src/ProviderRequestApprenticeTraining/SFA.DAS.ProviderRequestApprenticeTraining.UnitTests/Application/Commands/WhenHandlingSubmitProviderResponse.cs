@@ -126,7 +126,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Comman
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _mockNotificationsService.Verify(n => n.Send(It.Is<SendEmailCommand>(c => c.TemplateId == templateId && c.RecipientsAddress == command.CurrentUserEmail)), Times.Once);
+            _mockNotificationsService.Verify(n => n.Send(It.Is<SendEmailCommand>(c => 
+                c.TemplateId == templateId && 
+                c.RecipientsAddress == command.CurrentUserEmail &&
+                c.Tokens.GetValueOrDefault("user_name") == command.CurrentUserFirstName &&
+                c.Tokens.GetValueOrDefault("course_name") == command.StandardTitle &&
+                c.Tokens.GetValueOrDefault("course_level") == command.StandardLevel
+
+                )), Times.Once);
         }
 
         [Test, MoqAutoData]

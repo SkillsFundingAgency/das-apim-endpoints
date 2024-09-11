@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
 {
-    public class WhenPostingSubmitproviderresponseConfirmation
+    public class WhenPostingSubmitproviderResponseConfirmation
     {
         [Test, MoqAutoData]
         public async Task Then_Status_Code_Is_Ok_From_Mediator(
