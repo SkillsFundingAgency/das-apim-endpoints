@@ -32,6 +32,8 @@ public class GetManageApprenticeshipDetailsQueryHandler(
     ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
     : IRequestHandler<GetManageApprenticeshipDetailsQuery, GetManageApprenticeshipDetailsQueryResult>
 {
+    public const int QualifyingPeriod = 42; // number of days
+
     public async Task<GetManageApprenticeshipDetailsQueryResult> Handle(GetManageApprenticeshipDetailsQuery request, CancellationToken cancellationToken)
     {
         var apprenticeshipResponse = await apiClient.GetWithResponseCode<GetApprenticeshipResponse>(new GetApprenticeshipRequest(request.ApprenticeshipId));
@@ -179,16 +181,23 @@ public class GetManageApprenticeshipDetailsQueryHandler(
             return null;
         }
 
-        var currentAcademicYear = await collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now));
+        var fundingQualifyingPeriodEnd = actualStartDate.Value.AddDays(QualifyingPeriod + 1).AddTicks(-1);
+        if (fundingQualifyingPeriodEnd < DateTime.Now)
+        {
+            return false;
+        }
 
-        if (currentAcademicYear.StartDate <= actualStartDate)
+        var currentAcademicYear = await collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now));
+        var isStartDateAfterStartOfCurrentAcademicYear = currentAcademicYear.StartDate <= actualStartDate;
+        if (isStartDateAfterStartOfCurrentAcademicYear)
         {
             return true;
         }
 
         var previousAcademicYear = await collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now.AddYears(-1)));
-
-        if (previousAcademicYear.StartDate <= actualStartDate && previousAcademicYear.HardCloseDate > DateTime.Now)
+        var isStartDateInPreviousAcademicYear = previousAcademicYear.StartDate <= actualStartDate; 
+        var isItR13R14PeriodOfPreviousAcademicYear = previousAcademicYear.HardCloseDate > DateTime.Now;
+        if (isStartDateInPreviousAcademicYear && isItR13R14PeriodOfPreviousAcademicYear)
         {
             return true;
         }
