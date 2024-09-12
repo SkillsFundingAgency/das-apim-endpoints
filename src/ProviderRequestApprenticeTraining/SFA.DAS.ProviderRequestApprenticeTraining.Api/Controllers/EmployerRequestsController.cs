@@ -2,22 +2,20 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ProviderRequestApprenticeTraining.Api.Models;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.AcknowledgeEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitProviderResponse;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
-using System;
-using System.Net;
-using System.Threading.Tasks;
-using System.Linq;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequestsByIds;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderEmailAddresses;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
-using System.Collections.Generic;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequestsByIds;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitProviderResponse;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderResponseConfirmation;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.AcknowledgeEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
 {
@@ -32,42 +30,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
         {
             _mediator = mediator;
             _logger = logger;
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateEmployerRequest(CreateEmployerRequestCommand command)
-        {
-            try
-            {
-                var result = await _mediator.Send(command);
-                return Ok(result.EmployerRequestId);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error attempting to create employer request for RequestType: {command.RequestType}");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
-        }
-
-        [HttpGet("{employerRequestId:guid}")]
-        public async Task<IActionResult> GetEmployerRequest(Guid employerRequestId)
-        {
-            try
-            {
-                var result = await _mediator.Send(new GetEmployerRequestQuery { EmployerRequestId = employerRequestId });
-
-                if (result.EmployerRequest != null)
-                {
-                    return Ok(result.EmployerRequest);
-                }
-
-                return NotFound();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error attempting to retrieve employer request for EmployerRequestId: {employerRequestId}");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
         }
 
         [HttpGet("provider/{ukprn}/active")]
