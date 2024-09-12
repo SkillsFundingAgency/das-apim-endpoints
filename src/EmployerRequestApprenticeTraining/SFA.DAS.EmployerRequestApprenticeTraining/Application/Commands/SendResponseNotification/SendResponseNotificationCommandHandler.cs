@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Options;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Configuration;
+using SFA.DAS.EmployerRequestApprenticeTraining.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Interfaces;

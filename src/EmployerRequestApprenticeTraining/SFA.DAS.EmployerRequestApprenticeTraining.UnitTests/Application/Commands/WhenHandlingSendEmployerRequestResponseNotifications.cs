@@ -1,10 +1,9 @@
-﻿using FluentAssertions;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SendResponseNotification;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Configuration;
+using SFA.DAS.EmployerRequestApprenticeTraining.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Interfaces;

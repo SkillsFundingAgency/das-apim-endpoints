@@ -1,9 +1,8 @@
 ﻿using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
 namespace SFA.DAS.ProviderPR.InnerApi.Responses;
-
-public class GetRequestResponse 
-{ 
+public class GetRequestResponse
+{
     public Guid RequestId { get; set; }
     public required string RequestType { get; set; }
     public long Ukprn { get; set; }

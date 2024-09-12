@@ -15,11 +15,13 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
             services.AddOptions();
 
             services.Configure<ApprenticeAccountsApiConfiguration>(configuration.GetSection("ApprenticeAccountsInnerApi"));
+            services.Configure<ApprenticeProgressApiConfiguration>(configuration.GetSection("ApprenticeProgressInnerApi"));
             services.Configure<ApprenticeCommitmentsApiConfiguration>(configuration.GetSection("ApprenticeCommitmentsInnerApi"));
             services.Configure<TrainingProviderConfiguration>(configuration.GetSection("TrainingProviderApi"));
             services.Configure<CommitmentsV2ApiConfiguration>(configuration.GetSection("CommitmentsV2InnerApi"));
             services.Configure<CoursesApiConfiguration>(configuration.GetSection("CoursesApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeAccountsApiConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeProgressApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeCommitmentsApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
