@@ -26,7 +26,11 @@ public class CandidatesController(IMediator mediator, ILogger<CandidatesControll
                 Outcome = request.Status,
                 ApplicationId = applicationId,
                 CandidateId = candidateId,
-                VacancyReference = request.VacancyReference
+                VacancyReference = request.VacancyReference,
+                VacancyCity = request.VacancyCity,
+                VacancyPostcode = request.VacancyPostcode,
+                VacancyTitle = request.VacancyTitle,
+                VacancyEmployerName = request.VacancyEmployerName
             });
             return NoContent();
         }

@@ -35,6 +35,10 @@ public class WhenCallingPostCandidateApplication
                 && c.Feedback == request.CandidateFeedback
                 && c.Outcome == request.Status
                 && c.VacancyReference == request.VacancyReference
+                && c.VacancyTitle == request.VacancyTitle
+                && c.VacancyEmployerName == request.VacancyEmployerName
+                && c.VacancyCity == request.VacancyCity
+                && c.VacancyPostcode == request.VacancyPostcode
             ), CancellationToken.None), Times.Once);
     }
     [Test, MoqAutoData]
