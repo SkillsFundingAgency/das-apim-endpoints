@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Extensions;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.AcknowledgeProviderResponses;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CancelEmployerRequest;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.ExpireEmployerRequests;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SubmitEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetActiveEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
