@@ -4,5 +4,6 @@
     {
         public const string RATEmployerRequestConfirmation = nameof(RATEmployerRequestConfirmation);
         public const string RATEmployerCancelConfirmation = nameof(RATEmployerCancelConfirmation);
+        public const string RATEmployerResponseNotification = nameof(RATEmployerResponseNotification);
     }
 }

@@ -10,6 +10,7 @@ using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CancelEmplo
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
+using SFA.DAS.EmployerRequestApprenticeTraining.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using SFA.DAS.Testing.AutoFixture;
 using System;
@@ -57,7 +58,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
                 .ReturnsAsync(employerProfileUserResult);
 
             // Act
-            var result = await _controller.CancelEmployerRequest(employerRequestId, new Models.CancelEmployerRequestRequest { CancelledBy = cancelledBy });
+            var result = await _controller.CancelEmployerRequest(employerRequestId, new CancelEmployerRequestRequest { CancelledBy = cancelledBy });
 
             // Assert
             result.Should().BeOfType<OkResult>();
@@ -85,7 +86,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
                 .ReturnsAsync(employerRequestResult);
 
             // Act
-            var result = await _controller.CancelEmployerRequest(employerRequestId, new Models.CancelEmployerRequestRequest { CancelledBy = cancelledBy });
+            var result = await _controller.CancelEmployerRequest(employerRequestId, new CancelEmployerRequestRequest { CancelledBy = cancelledBy });
 
             // Assert
             result.Should().BeOfType<OkResult>();
@@ -120,7 +121,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
                 .ThrowsAsync(new Exception());
 
             // Act
-            var result = await _controller.CancelEmployerRequest(employerRequestId, new Models.CancelEmployerRequestRequest { CancelledBy = cancelledBy }) as StatusCodeResult;
+            var result = await _controller.CancelEmployerRequest(employerRequestId, new CancelEmployerRequestRequest { CancelledBy = cancelledBy }) as StatusCodeResult;
 
             // Assert
             result.Should().NotBeNull();

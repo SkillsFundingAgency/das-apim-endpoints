@@ -62,6 +62,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
 
             services.AddServiceRegistration();
+            services.AddEncodingServices(_configuration);
 
             services
                 .AddControllers(o =>
