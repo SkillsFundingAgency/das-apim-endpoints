@@ -58,7 +58,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
         public async Task Then_Notification_Is_Sent_If_Template_Found()
         {
             // Arrange
-            var templateId = _mockOptions.Object.Value.NotificationTemplates.First().TemplateId.ToString();
+            var templateId = _mockOptions.Object.Value.NotificationTemplates
+                .First(p => p.TemplateName == EmailTemplateNames.RATEmployerResponseNotification).TemplateId.ToString();
 
             var command = new SendResponseNotificationCommand 
             { 

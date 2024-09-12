@@ -5,6 +5,7 @@ using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SubmitEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Configuration;
 using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests;
+using SFA.DAS.EmployerRequestApprenticeTraining.Models;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
@@ -115,7 +116,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
             _mockApiClient.Setup(c => c.PostWithResponseCode<PostSubmitEmployerRequestData, SubmitEmployerRequestResponse>(It.IsAny<PostSubmitEmployerRequestRequest>(), It.IsAny<bool>()))
                 .ReturnsAsync(apiResponse);
 
-            var templateId = _mockOptions.Object.Value.NotificationTemplates.First().TemplateId.ToString();
+            var templateId = _mockOptions.Object.Value.NotificationTemplates
+                .First(p => p.TemplateName == EmailTemplateNames.RATEmployerRequestConfirmation).TemplateId.ToString();
 
             // Act
             await _handler.Handle(command, CancellationToken.None);

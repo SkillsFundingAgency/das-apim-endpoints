@@ -5,6 +5,7 @@ using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CancelEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Configuration;
 using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests;
+using SFA.DAS.EmployerRequestApprenticeTraining.Models;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
@@ -41,7 +42,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
                 {
                     new NotificationTemplate
                     {
-                        TemplateName = "RATEmployerCancelConfirmation",
+                        TemplateName = EmailTemplateNames.RATEmployerCancelConfirmation,
                         TemplateId = Guid.NewGuid()
                     }
                 }
@@ -114,7 +115,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
             _mockApiClient.Setup(c => c.PutWithResponseCode<NullResponse>(It.IsAny<PutCancelEmployerRequestRequest>()))
                 .ReturnsAsync(response);
 
-            var templateId = _mockOptions.Object.Value.NotificationTemplates.First().TemplateId.ToString();
+            var templateId = _mockOptions.Object.Value.NotificationTemplates
+                .First(p => p.TemplateName == EmailTemplateNames.RATEmployerCancelConfirmation).TemplateId.ToString();
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
