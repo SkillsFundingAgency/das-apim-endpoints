@@ -28,10 +28,12 @@
     <None Remove="Controllers\" />
     <None Remove="Services\" />
     <None Remove="Handlers\" />
+    <None Remove="Models\" />
+    <None Remove="InnerApi\ApprenticeProgress\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Services\" />
-    <Folder Include="Handlers\" />
+    <Folder Include="Models\" />
+    <Folder Include="InnerApi\ApprenticeProgress\" />
   </ItemGroup>
 </Project>

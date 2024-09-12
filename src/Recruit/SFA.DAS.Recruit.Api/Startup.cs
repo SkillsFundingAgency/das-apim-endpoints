@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -42,7 +41,7 @@ public static class Startup
         }
 
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetTrainingProgrammesQuery).Assembly));
-        services.AddServiceRegistration();
+        services.AddServiceRegistration(configuration);
 
         services.Configure<RouteOptions>(options =>
             {

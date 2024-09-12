@@ -17,20 +17,16 @@ public class GetEmployerRelationshipsTests
     public async Task GetEmployerRelationships_InvokesQueryHandler(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] EmployerRelationshipsController sut,
-        string accountHashedId,
-        long? ukprn,
-        string accountlegalentityPublicHashedId,
+        long accountId,
         CancellationToken cancellationToken
     )
     {
-        await sut.GetEmployerRelationships(accountHashedId, ukprn, accountlegalentityPublicHashedId, cancellationToken);
+        await sut.GetEmployerRelationships(accountId, cancellationToken);
 
         mediatorMock.Verify(
             m => m.Send(
-                It.Is<GetEmployerRelationshipsQuery>(x => 
-                    x.AccountHashedId == accountHashedId &&
-                    x.Ukprn == ukprn &&
-                    x.AccountlegalentityPublicHashedId == accountlegalentityPublicHashedId
+                It.Is<GetEmployerRelationshipsQuery>(x =>
+                    x.AccountId == accountId
                 ),
                 It.IsAny<CancellationToken>()
             )
@@ -41,25 +37,15 @@ public class GetEmployerRelationshipsTests
     public async Task GetEmployerRelationships_HandlerReturnsData_ReturnsOkResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] EmployerRelationshipsController sut,
-        string accountHashedId,
-        long? ukprn,
-        string accountlegalentityPublicHashedId,
+        long accountId,
         GetEmployerRelationshipsQueryResult queryResult,
         CancellationToken cancellationToken)
     {
-        mediatorMock.Setup(m =>
-            m.Send(
-                It.Is<GetEmployerRelationshipsQuery>(x => 
-                    x.AccountHashedId == accountHashedId &&
-                    x.Ukprn == ukprn && 
-                    x.AccountlegalentityPublicHashedId == accountlegalentityPublicHashedId
-                ),
-                It.IsAny<CancellationToken>()
-            )
-        )
-        .ReturnsAsync(queryResult);
+        mediatorMock
+            .Setup(m => m.Send(It.Is<GetEmployerRelationshipsQuery>(x => x.AccountId == accountId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(queryResult);
 
-        var result = await sut.GetEmployerRelationships(accountHashedId, ukprn, accountlegalentityPublicHashedId, cancellationToken);
+        var result = await sut.GetEmployerRelationships(accountId, cancellationToken);
 
         result.As<OkObjectResult>().Should().NotBeNull();
         result.As<OkObjectResult>().Value.Should().Be(queryResult);
