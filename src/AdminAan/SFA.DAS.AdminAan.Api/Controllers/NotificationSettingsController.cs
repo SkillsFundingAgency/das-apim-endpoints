@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.AdminAan.Application.NotificationsSettings.Commands;
 using SFA.DAS.AdminAan.Application.NotificationsSettings.Queries;
+using SFA.DAS.AdminAan.Domain.NotificationSettings;
 
 namespace SFA.DAS.AdminAan.Api.Controllers
 {
@@ -19,6 +21,20 @@ namespace SFA.DAS.AdminAan.Api.Controllers
             });
 
             return Ok(result);
+        }
+
+        [Route("")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpPost]
+        public async Task<IActionResult> Index(Guid memberId, [FromBody] NotificationSettingsPostRequest body)
+        {
+            await mediator.Send(new UpdateNotificationSettingsCommand
+            {
+                MemberId = memberId,
+                ReceiveNotifications = body.ReceiveNotifications
+            });
+
+            return Ok();
         }
     }
 }
