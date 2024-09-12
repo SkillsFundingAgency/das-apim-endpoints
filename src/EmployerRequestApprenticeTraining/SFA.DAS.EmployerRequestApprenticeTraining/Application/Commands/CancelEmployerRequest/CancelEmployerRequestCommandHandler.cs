@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using SFA.DAS.EmployerRequestApprenticeTraining.Configuration;
 using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests;
+using SFA.DAS.EmployerRequestApprenticeTraining.Models;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
@@ -40,19 +41,24 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CancelE
 
             response.EnsureSuccessStatusCode();
 
-            var templateId = _options.Value.NotificationTemplates.FirstOrDefault(p => p.TemplateName == "RATEmployerCancelConfirmation")?.TemplateId;
+            var templateId = _options.Value.NotificationTemplates.FirstOrDefault(p => p.TemplateName == EmailTemplateNames.RATEmployerCancelConfirmation)?.TemplateId;
             if (templateId != null)
             {
                 await _notificationService.Send(new SendEmailCommand(
                     templateId.ToString(),
                     command.CancelledByEmail,
-                    new Dictionary<string, string>
-                    {
-                        { "course_level", command.CourseLevel },
-                        { "user_name", command.CancelledByFirstName },
-                        { "dashboard_url", command.DashboardUrl }
-                    }));
+                    GetEmailData(command)));
             }
+        }
+
+        public Dictionary<string, string> GetEmailData(CancelEmployerRequestCommand command)
+        {
+            return new Dictionary<string, string>
+            {
+                { "course_level", command.CourseLevel },
+                { "user_name", command.CancelledByFirstName },
+                { "dashboard_url", command.DashboardUrl }
+            };
         }
     }
 }

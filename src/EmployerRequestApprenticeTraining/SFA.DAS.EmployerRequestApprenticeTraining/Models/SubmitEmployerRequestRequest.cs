@@ -18,5 +18,6 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Models
         public bool BlockRelease { get; set; }
         public Guid RequestedBy { get; set; }
         public Guid ModifiedBy { get; set; }
+        public string DashboardUrl { get; set; }
     }
 }

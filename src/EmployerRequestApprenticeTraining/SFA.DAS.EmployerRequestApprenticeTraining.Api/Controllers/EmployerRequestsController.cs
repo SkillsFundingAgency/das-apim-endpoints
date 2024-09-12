@@ -68,6 +68,14 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                     }
                 }
 
+                var standardTask = _mediator.Send(new GetStandardQuery { StandardId = submitRequest.StandardReference });
+                var settingsTask = _mediator.Send(new GetSettingsQuery());
+
+                await Task.WhenAll([standardTask, settingsTask]);
+
+                var standardResult = await standardTask;
+                var settings = await settingsTask;
+
                 var createCommand = new SubmitEmployerRequestCommand
                 {
                     OriginalLocation = submitRequest.OriginalLocation,
@@ -85,7 +93,10 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                     BlockRelease = submitRequest.BlockRelease,
                     RequestedBy = submitRequest.RequestedBy,
                     RequestedByEmail = employerProfileUserResult.Email,
-                    ModifiedBy = submitRequest.ModifiedBy
+                    ModifiedBy = submitRequest.ModifiedBy,
+                    CourseLevel = $"{standardResult.Standard.Title} (level {standardResult.Standard.Level})",
+                    ExpiryAfterMonths = settings.ExpiryAfterMonths,
+                    DashboardUrl = submitRequest.DashboardUrl
                 };
 
                 var result = await _mediator.Send(createCommand);
