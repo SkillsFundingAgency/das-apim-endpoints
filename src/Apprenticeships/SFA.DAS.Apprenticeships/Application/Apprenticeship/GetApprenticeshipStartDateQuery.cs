@@ -159,7 +159,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 
         var academicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(currentActualStartDate.Value));
 
-        return academicYear.StartDate;
+        return academicYear.StartDate > Constants.SimplifiedPayentsMinimumStartDate ? academicYear.StartDate : Constants.SimplifiedPayentsMinimumStartDate;
     }
 
     private async Task<DateTime?> GetLatestNewStartDate(DateTime? currentActualStartDate)

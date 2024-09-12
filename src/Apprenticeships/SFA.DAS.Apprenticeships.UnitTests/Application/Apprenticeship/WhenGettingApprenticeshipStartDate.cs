@@ -53,7 +53,7 @@ public class WhenGettingApprenticeshipStartDate
     {
         // Arrange
         _expectedResponse = _fixture.Create<ApprenticeshipStartDateResponse>();
-        _expectedEarliestStartDate = _fixture.Create<DateTime>();
+        _expectedEarliestStartDate = new DateTime(2025, 8, 1);
         _expectedLatestStartDate = _fixture.Create<DateTime>();
         _expectedLastFridayOfSchool = new DateTime(2021, 6, 25);
         _dateOfBirth = new DateTime(2005, 3, 3);
@@ -155,6 +155,23 @@ public class WhenGettingApprenticeshipStartDate
         result.LastFridayOfSchool.Should().Be(_expectedLastFridayOfSchool);
         result.CurrentAcademicYear.AcademicYear.Should().Be(_expectedResponse.CurrentAcademicYear.AcademicYear);
         result.PreviousAcademicYear.AcademicYear.Should().Be(_expectedResponse.PreviousAcademicYear.AcademicYear);
+    }
+
+    [Test]
+    public async Task When_AcademicYearStartDateAfterEarliestAllowed_ReturnsEarliestAllowed()
+    {
+        // Arrange
+        var expectedMinimumStartDate = new DateTime(2024, 10, 1);
+        _mockCollectionCalendarApiClient
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(y =>
+                y._dateTime == _expectedResponse.ActualStartDate.Value.ToString("yyyy-MM-dd"))))
+            .ReturnsAsync(new GetAcademicYearsResponse { StartDate = expectedMinimumStartDate.AddDays(-1), AcademicYear = _expectedResponse.CurrentAcademicYear.AcademicYear });
+
+        // Act
+        var result = await _sut.Handle(new GetApprenticeshipStartDateQuery(Guid.NewGuid()), CancellationToken.None);
+
+        // Assert
+        result.EarliestStartDate.Should().Be(expectedMinimumStartDate);
     }
 
     [TestCase(true, true)]
