@@ -6,6 +6,7 @@ using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitProviderResponse;
 using SFA.DAS.ProviderRequestApprenticeTraining.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -40,7 +41,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Comman
                 {
                     new NotificationTemplate
                     {
-                        TemplateName = "RATProviderResponseConfirmation",
+                        TemplateName = EmailTemplateNames.RATProviderResponseConfirmation,
                         TemplateId = Guid.NewGuid()
                     }
                 }
@@ -122,7 +123,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Comman
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _mockNotificationsService.Verify(n => n.Send(It.Is<SendEmailCommand>(c => c.TemplateId == templateId && c.RecipientsAddress == command.CurrentUserEmail)), Times.Once);
+            var expectedCourseLevel = string.Format("{0} (level {1})", command.StandardTitle, command.StandardLevel);
+
+            _mockNotificationsService.Verify(n => n.Send(It.Is<SendEmailCommand>(c => 
+                c.TemplateId == templateId && 
+                c.RecipientsAddress == command.CurrentUserEmail &&
+                c.Tokens.GetValueOrDefault("user_name") == command.CurrentUserFirstName &&
+                c.Tokens.GetValueOrDefault("course_level") == expectedCourseLevel
+                )), Times.Once);
         }
 
         [Test, MoqAutoData]

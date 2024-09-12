@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
 using MediatR;
-using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitProviderResponse
 {
@@ -16,5 +15,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitP
         public string CurrentUserEmail { get; set; }
         public Guid RespondedBy { get; set; }
         public string CurrentUserFirstName { get; set; }
+        public string StandardLevel { get; set; }
+        public string StandardTitle { get; set; }
     }
 }
