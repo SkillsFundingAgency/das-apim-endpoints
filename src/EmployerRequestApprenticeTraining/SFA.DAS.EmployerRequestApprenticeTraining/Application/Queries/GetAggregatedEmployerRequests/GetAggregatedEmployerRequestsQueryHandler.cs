@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests;
+using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Linq;

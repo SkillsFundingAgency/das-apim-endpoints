@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
+using SFA.DAS.EmployerRequestApprenticeTraining.Models;
 using System;
 using System.Net;
 using System.Threading.Tasks;

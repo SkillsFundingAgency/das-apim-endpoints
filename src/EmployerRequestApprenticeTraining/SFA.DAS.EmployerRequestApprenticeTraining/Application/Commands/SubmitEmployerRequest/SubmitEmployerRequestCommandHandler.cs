@@ -1,16 +1,16 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Options;
 using SFA.DAS.EmployerRequestApprenticeTraining.Configuration;
+using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using static SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining.SubmitEmployerRequestRequest;
+using static SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests.PostSubmitEmployerRequestRequest;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SubmitEmployerRequest
 {
@@ -31,7 +31,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SubmitE
 
         public async Task<SubmitEmployerRequestResponse> Handle(SubmitEmployerRequestCommand command, CancellationToken cancellationToken)
         {
-            var request = new SubmitEmployerRequestRequest(command.AccountId, new SubmitEmployerRequestData
+            var request = new PostSubmitEmployerRequestRequest(command.AccountId, new PostSubmitEmployerRequestData
             {
                 OriginalLocation = command.OriginalLocation,
                 RequestType = command.RequestType,
@@ -49,18 +49,18 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SubmitE
                 ModifiedBy = command.ModifiedBy
             });
 
-            var employerRequestResponse = await _requestApprenticeTrainingApiClient
-                .PostWithResponseCode<SubmitEmployerRequestData, SubmitEmployerRequestResponse>(request);
+            var response = await _requestApprenticeTrainingApiClient
+                .PostWithResponseCode<PostSubmitEmployerRequestData, SubmitEmployerRequestResponse>(request);
 
-            employerRequestResponse.EnsureSuccessStatusCode();
+            response.EnsureSuccessStatusCode();
 
-            var templateId = _options.Value.NotificationTemplates.FirstOrDefault(p => p.TemplateName == "SubmitEmployerRequest")?.TemplateId;
+            var templateId = _options.Value.NotificationTemplates.FirstOrDefault(p => p.TemplateName == "RATEmployerRequestConfirmation")?.TemplateId;
             if (templateId != null)
             {
                 await _notificationService.Send(new SendEmailCommand(templateId.ToString(), command.RequestedByEmail, new Dictionary<string, string>()));
             }
 
-            return employerRequestResponse.Body;
+            return response.Body;
         }
     }
 }

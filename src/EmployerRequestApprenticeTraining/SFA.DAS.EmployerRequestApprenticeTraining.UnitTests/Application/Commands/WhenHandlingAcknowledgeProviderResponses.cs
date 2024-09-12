@@ -1,8 +1,8 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.AcknowledgeProviderResponses;
+using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading;
@@ -38,7 +38,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
 
             // Assert
             _apiClientMock.Verify(client => client.Put(
-                It.Is<AcknowledgeProviderResponsesRequest>(req =>
+                It.Is<PutAcknowledgeProviderResponsesRequest>(req =>
                     req.EmployerRequestId == command.EmployerRequestId &&
                     req.Data.AcknowledgedBy == command.AcknowledgedBy
                 )), Times.Once);
@@ -54,12 +54,12 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
                 AcknowledgedBy = Guid.NewGuid()
             };
 
-            _apiClientMock.Setup(client => client.Put(It.IsAny<AcknowledgeProviderResponsesRequest>()))
+            _apiClientMock.Setup(client => client.Put(It.IsAny<PutAcknowledgeProviderResponsesRequest>()))
                 .ThrowsAsync(new Exception("API failure"));
 
             // Act & Assert
             Assert.ThrowsAsync<Exception>(() => _sut.Handle(command, CancellationToken.None));
-            _apiClientMock.Verify(client => client.Put(It.IsAny<AcknowledgeProviderResponsesRequest>()), Times.Once);
+            _apiClientMock.Verify(client => client.Put(It.IsAny<PutAcknowledgeProviderResponsesRequest>()), Times.Once);
         }
     }
 }

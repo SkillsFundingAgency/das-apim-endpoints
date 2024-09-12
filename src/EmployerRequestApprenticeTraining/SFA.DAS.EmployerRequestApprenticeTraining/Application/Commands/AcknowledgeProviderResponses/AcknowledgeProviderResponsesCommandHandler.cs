@@ -1,6 +1,6 @@
 ﻿using MediatR;
+using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.Acknowl
 
         public async Task Handle(AcknowledgeProviderResponsesCommand command, CancellationToken cancellationToken)
         {
-            var request = new AcknowledgeProviderResponsesRequest(command.EmployerRequestId, new AcknowledgeProviderResponsesRequestData
+            var request = new PutAcknowledgeProviderResponsesRequest(command.EmployerRequestId, new PutAcknowledgeProviderResponsesRequestData
             {
                 AcknowledgedBy = command.AcknowledgedBy
             });
