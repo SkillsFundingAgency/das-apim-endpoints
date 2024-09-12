@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Extensions;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.AcknowledgeProviderResponses;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CancelEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SubmitEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetActiveEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
@@ -13,7 +14,9 @@ using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetProvider;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetSettings;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
 using SFA.DAS.EmployerRequestApprenticeTraining.Models;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -125,7 +128,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
         }
 
         [HttpGet("{employerRequestId}/training-request")]
-        public async Task<IActionResult> GetTrainingRequest([FromRoute] Guid employerRequestId)
+        public async Task<IActionResult> GetTrainingRequest([FromRoute] Guid employerRequestId, [FromQuery] bool includeProviders)
         {
             try
             {
@@ -135,15 +138,19 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                 {
                     var employerRequest = employerRequestResult.EmployerRequest;
 
-                    var providerTasks = employerRequest.ProviderResponses.Select(async providerResponse =>
+                    List<Task<ProviderResponse>> providerTasks = new List<Task<ProviderResponse>>();
+                    if (includeProviders)
                     {
-                        var providerResult = await _mediator.Send(new GetProviderQuery { Ukprn = providerResponse.Ukprn });
-                        if (providerResult.Provider != null)
+                        providerTasks.AddRange(employerRequest.ProviderResponses.Select(async providerResponse =>
                         {
-                            providerResponse.ProviderName = providerResult.Provider.Name;
-                        }
-                        return providerResponse;
-                    }).ToList();
+                            var providerResult = await _mediator.Send(new GetProviderQuery { Ukprn = providerResponse.Ukprn });
+                            if (providerResult.Provider != null)
+                            {
+                                providerResponse.ProviderName = providerResult.Provider.Name;
+                            }
+                            return providerResponse;
+                        }).ToList());
+                    }
 
                     var standardTask = _mediator.Send(new GetStandardQuery { StandardId = employerRequest.StandardReference });
                     var settingsTask = _mediator.Send(new GetSettingsQuery());
@@ -172,7 +179,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                         ExpiryAt = employerRequest.RequestedAt.AddMonths(settings.ExpiryAfterMonths),
                         RemoveAt = employerRequest.RequestedAt.AddMonths(settings.ExpiryAfterMonths + settings.RemovedAfterExpiryMonths),
                         Regions = employerRequest.Regions,
-                        ProviderResponses = providerResponses.ToList()
+                        ProviderResponses = includeProviders ? providerResponses.ToList() : []
                     };
 
                     return Ok(trainingRequest);
@@ -205,6 +212,44 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to acknowledge provider responses for {EmployerRequestId}", employerRequestId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPut("{employerRequestId}/cancel-request")]
+        public async Task<IActionResult> CancelEmployerRequest([FromRoute] Guid employerRequestId, [FromBody] CancelEmployerRequestRequest cancelRequest)
+        {
+            try
+            {
+                var employerRequestResult = await _mediator.Send(new GetEmployerRequestQuery { EmployerRequestId = employerRequestId });
+                if (employerRequestResult.EmployerRequest != null && employerRequestResult.EmployerRequest.Status == RequestStatus.Active)
+                {
+                    var standardTask = _mediator.Send(new GetStandardQuery { StandardId = employerRequestResult.EmployerRequest.StandardReference });
+                    var employerProfileTask = _mediator.Send(new GetEmployerProfileUserQuery { UserId = cancelRequest.CancelledBy });
+
+                    await Task.WhenAll([standardTask, employerProfileTask]);
+
+                    var standardResult = await standardTask;
+                    var employerProfileResult = await employerProfileTask;
+
+                    var command = new CancelEmployerRequestCommand
+                    {
+                        EmployerRequestId = employerRequestId,
+                        CancelledBy = cancelRequest.CancelledBy,
+                        CancelledByEmail = employerProfileResult.Email,
+                        CancelledByFirstName = employerProfileResult.FirstName,
+                        CourseLevel = $"{standardResult.Standard.Title} (level {standardResult.Standard.Level})",
+                        DashboardUrl = cancelRequest.DashboardUrl
+                    };
+
+                    await _mediator.Send(command);
+                }
+                
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to cancel employer request for {EmployerRequestId}", employerRequestId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -252,6 +297,50 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to retrieve submit employer request confirmation for {EmployerRequestId}", employerRequestId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{employerRequestId}/cancel-confirmation")]
+        public async Task<IActionResult> GetCancelEmployerRequestConfirmation([FromRoute] Guid employerRequestId)
+        {
+            try
+            {
+                var employerRequestResult = await _mediator.Send(new GetEmployerRequestQuery { EmployerRequestId = employerRequestId });
+
+                if (employerRequestResult.EmployerRequest != null)
+                {
+                    var employerRequest = employerRequestResult.EmployerRequest;
+
+                    var standardTask = _mediator.Send(new GetStandardQuery { StandardId = employerRequest.StandardReference });
+                    var employerProfileUserTask = _mediator.Send(new GetEmployerProfileUserQuery { UserId = employerRequest.RequestedBy });
+
+                    await Task.WhenAll(standardTask, employerProfileUserTask);
+
+                    var standardResult = await standardTask;
+                    var employerProfileUser = await employerProfileUserTask;
+
+                    return Ok(new CancelEmployerRequestConfirmation
+                    {
+                        EmployerRequestId = employerRequest.Id,
+                        StandardTitle = standardResult.Standard.Title,
+                        StandardLevel = standardResult.Standard.Level,
+                        NumberOfApprentices = employerRequest.NumberOfApprentices,
+                        SameLocation = employerRequest.SameLocation,
+                        SingleLocation = employerRequest.SingleLocation,
+                        AtApprenticesWorkplace = employerRequest.AtApprenticesWorkplace,
+                        DayRelease = employerRequest.DayRelease,
+                        BlockRelease = employerRequest.BlockRelease,
+                        CancelledByEmail = employerProfileUser.Email,
+                        Regions = employerRequest.Regions
+                    });
+                }
+
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve cancel employer request confirmation for {EmployerRequestId}", employerRequestId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
