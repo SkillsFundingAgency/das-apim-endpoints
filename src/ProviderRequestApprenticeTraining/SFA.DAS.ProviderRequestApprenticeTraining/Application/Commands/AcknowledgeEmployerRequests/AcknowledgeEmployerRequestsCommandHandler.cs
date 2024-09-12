@@ -19,14 +19,14 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.Acknowl
 
         public async Task Handle(AcknowledgeEmployerRequestsCommand command, CancellationToken cancellationToken)
         {
-            var request = new CreateProviderResponseEmployerRequestRequest(new CreateEmployerResponseEmployerRequestData
+            var request = new AcknowledgeEmployerRequestsRequest(new AcknowledgeEmployerRequestsData
             {
                 EmployerRequestIds = command.EmployerRequestIds,
                 Ukprn = command.Ukprn
             });
 
             var response = await _requestApprenticeTrainingApiClient
-                .PostWithResponseCode<CreateEmployerResponseEmployerRequestData, AcknowledgeEmployerRequestsResponse>(request, false);
+                .PostWithResponseCode<AcknowledgeEmployerRequestsData, AcknowledgeEmployerRequestsResponse>(request, false);
 
             response.EnsureSuccessStatusCode();
         }

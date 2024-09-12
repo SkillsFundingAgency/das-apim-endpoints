@@ -2,6 +2,8 @@
 {
     public enum RequestStatus
     {
-        Active = 0
+        Active = 0,
+        Expired = 1,
+        Cancelled = 2
     }
 }

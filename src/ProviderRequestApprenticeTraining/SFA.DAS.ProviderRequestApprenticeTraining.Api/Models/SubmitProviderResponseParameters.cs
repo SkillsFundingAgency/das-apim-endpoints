@@ -10,5 +10,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
         public string Phone { get; set; }
         public string Website { get; set; }
         public string CurrentUserEmail { get; set; }
+        public string ContactName { get; set; }
+        public Guid RespondedBy { get; set; }
     }
 }

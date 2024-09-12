@@ -23,12 +23,20 @@
     <None Remove="Client\" />
     <None Remove="Application\Queries\SupportAndGuidance\" />
     <None Remove="Application\Commands\SupportAndGuidance\" />
+    <None Remove="InnerApi\ApprenticeProgress\" />
+    <None Remove="Application\Queries\Tasks\" />
+    <None Remove="Application\Commands\Tasks\" />
+    <None Remove="InnerApi\ApprenticeProgress\Responses\" />
+    <None Remove="Application\Commands\KsbProgress\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\Commands\ApprenticeSubscriptions\" />
     <Folder Include="Models\Contentful\" />
-    <Folder Include="Client\" />
     <Folder Include="Application\Queries\SupportAndGuidance\" />
     <Folder Include="Application\Commands\SupportAndGuidance\" />
+    <Folder Include="Application\Queries\Tasks\" />
+    <Folder Include="Application\Commands\Tasks\" />
+    <Folder Include="InnerApi\ApprenticeProgress\Responses\" />
+    <Folder Include="Application\Commands\KsbProgress\" />
   </ItemGroup>
 </Project>

@@ -1,9 +1,7 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining
 {
-    [ExcludeFromCodeCoverage]
     public class GetClosestRegionRequest : IGetApiRequest
     {
         private readonly double _latitude;
