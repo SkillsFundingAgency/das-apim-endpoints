@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.ProviderRequestApprenticeTraining.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -45,7 +46,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitP
 
             response.EnsureSuccessStatusCode();
 
-            var templateId = _options.Value.NotificationTemplates.FirstOrDefault(p => p.TemplateName == "RATProviderResponseConfirmation")?.TemplateId;
+            var templateId = _options.Value.NotificationTemplates.FirstOrDefault(p => p.TemplateName == EmailTemplateNames.RATProviderResponseConfirmation)?.TemplateId;
             if (templateId != null)
             {
                 await _notificationService.Send(new SendEmailCommand(templateId.ToString(), command.CurrentUserEmail, GetResponseEmailData(command)));

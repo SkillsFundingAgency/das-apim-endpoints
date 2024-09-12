@@ -6,6 +6,7 @@ using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.SubmitProviderResponse;
 using SFA.DAS.ProviderRequestApprenticeTraining.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -40,7 +41,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Comman
                 {
                     new NotificationTemplate
                     {
-                        TemplateName = "RATProviderResponseConfirmation",
+                        TemplateName = EmailTemplateNames.RATProviderResponseConfirmation,
                         TemplateId = Guid.NewGuid()
                     }
                 }
