@@ -11,6 +11,6 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests
             AccountId = accountId;
         }
 
-        public string GetUrl => $"api/employerrequest/account/{AccountId}/aggregated";
+        public string GetUrl => $"api/accounts/{AccountId}/employer-requests/aggregated";
     }
 }

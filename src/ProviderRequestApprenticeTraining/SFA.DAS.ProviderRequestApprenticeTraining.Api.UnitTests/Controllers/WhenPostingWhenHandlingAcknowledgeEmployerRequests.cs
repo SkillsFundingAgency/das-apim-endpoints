@@ -20,7 +20,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task Then_Status_Code_Is_Ok_From_Mediator(
             AcknowledgeRequestsParameters param,
-            [Greedy] EmployerRequestsController controller)
+            [Greedy] ProvidersController controller)
         {
             // Act
             var actual = await controller.AcknowledgeEmployerRequests(123456,param) as StatusCodeResult;
@@ -34,7 +34,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             AcknowledgeRequestsParameters param,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestsController controller)
+            [Greedy] ProvidersController controller)
         {
             // Arrange
             mediator.Setup(x => x.Send(It.IsAny<AcknowledgeEmployerRequestsCommand>(), CancellationToken.None))

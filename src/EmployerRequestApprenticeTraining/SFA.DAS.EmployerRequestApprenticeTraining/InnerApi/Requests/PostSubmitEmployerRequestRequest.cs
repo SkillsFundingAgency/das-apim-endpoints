@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests
             Data = data;
         }
 
-        public string PostUrl => $"api/employerrequest/account/{AccountId}/submit-request";
+        public string PostUrl => $"api/accounts/{AccountId}/employer-requests";
 
         public class PostSubmitEmployerRequestData
         {
