@@ -109,7 +109,12 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
             switch (res.ResponseMessage.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    return true;
+                    {
+                        GetRequestByUkprnAndPayeResponse getResponse = res.GetContent();
+                        if (getResponse.RequestType != "CreateAccount") return false;
+                        return true;
+
+                    }
                 case HttpStatusCode.NotFound:
                     return false;
             }

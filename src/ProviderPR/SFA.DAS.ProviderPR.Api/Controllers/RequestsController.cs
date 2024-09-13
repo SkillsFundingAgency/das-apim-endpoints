@@ -36,14 +36,30 @@ public class RequestsController(IMediator _mediator, IProviderRelationshipsApiRe
     public async Task<IActionResult> GetRequest([FromRoute] Guid requestId, CancellationToken cancellationToken)
     {
         GetRequestResponse? result = await _providerRelationshipsApiRestClient.GetRequest(requestId, cancellationToken);
-        
-        if(result is null)
+
+        if (result is null)
         {
             return NotFound();
         }
-        
+
         return Ok(result);
     }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetRequest([FromQuery] long ukprn, [FromQuery] string paye, CancellationToken cancellationToken)
+    {
+        GetRequestResponse? result = await _providerRelationshipsApiRestClient.GetRequest(ukprn, paye, cancellationToken);
+
+        if (result is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
+
 
     [HttpPost("permission")]
     [ProducesResponseType(typeof(CreatePermissionRequestCommandResult), StatusCodes.Status200OK)]
