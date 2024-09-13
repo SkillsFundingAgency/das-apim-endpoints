@@ -5,6 +5,7 @@ using SFA.DAS.EmployerPR.Application.Notifications.Commands.PostNotifications;
 using SFA.DAS.EmployerPR.Application.Permissions.Commands.PostPermissions;
 using SFA.DAS.EmployerPR.Application.Permissions.Queries.GetPermissions;
 using SFA.DAS.EmployerPR.Application.Relationships.Queries.GetRelationships;
+using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptPermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinedRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
 
@@ -36,4 +37,7 @@ public interface IProviderRelationshipsApiRestClient
 
     [Put("requests/{requestId}/declined")]
     Task<Unit> DeclineRequest([Path] Guid requestId, [Body] DeclinedRequestModel model, CancellationToken cancellationToken);
+
+    [Post("requests/{requestId}/permissions/accepted")]
+    Task<Unit> AcceptPermissionsRequest([Path] Guid requestId, [Body] AcceptPermissionsRequestModel model, CancellationToken cancellationToken);
 }

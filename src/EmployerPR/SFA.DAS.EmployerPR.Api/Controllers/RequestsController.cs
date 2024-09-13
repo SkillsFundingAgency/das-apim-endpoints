@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptPermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinedRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
 using SFA.DAS.EmployerPR.Infrastructure;
@@ -31,6 +32,22 @@ public class RequestsController(IProviderRelationshipsApiRestClient _providerRel
     public async Task<IActionResult> DeclineRequest([FromRoute] Guid requestId, [FromBody] DeclinedRequestModel model, CancellationToken cancellationToken)
     {
         DeclinedRequestCommand command = new DeclinedRequestCommand()
+        {
+            ActionedBy = model.ActionedBy,
+            RequestId = requestId
+        };
+
+        await _mediator.Send(command, cancellationToken);
+
+        return Ok();
+    }
+
+    [HttpPost("{requestId:guid}/permission/accepted")]
+    [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AcceptPermissionsRequest([FromRoute] Guid requestId, [FromBody] AcceptPermissionsRequestModel model, CancellationToken cancellationToken)
+    {
+        AcceptPermissionsRequestCommand command = new AcceptPermissionsRequestCommand()
         {
             ActionedBy = model.ActionedBy,
             RequestId = requestId
