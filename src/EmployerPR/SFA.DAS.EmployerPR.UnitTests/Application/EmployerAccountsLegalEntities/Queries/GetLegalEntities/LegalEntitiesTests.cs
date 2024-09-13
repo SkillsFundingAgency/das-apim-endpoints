@@ -1,6 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using NUnit.Framework;
-using SFA.DAS.EmployerPR.Application.Queries.GetAccountLegalEntities;
+using SFA.DAS.EmployerPR.Application.EmployerAccountsLegalEntities.Queries.GetAccountLegalEntities;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 
 namespace SFA.DAS.EmployerPR.UnitTests.Application.EmployerAccountsLegalEntities.Queries.GetLegalEntities;

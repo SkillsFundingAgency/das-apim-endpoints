@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerPR.Api.Controllers;
-using SFA.DAS.EmployerPR.Application.Queries.GetRoatpProviders;
+using SFA.DAS.EmployerPR.Application.Roatp.Queries.GetRoatpProviders;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerPR.Api.UnitTests.Controllers.ProvidersControllerTests;

@@ -1,10 +1,11 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerPR.Api.Controllers;
-using SFA.DAS.EmployerPR.Application.Queries.GetRequest;
+using SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
 using SFA.DAS.EmployerPR.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
@@ -18,11 +19,12 @@ public sealed class GetRequestTests
     public async Task RequestsController_GetRequest_ReturnsExpectedResponse(GetRequestResponse response)
     {
         Mock<IProviderRelationshipsApiRestClient> mockApiClient = new();
+        Mock<IMediator> mediatorMock = new();
         mockApiClient.Setup(a =>
             a.GetRequest(It.IsAny<Guid>(), CancellationToken.None))
             .ReturnsAsync(response);
 
-        RequestsController sut = new RequestsController(mockApiClient.Object);
+        RequestsController sut = new RequestsController(mockApiClient.Object, mediatorMock.Object);
        
         var result = await sut.GetRequest(It.IsAny<Guid>(), CancellationToken.None);
 
@@ -34,11 +36,12 @@ public sealed class GetRequestTests
     public async Task RequestsController_GetRequest_Returns_NotFound()
     {
         Mock<IProviderRelationshipsApiRestClient> mockApiClient = new();
+        Mock<IMediator> mediatorMock = new();
         mockApiClient.Setup(a =>
             a.GetRequest(It.IsAny<Guid>(), CancellationToken.None))
             .ReturnsAsync((GetRequestResponse?)null);
 
-        RequestsController sut = new RequestsController(mockApiClient.Object);
+        RequestsController sut = new RequestsController(mockApiClient.Object, mediatorMock.Object);
 
         var result = await sut.GetRequest(It.IsAny<Guid>(), CancellationToken.None);
 

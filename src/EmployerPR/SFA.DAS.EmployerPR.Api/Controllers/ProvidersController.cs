@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.EmployerPR.Application.Queries.GetRoatpProviders;
+using SFA.DAS.EmployerPR.Application.Roatp.Queries.GetRoatpProviders;
 
 namespace SFA.DAS.EmployerPR.Api.Controllers;
 

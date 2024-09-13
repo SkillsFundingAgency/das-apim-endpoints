@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.EmployerPR.Api.AppStart;
-using SFA.DAS.EmployerPR.Application.Queries.GetRoatpProviders;
+using SFA.DAS.EmployerPR.Application.Roatp.Queries.GetRoatpProviders;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 

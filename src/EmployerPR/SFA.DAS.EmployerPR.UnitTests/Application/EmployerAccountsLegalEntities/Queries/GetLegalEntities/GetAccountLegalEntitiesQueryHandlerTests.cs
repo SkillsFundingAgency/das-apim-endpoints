@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EmployerPR.Application.Queries.GetAccountLegalEntities;
+using SFA.DAS.EmployerPR.Application.EmployerAccountsLegalEntities.Queries.GetAccountLegalEntities;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;

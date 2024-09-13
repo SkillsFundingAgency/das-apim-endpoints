@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerPR.Api.Controllers;
-using SFA.DAS.EmployerPR.Application.Queries.GetAccountLegalEntities;
+using SFA.DAS.EmployerPR.Application.EmployerAccountsLegalEntities.Queries.GetAccountLegalEntities;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerPR.Api.UnitTests.Controllers.EmployerAccountControllerTests;

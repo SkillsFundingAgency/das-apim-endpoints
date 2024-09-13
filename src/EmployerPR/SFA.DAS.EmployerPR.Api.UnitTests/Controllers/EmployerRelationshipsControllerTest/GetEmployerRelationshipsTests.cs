@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerPR.Api.Controllers;
-using SFA.DAS.EmployerPR.Application.Queries.GetEmployerRelationships;
+using SFA.DAS.EmployerPR.Application.EmployerRelationships.Queries.GetEmployerRelationships;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerPR.Api.UnitTests.Controllers.EmployerRelationshipsControllerTest;
