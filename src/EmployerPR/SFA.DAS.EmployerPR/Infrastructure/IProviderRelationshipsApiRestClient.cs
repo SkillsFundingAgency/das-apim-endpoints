@@ -38,6 +38,6 @@ public interface IProviderRelationshipsApiRestClient
     [Put("requests/{requestId}/declined")]
     Task<Unit> DeclineRequest([Path] Guid requestId, [Body] DeclinedRequestModel model, CancellationToken cancellationToken);
 
-    [Post("requests/{requestId}/permissions/accepted")]
+    [Post("requests/{requestId}/permission/accepted")]
     Task<Unit> AcceptPermissionsRequest([Path] Guid requestId, [Body] AcceptPermissionsRequestModel model, CancellationToken cancellationToken);
 }
