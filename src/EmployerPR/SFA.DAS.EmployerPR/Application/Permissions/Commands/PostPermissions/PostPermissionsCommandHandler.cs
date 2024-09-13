@@ -49,7 +49,7 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
             return Unit.Value;
         }
 
-        PermissionEmailTemplateType templateType = default;
+        PermissionEmailTemplateType templateType;
 
         if (command.Operations.Count == 0)
         {
