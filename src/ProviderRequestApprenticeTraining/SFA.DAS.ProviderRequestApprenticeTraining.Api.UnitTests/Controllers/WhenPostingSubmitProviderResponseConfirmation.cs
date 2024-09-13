@@ -22,7 +22,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
             SubmitProviderResponseParameters param,
             SubmitProviderResponseResponse response,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestsController controller)
+            [Greedy] ProvidersController controller)
         {
             //Arrange
             mediator.Setup(x => x.Send(It.IsAny<SubmitProviderResponseCommand>(), CancellationToken.None))
@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             SubmitProviderResponseParameters param,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestsController controller)
+            [Greedy] ProvidersController controller)
         {
             // Arrange
             mediator.Setup(x => x.Send(It.IsAny<SubmitProviderResponseCommand>(), CancellationToken.None))

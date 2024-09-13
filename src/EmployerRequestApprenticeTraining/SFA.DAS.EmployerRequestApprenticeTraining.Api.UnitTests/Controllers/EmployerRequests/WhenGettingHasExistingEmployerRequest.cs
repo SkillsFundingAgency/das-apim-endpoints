@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
            string standardReference,
            GetActiveEmployerRequestResult queryResult,
            [Frozen] Mock<IMediator> mockMediator,
-           [Greedy] EmployerRequestsController controller)
+           [Greedy] AccountsController controller)
         {
             mockMediator
                 .Setup(x => x.Send(It.Is<GetActiveEmployerRequestQuery>(p => p.AccountId == accountId && p.StandardReference == standardReference), CancellationToken.None))
@@ -40,7 +40,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
            long accountId,
            string standardReference,
            [Frozen] Mock<IMediator> mockMediator,
-           [Greedy] EmployerRequestsController controller)
+           [Greedy] AccountsController controller)
         {
             mockMediator
                 .Setup(x => x.Send(It.IsAny<GetActiveEmployerRequestQuery>(), CancellationToken.None))
@@ -58,7 +58,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             long accountId,
            string standardReference,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestsController controller)
+            [Greedy] AccountsController controller)
         {
             mediator.Setup(x => x.Send(It.IsAny<GetActiveEmployerRequestQuery>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());

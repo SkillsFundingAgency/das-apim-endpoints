@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocation;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocations;
 using SFA.DAS.EmployerRequestApprenticeTraining.Models;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ using System.Threading.Tasks;
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]/")]
+    [Route("locations/")]
     public class LocationsController : ControllerBase
     {
         private readonly IMediator _mediator;

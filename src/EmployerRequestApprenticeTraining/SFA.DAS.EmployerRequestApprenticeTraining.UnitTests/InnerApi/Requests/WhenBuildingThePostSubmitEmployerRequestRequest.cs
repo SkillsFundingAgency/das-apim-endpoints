@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.InnerApi.Requests
             var request = new PostSubmitEmployerRequestRequest(accountId, data);
 
             // Act & Assert
-            request.PostUrl.Should().Be($"api/employerrequest/account/{accountId}/submit-request");
+            request.PostUrl.Should().Be($"api/accounts/{accountId}/employer-requests");
         }
 
         [Test, AutoData]

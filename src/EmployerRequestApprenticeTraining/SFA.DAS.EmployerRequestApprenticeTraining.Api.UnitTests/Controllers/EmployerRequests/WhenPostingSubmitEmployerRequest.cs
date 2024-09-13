@@ -26,15 +26,15 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
     public class WhenPostingSubmitEmployerRequest
     {
         private Mock<IMediator> _mockMediator;
-        private Mock<ILogger<EmployerRequestsController>> _mockLogger;
-        private EmployerRequestsController _sut;
+        private Mock<ILogger<AccountsController>> _mockLogger;
+        private AccountsController _sut;
 
         [SetUp]
         public void SetUp()
         {
             _mockMediator = new Mock<IMediator>();
-            _mockLogger = new Mock<ILogger<EmployerRequestsController>>();
-            _sut = new EmployerRequestsController(_mockMediator.Object, _mockLogger.Object);
+            _mockLogger = new Mock<ILogger<AccountsController>>();
+            _sut = new AccountsController(_mockMediator.Object, _mockLogger.Object);
         }
 
         [Test, MoqAutoData]

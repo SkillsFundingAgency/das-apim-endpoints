@@ -26,7 +26,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
             GetEmployerRequestsByIdsResult requestsResult,
             GetProviderWebsiteResult websiteResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] EmployerRequestsController controller,
+            [Greedy] ProvidersController controller,
             List<Guid> employerRequestids)
         {
             mockMediator
@@ -53,7 +53,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestsController controller,
+            [Greedy] ProvidersController controller,
             List<Guid> employerRequestids)
         {
             mediator.Setup(x => x.Send(It.IsAny<GetEmployerRequestsByIdsQuery>(), CancellationToken.None))
@@ -68,7 +68,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown2(
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestsController controller,
+            [Greedy] ProvidersController controller,
             List<Guid> employerRequestids)
         {
             mediator.Setup(x => x.Send(It.IsAny<GetProviderWebsiteQuery>(), CancellationToken.None))
