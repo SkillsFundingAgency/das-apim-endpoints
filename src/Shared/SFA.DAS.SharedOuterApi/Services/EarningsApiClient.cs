@@ -10,9 +10,9 @@ namespace SFA.DAS.SharedOuterApi.Services;
 
 public class EarningsApiClient : IEarningsApiClient<EarningsApiConfiguration>
 {
-    private readonly ITokenPassThroughInternalApiClient<EarningsApiConfiguration> _apiClient;
+    private readonly IInternalApiClient<EarningsApiConfiguration> _apiClient;
 
-    public EarningsApiClient(ITokenPassThroughInternalApiClient<EarningsApiConfiguration> apiClient)
+    public EarningsApiClient(IInternalApiClient<EarningsApiConfiguration> apiClient)
     {
         _apiClient = apiClient;
     }
