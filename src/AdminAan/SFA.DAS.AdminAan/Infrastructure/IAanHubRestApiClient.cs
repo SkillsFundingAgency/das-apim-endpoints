@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.JsonPatch;
 using RestEase;
 using SFA.DAS.AdminAan.Application.Admins.Commands.Create;
 using SFA.DAS.AdminAan.Application.Admins.Queries.GetAdminMember;
@@ -79,4 +80,7 @@ public interface IAanHubRestApiClient : IHealthChecker
     Task<GetMemberActivitiesResponse> GetMemberActivities(
         [Path] Guid memberId,
         CancellationToken cancellationToken);
+
+    [Patch("members/{memberId}")]
+    Task UpdateMember([Path] Guid memberId, [Body] JsonPatchDocument<PatchMemberModel> model, CancellationToken cancellationToken);
 }

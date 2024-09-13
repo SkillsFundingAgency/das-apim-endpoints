@@ -1,24 +1,24 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.JsonPatch;
+using SFA.DAS.AdminAan.Domain;
+using SFA.DAS.AdminAan.Infrastructure;
 
 namespace SFA.DAS.AdminAan.Application.NotificationsSettings.Commands
 {
-    public class UpdateNotificationSettingsCommand : IRequest<UpdateNotificationSettingsCommandResult>
+    public class UpdateNotificationSettingsCommand : IRequest
     {
         public Guid MemberId { get; set; }
         public bool ReceiveNotifications { get; set; }
     }
 
-    public class UpdateNotificationSettingsCommandHandler : IRequestHandler<UpdateNotificationSettingsCommand, UpdateNotificationSettingsCommandResult>
+    public class UpdateNotificationSettingsCommandHandler(IAanHubRestApiClient aanHubApiClient) : IRequestHandler<UpdateNotificationSettingsCommand>
     {
-        public Task<UpdateNotificationSettingsCommandResult> Handle(UpdateNotificationSettingsCommand request, CancellationToken cancellationToken)
+        public async Task Handle(UpdateNotificationSettingsCommand request, CancellationToken cancellationToken)
         {
-            // Implementation will go here
-            return Task.FromResult(new UpdateNotificationSettingsCommandResult());
-        }
-    }
+            var patchModel = new JsonPatchDocument<PatchMemberModel>();
+            patchModel.Replace(model => model.ReceiveNotifications, request.ReceiveNotifications);
 
-    public class UpdateNotificationSettingsCommandResult
-    {
-        // Properties for the result will go here
+            await aanHubApiClient.UpdateMember(request.MemberId, patchModel, cancellationToken);
+        }
     }
 }

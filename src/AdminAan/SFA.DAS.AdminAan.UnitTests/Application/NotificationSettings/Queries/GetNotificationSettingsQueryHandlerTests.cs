@@ -6,7 +6,7 @@ using SFA.DAS.AdminAan.Domain;
 using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.AdminAan.UnitTests.Application.Notifications.Queries
+namespace SFA.DAS.AdminAan.UnitTests.Application.NotificationSettings.Queries
 {
     public class GetNotificationSettingsQueryHandlerTests
     {
