@@ -4,5 +4,6 @@ public enum PermissionEmailTemplateType
 {
     PermissionsCreated,
     PermissionsUpdated,
-    PermissionDeleted
+    PermissionDeleted,
+    UpdatePermissionDeclined
 }
