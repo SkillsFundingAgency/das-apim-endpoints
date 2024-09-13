@@ -83,6 +83,6 @@ public sealed class DeclinedRequestCommandHandlerTests
 
         var result = await _handler.Handle(command, cancellationToken);
 
-        Assert.That(Unit.Value.Equals(result));
+        Assert.That(result, Is.EqualTo(Unit.Value));
     }
 }
