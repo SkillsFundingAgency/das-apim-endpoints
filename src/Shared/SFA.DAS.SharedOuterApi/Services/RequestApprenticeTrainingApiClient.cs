@@ -74,7 +74,7 @@ namespace SFA.DAS.SharedOuterApi.Services
         }
         public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
         {
-            throw new NotImplementedException();
+            return _apiClient.PutWithResponseCode<TResponse>(request);
         }
         
         // Method Obsolete
