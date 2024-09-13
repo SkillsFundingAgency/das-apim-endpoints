@@ -29,6 +29,9 @@ public interface IProviderRelationshipsApiRestClient
     [Get("requests/{requestId}")]
     Task<GetRequestResponse?> GetRequest([Path] Guid requestId, CancellationToken cancellationToken);
 
+    [Get("requests")]
+    Task<GetRequestResponse?> GetRequest([Query] long ukprn, [Query] string paye, CancellationToken cancellationToken);
+
     [Post("requests/permission")]
     Task<CreatePermissionRequestCommandResult> CreatePermissionsRequest([Body] CreatePermissionRequestCommand command, CancellationToken cancellationToken);
 

@@ -31,6 +31,8 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
     {
         var encodedPaye = Uri.EscapeDataString(paye);
 
+        expected.RequestType = "CreateAccount";
+
         providerRelationshipsApiRestClientMock.Setup(x =>
             x.GetRequestByUkprnAndPaye(
                 ukprn,

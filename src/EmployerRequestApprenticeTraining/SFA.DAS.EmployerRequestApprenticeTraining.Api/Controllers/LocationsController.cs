@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocation;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocations;
+using SFA.DAS.EmployerRequestApprenticeTraining.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
@@ -53,7 +53,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get list of locations, search term: {searchTerm}, exact match: {exactMatch}");
+                _logger.LogError(e, "Error attempting to retrieve list of locations for {SearchTerm} and {ExactMatch}", searchTerm, exactMatch);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
