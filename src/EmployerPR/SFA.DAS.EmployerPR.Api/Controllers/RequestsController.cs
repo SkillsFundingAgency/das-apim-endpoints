@@ -26,12 +26,12 @@ public class RequestsController(IProviderRelationshipsApiRestClient _providerRel
         return Ok(result);
     }
 
-    [HttpPost("{requestId:guid}/declined")]
+    [HttpPost("{requestId:guid}/permission/declined")]
     [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeclineRequest([FromRoute] Guid requestId, [FromBody] DeclinedRequestModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeclinePermissionRequest([FromRoute] Guid requestId, [FromBody] DeclinedRequestModel model, CancellationToken cancellationToken)
     {
-        DeclinedRequestCommand command = new DeclinedRequestCommand()
+        DeclinePermissionRequestCommand command = new DeclinePermissionRequestCommand()
         {
             ActionedBy = model.ActionedBy,
             RequestId = requestId

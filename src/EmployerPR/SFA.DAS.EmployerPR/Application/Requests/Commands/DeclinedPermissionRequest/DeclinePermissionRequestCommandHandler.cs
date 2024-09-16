@@ -5,9 +5,9 @@ using SFA.DAS.EmployerPR.Infrastructure;
 
 namespace SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinedRequest;
 
-public sealed class DeclinedRequestCommandHandler(IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient) : IRequestHandler<DeclinedRequestCommand, Unit>
+public sealed class DeclinePermissionRequestCommandHandler(IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient) : IRequestHandler<DeclinePermissionRequestCommand, Unit>
 {
-    public async Task<Unit> Handle(DeclinedRequestCommand command, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(DeclinePermissionRequestCommand command, CancellationToken cancellationToken)
     {
         await _providerRelationshipsApiRestClient.DeclineRequest(
             command.RequestId,
