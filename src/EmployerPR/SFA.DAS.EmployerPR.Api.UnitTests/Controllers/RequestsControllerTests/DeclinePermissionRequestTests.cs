@@ -11,13 +11,13 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerPR.Api.UnitTests.Controllers.RequestsControllerTests;
 
-public sealed class DeclineRequestTests
+public sealed class DeclinePermissionRequestTests
 {
     private Mock<IMediator> mediatorMock = new();
 
     [Test]
     [MoqAutoData]
-    public async Task RequestsController_DeclineRequest_ReturnsExpectedResponse(DeclinedRequestModel model)
+    public async Task RequestsController_DeclinePermissionRequest_ReturnsExpectedResponse(DeclinedRequestModel model)
     {
         var requestId = Guid.NewGuid();
         Mock<IProviderRelationshipsApiRestClient> mockApiClient = new();
@@ -28,7 +28,7 @@ public sealed class DeclineRequestTests
 
         RequestsController sut = new RequestsController(mockApiClient.Object, mediatorMock.Object);
 
-        var result = await sut.DeclineRequest(requestId, model, CancellationToken.None);
+        var result = await sut.DeclinePermissionRequest(requestId, model, CancellationToken.None);
 
         result.Should().BeOfType<OkResult>()
             .Which.StatusCode.Should().Be((int)HttpStatusCode.OK);

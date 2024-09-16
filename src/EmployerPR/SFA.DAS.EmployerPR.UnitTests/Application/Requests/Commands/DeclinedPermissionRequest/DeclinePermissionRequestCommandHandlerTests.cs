@@ -8,25 +8,25 @@ using SFA.DAS.EmployerPR.Infrastructure;
 
 namespace SFA.DAS.EmployerPR.UnitTests.Application.Requests.Commands.DeclinedRequest;
 
-public sealed class DeclinedRequestCommandHandlerTests
+public sealed class DeclinePermissionRequestCommandHandlerTests
 {
     private Mock<IProviderRelationshipsApiRestClient> _providerRelationshipsApiRestClientMock;
-    private DeclinedRequestCommandHandler _handler;
+    private DeclinePermissionRequestCommandHandler _handler;
     private CancellationToken cancellationToken = CancellationToken.None;
 
     [SetUp]
     public void SetUp()
     {
         _providerRelationshipsApiRestClientMock = new Mock<IProviderRelationshipsApiRestClient>();
-        _handler = new DeclinedRequestCommandHandler(_providerRelationshipsApiRestClientMock.Object);
+        _handler = new DeclinePermissionRequestCommandHandler(_providerRelationshipsApiRestClientMock.Object);
     }
 
     [Test]
-    public async Task Handle_DeclineRequest_CalledOnceWithCorrectParameters()
+    public async Task Handle_DeclinePermissionRequest_CalledOnceWithCorrectParameters()
     {
         var requestId = Guid.NewGuid();
         var actionedBy = requestId.ToString();
-        var command = new DeclinedRequestCommand
+        var command = new DeclinePermissionRequestCommand
         {
             RequestId = requestId,
             ActionedBy = actionedBy
@@ -49,7 +49,7 @@ public sealed class DeclinedRequestCommandHandlerTests
     {
         var requestId = Guid.NewGuid();
         var actionedBy = Guid.NewGuid().ToString();
-        var command = new DeclinedRequestCommand
+        var command = new DeclinePermissionRequestCommand
         {
             RequestId = requestId,
             ActionedBy = actionedBy
@@ -75,7 +75,7 @@ public sealed class DeclinedRequestCommandHandlerTests
     [Test]
     public async Task Handle_Returns_Unit()
     {
-        var command = new DeclinedRequestCommand
+        var command = new DeclinePermissionRequestCommand
         {
             RequestId = Guid.NewGuid(),
             ActionedBy = Guid.NewGuid().ToString()
