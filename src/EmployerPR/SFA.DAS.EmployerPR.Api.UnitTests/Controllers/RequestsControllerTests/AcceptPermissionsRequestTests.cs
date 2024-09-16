@@ -5,7 +5,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerPR.Api.Controllers;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptPermissionsRequest;
-using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinedRequest;
 using SFA.DAS.EmployerPR.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;

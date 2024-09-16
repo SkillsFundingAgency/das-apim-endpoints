@@ -6,5 +6,6 @@ public enum PermissionEmailTemplateType
     PermissionsUpdated,
     PermissionDeleted,
     UpdatePermissionDeclined,
-    UpdatePermissionAccepted
+    UpdatePermissionAccepted,
+    AddAccountDeclined
 }

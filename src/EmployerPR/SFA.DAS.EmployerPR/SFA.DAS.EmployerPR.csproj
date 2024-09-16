@@ -16,4 +16,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Application\Requests\Models\" />
+  </ItemGroup>
 </Project>
