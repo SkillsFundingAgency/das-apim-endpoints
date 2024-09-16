@@ -6,7 +6,7 @@ using SFA.DAS.EmployerPR.Application.Permissions.Commands.PostPermissions;
 using SFA.DAS.EmployerPR.Application.Permissions.Queries.GetPermissions;
 using SFA.DAS.EmployerPR.Application.Relationships.Queries.GetRelationships;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptPermissionsRequest;
-using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinedRequest;
+using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinePermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
 
 namespace SFA.DAS.EmployerPR.Infrastructure;

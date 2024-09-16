@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinedRequest;
+﻿namespace SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinePermissionsRequest;
 
 public class DeclinedRequestModel
 {

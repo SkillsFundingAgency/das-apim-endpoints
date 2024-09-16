@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptPermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclineAddAccountRequest;
-using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinedRequest;
+using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinePermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
 using SFA.DAS.EmployerPR.Infrastructure;
 
@@ -30,9 +30,9 @@ public class RequestsController(IProviderRelationshipsApiRestClient _providerRel
     [HttpPost("{requestId:guid}/permission/declined")]
     [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> DeclinePermissionRequest([FromRoute] Guid requestId, [FromBody] DeclinedRequestModel model, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeclinePermissionsRequest([FromRoute] Guid requestId, [FromBody] DeclinedRequestModel model, CancellationToken cancellationToken)
     {
-        DeclinePermissionRequestCommand command = new DeclinePermissionRequestCommand()
+        DeclinePermissionsRequestCommand command = new DeclinePermissionsRequestCommand()
         {
             ActionedBy = model.ActionedBy,
             RequestId = requestId

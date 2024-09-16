@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using SFA.DAS.EmployerPR.Application.Notifications.Commands.PostNotifications;
-using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinedRequest;
+using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinePermissionsRequest;
 using SFA.DAS.EmployerPR.Common;
 using SFA.DAS.EmployerPR.Infrastructure;
 
