@@ -24,8 +24,8 @@ public class EarningsController : ControllerBase
     /// </summary>
     /// <returns>All earnings data in the format of an FM36Learner array.</returns>
     [HttpGet]
-    [Route("{collectionPeriod}/{ukprn}")]
-    public async Task<IActionResult> GetAll(byte collectionPeriod, long ukprn)
+    [Route("{collectionYear}/{collectionPeriod}/{ukprn}")]
+    public async Task<IActionResult> GetAll(int collectionYear, byte collectionPeriod, long ukprn)
     {
         try
         {
@@ -47,8 +47,8 @@ public class EarningsController : ControllerBase
     /// </summary>
     /// <returns>All earnings data in the format of an FM36Learner array.</returns>
     [HttpGet]
-    [Route("stub/{collectionPeriod}/{ukprn}")]
-    public async Task<IActionResult> GetAllStub(string collectionPeriod, long ukprn)
+    [Route("stub/{collectionYear}/{collectionPeriod}/{ukprn}")]
+    public async Task<IActionResult> GetAllStub(int collectionYear, byte collectionPeriod, long ukprn)
     {
         return Ok(GetLearners(ukprn));
     }
