@@ -83,9 +83,22 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            submittedRequest.Data.Should().BeEquivalentTo(new
+            submittedRequest.Data.Should().BeEquivalentTo(new PostSubmitEmployerRequestData 
             {
-                command.RequestType
+                OriginalLocation = command.OriginalLocation,
+                RequestType = command.RequestType,
+                StandardReference = command.StandardReference,
+                NumberOfApprentices = command.NumberOfApprentices,
+                SameLocation = command.SameLocation,
+                SingleLocation = command.SingleLocation,
+                SingleLocationLatitude = command.SingleLocationLatitude,
+                SingleLocationLongitude = command.SingleLocationLongitude,
+                MultipleLocations = command.MultipleLocations,
+                AtApprenticesWorkplace = command.AtApprenticesWorkplace,
+                DayRelease = command.DayRelease,
+                BlockRelease = command.BlockRelease,
+                RequestedBy = command.RequestedBy,
+                ModifiedBy = command.ModifiedBy
             });
         }
 
@@ -123,7 +136,18 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _mockNotificationsService.Verify(n => n.Send(It.Is<SendEmailCommand>(c => c.TemplateId == templateId && c.RecipientsAddress == command.RequestedByEmail)), Times.Once);
+            _mockNotificationsService.Verify(n => n.Send(It.Is<SendEmailCommand>(c =>
+                c.TemplateId == templateId &&
+                c.RecipientsAddress == command.RequestedByEmail &&
+                c.Tokens != null &&
+                c.Tokens.Count == 5 &&
+                c.Tokens["course_level"] == command.CourseLevel &&
+                c.Tokens["user_name"] == command.RequestedByFirstName &&
+                c.Tokens["expiry_months"] == command.ExpiryAfterMonths.ToString() &&
+                c.Tokens["email_address"] == command.RequestedByEmail &&
+                c.Tokens["dashboard_url"] == command.DashboardUrl
+            )), Times.Once);
+
         }
 
         [Test, MoqAutoData]
