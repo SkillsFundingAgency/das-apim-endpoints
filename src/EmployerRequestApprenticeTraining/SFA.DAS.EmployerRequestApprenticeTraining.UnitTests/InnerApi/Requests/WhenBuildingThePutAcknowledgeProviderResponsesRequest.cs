@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.InnerApi.Requests
             var actualUrl = request.PutUrl;
 
             // Assert
-            actualUrl.Should().Be($"api/employerrequest/{employerRequestId}/acknowledge-responses");
+            actualUrl.Should().Be($"api/employer-requests/{employerRequestId}/responses/acknowledge");
         }
 
         [Test, AutoData]

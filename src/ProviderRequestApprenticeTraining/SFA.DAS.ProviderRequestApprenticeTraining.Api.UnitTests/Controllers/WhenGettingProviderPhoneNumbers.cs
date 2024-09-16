@@ -24,7 +24,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
         public async Task Then_The_providerPhoneNumbers_Are_Returned_From_Mediator(
             GetProviderPhoneNumbersResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] EmployerRequestsController controller,
+            [Greedy] ProvidersController controller,
             long ukprn)
         {
             mockMediator
@@ -43,7 +43,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestsController controller,
+            [Greedy] ProvidersController controller,
             long ukprn)
         {
             mediator.Setup(x => x.Send(It.IsAny<GetProviderPhoneNumbersQuery>(), CancellationToken.None))

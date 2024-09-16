@@ -15,7 +15,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests
             Data = data;
         }
 
-        public string PutUrl => $"api/employerrequest/{EmployerRequestId}/cancel-request";
+        public string PutUrl => $"api/employer-requests/{EmployerRequestId}/cancel";
 
         object IPutApiRequest.Data { get => Data; set => Data = value as PutCancelEmployerRequestRequestData; }
     }

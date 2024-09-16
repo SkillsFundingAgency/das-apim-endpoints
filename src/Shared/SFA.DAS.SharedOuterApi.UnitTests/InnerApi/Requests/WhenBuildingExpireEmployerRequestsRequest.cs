@@ -12,7 +12,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         {
             var actual = new ExpireEmployerRequestsRequest();
 
-            actual.PostUrl.Should().Be("api/employerrequest/expire-requests");
+            actual.PostUrl.Should().Be("api/employer-requests/expire");
         }
     }
 }

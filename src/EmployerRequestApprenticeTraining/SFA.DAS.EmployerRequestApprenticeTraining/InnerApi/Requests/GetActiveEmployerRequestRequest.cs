@@ -13,6 +13,6 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests
             StandardReference = standardReference;
         }
 
-        public string GetUrl => $"api/employerrequest/account/{AccountId}/standard/{StandardReference}/active";
+        public string GetUrl => $"api/accounts/{AccountId}/standard/{StandardReference}/employer-request/active";
     }
 }

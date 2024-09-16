@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             GetAggregatedEmployerRequestsResult queryAggregatedEmployerRequestsResult,
             GetSettingsResult querySettingsResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] EmployerRequestsController controller,
+            [Greedy] AccountsController controller,
             long ukprn)
         {
             mockMediator
@@ -50,7 +50,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             Guid employerRequestId,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestsController controller,
+            [Greedy] AccountsController controller,
             long ukprn)
         {
             mediator.Setup(x => x.Send(It.IsAny<GetAggregatedEmployerRequestsQuery>(), CancellationToken.None))

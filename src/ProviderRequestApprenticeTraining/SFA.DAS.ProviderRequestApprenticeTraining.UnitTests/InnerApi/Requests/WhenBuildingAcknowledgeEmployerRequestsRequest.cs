@@ -12,7 +12,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.InnerApi.Requests
         {
             var actual = new AcknowledgeEmployerRequestsRequest(data);
 
-            actual.PostUrl.Should().Be($"api/employerrequest/provider/{data.Ukprn}/acknowledge-requests");
+            actual.PostUrl.Should().Be($"api/providers/{data.Ukprn}/employer-requests/acknowledge");
             actual.Data.GetType().GetProperty("EmployerRequestIds")!.GetValue(actual.Data, null).Should().BeEquivalentTo(data.EmployerRequestIds);
             actual.Data.GetType().GetProperty("Ukprn")!.GetValue(actual.Data, null).Should().Be(data.Ukprn);
         }

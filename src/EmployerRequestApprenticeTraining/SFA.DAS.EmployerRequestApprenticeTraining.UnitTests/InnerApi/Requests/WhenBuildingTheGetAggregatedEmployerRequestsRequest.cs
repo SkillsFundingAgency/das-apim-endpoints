@@ -17,7 +17,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.InnerApi.Requests
             var actualUrl = request.GetUrl;
 
             // Assert
-            actualUrl.Should().Be($"api/employerrequest/account/{accountId}/aggregated");
+            actualUrl.Should().Be($"api/accounts/{accountId}/employer-requests/aggregated");
         }
     }
 }

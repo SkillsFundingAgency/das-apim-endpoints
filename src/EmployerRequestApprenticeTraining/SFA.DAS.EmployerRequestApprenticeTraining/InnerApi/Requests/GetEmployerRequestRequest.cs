@@ -12,6 +12,6 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests
             EmployerRequestId = employerRequestId;
         }
 
-        public string GetUrl => $"api/employerrequest/{EmployerRequestId}";
+        public string GetUrl => $"api/employer-requests/{EmployerRequestId}";
     }
 }

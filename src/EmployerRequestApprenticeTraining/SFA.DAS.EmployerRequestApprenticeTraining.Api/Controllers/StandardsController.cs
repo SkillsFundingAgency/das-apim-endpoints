@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]/")]
+    [Route("standards/")]
     public class StandardsController : ControllerBase
     {
         private readonly IMediator _mediator;
