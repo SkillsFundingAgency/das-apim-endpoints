@@ -89,6 +89,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                     RequestedByEmail = employerProfileUserResult.Email,
                     ModifiedBy = submitRequest.ModifiedBy,
                     CourseLevel = $"{standardResult.Standard.Title} (level {standardResult.Standard.Level})",
+                    RequestedByFirstName = employerProfileUserResult.FirstName,
                     ExpiryAfterMonths = settings.ExpiryAfterMonths,
                     DashboardUrl = submitRequest.DashboardUrl
                 };

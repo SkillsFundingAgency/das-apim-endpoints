@@ -23,6 +23,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SubmitE
         public string RequestedByEmail { get; set; }
         public Guid ModifiedBy { get; set; }
         public string CourseLevel { get; set; }
+        public string RequestedByFirstName { get; set; }
         public int ExpiryAfterMonths { get; set; }
         public string DashboardUrl { get; set; }
     }

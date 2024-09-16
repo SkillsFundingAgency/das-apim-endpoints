@@ -72,7 +72,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SubmitE
             return new Dictionary<string, string>
             {
                 { "course_level", command.CourseLevel },
-                { "user_name", command.RequestedByEmail },
+                { "user_name", command.RequestedByFirstName },
                 { "expiry_months", command.ExpiryAfterMonths.ToString() },
                 { "email_address", command.RequestedByEmail },
                 { "dashboard_url", command.DashboardUrl }
