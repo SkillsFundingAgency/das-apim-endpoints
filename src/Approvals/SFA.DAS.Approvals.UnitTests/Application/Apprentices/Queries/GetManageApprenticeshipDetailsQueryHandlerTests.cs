@@ -50,6 +50,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     private GetPendingPriceChangeResponse _pendingPriceChangeResponse;
     private GetPendingStartDateChangeApiResponse _pendingStartDateChangeResponse;
     private GetPaymentStatusApiResponse _paymentStatusResponse;
+    private GetLearnerStatusResponse _learnerStatusResponse;
     private Guid _apprenticeshipKey;
 
     [SetUp]
@@ -74,6 +75,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         _pendingPriceChangeResponse = fixture.Create<GetPendingPriceChangeResponse>();
         _pendingStartDateChangeResponse = fixture.Create<GetPendingStartDateChangeApiResponse>();
         _paymentStatusResponse = fixture.Create<GetPaymentStatusApiResponse>();
+        _learnerStatusResponse = fixture.Create<GetLearnerStatusResponse>();
 
         _deliveryModels = fixture.Create<List<string>>();
 
@@ -135,6 +137,9 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
 
         _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPaymentStatusApiResponse>(It.Is<GetPaymentStatusRequest>(r => r.ApprenticeshipKey == _apprenticeshipKey)))
             .ReturnsAsync(new ApiResponse<GetPaymentStatusApiResponse>(_paymentStatusResponse, HttpStatusCode.OK, string.Empty));
+
+        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetLearnerStatusResponse>(It.Is<GetLearnerStatusRequest>(r => r.ApprenticeshipKey == _apprenticeshipKey)))
+            .ReturnsAsync(new ApiResponse<GetLearnerStatusResponse>(_learnerStatusResponse, HttpStatusCode.OK, string.Empty));
 
         _collectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
 
