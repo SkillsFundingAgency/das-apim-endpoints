@@ -254,21 +254,6 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                 }).ToArray()
         };
 
-        //foreach (var apprenticeship in apprenticeshipsData.Apprenticeships)
-        //{
-        //    var learner = new FM36Learner
-        //    {
-        //        ULN = long.Parse(apprenticeship.Uln),
-        //        LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
-        //        PriceEpisodes = new List<PriceEpisode>()
-        //    };
-
-        //    foreach (var apprenticeshipEpisodePrice in apprenticeship.Episodes.SelectMany(e => e.Prices, (episode, price) => new { episode, price }))
-        //    {
-        //        if (apprenticeshipEpisodePrice.price.StartDate)
-        //    }
-        //}
-
         return result;
     }
 }
