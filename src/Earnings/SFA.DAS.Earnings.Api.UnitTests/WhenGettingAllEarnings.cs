@@ -29,7 +29,7 @@ public class WhenGettingAllEarnings
         var controller = new EarningsController(mockMediator.Object, mockLogger.Object);
 
         // Act
-        var result = await controller.GetAll(collectionYear, collectionPeriod, ukprn);
+        var result = await controller.GetAll(ukprn, collectionYear, collectionPeriod);
 
         // Assert
         var okObjectResult = result.ShouldBeOfType<OkObjectResult>();
@@ -54,7 +54,7 @@ public class WhenGettingAllEarnings
         var controller = new EarningsController(mockMediator.Object, mockLogger.Object);
 
         // Act
-        var result = await controller.GetAll(collectionYear, collectionPeriod, ukprn);
+        var result = await controller.GetAll(ukprn, collectionYear, collectionPeriod);
 
         // Assert
         result.Should().BeOfType<BadRequestResult>();
