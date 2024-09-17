@@ -28,7 +28,7 @@ public class RequestsController(IProviderRelationshipsApiRestClient _providerRel
     }
 
     [HttpPost("{requestId:guid}/permission/declined")]
-    [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Unit), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeclinePermissionsRequest([FromRoute] Guid requestId, [FromBody] DeclinedRequestModel model, CancellationToken cancellationToken)
     {
@@ -44,7 +44,7 @@ public class RequestsController(IProviderRelationshipsApiRestClient _providerRel
     }
 
     [HttpPost("{requestId:guid}/permission/accepted")]
-    [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Unit), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AcceptPermissionsRequest([FromRoute] Guid requestId, [FromBody] AcceptPermissionsRequestModel model, CancellationToken cancellationToken)
     {
@@ -60,7 +60,7 @@ public class RequestsController(IProviderRelationshipsApiRestClient _providerRel
     }
 
     [HttpPost("{requestId:guid}/addaccount/declined")]
-    [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Unit), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeclineAddAccountRequest([FromRoute] Guid requestId, [FromBody] DeclinedRequestModel model, CancellationToken cancellationToken)
     {
