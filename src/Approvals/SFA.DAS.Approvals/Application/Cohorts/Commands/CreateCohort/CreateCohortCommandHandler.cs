@@ -27,7 +27,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
         {
             var autoReservationCreated = false;
 
-            if (!request.ReservationId.HasValue)
+            if (!request.ReservationId.HasValue || request.ReservationId.Value == default)
             {
                 if (request.TransferSenderId != null)
                 {

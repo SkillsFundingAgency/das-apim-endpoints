@@ -27,7 +27,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
 
             var cohort = await _apiClient.Get<GetCohortResponse>(new GetCohortRequest(request.CohortId));
 
-            if (!request.ReservationId.HasValue)
+            if (!request.ReservationId.HasValue || request.ReservationId.Value == default)
             {
                 if (cohort.TransferSenderId.HasValue)
                 {
