@@ -8,6 +8,7 @@ using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Validation;
+using SFA.DAS.NServiceBus;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -44,6 +45,12 @@ public class AutoReservationsService : IAutoReservationsService
         {
             throw new ApplicationException("When creating an auto reservation, the AccountLegalEntity was not found");
         }
+
+        if (string.IsNullOrWhiteSpace(command.CourseCode))
+        {
+            throw CreateApiModelException("CourseCode", "Course must be correctly assigned");
+        }
+
         _logger.LogInformation("Creating Reservation with id {0}", id);
         var request = new CreateReservationRequest
         {
