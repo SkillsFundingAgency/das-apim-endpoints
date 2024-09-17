@@ -34,7 +34,7 @@ public class GetSignIntoYourOldAccountQueryHandler(
         }
 
         var result =
-            await legacyApiClient.PostWithResponseCode<GetLegacyValidateCredentialsApiResponse>(
+            await legacyApiClient.PostWithResponseCode<PostLegacyValidateCredentialsApiResponse>(
                 new PostLegacyValidateUserCredentialsApiRequest(
                     new PostLegacyValidateUserCredentialsApiRequestBody
                     {

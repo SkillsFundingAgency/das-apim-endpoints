@@ -20,7 +20,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
         [Test, MoqAutoData]
         public async Task Then_Validity_Of_Credentials_Is_Returned(
             GetSignIntoYourOldAccountQuery query,
-            GetLegacyValidateCredentialsApiResponse apiResponse,
+            PostLegacyValidateCredentialsApiResponse apiResponse,
             [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> candidateAccountApiClient,
             GetSignIntoYourOldAccountQueryHandler handler)
         {
@@ -30,11 +30,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
                 Password = query.Password
             });
             candidateAccountApiClient.Setup(x =>
-                    x.PostWithResponseCode<GetLegacyValidateCredentialsApiResponse>(
+                    x.PostWithResponseCode<PostLegacyValidateCredentialsApiResponse>(
                         It.Is<PostLegacyValidateUserCredentialsApiRequest>(r => r.PostUrl == expectedApiRequest.PostUrl
                             && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Email == query.Email
                             && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Password == query.Password), true))
-                .ReturnsAsync(new ApiResponse<GetLegacyValidateCredentialsApiResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
+                .ReturnsAsync(new ApiResponse<PostLegacyValidateCredentialsApiResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -44,7 +44,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
         [Test, MoqAutoData]
         public async Task Then_If_The_User_Fails_SignIn_Then_The_Failed_Attempt_Is_Recorded(
             GetSignIntoYourOldAccountQuery query,
-            GetLegacyValidateCredentialsApiResponse apiResponse,
+            PostLegacyValidateCredentialsApiResponse apiResponse,
             DateTime now,
             [Frozen] Mock<IDateTimeService> dateTimeService,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
@@ -68,11 +68,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
                 Password = query.Password
             });
             candidateAccountApiClient.Setup(x =>
-                    x.PostWithResponseCode<GetLegacyValidateCredentialsApiResponse>(
+                    x.PostWithResponseCode<PostLegacyValidateCredentialsApiResponse>(
                         It.Is<PostLegacyValidateUserCredentialsApiRequest>(r => r.PostUrl == expectedApiRequest.PostUrl
                             && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Email == query.Email
                             && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Password == query.Password), true))
-                .ReturnsAsync(new ApiResponse<GetLegacyValidateCredentialsApiResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
+                .ReturnsAsync(new ApiResponse<PostLegacyValidateCredentialsApiResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -87,7 +87,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
         [Test, MoqAutoData]
         public async Task Then_If_The_User_Has_Exceeded_SignIn_Attempts_Then_Sign_In_Fails(
             GetSignIntoYourOldAccountQuery query,
-            GetLegacyValidateCredentialsApiResponse apiResponse,
+            PostLegacyValidateCredentialsApiResponse apiResponse,
             DateTime now,
             [Frozen] Mock<IDateTimeService> dateTimeService,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
@@ -117,7 +117,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
             var result = await handler.Handle(query, CancellationToken.None);
 
             candidateAccountApiClient.Verify(x =>
-                x.PostWithResponseCode<GetLegacyValidateCredentialsApiResponse>(
+                x.PostWithResponseCode<PostLegacyValidateCredentialsApiResponse>(
                     It.IsAny<PostLegacyValidateUserCredentialsApiRequest>(), true), Times.Never);
 
             result.IsValid.Should().BeFalse();
@@ -126,7 +126,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
         [Test, MoqAutoData]
         public async Task Then_If_The_User_Successfully_Signs_In_Then_Previous_Attempts_Are_Cleared(
             GetSignIntoYourOldAccountQuery query,
-            GetLegacyValidateCredentialsApiResponse apiResponse,
+            PostLegacyValidateCredentialsApiResponse apiResponse,
             DateTime now,
             [Frozen] Mock<IDateTimeService> dateTimeService,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
@@ -157,11 +157,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
                 Password = query.Password
             });
             candidateAccountApiClient.Setup(x =>
-                    x.PostWithResponseCode<GetLegacyValidateCredentialsApiResponse>(
+                    x.PostWithResponseCode<PostLegacyValidateCredentialsApiResponse>(
                         It.Is<PostLegacyValidateUserCredentialsApiRequest>(r => r.PostUrl == expectedApiRequest.PostUrl
                             && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Email == query.Email
                             && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Password == query.Password), true))
-                .ReturnsAsync(new ApiResponse<GetLegacyValidateCredentialsApiResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
+                .ReturnsAsync(new ApiResponse<PostLegacyValidateCredentialsApiResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -173,7 +173,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
         [Test, MoqAutoData]
         public async Task Then_If_The_User_Exceeds_SignIn_Attempts_Then_They_May_Retry_After_Half_An_Hour(
             GetSignIntoYourOldAccountQuery query,
-            GetLegacyValidateCredentialsApiResponse apiResponse,
+            PostLegacyValidateCredentialsApiResponse apiResponse,
             DateTime now,
             [Frozen] Mock<IDateTimeService> dateTimeService,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
@@ -206,11 +206,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
                 Password = query.Password
             });
             candidateAccountApiClient.Setup(x =>
-                    x.PostWithResponseCode<GetLegacyValidateCredentialsApiResponse>(
+                    x.PostWithResponseCode<PostLegacyValidateCredentialsApiResponse>(
                         It.Is<PostLegacyValidateUserCredentialsApiRequest>(r => r.PostUrl == expectedApiRequest.PostUrl
                             && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Email == query.Email
                             && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Password == query.Password), true))
-                            .ReturnsAsync(new ApiResponse<GetLegacyValidateCredentialsApiResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
+                            .ReturnsAsync(new ApiResponse<PostLegacyValidateCredentialsApiResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
