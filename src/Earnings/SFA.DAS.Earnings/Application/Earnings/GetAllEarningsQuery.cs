@@ -133,7 +133,8 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                             PriceEpisodeCappedRemainingTNPAmount = priceEpisodeModel.episodePrice.Price.FundingBandMaximum
                                                                    - GetPreviousEarnings(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), request.CollectionPeriod),
                             PriceEpisodeExpectedTotalMonthlyValue = priceEpisodeModel.episodePrice.Price.FundingBandMaximum
-                                                                    - GetPreviousEarnings(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), request.CollectionPeriod),
+                                                                    - GetPreviousEarnings(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), request.CollectionPeriod)
+                                                                    - priceEpisodeModel.earningsEpisode.CompletionPayment,
                         },
                         PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
                         {

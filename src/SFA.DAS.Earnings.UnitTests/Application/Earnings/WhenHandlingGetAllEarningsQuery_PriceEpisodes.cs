@@ -120,7 +120,6 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompleted.Should().Be(episodePrice.Price.EndDate < DateTime.Now);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompletionPayment.Should().Be(0);
 
-                //todo confirm logic with Jas
                 var previousYearEarnings = earningApprenticeship.Episodes
                     .SelectMany(x => x.Instalments)
                     .Where(x => x.AcademicYear.IsEarlierThan(short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear)))
@@ -136,7 +135,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeRemainingTNPAmount.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeRemainingAmountWithinUpperLimit.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCappedRemainingTNPAmount.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeExpectedTotalMonthlyValue.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings);
+                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeExpectedTotalMonthlyValue.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings - earningEpisode.CompletionPayment);
 
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber.Should().Be(1);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeFirstDisadvantagePayment.Should().Be(0);
