@@ -44,7 +44,6 @@ public class AutoReservationsService : IAutoReservationsService
         {
             throw new ApplicationException("When creating an auto reservation, the AccountLegalEntity was not found");
         }
-
         _logger.LogInformation("Creating Reservation with id {0}", id);
         var request = new CreateReservationRequest
         {
@@ -86,7 +85,7 @@ public class AutoReservationsService : IAutoReservationsService
 
         if (error == null || error.StartDate == null || !error.StartDate.Any())
         {
-            return new ApplicationException("Unexpected error when creating reservation");
+            return CreateApiModelException("ReservationId", "Unexpected error when creating an auto reservation, please try later"); ;
         }
 
         var startDateErrorMessage = error.StartDate.FirstOrDefault();
@@ -94,7 +93,7 @@ public class AutoReservationsService : IAutoReservationsService
         {
             return CreateApiModelException("StartDate", startDateErrorMessage);
         }
-        return new ApplicationException("Unexpected error when reading reservation error message"); ;
+        return CreateApiModelException("ReservationId", "Unexpected error when reading an auto reservation error, please try later"); ;
     }
 
     private Exception CreateApiModelException(string fieldName, string message)

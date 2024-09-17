@@ -59,7 +59,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.AutoReservationsServiceTests
             var fixture = new AutoReservationsServiceTestFixture().WithAccountLegalEntity().WithErrorContent(JsonConvert.SerializeObject(error));
             var act = async () => await fixture.Sut.CreateReservation(fixture.AutoReservation);
 
-            await act.Should().ThrowAsync<ApplicationException>().WithMessage("Unexpected error when creating reservation");
+            await act.Should().ThrowAsync<DomainApimException>();
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.AutoReservationsServiceTests
             var fixture = new AutoReservationsServiceTestFixture().WithAccountLegalEntity().WithErrorContent(JsonConvert.SerializeObject(error));
             var act = async () => await fixture.Sut.CreateReservation(fixture.AutoReservation);
 
-            await act.Should().ThrowAsync<ApplicationException>().WithMessage("Unexpected error when reading reservation error message");
+            await act.Should().ThrowAsync<DomainApimException>();
         }
 
         [Test]
