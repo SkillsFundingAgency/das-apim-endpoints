@@ -1,4 +1,5 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Net;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -8,6 +9,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses;
 using SFA.DAS.NServiceBus.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
@@ -22,11 +24,17 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
             [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> candidateAccountApiClient,
             GetSignIntoYourOldAccountQueryHandler handler)
         {
-            var expectedApiRequest = new GetLegacyValidateCredentialsApiRequest(query.Email, query.Password);
+            var expectedApiRequest = new PostLegacyValidateUserCredentialsApiRequest(new PostLegacyValidateUserCredentialsApiRequestBody
+            {
+                Email = query.Email,
+                Password = query.Password
+            });
             candidateAccountApiClient.Setup(x =>
-                    x.Get<GetLegacyValidateCredentialsApiResponse>(
-                        It.Is<GetLegacyValidateCredentialsApiRequest>(r => r.GetUrl == expectedApiRequest.GetUrl)))
-                .ReturnsAsync(apiResponse);
+                    x.PostWithResponseCode<GetLegacyValidateCredentialsApiResponse>(
+                        It.Is<PostLegacyValidateUserCredentialsApiRequest>(r => r.PostUrl == expectedApiRequest.PostUrl
+                            && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Email == query.Email
+                            && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Password == query.Password), true))
+                .ReturnsAsync(new ApiResponse<GetLegacyValidateCredentialsApiResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -53,9 +61,18 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
                     x.RetrieveFromCache<GetSignIntoYourOldAccountQueryHandler.SignInAttemptHistory>(It.Is<string>(key =>
                         key == expectedCacheKey)))
                 .ReturnsAsync(cacheItem);
+
+            var expectedApiRequest = new PostLegacyValidateUserCredentialsApiRequest(new PostLegacyValidateUserCredentialsApiRequestBody
+            {
+                Email = query.Email,
+                Password = query.Password
+            });
             candidateAccountApiClient.Setup(x =>
-                x.Get<GetLegacyValidateCredentialsApiResponse>(
-                    It.IsAny<GetLegacyValidateCredentialsApiRequest>())).ReturnsAsync(apiResponse);
+                    x.PostWithResponseCode<GetLegacyValidateCredentialsApiResponse>(
+                        It.Is<PostLegacyValidateUserCredentialsApiRequest>(r => r.PostUrl == expectedApiRequest.PostUrl
+                            && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Email == query.Email
+                            && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Password == query.Password), true))
+                .ReturnsAsync(new ApiResponse<GetLegacyValidateCredentialsApiResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -100,8 +117,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
             var result = await handler.Handle(query, CancellationToken.None);
 
             candidateAccountApiClient.Verify(x =>
-                x.Get<GetLegacyValidateCredentialsApiResponse>(
-                    It.IsAny<GetLegacyValidateCredentialsApiRequest>()), Times.Never);
+                x.PostWithResponseCode<GetLegacyValidateCredentialsApiResponse>(
+                    It.IsAny<PostLegacyValidateUserCredentialsApiRequest>(), true), Times.Never);
 
             result.IsValid.Should().BeFalse();
         }
@@ -134,11 +151,17 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
                         key == expectedCacheKey)))
                 .ReturnsAsync(cacheItem);
 
-            var expectedApiRequest = new GetLegacyValidateCredentialsApiRequest(query.Email, query.Password);
+            var expectedApiRequest = new PostLegacyValidateUserCredentialsApiRequest(new PostLegacyValidateUserCredentialsApiRequestBody
+            {
+                Email = query.Email,
+                Password = query.Password
+            });
             candidateAccountApiClient.Setup(x =>
-                    x.Get<GetLegacyValidateCredentialsApiResponse>(
-                        It.Is<GetLegacyValidateCredentialsApiRequest>(r => r.GetUrl == expectedApiRequest.GetUrl)))
-                .ReturnsAsync(apiResponse);
+                    x.PostWithResponseCode<GetLegacyValidateCredentialsApiResponse>(
+                        It.Is<PostLegacyValidateUserCredentialsApiRequest>(r => r.PostUrl == expectedApiRequest.PostUrl
+                            && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Email == query.Email
+                            && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Password == query.Password), true))
+                .ReturnsAsync(new ApiResponse<GetLegacyValidateCredentialsApiResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -177,11 +200,17 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate
                         key == expectedCacheKey)))
                 .ReturnsAsync(cacheItem);
 
-            var expectedApiRequest = new GetLegacyValidateCredentialsApiRequest(query.Email, query.Password);
+            var expectedApiRequest = new PostLegacyValidateUserCredentialsApiRequest(new PostLegacyValidateUserCredentialsApiRequestBody
+            {
+                Email = query.Email,
+                Password = query.Password
+            });
             candidateAccountApiClient.Setup(x =>
-                    x.Get<GetLegacyValidateCredentialsApiResponse>(
-                        It.Is<GetLegacyValidateCredentialsApiRequest>(r => r.GetUrl == expectedApiRequest.GetUrl)))
-                .ReturnsAsync(apiResponse);
+                    x.PostWithResponseCode<GetLegacyValidateCredentialsApiResponse>(
+                        It.Is<PostLegacyValidateUserCredentialsApiRequest>(r => r.PostUrl == expectedApiRequest.PostUrl
+                            && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Email == query.Email
+                            && ((PostLegacyValidateUserCredentialsApiRequestBody)r.Data).Password == query.Password), true))
+                            .ReturnsAsync(new ApiResponse<GetLegacyValidateCredentialsApiResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
