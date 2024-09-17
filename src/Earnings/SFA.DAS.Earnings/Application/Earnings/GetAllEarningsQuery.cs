@@ -1,5 +1,6 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using MediatR;
+using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
@@ -10,6 +11,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using Apprenticeship = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Apprenticeship;
+using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode;
 
 
 namespace SFA.DAS.Earnings.Application.Earnings;
@@ -17,6 +19,7 @@ namespace SFA.DAS.Earnings.Application.Earnings;
 public class GetAllEarningsQuery : IRequest<GetAllEarningsQueryResult>
 {
     public long Ukprn { get; set; }
+    public byte CollectionPeriod { get; set; }
 }
 
 public class GetAllEarningsQueryResult
@@ -53,14 +56,101 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
             {
                 ULN = long.Parse(model.apprenticeship.Uln),
                 LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
-                PriceEpisodes = model.apprenticeship.Episodes.SelectMany(episode => episode.Prices, (episode, price) => new PriceEpisode
-                {
-                    PriceEpisodeIdentifier = $"25-{episode.TrainingCode}-{price.StartDate:dd/MM/yyyy}",
-                    PriceEpisodeValues = new PriceEpisodeValues
+                PriceEpisodes = model.apprenticeship.Episodes
+                    .SelectMany(episode => episode.Prices, (episode, price) => new { Episode = episode, Price = price })
+                    .Join(model.earningsApprenticeship.Episodes, a => a.Episode.Key, b => b.Key, (episodePrice, earningsEpisode) => new{ episodePrice, earningsEpisode } )
+                    .Select(priceEpisodeModel => new PriceEpisode
                     {
-                        EpisodeStartDate = price.StartDate
-                    }
-                }).ToList(),
+                        PriceEpisodeIdentifier = $"{EarningsFM36Constants.ProgType}-{priceEpisodeModel.episodePrice.Episode.TrainingCode}-{priceEpisodeModel.episodePrice.Price.StartDate:dd/MM/yyyy}",
+                        PriceEpisodeValues = new PriceEpisodeValues
+                        {
+                            EpisodeStartDate = priceEpisodeModel.episodePrice.Price.StartDate,
+                            TNP1 = priceEpisodeModel.episodePrice.Price.TrainingPrice,
+                            TNP2 = priceEpisodeModel.episodePrice.Price.EndPointAssessmentPrice,
+                            TNP3 = EarningsFM36Constants.TNP3,
+                            TNP4 = EarningsFM36Constants.TNP4,
+                            PriceEpisodeActualEndDateIncEPA = EarningsFM36Constants.PriceEpisodeActualEndDateIncEPA,
+                            PriceEpisode1618FUBalValue = EarningsFM36Constants.PriceEpisode1618FUBalValue,
+                            PriceEpisodeApplic1618FrameworkUpliftCompElement = EarningsFM36Constants.PriceEpisodeApplic1618FrameworkUpliftCompElement,
+                            PriceEpisode1618FrameworkUpliftTotPrevEarnings = EarningsFM36Constants.PriceEpisode1618FrameworkUpliftTotPrevEarnings,
+                            PriceEpisode1618FrameworkUpliftRemainingAmount = EarningsFM36Constants.PriceEpisode1618FrameworkUpliftRemainingAmount,
+                            PriceEpisode1618FUMonthInstValue = EarningsFM36Constants.PriceEpisode1618FUMonthInstValue,
+                            PriceEpisode1618FUTotEarnings = EarningsFM36Constants.PriceEpisode1618FUTotEarnings,
+                            PriceEpisodeUpperBandLimit = priceEpisodeModel.episodePrice.Price.FundingBandMaximum,
+                            PriceEpisodePlannedEndDate = model.apprenticeship.PlannedEndDate,
+                            PriceEpisodeActualEndDate = priceEpisodeModel.episodePrice.Price.EndDate,
+                            PriceEpisodeTotalTNPPrice = priceEpisodeModel.episodePrice.Price.TotalPrice,
+                            PriceEpisodeUpperLimitAdjustment = EarningsFM36Constants.PriceEpisodeUpperLimitAdjustment,
+                            PriceEpisodePlannedInstalments = priceEpisodeModel.episodePrice.Price.StartDate.GetNumberOfIncludedCensusDatesUntil(model.apprenticeship.PlannedEndDate),
+                            PriceEpisodeActualInstalments = model.earningsApprenticeship.Episodes
+                            .SelectMany(x => x.Instalments)
+                            .Count(x => x.AcademicYear == short.Parse(currentAcademicYear.AcademicYear)),
+                            PriceEpisodeInstalmentsThisPeriod = model.earningsApprenticeship.Episodes
+                            .SelectMany(x => x.Instalments)
+                            .Any(x => x.AcademicYear == short.Parse(currentAcademicYear.AcademicYear) && x.DeliveryPeriod == request.CollectionPeriod) ? 1 : 0,
+                            PriceEpisodeCompletionElement = priceEpisodeModel.earningsEpisode.CompletionPayment,
+                            PriceEpisodePreviousEarnings = EarningsFM36Constants.PriceEpisodePreviousEarnings,
+                            PriceEpisodeInstalmentValue = priceEpisodeModel.earningsEpisode.Instalments.FirstOrDefault()?.Amount ?? 0,
+                            PriceEpisodeOnProgPayment = EarningsFM36Constants.PriceEpisodeOnProgPayment,
+                            PriceEpisodeTotalEarnings = priceEpisodeModel.earningsEpisode.Instalments.Sum(x => x.Amount),
+                            PriceEpisodeBalanceValue = EarningsFM36Constants.PriceEpisodeBalanceValue,
+                            PriceEpisodeBalancePayment = EarningsFM36Constants.PriceEpisodeBalancePayment,
+                            PriceEpisodeCompleted = priceEpisodeModel.episodePrice.Price.EndDate < DateTime.Now,
+                            PriceEpisodeCompletionPayment = EarningsFM36Constants.PriceEpisodeCompletionPayment,
+                            PriceEpisodeAimSeqNumber = EarningsFM36Constants.AimSeqNumber,
+                            PriceEpisodeFirstDisadvantagePayment = EarningsFM36Constants.PriceEpisodeFirstDisadvantagePayment,
+                            PriceEpisodeSecondDisadvantagePayment = EarningsFM36Constants.PriceEpisodeSecondDisadvantagePayment,
+                            PriceEpisodeApplic1618FrameworkUpliftBalancing = EarningsFM36Constants.PriceEpisodeApplic1618FrameworkUpliftBalancing,
+                            PriceEpisodeApplic1618FrameworkUpliftCompletionPayment = EarningsFM36Constants.PriceEpisodeApplic1618FrameworkUpliftCompletionPayment,
+                            PriceEpisodeApplic1618FrameworkUpliftOnProgPayment = EarningsFM36Constants.PriceEpisodeApplic1618FrameworkUpliftOnProgPayment,
+                            PriceEpisodeSecondProv1618Pay = EarningsFM36Constants.PriceEpisodeSecondProv1618Pay,
+                            PriceEpisodeFirstEmp1618Pay = EarningsFM36Constants.PriceEpisodeFirstEmp1618Pay,
+                            PriceEpisodeSecondEmp1618Pay = EarningsFM36Constants.PriceEpisodeSecondEmp1618Pay,
+                            PriceEpisodeFirstProv1618Pay = EarningsFM36Constants.PriceEpisodeFirstProv1618Pay,
+                            PriceEpisodeLSFCash = EarningsFM36Constants.PriceEpisodeLSFCash,
+                            PriceEpisodeFundLineType = model.earningsApprenticeship.FundingLineType,
+                            PriceEpisodeLevyNonPayInd = EarningsFM36Constants.PriceEpisodeLevyNonPayInd,
+                            EpisodeEffectiveTNPStartDate = priceEpisodeModel.episodePrice.Price.StartDate,
+                            PriceEpisodeFirstAdditionalPaymentThresholdDate = EarningsFM36Constants.PriceEpisodeFirstAdditionalPaymentThresholdDate,
+                            PriceEpisodeSecondAdditionalPaymentThresholdDate = EarningsFM36Constants.PriceEpisodeSecondAdditionalPaymentThresholdDate,
+                            PriceEpisodeContractType = EarningsFM36Constants.PriceEpisodeContractType,
+                            PriceEpisodePreviousEarningsSameProvider = EarningsFM36Constants.PriceEpisodePreviousEarningsSameProvider,
+                            PriceEpisodeTotProgFunding = priceEpisodeModel.earningsEpisode.OnProgramTotal,
+                            PriceEpisodeProgFundIndMinCoInvest = priceEpisodeModel.earningsEpisode.OnProgramTotal * EarningsFM36Constants.CoInvestSfaMultiplier,
+                            PriceEpisodeProgFundIndMaxEmpCont = priceEpisodeModel.earningsEpisode.OnProgramTotal * EarningsFM36Constants.CoInvestEmployerMultiplier,
+                            PriceEpisodeTotalPMRs = EarningsFM36Constants.PriceEpisodeTotalPMRs,
+                            PriceEpisodeCumulativePMRs = EarningsFM36Constants.PriceEpisodeCumulativePMRs,
+                            PriceEpisodeCompExemCode = EarningsFM36Constants.PriceEpisodeCompExemCode,
+                            PriceEpisodeLearnerAdditionalPaymentThresholdDate = EarningsFM36Constants.PriceEpisodeLearnerAdditionalPaymentThresholdDate,
+                            PriceEpisodeRedStartDate = EarningsFM36Constants.PriceEpisodeRedStartDate,
+                            PriceEpisodeRedStatusCode = EarningsFM36Constants.PriceEpisodeRedStatusCode,
+                            PriceEpisodeLDAppIdent = $"{EarningsFM36Constants.ProgType}-{priceEpisodeModel.episodePrice.Episode.TrainingCode}",
+                            PriceEpisodeAugmentedBandLimitFactor = EarningsFM36Constants.PriceEpisodeAugmentedBandLimitFactor
+                        },
+                        PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
+                        {
+                            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeApplic1618FrameworkUpliftBalancing, 0),
+                            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeApplic1618FrameworkUpliftCompletionPayment, 0),
+                            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeApplic1618FrameworkUpliftOnProgPayment, 0),
+                            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeBalancePayment, 0),
+                            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeBalanceValue, 0),
+                            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeCompletionPayment, 0),
+                            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstDisadvantagePayment, 0),
+                            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstEmp1618Pay, 0),
+                            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstProv1618Pay, 0),
+                            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLevyNonPayInd, 0),
+                            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLSFCash, 0),
+                            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondDisadvantagePayment, 0),
+                            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondEmp1618Pay, 0),
+                            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondProv1618Pay, 0),
+                            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLearnerAdditionalPayment, 0),
+                            PriceEpisodePeriodisedValuesBuilder.BuildPriceEpisodeInstalmentsThisPeriodValues(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear()),
+                            PriceEpisodePeriodisedValuesBuilder.BuildInstallmentAmountValues(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeOnProgPayment),
+                            PriceEpisodePeriodisedValuesBuilder.BuildCoInvestmentValues(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeProgFundIndMaxEmpCont, EarningsFM36Constants.CoInvestEmployerMultiplier),
+                            PriceEpisodePeriodisedValuesBuilder.BuildCoInvestmentValues(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeProgFundIndMinCoInvest, EarningsFM36Constants.CoInvestSfaMultiplier),
+                            PriceEpisodePeriodisedValuesBuilder.BuildInstallmentAmountValues(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeTotProgFunding),
+                        }
+                    }).ToList(),
                 LearningDeliveries = new List<LearningDelivery>
                 {
                     new LearningDelivery
@@ -163,6 +253,21 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                 }
                 }).ToArray()
         };
+
+        //foreach (var apprenticeship in apprenticeshipsData.Apprenticeships)
+        //{
+        //    var learner = new FM36Learner
+        //    {
+        //        ULN = long.Parse(apprenticeship.Uln),
+        //        LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
+        //        PriceEpisodes = new List<PriceEpisode>()
+        //    };
+
+        //    foreach (var apprenticeshipEpisodePrice in apprenticeship.Episodes.SelectMany(e => e.Prices, (episode, price) => new { episode, price }))
+        //    {
+        //        if (apprenticeshipEpisodePrice.price.StartDate)
+        //    }
+        //}
 
         return result;
     }
