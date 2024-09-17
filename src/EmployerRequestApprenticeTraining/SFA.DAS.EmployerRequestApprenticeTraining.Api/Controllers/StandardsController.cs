@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.RefreshStandards;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetActiveStandards;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
 using System;
 using System.Net;
@@ -38,6 +40,27 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to retrieve standard for {StandardId}", standardId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPut("refresh")]
+        public async Task<IActionResult> RefreshStandards()
+        {
+            try
+            {
+                var standards = await _mediator.Send(new GetActiveStandardsQuery());
+
+                var result = await _mediator.Send(new RefreshStandardsCommand 
+                { 
+                    Standards = standards.Standards,
+                });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to refresh standards");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
