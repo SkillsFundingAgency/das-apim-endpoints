@@ -7,7 +7,7 @@ using SFA.DAS.Earnings.Application.Earnings;
 namespace SFA.DAS.Earnings.Api.Controllers;
 
 [ApiController]
-[Route("")]
+[Route("earnings")]
 public class EarningsController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -24,8 +24,8 @@ public class EarningsController : ControllerBase
     /// </summary>
     /// <returns>All earnings data in the format of an FM36Learner array.</returns>
     [HttpGet]
-    [Route("{collectionYear}/{collectionPeriod}/{ukprn}")]
-    public async Task<IActionResult> GetAll(int collectionYear, byte collectionPeriod, long ukprn)
+    [Route("{ukprn}/{collectionYear}/{collectionPeriod}")]
+    public async Task<IActionResult> GetAll(long ukprn, int collectionYear, byte collectionPeriod)
     {
         try
         {
@@ -47,8 +47,8 @@ public class EarningsController : ControllerBase
     /// </summary>
     /// <returns>All earnings data in the format of an FM36Learner array.</returns>
     [HttpGet]
-    [Route("stub/{collectionYear}/{collectionPeriod}/{ukprn}")]
-    public async Task<IActionResult> GetAllStub(int collectionYear, byte collectionPeriod, long ukprn)
+    [Route("stub/{ukprn}/{collectionYear}/{collectionPeriod}")]
+    public async Task<IActionResult> GetAllStub(long ukprn, int collectionYear, byte collectionPeriod)
     {
         return Ok(GetLearners(ukprn));
     }
