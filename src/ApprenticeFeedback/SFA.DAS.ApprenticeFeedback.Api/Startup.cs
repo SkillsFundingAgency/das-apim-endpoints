@@ -14,6 +14,7 @@ using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
 
 
 namespace SFA.DAS.ApprenticeFeedback.Api
@@ -53,6 +54,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api
                 .AddCheck<ApprenticeFeedbackApiHealthCheck>(ApprenticeFeedbackApiHealthCheck.HealthCheckResultDescription);
 
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetApprenticeQuery).Assembly));
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(UpsertApprenticeCommand).Assembly));
 
             services.AddServiceRegistration();
 

@@ -25,6 +25,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.AppStart
             services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
             services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
             services.AddTransient<IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration>, RequestApprenticeTrainingApiClient>();
+            services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
 
             services.AddTransient<IEmployerAccountsService,  EmployerAccountsService>();
         }

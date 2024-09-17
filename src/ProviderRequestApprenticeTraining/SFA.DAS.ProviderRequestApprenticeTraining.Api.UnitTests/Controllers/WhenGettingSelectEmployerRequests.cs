@@ -22,7 +22,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
         public async Task Then_The_SelectEmployerRequests_Are_Returned_From_Mediator(
             GetSelectEmployerRequestsResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] EmployerRequestsController controller,
+            [Greedy] ProvidersController controller,
             long ukprn,
             string standardReference)
         {
@@ -46,7 +46,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             Guid employerRequestId,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestsController controller,
+            [Greedy] ProvidersController controller,
             long ukprn,
             string standardReference)
         {
