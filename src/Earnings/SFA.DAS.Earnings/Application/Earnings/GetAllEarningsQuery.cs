@@ -125,7 +125,15 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                             PriceEpisodeRedStartDate = EarningsFM36Constants.PriceEpisodeRedStartDate,
                             PriceEpisodeRedStatusCode = EarningsFM36Constants.PriceEpisodeRedStatusCode,
                             PriceEpisodeLDAppIdent = $"{EarningsFM36Constants.ProgType}-{priceEpisodeModel.episodePrice.Episode.TrainingCode}",
-                            PriceEpisodeAugmentedBandLimitFactor = EarningsFM36Constants.PriceEpisodeAugmentedBandLimitFactor
+                            PriceEpisodeAugmentedBandLimitFactor = EarningsFM36Constants.PriceEpisodeAugmentedBandLimitFactor,
+                            PriceEpisodeRemainingTNPAmount = priceEpisodeModel.episodePrice.Price.FundingBandMaximum
+                                                             - GetPreviousEarnings(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), request.CollectionPeriod),
+                            PriceEpisodeRemainingAmountWithinUpperLimit = priceEpisodeModel.episodePrice.Price.FundingBandMaximum
+                                                                          - GetPreviousEarnings(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), request.CollectionPeriod),
+                            PriceEpisodeCappedRemainingTNPAmount = priceEpisodeModel.episodePrice.Price.FundingBandMaximum
+                                                                   - GetPreviousEarnings(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), request.CollectionPeriod),
+                            PriceEpisodeExpectedTotalMonthlyValue = priceEpisodeModel.episodePrice.Price.FundingBandMaximum
+                                                                    - GetPreviousEarnings(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), request.CollectionPeriod),
                         },
                         PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>()
                         {
@@ -255,5 +263,24 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
         };
 
         return result;
+    }
+
+    private decimal GetPreviousEarnings(SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship? apprenticeship, short academicYear, short collectionPeriod)
+    {
+        var previousYearEarnings = apprenticeship?
+            .Episodes
+            .SelectMany(x => x.Instalments)
+            .Where(x => x.AcademicYear.IsEarlierThan(academicYear))
+            .Sum(x => x.Amount);
+
+        var previousPeriodEarnings = apprenticeship?
+            .Episodes
+            .SelectMany(x => x.Instalments)
+            .Where(x =>
+                x.AcademicYear == academicYear
+                && x.DeliveryPeriod < collectionPeriod)
+            .Sum(x => x.Amount);
+
+        return previousYearEarnings.GetValueOrDefault() + previousPeriodEarnings.GetValueOrDefault();
     }
 }

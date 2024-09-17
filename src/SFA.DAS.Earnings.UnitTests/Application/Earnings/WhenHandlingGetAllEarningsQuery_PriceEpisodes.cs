@@ -119,7 +119,25 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeBalancePayment.Should().Be(0);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompleted.Should().Be(episodePrice.Price.EndDate < DateTime.Now);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompletionPayment.Should().Be(0);
-                //todo remaining earnings amounts
+
+                //todo confirm logic with Jas
+                var previousYearEarnings = earningApprenticeship.Episodes
+                    .SelectMany(x => x.Instalments)
+                    .Where(x => x.AcademicYear.IsEarlierThan(short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear)))
+                    .Sum(x => x.Amount);
+                var previousPeriodEarnings = earningApprenticeship.Episodes
+                    .SelectMany(x => x.Instalments)
+                    .Where(x => 
+                        x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear)
+                        && x.DeliveryPeriod < _testFixture.CollectionPeriod)
+                    .Sum(x => x.Amount);
+                var allPreviousEarnings = previousYearEarnings + previousPeriodEarnings;
+
+                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeRemainingTNPAmount.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings);
+                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeRemainingAmountWithinUpperLimit.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings);
+                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCappedRemainingTNPAmount.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings);
+                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeExpectedTotalMonthlyValue.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings);
+
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber.Should().Be(1);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeFirstDisadvantagePayment.Should().Be(0);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeSecondDisadvantagePayment.Should().Be(0);
