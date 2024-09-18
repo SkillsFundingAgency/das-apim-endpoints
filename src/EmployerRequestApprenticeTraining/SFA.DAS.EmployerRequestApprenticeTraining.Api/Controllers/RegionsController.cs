@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]/")]
-    public class RegionsController : Controller
+    [Route("regions/")]
+    public class RegionsController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly ILogger<RegionsController> _logger;
@@ -68,7 +68,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to retrieve closest region");
+                _logger.LogError(e, "Error attempting to retrieve closest region for {LocationName}", locationName);
                 return BadRequest();
             }
         }

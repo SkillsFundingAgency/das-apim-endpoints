@@ -8,6 +8,7 @@ using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Validation;
+using SFA.DAS.NServiceBus;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -43,6 +44,11 @@ public class AutoReservationsService : IAutoReservationsService
         if (ale == null)
         {
             throw new ApplicationException("When creating an auto reservation, the AccountLegalEntity was not found");
+        }
+
+        if (string.IsNullOrWhiteSpace(command.CourseCode))
+        {
+            throw CreateApiModelException("CourseCode", "Course must be correctly assigned");
         }
 
         _logger.LogInformation("Creating Reservation with id {0}", id);
@@ -86,7 +92,7 @@ public class AutoReservationsService : IAutoReservationsService
 
         if (error == null || error.StartDate == null || !error.StartDate.Any())
         {
-            return new ApplicationException("Unexpected error when creating reservation");
+            return CreateApiModelException("ReservationId", "Unexpected error when creating an auto reservation, please try later"); ;
         }
 
         var startDateErrorMessage = error.StartDate.FirstOrDefault();
@@ -94,7 +100,7 @@ public class AutoReservationsService : IAutoReservationsService
         {
             return CreateApiModelException("StartDate", startDateErrorMessage);
         }
-        return new ApplicationException("Unexpected error when reading reservation error message"); ;
+        return CreateApiModelException("ReservationId", "Unexpected error when reading an auto reservation error, please try later"); ;
     }
 
     private Exception CreateApiModelException(string fieldName, string message)

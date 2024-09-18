@@ -77,7 +77,6 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
             response.Should().BeEquivalentTo(expectedResponse);
         }
 
-
         [Test]
         public async Task Handle_AutoReservation_Creation_When_No_ReservationID_In_Request()
         {
@@ -110,7 +109,6 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
             _autoReservationService.Setup(x => x.CreateReservation(It.IsAny<AutoReservation>()))
                 .ReturnsAsync(reservationId);
 
-            var expectedResponse = _fixture.Create<CreateCohortResponse>();
             _commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
                 It.Is<PostCreateCohortRequest>(r =>
                     ((CreateCohortRequest)r.Data).ReservationId == _request.ReservationId
@@ -123,10 +121,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
         }
 
         [Test]
-        public async Task Does_Not_Delete_Reservation_When_ReservationID_In_Request()
+        public async Task Does_Not_Create_Or_Delete_Reservation_When_ReservationID_In_Request()
         {
-
-            var expectedResponse = _fixture.Create<CreateCohortResponse>();
             _commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
                 It.Is<PostCreateCohortRequest>(r =>
                     ((CreateCohortRequest)r.Data).ReservationId == _request.ReservationId
@@ -136,6 +132,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
             var act = async () => await _handler.Handle(_request, CancellationToken.None);
             await act.Should().ThrowAsync<Exception>();
             _autoReservationService.Verify(x => x.DeleteReservation(It.IsAny<Guid>()), Times.Never);
+            _autoReservationService.Verify(x => x.CreateReservation(It.IsAny<AutoReservation>()), Times.Never);
         }
 
         [Test]

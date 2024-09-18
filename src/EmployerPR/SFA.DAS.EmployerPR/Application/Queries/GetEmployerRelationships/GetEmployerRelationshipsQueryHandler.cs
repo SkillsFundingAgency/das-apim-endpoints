@@ -7,13 +7,7 @@ public class GetEmployerRelationshipsQueryHandler(IProviderRelationshipsApiRestC
 {
     public async Task<GetEmployerRelationshipsQueryResult> Handle(GetEmployerRelationshipsQuery query, CancellationToken cancellationToken)
     {
-        var response =
-            await _providerRelationshipsApiRestClient.GetEmployerRelationships(
-                query.AccountHashedId, 
-                query.Ukprn, 
-                query.AccountlegalentityPublicHashedId, 
-                cancellationToken
-        );
+        var response = await _providerRelationshipsApiRestClient.GetEmployerRelationships(query.AccountId, cancellationToken);
 
         return new GetEmployerRelationshipsQueryResult(
             response.AccountLegalEntities.Select(a => (AccountLegalEntityPermissionsModel)a).ToList()

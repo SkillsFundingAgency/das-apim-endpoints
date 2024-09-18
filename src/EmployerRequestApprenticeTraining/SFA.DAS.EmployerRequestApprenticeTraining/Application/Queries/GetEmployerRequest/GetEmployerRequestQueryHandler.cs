@@ -1,14 +1,13 @@
 ﻿using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Threading;
 using System.Threading.Tasks;
 
-using EmployerRequest = SFA.DAS.SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining.EmployerRequest;
+using EmployerRequest = SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Responses.EmployerRequest;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest
 {
@@ -23,18 +22,9 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmplo
 
         public async Task<GetEmployerRequestResult> Handle(GetEmployerRequestQuery request, CancellationToken cancellationToken)
         {
-            ApiResponse<EmployerRequest> employerRequest = null;
-            if(request.EmployerRequestId.HasValue)
-            {
-                employerRequest = await _requestApprenticeTrainingApiClient.
-                    GetWithResponseCode<EmployerRequest>(new GetEmployerRequestRequest(request.EmployerRequestId.Value));
-            }
-            else if(request.AccountId.HasValue && !string.IsNullOrEmpty(request.StandardReference))
-            {
-                employerRequest = await _requestApprenticeTrainingApiClient.
-                    GetWithResponseCode<EmployerRequest>(new GetEmployerRequestRequest(request.AccountId.Value, request.StandardReference));
-            }
-
+            ApiResponse<EmployerRequest> employerRequest = await _requestApprenticeTrainingApiClient.
+                GetWithResponseCode<EmployerRequest>(new GetEmployerRequestRequest(request.EmployerRequestId.Value));
+            
             if (employerRequest?.StatusCode != System.Net.HttpStatusCode.NotFound)
             {
                 employerRequest.EnsureSuccessStatusCode();
@@ -42,7 +32,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmplo
 
             return new GetEmployerRequestResult
             {
-                EmployerRequest = (SharedOuterApi.Models.RequestApprenticeTraining.EmployerRequest)employerRequest?.Body
+                EmployerRequest = (Models.EmployerRequest)employerRequest?.Body
             };
         }
     }
