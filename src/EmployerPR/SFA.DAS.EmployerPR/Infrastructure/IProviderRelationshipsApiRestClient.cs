@@ -5,6 +5,7 @@ using SFA.DAS.EmployerPR.Application.Notifications.Commands.PostNotifications;
 using SFA.DAS.EmployerPR.Application.Permissions.Commands.PostPermissions;
 using SFA.DAS.EmployerPR.Application.Permissions.Queries.GetPermissions;
 using SFA.DAS.EmployerPR.Application.Relationships.Queries.GetRelationships;
+using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptAddAccountRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptPermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinePermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
@@ -40,4 +41,7 @@ public interface IProviderRelationshipsApiRestClient
 
     [Post("requests/{requestId}/permission/accepted")]
     Task<Unit> AcceptPermissionsRequest([Path] Guid requestId, [Body] AcceptPermissionsRequestModel model, CancellationToken cancellationToken);
+
+    [Post("requests/{requestId}/addaccount/accepted")]
+    Task<Unit> AcceptAddAccountRequest([Path] Guid requestId, [Body] AcceptAddAccountRequestModel model, CancellationToken cancellationToken);
 }

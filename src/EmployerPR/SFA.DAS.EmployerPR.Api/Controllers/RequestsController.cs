@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptAddAccountRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptPermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclineAddAccountRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinePermissionsRequest;
@@ -28,7 +29,7 @@ public class RequestsController(IProviderRelationshipsApiRestClient _providerRel
     }
 
     [HttpPost("{requestId:guid}/permission/declined")]
-    [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Unit), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeclinePermissionsRequest([FromRoute] Guid requestId, [FromBody] DeclinedRequestModel model, CancellationToken cancellationToken)
     {
@@ -44,7 +45,7 @@ public class RequestsController(IProviderRelationshipsApiRestClient _providerRel
     }
 
     [HttpPost("{requestId:guid}/permission/accepted")]
-    [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Unit), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AcceptPermissionsRequest([FromRoute] Guid requestId, [FromBody] AcceptPermissionsRequestModel model, CancellationToken cancellationToken)
     {
@@ -60,11 +61,27 @@ public class RequestsController(IProviderRelationshipsApiRestClient _providerRel
     }
 
     [HttpPost("{requestId:guid}/addaccount/declined")]
-    [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Unit), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> DeclineAddAccountRequest([FromRoute] Guid requestId, [FromBody] DeclinedRequestModel model, CancellationToken cancellationToken)
     {
         DeclineAddAccountRequestCommand command = new DeclineAddAccountRequestCommand()
+        {
+            ActionedBy = model.ActionedBy,
+            RequestId = requestId
+        };
+
+        await _mediator.Send(command, cancellationToken);
+
+        return Ok();
+    }
+
+    [HttpPost("{requestId:guid}/addaccount/accepted")]
+    [ProducesResponseType(typeof(Unit), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AcceptAddAccountRequest([FromRoute] Guid requestId, [FromBody] AcceptAddAccountRequestModel model, CancellationToken cancellationToken)
+    {
+        AcceptAddAccountRequestCommand command = new AcceptAddAccountRequestCommand()
         {
             ActionedBy = model.ActionedBy,
             RequestId = requestId
