@@ -4,6 +4,6 @@ public static class AcademicYearComparisonHelper
 {
     public static bool IsEarlierThan(this short academicYear, short comparisonYear)
     {
-        return short.Parse($"{academicYear}"[..2]) < short.Parse($"{comparisonYear}"[..2]);
+        return academicYear / 100 < comparisonYear / 100;
     }
 }
