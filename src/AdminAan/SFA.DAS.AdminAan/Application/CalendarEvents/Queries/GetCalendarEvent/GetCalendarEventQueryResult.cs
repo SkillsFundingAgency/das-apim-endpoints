@@ -19,9 +19,9 @@ public class GetCalendarEventQueryResult
     public string ContactEmail { get; set; } = string.Empty;
     public bool IsActive { get; set; }
     public DateTime? LastUpdatedDate { get; set; }
-    public IEnumerable<AttendeeModel> Attendees { get; set; } = null!;
-    public IEnumerable<AttendeeModel> CancelledAttendees { get; set; } = null!;
-    public IEnumerable<EventGuestModel> EventGuests { get; set; } = null!;
+    public List<QueryAttendee> Attendees { get; set; } = new();
+    public List<QueryCancelledAttendee> CancelledAttendees { get; set; } = new();
+    public List<QueryEventGuest> EventGuests { get; set; } = new();
 
     public int PlannedAttendees { get; set; }
     public DateTime? CreatedDate { get; set; }
@@ -31,4 +31,10 @@ public class GetCalendarEventQueryResult
 
     public int? RegionId { get; set; }
     public string? RegionName { get; set; }
+
+    public record QueryAttendee(Guid MemberId, string UserType, string MemberName, DateTime? AddedDate, DateTime? CancelledDate);
+
+    public record QueryCancelledAttendee(Guid MemberId, string UserType, string MemberName, DateTime? AddedDate, DateTime? CancelledDate);
+
+    public record QueryEventGuest(string GuestName, string GuestJobTitle);
 }
