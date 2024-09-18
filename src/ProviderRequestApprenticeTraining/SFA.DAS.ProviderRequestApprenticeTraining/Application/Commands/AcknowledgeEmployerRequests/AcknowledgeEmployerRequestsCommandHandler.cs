@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.AcknowledgeEmployerRequests
 {
-    public class AcknowledgeEmployerRequestsCommandHandler : IRequestHandler<AcknowledgeEmployerRequestsCommand>
+    public class AcknowledgeEmployerRequestsCommandHandler : IRequestHandler<AcknowledgeEmployerRequestsCommand,Unit>
     {
         private readonly IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration> _requestApprenticeTrainingApiClient;
 
@@ -17,18 +17,19 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Application.Commands.Acknowl
             _requestApprenticeTrainingApiClient = requestApprenticeTrainingApiClient;
         }
 
-        public async Task Handle(AcknowledgeEmployerRequestsCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(AcknowledgeEmployerRequestsCommand command, CancellationToken cancellationToken)
         {
-            var request = new CreateProviderResponseEmployerRequestRequest(new CreateEmployerResponseEmployerRequestData
+            var request = new AcknowledgeEmployerRequestsRequest(new AcknowledgeEmployerRequestsData
             {
                 EmployerRequestIds = command.EmployerRequestIds,
                 Ukprn = command.Ukprn
             });
 
             var response = await _requestApprenticeTrainingApiClient
-                .PostWithResponseCode<CreateEmployerResponseEmployerRequestData, AcknowledgeEmployerRequestsResponse>(request, false);
+                .PostWithResponseCode<AcknowledgeEmployerRequestsData, AcknowledgeEmployerRequestsResponse>(request, false);
 
             response.EnsureSuccessStatusCode();
+            return Unit.Value;
         }
     }
 }

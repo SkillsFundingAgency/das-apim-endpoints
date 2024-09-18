@@ -1,23 +1,31 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.EmployerRequestApprenticeTraining.Api.Extensions;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CreateEmployerRequest;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.AcknowledgeProviderResponses;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CancelEmployerRequest;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.ExpireEmployerRequests;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SendResponseNotification;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.CanUserReceiveNotifications;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequests;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocation;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequestsForResponseNotification;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetProvider;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetSettings;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
+using SFA.DAS.EmployerRequestApprenticeTraining.Models;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]/")]
-    public class EmployerRequestsController : Controller
+    [Route("employer-requests/")]
+    public class EmployerRequestsController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly ILogger<EmployerRequestsController> _logger;
@@ -28,106 +36,182 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             _logger = logger;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SubmitEmployerRequest(SubmitEmployerRequestCommand submitCommand)
+        [HttpGet("{employerRequestId}/training-request")]
+        public async Task<IActionResult> GetTrainingRequest([FromRoute] Guid employerRequestId, [FromQuery] bool includeProviders)
         {
             try
             {
-                var employerProfileUserResult = await _mediator.Send(new GetEmployerProfileUserQuery { UserId = submitCommand.RequestedBy });
+                var employerRequestResult = await _mediator.Send(new GetEmployerRequestQuery { EmployerRequestId = employerRequestId });
 
-                GetLocationResult locationResult = null;
-                if (string.IsNullOrEmpty(submitCommand.SameLocation) || submitCommand.SameLocation == "Yes")
+                if (employerRequestResult.EmployerRequest != null)
                 {
-                    locationResult = await _mediator.Send(new GetLocationQuery { ExactSearchTerm = submitCommand.SingleLocation });
-                    if (locationResult.Location == null)
+                    var employerRequest = employerRequestResult.EmployerRequest;
+
+                    List<Task<ProviderResponse>> providerTasks = new List<Task<ProviderResponse>>();
+                    if (includeProviders)
                     {
-                        return BadRequest($"Unable to submit employer request as the specified location {submitCommand.SingleLocation} cannot be found");
+                        providerTasks.AddRange(employerRequest.ProviderResponses.Select(async providerResponse =>
+                        {
+                            var providerResult = await _mediator.Send(new GetProviderQuery { Ukprn = providerResponse.Ukprn });
+                            if (providerResult.Provider != null)
+                            {
+                                providerResponse.ProviderName = providerResult.Provider.Name;
+                            }
+                            return providerResponse;
+                        }).ToList());
                     }
-                }
 
-                var createCommand = new CreateEmployerRequestCommand
-                {
-                    OriginalLocation = submitCommand.OriginalLocation,
-                    RequestType = submitCommand.RequestType,
-                    AccountId = submitCommand.AccountId,
-                    StandardReference = submitCommand.StandardReference,
-                    NumberOfApprentices = submitCommand.NumberOfApprentices,
-                    SameLocation = submitCommand.SameLocation,
-                    SingleLocation = submitCommand.SingleLocation,
-                    SingleLocationLatitude = locationResult?.Location.Location.GeoPoint[0] ?? 0.0,
-                    SingleLocationLongitude = locationResult?.Location.Location.GeoPoint[1] ?? 0.0,
-                    MultipleLocations = submitCommand.MultipleLocations,
-                    AtApprenticesWorkplace = submitCommand.AtApprenticesWorkplace,
-                    DayRelease = submitCommand.DayRelease,
-                    BlockRelease = submitCommand.BlockRelease,
-                    RequestedBy = submitCommand.RequestedBy,
-                    RequestedByEmail = employerProfileUserResult.Email,
-                    ModifiedBy = submitCommand.ModifiedBy
-                };
+                    var standardTask = _mediator.Send(new GetStandardQuery { StandardId = employerRequest.StandardReference });
+                    var settingsTask = _mediator.Send(new GetSettingsQuery());
 
-                var result = await _mediator.Send(createCommand);
-                return Ok(result.EmployerRequestId);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error attempting to submit employer request for RequestType: {submitCommand.RequestType}");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
-        }
+                    var allTasks = providerTasks.Concat(new Task[] { standardTask, settingsTask }).ToList();
+                    await Task.WhenAll(allTasks);
 
-        [HttpGet("{employerRequestId}")]
-        public async Task<IActionResult> GetEmployerRequest(Guid employerRequestId)
-        {
-            try
-            {
-                var result = await _mediator.Send(new GetEmployerRequestQuery { EmployerRequestId = employerRequestId });
+                    var providerResponses = await Task.WhenAll(providerTasks); 
+                    var standardResult = await standardTask;
+                    var settings = await settingsTask;
 
-                if (result.EmployerRequest != null)
-                {
-                    return Ok(result.EmployerRequest);
+                    var trainingRequest = new TrainingRequest
+                    {
+                        EmployerRequestId = employerRequest.Id,
+                        StandardTitle = standardResult.Standard.Title,
+                        StandardLevel = standardResult.Standard.Level,
+                        NumberOfApprentices = employerRequest.NumberOfApprentices,
+                        SameLocation = employerRequest.SameLocation,
+                        SingleLocation = employerRequest.SingleLocation,
+                        AtApprenticesWorkplace = employerRequest.AtApprenticesWorkplace,
+                        DayRelease = employerRequest.DayRelease,
+                        BlockRelease = employerRequest.BlockRelease,
+                        RequestedAt = employerRequest.RequestedAt,
+                        Status = employerRequest.Status,
+                        ExpiredAt = employerRequest.ExpiredAt,
+                        ExpiryAt = employerRequest.RequestedAt.AddMonths(settings.ExpiryAfterMonths),
+                        RemoveAt = employerRequest.RequestedAt.AddMonths(settings.ExpiryAfterMonths + settings.RemovedAfterExpiryMonths),
+                        Regions = employerRequest.Regions,
+                        ProviderResponses = includeProviders ? providerResponses.ToList() : []
+                    };
+
+                    return Ok(trainingRequest);
                 }
 
                 return NotFound();
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to retrieve employer request for EmployerRequestId: {employerRequestId}");
+                _logger.LogError(e, "Error attempting to retrieve training request {EmployerRequestId}", employerRequestId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
 
-        [HttpGet("account/{accountId}/standard/{standardReference}")]
-        public async Task<IActionResult> GetEmployerRequest(long accountId, string standardReference)
+
+        [HttpPut("{employerRequestId}/responses/acknowledge")]
+        public async Task<IActionResult> AcknowledgeProviderResponses([FromRoute] Guid employerRequestId, [FromQuery] Guid acknowledgedBy)
         {
             try
             {
-                var result = await _mediator.Send(new GetEmployerRequestQuery { AccountId = accountId, StandardReference = standardReference });
-                return Ok(result.EmployerRequest);
+                var command = new AcknowledgeProviderResponsesCommand
+                {
+                    EmployerRequestId = employerRequestId,
+                    AcknowledgedBy = acknowledgedBy
+                };
+
+                await _mediator.Send(command);
+                return Ok();
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to retrieve employer request for AccountId: {accountId} and standardReference: {standardReference.SanitizeLogData()}");
+                _logger.LogError(e, "Error attempting to acknowledge provider responses for {EmployerRequestId}", employerRequestId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
 
-        [HttpGet("account/{accountId}")]
-        public async Task<IActionResult> GetEmployerRequests(long accountId)
+        [HttpPut("{employerRequestId}/cancel")]
+        public async Task<IActionResult> CancelEmployerRequest([FromRoute] Guid employerRequestId, [FromBody] CancelEmployerRequestRequest cancelRequest)
         {
             try
             {
-                var result = await _mediator.Send(new GetEmployerRequestsQuery { AccountId = accountId });
-                return Ok(result.EmployerRequests);
+                var employerRequestResult = await _mediator.Send(new GetEmployerRequestQuery { EmployerRequestId = employerRequestId });
+                if (employerRequestResult.EmployerRequest != null && employerRequestResult.EmployerRequest.Status == RequestStatus.Active)
+                {
+                    var standardTask = _mediator.Send(new GetStandardQuery { StandardId = employerRequestResult.EmployerRequest.StandardReference });
+                    var employerProfileTask = _mediator.Send(new GetEmployerProfileUserQuery { UserId = cancelRequest.CancelledBy });
+
+                    await Task.WhenAll([standardTask, employerProfileTask]);
+
+                    var standardResult = await standardTask;
+                    var employerProfileResult = await employerProfileTask;
+
+                    var command = new CancelEmployerRequestCommand
+                    {
+                        EmployerRequestId = employerRequestId,
+                        CancelledBy = cancelRequest.CancelledBy,
+                        CancelledByEmail = employerProfileResult.Email,
+                        CancelledByFirstName = employerProfileResult.FirstName,
+                        CourseLevel = $"{standardResult.Standard.Title} (level {standardResult.Standard.Level})",
+                        DashboardUrl = cancelRequest.DashboardUrl
+                    };
+
+                    await _mediator.Send(command);
+                }
+                
+                return Ok();
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to retrieve employer requests for AccoundId: {accountId}");
+                _logger.LogError(e, "Error attempting to cancel employer request for {EmployerRequestId}", employerRequestId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
 
         [HttpGet("{employerRequestId}/submit-confirmation")]
-        public async Task<IActionResult> GetSubmitEmployerRequestConfirmation(Guid employerRequestId)
+        public async Task<IActionResult> GetSubmitEmployerRequestConfirmation([FromRoute] Guid employerRequestId)
+        {
+            try
+            {
+                var employerRequestResult = await _mediator.Send(new GetEmployerRequestQuery { EmployerRequestId = employerRequestId });
+
+                if (employerRequestResult.EmployerRequest != null)
+                {
+                    var employerRequest = employerRequestResult.EmployerRequest;
+
+                    var standardTask = _mediator.Send(new GetStandardQuery { StandardId = employerRequest.StandardReference });
+                    var employerProfileUserTask = _mediator.Send(new GetEmployerProfileUserQuery { UserId = employerRequest.RequestedBy });
+                    var settingsTask = _mediator.Send(new GetSettingsQuery());
+
+                    await Task.WhenAll(standardTask, employerProfileUserTask, settingsTask);
+
+                    var standardResult = await standardTask;
+                    var employerProfileUser = await employerProfileUserTask;
+                    var settings = await settingsTask;
+
+                    return Ok(new SubmitEmployerRequestConfirmation
+                    {
+                        EmployerRequestId = employerRequest.Id,
+                        StandardTitle = standardResult.Standard.Title,
+                        StandardLevel = standardResult.Standard.Level,
+                        NumberOfApprentices = employerRequest.NumberOfApprentices,
+                        SameLocation = employerRequest.SameLocation,
+                        SingleLocation = employerRequest.SingleLocation,
+                        AtApprenticesWorkplace = employerRequest.AtApprenticesWorkplace,
+                        DayRelease = employerRequest.DayRelease,
+                        BlockRelease = employerRequest.BlockRelease,
+                        RequestedByEmail = employerProfileUser.Email,
+                        ExpiryAfterMonths = settings.ExpiryAfterMonths,
+                        Regions = employerRequest.Regions
+                    });
+                }
+
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve submit employer request confirmation for {EmployerRequestId}", employerRequestId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{employerRequestId}/cancel-confirmation")]
+        public async Task<IActionResult> GetCancelEmployerRequestConfirmation([FromRoute] Guid employerRequestId)
         {
             try
             {
@@ -145,7 +229,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                     var standardResult = await standardTask;
                     var employerProfileUser = await employerProfileUserTask;
 
-                    return Ok(new SubmitEmployerRequestConfirmation
+                    return Ok(new CancelEmployerRequestConfirmation
                     {
                         EmployerRequestId = employerRequest.Id,
                         StandardTitle = standardResult.Standard.Title,
@@ -156,7 +240,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                         AtApprenticesWorkplace = employerRequest.AtApprenticesWorkplace,
                         DayRelease = employerRequest.DayRelease,
                         BlockRelease = employerRequest.BlockRelease,
-                        RequestedByEmail = employerProfileUser.Email,
+                        CancelledByEmail = employerProfileUser.Email,
                         Regions = employerRequest.Regions
                     });
                 }
@@ -165,7 +249,73 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to retrieve submit employer request confirmation for EmployerRequestId: {employerRequestId}");
+                _logger.LogError(e, "Error attempting to retrieve cancel employer request confirmation for {EmployerRequestId}", employerRequestId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("expire")]
+        public async Task<IActionResult> ExpireEmployerRequests()
+        {
+            try
+            {
+                await _mediator.Send(new ExpireEmployerRequestsCommand());
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to expire employer requests");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("response-notifications")]
+        public async Task<IActionResult> GetEmployerRequestsForResponseNotification()
+        {
+            try
+            {
+                var employerRequestResult = await _mediator.Send(new GetEmployerRequestsForResponseNotificationQuery());
+                return Ok(employerRequestResult.EmployerRequests);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve employer requests for response notification");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("send-notification")]
+        public async Task<IActionResult> SendEmployerRequestResponseNotifications(SendResponseNotificationEmailParameters parameters)
+        {
+            try
+            {
+                var employerProfileUserResult = await _mediator.Send(new GetEmployerProfileUserQuery { UserId = parameters.RequestedBy });
+
+                bool canUserReceiveNotifications = await _mediator.Send(new CanUserReceiveNotificationsQuery { UserId = parameters.RequestedBy, AccountId = parameters.AccountId });
+
+                if(canUserReceiveNotifications) 
+                {
+                    await _mediator.Send(new SendResponseNotificationCommand()
+                    {
+                        EmailAddress = employerProfileUserResult.Email,
+                        FirstName = employerProfileUserResult.FirstName,
+                        RequestedBy = parameters.RequestedBy,
+                        AccountId = parameters.AccountId,
+                        Standards = parameters.Standards.Select(e =>
+                        new Application.Commands.SendResponseNotification.StandardDetails
+                        {
+                            StandardLevel = e.StandardLevel,
+                            StandardTitle = e.StandardTitle,
+                        }).ToList(),
+                        ManageRequestsLink = parameters.ManageRequestsLink,
+                        ManageNotificationSettingsLink = parameters.ManageNotificationSettingsLink,
+                    });
+                }
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to send employer request response notification for {AccountId}", parameters.AccountId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

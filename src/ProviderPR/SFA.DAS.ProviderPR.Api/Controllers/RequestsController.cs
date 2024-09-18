@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.ProviderPR.Application.Requests.Commands.AccountInvitation;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccount;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.CreatePermissions;
 using SFA.DAS.ProviderPR.Infrastructure;
@@ -20,20 +21,45 @@ public class RequestsController(IMediator _mediator, IProviderRelationshipsApiRe
         return Ok(result);
     }
 
+    [HttpPost("createaccount")]
+    [ProducesResponseType(typeof(CreateAccountInvitationRequestCommandResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CreateAccount([FromBody] CreateAccountInvitationRequestCommand command, CancellationToken cancellationToken)
+    {
+        CreateAccountInvitationRequestCommandResult result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
+    }
+
     [HttpGet("{requestId:guid}")]
     [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetRequest([FromRoute] Guid requestId, CancellationToken cancellationToken)
     {
         GetRequestResponse? result = await _providerRelationshipsApiRestClient.GetRequest(requestId, cancellationToken);
-        
-        if(result is null)
+
+        if (result is null)
         {
             return NotFound();
         }
-        
+
         return Ok(result);
     }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetRequest([FromQuery] long ukprn, [FromQuery] string paye, CancellationToken cancellationToken)
+    {
+        GetRequestResponse? result = await _providerRelationshipsApiRestClient.GetRequest(ukprn, paye, cancellationToken);
+
+        if (result is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
+
 
     [HttpPost("permission")]
     [ProducesResponseType(typeof(CreatePermissionRequestCommandResult), StatusCodes.Status200OK)]

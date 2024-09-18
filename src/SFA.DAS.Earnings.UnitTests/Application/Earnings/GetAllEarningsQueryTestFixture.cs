@@ -1,4 +1,5 @@
 using AutoFixture;
+using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.Earnings.Application.Earnings;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -46,7 +47,7 @@ public class GetAllEarningsQueryTestFixture
         SetupMocks(Ukprn, MockApprenticeshipsApiClient, ApprenticeshipsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse);
 
 
-        _handler = new GetAllEarningsQueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object);
+        _handler = new GetAllEarningsQueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, Mock.Of<ILogger<GetAllEarningsQueryHandler>>());
         _query = new GetAllEarningsQuery { Ukprn = Ukprn, CollectionPeriod = CollectionPeriod };
     }
 

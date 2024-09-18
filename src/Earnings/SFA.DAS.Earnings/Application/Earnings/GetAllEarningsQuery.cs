@@ -1,6 +1,7 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using MediatR;
 using SFA.DAS.Apprenticeships.Types;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
@@ -32,22 +33,29 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
     private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apprenticeshipsApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
     private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
+    private readonly ILogger<GetAllEarningsQueryHandler> _logger;
 
     public GetAllEarningsQueryHandler(IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient,
         IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-        ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
+        ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient,
+        ILogger<GetAllEarningsQueryHandler> logger)
     {
         _apprenticeshipsApiClient = apprenticeshipsApiClient;
         _earningsApiClient = earningsApiClient;
         _collectionCalendarApiClient = collectionCalendarApiClient;
+        _logger = logger;
     }
 
     public async Task<GetAllEarningsQueryResult> Handle(GetAllEarningsQuery request, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Handling GetAllEarningsQuery for provider {ukprn}", request.Ukprn);
+
         var apprenticeshipsData = await _apprenticeshipsApiClient.Get<GetApprenticeshipsResponse>(new GetApprenticeshipsRequest { Ukprn = request.Ukprn });
         var earningsData = await _earningsApiClient.Get<GetFm36DataResponse>(new GetFm36DataRequest(request.Ukprn));
         var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now));
-        
+
+        _logger.LogInformation("Found {apprenticeshipsCount} apprenticeships, {earningsApprenticeshipsCount} earnings apprenticeships, for provider {ukprn}", apprenticeshipsData.Apprenticeships.Count, earningsData.Count, request.Ukprn);
+
         var result = new GetAllEarningsQueryResult
         {
             FM36Learners = apprenticeshipsData.Apprenticeships

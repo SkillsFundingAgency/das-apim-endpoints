@@ -12,13 +12,13 @@ public interface IProviderRelationshipsApiRestClient
 {
     [Get("permissions")]
     [AllowAnyStatusCode]
-    Task<Response<GetPermissionsResponse>> GetPermissions([Query] long? ukprn, [Query] long? AccountLegalEntityId, CancellationToken cancellationToken);
+    Task<Response<GetPermissionsResponse>> GetPermissions([Query] long? ukprn, [Query] long? accountLegalEntityId, CancellationToken cancellationToken);
 
     [Get("relationships")]
-    Task<GetRelationshipsResponse> GetRelationships([Query] long? ukprn, [Query] int? accountLegalEntityId, CancellationToken cancellationToken);
+    Task<GetRelationshipsResponse> GetRelationships([Query] long? ukprn, [Query] long? accountLegalEntityId, CancellationToken cancellationToken);
 
-    [Get("relationships/employeraccount/{AccountHashedId}")]
-    Task<GetEmployerRelationshipsResponse> GetEmployerRelationships([Path] string AccountHashedId, [Query] long? Ukprn, [Query] string? AccountlegalentityPublicHashedId, CancellationToken cancellationToken);
+    [Get("employers/{accountId}/relationships")]
+    Task<GetEmployerRelationshipsResponse> GetEmployerRelationships([Path] long accountId, CancellationToken cancellationToken);
 
     [Post("permissions")]
     Task<PostPermissionsCommandResult> PostPermissions([Body] PostPermissionsCommand command, CancellationToken cancellationToken);

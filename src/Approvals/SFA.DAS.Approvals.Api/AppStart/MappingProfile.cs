@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeshipsCSV;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetPriceEpisodesResponse;
 
@@ -22,6 +23,10 @@ namespace SFA.DAS.Approvals.Api.AppStart
             CreateMap<PendingStartDateChange, GetManageApprenticeshipDetailsResponse.PendingStartDateChangeDetails>();
             CreateMap<GetManageApprenticeshipDetailsQueryResult, GetManageApprenticeshipDetailsResponse>();
             CreateMap<PaymentsStatus, GetManageApprenticeshipDetailsResponse.PaymentsStatusDetails>();
+            CreateMap<GetApprenticeshipsResponse, GetApprenticeshipsCSVQueryResult>();
+            CreateMap<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, GetApprenticeshipsCSVQueryResult.ApprenticeshipDetailsCSVResponse>();
+            CreateMap<GetApprenticeshipsCSVQueryResult, PostApprenticeshipsCSVResponse>();
+            CreateMap<GetApprenticeshipsCSVQueryResult.ApprenticeshipDetailsCSVResponse, PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse>();
         }
     }
 }

@@ -1,6 +1,6 @@
 namespace SFA.DAS.SharedOuterApi.Interfaces;
 
-public interface IEarningsApiClient<T> : ITokenPassThroughInternalApiClient<T>
+public interface IEarningsApiClient<T> : IInternalApiClient<T>
 {
 
 }

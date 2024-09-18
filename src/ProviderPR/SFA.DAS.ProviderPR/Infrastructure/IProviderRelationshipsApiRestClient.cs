@@ -1,4 +1,5 @@
 ﻿using RestEase;
+using SFA.DAS.ProviderPR.Application.Requests.Commands.AccountInvitation;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccount;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.CreatePermissions;
 using SFA.DAS.ProviderPR.InnerApi.Notifications.Commands;
@@ -12,7 +13,7 @@ public interface IProviderRelationshipsApiRestClient
     [AllowAnyStatusCode]
     Task<HttpResponseMessage> GetHealth(CancellationToken cancellationToken);
 
-    [Get("relationships/providers/{ukprn}")]
+    [Get("providers/{ukprn}/relationships")]
     Task<GetProviderRelationshipsResponse> GetProviderRelationships([Path] long ukprn, [RawQueryString] string queryString, CancellationToken cancellationToken);
 
     [Post("requests/addaccount")]
@@ -28,6 +29,16 @@ public interface IProviderRelationshipsApiRestClient
     [Get("requests/{requestId}")]
     Task<GetRequestResponse?> GetRequest([Path] Guid requestId, CancellationToken cancellationToken);
 
+    [Get("requests")]
+    Task<GetRequestResponse?> GetRequest([Query] long ukprn, [Query] string paye, CancellationToken cancellationToken);
+
     [Post("requests/permission")]
     Task<CreatePermissionRequestCommandResult> CreatePermissionsRequest([Body] CreatePermissionRequestCommand command, CancellationToken cancellationToken);
+
+    [Get("requests")]
+    [AllowAnyStatusCode]
+    Task<Response<GetRequestByUkprnAndPayeResponse?>> GetRequestByUkprnAndPaye([Query] long ukprn, [Query] string paye, CancellationToken cancellationToken);
+
+    [Post("requests/createaccount")]
+    Task<CreateAccountInvitationRequestCommandResult> CreateAccountInvitationRequest([Body] CreateAccountInvitationRequestCommand command, CancellationToken cancellationToken);
 }

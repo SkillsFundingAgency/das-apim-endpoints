@@ -13,7 +13,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.InnerApi.Requests
         {
             var actual = new GetProviderResponseConfirmationRequest(providerResponseId);
 
-            var expected = $"api/employerrequest/providerresponse/{providerResponseId}/confirmation";
+            var expected = $"api/provider-responses/{providerResponseId}/confirmation";
 
             actual.GetUrl.Should().Be(expected);
         }

@@ -14,6 +14,7 @@ public class WhenGettingAllEarnings
 {
     [Test, MoqAutoData]
     public async Task Then_Gets_All_Earnings_From_Mediator(
+        int collectionYear,
         byte collectionPeriod,
         long ukprn,
         GetAllEarningsQueryResult expectedResponse,
@@ -28,7 +29,7 @@ public class WhenGettingAllEarnings
         var controller = new EarningsController(mockMediator.Object, mockLogger.Object);
 
         // Act
-        var result = await controller.GetAll(collectionPeriod, ukprn);
+        var result = await controller.GetAll(ukprn, collectionYear, collectionPeriod);
 
         // Assert
         var okObjectResult = result.ShouldBeOfType<OkObjectResult>();
@@ -38,6 +39,7 @@ public class WhenGettingAllEarnings
 
     [Test, MoqAutoData]
     public async Task Then_Returns_BadRequest_On_Exception(
+        int collectionYear,
         byte collectionPeriod,
         long ukprn,
         Mock<IMediator> mockMediator,
@@ -52,7 +54,7 @@ public class WhenGettingAllEarnings
         var controller = new EarningsController(mockMediator.Object, mockLogger.Object);
 
         // Act
-        var result = await controller.GetAll(collectionPeriod, ukprn);
+        var result = await controller.GetAll(ukprn, collectionYear, collectionPeriod);
 
         // Assert
         result.Should().BeOfType<BadRequestResult>();
