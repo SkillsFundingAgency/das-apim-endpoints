@@ -8,12 +8,12 @@ namespace SFA.DAS.EmployerPR.Api.Controllers;
 [Route("relationships")]
 public class EmployerRelationshipsController(IMediator _mediator) : ControllerBase
 {
-    [HttpGet("employeraccount/{accountHashedId}")]
+    [HttpGet("{accountId}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(GetEmployerRelationshipsQueryResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetEmployerRelationships(string accountHashedId, [FromQuery] long? ukprn, [FromQuery] string? accountlegalentityPublicHashedId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetEmployerRelationships([FromRoute] long accountId, CancellationToken cancellationToken)
     {
-        GetEmployerRelationshipsQuery query = new(accountHashedId, ukprn, accountlegalentityPublicHashedId);
+        GetEmployerRelationshipsQuery query = new(accountId);
 
         var result = await _mediator.Send(query, cancellationToken);
 

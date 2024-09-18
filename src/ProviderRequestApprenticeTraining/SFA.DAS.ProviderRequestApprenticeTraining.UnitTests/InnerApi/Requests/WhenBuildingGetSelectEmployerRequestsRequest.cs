@@ -12,7 +12,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.InnerApi.Requests
         {
             var actual = new GetSelectEmployerRequestsRequest(standardReference, ukprn);
 
-            var expected = $"api/employerrequest/provider/{ukprn}/selectrequests/{standardReference}";
+            var expected = $"api/providers/{ukprn}/employer-requests/{standardReference}/select";
 
             actual.GetUrl.Should().Be(expected);
         }
