@@ -5,7 +5,7 @@ public class EarningsFM36Constants
     //Learner
     public const string LearnRefNumber = "9999999999";
 
-    //LearningDelivery
+    //LearningDelivery & PriceEpisode: AimSequenceNumber
     public const int AimSeqNumber = 1;
 
     //LearningDeliveryValues
@@ -48,8 +48,49 @@ public class EarningsFM36Constants
     public const decimal CoInvestEmployerMultiplier = 0.05m;
     public const decimal CoInvestSfaMultiplier = 0.95m;
 
+    //PriceEpisodeValues
+    public const decimal TNP3 = 0;
+    public const decimal TNP4 = 0;
+    public static DateTime? PriceEpisodeActualEndDateIncEPA = null;
+    public const decimal PriceEpisode1618FUBalValue = 0;
+    public const decimal PriceEpisodeApplic1618FrameworkUpliftCompElement = 0;
+    public const decimal PriceEpisode1618FrameworkUpliftTotPrevEarnings = 0;
+    public const decimal PriceEpisode1618FrameworkUpliftRemainingAmount = 0;
+    public const decimal PriceEpisode1618FUMonthInstValue = 0;
+    public const decimal PriceEpisode1618FUTotEarnings = 0;
+    public const decimal PriceEpisodeUpperLimitAdjustment = 0;
+    public const decimal PriceEpisodePreviousEarnings = 0;
+    public const decimal PriceEpisodeOnProgPayment = 0;
+    public const decimal PriceEpisodeBalanceValue = 0;
+    public const decimal PriceEpisodeBalancePayment = 0;
+    public const decimal PriceEpisodeCompletionPayment = 0;
+    public const decimal PriceEpisodeFirstDisadvantagePayment = 0;
+    public const decimal PriceEpisodeSecondDisadvantagePayment = 0;
+    public const decimal PriceEpisodeApplic1618FrameworkUpliftBalancing = 0;
+    public const decimal PriceEpisodeApplic1618FrameworkUpliftCompletionPayment = 0;
+    public const decimal PriceEpisodeApplic1618FrameworkUpliftOnProgPayment = 0;
+    public const decimal PriceEpisodeSecondProv1618Pay = 0;
+    public const decimal PriceEpisodeFirstEmp1618Pay = 0;
+    public const decimal PriceEpisodeSecondEmp1618Pay = 0;
+    public const decimal PriceEpisodeFirstProv1618Pay = 0;
+    public const decimal PriceEpisodeLSFCash = 0;
+    public const int PriceEpisodeLevyNonPayInd = 0;
+    public static DateTime? PriceEpisodeFirstAdditionalPaymentThresholdDate = null;
+    public static DateTime? PriceEpisodeSecondAdditionalPaymentThresholdDate = null;
+    public const string PriceEpisodeContractType = "ACT1";
+    public const decimal PriceEpisodePreviousEarningsSameProvider = 0;
+    public const decimal PriceEpisodeTotalPMRs = 0;
+    public const decimal PriceEpisodeCumulativePMRs = 0;
+    public const int PriceEpisodeCompExemCode = 0;
+    public static DateTime? PriceEpisodeLearnerAdditionalPaymentThresholdDate = null;
+    public static DateTime? PriceEpisodeRedStartDate = null;
+    public const int PriceEpisodeRedStatusCode = 0;
+    public const decimal PriceEpisodeAugmentedBandLimitFactor = 1;
+
+
     public static class PeriodisedAttributes
     {
+        //LearningDelivery
         public const string InstPerPeriod = "InstPerPeriod";
         public const string DisadvFirstPayment = "DisadvFirstPayment";
         public const string DisadvSecondPayment = "DisadvSecondPayment";
@@ -76,5 +117,27 @@ public class EarningsFM36Constants
         public const string ProgrammeAimTotProgFund = "ProgrammeAimTotProgFund";
         public const string FundLineType = "FundLineType";
         public const string LearnDelContType = "LearnDelContType";
+
+        //PriceEpisode
+        public const string PriceEpisodeApplic1618FrameworkUpliftBalancing = "PriceEpisodeApplic1618FrameworkUpliftBalancing";
+        public const string PriceEpisodeApplic1618FrameworkUpliftCompletionPayment = "PriceEpisodeApplic1618FrameworkUpliftCompletionPayment";
+        public const string PriceEpisodeApplic1618FrameworkUpliftOnProgPayment = "PriceEpisodeApplic1618FrameworkUpliftOnProgPayment";
+        public const string PriceEpisodeBalancePayment = "PriceEpisodeBalancePayment";
+        public const string PriceEpisodeBalanceValue = "PriceEpisodeBalanceValue";
+        public const string PriceEpisodeCompletionPayment = "PriceEpisodeCompletionPayment";
+        public const string PriceEpisodeFirstDisadvantagePayment = "PriceEpisodeFirstDisadvantagePayment";
+        public const string PriceEpisodeFirstEmp1618Pay = "PriceEpisodeFirstEmp1618Pay";
+        public const string PriceEpisodeFirstProv1618Pay = "PriceEpisodeFirstProv1618Pay";
+        public const string PriceEpisodeLevyNonPayInd = "PriceEpisodeLevyNonPayInd";
+        public const string PriceEpisodeLSFCash = "PriceEpisodeLSFCash";
+        public const string PriceEpisodeSecondDisadvantagePayment = "PriceEpisodeSecondDisadvantagePayment";
+        public const string PriceEpisodeSecondEmp1618Pay = "PriceEpisodeSecondEmp1618Pay";
+        public const string PriceEpisodeSecondProv1618Pay = "PriceEpisodeSecondProv1618Pay";
+        public const string PriceEpisodeLearnerAdditionalPayment = "PriceEpisodeLearnerAdditionalPayment";
+        public const string PriceEpisodeInstalmentsThisPeriod = "PriceEpisodeInstalmentsThisPeriod";
+        public const string PriceEpisodeOnProgPayment = "PriceEpisodeOnProgPayment";
+        public const string PriceEpisodeProgFundIndMaxEmpCont = "PriceEpisodeProgFundIndMaxEmpCont";
+        public const string PriceEpisodeProgFundIndMinCoInvest = "PriceEpisodeProgFundIndMinCoInvest";
+        public const string PriceEpisodeTotProgFunding = "PriceEpisodeTotProgFunding";
     }
 }

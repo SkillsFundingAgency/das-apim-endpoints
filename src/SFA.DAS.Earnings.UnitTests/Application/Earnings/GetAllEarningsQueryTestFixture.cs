@@ -20,6 +20,7 @@ public class GetAllEarningsQueryTestFixture
         
     public readonly Fixture Fixture = new();
     public long Ukprn;
+    public byte CollectionPeriod;
     public GetApprenticeshipsResponse ApprenticeshipsResponse;
     public GetFm36DataResponse EarningsResponse;
     public GetAcademicYearsResponse CollectionCalendarResponse;
@@ -39,6 +40,7 @@ public class GetAllEarningsQueryTestFixture
         MockCollectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
 
         Ukprn = Fixture.Create<long>();
+        CollectionPeriod = 2;
         ApprenticeshipsResponse = BuildApprenticeshipsResponse(Ukprn);
         EarningsResponse = BuildEarningsResponse(ApprenticeshipsResponse);
         CollectionCalendarResponse = BuildCollectionCalendarResponse(ApprenticeshipsResponse);
@@ -46,7 +48,7 @@ public class GetAllEarningsQueryTestFixture
 
 
         _handler = new GetAllEarningsQueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, Mock.Of<ILogger<GetAllEarningsQueryHandler>>());
-        _query = new GetAllEarningsQuery { Ukprn = Ukprn };
+        _query = new GetAllEarningsQuery { Ukprn = Ukprn, CollectionPeriod = CollectionPeriod };
     }
 
     public GetApprenticeshipsResponse BuildApprenticeshipsResponse(long ukprn)
@@ -144,7 +146,7 @@ public class GetAllEarningsQueryTestFixture
                 {
                     new SharedOuterApi.InnerApi.Responses.Earnings.Episode
                     {
-                        Key = Guid.NewGuid(),
+                        Key = apprenticeshipsResponse.Apprenticeships[0].Episodes[0].Key,
                         NumberOfInstalments = 12,
                         CompletionPayment = 3000,
                         OnProgramTotal = 12000,
@@ -175,7 +177,7 @@ public class GetAllEarningsQueryTestFixture
                 {
                     new SharedOuterApi.InnerApi.Responses.Earnings.Episode
                     {
-                        Key = Guid.NewGuid(),
+                        Key = apprenticeshipsResponse.Apprenticeships[1].Episodes[0].Key,
                         NumberOfInstalments = 12,
                         CompletionPayment = 6000,
                         OnProgramTotal = 24000,
