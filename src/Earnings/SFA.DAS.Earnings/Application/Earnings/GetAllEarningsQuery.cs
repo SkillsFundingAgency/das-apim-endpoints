@@ -298,6 +298,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
         {
             if (episodePrice.Price.StartDate < academicYearStartDate)
             {
+                //Price started before the current academic year, and so we need to create a price episode from the start of the current AY to satisfy the way the fm36 expects PriceEpisodes to be split by AY
                 var price = new EpisodePrice
                 {
                     StartDate = academicYearStartDate,
@@ -312,6 +313,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
             }
             else
             {
+                //Otherwise the price started during this AY so is valid to be included in the fm36 as is
                 yield return episodePrice;
             }
         }
