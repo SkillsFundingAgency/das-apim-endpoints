@@ -13,7 +13,7 @@ public interface IProviderRelationshipsApiRestClient
     [AllowAnyStatusCode]
     Task<HttpResponseMessage> GetHealth(CancellationToken cancellationToken);
 
-    [Get("relationships/providers/{ukprn}")]
+    [Get("providers/{ukprn}/relationships")]
     Task<GetProviderRelationshipsResponse> GetProviderRelationships([Path] long ukprn, [RawQueryString] string queryString, CancellationToken cancellationToken);
 
     [Post("requests/addaccount")]
@@ -28,6 +28,9 @@ public interface IProviderRelationshipsApiRestClient
 
     [Get("requests/{requestId}")]
     Task<GetRequestResponse?> GetRequest([Path] Guid requestId, CancellationToken cancellationToken);
+
+    [Get("requests")]
+    Task<GetRequestResponse?> GetRequest([Query] long ukprn, [Query] string paye, CancellationToken cancellationToken);
 
     [Post("requests/permission")]
     Task<CreatePermissionRequestCommandResult> CreatePermissionsRequest([Body] CreatePermissionRequestCommand command, CancellationToken cancellationToken);

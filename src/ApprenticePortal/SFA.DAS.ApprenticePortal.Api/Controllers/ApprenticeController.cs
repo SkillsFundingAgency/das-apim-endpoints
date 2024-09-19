@@ -5,16 +5,14 @@ using SFA.DAS.ApprenticePortal.Application.Queries.ApprenticeAccounts;
 using System;
 using System.Threading.Tasks;
 using SFA.DAS.ApprenticePortal.Application.Commands.ApprenticeAccounts;
+using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Controllers;
 
 namespace SFA.DAS.ApprenticePortal.Api.Controllers
 {
     [ApiController]
-    public class ApprenticeController : ControllerBase
+    public class ApprenticeController(IMediator mediator) : ApprenticeControllerBase(mediator)
     {
-        private readonly IMediator _mediator;
-
-        public ApprenticeController(IMediator mediator)
-            => _mediator = mediator;
+        private readonly IMediator _mediator = mediator;
 
         [HttpGet]
         [Route("/apprentices/{id}")]
@@ -30,6 +28,7 @@ namespace SFA.DAS.ApprenticePortal.Api.Controllers
 
             return Ok(queryResult.Apprentice);
         }
+        
 
         [HttpPatch("/apprentices/{apprenticeId}")]
         public async Task<IActionResult> UpdateApprentice([Path] Guid apprenticeId, [Body] object patch)
@@ -42,6 +41,10 @@ namespace SFA.DAS.ApprenticePortal.Api.Controllers
 
             return NoContent();
         }
+
+        // [HttpPut]
+        // public async Task<IActionResult> PutApprentice([FromBody] UpsertApprenticeRequest request) =>
+        //     base.PutApprentice(request);
 
     }
 }

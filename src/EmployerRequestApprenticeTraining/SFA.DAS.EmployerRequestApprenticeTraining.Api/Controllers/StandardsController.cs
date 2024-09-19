@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
-using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -10,8 +9,8 @@ using System.Threading.Tasks;
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]/")]
-    public class StandardsController : Controller
+    [Route("standards/")]
+    public class StandardsController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly ILogger<StandardsController> _logger;
@@ -38,7 +37,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to retrieve standard with StandardId: {standardId}");
+                _logger.LogError(e, "Error attempting to retrieve standard for {StandardId}", standardId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
