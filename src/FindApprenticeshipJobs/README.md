@@ -1,4 +1,4 @@
-## ?Never push sensitive information such as client id's, secrets or keys into repositories including in the README file?
+﻿## ⛔Never push sensitive information such as client id's, secrets or keys into repositories including in the README file⛔
 
 # APIM FindApprenticeship Jobs
 
@@ -8,7 +8,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SkillsFundingAgency_das-apim-endpoints_FindApprenticeshipJobs&metric=alert_status)](https://sonarcloud.io/dashboard?id=SkillsFundingAgency_das-apim-endpoints_FindApprenticeshipJobs)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg?longCache=true&style=flat-square)](https://en.wikipedia.org/wiki/MIT_License)
 
-This Find Apprenticeship Jobs Outer API solution is part of FindAnApprenticeship project. The APIM FindApprenticeship Jobs API is the outer API used to connect the [das-recruit](https://github.com/SkillsFundingAgency/das-recruit) and [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api) inner APIs, also fetches vacancies from NHS external Api to list them in the FindApprenticeship service.
+This Find Apprenticeship Jobs Outer API solution is part of the FindAnApprenticeship project. The APIM FindApprenticeship Jobs API is the outer API used to connect the [das-recruit](https://github.com/SkillsFundingAgency/das-recruit) and [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api) inner APIs, also fetches vacancies from NHS external Api to list them in the FindApprenticeship service.
 
 ## Installation
 
