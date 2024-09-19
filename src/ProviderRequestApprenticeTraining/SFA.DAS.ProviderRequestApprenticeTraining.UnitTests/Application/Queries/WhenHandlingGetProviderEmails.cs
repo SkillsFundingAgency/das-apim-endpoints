@@ -106,7 +106,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
             var actual = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            actual.EmailAddresses.Count().Should().Be(1);
+            actual.EmailAddresses.Count().Should().Be(2);
         }
     }
 }
