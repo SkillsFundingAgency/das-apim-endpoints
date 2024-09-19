@@ -67,7 +67,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 			PlannedEndDate = apprenticeStartDateInnerModel.PlannedEndDate,
 			EmployerName = employerName,
 			ProviderName = providerName,
-			EarliestStartDate = await GetEarliestNewStartDate(apprenticeStartDateInnerModel.ActualStartDate),
+			EarliestStartDate = await GetEarliestNewStartDate(apprenticeStartDateInnerModel.ActualStartDate, apprenticeStartDateInnerModel.SimplifiedPayentsMinimumStartDate),
 			LatestStartDate = await GetLatestNewStartDate(apprenticeStartDateInnerModel.ActualStartDate),
 			LastFridayOfSchool = apprenticeStartDateInnerModel.ApprenticeDateOfBirth.GetLastFridayInJuneOfSchoolYearApprenticeTurned16(),
 			Standard = ToStandardInfo(standard, apprenticeStartDateInnerModel.CourseVersion),
@@ -153,13 +153,13 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
         };
     }
 
-    private async Task<DateTime?> GetEarliestNewStartDate(DateTime? currentActualStartDate)
+    private async Task<DateTime?> GetEarliestNewStartDate(DateTime? currentActualStartDate, DateTime simplifiedPayentsMinimumStartDate)
     {
         if (currentActualStartDate == null) return null;
 
         var academicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(currentActualStartDate.Value));
 
-        return academicYear.StartDate > Constants.SimplifiedPayentsMinimumStartDate ? academicYear.StartDate : Constants.SimplifiedPayentsMinimumStartDate;
+        return academicYear.StartDate > simplifiedPayentsMinimumStartDate ? academicYear.StartDate : simplifiedPayentsMinimumStartDate;
     }
 
     private async Task<DateTime?> GetLatestNewStartDate(DateTime? currentActualStartDate)
