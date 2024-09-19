@@ -82,6 +82,11 @@ public class AutoReservationsService : IAutoReservationsService
     {
         _logger.LogInformation("Creating of reservation failed with this content {0}", responseErrorContent);
 
+        if (responseErrorContent.Contains("CourseId", StringComparison.InvariantCultureIgnoreCase))
+        {
+            return CreateApiModelException("ReservationId", "You cannot reserve funding for this course"); ;
+        }
+
         var error = JsonConvert.DeserializeObject<ReservationsStartDateErrorResponse>(responseErrorContent);
 
         if (error == null || error.StartDate == null || !error.StartDate.Any())

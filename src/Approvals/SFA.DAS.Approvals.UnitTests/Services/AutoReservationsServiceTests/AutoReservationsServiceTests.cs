@@ -52,6 +52,15 @@ namespace SFA.DAS.Approvals.UnitTests.Services.AutoReservationsServiceTests
         }
 
         [Test]
+        public async Task When_Creating_A_Reservation_And_It_Returns_A_CourseId_Exception()
+        {
+            var fixture = new AutoReservationsServiceTestFixture().WithAccountLegalEntity().WithErrorContent("Some error message (CourseId) text");
+            var act = async () => await fixture.Sut.CreateReservation(fixture.AutoReservation);
+
+            act.Should().ThrowAsync<ApplicationException>().WithMessage("Unexpected error when creating reservation");
+        }
+
+        [Test]
         public async Task When_Creating_A_Reservation_And_It_Returns_An_Empty_ErrorArray()
         {
             var error = new ReservationsStartDateErrorResponse {StartDate = new List<string>()};
