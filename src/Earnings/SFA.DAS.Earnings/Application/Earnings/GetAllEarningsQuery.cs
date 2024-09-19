@@ -1,6 +1,5 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using MediatR;
-using SFA.DAS.Apprenticeships.Types;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -64,12 +63,11 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
             {
                 ULN = long.Parse(model.apprenticeship.Uln),
                 LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
-                PriceEpisodes = model.apprenticeship.Episodes
-                    .SelectMany(episode => episode.Prices, (episode, price) => new { Episode = episode, Price = price })
+                PriceEpisodes = GetApprenticeshipPriceEpisodesForAcademicYearStarting(model.apprenticeship.Episodes, currentAcademicYear.StartDate)
                     .Join(model.earningsApprenticeship.Episodes, a => a.Episode.Key, b => b.Key, (episodePrice, earningsEpisode) => new{ episodePrice, earningsEpisode } )
                     .Select(priceEpisodeModel => new PriceEpisode
                     {
-                        PriceEpisodeIdentifier = $"{EarningsFM36Constants.ProgType}-{priceEpisodeModel.episodePrice.Episode.TrainingCode}-{priceEpisodeModel.episodePrice.Price.StartDate:dd/MM/yyyy}",
+                        PriceEpisodeIdentifier = $"{EarningsFM36Constants.ProgType}-{priceEpisodeModel.episodePrice.Episode.TrainingCode.Trim()}-{priceEpisodeModel.episodePrice.Price.StartDate:dd/MM/yyyy}",
                         PriceEpisodeValues = new PriceEpisodeValues
                         {
                             EpisodeStartDate = priceEpisodeModel.episodePrice.Price.StartDate,
@@ -132,7 +130,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                             PriceEpisodeLearnerAdditionalPaymentThresholdDate = EarningsFM36Constants.PriceEpisodeLearnerAdditionalPaymentThresholdDate,
                             PriceEpisodeRedStartDate = EarningsFM36Constants.PriceEpisodeRedStartDate,
                             PriceEpisodeRedStatusCode = EarningsFM36Constants.PriceEpisodeRedStatusCode,
-                            PriceEpisodeLDAppIdent = $"{EarningsFM36Constants.ProgType}-{priceEpisodeModel.episodePrice.Episode.TrainingCode}",
+                            PriceEpisodeLDAppIdent = $"{EarningsFM36Constants.ProgType}-{priceEpisodeModel.episodePrice.Episode.TrainingCode.Trim()}",
                             PriceEpisodeAugmentedBandLimitFactor = EarningsFM36Constants.PriceEpisodeAugmentedBandLimitFactor,
                             PriceEpisodeRemainingTNPAmount = priceEpisodeModel.episodePrice.Price.FundingBandMaximum
                                                              - GetPreviousEarnings(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), request.CollectionPeriod),
@@ -291,5 +289,31 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
             .Sum(x => x.Amount);
 
         return previousYearEarnings.GetValueOrDefault() + previousPeriodEarnings.GetValueOrDefault();
+    }
+
+    private IEnumerable<(Episode Episode, EpisodePrice Price)> GetApprenticeshipPriceEpisodesForAcademicYearStarting(List<Episode> apprenticeshipEpisodes, DateTime academicYearStartDate)
+    {
+        foreach (var episodePrice in apprenticeshipEpisodes
+                     .SelectMany(episode => episode.Prices.Select(price => (Episode: episode, Price: price))))
+        {
+            if (episodePrice.Price.StartDate < academicYearStartDate)
+            {
+                var price = new EpisodePrice
+                {
+                    StartDate = academicYearStartDate,
+                    EndDate = episodePrice.Price.EndDate,
+                    EndPointAssessmentPrice = episodePrice.Price.EndPointAssessmentPrice,
+                    FundingBandMaximum = episodePrice.Price.FundingBandMaximum,
+                    TotalPrice = episodePrice.Price.TotalPrice,
+                    TrainingPrice = episodePrice.Price.TrainingPrice
+                };
+
+                yield return new ValueTuple<Episode, EpisodePrice>(episodePrice.Episode, price);
+            }
+            else
+            {
+                yield return episodePrice;
+            }
+        }
     }
 }

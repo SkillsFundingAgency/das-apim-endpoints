@@ -17,27 +17,6 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
     }
 
     [Test]
-    public void ThenReturnsPriceEpisodeValues()
-    {
-        // Assert
-        _testFixture.Result.Should().NotBeNull();
-
-        foreach (var apprenticeship in _testFixture.ApprenticeshipsResponse.Apprenticeships)
-        {
-            var fm36Learner = _testFixture.Result.FM36Learners.SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
-            foreach (var apprenticeshipEpisode in apprenticeship.Episodes)
-            {
-                foreach (var apprenticeshipEpisodePrice in apprenticeshipEpisode.Prices)
-                {
-                    fm36Learner.PriceEpisodes.Should().Contain(episode =>
-                        episode.PriceEpisodeIdentifier == $"25-{apprenticeshipEpisode.TrainingCode}-{apprenticeshipEpisodePrice.StartDate:dd/MM/yyyy}"
-                        && episode.PriceEpisodeValues.EpisodeStartDate == apprenticeshipEpisodePrice.StartDate);
-                }
-            }
-        }
-    }
-
-    [Test]
     public void ThenAPriceEpisodeIsCreatedForEachPrice()
     {
         // Assert
@@ -63,8 +42,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             var fm36Learner = _testFixture.Result.FM36Learners
                 .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
 
-            foreach (var episodePrice in apprenticeship.Episodes
-                         .SelectMany(episode => episode.Prices.Select(price => new { Episode = episode, Price = price })))
+            foreach (var episodePrice in _testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
             {
                 var earningApprenticeship = _testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key);
                 var earningEpisode = earningApprenticeship.Episodes.Single();
@@ -74,7 +52,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.Should().NotBeNull();
 
                 actualPriceEpisode.PriceEpisodeIdentifier.Should()
-                    .Be($"25-{episodePrice.Episode.TrainingCode}-{episodePrice.Price.StartDate:dd/MM/yyyy}");
+                    .Be($"25-{episodePrice.Episode.TrainingCode.Trim()}-{episodePrice.Price.StartDate:dd/MM/yyyy}");
 
                 actualPriceEpisode.PriceEpisodeValues.TNP1.Should().Be(episodePrice.Price.TrainingPrice);
                 actualPriceEpisode.PriceEpisodeValues.TNP2.Should().Be(episodePrice.Price.EndPointAssessmentPrice);
@@ -164,7 +142,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeLearnerAdditionalPaymentThresholdDate.Should().BeNull();
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeRedStartDate.Should().BeNull();
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeRedStatusCode.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeLDAppIdent.Should().Be($"25-{episodePrice.Episode.TrainingCode}");
+                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeLDAppIdent.Should().Be($"25-{episodePrice.Episode.TrainingCode.Trim()}");
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeAugmentedBandLimitFactor.Should().Be(1);
             }
             fm36Learner.PriceEpisodes.Count.Should().Be(apprenticeship.Episodes.SelectMany(episode => episode.Prices).Count());
@@ -182,8 +160,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             var fm36Learner = _testFixture.Result.FM36Learners
                 .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
 
-            foreach (var episodePrice in apprenticeship.Episodes
-                         .SelectMany(episode => episode.Prices.Select(price => new { Episode = episode, Price = price })))
+            foreach (var episodePrice in _testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
             {
                 var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
                     x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
@@ -234,8 +211,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             var fm36Learner = _testFixture.Result.FM36Learners
                 .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
 
-            foreach (var episodePrice in apprenticeship.Episodes
-                         .SelectMany(episode => episode.Prices.Select(price => new { Episode = episode, Price = price })))
+            foreach (var episodePrice in _testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
             {
                 var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
                     x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
@@ -273,8 +249,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             var fm36Learner = _testFixture.Result.FM36Learners
                 .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
 
-            foreach (var episodePrice in apprenticeship.Episodes
-                         .SelectMany(episode => episode.Prices.Select(price => new { Episode = episode, Price = price })))
+            foreach (var episodePrice in _testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
             {
                 var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
                     x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
@@ -312,8 +287,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             var fm36Learner = _testFixture.Result.FM36Learners
                 .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
 
-            foreach (var episodePrice in apprenticeship.Episodes
-                         .SelectMany(episode => episode.Prices.Select(price => new { Episode = episode, Price = price })))
+            foreach (var episodePrice in _testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
             {
                 var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
                     x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
@@ -354,8 +328,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             var fm36Learner = _testFixture.Result.FM36Learners
                 .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
 
-            foreach (var episodePrice in apprenticeship.Episodes
-                         .SelectMany(episode => episode.Prices.Select(price => new { Episode = episode, Price = price })))
+            foreach (var episodePrice in _testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
             {
                 var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
                     x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
@@ -396,8 +369,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             var fm36Learner = _testFixture.Result.FM36Learners
                 .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
 
-            foreach (var episodePrice in apprenticeship.Episodes
-                         .SelectMany(episode => episode.Prices.Select(price => new { Episode = episode, Price = price })))
+            foreach (var episodePrice in _testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
             {
                 var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
                     x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);

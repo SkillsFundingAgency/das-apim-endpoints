@@ -69,7 +69,7 @@ public class GetAllEarningsQueryTestFixture
                         new Episode
                         {
                             Key = Guid.NewGuid(),
-                            TrainingCode = Fixture.Create<int>().ToString(),
+                            TrainingCode = $"{Fixture.Create<int>()}    ",
                             Prices = new List<EpisodePrice>
                             {
                                 new EpisodePrice
@@ -98,7 +98,7 @@ public class GetAllEarningsQueryTestFixture
                         new Episode
                         {
                             Key = Guid.NewGuid(),
-                            TrainingCode = Fixture.Create<int>().ToString(),
+                            TrainingCode = $"{Fixture.Create<int>()}    ",
                             Prices = new List<EpisodePrice>
                             {
                                 new EpisodePrice
@@ -240,5 +240,31 @@ public class GetAllEarningsQueryTestFixture
     {
         // Act
         Result = await _handler.Handle(_query, CancellationToken.None);
+    }
+
+    public IEnumerable<(Episode Episode, EpisodePrice Price)> GetExpectedPriceEpisodesSplitByAcademicYear(List<Episode> apprenticeshipEpisodes)
+    {
+        foreach (var episodePrice in apprenticeshipEpisodes
+                     .SelectMany(episode => episode.Prices.Select(price => (Episode: episode, Price: price))))
+        {
+            if (episodePrice.Price.StartDate < CollectionCalendarResponse.StartDate)
+            {
+                var price = new EpisodePrice
+                {
+                    StartDate = CollectionCalendarResponse.StartDate,
+                    EndDate = episodePrice.Price.EndDate,
+                    EndPointAssessmentPrice = episodePrice.Price.EndPointAssessmentPrice,
+                    FundingBandMaximum = episodePrice.Price.FundingBandMaximum,
+                    TotalPrice = episodePrice.Price.TotalPrice,
+                    TrainingPrice = episodePrice.Price.TrainingPrice
+                };
+
+                yield return new ValueTuple<Episode, EpisodePrice>(episodePrice.Episode, price);
+            }
+            else
+            {
+                yield return episodePrice;
+            }
+        }
     }
 }
