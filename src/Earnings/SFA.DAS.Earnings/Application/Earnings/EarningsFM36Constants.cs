@@ -139,5 +139,6 @@ public class EarningsFM36Constants
         public const string PriceEpisodeProgFundIndMaxEmpCont = "PriceEpisodeProgFundIndMaxEmpCont";
         public const string PriceEpisodeProgFundIndMinCoInvest = "PriceEpisodeProgFundIndMinCoInvest";
         public const string PriceEpisodeTotProgFunding = "PriceEpisodeTotProgFunding";
+        public const string PriceEpisodeESFAContribPct = "PriceEpisodeESFAContribPct";
     }
 }

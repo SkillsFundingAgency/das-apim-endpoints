@@ -168,7 +168,9 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                                     PriceEpisodePeriodisedValuesBuilder.BuildCoInvestmentValues(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeProgFundIndMaxEmpCont, EarningsFM36Constants.CoInvestEmployerMultiplier),
                                     PriceEpisodePeriodisedValuesBuilder.BuildCoInvestmentValues(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeProgFundIndMinCoInvest, EarningsFM36Constants.CoInvestSfaMultiplier),
                                     PriceEpisodePeriodisedValuesBuilder.BuildInstallmentAmountValues(model.earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeTotProgFunding),
-                    }}).ToList(),
+                                    PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeESFAContribPct, EarningsFM36Constants.CoInvestSfaMultiplier),
+                                }
+                            }).ToList(),
                     LearningDeliveries = new List<LearningDelivery>
                     {
                         new LearningDelivery

@@ -201,6 +201,8 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                     .Contain(x => x.AttributeName == "PriceEpisodeSecondProv1618Pay" && x.AllValuesAreSetToZero());
                 actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
                     .Contain(x => x.AttributeName == "PriceEpisodeLearnerAdditionalPayment" && x.AllValuesAreSetToZero());
+                actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
+                    .Contain(x => x.AttributeName == "PriceEpisodeESFAContribPct" && x.AllValuesAreSetTo(0.95m));
             }
         }
     }
