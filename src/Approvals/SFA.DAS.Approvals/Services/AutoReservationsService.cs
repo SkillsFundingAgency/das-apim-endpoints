@@ -90,7 +90,7 @@ public class AutoReservationsService : IAutoReservationsService
 
         if (responseErrorContent.Contains("CourseId", StringComparison.InvariantCultureIgnoreCase))
         {
-            return CreateApiModelException("ReservationId", "You cannot reserve funding for this course"); ;
+            return CreateApiModelException("ReservationId", "Funding is not available for this course on this start date"); ;
         }
 
         var error = JsonConvert.DeserializeObject<ReservationsStartDateErrorResponse>(responseErrorContent);
