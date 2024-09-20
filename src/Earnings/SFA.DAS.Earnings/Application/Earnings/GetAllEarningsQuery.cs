@@ -20,6 +20,8 @@ public class GetAllEarningsQueryResult
 
 public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, GetAllEarningsQueryResult>
 {
+    const int SimplificationEarningsPlatform = 2;
+
     private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apprenticeshipsApiClient;
 
     public GetAllEarningsQueryHandler(IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient)
@@ -38,7 +40,8 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
             FM36Learners = apprenticeshipInnerModel.Apprenticeships.Select(x => new FM36Learner
             {
                 ULN = long.Parse(x.Uln),
-                LearnRefNumber = EarningsFM36Constants.LearnRefNumber
+                LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
+                EarningsPlatform = SimplificationEarningsPlatform
             }).ToArray()
         };
     }
