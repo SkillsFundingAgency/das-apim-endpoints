@@ -29,7 +29,7 @@ public class EarningsController : ControllerBase
     {
         try
         {
-            var queryResult = await _mediator.Send(new GetAllEarningsQuery { Ukprn = ukprn });
+            var queryResult = await _mediator.Send(new GetAllEarningsQuery { Ukprn = ukprn, CollectionPeriod = collectionPeriod });
 
             var model = queryResult.FM36Learners;
 

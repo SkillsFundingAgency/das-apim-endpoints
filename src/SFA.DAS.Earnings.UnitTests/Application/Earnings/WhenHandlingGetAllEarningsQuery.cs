@@ -1,48 +1,50 @@
-using AutoFixture;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
 using Moq;
-using SFA.DAS.Earnings.Application.Earnings;
-using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
 {
     public class WhenHandlingGetAllEarningsQuery
     {
-        private readonly Fixture _fixture = new();
+        private GetAllEarningsQueryTestFixture _testFixture;
 
-        [Test, MoqAutoData]
-        public async Task Then_Gets_All_Earnings_From_ApiClient(
-            GetApprenticeshipsResponse apprenticeshipResponse,
-            Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient)
+        [SetUp]
+        public async Task SetUp()
         {
             // Arrange
-            var ukprn = _fixture.Create<long>();
-            apprenticeshipResponse.Apprenticeships.ForEach(x => x.Uln = _fixture.Create<long>().ToString());
-
-            mockApprenticeshipsApiClient
-                .Setup(x => x.Get<GetApprenticeshipsResponse>(It.Is<GetApprenticeshipsRequest>(r => r.Ukprn == ukprn)))
-                .ReturnsAsync(apprenticeshipResponse);
-
-            var handler = new GetAllEarningsQueryHandler(mockApprenticeshipsApiClient.Object);
-            var query = new GetAllEarningsQuery { Ukprn = ukprn };
+            _testFixture = new GetAllEarningsQueryTestFixture();
 
             // Act
-            var result = await handler.Handle(query, CancellationToken.None);
+            await _testFixture.CallSubjectUnderTest();
+        }
 
+        [Test]
+        public void ThenCallsApprenticeshipsApi()
+        {
+            //Assert
+            _testFixture.MockApprenticeshipsApiClient.Verify(x => x.Get<GetApprenticeshipsResponse>(It.Is<GetApprenticeshipsRequest>(r => r.Ukprn == _testFixture.Ukprn)), Times.Once);
+        }
+
+        [Test]
+        public void ThenCallsEarningsApi()
+        {
+            //Assert
+            _testFixture.MockEarningsApiClient.Verify(x => x.Get<GetFm36DataResponse>(It.Is<GetFm36DataRequest>(r => r.Ukprn == _testFixture.Ukprn)), Times.Once);
+        }
+
+        [Test]
+        public void ThenReturnsFM36LearnerIdentifiers()
+        {
             // Assert
-            result.Should().NotBeNull();
-            result.FM36Learners.Should().BeEquivalentTo(apprenticeshipResponse.Apprenticeships.Select(x => new FM36Learner
-            {
-                ULN = long.Parse(x.Uln),
-                LearnRefNumber = EarningsFM36Constants.LearnRefNumber
-            }).ToArray());
+            _testFixture.Result.Should().NotBeNull();
 
-            mockApprenticeshipsApiClient.Verify(x => x.Get<GetApprenticeshipsResponse>(It.Is<GetApprenticeshipsRequest>(r => r.Ukprn == ukprn)), Times.Once);
+            foreach (var apprenticeship in _testFixture.ApprenticeshipsResponse.Apprenticeships)
+            {
+                _testFixture.Result.FM36Learners.Should().Contain(learner => learner.ULN == long.Parse(apprenticeship.Uln) && learner.LearnRefNumber == "9999999999");
+            }
         }
     }
 
