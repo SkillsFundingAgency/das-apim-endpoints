@@ -75,6 +75,7 @@ public class EarningsController : ControllerBase
                 LearnRefNumber = Guid.NewGuid().ToString(),
                 PriceEpisodes = CreatePriceEpisodes(),
                 LearningDeliveries = CreateLearningDeliveries(),
+                EarningsPlatform = 2
             }
         };
     }

@@ -29,6 +29,8 @@ public class GetAllEarningsQueryResult
 
 public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, GetAllEarningsQueryResult>
 {
+    const int SimplificationEarningsPlatform = 2;
+
     private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apprenticeshipsApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
     private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
@@ -57,6 +59,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
 
         var result = new GetAllEarningsQueryResult
         {
+
             FM36Learners = apprenticeshipsData.Apprenticeships
                 .Join(earningsData, a => a.Key, e => e.Key, (apprenticeship,earningsApprenticeship) => new { apprenticeship, earningsApprenticeship })
                 .Select(model => {
@@ -65,6 +68,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                     {
                         ULN = long.Parse(model.apprenticeship.Uln),
                         LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
+                        EarningsPlatform = SimplificationEarningsPlatform,
                         PriceEpisodes = priceEpisodesForAcademicYear
                             .Join(model.earningsApprenticeship.Episodes, a => a.Episode.Key, b => b.Key, (episodePrice, earningsEpisode) => new{ episodePrice, earningsEpisode } )
                             .Select(priceEpisodeModel => new PriceEpisode
