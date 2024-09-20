@@ -47,6 +47,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryValues.AdjStartDate.Should().Be(apprenticeship.StartDate);
             learningDelivery.LearningDeliveryValues.AgeAtProgStart.Should().Be(apprenticeship.AgeAtStartOfApprenticeship);
             learningDelivery.LearningDeliveryValues.AppAdjLearnStartDate.Should().Be(apprenticeship.StartDate);
+            learningDelivery.LearningDeliveryValues.AppAdjLearnStartDateMatchPathway.Should().Be(apprenticeship.StartDate);
             learningDelivery.LearningDeliveryValues.ApplicCompDate.Should().Be(new DateTime(9999, 9, 9));
             learningDelivery.LearningDeliveryValues.CombinedAdjProp.Should().Be(1);
             learningDelivery.LearningDeliveryValues.Completed.Should().BeFalse();

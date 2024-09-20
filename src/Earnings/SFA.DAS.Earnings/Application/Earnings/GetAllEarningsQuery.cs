@@ -190,6 +190,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                                 AdjStartDate = model.apprenticeship.StartDate,
                                 AgeAtProgStart = model.apprenticeship.AgeAtStartOfApprenticeship,
                                 AppAdjLearnStartDate = model.apprenticeship.StartDate,
+                                AppAdjLearnStartDateMatchPathway = model.apprenticeship.StartDate,
                                 ApplicCompDate = EarningsFM36Constants.ApplicCompDate,
                                 CombinedAdjProp = EarningsFM36Constants.CombinedAdjProp,
                                 Completed = EarningsFM36Constants.Completed,
