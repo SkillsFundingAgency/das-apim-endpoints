@@ -95,9 +95,17 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                                         : model.earningsApprenticeship.Episodes
                                     .SelectMany(x => x.Instalments)
                                     .Count(x => x.AcademicYear == short.Parse(currentAcademicYear.AcademicYear)),
-                                    PriceEpisodeInstalmentsThisPeriod = model.earningsApprenticeship.Episodes
-                                    .SelectMany(x => x.Instalments)
-                                    .Any(x => x.AcademicYear == short.Parse(currentAcademicYear.AcademicYear) && x.DeliveryPeriod == request.CollectionPeriod) ? 1 : 0,
+                                    PriceEpisodeInstalmentsThisPeriod =
+                                        priceEpisodeModel.episodePrice.Price.StartDate
+                                        <= GetCensusDateForCollectionPeriod(short.Parse(currentAcademicYear.AcademicYear), request.CollectionPeriod)
+                                        &&
+                                        GetCensusDateForCollectionPeriod(short.Parse(currentAcademicYear.AcademicYear), request.CollectionPeriod)
+                                        <=
+                                        priceEpisodeModel.episodePrice.Price.EndDate
+                                        &&
+                                        model.earningsApprenticeship.Episodes
+                                        .SelectMany(x => x.Instalments)
+                                        .Any(x => x.AcademicYear == short.Parse(currentAcademicYear.AcademicYear) && x.DeliveryPeriod == request.CollectionPeriod) ? 1 : 0,
                                     PriceEpisodeCompletionElement = priceEpisodeModel.earningsEpisode.CompletionPayment,
                                     PriceEpisodePreviousEarnings = EarningsFM36Constants.PriceEpisodePreviousEarnings,
                                     PriceEpisodeInstalmentValue = priceEpisodeModel.earningsEpisode.Instalments.FirstOrDefault()?.Amount ?? 0,
@@ -277,7 +285,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
         return result;
     }
 
-    private decimal GetPreviousEarnings(SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship? apprenticeship, short academicYear, short collectionPeriod)
+    private static decimal GetPreviousEarnings(SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship? apprenticeship, short academicYear, short collectionPeriod)
     {
         var previousYearEarnings = apprenticeship?
             .Episodes
@@ -296,7 +304,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
         return previousYearEarnings.GetValueOrDefault() + previousPeriodEarnings.GetValueOrDefault();
     }
 
-    private IEnumerable<(Episode Episode, EpisodePrice Price)> GetApprenticeshipPriceEpisodesForAcademicYearStarting(List<Episode> apprenticeshipEpisodes, DateTime academicYearStartDate)
+    private static IEnumerable<(Episode Episode, EpisodePrice Price)> GetApprenticeshipPriceEpisodesForAcademicYearStarting(List<Episode> apprenticeshipEpisodes, DateTime academicYearStartDate)
     {
         foreach (var episodePrice in apprenticeshipEpisodes
                      .SelectMany(episode => episode.Prices.Select(price => (Episode: episode, Price: price))))
@@ -322,5 +330,24 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                 yield return episodePrice;
             }
         }
+    }
+
+    private static DateTime GetCensusDateForCollectionPeriod(short academicYear, byte collectionPeriod)
+    {
+        int year;
+        int month;
+        if (collectionPeriod < 6)
+        {
+            year = academicYear / 100;
+            month = collectionPeriod + 7;
+        }
+        else
+        {
+            year = (academicYear / 100) + 1;
+            month = collectionPeriod - 5;
+        }
+
+        var day = DateTime.DaysInMonth(year, month);
+        return new DateTime(year, month, day);
     }
 }

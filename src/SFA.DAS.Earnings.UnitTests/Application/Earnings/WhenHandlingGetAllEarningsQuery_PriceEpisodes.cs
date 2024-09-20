@@ -89,7 +89,13 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                         ? 0 
                         : earningEpisode.Instalments.Count(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear)));
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeInstalmentsThisPeriod.Should()
-                    .Be(earningEpisode.Instalments.Any(x =>
+                    .Be(episodePrice.Price.StartDate 
+                        <= CollectionPeriodTestHelper.GetCensusDateForCollectionPeriod(short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear), _testFixture.CollectionPeriod)
+                        &&
+                        CollectionPeriodTestHelper.GetCensusDateForCollectionPeriod(short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear), _testFixture.CollectionPeriod)
+                        <= episodePrice.Price.EndDate
+                        &&
+                        earningEpisode.Instalments.Any(x =>
                         x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear) &&
                         x.DeliveryPeriod == _testFixture.CollectionPeriod)
                         ? 1 : 0);
