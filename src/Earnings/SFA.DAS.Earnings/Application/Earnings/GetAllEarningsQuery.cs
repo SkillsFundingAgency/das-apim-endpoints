@@ -198,7 +198,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                                 LearnAimRef = EarningsFM36Constants.LearnAimRef,
                                 LearnStartDate = model.apprenticeship.StartDate,
                                 LearnDel1618AtStart = model.apprenticeship.AgeAtStartOfApprenticeship < 19,
-                                LearnDelAppAccDaysIL = ((model.apprenticeship.PlannedEndDate < currentAcademicYear.EndDate
+                                LearnDelAppAccDaysIL = 1 + ((model.apprenticeship.PlannedEndDate < currentAcademicYear.EndDate
                                     ? model.apprenticeship.PlannedEndDate
                                     : currentAcademicYear.EndDate) - model.apprenticeship.StartDate).Days,
                                 LearnDelApplicDisadvAmount = EarningsFM36Constants.LearnDelApplicDisadvAmount,
@@ -206,7 +206,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                                 LearnDelApplicProv1618FrameworkUplift = EarningsFM36Constants.LearnDelApplicProv1618FrameworkUplift,
                                 LearnDelApplicProv1618Incentive = EarningsFM36Constants.LearnDelApplicProv1618Incentive,
                                 LearnDelAppPrevAccDaysIL = 
-                                    ((model.apprenticeship.PlannedEndDate < currentAcademicYear.EndDate
+                                    1 + ((model.apprenticeship.PlannedEndDate < currentAcademicYear.EndDate
                                         ? model.apprenticeship.PlannedEndDate
                                         : currentAcademicYear.EndDate)
                                     - (model.apprenticeship.StartDate > currentAcademicYear.StartDate
@@ -227,7 +227,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                                 MathEngAimValue = EarningsFM36Constants.MathEngAimValue,
                                 OutstandNumOnProgInstalm = EarningsFM36Constants.OutstandNumOnProgInstalm,
                                 PlannedNumOnProgInstalm = model.apprenticeship.StartDate.GetNumberOfIncludedCensusDatesUntil(model.apprenticeship.PlannedEndDate),
-                                PlannedTotalDaysIL = (model.apprenticeship.PlannedEndDate - model.apprenticeship.StartDate).Days,
+                                PlannedTotalDaysIL = 1 + (model.apprenticeship.PlannedEndDate - model.apprenticeship.StartDate).Days,
                                 ProgType = EarningsFM36Constants.ProgType,
                                 PwayCode = EarningsFM36Constants.PwayCode,
                                 SecondIncentiveThresholdDate = EarningsFM36Constants.SecondIncentiveThresholdDate,

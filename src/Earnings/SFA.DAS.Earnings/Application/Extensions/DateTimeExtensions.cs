@@ -4,7 +4,7 @@
     {
         public static int GetNumberOfIncludedCensusDatesUntil(this DateTime start, DateTime end)
         {
-            var totalDays = (end - start).Days;
+            var totalDays = 1 + (end - start).Days;
             var includedCensusDateCounter = 0;
             for (var i = 0; i < totalDays; i++)
             {

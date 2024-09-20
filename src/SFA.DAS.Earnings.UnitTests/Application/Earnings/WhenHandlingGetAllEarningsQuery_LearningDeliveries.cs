@@ -56,12 +56,12 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryValues.LearnAimRef.Should().Be("ZPROG001");
             learningDelivery.LearningDeliveryValues.LearnStartDate.Should().Be(apprenticeship.StartDate);
             learningDelivery.LearningDeliveryValues.LearnDel1618AtStart.Should().Be(apprenticeship.AgeAtStartOfApprenticeship < 19);
-            learningDelivery.LearningDeliveryValues.LearnDelAppAccDaysIL.Should().Be((expectedPriceEpisodeEndDate - apprenticeship.StartDate).Days);
+            learningDelivery.LearningDeliveryValues.LearnDelAppAccDaysIL.Should().Be(1 + (expectedPriceEpisodeEndDate - apprenticeship.StartDate).Days);
             learningDelivery.LearningDeliveryValues.LearnDelApplicDisadvAmount.Should().Be(0);
             learningDelivery.LearningDeliveryValues.LearnDelApplicEmp1618Incentive.Should().Be(0);
             learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618FrameworkUplift.Should().Be(0);
             learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618Incentive.Should().Be(0);
-            learningDelivery.LearningDeliveryValues.LearnDelAppPrevAccDaysIL.Should().Be((expectedPriceEpisodeEndDate - expectedPriceEpisodeStartDate).Days);
+            learningDelivery.LearningDeliveryValues.LearnDelAppPrevAccDaysIL.Should().Be(1 + (expectedPriceEpisodeEndDate - expectedPriceEpisodeStartDate).Days);
             learningDelivery.LearningDeliveryValues.LearnDelDisadAmount.Should().Be(0);
             learningDelivery.LearningDeliveryValues.LearnDelEligDisadvPayment.Should().BeFalse();
             learningDelivery.LearningDeliveryValues.LearnDelEmpIdFirstAdditionalPaymentThreshold.Should().BeNull();
@@ -75,7 +75,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryValues.MathEngAimValue.Should().Be(0);
             learningDelivery.LearningDeliveryValues.OutstandNumOnProgInstalm.Should().BeNull();
 
-            var expectedPlannedTotalDays = (apprenticeship.PlannedEndDate - apprenticeship.StartDate).Days;
+            var expectedPlannedTotalDays = 1 + (apprenticeship.PlannedEndDate - apprenticeship.StartDate).Days;
             var expectedPlannedOnProgInstalments = 0;
             for (var i = 0; i < expectedPlannedTotalDays; i++)
             {
