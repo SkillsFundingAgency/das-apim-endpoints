@@ -42,7 +42,10 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             var fm36Learner = _testFixture.Result.FM36Learners
                 .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
 
-            foreach (var episodePrice in _testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
+            var expectedPriceEpisodesSplitByAcademicYear =
+                _testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes).ToList();
+
+            foreach (var episodePrice in expectedPriceEpisodesSplitByAcademicYear)
             {
                 var earningApprenticeship = _testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key);
                 var earningEpisode = earningApprenticeship.Episodes.Single();
@@ -82,7 +85,9 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
 
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodePlannedInstalments.Should().Be(expectedPlannedInstalments);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualInstalments.Should()
-                    .Be(earningEpisode.Instalments.Count(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear)));
+                    .Be(expectedPriceEpisodesSplitByAcademicYear.Any(x => x.Price.StartDate > episodePrice.Price.StartDate)
+                        ? 0 
+                        : earningEpisode.Instalments.Count(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear)));
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeInstalmentsThisPeriod.Should()
                     .Be(earningEpisode.Instalments.Any(x =>
                         x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear) &&
