@@ -38,19 +38,19 @@ Data:
   },
   "ApimDeveloperApiConfiguration": {
     "url": "https://localhost:5001/",
-    "identifier": "https://****.onmicrosoft.com/******""
+    "identifier": "https://****.onmicrosoft.com/******"
   },
   "EmployerProfilesApiConfiguration": {
     "url": "https://localhost:5001/",
-    "identifier": "https://****.onmicrosoft.com/******""
+    "identifier": "https://****.onmicrosoft.com/******"
   },
   "EmployerUsersApiConfiguration": {
     "url": "https://localhost:5001/",
-    "identifier": "https://****.onmicrosoft.com/******""
+    "identifier": "https://****.onmicrosoft.com/******"
   },
   "AzureAd": {
     "tenant": "****.onmicrosoft.com",
-    "identifier": "https://****.onmicrosoft.com/******""
+    "identifier": "https://****.onmicrosoft.com/******"
   },
   "ApimDeveloperMessagingConfiguration": {
     "VerifyThirdPartyAccountTemplateId": "{{Guid}}",
@@ -65,7 +65,7 @@ Data:
   },
   "RoatpV2ApiConfiguration": {
     "url": "https://localhost:5001/",
-    "identifier": "https://****.onmicrosoft.com/******""
+    "identifier": "https://****.onmicrosoft.com/******"
   }
 }
 ```
