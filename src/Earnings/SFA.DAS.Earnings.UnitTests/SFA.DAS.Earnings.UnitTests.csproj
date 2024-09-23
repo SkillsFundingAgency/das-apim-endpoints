@@ -35,8 +35,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Earnings\SFA.DAS.Earnings\SFA.DAS.Earnings.csproj" />
-	  <ProjectReference Include="..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+	  <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+	  <ProjectReference Include="..\SFA.DAS.Earnings\SFA.DAS.Earnings.csproj" />
 	</ItemGroup>
 
   <ItemGroup>
