@@ -5,6 +5,7 @@ using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Create;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Delete;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Update;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvent;
+using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEventAttendees;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.AdminAan.Infrastructure;
 
@@ -77,6 +78,16 @@ public class CalendarEventsController : ControllerBase
         var query = new GetCalendarEventQuery(requestedByMemberId, calendarEventId);
         var response = await _mediator.Send(query, cancellationToken);
 
+        return Ok(response);
+    }
+
+    [HttpGet("{calendarEventId}/attendees")]
+    [ProducesResponseType(typeof(GetCalendarEventQueryResult), StatusCodes.Status200OK)]
+
+    public async Task<IActionResult> GetCalendarEventAttendees([FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, Guid calendarEventId, CancellationToken cancellationToken)
+    {
+        var query = new GetCalendarEventAttendeesQuery(requestedByMemberId, calendarEventId);
+        var response = await _mediator.Send(query, cancellationToken);
         return Ok(response);
     }
 }
