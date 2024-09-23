@@ -18,6 +18,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="coverlet.msbuild">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Azure.Identity" />
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
