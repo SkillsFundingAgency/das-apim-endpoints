@@ -25,10 +25,10 @@ The [SFA.DAS-EmployerProfiles-Api](https://github.com/SkillsFundingAgency/das-ap
 ### Config
 You can find the latest config file in [das-employer-config repository](https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-apim-endpoints/SFA.DAS.EmployerProfiles.OuterApi.json)
 
-* If you are using Azure Storage Emulator for local development purpose, then In your Azure Storage Account, create a table called Configuration and Add the following
+* If you are using Azure Storage Emulator for local development purposes, then In your Azure Storage Account, create a table called Configuration and Add the following
 
 ParitionKey: LOCAL
-RowKey: SFA.DAS.ApimDeveloper.Outer.Api.json
+RowKey: SFA.DAS.EmployerProfiles.Outer.Api.json
 Data:
 ```json
 {
