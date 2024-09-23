@@ -29,9 +29,9 @@
         public long? Urn { get; set; }
     }
 
-    public record Attendee(Guid MemberId, string UserType, string MemberName, DateTime? AddedDate, DateTime? CancelledDate);
+    public record Attendee(Guid MemberId, string UserType, string MemberName, string Email, DateTime? AddedDate, DateTime? CancelledDate);
 
-    public record CancelledAttendee(Guid MemberId, string UserType, string MemberName, DateTime? AddedDate, DateTime? CancelledDate);
+    public record CancelledAttendee(Guid MemberId, string UserType, string MemberName, string Email, DateTime? AddedDate, DateTime? CancelledDate);
 
     public record EventGuest(string GuestName, string GuestJobTitle);
 
