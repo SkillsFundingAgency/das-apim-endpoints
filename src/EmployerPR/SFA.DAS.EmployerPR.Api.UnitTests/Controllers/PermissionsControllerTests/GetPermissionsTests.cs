@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerPR.Api.Controllers;
-using SFA.DAS.EmployerPR.Application.Queries.GetPermissions;
+using SFA.DAS.EmployerPR.Application.Permissions.Queries.GetPermissions;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerPR.Api.UnitTests.Controllers.PermissionsControllerTests;
