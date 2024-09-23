@@ -5,16 +5,17 @@ using SFA.DAS.ApprenticeAan.Application.ApprenticeAccount.Queries.GetApprenticeA
 using SFA.DAS.ApprenticeAan.Application.Apprentices.Commands.CreateApprenticeMember;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Apprentices;
+using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Controllers;
 
 namespace SFA.DAS.ApprenticeAan.Api.Controllers;
 
-[Route("[controller]")]
-public class ApprenticesController : ControllerBase
+[Route("apprentices")]
+public class ApprenticesController : ApprenticeControllerBase
 {
     private readonly IMediator _mediator;
     private readonly IAanHubRestApiClient _apiClient;
 
-    public ApprenticesController(IMediator mediator, IAanHubRestApiClient apiClient)
+    public ApprenticesController(IMediator mediator, IAanHubRestApiClient apiClient) : base(mediator)
     {
         _mediator = mediator;
         _apiClient = apiClient;

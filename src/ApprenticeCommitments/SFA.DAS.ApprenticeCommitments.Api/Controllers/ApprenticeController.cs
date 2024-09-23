@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System;
 using System.Threading.Tasks;
+using MediatR;
+using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Controllers;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 {
@@ -14,11 +16,11 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
     }
 
     [ApiController]
-    public class ApprenticeController : ControllerBase
+    public class ApprenticeController : ApprenticeControllerBase
     {
         private readonly ResponseReturningApiClient _client;
 
-        public ApprenticeController(TemporaryAccountsResponseReturningApiClient client) => _client = client;
+        public ApprenticeController(TemporaryAccountsResponseReturningApiClient client, IMediator mediator) : base(mediator) => _client = client;
 
         [HttpGet("/apprentices/{id}")]
         public Task<IActionResult> GetApprentice(Guid id)
