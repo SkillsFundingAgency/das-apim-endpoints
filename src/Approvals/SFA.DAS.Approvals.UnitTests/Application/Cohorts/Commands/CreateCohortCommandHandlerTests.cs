@@ -1,4 +1,5 @@
-﻿using AutoFixture;
+﻿using System;
+using AutoFixture;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -11,6 +12,7 @@ using FluentAssertions;
 using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.Services;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
 {
@@ -20,6 +22,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
         private CreateCohortCommandHandler _handler;
         private CreateCohortCommand _request;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
+        private Mock<IAutoReservationsService> _autoReservationService;
         private Fixture _fixture;
 
         [SetUp]
@@ -29,8 +32,9 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
             _request = _fixture.Create<CreateCohortCommand>();
 
             _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
+            _autoReservationService = new Mock<IAutoReservationsService>();
 
-            _handler = new CreateCohortCommandHandler(_commitmentsApiClient.Object);
+            _handler = new CreateCohortCommandHandler(_commitmentsApiClient.Object, _autoReservationService.Object);
         }
 
         [Test]
@@ -72,5 +76,74 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
 
             response.Should().BeEquivalentTo(expectedResponse);
         }
+
+        [Test]
+        public async Task Handle_AutoReservation_Creation_When_No_ReservationID_In_Request()
+        {
+            var reservationId = Guid.NewGuid();
+            _request.ReservationId = null;
+            _request.TransferSenderId = null;
+
+            _autoReservationService.Setup(x => x.CreateReservation(It.IsAny<AutoReservation>()))
+                .ReturnsAsync(reservationId);
+
+            var expectedResponse = _fixture.Create<CreateCohortResponse>();
+            _commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
+                    It.Is<PostCreateCohortRequest>(r =>
+                            ((CreateCohortRequest)r.Data).ReservationId == _request.ReservationId
+                        ), true
+                )).ReturnsAsync(new ApiResponse<CreateCohortResponse>(expectedResponse, HttpStatusCode.OK, string.Empty));
+
+            var response = await _handler.Handle(_request, CancellationToken.None);
+
+            response.Should().BeEquivalentTo(expectedResponse);
+        }
+
+        [Test]
+        public async Task Delete_Reservation_When_No_ReservationID_In_Request()
+        {
+            var reservationId = Guid.NewGuid();
+            _request.ReservationId = null;
+            _request.TransferSenderId = null;
+
+            _autoReservationService.Setup(x => x.CreateReservation(It.IsAny<AutoReservation>()))
+                .ReturnsAsync(reservationId);
+
+            _commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
+                It.Is<PostCreateCohortRequest>(r =>
+                    ((CreateCohortRequest)r.Data).ReservationId == _request.ReservationId
+                ), true
+            )).ThrowsAsync(new Exception("Some Error"));
+
+            var act = async () => await _handler.Handle(_request, CancellationToken.None);
+            await act.Should().ThrowAsync<Exception>();
+            _autoReservationService.Verify(x=>x.DeleteReservation(reservationId));
+        }
+
+        [Test]
+        public async Task Does_Not_Create_Or_Delete_Reservation_When_ReservationID_In_Request()
+        {
+            _commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
+                It.Is<PostCreateCohortRequest>(r =>
+                    ((CreateCohortRequest)r.Data).ReservationId == _request.ReservationId
+                ), true
+            )).ThrowsAsync(new Exception("Some Error"));
+
+            var act = async () => await _handler.Handle(_request, CancellationToken.None);
+            await act.Should().ThrowAsync<Exception>();
+            _autoReservationService.Verify(x => x.DeleteReservation(It.IsAny<Guid>()), Times.Never);
+            _autoReservationService.Verify(x => x.CreateReservation(It.IsAny<AutoReservation>()), Times.Never);
+        }
+
+        [Test]
+        public async Task Throw_ApplicationException_When_No_ReservationID_In_Request_But_TransferSenderId_Is_Present()
+        {
+            _request.ReservationId = null;
+
+            var act = async () => await _handler.Handle(_request, CancellationToken.None);
+            act.Should().ThrowAsync<ApplicationException>().WithMessage("When creating a auto reservation, the TransferSenderId must be null");
+            _autoReservationService.Verify(x => x.CreateReservation(It.IsAny<AutoReservation>()), Times.Never);
+        }
+
     }
 }

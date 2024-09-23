@@ -1,25 +1,18 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Controllers;
 
 namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class ApprenticeController : Controller
+    public class ApprenticeController(IMediator mediator) : ApprenticeControllerBase(mediator)
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<ApprenticeController> _logger;
-
-        public ApprenticeController(IMediator mediator, ILogger<ApprenticeController> logger)
-        {
-            _mediator = mediator;
-            _logger = logger;
-        }
-
+        private readonly IMediator _mediator = mediator;
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
