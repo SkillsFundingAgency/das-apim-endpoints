@@ -211,10 +211,8 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     public async Task Handle_Returns_Correct_CanActualStartDateBeChanged_CurrentAcademicYear()
     {
         // Arrange
-        // Intentionally using dates in the past to assert that the test will work forever
-        // Simple current academic year scenario
-        var actualStartDate = new DateTime(2020, 10, 1);
-        var currentAcademicYearStartDate = new DateTime(2020, 08, 01);
+        var actualStartDate = DateTime.Now.Date.AddDays(-41); // start date within qualifying period
+        var currentAcademicYearStartDate = actualStartDate.AddMonths(-2);
         _apprenticeship.ActualStartDate = actualStartDate;
 
         var currentAcademicYearResponse = new GetAcademicYearsResponse
@@ -236,12 +234,10 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     public async Task Handle_Returns_Correct_CanActualStartDateBeChanged_PreviousOpenAcademicYear()
     {
         // Arrange
-        // Intentionally using dates in the past to assert that the test will work forever
-        // Here the previous academic year is open, doesn't matter that the hard close date is years later the api will control returning correct data, but we need the hard close date to be AFTER DateTime.Now for this scenario
-        var actualStartDate = new DateTime(2019, 10, 1);
-        var currentAcademicYearStartDate = new DateTime(2020, 08, 01);
-        var previousAcademicYearStartDate = new DateTime(2019, 08, 01);
-        var previousAcademicYearHardCloseDate = DateTime.Now.AddMonths(1);
+        var actualStartDate = DateTime.Now.Date.AddDays(-41); // start date within qualifying period
+        var previousAcademicYearHardCloseDate = DateTime.Now.AddMonths(1); // previous year not hard closed yet
+        var previousAcademicYearStartDate = DateTime.Now.AddMonths(-13);
+        var currentAcademicYearStartDate = previousAcademicYearHardCloseDate.AddDays(1);
         _apprenticeship.ActualStartDate = actualStartDate;
 
         var currentAcademicYearResponse = new GetAcademicYearsResponse
@@ -275,11 +271,12 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         // Arrange
         // Intentionally using dates in the past to assert that the test will work forever
         // Here the previous academic year is closed, again doesn't matter that the hard close date is years later the api will control returning correct data, but we need the hard close date to be BEFORE DateTime.Now for this scenario
-        var actualStartDate = new DateTime(2019, 10, 1);
-        var currentAcademicYearStartDate = new DateTime(2020, 08, 01);
-        var previousAcademicYearStartDate = new DateTime(2019, 08, 01);
-        var previousAcademicYearHardCloseDate = DateTime.Now.AddMonths(-1);
+        var actualStartDate = DateTime.Now.Date.AddDays(-41);
         _apprenticeship.ActualStartDate = actualStartDate;
+
+        var currentAcademicYearStartDate = actualStartDate.AddYears(1);
+        var previousAcademicYearStartDate = actualStartDate.AddMonths(-13);
+        var previousAcademicYearHardCloseDate = DateTime.Now.AddMonths(-1);
 
         var currentAcademicYearResponse = new GetAcademicYearsResponse
         {
@@ -304,6 +301,33 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
 
         // Assert
         result.CanActualStartDateBeChanged.Should().BeFalse();
+    }
+
+    [TestCase(41, true)] 
+    [TestCase(42, true)] 
+    [TestCase(43, false)]
+    public async Task Handle_Returns_Correct_CanActualStartDateBeChanged_QualifyingPeriodPassed(int daysSinceApprenticeshipStartDate, bool expectedValue)
+    {
+        // Arrange
+        var startOfToday = DateTime.Now.Date;
+        var actualStartDate = startOfToday.AddDays(-daysSinceApprenticeshipStartDate);
+        _apprenticeship.ActualStartDate = actualStartDate;
+
+        var currentAcademicYearStartDate = actualStartDate.AddMonths(-3);
+        var currentAcademicYearResponse = new GetAcademicYearsResponse
+        {
+            StartDate = currentAcademicYearStartDate
+        };
+
+        _collectionCalendarApiClient
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(r => r._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
+            .ReturnsAsync(currentAcademicYearResponse);
+      
+        // Act
+        var result = await _handler.Handle(_query, CancellationToken.None);
+
+        // Assert
+        result.CanActualStartDateBeChanged.Should().Be(expectedValue);
     }
 
     [Test]

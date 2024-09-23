@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace SFA.DAS.Approvals.ErrorHandling
+namespace SFA.DAS.Approvals.Exceptions
 {
     public class DomainApimException : InvalidOperationException
     {
-        public string Content { get; set;  }
+        public string Content { get; set; }
 
         /// <summary>
         /// Creates a Domain Exception with multiple domain errors
@@ -14,6 +14,6 @@ namespace SFA.DAS.Approvals.ErrorHandling
         {
             Content = errors;
         }
-    
+
     }
 }
