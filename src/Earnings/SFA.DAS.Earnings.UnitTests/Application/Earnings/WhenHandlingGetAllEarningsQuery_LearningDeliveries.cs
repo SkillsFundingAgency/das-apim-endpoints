@@ -1,4 +1,5 @@
 using FluentAssertions;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Earnings;
 
@@ -77,15 +78,8 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryValues.OutstandNumOnProgInstalm.Should().BeNull();
 
             var expectedPlannedTotalDays = 1 + (apprenticeship.PlannedEndDate - apprenticeship.StartDate).Days;
-            var expectedPlannedOnProgInstalments = 0;
-            for (var i = 0; i < expectedPlannedTotalDays; i++)
-            {
-                if (apprenticeship.StartDate.AddDays(i).Day == DateTime.DaysInMonth(
-                        apprenticeship.StartDate.AddDays(i).Year, apprenticeship.StartDate.AddDays(i).Month))
-                    expectedPlannedOnProgInstalments++;
-            }
 
-            learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm.Should().Be(expectedPlannedOnProgInstalments);
+            learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm.Should().Be(InstalmentHelper.GetNumberOfInstalmentsBetweenDates(apprenticeship.StartDate, apprenticeship.PlannedEndDate));
             learningDelivery.LearningDeliveryValues.PlannedTotalDaysIL.Should().Be(expectedPlannedTotalDays);
             learningDelivery.LearningDeliveryValues.ProgType.Should().Be(25);
             learningDelivery.LearningDeliveryValues.PwayCode.Should().BeNull();
