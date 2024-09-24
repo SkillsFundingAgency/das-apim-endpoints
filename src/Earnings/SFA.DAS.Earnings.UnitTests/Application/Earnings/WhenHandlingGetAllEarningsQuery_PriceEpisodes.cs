@@ -1,4 +1,5 @@
 using FluentAssertions;
+using SFA.DAS.Earnings.Application.Extensions;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Earnings;
 
@@ -81,17 +82,19 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                     .Be(expectedPriceEpisodesSplitByAcademicYear.Any(x => x.Price.StartDate > episodePrice.Price.StartDate)
                         ? 0 
                         : earningEpisode.Instalments.Count(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear)));
+                
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeInstalmentsThisPeriod.Should()
                     .Be(episodePrice.Price.StartDate 
-                        <= CollectionPeriodTestHelper.GetCensusDateForCollectionPeriod(short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear), _testFixture.CollectionPeriod)
+                        <= _testFixture.CollectionCalendarResponse.GetCensusDateForCollectionPeriod(_testFixture.CollectionPeriod)
                         &&
-                        CollectionPeriodTestHelper.GetCensusDateForCollectionPeriod(short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear), _testFixture.CollectionPeriod)
+                        _testFixture.CollectionCalendarResponse.GetCensusDateForCollectionPeriod(_testFixture.CollectionPeriod)
                         <= episodePrice.Price.EndDate
                         &&
                         earningEpisode.Instalments.Any(x =>
                         x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear) &&
                         x.DeliveryPeriod == _testFixture.CollectionPeriod)
                         ? 1 : 0);
+                
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompletionElement.Should().Be(earningEpisode.CompletionPayment);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodePreviousEarnings.Should().Be(0);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeInstalmentValue.Should().Be(earningEpisode.Instalments.First().Amount);

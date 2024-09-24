@@ -125,25 +125,6 @@ namespace SFA.DAS.Earnings.Application.Earnings
             };
         }
 
-        private static DateTime GetCensusDateForCollectionPeriod(short academicYear, byte collectionPeriod)
-        {
-            int year;
-            int month;
-            if (collectionPeriod < 6)
-            {
-                year = academicYear / 100;
-                month = collectionPeriod + 7;
-            }
-            else
-            {
-                year = (academicYear / 100) + 1;
-                month = collectionPeriod - 5;
-            }
-
-            var day = DateTime.DaysInMonth(year, month);
-            return new DateTime(year, month, day);
-        }
-
         private static decimal GetPreviousEarnings(SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship? apprenticeship, short academicYear, short collectionPeriod)
         {
             var previousYearEarnings = apprenticeship?
@@ -184,8 +165,11 @@ namespace SFA.DAS.Earnings.Application.Earnings
             GetAcademicYearsResponse currentAcademicYear,
             byte collectionPeriod)
         {
-            return joinedPriceEpisode.ApprenticeshipEpisodePrice.StartDate <= GetCensusDateForCollectionPeriod(short.Parse(currentAcademicYear.AcademicYear), collectionPeriod)
-                    && GetCensusDateForCollectionPeriod(short.Parse(currentAcademicYear.AcademicYear), collectionPeriod) <= joinedPriceEpisode.ApprenticeshipEpisodePrice.EndDate
+
+            var censusDateForCollectionPeriod = currentAcademicYear.GetCensusDateForCollectionPeriod(collectionPeriod);
+
+            return joinedPriceEpisode.ApprenticeshipEpisodePrice.StartDate <= censusDateForCollectionPeriod
+                    && censusDateForCollectionPeriod <= joinedPriceEpisode.ApprenticeshipEpisodePrice.EndDate
                     && joinedEarningsApprenticeship.EarningsApprenticeship.Episodes
                             .SelectMany(x => x.Instalments)
                             .Any(x => x.AcademicYear == short.Parse(currentAcademicYear.AcademicYear) && x.DeliveryPeriod == collectionPeriod) ? 1 : 0;

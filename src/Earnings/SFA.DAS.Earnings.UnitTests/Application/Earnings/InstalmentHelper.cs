@@ -17,5 +17,10 @@
             return includedCensusDateCounter;
 
         }
+
+        internal static int InstalmentInThisPeriod(DateTime startDate, DateTime endDate, short academicYear, byte collectionPeriod)
+        {
+            return 0;
+        }
     }
 }
