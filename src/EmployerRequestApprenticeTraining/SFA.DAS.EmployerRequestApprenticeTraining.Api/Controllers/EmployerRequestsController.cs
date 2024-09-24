@@ -254,7 +254,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
         }
 
-        [HttpPost("expire")]
+        [HttpPut("expire")]
         public async Task<IActionResult> ExpireEmployerRequests()
         {
             try
@@ -284,7 +284,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
         }
 
-        [HttpPost("send-notification")]
+        [HttpPut("send-notification")]
         public async Task<IActionResult> SendEmployerRequestResponseNotifications(SendResponseNotificationEmailParameters parameters)
         {
             try
