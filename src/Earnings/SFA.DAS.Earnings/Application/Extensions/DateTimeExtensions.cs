@@ -39,5 +39,19 @@ namespace SFA.DAS.Earnings.Application.Extensions
         {
             return academicYearToCheck.AcademicYear.GetCensusDateForCollectionPeriod(collectionPeriod);
         }
+
+        public static bool IsEarlierThan(this short academicYear, short comparisonYear)
+        {
+            return academicYear / 100 < comparisonYear / 100;
+        }
+
+        public static short GetLastYear(this string academicYear)
+        {
+            int firstTwoDigits = int.Parse( academicYear.Substring(0, 2));
+            int lastTwoDigits = int.Parse(academicYear.Substring(2, 2));
+            firstTwoDigits--;
+            lastTwoDigits--;
+            return (short)(firstTwoDigits * 100 + lastTwoDigits);
+        }
     }
 }

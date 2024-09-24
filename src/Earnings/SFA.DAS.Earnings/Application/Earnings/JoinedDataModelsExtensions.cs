@@ -46,6 +46,9 @@ namespace SFA.DAS.Earnings.Application.Earnings
             GetAcademicYearsResponse currentAcademicYear,
             byte collectionPeriod)
         {
+
+            var previousEarnings = GetPreviousEarnings(joinedEarningsApprenticeship.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), collectionPeriod);
+
             return new PriceEpisodeValues
             {
                 EpisodeStartDate = joinedPriceEpisode.ApprenticeshipEpisodePrice.StartDate,
@@ -113,12 +116,9 @@ namespace SFA.DAS.Earnings.Application.Earnings
                 PriceEpisodeRedStatusCode = EarningsFM36Constants.PriceEpisodeRedStatusCode,
                 PriceEpisodeLDAppIdent = $"{EarningsFM36Constants.ProgType}-{joinedPriceEpisode.ApprenticeshipEpisode.TrainingCode.Trim()}",
                 PriceEpisodeAugmentedBandLimitFactor = EarningsFM36Constants.PriceEpisodeAugmentedBandLimitFactor,
-                PriceEpisodeRemainingTNPAmount = joinedPriceEpisode.ApprenticeshipEpisodePrice.FundingBandMaximum
-                                     - GetPreviousEarnings(joinedEarningsApprenticeship.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), collectionPeriod),
-                PriceEpisodeRemainingAmountWithinUpperLimit = joinedPriceEpisode.ApprenticeshipEpisodePrice.FundingBandMaximum
-                                                  - GetPreviousEarnings(joinedEarningsApprenticeship.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), collectionPeriod),
-                PriceEpisodeCappedRemainingTNPAmount = joinedPriceEpisode.ApprenticeshipEpisodePrice.FundingBandMaximum
-                                           - GetPreviousEarnings(joinedEarningsApprenticeship.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), collectionPeriod),
+                PriceEpisodeRemainingTNPAmount = joinedPriceEpisode.ApprenticeshipEpisodePrice.FundingBandMaximum - previousEarnings,
+                PriceEpisodeRemainingAmountWithinUpperLimit = joinedPriceEpisode.ApprenticeshipEpisodePrice.FundingBandMaximum - previousEarnings,
+                PriceEpisodeCappedRemainingTNPAmount = joinedPriceEpisode.ApprenticeshipEpisodePrice.FundingBandMaximum - previousEarnings,
                 PriceEpisodeExpectedTotalMonthlyValue = joinedPriceEpisode.ApprenticeshipEpisodePrice.FundingBandMaximum
                 - GetPreviousEarnings(joinedEarningsApprenticeship.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), collectionPeriod)
                                             - joinedPriceEpisode.EarningsEpisode.CompletionPayment,
@@ -152,15 +152,13 @@ namespace SFA.DAS.Earnings.Application.Earnings
                 LearnDelApplicEmp1618Incentive = EarningsFM36Constants.LearnDelApplicEmp1618Incentive,
                 LearnDelApplicProv1618FrameworkUplift = EarningsFM36Constants.LearnDelApplicProv1618FrameworkUplift,
                 LearnDelApplicProv1618Incentive = EarningsFM36Constants.LearnDelApplicProv1618Incentive,
-                LearnDelAppPrevAccDaysIL = LearnDelAppPrevAccDaysIL(joinedEarningsApprenticeship, currentAcademicYear),
+                LearnDelAppPrevAccDaysIL = GetLearnDelAppPrevAccDaysIL(joinedEarningsApprenticeship, currentAcademicYear),
                 LearnDelDisadAmount = EarningsFM36Constants.LearnDelDisadAmount,
                 LearnDelEligDisadvPayment = EarningsFM36Constants.LearnDelEligDisadvPayment,
                 LearnDelEmpIdFirstAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdFirstAdditionalPaymentThreshold,
                 LearnDelEmpIdSecondAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdSecondAdditionalPaymentThreshold,
                 LearnDelHistDaysThisApp = 1 + (currentAcademicYear.EndDate - joinedEarningsApprenticeship.Apprenticeship.StartDate).Days,
-                LearnDelHistProgEarnings = joinedEarningsApprenticeship.EarningsApprenticeship.Episodes
-                        .SelectMany(episode => episode.Instalments)
-                        .Sum(instalment => instalment.Amount),
+                LearnDelHistProgEarnings = GetLearnDelHistProgEarnings(joinedEarningsApprenticeship, currentAcademicYear),
                 LearnDelInitialFundLineType = joinedEarningsApprenticeship.EarningsApprenticeship.FundingLineType,
                 LearnDelMathEng = EarningsFM36Constants.LearnDelMathEng,
                 LearnDelProgEarliestACT2Date = EarningsFM36Constants.LearnDelProgEarliestACT2Date,
@@ -280,7 +278,7 @@ namespace SFA.DAS.Earnings.Application.Earnings
                             .Any(x => x.AcademicYear == short.Parse(currentAcademicYear.AcademicYear) && x.DeliveryPeriod == collectionPeriod) ? 1 : 0;
         }
 
-        private static int LearnDelAppPrevAccDaysIL(
+        private static int GetLearnDelAppPrevAccDaysIL(
             JoinedEarningsApprenticeship joinedEarningsApprenticeship,
             GetAcademicYearsResponse currentAcademicYear)
         {
@@ -292,5 +290,23 @@ namespace SFA.DAS.Earnings.Application.Earnings
                         : currentAcademicYear.StartDate)).Days;
         }
 
+        private static decimal GetLearnDelHistProgEarnings(JoinedEarningsApprenticeship joinedEarningsApprenticeship, GetAcademicYearsResponse currentAcademicYear)//, short collectionPeriod)
+        {
+            //  Currently this will be for only this provider as the api request is for a single provider, but this may need to be expanded in the future
+            var previousYearEarnings = joinedEarningsApprenticeship.EarningsApprenticeship?
+                .Episodes
+                .SelectMany(x => x.Instalments)
+                .Where(x => x.AcademicYear == currentAcademicYear.AcademicYear.GetLastYear())
+                .Sum(x => x.Amount);
+
+            var currentYearEarnings = joinedEarningsApprenticeship.EarningsApprenticeship?
+                .Episodes
+                .SelectMany(x => x.Instalments)
+                .Where(x => x.AcademicYear == currentAcademicYear.GetShortAcademicYear())
+                .Sum(x => x.Amount);
+
+            return previousYearEarnings.GetValueOrDefault() + currentYearEarnings.GetValueOrDefault();
+
+        }
     }
 }
