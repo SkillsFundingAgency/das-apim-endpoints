@@ -71,8 +71,8 @@ public class EarningsController : ControllerBase
         {
             new FM36Learner
             {
-                ULN = fixture.Create<long>(),
-                LearnRefNumber = Guid.NewGuid().ToString(),
+                ULN = 9000219204,
+                LearnRefNumber = "TestPS1",
                 PriceEpisodes = CreatePriceEpisodes(),
                 LearningDeliveries = CreateLearningDeliveries(),
                 EarningsPlatform = 2
