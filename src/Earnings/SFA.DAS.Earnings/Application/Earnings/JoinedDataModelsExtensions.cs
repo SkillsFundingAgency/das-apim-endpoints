@@ -125,6 +125,111 @@ namespace SFA.DAS.Earnings.Application.Earnings
             };
         }
 
+        internal static LearningDeliveryValues GetLearningDelivery(
+            this JoinedEarningsApprenticeship joinedEarningsApprenticeship, 
+            GetAcademicYearsResponse currentAcademicYear)
+        {
+            return new LearningDeliveryValues
+            {
+                ActualDaysIL = EarningsFM36Constants.ActualDaysIL,
+                AdjStartDate = joinedEarningsApprenticeship.Apprenticeship.StartDate,
+                AgeAtProgStart = joinedEarningsApprenticeship.Apprenticeship.AgeAtStartOfApprenticeship,
+                AppAdjLearnStartDate = joinedEarningsApprenticeship.Apprenticeship.StartDate,
+                AppAdjLearnStartDateMatchPathway = joinedEarningsApprenticeship.Apprenticeship.StartDate,
+                ApplicCompDate = EarningsFM36Constants.ApplicCompDate,
+                CombinedAdjProp = EarningsFM36Constants.CombinedAdjProp,
+                Completed = EarningsFM36Constants.Completed,
+                FundStart = EarningsFM36Constants.FundStart,
+                LDApplic1618FrameworkUpliftTotalActEarnings = EarningsFM36Constants.LDApplic1618FrameworkUpliftTotalActEarnings,
+                LearnAimRef = EarningsFM36Constants.LearnAimRef,
+                LearnStartDate = joinedEarningsApprenticeship.Apprenticeship.StartDate,
+                LearnDel1618AtStart = joinedEarningsApprenticeship.Apprenticeship.AgeAtStartOfApprenticeship < 19,
+                LearnDelAppAccDaysIL = 1 + ((joinedEarningsApprenticeship.Apprenticeship.PlannedEndDate < currentAcademicYear.EndDate
+                        ? joinedEarningsApprenticeship.Apprenticeship.PlannedEndDate
+                        : currentAcademicYear.EndDate) - joinedEarningsApprenticeship.Apprenticeship.StartDate).Days,
+
+                LearnDelApplicDisadvAmount = EarningsFM36Constants.LearnDelApplicDisadvAmount,
+                LearnDelApplicEmp1618Incentive = EarningsFM36Constants.LearnDelApplicEmp1618Incentive,
+                LearnDelApplicProv1618FrameworkUplift = EarningsFM36Constants.LearnDelApplicProv1618FrameworkUplift,
+                LearnDelApplicProv1618Incentive = EarningsFM36Constants.LearnDelApplicProv1618Incentive,
+                LearnDelAppPrevAccDaysIL = LearnDelAppPrevAccDaysIL(joinedEarningsApprenticeship, currentAcademicYear),
+                LearnDelDisadAmount = EarningsFM36Constants.LearnDelDisadAmount,
+                LearnDelEligDisadvPayment = EarningsFM36Constants.LearnDelEligDisadvPayment,
+                LearnDelEmpIdFirstAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdFirstAdditionalPaymentThreshold,
+                LearnDelEmpIdSecondAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdSecondAdditionalPaymentThreshold,
+                LearnDelHistDaysThisApp = 1 + (currentAcademicYear.EndDate - joinedEarningsApprenticeship.Apprenticeship.StartDate).Days,
+                LearnDelHistProgEarnings = joinedEarningsApprenticeship.EarningsApprenticeship.Episodes
+                        .SelectMany(episode => episode.Instalments)
+                        .Sum(instalment => instalment.Amount),
+                LearnDelInitialFundLineType = joinedEarningsApprenticeship.EarningsApprenticeship.FundingLineType,
+                LearnDelMathEng = EarningsFM36Constants.LearnDelMathEng,
+                LearnDelProgEarliestACT2Date = EarningsFM36Constants.LearnDelProgEarliestACT2Date,
+                LearnDelNonLevyProcured = EarningsFM36Constants.LearnDelNonLevyProcured,
+                MathEngAimValue = EarningsFM36Constants.MathEngAimValue,
+                OutstandNumOnProgInstalm = EarningsFM36Constants.OutstandNumOnProgInstalm,
+                PlannedNumOnProgInstalm = joinedEarningsApprenticeship.Apprenticeship.StartDate.GetNumberOfIncludedCensusDatesUntil(joinedEarningsApprenticeship.Apprenticeship.PlannedEndDate),
+                PlannedTotalDaysIL = 1 + (joinedEarningsApprenticeship.Apprenticeship.PlannedEndDate - joinedEarningsApprenticeship.Apprenticeship.StartDate).Days,
+                ProgType = EarningsFM36Constants.ProgType,
+                PwayCode = EarningsFM36Constants.PwayCode,
+                SecondIncentiveThresholdDate = EarningsFM36Constants.SecondIncentiveThresholdDate,
+                StdCode = int.TryParse(joinedEarningsApprenticeship.Apprenticeship.Episodes.MinBy(x => x.Prices.Min(price => price.StartDate))?.TrainingCode, out int parsedTrainingCode) ? parsedTrainingCode : null,
+                ThresholdDays = EarningsFM36Constants.ThresholdDays,
+                LearnDelApplicCareLeaverIncentive = EarningsFM36Constants.LearnDelApplicCareLeaverIncentive,
+                LearnDelHistDaysCareLeavers = EarningsFM36Constants.LearnDelHistDaysCareLeavers,
+                LearnDelAccDaysILCareLeavers = EarningsFM36Constants.LearnDelAccDaysILCareLeavers,
+                LearnDelPrevAccDaysILCareLeavers = EarningsFM36Constants.LearnDelPrevAccDaysILCareLeavers,
+                LearnDelLearnerAddPayThresholdDate = EarningsFM36Constants.LearnDelLearnerAddPayThresholdDate,
+                LearnDelRedCode = EarningsFM36Constants.LearnDelRedCode,
+                LearnDelRedStartDate = EarningsFM36Constants.LearnDelRedStartDate
+            };
+        }
+
+        internal static List<LearningDeliveryPeriodisedValues> GetLearningDeliveryPeriodisedValues(
+            this JoinedEarningsApprenticeship joinedEarningsApprenticeship,
+            GetAcademicYearsResponse currentAcademicYear)
+        {
+            return new List<LearningDeliveryPeriodisedValues>
+                {
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.DisadvFirstPayment, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.DisadvSecondPayment, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildInstPerPeriodValues(joinedEarningsApprenticeship.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear()),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LDApplic1618FrameworkUpliftBalancingPayment, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LDApplic1618FrameworkUpliftCompletionPayment, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LDApplic1618FrameworkUpliftOnProgPayment, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstEmp1618Pay, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstProv1618Pay, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelLearnAddPayment, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelLevyNonPayInd, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelSecondEmp1618Pay, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelSecondProv1618Pay, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelSEMContWaiver, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelESFAContribPct, 0.95m),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFund, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFundCash, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.MathEngBalPayment, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.MathEngOnProgPayment, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimBalPayment, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimCompletionPayment, 0),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildInstallmentAmountValues(
+                        joinedEarningsApprenticeship.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimOnProgPayment),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildCoInvestmentValues(
+                        joinedEarningsApprenticeship.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMaxEmpCont, EarningsFM36Constants.CoInvestEmployerMultiplier),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildCoInvestmentValues(
+                        joinedEarningsApprenticeship.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMinCoInvest, EarningsFM36Constants.CoInvestSfaMultiplier),
+                    LearningDeliveryPeriodisedValuesBuilder.BuildInstallmentAmountValues(
+                        joinedEarningsApprenticeship.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimTotProgFund)
+                };
+        }
+
+        internal static List<LearningDeliveryPeriodisedTextValues> GetLearningDeliveryPeriodisedTextValues(this JoinedEarningsApprenticeship joinedEarningsApprenticeship)
+        {
+            return new List<LearningDeliveryPeriodisedTextValues>
+                {
+                    LearningDeliveryPeriodisedTextValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.FundLineType, joinedEarningsApprenticeship.EarningsApprenticeship.FundingLineType),
+                    LearningDeliveryPeriodisedTextValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelContType, EarningsFM36Constants.LearnDelContType)
+                };
+        }
+
         private static decimal GetPreviousEarnings(SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship? apprenticeship, short academicYear, short collectionPeriod)
         {
             var previousYearEarnings = apprenticeship?
@@ -174,5 +279,18 @@ namespace SFA.DAS.Earnings.Application.Earnings
                             .SelectMany(x => x.Instalments)
                             .Any(x => x.AcademicYear == short.Parse(currentAcademicYear.AcademicYear) && x.DeliveryPeriod == collectionPeriod) ? 1 : 0;
         }
+
+        private static int LearnDelAppPrevAccDaysIL(
+            JoinedEarningsApprenticeship joinedEarningsApprenticeship,
+            GetAcademicYearsResponse currentAcademicYear)
+        {
+            return 1 + ((joinedEarningsApprenticeship.Apprenticeship.PlannedEndDate < currentAcademicYear.EndDate
+                            ? joinedEarningsApprenticeship.Apprenticeship.PlannedEndDate
+                            : currentAcademicYear.EndDate)
+                    - (joinedEarningsApprenticeship.Apprenticeship.StartDate > currentAcademicYear.StartDate
+                        ? joinedEarningsApprenticeship.Apprenticeship.StartDate
+                        : currentAcademicYear.StartDate)).Days;
+        }
+
     }
 }

@@ -82,108 +82,18 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                                 PriceEpisodeValues = model.GetPriceEpisodeValues(priceEpisodeModel, priceEpisodesForAcademicYear, currentAcademicYear, request.CollectionPeriod),
                                 PriceEpisodePeriodisedValues = model.GetPriceEpisodePeriodisedValues(currentAcademicYear)
                             }).ToList(),
-                    LearningDeliveries = new List<LearningDelivery>
-                    {
-                        new LearningDelivery
+                        LearningDeliveries = new List<LearningDelivery>
                         {
-                            AimSeqNumber = 1,
-                            LearningDeliveryValues = new LearningDeliveryValues
+                            new LearningDelivery
                             {
-                                ActualDaysIL = EarningsFM36Constants.ActualDaysIL,
-                                AdjStartDate = model.Apprenticeship.StartDate,
-                                AgeAtProgStart = model.Apprenticeship.AgeAtStartOfApprenticeship,
-                                AppAdjLearnStartDate = model.Apprenticeship.StartDate,
-                                AppAdjLearnStartDateMatchPathway = model.Apprenticeship.StartDate,
-                                ApplicCompDate = EarningsFM36Constants.ApplicCompDate,
-                                CombinedAdjProp = EarningsFM36Constants.CombinedAdjProp,
-                                Completed = EarningsFM36Constants.Completed,
-                                FundStart = EarningsFM36Constants.FundStart,
-                                LDApplic1618FrameworkUpliftTotalActEarnings = EarningsFM36Constants.LDApplic1618FrameworkUpliftTotalActEarnings,
-                                LearnAimRef = EarningsFM36Constants.LearnAimRef,
-                                LearnStartDate = model.Apprenticeship.StartDate,
-                                LearnDel1618AtStart = model.Apprenticeship.AgeAtStartOfApprenticeship < 19,
-                                LearnDelAppAccDaysIL = 1 + ((model.Apprenticeship.PlannedEndDate < currentAcademicYear.EndDate
-                                    ? model.Apprenticeship.PlannedEndDate
-                                    : currentAcademicYear.EndDate) - model.Apprenticeship.StartDate).Days,
-                                LearnDelApplicDisadvAmount = EarningsFM36Constants.LearnDelApplicDisadvAmount,
-                                LearnDelApplicEmp1618Incentive = EarningsFM36Constants.LearnDelApplicEmp1618Incentive,
-                                LearnDelApplicProv1618FrameworkUplift = EarningsFM36Constants.LearnDelApplicProv1618FrameworkUplift,
-                                LearnDelApplicProv1618Incentive = EarningsFM36Constants.LearnDelApplicProv1618Incentive,
-                                LearnDelAppPrevAccDaysIL = 
-                                    1 + ((model.Apprenticeship.PlannedEndDate < currentAcademicYear.EndDate
-                                        ? model.Apprenticeship.PlannedEndDate
-                                        : currentAcademicYear.EndDate)
-                                    - (model.Apprenticeship.StartDate > currentAcademicYear.StartDate
-                                        ? model.Apprenticeship.StartDate
-                                        : currentAcademicYear.StartDate)).Days,
-                                LearnDelDisadAmount = EarningsFM36Constants.LearnDelDisadAmount,
-                                LearnDelEligDisadvPayment = EarningsFM36Constants.LearnDelEligDisadvPayment,
-                                LearnDelEmpIdFirstAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdFirstAdditionalPaymentThreshold,
-                                LearnDelEmpIdSecondAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdSecondAdditionalPaymentThreshold,
-                                LearnDelHistDaysThisApp = (currentAcademicYear.EndDate - model.Apprenticeship.StartDate).Days,
-                                LearnDelHistProgEarnings = model.EarningsApprenticeship.Episodes
-                                    .SelectMany(episode => episode.Instalments)
-                                    .Sum(instalment => instalment.Amount),
-                                LearnDelInitialFundLineType = model.EarningsApprenticeship.FundingLineType,
-                                LearnDelMathEng = EarningsFM36Constants.LearnDelMathEng,
-                                LearnDelProgEarliestACT2Date = EarningsFM36Constants.LearnDelProgEarliestACT2Date,
-                                LearnDelNonLevyProcured = EarningsFM36Constants.LearnDelNonLevyProcured,
-                                MathEngAimValue = EarningsFM36Constants.MathEngAimValue,
-                                OutstandNumOnProgInstalm = EarningsFM36Constants.OutstandNumOnProgInstalm,
-                                PlannedNumOnProgInstalm = model.Apprenticeship.StartDate.GetNumberOfIncludedCensusDatesUntil(model.Apprenticeship.PlannedEndDate),
-                                PlannedTotalDaysIL = 1 + (model.Apprenticeship.PlannedEndDate - model.Apprenticeship.StartDate).Days,
-                                ProgType = EarningsFM36Constants.ProgType,
-                                PwayCode = EarningsFM36Constants.PwayCode,
-                                SecondIncentiveThresholdDate = EarningsFM36Constants.SecondIncentiveThresholdDate,
-                                StdCode = int.TryParse(model.Apprenticeship.Episodes.MinBy(x => x.Prices.Min(price => price.StartDate))?.TrainingCode, out int parsedTrainingCode) ? parsedTrainingCode : null,
-                                ThresholdDays = EarningsFM36Constants.ThresholdDays,
-                                LearnDelApplicCareLeaverIncentive = EarningsFM36Constants.LearnDelApplicCareLeaverIncentive,
-                                LearnDelHistDaysCareLeavers = EarningsFM36Constants.LearnDelHistDaysCareLeavers,
-                                LearnDelAccDaysILCareLeavers = EarningsFM36Constants.LearnDelAccDaysILCareLeavers,
-                                LearnDelPrevAccDaysILCareLeavers = EarningsFM36Constants.LearnDelPrevAccDaysILCareLeavers,
-                                LearnDelLearnerAddPayThresholdDate = EarningsFM36Constants.LearnDelLearnerAddPayThresholdDate,
-                                LearnDelRedCode = EarningsFM36Constants.LearnDelRedCode,
-                                LearnDelRedStartDate = EarningsFM36Constants.LearnDelRedStartDate
-                            },
-                            LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValues>
-                            {
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.DisadvFirstPayment, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.DisadvSecondPayment, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildInstPerPeriodValues(model.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear()),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LDApplic1618FrameworkUpliftBalancingPayment, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LDApplic1618FrameworkUpliftCompletionPayment, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LDApplic1618FrameworkUpliftOnProgPayment, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstEmp1618Pay, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstProv1618Pay, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelLearnAddPayment, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelLevyNonPayInd, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelSecondEmp1618Pay, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelSecondProv1618Pay, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelSEMContWaiver, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelESFAContribPct, 0.95m),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFund, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFundCash, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.MathEngBalPayment, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.MathEngOnProgPayment, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimBalPayment, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimCompletionPayment, 0),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildInstallmentAmountValues(
-                                    model.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimOnProgPayment),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildCoInvestmentValues(
-                                    model.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMaxEmpCont, EarningsFM36Constants.CoInvestEmployerMultiplier),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildCoInvestmentValues(
-                                    model.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMinCoInvest, EarningsFM36Constants.CoInvestSfaMultiplier),
-                                LearningDeliveryPeriodisedValuesBuilder.BuildInstallmentAmountValues(
-                                    model.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimTotProgFund)
-                            },
-                            LearningDeliveryPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>
-                            {
-                                LearningDeliveryPeriodisedTextValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.FundLineType, model.EarningsApprenticeship.FundingLineType),
-                                LearningDeliveryPeriodisedTextValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelContType, EarningsFM36Constants.LearnDelContType)
+                                AimSeqNumber = 1,
+                                LearningDeliveryValues = model.GetLearningDelivery(currentAcademicYear),
+                                LearningDeliveryPeriodisedValues = model.GetLearningDeliveryPeriodisedValues(currentAcademicYear),
+                                LearningDeliveryPeriodisedTextValues = model.GetLearningDeliveryPeriodisedTextValues()
                             }
                         }
-                    }
-                    };}).ToArray()
+                    };
+                }).ToArray()
         };
 
         return result;

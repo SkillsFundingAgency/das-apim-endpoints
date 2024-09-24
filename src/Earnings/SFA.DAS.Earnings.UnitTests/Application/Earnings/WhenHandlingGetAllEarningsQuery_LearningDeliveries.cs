@@ -68,7 +68,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryValues.LearnDelEligDisadvPayment.Should().BeFalse();
             learningDelivery.LearningDeliveryValues.LearnDelEmpIdFirstAdditionalPaymentThreshold.Should().BeNull();
             learningDelivery.LearningDeliveryValues.LearnDelEmpIdSecondAdditionalPaymentThreshold.Should().BeNull();
-            learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().Be((_testFixture.CollectionCalendarResponse.EndDate - apprenticeship.StartDate).Days);
+            learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().Be(1 + (_testFixture.CollectionCalendarResponse.EndDate - apprenticeship.StartDate).Days);
             learningDelivery.LearningDeliveryValues.LearnDelHistProgEarnings.Should().Be(earningEpisode.Instalments.Sum(i => i.Amount));
             learningDelivery.LearningDeliveryValues.LearnDelInitialFundLineType.Should().Be(earningApprenticeship.FundingLineType);
             learningDelivery.LearningDeliveryValues.LearnDelMathEng.Should().BeFalse();
