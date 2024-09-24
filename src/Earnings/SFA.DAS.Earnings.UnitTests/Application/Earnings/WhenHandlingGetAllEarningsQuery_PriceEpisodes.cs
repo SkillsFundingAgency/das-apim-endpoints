@@ -74,16 +74,9 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice.Should().Be(episodePrice.Price.TotalPrice);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeUpperLimitAdjustment.Should().Be(0);
 
-                var expectedPlannedTotalDays = (apprenticeship.PlannedEndDate - episodePrice.Price.StartDate).Days;
-                var expectedPlannedInstalments = 0;
-                for (var i = 0; i < expectedPlannedTotalDays; i++)
-                {
-                    if (apprenticeship.StartDate.AddDays(i).Day == DateTime.DaysInMonth(
-                            apprenticeship.StartDate.AddDays(i).Year, apprenticeship.StartDate.AddDays(i).Month))
-                        expectedPlannedInstalments++;
-                }
 
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodePlannedInstalments.Should().Be(expectedPlannedInstalments);
+                actualPriceEpisode.PriceEpisodeValues.PriceEpisodePlannedInstalments.Should().Be(InstalmentHelper.GetNumberOfInstalmentsBetweenDates(episodePrice.Price.StartDate, apprenticeship.PlannedEndDate));
+                
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualInstalments.Should()
                     .Be(expectedPriceEpisodesSplitByAcademicYear.Any(x => x.Price.StartDate > episodePrice.Price.StartDate)
                         ? 0 
