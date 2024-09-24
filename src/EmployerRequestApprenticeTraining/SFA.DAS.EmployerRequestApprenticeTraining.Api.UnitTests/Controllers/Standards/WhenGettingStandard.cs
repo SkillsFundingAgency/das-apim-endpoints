@@ -24,7 +24,7 @@ namespace SFA.DAS.WhenGettingStandard.Api.UnitTests.Controllers.Standards
             [Greedy] StandardsController controller)
         {
             mockMediator
-                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardId == standardId), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardReference == standardId), CancellationToken.None))
                 .ReturnsAsync(queryResult);
 
             var actual = await controller.Get(standardId) as ObjectResult;

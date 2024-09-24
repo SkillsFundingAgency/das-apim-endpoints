@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetStandardQuery { StandardId = standardId });
+                var result = await _mediator.Send(new GetStandardQuery { StandardReference = standardId });
 
                 if (result.Standard != null)
                 {
@@ -39,7 +39,28 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to retrieve standard for {StandardId}", standardId);
+                _logger.LogError(e, "Error attempting to retrieve standard for {StandardReference}", standardId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{standardId}")]
+        public async Task<IActionResult> Post(string standardId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new PostStandardCommand { StandardId = standardId });
+
+                if (result.Standard != null)
+                {
+                    return Ok(result.Standard);
+                }
+
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve standard for {StandardReference}", standardId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

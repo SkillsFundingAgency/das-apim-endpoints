@@ -1,8 +1,8 @@
 ﻿using SFA.DAS.EmployerRequestApprenticeTraining.Models;
 
-namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard
+namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.PostStandard
 {
-    public class GetStandardResult
+    public class PostStandardResult
     {
         public Standard Standard { get; set; }
     }
