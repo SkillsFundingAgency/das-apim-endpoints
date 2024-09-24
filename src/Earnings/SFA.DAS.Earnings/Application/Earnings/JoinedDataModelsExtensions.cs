@@ -1,9 +1,7 @@
-﻿using Azure.Core;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
-using System.Reflection;
 
 namespace SFA.DAS.Earnings.Application.Earnings
 {
