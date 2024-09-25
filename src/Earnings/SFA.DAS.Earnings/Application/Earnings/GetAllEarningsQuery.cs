@@ -58,6 +58,10 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
 
         var apprenticeshipsData = await _apprenticeshipsApiClient.Get<GetApprenticeshipsResponse>(new GetApprenticeshipsRequest { Ukprn = request.Ukprn });
         var earningsData = await _earningsApiClient.Get<GetFm36DataResponse>(new GetFm36DataRequest(request.Ukprn));
+
+        if(!IsDataReturnedValid(request.Ukprn, apprenticeshipsData, earningsData))
+            return new GetAllEarningsQueryResult { FM36Learners = [] };
+
         var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now));
 
         _logger.LogInformation("Found {apprenticeshipsCount} apprenticeships, {earningsApprenticeshipsCount} earnings apprenticeships, for provider {ukprn}", apprenticeshipsData.Apprenticeships.Count, earningsData.Count, request.Ukprn);
@@ -98,6 +102,23 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
 
         return result;
     }
+
+    private bool IsDataReturnedValid(long ukprn, GetApprenticeshipsResponse apprenticeshipsData, GetFm36DataResponse earningsData)
+    {
+        if(apprenticeshipsData == null || apprenticeshipsData.Apprenticeships == null || !apprenticeshipsData.Apprenticeships.Any())
+        {
+            _logger.LogWarning("No apprenticeships data returned for {ukprn}", ukprn);
+            return false;
+        }
+
+        if(earningsData == null || !earningsData.Any())
+        {
+            _logger.LogWarning("No earnings data returned for {ukprn}", ukprn);
+            return false;
+        }
+
+        return true;
+    } 
 
     private static IEnumerable<(Episode Episode, EpisodePrice Price)> GetApprenticeshipPriceEpisodesForAcademicYearStarting(List<Episode> apprenticeshipEpisodes, DateTime academicYearStartDate)
     {
