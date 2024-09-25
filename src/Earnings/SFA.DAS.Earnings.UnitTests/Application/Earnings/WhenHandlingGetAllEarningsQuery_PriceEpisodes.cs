@@ -1,4 +1,5 @@
 using FluentAssertions;
+using SFA.DAS.Earnings.Application.Extensions;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Earnings;
 
@@ -74,31 +75,26 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice.Should().Be(episodePrice.Price.TotalPrice);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeUpperLimitAdjustment.Should().Be(0);
 
-                var expectedPlannedTotalDays = (apprenticeship.PlannedEndDate - episodePrice.Price.StartDate).Days;
-                var expectedPlannedInstalments = 0;
-                for (var i = 0; i < expectedPlannedTotalDays; i++)
-                {
-                    if (apprenticeship.StartDate.AddDays(i).Day == DateTime.DaysInMonth(
-                            apprenticeship.StartDate.AddDays(i).Year, apprenticeship.StartDate.AddDays(i).Month))
-                        expectedPlannedInstalments++;
-                }
 
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodePlannedInstalments.Should().Be(expectedPlannedInstalments);
+                actualPriceEpisode.PriceEpisodeValues.PriceEpisodePlannedInstalments.Should().Be(InstalmentHelper.GetNumberOfInstalmentsBetweenDates(episodePrice.Price.StartDate, apprenticeship.PlannedEndDate));
+                
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualInstalments.Should()
                     .Be(expectedPriceEpisodesSplitByAcademicYear.Any(x => x.Price.StartDate > episodePrice.Price.StartDate)
                         ? 0 
                         : earningEpisode.Instalments.Count(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear)));
+                
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeInstalmentsThisPeriod.Should()
                     .Be(episodePrice.Price.StartDate 
-                        <= CollectionPeriodTestHelper.GetCensusDateForCollectionPeriod(short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear), _testFixture.CollectionPeriod)
+                        <= _testFixture.CollectionCalendarResponse.GetCensusDateForCollectionPeriod(_testFixture.CollectionPeriod)
                         &&
-                        CollectionPeriodTestHelper.GetCensusDateForCollectionPeriod(short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear), _testFixture.CollectionPeriod)
+                        _testFixture.CollectionCalendarResponse.GetCensusDateForCollectionPeriod(_testFixture.CollectionPeriod)
                         <= episodePrice.Price.EndDate
                         &&
                         earningEpisode.Instalments.Any(x =>
                         x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear) &&
                         x.DeliveryPeriod == _testFixture.CollectionPeriod)
                         ? 1 : 0);
+                
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompletionElement.Should().Be(earningEpisode.CompletionPayment);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodePreviousEarnings.Should().Be(0);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeInstalmentValue.Should().Be(earningEpisode.Instalments.First().Amount);

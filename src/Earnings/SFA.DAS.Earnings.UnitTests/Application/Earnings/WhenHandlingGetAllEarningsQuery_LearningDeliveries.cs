@@ -1,4 +1,5 @@
 using FluentAssertions;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Earnings;
 
@@ -67,7 +68,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryValues.LearnDelEligDisadvPayment.Should().BeFalse();
             learningDelivery.LearningDeliveryValues.LearnDelEmpIdFirstAdditionalPaymentThreshold.Should().BeNull();
             learningDelivery.LearningDeliveryValues.LearnDelEmpIdSecondAdditionalPaymentThreshold.Should().BeNull();
-            learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().Be((_testFixture.CollectionCalendarResponse.EndDate - apprenticeship.StartDate).Days);
+            learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().Be(1 + (_testFixture.CollectionCalendarResponse.EndDate - apprenticeship.StartDate).Days);
             learningDelivery.LearningDeliveryValues.LearnDelHistProgEarnings.Should().Be(earningEpisode.Instalments.Sum(i => i.Amount));
             learningDelivery.LearningDeliveryValues.LearnDelInitialFundLineType.Should().Be(earningApprenticeship.FundingLineType);
             learningDelivery.LearningDeliveryValues.LearnDelMathEng.Should().BeFalse();
@@ -77,15 +78,8 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryValues.OutstandNumOnProgInstalm.Should().BeNull();
 
             var expectedPlannedTotalDays = 1 + (apprenticeship.PlannedEndDate - apprenticeship.StartDate).Days;
-            var expectedPlannedOnProgInstalments = 0;
-            for (var i = 0; i < expectedPlannedTotalDays; i++)
-            {
-                if (apprenticeship.StartDate.AddDays(i).Day == DateTime.DaysInMonth(
-                        apprenticeship.StartDate.AddDays(i).Year, apprenticeship.StartDate.AddDays(i).Month))
-                    expectedPlannedOnProgInstalments++;
-            }
 
-            learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm.Should().Be(expectedPlannedOnProgInstalments);
+            learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm.Should().Be(InstalmentHelper.GetNumberOfInstalmentsBetweenDates(apprenticeship.StartDate, apprenticeship.PlannedEndDate));
             learningDelivery.LearningDeliveryValues.PlannedTotalDaysIL.Should().Be(expectedPlannedTotalDays);
             learningDelivery.LearningDeliveryValues.ProgType.Should().Be(25);
             learningDelivery.LearningDeliveryValues.PwayCode.Should().BeNull();
