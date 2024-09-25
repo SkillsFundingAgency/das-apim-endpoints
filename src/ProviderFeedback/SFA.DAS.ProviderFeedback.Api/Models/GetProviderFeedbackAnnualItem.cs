@@ -12,6 +12,7 @@ namespace SFA.DAS.ProviderFeedback.Api.Models
             return new GetProviderFeedbackAnnualItem
             {
                 ProviderId = source.ProviderStandard.Ukprn,
+                IsEmployerProvider = source.ProviderStandard.IsEmployerProvider,
                 EmployerFeedback = employerFeedbackResponse,
                 ApprenticeFeedback = apprenticeFeedbackResponse,
             };
