@@ -87,6 +87,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 
                 foreach (var vacancy in vacancyResult.ApprenticeshipVacancies)
                 {
+                    var savedVacancy = await candidateApiClient.Get<GetSavedVacancyApiResponse>(
+                        new GetSavedVacancyApiRequest(Guid.Parse(request.CandidateId), vacancy.Id));
+
                     vacancy.Application = new GetVacanciesListItem.CandidateApplication
                     {
                         Status = candidateApplications.Applications.FirstOrDefault(fil =>
@@ -94,6 +97,10 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                                     StringComparison.CurrentCultureIgnoreCase))?
                             .Status
                     };
+                    if (savedVacancy != null)
+                    {
+                        vacancy.IsSavedVacancy = true;
+                    }
                     apprenticeshipVacancies.Add(vacancy);
                 }
             }

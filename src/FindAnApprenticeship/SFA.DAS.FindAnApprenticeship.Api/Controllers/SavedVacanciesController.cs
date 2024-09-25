@@ -5,6 +5,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Vacancies;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies.DeleteSavedVacancy;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies.SaveVacancy;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies;
 
@@ -44,7 +45,23 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Post Saved Vacancies : An error occurred");
+                logger.LogError(e, "Post Saved Vacancy : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost, Route("{candidateId:guid}/delete")]
+        public async Task<IActionResult> Delete([FromRoute] Guid candidateId, [FromBody] DeleteSavedVacancyApiRequest request)
+        {
+            try
+            {
+                var result = await mediator.Send(new DeleteSavedVacancyCommand(candidateId, request.VacancyReference));
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Post Delete Saved Vacancy : An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

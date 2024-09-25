@@ -14,6 +14,7 @@ using System.Net;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Vacancies
 {
+    [TestFixture]
     public class WhenHandlingSaveVacancyCommand
     {
         [Test, MoqAutoData]
