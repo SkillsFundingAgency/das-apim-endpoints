@@ -32,7 +32,7 @@ public class GetCalendarEventQueryHandler(IAanHubRestApiClient apiClient, IRefer
             ContactEmail = apiResponse.ContactEmail,
             IsActive = apiResponse.IsActive,
             LastUpdatedDate = apiResponse.LastUpdatedDate,
-            Attendees = apiResponse.Attendees.Select(a => new QueryAttendee(a.MemberId, a.UserType, a.MemberName, a.Email,a.AddedDate, a.CancelledDate)).ToList(),
+            Attendees = apiResponse.Attendees.Select(a => new QueryAttendee(a.MemberId, a.UserType, a.MemberName, a.Surname, a.Email,a.AddedDate, a.CancelledDate)).ToList(),
             CancelledAttendees = apiResponse.CancelledAttendees.Select(ca => new QueryCancelledAttendee(ca.MemberId, ca.UserType, ca.MemberName, ca.Email, ca.AddedDate, ca.CancelledDate)).ToList(),
             EventGuests = apiResponse.EventGuests.Select(eg => new QueryEventGuest(eg.GuestName, eg.GuestJobTitle)).ToList(),
             PlannedAttendees = apiResponse.PlannedAttendees,

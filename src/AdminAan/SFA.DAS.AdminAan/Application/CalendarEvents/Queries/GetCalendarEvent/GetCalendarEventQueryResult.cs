@@ -32,7 +32,7 @@ public class GetCalendarEventQueryResult
     public int? RegionId { get; set; }
     public string? RegionName { get; set; }
 
-    public record QueryAttendee(Guid MemberId, string UserType, string MemberName, string Email, DateTime? AddedDate, DateTime? CancelledDate);
+    public record QueryAttendee(Guid MemberId, string UserType, string MemberName, string Surname, string Email, DateTime? AddedDate, DateTime? CancelledDate);
 
     public record QueryCancelledAttendee(Guid MemberId, string UserType, string MemberName, string Email, DateTime? AddedDate, DateTime? CancelledDate);
 
