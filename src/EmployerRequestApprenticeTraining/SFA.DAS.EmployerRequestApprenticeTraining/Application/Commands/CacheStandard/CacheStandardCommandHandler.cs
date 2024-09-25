@@ -12,16 +12,16 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
-using static SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests.PostStandardRequest;
+using static SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests.CacheStandardRequest;
 
-namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.PostStandard
+namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CacheStandard
 {
-    public class PostStandardCommandHandler : IRequestHandler<PostStandardCommand, PostStandardResult>
+    public class CacheStandardCommandHandler : IRequestHandler<CacheStandardCommand, CacheStandardResult>
     {
         private readonly IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration> _requestApprenticeTrainingApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
 
-        public PostStandardCommandHandler(
+        public CacheStandardCommandHandler(
             IRequestApprenticeTrainingApiClient<RequestApprenticeTrainingApiConfiguration> requestApprenticeTrainingApiClient,
             ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
         {
@@ -29,21 +29,21 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.PostSta
             _coursesApiClient = coursesApiClient;
         }
 
-        public async Task<PostStandardResult> Handle(PostStandardCommand command, CancellationToken cancellationToken)
+        public async Task<CacheStandardResult> Handle(CacheStandardCommand command, CancellationToken cancellationToken)
         {
             var coursesResponse = await _coursesApiClient.
-                GetWithResponseCode<StandardDetailResponse>(new GetStandardDetailsByIdRequest(command.StandardId));
+                GetWithResponseCode<StandardDetailResponse>(new GetStandardDetailsByIdRequest(command.StandardLarsCode));
 
             if (coursesResponse.StatusCode != System.Net.HttpStatusCode.NotFound)
             {
                 coursesResponse.EnsureSuccessStatusCode();
 
                 var response = await _requestApprenticeTrainingApiClient
-                .PostWithResponseCode<PostStandardRequestData, StandardResponse>((PostStandardRequest)coursesResponse.Body);
+                .PostWithResponseCode<CacheStandardRequestData, StandardResponse>((CacheStandardRequest)coursesResponse.Body);
 
                 response.EnsureSuccessStatusCode();
 
-                return new PostStandardResult
+                return new CacheStandardResult
                 {
                     Standard = (Standard)response.Body,
                 };

@@ -2,22 +2,22 @@
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using static SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests.PostStandardRequest;
+using static SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests.CacheStandardRequest;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests
 {
-    public class PostStandardRequest : IPostApiRequest<PostStandardRequestData>
+    public class CacheStandardRequest : IPostApiRequest<CacheStandardRequestData>
     {
-        public PostStandardRequestData Data { get; set; }
+        public CacheStandardRequestData Data { get; set; }
 
-        public PostStandardRequest(PostStandardRequestData data)
+        public CacheStandardRequest(CacheStandardRequestData data)
         {
             Data = data;
         }
 
         public string PostUrl => $"api/standards";
 
-        public class PostStandardRequestData
+        public class CacheStandardRequestData
         {
             public string StandardReference { get; set; }
             public string StandardTitle { get; set; }
@@ -25,9 +25,9 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests
             public string StandardSector { get; set; }
         }
 
-        public static implicit operator PostStandardRequest(StandardDetailResponse source)
+        public static implicit operator CacheStandardRequest(StandardDetailResponse source)
         {
-            return new PostStandardRequest(new PostStandardRequestData 
+            return new CacheStandardRequest(new CacheStandardRequestData 
             { 
                 StandardLevel = source.Level,
                 StandardReference = source.IfateReferenceNumber,

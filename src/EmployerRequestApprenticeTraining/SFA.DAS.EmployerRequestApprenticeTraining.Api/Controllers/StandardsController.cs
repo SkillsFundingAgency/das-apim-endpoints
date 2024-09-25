@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.PostStandard;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CacheStandard;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.RefreshStandards;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetActiveStandards;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
@@ -24,12 +24,12 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{standardId}")]
-        public async Task<IActionResult> Get(string standardId)
+        [HttpGet("{standardReference}")]
+        public async Task<IActionResult> Get(string standardReference)
         {
             try
             {
-                var result = await _mediator.Send(new GetStandardQuery { StandardReference = standardId });
+                var result = await _mediator.Send(new GetStandardQuery { StandardReference = standardReference });
 
                 if (result.Standard != null)
                 {
@@ -40,17 +40,17 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to retrieve standard for {StandardReference}", standardId);
+                _logger.LogError(e, "Error attempting to retrieve standard for {StandardReference}", standardReference);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
 
-        [HttpPost("{standardId}")]
-        public async Task<IActionResult> Post(string standardId)
+        [HttpPost("{standardLarsCode}")]
+        public async Task<IActionResult> Cache(string standardLarsCode)
         {
             try
             {
-                var result = await _mediator.Send(new PostStandardCommand { StandardId = standardId });
+                var result = await _mediator.Send(new CacheStandardCommand { StandardLarsCode = standardLarsCode });
 
                 if (result.Standard != null)
                 {
@@ -61,7 +61,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to retrieve standard for {StandardReference}", standardId);
+                _logger.LogError(e, "Error attempting to cache standard for {StandardLarsCode}", standardLarsCode);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -73,7 +73,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             {
                 var standards = await _mediator.Send(new GetActiveStandardsQuery());
 
-                var result = await _mediator.Send(new RefreshStandardsCommand 
+                await _mediator.Send(new RefreshStandardsCommand 
                 { 
                     Standards = standards.Standards,
                 });

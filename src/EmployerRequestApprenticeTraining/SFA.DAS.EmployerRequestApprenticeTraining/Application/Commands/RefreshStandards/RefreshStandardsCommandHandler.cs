@@ -30,7 +30,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.Refresh
                     StandardSector = s.StandardSector,
                     StandardTitle = s.StandardTitle 
                 }).ToList()
-            }); ;
+            });
 
             await _requestApprenticeTrainingApiClient.Put(request);
 

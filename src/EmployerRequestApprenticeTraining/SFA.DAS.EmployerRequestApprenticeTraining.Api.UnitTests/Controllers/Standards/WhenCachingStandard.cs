@@ -1,5 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
+﻿using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -7,11 +6,8 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.PostStandard;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CacheStandard;
 using SFA.DAS.EmployerRequestApprenticeTraining.Models;
-using SFA.DAS.SharedOuterApi.Exceptions;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
@@ -20,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Standards
 {
-    public class WhenPostingStandard
+    public class WhenCachingStandard
     {
         private Mock<IMediator> _mockMediator;
         private Mock<ILogger<StandardsController>> _mockLogger;
@@ -36,14 +32,14 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.St
 
         [Test, MoqAutoData]
         public async Task Then_The_Standard_Is_Returned(
-            PostStandardResult result)
+            CacheStandardResult result)
         {
             // Arrange
             _mockMediator
-                .Setup(x => x.Send(It.IsAny<PostStandardCommand>(), CancellationToken.None))
+                .Setup(x => x.Send(It.IsAny<CacheStandardCommand>(), CancellationToken.None))
                 .ReturnsAsync(result);
             // Act
-            var actual = await _sut.Post("1001") as OkObjectResult;
+            var actual = await _sut.Cache("1001") as OkObjectResult;
 
             // Assert
             actual.Should().NotBeNull();
@@ -52,16 +48,16 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.St
         }
 
         [Test, MoqAutoData]
-        public async Task PostStandardCommand_IsUnsuccessful_Then_ReturnBadRequest
+        public async Task CacheStandardCommand_IsUnsuccessful_Then_ReturnBadRequest
             (SendResponseNotificationEmailParameters param)
         {
             // Arrange
             _mockMediator
-               .Setup(m => m.Send(It.IsAny<PostStandardCommand>(), It.IsAny<CancellationToken>()))
+               .Setup(m => m.Send(It.IsAny<CacheStandardCommand>(), It.IsAny<CancellationToken>()))
                .Throws(new Exception());
 
             // Act
-            var result = await _sut.Post("1001") as StatusCodeResult;
+            var result = await _sut.Cache("1001") as StatusCodeResult;
 
             // Assert
             result.Should().NotBeNull();
