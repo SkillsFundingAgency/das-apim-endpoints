@@ -1,10 +1,14 @@
-﻿using RestEase;
-using SFA.DAS.EmployerPR.Application.Commands.PostNotifications;
-using SFA.DAS.EmployerPR.Application.Commands.PostPermissions;
-using SFA.DAS.EmployerPR.Application.Queries.GetEmployerRelationships;
-using SFA.DAS.EmployerPR.Application.Queries.GetPermissions;
-using SFA.DAS.EmployerPR.Application.Queries.GetRelationships;
-using SFA.DAS.EmployerPR.Application.Queries.GetRequest;
+﻿using MediatR;
+using RestEase;
+using SFA.DAS.EmployerPR.Application.EmployerRelationships.Queries.GetEmployerRelationships;
+using SFA.DAS.EmployerPR.Application.Notifications.Commands.PostNotifications;
+using SFA.DAS.EmployerPR.Application.Permissions.Commands.PostPermissions;
+using SFA.DAS.EmployerPR.Application.Permissions.Queries.GetPermissions;
+using SFA.DAS.EmployerPR.Application.Relationships.Queries.GetRelationships;
+using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptAddAccountRequest;
+using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptPermissionsRequest;
+using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinePermissionsRequest;
+using SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
 
 namespace SFA.DAS.EmployerPR.Infrastructure;
 
@@ -31,4 +35,13 @@ public interface IProviderRelationshipsApiRestClient
 
     [Get("requests/{requestId}")]
     Task<GetRequestResponse?> GetRequest([Path] Guid requestId, CancellationToken cancellationToken);
+
+    [Put("requests/{requestId}/declined")]
+    Task<Unit> DeclineRequest([Path] Guid requestId, [Body] DeclinedRequestModel model, CancellationToken cancellationToken);
+
+    [Post("requests/{requestId}/permission/accepted")]
+    Task<Unit> AcceptPermissionsRequest([Path] Guid requestId, [Body] AcceptPermissionsRequestModel model, CancellationToken cancellationToken);
+
+    [Post("requests/{requestId}/addaccount/accepted")]
+    Task<Unit> AcceptAddAccountRequest([Path] Guid requestId, [Body] AcceptAddAccountRequestModel model, CancellationToken cancellationToken);
 }

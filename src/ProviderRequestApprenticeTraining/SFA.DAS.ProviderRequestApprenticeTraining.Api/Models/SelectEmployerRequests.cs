@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
-using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,6 +10,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Models
         public string StandardTitle { get; set; }
         public int StandardLevel { get; set; }
         public List<SelectEmployerRequest> EmployerRequests { get; set; }
+        public int ExpiryAfterMonths { get; set; }
+        public int RemovedAfterRequestedMonths { get; set; }
 
         public static implicit operator SelectEmployerRequests(GetSelectEmployerRequestsResult source)
         {
