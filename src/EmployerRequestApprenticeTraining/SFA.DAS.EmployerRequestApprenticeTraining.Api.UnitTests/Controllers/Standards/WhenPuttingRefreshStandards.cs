@@ -6,7 +6,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.RefreshStandards;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetActiveStandards;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLatestStandards;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
@@ -19,12 +19,12 @@ namespace SFA.DAS.WhenGettingStandard.Api.UnitTests.Controllers.ActiveStandards
     {
         [Test, MoqAutoData]
         public async Task Then_The_ActiveStandards_Are_Returned_From_Mediator(
-            GetActiveStandardsResult queryResult,
+            GetLatestStandardsResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] StandardsController controller)
         {
             mockMediator
-                .Setup(x => x.Send(It.IsAny<GetActiveStandardsQuery>(), CancellationToken.None))
+                .Setup(x => x.Send(It.IsAny<GetLatestStandardsQuery>(), CancellationToken.None))
                 .ReturnsAsync(queryResult);
 
             mockMediator
@@ -39,12 +39,12 @@ namespace SFA.DAS.WhenGettingStandard.Api.UnitTests.Controllers.ActiveStandards
         }
 
         [Test, MoqAutoData]
-        public async Task Then_InternalServerError_Returned_If_GetActiveStandardsThrowsException(
+        public async Task Then_InternalServerError_Returned_If_GetLatestStandardsThrowsException(
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] StandardsController controller)
         {
             mockMediator
-                .Setup(x => x.Send(It.IsAny<GetActiveStandardsQuery>(), CancellationToken.None))
+                .Setup(x => x.Send(It.IsAny<GetLatestStandardsQuery>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
             var actual = await controller.RefreshStandards() as StatusCodeResult;
@@ -55,12 +55,12 @@ namespace SFA.DAS.WhenGettingStandard.Api.UnitTests.Controllers.ActiveStandards
 
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_RefreshStandardsThrowsException(
-            GetActiveStandardsResult queryResult,
+            GetLatestStandardsResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] StandardsController controller)
         {
             mockMediator
-                .Setup(x => x.Send(It.IsAny<GetActiveStandardsQuery>(), CancellationToken.None))
+                .Setup(x => x.Send(It.IsAny<GetLatestStandardsQuery>(), CancellationToken.None))
                 .ReturnsAsync(queryResult);
 
             mockMediator

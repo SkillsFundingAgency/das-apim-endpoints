@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CacheStandard;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.RefreshStandards;
-using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetActiveStandards;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLatestStandards;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
 using System;
 using System.Net;
@@ -71,7 +71,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
         {
             try
             {
-                var standards = await _mediator.Send(new GetActiveStandardsQuery());
+                var standards = await _mediator.Send(new GetLatestStandardsQuery());
 
                 await _mediator.Send(new RefreshStandardsCommand 
                 { 
