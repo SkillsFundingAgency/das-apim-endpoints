@@ -53,80 +53,88 @@ public class GetAllEarningsQueryTestFixture
 
     public GetApprenticeshipsResponse BuildApprenticeshipsResponse(long ukprn)
     {
+        //Simple apprenticeship, spans an academic year boundary,
+        // so we can use this to test that a new price episode is created in the fm36 when a new academic year starts
+        var simpleApprenticeship =
+            new Apprenticeship
+            {
+                Uln = Fixture.Create<int>().ToString(),
+                Key = Guid.NewGuid(),
+                Episodes = new List<Episode>
+                {
+                    new Episode
+                    {
+                        Key = Guid.NewGuid(),
+                        TrainingCode = $"{Fixture.Create<int>()}    ",
+                        Prices = new List<EpisodePrice>
+                        {
+                            new EpisodePrice
+                            {
+                                StartDate = new DateTime(2020, 1, 1),
+                                EndDate = new DateTime(2021, 1, 1),
+                                TrainingPrice = 14000,
+                                EndPointAssessmentPrice = 1000,
+                                TotalPrice = 15000,
+                                FundingBandMaximum = 19000
+                            }
+                        }
+                    }
+                },
+                StartDate = new DateTime(2020, 1, 1),
+                PlannedEndDate = new DateTime(2021, 1, 1),
+                AgeAtStartOfApprenticeship = 18
+            };
+
+        //Apprenticeship with a price change
+        var apprenticeshipWithAPriceChange =
+            new Apprenticeship
+            {
+                Uln = Fixture.Create<int>().ToString(),
+                Key = Guid.NewGuid(),
+                Episodes = new List<Episode>
+                {
+                    new Episode
+                    {
+                        Key = Guid.NewGuid(),
+                        TrainingCode = $"{Fixture.Create<int>()}    ",
+                        Prices = new List<EpisodePrice>
+                        {
+                            new EpisodePrice
+                            {
+                                StartDate = new DateTime(2020, 8, 1),
+                                EndDate = new DateTime(2021, 5, 2),
+                                TrainingPrice = 21000,
+                                EndPointAssessmentPrice = 1500,
+                                TotalPrice = 22500,
+                                FundingBandMaximum = 30000
+                            },
+                            new EpisodePrice
+                            {
+                                StartDate = new DateTime(2021, 5, 3),
+                                EndDate = new DateTime(2021, 7, 31),
+                                TrainingPrice = 28500,
+                                EndPointAssessmentPrice = 1500,
+                                TotalPrice = 30000,
+                                FundingBandMaximum = 30000
+                            }
+                        }
+                    }
+                },
+                StartDate = new DateTime(2020, 8, 1),
+                PlannedEndDate = new DateTime(2021, 7, 31),
+                AgeAtStartOfApprenticeship = 19
+            };
+
         var response = new GetApprenticeshipsResponse
         {
             Ukprn = ukprn,
             Apprenticeships = new List<Apprenticeship>
             {
-                //Simple apprenticeship, spans an academic year boundary,
-                // so we can use this to test that a new price episode is created in the fm36 when a new academic year starts
-                new Apprenticeship
-                {
-                    Uln = Fixture.Create<int>().ToString(),
-                    Key = Guid.NewGuid(),
-                    Episodes = new List<Episode>
-                    {
-                        new Episode
-                        {
-                            Key = Guid.NewGuid(),
-                            TrainingCode = $"{Fixture.Create<int>()}    ",
-                            Prices = new List<EpisodePrice>
-                            {
-                                new EpisodePrice
-                                {
-                                    StartDate = new DateTime(2020,1,1),
-                                    EndDate = new DateTime(2021,1,1),
-                                    TrainingPrice = 14000,
-                                    EndPointAssessmentPrice = 1000,
-                                    TotalPrice = 15000,
-                                    FundingBandMaximum = 19000
-                                }
-                            }
-                        }
-                    },
-                    StartDate = new DateTime(2020,1,1),
-                    PlannedEndDate = new DateTime(2021,1,1),
-                    AgeAtStartOfApprenticeship = 18
-                },
-                //Apprenticeship with a price change
-                new Apprenticeship
-                {
-                    Uln = Fixture.Create<int>().ToString(),
-                    Key = Guid.NewGuid(),
-                    Episodes = new List<Episode>
-                    {
-                        new Episode
-                        {
-                            Key = Guid.NewGuid(),
-                            TrainingCode = $"{Fixture.Create<int>()}    ",
-                            Prices = new List<EpisodePrice>
-                            {
-                                new EpisodePrice
-                                {
-                                    StartDate = new DateTime(2020,8,1),
-                                    EndDate = new DateTime(2021,5,2),
-                                    TrainingPrice = 21000,
-                                    EndPointAssessmentPrice = 1500,
-                                    TotalPrice = 22500,
-                                    FundingBandMaximum = 30000
-                                },
-                                new EpisodePrice
-                                {
-                                    StartDate = new DateTime(2021,5,3),
-                                    EndDate = new DateTime(2021,7,31),
-                                    TrainingPrice = 28500,
-                                    EndPointAssessmentPrice = 1500,
-                                    TotalPrice = 30000,
-                                    FundingBandMaximum = 30000
-                                }
-                            }
-                        }
-                    },
-                    StartDate = new DateTime(2020,8,1),
-                    PlannedEndDate = new DateTime(2021,7,31),
-                    AgeAtStartOfApprenticeship = 19
-                }
-            }
+                simpleApprenticeship,
+                apprenticeshipWithAPriceChange
+            },
+            SimpleApprenticeship = simpleApprenticeship,
+            ApprenticeshipWithAPriceChange = apprenticeshipWithAPriceChange
         };
         response.Ukprn = ukprn;
         response.Apprenticeships.ForEach(x => x.Uln = Fixture.Create<long>().ToString());
@@ -183,18 +191,18 @@ public class GetAllEarningsQueryTestFixture
                         OnProgramTotal = 24000,
                         Instalments = new List<Instalment>
                         {
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 2000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 2000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 2000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 2000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 2000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 6, Amount = 2000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 2000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 8, Amount = 2000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 9, Amount = 2000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 10, Amount = 2000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 11, Amount = 2000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 12, Amount = 2000 }
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 1875 },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 1875 },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 1875 },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 1875 },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 1875 },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 6, Amount = 1875 },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 1875 },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 8, Amount = 1875 },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 9, Amount = 1875 },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 10, Amount = 4375 },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 11, Amount = 4375 },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 12, Amount = 4375 }
                         }
                     }
                 }
