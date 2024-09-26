@@ -1,6 +1,8 @@
 ﻿using MediatR;
+using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
@@ -20,7 +22,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.ExpireE
         public async Task<Unit> Handle(ExpireEmployerRequestsCommand command, CancellationToken cancellationToken)
         {
             var response = await _requestApprenticeTrainingApiClient
-               .PostWithResponseCode<ExpireEmployerRequestsData, object>(new ExpireEmployerRequestsRequest(), false);
+                .PutWithResponseCode<NullResponse>(new ExpireEmployerRequestsRequest());
 
             response.EnsureSuccessStatusCode();
 
