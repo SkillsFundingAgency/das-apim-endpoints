@@ -83,7 +83,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                             .Select(priceEpisodeModel => new PriceEpisode
                             {
                                 PriceEpisodeIdentifier = $"{EarningsFM36Constants.ProgType}-{priceEpisodeModel.ApprenticeshipEpisode.TrainingCode.Trim()}-{priceEpisodeModel.ApprenticeshipEpisodePrice.StartDate:dd/MM/yyyy}",
-                                PriceEpisodeValues = model.GetPriceEpisodeValues(priceEpisodeModel, priceEpisodesForAcademicYear, currentAcademicYear, request.CollectionPeriod),
+                                PriceEpisodeValues = model.GetPriceEpisodeValues(priceEpisodeModel, priceEpisodesForAcademicYear, currentAcademicYear, request.CollectionPeriod, priceEpisodeModel.ApprenticeshipEpisodePrice != priceEpisodesForAcademicYear.Last().Price),
                                 PriceEpisodePeriodisedValues = model.GetPriceEpisodePeriodisedValues(currentAcademicYear)
                             }).ToList(),
                         LearningDeliveries = new List<LearningDelivery>

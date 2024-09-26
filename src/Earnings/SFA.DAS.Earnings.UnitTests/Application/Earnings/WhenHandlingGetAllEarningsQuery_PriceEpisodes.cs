@@ -71,17 +71,11 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisode1618FUTotEarnings.Should().Be(0);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeUpperBandLimit.Should().Be(episodePrice.Price.FundingBandMaximum);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodePlannedEndDate.Should().Be(apprenticeship.PlannedEndDate);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.Should().Be(episodePrice.Price.EndDate);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice.Should().Be(episodePrice.Price.TotalPrice);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeUpperLimitAdjustment.Should().Be(0);
 
 
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodePlannedInstalments.Should().Be(InstalmentHelper.GetNumberOfInstalmentsBetweenDates(episodePrice.Price.StartDate, apprenticeship.PlannedEndDate));
-                
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualInstalments.Should()
-                    .Be(expectedPriceEpisodesSplitByAcademicYear.Any(x => x.Price.StartDate > episodePrice.Price.StartDate)
-                        ? 0 
-                        : earningEpisode.Instalments.Count(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear)));
                 
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeInstalmentsThisPeriod.Should()
                     .Be(episodePrice.Price.StartDate 
@@ -154,6 +148,48 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             }
             fm36Learner.PriceEpisodes.Count.Should().Be(apprenticeship.Episodes.SelectMany(episode => episode.Prices).Count());
         }
+    }
+
+    [Test]
+    public void WhenNoSubsequentPriceInYearThenPriceEpisodeActualEndDateAndPriceEpisodeActualInstalmentsAreNotSet()
+    {
+        // Assert
+        _testFixture.Result.Should().NotBeNull();
+
+        var fm36Learner = _testFixture.Result.FM36Learners
+            .SingleOrDefault(x => x.ULN == long.Parse(_testFixture.ApprenticeshipsResponse.SimpleApprenticeship.Uln));
+
+        var expectedPriceEpisodesSplitByAcademicYear =
+            _testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(_testFixture.ApprenticeshipsResponse.SimpleApprenticeship.Episodes).ToList();
+
+        var episodePrice = expectedPriceEpisodesSplitByAcademicYear.Single().Price;
+
+        var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
+            x.PriceEpisodeValues.EpisodeStartDate == episodePrice.StartDate);
+
+        actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.Should().BeNull();
+        actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualInstalments.Should().Be(0);
+    }
+
+    [Test]
+    public void WhenSubsequentPriceInYearThenPriceEpisodeActualEndDateAndPriceEpisodeActualInstalmentsAreSet()
+    {
+        // Assert
+        _testFixture.Result.Should().NotBeNull();
+
+        var fm36Learner = _testFixture.Result.FM36Learners
+            .SingleOrDefault(x => x.ULN == long.Parse(_testFixture.ApprenticeshipsResponse.ApprenticeshipWithAPriceChange.Uln));
+
+        var expectedPriceEpisodesSplitByAcademicYear =
+            _testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(_testFixture.ApprenticeshipsResponse.ApprenticeshipWithAPriceChange.Episodes).ToList();
+
+        var episodePrice = expectedPriceEpisodesSplitByAcademicYear.First().Price;
+
+        var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
+            x.PriceEpisodeValues.EpisodeStartDate == episodePrice.StartDate);
+
+        actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.Should().Be(episodePrice.EndDate);
+        actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualInstalments.Should().Be(12);
     }
 
     [Test]

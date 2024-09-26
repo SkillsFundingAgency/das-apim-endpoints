@@ -42,7 +42,8 @@ namespace SFA.DAS.Earnings.Application.Earnings
             JoinedPriceEpisodeModel joinedPriceEpisode,
             IEnumerable<(Episode Episode, EpisodePrice Price)> priceEpisodesForAcademicYear,
             GetAcademicYearsResponse currentAcademicYear,
-            byte collectionPeriod)
+            byte collectionPeriod,
+            bool hasSubsequentPriceEpisodes)
         {
 
             var previousEarnings = GetPreviousEarnings(joinedEarningsApprenticeship.EarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), collectionPeriod);
@@ -66,12 +67,12 @@ namespace SFA.DAS.Earnings.Application.Earnings
 
                 PriceEpisodeUpperBandLimit = joinedPriceEpisode.ApprenticeshipEpisodePrice.FundingBandMaximum,
                 PriceEpisodePlannedEndDate = joinedEarningsApprenticeship.Apprenticeship.PlannedEndDate,
-                PriceEpisodeActualEndDate = joinedPriceEpisode.ApprenticeshipEpisodePrice.EndDate,
+                PriceEpisodeActualEndDate = hasSubsequentPriceEpisodes ? joinedPriceEpisode.ApprenticeshipEpisodePrice.EndDate : null,
                 PriceEpisodeTotalTNPPrice = joinedPriceEpisode.ApprenticeshipEpisodePrice.TotalPrice,
                 PriceEpisodeUpperLimitAdjustment = EarningsFM36Constants.PriceEpisodeUpperLimitAdjustment,
                 
                 PriceEpisodePlannedInstalments = joinedPriceEpisode.ApprenticeshipEpisodePrice.StartDate.GetNumberOfIncludedCensusDatesUntil(joinedEarningsApprenticeship.Apprenticeship.PlannedEndDate),
-                PriceEpisodeActualInstalments = joinedEarningsApprenticeship.GetPriceEpisodeActualInstalments(joinedPriceEpisode,priceEpisodesForAcademicYear,currentAcademicYear),
+                PriceEpisodeActualInstalments = joinedEarningsApprenticeship.GetPriceEpisodeActualInstalments(currentAcademicYear, hasSubsequentPriceEpisodes),
                 PriceEpisodeInstalmentsThisPeriod = joinedEarningsApprenticeship.GetPriceEpisodeInstalmentsThisPeriod(joinedPriceEpisode, priceEpisodesForAcademicYear,currentAcademicYear, collectionPeriod),
 
                 PriceEpisodeCompletionElement = joinedPriceEpisode.EarningsEpisode.CompletionPayment,
@@ -247,16 +248,15 @@ namespace SFA.DAS.Earnings.Application.Earnings
 
         private static int? GetPriceEpisodeActualInstalments(
             this JoinedEarningsApprenticeship joinedEarningsApprenticeship,
-            JoinedPriceEpisodeModel joinedPriceEpisode,
-            IEnumerable<(Episode Episode, EpisodePrice Price)> priceEpisodesForAcademicYear,
-            GetAcademicYearsResponse currentAcademicYear)
+            GetAcademicYearsResponse currentAcademicYear,
+            bool hasSubsequencePriceEpisodes)
         {
 
-            return priceEpisodesForAcademicYear.Any(x => x.Price.StartDate > joinedPriceEpisode.ApprenticeshipEpisodePrice.StartDate)
-                ? 0
-                : joinedEarningsApprenticeship.EarningsApprenticeship.Episodes
-                .SelectMany(x => x.Instalments)
-                .Count(x => x.AcademicYear == short.Parse(currentAcademicYear.AcademicYear));
+            return hasSubsequencePriceEpisodes
+                ? joinedEarningsApprenticeship.EarningsApprenticeship.Episodes
+                    .SelectMany(x => x.Instalments)
+                    .Count(x => x.AcademicYear == short.Parse(currentAcademicYear.AcademicYear))
+                : 0;
         }
 
         private static int? GetPriceEpisodeInstalmentsThisPeriod(
