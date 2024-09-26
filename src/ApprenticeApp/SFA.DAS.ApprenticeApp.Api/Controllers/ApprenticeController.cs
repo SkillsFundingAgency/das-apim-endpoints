@@ -6,18 +6,15 @@ using RestEase;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeSubscriptions;
 using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts;
+using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Controllers;
 
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
 {
     [ApiController]
-    public class ApprenticeController : ControllerBase
+    public class ApprenticeController(IMediator mediator) : ApprenticeControllerBase(mediator)
     {
-        private readonly IMediator _mediator;
+        private readonly IMediator _mediator = mediator;
 
-        public ApprenticeController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
 
         [HttpGet]
         [Route("/apprentices/{id}")]
