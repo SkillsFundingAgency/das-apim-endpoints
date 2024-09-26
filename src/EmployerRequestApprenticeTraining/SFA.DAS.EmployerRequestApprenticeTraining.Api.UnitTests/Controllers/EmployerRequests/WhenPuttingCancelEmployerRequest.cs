@@ -50,7 +50,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
                 .ReturnsAsync(employerRequestResult);
 
             _mediatorMock
-                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardId == employerRequestResult.EmployerRequest.StandardReference), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardReference == employerRequestResult.EmployerRequest.StandardReference), CancellationToken.None))
                 .ReturnsAsync(standardResult);
 
             _mediatorMock
@@ -109,7 +109,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
                 .ReturnsAsync(employerRequestResult);
 
             _mediatorMock
-                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardId == employerRequestResult.EmployerRequest.StandardReference), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardReference == employerRequestResult.EmployerRequest.StandardReference), CancellationToken.None))
                 .ReturnsAsync(standardResult);
 
             _mediatorMock

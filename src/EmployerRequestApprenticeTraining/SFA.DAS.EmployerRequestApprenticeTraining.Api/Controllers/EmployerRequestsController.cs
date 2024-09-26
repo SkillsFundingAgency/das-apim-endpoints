@@ -61,7 +61,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                         }).ToList());
                     }
 
-                    var standardTask = _mediator.Send(new GetStandardQuery { StandardId = employerRequest.StandardReference });
+                    var standardTask = _mediator.Send(new GetStandardQuery { StandardReference = employerRequest.StandardReference });
                     var settingsTask = _mediator.Send(new GetSettingsQuery());
 
                     var allTasks = providerTasks.Concat(new Task[] { standardTask, settingsTask }).ToList();
@@ -74,8 +74,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                     var trainingRequest = new TrainingRequest
                     {
                         EmployerRequestId = employerRequest.Id,
-                        StandardTitle = standardResult.Standard.Title,
-                        StandardLevel = standardResult.Standard.Level,
+                        StandardTitle = standardResult.Standard.StandardTitle,
+                        StandardLevel = standardResult.Standard.StandardLevel,
                         NumberOfApprentices = employerRequest.NumberOfApprentices,
                         SameLocation = employerRequest.SameLocation,
                         SingleLocation = employerRequest.SingleLocation,
@@ -133,7 +133,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                 var employerRequestResult = await _mediator.Send(new GetEmployerRequestQuery { EmployerRequestId = employerRequestId });
                 if (employerRequestResult.EmployerRequest != null && employerRequestResult.EmployerRequest.Status == RequestStatus.Active)
                 {
-                    var standardTask = _mediator.Send(new GetStandardQuery { StandardId = employerRequestResult.EmployerRequest.StandardReference });
+                    var standardTask = _mediator.Send(new GetStandardQuery { StandardReference = employerRequestResult.EmployerRequest.StandardReference });
                     var employerProfileTask = _mediator.Send(new GetEmployerProfileUserQuery { UserId = cancelRequest.CancelledBy });
 
                     await Task.WhenAll([standardTask, employerProfileTask]);
@@ -147,7 +147,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                         CancelledBy = cancelRequest.CancelledBy,
                         CancelledByEmail = employerProfileResult.Email,
                         CancelledByFirstName = employerProfileResult.FirstName,
-                        CourseLevel = $"{standardResult.Standard.Title} (level {standardResult.Standard.Level})",
+                        CourseLevel = $"{standardResult.Standard.StandardLevel} (level {standardResult.Standard.StandardLevel})",
                         DashboardUrl = cancelRequest.DashboardUrl
                     };
 
@@ -174,7 +174,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                 {
                     var employerRequest = employerRequestResult.EmployerRequest;
 
-                    var standardTask = _mediator.Send(new GetStandardQuery { StandardId = employerRequest.StandardReference });
+                    var standardTask = _mediator.Send(new GetStandardQuery { StandardReference = employerRequest.StandardReference });
                     var employerProfileUserTask = _mediator.Send(new GetEmployerProfileUserQuery { UserId = employerRequest.RequestedBy });
                     var settingsTask = _mediator.Send(new GetSettingsQuery());
 
@@ -187,8 +187,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                     return Ok(new SubmitEmployerRequestConfirmation
                     {
                         EmployerRequestId = employerRequest.Id,
-                        StandardTitle = standardResult.Standard.Title,
-                        StandardLevel = standardResult.Standard.Level,
+                        StandardTitle = standardResult.Standard.StandardTitle,
+                        StandardLevel = standardResult.Standard.StandardLevel,
                         NumberOfApprentices = employerRequest.NumberOfApprentices,
                         SameLocation = employerRequest.SameLocation,
                         SingleLocation = employerRequest.SingleLocation,
@@ -221,7 +221,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                 {
                     var employerRequest = employerRequestResult.EmployerRequest;
 
-                    var standardTask = _mediator.Send(new GetStandardQuery { StandardId = employerRequest.StandardReference });
+                    var standardTask = _mediator.Send(new GetStandardQuery { StandardReference = employerRequest.StandardReference });
                     var employerProfileUserTask = _mediator.Send(new GetEmployerProfileUserQuery { UserId = employerRequest.RequestedBy });
 
                     await Task.WhenAll(standardTask, employerProfileUserTask);
@@ -232,8 +232,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                     return Ok(new CancelEmployerRequestConfirmation
                     {
                         EmployerRequestId = employerRequest.Id,
-                        StandardTitle = standardResult.Standard.Title,
-                        StandardLevel = standardResult.Standard.Level,
+                        StandardTitle = standardResult.Standard.StandardTitle,
+                        StandardLevel = standardResult.Standard.StandardLevel,
                         NumberOfApprentices = employerRequest.NumberOfApprentices,
                         SameLocation = employerRequest.SameLocation,
                         SingleLocation = employerRequest.SingleLocation,
@@ -254,7 +254,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
         }
 
-        [HttpPost("expire")]
+        [HttpPut("expire")]
         public async Task<IActionResult> ExpireEmployerRequests()
         {
             try
@@ -284,7 +284,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
         }
 
-        [HttpPost("send-notification")]
+        [HttpPut("send-notification")]
         public async Task<IActionResult> SendEmployerRequestResponseNotifications(SendResponseNotificationEmailParameters parameters)
         {
             try

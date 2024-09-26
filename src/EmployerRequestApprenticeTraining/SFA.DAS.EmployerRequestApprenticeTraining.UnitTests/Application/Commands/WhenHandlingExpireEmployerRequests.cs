@@ -2,8 +2,10 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.ExpireEmployerRequests;
+using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -29,35 +31,19 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
         }
 
         [Test, MoqAutoData]
-        public async Task Then_PostRequestIsSent(ExpireEmployerRequestsCommand command, string errorContent)
+        public async Task Then_PutRequestIsSent(ExpireEmployerRequestsCommand command, string errorContent)
         {
             // Arrange
-            var response = new ApiResponse<object>(new object(), HttpStatusCode.OK, errorContent);
+            var response = new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.OK, errorContent);
 
-            _mockApiClient.Setup(c => c.PostWithResponseCode<ExpireEmployerRequestsData, object>(It.IsAny<ExpireEmployerRequestsRequest>(), It.IsAny<bool>()))
+            _mockApiClient.Setup(c => c.PutWithResponseCode<NullResponse>(It.IsAny<ExpireEmployerRequestsRequest>()))
                 .ReturnsAsync(response);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _mockApiClient.Verify(c => c.PostWithResponseCode<ExpireEmployerRequestsData, object>(It.IsAny<ExpireEmployerRequestsRequest>(), It.IsAny<bool>()), Times.Once);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_PostRequestSentIsCommand(ExpireEmployerRequestsCommand command, string errorContent)
-        {
-            // Arrange
-            var response = new ApiResponse<object>(new object(), HttpStatusCode.Created, errorContent);
-            IPostApiRequest<ExpireEmployerRequestsData> submittedRequest = null;
-
-            _mockApiClient.Setup(c => c.PostWithResponseCode<ExpireEmployerRequestsData, object>(It.IsAny<ExpireEmployerRequestsRequest>(), It.IsAny<bool>()))
-                .Callback<IPostApiRequest<ExpireEmployerRequestsData>, bool>((x, y) => submittedRequest = x)
-                .ReturnsAsync(response);
-
-            // Act
-            await _handler.Handle(command, CancellationToken.None);
-
+            _mockApiClient.Verify(c => c.PutWithResponseCode<NullResponse>(It.IsAny<ExpireEmployerRequestsRequest>()), Times.Once);
         }
 
         [Test]
@@ -69,9 +55,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
             ExpireEmployerRequestsCommand command,
             string errorContent)
         {
-            var response = new ApiResponse<object>(null, statusCode, errorContent);
-
-            _mockApiClient.Setup(c => c.PostWithResponseCode<ExpireEmployerRequestsData, object>(It.IsAny<ExpireEmployerRequestsRequest>(), false))
+            var response = new ApiResponse<NullResponse>(new NullResponse(), statusCode, errorContent);
+            _mockApiClient.Setup(c => c.PutWithResponseCode<NullResponse>(It.IsAny<ExpireEmployerRequestsRequest>()))
                 .ReturnsAsync(response);
 
             Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
