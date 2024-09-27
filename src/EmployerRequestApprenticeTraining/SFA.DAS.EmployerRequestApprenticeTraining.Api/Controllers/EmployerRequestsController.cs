@@ -83,7 +83,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                         DayRelease = employerRequest.DayRelease,
                         BlockRelease = employerRequest.BlockRelease,
                         RequestedAt = employerRequest.RequestedAt,
-                        Status = employerRequest.Status,
+                        Status = employerRequest.RequestStatus,
                         ExpiredAt = employerRequest.ExpiredAt,
                         ExpiryAt = employerRequest.RequestedAt.AddMonths(settings.ExpiryAfterMonths),
                         RemoveAt = employerRequest.RequestedAt.AddMonths(settings.ExpiryAfterMonths + settings.RemovedAfterExpiryMonths),
@@ -131,7 +131,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             try
             {
                 var employerRequestResult = await _mediator.Send(new GetEmployerRequestQuery { EmployerRequestId = employerRequestId });
-                if (employerRequestResult.EmployerRequest != null && employerRequestResult.EmployerRequest.Status == RequestStatus.Active)
+                if (employerRequestResult.EmployerRequest != null && employerRequestResult.EmployerRequest.RequestStatus == RequestStatus.Active)
                 {
                     var standardTask = _mediator.Send(new GetStandardQuery { StandardReference = employerRequestResult.EmployerRequest.StandardReference });
                     var employerProfileTask = _mediator.Send(new GetEmployerProfileUserQuery { UserId = cancelRequest.CancelledBy });
