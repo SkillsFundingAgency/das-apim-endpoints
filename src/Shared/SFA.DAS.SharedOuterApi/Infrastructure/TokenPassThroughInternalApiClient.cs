@@ -35,6 +35,8 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             if (authHeader != null)
             {
                 httpRequestMessage.Headers.Add("Authorization", authHeader);
+                //todo do not merge this line
+                _logger.LogWarning("TokenPassThroughInternalApiClient authHeader - {0}", authHeader);
             }
             else
             {
