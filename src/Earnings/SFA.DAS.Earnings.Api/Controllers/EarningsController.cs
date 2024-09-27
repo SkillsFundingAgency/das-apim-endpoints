@@ -29,7 +29,7 @@ public class EarningsController : ControllerBase
     {
         try
         {
-            var queryResult = await _mediator.Send(new GetAllEarningsQuery { Ukprn = ukprn });
+            var queryResult = await _mediator.Send(new GetAllEarningsQuery { Ukprn = ukprn, CollectionPeriod = collectionPeriod });
 
             var model = queryResult.FM36Learners;
 
@@ -71,10 +71,11 @@ public class EarningsController : ControllerBase
         {
             new FM36Learner
             {
-                ULN = fixture.Create<long>(),
-                LearnRefNumber = Guid.NewGuid().ToString(),
+                ULN = 9000219204,
+                LearnRefNumber = "TestPS1",
                 PriceEpisodes = CreatePriceEpisodes(),
                 LearningDeliveries = CreateLearningDeliveries(),
+                EarningsPlatform = 2
             }
         };
     }

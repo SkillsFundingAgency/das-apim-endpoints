@@ -23,7 +23,7 @@ public class WhenGettingAllEarnings
     {
         // Arrange
         mockMediator
-            .Setup(x => x.Send(It.Is<GetAllEarningsQuery>(query => query.Ukprn == ukprn), It.IsAny<CancellationToken>()))
+            .Setup(x => x.Send(It.Is<GetAllEarningsQuery>(query => query.Ukprn == ukprn && query.CollectionPeriod == collectionPeriod), It.IsAny<CancellationToken>()))
             .ReturnsAsync(expectedResponse);
 
         var controller = new EarningsController(mockMediator.Object, mockLogger.Object);

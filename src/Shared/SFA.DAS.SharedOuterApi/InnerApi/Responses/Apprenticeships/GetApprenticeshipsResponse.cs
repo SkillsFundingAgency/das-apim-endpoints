@@ -7,6 +7,9 @@ public class GetApprenticeshipsResponse
 {
     public long Ukprn { get; set; }
     public List<Apprenticeship> Apprenticeships { get; set; }
+
+    public Apprenticeship SimpleApprenticeship { get; set; }
+    public Apprenticeship ApprenticeshipWithAPriceChange { get; set; }
 }
 
 public class Apprenticeship
