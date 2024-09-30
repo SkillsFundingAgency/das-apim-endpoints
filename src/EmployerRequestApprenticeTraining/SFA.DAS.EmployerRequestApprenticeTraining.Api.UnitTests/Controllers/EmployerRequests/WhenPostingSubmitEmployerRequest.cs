@@ -66,7 +66,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
                 .ReturnsAsync(response);
 
             _mockMediator
-                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardId == submitRequest.StandardReference), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardReference == submitRequest.StandardReference), CancellationToken.None))
                 .ReturnsAsync(standardResult);
 
             _mockMediator

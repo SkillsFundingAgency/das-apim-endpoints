@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Responses
         public bool BlockRelease { get; set; }
         public DateTime RequestedAt { get; set; }
         public Guid RequestedBy { get; set; }
-        public RequestStatus Status { get; set; }
+        public RequestStatus RequestStatus { get; set; }
         public Guid ModifiedBy { get; set; }
         public DateTime? ExpiredAt { get; set; }
 

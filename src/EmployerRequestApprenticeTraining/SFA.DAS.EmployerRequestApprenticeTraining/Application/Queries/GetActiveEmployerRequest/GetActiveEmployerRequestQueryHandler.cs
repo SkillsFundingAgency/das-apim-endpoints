@@ -32,7 +32,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetActiv
 
             return new GetActiveEmployerRequestResult
             {
-                EmployerRequest = (Models.EmployerRequest)employerRequest?.Body
+                EmployerRequest = (EmployerRequestApprenticeTraining.Models.EmployerRequest)employerRequest?.Body
             };
         }
     }
