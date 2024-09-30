@@ -19,7 +19,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
         [Test, AutoData]
         public async Task Then_The_Endpoint_Is_Called(
             int id,
-            TestInternalApiConfiguration config)
+            TestTokenPassThroughApiConfiguration config)
         {
             //Arrange
             var tokenValue = Guid.NewGuid().ToString();
@@ -38,11 +38,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             var client = new HttpClient(httpMessageHandler.Object);
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
-            var sut = new TokenPassThroughInternalApiClient<TestInternalApiConfiguration>(
+            var sut = new TokenPassThroughInternalApiClient<TestTokenPassThroughApiConfiguration>(
                 clientFactory.Object, 
                 config, 
                 httpContextAccessor.Object, 
-                Mock.Of<ILogger<TokenPassThroughInternalApiClient<TestInternalApiConfiguration>>>());
+                Mock.Of<ILogger<TokenPassThroughInternalApiClient<TestTokenPassThroughApiConfiguration>>>());
 
             //Act
             await sut.Get<string>(getTestRequest);
@@ -65,7 +65,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
         [Test, AutoData]
         public async Task Then_The_Endpoint_Is_Called_And_Falls_Back_To_Authorisation_Header(
             int id,
-            TestInternalApiConfiguration config)
+            TestTokenPassThroughApiConfiguration config)
         {
             //Arrange
             var tokenValue = Guid.NewGuid().ToString();
@@ -84,11 +84,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi
             var client = new HttpClient(httpMessageHandler.Object);
             var clientFactory = new Mock<IHttpClientFactory>();
             clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
-            var sut = new TokenPassThroughInternalApiClient<TestInternalApiConfiguration>(
+            var sut = new TokenPassThroughInternalApiClient<TestTokenPassThroughApiConfiguration>(
                 clientFactory.Object, 
                 config, 
                 httpContextAccessor.Object, 
-                Mock.Of<ILogger<TokenPassThroughInternalApiClient<TestInternalApiConfiguration>>>());
+                Mock.Of<ILogger<TokenPassThroughInternalApiClient<TestTokenPassThroughApiConfiguration>>>());
 
             //Act
             await sut.Get<string>(getTestRequest);
