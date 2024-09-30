@@ -302,11 +302,13 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                         RequestedBy = parameters.RequestedBy,
                         AccountId = parameters.AccountId,
                         Standards = parameters.Standards.Select(e =>
-                        new Application.Commands.SendResponseNotification.StandardDetails
-                        {
-                            StandardLevel = e.StandardLevel,
-                            StandardTitle = e.StandardTitle,
-                        }).ToList(),
+                            new Application.Commands.SendResponseNotification.StandardDetails
+                            {
+                                StandardLevel = e.StandardLevel,
+                                StandardTitle = e.StandardTitle,
+                            })
+                            .OrderBy(s => s.StandardTitle)
+                            .ToList(),
                         ManageRequestsLink = parameters.ManageRequestsLink,
                         ManageNotificationSettingsLink = parameters.ManageNotificationSettingsLink,
                     });
