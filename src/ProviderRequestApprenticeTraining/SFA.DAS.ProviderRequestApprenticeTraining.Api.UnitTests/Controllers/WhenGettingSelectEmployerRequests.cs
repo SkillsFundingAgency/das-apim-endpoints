@@ -7,6 +7,7 @@ using NUnit.Framework;
 using SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Api.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSettings;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Linq;
@@ -21,6 +22,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task Then_The_SelectEmployerRequests_Are_Returned_From_Mediator(
             GetSelectEmployerRequestsResult queryResult,
+            GetSettingsResult settingsResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ProvidersController controller,
             long ukprn,
@@ -29,6 +31,10 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
             mockMediator
                 .Setup(x => x.Send(It.IsAny<GetSelectEmployerRequestsQuery>(), CancellationToken.None))
                 .ReturnsAsync(queryResult);
+
+            mockMediator
+                .Setup(x => x.Send(It.IsAny<GetSettingsQuery>(), CancellationToken.None))
+                .ReturnsAsync(settingsResult);
 
             var actual = await controller.GetSelectEmployerRequests(standardReference, ukprn) as ObjectResult;
 
@@ -40,6 +46,8 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
             returnedRequests.StandardTitle.Should().Be(queryResult.SelectEmployerRequests.FirstOrDefault().StandardTitle);
             returnedRequests.StandardReference.Should().Be(queryResult.SelectEmployerRequests.FirstOrDefault().StandardReference);
             returnedRequests.EmployerRequests.Count.Should().Be(queryResult.SelectEmployerRequests.Count());
+            returnedRequests.ExpiryAfterMonths.Should().Be(settingsResult.ExpiryAfterMonths);
+            returnedRequests.RemovedAfterRequestedMonths.Should().Be(settingsResult.RemovedAfterRequestedMonths);
         }
 
         [Test, MoqAutoData]

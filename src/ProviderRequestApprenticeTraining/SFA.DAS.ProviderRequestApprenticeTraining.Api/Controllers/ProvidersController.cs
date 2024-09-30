@@ -10,6 +10,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderE
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderPhoneNumbers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSettings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,13 +54,23 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetSelectEmployerRequestsQuery() 
+                var selectEmployerRequestsTask = _mediator.Send(new GetSelectEmployerRequestsQuery() 
                 {
                     StandardReference = standardReference,
                     Ukprn = ukprn
                 });
 
-                var model = (SelectEmployerRequests)result;
+                var settingsTask = _mediator.Send(new GetSettingsQuery());
+
+                await Task.WhenAll(selectEmployerRequestsTask, settingsTask);
+
+                var selectEmployerRequestsResult = await selectEmployerRequestsTask;
+                var settings = await settingsTask;
+
+                var model = (SelectEmployerRequests)selectEmployerRequestsResult;
+                model.ExpiryAfterMonths = settings.ExpiryAfterMonths;
+                model.RemovedAfterRequestedMonths = settings.RemovedAfterRequestedMonths;
+                
                 return Ok(model);
             }
             catch (Exception e)

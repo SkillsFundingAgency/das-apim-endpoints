@@ -4,6 +4,6 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStand
 {
     public class GetStandardQuery : IRequest<GetStandardResult>
     {
-        public string StandardId { get; set; }
+        public string StandardReference { get; set; }
     }
 }

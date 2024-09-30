@@ -10,6 +10,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Extensions
     {
         public static string RemoveWhitespace(this string value)
         {
+            if (value == null)
+            {
+                return null; 
+            }
+
             return new string(value
                 .Where(c => !Char.IsWhiteSpace(c))
                 .ToArray());

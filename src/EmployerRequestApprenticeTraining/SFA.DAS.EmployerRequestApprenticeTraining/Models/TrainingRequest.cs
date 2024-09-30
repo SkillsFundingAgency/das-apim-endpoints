@@ -40,7 +40,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Models
                 DayRelease = source.DayRelease,
                 BlockRelease = source.BlockRelease,
                 RequestedAt = source.RequestedAt,
-                Status = source.Status,
+                Status = source.RequestStatus,
                 ExpiredAt = source.ExpiredAt,
                 Regions = source.Regions.Select(s => (Region)s).ToList(),
                 ProviderResponses = source.ProviderResponses.Select(s => (ProviderResponse)s).ToList(),

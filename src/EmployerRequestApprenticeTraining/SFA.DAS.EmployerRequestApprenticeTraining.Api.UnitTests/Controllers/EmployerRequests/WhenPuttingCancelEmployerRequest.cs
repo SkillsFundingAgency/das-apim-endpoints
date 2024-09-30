@@ -43,14 +43,14 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             GetEmployerProfileUserResult employerProfileUserResult)
         {
             // Arrange
-            employerRequestResult.EmployerRequest.Status = RequestStatus.Active;
+            employerRequestResult.EmployerRequest.RequestStatus = RequestStatus.Active;
 
             _mediatorMock
                 .Setup(x => x.Send(It.Is<GetEmployerRequestQuery>(p => p.EmployerRequestId == employerRequestId), CancellationToken.None))
                 .ReturnsAsync(employerRequestResult);
 
             _mediatorMock
-                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardId == employerRequestResult.EmployerRequest.StandardReference), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardReference == employerRequestResult.EmployerRequest.StandardReference), CancellationToken.None))
                 .ReturnsAsync(standardResult);
 
             _mediatorMock
@@ -79,7 +79,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             GetEmployerProfileUserResult employerProfileUserResult)
         {
             // Arrange
-            employerRequestResult.EmployerRequest.Status = status;
+            employerRequestResult.EmployerRequest.RequestStatus = status;
 
             _mediatorMock
                 .Setup(x => x.Send(It.Is<GetEmployerRequestQuery>(p => p.EmployerRequestId == employerRequestId), CancellationToken.None))
@@ -109,7 +109,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
                 .ReturnsAsync(employerRequestResult);
 
             _mediatorMock
-                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardId == employerRequestResult.EmployerRequest.StandardReference), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardReference == employerRequestResult.EmployerRequest.StandardReference), CancellationToken.None))
                 .ReturnsAsync(standardResult);
 
             _mediatorMock

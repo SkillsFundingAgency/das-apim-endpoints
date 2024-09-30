@@ -2,13 +2,9 @@
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining
 {
-    public class ExpireEmployerRequestsRequest : IPostApiRequest<ExpireEmployerRequestsData>
+    public class ExpireEmployerRequestsRequest : IPutApiRequest
     {
-        public ExpireEmployerRequestsData Data { get; set; }
-        public string PostUrl => $"api/employer-requests/expire";
-    }
-
-    public class ExpireEmployerRequestsData
-    {
+        public object Data { get; set; }
+        public string PutUrl => $"api/employer-requests/expire";
     }
 }
