@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using MediatR.Extensions.FluentValidation.AspNetCore;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval;
+using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using CommitmentsV2HealthCheck = SFA.DAS.ApprenticeCommitments.Infrastructure.CommitmentsV2HealthCheck;
 using CoursesApiHealthCheck = SFA.DAS.ApprenticeCommitments.Infrastructure.CoursesApiHealthCheck;
@@ -40,6 +41,9 @@ namespace SFA.DAS.ApprenticeCommitments.Api
         {
             services.AddOptions();
             services.AddSingleton(_env);
+            
+            services.Configure<SharedOuterApi.Configuration.ApprenticeAccountsApiConfiguration>(_configuration.GetSection("ApprenticeAccountsInnerApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<SharedOuterApi.Configuration.ApprenticeAccountsApiConfiguration>>().Value); 
             services.Configure<ApprenticeCommitmentsConfiguration>(_configuration.GetSection("ApprenticeCommitmentsInnerApi"));
             services.Configure<ApprenticeAccountsConfiguration>(_configuration.GetSection("ApprenticeAccountsInnerApi"));
             services.Configure<ApprenticeLoginConfiguration>(_configuration.GetSection("ApprenticeLoginApi"));
@@ -75,6 +79,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api
                 .AddCheck<CoursesApiHealthCheck>(nameof(CoursesApiHealthCheck));
 
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(CreateApprovalCommandHandler).Assembly));
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(UpsertApprenticeCommand).Assembly));
             services.AddFluentValidation(new[] { typeof(CreateApprovalCommandHandler).Assembly });
             services.AddServiceRegistration();
 

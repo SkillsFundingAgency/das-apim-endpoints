@@ -40,6 +40,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
                         s.GetRequiredService<ApprenticeAccountsConfiguration>(),
                         s.GetRequiredService<IWebHostEnvironment>(),
                         s.GetRequiredService<IAzureClientCredentialHelper>())));
+            
+            services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
         }
     }
 }

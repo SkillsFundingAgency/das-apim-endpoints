@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.EmployerPR.Application.Queries.GetEmployerRelationships;
+using SFA.DAS.EmployerPR.Application.EmployerRelationships.Queries.GetEmployerRelationships;
 
 namespace SFA.DAS.EmployerPR.Api.Controllers;
 

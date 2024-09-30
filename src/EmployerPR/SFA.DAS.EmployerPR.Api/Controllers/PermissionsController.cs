@@ -1,8 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.EmployerPR.Application.Commands.PostPermissions;
-using SFA.DAS.EmployerPR.Application.Queries.GetPermissions;
-
+using SFA.DAS.EmployerPR.Application.Permissions.Commands.PostPermissions;
+using SFA.DAS.EmployerPR.Application.Permissions.Queries.GetPermissions;
 
 namespace SFA.DAS.EmployerPR.Api.Controllers;
 
