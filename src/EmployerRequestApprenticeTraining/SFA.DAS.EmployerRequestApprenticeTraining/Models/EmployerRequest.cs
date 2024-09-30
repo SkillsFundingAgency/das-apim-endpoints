@@ -20,7 +20,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Models
         public bool BlockRelease { get; set; }
         public DateTime RequestedAt { get; set; }
         public Guid RequestedBy { get; set; }
-        public RequestStatus Status { get; set; }
+        public RequestStatus RequestStatus { get; set; }
         public Guid ModifiedBy { get; set; }
         public DateTime? ExpiredAt { get; set; }
 
@@ -46,7 +46,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Models
                 BlockRelease = source.BlockRelease,
                 RequestedAt = source.RequestedAt,
                 RequestedBy = source.RequestedBy,
-                Status = source.Status,
+                RequestStatus = source.RequestStatus,
                 ModifiedBy = source.ModifiedBy,
                 ExpiredAt = source.ExpiredAt,
                 Regions = source.Regions.Select(s => (Region)s).ToList(),
