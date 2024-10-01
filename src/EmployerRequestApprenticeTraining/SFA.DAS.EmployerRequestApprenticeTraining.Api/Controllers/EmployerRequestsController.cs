@@ -147,7 +147,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                         CancelledBy = cancelRequest.CancelledBy,
                         CancelledByEmail = employerProfileResult.Email,
                         CancelledByFirstName = employerProfileResult.FirstName,
-                        CourseLevel = $"{standardResult.Standard.StandardLevel} (level {standardResult.Standard.StandardLevel})",
+                        CourseLevel = $"{standardResult.Standard.StandardTitle} (level {standardResult.Standard.StandardLevel})",
                         DashboardUrl = cancelRequest.DashboardUrl
                     };
 
