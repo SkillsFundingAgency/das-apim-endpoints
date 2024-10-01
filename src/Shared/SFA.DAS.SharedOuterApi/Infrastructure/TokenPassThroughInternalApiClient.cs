@@ -47,7 +47,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         /// </summary>
         protected override Task AddAuthenticationHeader(HttpRequestMessage httpRequestMessage)
         {
-            if (_httpContextAccessor.HttpContext.Items.ContainsKey(_serviceBearerTokenKey))
+            if (_httpContextAccessor.HttpContext.Items?.ContainsKey(_serviceBearerTokenKey) == true)
             {
                 var serviceBearerToken = _httpContextAccessor.HttpContext.Items[_serviceBearerTokenKey].ToString();
                 httpRequestMessage.Headers.Add("Authorization", $"Bearer {serviceBearerToken}");
@@ -56,7 +56,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             }
 
             var authHeader = _httpContextAccessor.HttpContext.Request.Headers["X-Forwarded-Authorization"].FirstOrDefault();
-            if (string.IsNullOrEmpty(authHeader))
+            if (!string.IsNullOrEmpty(authHeader))
             {
                 httpRequestMessage.Headers.Add("Authorization", authHeader);
                 _logger.LogInformation("X-Forwarded-Authorization header attached to request message.");
@@ -64,7 +64,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             }
 
             authHeader = _httpContextAccessor.HttpContext.Request.Headers.Authorization.FirstOrDefault();
-            if (string.IsNullOrEmpty(authHeader))
+            if (!string.IsNullOrEmpty(authHeader))
             {
                 httpRequestMessage.Headers.Add("Authorization", authHeader);
                 _logger.LogInformation("Authorization header attached to request message.");
