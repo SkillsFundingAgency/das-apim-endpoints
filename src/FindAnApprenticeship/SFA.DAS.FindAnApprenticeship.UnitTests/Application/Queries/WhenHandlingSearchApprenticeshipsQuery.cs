@@ -113,6 +113,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             GetVacanciesResponse vacanciesResponse,
             GetRoutesListResponse routesResponse,
             GetApplicationsApiResponse getApplicationsApiResponse,
+            GetSavedVacanciesApiResponse getSavedVacanciesApiResponse,
             [Frozen] Mock<IMetrics> metricsService,
             [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<ILocationLookupService> locationLookupService,
@@ -133,6 +134,12 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                     service.Get<GetApplicationsApiResponse>(
                         It.Is<GetApplicationsApiRequest>(r => r.GetUrl == expectedUrl.GetUrl)))
                 .ReturnsAsync(getApplicationsApiResponse);
+
+            var expectedSavedApplicationsApiRequestUrl = new GetSavedVacanciesApiRequest(candidateId);
+            candidateApiClient.Setup(service =>
+                    service.Get<GetSavedVacanciesApiResponse>(
+                        It.Is<GetSavedVacanciesApiRequest>(r => r.GetUrl == expectedSavedApplicationsApiRequestUrl.GetUrl)))
+                .ReturnsAsync(getSavedVacanciesApiResponse);
 
             var categories = routesResponse.Routes.Where(route => query.SelectedRouteIds != null && query.SelectedRouteIds.Contains(route.Id.ToString()))
                 .Select(route => route.Name).ToList();

@@ -43,15 +43,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
     {
         public async Task<GetSavedVacanciesQueryResult> Handle(GetSavedVacanciesQuery request, CancellationToken cancellationToken)
         {
-            var candidateApiResponseTask =
-                        candidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId.ToString()));
-
-            var applicationsTask =
-                candidateApiClient.Get<GetSavedVacanciesApiResponse>(
+            var savedVacanciesResponse =
+                await candidateApiClient.Get<GetSavedVacanciesApiResponse>(
                     new GetSavedVacanciesApiRequest(request.CandidateId));
 
-            var candidateApiResponse = candidateApiResponseTask.Result;
-            var savedVacancyList = applicationsTask.Result.SavedVacancies;
+            var savedVacancyList = savedVacanciesResponse.SavedVacancies;
 
             if (savedVacancyList.Count == 0) { return new GetSavedVacanciesQueryResult(); }
 

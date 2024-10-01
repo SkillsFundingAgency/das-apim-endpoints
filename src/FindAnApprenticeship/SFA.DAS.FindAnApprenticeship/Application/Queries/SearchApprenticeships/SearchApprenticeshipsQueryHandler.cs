@@ -81,15 +81,21 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 
             if (!string.IsNullOrEmpty(request.CandidateId))
             {
-                var candidateApplications =
-                    await candidateApiClient.Get<GetApplicationsApiResponse>(
+                var candidateApplicationsTask =
+                    candidateApiClient.Get<GetApplicationsApiResponse>(
                         new GetApplicationsApiRequest(Guid.Parse(request.CandidateId)));
+
+                var savedVacanciesResponseTask =
+                    candidateApiClient.Get<GetSavedVacanciesApiResponse>(
+                        new GetSavedVacanciesApiRequest(Guid.Parse(request.CandidateId)));
+
+                await Task.WhenAll(candidateApplicationsTask, savedVacanciesResponseTask);
+
+                var candidateApplications = candidateApplicationsTask.Result;
+                var savedVacanciesResponse = savedVacanciesResponseTask.Result;
 
                 foreach (var vacancy in vacancyResult.ApprenticeshipVacancies)
                 {
-                    var savedVacancy = await candidateApiClient.Get<GetSavedVacancyApiResponse>(
-                        new GetSavedVacancyApiRequest(Guid.Parse(request.CandidateId), vacancy.Id));
-
                     vacancy.Application = new GetVacanciesListItem.CandidateApplication
                     {
                         Status = candidateApplications.Applications.FirstOrDefault(fil =>
@@ -97,7 +103,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                                     StringComparison.CurrentCultureIgnoreCase))?
                             .Status
                     };
-                    if (savedVacancy != null)
+                    
+                    if (savedVacanciesResponse.SavedVacancies.Count > 0 && savedVacanciesResponse.SavedVacancies.Exists(vac => vac.VacancyReference.Equals(vacancy.Id, StringComparison.CurrentCultureIgnoreCase)))
                     {
                         vacancy.IsSavedVacancy = true;
                     }
