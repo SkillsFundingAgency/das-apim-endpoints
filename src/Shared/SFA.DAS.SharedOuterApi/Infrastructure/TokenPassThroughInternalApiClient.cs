@@ -84,8 +84,8 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
                 throw new AuthException("Cannot generate service token as the Authorization header is present");
             }
 
-            var claims = new JwtSecurityTokenHandler().ReadJwtToken(authorizationHeader.Replace("Bearer ", string.Empty)).Claims;
-            claims.Append(new Claim("serviceAccount", serviceAccount));
+            var claims = new JwtSecurityTokenHandler().ReadJwtToken(authorizationHeader.Replace("Bearer ", string.Empty)).Claims.ToList();
+            claims.Add(new Claim("serviceAccount", serviceAccount));
 
             ValidateSigningKey(Configuration.BearerTokenSigningKey);
 
