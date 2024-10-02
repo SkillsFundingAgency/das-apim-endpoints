@@ -32,6 +32,8 @@ public class EmployerAccountsService(
         
         return response.Select(usersResponse => new TeamMember
         {
+            Name = usersResponse.Name,
+            Status = usersResponse.Status,
             Email = usersResponse.Email,
             Role = usersResponse.Role,
             UserRef = usersResponse.UserRef,

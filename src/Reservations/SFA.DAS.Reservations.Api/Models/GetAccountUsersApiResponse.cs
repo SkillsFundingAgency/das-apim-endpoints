@@ -25,8 +25,10 @@ public record GetAccountUsersApiResponse
     {
         public string UserRef { get; set; }
         public string Email { get; set; }
+        public string Name { get; set; }
         public string Role { get; set; }
         public bool CanReceiveNotifications { get; set; }
+        public int Status { get; set; }
 
         public static implicit operator AccountUsersApiResponseItem(TeamMember source)
         {
@@ -36,6 +38,8 @@ public record GetAccountUsersApiResponse
                 CanReceiveNotifications = source.CanReceiveNotifications,
                 Role = source.Role,
                 UserRef = source.UserRef,
+                Name = source.Name,
+                Status = source.Status
             };
         }
     }

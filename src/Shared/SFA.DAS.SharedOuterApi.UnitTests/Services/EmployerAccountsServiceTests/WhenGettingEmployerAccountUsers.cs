@@ -34,6 +34,8 @@ public class WhenGettingEmployerAccountUsers
             .Verify(x => x.GetAll<GetAccountTeamMembersResponse>(It.Is<GetAccountTeamMembersRequest>(c => c.GetAllUrl.Contains($"accounts/internal/{accountId}/users")))
                 , Times.Once);
 
+        actual.First().Name.Should().Be(teamResponse.Name);
+        actual.First().Status.Should().Be(teamResponse.Status);
         actual.First().Role.Should().Be(teamResponse.Role);
         actual.First().Email.Should().Be(teamResponse.Email);
         actual.First().UserRef.Should().Be(teamResponse.UserRef);
