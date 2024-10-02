@@ -31,12 +31,12 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok(queryResult.Apprentice);
         }
 
-        [HttpPatch("/apprentices/{apprenticeId}")]
-        public async Task<IActionResult> UpdateApprentice([Path] Guid apprenticeId, [Body] object patch)
+        [HttpPatch("/apprentices/{id}")]
+        public async Task<IActionResult> UpdateApprentice([Path] Guid id, [Body] object patch)
         {
             await _mediator.Send(new ApprenticePatchCommand
             {
-                ApprenticeId = apprenticeId,
+                ApprenticeId = id,
                 Patch = patch
             });
 

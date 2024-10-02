@@ -14,6 +14,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         public MyApprenticeshipController(IMediator mediator)
             => _mediator = mediator;
 
+        //not needed for apprentice app?
         [HttpPost("/apprentices/{id}/my-apprenticeship")]
         public async Task<IActionResult> Post(Guid id, [FromBody] MyApprenticeshipConfirmedRequest request)
         {
