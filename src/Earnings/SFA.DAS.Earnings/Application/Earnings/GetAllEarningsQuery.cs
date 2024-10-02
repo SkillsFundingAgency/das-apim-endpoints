@@ -1,8 +1,6 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
@@ -11,13 +9,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Reflection;
-using Apprenticeship = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Apprenticeship;
 using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode;
-using EarningsApprenticeship = SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship;
-using EarningsEpisode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.Episode;
-using Azure.Core;
-using SFA.DAS.Apprenticeships.Types;
 
 namespace SFA.DAS.Earnings.Application.Earnings;
 
@@ -56,6 +48,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
     {
         _logger.LogInformation("Handling GetAllEarningsQuery for provider {ukprn}", request.Ukprn);
 
+        _apprenticeshipsApiClient.GenerateServiceToken("Earnings");
         var apprenticeshipsData = await _apprenticeshipsApiClient.Get<GetApprenticeshipsResponse>(new GetApprenticeshipsRequest { Ukprn = request.Ukprn });
         var earningsData = await _earningsApiClient.Get<GetFm36DataResponse>(new GetFm36DataRequest(request.Ukprn));
 
