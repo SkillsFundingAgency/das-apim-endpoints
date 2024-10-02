@@ -94,12 +94,15 @@ public class GetLiveVacanciesApiResponse
                 AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
                 ApplicationMethod = source.ApplicationMethod,
                 ApplicationUrl = source.ApplicationUrl,
+                ApplicationInstructions = source.ApplicationInstructions,
                 TypicalJobTitles = source.TypicalJobTitles,
                 AdditionalQuestion1 = source.AdditionalQuestion1,
                 AdditionalQuestion2 = source.AdditionalQuestion2,
                 AdditionalTrainingDescription = source.AdditionalTrainingDescription
             };
         }
+
+        public string? ApplicationInstructions { get; set; }
 
         public int RouteCode { get; set; }
         public string? DurationUnit { get; set; }
