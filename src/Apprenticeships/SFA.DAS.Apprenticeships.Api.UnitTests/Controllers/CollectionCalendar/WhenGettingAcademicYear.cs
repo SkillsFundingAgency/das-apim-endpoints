@@ -22,7 +22,7 @@ public class WhenGettingAcademicYear
         Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> mockCollectionCalendarApiClient)
     {
         //  Arrange
-        mockCollectionCalendarApiClient.Setup(x => x.Get<GetAcademicYearsResponse>(It.IsAny<GetAcademicYearsRequest>())).ReturnsAsync(expectedResponse);
+        mockCollectionCalendarApiClient.Setup(x => x.Get<GetAcademicYearsResponse>(It.IsAny<GetAcademicYearByDateRequest>())).ReturnsAsync(expectedResponse);
 
         var controller = new CollectionCalendarController(mockCollectionCalendarApiClient.Object);
 

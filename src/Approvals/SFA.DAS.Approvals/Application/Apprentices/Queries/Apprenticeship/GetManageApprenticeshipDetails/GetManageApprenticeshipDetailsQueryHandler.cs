@@ -187,14 +187,14 @@ public class GetManageApprenticeshipDetailsQueryHandler(
             return false;
         }
 
-        var currentAcademicYear = await collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now));
+        var currentAcademicYear = await collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(DateTime.Now));
         var isStartDateAfterStartOfCurrentAcademicYear = currentAcademicYear.StartDate <= actualStartDate;
         if (isStartDateAfterStartOfCurrentAcademicYear)
         {
             return true;
         }
 
-        var previousAcademicYear = await collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now.AddYears(-1)));
+        var previousAcademicYear = await collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(DateTime.Now.AddYears(-1)));
         var isStartDateInPreviousAcademicYear = previousAcademicYear.StartDate <= actualStartDate; 
         var isItR13R14PeriodOfPreviousAcademicYear = previousAcademicYear.HardCloseDate > DateTime.Now;
         if (isStartDateInPreviousAcademicYear && isItR13R14PeriodOfPreviousAcademicYear)
