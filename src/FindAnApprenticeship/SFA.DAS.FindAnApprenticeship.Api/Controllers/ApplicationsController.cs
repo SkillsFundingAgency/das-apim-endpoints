@@ -5,6 +5,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplicati
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetSubmittedApplications;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
@@ -39,6 +40,25 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             {
                 _logger.LogError(e, "Get Applications : An error occurred");
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("submitted")]
+        public async Task<IActionResult> GetSubmittedApplications([FromQuery] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetSubmittedApplicationsQuery(candidateId)
+                {
+                    CandidateId = candidateId,
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Get Submitted Applications : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
     }
