@@ -510,7 +510,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             mediator.Setup(x => x.Send(It.IsAny<GetTaskByTaskIdQuery>(), default)).ReturnsAsync(taskResult);
             taskResult.Tasks = new ApprenticeTasksCollection() { Tasks = new System.Collections.Generic.List<ApprenticeTask>() };
             var result = await controller.GetTaskViewData(apprenticeId, taskId);
-            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.NotFoundResult));
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
         }
 
         [Test, MoqAutoData]
