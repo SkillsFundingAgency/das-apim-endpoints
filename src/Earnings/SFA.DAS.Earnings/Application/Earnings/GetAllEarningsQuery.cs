@@ -15,8 +15,16 @@ namespace SFA.DAS.Earnings.Application.Earnings;
 
 public class GetAllEarningsQuery : IRequest<GetAllEarningsQueryResult>
 {
-    public long Ukprn { get; set; }
-    public byte CollectionPeriod { get; set; }
+    public GetAllEarningsQuery(long ukprn, int collectionYear, byte collectionPeriod)
+    {
+        Ukprn = ukprn;
+        CollectionYear = collectionYear;
+        CollectionPeriod = collectionPeriod;
+    }
+
+    public long Ukprn { get; }
+    public int CollectionYear { get; }
+    public byte CollectionPeriod { get; }
 }
 
 public class GetAllEarningsQueryResult
@@ -55,7 +63,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
         if(!IsDataReturnedValid(request.Ukprn, apprenticeshipsData, earningsData))
             return new GetAllEarningsQueryResult { FM36Learners = [] };
 
-        var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now));
+        var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByYearRequest(request.CollectionYear));
 
         _logger.LogInformation("Found {apprenticeshipsCount} apprenticeships, {earningsApprenticeshipsCount} earnings apprenticeships, for provider {ukprn}", apprenticeshipsData.Apprenticeships.Count, earningsData.Count, request.Ukprn);
 

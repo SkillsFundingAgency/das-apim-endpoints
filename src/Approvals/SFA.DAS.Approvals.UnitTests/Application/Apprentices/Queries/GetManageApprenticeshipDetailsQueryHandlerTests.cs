@@ -220,7 +220,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
             StartDate = currentAcademicYearStartDate
         };
         _collectionCalendarApiClient
-            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(r => r._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(r => r._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
             .ReturnsAsync(currentAcademicYearResponse);
 
         // Act
@@ -251,11 +251,11 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         };
 
         _collectionCalendarApiClient
-            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(r => r._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(r => r._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
             .ReturnsAsync(currentAcademicYearResponse);
        
         _collectionCalendarApiClient
-            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(r => r._dateTime == DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"))))
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(r => r._dateTime == DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"))))
             .ReturnsAsync(previousAcademicYearResponse);
 
         // Act
@@ -289,11 +289,11 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         };
 
         _collectionCalendarApiClient
-            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(r => r._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(r => r._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
             .ReturnsAsync(currentAcademicYearResponse);
       
         _collectionCalendarApiClient
-            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(r => r._dateTime == DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"))))
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(r => r._dateTime == DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"))))
             .ReturnsAsync(previousAcademicYearResponse);
 
         // Act
@@ -320,7 +320,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         };
 
         _collectionCalendarApiClient
-            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(r => r._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(r => r._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
             .ReturnsAsync(currentAcademicYearResponse);
       
         // Act

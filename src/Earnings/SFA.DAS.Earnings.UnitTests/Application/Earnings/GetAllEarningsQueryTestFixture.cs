@@ -21,6 +21,7 @@ public class GetAllEarningsQueryTestFixture
     public readonly Fixture Fixture = new();
     public long Ukprn;
     public byte CollectionPeriod;
+    public int CollectionYear;
     public GetApprenticeshipsResponse ApprenticeshipsResponse;
     public GetFm36DataResponse EarningsResponse;
     public GetAcademicYearsResponse CollectionCalendarResponse;
@@ -41,6 +42,7 @@ public class GetAllEarningsQueryTestFixture
 
         Ukprn = Fixture.Create<long>();
         CollectionPeriod = 2;
+        CollectionYear = 2425;
         ApprenticeshipsResponse = BuildApprenticeshipsResponse(Ukprn);
         EarningsResponse = BuildEarningsResponse(ApprenticeshipsResponse);
         CollectionCalendarResponse = BuildCollectionCalendarResponse(ApprenticeshipsResponse);
@@ -48,7 +50,7 @@ public class GetAllEarningsQueryTestFixture
 
 
         _handler = new GetAllEarningsQueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, Mock.Of<ILogger<GetAllEarningsQueryHandler>>());
-        _query = new GetAllEarningsQuery { Ukprn = Ukprn, CollectionPeriod = CollectionPeriod };
+        _query = new GetAllEarningsQuery(Ukprn, CollectionYear, CollectionPeriod);
     }
 
     public GetApprenticeshipsResponse BuildApprenticeshipsResponse(long ukprn)
@@ -240,7 +242,7 @@ public class GetAllEarningsQueryTestFixture
             .ReturnsAsync(earningsResponse);
 
         MockCollectionCalendarApiClient
-            .Setup(x => x.Get<GetAcademicYearsResponse>(It.IsAny<GetAcademicYearsRequest>()))
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByYearRequest>(y => y.GetUrl == $"academicyears/{CollectionYear}")))
             .ReturnsAsync(collectionCalendarResponse);
     }
 

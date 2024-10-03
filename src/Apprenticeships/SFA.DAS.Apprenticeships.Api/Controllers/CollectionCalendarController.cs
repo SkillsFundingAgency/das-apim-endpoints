@@ -21,6 +21,6 @@ public class CollectionCalendarController : ControllerBase
     [Route("academicYear/{searchDate}")]
     public async Task<IActionResult> GetAcademicYear(DateTime searchDate)
     {
-        return Ok(await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(searchDate)));
+        return Ok(await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(searchDate)));
     }
 }
