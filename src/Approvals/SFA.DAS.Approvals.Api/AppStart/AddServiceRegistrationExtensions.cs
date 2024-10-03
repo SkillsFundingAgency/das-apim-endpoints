@@ -62,6 +62,7 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
             services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
+            services.AddTransient<IAutoReservationsService, AutoReservationsService>();
             services.AddServiceParameters();
         }
     }

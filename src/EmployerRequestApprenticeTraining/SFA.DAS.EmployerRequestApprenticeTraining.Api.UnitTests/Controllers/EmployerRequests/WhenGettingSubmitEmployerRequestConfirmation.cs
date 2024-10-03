@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers;
-using SFA.DAS.EmployerRequestApprenticeTraining.Api.Models;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerProfileUser;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
+using SFA.DAS.EmployerRequestApprenticeTraining.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
                 .ReturnsAsync(queryResult);
 
             mockMediator
-                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardId == queryResult.EmployerRequest.StandardReference), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardReference == queryResult.EmployerRequest.StandardReference), CancellationToken.None))
                 .ReturnsAsync(standardResult);
 
             mockMediator
@@ -48,8 +48,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             actual.Value.Should().BeEquivalentTo(new SubmitEmployerRequestConfirmation
             {
                 EmployerRequestId = queryResult.EmployerRequest.Id,
-                StandardTitle = standardResult.Standard.Title,
-                StandardLevel = standardResult.Standard.Level,
+                StandardTitle = standardResult.Standard.StandardTitle,
+                StandardLevel = standardResult.Standard.StandardLevel,
                 NumberOfApprentices = queryResult.EmployerRequest.NumberOfApprentices,
                 SameLocation = queryResult.EmployerRequest.SameLocation,
                 SingleLocation = queryResult.EmployerRequest.SingleLocation,

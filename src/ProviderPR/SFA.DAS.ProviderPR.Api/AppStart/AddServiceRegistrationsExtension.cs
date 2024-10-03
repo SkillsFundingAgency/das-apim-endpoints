@@ -1,14 +1,14 @@
-﻿using RestEase.HttpClientFactory;
+﻿using System.Diagnostics.CodeAnalysis;
+using RestEase.HttpClientFactory;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationships;
+using SFA.DAS.ProviderPR.Application.Queries.GetRelationship;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.Application.Queries.ProviderAccounts;
 using SFA.DAS.SharedOuterApi.Services;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.ProviderPR.Api.AppStart;
 
@@ -18,8 +18,9 @@ public static class AddServiceRegistrationsExtension
     public static IServiceCollection AddServiceRegistration(this IServiceCollection services, IConfigurationRoot configuration)
     {
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRoatpV2ProviderQuery).Assembly));
-        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRelationshipsQuery).Assembly));
-
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRelationshipQuery).Assembly));
+        services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
+        services.AddTransient<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>, PensionRegulatorApiClient>();
         services.AddHttpClient();
 
         AddProviderRelationshipsApiClient(services, configuration);
@@ -28,6 +29,7 @@ public static class AddServiceRegistrationsExtension
 
         return services;
     }
+
     private static void AddProviderRelationshipsApiClient(IServiceCollection services, IConfiguration configuration)
     {
         var apiConfig = GetApiConfiguration(configuration, "ProviderRelationshipsApiConfiguration");

@@ -4,9 +4,9 @@ using MediatR;
 using Moq;
 using NUnit.Framework;
 using RestEase;
-using SFA.DAS.EmployerPR.Application.Commands.PostNotifications;
-using SFA.DAS.EmployerPR.Application.Commands.PostPermissions;
-using SFA.DAS.EmployerPR.Application.Queries.GetPermissions;
+using SFA.DAS.EmployerPR.Application.Notifications.Commands.PostNotifications;
+using SFA.DAS.EmployerPR.Application.Permissions.Commands.PostPermissions;
+using SFA.DAS.EmployerPR.Application.Permissions.Queries.GetPermissions;
 using SFA.DAS.EmployerPR.Common;
 using SFA.DAS.EmployerPR.Infrastructure;
 using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
@@ -222,7 +222,7 @@ public class PostPermissionsCommandHandlerTests
                 It.Is<PostNotificationsCommand>(cmd =>
                     cmd.Notifications.Count() == 1 &&
                     cmd.Notifications[0].NotificationType == nameof(NotificationType.Provider) &&
-                    cmd.Notifications[0].TemplateName == nameof(PermissionEmailTemplateType.PermissionDeleted) &&
+                    cmd.Notifications[0].TemplateName == nameof(PermissionEmailTemplateType.PermissionsRemoved) &&
                     cmd.Notifications[0].Ukprn == command.Ukprn &&
                     cmd.Notifications[0].AccountLegalEntityId == command.AccountLegalEntityId &&
                     cmd.Notifications[0].PermitApprovals == 0 &&

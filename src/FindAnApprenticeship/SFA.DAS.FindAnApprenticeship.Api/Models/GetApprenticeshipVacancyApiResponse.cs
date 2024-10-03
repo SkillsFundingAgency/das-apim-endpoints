@@ -30,6 +30,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public decimal? WageAmountUpperBound { get; init; }
         public string WageText { get; init; }
         public int WageUnit { get; init; }
+        public string WageAdditionalInformation { get; init; }
 
         public decimal? Distance { get; init; }
 
@@ -94,6 +95,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string CandidatePostcode { get; set; }
 
         public string ApplicationUrl { get; set; }
+        public string ApplicationInstructions { get; set; }
         
         public static implicit operator GetApprenticeshipVacancyApiResponse(GetApprenticeshipVacancyQueryResult source)
         {
@@ -140,6 +142,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 WageAmountUpperBound = source.ApprenticeshipVacancy.WageAmountUpperBound,
                 WageText = source.ApprenticeshipVacancy.WageText,
                 WageUnit = source.ApprenticeshipVacancy.WageUnit,
+                WageAdditionalInformation = source.ApprenticeshipVacancy.WageAdditionalInformation,
                 WorkingWeek = source.ApprenticeshipVacancy.WorkingWeek,
                 ExpectedDuration = source.ApprenticeshipVacancy.ExpectedDuration,
                 Score = source.ApprenticeshipVacancy.Score,
@@ -164,6 +167,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
 				IsClosed = source.ApprenticeshipVacancy.IsClosed,
                 CandidatePostcode = source.CandidatePostcode,
                 ApplicationUrl = source.ApprenticeshipVacancy.ApplicationUrl,
+                ApplicationInstructions = source.ApprenticeshipVacancy.ApplicationInstructions,
                 CompanyBenefitsInformation = source.ApprenticeshipVacancy.CompanyBenefitsInformation,
                 AdditionalTrainingDescription = source.ApprenticeshipVacancy.AdditionalTrainingDescription
             };

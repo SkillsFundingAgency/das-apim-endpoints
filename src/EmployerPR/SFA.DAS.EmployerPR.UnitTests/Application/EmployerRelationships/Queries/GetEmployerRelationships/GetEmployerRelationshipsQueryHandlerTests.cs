@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EmployerPR.Application.Queries.GetEmployerRelationships;
+using SFA.DAS.EmployerPR.Application.EmployerRelationships.Queries.GetEmployerRelationships;
 using SFA.DAS.EmployerPR.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -21,9 +21,7 @@ public class GetEmployerRelationshipsQueryHandlerTests
     {
         providerRelationshipsApiRestClient.Setup(x =>
             x.GetEmployerRelationships(
-                query.AccountHashedId, 
-                query.Ukprn, 
-                query.AccountlegalentityPublicHashedId,
+                query.AccountId,
                 CancellationToken.None
             )
         ).ReturnsAsync(response);

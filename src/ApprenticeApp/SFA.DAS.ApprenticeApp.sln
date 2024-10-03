@@ -15,11 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeApp.MockA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeApp.UnitTests", "SFA.DAS.ApprenticeApp.UnitTests\SFA.DAS.ApprenticeApp.UnitTests.csproj", "{16F8E585-3C55-4FBA-ABBB-75477644F6BC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{647A2EF9-5668-461D-AEA0-7491CAA5D7C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.PushNotifications.Messages", "SFA.DAS.PushNotifications.Messages\SFA.DAS.PushNotifications.Messages.csproj", "{8E24E4DB-3958-41D5-B494-1A516F54FE8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.PushNotifications.Messages", "SFA.DAS.PushNotifications.Messages\SFA.DAS.PushNotifications.Messages.csproj", "{8E24E4DB-3958-41D5-B494-1A516F54FE8E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{376EEFA3-900F-4287-848E-59D349E5B87E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth", "..\Shared\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.csproj", "{18404969-EBD4-4C33-A240-F7B7F2F59049}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,23 +53,28 @@ Global
 		{16F8E585-3C55-4FBA-ABBB-75477644F6BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16F8E585-3C55-4FBA-ABBB-75477644F6BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16F8E585-3C55-4FBA-ABBB-75477644F6BC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8E24E4DB-3958-41D5-B494-1A516F54FE8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8E24E4DB-3958-41D5-B494-1A516F54FE8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E24E4DB-3958-41D5-B494-1A516F54FE8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E24E4DB-3958-41D5-B494-1A516F54FE8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{376EEFA3-900F-4287-848E-59D349E5B87E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{376EEFA3-900F-4287-848E-59D349E5B87E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{376EEFA3-900F-4287-848E-59D349E5B87E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{376EEFA3-900F-4287-848E-59D349E5B87E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18404969-EBD4-4C33-A240-F7B7F2F59049}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18404969-EBD4-4C33-A240-F7B7F2F59049}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18404969-EBD4-4C33-A240-F7B7F2F59049}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18404969-EBD4-4C33-A240-F7B7F2F59049}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {1F176FB5-E296-4DE2-91FA-D012A1BF8567}
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{88966F31-F6F5-4494-8D58-F6A73C137AFA} = {647A2EF9-5668-461D-AEA0-7491CAA5D7C9}
 		{16F8E585-3C55-4FBA-ABBB-75477644F6BC} = {647A2EF9-5668-461D-AEA0-7491CAA5D7C9}
-		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113} = {647A2EF9-5668-461D-AEA0-7491CAA5D7C9}
+		{376EEFA3-900F-4287-848E-59D349E5B87E} = {647A2EF9-5668-461D-AEA0-7491CAA5D7C9}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1F176FB5-E296-4DE2-91FA-D012A1BF8567}
 	EndGlobalSection
 EndGlobal

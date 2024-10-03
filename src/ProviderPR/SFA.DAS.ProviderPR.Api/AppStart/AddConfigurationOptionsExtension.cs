@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Options;
 using SFA.DAS.SharedOuterApi.Configuration;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.ProviderPR.Api.AppStart;
 
@@ -16,7 +16,8 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>()!.Value);
         services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>()!.Value);
-
+        services.Configure<PensionRegulatorApiConfiguration>(configuration.GetSection("PensionRegulatorApi"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<PensionRegulatorApiConfiguration>>()!.Value);
         return services;
     }
 }

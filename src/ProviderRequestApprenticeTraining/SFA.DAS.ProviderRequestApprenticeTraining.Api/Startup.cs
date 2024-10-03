@@ -6,14 +6,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.ProviderRequestApprenticeTraining.Api.AppStart;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequest;
+using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetAggregatedEmployerRequests;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.Application.Queries.ProviderAccounts;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -23,6 +22,9 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api
     [ExcludeFromCodeCoverage]
     public class Startup
     {
+
+        private const string EndpointName = "SFA.DAS.ProviderRequestApprenticeTraining";
+
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
 
@@ -54,7 +56,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api
                     .AddCheck<RequestApprenticeTrainingApiHealthCheck>(RequestApprenticeTrainingApiHealthCheck.HealthCheckResultDescription);
             }
 
-            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEmployerRequestQuery).Assembly));
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAggregatedEmployerRequestsQuery).Assembly));
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRoatpV2ProviderQuery).Assembly));
 
             services.AddServiceRegistration();
@@ -153,6 +155,11 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api
                     pattern: "api/{controller=Account}/{action=index}/{id?}");
             });
 
+        }
+
+        public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
+        {
+            serviceProvider.StartNServiceBus(_configuration, EndpointName).GetAwaiter().GetResult();
         }
     }
 }

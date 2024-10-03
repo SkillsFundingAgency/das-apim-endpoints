@@ -62,7 +62,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string WageText { get; init; }
             
             public int WageUnit { get; init; }
-            
+            public string WageAdditionalInformation { get; set; }
+
             public string WorkingWeek { get; init; }
             
             public string ExpectedDuration { get; init; }
@@ -98,7 +99,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string? CompanyBenefitsInformation { get; set; }
             public string? AdditionalTrainingDescription { get; set; }
             public string ApplicationUrl { get; set; }
-
+            public string ApplicationInstructions { get; set; }
+            
             public static Vacancy FromIVacancy(IVacancy source)
             {
                 return source switch
@@ -175,6 +177,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     WageAmountUpperBound = source.WageAmountUpperBound,
                     WageText = source.WageText,
                     WageUnit = source.WageUnit,
+                    WageAdditionalInformation = source.WageAdditionalInformation,
                     WorkingWeek = source.WorkingWeek,
                     ExpectedDuration = source.ExpectedDuration,
                     Score = source.Score,
@@ -199,6 +202,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     AdditionalQuestion2 = source.AdditionalQuestion2,
                     IsClosed = false,
                     ApplicationUrl = source.ApplicationUrl,
+                    ApplicationInstructions = source.ApplicationInstructions,
                     CompanyBenefitsInformation = source.CompanyBenefitsInformation,
                     AdditionalTrainingDescription = source.AdditionalTrainingDescription
                 };
