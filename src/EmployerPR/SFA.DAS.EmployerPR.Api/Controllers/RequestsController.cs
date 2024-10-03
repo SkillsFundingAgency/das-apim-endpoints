@@ -5,6 +5,7 @@ using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptPermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclineAddAccountRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinePermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
+using SFA.DAS.EmployerPR.Application.Requests.Queries.ValidateRequest;
 using SFA.DAS.EmployerPR.Infrastructure;
 
 namespace SFA.DAS.EmployerPR.Api.Controllers;
@@ -90,5 +91,14 @@ public class RequestsController(IProviderRelationshipsApiRestClient _providerRel
         await _mediator.Send(command, cancellationToken);
 
         return Ok();
+    }
+
+    [HttpGet("{requestId:guid}/createaccount")]
+    [ProducesResponseType(typeof(ValidatePermissionsRequestQueryResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ValidateRequest([FromRoute] Guid requestId, CancellationToken cancellationToken)
+    {
+        ValidatePermissionsRequestQuery query = new(requestId);
+        ValidatePermissionsRequestQueryResult result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
     }
 }
