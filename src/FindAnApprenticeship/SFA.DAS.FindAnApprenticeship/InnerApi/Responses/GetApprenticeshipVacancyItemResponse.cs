@@ -103,6 +103,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public string Postcode => Address.Postcode;
         public string City => Address.AddressLine4;
         public string ApplicationUrl { get; set; }
+        public string ApplicationInstructions { get; set; }
         public bool IsExternalVacancy => !string.IsNullOrWhiteSpace(ApplicationUrl);
         public string ExternalVacancyUrl => ApplicationUrl;
         public string? CompanyBenefitsInformation { get; set; }

@@ -53,6 +53,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 AccountPublicHashedId = source.AccountPublicHashedId,
                 AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
                 ApplicationMethod = source.ApplicationMethod,
+                ApplicationInstructions = source.ApplicationInstructions,
                 ApplicationUrl = source.ApplicationUrl,
                 LongDescription = source.Description,
                 TrainingDescription = source.TrainingDescription,

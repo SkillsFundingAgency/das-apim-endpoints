@@ -222,7 +222,7 @@ public class PostPermissionsCommandHandlerTests
                 It.Is<PostNotificationsCommand>(cmd =>
                     cmd.Notifications.Count() == 1 &&
                     cmd.Notifications[0].NotificationType == nameof(NotificationType.Provider) &&
-                    cmd.Notifications[0].TemplateName == nameof(PermissionEmailTemplateType.PermissionDeleted) &&
+                    cmd.Notifications[0].TemplateName == nameof(PermissionEmailTemplateType.PermissionsRemoved) &&
                     cmd.Notifications[0].Ukprn == command.Ukprn &&
                     cmd.Notifications[0].AccountLegalEntityId == command.AccountLegalEntityId &&
                     cmd.Notifications[0].PermitApprovals == 0 &&
