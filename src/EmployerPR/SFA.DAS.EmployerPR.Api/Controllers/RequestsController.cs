@@ -6,20 +6,19 @@ using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclineAddAccountRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinePermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Queries.ValidateRequest;
-using SFA.DAS.EmployerPR.Infrastructure;
 
 namespace SFA.DAS.EmployerPR.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class RequestsController(IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient, IMediator _mediator) : ControllerBase
+public class RequestsController(IMediator _mediator) : ControllerBase
 {
     [HttpGet("{requestId:guid}")]
-    [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetRequestQueryResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetRequest([FromRoute] Guid requestId, CancellationToken cancellationToken)
     {
-        GetRequestResponse? result = await _providerRelationshipsApiRestClient.GetRequest(requestId, cancellationToken);
+        GetRequestQueryResult? result = await _mediator.Send(new GetRequestQuery(requestId), cancellationToken);
 
         if (result is null)
         {
