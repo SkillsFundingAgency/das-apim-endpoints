@@ -96,7 +96,8 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                                 LearningDeliveryPeriodisedValues = model.GetLearningDeliveryPeriodisedValues(currentAcademicYear),
                                 LearningDeliveryPeriodisedTextValues = model.GetLearningDeliveryPeriodisedTextValues()
                             }
-                        }
+                        },
+                        HistoricEarningOutputValues = new List<HistoricEarningOutputValues>()
                     };
                 }).ToArray()
         };
