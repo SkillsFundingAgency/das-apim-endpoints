@@ -1,23 +1,23 @@
-﻿using MediatR;
+﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetSubmittedApplications
+namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDeletionQuery
 {
-    public record GetSubmittedApplicationsQueryHandler(
+    public record GetAccountDeletionQueryHandler(
         IVacancyService VacancyService,
         ICandidateApiClient<CandidateApiConfiguration> CandidateApiClient)
-        : IRequestHandler<GetSubmittedApplicationsQuery, GetSubmittedApplicationsQueryResult>
+        : IRequestHandler<GetAccountDeletionQuery, GetAccountDeletionQueryResult>
     {
-        public async Task<GetSubmittedApplicationsQueryResult> Handle(GetSubmittedApplicationsQuery request,
+        public async Task<GetAccountDeletionQueryResult> Handle(GetAccountDeletionQuery request,
             CancellationToken cancellationToken)
         {
             var applicationsTask =
@@ -31,14 +31,14 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetSubmi
 
             var vacancies = await VacancyService.GetVacancies(vacancyReferences);
 
-            var result = new GetSubmittedApplicationsQueryResult();
+            var result = new GetAccountDeletionQueryResult();
 
             foreach (var application in applicationList)
             {
                 var vacancy = vacancies.FirstOrDefault(v =>
                     v.VacancyReference.Replace("VAC", string.Empty) == application.VacancyReference);
                 Enum.TryParse<ApplicationStatus>(application.Status, out var status);
-                result.SubmittedApplications.Add(new GetSubmittedApplicationsQueryResult.Application
+                result.SubmittedApplications.Add(new GetAccountDeletionQueryResult.Application
                 {
                     Id = application.Id,
                     City = vacancy?.City,

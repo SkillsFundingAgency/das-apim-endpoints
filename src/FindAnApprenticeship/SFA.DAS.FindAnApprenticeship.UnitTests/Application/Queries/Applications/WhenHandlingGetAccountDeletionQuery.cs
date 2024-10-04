@@ -3,7 +3,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetSubmittedApplications;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDeletionQuery;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
@@ -16,16 +16,16 @@ using static SFA.DAS.FindAnApprenticeship.InnerApi.Responses.PostGetVacanciesByR
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Applications
 {
     [TestFixture]
-    public class WhenHandlingGetSubmittedApplicationsQuery
+    public class WhenHandlingGetAccountDeletionQuery
     {
         [Test, MoqAutoData]
         public async Task Then_The_QueryResult_Is_Returned_As_Expected(
-            GetSubmittedApplicationsQuery query,
+            GetAccountDeletionQuery query,
             GetApplicationsApiResponse applicationApiResponse,
             List<ApprenticeshipVacancy> vacancies,
             [Frozen] Mock<IVacancyService> vacancyService,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-            GetSubmittedApplicationsQueryHandler handler)
+            GetAccountDeletionQueryHandler handler)
         {
             for (var i = 0; i < applicationApiResponse.Applications.Count; i++)
             {
@@ -48,14 +48,14 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
             using var scope = new AssertionScope();
             result.SubmittedApplications.Count.Should().Be(applicationApiResponse.Applications.Count);
 
-            var expectedResult = new GetSubmittedApplicationsQueryResult();
+            var expectedResult = new GetAccountDeletionQueryResult();
 
             foreach (var application in applicationApiResponse.Applications)
             {
                 var vacancy = vacancies.Single(x =>
                     x.VacancyReference == $"{application.VacancyReference}");
 
-                expectedResult.SubmittedApplications.Add(new GetSubmittedApplicationsQueryResult.Application
+                expectedResult.SubmittedApplications.Add(new GetAccountDeletionQueryResult.Application
                 {
                     Id = application.Id,
                     Title = vacancy.Title,
@@ -81,12 +81,12 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
         [MoqInlineAutoData(ApplicationStatus.Successful)]
         public async Task Then_The_QueryResult_Is_Returned_Then_Other_ApplicationStatus_Not_Included(
            ApplicationStatus status,
-           GetSubmittedApplicationsQuery query,
+           GetAccountDeletionQuery query,
            GetApplicationsApiResponse applicationApiResponse,
            List<ApprenticeshipVacancy> vacancies,
            [Frozen] Mock<IVacancyService> vacancyService,
            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-           GetSubmittedApplicationsQueryHandler handler)
+           GetAccountDeletionQueryHandler handler)
         {
             for (var i = 0; i < applicationApiResponse.Applications.Count; i++)
             {

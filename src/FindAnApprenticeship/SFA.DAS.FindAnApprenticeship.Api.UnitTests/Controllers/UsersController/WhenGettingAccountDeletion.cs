@@ -4,33 +4,33 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetSubmittedApplications;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDeletionQuery;
 
-namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplicationsController
+namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController
 {
     [TestFixture]
-    public class WhenGettingSubmittedApplications
+    public class WhenGettingAccountDeletion
     {
         [Test, MoqAutoData]
         public async Task Then_The_Query_Response_Is_Returned(
             Guid candidateId,
-            GetSubmittedApplicationsQueryResult queryResult,
+            GetAccountDeletionQueryResult queryResult,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] Api.Controllers.ApplicationsController controller)
+            [Greedy] Api.Controllers.UsersController controller)
         {
-            mediator.Setup(x => x.Send(It.Is<GetSubmittedApplicationsQuery>(q =>
+            mediator.Setup(x => x.Send(It.Is<GetAccountDeletionQuery>(q =>
                         q.CandidateId == candidateId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(queryResult);
 
-            var actual = await controller.GetSubmittedApplications(candidateId);
+            var actual = await controller.AccountDeletion(candidateId);
 
             actual.Should().BeOfType<OkObjectResult>();
-            var actualObject = ((OkObjectResult)actual).Value as GetSubmittedApplicationsQueryResult;
+            var actualObject = ((OkObjectResult)actual).Value as GetAccountDeletionQueryResult;
             actualObject.Should().NotBeNull();
             actualObject.Should().Be(queryResult);
         }
