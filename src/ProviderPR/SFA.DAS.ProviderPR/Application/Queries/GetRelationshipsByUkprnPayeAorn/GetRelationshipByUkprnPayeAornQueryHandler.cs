@@ -8,6 +8,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.PensionRegulator;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.PensionsRegulator;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -33,7 +34,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
         }
 
         var pensionRegulatorResponse =
-            await pensionsRegulatorApiClient.GetWithResponseCode<List<GetPensionRegulatorOrganisationResponse>>(
+            await pensionsRegulatorApiClient.GetWithResponseCode<List<PensionRegulatorOrganisation>>(
                 new GetPensionsRegulatorOrganisationsRequest(request.Aorn, encodedPaye));
 
         var hasInvalidPaye = CheckPensionOrganisationsHaveInvalidPaye(pensionRegulatorResponse);
@@ -124,7 +125,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
             $"Pensions regulator API threw unexpected response for ukprn {ukprn} and paye {paye}");
     }
 
-    private static OrganisationDetails? GetPensionRegulatorOrganisationDetails(List<GetPensionRegulatorOrganisationResponse> pensionRegulatorOrganisations)
+    private static OrganisationDetails? GetPensionRegulatorOrganisationDetails(List<PensionRegulatorOrganisation> pensionRegulatorOrganisations)
     {
         OrganisationDetails? organisationDetails = null;
 
@@ -154,7 +155,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
         return organisationDetails;
     }
 
-    private static bool CheckPensionOrganisationsHaveInvalidPaye(ApiResponse<List<GetPensionRegulatorOrganisationResponse>> result)
+    private static bool CheckPensionOrganisationsHaveInvalidPaye(ApiResponse<List<PensionRegulatorOrganisation>> result)
     {
         if (result.StatusCode == HttpStatusCode.OK)
         {
