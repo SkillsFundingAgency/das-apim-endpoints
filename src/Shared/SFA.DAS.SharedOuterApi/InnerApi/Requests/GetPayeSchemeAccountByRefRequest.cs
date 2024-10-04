@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using System;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
@@ -8,7 +9,7 @@ public class GetPayeSchemeAccountByRefRequest : IGetApiRequest
 
     public GetPayeSchemeAccountByRefRequest(string encodedPayeScheme)
     {
-        EncodedPayeScheme = encodedPayeScheme;
+        EncodedPayeScheme = Uri.EscapeDataString(encodedPayeScheme);
     }
 
     public string GetUrl => $"api/accounthistories?payeRef={EncodedPayeScheme}";

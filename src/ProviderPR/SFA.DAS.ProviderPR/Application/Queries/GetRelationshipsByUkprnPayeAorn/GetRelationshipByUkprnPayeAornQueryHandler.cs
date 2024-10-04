@@ -17,8 +17,6 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
 {
     public async Task<GetRelationshipsByUkprnPayeAornResult> Handle(GetRelationshipsByUkprnPayeAornQuery request, CancellationToken cancellationToken)
     {
-        var encodedPaye = Uri.EscapeDataString(request.Paye);
-
         var queryResult =
             new GetRelationshipsByUkprnPayeAornResult();
 
@@ -35,7 +33,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
 
         var pensionRegulatorResponse =
             await pensionsRegulatorApiClient.GetWithResponseCode<List<PensionRegulatorOrganisation>>(
-                new GetPensionsRegulatorOrganisationsRequest(request.Aorn, encodedPaye));
+                new GetPensionsRegulatorOrganisationsRequest(request.Aorn, request.Paye));
 
         var hasInvalidPaye = CheckPensionOrganisationsHaveInvalidPaye(pensionRegulatorResponse);
 
@@ -49,7 +47,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
         queryResult.Organisation = GetPensionRegulatorOrganisationDetails(pensionRegulatorResponse.Body);
 
         var accountHistoryFromPayeRefResult =
-            await accountsApiClient.GetWithResponseCode<AccountHistory>(new GetPayeSchemeAccountByRefRequest(encodedPaye));
+            await accountsApiClient.GetWithResponseCode<AccountHistory>(new GetPayeSchemeAccountByRefRequest(request.Paye));
 
         if (accountHistoryFromPayeRefResult.StatusCode != HttpStatusCode.OK)
         {
