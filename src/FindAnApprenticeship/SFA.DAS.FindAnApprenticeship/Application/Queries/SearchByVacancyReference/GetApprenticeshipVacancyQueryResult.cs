@@ -99,7 +99,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string? CompanyBenefitsInformation { get; set; }
             public string? AdditionalTrainingDescription { get; set; }
             public string ApplicationUrl { get; set; }
-
+            public string ApplicationInstructions { get; set; }
+            
             public static Vacancy FromIVacancy(IVacancy source)
             {
                 return source switch
@@ -201,6 +202,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     AdditionalQuestion2 = source.AdditionalQuestion2,
                     IsClosed = false,
                     ApplicationUrl = source.ApplicationUrl,
+                    ApplicationInstructions = source.ApplicationInstructions,
                     CompanyBenefitsInformation = source.CompanyBenefitsInformation,
                     AdditionalTrainingDescription = source.AdditionalTrainingDescription
                 };
