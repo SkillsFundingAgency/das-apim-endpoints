@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using RestEase.HttpClientFactory;
 using SFA.DAS.Api.Common.AppStart;
@@ -12,7 +13,6 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.EmployerPR.Api.AppStart;
 
@@ -49,6 +49,7 @@ public static class AddServiceCollectionExtensions
         services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
+        services.AddTransient<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>, PensionRegulatorApiClient>();
 
         AddProviderRelationshipsApiClient(services, configuration);
 
@@ -79,6 +80,8 @@ public static class AddServiceCollectionExtensions
         services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>()!.Value);
         services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>()!.Value);
+        services.Configure<PensionRegulatorApiConfiguration>(configuration.GetSection("PensionRegulatorApi"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<PensionRegulatorApiConfiguration>>()!.Value);
         return services;
     }
 
