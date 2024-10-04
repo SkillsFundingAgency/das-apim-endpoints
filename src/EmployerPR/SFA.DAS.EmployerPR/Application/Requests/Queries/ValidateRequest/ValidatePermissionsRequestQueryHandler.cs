@@ -32,7 +32,7 @@ public class ValidatePermissionsRequestQueryHandler(
 
         GetRequestQueryResult permissionRequest = permissionRequestResponse.GetContent()!;
 
-        if (permissionRequest.RequestType != RequestType.CreateAccount)
+        if (permissionRequest.RequestType != RequestType.CreateAccount.ToString())
         {
             result.IsRequestValid = false;
             return result;

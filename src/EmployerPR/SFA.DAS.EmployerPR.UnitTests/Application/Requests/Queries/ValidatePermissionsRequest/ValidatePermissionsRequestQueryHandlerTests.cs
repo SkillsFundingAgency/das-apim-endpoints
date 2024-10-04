@@ -46,7 +46,7 @@ public class ValidatePermissionsRequestQueryHandlerTests
         GetRequestQueryResult getRequestQueryResult,
         CancellationToken cancellationToken)
     {
-        getRequestQueryResult.RequestType = requestType;
+        getRequestQueryResult.RequestType = requestType.ToString();
         clientMock.Setup(c => c.GetRequest(query.RequestId, cancellationToken)).ReturnsAsync(RestEaseResponseBuilder.GetOkResponse(getRequestQueryResult));
 
         var actual = await sut.Handle(query, cancellationToken);
@@ -68,7 +68,7 @@ public class ValidatePermissionsRequestQueryHandlerTests
 
         tprApiClientMock.Setup(a => a.GetWithResponseCode<IEnumerable<PensionRegulatorOrganisation>>(It.Is<GetPensionsRegulatorOrganisationsRequest>(r => r.PayeRef == getRequestQueryResult.EmployerPAYE && r.Aorn == getRequestQueryResult.EmployerAORN))).ReturnsAsync(new ApiResponse<IEnumerable<PensionRegulatorOrganisation>>(Enumerable.Empty<PensionRegulatorOrganisation>(), HttpStatusCode.NotFound, null));
 
-        getRequestQueryResult.RequestType = RequestType.CreateAccount;
+        getRequestQueryResult.RequestType = RequestType.CreateAccount.ToString();
         prApiClientMock.Setup(c => c.GetRequest(query.RequestId, cancellationToken)).ReturnsAsync(RestEaseResponseBuilder.GetOkResponse(getRequestQueryResult));
 
         var actual = await sut.Handle(query, cancellationToken);
@@ -93,7 +93,7 @@ public class ValidatePermissionsRequestQueryHandlerTests
     {
         tprApiClientMock.Setup(a => a.GetWithResponseCode<IEnumerable<PensionRegulatorOrganisation>>(It.Is<GetPensionsRegulatorOrganisationsRequest>(r => r.PayeRef == getRequestQueryResult.EmployerPAYE && r.Aorn == getRequestQueryResult.EmployerAORN))).ReturnsAsync(new ApiResponse<IEnumerable<PensionRegulatorOrganisation>>(Enumerable.Empty<PensionRegulatorOrganisation>(), HttpStatusCode.NotFound, null));
 
-        getRequestQueryResult.RequestType = RequestType.CreateAccount;
+        getRequestQueryResult.RequestType = RequestType.CreateAccount.ToString();
         prApiClientMock.Setup(c => c.GetRequest(query.RequestId, cancellationToken)).ReturnsAsync(RestEaseResponseBuilder.GetOkResponse(getRequestQueryResult));
 
         /// key setup
@@ -118,7 +118,7 @@ public class ValidatePermissionsRequestQueryHandlerTests
     {
         accountsApiClientMock.Setup(a => a.GetWithResponseCode<GetAccountHistoriesByPayeResponse>(It.Is<GetAccountHistoriesByPayeRequest>(r => r.PayeRef == getRequestQueryResult.EmployerPAYE))).ReturnsAsync(new ApiResponse<GetAccountHistoriesByPayeResponse>(new(), HttpStatusCode.NotFound, null));
 
-        getRequestQueryResult.RequestType = RequestType.CreateAccount;
+        getRequestQueryResult.RequestType = RequestType.CreateAccount.ToString();
         prApiClientMock.Setup(c => c.GetRequest(query.RequestId, cancellationToken)).ReturnsAsync(RestEaseResponseBuilder.GetOkResponse(getRequestQueryResult));
 
         /// key setup
@@ -143,7 +143,7 @@ public class ValidatePermissionsRequestQueryHandlerTests
     {
         accountsApiClientMock.Setup(a => a.GetWithResponseCode<GetAccountHistoriesByPayeResponse>(It.Is<GetAccountHistoriesByPayeRequest>(r => r.PayeRef == getRequestQueryResult.EmployerPAYE))).ReturnsAsync(new ApiResponse<GetAccountHistoriesByPayeResponse>(new(), HttpStatusCode.NotFound, null));
 
-        getRequestQueryResult.RequestType = RequestType.CreateAccount;
+        getRequestQueryResult.RequestType = RequestType.CreateAccount.ToString();
         prApiClientMock.Setup(c => c.GetRequest(query.RequestId, cancellationToken)).ReturnsAsync(RestEaseResponseBuilder.GetOkResponse(getRequestQueryResult));
 
         /// key setup
@@ -169,7 +169,7 @@ public class ValidatePermissionsRequestQueryHandlerTests
     {
         accountsApiClientMock.Setup(a => a.GetWithResponseCode<GetAccountHistoriesByPayeResponse>(It.Is<GetAccountHistoriesByPayeRequest>(r => r.PayeRef == getRequestQueryResult.EmployerPAYE))).ReturnsAsync(new ApiResponse<GetAccountHistoriesByPayeResponse>(new(), HttpStatusCode.NotFound, null));
 
-        getRequestQueryResult.RequestType = RequestType.CreateAccount;
+        getRequestQueryResult.RequestType = RequestType.CreateAccount.ToString();
         prApiClientMock.Setup(c => c.GetRequest(query.RequestId, cancellationToken)).ReturnsAsync(RestEaseResponseBuilder.GetOkResponse(getRequestQueryResult));
 
         /// key setup
