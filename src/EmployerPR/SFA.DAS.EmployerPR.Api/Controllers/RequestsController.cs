@@ -92,7 +92,7 @@ public class RequestsController(IMediator _mediator) : ControllerBase
         return Ok();
     }
 
-    [HttpGet("{requestId:guid}/createaccount")]
+    [HttpGet("{requestId:guid}/createaccount/validate")]
     [ProducesResponseType(typeof(ValidatePermissionsRequestQueryResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> ValidateRequest([FromRoute] Guid requestId, CancellationToken cancellationToken)
     {

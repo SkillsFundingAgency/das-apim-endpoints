@@ -8,7 +8,7 @@ public class GetRequestQueryHandler(IProviderRelationshipsApiRestClient _provide
 {
     public async Task<GetRequestQueryResult?> Handle(GetRequestQuery request, CancellationToken cancellationToken)
     {
-        Response<GetRequestQueryResult> response = await _providerRelationshipsApiRestClient.GetRequest(request.RequestId, cancellationToken);
+        Response<GetRequestQueryResult?> response = await _providerRelationshipsApiRestClient.GetRequest(request.RequestId, cancellationToken);
 
         return response.ResponseMessage.IsSuccessStatusCode ? response.GetContent() : null;
     }
