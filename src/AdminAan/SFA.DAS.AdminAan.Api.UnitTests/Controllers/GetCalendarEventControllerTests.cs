@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.AdminAan.Api.Controllers;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvent;
+using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEventAttendees;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminAan.Api.UnitTests.Controllers;
@@ -38,6 +39,23 @@ public class GetCalendarEventControllerTests
             .ReturnsAsync(queryResult);
 
         var result = await sut.GetCalendarEvent(requestedByMemberId, calendarEventId, cancellationToken);
+
+        result.As<OkObjectResult>().Value.Should().Be(queryResult);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Get_Attendees_HandlerReturnsData_ReturnsOkResponse(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] CalendarEventsController sut,
+        Guid requestedByMemberId,
+        Guid calendarEventId,
+        GetCalendarEventAttendeesQueryResult queryResult,
+        CancellationToken cancellationToken)
+    {
+        mediatorMock.Setup(m => m.Send(It.Is<GetCalendarEventAttendeesQuery>(q => q.RequestedByMemberId == requestedByMemberId && q.CalendarEventId == calendarEventId), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(queryResult);
+
+        var result = await sut.GetCalendarEventAttendees(requestedByMemberId, calendarEventId, cancellationToken);
 
         result.As<OkObjectResult>().Value.Should().Be(queryResult);
     }
