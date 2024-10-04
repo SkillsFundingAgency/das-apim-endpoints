@@ -1,4 +1,5 @@
 ﻿using AutoFixture.NUnit3;
+using Azure.Core;
 using FluentAssertions;
 using MediatR;
 using Moq;
@@ -20,7 +21,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Vacancies
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             DeleteSavedVacancyCommandHandler handler)
         {
-            var expectedRequest = new PostDeleteSavedVacancyApiRequest(command.CandidateId, command.VacancyReference);
+            var vacancyReference =
+                command.VacancyReference.Replace("VAC", string.Empty, StringComparison.CurrentCultureIgnoreCase);
+            var expectedRequest = new PostDeleteSavedVacancyApiRequest(command.CandidateId, vacancyReference);
 
             var actual = await handler.Handle(command, CancellationToken.None);
 
