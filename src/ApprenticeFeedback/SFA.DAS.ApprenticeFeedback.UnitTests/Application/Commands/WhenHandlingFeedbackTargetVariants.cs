@@ -34,7 +34,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Commands
         public async Task Then_PostRequestIsSent(ProcessFeedbackTargetVariantsCommand command, string errorContent)
         {
             var response = new ApiResponse<NullResponse>(null, HttpStatusCode.OK, errorContent);
-            var request = new ProcessFeedbackTargetVariantsRequest(new ProcessFeedbackTargetVariantsData(command.FeedbackTargetVariants));
+            var request = new ProcessFeedbackTargetVariantsRequest(new ProcessFeedbackTargetVariantsData(command.ClearStaging, command.MergeStaging, command.FeedbackTargetVariants));
 
             _mockApiClient.Setup(c => c.PostWithResponseCode<NullResponse>(It.IsAny<ProcessFeedbackTargetVariantsRequest>(), false))
                 .ReturnsAsync(response);

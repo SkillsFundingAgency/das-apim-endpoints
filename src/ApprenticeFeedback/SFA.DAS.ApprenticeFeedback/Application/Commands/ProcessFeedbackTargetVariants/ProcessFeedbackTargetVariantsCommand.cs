@@ -7,6 +7,8 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.ProcessFeedbackTargetV
 {
     public class ProcessFeedbackTargetVariantsCommand : IRequest<NullResponse>
     {
+        public bool ClearStaging { get; set; }
+        public bool MergeStaging { get; set; }
         public List<FeedbackTargetVariant> FeedbackTargetVariants { get; set; }
     }
 }

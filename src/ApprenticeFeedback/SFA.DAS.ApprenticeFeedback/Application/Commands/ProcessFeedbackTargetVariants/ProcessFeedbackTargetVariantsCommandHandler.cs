@@ -21,7 +21,8 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Commands.ProcessFeedbackTargetV
 
         public async Task<NullResponse> Handle(ProcessFeedbackTargetVariantsCommand command, CancellationToken cancellationToken)
         {
-            var request = new ProcessFeedbackTargetVariantsRequest(new ProcessFeedbackTargetVariantsData(command.FeedbackTargetVariants));
+            var request = new ProcessFeedbackTargetVariantsRequest(
+                new ProcessFeedbackTargetVariantsData(command.ClearStaging, command.MergeStaging, command.FeedbackTargetVariants));
 
             var response = await _apiClient.PostWithResponseCode<NullResponse>(request, false);
 

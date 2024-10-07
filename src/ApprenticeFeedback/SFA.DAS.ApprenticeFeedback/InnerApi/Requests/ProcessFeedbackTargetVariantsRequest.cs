@@ -19,9 +19,14 @@ namespace SFA.DAS.ApprenticeFeedback.InnerApi.Requests
 
     public class ProcessFeedbackTargetVariantsData
     {
+        public bool ClearStaging { get; set; }
+        public bool MergeStaging { get; set; }
         public List<FeedbackTargetVariant> FeedbackTargetVariants { get; set; }
-        public ProcessFeedbackTargetVariantsData(List<FeedbackTargetVariant> variants)
+
+        public ProcessFeedbackTargetVariantsData(bool clearStaging, bool mergeStaging, List<FeedbackTargetVariant> variants)
         {
+            ClearStaging = clearStaging;
+            MergeStaging = mergeStaging;
             FeedbackTargetVariants = variants;
         }
     }
