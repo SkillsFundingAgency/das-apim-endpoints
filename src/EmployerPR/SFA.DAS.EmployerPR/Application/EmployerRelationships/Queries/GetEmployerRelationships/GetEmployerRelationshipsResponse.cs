@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
+﻿using SFA.DAS.EmployerPR.Common;
+using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
 namespace SFA.DAS.EmployerPR.Application.EmployerRelationships.Queries.GetEmployerRelationships;
 
@@ -22,6 +23,7 @@ public class AccountLegalEntityPermissionsResponseModel
     public required long AccountId { get; set; }
 
     public List<ProviderPermissionsResponseModel> Permissions { get; set; } = [];
+    public List<ProviderRequestsResponseModel> Requests { get; set; } = [];
 }
 
 public class ProviderPermissionsResponseModel
@@ -31,5 +33,13 @@ public class ProviderPermissionsResponseModel
     public required string ProviderName { get; set; }
 
     public Operation[] Operations { get; set; } = [];
+}
+
+public class ProviderRequestsResponseModel
+{
+    public required long Ukprn { get; set; }
+    public required Guid RequestId { get; set; }
+    public Operation[] Operations { get; set; } = [];
+    public RequestType RequestType { get; set; }
 }
 
