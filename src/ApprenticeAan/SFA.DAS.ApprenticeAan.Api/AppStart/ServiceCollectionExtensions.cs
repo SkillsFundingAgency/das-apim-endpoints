@@ -1,11 +1,16 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using RestEase.HttpClientFactory;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.ApprenticeAan.Api.HealthCheck;
 using SFA.DAS.ApprenticeAan.Application.Extensions;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 using ApprenticeAccountsApiHealthCheck = SFA.DAS.ApprenticeAan.Api.HealthCheck.ApprenticeAccountsApiHealthCheck;
 using CoursesApiHealthCheck = SFA.DAS.ApprenticeAan.Api.HealthCheck.CoursesApiHealthCheck;
 
@@ -75,6 +80,12 @@ public static class ServiceCollectionExtensions
 
         services.AddRestEaseClient<IApprenticeAccountsApiClient>(apiConfig.Url)
             .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+        
+        services.Configure<ApprenticeAccountsApiConfiguration>(configuration.GetSection(nameof(ApprenticeAccountsApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeAccountsApiConfiguration>>().Value);
+        services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
+        services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
     }
 
     private static void AddCoursesApiClient(IServiceCollection services, IConfiguration configuration)

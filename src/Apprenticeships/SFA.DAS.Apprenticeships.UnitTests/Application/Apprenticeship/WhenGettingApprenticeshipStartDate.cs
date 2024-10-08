@@ -117,22 +117,22 @@ public class WhenGettingApprenticeshipStartDate
             });
 
         _mockCollectionCalendarApiClient
-            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(y =>
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(y =>
                 y._dateTime == _expectedResponse.ActualStartDate.Value.ToString("yyyy-MM-dd"))))
             .ReturnsAsync(new GetAcademicYearsResponse { StartDate = _expectedEarliestStartDate, AcademicYear = _expectedResponse.CurrentAcademicYear.AcademicYear });
 
         _mockCollectionCalendarApiClient
-            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(y =>
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(y =>
                 y._dateTime == _expectedResponse.ActualStartDate.Value.AddYears(1).ToString("yyyy-MM-dd"))))
             .ReturnsAsync(new GetAcademicYearsResponse { EndDate = _expectedLatestStartDate });
 
         _mockCollectionCalendarApiClient
-            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(y =>
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(y =>
                 y._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
             .ReturnsAsync(new GetAcademicYearsResponse { AcademicYear = _expectedResponse.CurrentAcademicYear.AcademicYear });
 
         _mockCollectionCalendarApiClient
-            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(y =>
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(y =>
                 y._dateTime == DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"))))
             .ReturnsAsync(new GetAcademicYearsResponse { AcademicYear = _expectedResponse.PreviousAcademicYear.AcademicYear });
 

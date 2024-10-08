@@ -8,6 +8,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.PensionRegulator;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.PensionsRegulator;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -16,8 +17,6 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
 {
     public async Task<GetRelationshipsByUkprnPayeAornResult> Handle(GetRelationshipsByUkprnPayeAornQuery request, CancellationToken cancellationToken)
     {
-        var encodedPaye = Uri.EscapeDataString(request.Paye);
-
         var queryResult =
             new GetRelationshipsByUkprnPayeAornResult();
 
@@ -33,8 +32,8 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
         }
 
         var pensionRegulatorResponse =
-            await pensionsRegulatorApiClient.GetWithResponseCode<List<GetPensionRegulatorOrganisationResponse>>(
-                new GetPensionsRegulatorOrganisationsRequest(request.Aorn, encodedPaye));
+            await pensionsRegulatorApiClient.GetWithResponseCode<List<PensionRegulatorOrganisation>>(
+                new GetPensionsRegulatorOrganisationsRequest(request.Aorn, request.Paye));
 
         var hasInvalidPaye = CheckPensionOrganisationsHaveInvalidPaye(pensionRegulatorResponse);
 
@@ -48,7 +47,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
         queryResult.Organisation = GetPensionRegulatorOrganisationDetails(pensionRegulatorResponse.Body);
 
         var accountHistoryFromPayeRefResult =
-            await accountsApiClient.GetWithResponseCode<AccountHistory>(new GetPayeSchemeAccountByRefRequest(encodedPaye));
+            await accountsApiClient.GetWithResponseCode<AccountHistory>(new GetPayeSchemeAccountByRefRequest(request.Paye));
 
         if (accountHistoryFromPayeRefResult.StatusCode != HttpStatusCode.OK)
         {
@@ -109,7 +108,12 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
             switch (res.ResponseMessage.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    return true;
+                    {
+                        GetRequestByUkprnAndPayeResponse getResponse = res.GetContent();
+                        if (getResponse.RequestType != "CreateAccount") return false;
+                        return true;
+
+                    }
                 case HttpStatusCode.NotFound:
                     return false;
             }
@@ -119,7 +123,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
             $"Pensions regulator API threw unexpected response for ukprn {ukprn} and paye {paye}");
     }
 
-    private static OrganisationDetails? GetPensionRegulatorOrganisationDetails(List<GetPensionRegulatorOrganisationResponse> pensionRegulatorOrganisations)
+    private static OrganisationDetails? GetPensionRegulatorOrganisationDetails(List<PensionRegulatorOrganisation> pensionRegulatorOrganisations)
     {
         OrganisationDetails? organisationDetails = null;
 
@@ -149,7 +153,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
         return organisationDetails;
     }
 
-    private static bool CheckPensionOrganisationsHaveInvalidPaye(ApiResponse<List<GetPensionRegulatorOrganisationResponse>> result)
+    private static bool CheckPensionOrganisationsHaveInvalidPaye(ApiResponse<List<PensionRegulatorOrganisation>> result)
     {
         if (result.StatusCode == HttpStatusCode.OK)
         {

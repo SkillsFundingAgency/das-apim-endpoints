@@ -15,14 +15,14 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
 {
-    public class WhenPostingSubmitproviderresponseConfirmation
+    public class WhenPostingSubmitproviderResponseConfirmation
     {
         [Test, MoqAutoData]
         public async Task Then_Status_Code_Is_Ok_From_Mediator(
             SubmitProviderResponseParameters param,
             SubmitProviderResponseResponse response,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestsController controller)
+            [Greedy] ProvidersController controller)
         {
             //Arrange
             mediator.Setup(x => x.Send(It.IsAny<SubmitProviderResponseCommand>(), CancellationToken.None))
@@ -42,7 +42,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.UnitTests.Controllers
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             SubmitProviderResponseParameters param,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] EmployerRequestsController controller)
+            [Greedy] ProvidersController controller)
         {
             // Arrange
             mediator.Setup(x => x.Send(It.IsAny<SubmitProviderResponseCommand>(), CancellationToken.None))

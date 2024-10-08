@@ -11,6 +11,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.PensionRegulator;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.PensionsRegulator;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -30,6 +31,8 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
     )
     {
         var encodedPaye = Uri.EscapeDataString(paye);
+
+        expected.RequestType = "CreateAccount";
 
         providerRelationshipsApiRestClientMock.Setup(x =>
             x.GetRequestByUkprnAndPaye(
@@ -71,10 +74,10 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 
         SetupPrMockForGetRequestByUkprnAndPaye(providerRelationshipsApiRestClientMock, ukprn, expected, encodedPaye, cancellationToken);
 
-        var pensionResponse = new ApiResponse<List<GetPensionRegulatorOrganisationResponse>>(new List<GetPensionRegulatorOrganisationResponse>(), HttpStatusCode.NotFound, "");
+        var pensionResponse = new ApiResponse<List<PensionRegulatorOrganisation>>(new List<PensionRegulatorOrganisation>(), HttpStatusCode.NotFound, "");
 
         pensionRegulatorApiClientMock.Setup(
-                p => p.GetWithResponseCode<List<GetPensionRegulatorOrganisationResponse>>(
+                p => p.GetWithResponseCode<List<PensionRegulatorOrganisation>>(
 
                     It.IsAny<GetPensionsRegulatorOrganisationsRequest>()
                     ))
@@ -93,7 +96,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
         actual.Should().BeEquivalentTo(expectedResponse);
         providerRelationshipsApiRestClientMock.Verify(r => r.GetRequestByUkprnAndPaye(ukprn, encodedPaye, cancellationToken), Times.Once);
         pensionRegulatorApiClientMock.Verify(
-            r => r.GetWithResponseCode<List<GetPensionRegulatorOrganisationResponse>>(
+            r => r.GetWithResponseCode<List<PensionRegulatorOrganisation>>(
                 It.IsAny<GetPensionsRegulatorOrganisationsRequest>()), Times.Once);
     }
 
@@ -112,14 +115,14 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 
         SetupPrMockForGetRequestByUkprnAndPaye(providerRelationshipsApiRestClientMock, ukprn, expected, encodedPaye, cancellationToken);
 
-        var pensionResponse = new ApiResponse<List<GetPensionRegulatorOrganisationResponse>>(new List<GetPensionRegulatorOrganisationResponse>
+        var pensionResponse = new ApiResponse<List<PensionRegulatorOrganisation>>(new List<PensionRegulatorOrganisation>
         {
             new(),
             new() {Status="Status"}
         }, HttpStatusCode.OK, "");
 
         pensionRegulatorApiClientMock.Setup(
-                p => p.GetWithResponseCode<List<GetPensionRegulatorOrganisationResponse>>(
+                p => p.GetWithResponseCode<List<PensionRegulatorOrganisation>>(
 
                     It.IsAny<GetPensionsRegulatorOrganisationsRequest>()
                     ))
@@ -138,7 +141,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
         actual.Should().BeEquivalentTo(expectedResponse);
         providerRelationshipsApiRestClientMock.Verify(r => r.GetRequestByUkprnAndPaye(ukprn, encodedPaye, cancellationToken), Times.Once);
         pensionRegulatorApiClientMock.Verify(
-            r => r.GetWithResponseCode<List<GetPensionRegulatorOrganisationResponse>>(
+            r => r.GetWithResponseCode<List<PensionRegulatorOrganisation>>(
                 It.IsAny<GetPensionsRegulatorOrganisationsRequest>()), Times.Once);
     }
 
@@ -150,7 +153,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
      long ukprn,
      string paye,
      string aorn,
-     GetPensionRegulatorOrganisationResponse pensionOrganisationResponse,
+     PensionRegulatorOrganisation pensionOrganisationResponse,
      GetRequestByUkprnAndPayeResponse expected,
      CancellationToken cancellationToken
  )
@@ -186,7 +189,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
         actual.Should().BeEquivalentTo(expectedResponse);
         providerRelationshipsApiRestClientMock.Verify(r => r.GetRequestByUkprnAndPaye(ukprn, encodedPaye, cancellationToken), Times.Once);
         pensionRegulatorApiClientMock.Verify(
-            r => r.GetWithResponseCode<List<GetPensionRegulatorOrganisationResponse>>(
+            r => r.GetWithResponseCode<List<PensionRegulatorOrganisation>>(
                 It.IsAny<GetPensionsRegulatorOrganisationsRequest>()), Times.Once);
         accountsApiClientMock.Verify(
             r => r.GetWithResponseCode<AccountHistory>(
@@ -202,7 +205,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
      long ukprn,
      string paye,
      string aorn,
-     GetPensionRegulatorOrganisationResponse pensionOrganisationResponse,
+     PensionRegulatorOrganisation pensionOrganisationResponse,
      GetRequestByUkprnAndPayeResponse expected,
      AccountHistory accountHistory,
      CancellationToken cancellationToken
@@ -254,7 +257,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
         actual.Should().BeEquivalentTo(expectedResponse);
         providerRelationshipsApiRestClientMock.Verify(r => r.GetRequestByUkprnAndPaye(ukprn, encodedPaye, cancellationToken), Times.Once);
         pensionRegulatorApiClientMock.Verify(
-            r => r.GetWithResponseCode<List<GetPensionRegulatorOrganisationResponse>>(
+            r => r.GetWithResponseCode<List<PensionRegulatorOrganisation>>(
                 It.IsAny<GetPensionsRegulatorOrganisationsRequest>()), Times.Once);
         accountsApiClientMock.Verify(
             r => r.GetWithResponseCode<AccountHistory>(
@@ -270,7 +273,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
     long ukprn,
     string paye,
     string aorn,
-    GetPensionRegulatorOrganisationResponse pensionOrganisationResponse,
+    PensionRegulatorOrganisation pensionOrganisationResponse,
     GetRequestByUkprnAndPayeResponse expected,
     AccountHistory accountHistory,
     GetAccountLegalEntityResponse legalEntityResponse,
@@ -354,7 +357,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
    long ukprn,
    string paye,
    string aorn,
-   GetPensionRegulatorOrganisationResponse pensionOrganisationResponse,
+   PensionRegulatorOrganisation pensionOrganisationResponse,
    GetRequestByUkprnAndPayeResponse expected,
    AccountHistory accountHistory,
    GetAccountLegalEntityResponse legalEntityResponse,
@@ -432,7 +435,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
         providerRelationshipsApiRestClientMock.Verify(r => r.GetRelationship(ukprn, legalEntityResponse.AccountLegalEntityId, cancellationToken), Times.Once);
     }
 
-    private static OrganisationDetails BuildOrganisationDetails(GetPensionRegulatorOrganisationResponse pensionOrganisationResponse)
+    private static OrganisationDetails BuildOrganisationDetails(PensionRegulatorOrganisation pensionOrganisationResponse)
     {
         return new OrganisationDetails
         {
@@ -450,18 +453,18 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
     }
 
     private static void SetupPensionResponses(Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
-        GetPensionRegulatorOrganisationResponse pensionOrganisationResponse)
+        PensionRegulatorOrganisation pensionOrganisationResponse)
     {
         pensionOrganisationResponse.Status = "";
 
-        var pensionResponse = new ApiResponse<List<GetPensionRegulatorOrganisationResponse>>(
-            new List<GetPensionRegulatorOrganisationResponse>
+        var pensionResponse = new ApiResponse<List<PensionRegulatorOrganisation>>(
+            new List<PensionRegulatorOrganisation>
             {
                 pensionOrganisationResponse
             }, HttpStatusCode.OK, "");
 
         pensionRegulatorApiClientMock.Setup(
-                p => p.GetWithResponseCode<List<GetPensionRegulatorOrganisationResponse>>(
+                p => p.GetWithResponseCode<List<PensionRegulatorOrganisation>>(
                     It.IsAny<GetPensionsRegulatorOrganisationsRequest>()
                 ))
             .ReturnsAsync(

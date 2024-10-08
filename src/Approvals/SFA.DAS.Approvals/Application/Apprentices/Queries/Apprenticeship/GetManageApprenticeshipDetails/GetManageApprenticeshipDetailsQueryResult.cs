@@ -7,6 +7,8 @@ using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetChangeOfPr
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetChangeOfEmployerChainResponse;
 using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetOverlappingTrainingDateResponse;
 using System;
+using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apprenticeships.Types;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails
 {
@@ -25,6 +27,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
         public bool? CanActualStartDateBeChanged { get; set; }
         public PendingStartDateChange PendingStartDateChange { get; set; }
         public PaymentsStatus PaymentsStatus { get; set; }
+        public LearnerStatus LearnerStatus { get; set; }
     }
 
     public class PendingPriceChange
