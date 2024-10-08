@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
 
-public class GetRequestResponse
+public class GetRequestQueryResult
 {
     public Guid RequestId { get; set; }
     public required string RequestType { get; set; }
@@ -21,4 +21,3 @@ public class GetRequestResponse
     public DateTime? UpdatedDate { get; set; }
     public Operation[] Operations { get; set; } = [];
 }
-
