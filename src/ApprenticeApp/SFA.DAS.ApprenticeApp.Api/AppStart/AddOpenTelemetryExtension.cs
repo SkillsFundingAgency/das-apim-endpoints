@@ -5,8 +5,12 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
+using Microsoft.Identity.Client;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using SFA.DAS.ApprenticeApp.Api.Telemetry;
 
-namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
+namespace SFA.DAS.SFA.DAS.ApprenticeApp.Api.AppStart
 {
     public static class AddOpenTelemetryExtensions
     {
@@ -22,12 +26,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
                 // This service will collect and send telemetry data to Azure Monitor.
                 services.AddOpenTelemetry().UseAzureMonitor(options =>
                 {
-                    options.ConnectionString = "<KeyGoesHere>;
+                    options.ConnectionString = "appInsightsConnectionString";
                 });
                 // Configure metrics
-
+            
             }
-          
+
         }
+          
+        
     }
 }
