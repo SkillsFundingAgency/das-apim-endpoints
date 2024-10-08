@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Types;
+using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Approvals.Api.Models.Apprentices
 {
@@ -20,6 +21,7 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
         public PendingStartDateChangeDetails PendingStartDateChange { get; set; }
         public bool? CanActualStartDateBeChanged { get; set; }
         public PaymentsStatusDetails PaymentsStatus { get; set; }
+        public LearnerStatus LearnerStatus { get; set; }
 
         public class ApprenticeshipDetails
         {
