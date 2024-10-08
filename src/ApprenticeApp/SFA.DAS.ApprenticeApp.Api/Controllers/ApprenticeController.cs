@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestEase;
+using SFA.DAS.ApprenticeApp.Api.Telemetry;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeSubscriptions;
 using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts;
@@ -49,6 +50,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         [HttpPost("/apprentices/{id}/subscriptions")]
         public async Task<IActionResult> ApprenticeAddSubscription(Guid id, [FromBody] ApprenticeAddSubscriptionRequest request)
         {
+            MyApprenticeshipAppMetrics.IncrementEnablePushNotificationsCounter();
             await _mediator.Send(new AddApprenticeSubscriptionCommand
             {
                 ApprenticeId = id,
@@ -63,6 +65,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         [HttpDelete("/apprentices/{id}/subscriptions")]
         public async Task<IActionResult> ApprenticeRemoveSubscription(Guid id, [FromBody] ApprenticeRemoveSubscriptionRequest request)
         {
+            MyApprenticeshipAppMetrics.IncrementDisablePushNotificationsCounter();
             await _mediator.Send(new RemoveApprenticeSubscriptionCommand
             {
                 ApprenticeId = id,
