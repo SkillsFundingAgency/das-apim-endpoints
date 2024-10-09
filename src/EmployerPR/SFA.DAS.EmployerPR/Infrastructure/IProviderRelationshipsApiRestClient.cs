@@ -34,7 +34,8 @@ public interface IProviderRelationshipsApiRestClient
     Task RemovePermissions([Query] Guid userRef, [Query] long ukprn, [Query] long accountLegalEntityId, CancellationToken cancellationToken);
 
     [Get("requests/{requestId}")]
-    Task<GetRequestResponse?> GetRequest([Path] Guid requestId, CancellationToken cancellationToken);
+    [AllowAnyStatusCode]
+    Task<Response<GetRequestQueryResult?>> GetRequest([Path] Guid requestId, CancellationToken cancellationToken);
 
     [Put("requests/{requestId}/declined")]
     Task<Unit> DeclineRequest([Path] Guid requestId, [Body] DeclinedRequestModel model, CancellationToken cancellationToken);
