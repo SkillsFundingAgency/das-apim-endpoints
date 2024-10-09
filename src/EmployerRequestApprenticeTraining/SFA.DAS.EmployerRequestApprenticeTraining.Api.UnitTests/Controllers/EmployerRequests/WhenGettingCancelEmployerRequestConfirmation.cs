@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
                 .ReturnsAsync(queryResult);
 
             mockMediator
-                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardId == queryResult.EmployerRequest.StandardReference), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardReference == queryResult.EmployerRequest.StandardReference), CancellationToken.None))
                 .ReturnsAsync(standardResult);
 
             mockMediator
@@ -48,8 +48,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.UnitTests.Controllers.Em
             actual.Value.Should().BeEquivalentTo(new CancelEmployerRequestConfirmation
             {
                 EmployerRequestId = queryResult.EmployerRequest.Id,
-                StandardTitle = standardResult.Standard.Title,
-                StandardLevel = standardResult.Standard.Level,
+                StandardTitle = standardResult.Standard.StandardTitle,
+                StandardLevel = standardResult.Standard.StandardLevel,
                 NumberOfApprentices = queryResult.EmployerRequest.NumberOfApprentices,
                 SameLocation = queryResult.EmployerRequest.SameLocation,
                 SingleLocation = queryResult.EmployerRequest.SingleLocation,

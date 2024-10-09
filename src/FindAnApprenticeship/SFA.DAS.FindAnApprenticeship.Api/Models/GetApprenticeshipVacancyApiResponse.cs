@@ -96,6 +96,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string CandidatePostcode { get; set; }
 
         public string ApplicationUrl { get; set; }
+        public string ApplicationInstructions { get; set; }
         
         public static implicit operator GetApprenticeshipVacancyApiResponse(GetApprenticeshipVacancyQueryResult source)
         {
@@ -168,6 +169,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 IsSavedVacancy = source.IsSavedVacancy,
                 CandidatePostcode = source.CandidatePostcode,
                 ApplicationUrl = source.ApprenticeshipVacancy.ApplicationUrl,
+                ApplicationInstructions = source.ApprenticeshipVacancy.ApplicationInstructions,
                 CompanyBenefitsInformation = source.ApprenticeshipVacancy.CompanyBenefitsInformation,
                 AdditionalTrainingDescription = source.ApprenticeshipVacancy.AdditionalTrainingDescription
             };

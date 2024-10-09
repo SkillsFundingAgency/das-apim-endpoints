@@ -7,5 +7,6 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.Acknowl
     {
         public Guid EmployerRequestId { get; set; }
         public Guid AcknowledgedBy { get; set; }
+
     }
 }
