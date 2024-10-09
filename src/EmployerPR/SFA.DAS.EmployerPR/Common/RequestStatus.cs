@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.EmployerPR.Application.Relationships.Queries.GetRelationships;
+﻿namespace SFA.DAS.EmployerPR.Common;
 public enum RequestStatus : short
 {
     New,

@@ -3,12 +3,12 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar
 {
-	public class GetAcademicYearsRequest : IGetApiRequest
+	public class GetAcademicYearByDateRequest : IGetApiRequest
 	{
 		public readonly string _dateTime;
-		public string GetUrl => $"academicyears/{_dateTime}";
+		public string GetUrl => $"academicyears?date={_dateTime}";
 
-		public GetAcademicYearsRequest(DateTime dateTime)
+		public GetAcademicYearByDateRequest(DateTime dateTime)
 		{
 			_dateTime = dateTime.ToString("yyyy-MM-dd");
 		}
