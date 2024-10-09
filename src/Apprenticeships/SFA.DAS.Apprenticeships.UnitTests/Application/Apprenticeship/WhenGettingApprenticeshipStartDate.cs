@@ -164,7 +164,7 @@ public class WhenGettingApprenticeshipStartDate
         // Arrange
         var expectedMinimumStartDate = new DateTime(2024, 10, 1);
         _mockCollectionCalendarApiClient
-            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearsRequest>(y =>
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(y =>
                 y._dateTime == _expectedResponse.ActualStartDate.Value.ToString("yyyy-MM-dd"))))
             .ReturnsAsync(new GetAcademicYearsResponse { StartDate = expectedMinimumStartDate.AddDays(-1), AcademicYear = _expectedResponse.CurrentAcademicYear.AcademicYear });
 
