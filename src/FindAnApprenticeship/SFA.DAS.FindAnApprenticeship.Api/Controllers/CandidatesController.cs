@@ -93,17 +93,17 @@ public class CandidatesController : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("sign-in-to-your-old-account")]
-    public async Task<IActionResult> SignIntoYourOldAccount([FromQuery] Guid candidateId, [FromQuery] string email, [FromQuery] string password)
+    public async Task<IActionResult> SignIntoYourOldAccount(PostSignIntoYourOldAccountRequest request)
     {
         try
         {
             var queryResponse = await _mediator.Send(new GetSignIntoYourOldAccountQuery
             {
-                CandidateId = candidateId,
-                Email = email,
-                Password = password
+                CandidateId = request.CandidateId,
+                Email = request.Email,
+                Password = request.Password
             });
 
             return Ok(queryResponse);
