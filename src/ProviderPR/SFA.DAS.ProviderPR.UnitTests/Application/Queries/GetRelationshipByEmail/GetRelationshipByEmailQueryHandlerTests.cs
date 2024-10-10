@@ -111,7 +111,7 @@ public class GetRelationshipByEmailQueryHandlerTests
 
         var actual = await handler.Handle(request, cancellationToken);
 
-        var expectedResponse = new GetRelationshipByEmailQueryResult();
+        var expectedResponse = new GetRelationshipByEmailQueryResult { HasUserAccount = false };
 
         actual.Should().BeEquivalentTo(expectedResponse);
         accountsApiClient.Verify(r => r.GetWithResponseCode<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
@@ -175,7 +175,7 @@ public class GetRelationshipByEmailQueryHandlerTests
 
         var actual = await handler.Handle(request, new CancellationToken());
 
-        var expectedResponse = new GetRelationshipByEmailQueryResult();
+        var expectedResponse = new GetRelationshipByEmailQueryResult { HasUserAccount = false };
 
         actual.Should().BeEquivalentTo(expectedResponse);
         accountsApiClient.Verify(r => r.GetWithResponseCode<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
