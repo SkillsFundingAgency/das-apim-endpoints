@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Asp.Versioning;
 using SFA.DAS.EarlyConnect.Application.Queries.GetEducationalOrganisationsByLepCode;
 using System.Net;
+using SFA.DAS.EarlyConnect.Api.Models;
 using SFA.DAS.EarlyConnect.Api.Requests.GetRequests;
 
 namespace SFA.DAS.EarlyConnect.Api.Controllers
@@ -21,6 +22,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetEducationalOrganisationsData([FromQuery] EducationalOrganisationsGetRequest educationalOrganisationsGetRequest)
         {
             var result = await _mediator.Send(new GetEducationalOrganisationsByLepCodeQuery
@@ -29,7 +31,11 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                 SearchTerm = educationalOrganisationsGetRequest.SearchTerm
             });
 
-            return Ok(result.EducationalOrganisations?.Select(c => c).ToList());
+            var response = result.EducationalOrganisations?
+                .Select(org => (GetEducationalOrganisationsResponse)org)
+                .ToList();
+
+            return Ok(response);
         }
 
     }
