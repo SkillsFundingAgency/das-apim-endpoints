@@ -8,9 +8,11 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apprenticeships.Application.Notifications;
 using CreateApprenticeshipPriceChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipPriceChangeRequest;
 using CreateApprenticeshipStartDateChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipStartDateChangeRequest;
 using GetProviderResponse = SFA.DAS.Apprenticeships.Api.Models.GetProviderResponse;
+using SFA.DAS.Apprenticeships.Api.Extensions;
 
 namespace SFA.DAS.Apprenticeships.Api.Controllers;
 
@@ -91,23 +93,24 @@ public class ApprenticeshipController : ControllerBase
     public async Task<ActionResult> CreateApprenticeshipPriceChange(Guid apprenticeshipKey,
         [FromBody] CreateApprenticeshipPriceChangeRequest request)
     {
-        var response = await _apiClient.PostWithResponseCode<PostCreateApprenticeshipPriceChangeApiResponse>(new PostCreateApprenticeshipPriceChangeRequest(
-            apprenticeshipKey,
-            request.Initiator,
-            request.UserId,
-            request.TrainingPrice,
-            request.AssessmentPrice,
-            request.TotalPrice,
-            request.Reason,
-            request.EffectiveFromDate));
+        var response = await _apiClient.PostWithResponseCode<PostCreateApprenticeshipPriceChangeApiResponse>(request.ToApiRequest(apprenticeshipKey));
 
-        if (string.IsNullOrEmpty(response.ErrorContent))
+        if (!string.IsNullOrEmpty(response.ErrorContent))
         {
-            return Ok(new PostCreateApprenticeshipPriceChangeResponse(response.Body.PriceChangeStatus));
+            _logger.LogError("Error attempting to create apprenticeship price change. {statusCode} returned from inner api.", response.StatusCode);
+            return BadRequest();
         }
-               
-        _logger.LogError($"Error attempting to create apprenticeship price change. {response.StatusCode} returned from inner api.", response.StatusCode);
-        return BadRequest();
+
+        var notificationResponse = await _mediator.Send(request.ToNotificationCommand(apprenticeshipKey));
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to send ChangeOfPrice requested notification after successful change of price request");
+            return BadRequest();
+        }
+
+        return Ok(new PostCreateApprenticeshipPriceChangeResponse(response.Body.PriceChangeStatus));
+
     }
 
     [HttpPost]

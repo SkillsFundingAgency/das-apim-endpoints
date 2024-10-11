@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.Apprenticeships.Application.Notifications;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -25,8 +26,10 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
         services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
-		    services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
-	  }
+        services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
+        services.AddTransient<INotificationService, NotificationService>();
+        services.AddTransient<IExtendedNotificationService, ExtendedNotificationService>();
+    }
 }
 
 [ExcludeFromCodeCoverage]
@@ -56,6 +59,9 @@ public static class AddConfigurationOptionsExtension
 
 		services.Configure<CollectionCalendarApiConfiguration>(configuration.GetSection(nameof(CollectionCalendarApiConfiguration)));
 		services.AddSingleton(cfg => cfg.GetService<IOptions<CollectionCalendarApiConfiguration>>()!.Value);
-	}
+
+        services.Configure<NServiceBusConfiguration>(configuration.GetSection(nameof(NServiceBusConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<NServiceBusConfiguration>>()!.Value);
+    }
 
 }
