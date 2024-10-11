@@ -30,7 +30,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SavedVacanciesC
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Unit.Value);
 
-            var actual = await controller.Delete(candidateId, request);
+            var actual = await controller.DeleteSavedVacancy(candidateId, request);
 
             actual.Should().BeOfType<OkObjectResult>();
         }
@@ -48,7 +48,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SavedVacanciesC
                     It.IsAny<CancellationToken>()))
              .ThrowsAsync(new Exception());
 
-            var actual = await controller.Delete(candidateId, request) as StatusCodeResult;
+            var actual = await controller.DeleteSavedVacancy(candidateId, request) as StatusCodeResult;
 
             actual.Should().NotBeNull();
             actual!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

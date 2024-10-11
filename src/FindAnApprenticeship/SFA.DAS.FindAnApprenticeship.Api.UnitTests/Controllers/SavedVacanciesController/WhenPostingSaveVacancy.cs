@@ -31,7 +31,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SavedVacanciesC
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(commandResult);
 
-            var actual = await controller.Add(candidateId, request);
+            var actual = await controller.AddSavedVacancy(candidateId, request);
 
             actual.Should().BeOfType<OkObjectResult>();
             var actualObject = ((OkObjectResult)actual).Value as SaveVacancyCommandResult;
@@ -52,7 +52,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SavedVacanciesC
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception());
 
-            var actual = await controller.Add(candidateId, request) as StatusCodeResult;
+            var actual = await controller.AddSavedVacancy(candidateId, request) as StatusCodeResult;
 
             actual.Should().NotBeNull();
             actual!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
