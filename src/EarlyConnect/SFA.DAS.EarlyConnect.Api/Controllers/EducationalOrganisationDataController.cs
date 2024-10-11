@@ -28,7 +28,9 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             var result = await _mediator.Send(new GetEducationalOrganisationsByLepCodeQuery
             {
                 LepCode = educationalOrganisationsGetRequest.LepCode,
-                SearchTerm = educationalOrganisationsGetRequest.SearchTerm
+                SearchTerm = educationalOrganisationsGetRequest.SearchTerm,
+                PageSize = educationalOrganisationsGetRequest.PageSize,
+                Page = educationalOrganisationsGetRequest.Page
             });
 
             var response = result.EducationalOrganisations?

@@ -10,5 +10,7 @@ namespace SFA.DAS.EarlyConnect.Api.Requests.GetRequests
 
         [RegularExpression(@"^[\w\s]+$", ErrorMessage = "Invalid Search Term")]
         public string? SearchTerm { get; set; }
+        public int Page { get; set; }
+        public int PageSize { get; set; }
     }
 }

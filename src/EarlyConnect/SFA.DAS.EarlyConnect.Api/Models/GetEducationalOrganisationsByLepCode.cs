@@ -9,6 +9,7 @@ namespace SFA.DAS.EarlyConnect.Api.Models
         public string? Town { get; set; }
         public string? County { get; set; }
         public string? PostCode { get; set; }
+        public string? URN { get; set; }
 
         public static implicit operator GetEducationalOrganisationsResponse(GetEducationalOrganisationsByLepCodeResponse educationalOrganisationsDto)
         {
@@ -18,7 +19,8 @@ namespace SFA.DAS.EarlyConnect.Api.Models
                 AddressLine1 = educationalOrganisationsDto.AddressLine1,
                 Town = educationalOrganisationsDto.Town,
                 County = educationalOrganisationsDto.County,
-                PostCode = educationalOrganisationsDto.PostCode
+                PostCode = educationalOrganisationsDto.PostCode,
+                URN = educationalOrganisationsDto.URN
             };
         }
     }
