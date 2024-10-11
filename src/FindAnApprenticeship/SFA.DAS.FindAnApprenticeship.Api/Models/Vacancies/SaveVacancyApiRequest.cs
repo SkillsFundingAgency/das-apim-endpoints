@@ -1,7 +1,7 @@
 ﻿namespace SFA.DAS.FindAnApprenticeship.Api.Models.Vacancies
 {
-    public record SaveVacancyApiRequest
+    public class SaveVacancyApiRequest
     {
-        public required string VacancyReference { get; set; }
+        public string VacancyReference { get; set; }
     }
 }
