@@ -82,8 +82,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{candidateId:guid}/save-vacancy")]
-        public async Task<IActionResult> SaveVacancy([FromRoute] Guid candidateId, [FromBody] SaveVacancyApiRequest request)
+        [Route("save-vacancy")]
+        public async Task<IActionResult> SaveVacancy([FromQuery] Guid candidateId, [FromBody] SaveVacancyApiRequest request)
         {
             try
             {
