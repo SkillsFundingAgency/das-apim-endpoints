@@ -1,11 +1,11 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using RestEase;
 using SFA.DAS.EmployerPR.Application.Notifications.Commands.PostNotifications;
 using SFA.DAS.EmployerPR.Application.Permissions.Queries.GetPermissions;
 using SFA.DAS.EmployerPR.Common;
 using SFA.DAS.EmployerPR.Infrastructure;
 using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
-using System.Net;
 
 namespace SFA.DAS.EmployerPR.Application.Permissions.Commands.PostPermissions;
 
@@ -60,7 +60,7 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
                 cancellationToken
             );
 
-            templateType = PermissionEmailTemplateType.PermissionDeleted;
+            templateType = PermissionEmailTemplateType.PermissionsRemoved;
         }
         else
         {
