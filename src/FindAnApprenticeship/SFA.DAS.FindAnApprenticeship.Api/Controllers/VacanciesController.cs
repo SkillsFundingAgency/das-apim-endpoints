@@ -10,6 +10,8 @@ using System;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Vacancies;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Vacancies;
 using SFA.DAS.FindAnApprenticeship.Services;
+using Microsoft.AspNetCore.Components.Forms;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies.SaveVacancy;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -75,6 +77,23 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error posting vacancy details by reference:{vacancyReference}", vacancyReference);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("{candidateId:guid}/save-vacancy")]
+        public async Task<IActionResult> SaveVacancy([FromRoute] Guid candidateId, [FromBody] SaveVacancyApiRequest request)
+        {
+            try
+            {
+                var result = await _mediator.Send(new SaveVacancyCommand(candidateId, request.VacancyReference));
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Post Saved Vacancy : An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

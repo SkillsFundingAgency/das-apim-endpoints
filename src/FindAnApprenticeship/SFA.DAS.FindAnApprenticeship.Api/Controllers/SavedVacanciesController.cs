@@ -35,7 +35,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{candidateId}/add")]
+        [Route("{candidateId:guid}/add")]
         public async Task<IActionResult> AddSavedVacancy([FromRoute] Guid candidateId, [FromBody] SaveVacancyApiRequest request)
         {
             try
@@ -52,7 +52,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{candidateId}/delete")]
+        [Route("{candidateId:guid}/delete")]
         public async Task<IActionResult> DeleteSavedVacancy([FromRoute] Guid candidateId, [FromBody] DeleteSavedVacancyApiRequest request)
         {
             try
