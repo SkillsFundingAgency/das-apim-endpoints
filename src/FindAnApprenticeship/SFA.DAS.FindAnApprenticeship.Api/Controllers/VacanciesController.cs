@@ -80,22 +80,5 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
-
-        [HttpPost]
-        [Route("save-vacancy")]
-        public async Task<IActionResult> SaveVacancy([FromQuery] Guid candidateId, [FromBody] SaveVacancyApiRequest request)
-        {
-            try
-            {
-                var result = await _mediator.Send(new SaveVacancyCommand(candidateId, request.VacancyReference));
-
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Post Saved Vacancy : An error occurred");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
-        }
     }
 }
