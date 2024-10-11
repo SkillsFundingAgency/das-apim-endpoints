@@ -12,7 +12,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies;
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
     [ApiController]
-    [Route("saved-vacancies")]
+    [Route("saved-vacancies/")]
     public class SavedVacanciesController(IMediator mediator, ILogger<ApplicationsController> logger) : Controller
     {
         [HttpGet]
@@ -34,7 +34,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 
-        [HttpPost, Route("/{candidateId}/add")]
+        [HttpPost, Route("{candidateId}/add")]
         public async Task<IActionResult> Add([FromRoute] Guid candidateId, [FromBody] SaveVacancyApiRequest request)
         {
             try
@@ -50,7 +50,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 
-        [HttpPost, Route("/{candidateId}/delete")]
+        [HttpPost, Route("{candidateId}/delete")]
         public async Task<IActionResult> Delete([FromRoute] Guid candidateId, [FromBody] DeleteSavedVacancyApiRequest request)
         {
             try
