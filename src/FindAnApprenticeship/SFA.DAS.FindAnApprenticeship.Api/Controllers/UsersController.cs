@@ -473,7 +473,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 
-        [HttpDelete("{candidateId}/account-deletion")]
+        [HttpPost("{candidateId}/account-deletion")]
         public async Task<IActionResult> UserAccountDeletion([FromRoute] Guid candidateId)
         {
             try

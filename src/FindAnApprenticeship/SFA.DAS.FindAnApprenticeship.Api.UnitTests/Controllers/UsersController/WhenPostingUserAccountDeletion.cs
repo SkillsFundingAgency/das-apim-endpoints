@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.UsersController
 {
     [TestFixture]
-    public class WhenDeletingUserAccountDeletion
+    public class WhenPostingUserAccountDeletion
     {
         [Test, MoqAutoData]
         public async Task Then_The_Command_Response_Is_Returned(
