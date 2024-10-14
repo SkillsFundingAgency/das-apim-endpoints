@@ -8,9 +8,10 @@ using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.Identity.Client;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
-using SFA.DAS.ApprenticeApp.Api.Telemetry;
+using System.Diagnostics.Metrics;
 
-namespace SFA.DAS.SFA.DAS.ApprenticeApp.Api.AppStart
+
+namespace SFA.DAS.ApprenticeApp.Telemetry
 {
     public static class AddOpenTelemetryExtensions
     {
@@ -29,7 +30,8 @@ namespace SFA.DAS.SFA.DAS.ApprenticeApp.Api.AppStart
                     options.ConnectionString = "appInsightsConnectionString";
                 });
                 // Configure metrics
-            
+                    
+                services.AddSingleton<IApprenticeAppMetrics, ApprenticeAppMetrics>();
             }
 
         }

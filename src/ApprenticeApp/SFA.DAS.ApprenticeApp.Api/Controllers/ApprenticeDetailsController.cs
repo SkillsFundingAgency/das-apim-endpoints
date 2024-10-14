@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ApprenticeApp.Api.Telemetry;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
+using SFA.DAS.ApprenticeApp.Telemetry;
 using System;
 using System.Threading.Tasks;
 
@@ -11,19 +11,25 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
     public class ApprenticeDetailsController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IApprenticeAppMetrics _apprenticeAppMetrics;
 
         public ApprenticeDetailsController(IMediator mediator)
             => _mediator = mediator;
 
+        public ApprenticeDetailsController(IApprenticeAppMetrics metrics)
+        {
+            _apprenticeAppMetrics = metrics;
+        }
+
         [HttpGet("/apprentices/{id}/details")]
         public async Task<IActionResult> GetApprenticeDetails(Guid id)
-        { 
+        {
             
             var result = await _mediator.Send(new GetApprenticeDetailsQuery { ApprenticeId = id });
-            MyApprenticeshipAppMetrics.IncrementViewProfileCounter();
+            
             if (result.ApprenticeDetails?.Apprentice == null)
-                return NotFound();            
-
+                return NotFound();
+            _apprenticeAppMetrics.IncreaseAccountViews();
             return Ok(result.ApprenticeDetails);
         }
     }

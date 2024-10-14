@@ -4,6 +4,7 @@ using SFA.DAS.ApprenticeApp.Application.Commands;
 using SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
 using SFA.DAS.ApprenticeApp.Models;
+using SFA.DAS.ApprenticeApp.Telemetry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,13 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
     public class KsbProgressController : ControllerBase
     {
         private readonly IMediator _mediator;
-
+        private readonly IApprenticeAppMetrics _apprenticeAppMetrics;
         public KsbProgressController(IMediator mediator)
             => _mediator = mediator;
+        public KsbProgressController(IApprenticeAppMetrics metrics)
+        {
+            _apprenticeAppMetrics = metrics;
+        }
 
         [HttpPost("/apprentices/{apprenticeshipId}/ksbs")]
         public async Task<IActionResult> AddUpdateKsbProgress(long apprenticeshipId, ApprenticeKsbProgressData data)
@@ -27,7 +32,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 ApprenticeshipId = apprenticeshipId,
                 Data = data
             });
-
+            _apprenticeAppMetrics.IncreaseKSBInProgress(apprenticeshipId.ToString(), data.ToString());
             return Ok();
         }
 
@@ -53,7 +58,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 ApprenticeshipId = apprenticeshipId,
                 Guids = guids
             });
-
+            _apprenticeAppMetrics.IncreaseKSBsViews(apprenticeshipId.ToString());
             return Ok(queryResult.KSBProgresses);
         }
 
@@ -89,9 +94,10 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                     }
                     apprenticeKsbs.Add(apprenticeKsb);
                 }
-
+                _apprenticeAppMetrics.IncreaseKSBsViews(standardUid);
                 return Ok(apprenticeKsbs);
             }
+            
             return Ok();
         }
 
