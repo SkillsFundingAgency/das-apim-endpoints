@@ -4,6 +4,7 @@ namespace SFA.DAS.EarlyConnect.Application.Queries.GetEducationalOrganisationsBy
 {
     public class GetEducationalOrganisationsByLepCodeResult
     {
-        public ICollection<GetEducationalOrganisationsByLepCodeResponse>? EducationalOrganisations { get; set; }
+        public int TotalCount { get; set; }
+        public ICollection<EducationalOrganisationData>? EducationalOrganisations { get; set; }
     }
 }

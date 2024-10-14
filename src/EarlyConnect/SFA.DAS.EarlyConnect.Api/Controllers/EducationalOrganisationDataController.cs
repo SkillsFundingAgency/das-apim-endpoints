@@ -33,11 +33,9 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                 Page = educationalOrganisationsGetRequest.Page
             });
 
-            var response = result.EducationalOrganisations?
-                .Select(org => (GetEducationalOrganisationsResponse)org)
-                .ToList();
+       
 
-            return Ok(response);
+            return Ok((GetEducationalOrganisationsResponse)result);
         }
 
     }

@@ -39,9 +39,9 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var mediatorResult = new GetEducationalOrganisationsByLepCodeResult
             {
-                EducationalOrganisations = new List<GetEducationalOrganisationsByLepCodeResponse>
+                EducationalOrganisations = new List<EducationalOrganisationData>
                 {
-                    new GetEducationalOrganisationsByLepCodeResponse
+                    new EducationalOrganisationData
                     {
                         Name = "Test School",
                         AddressLine1 = "123 Test St",
@@ -62,10 +62,10 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
             var okResult = (OkObjectResult)result;
             Assert.That(okResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
 
-            var returnedData = okResult.Value as List<GetEducationalOrganisationsResponse>;
+            var returnedData = okResult.Value as GetEducationalOrganisationsResponse;
             Assert.That(returnedData, Is.Not.Null);
-            Assert.That(returnedData.Count, Is.EqualTo(mediatorResult.EducationalOrganisations.Count));
-            Assert.That(returnedData.First().Name, Is.EqualTo("Test School"));
+            Assert.That(returnedData.EducationalOrganisations.Count, Is.EqualTo(mediatorResult.EducationalOrganisations.Count));
+            Assert.That(returnedData.EducationalOrganisations.First().Name, Is.EqualTo("Test School"));
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             var mediatorResult = new GetEducationalOrganisationsByLepCodeResult
             {
-                EducationalOrganisations = new List<GetEducationalOrganisationsByLepCodeResponse>()
+                EducationalOrganisations = new List<EducationalOrganisationData>()
             };
 
             _mediatorMock
@@ -92,9 +92,9 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
             var okResult = (OkObjectResult)result;
             Assert.That(okResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
 
-            var returnedData = okResult.Value as List<GetEducationalOrganisationsResponse>;
+            var returnedData = okResult.Value as GetEducationalOrganisationsResponse;
             Assert.That(returnedData, Is.Not.Null);
-            Assert.That(returnedData.Count, Is.EqualTo(0));
+            Assert.That(returnedData.EducationalOrganisations.Count, Is.EqualTo(0));
         }
     }
 }

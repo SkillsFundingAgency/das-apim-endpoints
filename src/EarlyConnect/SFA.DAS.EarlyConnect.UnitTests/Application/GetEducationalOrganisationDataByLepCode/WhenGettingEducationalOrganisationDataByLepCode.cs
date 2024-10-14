@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -20,22 +19,23 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Application.GetEducationalOrganisationD
     {
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_With_The_Request_And_EducationalOrganisationData_Is_Returned(
-            GetEducationalOrganisationsByLepCodeQuery query, 
-            List<GetEducationalOrganisationsByLepCodeResponse> apiResponse, 
+            GetEducationalOrganisationsByLepCodeQuery query,
+            GetEducationalOrganisationsByLepCodeResponse apiResponse,
             [Frozen] Mock<IEarlyConnectApiClient<EarlyConnectApiConfiguration>> apiClient,
-            GetEducationalOrganisationsByLepCodeQueryHandler handler 
+            GetEducationalOrganisationsByLepCodeQueryHandler handler
         )
         {
-            apiClient.Setup(x => x.GetWithResponseCode<List<GetEducationalOrganisationsByLepCodeResponse>>(
-                It.Is<GetEducationalOrganisationsByLepCodeRequest>(r => r.LepCode == query.LepCode && r.SearchTerm == query.SearchTerm)))
-                .ReturnsAsync(new ApiResponse<List<GetEducationalOrganisationsByLepCodeResponse>>(apiResponse, HttpStatusCode.OK, string.Empty));
+            apiClient.Setup(x => x.GetWithResponseCode<GetEducationalOrganisationsByLepCodeResponse>(
+                    It.Is<GetEducationalOrganisationsByLepCodeRequest>(r => r.LepCode == query.LepCode && r.SearchTerm == query.SearchTerm)))
+                .ReturnsAsync(new ApiResponse<GetEducationalOrganisationsByLepCodeResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.EducationalOrganisations.Should().BeEquivalentTo(apiResponse);
+            actual.EducationalOrganisations.Should().BeEquivalentTo(apiResponse.EducationalOrganisations, options => options.ExcludingMissingMembers());
 
-            apiClient.Verify(x => x.GetWithResponseCode<List<GetEducationalOrganisationsByLepCodeResponse>>(
+            apiClient.Verify(x => x.GetWithResponseCode<GetEducationalOrganisationsByLepCodeResponse>(
                 It.Is<GetEducationalOrganisationsByLepCodeRequest>(r => r.LepCode == query.LepCode && r.SearchTerm == query.SearchTerm)), Times.Once);
         }
+
     }
 }
