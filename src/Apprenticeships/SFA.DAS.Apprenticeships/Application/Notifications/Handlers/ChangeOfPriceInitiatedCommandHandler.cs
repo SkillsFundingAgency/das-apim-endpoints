@@ -1,16 +1,15 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
 {
     public class ChangeOfPriceInitiatedCommand : NotificationCommandBase, IRequest<NotificationResponse>
     {
+        public string? Initiator { get; set; }
     }
 
     public class ChangeOfPriceInitiatedCommandHandler : NotificationCommandHandlerBase<ChangeOfPriceInitiatedCommand>
     {
-        private const string ToEmployerTemplateId = "ProviderInitiatedChangeOfPrice";//CODE REVIEW TALKING POINT: Do we want to discuss a naming convention for these?
+        private const string ToEmployerTemplateId = "EmployerChangeOfPriceInitiated";//CODE REVIEW TALKING POINT: Do we want to discuss a naming convention for these?
         
         public ChangeOfPriceInitiatedCommandHandler(IExtendedNotificationService notificationService) 
             : base(notificationService)

@@ -47,8 +47,12 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
         /// </summary>
         public async Task<GetCurrentPartyIdsResponse> GetCurrentPartyIds(Guid apprenticeshipKey)
         {
-            var ownerIds = await _apprenticeshipsApiClient.Get<GetCurrentPartyIdsResponse>(new GetCurrentPartyIdsRequest { ApprenticeshipKey = apprenticeshipKey });
-            return ownerIds;
+            var partyIds = await _apprenticeshipsApiClient.Get<GetCurrentPartyIdsResponse>(new GetCurrentPartyIdsRequest { ApprenticeshipKey = apprenticeshipKey });
+            if(partyIds == null)
+            {
+                throw new Exception($"No response returned from ApprenticeshipInnerApi for apprenticeship key {apprenticeshipKey} for the {nameof(GetCurrentPartyIdsRequest)}");
+            }
+            return partyIds;
         }
 
         public async Task<IEnumerable<Recipient>> GetEmployerRecipients(long accountId)
@@ -57,7 +61,7 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
 
             if (response == null || !response.Any())
             {
-                _logger.LogWarning($"No response returned from the shared outer api for account id {accountId}");
+                _logger.LogWarning($"No response returned for the {nameof(GetAccountTeamMembersWhichReceiveNotificationsRequest)} for account id {accountId}");
                 return Enumerable.Empty<Recipient>();
             }
 

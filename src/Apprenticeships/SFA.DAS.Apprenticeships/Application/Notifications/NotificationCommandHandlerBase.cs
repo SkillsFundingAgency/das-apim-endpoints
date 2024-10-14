@@ -1,21 +1,9 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
-using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Apprenticeships.Application.Notifications
 {
     public abstract class NotificationCommandBase : IRequest<NotificationResponse>
     {
-        public string? Initiator { get; set; }
         public Guid ApprenticeshipKey { get; set; }
     }
 
