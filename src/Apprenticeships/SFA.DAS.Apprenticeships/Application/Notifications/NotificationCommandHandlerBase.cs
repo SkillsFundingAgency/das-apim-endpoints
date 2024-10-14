@@ -33,10 +33,5 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
 
             return notificationResponse;
         }
-
-        protected Task<NotificationResponse> SendToProvider(T request)
-        {
-            throw new NotImplementedException($"No override has been implemented for {nameof(SendToProvider)} on this commandhandler");
-        }
     }
 }
