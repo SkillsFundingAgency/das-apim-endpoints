@@ -55,7 +55,7 @@ public class ValidatePermissionsRequestQueryHandlerTests
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_RequestTypeIsCreateAccount_SetsRequestStatus(
+    public async Task Handle_RequestTypeIsCreateAccount_SetsRequestStatusAndEmployerContactEmail(
         [Frozen] Mock<IProviderRelationshipsApiRestClient> prApiClientMock,
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClientMock,
         [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> tprApiClientMock,
@@ -75,6 +75,7 @@ public class ValidatePermissionsRequestQueryHandlerTests
 
         actual.IsRequestValid.Should().BeTrue();
         actual.Status.Should().Be(getRequestQueryResult.Status);
+        actual.EmployerContactEmail.Should().Be(getRequestQueryResult.EmployerContactEmail);
     }
 
     [Test]

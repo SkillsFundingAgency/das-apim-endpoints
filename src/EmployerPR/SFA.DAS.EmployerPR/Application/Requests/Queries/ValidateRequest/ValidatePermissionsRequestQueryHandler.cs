@@ -40,6 +40,7 @@ public class ValidatePermissionsRequestQueryHandler(
 
         result.IsRequestValid = true;
         result.Status = permissionRequest.Status;
+        result.EmployerContactEmail = permissionRequest.EmployerContactEmail;
 
         var accountHistoriesResponseTask = _accountsApiClient.GetWithResponseCode<GetAccountHistoriesByPayeResponse>(new GetAccountHistoriesByPayeRequest(permissionRequest.EmployerPAYE));
 

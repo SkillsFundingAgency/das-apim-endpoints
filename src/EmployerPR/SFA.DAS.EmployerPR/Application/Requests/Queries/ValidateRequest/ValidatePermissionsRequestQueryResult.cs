@@ -6,4 +6,5 @@ public class ValidatePermissionsRequestQueryResult
     public string? Status { get; set; }
     public bool? HasEmployerAccount { get; set; }
     public bool? HasValidaPaye { get; set; }
+    public string? EmployerContactEmail { get; set; }
 }
