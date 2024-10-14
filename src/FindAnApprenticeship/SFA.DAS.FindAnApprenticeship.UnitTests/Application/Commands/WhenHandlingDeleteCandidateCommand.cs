@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.WithdrawApplication;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidate;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
@@ -23,6 +16,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
 {
@@ -34,7 +28,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
         [MoqInlineAutoData("address1", "address2", "address3", null, "address3")]
         [MoqInlineAutoData("address1", "address2", null, null, "address2")]
         [MoqInlineAutoData("address1", null, null, null, "address1")]
-        public async Task Then_The_Application_Is_Withdrawn_From_Recruit_Status_Updated_And_Email_Sent(
+        public async Task Then_The_Application_Is_Withdrawn_From_Recruit_Status_Updated_And_Email_Sent_AccountDeleted(
                 string address1,
                 string address2,
                 string address3,
