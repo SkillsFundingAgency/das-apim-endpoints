@@ -101,11 +101,12 @@ public class ApprenticeshipController : ControllerBase
             return BadRequest();
         }
 
-        var notificationResponse = await _mediator.Send(request.ToNotificationCommand(apprenticeshipKey));
+        var changeOfPriceInitiatedNotificationCommand = request.ToNotificationCommand(apprenticeshipKey);
+        var notificationResponse = await _mediator.Send(changeOfPriceInitiatedNotificationCommand);
 
         if (!notificationResponse.Success)
         {
-            _logger.LogError("Error attempting to send ChangeOfPrice requested notification after successful change of price request");
+            _logger.LogError("Error attempting to send change of price Notification(s) to the related part(ies)");
             return BadRequest();
         }
 

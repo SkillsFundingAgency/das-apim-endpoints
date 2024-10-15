@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.Apprenticeships.Application.Notifications.Templates;
 
 namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
 {
@@ -9,8 +10,6 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
 
     public class ChangeOfPriceInitiatedCommandHandler : NotificationCommandHandlerBase<ChangeOfPriceInitiatedCommand>
     {
-        private const string ToEmployerTemplateId = "EmployerChangeOfPriceInitiated";//CODE REVIEW TALKING POINT: Do we want to discuss a naming convention for these?
-        
         public ChangeOfPriceInitiatedCommandHandler(IExtendedNotificationService notificationService) 
             : base(notificationService)
         {
@@ -21,7 +20,7 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
         {
             if (request.Initiator == "Provider")
             {
-                return await SendToEmployer(request, ToEmployerTemplateId, (_, apprenticeship) => GetEmployerTokens(request, apprenticeship));
+                return await SendToEmployer(request, ProviderInitiatedChangeOfPriceToEmployer.TemplateId, (_, apprenticeship) => GetEmployerTokens(request, apprenticeship));
             }
 
             return NotificationResponse.Ok();//Send to provider to be implemented in FLP-406
@@ -31,9 +30,9 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
         private Dictionary<string, string> GetEmployerTokens(ChangeOfPriceInitiatedCommand request, CommitmentsApprenticeshipDetails apprenticeshipDetails)
         {
             var tokens = new Dictionary<string, string>();
-            tokens.Add("Training provider", apprenticeshipDetails.ProviderName);
-            tokens.Add("Employer", apprenticeshipDetails.EmployerName);
-            tokens.Add("apprentice", $"{apprenticeshipDetails.ApprenticeFirstName} {apprenticeshipDetails.ApprenticeLastName}");
+            tokens.Add(ProviderInitiatedChangeOfPriceToEmployer.TrainingProvider, apprenticeshipDetails.ProviderName);
+            tokens.Add(ProviderInitiatedChangeOfPriceToEmployer.Employer, apprenticeshipDetails.EmployerName);
+            tokens.Add(ProviderInitiatedChangeOfPriceToEmployer.Apprentice, $"{apprenticeshipDetails.ApprenticeFirstName} {apprenticeshipDetails.ApprenticeLastName}");
             return tokens;
         }
 

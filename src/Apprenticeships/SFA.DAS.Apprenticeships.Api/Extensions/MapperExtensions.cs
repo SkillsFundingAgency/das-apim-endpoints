@@ -4,7 +4,6 @@ using PostCreateApprenticeshipPriceChangeRequest = SFA.DAS.SharedOuterApi.InnerA
 
 namespace SFA.DAS.Apprenticeships.Api.Extensions
 {
-    // Code review topic for discussion, can we 
     public static class MapperExtensions
     {
         public static PostCreateApprenticeshipPriceChangeRequest ToApiRequest(this CreateApprenticeshipPriceChangeRequest request, Guid apprenticeshipKey)

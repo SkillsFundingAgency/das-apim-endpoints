@@ -34,7 +34,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
             var response = await handler.Handle(command, new System.Threading.CancellationToken());
 
             // Assert
-            VerifySentToEmployer("EmployerChangeOfPriceInitiated", new Dictionary<string, string>
+            VerifySentToEmployer("ProviderInitiatedChangeOfPriceToEmployer", new Dictionary<string, string>
             {
                 { "Training provider", ExpectedApprenticeshipDetails.ProviderName },
                 { "Employer", ExpectedApprenticeshipDetails.EmployerName },
