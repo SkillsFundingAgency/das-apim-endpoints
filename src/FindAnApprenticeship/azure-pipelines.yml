@@ -38,7 +38,7 @@ resources:
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/5.1.7
+    ref: refs/heads/DASD-11985-update-swagger-filepath-2
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-employer-config
