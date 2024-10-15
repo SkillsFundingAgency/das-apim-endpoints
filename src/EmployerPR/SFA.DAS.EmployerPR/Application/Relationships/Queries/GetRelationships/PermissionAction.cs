@@ -5,5 +5,7 @@ public enum PermissionAction : short
     RecruitRelationship,
     PermissionCreated,
     PermissionUpdated,
-    PermissionDeleted
+    PermissionDeleted,
+    AccountCreated,
+    AccountAdded
 }

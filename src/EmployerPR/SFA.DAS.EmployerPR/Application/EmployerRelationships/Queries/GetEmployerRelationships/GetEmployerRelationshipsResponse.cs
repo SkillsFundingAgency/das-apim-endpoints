@@ -38,6 +38,7 @@ public class ProviderPermissionsResponseModel
 public class ProviderRequestsResponseModel
 {
     public required long Ukprn { get; set; }
+    public required string ProviderName { get; set; }
     public required Guid RequestId { get; set; }
     public Operation[] Operations { get; set; } = [];
     public RequestType RequestType { get; set; }
