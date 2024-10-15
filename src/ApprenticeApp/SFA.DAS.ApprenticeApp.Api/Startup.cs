@@ -85,7 +85,7 @@ namespace SFA.DAS.ApprenticeApp.Api
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 });
 
-            services.AddOpenTelemetryRegistration(_configuration["<KeyGoesHere>"]);
+            services.AddOpenTelemetryRegistration(_configuration["appInsightsConnectionString"]);
             
             services.AddSingleton<IApprenticeAppMetrics, ApprenticeAppMetrics>();
 
