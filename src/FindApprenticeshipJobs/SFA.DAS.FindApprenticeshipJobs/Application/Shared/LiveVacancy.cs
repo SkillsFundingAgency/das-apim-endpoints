@@ -47,6 +47,7 @@
         public string AccountPublicHashedId { get; set; } = null!;
         public string AccountLegalEntityPublicHashedId { get; set; } = null!;
         public string ApplicationMethod { get; set; } = null!;
+        public string? ApplicationInstructions { get; set; }
         public string? ApplicationUrl { get; set; }
         public string TypicalJobTitles { get; set; } = null!;
         public string? AdditionalQuestion1 { get; set; }

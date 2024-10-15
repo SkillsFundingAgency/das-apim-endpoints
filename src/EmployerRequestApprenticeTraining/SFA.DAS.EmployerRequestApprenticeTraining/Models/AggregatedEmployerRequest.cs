@@ -11,6 +11,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Models
         public string StandardTitle { get; set; }
         public int StandardLevel { get; set; }
         public DateTime RequestedAt { get; set; }
+        public DateTime? ExpiredAt { get; set; }
         public DateTime ExpiryAt { get; set; }
         public RequestStatus RequestStatus { get; set; }
         public int NumberOfResponses { get; set; }
@@ -25,6 +26,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Models
                 StandardTitle = source.StandardTitle,
                 StandardLevel = source.StandardLevel,
                 RequestedAt = source.RequestedAt,
+                ExpiredAt = source.ExpiredAt,
                 ExpiryAt = source.ExpiryAt,
                 RequestStatus = source.RequestStatus,
                 NumberOfResponses = source.NumberOfResponses,

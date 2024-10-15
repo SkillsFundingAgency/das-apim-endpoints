@@ -7,6 +7,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses;
 using SFA.DAS.NServiceBus.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.SignIntoYourOldAccount;
@@ -33,10 +34,22 @@ public class GetSignIntoYourOldAccountQueryHandler(
         }
 
         var result =
-            await legacyApiClient.Get<GetLegacyValidateCredentialsApiResponse>(
-                new GetLegacyValidateCredentialsApiRequest(request.Email, request.Password));
+            await legacyApiClient.PostWithResponseCode<PostLegacyValidateCredentialsApiResponse>(
+                new PostLegacyValidateUserCredentialsApiRequest(
+                    new PostLegacyValidateUserCredentialsApiRequestBody
+                    {
+                        Email = request.Email,
+                        Password = request.Password
+                    }));
 
-        if (!result.IsValid)
+        result.EnsureSuccessStatusCode();
+
+        if (result is null) return new GetSignIntoYourOldAccountQueryResult
+        {
+            IsValid = false
+        };
+
+        if (!result.Body.IsValid)
         {
             cacheItem ??= new SignInAttemptHistory();
             cacheItem.SignInAttempts.Add(dateTimeService.UtcNow);
@@ -49,7 +62,7 @@ public class GetSignIntoYourOldAccountQueryHandler(
 
         return new GetSignIntoYourOldAccountQueryResult
         {
-            IsValid = result.IsValid
+            IsValid = result.Body.IsValid
         };
     }
 

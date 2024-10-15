@@ -54,7 +54,7 @@ public class WhenGettingApprenticeshipPrice
 				LegalEntityName = expectedResponse.EmployerName!
 			});
 
-		mockCollectionCalendarApiClient.Setup(x => x.Get<GetAcademicYearsResponse>(It.IsAny<GetAcademicYearsRequest>())).ReturnsAsync(new GetAcademicYearsResponse
+		mockCollectionCalendarApiClient.Setup(x => x.Get<GetAcademicYearsResponse>(It.IsAny<GetAcademicYearByDateRequest>())).ReturnsAsync(new GetAcademicYearsResponse
 		{
 			StartDate = expectedResponse.EarliestEffectiveDate,
 			HardCloseDate = expectedResponse.EarliestEffectiveDate

@@ -90,6 +90,11 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             return await _apiClient.PutWithResponseCode<TResponse>(request);
         }
+
+        public void GenerateServiceToken(string serviceAccount)
+        {
+            _apiClient.GenerateServiceToken(serviceAccount);
+        }
     }
 
     public class ApiUnauthorizedException : Exception { }

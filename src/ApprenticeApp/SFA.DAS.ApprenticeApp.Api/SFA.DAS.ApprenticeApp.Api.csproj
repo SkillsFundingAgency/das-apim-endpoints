@@ -52,6 +52,7 @@
         </Content>
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.csproj" />
       <ProjectReference Include="..\SFA.DAS.ApprenticeApp\SFA.DAS.ApprenticeApp.csproj" />
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>

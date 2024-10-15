@@ -3,28 +3,24 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RestEase;
-
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeSubscriptions;
 using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts;
 using SFA.DAS.ApprenticeApp.Telemetry;
+using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Controllers;
 
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
 {
     [ApiController]
-    public class ApprenticeController : ControllerBase
+    public class ApprenticeController(IMediator mediator) : ApprenticeControllerBase(mediator)
     {
         private readonly IMediator _mediator;
-        private readonly IApprenticeAppMetrics _apprenticeAppMetrics;
 
         public ApprenticeController(IMediator mediator)
         {
             _mediator = mediator;
         }
-        public ApprenticeController(IApprenticeAppMetrics metrics)
-        {
-            _apprenticeAppMetrics = metrics;
-        }
+
         [HttpGet]
         [Route("/apprentices/{id}")]
         public async Task<IActionResult> GetApprentice([Path] Guid id)
@@ -40,12 +36,12 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok(queryResult.Apprentice);
         }
 
-        [HttpPatch("/apprentices/{apprenticeId}")]
-        public async Task<IActionResult> UpdateApprentice([Path] Guid apprenticeId, [Body] object patch)
+        [HttpPatch("/apprentices/{id}")]
+        public async Task<IActionResult> UpdateApprentice([Path] Guid id, [Body] object patch)
         {
             await _mediator.Send(new ApprenticePatchCommand
             {
-                ApprenticeId = apprenticeId,
+                ApprenticeId = id,
                 Patch = patch
             });
 
