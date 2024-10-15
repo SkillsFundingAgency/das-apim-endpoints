@@ -84,22 +84,22 @@ public class WhenCreateApprenticeshipPriceHistory
         response.Should().BeOfType<OkObjectResult>();
     }
 
-	[Test]
-	public async Task IfApiRequestFailsReturnsBadRequest()
-	{
-		var sut = new ApprenticeshipController(_mockedLogger, _mockApiClient.Object, _mockedCommitmentsV2ApiClient, _mockMediator.Object);
+    [Test]
+    public async Task IfApiRequestFailsReturnsBadRequest()
+    {
+        var sut = new ApprenticeshipController(_mockedLogger, _mockApiClient.Object, _mockedCommitmentsV2ApiClient, _mockMediator.Object);
 
-		// Arrange
-		var apprenticeshipKey = Guid.NewGuid();
-		var request = _fixture.Create<Models.CreateApprenticeshipPriceChangeRequest>();
+        // Arrange
+        var apprenticeshipKey = Guid.NewGuid();
+        var request = _fixture.Create<Models.CreateApprenticeshipPriceChangeRequest>();
         _mockApiClient.Setup(x => x.PostWithResponseCode<PostCreateApprenticeshipPriceChangeApiResponse>(It.IsAny<PostCreateApprenticeshipPriceChangeRequest>(), It.IsAny<bool>())).ReturnsAsync(new ApiResponse<PostCreateApprenticeshipPriceChangeApiResponse>(null, HttpStatusCode.NotFound, "Has Error"));
 
-		// Act
-		var response = await sut.CreateApprenticeshipPriceChange(apprenticeshipKey, request);
+        // Act
+        var response = await sut.CreateApprenticeshipPriceChange(apprenticeshipKey, request);
 
-		// Assert
-		response.Should().BeOfType<BadRequestResult>();
-	}
+        // Assert
+        response.Should().BeOfType<BadRequestResult>();
+    }
 
     [Test]
     public async Task IfSendNotificationFailsReturnsBadRequest()
