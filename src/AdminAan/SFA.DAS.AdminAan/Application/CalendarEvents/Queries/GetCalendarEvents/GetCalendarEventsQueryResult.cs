@@ -9,4 +9,5 @@ public class GetCalendarEventsQueryResult
     public int TotalCount { get; set; }
     public IEnumerable<CalendarEventSummary> CalendarEvents { get; set; } = Enumerable.Empty<CalendarEventSummary>();
     public LocationItem LocationItem { get; set; }
+    public bool IsInvalidLocation { get; set; }
 }

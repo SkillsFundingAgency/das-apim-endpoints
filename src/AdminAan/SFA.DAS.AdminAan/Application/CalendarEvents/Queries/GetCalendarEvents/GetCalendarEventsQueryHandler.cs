@@ -26,13 +26,27 @@ public class GetCalendarEventsQueryHandler : IRequestHandler<GetCalendarEventsQu
         // otherwise:
         //  pass the co-ordinates of the location into the inner api with the radius
 
+        double? locationLat = null;
+        double? locationLong = null;
+        
         if (!string.IsNullOrWhiteSpace(request.Location))
         {
             var locationData = await _locationLookupService.GetLocationInformation(request.Location, 0, 0, false);
-            return new GetCalendarEventsQueryResult{LocationItem = locationData };
+
+            if (locationData == null)
+            {
+                return new GetCalendarEventsQueryResult
+                {
+                    IsInvalidLocation = true
+                };
+            }
+
+            locationLat = locationData.GeoPoint[0];
+            locationLong = locationData.GeoPoint[1];
+
+            //return new GetCalendarEventsQueryResult{LocationItem = locationData };
         }
         
-
         request.PageSize ??= PageSize;
 
         var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(request);
