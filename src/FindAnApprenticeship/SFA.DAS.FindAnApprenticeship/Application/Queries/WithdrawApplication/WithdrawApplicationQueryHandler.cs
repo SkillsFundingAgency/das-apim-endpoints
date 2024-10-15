@@ -9,12 +9,13 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.FindAnApprenticeship.Services;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.WithdrawApplication;
 
 public class WithdrawApplicationQueryHandler(
-    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient, 
-    IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient) : IRequestHandler<WithdrawApplicationQuery, WithdrawApplicationQueryResult>
+    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
+    IVacancyService vacancyService) : IRequestHandler<WithdrawApplicationQuery, WithdrawApplicationQueryResult>
 {
     public async Task<WithdrawApplicationQueryResult> Handle(WithdrawApplicationQuery request, CancellationToken cancellationToken)
     {
@@ -24,7 +25,7 @@ public class WithdrawApplicationQueryHandler(
             return new WithdrawApplicationQueryResult();
         }
 
-        var vacancy = await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference));
+        var vacancy = await vacancyService.GetVacancy(application.VacancyReference);
 
         return new WithdrawApplicationQueryResult
         {
