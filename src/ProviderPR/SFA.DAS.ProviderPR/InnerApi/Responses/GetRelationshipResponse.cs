@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
+﻿using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
 namespace SFA.DAS.ProviderPR.InnerApi.Responses;
 
@@ -31,23 +32,3 @@ public class GetRelationshipResponse
     public Operation[]? LastRequestOperations { get; set; }
 }
 
-public enum PermissionAction : short
-{
-    ApprovalsRelationship,
-    RecruitRelationship,
-    PermissionCreated,
-    PermissionUpdated,
-    PermissionDeleted,
-    AccountCreated,
-    AccountAdded
-}
-
-public enum RequestStatus : short
-{
-    New,
-    Sent,
-    Accepted,
-    Declined,
-    Expired,
-    Deleted
-}

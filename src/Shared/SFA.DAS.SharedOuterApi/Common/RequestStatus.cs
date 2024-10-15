@@ -1,4 +1,5 @@
-﻿namespace SFA.DAS.EmployerPR.Common;
+﻿namespace SFA.DAS.SharedOuterApi.Common;
+
 public enum RequestStatus : short
 {
     New,
