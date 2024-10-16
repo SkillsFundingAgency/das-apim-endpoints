@@ -3,5 +3,6 @@
 public enum MemberUserType
 {
     Apprentice,
-    Employer
+    Employer,
+    Admin
 }
