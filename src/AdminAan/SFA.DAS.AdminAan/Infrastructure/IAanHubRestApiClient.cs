@@ -9,6 +9,7 @@ using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.AdminAan.Application.Entities;
 using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.AdminAan.Domain;
+using SFA.DAS.AdminAan.Domain.InnerApi.AanHubApi;
 using SFA.DAS.AdminAan.Domain.LeavingReasons;
 
 namespace SFA.DAS.AdminAan.Infrastructure;
@@ -24,7 +25,7 @@ public interface IAanHubRestApiClient : IHealthChecker
 
 
     [Get("calendarEvents")]
-    Task<GetCalendarEventsQueryResult> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
+    Task<GetCalendarEventsApiResponse> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
 
     [Post("calendarEvents")]
     Task<PostEventCommandResult> PostCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [Body] PostEventCommand command, CancellationToken cancellationToken);

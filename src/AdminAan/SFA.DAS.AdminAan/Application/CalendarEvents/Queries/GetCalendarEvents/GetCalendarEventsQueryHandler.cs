@@ -11,12 +11,15 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
 
     public async Task<GetCalendarEventsQueryResult?> Handle(GetCalendarEventsQuery request, CancellationToken cancellationToken)
     {
-        //if no location specified, then do as it currently does
-        //otherwise:
-        // call the locations api and lookup the specified location
-        // if the location was not found, exit straight back with specific bool set on response, eg. "IsLocationNotFound"
-        // otherwise:
-        //  pass the co-ordinates of the location into the inner api with the radius
+        var regionResponse = await apiClient.GetRegions(cancellationToken);
+        var regions = regionResponse.Regions.Select(r => new GetCalendarEventsQueryResult.Region
+        {
+            Id = r.Id,
+            Area = r.Area,
+            Ordering = r.Ordering
+        }).ToList();
+
+        var calendarsResponse = await apiClient.GetCalendars(cancellationToken);
 
         double? latitude = null;
         double? longitude = null;
@@ -30,7 +33,9 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
             {
                 return new GetCalendarEventsQueryResult
                 {
-                    IsInvalidLocation = true
+                    IsInvalidLocation = true,
+                    Regions = regions,
+                    Calendars = calendarsResponse
                 };
             }
 
@@ -43,6 +48,16 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
         request.PageSize ??= DefaultPageSize;
 
         var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(request, latitude, longitude, radius, orderBy);
-        return await apiClient.GetCalendarEvents(request.RequestedByMemberId!, parameters, cancellationToken);
+        var eventsResponse = await apiClient.GetCalendarEvents(request.RequestedByMemberId!, parameters, cancellationToken);
+
+        return new GetCalendarEventsQueryResult
+        {
+            Regions = regions,
+            Calendars = calendarsResponse,
+            CalendarEvents = eventsResponse.CalendarEvents,
+            Page = eventsResponse.Page,
+            TotalCount = eventsResponse.TotalCount,
+            PageSize = eventsResponse.PageSize
+        };
     }
 }

@@ -1,7 +1,12 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Equivalency;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+using SFA.DAS.AdminAan.Application.Entities;
+using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
+using SFA.DAS.AdminAan.Domain.InnerApi.AanHubApi;
 using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -14,7 +19,7 @@ public class GetCalendarEventsQueryHandlerTests
     public async Task Handle_ReturnCalendarEvents(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         GetCalendarEventsQueryHandler handler,
-        GetCalendarEventsQueryResult expected,
+        GetCalendarEventsApiResponse apiResponse,
         Guid requestedByMemberId,
         bool? isActive,
         DateTime? fromDate,
@@ -39,9 +44,10 @@ public class GetCalendarEventsQueryHandlerTests
             ShowUserEventsOnly = showUserEventsOnly
         };
 
-        apiClient.Setup(x => x.GetCalendarEvents(requestedByMemberId, It.IsAny<Dictionary<string, string[]>>(), cancellationToken)).ReturnsAsync(expected);
+        apiClient.Setup(x => x.GetCalendarEvents(requestedByMemberId, It.IsAny<Dictionary<string, string[]>>(), cancellationToken)).ReturnsAsync(apiResponse);
         var actual = await handler.Handle(query, cancellationToken);
-        actual.Should().Be(expected);
+
+        actual.CalendarEvents.Should().BeEquivalentTo(apiResponse.CalendarEvents, config => config.ExcludingMissingMembers());
     }
 
     [Test, MoqAutoData]
@@ -60,5 +66,33 @@ public class GetCalendarEventsQueryHandlerTests
 
         apiClient.Verify(x => x.GetCalendarEvents(It.IsAny<Guid>(), It.IsAny<IDictionary<string, string[]>>(), It.IsAny<CancellationToken>()), Times.Never);
 
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_Returns_Regions(
+        [Frozen] Mock<IAanHubRestApiClient> apiClient,
+        GetCalendarEventsQueryHandler handler,
+        GetRegionsQueryResult apiResponse,
+        GetCalendarEventsQuery query,
+        CancellationToken cancellationToken)
+    {
+        apiClient.Setup(x => x.GetRegions(cancellationToken)).ReturnsAsync(apiResponse);
+        var actual = await handler.Handle(query, cancellationToken);
+
+        actual.Regions.Should().BeEquivalentTo(apiResponse.Regions, config => config.ExcludingMissingMembers());
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_Returns_Calendars(
+        [Frozen] Mock<IAanHubRestApiClient> apiClient,
+        GetCalendarEventsQueryHandler handler,
+        List<Calendar> apiResponse,
+        GetCalendarEventsQuery query,
+        CancellationToken cancellationToken)
+    {
+        apiClient.Setup(x => x.GetCalendars(cancellationToken)).ReturnsAsync(apiResponse);
+        var actual = await handler.Handle(query, cancellationToken);
+
+        actual.Calendars.Should().BeEquivalentTo(apiResponse, config => config.ExcludingMissingMembers());
     }
 }
