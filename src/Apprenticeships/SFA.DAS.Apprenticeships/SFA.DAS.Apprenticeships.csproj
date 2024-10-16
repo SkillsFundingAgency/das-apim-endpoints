@@ -10,10 +10,13 @@
     <PackageReference Include="Azure.Identity" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
+    <PackageReference Include="SFA.DAS.Employer.Shared.UI" />
+    <PackageReference Include="SFA.DAS.Encoding" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Approvals\SFA.DAS.Approvals\SFA.DAS.Approvals.csproj" />
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
   </ItemGroup>
 
