@@ -6,6 +6,7 @@ public class GetCalendarEventsQuery : IRequest<GetCalendarEventsQueryResult>
     public Guid RequestedByMemberId { get; set; }
     public string? Location { get; set; }
     public int Radius { get; set; }
+    public string OrderBy { get; set; } = "";
     public bool? IsActive { get; set; }
 
     public string? FromDate { get; set; }

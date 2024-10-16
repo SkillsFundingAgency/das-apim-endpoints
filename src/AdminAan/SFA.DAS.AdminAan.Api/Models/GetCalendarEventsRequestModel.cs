@@ -13,6 +13,8 @@ public class GetCalendarEventsRequestModel
 
     [FromQuery] public int Radius { get; set; } = 0;
 
+    [FromQuery] public string OrderBy { get; set; } = "";
+
     [FromQuery]
     public bool? IsActive { get; set; }
 
@@ -50,6 +52,7 @@ public class GetCalendarEventsRequestModel
         PageSize = requestModel.PageSize,
         ShowUserEventsOnly = requestModel.ShowUserEventsOnly,
         Location = requestModel.Location,
-        Radius = requestModel.Radius
+        Radius = requestModel.Radius,
+        OrderBy = requestModel.OrderBy
     };
 }

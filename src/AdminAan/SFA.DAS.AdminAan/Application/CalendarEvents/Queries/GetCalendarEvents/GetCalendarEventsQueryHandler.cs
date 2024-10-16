@@ -4,18 +4,10 @@ using SFA.DAS.AdminAan.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
-public class GetCalendarEventsQueryHandler : IRequestHandler<GetCalendarEventsQuery, GetCalendarEventsQueryResult?>
+public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILocationLookupService locationLookupService)
+    : IRequestHandler<GetCalendarEventsQuery, GetCalendarEventsQueryResult?>
 {
-    public const int PageSize = 10;
-
-    private readonly IAanHubRestApiClient _apiClient;
-    private readonly ILocationLookupService _locationLookupService;
-
-    public GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILocationLookupService locationLookupService)
-    {
-        _apiClient = apiClient;
-        _locationLookupService = locationLookupService;
-    }
+    public const int DefaultPageSize = 10;
 
     public async Task<GetCalendarEventsQueryResult?> Handle(GetCalendarEventsQuery request, CancellationToken cancellationToken)
     {
@@ -26,13 +18,12 @@ public class GetCalendarEventsQueryHandler : IRequestHandler<GetCalendarEventsQu
         // otherwise:
         //  pass the co-ordinates of the location into the inner api with the radius
 
-        double? locationLat = null;
-        double? locationLong = null;
+        double? latitude = null;
+        double? longitude = null;
         
         if (!string.IsNullOrWhiteSpace(request.Location))
         {
-            var locationData = await _locationLookupService.GetLocationInformation(request.Location, 0, 0, false);
-
+            var locationData = await locationLookupService.GetLocationInformation(request.Location, 0, 0, false);
             if (locationData == null)
             {
                 return new GetCalendarEventsQueryResult
@@ -41,16 +32,13 @@ public class GetCalendarEventsQueryHandler : IRequestHandler<GetCalendarEventsQu
                 };
             }
 
-            locationLat = locationData.GeoPoint[0];
-            locationLong = locationData.GeoPoint[1];
-
-            //return new GetCalendarEventsQueryResult{LocationItem = locationData };
+            latitude = locationData.GeoPoint[0];
+            longitude = locationData.GeoPoint[1];
         }
         
-        request.PageSize ??= PageSize;
+        request.PageSize ??= DefaultPageSize;
 
-        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(request);
-        return await _apiClient.GetCalendarEvents(request.RequestedByMemberId!, parameters, cancellationToken);
-
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(request, latitude, longitude, request.Radius, request.OrderBy);
+        return await apiClient.GetCalendarEvents(request.RequestedByMemberId!, parameters, cancellationToken);
     }
 }
