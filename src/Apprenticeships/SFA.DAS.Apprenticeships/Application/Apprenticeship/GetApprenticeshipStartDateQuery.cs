@@ -57,8 +57,8 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 
 		var providerName = await GetProviderName(apprenticeStartDateInnerModel);
 
-		var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now));
-        var previousAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(DateTime.Now.AddYears(-1)));
+		var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(DateTime.Now));
+        var previousAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(DateTime.Now.AddYears(-1)));
 
         var apprenticeshipStartDateOuterModel = new ApprenticeshipStartDateResponse
 		{
@@ -157,7 +157,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
     {
         if (currentActualStartDate == null) return null;
 
-        var academicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(currentActualStartDate.Value));
+        var academicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(currentActualStartDate.Value));
 
         return academicYear.StartDate;
     }
@@ -168,7 +168,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 
 		var nextYear = currentActualStartDate.Value.AddYears(1);
 
-        var academicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(nextYear));
+        var academicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(nextYear));
 
         return academicYear.EndDate;
     }
