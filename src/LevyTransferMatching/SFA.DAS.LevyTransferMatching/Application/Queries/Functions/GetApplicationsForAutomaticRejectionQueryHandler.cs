@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
+using Microsoft.Extensions.Logging;
 
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
@@ -15,10 +16,13 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private static readonly DateTime ThreeMonthsAgo = DateTime.UtcNow.AddMonths(-3);
+        private readonly ILogger<GetApplicationsForAutomaticRejectionQueryHandler> _logger;
 
-        public GetApplicationsForAutomaticRejectionQueryHandler(ILevyTransferMatchingService levyTransferMatchingService)
+
+        public GetApplicationsForAutomaticRejectionQueryHandler(ILevyTransferMatchingService levyTransferMatchingService, ILogger<GetApplicationsForAutomaticRejectionQueryHandler> logger)
         {
             _levyTransferMatchingService = levyTransferMatchingService;
+            _logger = logger;
         }
 
         public async Task<GetApplicationsForAutomaticRejectionQueryResult> Handle(GetApplicationsForAutomaticRejectionQuery request, CancellationToken cancellationToken)
@@ -31,8 +35,15 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
            
             var applications = FilterApplications(getApplicationsResponse);
 
-            var result = applications.Select(application => GetApplicationsForAutomaticRejectionQueryResult.Application.BuildApplication(application)).ToList();
+            var result = applications.Select(GetApplicationsForAutomaticRejectionQueryResult.Application.BuildApplication).ToList();
 
+            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler has returned {count} records from the inner api", result.Count);
+
+            foreach (var app in result)
+            {
+                _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler appId {appId} , pledgeId {pledgeId}", app.Id, app.PledgeId);
+
+            }
             return new GetApplicationsForAutomaticRejectionQueryResult
             {
                 Applications = result
@@ -43,7 +54,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
         {
             if (getApplicationsResponse == null)
             {
-                return new List<GetApplicationsResponse.Application>();
+                return [];
             }
           
             return getApplicationsResponse.Applications
