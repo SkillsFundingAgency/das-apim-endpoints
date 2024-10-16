@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Application.Notifications;
+using SFA.DAS.Encoding;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -27,6 +28,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications
         private Mock<IAccountsApiClient<AccountsConfiguration>> _accountsApiClientMock;
         private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _apprenticeshipsApiClientMock;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _apiCommitmentsClientMock;
+        private Mock<IEncodingService> _encodingServiceMock;
         private Mock<INotificationService> _notificationServiceMock;
         private ExtendedNotificationService _service;
 #pragma warning restore CS8618
@@ -39,6 +41,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications
             _accountsApiClientMock = new Mock<IAccountsApiClient<AccountsConfiguration>>();
             _apprenticeshipsApiClientMock = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
             _apiCommitmentsClientMock = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
+            _encodingServiceMock = new Mock<IEncodingService>();
             _notificationServiceMock = new Mock<INotificationService>();
 
             _service = new ExtendedNotificationService(
@@ -46,6 +49,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications
                 _accountsApiClientMock.Object,
                 _apprenticeshipsApiClientMock.Object,
                 _apiCommitmentsClientMock.Object,
+                _encodingServiceMock.Object,
                 _notificationServiceMock.Object);
         }
 

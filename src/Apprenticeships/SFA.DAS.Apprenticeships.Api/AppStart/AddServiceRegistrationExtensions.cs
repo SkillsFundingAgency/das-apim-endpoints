@@ -1,9 +1,13 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Apprenticeships.Application.Notifications;
+using SFA.DAS.Employer.Shared.UI;
+using SFA.DAS.Encoding;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -29,6 +33,11 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
         services.AddTransient<INotificationService, NotificationService>();
         services.AddTransient<IExtendedNotificationService, ExtendedNotificationService>();
+        services.AddSingleton(new UrlBuilder("prd"));
+
+        var encodingList = configuration.GetSection(nameof(EncodingConfig.Encodings)).Get<List<SFA.DAS.Encoding.Encoding>>();
+        var encodingConfig = new EncodingConfig { Encodings = encodingList };
+        services.AddSingleton<IEncodingService, EncodingService>((sp)=>new EncodingService(encodingConfig));
     }
 }
 

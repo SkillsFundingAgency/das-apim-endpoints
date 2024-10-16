@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Azure.Core;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
+using SFA.DAS.Encoding;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
@@ -26,6 +28,7 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
         private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
         private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apprenticeshipsApiClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
+        private readonly IEncodingService _encodingService;
         private readonly INotificationService _notificationService;
 
         public ExtendedNotificationService(
@@ -33,12 +36,14 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
             IAccountsApiClient<AccountsConfiguration> accountsApiClient,
             IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient,
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient,
+            IEncodingService encodingService,
             INotificationService notificationService)
         {
             _logger = logger;
             _accountsApiClient = accountsApiClient;
             _apprenticeshipsApiClient = apprenticeshipsApiClient;
             _apiCommitmentsClient = apiCommitmentsClient;
+            _encodingService = encodingService;
             _notificationService = notificationService;
         }
 
@@ -83,6 +88,7 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
             var innerApiRequest = new GetApprenticeshipRequest(currentPartyIds.ApprovalsApprenticeshipId);
             var innerApiResponse = await _apiCommitmentsClient.GetWithResponseCode<GetApprenticeshipResponse>(innerApiRequest);
 
+
             if (!ApiResponseErrorChecking.IsSuccessStatusCode(innerApiResponse.StatusCode))
             {
                 throw new Exception($"Apprenticeship not found for id {currentPartyIds.ApprovalsApprenticeshipId}");
@@ -92,8 +98,10 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
             {
                 ProviderName = innerApiResponse.Body.ProviderName,
                 EmployerName = innerApiResponse.Body.EmployerName,
+                EmployerAccountHashedId = _encodingService.Encode(innerApiResponse.Body.EmployerAccountId, EncodingType.AccountId),
                 ApprenticeFirstName = innerApiResponse.Body.FirstName,
-                ApprenticeLastName = innerApiResponse.Body.LastName
+                ApprenticeLastName = innerApiResponse.Body.LastName,
+                ApprenticeshipHashedId = _encodingService.Encode(innerApiResponse.Body.Id, EncodingType.ApprenticeshipId)
             };
         }
 
@@ -119,7 +127,9 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
     {
         public string ProviderName { get; set; } = string.Empty;
         public string EmployerName { get; set; } = string.Empty;
+        public string EmployerAccountHashedId { get; set; } = string.Empty;
         public string ApprenticeFirstName { get; set; } = string.Empty;
         public string ApprenticeLastName { get; set; } = string.Empty;
+        public string ApprenticeshipHashedId { get; set; } = string.Empty;
     }
 }

@@ -10,6 +10,8 @@
     <PackageReference Include="Azure.Identity" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
+    <PackageReference Include="SFA.DAS.Employer.Shared.UI" />
+    <PackageReference Include="SFA.DAS.Encoding" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
   </ItemGroup>
 

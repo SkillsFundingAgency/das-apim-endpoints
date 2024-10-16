@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.Apprenticeships.Application.Notifications.Templates;
 using SFA.DAS.Apprenticeships.Constants;
+using SFA.DAS.Employer.Shared.UI;
 
 namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
 {
@@ -12,10 +13,14 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
 
     public class ChangeOfPriceInitiatedCommandHandler : NotificationCommandHandlerBase<ChangeOfPriceInitiatedCommand>
     {
-        public ChangeOfPriceInitiatedCommandHandler(IExtendedNotificationService notificationService) 
+        private readonly UrlBuilder _externalEmployerUrlHelper;
+
+        public ChangeOfPriceInitiatedCommandHandler(
+            IExtendedNotificationService notificationService, 
+            UrlBuilder externalEmployerUrlHelper) 
             : base(notificationService)
         {
-
+            _externalEmployerUrlHelper = externalEmployerUrlHelper;
         }
 
         public override async Task<NotificationResponse> Handle(ChangeOfPriceInitiatedCommand request, CancellationToken cancellationToken)
@@ -33,10 +38,14 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
 
         private Dictionary<string, string> GetEmployerTokens(ChangeOfPriceInitiatedCommand request, CommitmentsApprenticeshipDetails apprenticeshipDetails)
         {
+            var linkUrl = _externalEmployerUrlHelper.CommitmentsV2Link("ApprenticeDetails", apprenticeshipDetails.EmployerAccountHashedId, apprenticeshipDetails.ApprenticeshipHashedId);
+
             var tokens = new Dictionary<string, string>();
             tokens.Add(ProviderInitiatedChangeOfPriceToEmployer.TrainingProvider, apprenticeshipDetails.ProviderName);
             tokens.Add(ProviderInitiatedChangeOfPriceToEmployer.Employer, apprenticeshipDetails.EmployerName);
             tokens.Add(ProviderInitiatedChangeOfPriceToEmployer.Apprentice, $"{apprenticeshipDetails.ApprenticeFirstName} {apprenticeshipDetails.ApprenticeLastName}");
+            tokens.Add(ProviderInitiatedChangeOfPriceToEmployer.ReviewChangesUrl, linkUrl);
+            
             return tokens;
         }
 

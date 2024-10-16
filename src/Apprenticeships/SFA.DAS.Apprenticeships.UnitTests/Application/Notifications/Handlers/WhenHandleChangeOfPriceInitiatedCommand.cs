@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
 using SFA.DAS.Apprenticeships.Constants;
+using SFA.DAS.Employer.Shared.UI;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,10 +10,17 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
 {
     internal class WhenHandleChangeOfPriceInitiatedCommand : BaseHandlerTestHelper
     {
+        private UrlBuilder _externalEmployerUrlHelper;
+
+        public WhenHandleChangeOfPriceInitiatedCommand()
+        {
+            _externalEmployerUrlHelper = new UrlBuilder("AT");
+        }
+
         [SetUp]
         public void SetUp()
         {
-            Reset();
+            Reset(); 
         }
 
         [Test]
@@ -25,7 +33,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
                 Initiator = RequestInitiator.Provider,
                 PriceChangeStatus = ChangeRequestStatus.Created
             };
-            var handler = new ChangeOfPriceInitiatedCommandHandler(GetExtendedNotificationService());
+            var handler = new ChangeOfPriceInitiatedCommandHandler(GetExtendedNotificationService(), _externalEmployerUrlHelper);
 
             // Act
             var response = await handler.Handle(command, new System.Threading.CancellationToken());
@@ -35,7 +43,8 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
             {
                 { "Training provider", ExpectedApprenticeshipDetails.ProviderName },
                 { "Employer", ExpectedApprenticeshipDetails.EmployerName },
-                { "apprentice", $"{ExpectedApprenticeshipDetails.ApprenticeFirstName} {ExpectedApprenticeshipDetails.ApprenticeLastName}" }
+                { "apprentice", $"{ExpectedApprenticeshipDetails.ApprenticeFirstName} {ExpectedApprenticeshipDetails.ApprenticeLastName}" },
+                { "review changes URL", $"https://approvals.at-eas.apprenticeships.education.gov.uk/{ExpectedApprenticeshipDetails.EmployerAccountHashedId}/apprentices/{ExpectedApprenticeshipDetails.ApprenticeshipHashedId}/details" }
             });
         }
 
@@ -50,7 +59,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
                 Initiator = initiator,
                 PriceChangeStatus = changeStatus
             };
-            var handler = new ChangeOfPriceInitiatedCommandHandler(GetExtendedNotificationService());
+            var handler = new ChangeOfPriceInitiatedCommandHandler(GetExtendedNotificationService(), _externalEmployerUrlHelper);
 
             // Act
             var response = await handler.Handle(command, new System.Threading.CancellationToken());
