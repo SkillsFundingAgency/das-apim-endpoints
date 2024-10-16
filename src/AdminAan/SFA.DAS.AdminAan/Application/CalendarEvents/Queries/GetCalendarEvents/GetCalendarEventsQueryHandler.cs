@@ -20,7 +20,7 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
 
         double? latitude = null;
         double? longitude = null;
-        var radius = 0;
+        int? radius = null;
         var orderBy = string.Empty;
         
         if (!string.IsNullOrWhiteSpace(request.Location))

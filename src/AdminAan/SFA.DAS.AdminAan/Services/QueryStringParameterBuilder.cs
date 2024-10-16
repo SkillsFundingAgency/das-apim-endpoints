@@ -6,7 +6,7 @@ namespace SFA.DAS.AdminAan.Services;
 public static class QueryStringParameterBuilder
 {
 
-    public static Dictionary<string, string[]> BuildQueryStringParameters(GetCalendarEventsQuery request, double? longitude = null, double? latitude = null, int radius = 0, string? orderBy="")
+    public static Dictionary<string, string[]> BuildQueryStringParameters(GetCalendarEventsQuery request, double? longitude = null, double? latitude = null, int? radius = null, string? orderBy=null)
     {
         var parameters = new Dictionary<string, string[]>();
         if (request.IsActive.HasValue) parameters.Add("IsActive", new[] { request.IsActive.ToString() }!);
@@ -34,7 +34,7 @@ public static class QueryStringParameterBuilder
 
         if (longitude.HasValue) { parameters.Add("longitude", [longitude.Value.ToString(CultureInfo.InvariantCulture)]); }
         if (latitude.HasValue) { parameters.Add("latitude", [latitude.Value.ToString(CultureInfo.InvariantCulture)]); }
-        parameters.Add("radius", [radius.ToString()]);
+        if(radius.HasValue) { parameters.Add("radius", [radius.Value.ToString()]);}
         if(!string.IsNullOrWhiteSpace(request.OrderBy)) { parameters.Add("orderBy", new[] { request.OrderBy }); }
 
         return parameters;

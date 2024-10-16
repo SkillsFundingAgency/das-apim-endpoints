@@ -199,7 +199,7 @@ public class QueryStringParameterBuilderTests
         {
             RequestedByMemberId = Guid.NewGuid(),
         };
-        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model, longitude, null, 0, "");
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model, longitude, null, null, "");
 
         parameters.TryGetValue("longitude", out var actual);
         if (longitude.HasValue)
@@ -220,7 +220,7 @@ public class QueryStringParameterBuilderTests
         {
             RequestedByMemberId = Guid.NewGuid(),
         };
-        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model, null, latitude, 0, "");
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model, null, latitude, null, "");
 
         parameters.TryGetValue("latitude", out var actual);
         if (latitude.HasValue)
@@ -233,8 +233,9 @@ public class QueryStringParameterBuilderTests
         }
     }
 
+    [TestCase(null)]
     [TestCase(140)]
-    public void Builder_ConstructParameters_Radius(int radius)
+    public void Builder_ConstructParameters_Radius(int? radius)
     {
         var model = new GetCalendarEventsQuery
         {
@@ -243,8 +244,15 @@ public class QueryStringParameterBuilderTests
         var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model, null, null, radius, "");
 
         parameters.TryGetValue("radius", out var actual);
-        actual![0].Should().Be(radius.ToString());
-     }
+        if (radius.HasValue)
+        {
+            actual![0].Should().Be(radius.Value.ToString());
+        }
+        else
+        {
+            actual.Should().BeNull();
+        }
+    }
 
     [TestCase(null)]
     [TestCase("")]
@@ -254,7 +262,7 @@ public class QueryStringParameterBuilderTests
         {
             RequestedByMemberId = Guid.NewGuid(),
         };
-        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model, null, null, 0, orderBy);
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(model, null, null, null, orderBy);
 
         parameters.TryGetValue("orderBy", out var actual);
         if (!string.IsNullOrWhiteSpace(orderBy))
