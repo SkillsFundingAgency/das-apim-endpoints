@@ -1,7 +1,4 @@
-﻿using SFA.DAS.AdminAan.Application.Entities;
-using SFA.DAS.SharedOuterApi.Models;
-
-namespace SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
+﻿namespace SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 public class GetCalendarEventsQueryResult
 {
     public int Page { get; set; }
@@ -11,14 +8,22 @@ public class GetCalendarEventsQueryResult
     public IEnumerable<CalendarEventSummary> CalendarEvents { get; set; } = [];
     public bool IsInvalidLocation { get; set; }
 
-    public List<Region> Regions { get; set; } = [];
-    public List<Calendar> Calendars { get; set; } = [];
+    public List<RegionData> Regions { get; set; } = [];
+    public List<CalendarType> Calendars { get; set; } = [];
 
-    public class Region
+    public class RegionData
     {
         public int Id { get; set; }
         public string Area { get; set; }
         public int Ordering { get; set; }
     }
 
+    public class CalendarType
+    {
+        public int Id { get; set; }
+        public string CalendarName { get; set; } = string.Empty;
+        public DateTime EffectiveFrom { get; set; }
+        public DateTime? EffectiveTo { get; set; }
+        public int Ordering { get; set; }
+    }
 }

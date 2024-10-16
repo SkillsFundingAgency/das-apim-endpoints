@@ -12,7 +12,7 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
     public async Task<GetCalendarEventsQueryResult?> Handle(GetCalendarEventsQuery request, CancellationToken cancellationToken)
     {
         var regionResponse = await apiClient.GetRegions(cancellationToken);
-        var regions = regionResponse.Regions.Select(r => new GetCalendarEventsQueryResult.Region
+        var regions = regionResponse.Regions.Select(r => new GetCalendarEventsQueryResult.RegionData
         {
             Id = r.Id,
             Area = r.Area,
@@ -20,6 +20,14 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
         }).ToList();
 
         var calendarsResponse = await apiClient.GetCalendars(cancellationToken);
+        var calendars = calendarsResponse.Select(c => new GetCalendarEventsQueryResult.CalendarType
+        {
+            CalendarName = c.CalendarName,
+            EffectiveFrom = c.EffectiveFrom,
+            EffectiveTo = c.EffectiveTo,
+            Id = c.Id,
+            Ordering = c.Ordering
+        }).ToList();
 
         double? latitude = null;
         double? longitude = null;
@@ -35,7 +43,7 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
                 {
                     IsInvalidLocation = true,
                     Regions = regions,
-                    Calendars = calendarsResponse
+                    Calendars = calendars
                 };
             }
 
@@ -53,7 +61,7 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
         return new GetCalendarEventsQueryResult
         {
             Regions = regions,
-            Calendars = calendarsResponse,
+            Calendars = calendars,
             CalendarEvents = eventsResponse.CalendarEvents,
             Page = eventsResponse.Page,
             TotalCount = eventsResponse.TotalCount,
