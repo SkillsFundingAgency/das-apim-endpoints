@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Apprenticeships.Api.Extensions;
 using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.Apprenticeship;
 using SFA.DAS.Apprenticeships.InnerApi;
@@ -8,11 +9,9 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Apprenticeships.Application.Notifications;
 using CreateApprenticeshipPriceChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipPriceChangeRequest;
 using CreateApprenticeshipStartDateChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipStartDateChangeRequest;
 using GetProviderResponse = SFA.DAS.Apprenticeships.Api.Models.GetProviderResponse;
-using SFA.DAS.Apprenticeships.Api.Extensions;
 
 namespace SFA.DAS.Apprenticeships.Api.Controllers;
 
@@ -101,7 +100,7 @@ public class ApprenticeshipController : ControllerBase
             return BadRequest();
         }
 
-        var changeOfPriceInitiatedNotificationCommand = request.ToNotificationCommand(apprenticeshipKey);
+        var changeOfPriceInitiatedNotificationCommand = request.ToNotificationCommand(apprenticeshipKey, response.Body);
         var notificationResponse = await _mediator.Send(changeOfPriceInitiatedNotificationCommand);
 
         if (!notificationResponse.Success)

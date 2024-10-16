@@ -1,12 +1,8 @@
-﻿using FluentAssertions.Common;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apprenticeships.Constants;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
@@ -26,7 +22,8 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
             var command = new ChangeOfPriceInitiatedCommand
             {
                 ApprenticeshipKey = Guid.NewGuid(),
-                Initiator = "Provider"
+                Initiator = RequestInitiator.Provider,
+                PriceChangeStatus = ChangeRequestStatus.Created
             };
             var handler = new ChangeOfPriceInitiatedCommandHandler(GetExtendedNotificationService());
 
@@ -42,14 +39,16 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
             });
         }
 
-        [Test]
-        public async Task AndInitiatorIsNotProvider_ShouldNotSendToEmployer()
+        [TestCase(RequestInitiator.Provider, "Invalid")]
+        [TestCase("Invalid", ChangeRequestStatus.Created)]
+        public async Task AndInitiatorIsNotProvider_ShouldNotSendToEmployer(string initiator, string changeStatus)
         {
             // Arrange
             var command = new ChangeOfPriceInitiatedCommand
             {
                 ApprenticeshipKey = Guid.NewGuid(),
-                Initiator = "Invalid"
+                Initiator = initiator,
+                PriceChangeStatus = changeStatus
             };
             var handler = new ChangeOfPriceInitiatedCommandHandler(GetExtendedNotificationService());
 
