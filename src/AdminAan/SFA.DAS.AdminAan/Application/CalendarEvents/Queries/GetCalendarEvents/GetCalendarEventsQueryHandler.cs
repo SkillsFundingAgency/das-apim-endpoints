@@ -20,6 +20,8 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
 
         double? latitude = null;
         double? longitude = null;
+        var radius = 0;
+        var orderBy = string.Empty;
         
         if (!string.IsNullOrWhiteSpace(request.Location))
         {
@@ -34,11 +36,13 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
 
             latitude = locationData.GeoPoint[0];
             longitude = locationData.GeoPoint[1];
+            radius = request.Radius;
+            orderBy = request.OrderBy;
         }
         
         request.PageSize ??= DefaultPageSize;
 
-        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(request, latitude, longitude, request.Radius, request.OrderBy);
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(request, latitude, longitude, radius, orderBy);
         return await apiClient.GetCalendarEvents(request.RequestedByMemberId!, parameters, cancellationToken);
     }
 }
