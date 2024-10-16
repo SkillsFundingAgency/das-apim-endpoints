@@ -1,15 +1,16 @@
-﻿using Moq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture;
+using Microsoft.Extensions.Logging;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Functions;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Linq;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
-using AutoFixture;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.GetApplicationsForAutomaticRejection
 {
@@ -19,13 +20,15 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.G
         private static readonly DateTime ThreeMonthsAgo = DateTime.UtcNow.AddMonths(-3);
         private Mock<ILevyTransferMatchingService> _levyTransferMatchingServiceMock;
         private GetApplicationsForAutomaticRejectionQueryHandler _handler;
+        private Mock<ILogger<GetApplicationsForAutomaticRejectionQueryHandler>> _logger;
         private Fixture _fixture;
 
         [SetUp]
         public void SetUp()
         {
             _levyTransferMatchingServiceMock = new Mock<ILevyTransferMatchingService>();
-            _handler = new GetApplicationsForAutomaticRejectionQueryHandler(_levyTransferMatchingServiceMock.Object);
+            _logger = new Mock<ILogger<GetApplicationsForAutomaticRejectionQueryHandler>>();
+            _handler = new GetApplicationsForAutomaticRejectionQueryHandler(_levyTransferMatchingServiceMock.Object, _logger.Object);
             _fixture = new Fixture();
         }
 
