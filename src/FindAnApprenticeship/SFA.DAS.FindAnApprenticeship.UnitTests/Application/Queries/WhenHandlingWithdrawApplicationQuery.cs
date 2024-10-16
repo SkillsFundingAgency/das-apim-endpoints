@@ -40,6 +40,7 @@ public class WhenHandlingWithdrawApplicationQuery
 
         actual.ApplicationId.Should().Be(getApplicationApiResponse.Id);
         actual.ClosingDate.Should().Be(vacancyResponse.ClosingDate);
+        actual.ClosedDate.Should().Be(vacancyResponse.ClosedDate);
         actual.EmployerName.Should().Be(vacancyResponse.EmployerName);
         actual.SubmittedDate.Should().Be(getApplicationApiResponse.SubmittedDate);
         actual.AdvertTitle.Should().Be(vacancyResponse.Title);

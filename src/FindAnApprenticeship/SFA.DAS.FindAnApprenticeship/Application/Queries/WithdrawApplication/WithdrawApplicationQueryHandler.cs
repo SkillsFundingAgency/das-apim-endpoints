@@ -31,6 +31,7 @@ public class WithdrawApplicationQueryHandler(
         {
             ApplicationId = application.Id,
             ClosingDate = vacancy.ClosingDate,
+            ClosedDate = vacancy.ClosedDate,
             EmployerName = vacancy.EmployerName,
             SubmittedDate = application.SubmittedDate,
             AdvertTitle = vacancy.Title
