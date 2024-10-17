@@ -34,7 +34,7 @@ parameters:
 - name: RunAcceptanceTests
   default: true
 - name: ContinueOnVulnerablePackageScanError
-  default: true
+  default: false
 
 trigger:
   batch: true
