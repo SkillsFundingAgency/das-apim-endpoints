@@ -71,11 +71,15 @@ public class GetCalendarEventsQueryHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_Returns_Regions(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
+        [Frozen] Mock<ICacheStorageService> cacheService,
         GetCalendarEventsQueryHandler handler,
         GetRegionsQueryResult apiResponse,
         GetCalendarEventsQuery query,
         CancellationToken cancellationToken)
     {
+        cacheService.Setup(x => x.RetrieveFromCache<List<GetCalendarEventsQueryResult.RegionData>>(It.IsAny<string>()))
+            .ReturnsAsync(() => null);
+
         apiClient.Setup(x => x.GetRegions(cancellationToken)).ReturnsAsync(apiResponse);
         var actual = await handler.Handle(query, cancellationToken);
 
@@ -85,11 +89,15 @@ public class GetCalendarEventsQueryHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_Returns_Calendars(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
+        [Frozen] Mock<ICacheStorageService> cacheService,
         GetCalendarEventsQueryHandler handler,
         List<Calendar> apiResponse,
         GetCalendarEventsQuery query,
         CancellationToken cancellationToken)
     {
+        cacheService.Setup(x => x.RetrieveFromCache<List<GetCalendarEventsQueryResult.CalendarType>>(It.IsAny<string>()))
+            .ReturnsAsync(() => null);
+
         apiClient.Setup(x => x.GetCalendars(cancellationToken)).ReturnsAsync(apiResponse);
         var actual = await handler.Handle(query, cancellationToken);
 
