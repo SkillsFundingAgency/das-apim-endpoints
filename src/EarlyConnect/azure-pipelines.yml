@@ -55,3 +55,4 @@ stages:
     ConfigurationSecrets:
       ContentfulApiPreviewAccessToken: $(ContentfulApiPreviewAccessToken)
       EarlyConnectLepsLoApiKey: $(EarlyConnectLepsLoApiKey)
+      ClientId: $(ClientId)
