@@ -13,6 +13,7 @@ namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyI
         public string LastName { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string SchoolName { get; set; }
+        public string URN { get; set; } = string.Empty;
         public string Telephone { get; set; }
         public string Email { get; set; }
         public string Postcode { get; set; }

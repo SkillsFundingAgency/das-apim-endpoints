@@ -160,6 +160,7 @@ namespace SFA.DAS.EarlyConnect.Services
                 Postcode = responseData.Postcode,
                 DataSource = responseData.DataSource,
                 SchoolName = responseData.SchoolName,
+                URN=responseData.URN,
                 Industry = responseData.Industry,
                 DateInterest = responseData.DateInterest,
                 SurveyResponses = responseData.SurveyQuestions.Select(question => new SurveyQuestionsDto

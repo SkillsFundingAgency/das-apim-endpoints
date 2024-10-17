@@ -33,6 +33,7 @@ namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyI
                 LastName = result.Body.LastName,
                 DateOfBirth = result.Body.DateOfBirth,
                 SchoolName = result.Body.SchoolName,
+                URN=result.Body.URN,
                 Email = result.Body.Email,
                 Telephone = result.Body.Telephone,
                 Postcode = result.Body.Postcode,
