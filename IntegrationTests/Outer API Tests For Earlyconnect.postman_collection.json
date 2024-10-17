@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0ba91a0e-2638-4f21-9e8b-a4fc301974d6",
+		"_postman_id": "0960c2c8-b88f-475e-8484-16fcb6533280",
 		"name": "EarlyConnect-OuterApi",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "21174429"
@@ -224,6 +224,76 @@
 						"early-connect",
 						"metrics-data",
 						"E37000025"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetEducationalOrganisations",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"content-type": true
+				},
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ik1jN2wzSXo5M2c3dXdnTmVFbW13X1dZR1BrbyIsImtpZCI6Ik1jN2wzSXo5M2c3dXdnTmVFbW13X1dZR1BrbyJ9.eyJhdWQiOiJodHRwczovL2NpdGl6ZW5henVyZXNmYWJpc2dvdi5vbm1pY3Jvc29mdC5jb20vZGFzLWF0LWFwaW1lbmRwLWVybHljb25hcGktYXMtYXIiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8xYTkyODg5Yi04ZWExLTRhMTYtODEzMi0zNDc4MTQwNTE1NjcvIiwiaWF0IjoxNzI4NTc2MzgyLCJuYmYiOjE3Mjg1NzYzODIsImV4cCI6MTcyODU4MDQ4MiwiYWNyIjoiMSIsImFpbyI6IkFWUUFxLzhZQUFBQUtxbjNLc09jTlp1OXVvYjdYSEdha0piQmxKZW1Gc3RZWElyViswR0xLY2lrWnN0Vks2anNYM1ZSemZ5SkZCNDFxZldQS1JFSjhoNU9OWVVuMUpSblZqTmY2MGtQck1VQjRnNGE2aERvdXpNPSIsImFtciI6WyJwd2QiLCJtZmEiXSwiYXBwaWQiOiIwNGIwNzc5NS04ZGRiLTQ2MWEtYmJlZS0wMmY5ZTFiZjdiNDYiLCJhcHBpZGFjciI6IjAiLCJpcGFkZHIiOiI4Ni40LjE1Ni4xNDkiLCJuYW1lIjoiUmF0aGVlc2ggUmkiLCJvaWQiOiJjOWQxZmViMi0xMTI1LTQ4ZWMtYjRkNC00YjljMzI5MmEyZTkiLCJyaCI6IjAuQVhrQW00aVNHcUdPRmtxQk1qUjRGQVVWWjk1ZG9vVExJRHBPb2wzMENiUjFVMklNQVRNLiIsInJvbGVzIjpbIkFQSU0iXSwic2NwIjoidXNlcl9pbXBlcnNvbmF0aW9uIiwic3ViIjoiU3k1bmJOR0FTRGxlbjhCaWFJWHVpS2JvT2gtOEptTjVuSEpEb0tJTkk4SSIsInRpZCI6IjFhOTI4ODliLThlYTEtNGExNi04MTMyLTM0NzgxNDA1MTU2NyIsInVuaXF1ZV9uYW1lIjoicmF0aGVlc2gucmlAY2l0aXplbmF6dXJlc2ZhYmlzZ292Lm9ubWljcm9zb2Z0LmNvbSIsInVwbiI6InJhdGhlZXNoLnJpQGNpdGl6ZW5henVyZXNmYWJpc2dvdi5vbm1pY3Jvc29mdC5jb20iLCJ1dGkiOiJuYTF1dW9PbnhrZXlSRlhmaGtzYUFBIiwidmVyIjoiMS4wIn0.V0Dcs3e8ELz59ywrctPcCfXMvb0_kBITE00kYU-5FkwB0sSkjdMpxJIJJgBBIcrgLqAXiJ5pM7aC7Uagq71fE4t8xDRD35hIzE8K4pQBTpN2c1oCekixe-l8mxYBzs6Jnm1Y7m7WUtqpytt4jAhFbG6r91xHMqRqNj9Pw4Hh_w4UTOAY-LjfairlcXKY7y5_8vv3hlfMBItku7PK9BFrx01Ehq8pXHNxC3hHKMuDpUp0v1TPlQIsj_q_-6l7jn_4X8oQAQgPWr9uwaZPbI21u7pq5rwgIdPodwhO9IKCTiBuedSc78V9rr_ob9FS8NkHIMY0cr-KgZ3qQrhqq8B1BA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Version",
+						"value": "1.0",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"requestType\": \"StrdentData\",\r\n  \"requestSource\": \"UCAS\",\r\n  \"requestIP\": \"82.10.212.131\",\r\n  \"payload\": \"{Json}\",\r\n  \"fileName\": \"\",\r\n  \"status\": \"InProgress\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://at-apim-erlycon-api.apprenticeships.education.gov.uk/early-connect/educational-organisations-data/?LepCode=E37000025&SearchTerm=NU",
+					"protocol": "https",
+					"host": [
+						"at-apim-erlycon-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"early-connect",
+						"educational-organisations-data",
+						""
+					],
+					"query": [
+						{
+							"key": "LepCode",
+							"value": "E37000025"
+						},
+						{
+							"key": "SearchTerm",
+							"value": "NU"
+						}
 					]
 				}
 			},
