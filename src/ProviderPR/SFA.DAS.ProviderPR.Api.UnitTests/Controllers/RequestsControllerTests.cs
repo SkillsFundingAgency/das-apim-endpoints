@@ -77,11 +77,11 @@ public class RequestsControllerTests
     )
     {
         Mock<IProviderRelationshipsApiRestClient> client = new();
-        client.Setup(c => c.GetRequest(ukprn, paye, CancellationToken.None)).ReturnsAsync(response);
+        client.Setup(c => c.GetRequest(ukprn, paye, null, CancellationToken.None)).ReturnsAsync(response);
 
         RequestsController sut = new(new Mock<IMediator>().Object, client.Object);
 
-        var result = await sut.GetRequest(ukprn, paye, CancellationToken.None);
+        var result = await sut.GetRequest(ukprn, paye, null, CancellationToken.None);
 
         result.Should().BeOfType<OkObjectResult>();
     }
@@ -94,11 +94,45 @@ public class RequestsControllerTests
     )
     {
         Mock<IProviderRelationshipsApiRestClient> client = new();
-        client.Setup(c => c.GetRequest(ukprn, paye, CancellationToken.None)).ReturnsAsync((GetRequestResponse?)null);
+        client.Setup(c => c.GetRequest(ukprn, paye, null, CancellationToken.None)).ReturnsAsync((GetRequestResponse?)null);
 
         RequestsController sut = new(new Mock<IMediator>().Object, client.Object);
 
-        var result = await sut.GetRequest(ukprn, paye, CancellationToken.None);
+        var result = await sut.GetRequest(ukprn, paye, null, CancellationToken.None);
+
+        result.Should().BeOfType<NotFoundResult>();
+    }
+
+    [Test, AutoData]
+    public async Task RequestsController_GetRequestFromUkprnEmail_ReturnsOkResponse(
+        int ukprn,
+        string email,
+        GetRequestResponse response
+    )
+    {
+        Mock<IProviderRelationshipsApiRestClient> client = new();
+        client.Setup(c => c.GetRequest(ukprn, null, email, CancellationToken.None)).ReturnsAsync(response);
+
+        RequestsController sut = new(new Mock<IMediator>().Object, client.Object);
+
+        var result = await sut.GetRequest(ukprn, null, email, CancellationToken.None);
+
+        result.Should().BeOfType<OkObjectResult>();
+    }
+
+    [Test, AutoData]
+    public async Task RequestsController_GetRequestFromUkprnEmail_ReturnsNotFoundResult(
+        int ukprn,
+        string email,
+        GetRequestResponse response
+    )
+    {
+        Mock<IProviderRelationshipsApiRestClient> client = new();
+        client.Setup(c => c.GetRequest(ukprn, null, email, CancellationToken.None)).ReturnsAsync((GetRequestResponse?)null);
+
+        RequestsController sut = new(new Mock<IMediator>().Object, client.Object);
+
+        var result = await sut.GetRequest(ukprn, null, email, CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
     }
