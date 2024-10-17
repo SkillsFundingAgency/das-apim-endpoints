@@ -38,7 +38,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId,
                 Data = data
             });
-            _apprenticeAppMetrics.IncreaseKSBInProgress(apprenticeshipId.ToString(), data.ToString());
+            _apprenticeAppMetrics.IncreaseKSBInProgress(apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId, data.ToString());
             return Ok();
         }
 
@@ -72,7 +72,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId,
                 Guids = guids
             });
-            _apprenticeAppMetrics.IncreaseKSBsViews(apprenticeshipId.ToString());
+            _apprenticeAppMetrics.IncreaseKSBsViews((apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId));
             return Ok(queryResult.KSBProgresses);
         }
 
@@ -112,7 +112,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                     }
                     apprenticeKsbs.Add(apprenticeKsb);
                 }
-                _apprenticeAppMetrics.IncreaseKSBsViews(standardUid);
+                _apprenticeAppMetrics.IncreaseKSBsViews(apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId);
                 return Ok(apprenticeKsbs);
             }
             

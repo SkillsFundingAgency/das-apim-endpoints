@@ -15,11 +15,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
     public class ApprenticeController(IMediator mediator) : ApprenticeControllerBase(mediator)
     {
         private readonly IMediator _mediator;
-
-        public ApprenticeController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+  
 
         [HttpGet]
         [Route("/apprentices/{id}")]
