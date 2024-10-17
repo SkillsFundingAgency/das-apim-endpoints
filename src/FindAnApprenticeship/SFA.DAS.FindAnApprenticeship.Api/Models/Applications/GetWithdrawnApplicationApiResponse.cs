@@ -10,6 +10,7 @@ public class GetWithdrawnApplicationApiResponse
     public string EmployerName { get; set; }
     public DateTime? SubmittedDate { get; set; }
     public DateTime ClosingDate { get; set; }
+    public DateTime? ClosedDate { get; set; }
     
     public static implicit operator GetWithdrawnApplicationApiResponse(WithdrawApplicationQueryResult source)
     {
@@ -17,6 +18,7 @@ public class GetWithdrawnApplicationApiResponse
         {
             ApplicationId = source.ApplicationId,
             ClosingDate = source.ClosingDate,
+            ClosedDate = source.ClosedDate,
             EmployerName = source.EmployerName,
             SubmittedDate = source.SubmittedDate,
             AdvertTitle = source.AdvertTitle
