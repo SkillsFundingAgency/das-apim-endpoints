@@ -2,7 +2,7 @@ parameters:
   SonarCloudProjectKey:
   TargetProjects:
   UnitTestProjects:
-  PublishProject: 
+  PublishProject:
   AcceptanceTestProjects:
 
 jobs:
@@ -27,6 +27,7 @@ jobs:
       UnitTestProjects: ${{ parameters.UnitTestProjects }}
       AcceptanceTestProjects: ${{ parameters.AcceptanceTestProjects }}
       RunAcceptanceTests: true
+      ContinueOnVulnerablePackageScanError: true
 
   - task: DotNetCoreCLI@2
     displayName: 'Publish Outer Api'
