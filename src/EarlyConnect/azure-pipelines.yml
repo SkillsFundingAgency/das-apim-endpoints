@@ -54,5 +54,6 @@ stages:
     OuterApiName: EarlyConnect
     ConfigurationSecrets:
       ContentfulApiPreviewAccessToken: $(ContentfulApiPreviewAccessToken)
+      EarlyConnectLepsNeApiClientId: $(EarlyConnectLepsNeApiClientId)
+      EarlyConnectLepsNeApiClientSecret: $(EarlyConnectLepsNeApiClientSecret)
       EarlyConnectLepsLoApiKey: $(EarlyConnectLepsLoApiKey)
-      ClientId: $(ClientId)
