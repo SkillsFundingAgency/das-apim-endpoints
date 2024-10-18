@@ -15,6 +15,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
         public List<GetCourseLevelsListItem> Levels { get; init; }
         public CandidateApplication Application { get; init; }
         public string CandidatePostcode { get; set; }
+        public bool IsSavedVacancy { get; set; }
 
         public class Vacancy
         {
