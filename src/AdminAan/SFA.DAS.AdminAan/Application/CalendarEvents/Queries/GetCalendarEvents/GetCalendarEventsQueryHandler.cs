@@ -48,7 +48,7 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
         
         request.PageSize ??= DefaultPageSize;
 
-        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(request, latitude, longitude, radius, orderBy);
+        var parameters = QueryStringParameterBuilder.BuildQueryStringParameters(request, longitude, latitude, radius, orderBy);
         var eventsResponse = await apiClient.GetCalendarEvents(request.RequestedByMemberId!, parameters, cancellationToken);
 
         return new GetCalendarEventsQueryResult

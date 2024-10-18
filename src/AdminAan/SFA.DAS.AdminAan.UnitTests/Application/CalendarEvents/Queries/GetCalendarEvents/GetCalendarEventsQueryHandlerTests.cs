@@ -1,7 +1,5 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
-using FluentAssertions.Equivalency;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.AdminAan.Application.Entities;
