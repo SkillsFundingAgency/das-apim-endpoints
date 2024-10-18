@@ -38,5 +38,24 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             return Ok((GetEducationalOrganisationsResponse)result);
         }
 
+        [HttpGet("{id}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public IActionResult GetById(int id)
+        {
+            if (id <= 0)
+            {
+                return NotFound("ID must be greater than zero.");
+            }
+
+            var response = new
+            {
+                Id = id,
+                Message = $"Data for item with ID {id}.",
+                Timestamp = DateTime.UtcNow
+            };
+
+            return Ok(response);
+        }
     }
 }
