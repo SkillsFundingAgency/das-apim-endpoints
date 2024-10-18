@@ -58,7 +58,8 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
             CalendarEvents = eventsResponse.CalendarEvents,
             Page = eventsResponse.Page,
             TotalCount = eventsResponse.TotalCount,
-            PageSize = eventsResponse.PageSize
+            PageSize = eventsResponse.PageSize,
+            TotalPages = eventsResponse.TotalPages
         };
     }
 
