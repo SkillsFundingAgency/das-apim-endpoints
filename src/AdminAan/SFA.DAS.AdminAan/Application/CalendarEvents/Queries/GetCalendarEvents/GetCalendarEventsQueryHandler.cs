@@ -8,7 +8,7 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
     : IRequestHandler<GetCalendarEventsQuery, GetCalendarEventsQueryResult?>
 {
     public const int DefaultPageSize = 10;
-    public const string RegionsCachekey = "GetCalendarEventsQueryHandler.Regions";
+    public const string RegionsCacheKey = "GetCalendarEventsQueryHandler.Regions";
     public const string CalendarsCacheKey = "GetCalendarEventsQueryHandler.Calendars";
 
 
@@ -22,7 +22,7 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
         var regions = await regionTask;
         var calendars = await calendarTask;
 
-        double ? latitude = null;
+        double? latitude = null;
         double? longitude = null;
         int? radius = null;
         var orderBy = string.Empty;
@@ -64,7 +64,7 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
 
     private async Task<List<GetCalendarEventsQueryResult.RegionData>> GetRegionsAsync(CancellationToken cancellationToken)
     {
-        var cachedResponse = await cacheService.RetrieveFromCache<List<GetCalendarEventsQueryResult.RegionData>>(RegionsCachekey);
+        var cachedResponse = await cacheService.RetrieveFromCache<List<GetCalendarEventsQueryResult.RegionData>>(RegionsCacheKey);
         if (cachedResponse != null) return cachedResponse;
 
         var regionResponse = await apiClient.GetRegions(cancellationToken);
@@ -75,7 +75,7 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
             Ordering = r.Ordering
         }).ToList();
 
-        await cacheService.SaveToCache(RegionsCachekey, regions, 1);
+        await cacheService.SaveToCache(RegionsCacheKey, regions, 1);
         return regions;
     }
 
