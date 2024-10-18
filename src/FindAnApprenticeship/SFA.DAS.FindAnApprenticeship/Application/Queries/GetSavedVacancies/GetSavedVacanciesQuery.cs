@@ -33,6 +33,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
             public string Postcode { get; set; }
             public bool IsExternalVacancy { get; set; }
             public string ExternalVacancyUrl { get; set; }
+            public string ApplicationStatus { get; set; }
         }
     }
 
@@ -60,7 +61,13 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
             foreach (var application in savedVacancyList)
             {
                 var vacancy = vacancies.FirstOrDefault(v => v.VacancyReference.Replace("VAC", string.Empty) == application.VacancyReference);
-                
+
+                var vacancyReference =
+                    application.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
+
+                var applicationResult = await candidateApiClient.Get<GetApplicationByReferenceApiResponse>(
+                    new GetApplicationByReferenceApiRequest(request.CandidateId, vacancyReference));
+
                 result.SavedVacancies.Add(new GetSavedVacanciesQueryResult.SavedVacancy
                 {
                     Id = application.Id,
@@ -72,7 +79,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
                     City = vacancy!.City,
                     Postcode = vacancy!.Postcode,
                     IsExternalVacancy = vacancy!.IsExternalVacancy,
-                    ExternalVacancyUrl = vacancy!.ExternalVacancyUrl
+                    ExternalVacancyUrl = vacancy!.ExternalVacancyUrl,
+                    ApplicationStatus = applicationResult != null ? applicationResult.Status : string.Empty
                 });
             }
 
