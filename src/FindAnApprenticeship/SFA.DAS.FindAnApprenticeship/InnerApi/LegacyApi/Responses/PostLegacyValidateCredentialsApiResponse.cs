@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses
 {
-    public class GetLegacyValidateCredentialsApiResponse
+    public class PostLegacyValidateCredentialsApiResponse
     {
         public bool IsValid { get; set; }
     }

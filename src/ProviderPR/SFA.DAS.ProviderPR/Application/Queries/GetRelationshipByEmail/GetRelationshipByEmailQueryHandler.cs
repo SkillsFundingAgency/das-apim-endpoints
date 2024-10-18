@@ -28,6 +28,8 @@ public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfi
             return queryResult;
         }
 
+        queryResult.HasUserAccount = false;
+
         var result = await _accountsApiClient.GetWithResponseCode<GetUserByEmailResponse>(new GetUserByEmailRequest(request.Email));
 
         if (result.StatusCode == HttpStatusCode.NotFound)
