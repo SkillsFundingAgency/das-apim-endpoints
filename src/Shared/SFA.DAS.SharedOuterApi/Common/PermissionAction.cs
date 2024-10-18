@@ -1,9 +1,12 @@
-﻿namespace SFA.DAS.EmployerPR.Application.Relationships.Queries.GetRelationships;
+﻿namespace SFA.DAS.SharedOuterApi.Common;
+
 public enum PermissionAction : short
 {
     ApprovalsRelationship,
     RecruitRelationship,
     PermissionCreated,
     PermissionUpdated,
-    PermissionDeleted
+    PermissionDeleted,
+    AccountCreated,
+    AccountAdded
 }
