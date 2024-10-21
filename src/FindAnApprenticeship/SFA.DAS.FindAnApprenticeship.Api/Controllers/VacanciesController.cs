@@ -8,7 +8,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Vacancies;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Vacancies;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies;
 using SFA.DAS.FindAnApprenticeship.Services;
 using Microsoft.AspNetCore.Components.Forms;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies.SaveVacancy;

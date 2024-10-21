@@ -1,7 +1,7 @@
 ﻿using System;
 using MediatR;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Vacancies
+namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies
 {
     public class ApplyCommand : IRequest<ApplyCommandResponse>
     {
