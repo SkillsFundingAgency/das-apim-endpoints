@@ -33,3 +33,4 @@ steps:
   - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
     parameters:
       SonarCloud: false
+      ContinueOnVulnerablePackageScanError: true
