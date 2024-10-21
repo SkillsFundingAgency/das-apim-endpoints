@@ -11,7 +11,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Vacancies;
+namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies;
 
 public class ApplyCommandHandler(
     IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
@@ -34,7 +34,7 @@ public class ApplyCommandHandler(
             AdditionalQuestions = additionalQuestions,
             IsAdditionalQuestion1Complete = string.IsNullOrEmpty(result.AdditionalQuestion1) ? (short)4 : (short)0,
             IsAdditionalQuestion2Complete = string.IsNullOrEmpty(result.AdditionalQuestion2) ? (short)4 : (short)0,
-            IsDisabilityConfidenceComplete = result.IsDisabilityConfident ? (short)0 :(short)4
+            IsDisabilityConfidenceComplete = result.IsDisabilityConfident ? (short)0 : (short)4
         };
         var putData = putApplicationApiRequestData;
         var vacancyReference =
