@@ -40,8 +40,8 @@ public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILoca
                 };
             }
 
-            latitude = locationData.GeoPoint[0];
-            longitude = locationData.GeoPoint[1];
+            longitude = locationData.GeoPoint[0];
+            latitude = locationData.GeoPoint[1];
             radius = request.Radius;
             orderBy = request.OrderBy;
         }
