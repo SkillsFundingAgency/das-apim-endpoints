@@ -18,6 +18,18 @@ public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfi
         var queryResult =
             new GetRelationshipByEmailQueryResult();
 
+        var res = await _providerRelationshipsApiClient.GetRequestByUkprnAndEmail(request.Ukprn, request.Email, cancellationToken);
+
+        var isRequestPresent = IsRequestPresent(res!, request.Ukprn, request.Email);
+
+        if (isRequestPresent)
+        {
+            queryResult.HasActiveRequest = true;
+            return queryResult;
+        }
+
+        queryResult.HasUserAccount = false;
+
         var result = await _accountsApiClient.GetWithResponseCode<GetUserByEmailResponse>(new GetUserByEmailRequest(request.Email));
 
         if (result.StatusCode == HttpStatusCode.NotFound)
@@ -77,5 +89,16 @@ public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfi
         }
 
         return queryResult;
+    }
+
+    private static bool IsRequestPresent(Response<GetRequestByUkprnAndEmailResponse> res, long ukprn, string email)
+    {
+        return res.ResponseMessage.StatusCode switch
+        {
+            HttpStatusCode.OK => true,
+            HttpStatusCode.NotFound => false,
+            _ => throw new InvalidOperationException(
+                $"Provider PR API threw unexpected response for ukprn {ukprn} and email {email}")
+        };
     }
 }

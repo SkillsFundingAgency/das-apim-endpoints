@@ -18,16 +18,16 @@ namespace SFA.DAS.WhenGettingStandard.Api.UnitTests.Controllers.Standards
     {
         [Test, MoqAutoData]
         public async Task Then_The_Standard_Is_Returned_From_Mediator(
-            string standardId,
+            string standardReference,
             GetStandardResult queryResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] StandardsController controller)
         {
             mockMediator
-                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardId == standardId), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<GetStandardQuery>(p => p.StandardReference == standardReference), CancellationToken.None))
                 .ReturnsAsync(queryResult);
 
-            var actual = await controller.Get(standardId) as ObjectResult;
+            var actual = await controller.Get(standardReference) as ObjectResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -36,14 +36,14 @@ namespace SFA.DAS.WhenGettingStandard.Api.UnitTests.Controllers.Standards
 
         [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
-            string standardId,
+            string standardReference,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] StandardsController controller)
         {
             mockMediator.Setup(x => x.Send(It.IsAny<GetStandardQuery>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
-            var actual = await controller.Get(standardId) as StatusCodeResult;
+            var actual = await controller.Get(standardReference) as StatusCodeResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

@@ -48,6 +48,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public double? Lat { get; set; }
         public string? CompanyBenefitsInformation { get; set; }
         public string? AdditionalTrainingDescription { get; set; }
+        public bool IsSavedVacancy { get; set; } = false;
 
         public CandidateApplicationDetails? Application { get; set; }
 
@@ -82,7 +83,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 Lon = source.Location.Lon,
                 ApplicationUrl = source.ApplicationUrl,
                 CompanyBenefitsInformation = source.CompanyBenefitsInformation,
-                AdditionalTrainingDescription = source.AdditionalTrainingDescription
+                AdditionalTrainingDescription = source.AdditionalTrainingDescription,
+                IsSavedVacancy = source.IsSavedVacancy,
             };
         }
 

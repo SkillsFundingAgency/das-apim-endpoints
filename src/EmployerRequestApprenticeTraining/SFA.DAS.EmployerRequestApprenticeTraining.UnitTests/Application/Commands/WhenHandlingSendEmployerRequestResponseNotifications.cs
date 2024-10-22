@@ -84,7 +84,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
             var expectedCourseLevels = new StringBuilder();
             foreach (var course in command.Standards)
             {
-                expectedCourseLevels.Append($"* {course.StandardTitle} (level{course.StandardLevel})\n");
+                expectedCourseLevels.Append($"* {course.StandardTitle} (level {course.StandardLevel})\n");
             }
 
             _mockNotificationsService.Verify(n => n.Send(It.Is<SendEmailCommand>(c =>
@@ -117,8 +117,8 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
                 RequestedBy = Guid.NewGuid(),
                 Standards = new List<StandardDetails>
                 {
-                    new StandardDetails { StandardTitle = "Title 1", StandardLevel = 1},
-                    new StandardDetails { StandardTitle = "Title 2", StandardLevel = 2},
+                    new StandardDetails { StandardTitle = "StandardTitle 1", StandardLevel = 1},
+                    new StandardDetails { StandardTitle = "StandardTitle 2", StandardLevel = 2},
                 }
             };
 

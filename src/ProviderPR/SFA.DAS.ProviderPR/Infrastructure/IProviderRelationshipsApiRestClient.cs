@@ -30,7 +30,7 @@ public interface IProviderRelationshipsApiRestClient
     Task<GetRequestResponse?> GetRequest([Path] Guid requestId, CancellationToken cancellationToken);
 
     [Get("requests")]
-    Task<GetRequestResponse?> GetRequest([Query] long ukprn, [Query] string paye, CancellationToken cancellationToken);
+    Task<GetRequestResponse?> GetRequest([Query] long ukprn, [Query] string? paye, [Query] string? email, CancellationToken cancellationToken);
 
     [Post("requests/permission")]
     Task<CreatePermissionRequestCommandResult> CreatePermissionsRequest([Body] CreatePermissionRequestCommand command, CancellationToken cancellationToken);
@@ -38,6 +38,10 @@ public interface IProviderRelationshipsApiRestClient
     [Get("requests")]
     [AllowAnyStatusCode]
     Task<Response<GetRequestByUkprnAndPayeResponse?>> GetRequestByUkprnAndPaye([Query] long ukprn, [Query] string paye, CancellationToken cancellationToken);
+
+    [Get("requests")]
+    [AllowAnyStatusCode]
+    Task<Response<GetRequestByUkprnAndEmailResponse?>> GetRequestByUkprnAndEmail([Query] long ukprn, [Query] string email, CancellationToken cancellationToken);
 
     [Post("requests/createaccount")]
     Task<CreateAccountInvitationRequestCommandResult> CreateAccountInvitationRequest([Body] CreateAccountInvitationRequestCommand command, CancellationToken cancellationToken);

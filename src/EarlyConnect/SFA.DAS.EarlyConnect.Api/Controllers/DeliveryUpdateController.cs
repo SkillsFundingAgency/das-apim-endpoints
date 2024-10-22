@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Asp.Versioning;
 using SFA.DAS.EarlyConnect.Api.Models;
 using SFA.DAS.EarlyConnect.Api.Mappers;
 using SFA.DAS.EarlyConnect.Application.Commands.UpdateLogData;

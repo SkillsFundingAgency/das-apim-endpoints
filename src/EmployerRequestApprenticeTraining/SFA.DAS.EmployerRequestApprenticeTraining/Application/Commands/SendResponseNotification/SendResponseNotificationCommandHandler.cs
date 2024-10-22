@@ -31,14 +31,13 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SendRes
 
         public async Task<Unit> Handle(SendResponseNotificationCommand command, CancellationToken cancellationToken)
         { 
-
-        var templateId = _options.Value.NotificationTemplates.FirstOrDefault(
-            p => p.TemplateName == EmailTemplateNames.RATEmployerResponseNotification)?.TemplateId;
-        if (templateId != null)
-        {
-            await _notificationService.Send(
-                new SendEmailCommand(templateId.ToString(), command.EmailAddress, GetResponseEmailData(command)));
-        }
+            var templateId = _options.Value.NotificationTemplates.FirstOrDefault(
+                p => p.TemplateName == EmailTemplateNames.RATEmployerResponseNotification)?.TemplateId;
+            if (templateId != null)
+            {
+                await _notificationService.Send(
+                    new SendEmailCommand(templateId.ToString(), command.EmailAddress, GetResponseEmailData(command)));
+            }
             return Unit.Value;
         }
 
@@ -47,7 +46,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.SendRes
             var courseList = new StringBuilder();
             foreach (var course in command.Standards)
             {
-                courseList.Append($"* {course.StandardTitle} (level{course.StandardLevel})\n");
+                courseList.Append($"* {course.StandardTitle} (level {course.StandardLevel})\n");
             }
 
             var encodedAccountId = _encodingService.Encode(command.AccountId, EncodingType.AccountId);
