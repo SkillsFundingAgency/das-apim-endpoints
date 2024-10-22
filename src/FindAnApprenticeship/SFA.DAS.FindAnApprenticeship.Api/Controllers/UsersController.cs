@@ -26,6 +26,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidate;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDeletionQuery;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
@@ -468,6 +469,25 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Get Account Deletion : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{candidateId}/account-deletion")]
+        public async Task<IActionResult> UserAccountDeletion([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new DeleteCandidateCommand(candidateId)
+                {
+                    CandidateId = candidateId,
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "User Account Deletion : An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
