@@ -13,7 +13,7 @@
     <PackageVersion Include="SFA.DAS.Encoding" Version="1.1.76" />
     <PackageVersion Include="System.Text.Json" Version="8.0.5" />
     <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
-    <PackageVersion Include="Azure.Identity" Version="1.12.0" />
+    <PackageVersion Include="Azure.Identity" Version="1.12.1" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.1.1" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.2.0" />
     <PackageVersion Include="Azure.Security.KeyVault.Certificates" Version="4.6.0" />
@@ -56,7 +56,7 @@
     <PackageVersion Include="RestEase" Version="1.6.4" />
     <PackageVersion Include="RestEase.HttpClientFactory" Version="1.6.4" />
     <PackageVersion Include="Scrutor" Version="3.3.0" />
-    <PackageVersion Include="SFA.DAS.Api.Common" Version="17.1.107" />
+    <PackageVersion Include="SFA.DAS.Api.Common" Version="17.1.112" />
     <PackageVersion Include="SFA.DAS.Common.Domain" Version="1.4.283" />
     <PackageVersion Include="SFA.DAS.Configuration.AzureTableStorage" Version="17.1.113" />
     <PackageVersion Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
@@ -79,7 +79,7 @@
     <PackageVersion Include="WireMock.Net.FluentAssertions" Version="1.5.48" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="FluentAssertions.Web" Version="1.2.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.8" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.8" />
