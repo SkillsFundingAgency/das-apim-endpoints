@@ -1,15 +1,16 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.JsonPatch;
 using RestEase;
 using SFA.DAS.AdminAan.Application.Admins.Commands.Create;
 using SFA.DAS.AdminAan.Application.Admins.Queries.GetAdminMember;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Create;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Commands.Update;
-using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvent;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.AdminAan.Application.Entities;
 using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.AdminAan.Domain;
 using SFA.DAS.AdminAan.Domain.InnerApi.AanHubApi;
+using SFA.DAS.AdminAan.Domain.InnerApi.AanHubApi.Responses;
 using SFA.DAS.AdminAan.Domain.LeavingReasons;
 
 namespace SFA.DAS.AdminAan.Infrastructure;
@@ -36,7 +37,7 @@ public interface IAanHubRestApiClient : IHealthChecker
 
     [Get("calendarEvents/{calendarEventId}")]
     [AllowAnyStatusCode]
-    Task<GetCalendarEventQueryResult> GetCalendarEvent([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [Path] Guid calendarEventId, CancellationToken cancellationToken);
+    Task<GetCalendarEventByIdApiResponse> GetCalendarEvent([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [Path] Guid calendarEventId, CancellationToken cancellationToken);
 
     [Delete("calendarEvents/{calendarEventId}")]
     [AllowAnyStatusCode]
@@ -80,4 +81,7 @@ public interface IAanHubRestApiClient : IHealthChecker
     Task<GetMemberActivitiesResponse> GetMemberActivities(
         [Path] Guid memberId,
         CancellationToken cancellationToken);
+
+    [Patch("members/{memberId}")]
+    Task UpdateMember([Path] Guid memberId, [Body] JsonPatchDocument<PatchMemberModel> model, CancellationToken cancellationToken);
 }

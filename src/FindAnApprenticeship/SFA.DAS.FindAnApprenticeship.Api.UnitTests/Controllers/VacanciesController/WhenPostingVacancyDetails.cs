@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Vacancies;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Vacancies;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.Testing.AutoFixture;
 

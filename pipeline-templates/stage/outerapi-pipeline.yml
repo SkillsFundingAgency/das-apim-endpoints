@@ -34,8 +34,6 @@ stages:
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
   - group: AT das-apim-endpoints
-  - name: platformBuildBlockVersion
-    value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -66,8 +64,6 @@ stages:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
   - group: TEST das-apim-endpoints
-  - name: platformBuildBlockVersion
-    value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -98,8 +94,6 @@ stages:
   - group: DevTest Management Resources
   - group: TEST2 DevTest Shared Resources
   - group: TEST2 das-apim-endpoints
-  - name: platformBuildBlockVersion
-    value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -130,8 +124,6 @@ stages:
   - group: PREPROD Management Resources
   - group: PREPROD Shared Resources
   - group: PREPROD das-apim-endpoints
-  - name: platformBuildBlockVersion
-    value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -162,8 +154,6 @@ stages:
   - group: PROD Management Resources
   - group: PROD Shared Resources
   - group: PROD das-apim-endpoints
-  - name: platformBuildBlockVersion
-    value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -193,8 +183,6 @@ stages:
   - group: MO Management Resources
   - group: MO Shared Resources
   - group: MO das-apim-endpoints
-  - name: platformBuildBlockVersion
-    value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -224,8 +212,6 @@ stages:
   - group: DevTest Management Resources
   - group: DEMO DevTest Shared Resources
   - group: DEMO das-apim-endpoints
-  - name: platformBuildBlockVersion
-    value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:

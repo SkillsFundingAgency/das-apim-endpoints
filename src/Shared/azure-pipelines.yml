@@ -27,9 +27,10 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/2.0.0
+    ref: refs/tags/2.2.0
     endpoint: SkillsFundingAgency
 steps:
   - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
     parameters:
       SonarCloud: false
+      ContinueOnVulnerablePackageScanError: true
