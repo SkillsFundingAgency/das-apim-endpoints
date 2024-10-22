@@ -13,6 +13,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -43,6 +44,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidat
                     x.Status == ApplicationStatus.Submitted.ToString())
                 .ToList();
 
+            var emailNotifications = new List<EmailNotification>
+            {
+                Capacity = 0
+            };
+
             foreach (var application in applicationList)
             {
                 var response = await RecruitApiClient.PostWithResponseCode<NullResponse>(
@@ -61,6 +67,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidat
                 var vacancy = await VacancyService.GetVacancy(application.VacancyReference) as GetApprenticeshipVacancyItemResponse;
 
                 var patchRequest = new PatchApplicationApiRequest(application.Id, application.CandidateId, jsonPatchDocument);
+
+                await CandidateApiClient.PatchWithResponseCode(patchRequest);
+
                 var email = new WithdrawApplicationEmail(
                     EmailEnvironmentHelper.WithdrawApplicationEmailTemplateId,
                     candidate.Email,
@@ -69,16 +78,24 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidat
                     vacancy?.Address.AddressLine4 ?? vacancy?.Address.AddressLine3 ?? vacancy?.Address.AddressLine2 ?? vacancy?.Address.AddressLine1 ?? "Unknown",
                     vacancy?.Address.Postcode);
 
-                await Task.WhenAll(
-                    CandidateApiClient.PatchWithResponseCode(patchRequest)
-                    , NotificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens))
-                );
+                emailNotifications.Add(new EmailNotification(email.TemplateId, email.RecipientAddress, email.Tokens));
             }
+
+            if(emailNotifications.Count > 0) await SendApplicationWithDrawnNotificationEmail(emailNotifications);
 
             var apiRequest = new DeleteAccountApiRequest(command.CandidateId);
             await CandidateApiClient.Delete(apiRequest);
 
             return Unit.Value;
+        }
+
+        private async Task SendApplicationWithDrawnNotificationEmail(List<EmailNotification> emailNotifications)
+        {
+            foreach (var notification in emailNotifications)
+            {
+                await NotificationService.Send(new SendEmailCommand(notification.TemplateId, notification.RecipientAddress,
+                    notification.Tokens));
+            }
         }
     }
 }

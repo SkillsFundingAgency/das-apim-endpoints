@@ -100,7 +100,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                         It.Is<PostWithdrawApplicationRequest>(c =>
                             c.PostUrl.Contains(command.CandidateId.ToString())
                             && c.PostUrl.Contains(vacancyRef.ToString())
-                        ), false), Times.AtLeastOnce);
+                        ), false), Times.Exactly(applicationsApiResponse.Applications.Count));
 
                 notificationService.Verify(x => x.Send(
                     It.Is<SendEmailCommand>(c =>
@@ -112,7 +112,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                         && c.Tokens["city"] == expectedAddress
                         && c.Tokens["postcode"] == vacancyResponse.Address.Postcode
                     )
-                ), Times.AtLeastOnce);
+                ), Times.Exactly(applicationsApiResponse.Applications.Count));
             }
 
             var expectedDeleteAccountApiRequest =
