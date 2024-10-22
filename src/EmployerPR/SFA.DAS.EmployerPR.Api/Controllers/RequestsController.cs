@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.EmployerPR.Api.Models;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptAddAccountRequest;
+using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptCreateAccountRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptPermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclineAddAccountRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclineCreateAccountRequest;
@@ -94,15 +96,6 @@ public class RequestsController(IMediator _mediator) : ControllerBase
         return Ok();
     }
 
-    [HttpGet("{requestId:guid}/createaccount/validate")]
-    [ProducesResponseType(typeof(ValidatePermissionsRequestQueryResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> ValidateRequest([FromRoute] Guid requestId, CancellationToken cancellationToken)
-    {
-        ValidatePermissionsRequestQuery query = new(requestId);
-        ValidatePermissionsRequestQueryResult result = await _mediator.Send(query, cancellationToken);
-        return Ok(result);
-    }
-
     [HttpPost("{requestId:guid}/createaccount/declined")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -116,6 +109,31 @@ public class RequestsController(IMediator _mediator) : ControllerBase
 
         await _mediator.Send(command, cancellationToken);
 
+        return Ok();
+    }
+    
+    [HttpGet("{requestId:guid}/createaccount/validate")]
+    [ProducesResponseType(typeof(ValidatePermissionsRequestQueryResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> ValidateCreateAccountRequest([FromRoute] Guid requestId, CancellationToken cancellationToken)
+    {
+        ValidatePermissionsRequestQuery query = new(requestId);
+        ValidatePermissionsRequestQueryResult result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Before invoking this endpoint, the request should be validated by invoking ValidateRequest endpoint "/requests/{requestId}/createaccount/validate
+    /// </summary>
+    /// <param name="requestId"></param>
+    /// <param name="AcceptCreateAccountRequestModel"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    [HttpPost("{requestId:guid}/createaccount/accepted")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> AcceptCreateAccountRequest([FromRoute] Guid requestId, [FromBody] AcceptCreateAccountRequestModel model, CancellationToken cancellationToken)
+    {
+        AcceptCreateAccountRequestCommand command = new(requestId, model.FirstName, model.LastName, model.Email, model.GovIdentifier);
+        await _mediator.Send(command, cancellationToken);
         return Ok();
     }
 }
