@@ -38,7 +38,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId,
                 Data = data
             });
-            _apprenticeAppMetrics.IncreaseKSBInProgress(apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId, data.ToString());
+            _apprenticeAppMetrics.IncreaseKSBInProgress(apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId, data.KsbKey);
             return Ok();
         }
 
