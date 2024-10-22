@@ -8,7 +8,7 @@ using SFA.DAS.EmployerPR.Application.Relationships.Queries.GetRelationships;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptAddAccountRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptPermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinePermissionsRequest;
-using SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
+using SFA.DAS.EmployerPR.InnerApi.Responses;
 
 namespace SFA.DAS.EmployerPR.Infrastructure;
 
@@ -35,7 +35,7 @@ public interface IProviderRelationshipsApiRestClient
 
     [Get("requests/{requestId}")]
     [AllowAnyStatusCode]
-    Task<Response<GetRequestQueryResult?>> GetRequest([Path] Guid requestId, CancellationToken cancellationToken);
+    Task<Response<GetRequestResponse?>> GetRequest([Path] Guid requestId, CancellationToken cancellationToken);
 
     [Put("requests/{requestId}/declined")]
     Task<Unit> DeclineRequest([Path] Guid requestId, [Body] DeclinedRequestModel model, CancellationToken cancellationToken);
