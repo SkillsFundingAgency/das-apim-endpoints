@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.EmployerPR.Application.Notifications.Commands.PostNotifications;
+﻿namespace SFA.DAS.EmployerPR.InnerApi.Requests;
 
 public class NotificationModel
 {

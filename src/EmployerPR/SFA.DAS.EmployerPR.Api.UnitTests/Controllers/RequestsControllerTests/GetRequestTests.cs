@@ -6,6 +6,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerPR.Api.Controllers;
 using SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
+using SFA.DAS.EmployerPR.InnerApi.Responses;
 
 namespace SFA.DAS.EmployerPR.Api.UnitTests.Controllers.RequestsControllerTests;
 
@@ -13,7 +14,7 @@ public sealed class GetRequestTests
 {
     [Test]
     [AutoData]
-    public async Task RequestsController_GetRequest_ReturnsExpectedResponse(GetRequestQueryResult expected, Guid requestId, CancellationToken cancellationToken)
+    public async Task RequestsController_GetRequest_ReturnsExpectedResponse(GetRequestResponse expected, Guid requestId, CancellationToken cancellationToken)
     {
         Mock<IMediator> _mediator = new();
         _mediator.Setup(m => m.Send(It.Is<GetRequestQuery>(q => q.RequestId == requestId), cancellationToken)).ReturnsAsync(expected);

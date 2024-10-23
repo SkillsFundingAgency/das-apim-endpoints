@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using SFA.DAS.EmployerPR.Application.Notifications.Commands.PostNotifications;
 using SFA.DAS.EmployerPR.Common;
 using SFA.DAS.EmployerPR.Infrastructure;
+using SFA.DAS.EmployerPR.InnerApi.Requests;
 
 namespace SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptPermissionsRequest;
 
@@ -16,7 +16,7 @@ public sealed class AcceptPermissionsRequestCommandHandler(IProviderRelationship
        );
 
         await _providerRelationshipsApiRestClient.PostNotifications(
-            new PostNotificationsCommand(
+            new PostNotificationsRequest(
                 [
                     new NotificationModel()
                     {

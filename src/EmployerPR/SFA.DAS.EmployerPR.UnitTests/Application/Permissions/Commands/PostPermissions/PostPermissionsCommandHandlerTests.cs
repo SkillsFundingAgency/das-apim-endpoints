@@ -4,11 +4,11 @@ using MediatR;
 using Moq;
 using NUnit.Framework;
 using RestEase;
-using SFA.DAS.EmployerPR.Application.Notifications.Commands.PostNotifications;
 using SFA.DAS.EmployerPR.Application.Permissions.Commands.PostPermissions;
 using SFA.DAS.EmployerPR.Application.Permissions.Queries.GetPermissions;
 using SFA.DAS.EmployerPR.Common;
 using SFA.DAS.EmployerPR.Infrastructure;
+using SFA.DAS.EmployerPR.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
@@ -219,7 +219,7 @@ public class PostPermissionsCommandHandlerTests
 
         providerRelationshipsApiRestClient.Verify(x =>
             x.PostNotifications(
-                It.Is<PostNotificationsCommand>(cmd =>
+                It.Is<PostNotificationsRequest>(cmd =>
                     cmd.Notifications.Count() == 1 &&
                     cmd.Notifications[0].NotificationType == nameof(NotificationType.Provider) &&
                     cmd.Notifications[0].TemplateName == nameof(PermissionEmailTemplateType.PermissionsRemoved) &&
@@ -287,7 +287,7 @@ public class PostPermissionsCommandHandlerTests
 
         providerRelationshipsApiRestClient.Verify(x =>
             x.PostNotifications(
-                It.Is<PostNotificationsCommand>(cmd =>
+                It.Is<PostNotificationsRequest>(cmd =>
                     cmd.Notifications.Count() == 1 &&
                     cmd.Notifications[0].NotificationType == nameof(NotificationType.Provider) &&
                     cmd.Notifications[0].TemplateName == nameof(PermissionEmailTemplateType.PermissionsCreated) &&
@@ -355,7 +355,7 @@ public class PostPermissionsCommandHandlerTests
 
         providerRelationshipsApiRestClient.Verify(x =>
             x.PostNotifications(
-                It.Is<PostNotificationsCommand>(cmd =>
+                It.Is<PostNotificationsRequest>(cmd =>
                     cmd.Notifications.Count() == 1 &&
                     cmd.Notifications[0].NotificationType == nameof(NotificationType.Provider) &&
                     cmd.Notifications[0].TemplateName == nameof(PermissionEmailTemplateType.PermissionsCreated) &&
@@ -423,7 +423,7 @@ public class PostPermissionsCommandHandlerTests
 
         providerRelationshipsApiRestClient.Verify(x =>
             x.PostNotifications(
-                It.Is<PostNotificationsCommand>(cmd =>
+                It.Is<PostNotificationsRequest>(cmd =>
                     cmd.Notifications.Count() == 1 &&
                     cmd.Notifications[0].NotificationType == nameof(NotificationType.Provider) &&
                     cmd.Notifications[0].TemplateName == nameof(PermissionEmailTemplateType.PermissionsUpdated) &&

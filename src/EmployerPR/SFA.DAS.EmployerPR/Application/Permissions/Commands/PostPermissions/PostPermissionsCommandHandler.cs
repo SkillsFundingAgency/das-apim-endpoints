@@ -1,10 +1,10 @@
 ﻿using System.Net;
 using MediatR;
 using RestEase;
-using SFA.DAS.EmployerPR.Application.Notifications.Commands.PostNotifications;
 using SFA.DAS.EmployerPR.Application.Permissions.Queries.GetPermissions;
 using SFA.DAS.EmployerPR.Common;
 using SFA.DAS.EmployerPR.Infrastructure;
+using SFA.DAS.EmployerPR.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
 namespace SFA.DAS.EmployerPR.Application.Permissions.Commands.PostPermissions;
@@ -108,7 +108,7 @@ public class PostPermissionsCommandHandler(IProviderRelationshipsApiRestClient _
         };
 
         await _providerRelationshipsApiRestClient.PostNotifications(
-            new PostNotificationsCommand([notification]),
+            new PostNotificationsRequest([notification]),
             cancellationToken
         );
     }
