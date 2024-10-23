@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
+using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Apprenticeships.Api.AppStart;
@@ -15,6 +16,7 @@ namespace SFA.DAS.Apprenticeships.Api;
 [ExcludeFromCodeCoverage]
 public class Startup
 {
+    private const string EndpointName = "SFA.DAS.Apprenticeships";
     private readonly IWebHostEnvironment _env;
     private readonly IConfiguration _configuration;
 
@@ -102,5 +104,10 @@ public class Startup
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApprenticeshipsOuterApi");
             c.RoutePrefix = string.Empty;
         });
+    }
+
+    public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
+    {
+        serviceProvider.StartNServiceBus(_configuration, EndpointName).GetAwaiter().GetResult();
     }
 }

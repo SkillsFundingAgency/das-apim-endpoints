@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Apprenticeships.Api.Extensions;
 using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.Apprenticeship;
 using SFA.DAS.Apprenticeships.InnerApi;
@@ -91,23 +92,25 @@ public class ApprenticeshipController : ControllerBase
     public async Task<ActionResult> CreateApprenticeshipPriceChange(Guid apprenticeshipKey,
         [FromBody] CreateApprenticeshipPriceChangeRequest request)
     {
-        var response = await _apiClient.PostWithResponseCode<PostCreateApprenticeshipPriceChangeApiResponse>(new PostCreateApprenticeshipPriceChangeRequest(
-            apprenticeshipKey,
-            request.Initiator,
-            request.UserId,
-            request.TrainingPrice,
-            request.AssessmentPrice,
-            request.TotalPrice,
-            request.Reason,
-            request.EffectiveFromDate));
+        var response = await _apiClient.PostWithResponseCode<PostCreateApprenticeshipPriceChangeApiResponse>(request.ToApiRequest(apprenticeshipKey));
 
-        if (string.IsNullOrEmpty(response.ErrorContent))
+        if (!string.IsNullOrEmpty(response.ErrorContent))
         {
-            return Ok(new PostCreateApprenticeshipPriceChangeResponse(response.Body.PriceChangeStatus));
+            _logger.LogError("Error attempting to create apprenticeship price change. {statusCode} returned from inner api.", response.StatusCode);
+            return BadRequest();
         }
-               
-        _logger.LogError($"Error attempting to create apprenticeship price change. {response.StatusCode} returned from inner api.", response.StatusCode);
-        return BadRequest();
+
+        var changeOfPriceInitiatedNotificationCommand = request.ToNotificationCommand(apprenticeshipKey, response.Body);
+        var notificationResponse = await _mediator.Send(changeOfPriceInitiatedNotificationCommand);
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to send change of price Notification(s) to the related part(ies)");
+            return BadRequest();
+        }
+
+        return Ok(new PostCreateApprenticeshipPriceChangeResponse(response.Body.PriceChangeStatus));
+
     }
 
     [HttpPost]
