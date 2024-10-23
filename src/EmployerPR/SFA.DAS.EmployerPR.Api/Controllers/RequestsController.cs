@@ -132,7 +132,7 @@ public class RequestsController(IMediator _mediator) : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> AcceptCreateAccountRequest([FromRoute] Guid requestId, [FromBody] AcceptCreateAccountRequestModel model, CancellationToken cancellationToken)
     {
-        AcceptCreateAccountRequestCommand command = new(requestId, model.FirstName, model.LastName, model.Email, model.GovIdentifier);
+        AcceptCreateAccountRequestCommand command = new(requestId, model.FirstName, model.LastName, model.Email, model.UserRef);
         await _mediator.Send(command, cancellationToken);
         return Ok();
     }

@@ -22,7 +22,7 @@ public class AcceptCreateAccountRequestTests
         var result = await sut.AcceptCreateAccountRequest(requestId, model, cancellationToken);
 
         mediatorMock.Verify(m => m.Send(
-            It.Is<AcceptCreateAccountRequestCommand>(c => c.RequestId == requestId && c.FirstName == model.FirstName && c.LastName == model.LastName && c.Email == model.Email && c.GovIdentifier == model.GovIdentifier)
+            It.Is<AcceptCreateAccountRequestCommand>(c => c.RequestId == requestId && c.FirstName == model.FirstName && c.LastName == model.LastName && c.Email == model.Email && c.UserRef == model.UserRef)
             , cancellationToken), Times.Once);
 
         result.Should().BeOfType<OkResult>();
