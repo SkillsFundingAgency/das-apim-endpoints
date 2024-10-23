@@ -1,7 +1,7 @@
 ﻿using MediatR;
-using SFA.DAS.EmployerPR.Application.Notifications.Commands.PostNotifications;
 using SFA.DAS.EmployerPR.Common;
 using SFA.DAS.EmployerPR.Infrastructure;
+using SFA.DAS.EmployerPR.InnerApi.Requests;
 
 namespace SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptAddAccountRequest;
 
@@ -10,13 +10,13 @@ public sealed class AcceptAddAccountRequestCommandHandler(IProviderRelationships
     public async Task<Unit> Handle(AcceptAddAccountRequestCommand command, CancellationToken cancellationToken)
     {
         await _providerRelationshipsApiRestClient.AcceptAddAccountRequest(
-            command.RequestId, 
+            command.RequestId,
             new AcceptAddAccountRequestModel(command.ActionedBy),
             cancellationToken
         );
 
         await _providerRelationshipsApiRestClient.PostNotifications(
-            new PostNotificationsCommand(
+            new PostNotificationsRequest(
                 [
                     new NotificationModel()
                     {

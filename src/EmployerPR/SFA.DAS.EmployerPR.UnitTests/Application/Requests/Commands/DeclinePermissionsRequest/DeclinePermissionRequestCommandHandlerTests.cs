@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EmployerPR.Application.Notifications.Commands.PostNotifications;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinePermissionsRequest;
 using SFA.DAS.EmployerPR.Common;
 using SFA.DAS.EmployerPR.Infrastructure;
+using SFA.DAS.EmployerPR.InnerApi.Requests;
 
 namespace SFA.DAS.EmployerPR.UnitTests.Application.Requests.Commands.DeclinePermissionsRequest;
 
@@ -59,7 +59,7 @@ public sealed class DeclinePermissionRequestCommandHandlerTests
 
         _providerRelationshipsApiRestClientMock.Verify(x =>
             x.PostNotifications(
-                It.Is<PostNotificationsCommand>(cmd =>
+                It.Is<PostNotificationsRequest>(cmd =>
                     cmd.Notifications.Count() == 1 &&
                     cmd.Notifications[0].TemplateName == nameof(PermissionEmailTemplateType.UpdatePermissionDeclined) &&
                     cmd.Notifications[0].NotificationType == nameof(NotificationType.Provider) &&
