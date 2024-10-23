@@ -46,7 +46,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl);
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
-            await AddAuthenticationHeader(requestMessage);
+            //await AddAuthenticationHeader(requestMessage);
 
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -88,7 +88,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl);
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
-            await AddAuthenticationHeader(requestMessage);
+            // await AddAuthenticationHeader(requestMessage);
 
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -99,7 +99,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Delete, request.DeleteUrl);
             requestMessage.AddVersion(request.Version);
-            await AddAuthenticationHeader(requestMessage);
+            // await AddAuthenticationHeader(requestMessage);
 
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -165,7 +165,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var requestMessage = new HttpRequestMessage(HttpMethod.Put, request.PutUrl);
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
-            await AddAuthenticationHeader(requestMessage);
+            //await AddAuthenticationHeader(requestMessage);
 
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -198,7 +198,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetAllUrl);
             requestMessage.AddVersion(request.Version);
-            await AddAuthenticationHeader(requestMessage);
+            //await AddAuthenticationHeader(requestMessage);
 
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -215,7 +215,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
             requestMessage.AddVersion(request.Version);
-            await AddAuthenticationHeader(requestMessage);
+            //await AddAuthenticationHeader(requestMessage);
 
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -226,7 +226,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetPagedUrl);
             requestMessage.AddVersion(request.Version);
-            await AddAuthenticationHeader(requestMessage);
+            //await AddAuthenticationHeader(requestMessage);
 
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
