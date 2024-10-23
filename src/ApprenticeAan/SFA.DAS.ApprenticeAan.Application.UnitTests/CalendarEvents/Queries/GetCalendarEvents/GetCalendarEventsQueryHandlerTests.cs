@@ -43,6 +43,8 @@ public class GetCalendarEventsQueryHandlerTests
 
         apiClient.Setup(x => x.GetCalendarEvents(requestedByMemberId, It.IsAny<Dictionary<string, string[]>>(), cancellationToken)).ReturnsAsync(apiResponse);
         var actual = await handler.Handle(query, cancellationToken);
-        actual.Should().Be(apiResponse);
+
+        Assert.That(actual, Is.Not.Null);
+        actual.CalendarEvents.Should().BeEquivalentTo(apiResponse.CalendarEvents, config => config.ExcludingMissingMembers());
     }
 }
