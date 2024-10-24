@@ -1,6 +1,5 @@
 ﻿namespace SFA.DAS.SharedOuterApi.Configuration
 {
-
     public class AccessTokenProviderApiConfiguration
     {
         public string Url { get; set; }

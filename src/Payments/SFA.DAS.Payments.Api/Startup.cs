@@ -4,10 +4,12 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Payments.Api.AppStart;
 using SFA.DAS.Payments.Application.Learners;
 using SFA.DAS.SharedOuterApi.AppStart;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 namespace SFA.DAS.Payments.Api;
 
+[ExcludeFromCodeCoverage]
 public class Startup
 {
     private readonly IWebHostEnvironment _env;
@@ -53,11 +55,6 @@ public class Startup
         services.AddControllers().AddJsonOptions(options =>
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-        if (_configuration["Environment"] != "DEV")
-        {
-            //services.AddHealthChecks().AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription); TODO : decide if we need health checks
-        }
-
         services.AddApplicationInsightsTelemetry(x => x.ConnectionString = _configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
         services.AddSwaggerGen(c =>
@@ -78,7 +75,6 @@ public class Startup
         }
 
         app.UseAuthentication();
-        //app.UseHealthChecks();
 
         app.UseRouting();
         app.UseEndpoints(endpoints =>

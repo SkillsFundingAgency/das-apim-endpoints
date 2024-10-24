@@ -5,11 +5,13 @@ using NLog.Config;
 using NLog.Extensions.Logging;
 using NLog.Targets;
 using SFA.DAS.NLog.Targets.Redis.DotNetCore;
+using System.Diagnostics.CodeAnalysis;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using NLogLevel = NLog.LogLevel;
 
 namespace SFA.DAS.Payments.Api.AppStart;
 
+[ExcludeFromCodeCoverage]
 public static class LoggingSetup
 {
     public static IServiceCollection AddNLog(this IServiceCollection serviceCollection)
@@ -34,6 +36,7 @@ public static class LoggingSetup
     }
 }
 
+[ExcludeFromCodeCoverage]
 public class NLogConfiguration
 {
     public void ConfigureNLog()

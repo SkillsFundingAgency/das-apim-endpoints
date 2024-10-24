@@ -10,9 +10,9 @@ namespace SFA.DAS.Payments.Application.Learners
 {
     public class GetLearnersQuery : IRequest<IEnumerable<LearnerResponse>>
     {
-        public int Ukprn { get; set; }
-        public int AcademicYear { get; set; }
-        public GetLearnersQuery(int ukprn, int academicYear)
+        public string Ukprn { get; set; }
+        public short AcademicYear { get; set; }
+        public GetLearnersQuery(string ukprn, short academicYear)
         {
             Ukprn = ukprn;
             AcademicYear = academicYear;
@@ -37,6 +37,12 @@ namespace SFA.DAS.Payments.Application.Learners
             List<LearnerResponse> learners = new List<LearnerResponse>();
 
             var initialResponse = await _apiClient.GetWithResponseCode<List<LearnerResponse>>(new GetLearnersRequest(request.Ukprn, request.AcademicYear, 1));
+            if(initialResponse.StatusCode == System.Net.HttpStatusCode.NoContent)
+            {
+                _logger.LogWarning("No learners found for UKPRN: {ukprn} and Academic Year: {academicYear}", request.Ukprn, request.AcademicYear);
+                return learners;
+            }
+
             learners.AddRange(initialResponse.Body);
 
             var paginationHeader = GetPaginationHeader(initialResponse);

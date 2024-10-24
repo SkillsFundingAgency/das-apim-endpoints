@@ -20,11 +20,11 @@ namespace SFA.DAS.Payments.Api.Controllers
 
         [HttpGet]
         [Route("{ukprn}/{academicYear}")]
-        public async Task<IActionResult> GetLearnerReferences(int ukprn, int academicYear)
+        public async Task<IActionResult> GetLearnerReferences(string ukprn, short academicYear)
         {
             try
             {
-                var result = await _mediator.Send(new GetLearnersQuery(ukprn,academicYear));
+                var result = await _mediator.Send(new GetLearnersQuery(ukprn, academicYear));
                 var learnerReferences = result.ToLearnerReferenceResponse();
                 return Ok(learnerReferences);
             }
