@@ -27,6 +27,19 @@ The Outer API orchestrates calls to multiple inner APIs in order to provide the 
 
 Most of the application configuration is taken from the [das-employer-config repository](https://github.com/SkillsFundingAgency/das-employer-config) and the default values can be used in most cases.  The config json will need to be added to the local Azure Storage instance with a a PartitionKey of LOCAL and a RowKey of SFA.DAS.Payments.OuterAPI_1.0.
 
+| Name                                                          | Description                                       | Stub Value                                |
+| ------------------------------------------------------------- | ------------------------------------------------- |-------------------------------------------|
+| LearnerDataApiConfiguration:Url                               | Url of the data endpoint                          | https://localhost:4000/learner-data-api   |
+| LearnerDataApiConfiguration:TokenSettings:Url                 | Url of the token endpoint                         |                                           |
+| LearnerDataApiConfiguration:TokenSettings:Scope               | Token settings                                    |                                           |
+| LearnerDataApiConfiguration:TokenSettings:ClientId            | Token settings                                    |                                           |
+| LearnerDataApiConfiguration:TokenSettings:Tenant              | Token settings                                    |                                           |
+| LearnerDataApiConfiguration:TokenSettings:ClientSecret        | Token settings                                    |                                           |
+| LearnerDataApiConfiguration:TokenSettings:GrantType           | Token settings                                    |                                           |
+| LearnerDataApiConfiguration:TokenSettings:ShouldSkipForLocal  | For local use only, skips calling token endpoint  | true                                      |
+
+
+
 
 ## 🔗 External Dependencies
 
