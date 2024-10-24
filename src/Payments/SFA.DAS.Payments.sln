@@ -5,16 +5,20 @@ VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments", "SFA.DAS.Payments\SFA.DAS.Payments.csproj", "{58BF78ED-6961-4BCD-9E6E-68FACFBC36C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Api", "SFA.DAS.Payments.Api\SFA.DAS.Payments.Api.csproj", "{88FC840A-7A97-4411-8CE7-894E58DD0564}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Api", "SFA.DAS.Payments.Api\SFA.DAS.Payments.Api.csproj", "{88FC840A-7A97-4411-8CE7-894E58DD0564}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.UnitTests", "SFA.DAS.Payments.UnitTests\SFA.DAS.Payments.UnitTests.csproj", "{720C6265-EF1B-4C49-B524-00CEFC4C5D87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.UnitTests", "SFA.DAS.Payments.UnitTests\SFA.DAS.Payments.UnitTests.csproj", "{720C6265-EF1B-4C49-B524-00CEFC4C5D87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Api.UnitTests", "SFA.DAS.Payments.Api.UnitTests\SFA.DAS.Payments.Api.UnitTests.csproj", "{90332082-C132-43AE-A664-7F65F9F0F52E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Api.UnitTests", "SFA.DAS.Payments.Api.UnitTests\SFA.DAS.Payments.Api.UnitTests.csproj", "{90332082-C132-43AE-A664-7F65F9F0F52E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{65EE386C-94BB-4A55-BDCF-6D0573AD229F}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{268E0FE2-9159-48C2-A3BF-EDB6502E0011}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{FBFA8D08-A342-4106-8805-5E4F424C3AB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,9 +42,16 @@ Global
 		{90332082-C132-43AE-A664-7F65F9F0F52E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90332082-C132-43AE-A664-7F65F9F0F52E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90332082-C132-43AE-A664-7F65F9F0F52E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBFA8D08-A342-4106-8805-5E4F424C3AB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBFA8D08-A342-4106-8805-5E4F424C3AB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBFA8D08-A342-4106-8805-5E4F424C3AB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBFA8D08-A342-4106-8805-5E4F424C3AB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FBFA8D08-A342-4106-8805-5E4F424C3AB7} = {268E0FE2-9159-48C2-A3BF-EDB6502E0011}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1FBA9471-0084-450A-961B-4B248AA9922B}

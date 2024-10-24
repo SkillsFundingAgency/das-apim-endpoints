@@ -13,20 +13,13 @@ namespace SFA.DAS.Payments.Api.AppStart;
 [ExcludeFromCodeCoverage]
 public static class AddServiceRegistrationExtensions
 {
-    //public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
-    //{
-    //    services.AddHttpClient();
-    //    services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
-    //    services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
-    //    services.AddTransient(typeof(ITokenPassThroughInternalApiClient<>), typeof(TokenPassThroughInternalApiClient<>));
-    //    services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
-    //    services.AddTransient<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>, ApprenticeshipsApiClient>();
-    //    services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
-    //    services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
-    //    services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
-    //    services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
-    //    services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
-    //}
+    public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddHttpClient();
+        services.AddTransient(typeof(IAccessTokenApiClient<>), typeof(AccessTokenApiClient<>));
+        services.AddTransient<ILearnerDataApiClient<LearnerDataApiConfiguration>, LearnerDataApiClient>();
+
+    }
 }
 
 [ExcludeFromCodeCoverage]

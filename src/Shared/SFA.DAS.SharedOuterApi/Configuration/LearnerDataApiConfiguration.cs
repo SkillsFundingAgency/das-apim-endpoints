@@ -2,17 +2,9 @@
 
 namespace SFA.DAS.SharedOuterApi.Configuration
 {
-    public class LearnerDataApiConfiguration : IApiConfiguration
+    public class LearnerDataApiConfiguration : IAccessTokenApiConfiguration
     {
         public string Url { get; set; }
-        public LearnerDataTokenProviderSettings TokenSettings { get; set; }
-    }
-
-    public class LearnerDataTokenProviderSettings
-    {
-        public string Scope { get; set; }
-        public string ClientId { get; set; }
-        public string Tenant { get; set; }
-        public string ClientSecret { get; set; }
+        public AccessTokenProviderApiConfiguration TokenSettings { get; set; }
     }
 }

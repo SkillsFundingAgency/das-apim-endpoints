@@ -4,7 +4,7 @@ namespace SFA.DAS.Payments.Api.Models
 {
     public class LearnerReferenceResponse
     {
-        public int Uln { get; set; }
+        public long Uln { get; set; }
         public string LearnerReferenceNumber { get; set; } = string.Empty;
     }
 

@@ -39,7 +39,7 @@ public class Startup
         }
 
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetLearnersQueryHandler).Assembly));
-        //services.AddServiceRegistration(_configuration);
+        services.AddServiceRegistration(_configuration);
 
         services
             .AddMvc(o =>

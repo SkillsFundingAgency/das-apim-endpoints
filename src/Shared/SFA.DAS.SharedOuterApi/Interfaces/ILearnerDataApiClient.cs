@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.SharedOuterApi.Interfaces
 {
-    interface ILearnerDataApiClient<T> : IApiClient<T>
+    public interface ILearnerDataApiClient<T> : IGetApiClient<T>
     {
     }
 }

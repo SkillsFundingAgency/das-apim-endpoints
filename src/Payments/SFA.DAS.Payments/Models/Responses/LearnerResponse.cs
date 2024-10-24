@@ -4,7 +4,7 @@
     { 
         public int Ukprn { get; set; }
         public string LearnRefNumber { get; set; }
-        public int Uln { get; set; }
+        public long Uln { get; set; }
         public string FamilyName { get; set; }
         public string GivenNames { get; set; }
         public DateTime DateOfBirth { get; set; }
