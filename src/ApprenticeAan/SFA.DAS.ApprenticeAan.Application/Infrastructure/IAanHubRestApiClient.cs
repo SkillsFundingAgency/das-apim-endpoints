@@ -6,6 +6,7 @@ using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Apprentices;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.CalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.MemberProfiles;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Members;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Notifications;
@@ -45,7 +46,7 @@ public interface IAanHubRestApiClient : IHealthChecker
         CancellationToken cancellationToken);
 
     [Get("calendarEvents")]
-    Task<GetCalendarEventsQueryResult> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
+    Task<GetCalendarEventsApiResponse> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
 
     [Get("calendarEvents/{calendarEventId}")]
     [AllowAnyStatusCode]

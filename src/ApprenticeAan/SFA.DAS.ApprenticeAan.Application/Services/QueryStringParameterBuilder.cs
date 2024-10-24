@@ -1,12 +1,13 @@
 ﻿using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMembers;
+using System.Globalization;
 
 namespace SFA.DAS.ApprenticeAan.Application.Services;
 
 public static class QueryStringParameterBuilder
 {
 
-    public static Dictionary<string, string[]> BuildQueryStringParameters(GetCalendarEventsQuery request)
+    public static Dictionary<string, string[]> BuildQueryStringParameters(GetCalendarEventsQuery request, double? longitude = null, double? latitude = null, int? radius = null, string? orderBy = null)
     {
         var parameters = new Dictionary<string, string[]>();
         if (!string.IsNullOrWhiteSpace(request.Keyword)) parameters.Add("keyword", new[] { request.Keyword });
@@ -39,6 +40,12 @@ public static class QueryStringParameterBuilder
         if (request.Page != null) parameters.Add("page", new[] { request.Page?.ToString() }!);
         if (request.PageSize != null) parameters.Add("pageSize", new[] { request.PageSize?.ToString() }!);
         parameters.Add("isActive", new[] { "true" });
+
+        if (longitude.HasValue) { parameters.Add("longitude", [longitude.Value.ToString(CultureInfo.InvariantCulture)]); }
+        if (latitude.HasValue) { parameters.Add("latitude", [latitude.Value.ToString(CultureInfo.InvariantCulture)]); }
+        if (radius.HasValue) { parameters.Add("radius", [radius.Value.ToString()]); }
+        if (!string.IsNullOrWhiteSpace(request.OrderBy)) { parameters.Add("orderBy", new[] { request.OrderBy }); }
+
         return parameters;
     }
 
