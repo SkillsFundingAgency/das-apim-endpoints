@@ -9,6 +9,11 @@ public class GetCalendarEventsRequestModel
     [FromHeader(Name = Constants.ApiHeaders.RequestedByMemberIdHeader)]
     public Guid RequestedByMemberId { get; set; }
 
+    [FromQuery] public string Location { get; set; } = "";
+
+    [FromQuery] public int Radius { get; set; } = 0;
+
+    [FromQuery] public string OrderBy { get; set; } = "";
 
     [FromQuery]
     public bool? IsActive { get; set; }
@@ -45,6 +50,9 @@ public class GetCalendarEventsRequestModel
         CalendarIds = requestModel.CalendarId,
         Page = requestModel.Page,
         PageSize = requestModel.PageSize,
-        ShowUserEventsOnly = requestModel.ShowUserEventsOnly
+        ShowUserEventsOnly = requestModel.ShowUserEventsOnly,
+        Location = requestModel.Location,
+        Radius = requestModel.Radius,
+        OrderBy = requestModel.OrderBy
     };
 }
