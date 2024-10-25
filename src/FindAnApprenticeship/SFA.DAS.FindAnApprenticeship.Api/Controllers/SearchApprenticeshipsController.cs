@@ -17,7 +17,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/")]
-public class SearchApprenticeshipsController(ILogger<SearchApprenticeshipsController> logger, IMediator mediator) : Controller
+public class SearchApprenticeshipsController(ILogger<SearchApprenticeshipsController> logger, IMediator mediator) : ControllerBase
 {
     [HttpGet]
     [Route("")]
