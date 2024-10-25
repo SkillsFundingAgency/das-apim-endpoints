@@ -93,7 +93,7 @@ public class SearchApprenticeshipsController(ILogger<SearchApprenticeshipsContro
         }
     }
         
-    [HttpPost("")]
+    [HttpPost()]
     [Route("saved-search")]
     [ProducesResponseType((int)HttpStatusCode.Created)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
