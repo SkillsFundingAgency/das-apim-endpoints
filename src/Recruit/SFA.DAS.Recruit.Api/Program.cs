@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using NLog.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
@@ -8,7 +7,6 @@ using SFA.DAS.Recruit.Api;
 using SFA.DAS.SharedOuterApi.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseNLog();
 builder.Host.UseServiceProviderFactory(new NServiceBusServiceProviderFactory());
 
 var configuration = builder.Configuration.BuildSharedConfiguration();

@@ -12,8 +12,8 @@
     "SFA.DAS.AdminAan.Api": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": false,
-      "launchUrl": "",
+      "launchBrowser": true,
+      "launchUrl": "https://localhost:7074",
       "applicationUrl": "https://localhost:7074;http://localhost:5285",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
