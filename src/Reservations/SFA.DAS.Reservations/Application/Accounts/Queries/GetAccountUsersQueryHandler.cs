@@ -7,7 +7,7 @@ using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.Reservations.Application.Accounts.Queries;
 
-public record GetAccountUsersQuery(long AccountId) : IRequest<GetAccountUsersQueryResult> { }
+public record GetAccountUsersQuery(long AccountId) : IRequest<GetAccountUsersQueryResult>;
 
 public record GetAccountUsersQueryResult
 {
@@ -24,6 +24,8 @@ public class GetAccountUsersQueryHandler(IEmployerAccountsService employerAccoun
         {
             TeamMembers = teamMembers.Select(user => new TeamMember
             {
+                Name = user.Name,
+                Status = user.Status,
                 Email = user.Email,
                 Role = user.Role,
                 UserRef = user.UserRef,
