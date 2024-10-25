@@ -9,6 +9,7 @@ using static SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetOverlappin
 using System;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Apprenticeships.Types;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails
 {

@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Approvals.InnerApi.Interfaces
+﻿namespace SFA.DAS.SharedOuterApi.InnerApi.Interfaces
 {
     public interface IPartyResource
     {
