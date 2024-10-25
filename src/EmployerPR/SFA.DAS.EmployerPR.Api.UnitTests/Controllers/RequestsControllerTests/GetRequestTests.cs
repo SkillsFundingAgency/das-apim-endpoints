@@ -6,46 +6,37 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerPR.Api.Controllers;
 using SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
-using SFA.DAS.EmployerPR.Infrastructure;
-using SFA.DAS.Testing.AutoFixture;
-using System.Net;
 
 namespace SFA.DAS.EmployerPR.Api.UnitTests.Controllers.RequestsControllerTests;
 
 public sealed class GetRequestTests
 {
-    private Mock<IMediator> _mediator = new ();
-
     [Test]
-    [MoqAutoData]
-    public async Task RequestsController_GetRequest_ReturnsExpectedResponse(GetRequestResponse response)
+    [AutoData]
+    public async Task RequestsController_GetRequest_ReturnsExpectedResponse(GetRequestQueryResult expected, Guid requestId, CancellationToken cancellationToken)
     {
-        Mock<IProviderRelationshipsApiRestClient> mockApiClient = new();
-        mockApiClient.Setup(a =>
-            a.GetRequest(It.IsAny<Guid>(), CancellationToken.None))
-            .ReturnsAsync(response);
+        Mock<IMediator> _mediator = new();
+        _mediator.Setup(m => m.Send(It.Is<GetRequestQuery>(q => q.RequestId == requestId), cancellationToken)).ReturnsAsync(expected);
 
-        RequestsController sut = new RequestsController(mockApiClient.Object, _mediator.Object);
-       
-        var result = await sut.GetRequest(It.IsAny<Guid>(), CancellationToken.None);
+        RequestsController sut = new RequestsController(_mediator.Object);
 
-        result.As<OkObjectResult>().Should().NotBeNull();
-        result.As<OkObjectResult>().StatusCode.Should().Be((int)HttpStatusCode.OK);
+        var actual = await sut.GetRequest(requestId, cancellationToken);
+
+        actual.As<OkObjectResult>().Should().NotBeNull();
+        actual.As<OkObjectResult>().Value.Should().Be(expected);
     }
+
     [Test]
-    [MoqAutoData]
-    public async Task RequestsController_GetRequest_Returns_NotFound()
+    [AutoData]
+    public async Task RequestsController_GetRequest_Returns_NotFound(Guid requestId, CancellationToken cancellationToken)
     {
-        Mock<IProviderRelationshipsApiRestClient> mockApiClient = new();
-        mockApiClient.Setup(a =>
-            a.GetRequest(It.IsAny<Guid>(), CancellationToken.None))
-            .ReturnsAsync((GetRequestResponse?)null);
+        Mock<IMediator> _mediator = new();
+        _mediator.Setup(m => m.Send(It.Is<GetRequestQuery>(q => q.RequestId == requestId), cancellationToken)).ReturnsAsync(() => null);
 
-        RequestsController sut = new RequestsController(mockApiClient.Object, _mediator.Object);
+        RequestsController sut = new RequestsController(_mediator.Object);
 
-        var result = await sut.GetRequest(It.IsAny<Guid>(), CancellationToken.None);
+        var result = await sut.GetRequest(requestId, cancellationToken);
 
         result.As<NotFoundResult>().Should().NotBeNull();
-        result.As<NotFoundResult>().StatusCode.Should().Be((int)HttpStatusCode.NotFound);
     }
 }
