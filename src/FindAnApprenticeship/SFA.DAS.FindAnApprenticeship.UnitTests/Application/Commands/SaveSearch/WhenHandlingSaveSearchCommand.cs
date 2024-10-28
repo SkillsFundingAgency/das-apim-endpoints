@@ -14,13 +14,19 @@ public class WhenHandlingSaveSearchCommand
     [Test, MoqAutoData]
     public async Task If_Inner_Api_Succeeds_Then_Valid_Response_Is_Returned(
         [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+        [Frozen] Mock<ILocationLookupService> locationLookupService,
         PostSavedSearchApiRequest savedSearchApiRequest,
         SaveSearchCommand saveSearchCommand,
         PostSavedSearchApiResponse savedSearchApiResponse,
+        LocationItem locationItem,
         SaveSearchCommandHandler sut
     )
     {
         // arrange
+        locationLookupService
+            .Setup(x => x.GetLocationInformation(It.IsAny<string>(), default, default, false))
+            .ReturnsAsync(locationItem);
+        
         PostSavedSearchApiRequestData? savedSearchApiRequestData = null;
         apiClient
             .Setup(client => client.PostWithResponseCode<PostSavedSearchApiResponse>(It.IsAny<PostSavedSearchApiRequest>(), true))
@@ -34,6 +40,11 @@ public class WhenHandlingSaveSearchCommand
         // assert
         result.Id.Should().Be(savedSearchApiResponse.Id);
         savedSearchParameters.Should()
-            .BeEquivalentTo(saveSearchCommand, options => options.Excluding(x => x.CandidateId));
+            .BeEquivalentTo(saveSearchCommand, 
+                options => options
+                    .Excluding(x => x.CandidateId)
+                    .Excluding(x => x.Location)
+                );
+        savedSearchParameters?.Location.Should().BeEquivalentTo(locationItem);
     }
 }

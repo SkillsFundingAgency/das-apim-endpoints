@@ -4,7 +4,7 @@ namespace SFA.DAS.SharedOuterApi.Models;
 
 public record SavedSearchParameters(
     string? SearchTerm,
-    string? Location,
+    LocationItem? Location,
     int? Distance,
     string? SortOrder,
     bool DisabilityConfident,

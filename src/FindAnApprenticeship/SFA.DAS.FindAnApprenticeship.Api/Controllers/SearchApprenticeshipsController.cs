@@ -8,6 +8,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.BrowseByInterestsLocation
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndex;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Api.Models.SavedSearches;
@@ -96,8 +97,9 @@ public class SearchApprenticeshipsController(ILogger<SearchApprenticeshipsContro
     [HttpPost()]
     [Route("saved-search")]
     [ProducesResponseType((int)HttpStatusCode.Created)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-    public async Task<IActionResult> PostSaveSearch([FromQuery] Guid candidateId, [FromBody] PostSaveSearchApiRequest apiRequest)
+    public async Task<IActionResult> PostSaveSearch([FromQuery, Required] Guid candidateId, [FromBody] PostSaveSearchApiRequest apiRequest)
     {
         try
         {

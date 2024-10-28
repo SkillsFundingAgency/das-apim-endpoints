@@ -11,13 +11,17 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch;
 
-public class SaveSearchCommandHandler(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient) : IRequestHandler<SaveSearchCommand, SaveSearchCommandResult>
+public class SaveSearchCommandHandler(
+    IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
+    ILocationLookupService locationLookupService) : IRequestHandler<SaveSearchCommand, SaveSearchCommandResult>
 {
     public async Task<SaveSearchCommandResult> Handle(SaveSearchCommand request, CancellationToken cancellationToken)
     {
+        var location = await locationLookupService.GetLocationInformation(request.Location, default, default, false);
+        
         var payload = JsonConvert.SerializeObject(new SavedSearchParameters(
             request.SearchTerm,
-            request.Location,
+            location,
             request.Distance,
             request.SortOrder,
             request.DisabilityConfident,
