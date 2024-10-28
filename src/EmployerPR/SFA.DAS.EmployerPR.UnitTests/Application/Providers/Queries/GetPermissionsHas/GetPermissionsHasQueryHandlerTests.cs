@@ -2,7 +2,7 @@
 using Moq;
 using NUnit.Framework;
 using RestEase;
-using SFA.DAS.EmployerPR.Application.Queries.GetPermissions;
+using SFA.DAS.EmployerPR.Application.Permissions.Queries.GetPermissions;
 using SFA.DAS.EmployerPR.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;

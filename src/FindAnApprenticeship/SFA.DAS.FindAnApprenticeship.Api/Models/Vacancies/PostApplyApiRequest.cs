@@ -1,5 +1,5 @@
 ﻿using System;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Vacancies;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Vacancies
 {

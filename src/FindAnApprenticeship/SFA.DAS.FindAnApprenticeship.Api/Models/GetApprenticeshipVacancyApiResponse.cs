@@ -77,6 +77,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string AnonymousEmployerName { get; init; }
         public bool IsEmployerAnonymous { get; init; }
         public bool IsClosed { get; set; }
+        public bool IsSavedVacancy { get; set; } = false;
 
         [JsonProperty("VacancyQualification")]
         public IEnumerable<VacancyQualificationApiResponse> Qualifications { get; init; }
@@ -95,6 +96,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string CandidatePostcode { get; set; }
 
         public string ApplicationUrl { get; set; }
+        public string ApplicationInstructions { get; set; }
         
         public static implicit operator GetApprenticeshipVacancyApiResponse(GetApprenticeshipVacancyQueryResult source)
         {
@@ -164,8 +166,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 Levels = source.Levels,
                 Application = (CandidateApplication)source.Application,
 				IsClosed = source.ApprenticeshipVacancy.IsClosed,
+                IsSavedVacancy = source.IsSavedVacancy,
                 CandidatePostcode = source.CandidatePostcode,
                 ApplicationUrl = source.ApprenticeshipVacancy.ApplicationUrl,
+                ApplicationInstructions = source.ApprenticeshipVacancy.ApplicationInstructions,
                 CompanyBenefitsInformation = source.ApprenticeshipVacancy.CompanyBenefitsInformation,
                 AdditionalTrainingDescription = source.ApprenticeshipVacancy.AdditionalTrainingDescription
             };

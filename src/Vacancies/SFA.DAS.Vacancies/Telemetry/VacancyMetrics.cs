@@ -31,4 +31,17 @@ namespace SFA.DAS.Vacancies.Telemetry
                 new KeyValuePair<string, object>("vacancy.source", Constants.OpenTelemetry.RequestSourceName));
         }
     }
+    
+    public class MockVacancyMetrics : IMetrics
+    {
+        public void IncreaseVacancyViews(string vacancyReference, int viewCount = 1)
+        {
+            
+        }
+
+        public void IncreaseVacancySearchResultViews(string vacancyReference, int viewCount = 1)
+        {
+            
+        }
+    }
 }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using MediatR;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -34,7 +34,7 @@ namespace SFA.DAS.Approvals.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(_env);
-            
+
             services.AddLogging(builder =>
             {
                 builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
@@ -48,7 +48,7 @@ namespace SFA.DAS.Approvals.Api
                 var azureAdConfiguration = _configuration
                     .GetSection("AzureAd")
                     .Get<AzureActiveDirectoryConfiguration>();
-                
+
                 var policies = new Dictionary<string, string>
                 {
                     { "default", "APIM" }
@@ -88,7 +88,7 @@ namespace SFA.DAS.Approvals.Api
                 c.CustomSchemaIds(type => type.ToString());
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApprovalsOuterApi", Version = "v1" });
             });
-            
+
             services.AddApplicationInsightsTelemetry();
         }
 
@@ -99,6 +99,19 @@ namespace SFA.DAS.Approvals.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.OnStarting(() =>
+                {
+                    if (context.Response.Headers.ContainsKey("X-Powered-By"))
+                    {
+                        context.Response.Headers.Remove("X-Powered-By");
+                    }
+                    return Task.CompletedTask;
+                });
+                await next();
+            });
 
             app.UseAuthentication();
 

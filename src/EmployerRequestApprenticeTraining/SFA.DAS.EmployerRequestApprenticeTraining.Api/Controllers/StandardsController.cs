@@ -1,6 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CacheStandard;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.RefreshStandards;
+using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLatestStandards;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
 using System;
 using System.Net;
@@ -21,12 +24,12 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{standardId}")]
-        public async Task<IActionResult> Get(string standardId)
+        [HttpGet("{standardReference}")]
+        public async Task<IActionResult> Get(string standardReference)
         {
             try
             {
-                var result = await _mediator.Send(new GetStandardQuery { StandardId = standardId });
+                var result = await _mediator.Send(new GetStandardQuery { StandardReference = standardReference });
 
                 if (result.Standard != null)
                 {
@@ -37,7 +40,49 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to retrieve standard for {StandardId}", standardId);
+                _logger.LogError(e, "Error attempting to retrieve standard for {StandardReference}", standardReference);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{standardLarsCode}")]
+        public async Task<IActionResult> Cache(string standardLarsCode)
+        {
+            try
+            {
+                var result = await _mediator.Send(new CacheStandardCommand { StandardLarsCode = standardLarsCode });
+
+                if (result.Standard != null)
+                {
+                    return Ok(result.Standard);
+                }
+
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to cache standard for {StandardLarsCode}", standardLarsCode);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPut("refresh")]
+        public async Task<IActionResult> RefreshStandards()
+        {
+            try
+            {
+                var standards = await _mediator.Send(new GetLatestStandardsQuery());
+
+                await _mediator.Send(new RefreshStandardsCommand 
+                { 
+                    Standards = standards.Standards,
+                });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to refresh standards");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

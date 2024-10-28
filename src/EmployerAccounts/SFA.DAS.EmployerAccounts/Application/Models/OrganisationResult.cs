@@ -106,15 +106,7 @@ public class OrganisationResult
             SubType = OrganisationSubType.None,
             Code = source.CompanyNumber,
             RegistrationDate = source.DateOfIncorporation,
-            Address = new Address
-            {
-                Line1 = source.RegisteredAddress.Line1,
-                Line2 = source.RegisteredAddress.Line2,
-                Line3 = source.RegisteredAddress.Line3,
-                Line4 = source.RegisteredAddress.TownOrCity,
-                Line5 = source.RegisteredAddress.County,
-                Postcode = source.RegisteredAddress.PostCode
-            },
+            Address = MapCompaniesHouseAddress(source.RegisteredAddress),
             Sector = null,
             OrganisationStatus = MapCompanyToOrganisationStatus(source.CompanyStatus)
         };
@@ -193,5 +185,19 @@ public class OrganisationResult
         Enum.TryParse(companiesHouseStatus?.Replace("-", string.Empty), true, out OrganisationStatus organisationStatus);
 
         return organisationStatus;
+    }
+
+    private static Address MapCompaniesHouseAddress(ExternalApi.Models.Address companiesHouseAddress)
+    {
+        if (companiesHouseAddress == null) { return new() { }; }
+        return new Address
+        {
+            Line1 = companiesHouseAddress.Line1,
+            Line2 = companiesHouseAddress.Line2,
+            Line3 = companiesHouseAddress.Line3,
+            Line4 = companiesHouseAddress.TownOrCity,
+            Line5 = companiesHouseAddress.County,
+            Postcode = companiesHouseAddress.PostCode
+        };
     }
 }

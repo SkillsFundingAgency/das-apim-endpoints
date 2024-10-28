@@ -82,5 +82,31 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.Application.Querie
             // Assert
             actual.EmailAddresses.Count().Should().Be(2);
         }
+
+        [Test, MoqAutoData]
+        public async Task Then_Get_ProviderEmails_From_The_Api_ShouldNotIncludeNull(
+            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpCourseManagementApiClient,
+            GetProviderEmailAddressesQueryHandler handler,
+            GetProviderEmailAddressesQuery query)
+        {
+
+            // Arrange
+            query.UserEmailAddress = "user@hotmail.com";
+            List<ProviderCourse> courses = new List<ProviderCourse>
+            {
+                new ProviderCourse{ ContactUsEmail = null},
+                new ProviderCourse{ ContactUsEmail = string.Empty},
+                new ProviderCourse{ ContactUsEmail = "valid@email.com"}
+            };
+
+            mockRoatpCourseManagementApiClient.Setup(client => client.Get<List<ProviderCourse>>(It.IsAny<GetProviderCoursesRequest>()))
+                    .ReturnsAsync(courses);
+
+            // Act
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            actual.EmailAddresses.Count().Should().Be(2);
+        }
     }
 }

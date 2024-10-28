@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EmployerPR.Application.Queries.GetEmployerRelationships;
+using SFA.DAS.EmployerPR.Application.EmployerRelationships.Queries.GetEmployerRelationships;
 using SFA.DAS.EmployerPR.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 

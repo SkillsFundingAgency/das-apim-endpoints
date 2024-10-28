@@ -3,6 +3,7 @@ namespace SFA.DAS.ProviderFeedback.Api.Models
     public class ProviderFeedbackAnnualBase
     {
         public int ProviderId { get; set; }
+        public bool IsEmployerProvider { get; set; }
         public GetEmployerFeedbackAnnualResponse EmployerFeedback { get; set; }
         public GetApprenticeFeedbackAnnualResponse ApprenticeFeedback { get; set; }
 

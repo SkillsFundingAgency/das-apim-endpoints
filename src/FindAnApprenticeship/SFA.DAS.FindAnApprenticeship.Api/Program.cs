@@ -15,8 +15,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseApplicationInsights()
-                        .UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>();
                 }).UseNServiceBusContainer();
     }
 }

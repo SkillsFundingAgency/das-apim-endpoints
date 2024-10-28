@@ -115,14 +115,14 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 	private async Task<DateTime> GetEarliestEffectiveDate()
 	{
 		var searchDate = DateTime.Now;
-		var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(searchDate));
+		var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(searchDate));
 		if(currentAcademicYear == null)
 		{
 			throw new NotFoundException<GetAcademicYearsResponse>($"No current academic year returned from innerApi for date {searchDate.ToString("yyyy-MMM-dd")}");
 		}
 
 		searchDate = currentAcademicYear.StartDate.AddDays(-1);
-		var previousAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearsRequest(searchDate));
+		var previousAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(searchDate));
 		if (previousAcademicYear == null)
 		{
 			throw new NotFoundException<GetAcademicYearsResponse>($"No previous academic year returned from innerApi for date {searchDate.ToString("yyyy - MMM - dd")}");

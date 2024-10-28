@@ -13,7 +13,12 @@ namespace SFA.DAS.Approvals.Api
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder
+                    .ConfigureKestrel(c => c.AddServerHeader = false)
+                    .UseStartup<Startup>();
+                })
                 .UseNLog();
     }
 }
