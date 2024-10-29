@@ -9,15 +9,15 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerPR.Api.UnitTests.Controllers.RequestsControllerTests;
 
-public sealed class DeclineAddAccountRequestTests
+public sealed class DeclineCreateAccountRequestTests
 {
     [Test]
     [MoqAutoData]
-    public async Task RequestsController_DeclineAddAccountRequest_ReturnsExpectedResponse(DeclinedRequestModel model, Guid requestId)
+    public async Task RequestsController_DeclineCreateAccountRequest_ReturnsExpectedResponse(DeclinedRequestModel model, Guid requestId)
     {
         RequestsController sut = new RequestsController(Mock.Of<IMediator>());
 
-        var result = await sut.DeclineAddAccountRequest(requestId, model, CancellationToken.None);
+        var result = await sut.DeclineCreateAccountRequest(requestId, model, CancellationToken.None);
 
         result.Should().BeOfType<OkResult>();
     }
