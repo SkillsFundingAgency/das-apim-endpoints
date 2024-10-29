@@ -5,6 +5,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplicati
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
@@ -23,6 +24,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType<GetApplicationsApiResponse>((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> Index([FromQuery] Guid candidateId, [FromQuery] ApplicationStatus status)
         {
             try
@@ -33,7 +36,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     Status = status
                 });
 
-                return Ok(result);
+                return Ok(GetApplicationsApiResponse.From(result));
             }
             catch (Exception e)
             {
