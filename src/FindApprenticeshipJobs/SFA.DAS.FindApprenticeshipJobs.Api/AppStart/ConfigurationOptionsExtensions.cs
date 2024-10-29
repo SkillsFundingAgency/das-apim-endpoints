@@ -22,6 +22,8 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
         services.Configure<CandidateApiConfiguration>(configuration.GetSection(nameof(CandidateApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<CandidateApiConfiguration>>().Value);
+        services.Configure<FindApprenticeshipApiConfiguration>(configuration.GetSection(nameof(FindApprenticeshipApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipApiConfiguration>>().Value);
         services.AddSingleton(new NhsJobsConfiguration());
     }
 }
