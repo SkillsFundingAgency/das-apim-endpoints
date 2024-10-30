@@ -4,6 +4,7 @@ using Moq;
 using SFA.DAS.EmployerAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.EmployerAan.Common;
 using SFA.DAS.EmployerAan.Infrastructure;
+using SFA.DAS.EmployerAan.InnerApi.CalendarEvents;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAan.UnitTests.Application.CalendarEvents.Queries.GetCalendarEvents;
@@ -14,7 +15,7 @@ public class GetCalendarEventsQueryHandlerTests
     public async Task Handle_ReturnCalendarEvents(
         [Frozen] Mock<IAanHubRestApiClient> apiClient,
         GetCalendarEventsQueryHandler handler,
-        GetCalendarEventsQueryResult expected,
+        GetCalendarEventsApiResponse apiResponse,
         Guid requestedByMemberId,
         string keyword,
         DateTime? fromDate,
@@ -40,8 +41,10 @@ public class GetCalendarEventsQueryHandlerTests
 
         };
 
-        apiClient.Setup(x => x.GetCalendarEvents(requestedByMemberId, It.IsAny<Dictionary<string, string[]>>(), cancellationToken)).ReturnsAsync(expected);
+        apiClient.Setup(x => x.GetCalendarEvents(requestedByMemberId, It.IsAny<Dictionary<string, string[]>>(), cancellationToken)).ReturnsAsync(apiResponse);
         var actual = await handler.Handle(query, cancellationToken);
-        actual.Should().Be(expected);
+        actual.Should().Be(apiResponse);
+        Assert.That(actual, Is.Not.Null);
+        actual.CalendarEvents.Should().BeEquivalentTo(apiResponse.CalendarEvents, config => config.ExcludingMissingMembers());
     }
 }
