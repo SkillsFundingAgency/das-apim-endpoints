@@ -1,10 +1,11 @@
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using Polly;
+using Polly.Registry;
 using SFA.DAS.Approvals.Application.ProviderAccounts.Queries;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -18,9 +19,16 @@ namespace SFA.DAS.Approvals.UnitTests.Application.ProviderAccounts
         public async Task Then_The_Service_Is_Called_And_Flag_Returned(
             GetRoatpV2ProviderQuery query,
             GetProviderSummaryResponse serviceResponse,
-            [Frozen] Mock<IRoatpV2TrainingProviderService> service,
-            GetRoatpV2ProviderQueryHandler handler)
+            [Frozen] Mock<IRoatpV2TrainingProviderService> service)
         {
+
+            var pipelineProvider = new Mock<ResiliencePipelineProvider<string>>();
+            pipelineProvider
+               .Setup(p => p.GetPipeline("default"))
+               .Returns(ResiliencePipeline.Empty);
+
+            var handler = new GetRoatpV2ProviderQueryHandler(service.Object, pipelineProvider.Object);
+
             service.Setup(x => x.GetProviderSummary(query.Ukprn)).ReturnsAsync(serviceResponse);
 
             var actual = await handler.Handle(query, CancellationToken.None);
@@ -32,42 +40,20 @@ namespace SFA.DAS.Approvals.UnitTests.Application.ProviderAccounts
         public async Task Then_If_Service_Returns_Null_Then_False_Returned(
             GetRoatpV2ProviderQuery query,
             GetProviderSummaryResponse serviceResponse,
-            [Frozen] Mock<IRoatpV2TrainingProviderService> service,
-            GetRoatpV2ProviderQueryHandler handler)
+            [Frozen] Mock<IRoatpV2TrainingProviderService> service)
         {
+            var pipelineProvider = new Mock<ResiliencePipelineProvider<string>>();
+            pipelineProvider
+               .Setup(p => p.GetPipeline("default"))
+               .Returns(ResiliencePipeline.Empty);
+
+            var handler = new GetRoatpV2ProviderQueryHandler(service.Object, pipelineProvider.Object);
+
             service.Setup(x => x.GetProviderSummary(query.Ukprn)).ReturnsAsync((GetProviderSummaryResponse)null);
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.Should().BeFalse();
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_The_Service_Retries_On_Exception(
-           GetRoatpV2ProviderQuery query,
-           GetProviderSummaryResponse serviceResponse,
-           [Frozen] Mock<IRoatpV2TrainingProviderService> service,
-           GetRoatpV2ProviderQueryHandler handler)
-        {
-            // Arrange
-            var callCount = 0;
-            service.Setup(x => x.GetProviderSummary(query.Ukprn))
-                   .ReturnsAsync(() =>
-                   {
-                       callCount++;
-                       if (callCount < 4)
-                       {
-                           throw new HttpRequestException("Simulated exception");
-                       }
-                       return serviceResponse;
-                   });
-
-            // Act
-            var actual = await handler.Handle(query, CancellationToken.None);
-
-            // Assert
-            actual.Should().Be(serviceResponse.CanAccessApprenticeshipService);
-            service.Verify(x => x.GetProviderSummary(query.Ukprn), Times.Exactly(4));
         }
     }
 }

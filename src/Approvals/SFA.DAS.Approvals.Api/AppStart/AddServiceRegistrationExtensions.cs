@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Polly;
+using Polly.Retry;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Approvals.Api.Clients;
@@ -51,7 +54,7 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddTransient<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>, ApprenticeshipsApiClient>();
             services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
             services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
-			AddCommitmentApiInternalClient(services, configuration);
+            AddCommitmentApiInternalClient(services, configuration);
             services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
             services.AddTransient<IReservationApiClient<ReservationApiConfiguration>, ReservationApiClient>();
             services.AddTransient<IDeliveryModelService, DeliveryModelService>();
@@ -64,6 +67,22 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
             services.AddTransient<IAutoReservationsService, AutoReservationsService>();
             services.AddServiceParameters();
+        }
+
+        public static void AddResiliencePipelineRegistration(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddResiliencePipeline("default", x =>
+            {
+                x.AddRetry(new RetryStrategyOptions
+                {
+                    ShouldHandle = new PredicateBuilder().Handle<Exception>(),
+                    Delay = TimeSpan.FromSeconds(1),
+                    MaxRetryAttempts = 3,
+                    BackoffType = DelayBackoffType.Exponential,
+                    UseJitter = true
+                })
+                .AddTimeout(TimeSpan.FromSeconds(1));
+            });
         }
     }
 }

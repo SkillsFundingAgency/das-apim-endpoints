@@ -59,6 +59,7 @@ namespace SFA.DAS.Approvals.Api
 
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetStandardsQuery).Assembly));
             services.AddServiceRegistration(_configuration);
+            services.AddResiliencePipelineRegistration(_configuration);
             services.AddAutoMapper(typeof(Startup));
 
             services
