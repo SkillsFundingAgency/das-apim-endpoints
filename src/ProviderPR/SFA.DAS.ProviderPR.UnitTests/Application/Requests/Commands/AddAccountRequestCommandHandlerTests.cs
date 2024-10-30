@@ -108,7 +108,7 @@ public class AddAccountRequestCommandHandlerTests
 
     [Test]
     [AutoData]
-    public async Task Handle_AddAccountRequest_TeamMemberAssociatedWithEmployerContactEmail_MultipleNotifications(
+    public async Task Handle_AddAccountRequest_TeamMemberAssociatedWithEmployerContactEmailAndAccountOwner_AddAccountInvitationEmailSent(
         AddAccountRequestCommand command,
         AddAccountRequestCommandResult response,
         TeamMember teamMember
@@ -145,15 +145,53 @@ public class AddAccountRequestCommandHandlerTests
         
         _providerRelationshipsApiRestClient.Verify(a =>
             a.PostNotifications(
-                It.Is<PostNotificationsCommand>(c => c.Notifications.Any(a => a.TemplateName == NotificationConstants.AddAccountInformationTemplateName)),
+                It.Is<PostNotificationsCommand>(c => c.Notifications.Any(a => a.TemplateName == NotificationConstants.AddAccountInvitationTemplateName)),
                 CancellationToken.None
             ),
             Times.Once
         );
+    }
+
+    [Test]
+    [AutoData]
+    public async Task Handle_AddAccountRequest_TeamMemberAssociatedWithEmployerContactEmailAndNotAccountOwner_AddAccountInformationEmailSent(
+        AddAccountRequestCommand command,
+        AddAccountRequestCommandResult response,
+        TeamMember teamMember
+    )
+    {
+        teamMember.CanReceiveNotifications = true;
+        teamMember.Role = nameof(Role.Viewer);
+        teamMember.Status = InvitationStatus.Accepted;
+        teamMember.Email = command.EmployerContactEmail;
+
+        _providerRelationshipsApiRestClient.Setup(x =>
+            x.CreateAddAccountRequest(
+                It.IsAny<AddAccountRequestCommand>(),
+                CancellationToken.None
+            )
+        ).ReturnsAsync(response);
+
+        var apiResponse = new ApiResponse<List<TeamMember>>([teamMember], HttpStatusCode.OK, string.Empty);
+
+        _accountsApiClient.Setup(x =>
+            x.GetWithResponseCode<List<TeamMember>>(
+                It.IsAny<GetAccountTeamMembersByInternalAccountIdRequest>()
+            )
+        ).ReturnsAsync(apiResponse);
+
+        AddAccountRequestCommandHandler sut = new(_providerRelationshipsApiRestClient.Object, _accountsApiClient.Object);
+        var result = await sut.Handle(command, CancellationToken.None);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.RequestId, Is.EqualTo(response.RequestId));
+        });
 
         _providerRelationshipsApiRestClient.Verify(a =>
             a.PostNotifications(
-                It.Is<PostNotificationsCommand>(c => c.Notifications.Any(a => a.TemplateName == NotificationConstants.AddAccountInvitationTemplateName)),
+                It.Is<PostNotificationsCommand>(c => c.Notifications.Any(a => a.TemplateName == NotificationConstants.AddAccountInformationTemplateName)),
                 CancellationToken.None
             ),
             Times.Once

@@ -122,7 +122,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     VacancyReference = vacancy.VacancyReference,
                     EmployerName = vacancy.EmployerName,
                     CreatedDate = application.CreatedDate,
-                    ClosingDate = vacancy.ClosedDate ?? vacancy.ClosingDate,
+                    ClosingDate = vacancy.ClosingDate,
+                    ClosedDate = vacancy.ClosedDate,
                     WithdrawnDate = application.WithdrawnDate,
                     SubmittedDate = application.SubmittedDate,
                     ResponseDate = application.ResponseDate,
@@ -182,7 +183,70 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     VacancyReference = vacancy.VacancyReference,
                     EmployerName = vacancy.EmployerName,
                     CreatedDate = application.CreatedDate,
-                    ClosingDate = vacancy.ClosedDate ?? vacancy.ClosingDate,
+                    ClosingDate = vacancy.ClosingDate,
+                    ClosedDate = vacancy.ClosedDate,
+                    SubmittedDate = application.SubmittedDate,
+                    WithdrawnDate = application.WithdrawnDate,
+                    ResponseDate = application.ResponseDate,
+                    ResponseNotes = application.ResponseNotes,
+                    Status = Enum.Parse<ApplicationStatus>(application.Status)
+                });
+            }
+
+            result.Should().BeEquivalentTo(expectedResult);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_Draft_Applications_Retrieved_Then_Expired_Also_Returned(
+            GetCandidateApiResponse candidateResponse,
+            GetApplicationsQuery query,
+            GetApplicationsApiResponse applicationApiResponse,
+            List<ApprenticeshipVacancy> vacancies,
+            [Frozen] Mock<IVacancyService> vacancyService,
+            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            GetApplicationsQueryHandler handler)
+        {
+            query.Status = ApplicationStatus.Draft;
+            for (var i = 0; i < applicationApiResponse.Applications.Count; i++)
+            {
+                applicationApiResponse.Applications[i].Status = i == 0 ? ApplicationStatus.Draft.ToString() : ApplicationStatus.Expired.ToString();
+                vacancies[i].VacancyReference = applicationApiResponse.Applications[i].VacancyReference;
+            }
+
+            var expectedGetApplicationRequest = new GetApplicationsApiRequest(query.CandidateId);
+            candidateApiClient
+                .Setup(client => client.Get<GetApplicationsApiResponse>(
+                    It.Is<GetApplicationsApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
+                .ReturnsAsync(applicationApiResponse);
+
+            candidateApiClient
+                .Setup(x => x.Get<GetCandidateApiResponse>(
+                    It.Is<GetCandidateApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
+                .ReturnsAsync(candidateResponse);
+
+            vacancyService.Setup(x => x.GetVacancies(It.IsAny<List<string>>()))
+                .ReturnsAsync(vacancies.Select(x => (IVacancy)x).ToList());
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            using var scope = new AssertionScope();
+            result.Applications.Count.Should().Be(applicationApiResponse.Applications.Count(x => x.Status == ApplicationStatus.Draft.ToString() || x.Status == ApplicationStatus.Expired.ToString()));
+
+            var expectedResult = new GetApplicationsQueryResult();
+            foreach (var application in applicationApiResponse.Applications)
+            {
+                var vacancy = vacancies.Single(x =>
+                    x.VacancyReference == $"{application.VacancyReference}");
+
+                expectedResult.Applications.Add(new GetApplicationsQueryResult.Application
+                {
+                    Id = application.Id,
+                    Title = vacancy.Title,
+                    VacancyReference = vacancy.VacancyReference,
+                    EmployerName = vacancy.EmployerName,
+                    CreatedDate = application.CreatedDate,
+                    ClosingDate = vacancy.ClosingDate,
+                    ClosedDate = vacancy.ClosedDate,
                     SubmittedDate = application.SubmittedDate,
                     WithdrawnDate = application.WithdrawnDate,
                     ResponseDate = application.ResponseDate,

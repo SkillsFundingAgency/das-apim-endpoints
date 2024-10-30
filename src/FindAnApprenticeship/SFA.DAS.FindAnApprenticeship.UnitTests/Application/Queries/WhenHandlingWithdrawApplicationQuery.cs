@@ -6,8 +6,8 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.WithdrawApplication;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
@@ -20,9 +20,9 @@ public class WhenHandlingWithdrawApplicationQuery
     public async Task Then_The_Query_Is_Handled_And_Withdraw_Application_Details_Returned(
         WithdrawApplicationQuery query,
         GetApplicationApiResponse getApplicationApiResponse,
-        GetApprenticeshipVacancyItemResponse getApprenticeshipVacancyItemResponse,
+        GetApprenticeshipVacancyItemResponse vacancyResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
+        [Frozen] Mock<IVacancyService> vacancyService,
         WithdrawApplicationQueryHandler handler)
     {
         getApplicationApiResponse.Status = ApplicationStatus.Submitted;
@@ -31,18 +31,17 @@ public class WhenHandlingWithdrawApplicationQuery
                     x.GetUrl.Contains(query.ApplicationId.ToString())
                     && x.GetUrl.Contains(query.CandidateId.ToString()))))
             .ReturnsAsync(getApplicationApiResponse);
-        findApprenticeshipApiClient
-            .Setup(x => x.Get<GetApprenticeshipVacancyItemResponse>(
-                It.Is<GetVacancyRequest>(c => c.GetUrl.Contains(getApplicationApiResponse.VacancyReference))))
-            .ReturnsAsync(getApprenticeshipVacancyItemResponse);
+        
+        vacancyService.Setup(x => x.GetVacancy(getApplicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
 
         var actual = await handler.Handle(query, CancellationToken.None);
 
         actual.ApplicationId.Should().Be(getApplicationApiResponse.Id);
-        actual.ClosingDate.Should().Be(getApprenticeshipVacancyItemResponse.ClosingDate);
-        actual.EmployerName.Should().Be(getApprenticeshipVacancyItemResponse.EmployerName);
+        actual.ClosingDate.Should().Be(vacancyResponse.ClosingDate);
+        actual.ClosedDate.Should().Be(vacancyResponse.ClosedDate);
+        actual.EmployerName.Should().Be(vacancyResponse.EmployerName);
         actual.SubmittedDate.Should().Be(getApplicationApiResponse.SubmittedDate);
-        actual.AdvertTitle.Should().Be(getApprenticeshipVacancyItemResponse.Title);
+        actual.AdvertTitle.Should().Be(vacancyResponse.Title);
     }
 
     [Test, MoqAutoData]
