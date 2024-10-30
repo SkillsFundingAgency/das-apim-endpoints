@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Web;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests
@@ -25,7 +24,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests
             int? pageNumber,
             int? pageSize,
             IReadOnlyCollection<string> categories,
-            IReadOnlyCollection<string> levels,
+            IReadOnlyCollection<string>? levels,
             VacancySort sort,
             bool disabilityConfident)
         {
@@ -41,7 +40,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests
             _disabilityConfident = disabilityConfident;
 
         }
-
 
         public string Version => "2.0";
         public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&distanceInMiles={_distance}&sort={_sort}&pageNumber={_pageNumber}&pageSize={_pageSize}&categories={_categories}&levels={_levels}&searchTerm={_searchTerm}&disabilityConfident={_disabilityConfident}";

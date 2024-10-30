@@ -17,7 +17,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
         {
             var searchResultList = new List<GetSavedSearchesQueryResult.SearchResult>();
 
-            var savedSearchResponse = await FindApprenticeshipApiClient.Get<GetSavedSearchesApiResponse>(new GetSavedSearchesApiRequest(request.LastRunDateFilter.ToString("O"), request.PageNumber, request.PageSize));
+            var savedSearchResponse = await FindApprenticeshipApiClient.Get<GetSavedSearchesApiResponse>(
+                new GetSavedSearchesApiRequest(request.LastRunDateFilter.ToString("O"),
+                    request.PageNumber,
+                    request.PageSize));
 
             if (savedSearchResponse is not { SavedSearches.Count: > 0 })
                 return new GetSavedSearchesQueryResult
@@ -28,7 +31,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                     TotalCount = savedSearchResponse.TotalCount,
                     SavedSearchResults = []
                 };
-
 
             foreach (var savedSearch in savedSearchResponse.SavedSearches)
             {
@@ -48,12 +50,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
 
                 var vacanciesResponse = await FindApprenticeshipApiClient.Get<GetVacanciesResponse>(
                     new GetVacanciesRequest(
-                        Convert.ToDouble(savedSearch.SearchCriteriaParameters.Latitude),
-                        Convert.ToDouble(savedSearch.SearchCriteriaParameters.Longitude),
+                        !string.IsNullOrEmpty(savedSearch.SearchCriteriaParameters.Latitude) ? Convert.ToDouble(savedSearch.SearchCriteriaParameters.Latitude) : null,
+                        !string.IsNullOrEmpty(savedSearch.SearchCriteriaParameters.Longitude) ? Convert.ToDouble(savedSearch.SearchCriteriaParameters.Longitude) : null,
                         savedSearch.SearchCriteriaParameters.Distance,
                         savedSearch.SearchCriteriaParameters.SearchTerm,
-                        1,
-                        request.MaxApprenticeshipSearchResultsCount,
+                        1,  // Defaulting to top results.
+                        request.MaxApprenticeshipSearchResultsCount, // Default page size set to 10.
                         categories,
                         savedSearch.SearchCriteriaParameters.Levels,
                         request.ApprenticeshipSearchResultsSortOrder,
