@@ -19,5 +19,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
         public List<GetCourseLevelsListItem> Levels { get; set; }
         public long TotalFound { get; set; }
         public bool DisabilityConfident { get; set; }
+        public int SavedSearchesCount { get; init; }
     }
 }
