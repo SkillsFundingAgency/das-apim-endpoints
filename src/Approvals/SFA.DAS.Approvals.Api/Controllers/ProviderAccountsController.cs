@@ -6,37 +6,29 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.ProviderAccounts.Queries;
 
-namespace SFA.DAS.Approvals.Api.Controllers
+namespace SFA.DAS.Approvals.Api.Controllers;
+
+[ApiController]
+[Route("[controller]/")]
+public class ProviderAccountsController(IMediator mediator) : Controller
 {
-    [ApiController]
-    [Route("[controller]/")]
-    public class ProviderAccountsController : Controller
+    [HttpGet]
+    [Route("{ukprn}")]
+    public async Task<IActionResult> GetProviderStatus([FromRoute] int ukprn)
     {
-        private readonly IMediator _mediator;
-
-        public ProviderAccountsController(IMediator mediator)
+        try
         {
-            _mediator = mediator;
+            var result = await mediator.Send(new GetRoatpV2ProviderQuery
+            {
+                Ukprn = ukprn
+            });
+
+            return Ok(new ProviderAccountResponse { CanAccessService = result });
+
         }
-
-        [HttpGet]
-        [Route("{ukprn}")]
-        public async Task<IActionResult> GetProviderStatus([FromRoute]int ukprn)
+        catch (Exception)
         {
-            try
-            {
-                var result = await _mediator.Send(new GetRoatpV2ProviderQuery
-                {
-                    Ukprn = ukprn
-                });
-
-                return Ok(new ProviderAccountResponse{CanAccessService = result});
-            
-            }
-            catch (Exception)
-            {
-                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
-            }
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 }
