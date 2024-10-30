@@ -228,7 +228,7 @@ public class ApprenticeshipController : ControllerBase
     [Route("{apprenticeshipKey}/priceHistory/pending/approve")]
     public async Task<ActionResult> ApprovePendingPriceChange(Guid apprenticeshipKey, [FromBody] ApprovePriceChangeRequest request)
     {
-        await _apiClient.Patch(new PatchApproveApprenticeshipPriceChangeRequest(apprenticeshipKey, request.UserId, request.TrainingPrice, request.AssessmentPrice));
+        var approver = await _apiClient.PatchWithResponseCode(new PatchApproveApprenticeshipPriceChangeRequest(apprenticeshipKey, request.UserId, request.TrainingPrice, request.AssessmentPrice));
         return Ok();
     }
 
