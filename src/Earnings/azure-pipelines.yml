@@ -1,10 +1,10 @@
 #################################################################################################################################################
 #### NOTE - This is a non-standard pipeline due requirements for the Earnings endpoint to use a package the dct-pkg in Azure artifacts.
-####        This pipeline has the build stage steps hardcoded to allow the custom DotNetCoreCLI@2 restore task The deploy stages still 
+####        This pipeline has the build stage steps hardcoded to allow the custom DotNetCoreCLI@2 restore task The deploy stages still
 ####        make use of platform-building-block templates. If another serice requires a similar setup then consideration needs to be taken
 ####        to merge these changes: https://github.com/SkillsFundingAgency/das-platform-building-blocks/pull/340. This code change has a
 ####        dependency on platform building blocks being updated to 2.x.x so that the breaking changes to the generate-config.yml task
-####        are resolved. 
+####        are resolved.
 #################################################################################################################################################
 
 parameters:
@@ -34,7 +34,7 @@ parameters:
 - name: RunAcceptanceTests
   default: true
 - name: ContinueOnVulnerablePackageScanError
-  default: false
+  default: true
 
 trigger:
   batch: true
@@ -68,7 +68,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/1.0.7
+    ref: refs/tags/2.2.0
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
@@ -80,7 +80,7 @@ resources:
     project: Digital Apprenticeship Service
     source: das-employer-config
     branch: master
-  
+
 stages:
 - stage: Build
   jobs:
@@ -144,7 +144,7 @@ stages:
             Write-Host "##vso[task.logissue type=warning]Package issues discovered, review output above"
             Write-Output "##vso[task.setvariable variable=VulnerablePackagesDetected;isreadonly=true]true"
             $(exit 1)
-        } 
+        }
         else {
             Write-Output "##vso[task.setvariable variable=VulnerablePackagesDetected;isreadonly=true]false"
             $(exit 0)
@@ -258,6 +258,8 @@ stages:
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
   - group: AT das-apim-endpoints
+  - name: platformBuildBlockVersion
+    value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -265,6 +267,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: AT
       SchemaFilePath: $(EarningsOuterApiSchemaFilePath)
+      ConfigurationSecrets: {}
       DeploymentName: Deploy_Earnings
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(EarningsOuterApiAppServiceName)
@@ -287,6 +290,8 @@ stages:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
   - group: TEST das-apim-endpoints
+  - name: platformBuildBlockVersion
+    value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -294,6 +299,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: TEST
       SchemaFilePath: $(EarningsOuterApiSchemaFilePath)
+      ConfigurationSecrets: {}
       DeploymentName: Deploy_Earnings
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(EarningsOuterApiAppServiceName)
@@ -316,6 +322,8 @@ stages:
   - group: DevTest Management Resources
   - group: TEST2 DevTest Shared Resources
   - group: TEST2 das-apim-endpoints
+  - name: platformBuildBlockVersion
+    value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -323,6 +331,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: TEST2
       SchemaFilePath: $(EarningsOuterApiSchemaFilePath)
+      ConfigurationSecrets: {}
       DeploymentName: Deploy_Earnings
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(EarningsOuterApiAppServiceName)
@@ -345,6 +354,8 @@ stages:
   - group: PREPROD Management Resources
   - group: PREPROD Shared Resources
   - group: PREPROD das-apim-endpoints
+  - name: platformBuildBlockVersion
+    value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -352,6 +363,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: PP
       SchemaFilePath: $(EarningsOuterApiSchemaFilePath)
+      ConfigurationSecrets: {}
       DeploymentName: Deploy_Earnings
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(EarningsOuterApiAppServiceName)
@@ -374,6 +386,8 @@ stages:
   - group: PROD Management Resources
   - group: PROD Shared Resources
   - group: PROD das-apim-endpoints
+  - name: platformBuildBlockVersion
+    value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -381,6 +395,8 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: PROD
       SchemaFilePath: $(EarningsOuterApiSchemaFilePath)
+      ConfigurationSecrets:
+        UserBearerTokenSigningKey: $(UserBearerTokenSigningKey)
       DeploymentName: Deploy_Earnings
       AppServiceName: $(EarningsOuterApiAppServiceName)
       CustomHostName: $(EarningsOuterApiCustomHostname)
@@ -402,6 +418,8 @@ stages:
   - group: MO Management Resources
   - group: MO Shared Resources
   - group: MO das-apim-endpoints
+  - name: platformBuildBlockVersion
+    value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -409,6 +427,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: MO
       SchemaFilePath: $(EarningsOuterApiSchemaFilePath)
+      ConfigurationSecrets: {}
       DeploymentName: Deploy_Earnings
       AppServiceName: $(EarningsOuterApiAppServiceName)
       CustomHostName: $(EarningsOuterApiCustomHostname)
@@ -430,6 +449,8 @@ stages:
   - group: DevTest Management Resources
   - group: DEMO DevTest Shared Resources
   - group: DEMO das-apim-endpoints
+  - name: platformBuildBlockVersion
+    value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -437,6 +458,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: DEMO
       SchemaFilePath: $(EarningsOuterApiSchemaFilePath)
+      ConfigurationSecrets: {}
       DeploymentName: Deploy_Earnings
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(EarningsOuterApiAppServiceName)

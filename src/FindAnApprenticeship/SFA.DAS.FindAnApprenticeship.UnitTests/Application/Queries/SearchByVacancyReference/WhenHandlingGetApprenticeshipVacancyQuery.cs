@@ -57,11 +57,13 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                     .Excluding(x => x.City)
                     .Excluding(x => x.Postcode)
                     .Excluding(x => x.ApplicationUrl)
+                    .Excluding(x => x.IsSavedVacancy)
                 );
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().BeNull();
             result.ApprenticeshipVacancy.ClosingDate.Should().Be(vacancy.ClosedDate ?? vacancy.ClosingDate);
+            result.IsSavedVacancy.Should().BeFalse();
         }
 
         [Test, MoqAutoData]
@@ -72,6 +74,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             GetCourseLevelsListResponse courseLevelsResponse,
             GetApplicationByReferenceApiResponse applicationResponse,
             GetCandidateAddressApiResponse candidateAddressApiResponse,
+            GetSavedVacancyApiResponse savedVacancyApiResponse,
             [Frozen] Mock<IVacancyService> vacancyService,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> courseApiClient,
             [Frozen] Mock<ICourseService> courseService,
@@ -106,6 +109,14 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                         It.Is<GetCandidateAddressApiRequest>(c=>c.GetUrl == expectedGetCandidateAddressRequest.GetUrl)))
                 .ReturnsAsync(candidateAddressApiResponse);
 
+            var expectedGetSavedVacancyApiRequest =
+                new GetSavedVacancyApiRequest(query.CandidateId.Value, query.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase));
+            candidateApiClient
+                .Setup(client =>
+                    client.Get<GetSavedVacancyApiResponse>(
+                        It.Is<GetSavedVacancyApiRequest>(c => c.GetUrl == expectedGetSavedVacancyApiRequest.GetUrl)))
+                .ReturnsAsync(savedVacancyApiResponse);
+
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -119,6 +130,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                     .Excluding(x => x.City)
                     .Excluding(x => x.Postcode)
                     .Excluding(x => x.ApplicationUrl)
+                    .Excluding(x => x.IsSavedVacancy)
                 );
 
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
@@ -129,6 +141,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             result.Application.SubmittedDate.Should().Be(applicationResponse.SubmittedDate);
             result.ApprenticeshipVacancy.ClosingDate.Should().Be(vacancy.ClosedDate ?? vacancy.ClosingDate);
             result.CandidatePostcode.Should().Be(candidateAddressApiResponse.Postcode);
+            result.IsSavedVacancy.Should().BeTrue();
         }
     }
 }
