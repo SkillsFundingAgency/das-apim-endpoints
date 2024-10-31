@@ -1,6 +1,8 @@
-﻿using System.Net;
+﻿using System.Globalization;
+using System.Net;
 using Newtonsoft.Json;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -35,16 +37,17 @@ public class WhenHandlingSaveSearchCommand
 
         // act
         var result = await sut.Handle(saveSearchCommand, CancellationToken.None);
-        var savedSearchParameters = JsonConvert.DeserializeObject<SavedSearchParameters>(savedSearchApiRequestData?.SearchParameters);
+        var savedSearchParameters = savedSearchApiRequestData?.SearchParameters;
 
         // assert
         result.Id.Should().Be(savedSearchApiResponse.Id);
-        savedSearchParameters.Should()
-            .BeEquivalentTo(saveSearchCommand, 
-                options => options
-                    .Excluding(x => x.CandidateId)
-                    .Excluding(x => x.Location)
-                );
-        savedSearchParameters?.Location.Should().BeEquivalentTo(locationItem);
+
+        savedSearchParameters?.SearchTerm.Should().Be(saveSearchCommand.SearchTerm);
+        savedSearchParameters?.Distance.Should().Be(saveSearchCommand.Distance);
+        savedSearchParameters?.DisabilityConfident.Should().Be(saveSearchCommand.DisabilityConfident);
+        savedSearchParameters?.Levels.Should().BeEquivalentTo(saveSearchCommand.SelectedLevelIds);
+        savedSearchParameters?.Categories.Should().BeEquivalentTo(saveSearchCommand.SelectedRouteIds);
+        savedSearchParameters?.Latitude.Should().Be(locationItem.GeoPoint[0].ToString(CultureInfo.InvariantCulture));
+        savedSearchParameters?.Longitude.Should().Be(locationItem.GeoPoint[1].ToString(CultureInfo.InvariantCulture));
     }
 }
