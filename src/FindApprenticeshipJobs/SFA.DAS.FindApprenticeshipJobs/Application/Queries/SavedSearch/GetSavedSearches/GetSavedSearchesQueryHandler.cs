@@ -63,6 +63,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
 
                 searchResultList.Add(new GetSavedSearchesQueryResult.SearchResult
                 {
+                    User = candidate,
                     SearchTerm = savedSearch.SearchCriteriaParameters.SearchTerm,
                     Categories = savedSearch.SearchCriteriaParameters.Categories,
                     Levels = savedSearch.SearchCriteriaParameters.Levels,

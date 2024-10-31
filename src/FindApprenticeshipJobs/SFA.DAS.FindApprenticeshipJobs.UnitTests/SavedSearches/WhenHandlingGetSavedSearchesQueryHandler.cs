@@ -54,6 +54,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches
 
             actual.Should().NotBeNull();
             actual.SavedSearchResults.Count.Should().Be(mockGetSavedSearchesApiResponse.SavedSearches.Count);
+            actual.SavedSearchResults.FirstOrDefault()?.User.Should().NotBeNull();
+            actual.SavedSearchResults.FirstOrDefault()?.User?.Should().BeEquivalentTo(getCandidateApiResponse, options => options.Excluding(ex => ex.Status));
             actual.PageIndex.Should().Be(mockGetSavedSearchesApiResponse.PageIndex);
             actual.PageSize.Should().Be(mockGetSavedSearchesApiResponse.PageSize);
             actual.TotalPages.Should().Be(mockGetSavedSearchesApiResponse.TotalPages);

@@ -12,6 +12,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
 
         public class SearchResult
         {
+            public UserDetails? User { get; set; }
             public List<string>? Categories { get; set; }
             public List<string>? Levels { get; set; }
             public int? Distance { get; set; }
@@ -65,6 +66,27 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                         AddressLine3 = source.AddressLine3,
                         AddressLine4 = source.AddressLine4,
                         Postcode = source.Postcode,
+                    };
+                }
+            }
+
+            public class UserDetails
+            {
+                public Guid Id { get; set; }
+                public string? FirstName { get; set; }
+                public string? MiddleNames { get; set; }
+                public string? LastName { get; set; }
+                public string? Email { get; set; }
+
+                public static implicit operator UserDetails(GetCandidateApiResponse source)
+                {
+                    return new UserDetails
+                    {
+                        Id = source.Id,
+                        Email = source.Email,
+                        FirstName = source.FirstName,
+                        LastName = source.LastName,
+                        MiddleNames = source.MiddleNames,
                     };
                 }
             }
