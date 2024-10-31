@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerPR.Application.Notifications.Commands.PostNotifications;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclineCreateAccountRequest;
@@ -70,19 +69,5 @@ public class DeclineCreateAccountRequestCommandHandlerTests
             ),
             Times.Once
         );
-    }
-
-    [Test]
-    public async Task Handle_Returns_Unit()
-    {
-        var command = new DeclineCreateAccountRequestCommand
-        {
-            RequestId = Guid.NewGuid(),
-            ActionedBy = Guid.NewGuid().ToString()
-        };
-
-        var result = await _handler.Handle(command, cancellationToken);
-
-        Assert.That(result, Is.EqualTo(Unit.Value));
     }
 }
