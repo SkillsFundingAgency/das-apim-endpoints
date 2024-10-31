@@ -52,5 +52,5 @@ stages:
   parameters:
     OuterApiName: Apprenticeships
     AddXForwardedAuthorization: $True
-     ConfigurationSecrets:
-      NServiceBusLicense: $(NServiceBusLicense)
+    ConfigurationSecrets:
+     NServiceBusLicense: $(NServiceBusLicense)
