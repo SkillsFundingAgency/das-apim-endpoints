@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptAddAccountRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptPermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclineAddAccountRequest;
+using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclineCreateAccountRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinePermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Queries.ValidateRequest;
@@ -99,5 +100,21 @@ public class RequestsController(IMediator _mediator) : ControllerBase
         ValidatePermissionsRequestQuery query = new(requestId);
         ValidatePermissionsRequestQueryResult result = await _mediator.Send(query, cancellationToken);
         return Ok(result);
+    }
+
+    [HttpPost("{requestId:guid}/createaccount/declined")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> DeclineCreateAccountRequest([FromRoute] Guid requestId, [FromBody] DeclinedRequestModel model, CancellationToken cancellationToken)
+    {
+        DeclineCreateAccountRequestCommand command = new DeclineCreateAccountRequestCommand()
+        {
+            ActionedBy = model.ActionedBy,
+            RequestId = requestId
+        };
+
+        await _mediator.Send(command, cancellationToken);
+
+        return Ok();
     }
 }
