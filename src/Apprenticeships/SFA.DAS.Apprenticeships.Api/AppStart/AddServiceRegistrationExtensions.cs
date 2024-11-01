@@ -33,7 +33,9 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
         services.AddTransient<INotificationService, NotificationService>();
         services.AddTransient<IExtendedNotificationService, ExtendedNotificationService>();
-        services.AddSingleton(new UrlBuilder("prd"));
+
+
+        services.AddSingleton(new UrlBuilder(configuration["ResourceEnvironmentName"]));
 
         var encodingList = configuration.GetSection(nameof(EncodingConfig.Encodings)).Get<List<SFA.DAS.Encoding.Encoding>>();
         var encodingConfig = new EncodingConfig { Encodings = encodingList };
