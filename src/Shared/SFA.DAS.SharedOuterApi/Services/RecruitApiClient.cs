@@ -86,4 +86,9 @@ public class RecruitApiClient : IRecruitApiClient<RecruitApiConfiguration>
         {
             throw new System.NotImplementedException();
         }
+
+    public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+    {
+        throw new NotImplementedException();
     }
+}
