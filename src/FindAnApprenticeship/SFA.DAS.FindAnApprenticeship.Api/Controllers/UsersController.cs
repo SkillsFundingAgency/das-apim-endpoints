@@ -1,32 +1,33 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Net;
-using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DateOfBirth;
+using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.AddDetails;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePostcodeAddress;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddressesByPostcode;
-using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Address;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.ManuallyEnteredAddress;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePreferences;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.GetDateOfBirth;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CandidatePreferences;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CheckAnswers;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DateOfBirth;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.ManuallyEnteredAddress;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.PhoneNumber;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.CheckAnswers;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.PhoneNumber;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddress;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateAddressesByPostcode;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidateName;
-using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePostcode;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.MigrateData;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePostcodeAddress;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePreferences;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetDateOfBirth;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetSettings;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.MigrateData;
+using System;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidate;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDeletionQuery;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -449,6 +450,44 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Post Migrate data transfer: An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{candidateId}/account-deletion")]
+        public async Task<IActionResult> AccountDeletion([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetAccountDeletionQuery(candidateId)
+                {
+                    CandidateId = candidateId,
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Get Account Deletion : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{candidateId}/account-deletion")]
+        public async Task<IActionResult> UserAccountDeletion([FromRoute] Guid candidateId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new DeleteCandidateCommand(candidateId)
+                {
+                    CandidateId = candidateId,
+                });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "User Account Deletion : An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

@@ -16,8 +16,12 @@ using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using Microsoft.Extensions.Logging;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.FindAnApprenticeship.Api.AppStart;
+using SFA.DAS.FindAnApprenticeship.Api.Telemetry;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetAddresses;
+using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.Domain.Configuration;
+using SFA.DAS.FindAnApprenticeship.Services;
+using SFA.DAS.FindAnApprenticeship.Telemetry;
 
 namespace SFA.DAS.FindAnApprenticeship.Api
 {
@@ -88,9 +92,23 @@ namespace SFA.DAS.FindAnApprenticeship.Api
                     options.Configuration = configuration.ApimEndpointsRedisConnectionString;
                 });
             }
-            
-            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
+            services.AddOpenTelemetryRegistration(
+                _configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"],
+                nameof(FindAnApprenticeship), 
+                Constants.OpenTelemetry.ServiceMeterName,
+                Constants.OpenTelemetry.ServiceName);
+
+            if (!string.IsNullOrEmpty(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
+            {
+                // This service will collect and send telemetry data to Azure Monitor.
+                services.AddSingleton<IMetrics, FindAnApprenticeshipMetrics>();
+            }
+            else
+            {
+                services.AddSingleton<IMetrics, StubFindAnApprenticeshipMetrics>();
+            }
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "FindAnApprenticeshipOuterApi", Version = "v1" });
