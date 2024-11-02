@@ -16,6 +16,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
+using SFA.DAS.Vacancies.Services;
+using SFA.DAS.Vacancies.Telemetry;
 
 namespace SFA.DAS.Vacancies.Api;
 
@@ -83,8 +85,18 @@ public static class Startup
             });
         }
 
-        services.AddOpenTelemetryRegistration(configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
+        services.AddOpenTelemetryRegistration(configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"], nameof(Vacancies),
+            Constants.OpenTelemetry.ServiceMeterName, Constants.OpenTelemetry.ServiceName);
 
+        if (!string.IsNullOrEmpty(configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
+        {
+            services.AddSingleton<IMetrics, VacancyMetrics>();    
+        }
+        else
+        {
+            services.AddSingleton<IMetrics, MockVacancyMetrics>();
+        }
+        
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo

@@ -78,6 +78,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public Location Location { get; set; }
         public string? CompanyBenefitsInformation { get; set; }
         public string? AdditionalTrainingDescription { get; set; }
+        public bool IsSavedVacancy { get; set; } = false;
 
         public class CandidateApplication
         {
