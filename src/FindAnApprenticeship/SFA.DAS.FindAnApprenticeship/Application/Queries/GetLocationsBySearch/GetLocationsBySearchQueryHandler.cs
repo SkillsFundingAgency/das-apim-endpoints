@@ -18,6 +18,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetLocationsBySearch
         {
             var result = await _apiClient.Get<GetLocationsListResponse>(new GetLocationsQueryRequest(request.SearchTerm));
 
+            if (result == null)
+            {
+                return new GetLocationsBySearchQueryResult();
+            }
+            
             return new GetLocationsBySearchQueryResult
             {
                 Locations = result.Locations
