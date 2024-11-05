@@ -159,6 +159,8 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 
         var academicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(currentActualStartDate.Value));
 
+        _logger.LogInformation("currentActualStartDate: {0} | academicYearStartDate: {1} | simplifiedPaymentsMinimumStartDate: {2}", currentActualStartDate, academicYear.StartDate, simplifiedPayentsMinimumStartDate);
+
         return academicYear.StartDate > simplifiedPayentsMinimumStartDate ? academicYear.StartDate : simplifiedPayentsMinimumStartDate;
     }
 
