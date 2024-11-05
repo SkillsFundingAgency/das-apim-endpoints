@@ -24,7 +24,7 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
 
         public override async Task<NotificationResponse> Handle(ChangeOfPriceApprovedCommand request, CancellationToken cancellationToken)
         {
-            if(request.Approver == RequestApprover.Provider)
+            if(request.Approver == RequestParty.Provider)
             {
                 return await SendToEmployer(request, ProviderApprovedChangeOfPriceToEmployer.TemplateId, (_, apprenticeship) => GetEmployerTokens(apprenticeship));
             }

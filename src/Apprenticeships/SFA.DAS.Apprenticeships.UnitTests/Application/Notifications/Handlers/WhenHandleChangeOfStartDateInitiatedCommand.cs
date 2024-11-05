@@ -30,7 +30,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
             var command = new ChangeOfStartDateInitiatedCommand()
             {
                 ApprenticeshipKey = Guid.NewGuid(),
-                Initiator = RequestInitiator.Provider
+                Initiator = RequestParty.Provider
             };
             var handler = new ChangeOfStartDateInitiatedCommandHandler(GetExtendedNotificationService(), _externalEmployerUrlHelper);
 
