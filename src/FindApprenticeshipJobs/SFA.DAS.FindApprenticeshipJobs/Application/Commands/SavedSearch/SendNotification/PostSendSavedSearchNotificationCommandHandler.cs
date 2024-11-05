@@ -22,6 +22,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
 
             var patchRequest = new PatchSavedSearchApiRequest(command.Id, jsonPatchDocument);
 
+            var vacanciesEmailSnippet =
+                EmailTemplateBuilder.GetSavedSearchVacanciesSnippet(EmailEnvironmentHelper, command.Vacancies);
+
             var email = new SavedSearchEmailNotificationTemplate(
                 EmailEnvironmentHelper.SavedSearchEmailNotificationTemplateId,
                 command.User.Email,
@@ -32,7 +35,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
                 EmailEnvironmentHelper.SearchUrl,
                 !string.IsNullOrEmpty(command.Location) ? command.Location : string.Empty,
                 command.Categories is {Count: > 0} ? string.Join(",", command.Categories) : string.Empty,
-                command.Levels is { Count: > 0 } ? string.Join(",", command.Levels) : string.Empty);
+                command.Levels is { Count: > 0 } ? string.Join(",", command.Levels) : string.Empty,
+                EmailEnvironmentHelper.SavedSearchUnSubscribeUrl.Replace("{search-Id}", command.Id.ToString()),
+                vacanciesEmailSnippet);
 
             await Task.WhenAll(
                 FindApprenticeshipApiClient.PatchWithResponseCode(patchRequest)

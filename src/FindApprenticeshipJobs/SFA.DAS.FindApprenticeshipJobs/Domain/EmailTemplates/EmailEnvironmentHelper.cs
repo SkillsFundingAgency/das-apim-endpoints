@@ -15,6 +15,8 @@ public class EmailEnvironmentHelper(string environmentName)
     public string VacancyUrl { get; } = $"{GetBaseUrl(environmentName)}vacancies";
     public string SettingsUrl { get; } = $"{GetBaseUrl(environmentName)}settings";
     public string SearchUrl => $"{GetBaseUrl(environmentName)}apprenticeships?sort=AgeAsc";
+    public string SavedSearchUnSubscribeUrl => $"{GetBaseUrl(environmentName)}saved-searches/{{search-Id}}/unsubscribe";
+    public string VacancyDetailsUrl => $"{GetBaseUrl(environmentName)}apprenticeships/{{vacancy-reference}}/";
 
     private static string GetBaseUrl(string environmentName)
     {

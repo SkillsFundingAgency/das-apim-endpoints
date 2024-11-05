@@ -13,8 +13,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
             string searchUrl,
             string location,
             string selectedCategories,
-            string apprenticeshipLevels
-        )
+            string apprenticeshipLevels,
+            string unsubscribeUrl,
+            string vacanciesList)
         {
             TemplateId = templateId;
             RecipientAddress = recipientEmail;
@@ -28,6 +29,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 {"location", location },
                 {"selectedCategories", selectedCategories },
                 {"apprenticeshipLevels", apprenticeshipLevels },
+                {"unsubscribeLink", unsubscribeUrl },
+                {"vacanciesList", vacanciesList },
             };
         }
     }

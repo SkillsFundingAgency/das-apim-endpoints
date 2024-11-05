@@ -57,7 +57,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches
             findApprenticeshipApiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchSavedSearchApiRequest>(c =>
                 c.PatchUrl.Contains(command.Id.ToString(), StringComparison.CurrentCultureIgnoreCase))), Times.Once);
 
-
             notificationService.Verify(x => x.Send(
                 It.Is<SendEmailCommand>(c =>
                     c.RecipientsAddress == email
@@ -66,6 +65,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches
                     && c.Tokens["location"] == expectedLocation
                     && c.Tokens["keyword"] ==expectedSearchTerm
                     && c.Tokens["newApprenticeships"] == command.Vacancies.Count.ToString()
+                    && !string.IsNullOrEmpty(c.Tokens["unsubscribeLink"])
                 )
             ), Times.Once);
         }
