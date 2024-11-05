@@ -40,13 +40,25 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
 
                 if (candidate == null || candidate.Status == UserStatus.Deleted) continue;
 
-                var routes = await CourseService.GetRoutes();
+                var routesTask = CourseService.GetRoutes();
+                var levelsTask = CourseService.GetLevels();
 
-                var categories = routes.Routes
+                await Task.WhenAll(routesTask, levelsTask);
+
+                var routesList = routesTask.Result;
+                var levelsList = levelsTask.Result;
+
+                var categories = routesList.Routes
                     .Where(route =>
                         savedSearch.SearchCriteriaParameters.Categories != null
                         && savedSearch.SearchCriteriaParameters.Categories.Contains(route.Id.ToString()))
                     .Select(route => route.Name).ToList();
+
+                var levels = levelsList.Levels
+                    .Where(level =>
+                        savedSearch.SearchCriteriaParameters.Levels != null &&
+                        savedSearch.SearchCriteriaParameters.Levels.Contains(level.Code.ToString()))
+                    .Select(level => level.Name).ToList();
 
                 var vacanciesResponse = await FindApprenticeshipApiClient.Get<GetVacanciesResponse>(
                     new GetVacanciesRequest(
@@ -63,10 +75,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
 
                 searchResultList.Add(new GetSavedSearchesQueryResult.SearchResult
                 {
+                    Id = savedSearch.Id,
                     User = candidate,
                     SearchTerm = savedSearch.SearchCriteriaParameters.SearchTerm,
-                    Categories = savedSearch.SearchCriteriaParameters.Categories,
-                    Levels = savedSearch.SearchCriteriaParameters.Levels,
+                    Location = savedSearch.SearchCriteriaParameters.Location,
+                    Categories = categories,
+                    Levels = levels,
                     DisabilityConfident = savedSearch.SearchCriteriaParameters.DisabilityConfident,
                     Distance = savedSearch.SearchCriteriaParameters.Distance,
                     Vacancies = vacanciesResponse.ApprenticeshipVacancies.Select(x => (GetSavedSearchesQueryResult.SearchResult.ApprenticeshipVacancy)x)

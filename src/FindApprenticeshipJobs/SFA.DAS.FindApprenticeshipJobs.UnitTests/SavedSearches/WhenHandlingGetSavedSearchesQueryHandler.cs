@@ -26,6 +26,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches
             GetSavedSearchesApiResponse mockGetSavedSearchesApiResponse,
             GetCandidateApiResponse getCandidateApiResponse,
             GetRoutesListResponse getRoutesListResponse,
+            GetCourseLevelsListResponse getCourseLevelsListResponse,
             [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockCandidateApiClient,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> mockFindApprenticeshipApiClient,
@@ -49,6 +50,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches
 
             courseService.Setup(x => x.GetRoutes())
                 .ReturnsAsync(getRoutesListResponse);
+
+            courseService.Setup(x => x.GetLevels())
+                .ReturnsAsync(getCourseLevelsListResponse);
 
             var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
 

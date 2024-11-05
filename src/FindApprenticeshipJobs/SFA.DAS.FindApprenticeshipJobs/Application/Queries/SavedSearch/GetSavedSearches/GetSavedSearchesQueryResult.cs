@@ -12,13 +12,16 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
 
         public class SearchResult
         {
+            public Guid Id { get; set; }
             public UserDetails? User { get; set; }
             public List<string>? Categories { get; set; }
             public List<string>? Levels { get; set; }
             public int? Distance { get; set; }
             public string? SearchTerm { get; set; }
+            public string? Location { get; set; }
             public bool DisabilityConfident { get; set; }
             public List<ApprenticeshipVacancy> Vacancies { get; set; } = [];
+            
 
             public class ApprenticeshipVacancy
             {

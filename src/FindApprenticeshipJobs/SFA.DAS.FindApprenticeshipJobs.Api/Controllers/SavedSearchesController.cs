@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearches;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using System.Net;
+using SFA.DAS.FindApprenticeshipJobs.Api.Models;
+using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
 {
@@ -36,6 +38,63 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error invoking Get Saved Searches");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("sendNotification")]
+        public async Task<IActionResult> SendNotification(
+            [FromBody] SavedSearchApiRequest savedSearchApiRequest,
+            CancellationToken cancellationToken = default)
+        {
+            logger.LogInformation("Post send saved search notification invoked");
+
+            try
+            {
+                await mediator.Send(new PostSendSavedSearchNotificationCommand
+                {
+                    Id = savedSearchApiRequest.Id,
+                    Categories = savedSearchApiRequest.Categories,
+                    Levels = savedSearchApiRequest.Levels,
+                    Distance = savedSearchApiRequest.Distance,
+                    DisabilityConfident = savedSearchApiRequest.DisabilityConfident,
+                    Location = savedSearchApiRequest.Location,
+                    SearchTerm = savedSearchApiRequest.SearchTerm,
+                    User = new PostSendSavedSearchNotificationCommand.UserDetails
+                    {
+                        Id = savedSearchApiRequest.User.Id,
+                        Email = savedSearchApiRequest.User.Email,
+                        FirstName = savedSearchApiRequest.User.FirstName,
+                        MiddleNames = savedSearchApiRequest.User.MiddleNames,
+                        LastName = savedSearchApiRequest.User.LastName
+                    },
+                    Vacancies = savedSearchApiRequest.Vacancies.Select(vacancy => new PostSendSavedSearchNotificationCommand.Vacancy
+                    {
+                        Id = vacancy.Id,
+                        ClosingDate = vacancy.ClosingDate,
+                        Distance = vacancy.Distance,
+                        EmployerName = vacancy.EmployerName,
+                        Title = vacancy.Title,
+                        TrainingCourse = vacancy.TrainingCourse,
+                        VacancyReference = vacancy.VacancyReference,
+                        Wage = vacancy.Wage,
+                        Address = new PostSendSavedSearchNotificationCommand.Address
+                        {
+                            AddressLine1 = vacancy.Address.AddressLine1,
+                            AddressLine2 = vacancy.Address.AddressLine2,
+                            AddressLine3 = vacancy.Address.AddressLine3,
+                            AddressLine4 = vacancy.Address.AddressLine4,
+                            Postcode = vacancy.Address.Postcode,
+                        }
+                    }).ToList()
+                }, cancellationToken);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error invoking Post Send saved Search notification");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

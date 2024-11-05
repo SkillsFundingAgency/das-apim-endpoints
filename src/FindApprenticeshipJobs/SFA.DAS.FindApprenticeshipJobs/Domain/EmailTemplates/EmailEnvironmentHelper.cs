@@ -8,9 +8,13 @@ public class EmailEnvironmentHelper(string environmentName)
     public string VacancyClosedEarlyTemplateId { get; } = environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
         ? "8eed4437-9b7d-422b-be3b-dd943c64e0b6" : "41d0c41b-e95f-4dd7-b8b5-97c87ccd8141";
 
+    public string SavedSearchEmailNotificationTemplateId { get; } = environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase)
+        ? "TBC" : "TBC";
+
     public string CandidateApplicationUrl { get; } = $"{GetBaseUrl(environmentName)}applications";
     public string VacancyUrl { get; } = $"{GetBaseUrl(environmentName)}vacancies";
     public string SettingsUrl { get; } = $"{GetBaseUrl(environmentName)}settings";
+    public string SearchUrl => $"{GetBaseUrl(environmentName)}apprenticeships?sort=AgeAsc";
 
     private static string GetBaseUrl(string environmentName)
     {
