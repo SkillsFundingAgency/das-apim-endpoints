@@ -6,6 +6,8 @@ using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
@@ -161,6 +163,12 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
                 .ReturnsAsync(vacanciesResponse);
 
+            var getSavedSearchesCountApiResponse = new GetSavedSearchesCountApiResponse(candidateId, 5);
+            apiClient
+                .Setup(client => client.Get<GetSavedSearchesCountApiResponse>(
+                    It.Is<GetSavedSearchesCountApiRequest>(r => r.GetUrl == $"api/SavedSearches/count?candidateId={candidateId}")))
+                .ReturnsAsync(getSavedSearchesCountApiResponse);
+
             var totalPages = (int)Math.Ceiling((double)vacanciesResponse.TotalFound / query.PageSize);
 
             // Act
@@ -178,6 +186,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 result.PageSize.Should().Be(query.PageSize);
                 result.TotalPages.Should().Be(totalPages);
                 result.DisabilityConfident.Should().Be(query.DisabilityConfident);
+                result.SavedSearchesCount.Should().Be(5);
                 metricsService.Verify(x => x.IncreaseVacancySearchResultViews(It.IsAny<string>(), 1), Times.Exactly(vacanciesResponse.ApprenticeshipVacancies.Count()));
             }
         }
