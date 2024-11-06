@@ -8,11 +8,18 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetSavedSearches;
 
-public class GetCandidateSavedSearchesQueryHandler(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient) : IRequestHandler<GetCandidateSavedSearchesQuery, GetCandidateSavedSearchesQueryResult>
+public class GetCandidateSavedSearchesQueryHandler(
+    IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
+    ICourseService courseService) : IRequestHandler<GetCandidateSavedSearchesQuery, GetCandidateSavedSearchesQueryResult>
 {
     public async Task<GetCandidateSavedSearchesQueryResult> Handle(GetCandidateSavedSearchesQuery request, CancellationToken cancellationToken)
     {
-        var result = await findApprenticeshipApiClient.Get<GetCandidateSavedSearchesApiResponse>(new GetCandidateSavedSearchesApiRequest(request.CandidateId));
-        return GetCandidateSavedSearchesQueryResult.From(result);
+        var routesTask = courseService.GetRoutes();
+        var savedSearchesTask = findApprenticeshipApiClient.Get<GetCandidateSavedSearchesApiResponse>(
+                new GetCandidateSavedSearchesApiRequest(request.CandidateId));
+        
+        await Task.WhenAll(routesTask, savedSearchesTask);
+        
+        return GetCandidateSavedSearchesQueryResult.From(savedSearchesTask.Result, routesTask.Result);
     }
 }
