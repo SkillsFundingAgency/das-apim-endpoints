@@ -19,28 +19,14 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches
     public class WhenHandlingPostSendSavedSearchNotificationCommand
     {
         [Test]
-        [MoqInlineAutoData("someName", "someone@test.com", "Apprenticeship", "Apprenticeship", "address", "address")]
-        [MoqInlineAutoData("someName", "someone@test.com", "Jobs", "Jobs", "address3", "address3")]
-        [MoqInlineAutoData("someName", "someone@test.com", null, "", "address2", "address2")]
-        [MoqInlineAutoData("someName", "test@test.com", "", "", null, "")]
+        [MoqAutoData]
         public async Task Then_The_SavedSearch_Is_Patched_LastEmailSent_Updated_And_Email_Sent(
-        string firstName,
-        string email,
-        string searchTerm,
-        string expectedSearchTerm,
-        string location,
-        string expectedLocation,
         PostSendSavedSearchNotificationCommand command,
         EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         PostSendSavedSearchNotificationCommandHandler handler)
         {
-            command.User.Email = email;
-            command.User.FirstName = firstName;
-            command.SearchTerm = searchTerm;
-            command.Location = location;
-
             var expectedPatchSavedSearchApiRequest =
                 new PatchSavedSearchApiRequest(command.Id, new JsonPatchDocument<PatchSavedSearch>());
 
@@ -59,13 +45,14 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches
 
             notificationService.Verify(x => x.Send(
                 It.Is<SendEmailCommand>(c =>
-                    c.RecipientsAddress == email
+                    c.RecipientsAddress == command.User.Email
                     && c.TemplateId == emailEnvironmentHelper.SavedSearchEmailNotificationTemplateId
-                    && c.Tokens["firstName"] == firstName
-                    && c.Tokens["location"] == expectedLocation
-                    && c.Tokens["keyword"] ==expectedSearchTerm
+                    && c.Tokens["firstName"] == command.User.FirstName 
                     && c.Tokens["newApprenticeships"] == command.Vacancies.Count.ToString()
+                    && c.Tokens["searchAlertDescriptor"] == $"{command.SearchTerm} in {command.Location}"
                     && !string.IsNullOrEmpty(c.Tokens["unsubscribeLink"])
+                    && !string.IsNullOrEmpty(c.Tokens["searchUrl"])
+                    && !string.IsNullOrEmpty(c.Tokens["searchParams"])
                 )
             ), Times.Once);
         }

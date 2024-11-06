@@ -9,13 +9,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
             string firstName,
             string newApprenticeships,
             string searchAlertDescriptor,
-            string keyword,
             string searchUrl,
-            string location,
-            string selectedCategories,
-            string apprenticeshipLevels,
             string unsubscribeUrl,
-            string vacanciesList)
+            string vacancies,
+            string searchParams)
         {
             TemplateId = templateId;
             RecipientAddress = recipientEmail;
@@ -24,13 +21,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 {"firstName", firstName },
                 {"newApprenticeships", newApprenticeships },
                 {"searchAlertDescriptor", searchAlertDescriptor },
-                {"keyword", keyword },
                 {"searchUrl", searchUrl },
-                {"location", location },
-                {"selectedCategories", selectedCategories },
-                {"apprenticeshipLevels", apprenticeshipLevels },
                 {"unsubscribeLink", unsubscribeUrl },
-                {"vacanciesList", vacanciesList },
+                {"vacancies", vacancies },
+                {"searchParams", searchParams },
             };
         }
     }

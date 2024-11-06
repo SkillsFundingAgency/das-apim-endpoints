@@ -5,8 +5,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
 {
     public record GetSavedSearchesQuery(
         DateTime LastRunDateFilter,
-        int PageNumber,
-        int PageSize,
-        int MaxApprenticeshipSearchResultsCount,
-        VacancySort ApprenticeshipSearchResultsSortOrder) : IRequest<GetSavedSearchesQueryResult>;
+        int PageNumber = 1,
+        int PageSize = 10,
+        int MaxApprenticeshipSearchResultsCount = 5,
+        VacancySort ApprenticeshipSearchResultsSortOrder = VacancySort.AgeDesc) : IRequest<GetSavedSearchesQueryResult>;
 }

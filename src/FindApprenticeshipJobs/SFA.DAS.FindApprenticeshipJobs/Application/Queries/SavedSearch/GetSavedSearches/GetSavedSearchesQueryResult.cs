@@ -14,12 +14,13 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
         {
             public Guid Id { get; set; }
             public UserDetails? User { get; set; }
-            public List<string>? Categories { get; set; }
-            public List<string>? Levels { get; set; }
+            public List<Category>? Categories { get; set; } = [];
+            public List<Level>? Levels { get; set; } = [];
             public int? Distance { get; set; }
             public string? SearchTerm { get; set; }
             public string? Location { get; set; }
             public bool DisabilityConfident { get; set; }
+            public string? UnSubscribeToken { get; set; }
             public List<ApprenticeshipVacancy> Vacancies { get; set; } = [];
             
 
@@ -92,6 +93,18 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                         MiddleNames = source.MiddleNames,
                     };
                 }
+            }
+
+            public class Category
+            {
+                public int Id { get; set; }
+                public string? Name { get; set; }
+            }
+
+            public class Level
+            {
+                public int Code { get; set; }
+                public string? Name { get; set; }
             }
 
             public static implicit operator SearchResult(GetVacanciesResponse source)

@@ -12,8 +12,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
         {
             var actual = new EmailEnvironmentHelper("PRd");
 
-            actual.SavedSearchEmailNotificationTemplateId.Should().Be("TBC");
-            actual.SavedSearchUnSubscribeUrl.Should().Be("https://findapprenticeship.service.gov.uk/saved-searches/{search-Id}/unsubscribe");
+            actual.SavedSearchEmailNotificationTemplateId.Should().Be("668d5683-1252-43ac-ba57-8023a97813a3");
+            actual.SavedSearchUnSubscribeUrl.Should().Be("https://findapprenticeship.service.gov.uk/saved-searches/unsubscribe?token=");
             actual.SearchUrl.Should().Be("https://findapprenticeship.service.gov.uk/apprenticeships?sort=AgeAsc");
             actual.VacancyDetailsUrl.Should().Be("https://findapprenticeship.service.gov.uk/apprenticeship/{vacancy-reference}");
         }
@@ -22,8 +22,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
         {
             var actual = new EmailEnvironmentHelper("TEST");
 
-            actual.SavedSearchEmailNotificationTemplateId.Should().Be("TBC");
-            actual.SavedSearchUnSubscribeUrl.Should().Be("https://test-findapprenticeship.apprenticeships.education.gov.uk/saved-searches/{search-Id}/unsubscribe");
+            actual.SavedSearchEmailNotificationTemplateId.Should().Be("4fa070f9-db70-4763-b3f7-04af5e08b167");
+            actual.SavedSearchUnSubscribeUrl.Should().Be("https://test-findapprenticeship.apprenticeships.education.gov.uk/saved-searches/unsubscribe?token=");
             actual.SearchUrl.Should().Be("https://test-findapprenticeship.apprenticeships.education.gov.uk/apprenticeships?sort=AgeAsc");
             actual.VacancyDetailsUrl.Should().Be("https://test-findapprenticeship.apprenticeships.education.gov.uk/apprenticeship/{vacancy-reference}");
         }

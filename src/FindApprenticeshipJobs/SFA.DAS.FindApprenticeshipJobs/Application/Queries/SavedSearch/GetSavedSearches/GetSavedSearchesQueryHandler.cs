@@ -52,13 +52,21 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                     .Where(route =>
                         savedSearch.SearchCriteriaParameters.Categories != null
                         && savedSearch.SearchCriteriaParameters.Categories.Contains(route.Id.ToString()))
-                    .Select(route => route.Name).ToList();
+                    .Select(route => new GetSavedSearchesQueryResult.SearchResult.Category
+                    {
+                        Id = route.Id,
+                        Name = route.Name,
+                    }).ToList();
 
                 var levels = levelsList.Levels
                     .Where(level =>
                         savedSearch.SearchCriteriaParameters.Levels != null &&
                         savedSearch.SearchCriteriaParameters.Levels.Contains(level.Code.ToString()))
-                    .Select(level => level.Name).ToList();
+                    .Select(level => new GetSavedSearchesQueryResult.SearchResult.Level
+                    {
+                        Code = level.Code,
+                        Name = level.Name,
+                    }).ToList();
 
                 var vacanciesResponse = await FindApprenticeshipApiClient.Get<GetVacanciesResponse>(
                     new GetVacanciesRequest(
@@ -67,8 +75,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                         savedSearch.SearchCriteriaParameters.Distance,
                         savedSearch.SearchCriteriaParameters.SearchTerm,
                         1,  // Defaulting to top results.
-                        request.MaxApprenticeshipSearchResultsCount, // Default page size set to 10.
-                        categories,
+                        request.MaxApprenticeshipSearchResultsCount, // Default page size set to 5.
+                        categories.Select(cat => cat.Id.ToString()).ToList(),
                         savedSearch.SearchCriteriaParameters.Levels,
                         request.ApprenticeshipSearchResultsSortOrder,
                         savedSearch.SearchCriteriaParameters.DisabilityConfident));
@@ -83,6 +91,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                     Levels = levels,
                     DisabilityConfident = savedSearch.SearchCriteriaParameters.DisabilityConfident,
                     Distance = savedSearch.SearchCriteriaParameters.Distance,
+                    UnSubscribeToken = savedSearch.UnSubscribeToken,
                     Vacancies = vacanciesResponse.ApprenticeshipVacancies.Select(x => (GetSavedSearchesQueryResult.SearchResult.ApprenticeshipVacancy)x)
                         .ToList()
                 });

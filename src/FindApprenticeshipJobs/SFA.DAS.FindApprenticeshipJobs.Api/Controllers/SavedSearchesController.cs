@@ -17,9 +17,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(
             [FromQuery] DateTime lastRunDateTime, 
-            [FromQuery] int pageNumber,
-            [FromQuery] int pageSize,
-            [FromQuery] int maxApprenticeshipSearchResultCount = 10,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] int maxApprenticeshipSearchResultCount = 5,
             [FromQuery] VacancySort sortOrder = VacancySort.AgeDesc, 
             CancellationToken cancellationToken = default)
         {
@@ -55,12 +55,21 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
                 await mediator.Send(new PostSendSavedSearchNotificationCommand
                 {
                     Id = savedSearchApiRequest.Id,
-                    Categories = savedSearchApiRequest.Categories,
-                    Levels = savedSearchApiRequest.Levels,
+                    Categories = savedSearchApiRequest.Categories?.Select(category => new PostSendSavedSearchNotificationCommand.Category
+                    {
+                        Id = category.Id,
+                        Name = category.Name
+                    }).ToList(),
+                    Levels = savedSearchApiRequest.Levels?.Select(level => new PostSendSavedSearchNotificationCommand.Level
+                    {
+                        Code = level.Code,
+                        Name = level.Name
+                    }).ToList(),
                     Distance = savedSearchApiRequest.Distance,
                     DisabilityConfident = savedSearchApiRequest.DisabilityConfident,
                     Location = savedSearchApiRequest.Location,
                     SearchTerm = savedSearchApiRequest.SearchTerm,
+                    UnSubscribeToken = savedSearchApiRequest.UnSubscribeToken,
                     User = new PostSendSavedSearchNotificationCommand.UserDetails
                     {
                         Id = savedSearchApiRequest.User.Id,

@@ -4,15 +4,14 @@
     {
         public Guid Id { get; set; }
         public UserDetails User { get; set; } = new();
-        public List<string>? Categories { get; set; }
-        public List<string>? Levels { get; set; }
+        public List<Category>? Categories { get; set; } = [];
+        public List<Level>? Levels { get; set; } = [];
         public string? Location { get; set; }
         public int Distance { get; set; }
         public string? SearchTerm { get; set; }
         public bool DisabilityConfident { get; set; }
-
+        public string? UnSubscribeToken { get; set; }
         public List<Vacancy> Vacancies { get; set; } = [];
-
         public class Vacancy
         {
             public string? Id { get; set; }
@@ -33,7 +32,6 @@
 
             public double? Distance { get; set; }
         }
-
         public class Address
         {
             public string? AddressLine1 { get; set; }
@@ -46,7 +44,16 @@
 
             public string? Postcode { get; set; }
         }
-
+        public class Category
+        {
+            public int Id { get; set; }
+            public string? Name { get; set; }
+        }
+        public class Level
+        {
+            public int Code { get; set; }
+            public string? Name { get; set; }
+        }
         public class UserDetails
         {
             public Guid Id { get; set; }

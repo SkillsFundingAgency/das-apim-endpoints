@@ -22,8 +22,22 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
 
             var patchRequest = new PatchSavedSearchApiRequest(command.Id, jsonPatchDocument);
 
-            var vacanciesEmailSnippet =
-                EmailTemplateBuilder.GetSavedSearchVacanciesSnippet(EmailEnvironmentHelper, command.Vacancies);
+            var vacanciesEmailSnippet = EmailTemplateBuilder.GetSavedSearchVacanciesSnippet(EmailEnvironmentHelper,
+                command.Vacancies);
+
+            var searchParamsEmailSnippet = EmailTemplateBuilder.GetSavedSearchSearchParams(command.SearchTerm,
+                command.Distance,
+                command.Location,
+                command.Categories?.Select(cat => cat.Name).ToList(),
+                command.Levels?.Select(lev => lev.Name).ToList(),
+                command.DisabilityConfident);
+
+            var queryParameters = EmailTemplateBuilder.GetSavedSearchUrl(command.SearchTerm,
+                command.Distance,
+                command.Location,
+                command.Categories?.Select(cat => cat.Id.ToString()).ToList(),
+                command.Levels?.Select(lev => lev.Code.ToString()).ToList(),
+                command.DisabilityConfident);
 
             var email = new SavedSearchEmailNotificationTemplate(
                 EmailEnvironmentHelper.SavedSearchEmailNotificationTemplateId,
@@ -31,17 +45,14 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
                 command.User.FirstName,
                 command.Vacancies.Count.ToString(),
                 $"{command.SearchTerm} in {command.Location}",
-                !string.IsNullOrEmpty(command.SearchTerm) ? command.SearchTerm : string.Empty,
-                EmailEnvironmentHelper.SearchUrl,
-                !string.IsNullOrEmpty(command.Location) ? command.Location : string.Empty,
-                command.Categories is {Count: > 0} ? string.Join(",", command.Categories) : string.Empty,
-                command.Levels is { Count: > 0 } ? string.Join(",", command.Levels) : string.Empty,
-                EmailEnvironmentHelper.SavedSearchUnSubscribeUrl.Replace("{search-Id}", command.Id.ToString()),
-                vacanciesEmailSnippet);
+                string.Concat(EmailEnvironmentHelper.SearchUrl, queryParameters), 
+                string.Concat(EmailEnvironmentHelper.SavedSearchUnSubscribeUrl, command.UnSubscribeToken),
+                vacanciesEmailSnippet,
+                searchParamsEmailSnippet);
 
             await Task.WhenAll(
-                FindApprenticeshipApiClient.PatchWithResponseCode(patchRequest)
-                , NotificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens))
+                FindApprenticeshipApiClient.PatchWithResponseCode(patchRequest),
+                NotificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens))
             );
 
             return Unit.Value;
