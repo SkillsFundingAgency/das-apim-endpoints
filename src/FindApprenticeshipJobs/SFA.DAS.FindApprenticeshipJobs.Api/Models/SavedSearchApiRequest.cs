@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
+﻿using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
+
+namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
 {
     public class SavedSearchApiRequest
     {
@@ -61,6 +63,58 @@
             public string? MiddleNames { get; set; }
             public string? LastName { get; set; }
             public string Email { get; set; } = null!;
+        }
+
+        public PostSendSavedSearchNotificationCommand MapToCommand(SavedSearchApiRequest savedSearchApiRequest)
+        {
+            return new PostSendSavedSearchNotificationCommand
+            {
+                Id = savedSearchApiRequest.Id,
+                Categories = savedSearchApiRequest.Categories?.Select(category =>
+                    new PostSendSavedSearchNotificationCommand.Category
+                    {
+                        Id = category.Id,
+                        Name = category.Name
+                    }).ToList(),
+                Levels = savedSearchApiRequest.Levels?.Select(level => new PostSendSavedSearchNotificationCommand.Level
+                {
+                    Code = level.Code,
+                    Name = level.Name
+                }).ToList(),
+                Distance = savedSearchApiRequest.Distance,
+                DisabilityConfident = savedSearchApiRequest.DisabilityConfident,
+                Location = savedSearchApiRequest.Location,
+                SearchTerm = savedSearchApiRequest.SearchTerm,
+                UnSubscribeToken = savedSearchApiRequest.UnSubscribeToken,
+                User = new PostSendSavedSearchNotificationCommand.UserDetails
+                {
+                    Id = savedSearchApiRequest.User.Id,
+                    Email = savedSearchApiRequest.User.Email,
+                    FirstName = savedSearchApiRequest.User.FirstName,
+                    MiddleNames = savedSearchApiRequest.User.MiddleNames,
+                    LastName = savedSearchApiRequest.User.LastName
+                },
+                Vacancies = savedSearchApiRequest.Vacancies.Select(vacancy =>
+                    new PostSendSavedSearchNotificationCommand.Vacancy
+                    {
+                        Id = vacancy.Id,
+                        ClosingDate = vacancy.ClosingDate,
+                        Distance = vacancy.Distance,
+                        EmployerName = vacancy.EmployerName,
+                        Title = vacancy.Title,
+                        TrainingCourse = vacancy.TrainingCourse,
+                        VacancyReference = vacancy.VacancyReference,
+                        Wage = vacancy.Wage,
+                        Address = new PostSendSavedSearchNotificationCommand.Address
+                        {
+                            AddressLine1 = vacancy.Address.AddressLine1,
+                            AddressLine2 = vacancy.Address.AddressLine2,
+                            AddressLine3 = vacancy.Address.AddressLine3,
+                            AddressLine4 = vacancy.Address.AddressLine4,
+                            Postcode = vacancy.Address.Postcode,
+                        }
+                    }).ToList()
+            };
         }
     }
 }

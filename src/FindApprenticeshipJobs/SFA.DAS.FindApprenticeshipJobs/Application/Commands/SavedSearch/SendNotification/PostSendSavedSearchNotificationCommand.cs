@@ -18,13 +18,13 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
         public class Category
         {
             public int Id { get; set; }
-            public string Name { get; set; }
+            public string? Name { get; set; }
         }
 
         public class Level
         {
             public int Code { get; set; }
-            public string Name { get; set; }
+            public string? Name { get; set; }
         }
 
         public class Vacancy
