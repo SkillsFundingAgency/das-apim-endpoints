@@ -17,9 +17,9 @@ public class WhenHandlingSaveSearchCommand
     public async Task If_Inner_Api_Succeeds_Then_Valid_Response_Is_Returned(
         [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
         [Frozen] Mock<ILocationLookupService> locationLookupService,
-        PostSavedSearchApiRequest savedSearchApiRequest,
+        PutSavedSearchApiRequest savedSearchApiRequest,
         SaveSearchCommand saveSearchCommand,
-        PostSavedSearchApiResponse savedSearchApiResponse,
+        PutSavedSearchApiResponse savedSearchApiResponse,
         LocationItem locationItem,
         SaveSearchCommandHandler sut
     )
@@ -29,11 +29,11 @@ public class WhenHandlingSaveSearchCommand
             .Setup(x => x.GetLocationInformation(It.IsAny<string>(), default, default, false))
             .ReturnsAsync(locationItem);
         
-        PostSavedSearchApiRequestData? savedSearchApiRequestData = null;
+        PutSavedSearchApiRequestData? savedSearchApiRequestData = null;
         apiClient
-            .Setup(client => client.PostWithResponseCode<PostSavedSearchApiResponse>(It.IsAny<PostSavedSearchApiRequest>(), true))
-            .Callback<IPostApiRequest, bool>((x, y) => savedSearchApiRequestData = x.Data as PostSavedSearchApiRequestData)
-            .ReturnsAsync(new ApiResponse<PostSavedSearchApiResponse>(savedSearchApiResponse, HttpStatusCode.OK, string.Empty));
+            .Setup(client => client.PutWithResponseCode<PutSavedSearchApiResponse>(It.IsAny<PutSavedSearchApiRequest>()))
+            .Callback<IPutApiRequest>(x => savedSearchApiRequestData = x.Data as PutSavedSearchApiRequestData)
+            .ReturnsAsync(new ApiResponse<PutSavedSearchApiResponse>(savedSearchApiResponse, HttpStatusCode.OK, string.Empty));
 
         // act
         var result = await sut.Handle(saveSearchCommand, CancellationToken.None);
@@ -47,6 +47,7 @@ public class WhenHandlingSaveSearchCommand
         savedSearchParameters?.DisabilityConfident.Should().Be(saveSearchCommand.DisabilityConfident);
         savedSearchParameters?.Levels.Should().BeEquivalentTo(saveSearchCommand.SelectedLevelIds);
         savedSearchParameters?.Categories.Should().BeEquivalentTo(saveSearchCommand.SelectedRouteIds);
+        savedSearchParameters?.Location.Should().BeEquivalentTo(saveSearchCommand.Location);
         savedSearchParameters?.Latitude.Should().Be(locationItem.GeoPoint[0].ToString(CultureInfo.InvariantCulture));
         savedSearchParameters?.Longitude.Should().Be(locationItem.GeoPoint[1].ToString(CultureInfo.InvariantCulture));
     }

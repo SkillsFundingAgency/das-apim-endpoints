@@ -8,6 +8,7 @@ public record SearchParameters(
     int? Distance,
     bool DisabilityConfident,
     List<string>? Levels,
+    string? Location,
     string? Latitude,
     string? Longitude
 );

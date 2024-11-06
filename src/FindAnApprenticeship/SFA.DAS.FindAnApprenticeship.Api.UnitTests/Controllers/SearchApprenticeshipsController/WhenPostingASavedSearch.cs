@@ -29,7 +29,6 @@ public class WhenPostingASavedSearch
                 && cmd.DisabilityConfident == apiRequest.DisabilityConfident
                 && cmd.Distance == apiRequest.Distance
                 && cmd.Location == apiRequest.Location
-                && cmd.SortOrder == apiRequest.SortOrder
                 && cmd.SelectedLevelIds == apiRequest.SelectedLevelIds
                 && cmd.SelectedRouteIds == apiRequest.SelectedRouteIds
             ), CancellationToken.None))
@@ -58,7 +57,6 @@ public class WhenPostingASavedSearch
                 && cmd.DisabilityConfident == apiRequest.DisabilityConfident
                 && cmd.Distance == apiRequest.Distance
                 && cmd.Location == apiRequest.Location
-                && cmd.SortOrder == apiRequest.SortOrder
                 && cmd.SelectedLevelIds == apiRequest.SelectedLevelIds
                 && cmd.SelectedRouteIds == apiRequest.SelectedRouteIds
             ), CancellationToken.None))

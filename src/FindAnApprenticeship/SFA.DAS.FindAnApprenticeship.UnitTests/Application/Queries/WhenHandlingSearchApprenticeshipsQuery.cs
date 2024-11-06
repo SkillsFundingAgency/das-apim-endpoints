@@ -166,7 +166,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             var getSavedSearchesCountApiResponse = new GetSavedSearchesCountApiResponse(candidateId, 5);
             apiClient
                 .Setup(client => client.Get<GetSavedSearchesCountApiResponse>(
-                    It.Is<GetSavedSearchesCountApiRequest>(r => r.GetUrl == $"api/SavedSearches/count?candidateId={candidateId}")))
+                    It.Is<GetSavedSearchesCountApiRequest>(r => r.GetUrl == $"api/Users/{candidateId}/SavedSearches/count")))
                 .ReturnsAsync(getSavedSearchesCountApiResponse);
 
             var totalPages = (int)Math.Ceiling((double)vacanciesResponse.TotalFound / query.PageSize);

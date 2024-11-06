@@ -1,16 +1,14 @@
-﻿using System.Globalization;
-using System.Linq;
+﻿using System;
+using System.Globalization;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Newtonsoft.Json;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch;
 
@@ -27,12 +25,13 @@ public class SaveSearchCommandHandler(
             request.Distance,
             request.DisabilityConfident,
             request.SelectedLevelIds,
+            request.Location,
             location?.GeoPoint[0].ToString(CultureInfo.InvariantCulture),
             location?.GeoPoint[1].ToString(CultureInfo.InvariantCulture)
         );
 
-        var response = await findApprenticeshipApiClient.PostWithResponseCode<PostSavedSearchApiResponse>(
-            new PostSavedSearchApiRequest(new PostSavedSearchApiRequestData(request.CandidateId, payload)));
+        var response = await findApprenticeshipApiClient.PutWithResponseCode<PutSavedSearchApiResponse>(
+            new PutSavedSearchApiRequest(request.CandidateId, Guid.NewGuid(), new PutSavedSearchApiRequestData(payload)));
         
         return response is not null && response.StatusCode == HttpStatusCode.OK
             ? SaveSearchCommandResult.From(response.Body)

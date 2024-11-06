@@ -25,9 +25,11 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.MigrateData;
 using System;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidate;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDeletionQuery;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetSavedSearches;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -488,6 +490,22 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "User Account Deletion : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("{candidateId:guid}/saved-searches")]
+        public async Task<IActionResult> GetUserSavedSearches([FromRoute] Guid candidateId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCandidateSavedSearchesQuery(candidateId), cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Get User Saved Searches : An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

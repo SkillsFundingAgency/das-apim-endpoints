@@ -8,6 +8,5 @@ public record PostSaveSearchApiRequest(
     string? Location,
     string? SearchTerm,
     List<string>? SelectedLevelIds,
-    List<string>? SelectedRouteIds,
-    string? SortOrder
+    List<string>? SelectedRouteIds
 );
