@@ -5,6 +5,7 @@ using SFA.DAS.EmployerPR.Infrastructure;
 using SFA.DAS.EmployerPR.InnerApi.Requests;
 using SFA.DAS.EmployerPR.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.PensionRegulator;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
@@ -25,11 +26,11 @@ public class AcceptCreateAccountRequestCommandHandler(
 
         PensionRegulatorOrganisation organisation = await GetPensionRegulatorOrganisation(_pensionRegulatorApiClient, permissionRequest);
 
-        PostCreateAccountResponse createAccountResponse = await CreateEmployerAccount(_accountsApiClient, command, permissionRequest, organisation);
+        PostCreateAccountResponse createAccountResponse = await CreateEmployerAccount(command, permissionRequest, organisation);
 
         await AcceptPermissionRequest(command, createAccountResponse, permissionRequest.EmployerOrganisationName!, cancellationToken);
 
-        await SendNotifications(_providerRelationshipsApiRestClient, command, permissionRequest, createAccountResponse, cancellationToken);
+        await SendNotifications(command, permissionRequest, createAccountResponse, cancellationToken);
     }
 
     private static async Task<GetRequestResponse> GetPermissionRequestDetails(IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient, AcceptCreateAccountRequestCommand command, CancellationToken cancellationToken)
@@ -49,7 +50,7 @@ public class AcceptCreateAccountRequestCommandHandler(
         return organisation;
     }
 
-    private static async Task<PostCreateAccountResponse> CreateEmployerAccount(IAccountsApiClient<AccountsConfiguration> _accountsApiClient, AcceptCreateAccountRequestCommand command, GetRequestResponse permissionRequest, PensionRegulatorOrganisation organisation)
+    private async Task<PostCreateAccountResponse> CreateEmployerAccount(AcceptCreateAccountRequestCommand command, GetRequestResponse permissionRequest, PensionRegulatorOrganisation organisation)
     {
         CreateAccountRequestBody createAccountRequestBody = new()
         {
@@ -67,6 +68,7 @@ public class AcceptCreateAccountRequestCommandHandler(
         PostCreateAccountRequest postCreateAccountRequest = new() { Data = createAccountRequestBody };
 
         var accountsApiResponse = await _accountsApiClient.PostWithResponseCode<CreateAccountRequestBody, PostCreateAccountResponse>(postCreateAccountRequest);
+        accountsApiResponse.EnsureSuccessStatusCode();
         PostCreateAccountResponse createAccountResponse = accountsApiResponse.Body;
         return createAccountResponse;
     }
@@ -82,7 +84,7 @@ public class AcceptCreateAccountRequestCommandHandler(
         await _providerRelationshipsApiRestClient.AcceptCreateAccountRequest(command.RequestId, acceptCreateAccountRequest, cancellationToken);
     }
 
-    private async Task SendNotifications(IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient, AcceptCreateAccountRequestCommand command, GetRequestResponse permissionRequest, PostCreateAccountResponse createAccountResponse, CancellationToken cancellationToken)
+    private async Task SendNotifications(AcceptCreateAccountRequestCommand command, GetRequestResponse permissionRequest, PostCreateAccountResponse createAccountResponse, CancellationToken cancellationToken)
     {
         PostNotificationsRequest notificationsRequest = new([
             new NotificationModel()
