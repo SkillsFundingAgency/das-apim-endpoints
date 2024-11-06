@@ -43,6 +43,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
 
         [HttpPost]
         [Route("sendNotification")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> SendNotification(
             [FromBody] SavedSearchApiRequest request,
             CancellationToken cancellationToken = default)
