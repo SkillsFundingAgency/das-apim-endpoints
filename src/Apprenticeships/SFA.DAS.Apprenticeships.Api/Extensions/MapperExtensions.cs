@@ -1,15 +1,13 @@
 ﻿using SFA.DAS.Apprenticeships.Api.Models;
-using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using PostCreateApprenticeshipPriceChangeRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships.PostCreateApprenticeshipPriceChangeRequest;
 
-namespace SFA.DAS.Apprenticeships.Api.Extensions
+namespace SFA.DAS.Apprenticeships.Api.Extensions;
+
+public static class MapperExtensions
 {
-    public static class MapperExtensions
+    public static PostCreateApprenticeshipPriceChangeRequest ToApiRequest(this CreateApprenticeshipPriceChangeRequest request, Guid apprenticeshipKey)
     {
-        public static PostCreateApprenticeshipPriceChangeRequest ToApiRequest(this CreateApprenticeshipPriceChangeRequest request, Guid apprenticeshipKey)
-        {
-            return new PostCreateApprenticeshipPriceChangeRequest(
+        return new PostCreateApprenticeshipPriceChangeRequest(
             apprenticeshipKey,
             request.Initiator,
             request.UserId,
@@ -18,16 +16,5 @@ namespace SFA.DAS.Apprenticeships.Api.Extensions
             request.TotalPrice,
             request.Reason,
             request.EffectiveFromDate);
-        }
-
-        public static ChangeOfPriceInitiatedCommand ToNotificationCommand(this CreateApprenticeshipPriceChangeRequest request, Guid apprenticeshipKey, PostCreateApprenticeshipPriceChangeApiResponse response)
-        {
-            return new ChangeOfPriceInitiatedCommand
-            {
-                Initiator = request.Initiator,
-                ApprenticeshipKey = apprenticeshipKey,
-                PriceChangeStatus = response.PriceChangeStatus
-            };
-        }
     }
 }

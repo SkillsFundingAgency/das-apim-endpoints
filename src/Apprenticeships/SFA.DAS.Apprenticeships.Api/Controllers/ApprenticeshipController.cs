@@ -126,13 +126,22 @@ public class ApprenticeshipController : ControllerBase
             request.PlannedEndDate,
             request.Reason), false);
 
-        if (string.IsNullOrEmpty(response.ErrorContent))
+        if (!string.IsNullOrEmpty(response.ErrorContent))
         {
-            return Ok();
+            _logger.LogError($"Error attempting to create apprenticeship start date change. {response.StatusCode} returned from inner api.", response.StatusCode);
+            return BadRequest();
         }
 
-        _logger.LogError($"Error attempting to create apprenticeship start date change. {response.StatusCode} returned from inner api.", response.StatusCode);
-        return BadRequest();
+        var changeOfStartDateInitiatedNotificationCommand = request.ToNotificationCommand(apprenticeshipKey);
+        var notificationResponse = await _mediator.Send(changeOfStartDateInitiatedNotificationCommand);
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to send change of start date Notification(s) to the related part(ies)");
+            return BadRequest();
+        }
+
+        return Ok();
     }
 
     [HttpGet]
