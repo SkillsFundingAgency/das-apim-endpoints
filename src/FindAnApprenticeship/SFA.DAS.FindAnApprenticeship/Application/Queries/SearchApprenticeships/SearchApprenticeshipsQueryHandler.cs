@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
@@ -79,17 +81,29 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 
             var apprenticeshipVacancies = new List<GetVacanciesListItem>();
 
+            var savedSearchesCount = 0;
+
             if (!string.IsNullOrEmpty(request.CandidateId))
             {
+                var candidateId = Guid.Parse(request.CandidateId);
+                
                 var candidateApplicationsTask =
                     candidateApiClient.Get<GetApplicationsApiResponse>(
-                        new GetApplicationsApiRequest(Guid.Parse(request.CandidateId)));
+                        new GetApplicationsApiRequest(candidateId));
 
                 var savedVacanciesResponseTask =
                     candidateApiClient.Get<GetSavedVacanciesApiResponse>(
-                        new GetSavedVacanciesApiRequest(Guid.Parse(request.CandidateId)));
+                        new GetSavedVacanciesApiRequest(candidateId));
 
-                await Task.WhenAll(candidateApplicationsTask, savedVacanciesResponseTask);
+                var savedSearchesCountResponseTask =
+                    findApprenticeshipApiClient.Get<GetSavedSearchesCountApiResponse>(
+                        new GetSavedSearchesCountApiRequest(candidateId));
+
+                await Task.WhenAll(
+                    candidateApplicationsTask,
+                    savedVacanciesResponseTask,
+                    savedSearchesCountResponseTask
+                );
 
                 var candidateApplications = candidateApplicationsTask.Result;
                 var savedVacanciesResponse = savedVacanciesResponseTask.Result;
@@ -110,6 +124,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     }
                     apprenticeshipVacancies.Add(vacancy);
                 }
+                
+                savedSearchesCount = savedSearchesCountResponseTask.Result.SavedSearchesCount;
             }
             else
             {
@@ -130,7 +146,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 PageSize = request.PageSize,
                 TotalPages = totalPages,
                 Levels = courseLevels.Levels.ToList(),
-                DisabilityConfident = request.DisabilityConfident
+                DisabilityConfident = request.DisabilityConfident,
+                SavedSearchesCount = savedSearchesCount
             };
         }
     }
