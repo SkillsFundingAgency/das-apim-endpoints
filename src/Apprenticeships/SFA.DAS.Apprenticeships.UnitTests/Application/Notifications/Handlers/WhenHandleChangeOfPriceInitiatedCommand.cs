@@ -30,7 +30,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
             var command = new ChangeOfPriceInitiatedCommand
             {
                 ApprenticeshipKey = Guid.NewGuid(),
-                Initiator = RequestInitiator.Provider,
+                Initiator = RequestParty.Provider,
                 PriceChangeStatus = ChangeRequestStatus.Created
             };
             var handler = new ChangeOfPriceInitiatedCommandHandler(GetExtendedNotificationService(), _externalEmployerUrlHelper);
@@ -48,7 +48,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
             });
         }
 
-        [TestCase(RequestInitiator.Provider, "Invalid")]
+        [TestCase(RequestParty.Provider, "Invalid")]
         [TestCase("Invalid", ChangeRequestStatus.Created)]
         public async Task AndInitiatorIsNotProvider_ShouldNotSendToEmployer(string initiator, string changeStatus)
         {

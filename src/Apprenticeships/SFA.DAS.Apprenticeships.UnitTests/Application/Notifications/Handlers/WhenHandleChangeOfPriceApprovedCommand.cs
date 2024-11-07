@@ -30,7 +30,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
             var command = new ChangeOfPriceApprovedCommand
             {
                 ApprenticeshipKey = Guid.NewGuid(),
-                Approver = RequestApprover.Provider
+                Approver = RequestParty.Provider
             };
             var handler = new ChangeOfPriceApprovedCommandHandler(GetExtendedNotificationService(), _externalEmployerUrlHelper);
 
@@ -54,7 +54,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
             var command = new ChangeOfPriceApprovedCommand
             {
                 ApprenticeshipKey = Guid.NewGuid(),
-                Approver = RequestApprover.Employer
+                Approver = RequestParty.Employer
             };
             var handler = new ChangeOfPriceApprovedCommandHandler(GetExtendedNotificationService(), _externalEmployerUrlHelper);
 

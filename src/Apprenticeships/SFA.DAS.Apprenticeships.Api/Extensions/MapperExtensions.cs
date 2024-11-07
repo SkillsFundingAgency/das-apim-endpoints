@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.Apprenticeships.Api.Models;
 using PostCreateApprenticeshipPriceChangeRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships.PostCreateApprenticeshipPriceChangeRequest;
 using PatchApproveApprenticeshipPriceChangeRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships.PatchApproveApprenticeshipPriceChangeRequest;
+using PatchRejectApprenticeshipPriceChangeRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships.PatchRejectApprenticeshipPriceChangeRequest;
 
 namespace SFA.DAS.Apprenticeships.Api.Extensions;
 
@@ -19,7 +20,6 @@ public static class MapperExtensions
             request.EffectiveFromDate);
     }
 
-    
     public static PatchApproveApprenticeshipPriceChangeRequest ToApiRequest(this ApprovePriceChangeRequest request, Guid apprenticeshipKey)
     {
         return new PatchApproveApprenticeshipPriceChangeRequest(
@@ -28,7 +28,12 @@ public static class MapperExtensions
             request.TrainingPrice,
             request.AssessmentPrice);
     }
-     
-     
-     
+
+    public static PatchRejectApprenticeshipPriceChangeRequest ToApiRequest(this RejectPriceChangeRequest request, Guid apprenticeshipKey)
+    {
+        return new PatchRejectApprenticeshipPriceChangeRequest(
+            apprenticeshipKey,
+            request.Reason);
+    }
+
 }

@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
 using SFA.DAS.Apprenticeships.Constants;
 using SFA.DAS.Employer.Shared.UI;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
 {
-    internal class WhenHandleChangeOfStartDateInitiatedCommand : BaseHandlerTestHelper
+    internal class WhenHandleChangeOfPriceRejectedCommand : BaseHandlerTestHelper
     {
         private UrlBuilder _externalEmployerUrlHelper;
 
-        public WhenHandleChangeOfStartDateInitiatedCommand()
+        public WhenHandleChangeOfPriceRejectedCommand()
         {
             _externalEmployerUrlHelper = new UrlBuilder("AT");
         }
@@ -24,40 +24,39 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
         }
 
         [Test]
-        public async Task AndInitiatorIsProvider_ShouldSendToEmployer()
+        public async Task AndApproverIsProvider_ShouldSendToEmployer()
         {
             // Arrange
-            var command = new ChangeOfStartDateInitiatedCommand()
+            var command = new ChangeOfPriceRejectedCommand
             {
                 ApprenticeshipKey = Guid.NewGuid(),
-                Initiator = RequestParty.Provider
+                Rejector = RequestParty.Provider
             };
-            var handler = new ChangeOfStartDateInitiatedCommandHandler(GetExtendedNotificationService(), _externalEmployerUrlHelper);
+            var handler = new ChangeOfPriceRejectedCommandHandler(GetExtendedNotificationService(), _externalEmployerUrlHelper);
 
             // Act
             var response = await handler.Handle(command, new System.Threading.CancellationToken());
 
             // Assert
-            VerifySentToEmployer("ProviderInitiatedChangeOfStartDateToEmployer", new Dictionary<string, string>
+            VerifySentToEmployer("ProviderRejectedChangeOfPriceToEmployer", new Dictionary<string, string>
             {
                 { "Training provider", ExpectedApprenticeshipDetails.ProviderName },
                 { "Employer", ExpectedApprenticeshipDetails.EmployerName },
                 { "apprentice", $"{ExpectedApprenticeshipDetails.ApprenticeFirstName} {ExpectedApprenticeshipDetails.ApprenticeLastName}" },
-                { "review changes URL", $"https://approvals.at-eas.apprenticeships.education.gov.uk/{ExpectedApprenticeshipDetails.EmployerAccountHashedId}/apprentices/{ExpectedApprenticeshipDetails.ApprenticeshipHashedId}/details" }
+                { "Apprentice details URL", $"https://approvals.at-eas.apprenticeships.education.gov.uk/{ExpectedApprenticeshipDetails.EmployerAccountHashedId}/apprentices/{ExpectedApprenticeshipDetails.ApprenticeshipHashedId}/details" }
             });
         }
-
 
         [Test]
         public async Task AndInitiatorIsNotProvider_ShouldNotSendToEmployer()
         {
             // Arrange
-            var command = new ChangeOfStartDateInitiatedCommand
+            var command = new ChangeOfPriceRejectedCommand
             {
                 ApprenticeshipKey = Guid.NewGuid(),
-                Initiator = "Invalid",
+                Rejector = RequestParty.Employer
             };
-            var handler = new ChangeOfStartDateInitiatedCommandHandler(GetExtendedNotificationService(), _externalEmployerUrlHelper);
+            var handler = new ChangeOfPriceRejectedCommandHandler(GetExtendedNotificationService(), _externalEmployerUrlHelper);
 
             // Act
             var response = await handler.Handle(command, new System.Threading.CancellationToken());

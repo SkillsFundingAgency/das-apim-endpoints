@@ -35,5 +35,14 @@ namespace SFA.DAS.Apprenticeships.Api.Extensions
                 Approver = response.Approver
             };
         }
+
+        public static ChangeOfPriceRejectedCommand ToNotificationCommand(this PatchRejectApprenticeshipPriceChangeResponse response, Guid apprenticeshipKey)
+        {
+            return new ChangeOfPriceRejectedCommand
+            {
+                ApprenticeshipKey = apprenticeshipKey,
+                Rejector = response.Rejector
+            };
+        }
     }
 }
