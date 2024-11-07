@@ -120,6 +120,43 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             await response.EnsureSuccessStatusCodeIncludeContentInException();
         }
 
+
+        public async Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+        {
+            var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
+
+            var requestMessage = new HttpRequestMessage(HttpMethod.Patch, request.PatchUrl);
+            requestMessage.AddVersion(request.Version);
+            requestMessage.Content = stringContent;
+            await AddAuthenticationHeader(requestMessage);
+
+            var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
+
+            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            var errorContent = "";
+            var responseBody = (TResponse)default;
+
+            if (IsNot200RangeResponseCode(response.StatusCode))
+            {
+                errorContent = json;
+                HandleException(response, json);
+            }
+            else if (includeResponse)
+            {
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                responseBody = JsonSerializer.Deserialize<TResponse>(json, options);
+            }
+
+            var patchWithResponseCode = new ApiResponse<TResponse>(responseBody, response.StatusCode, errorContent);
+
+            return patchWithResponseCode;
+        }
+
         public async Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
         {
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;

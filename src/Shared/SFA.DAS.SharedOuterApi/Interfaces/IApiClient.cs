@@ -23,6 +23,7 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
             throw new System.NotImplementedException();
         }
         Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request);
+        Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true);
         /// <summary>
         /// Sends a PUT request to an API endpoint and returns a response code.
         /// </summary>

@@ -132,5 +132,10 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         {
             return json;
         }
+
+        public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

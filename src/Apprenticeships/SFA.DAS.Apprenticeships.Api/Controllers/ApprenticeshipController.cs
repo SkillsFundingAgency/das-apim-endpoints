@@ -228,8 +228,26 @@ public class ApprenticeshipController : ControllerBase
     [Route("{apprenticeshipKey}/priceHistory/pending/approve")]
     public async Task<ActionResult> ApprovePendingPriceChange(Guid apprenticeshipKey, [FromBody] ApprovePriceChangeRequest request)
     {
-        await _apiClient.Patch(new PatchApproveApprenticeshipPriceChangeRequest(apprenticeshipKey, request.UserId, request.TrainingPrice, request.AssessmentPrice));
+
+        var response = await _apiClient.PatchWithResponseCode<ApproveApprenticeshipPriceChangeRequest, PatchApproveApprenticeshipPriceChangeResponse>(request.ToApiRequest(apprenticeshipKey));
+
+        if (!string.IsNullOrEmpty(response.ErrorContent))
+        {
+            _logger.LogError("Error attempting to approve apprenticeship price change. {statusCode} returned from inner api.", response.StatusCode);
+            return BadRequest();
+        }
+
+        var notificationCommand = response.Body.ToNotificationCommand(apprenticeshipKey);
+        var notificationResponse = await _mediator.Send(notificationCommand);
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to send change of price approved Notification(s) to the related part(ies)");
+            return BadRequest();
+        }
+
         return Ok();
+
     }
 
     [HttpPatch]
