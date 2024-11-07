@@ -14,15 +14,12 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         private readonly IMediator _mediator;
         private readonly IApprenticeAppMetrics _apprenticeAppMetrics;
 
-        public SupportAndGuidanceController(IMediator mediator)
+        public SupportAndGuidanceController(IMediator mediator, IApprenticeAppMetrics metrics)
         {
             _mediator = mediator;
-        }
-        public SupportAndGuidanceController(IApprenticeAppMetrics metrics)
-        {
             _apprenticeAppMetrics = metrics;
         }
-
+       
         [HttpGet]
         [Route("/supportguidance/categories/{contentType}")]
         public async Task<IActionResult> GetCategories(string contentType)

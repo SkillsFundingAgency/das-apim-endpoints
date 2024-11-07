@@ -18,14 +18,12 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IApprenticeAppMetrics _apprenticeAppMetrics;
-        public KsbProgressController(IMediator mediator)
-            => _mediator = mediator;
-        public KsbProgressController(IApprenticeAppMetrics metrics)
+        public KsbProgressController(IMediator mediator, IApprenticeAppMetrics metrics)
         {
+            _mediator = mediator;
             _apprenticeAppMetrics = metrics;
         }
-
-        
+       
         [HttpPost("/apprentices/{apprenticeId}/ksbs")]
         public async Task<IActionResult> AddUpdateKsbProgress(Guid apprenticeId, ApprenticeKsbProgressData data)
         {
