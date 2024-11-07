@@ -34,8 +34,26 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.LocationsContro
 
             using (new AssertionScope())
             {
-                actual.StatusCode.Should().Be(200);
+                actual!.StatusCode.Should().Be(200);
                 actual.Value.As<GetLocationBySearchResponse>().Locations.Should().BeEquivalentTo(queryResponse.Locations, options => options.ExcludingMissingMembers());
+            }
+        }
+        [Test, MoqAutoData]
+        public async Task Then_If_No_Locations_Returns_Empty_List(
+            string searchTerm,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] Api.Controllers.LocationsController controller)
+        {
+            mockMediator
+                .Setup(mediator => mediator.Send(It.Is<GetLocationsBySearchQuery>(c => c.SearchTerm.Equals(searchTerm)), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetLocationsBySearchQueryResult());
+
+            var actual = await controller.SearchByLocation(searchTerm) as ObjectResult;
+
+            using (new AssertionScope())
+            {
+                actual!.StatusCode.Should().Be(200);
+                actual.Value.As<GetLocationBySearchResponse>().Locations.Should().BeEmpty();
             }
         }
 
@@ -53,7 +71,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.LocationsContro
 
             var controllerResult = await controller.SearchByLocation(searchTerm) as StatusCodeResult;
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
     }
 }
