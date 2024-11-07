@@ -23,10 +23,10 @@ public record GetCandidateSavedSearchesQueryResult(List<SavedSearch> SavedSearch
             source.EmailLastSendDate,
             new SearchParameters(
                 source.SearchParameters.SearchTerm,
-                source.SearchParameters.Categories,
+                source.SearchParameters.SelectedRouteIds,
                 source.SearchParameters.Distance,
                 source.SearchParameters.DisabilityConfident,
-                source.SearchParameters.Levels,
+                source.SearchParameters.SelectedLevelIds,
                 source.SearchParameters.Location,
                 source.SearchParameters.Latitude,
                 source.SearchParameters.Longitude

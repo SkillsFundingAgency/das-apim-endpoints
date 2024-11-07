@@ -45,8 +45,8 @@ public class WhenHandlingSaveSearchCommand
         savedSearchParameters?.SearchTerm.Should().Be(saveSearchCommand.SearchTerm);
         savedSearchParameters?.Distance.Should().Be(saveSearchCommand.Distance);
         savedSearchParameters?.DisabilityConfident.Should().Be(saveSearchCommand.DisabilityConfident);
-        savedSearchParameters?.Levels.Should().BeEquivalentTo(saveSearchCommand.SelectedLevelIds);
-        savedSearchParameters?.Categories.Should().BeEquivalentTo(saveSearchCommand.SelectedRouteIds);
+        savedSearchParameters?.SelectedLevelIds.Should().BeEquivalentTo(saveSearchCommand.SelectedLevelIds);
+        savedSearchParameters?.SelectedRouteIds.Should().BeEquivalentTo(saveSearchCommand.SelectedRouteIds);
         savedSearchParameters?.Location.Should().BeEquivalentTo(saveSearchCommand.Location);
         savedSearchParameters?.Latitude.Should().Be(locationItem.GeoPoint[0].ToString(CultureInfo.InvariantCulture));
         savedSearchParameters?.Longitude.Should().Be(locationItem.GeoPoint[1].ToString(CultureInfo.InvariantCulture));
