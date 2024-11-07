@@ -18,9 +18,9 @@ public class AcceptCreateAccountRequestCommandHandler(
     IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient,
     IPensionRegulatorApiClient<PensionRegulatorApiConfiguration> _pensionRegulatorApiClient,
     IAccountsApiClient<AccountsConfiguration> _accountsApiClient)
-    : IRequestHandler<AcceptCreateAccountRequestCommand>
+    : IRequestHandler<AcceptCreateAccountRequestCommand, AcceptCreateAccountRequestCommandResult>
 {
-    public async Task Handle(AcceptCreateAccountRequestCommand command, CancellationToken cancellationToken)
+    public async Task<AcceptCreateAccountRequestCommandResult> Handle(AcceptCreateAccountRequestCommand command, CancellationToken cancellationToken)
     {
         GetRequestResponse permissionRequest = await GetPermissionRequestDetails(_providerRelationshipsApiRestClient, command, cancellationToken);
 
@@ -31,6 +31,8 @@ public class AcceptCreateAccountRequestCommandHandler(
         await AcceptPermissionRequest(command, createAccountResponse, permissionRequest.EmployerOrganisationName!, cancellationToken);
 
         await SendNotifications(command, permissionRequest, createAccountResponse, cancellationToken);
+
+        return new AcceptCreateAccountRequestCommandResult(createAccountResponse.AccountId);
     }
 
     private static async Task<GetRequestResponse> GetPermissionRequestDetails(IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient, AcceptCreateAccountRequestCommand command, CancellationToken cancellationToken)

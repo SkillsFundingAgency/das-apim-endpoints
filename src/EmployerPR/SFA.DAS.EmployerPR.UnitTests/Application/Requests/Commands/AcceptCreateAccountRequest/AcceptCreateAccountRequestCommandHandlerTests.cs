@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using AutoFixture;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using RestEase;
@@ -25,6 +26,7 @@ public class AcceptCreateAccountRequestCommandHandlerTests
     private Mock<IAccountsApiClient<AccountsConfiguration>> _accountsApiClientMock;
     private GetRequestResponse _permissionRequest;
     private AcceptCreateAccountRequestCommand _command;
+    private AcceptCreateAccountRequestCommandResult _result;
     private PostCreateAccountResponse _createAccountResponse;
 
     [SetUp]
@@ -46,7 +48,7 @@ public class AcceptCreateAccountRequestCommandHandlerTests
         _createAccountResponse = fixture.Create<PostCreateAccountResponse>();
         _accountsApiClientMock.Setup(a => a.PostWithResponseCode<CreateAccountRequestBody, PostCreateAccountResponse>(It.Is<PostCreateAccountRequest>(r => true), true)).ReturnsAsync(new ApiResponse<PostCreateAccountResponse>(_createAccountResponse, HttpStatusCode.OK, string.Empty));
 
-        await _sut.Handle(_command, CancellationToken.None);
+        _result = await _sut.Handle(_command, CancellationToken.None);
     }
 
     [Test]
@@ -77,5 +79,11 @@ public class AcceptCreateAccountRequestCommandHandlerTests
     public void Handle_SendsNotifications()
     {
         _prApiClientMock.Verify(p => p.PostNotifications(It.Is<PostNotificationsRequest>(r => r.Notifications.Length == 2), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public void Handle_ReturnsAccountId()
+    {
+        _result.AccountId.Should().Be(_createAccountResponse.AccountId);
     }
 }

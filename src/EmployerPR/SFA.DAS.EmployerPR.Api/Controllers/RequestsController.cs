@@ -111,7 +111,7 @@ public class RequestsController(IMediator _mediator) : ControllerBase
 
         return Ok();
     }
-    
+
     [HttpGet("{requestId:guid}/createaccount/validate")]
     [ProducesResponseType(typeof(ValidatePermissionsRequestQueryResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> ValidateCreateAccountRequest([FromRoute] Guid requestId, CancellationToken cancellationToken)
@@ -129,11 +129,11 @@ public class RequestsController(IMediator _mediator) : ControllerBase
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpPost("{requestId:guid}/createaccount/accepted")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(AcceptCreateAccountRequestCommandResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> AcceptCreateAccountRequest([FromRoute] Guid requestId, [FromBody] AcceptCreateAccountRequestModel model, CancellationToken cancellationToken)
     {
         AcceptCreateAccountRequestCommand command = new(requestId, model.FirstName, model.LastName, model.Email, model.UserRef);
-        await _mediator.Send(command, cancellationToken);
-        return Ok();
+        AcceptCreateAccountRequestCommandResult result = await _mediator.Send(command, cancellationToken);
+        return Ok(result);
     }
 }

@@ -14,17 +14,16 @@ public class AcceptCreateAccountRequestTests
 {
     [Test]
     [AutoData]
-    public async Task AcceptCreateAccountRequest_InvokeMediatorAndReturnsOkResult(Guid requestId, AcceptCreateAccountRequestModel model, CancellationToken cancellationToken)
+    public async Task AcceptCreateAccountRequest_InvokeMediatorAndReturnsOkResult(Guid requestId, AcceptCreateAccountRequestModel model, AcceptCreateAccountRequestCommandResult result, CancellationToken cancellationToken)
     {
         Mock<IMediator> mediatorMock = new();
+        mediatorMock.Setup(m => m.Send(It.Is<AcceptCreateAccountRequestCommand>(c => c.RequestId == requestId && c.FirstName == model.FirstName && c.LastName == model.LastName && c.Email == model.Email && c.UserRef == model.UserRef), cancellationToken)).ReturnsAsync(result);
         RequestsController sut = new RequestsController(mediatorMock.Object);
 
-        var result = await sut.AcceptCreateAccountRequest(requestId, model, cancellationToken);
+        var response = await sut.AcceptCreateAccountRequest(requestId, model, cancellationToken);
 
-        mediatorMock.Verify(m => m.Send(
-            It.Is<AcceptCreateAccountRequestCommand>(c => c.RequestId == requestId && c.FirstName == model.FirstName && c.LastName == model.LastName && c.Email == model.Email && c.UserRef == model.UserRef)
-            , cancellationToken), Times.Once);
+        mediatorMock.Verify(m => m.Send(It.Is<AcceptCreateAccountRequestCommand>(c => c.RequestId == requestId && c.FirstName == model.FirstName && c.LastName == model.LastName && c.Email == model.Email && c.UserRef == model.UserRef), cancellationToken), Times.Once);
 
-        result.Should().BeOfType<OkResult>();
+        response.As<OkObjectResult>().Value.Should().Be(result);
     }
 }
