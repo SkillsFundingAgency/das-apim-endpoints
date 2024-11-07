@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using NLog.Web;
 
 namespace SFA.DAS.Campaign.Api
 {
@@ -13,10 +12,6 @@ namespace SFA.DAS.Campaign.Api
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                    webBuilder.UseNLog();
-                });
+                .ConfigureWebHostDefaults(builder => builder.UseStartup<Startup>());
     }
 }
