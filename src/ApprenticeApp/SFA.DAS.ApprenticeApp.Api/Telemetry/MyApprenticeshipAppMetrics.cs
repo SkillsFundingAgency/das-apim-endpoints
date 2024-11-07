@@ -58,7 +58,7 @@ namespace SFA.DAS.ApprenticeApp.Telemetry
         }
         public void IncreaseSupportGuidanceArticleViews(string articleId, int viewCount = 1)
         {
-            KSBCompletedCounter.Add(viewCount,
+            SupportAndGuidanceArticleViewsCounter.Add(viewCount,
                 new KeyValuePair<string, object>("article.id", articleId));
         }
     }
