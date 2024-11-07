@@ -29,5 +29,21 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 
             result.Locations.Should().BeEquivalentTo(apiResponse.Locations);
         }
+        
+        [Test, MoqAutoData]
+        public async Task Then_Gets_Locations_From_Location_Api_And_Returns_Null_If_No_Items_Returned(
+            GetLocationsBySearchQuery query,
+            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockApiClient,
+            GetLocationsBySearchQueryHandler handler)
+        {
+            mockApiClient
+                .Setup(client => client.Get<GetLocationsListResponse>(
+                    It.Is<GetLocationsQueryRequest>(c => c.GetUrl.Contains(query.SearchTerm))))
+                .ReturnsAsync((GetLocationsListResponse)null!);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Should().BeEquivalentTo(new GetLocationsBySearchQueryResult());
+        }
     }
 }
