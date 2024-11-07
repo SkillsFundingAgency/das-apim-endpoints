@@ -10,6 +10,7 @@ using SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
 using SFA.DAS.ApprenticeApp.Models;
+using SFA.DAS.ApprenticeApp.Telemetry;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading.Tasks;
@@ -55,8 +56,8 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
 
         [Test, MoqAutoData]
         public async Task AddUpdateKsbProgress_NoApprenticeship_Test(
-    [Frozen] Mock<IMediator> mediator,
-    [Greedy] KsbProgressController controller)
+            [Frozen] Mock<IMediator> mediator,
+            [Greedy] KsbProgressController controller)
         {
             var httpContext = new DefaultHttpContext();
             var apprenticeId = Guid.NewGuid();
@@ -80,7 +81,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
                 ApprenticeDetails = new ApprenticeDetails
                 {
                     Apprentice = new Apprentice { ApprenticeId = apprenticeId },
-                    MyApprenticeship = null 
+                    MyApprenticeship = null
                 }
             });
             var result = await controller.AddUpdateKsbProgress(apprenticeId, data);
@@ -174,6 +175,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
 
         [Test, MoqAutoData]
         public async Task Get_ApprenticeKsbs_NoKsbs_Test(
+            [Frozen] Mock<IApprenticeAppMetrics> metrics,
             Mock<IMediator> mediator)
         {
             var httpContext = new DefaultHttpContext();
@@ -218,7 +220,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             mediator.Setup(m => m.Send(It.IsAny<GetStandardOptionKsbsQuery>(), default)).ReturnsAsync(ksbQueryResult);
             mediator.Setup(m => m.Send(It.IsAny<GetKsbsByApprenticeshipIdQuery>(), default)).ReturnsAsync(ksbProgressResult);
 
-            var controller = new KsbProgressController(mediator.Object);
+            var controller = new KsbProgressController(mediator.Object, metrics.Object);
 
             controller.ControllerContext = new ControllerContext
             {
@@ -281,6 +283,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
 
         [Test, MoqAutoData]
         public async Task Get_ApprenticeKsb_Test(
+            [Frozen] Mock<IApprenticeAppMetrics> metrics,
            Mock<IMediator> mediator)
         {
             var httpContext = new DefaultHttpContext();
@@ -326,7 +329,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             mediator.Setup(m => m.Send(It.IsAny<GetStandardOptionKsbsQuery>(), default)).ReturnsAsync(ksbQueryResult);
             mediator.Setup(m => m.Send(It.IsAny<GetKsbsByApprenticeshipIdQuery>(), default)).ReturnsAsync(ksbProgressResult);
 
-            var controller = new KsbProgressController(mediator.Object);
+            var controller = new KsbProgressController(mediator.Object, metrics.Object);
 
             controller.ControllerContext = new ControllerContext
             {
@@ -339,7 +342,8 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
 
         [Test, MoqAutoData]
         public async Task Get_ApprenticeKsb_NoKsb_Test(
-           Mock<IMediator> mediator)
+            [Frozen] Mock<IApprenticeAppMetrics> metrics,
+            Mock<IMediator> mediator)
         {
             var httpContext = new DefaultHttpContext();
             var apprenticeId = Guid.NewGuid();
@@ -392,7 +396,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             mediator.Setup(m => m.Send(It.IsAny<GetStandardOptionKsbsQuery>(), default)).ReturnsAsync(ksbQueryResult);
             mediator.Setup(m => m.Send(It.IsAny<GetKsbsByApprenticeshipIdQuery>(), default)).ReturnsAsync(ksbProgressResult);
 
-            var controller = new KsbProgressController(mediator.Object);
+            var controller = new KsbProgressController(mediator.Object, metrics.Object);
 
             controller.ControllerContext = new ControllerContext
             {
@@ -405,11 +409,12 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
 
         [Test, MoqAutoData]
         public async Task Get_ApprenticeKsb_NoKsbResult_Test(
-          Mock<IMediator> mediator)
+            [Frozen] Mock<IApprenticeAppMetrics> metrics,
+            Mock<IMediator> mediator)
         {
             var httpContext = new DefaultHttpContext();
             var apprenticeId = Guid.NewGuid();
-          
+
             Guid ksbId = Guid.NewGuid();
             mediator.Setup(m => m.Send(It.IsAny<GetApprenticeDetailsQuery>(), default)).ReturnsAsync(new GetApprenticeDetailsQueryResult
             {
@@ -427,10 +432,10 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
                 }
             });
             var ksbQueryResult = new GetStandardOptionKsbsQueryResult();
-           
+
             mediator.Setup(m => m.Send(It.IsAny<GetStandardOptionKsbsQuery>(), default)).ReturnsAsync(ksbQueryResult);
 
-            var controller = new KsbProgressController(mediator.Object);
+            var controller = new KsbProgressController(mediator.Object, metrics.Object);
 
             controller.ControllerContext = new ControllerContext
             {
@@ -443,7 +448,8 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
 
         [Test, MoqAutoData]
         public async Task Get_ApprenticeKsb_NoKsbResult_NoApprenticeship_Test(
-         Mock<IMediator> mediator)
+            [Frozen] Mock<IApprenticeAppMetrics> metrics,
+            Mock<IMediator> mediator)
         {
             var httpContext = new DefaultHttpContext();
             var apprenticeId = Guid.NewGuid();
@@ -460,8 +466,8 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
                     MyApprenticeship = null
                 }
             });
-            
-            var controller = new KsbProgressController(mediator.Object);
+
+            var controller = new KsbProgressController(mediator.Object, metrics.Object);
 
             controller.ControllerContext = new ControllerContext
             {
