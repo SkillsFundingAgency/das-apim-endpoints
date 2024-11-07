@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeSubscriptions;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
+using SFA.DAS.ApprenticeApp.Telemetry;
 
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
 {
@@ -11,10 +12,12 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
     public class SupportAndGuidanceController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IApprenticeAppMetrics _apprenticeAppMetrics;
 
-        public SupportAndGuidanceController(IMediator mediator)
+        public SupportAndGuidanceController(IMediator mediator, IApprenticeAppMetrics metrics)
         {
             _mediator = mediator;
+            _apprenticeAppMetrics = metrics;
         }
 
         [HttpGet]
@@ -25,7 +28,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             {
                 ContentType = contentType
             });
-
+            _apprenticeAppMetrics.IncreaseSupportGuidanceArticleViews(contentType.ToString());
             return Ok(queryResult.CategoryPages);
         }
 

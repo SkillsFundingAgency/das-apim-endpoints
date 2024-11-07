@@ -1,5 +1,7 @@
+
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using Contentful.Core.Configuration;
 using Microsoft.AspNetCore.Builder;
@@ -16,6 +18,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.ApprenticeApp.Api.AppStart;
 using SFA.DAS.ApprenticeApp.Api.ErrorHandler;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
+using SFA.DAS.ApprenticeApp.Telemetry;
 using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
@@ -82,9 +85,9 @@ namespace SFA.DAS.ApprenticeApp.Api
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-                });           
+                });
 
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            SFA.DAS.ApprenticeApp.Telemetry.AddOpenTelemetryExtensions.AddOpenTelemetryRegistration(services, _configuration["appInsightsConnectionString"]);
 
             services.AddSwaggerGen(c =>
             {
