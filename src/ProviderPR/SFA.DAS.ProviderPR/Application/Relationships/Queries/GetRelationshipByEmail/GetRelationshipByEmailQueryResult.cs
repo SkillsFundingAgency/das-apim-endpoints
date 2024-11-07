@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
-namespace SFA.DAS.ProviderPR.Application.Queries.GetRelationshipByEmail;
+namespace SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipByEmail;
 
 public record GetRelationshipByEmailQueryResult
 {

@@ -10,7 +10,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.ProviderPR.Application.Queries.GetRelationshipByEmail;
+namespace SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipByEmail;
 public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfiguration> _accountsApiClient, IProviderRelationshipsApiRestClient _providerRelationshipsApiClient) : IRequestHandler<GetRelationshipByEmailQuery, GetRelationshipByEmailQueryResult>
 {
     public async Task<GetRelationshipByEmailQueryResult> Handle(GetRelationshipByEmailQuery request, CancellationToken cancellationToken)

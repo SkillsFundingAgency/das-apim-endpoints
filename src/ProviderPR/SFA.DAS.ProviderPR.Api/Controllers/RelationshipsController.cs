@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationship;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationshipByEmail;
+using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationship;
+using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipByEmail;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Requests;
 using SFA.DAS.ProviderPR.InnerApi.Responses;

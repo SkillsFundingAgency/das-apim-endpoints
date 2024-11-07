@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.ProviderPR.Api.Controllers;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationship;
+using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationship;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
 

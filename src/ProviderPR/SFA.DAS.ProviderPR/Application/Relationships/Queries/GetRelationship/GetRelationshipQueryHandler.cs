@@ -3,7 +3,7 @@ using RestEase;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
 
-namespace SFA.DAS.ProviderPR.Application.Queries.GetRelationship;
+namespace SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationship;
 
 public class GetRelationshipQueryHandler(IProviderRelationshipsApiRestClient _providerRelationshipsApiClient) : IRequestHandler<GetRelationshipQuery, GetRelationshipResponse>
 {
