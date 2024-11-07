@@ -121,6 +121,11 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 			throw new NotFoundException<GetAcademicYearsResponse>($"No current academic year returned from innerApi for date {searchDate.ToString("yyyy-MMM-dd")}");
 		}
 
+        if (!currentAcademicYear.HardCloseDate.HasValue)
+        {
+            throw new AcademicYearDataIncompleteException(PreviousOrCurrentAcademicYear.Current);
+        }
+
 		searchDate = currentAcademicYear.StartDate.AddDays(-1);
 		var previousAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(searchDate));
 		if (previousAcademicYear == null)
@@ -128,7 +133,12 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 			throw new NotFoundException<GetAcademicYearsResponse>($"No previous academic year returned from innerApi for date {searchDate.ToString("yyyy - MMM - dd")}");
 		}
 
-		if (DateTime.Now > previousAcademicYear.HardCloseDate)
+        if (!previousAcademicYear.HardCloseDate.HasValue)
+        {
+            throw new AcademicYearDataIncompleteException(PreviousOrCurrentAcademicYear.Previous);
+        }
+
+        if (DateTime.Now > previousAcademicYear.HardCloseDate)
 		{
 			//earliest allowed date is 1st Aug current academic year
 			return currentAcademicYear.StartDate;

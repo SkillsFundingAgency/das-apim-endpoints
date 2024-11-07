@@ -6,6 +6,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.GetAddresses;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetGeoPoint;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetLocationsBySearch;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -75,8 +76,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 
                 var response = new GetLocationBySearchResponse
                 {
-                    Locations = queryResult.Locations
-                        .Select(c => (GetLocationSearchResponseItem)c),
+                    Locations = queryResult.Locations != null? queryResult.Locations
+                        .Select(c => (GetLocationSearchResponseItem)c) : new List<GetLocationSearchResponseItem>(),
                 };
                 return Ok(response);
             }
