@@ -64,6 +64,18 @@ namespace SFA.DAS.Payments.Application.Learners
 
             try
             {
+                if(!apiResponse.Headers.ContainsKey("X-Pagination"))
+                {
+                    _logger.LogWarning("No X-Pagination header returned from LearnerData endpoint. This is acceptable when working with Stub only");
+                    return new PaginationHeader
+                    {
+                        TotalItems = apiResponse.Body.Count,
+                        PageNumber = 1,
+                        PageSize = apiResponse.Body.Count,
+                        TotalPages = 1
+                    };
+                }
+
                 var paginationHeaderString = apiResponse.Headers["X-Pagination"].Single();
                 paginationHeader = Newtonsoft.Json.JsonConvert.DeserializeObject<PaginationHeader>(paginationHeaderString);
             }
