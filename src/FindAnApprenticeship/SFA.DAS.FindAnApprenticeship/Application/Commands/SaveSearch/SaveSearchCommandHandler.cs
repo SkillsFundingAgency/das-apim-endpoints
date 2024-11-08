@@ -19,22 +19,19 @@ public class SaveSearchCommandHandler(
     public async Task<SaveSearchCommandResult> Handle(SaveSearchCommand request, CancellationToken cancellationToken)
     {
         var location = await locationLookupService.GetLocationInformation(request.Location, default, default, false);
-        var payload = new SaveSearchRequest
-        {
-            UnSubscribeToken = request.UnSubscribeToken,
-            SearchParameters = new SearchParameters(
-            request.SearchTerm,
-            request.SelectedRouteIds,
-            request.Distance,
-            request.DisabilityConfident,
-            request.SelectedLevelIds,
-            request.Location,
-            location?.GeoPoint[0].ToString(CultureInfo.InvariantCulture),
-            location?.GeoPoint[1].ToString(CultureInfo.InvariantCulture))
-        };
-
         var response = await findApprenticeshipApiClient.PutWithResponseCode<PutSavedSearchApiResponse>(
-            new PutSavedSearchApiRequest(request.CandidateId, Guid.NewGuid(), new PutSavedSearchApiRequestData(payload)));
+            new PutSavedSearchApiRequest(request.CandidateId, Guid.NewGuid(), new PutSavedSearchApiRequestData
+            {
+                UnSubscribeToken = request.UnSubscribeToken,
+                SearchParameters = new SearchParameters(request.SearchTerm,
+                    request.SelectedRouteIds,
+                    request.Distance,
+                    request.DisabilityConfident,
+                    request.SelectedLevelIds,
+                    request.Location,
+                    location?.GeoPoint[0].ToString(CultureInfo.InvariantCulture),
+                    location?.GeoPoint[1].ToString(CultureInfo.InvariantCulture))
+            }));
         
         return response is not null && response.StatusCode == HttpStatusCode.OK
             ? SaveSearchCommandResult.From(response.Body)

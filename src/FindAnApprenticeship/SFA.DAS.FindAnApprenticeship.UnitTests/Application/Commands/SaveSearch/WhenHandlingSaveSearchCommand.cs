@@ -37,8 +37,8 @@ public class WhenHandlingSaveSearchCommand
 
         // act
         var result = await sut.Handle(saveSearchCommand, CancellationToken.None);
-        var savedSearchParameters = savedSearchApiRequestData?.SaveSearchRequest.SearchParameters;
-        var unSubscribeToken = savedSearchApiRequestData.SaveSearchRequest.UnSubscribeToken;
+        var savedSearchParameters = savedSearchApiRequestData?.SearchParameters;
+        var unSubscribeToken = savedSearchApiRequestData?.UnSubscribeToken;
 
         // assert
         result.Id.Should().Be(savedSearchApiResponse.Id);
