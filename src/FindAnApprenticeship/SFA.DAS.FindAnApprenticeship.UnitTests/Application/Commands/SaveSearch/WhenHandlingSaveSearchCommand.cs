@@ -37,7 +37,8 @@ public class WhenHandlingSaveSearchCommand
 
         // act
         var result = await sut.Handle(saveSearchCommand, CancellationToken.None);
-        var savedSearchParameters = savedSearchApiRequestData?.SearchParameters;
+        var savedSearchParameters = savedSearchApiRequestData?.SaveSearchRequest.SearchParameters;
+        var unSubscribeToken = savedSearchApiRequestData.SaveSearchRequest.UnSubscribeToken;
 
         // assert
         result.Id.Should().Be(savedSearchApiResponse.Id);
@@ -50,5 +51,6 @@ public class WhenHandlingSaveSearchCommand
         savedSearchParameters?.Location.Should().BeEquivalentTo(saveSearchCommand.Location);
         savedSearchParameters?.Latitude.Should().Be(locationItem.GeoPoint[0].ToString(CultureInfo.InvariantCulture));
         savedSearchParameters?.Longitude.Should().Be(locationItem.GeoPoint[1].ToString(CultureInfo.InvariantCulture));
+        unSubscribeToken.Should().Be(saveSearchCommand.UnSubscribeToken);
     }
 }
