@@ -52,7 +52,7 @@ public class ValidatePermissionsRequestQueryHandler(
 
         result.HasEmployerAccount = accountHistoriesResponse.StatusCode == HttpStatusCode.OK;
 
-        result.HasValidaPaye = tprResponse.StatusCode == HttpStatusCode.OK && tprResponse.Body.Any(o => o.Status == string.Empty);
+        result.HasValidPaye = tprResponse.StatusCode == HttpStatusCode.OK && tprResponse.Body.Any(o => o.Status == string.Empty);
 
         return result;
     }

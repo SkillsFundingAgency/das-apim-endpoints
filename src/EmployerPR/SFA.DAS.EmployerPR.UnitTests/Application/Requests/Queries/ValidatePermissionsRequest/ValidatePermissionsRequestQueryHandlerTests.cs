@@ -127,7 +127,7 @@ public class ValidatePermissionsRequestQueryHandlerTests
         /// action
         var actual = await sut.Handle(query, cancellationToken);
 
-        actual.HasValidaPaye.Should().BeFalse();
+        actual.HasValidPaye.Should().BeFalse();
     }
 
     [Test, MoqAutoData]
@@ -153,7 +153,7 @@ public class ValidatePermissionsRequestQueryHandlerTests
         /// action
         var actual = await sut.Handle(query, cancellationToken);
 
-        actual.HasValidaPaye.Should().BeFalse();
+        actual.HasValidPaye.Should().BeFalse();
     }
 
     [Test, MoqAutoData]
@@ -179,6 +179,6 @@ public class ValidatePermissionsRequestQueryHandlerTests
         /// action
         var actual = await sut.Handle(query, cancellationToken);
 
-        actual.HasValidaPaye.Should().BeTrue();
+        actual.HasValidPaye.Should().BeTrue();
     }
 }
