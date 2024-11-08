@@ -39,6 +39,64 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
         }
 
         [Test]
+        [MoqAutoData]
+        public void Then_Distance_Is_One_Mile_GetSavedSearchSearchParams_WhenCalled_ReturnsExpectedResult()
+        {
+            // Arrange
+            const string searchTerm = "Software Developer";
+            const int distance = 1;
+            const string location = "London";
+            List<string> categories = ["IT", "Engineering"];
+            List<string> levels = ["Intermediate", "Advanced"];
+            const bool disabilityConfident = true;
+
+            const string expected = """
+
+                                    What: Software Developer
+                                    Where: London (within 1 mile)
+                                    Categories: IT, Engineering
+                                    Apprenticeship levels: Intermediate, Advanced
+                                    Only show Disability Confident apprenticeships
+
+                                    """;
+
+            // Act
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident);
+
+            // Assert
+            result.Trim().Should().BeEquivalentTo(expected.Trim());
+        }
+
+
+        [Test]
+        [MoqAutoData]
+        public void Then_The_Location_Is_Null_GetSavedSearchSearchParams_WhenCalled_ReturnsExpectedResult()
+        {
+            // Arrange
+            const string searchTerm = "Software Developer";
+            const int distance = 1;
+            const string location = "";
+            List<string> categories = ["IT", "Engineering"];
+            List<string> levels = ["Intermediate", "Advanced"];
+            const bool disabilityConfident = true;
+
+            const string expected = """
+
+                                    What: Software Developer
+                                    Categories: IT, Engineering
+                                    Apprenticeship levels: Intermediate, Advanced
+                                    Only show Disability Confident apprenticeships
+
+                                    """;
+
+            // Act
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident);
+
+            // Assert
+            result.Trim().Should().BeEquivalentTo(expected.Trim());
+        }
+
+        [Test]
         public void GetSavedSearchUrl_WithValidParameters_ReturnsQueryParameters()
         {
             // Arrange
