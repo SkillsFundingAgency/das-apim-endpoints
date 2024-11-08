@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using OpenTelemetry.Metrics;
+﻿using System.Collections.Generic;
 using System.Diagnostics.Metrics;
-using SFA.DAS.ApprenticeApp.Models;
+
 
 
 
@@ -29,12 +23,12 @@ namespace SFA.DAS.ApprenticeApp.Telemetry
         private Counter<long> SupportAndGuidanceArticleViewsCounter { get; }
         public ApprenticeAppMetrics(IMeterFactory meterFactory)
         {
-            var meter = meterFactory.Create("MyApprenticeApp");
-            AccountViewsCounter = meter.CreateCounter<long>("MyApprentice-App.accounts.views", "account", "Instrument used to measure the number of times the apprentice accounts is viewed");
-            KSBsViewsCounter = meter.CreateCounter<long>("MyApprentice-App.ksb.views", "ksbs", "Instrument used to measure the number of times the course KSBs are viewed");
-            KSBInProgressCounter = meter.CreateCounter<long>("MyApprentice-App.ksb.inprogress", "ksb", "Instrument used to measure the number of a KSB marked as in-progress");
-            KSBCompletedCounter = meter.CreateCounter<long>("MyApprentice-App.ksb.completed", "ksb", "Instrument used to measure the number of times a KSB is marked as completed");
-            SupportAndGuidanceArticleViewsCounter = meter.CreateCounter<long>("MyApprentice-App.supportguidancearticle.views", "article", "Instrument used to measure the number of support and guidance articles viewed");
+            var meter = meterFactory.Create("MyApprenticeshipApp");
+            AccountViewsCounter = meter.CreateCounter<long>("MyApprenticeship-App.accounts.views", "account", "Instrument used to measure the number of times the apprentice accounts is viewed");
+            KSBsViewsCounter = meter.CreateCounter<long>("MyApprenticeship-App.ksb.views", "ksbs", "Instrument used to measure the number of times the course KSBs are viewed");
+            KSBInProgressCounter = meter.CreateCounter<long>("MyApprenticeship-App.ksb.inprogress", "ksb", "Instrument used to measure the number of a KSB marked as in-progress");
+            KSBCompletedCounter = meter.CreateCounter<long>("MyApprenticeship-App.ksb.completed", "ksb", "Instrument used to measure the number of times a KSB is marked as completed");
+            SupportAndGuidanceArticleViewsCounter = meter.CreateCounter<long>("MyApprenticeship-App.supportguidancearticle.views", "article", "Instrument used to measure the number of support and guidance articles viewed");
         }
         public void IncreaseAccountViews(int viewCount = 1)
         {
