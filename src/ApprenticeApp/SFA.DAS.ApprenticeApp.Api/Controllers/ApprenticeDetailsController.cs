@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Telemetry;
 using System;
@@ -19,7 +18,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             _mediator = mediator;
             _apprenticeAppMetrics = metrics;
         }
-
 
         [HttpGet("/apprentices/{id}/details")]
         public async Task<IActionResult> GetApprenticeDetails(Guid id)

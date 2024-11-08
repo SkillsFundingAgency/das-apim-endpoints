@@ -8,7 +8,6 @@ using SFA.DAS.ApprenticeApp.Telemetry;
 
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
 {
-    [ApiController]
     public class SupportAndGuidanceController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -19,6 +18,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             _mediator = mediator;
             _apprenticeAppMetrics = metrics;
         }
+        
 
         [HttpGet]
         [Route("/supportguidance/categories/{contentType}")]

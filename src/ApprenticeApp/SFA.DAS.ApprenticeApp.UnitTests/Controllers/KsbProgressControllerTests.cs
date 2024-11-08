@@ -221,7 +221,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             mediator.Setup(m => m.Send(It.IsAny<GetKsbsByApprenticeshipIdQuery>(), default)).ReturnsAsync(ksbProgressResult);
 
             var controller = new KsbProgressController(mediator.Object, metrics.Object);
-
+            
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -330,7 +330,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             mediator.Setup(m => m.Send(It.IsAny<GetKsbsByApprenticeshipIdQuery>(), default)).ReturnsAsync(ksbProgressResult);
 
             var controller = new KsbProgressController(mediator.Object, metrics.Object);
-
+            
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -397,7 +397,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             mediator.Setup(m => m.Send(It.IsAny<GetKsbsByApprenticeshipIdQuery>(), default)).ReturnsAsync(ksbProgressResult);
 
             var controller = new KsbProgressController(mediator.Object, metrics.Object);
-
+           
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -436,7 +436,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             mediator.Setup(m => m.Send(It.IsAny<GetStandardOptionKsbsQuery>(), default)).ReturnsAsync(ksbQueryResult);
 
             var controller = new KsbProgressController(mediator.Object, metrics.Object);
-
+            
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
@@ -468,7 +468,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             });
 
             var controller = new KsbProgressController(mediator.Object, metrics.Object);
-
+            
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
