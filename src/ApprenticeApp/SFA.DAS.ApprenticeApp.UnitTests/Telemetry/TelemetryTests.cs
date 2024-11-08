@@ -20,7 +20,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Telemetry
             var services = CreateServiceProvider();
             var metrics = services.GetRequiredService<IApprenticeAppMetrics>();
             var meterFactory = services.GetRequiredService<IMeterFactory>();
-            var collector = new MetricCollector<long>(meterFactory, "MyApprenticeApp", "MyApprentice-App.accounts.views");
+            var collector = new MetricCollector<long>(meterFactory, "MyApprenticeshipApp", "MyApprenticeship-App.accounts.views");
 
             // Act
             metrics.IncreaseAccountViews(viewCount);
@@ -38,7 +38,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Telemetry
             var services = CreateServiceProvider();
             var metrics = services.GetRequiredService<IApprenticeAppMetrics>();
             var meterFactory = services.GetRequiredService<IMeterFactory>();
-            var collector = new MetricCollector<long>(meterFactory, "MyApprenticeApp", "MyApprentice-App.ksb.views");
+            var collector = new MetricCollector<long>(meterFactory, "MyApprenticeshipApp", "MyApprenticeship-App.ksb.views");
 
             // Act
             metrics.IncreaseKSBsViews(courseId, viewCount);
@@ -55,7 +55,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Telemetry
             var services = CreateServiceProvider();
             var metrics = services.GetRequiredService<IApprenticeAppMetrics>();
             var meterFactory = services.GetRequiredService<IMeterFactory>();
-            var collector = new MetricCollector<long>(meterFactory, "MyApprenticeApp", "MyApprentice-App.ksb.inprogress");
+            var collector = new MetricCollector<long>(meterFactory, "MyApprenticeshipApp", "MyApprenticeship-App.ksb.inprogress");
 
             // Act
             metrics.IncreaseKSBInProgress(courseId, ksbId, viewCount);
@@ -72,7 +72,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Telemetry
             var services = CreateServiceProvider();
             var metrics = services.GetRequiredService<IApprenticeAppMetrics>();
             var meterFactory = services.GetRequiredService<IMeterFactory>();
-            var collector = new MetricCollector<long>(meterFactory, "MyApprenticeApp", "MyApprentice-App.ksb.completed");
+            var collector = new MetricCollector<long>(meterFactory, "MyApprenticeshipApp", "MyApprenticeship-App.ksb.completed");
 
             // Act
             metrics.IncreaseKSBCompleted(courseId, ksbId, viewCount);
@@ -89,7 +89,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Telemetry
             var services = CreateServiceProvider();
             var metrics = services.GetRequiredService<IApprenticeAppMetrics>();
             var meterFactory = services.GetRequiredService<IMeterFactory>();
-            var collector = new MetricCollector<long>(meterFactory, "MyApprenticeApp", "MyApprentice-App.supportguidancearticle.views");
+            var collector = new MetricCollector<long>(meterFactory, "MyApprenticeshipApp", "MyApprenticeship-App.supportguidancearticle.views");
 
             // Act
             metrics.IncreaseSupportGuidanceArticleViews(articleId, viewCount);
