@@ -27,7 +27,7 @@ namespace SFA.DAS.ApprenticeApp.Telemetry
                 // This service will collect and send telemetry data to Azure Monitor.
                 services.AddOpenTelemetry().UseAzureMonitor(options =>
                 {
-                    options.ConnectionString = appInsightsConnectionString;//"appInsightsConnectionString";
+                    options.ConnectionString = appInsightsConnectionString;
                 });
                 // Configure metrics
 
