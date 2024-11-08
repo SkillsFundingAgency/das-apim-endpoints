@@ -5,6 +5,7 @@ using MediatR;
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch;
 
 public record SaveSearchCommand(
+    Guid Id,
     Guid CandidateId,
     bool DisabilityConfident,
     decimal? Distance,

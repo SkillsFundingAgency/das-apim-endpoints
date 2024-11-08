@@ -20,7 +20,7 @@ public class SaveSearchCommandHandler(
     {
         var location = await locationLookupService.GetLocationInformation(request.Location, default, default, false);
         var response = await findApprenticeshipApiClient.PutWithResponseCode<PutSavedSearchApiResponse>(
-            new PutSavedSearchApiRequest(request.CandidateId, Guid.NewGuid(), new PutSavedSearchApiRequestData
+            new PutSavedSearchApiRequest(request.CandidateId, request.Id, new PutSavedSearchApiRequestData
             {
                 UnSubscribeToken = request.UnSubscribeToken,
                 SearchParameters = new SearchParameters(request.SearchTerm,

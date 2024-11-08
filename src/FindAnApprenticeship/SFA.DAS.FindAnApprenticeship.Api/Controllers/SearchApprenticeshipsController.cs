@@ -94,16 +94,17 @@ public class SearchApprenticeshipsController(ILogger<SearchApprenticeshipsContro
         }
     }
         
-    [HttpPost()]
+    [HttpPost]
     [Route("saved-search")]
     [ProducesResponseType((int)HttpStatusCode.Created)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-    public async Task<IActionResult> PostSaveSearch([FromQuery, Required] Guid candidateId, [FromBody] PostSaveSearchApiRequest apiRequest)
+    public async Task<IActionResult> PostSaveSearch([FromQuery, Required] Guid candidateId, [FromQuery, Required] Guid id, [FromBody] PostSaveSearchApiRequest apiRequest)
     {
         try
         {
             var response = await mediator.Send(new SaveSearchCommand(
+                id,
                 candidateId,
                 apiRequest.DisabilityConfident,
                 apiRequest.Distance,
