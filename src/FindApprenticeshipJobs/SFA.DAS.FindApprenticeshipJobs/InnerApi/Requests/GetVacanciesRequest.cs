@@ -7,7 +7,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests
     {
         private readonly double? _lat;
         private readonly double? _lon;
-        private readonly int? _distance;
+        private readonly decimal? _distance;
         private readonly int? _pageNumber;
         private readonly int? _pageSize;
         private readonly string _categories;
@@ -19,12 +19,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests
         public GetVacanciesRequest(
             double? lat,
             double? lon,
-            int? distance,
+            decimal? distance,
             string? searchTerm,
             int? pageNumber,
             int? pageSize,
             IReadOnlyCollection<string> categories,
-            IReadOnlyCollection<string>? levels,
+            IReadOnlyCollection<int>? levels,
             VacancySort sort,
             bool disabilityConfident)
         {

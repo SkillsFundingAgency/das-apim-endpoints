@@ -16,14 +16,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
             public UserDetails? User { get; set; }
             public List<Category>? Categories { get; set; } = [];
             public List<Level>? Levels { get; set; } = [];
-            public int? Distance { get; set; }
+            public decimal? Distance { get; set; }
             public string? SearchTerm { get; set; }
             public string? Location { get; set; }
             public bool DisabilityConfident { get; set; }
             public string? UnSubscribeToken { get; set; }
             public List<ApprenticeshipVacancy> Vacancies { get; set; } = [];
-            
-
             public class ApprenticeshipVacancy
             {
                 public string? Id { get; set; }
@@ -52,7 +50,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                     };
                 }
             }
-
             public class Address
             {
                 public string? AddressLine1 { get; set; }
@@ -73,7 +70,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                     };
                 }
             }
-
             public class UserDetails
             {
                 public Guid Id { get; set; }
@@ -94,7 +90,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                     };
                 }
             }
-
             public class Category
             {
                 public int Id { get; set; }

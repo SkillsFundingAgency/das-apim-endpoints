@@ -50,8 +50,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
 
                 var categories = routesList.Routes
                     .Where(route =>
-                        savedSearch.SearchCriteriaParameters.Categories != null
-                        && savedSearch.SearchCriteriaParameters.Categories.Contains(route.Id.ToString()))
+                        savedSearch.SearchParameters.SelectedRouteIds != null
+                        && savedSearch.SearchParameters.SelectedRouteIds.Contains(route.Id))
                     .Select(route => new GetSavedSearchesQueryResult.SearchResult.Category
                     {
                         Id = route.Id,
@@ -60,8 +60,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
 
                 var levels = levelsList.Levels
                     .Where(level =>
-                        savedSearch.SearchCriteriaParameters.Levels != null &&
-                        savedSearch.SearchCriteriaParameters.Levels.Contains(level.Code.ToString()))
+                        savedSearch.SearchParameters.SelectedLevelIds != null &&
+                        savedSearch.SearchParameters.SelectedLevelIds.Contains(level.Code))
                     .Select(level => new GetSavedSearchesQueryResult.SearchResult.Level
                     {
                         Code = level.Code,
@@ -70,31 +70,33 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
 
                 var vacanciesResponse = await FindApprenticeshipApiClient.Get<GetVacanciesResponse>(
                     new GetVacanciesRequest(
-                        !string.IsNullOrEmpty(savedSearch.SearchCriteriaParameters.Latitude) ? Convert.ToDouble(savedSearch.SearchCriteriaParameters.Latitude) : null,
-                        !string.IsNullOrEmpty(savedSearch.SearchCriteriaParameters.Longitude) ? Convert.ToDouble(savedSearch.SearchCriteriaParameters.Longitude) : null,
-                        savedSearch.SearchCriteriaParameters.Distance,
-                        savedSearch.SearchCriteriaParameters.SearchTerm,
+                        !string.IsNullOrEmpty(savedSearch.SearchParameters.Latitude) ? Convert.ToDouble(savedSearch.SearchParameters.Latitude) : null,
+                        !string.IsNullOrEmpty(savedSearch.SearchParameters.Longitude) ? Convert.ToDouble(savedSearch.SearchParameters.Longitude) : null,
+                        savedSearch.SearchParameters.Distance,
+                        savedSearch.SearchParameters.SearchTerm,
                         1,  // Defaulting to top results.
                         request.MaxApprenticeshipSearchResultsCount, // Default page size set to 5.
                         categories.Select(cat => cat.Id.ToString()).ToList(),
-                        savedSearch.SearchCriteriaParameters.Levels,
+                        savedSearch.SearchParameters.SelectedLevelIds,
                         request.ApprenticeshipSearchResultsSortOrder,
-                        savedSearch.SearchCriteriaParameters.DisabilityConfident));
+                        savedSearch.SearchParameters.DisabilityConfident));
 
-                searchResultList.Add(new GetSavedSearchesQueryResult.SearchResult
-                {
-                    Id = savedSearch.Id,
-                    User = candidate,
-                    SearchTerm = savedSearch.SearchCriteriaParameters.SearchTerm,
-                    Location = savedSearch.SearchCriteriaParameters.Location,
-                    Categories = categories,
-                    Levels = levels,
-                    DisabilityConfident = savedSearch.SearchCriteriaParameters.DisabilityConfident,
-                    Distance = savedSearch.SearchCriteriaParameters.Distance,
-                    UnSubscribeToken = savedSearch.UnSubscribeToken,
-                    Vacancies = vacanciesResponse.ApprenticeshipVacancies.Select(x => (GetSavedSearchesQueryResult.SearchResult.ApprenticeshipVacancy)x)
-                        .ToList()
-                });
+                if (vacanciesResponse != null && vacanciesResponse.ApprenticeshipVacancies.Any())
+                    searchResultList.Add(new GetSavedSearchesQueryResult.SearchResult
+                    {
+                        Id = savedSearch.Id,
+                        User = candidate,
+                        SearchTerm = savedSearch.SearchParameters.SearchTerm,
+                        Location = savedSearch.SearchParameters.Location,
+                        Categories = categories,
+                        Levels = levels,
+                        DisabilityConfident = savedSearch.SearchParameters.DisabilityConfident,
+                        Distance = savedSearch.SearchParameters.Distance,
+                        UnSubscribeToken = savedSearch.UnSubscribeToken,
+                        Vacancies = vacanciesResponse.ApprenticeshipVacancies.Select(x =>
+                                (GetSavedSearchesQueryResult.SearchResult.ApprenticeshipVacancy) x)
+                            .ToList()
+                    });
             }
 
             return new GetSavedSearchesQueryResult

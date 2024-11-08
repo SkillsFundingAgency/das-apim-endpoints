@@ -36,8 +36,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
             [JsonProperty("emailLastSendDate")]
             public DateTime? EmailLastSendDate { get; set; }
 
-            [JsonProperty("searchCriteriaParameters")]
-            public SearchParameters SearchCriteriaParameters { get; set; } = null!;
+            [JsonProperty("searchParameters")]
+            public SearchParameters SearchParameters { get; set; } = null!;
 
             [JsonProperty("unSubscribeToken")] 
             public string? UnSubscribeToken { get; set; }
@@ -45,11 +45,11 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
 
         public record SearchParameters
         {
-            [JsonProperty("categories")]
-            public List<string>? Categories { get; set; } = [];
+            [JsonProperty("selectedRouteIds")]
+            public List<int>? SelectedRouteIds { get; set; } = [];
 
-            [JsonProperty("levels")]
-            public List<string>? Levels { get; set; } = [];
+            [JsonProperty("selectedLevelIds")]
+            public List<int>? SelectedLevelIds { get; set; } = [];
 
             [JsonProperty("latitude")]
             public string? Latitude { get; set; }
@@ -57,8 +57,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
             [JsonProperty("longitude")]
             public string? Longitude { get; set; }
 
-            [JsonProperty("distance")]
-            public int? Distance { get; set; }
+            [JsonProperty("distance")] 
+            public decimal? Distance { get; set; } = null;
 
             [JsonProperty("searchTerm")]
             public string? SearchTerm { get; set; }

@@ -7,10 +7,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
     {
         public static string GetSavedSearchSearchParams(
             string? searchTerm,
-            int distance,
+            decimal? distance,
             string? location,
-            List<string>? categories,
-            List<string>? levels,
+            List<string?>? categories,
+            List<string?>? levels,
             bool? disabilityConfident)
         {
             var sb = new StringBuilder();
@@ -28,7 +28,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
 
         public static string GetSavedSearchUrl(
             string? searchTerm,
-            int distance,
+            decimal? distance,
             string? location,
             List<string>? categoryIds,
             List<string>? levelCodes,
