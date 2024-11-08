@@ -6,5 +6,5 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch;
 public record SaveSearchCommandResult(Guid Id)
 {
     public static SaveSearchCommandResult None => new(Guid.Empty);
-    public static SaveSearchCommandResult From(PostSavedSearchApiResponse response) => new (response.Id);
+    public static SaveSearchCommandResult From(PutSavedSearchApiResponse response) => new (response.Id);
 }

@@ -110,8 +110,7 @@ public class SearchApprenticeshipsController(ILogger<SearchApprenticeshipsContro
                 apiRequest.Location,
                 apiRequest.SearchTerm,
                 apiRequest.SelectedLevelIds,
-                apiRequest.SelectedRouteIds,
-                apiRequest.SortOrder
+                apiRequest.SelectedRouteIds
             ));
 
             return response == SaveSearchCommandResult.None

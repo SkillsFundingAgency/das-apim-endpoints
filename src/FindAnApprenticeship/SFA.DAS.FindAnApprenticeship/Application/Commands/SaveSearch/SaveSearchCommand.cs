@@ -7,10 +7,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch;
 public record SaveSearchCommand(
     Guid CandidateId,
     bool DisabilityConfident,
-    int? Distance,
+    decimal? Distance,
     string? Location,
     string? SearchTerm,
-    List<string>? SelectedLevelIds,
-    List<string>? SelectedRouteIds,
-    string? SortOrder
+    List<int>? SelectedLevelIds,
+    List<int>? SelectedRouteIds
 )  : IRequest<SaveSearchCommandResult>;
