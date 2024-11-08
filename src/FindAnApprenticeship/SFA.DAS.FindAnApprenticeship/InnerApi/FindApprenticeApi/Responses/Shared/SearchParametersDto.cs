@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.FindAnApprenticeship.Domain.Models;
+namespace SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses.Shared;
 
-public record SearchParameters(
+public record SearchParametersDto(
     string? SearchTerm,
     List<int>? SelectedRouteIds,
     int? Distance,
