@@ -4,7 +4,6 @@ using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.ProviderPR.Application.Queries.GetRelationship;
 using SFA.DAS.ProviderPR.Infrastructure;
-using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -27,8 +26,6 @@ public static class AddServiceRegistrationsExtension
         AddProviderRelationshipsApiClient(services, configuration);
 
         RegisterExternalApiClients(services);
-
-        services.AddOpenTelemetryRegistration(configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
         return services;
     }
