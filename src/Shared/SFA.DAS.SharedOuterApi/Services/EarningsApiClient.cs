@@ -88,4 +88,9 @@ public class EarningsApiClient : IEarningsApiClient<EarningsApiConfiguration>
     {
         return await _apiClient.PutWithResponseCode<TResponse>(request);
     }
+
+    public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+    {
+        throw new NotImplementedException();
+    }
 }

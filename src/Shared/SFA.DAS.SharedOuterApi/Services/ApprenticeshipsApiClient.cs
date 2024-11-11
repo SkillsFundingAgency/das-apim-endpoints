@@ -95,6 +95,11 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             _apiClient.GenerateServiceToken(serviceAccount);
         }
+
+        public async Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+        {
+            return await _apiClient.PatchWithResponseCode<TData, TResponse>(request, includeResponse);
+        }
     }
 
     public class ApiUnauthorizedException : Exception { }
