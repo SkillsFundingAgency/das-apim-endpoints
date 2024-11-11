@@ -3,8 +3,6 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using RestEase;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationshipByEmail;
-using SFA.DAS.ProviderPR.Application.Relationships.GetRelationshipByEmail;
 using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipByEmail;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
