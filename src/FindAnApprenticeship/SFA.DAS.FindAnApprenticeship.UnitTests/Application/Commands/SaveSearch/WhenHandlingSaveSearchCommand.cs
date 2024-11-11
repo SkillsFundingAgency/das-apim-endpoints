@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Net;
 using Newtonsoft.Json;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch.CreateSaveSearch;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;

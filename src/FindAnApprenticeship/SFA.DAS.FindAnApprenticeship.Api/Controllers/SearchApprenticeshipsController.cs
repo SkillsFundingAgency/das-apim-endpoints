@@ -12,7 +12,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Api.Models.SavedSearches;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch.CreateSaveSearch;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 

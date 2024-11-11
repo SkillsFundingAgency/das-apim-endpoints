@@ -18,6 +18,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidate
 {
@@ -27,6 +28,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidat
         INotificationService NotificationService,
         IRecruitApiClient<RecruitApiConfiguration> RecruitApiClient,
         ICandidateApiClient<CandidateApiConfiguration> CandidateApiClient,
+        IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> FindApprenticeshipApiClient,
         EmailEnvironmentHelper EmailEnvironmentHelper) : IRequestHandler<DeleteCandidateCommand, Unit>
     {
         public async Task<Unit> Handle(DeleteCandidateCommand command, CancellationToken cancellationToken)
@@ -83,8 +85,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidat
 
             if(emailNotifications.Count > 0) await SendApplicationWithDrawnNotificationEmail(emailNotifications);
 
-            var apiRequest = new DeleteAccountApiRequest(command.CandidateId);
-            await CandidateApiClient.Delete(apiRequest);
+            await Task.WhenAll(
+                FindApprenticeshipApiClient.Delete(new DeleteSavedSearchesApiRequest(command.CandidateId)),
+                CandidateApiClient.Delete(new DeleteAccountApiRequest(command.CandidateId)));
 
             return Unit.Value;
         }
