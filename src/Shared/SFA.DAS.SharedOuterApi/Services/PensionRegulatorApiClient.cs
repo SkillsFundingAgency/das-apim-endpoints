@@ -88,4 +88,9 @@ public class PensionRegulatorApiClient : IPensionRegulatorApiClient<PensionRegul
     {
         throw new NotImplementedException();
     }
+
+    public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+    {
+        throw new NotImplementedException();
+    }
 }

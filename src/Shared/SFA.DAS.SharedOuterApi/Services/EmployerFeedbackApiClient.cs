@@ -90,5 +90,10 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -23,6 +23,9 @@ using FluentAssertions;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprenticeshipUpdates;
 using SFA.DAS.Approvals.Extensions;
+using GetApprenticeshipUpdatesResponse = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetApprenticeshipUpdatesResponse;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 {
