@@ -1,8 +1,8 @@
 ﻿using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
-namespace SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
+namespace SFA.DAS.EmployerPR.InnerApi.Responses;
 
-public class GetRequestQueryResult
+public class GetRequestResponse
 {
     public Guid RequestId { get; set; }
     public required string RequestType { get; set; }

@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using MediatR;
-using SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
 using SFA.DAS.EmployerPR.Common;
 using SFA.DAS.EmployerPR.Infrastructure;
+using SFA.DAS.EmployerPR.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.PensionRegulator;
@@ -30,7 +30,7 @@ public class ValidatePermissionsRequestQueryHandler(
             return result;
         }
 
-        GetRequestQueryResult permissionRequest = permissionRequestResponse.GetContent()!;
+        GetRequestResponse permissionRequest = permissionRequestResponse.GetContent()!;
 
         if (permissionRequest.RequestType != RequestType.CreateAccount.ToString())
         {
@@ -52,7 +52,7 @@ public class ValidatePermissionsRequestQueryHandler(
 
         result.HasEmployerAccount = accountHistoriesResponse.StatusCode == HttpStatusCode.OK;
 
-        result.HasValidaPaye = tprResponse.StatusCode == HttpStatusCode.OK && tprResponse.Body.Any(o => o.Status == string.Empty);
+        result.HasValidPaye = tprResponse.StatusCode == HttpStatusCode.OK && tprResponse.Body.Any(o => o.Status == string.Empty);
 
         return result;
     }
