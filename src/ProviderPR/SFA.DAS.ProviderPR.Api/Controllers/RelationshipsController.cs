@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ProviderPR.Application.Queries.GetRelationship;
 using SFA.DAS.ProviderPR.Application.Queries.GetRelationshipByEmail;
 using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationships;
-using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Requests;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
 
@@ -11,8 +10,7 @@ namespace SFA.DAS.ProviderPR.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class RelationshipsController(IMediator _mediator, IProviderRelationshipsApiRestClient _prApiClient,
-    ILogger<RelationshipsController> _logger) : ControllerBase
+public class RelationshipsController(IMediator _mediator) : ControllerBase
 {
     [HttpGet("{ukprn:long}")]
     [ProducesResponseType(typeof(GetProviderRelationshipsResponse), StatusCodes.Status200OK)]
