@@ -11,7 +11,7 @@ public record SaveSearchCommand(
     decimal? Distance,
     string Location,
     string SearchTerm,
-    List<int> SelectedLevelIds,
-    List<int> SelectedRouteIds,
+    List<int>? SelectedLevelIds,
+    List<int>? SelectedRouteIds,
     string UnSubscribeToken
 ) : IRequest<SaveSearchCommandResult>;
