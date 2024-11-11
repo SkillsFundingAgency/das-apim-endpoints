@@ -30,8 +30,6 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
         {
             try
             {
-                _logger.LogInformation("CreateLog called");
-
                 var response = await _mediator.Send(new CreateLogDataCommand
                 {
                     Log = request.MapFromLogCreateRequest()
