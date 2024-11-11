@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses.Shared;
 
