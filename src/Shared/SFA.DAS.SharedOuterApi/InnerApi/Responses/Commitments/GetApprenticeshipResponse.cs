@@ -1,7 +1,7 @@
-﻿using SFA.DAS.Approvals.InnerApi.Interfaces;
-using System;
+﻿using System;
+using SFA.DAS.SharedOuterApi.InnerApi.Interfaces;
 
-namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses
+namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments
 {
     public class GetApprenticeshipResponse : IPartyResource
     {
