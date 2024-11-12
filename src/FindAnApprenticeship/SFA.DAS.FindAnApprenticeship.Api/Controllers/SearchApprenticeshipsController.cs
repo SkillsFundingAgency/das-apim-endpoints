@@ -115,7 +115,7 @@ public class SearchApprenticeshipsController(ILogger<SearchApprenticeshipsContro
             ));
 
             return response == SaveSearchCommandResult.None
-                ? new StatusCodeResult((int)HttpStatusCode.InternalServerError)
+                ? new StatusCodeResult((int)HttpStatusCode.BadRequest)
                 : Created();
         }
         catch (Exception e)
