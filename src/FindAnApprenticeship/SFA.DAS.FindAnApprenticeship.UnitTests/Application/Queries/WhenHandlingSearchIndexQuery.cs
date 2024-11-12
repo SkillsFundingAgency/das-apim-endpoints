@@ -5,6 +5,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchIndex;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses.Shared;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -78,6 +79,6 @@ public class WhenHandlingSearchIndexQuery
         Assert.That(locationItem, Is.EqualTo(result.LocationItem));
         result.Routes.Should().BeEquivalentTo(routes.Routes);
         result.SavedSearches.Should()
-            .BeEquivalentTo(savedSearchesApiResponse.SavedSearches.Select(c => c.MapSavedSearch()).ToList());
+            .BeEquivalentTo(savedSearchesApiResponse.SavedSearches.Select(c => c.ToDomain()).ToList());
     }
 }
