@@ -18,6 +18,7 @@ pr:
   paths:
     include:
     - src/VacanciesManage
+    - Directory.Packages.props
     exclude:
     - azure
     - pipeline-templates
