@@ -9,7 +9,7 @@ public record SaveSearchCommand(
     Guid CandidateId,
     bool DisabilityConfident,
     decimal? Distance,
-    string Location,
+    string? Location,
     string SearchTerm,
     List<int>? SelectedLevelIds,
     List<int>? SelectedRouteIds,
