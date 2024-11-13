@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Net;
 using Newtonsoft.Json;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch;
@@ -39,7 +39,9 @@ public class WhenHandlingSaveSearchCommand
 
         // act
         var result = await sut.Handle(saveSearchCommand, CancellationToken.None);
+
         var savedSearchParameters = (passedRequest?.Data as PutSavedSearchApiRequestData)?.SearchParameters;
+        var unSubscribeToken = (passedRequest?.Data as PutSavedSearchApiRequestData)?.UnSubscribeToken;
 
         // assert
         result.Id.Should().Be(savedSearchApiResponse.Id);
@@ -53,5 +55,6 @@ public class WhenHandlingSaveSearchCommand
         savedSearchParameters?.Location.Should().BeEquivalentTo(saveSearchCommand.Location);
         savedSearchParameters?.Latitude.Should().Be(locationItem.GeoPoint[0].ToString(CultureInfo.InvariantCulture));
         savedSearchParameters?.Longitude.Should().Be(locationItem.GeoPoint[1].ToString(CultureInfo.InvariantCulture));
+        unSubscribeToken.Should().Be(saveSearchCommand.UnSubscribeToken);
     }
 }

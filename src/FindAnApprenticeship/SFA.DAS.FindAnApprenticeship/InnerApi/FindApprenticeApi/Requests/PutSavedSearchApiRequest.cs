@@ -4,7 +4,11 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
 
-public record PutSavedSearchApiRequestData(SearchParameters SearchParameters);
+public record PutSavedSearchApiRequestData
+{
+    public string UnSubscribeToken { get; set; }
+    public SearchParameters SearchParameters { get; set; }
+};
 
 public class PutSavedSearchApiRequest(Guid candidateId, Guid id, PutSavedSearchApiRequestData payload) : IPutApiRequest
 {
