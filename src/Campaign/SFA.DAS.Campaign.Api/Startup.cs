@@ -87,6 +87,8 @@ namespace SFA.DAS.Campaign.Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CampaignOuterApi", Version = "v1" });
             });
+
+            services.AddLogging();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
