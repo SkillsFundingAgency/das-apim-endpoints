@@ -9,10 +9,13 @@ using SFA.DAS.ApprenticeApp.Api.Controllers;
 using SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
+using SFA.DAS.ApprenticeApp.Application.Queries.Tasks;
 using SFA.DAS.ApprenticeApp.Models;
+using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading.Tasks;
+using Apprentice = SFA.DAS.ApprenticeApp.Models.Apprentice;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests
 {
@@ -584,6 +587,57 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             ksbProgressResult.KSBProgress = new System.Collections.Generic.List<ApprenticeKsbProgressData>() { ksbProgress };
             var result = await controller.GetTaskViewData(apprenticeId, taskId);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkObjectResult));
+        }
+
+        [Test, MoqAutoData]
+        public async Task Get_TaskReminders(
+            [Frozen] Mock<IMediator> mediator,
+            [Frozen] GetTaskRemindersByApprenticeshipIdQueryResult taskRemindersResult,
+            [Greedy] TasksController controller)
+        {
+            var httpContext = new DefaultHttpContext();
+            var apprenticeId = Guid.NewGuid();
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+            mediator.Setup(m => m.Send(It.IsAny<GetApprenticeDetailsQuery>(), default)).ReturnsAsync(new GetApprenticeDetailsQueryResult
+            {
+                ApprenticeDetails = new ApprenticeDetails
+                {
+                    Apprentice = new Apprentice { ApprenticeId = apprenticeId },
+                    MyApprenticeship = new MyApprenticeship { ApprenticeshipId = 1 }
+                }
+            });
+
+            var result = await controller.GetTaskReminders(apprenticeId);
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkObjectResult));
+        }
+
+        [Test, MoqAutoData]
+        public async Task Get_TaskReminders_NoApprenticeshipId(
+           [Frozen] Mock<IMediator> mediator,
+           [Greedy] TasksController controller)
+        {
+            var httpContext = new DefaultHttpContext();
+            var apprenticeId = Guid.NewGuid();
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+            mediator.Setup(m => m.Send(It.IsAny<GetApprenticeDetailsQuery>(), default)).ReturnsAsync(new GetApprenticeDetailsQueryResult
+            {
+                ApprenticeDetails = new ApprenticeDetails
+                {
+                    Apprentice = new Apprentice { ApprenticeId = apprenticeId },
+                    MyApprenticeship = null
+                }
+            });
+
+            var result = await controller.GetTaskReminders(apprenticeId);
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
         }
     }
 }

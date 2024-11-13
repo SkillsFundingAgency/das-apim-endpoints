@@ -4,6 +4,7 @@ using SFA.DAS.ApprenticeApp.Application.Commands;
 using SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
+using SFA.DAS.ApprenticeApp.Application.Queries.Tasks;
 using SFA.DAS.ApprenticeApp.Models;
 using System;
 using System.Collections.Generic;
@@ -189,6 +190,22 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             };
 
             return Ok(getTaskViewDataResult);
+        }
+
+
+        [HttpGet("/{apprenticeId}/progress/tasks/taskReminders")]
+        public async Task<IActionResult> GetTaskReminders(Guid apprenticeId)
+        {
+            var apprenticeDetailsResult = await _mediator.Send(new GetApprenticeDetailsQuery { ApprenticeId = apprenticeId }); ;
+            if (apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship == null)
+                return Ok();
+
+            var taskRemindersResult = await _mediator.Send(new GetTaskRemindersByApprenticeshipIdQuery
+            {
+                ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId
+            });
+
+            return Ok(taskRemindersResult.TaskReminders);
         }
     }
 }
