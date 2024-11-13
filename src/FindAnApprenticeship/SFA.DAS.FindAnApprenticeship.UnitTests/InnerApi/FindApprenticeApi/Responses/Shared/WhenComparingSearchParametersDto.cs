@@ -4,192 +4,46 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.InnerApi.FindApprenticeApi.Resp
 
 public class WhenComparingSearchParametersDto
 {
-    [Test, MoqAutoData]
-    public void Then_If_Values_Match_Then_Dtos_Are_Equal(SearchParametersDto searchParametersDto)
+    private static readonly object?[] EqualTestCases =
+    [
+        new object[] { new SearchParametersDto("foo", null, null, false, null, null, null, null), new SearchParametersDto("foo", null, null, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, [1, 2], null, false, null, null, null, null), new SearchParametersDto(null, [1, 2], null, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, 1, false, null, null, null, null), new SearchParametersDto(null, null, 1, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, null, null, null, null), new SearchParametersDto(null, null, null, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, true, null, null, null, null), new SearchParametersDto(null, null, null, true, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, [1, 2], null, null, null), new SearchParametersDto(null, null, null, false, [1, 2], null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, null, "London", null, null), new SearchParametersDto(null, null, null, false, null, "London", null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, null, null, "1.0", null), new SearchParametersDto(null, null, null, false, null, null, "1.0", null) },
+        new object[] { new SearchParametersDto(null, null, null, false, null, null, null, "1.0"), new SearchParametersDto(null, null, null, false, null, null, null, "1.0") },
+    ];
+    
+    [TestCaseSource(nameof(EqualTestCases))]
+    public void Then_If_Values_Match_Then_Dtos_Are_Equal(SearchParametersDto left, SearchParametersDto right)
     {
-        // arrange
-        var dto = searchParametersDto with
-        {
-            SelectedRouteIds = searchParametersDto.SelectedRouteIds?.Select(x => x).ToList(),
-            SelectedLevelIds = searchParametersDto.SelectedLevelIds?.Select(x => x).ToList()
-        };
-        
         // act
-        var result = dto.Equals(searchParametersDto); 
+        var result = left.Equals(right);
         
         // assert
         result.Should().BeTrue();
     }
     
-    [Test, MoqAutoData]
-    public void Then_If_Selected_Routes_Do_Not_Match_Then_Dtos_Are_Not_Equal(SearchParametersDto searchParametersDto)
-    {
-        // arrange
-        var dto = searchParametersDto with
-        {
-            SelectedRouteIds = [4, 5000],
-            SelectedLevelIds = searchParametersDto.SelectedLevelIds?.Select(x => x).ToList()
-        };
-        
-        // act
-        var result = dto.Equals(searchParametersDto); 
-        
-        // assert
-        result.Should().BeFalse();
-    }
+    private static readonly object?[] NotEqualTestCases =
+    [
+        new object[] { new SearchParametersDto("foo", null, null, false, null, null, null, null), new SearchParametersDto("foo2", null, null, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, [1, 2], null, false, null, null, null, null), new SearchParametersDto(null, [1, 3], null, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, 1, false, null, null, null, null), new SearchParametersDto(null, null, 2, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, null, null, null, null), new SearchParametersDto(null, null, null, true, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, [1, 2], null, null, null), new SearchParametersDto(null, null, null, false, [1, 3], null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, null, "London", null, null), new SearchParametersDto(null, null, null, false, null, "Glasgow", null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, null, null, "1.0", null), new SearchParametersDto(null, null, null, false, null, null, "1.1", null) },
+        new object[] { new SearchParametersDto(null, null, null, false, null, null, null, "1.0 "), new SearchParametersDto(null, null, null, false, null, null, null, "1.1") },
+    ];
     
-    [Test, MoqAutoData]
-    public void Then_If_Selected_Levels_Do_Not_Match_Then_Dtos_Are_Not_Equal(SearchParametersDto searchParametersDto)
-    {
-        // arrange
-        var dto = searchParametersDto with
-        {
-            SelectedRouteIds = searchParametersDto.SelectedRouteIds?.Select(x => x).ToList(),
-            SelectedLevelIds = [999999]
-        };
-        
-        // act
-        var result = dto.Equals(searchParametersDto); 
-        
-        // assert
-        result.Should().BeFalse();
-    }
-    
-    [Test, MoqAutoData]
-    public void Then_If_Selected_Levels_Are_Null_Then_Dtos_Are_Not_Equal(SearchParametersDto searchParametersDto)
-    {
-        // arrange
-        var dto = searchParametersDto with
-        {
-            SelectedRouteIds = searchParametersDto.SelectedRouteIds?.Select(x => x).ToList(),
-            SelectedLevelIds = null
-        };
-        
-        // act
-        var result = dto.Equals(searchParametersDto); 
-        
-        // assert
-        result.Should().BeFalse();
-    }
-    
-    [Test, MoqAutoData]
-    public void Then_If_Selected_RouteIds_Are_Null_Then_Dtos_Are_Not_Equal(SearchParametersDto searchParametersDto)
-    {
-        // arrange
-        var dto = searchParametersDto with
-        {
-            SelectedRouteIds = null,
-            SelectedLevelIds = searchParametersDto.SelectedLevelIds?.Select(x => x).ToList()
-        };
-        
-        // act
-        var result = dto.Equals(searchParametersDto); 
-        
-        // assert
-        result.Should().BeFalse();
-    }
-    
-    [Test, MoqAutoData]
-    public void Then_If_SearchTerm_Does_Not_Match_Then_Dtos_Are_Not_Equal(SearchParametersDto searchParametersDto)
-    {
-        // arrange
-        var dto = searchParametersDto with
-        {
-            SearchTerm = "qwerty"
-        };
-        
-        // act
-        var result = dto.Equals(searchParametersDto); 
-        
-        // assert
-        result.Should().BeFalse();
-    }
-    
-    [Test, MoqAutoData]
-    public void Then_If_Distance_Does_Not_Match_Then_Dtos_Are_Not_Equal(SearchParametersDto searchParametersDto)
-    {
-        // arrange
-        var dto = searchParametersDto with
-        {
-            Distance = null
-        };
-        
-        // act
-        var result = dto.Equals(searchParametersDto); 
-        
-        // assert
-        result.Should().BeFalse();
-    }
-    
-    [Test, MoqAutoData]
-    public void Then_If_Location_Does_Not_Match_Then_Dtos_Are_Not_Equal(SearchParametersDto searchParametersDto)
-    {
-        // arrange
-        var dto = searchParametersDto with
-        {
-            Location = null
-        };
-        
-        // act
-        var result = dto.Equals(searchParametersDto); 
-        
-        // assert
-        result.Should().BeFalse();
-    }
-    
-    [Test, MoqAutoData]
-    public void Then_If_Latitude_Does_Not_Match_Then_Dtos_Are_Not_Equal(SearchParametersDto searchParametersDto)
-    {
-        // arrange
-        var dto = searchParametersDto with
-        {
-            Latitude = null
-        };
-        
-        // act
-        var result = dto.Equals(searchParametersDto); 
-        
-        // assert
-        result.Should().BeFalse();
-    }
-    
-    [Test, MoqAutoData]
-    public void Then_If_Longitude_Does_Not_Match_Then_Dtos_Are_Not_Equal(SearchParametersDto searchParametersDto)
-    {
-        // arrange
-        var dto = searchParametersDto with
-        {
-            Longitude = null
-        };
-        
-        // act
-        var result = dto.Equals(searchParametersDto); 
-        
-        // assert
-        result.Should().BeFalse();
-    }
-    
-    [Test, MoqAutoData]
-    public void Then_If_DisabilityConfident_Does_Not_Match_Then_Dtos_Are_Not_Equal(SearchParametersDto searchParametersDto)
-    {
-        // arrange
-        var dto = searchParametersDto with
-        {
-            DisabilityConfident = !searchParametersDto.DisabilityConfident
-        };
-        
-        // act
-        var result = dto.Equals(searchParametersDto); 
-        
-        // assert
-        result.Should().BeFalse();
-    }
-    
-    [Test, MoqAutoData]
-    public void Then_If_Source_Is_Null_Then_Dtos_Are_Not_Equal(SearchParametersDto searchParametersDto)
+    [TestCaseSource(nameof(NotEqualTestCases))]
+    public void Then_If_Values_Do_Not_Match_Then_Dtos_Are_Not_Equal(SearchParametersDto left, SearchParametersDto right)
     {
         // act
-        var result = searchParametersDto.Equals(null); 
+        var result = left.Equals(right);
         
         // assert
         result.Should().BeFalse();

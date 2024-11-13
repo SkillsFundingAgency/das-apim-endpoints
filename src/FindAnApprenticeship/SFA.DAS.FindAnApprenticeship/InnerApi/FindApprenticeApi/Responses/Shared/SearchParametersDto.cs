@@ -24,7 +24,7 @@ public record SearchParametersDto(
         
         var routesEqual = SelectedRouteIds is not null && other.SelectedRouteIds is not null
             ? (SelectedRouteIds.Count == other.SelectedRouteIds.Count) && !SelectedRouteIds.Except(other.SelectedRouteIds).Any()
-            : SelectedRouteIds == other.SelectedLevelIds;
+            : SelectedRouteIds == other.SelectedRouteIds;
 
         if (routesEqual is false)
         {
