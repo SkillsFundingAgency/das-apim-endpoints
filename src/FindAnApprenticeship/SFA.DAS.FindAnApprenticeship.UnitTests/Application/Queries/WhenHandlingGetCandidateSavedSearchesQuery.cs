@@ -17,8 +17,10 @@ public class WhenHandlingGetCandidateSavedSearchesQuery
         )
     {
         // arrange
+        GetCandidateSavedSearchesApiRequest? passedRequest = null;
         findApprenticeshipApiClient
             .Setup(x => x.Get<GetCandidateSavedSearchesApiResponse>(It.IsAny<GetCandidateSavedSearchesApiRequest>()))
+            .Callback<IGetApiRequest>(x => passedRequest = x as GetCandidateSavedSearchesApiRequest)
             .ReturnsAsync(queryResponse);
         
         // act
@@ -26,5 +28,6 @@ public class WhenHandlingGetCandidateSavedSearchesQuery
 
         // assert
         result.Should().BeEquivalentTo(queryResponse);
+        passedRequest!.GetUrl.Should().Be($"api/Users/{query.CandidateId}/SavedSearches");
     }
 }

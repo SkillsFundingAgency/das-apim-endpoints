@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses.Shared;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -26,7 +27,7 @@ public class SearchIndexQueryHandler(
         var totalPositionsCountTask = totalPositionsAvailableService.GetTotalPositionsAvailable();
 
         List<GetRoutesListItem> routes = null;
-        List<GetCandidateSavedSearchesApiResponse.SavedSearchResponse> savedSearches = null;
+        List<SavedSearchDto> savedSearches = null;
         var routesTask = Task.FromResult((GetRoutesListResponse)null);
         var savedSearchesTask = Task.FromResult((GetCandidateSavedSearchesApiResponse)null);
         
@@ -48,7 +49,7 @@ public class SearchIndexQueryHandler(
             TotalApprenticeshipCount = totalPositionsCountTask.Result,
             LocationSearched = !string.IsNullOrEmpty(request.LocationSearchTerm),
             LocationItem = location,
-            SavedSearches = savedSearches?.Select(c=>c.MapSavedSearch()).ToList(),
+            SavedSearches = savedSearches?.Select(c=>c.ToDomain()).ToList(),
             Routes = routes
         };
     }

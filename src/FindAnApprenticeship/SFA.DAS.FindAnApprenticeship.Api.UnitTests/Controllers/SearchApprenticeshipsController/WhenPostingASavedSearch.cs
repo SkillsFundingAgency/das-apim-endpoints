@@ -42,7 +42,7 @@ public class WhenPostingASavedSearch
     }
     
     [Test, MoqAutoData]
-    public async Task If_The_Request_Is_Invalid_Then_Internal_Server_Error_Is_Returned(
+    public async Task If_The_Request_Is_Invalid_Then_BadRequest_Is_Returned(
         Guid candidateId,
         PostSaveSearchApiRequest apiRequest,    
         [Frozen] Mock<IMediator> mediator,
@@ -67,7 +67,7 @@ public class WhenPostingASavedSearch
         
         // assert
         response.Should().NotBeNull();
-        response?.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+        response?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
     }
     
     [Test, MoqAutoData]
