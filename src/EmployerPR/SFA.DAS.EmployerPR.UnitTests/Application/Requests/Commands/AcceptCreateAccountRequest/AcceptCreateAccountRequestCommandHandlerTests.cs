@@ -9,8 +9,10 @@ using SFA.DAS.EmployerPR.Infrastructure;
 using SFA.DAS.EmployerPR.InnerApi.Requests;
 using SFA.DAS.EmployerPR.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.PensionRegulator;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.PensionsRegulator;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -24,6 +26,7 @@ public class AcceptCreateAccountRequestCommandHandlerTests
     private Mock<IProviderRelationshipsApiRestClient> _prApiClientMock;
     private Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> _tprApiClientMock;
     private Mock<IAccountsApiClient<AccountsConfiguration>> _accountsApiClientMock;
+    private Mock<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>> _employerProfilesApiMock;
     private GetRequestResponse _permissionRequest;
     private AcceptCreateAccountRequestCommand _command;
     private AcceptCreateAccountRequestCommandResult _result;
@@ -35,7 +38,9 @@ public class AcceptCreateAccountRequestCommandHandlerTests
         _prApiClientMock = new();
         _tprApiClientMock = new();
         _accountsApiClientMock = new();
-        _sut = new(_prApiClientMock.Object, _tprApiClientMock.Object, _accountsApiClientMock.Object);
+        _employerProfilesApiMock = new();
+
+        _sut = new(_prApiClientMock.Object, _tprApiClientMock.Object, _accountsApiClientMock.Object, _employerProfilesApiMock.Object);
         Fixture fixture = new();
         _permissionRequest = fixture.Create<GetRequestResponse>();
 
@@ -47,6 +52,11 @@ public class AcceptCreateAccountRequestCommandHandlerTests
 
         _createAccountResponse = fixture.Create<PostCreateAccountResponse>();
         _accountsApiClientMock.Setup(a => a.PostWithResponseCode<CreateAccountRequestBody, PostCreateAccountResponse>(It.Is<PostCreateAccountRequest>(r => true), true)).ReturnsAsync(new ApiResponse<PostCreateAccountResponse>(_createAccountResponse, HttpStatusCode.OK, string.Empty));
+
+        var getUserResponse = fixture.Create<EmployerProfileUsersApiResponse>();
+        _employerProfilesApiMock.Setup(e => e.GetWithResponseCode<EmployerProfileUsersApiResponse>(It.Is<GetEmployerUserAccountRequest>(r => r.GetUrl.Contains(_command.UserRef.ToString())))).ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(getUserResponse, HttpStatusCode.OK, null));
+
+        _employerProfilesApiMock.Setup(e => e.PutWithResponseCode<EmployerProfileUsersApiResponse>(It.IsAny<PutUpsertEmployerUserAccountRequest>())).ReturnsAsync(new ApiResponse<EmployerProfileUsersApiResponse>(getUserResponse, HttpStatusCode.OK, null));
 
         _result = await _sut.Handle(_command, CancellationToken.None);
     }
@@ -62,6 +72,14 @@ public class AcceptCreateAccountRequestCommandHandlerTests
     {
         _tprApiClientMock.Verify(t => t.GetWithResponseCode<IEnumerable<PensionRegulatorOrganisation>>(It.Is<GetPensionsRegulatorOrganisationsRequest>(r => r.PayeRef == _permissionRequest.EmployerPAYE && r.Aorn == _permissionRequest.EmployerAORN)), Times.Once);
     }
+
+    [Test]
+    public void Handle_GetsExistingUserProfile()
+    => _employerProfilesApiMock.Verify(e => e.GetWithResponseCode<EmployerProfileUsersApiResponse>(It.IsAny<GetEmployerUserAccountRequest>()), Times.Once);
+
+    [Test]
+    public void Handle_UpdatesUserProfile()
+        => _employerProfilesApiMock.Verify(e => e.PutWithResponseCode<EmployerProfileUsersApiResponse>(It.IsAny<PutUpsertEmployerUserAccountRequest>()), Times.Once);
 
     [Test]
     public void Handle_CreatesEmployerAccount()

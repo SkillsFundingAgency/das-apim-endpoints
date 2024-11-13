@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using RestEase;
 using SFA.DAS.EmployerPR.Common;
 using SFA.DAS.EmployerPR.Infrastructure;
@@ -6,8 +7,10 @@ using SFA.DAS.EmployerPR.InnerApi.Requests;
 using SFA.DAS.EmployerPR.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.PensionRegulator;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.PensionsRegulator;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -17,7 +20,8 @@ namespace SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptCreateAccountRe
 public class AcceptCreateAccountRequestCommandHandler(
     IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient,
     IPensionRegulatorApiClient<PensionRegulatorApiConfiguration> _pensionRegulatorApiClient,
-    IAccountsApiClient<AccountsConfiguration> _accountsApiClient)
+    IAccountsApiClient<AccountsConfiguration> _accountsApiClient,
+    IEmployerProfilesApiClient<EmployerProfilesApiConfiguration> _employerProfilesApiClient)
     : IRequestHandler<AcceptCreateAccountRequestCommand, AcceptCreateAccountRequestCommandResult>
 {
     public async Task<AcceptCreateAccountRequestCommandResult> Handle(AcceptCreateAccountRequestCommand command, CancellationToken cancellationToken)
@@ -25,6 +29,8 @@ public class AcceptCreateAccountRequestCommandHandler(
         GetRequestResponse permissionRequest = await GetPermissionRequestDetails(_providerRelationshipsApiRestClient, command, cancellationToken);
 
         PensionRegulatorOrganisation organisation = await GetPensionRegulatorOrganisation(_pensionRegulatorApiClient, permissionRequest);
+
+        await UpdateUserProfile(command);
 
         PostCreateAccountResponse createAccountResponse = await CreateEmployerAccount(command, permissionRequest, organisation);
 
@@ -50,6 +56,16 @@ public class AcceptCreateAccountRequestCommandHandler(
 
         PensionRegulatorOrganisation organisation = tprResponse.Body.First(r => r.Status == string.Empty);
         return organisation;
+    }
+
+    private async Task UpdateUserProfile(AcceptCreateAccountRequestCommand command)
+    {
+        var userResponse = await _employerProfilesApiClient.GetWithResponseCode<EmployerProfileUsersApiResponse>(new GetEmployerUserAccountRequest(command.UserRef.ToString()));
+        var govId = userResponse.StatusCode == HttpStatusCode.NotFound ? command.UserRef.ToString() : userResponse.Body.GovUkIdentifier;
+
+        PutUpsertEmployerUserAccountRequest request = new(command.UserRef, govId, command.Email, command.FirstName, command.LastName);
+        var response = await _employerProfilesApiClient.PutWithResponseCode<EmployerProfileUsersApiResponse>(request);
+        response.EnsureSuccessStatusCode();
     }
 
     private async Task<PostCreateAccountResponse> CreateEmployerAccount(AcceptCreateAccountRequestCommand command, GetRequestResponse permissionRequest, PensionRegulatorOrganisation organisation)
