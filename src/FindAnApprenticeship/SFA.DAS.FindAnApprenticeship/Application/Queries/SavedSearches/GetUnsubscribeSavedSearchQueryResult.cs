@@ -7,11 +7,11 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SavedSearches;
 
-public record GetUnsubscribeSavedSearchQueryResult(SavedSearch SavedSearch, List<GetRoutesListItem> Routes)
+public record GetUnsubscribeSavedSearchQueryResult(SavedSearch SavedSearch, GetRoutesListItem Routes)
 {
-    public static GetUnsubscribeSavedSearchQueryResult From(GetCandidateSavedSearchApiResponse source, GetRoutesListResponse routes)
+    public static GetUnsubscribeSavedSearchQueryResult From(GetSavedSearchUnsubscribeApiResponse source, GetRoutesListResponse routes)
     {
-        return new GetUnsubscribeSavedSearchQueryResult(MapSavedSearch(source.SavedSearch), routes.Routes.ToList());
+        return new GetUnsubscribeSavedSearchQueryResult(MapSavedSearch(source.SavedSearch), routes.Routes.First());
     }
 
     private static SavedSearch MapSavedSearch(SavedSearchDto source)
