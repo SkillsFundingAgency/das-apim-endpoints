@@ -21,6 +21,7 @@ pr:
     - pipeline-templates
     - deployments
     - src/Approvals
+    - Directory.Packages.props
 
 variables:
 - group: Release Management Resources
