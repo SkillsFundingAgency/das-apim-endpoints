@@ -22,13 +22,14 @@ public class SearchApprenticeshipsController(ILogger<SearchApprenticeshipsContro
 {
     [HttpGet]
     [Route("")]
-    public async Task<IActionResult> Index([FromQuery] string locationSearchTerm = null)
+    public async Task<IActionResult> Index([FromQuery] string locationSearchTerm = null, [FromQuery] Guid? candidateId = null)
     {
         try
         {
             var result = await mediator.Send(new SearchIndexQuery
             {
-                LocationSearchTerm = locationSearchTerm
+                LocationSearchTerm = locationSearchTerm,
+                CandidateId = candidateId
             });
             var viewModel = (SearchIndexApiResponse)result;
             return Ok(viewModel);
@@ -116,7 +117,7 @@ public class SearchApprenticeshipsController(ILogger<SearchApprenticeshipsContro
             ));
 
             return response == SaveSearchCommandResult.None
-                ? new StatusCodeResult((int)HttpStatusCode.InternalServerError)
+                ? new StatusCodeResult((int)HttpStatusCode.BadRequest)
                 : Created();
         }
         catch (Exception e)

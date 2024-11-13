@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,7 +70,7 @@ public class WhenPostingASavedSearch
         
         // assert
         response.Should().NotBeNull();
-        response?.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+        response?.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
     }
     
     [Test, MoqAutoData]
