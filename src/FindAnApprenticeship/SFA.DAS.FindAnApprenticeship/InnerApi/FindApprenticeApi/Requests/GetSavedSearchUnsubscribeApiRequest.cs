@@ -9,8 +9,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests
 {
     public record GetSavedSearchUnsubscribeApiRequest (Guid SearchId) : IGetApiRequest
     {
-        private readonly Guid _search_id = SearchId;
-        
-        public string GetUrl => $"saved-searches/{_search_id}/unsubscribe";
+        public string GetUrl => $"api/savedsearches/{SearchId}";
     }
 }
