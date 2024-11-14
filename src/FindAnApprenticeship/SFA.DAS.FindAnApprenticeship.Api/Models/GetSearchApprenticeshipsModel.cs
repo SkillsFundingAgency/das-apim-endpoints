@@ -16,6 +16,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         [FromQuery] public int? PageSize { get; set; }
         [FromQuery] public string? SearchTerm { get; set; }
         [FromQuery] public VacancySort? Sort { get; set; }
+        [FromQuery] public WageType? SkipWageType { get; set; } = null;
         [FromQuery] public bool DisabilityConfident { get; set; }
         [FromQuery] public string? CandidateId { get; set; }
         
@@ -26,6 +27,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
             Location = model.Location,
             Distance = model.Distance,
             Sort = model.Sort ?? Constants.SearchApprenticeships.DefaultSortOrder,
+            SkipWageType = model.SkipWageType,
             PageNumber = model.PageNumber is null or <= 0 ? Constants.SearchApprenticeships.DefaultPageNumber : (int)model.PageNumber,
             PageSize = model.PageSize is null or <= 0 ? Constants.SearchApprenticeships.DefaultPageSize : (int)model.PageSize,
             SearchTerm = model.SearchTerm,

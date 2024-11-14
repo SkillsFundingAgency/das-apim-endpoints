@@ -12,6 +12,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
             return new SearchApprenticeshipsApiResponse
             {
                 TotalApprenticeshipCount = source.TotalApprenticeshipCount,
+                TotalCompetitiveVacanciesCount = source.TotalWageTypeVacanciesCount,
                 Location = source.LocationItem,
                 Routes = source.Routes.Select(c=>(RouteApiResponse)c).ToList(),
                 Vacancies = source.Vacancies.Select(c => (GetVacanciesListResponseItem)c).ToList(),
@@ -29,6 +30,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
 
         [JsonPropertyName("totalApprenticeshipCount")]
         public long TotalApprenticeshipCount { get; init; }
+        [JsonPropertyName("totalCompetitiveVacanciesCount")]
+        public long TotalCompetitiveVacanciesCount { get; init; }
         [JsonPropertyName("location")]
         public SearchLocationApiResponse Location { get; init; }
         public List<RouteApiResponse> Routes { get; init; }

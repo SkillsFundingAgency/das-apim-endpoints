@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
@@ -62,6 +63,14 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var categories = routes.Routes.Where(route => request.SelectedRouteIds != null && request.SelectedRouteIds.Contains(route.Id.ToString()))
                 .Select(route => route.Name).ToList();
 
+            var totalWageTypeVacanciesCount = new GetApprenticeshipCountResponse { TotalVacancies = 0 };
+            if (request.Sort is VacancySort.SalaryAsc or VacancySort.SalaryDesc)
+            {
+                totalWageTypeVacanciesCount = await
+                    findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
+                        new GetApprenticeshipCountRequest(request.SkipWageType));
+            }
+
             var vacancyResult = await findApprenticeshipApiClient.Get<GetVacanciesResponse>(
                 new GetVacanciesRequest(
                     location?.GeoPoint?.FirstOrDefault(),
@@ -73,6 +82,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     categories,
                     request.SelectedLevelIds,
                     request.Sort,
+                    request.SkipWageType,
                     request.DisabilityConfident));
 
             var totalPages = (int)Math.Ceiling((double)vacancyResult.TotalFound / request.PageSize);
@@ -122,6 +132,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             return new SearchApprenticeshipsResult
             {
                 TotalApprenticeshipCount = vacancyResult.Total,
+                TotalWageTypeVacanciesCount = totalWageTypeVacanciesCount.TotalVacancies,
                 TotalFound = vacancyResult.TotalFound,
                 LocationItem = location,
                 Routes = routes.Routes.ToList(),
