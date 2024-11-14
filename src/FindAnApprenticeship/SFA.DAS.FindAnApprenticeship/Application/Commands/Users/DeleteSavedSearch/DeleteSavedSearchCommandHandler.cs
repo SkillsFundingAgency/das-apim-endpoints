@@ -11,6 +11,6 @@ public class DeleteSavedSearchCommandHandler(IFindApprenticeshipApiClient<FindAp
 {
     public async Task Handle(DeleteSavedSearchCommand request, CancellationToken cancellationToken)
     {
-        await findApprenticeshipApiClient.Delete(new DeleteSavedSearchRequest(request.CandidateId, request.Id));
+        await findApprenticeshipApiClient.Delete(new DeleteCandidateSavedSearchRequest(request.CandidateId, request.Id));
     }
 }

@@ -1,3 +1,4 @@
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -15,11 +16,16 @@ public class GetUnsubscribeSavedSearchQueryHandler(
     public async Task<GetUnsubscribeSavedSearchQueryResult> Handle(GetUnsubscribeSavedSearchQuery request, CancellationToken cancellationToken)
     {
         var routesTask = courseService.GetRoutes();
-        var savedSearchTask = findApprenticeshipApiClient.Get<GetSavedSearchUnsubscribeApiResponse>(
-            new GetSavedSearchUnsubscribeApiRequest(request.SavedSearchId));
+        var savedSearchTask = findApprenticeshipApiClient.GetWithResponseCode<GetSavedSearchUnsubscribeApiResponse>(
+            new GetSavedSearchApiRequest(request.SavedSearchId));
 
         await Task.WhenAll(routesTask, savedSearchTask);
 
-        return GetUnsubscribeSavedSearchQueryResult.From(savedSearchTask.Result, routesTask.Result);
+        if (savedSearchTask.Result.StatusCode == HttpStatusCode.NotFound)
+        {
+            return new GetUnsubscribeSavedSearchQueryResult(null, routesTask.Result.Routes);    
+        }
+        
+        return GetUnsubscribeSavedSearchQueryResult.From(savedSearchTask.Result.Body, routesTask.Result);
     }
 }

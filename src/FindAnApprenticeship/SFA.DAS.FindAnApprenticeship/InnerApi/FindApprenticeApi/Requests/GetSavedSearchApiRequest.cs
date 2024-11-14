@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests
 {
-    public record GetSavedSearchUnsubscribeApiRequest (Guid SearchId) : IGetApiRequest
+    public record GetSavedSearchApiRequest (Guid SearchId) : IGetApiRequest
     {
         public string GetUrl => $"api/savedsearches/{SearchId}";
     }
