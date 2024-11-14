@@ -11,27 +11,6 @@ public record GetCandidateSavedSearchesQueryResult(List<SavedSearch> SavedSearch
 {
     public static GetCandidateSavedSearchesQueryResult From(GetCandidateSavedSearchesApiResponse source, GetRoutesListResponse routes)
     {
-        return new GetCandidateSavedSearchesQueryResult(source.SavedSearches.Select(MapSavedSearch).ToList(), routes.Routes.ToList());
-    }
-
-    private static SavedSearch MapSavedSearch(SavedSearchDto source)
-    {
-        return new SavedSearch(
-            source.Id,
-            source.UserReference,
-            source.DateCreated,
-            source.LastRunDate,
-            source.EmailLastSendDate,
-            new SearchParameters(
-                source.SearchParameters.SearchTerm,
-                source.SearchParameters.SelectedRouteIds,
-                source.SearchParameters.Distance,
-                source.SearchParameters.DisabilityConfident,
-                source.SearchParameters.SelectedLevelIds,
-                source.SearchParameters.Location,
-                source.SearchParameters.Latitude,
-                source.SearchParameters.Longitude
-            )
-        );
+        return new GetCandidateSavedSearchesQueryResult(source.SavedSearches.Select(c => c.ToDomain()).ToList(), routes.Routes.ToList());
     }
 }

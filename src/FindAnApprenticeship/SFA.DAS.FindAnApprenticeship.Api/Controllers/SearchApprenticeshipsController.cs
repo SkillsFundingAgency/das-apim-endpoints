@@ -22,13 +22,14 @@ public class SearchApprenticeshipsController(ILogger<SearchApprenticeshipsContro
 {
     [HttpGet]
     [Route("")]
-    public async Task<IActionResult> Index([FromQuery] string locationSearchTerm = null)
+    public async Task<IActionResult> Index([FromQuery] string locationSearchTerm = null, [FromQuery] Guid? candidateId = null)
     {
         try
         {
             var result = await mediator.Send(new SearchIndexQuery
             {
-                LocationSearchTerm = locationSearchTerm
+                LocationSearchTerm = locationSearchTerm,
+                CandidateId = candidateId
             });
             var viewModel = (SearchIndexApiResponse)result;
             return Ok(viewModel);
@@ -94,27 +95,29 @@ public class SearchApprenticeshipsController(ILogger<SearchApprenticeshipsContro
         }
     }
         
-    [HttpPost()]
+    [HttpPost]
     [Route("saved-search")]
     [ProducesResponseType((int)HttpStatusCode.Created)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-    public async Task<IActionResult> PostSaveSearch([FromQuery, Required] Guid candidateId, [FromBody] PostSaveSearchApiRequest apiRequest)
+    public async Task<IActionResult> PostSaveSearch([FromQuery, Required] Guid candidateId, [FromQuery, Required] Guid id, [FromBody] PostSaveSearchApiRequest apiRequest)
     {
         try
         {
             var response = await mediator.Send(new SaveSearchCommand(
+                id,
                 candidateId,
                 apiRequest.DisabilityConfident,
                 apiRequest.Distance,
                 apiRequest.Location,
                 apiRequest.SearchTerm,
                 apiRequest.SelectedLevelIds,
-                apiRequest.SelectedRouteIds
+                apiRequest.SelectedRouteIds,
+                apiRequest.UnSubscribeToken
             ));
 
             return response == SaveSearchCommandResult.None
-                ? new StatusCodeResult((int)HttpStatusCode.InternalServerError)
+                ? new StatusCodeResult((int)HttpStatusCode.BadRequest)
                 : Created();
         }
         catch (Exception e)

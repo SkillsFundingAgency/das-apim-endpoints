@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Domain.Models;
 
