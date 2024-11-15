@@ -2,5 +2,6 @@
 
 public enum NotificationType
 {
-    Provider
+    Provider,
+    Employer
 }
