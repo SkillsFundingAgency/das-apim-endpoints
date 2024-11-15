@@ -18,6 +18,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
         public static void AddServiceRegistration(this IServiceCollection services)
         {
             services.AddHttpClient();
+            services.AddHttpContextAccessor();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
 
             services.AddTransient<ICacheStorageService, CacheStorageService>();
