@@ -65,7 +65,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 
             var totalPages = (int)Math.Ceiling((double)vacanciesResponse.TotalFound / query.PageSize);
 
-            var apprenticeCountRequest = new GetApprenticeshipCountRequest(query.SkipWageType);
+            var apprenticeCountRequest = new GetApprenticeshipCountRequest(WageType.CompetitiveSalary);
             apiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(
                         It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == apprenticeCountRequest.GetUrl)))
@@ -179,7 +179,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 
             var totalPages = (int)Math.Ceiling((double)vacanciesResponse.TotalFound / query.PageSize);
 
-            var apprenticeCountRequest = new GetApprenticeshipCountRequest(query.SkipWageType);
+            var apprenticeCountRequest = new GetApprenticeshipCountRequest(WageType.CompetitiveSalary);
             apiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(
                         It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == apprenticeCountRequest.GetUrl)))

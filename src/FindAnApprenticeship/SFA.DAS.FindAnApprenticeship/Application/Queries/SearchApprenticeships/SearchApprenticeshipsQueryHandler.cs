@@ -68,7 +68,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             {
                 totalWageTypeVacanciesCount = await
                     findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
-                        new GetApprenticeshipCountRequest(request.SkipWageType));
+                        new GetApprenticeshipCountRequest(WageType.CompetitiveSalary));
             }
 
             var vacancyResult = await findApprenticeshipApiClient.Get<GetVacanciesResponse>(
