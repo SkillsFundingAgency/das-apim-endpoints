@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses.Shared;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
 
-public class GetCandidateSavedSearchesApiResponse
-{
-    public List<SavedSearchDto> SavedSearches { get; set; }
-}
+public record GetCandidateSavedSearchApiResponse(SavedSearchDto SavedSearch);

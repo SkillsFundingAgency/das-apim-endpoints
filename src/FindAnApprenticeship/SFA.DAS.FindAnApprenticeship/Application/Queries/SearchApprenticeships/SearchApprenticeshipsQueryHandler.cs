@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses.Shared;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
@@ -82,6 +85,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var apprenticeshipVacancies = new List<GetVacanciesListItem>();
 
             var savedSearchesCount = 0;
+            var searchAlreadySaved = false;
 
             if (!string.IsNullOrEmpty(request.CandidateId))
             {
@@ -95,14 +99,14 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     candidateApiClient.Get<GetSavedVacanciesApiResponse>(
                         new GetSavedVacanciesApiRequest(candidateId));
 
-                var savedSearchesCountResponseTask =
-                    findApprenticeshipApiClient.Get<GetSavedSearchesCountApiResponse>(
-                        new GetSavedSearchesCountApiRequest(candidateId));
+                var savedSearchesResponseTask =
+                    findApprenticeshipApiClient.Get<GetCandidateSavedSearchesApiResponse>(
+                        new GetCandidateSavedSearchesApiRequest(candidateId));
 
                 await Task.WhenAll(
                     candidateApplicationsTask,
                     savedVacanciesResponseTask,
-                    savedSearchesCountResponseTask
+                    savedSearchesResponseTask
                 );
 
                 var candidateApplications = candidateApplicationsTask.Result;
@@ -124,9 +128,22 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     }
                     apprenticeshipVacancies.Add(vacancy);
                 }
+
+                var savedSearchesResponse = savedSearchesResponseTask.Result;
+                var searchParameters = new SearchParametersDto(
+                    request.SearchTerm,
+                    request.SelectedRouteIds?.Select(x => Convert.ToInt32(x)).ToList(),
+                    request.Distance,
+                    request.DisabilityConfident,
+                    request.SelectedLevelIds?.Select(x => Convert.ToInt32(x)).ToList(),
+                    request.Location,
+                    location?.GeoPoint?.FirstOrDefault().ToString(CultureInfo.InvariantCulture),
+                    location?.GeoPoint?.LastOrDefault().ToString(CultureInfo.InvariantCulture)
+                );
                 
-                savedSearchesCount = savedSearchesCountResponseTask.Result.SavedSearchesCount;
-            }
+                savedSearchesCount = savedSearchesResponse.SavedSearches?.Count ?? 0;
+                searchAlreadySaved = savedSearchesResponse.SavedSearches?.Any(x => x.SearchParameters.Equals(searchParameters)) ?? false;
+            } 
             else
             {
                 apprenticeshipVacancies = vacancyResult.ApprenticeshipVacancies.ToList();
@@ -147,7 +164,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 TotalPages = totalPages,
                 Levels = courseLevels.Levels.ToList(),
                 DisabilityConfident = request.DisabilityConfident,
-                SavedSearchesCount = savedSearchesCount
+                SavedSearchesCount = savedSearchesCount,
+                SearchAlreadySaved = searchAlreadySaved
             };
         }
     }
