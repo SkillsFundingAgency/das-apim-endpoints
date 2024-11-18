@@ -44,7 +44,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
         public decimal? Distance { get; set; }
 
         [JsonPropertyName("score")]
-        public long Score { get; set; }
+        public double Score { get; set; }
 
         [JsonPropertyName("standardTitle")]
         public string CourseTitle { get; set; }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using MediatR;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch;
+namespace SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch.CreateSaveSearch;
 
 public record SaveSearchCommand(
     Guid Id,
@@ -10,8 +10,8 @@ public record SaveSearchCommand(
     bool DisabilityConfident,
     int? Distance,
     string? Location,
-    string? SearchTerm,
+    string SearchTerm,
     List<int>? SelectedLevelIds,
     List<int>? SelectedRouteIds,
     string UnSubscribeToken
-)  : IRequest<SaveSearchCommandResult>;
+) : IRequest<SaveSearchCommandResult>;
