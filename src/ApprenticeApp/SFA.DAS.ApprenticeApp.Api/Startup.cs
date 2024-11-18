@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics.Metrics;
-using System.Linq;
 using Contentful.Core.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,9 +14,14 @@ using SFA.DAS.ApprenticeApp.Api.AppStart;
 using SFA.DAS.ApprenticeApp.Api.ErrorHandler;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Telemetry;
-using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using SFA.DAS.ApprenticeApp.Models;
+
 
 namespace SFA.DAS.ApprenticeApp.Api
 {
@@ -86,7 +87,21 @@ namespace SFA.DAS.ApprenticeApp.Api
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 });
 
-            SFA.DAS.ApprenticeApp.Telemetry.AddOpenTelemetryExtensions.AddOpenTelemetryRegistration(services, _configuration["appInsightsConnectionString"]);
+            //SFA.DAS.ApprenticeApp.Telemetry.AddOpenTelemetryExtensions.AddOpenTelemetryRegistration(services, _configuration["appInsightsConnectionString"]);
+
+            services.AddOpenTelemetryRegistration(
+                _configuration["appInsightsConnectionString"],
+                nameof(MyApprenticeship),
+                "MyApprenticeshipApp", // This should match the meter name used in the ApprenticeAppMetrics constructor
+                "MyApprenticeship-Service"); // This should match the desired service name
+
+
+            if (!string.IsNullOrEmpty(_configuration["appInsightsConnectionString"]))
+            {
+                // This service will collect and send telemetry data to Azure Monitor.
+                services.AddSingleton<IApprenticeAppMetrics, ApprenticeAppMetrics>();
+            }
+          
 
             services.AddSwaggerGen(c =>
             {
