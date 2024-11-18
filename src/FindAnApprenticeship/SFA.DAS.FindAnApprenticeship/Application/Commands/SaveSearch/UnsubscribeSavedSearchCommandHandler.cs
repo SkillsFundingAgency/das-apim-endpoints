@@ -7,7 +7,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch;
 
-public class UnsubscribeSavedSearchCommandHandler(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> apiClient) : IRequestHandler<UnsubscribeSavedSearchCommand>
+public record UnsubscribeSavedSearchCommandHandler(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> apiClient) : IRequestHandler<UnsubscribeSavedSearchCommand>
 {
     public async Task Handle(UnsubscribeSavedSearchCommand request, CancellationToken cancellationToken)
     {

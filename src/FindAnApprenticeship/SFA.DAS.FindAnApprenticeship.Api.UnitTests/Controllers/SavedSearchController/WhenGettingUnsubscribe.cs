@@ -42,7 +42,7 @@ public class WhenGettingUnsubscribe
 
         actual.Should().NotBeNull();
         var actualModel = actual!.Value as GetUnsubscribeSavedSearchApiResponse;
-        actualModel!.SavedSearch.Should().BeNull();
+        actualModel?.SavedSearch.Should().BeNull();
     }
 
     [Test, MoqAutoData]
