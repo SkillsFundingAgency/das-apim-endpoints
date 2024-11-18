@@ -10,7 +10,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch;
+namespace SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch.CreateSaveSearch;
 
 public class SaveSearchCommandHandler(
     IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
@@ -32,7 +32,7 @@ public class SaveSearchCommandHandler(
                     location?.GeoPoint[0].ToString(CultureInfo.InvariantCulture),
                     location?.GeoPoint[1].ToString(CultureInfo.InvariantCulture))
             }));
-        
+
         return response is not null && response.StatusCode == HttpStatusCode.OK
             ? SaveSearchCommandResult.From(response.Body)
             : SaveSearchCommandResult.None;
