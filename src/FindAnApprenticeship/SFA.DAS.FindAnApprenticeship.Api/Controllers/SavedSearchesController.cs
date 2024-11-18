@@ -40,9 +40,8 @@ public class SavedSearchesController(IMediator mediator, ILogger<SavedSearchesCo
     {
         try
         {
-            var result = await mediator.Send(new UnsubscribeSavedSearchCommand(request.SavedSearchId));
-
-            return Ok(result);
+            await mediator.Send(new UnsubscribeSavedSearchCommand(request.SavedSearchId));
+            return Ok();
         }
         catch (Exception e)
         {
