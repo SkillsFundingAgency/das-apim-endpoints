@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging.ApplicationInsights;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
@@ -33,6 +35,7 @@ namespace SFA.DAS.Reservations.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(_env);
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
             services.AddConfigurationOptions(_configuration);
 
