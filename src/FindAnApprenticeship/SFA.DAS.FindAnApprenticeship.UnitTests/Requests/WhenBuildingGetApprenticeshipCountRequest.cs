@@ -21,7 +21,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Requests
         {
             var actual = new GetApprenticeshipCountRequest();
 
-            actual.GetUrl.Should().Be($"/api/vacancies/count?wageType=");
+            actual.GetUrl.Should().Be("/api/vacancies/count");
         }
     }
 }
