@@ -19,7 +19,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             _apprenticeAppMetrics = metrics;
         }
         
-
         [HttpGet]
         [Route("/supportguidance/categories/{contentType}")]
         public async Task<IActionResult> GetCategories(string contentType)

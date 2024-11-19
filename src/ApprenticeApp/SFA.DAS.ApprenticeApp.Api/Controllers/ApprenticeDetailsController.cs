@@ -12,7 +12,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IApprenticeAppMetrics _apprenticeAppMetrics;
-
         public ApprenticeDetailsController(IMediator mediator, IApprenticeAppMetrics metrics)
         {
             _mediator = mediator;
@@ -22,9 +21,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         [HttpGet("/apprentices/{id}/details")]
         public async Task<IActionResult> GetApprenticeDetails(Guid id)
         {
-
             var result = await _mediator.Send(new GetApprenticeDetailsQuery { ApprenticeId = id });
-
             if (result.ApprenticeDetails?.Apprentice == null)
                 return NotFound();
             _apprenticeAppMetrics.IncreaseAccountViews();

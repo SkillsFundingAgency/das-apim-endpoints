@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 
-
-
-
 namespace SFA.DAS.ApprenticeApp.Telemetry
 {
     public interface IApprenticeAppMetrics

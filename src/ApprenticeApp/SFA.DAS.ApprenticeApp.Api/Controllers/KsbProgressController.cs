@@ -25,7 +25,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             _apprenticeAppMetrics = metrics;
         }
 
-
         [HttpPost("/apprentices/{apprenticeId}/ksbs")]
         public async Task<IActionResult> AddUpdateKsbProgress(Guid apprenticeId, ApprenticeKsbProgressData data)
         {
@@ -56,7 +55,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 KsbProgressId = ksbProgressId,
                 ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId
             });
-
             return Ok();
         }
 
@@ -66,7 +64,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             var apprenticeDetailsResult = await _mediator.Send(new GetApprenticeDetailsQuery { ApprenticeId = apprenticeId });
             if (apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship == null)
                 return Ok();
-
             var queryResult = await _mediator.Send(new GetKsbsByApprenticeshipIdAndGuidListQuery
             {
                 ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId,
@@ -93,7 +90,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             if (ksbQueryResult.KsbsResult != null && ksbQueryResult.KsbsResult.Ksbs.Count > 0)
             {
                 var ksbProgressResult = await _mediator.Send(new GetKsbsByApprenticeshipIdQuery { ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId });
-
                 var apprenticeKsbs = new List<ApprenticeKsb>();
                 foreach (var ksb in ksbQueryResult.KsbsResult.Ksbs)
                 {
@@ -115,7 +111,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 _apprenticeAppMetrics.IncreaseKSBsViews(apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId);
                 return Ok(apprenticeKsbs);
             }
-
             return Ok();
         }
 
@@ -131,7 +126,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId,
                 TaskId = taskId
             });
-
             return Ok(queryResult.KSBProgress);
         }
 

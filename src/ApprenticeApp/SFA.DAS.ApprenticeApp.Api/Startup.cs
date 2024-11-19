@@ -22,7 +22,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using SFA.DAS.ApprenticeApp.Models;
 
-
 namespace SFA.DAS.ApprenticeApp.Api
 {
     [ExcludeFromCodeCoverage]
@@ -37,7 +36,6 @@ namespace SFA.DAS.ApprenticeApp.Api
             _env = env;
             _configuration = configuration.BuildSharedConfiguration();
         }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -87,29 +85,21 @@ namespace SFA.DAS.ApprenticeApp.Api
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 });
 
-            //SFA.DAS.ApprenticeApp.Telemetry.AddOpenTelemetryExtensions.AddOpenTelemetryRegistration(services, _configuration["appInsightsConnectionString"]);
-
-            services.AddOpenTelemetryRegistration(
-                _configuration["appInsightsConnectionString"],
-                nameof(MyApprenticeship),
-                "MyApprenticeshipApp", // This should match the meter name used in the ApprenticeAppMetrics constructor
-                "MyApprenticeship-Service"); // This should match the desired service name
-
+            services.AddOpenTelemetryRegistration(_configuration["appInsightsConnectionString"],nameof(MyApprenticeship), "MyApprenticeshipApp", "MyApprenticeship-Service"); 
 
             if (!string.IsNullOrEmpty(_configuration["appInsightsConnectionString"]))
             {
                 // This service will collect and send telemetry data to Azure Monitor.
                 services.AddSingleton<IApprenticeAppMetrics, ApprenticeAppMetrics>();
             }
-          
-
+         
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApprenticeAppOuterApi", Version = "v1" });
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
         }
-
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
