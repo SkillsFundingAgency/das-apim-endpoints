@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using Contentful.Core.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -86,6 +87,8 @@ namespace SFA.DAS.ApprenticeApp.Api
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
+
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApprenticeAppOuterApi", Version = "v1" });
@@ -105,6 +108,19 @@ namespace SFA.DAS.ApprenticeApp.Api
                 app.UseHsts();
             }
 
+            app.Use(async (context, next) =>
+            {
+                context.Response.OnStarting(() =>
+                {
+                    if (context.Response.Headers.ContainsKey("X-Powered-By"))
+                    {
+                        context.Response.Headers.Remove("X-Powered-By");
+                    }
+                    return Task.CompletedTask;
+                });
+                await next();
+
+            });
             app.UseHttpsRedirection()
                 .UseApiGlobalExceptionHandler(loggerFactory.CreateLogger("Startup"))
                 .UseHealthChecks()
