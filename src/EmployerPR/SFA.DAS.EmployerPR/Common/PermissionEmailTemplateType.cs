@@ -9,5 +9,7 @@ public enum PermissionEmailTemplateType
     UpdatePermissionAccepted,
     AddAccountDeclined,
     AddAccountAccepted,
-    CreateAccountDeclined
+    CreateAccountDeclined,
+    WelcomeConfirmed,
+    CreateAccountAccepted
 }

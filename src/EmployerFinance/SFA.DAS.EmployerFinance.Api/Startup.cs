@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -31,9 +30,9 @@ namespace SFA.DAS.EmployerFinance.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(_env);
-            
+
             services.AddConfigurationOptions(_configuration);
-            
+
             if (!_configuration.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration
@@ -66,7 +65,7 @@ namespace SFA.DAS.EmployerFinance.Api
                     .AddCheck<RoatpCourseManagementApiHealthCheck>(RoatpCourseManagementApiHealthCheck.HealthCheckResultDescription);
             }
 
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
             services.AddSwaggerGen(c =>
             {
