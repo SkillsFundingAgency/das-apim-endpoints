@@ -38,7 +38,14 @@ Most of the application configuration is taken from the [das-employer-config rep
 | LearnerDataApiConfiguration:TokenSettings:GrantType           | Token settings                                    |                                           |
 | LearnerDataApiConfiguration:TokenSettings:ShouldSkipForLocal  | For local use only, skips calling token endpoint  | true                                      |
 
+* Ensure you have the following appsettings.development.json in the API project root:
 
+```
+{
+  "Environment": "LOCAL",
+  "ConfigurationStorageConnectionString": "UseDevelopmentStorage=true"
+}
+```
 
 
 ## 🔗 External Dependencies
