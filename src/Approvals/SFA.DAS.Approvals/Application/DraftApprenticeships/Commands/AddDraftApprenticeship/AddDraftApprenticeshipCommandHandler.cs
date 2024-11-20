@@ -39,7 +39,6 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
                     AccountId = cohort.AccountId,
                     AccountLegalEntityId = cohort.AccountLegalEntityId,
                     CourseCode = request.CourseCode,
-                    ProviderId = cohort.ProviderId,
                     StartDate = request.StartDate,
                     UserInfo = request.UserInfo
                 });
