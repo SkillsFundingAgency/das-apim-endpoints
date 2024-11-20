@@ -58,7 +58,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 categories,
                 query.SelectedLevelIds,
                 query.Sort,
-                query.DisabilityConfident);
+                query.DisabilityConfident,
+                new List<VacancyDataSource>
+                {
+                    VacancyDataSource.Nhs
+                });
 
             apiClient
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
@@ -173,7 +177,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 categories,
                 query.SelectedLevelIds,
                 query.Sort,
-                query.DisabilityConfident);
+                query.DisabilityConfident,
+                new List<VacancyDataSource>
+                {
+                    VacancyDataSource.Nhs
+                });
 
             apiClient
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))

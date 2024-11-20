@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using MediatR;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;

@@ -78,7 +78,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     categories,
                     request.SelectedLevelIds,
                     request.Sort,
-                    request.DisabilityConfident));
+                    request.DisabilityConfident,
+                    new List<VacancyDataSource>
+                    {
+                        VacancyDataSource.Nhs
+                    }));
 
             var totalPages = (int)Math.Ceiling((double)vacancyResult.TotalFound / request.PageSize);
 

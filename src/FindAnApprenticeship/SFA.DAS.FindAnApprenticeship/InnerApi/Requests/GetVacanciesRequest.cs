@@ -15,7 +15,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
         private readonly string _levels;
         private readonly string _searchTerm;
         private readonly VacancySort _sort;
-        private readonly bool _disabilityConfident; 
+        private readonly bool _disabilityConfident;
+        private readonly string _additionalDataSources;
 
         public GetVacanciesRequest(
             double? lat,
@@ -27,7 +28,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
             IReadOnlyCollection<string> categories,
             IReadOnlyCollection<string> levels,
             VacancySort sort,
-            bool disabilityConfident)
+            bool disabilityConfident,
+            IReadOnlyCollection<VacancyDataSource> additionalDataSources)
         {
             _lat = lat;
             _lon = lon;
@@ -39,11 +41,11 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
             _levels = levels is { Count: > 0 } ? string.Join("&levels=", levels) : string.Empty;
             _searchTerm = searchTerm;
             _disabilityConfident = disabilityConfident;
-
+            _additionalDataSources = additionalDataSources is { Count: > 0 } ? string.Join("&additionalDataSources=", additionalDataSources) : string.Empty;
         }
 
 
         public string Version => "2.0";
-        public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&distanceInMiles={_distance}&sort={_sort}&pageNumber={_pageNumber}&pageSize={_pageSize}&categories={_categories}&levels={_levels}&searchTerm={_searchTerm}&disabilityConfident={_disabilityConfident}";
+        public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&distanceInMiles={_distance}&sort={_sort}&pageNumber={_pageNumber}&pageSize={_pageSize}&categories={_categories}&levels={_levels}&searchTerm={_searchTerm}&disabilityConfident={_disabilityConfident}&additionalDataSources={_additionalDataSources}";
     }
 }
