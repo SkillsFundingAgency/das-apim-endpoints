@@ -11,7 +11,7 @@ parameters:
 stages:
 - stage: Build
   jobs:
-  - template: ../../pipeline-templates/job/code-build.yml
+  - template: ../../../../pipeline-templates/job/code-build.yml
     parameters:
       SonarCloudProjectKey: SkillsFundingAgency_das-apim-endpoints_${{ parameters.OuterApiName }}
       TargetProjects: |
@@ -37,7 +37,7 @@ stages:
   - name: platformBuildBlockVersion
     value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
-  - template: ../../job/deploy.yml
+  - template: ../../../../src/Payments/pipeline-templates-payments/job/deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
@@ -69,7 +69,7 @@ stages:
   - name: platformBuildBlockVersion
     value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
-  - template: ../../job/deploy.yml
+  - template: ../../../../src/Payments/pipeline-templates-payments/job/deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
@@ -101,7 +101,7 @@ stages:
   - name: platformBuildBlockVersion
     value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
-  - template: ../../job/deploy.yml
+  - template: ../../../../src/Payments/pipeline-templates-payments/job/deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
@@ -133,7 +133,7 @@ stages:
   - name: platformBuildBlockVersion
     value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
-  - template: ../../job/deploy.yml
+  - template: ../../../../src/Payments/pipeline-templates-payments/job/deploy.yml
     parameters:
       ServiceConnection: SFA-DIG-PreProd-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
@@ -165,7 +165,7 @@ stages:
   - name: platformBuildBlockVersion
     value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
-  - template: ../../job/deploy.yml
+  - template: ../../../../src/Payments/pipeline-templates-payments/job/deploy.yml
     parameters:
       ServiceConnection: SFA-DIG-Prod-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
@@ -196,7 +196,7 @@ stages:
   - name: platformBuildBlockVersion
     value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
-  - template: ../../job/deploy.yml
+  - template: ../../../../src/Payments/pipeline-templates-payments/job/deploy.yml
     parameters:
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
@@ -227,7 +227,7 @@ stages:
   - name: platformBuildBlockVersion
     value: $[ resources.repositories['das-platform-building-blocks'].ref ]
   jobs:
-  - template: ../../job/deploy.yml
+  - template: ../../../../src/Payments/pipeline-templates-payments/job/deploy.yml
     parameters:
       ServiceConnection: SFA-DAS-DevTest-ARM
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS

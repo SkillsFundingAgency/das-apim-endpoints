@@ -48,6 +48,6 @@ resources:
     branch: master
 
 stages:
-- template: ../../pipeline-templates/stage/outerapi-pipeline.yml
+- template: ../Payments/pipeline-templates-payments/stage/outerapi-pipeline.yml
   parameters:
     OuterApiName: Payments
