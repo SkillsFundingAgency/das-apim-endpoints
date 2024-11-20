@@ -25,8 +25,11 @@ public class WhenGettingUnsubscribe
 
         var actual = await savedSearchController.GetUnsubscribeSavedSearch(id) as OkObjectResult;
 
-        actual.Should().NotBeNull();
         actual!.Value.Should().Be(queryResult);
+        var actualObject = (GetUnsubscribeSavedSearchQueryResult)actual.Value;
+        actualObject.SavedSearch.Should().NotBeNull();
+        actualObject.SavedSearch.Should().BeEquivalentTo(queryResult.SavedSearch);
+        actualObject.Routes.Should().BeEquivalentTo(queryResult.Routes);
     }
     
     [Test, MoqAutoData]
