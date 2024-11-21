@@ -193,7 +193,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         }
 
 
-        [HttpGet("/{apprenticeId}/progress/tasks/taskReminders")]
+        [HttpGet("/apprentices/{apprenticeId}/progress/tasks/taskReminders")]
         public async Task<IActionResult> GetTaskReminders(Guid apprenticeId)
         {
             var apprenticeDetailsResult = await _mediator.Send(new GetApprenticeDetailsQuery { ApprenticeId = apprenticeId }); ;

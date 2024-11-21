@@ -27,7 +27,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Tasks
         public async Task<GetTaskRemindersByApprenticeshipIdQueryResult> Handle(GetTaskRemindersByApprenticeshipIdQuery request, CancellationToken cancellationToken)
         {
 
-            var taskReminders = await _progressApiClient.Get<ApprenticeTaskReminderCollection>(new GetApprenticeTaskRemindersRequest(request.ApprenticeshipId));
+            var taskReminders = await _progressApiClient.Get<ApprenticeTaskRemindersCollection>(new GetApprenticeTaskRemindersRequest(request.ApprenticeshipId));
 
             return new GetTaskRemindersByApprenticeshipIdQueryResult
             {
