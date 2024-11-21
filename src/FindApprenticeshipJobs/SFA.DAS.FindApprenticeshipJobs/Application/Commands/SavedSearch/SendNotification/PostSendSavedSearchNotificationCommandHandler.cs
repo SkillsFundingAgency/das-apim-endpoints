@@ -44,7 +44,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
                 EmailEnvironmentHelper.SavedSearchEmailNotificationTemplateId,
                 command.User.Email,
                 command.User.FirstName,
-                command.Vacancies.Count.ToString(),
+                $"{command.Vacancies.Count.ToString()} new {(command.Vacancies.Count == 1 ? "apprenticeship" : "apprenticeships")}",
                 $"{EmailTemplateBuilder.BuildSearchAlertDescriptor(command)}",
                 string.Concat(EmailEnvironmentHelper.SearchUrl, queryParameters), 
                 string.Concat(EmailEnvironmentHelper.SavedSearchUnSubscribeUrl, command.UnSubscribeToken),
