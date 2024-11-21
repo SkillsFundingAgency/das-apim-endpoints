@@ -4,6 +4,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Payments.Api.AppStart;
 using SFA.DAS.Payments.Application.Learners;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
