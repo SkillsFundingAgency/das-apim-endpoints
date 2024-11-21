@@ -77,7 +77,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api
                 options.LowercaseQueryStrings = true;
             }).AddMvc();
 
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
             services.AddSwaggerGen(c =>
             {
