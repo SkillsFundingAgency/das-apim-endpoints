@@ -64,7 +64,7 @@ public class Startup
                 .AddCheck<EarlyConnectApiHealthCheck>(EarlyConnectApiHealthCheck.HealthCheckResultDescription);
         }
 
-        services.AddApplicationInsightsTelemetry(x => x.ConnectionString = _configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+        services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
         services.AddSwaggerGen(c =>
         {

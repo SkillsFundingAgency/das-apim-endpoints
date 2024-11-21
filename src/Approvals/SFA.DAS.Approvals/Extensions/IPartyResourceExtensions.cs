@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.Approvals.Application;
-using SFA.DAS.Approvals.InnerApi.Interfaces;
+using SFA.DAS.SharedOuterApi.InnerApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Extensions
 {

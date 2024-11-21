@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Apprenticeships.Api.Extensions;
 using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.Apprenticeship;
 using SFA.DAS.Apprenticeships.InnerApi;
@@ -91,23 +92,25 @@ public class ApprenticeshipController : ControllerBase
     public async Task<ActionResult> CreateApprenticeshipPriceChange(Guid apprenticeshipKey,
         [FromBody] CreateApprenticeshipPriceChangeRequest request)
     {
-        var response = await _apiClient.PostWithResponseCode<PostCreateApprenticeshipPriceChangeApiResponse>(new PostCreateApprenticeshipPriceChangeRequest(
-            apprenticeshipKey,
-            request.Initiator,
-            request.UserId,
-            request.TrainingPrice,
-            request.AssessmentPrice,
-            request.TotalPrice,
-            request.Reason,
-            request.EffectiveFromDate));
+        var response = await _apiClient.PostWithResponseCode<PostCreateApprenticeshipPriceChangeApiResponse>(request.ToApiRequest(apprenticeshipKey));
 
-        if (string.IsNullOrEmpty(response.ErrorContent))
+        if (!string.IsNullOrEmpty(response.ErrorContent))
         {
-            return Ok(new PostCreateApprenticeshipPriceChangeResponse(response.Body.PriceChangeStatus));
+            _logger.LogError("Error attempting to create apprenticeship price change. {statusCode} returned from inner api.", response.StatusCode);
+            return BadRequest();
         }
-               
-        _logger.LogError($"Error attempting to create apprenticeship price change. {response.StatusCode} returned from inner api.", response.StatusCode);
-        return BadRequest();
+
+        var changeOfPriceInitiatedNotificationCommand = request.ToNotificationCommand(apprenticeshipKey, response.Body);
+        var notificationResponse = await _mediator.Send(changeOfPriceInitiatedNotificationCommand);
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to send change of price Notification(s) to the related part(ies)");
+            return BadRequest();
+        }
+
+        return Ok(new PostCreateApprenticeshipPriceChangeResponse(response.Body.PriceChangeStatus));
+
     }
 
     [HttpPost]
@@ -123,13 +126,22 @@ public class ApprenticeshipController : ControllerBase
             request.PlannedEndDate,
             request.Reason), false);
 
-        if (string.IsNullOrEmpty(response.ErrorContent))
+        if (!string.IsNullOrEmpty(response.ErrorContent))
         {
-            return Ok();
+            _logger.LogError($"Error attempting to create apprenticeship start date change. {response.StatusCode} returned from inner api.", response.StatusCode);
+            return BadRequest();
         }
 
-        _logger.LogError($"Error attempting to create apprenticeship start date change. {response.StatusCode} returned from inner api.", response.StatusCode);
-        return BadRequest();
+        var changeOfStartDateInitiatedNotificationCommand = request.ToNotificationCommand(apprenticeshipKey);
+        var notificationResponse = await _mediator.Send(changeOfStartDateInitiatedNotificationCommand);
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to send change of start date Notification(s) to the related part(ies)");
+            return BadRequest();
+        }
+
+        return Ok();
     }
 
     [HttpGet]
@@ -208,7 +220,23 @@ public class ApprenticeshipController : ControllerBase
     [Route("{apprenticeshipKey}/priceHistory/pending/reject")]
     public async Task<ActionResult> RejectPendingPriceChange(Guid apprenticeshipKey, [FromBody] RejectPriceChangeRequest request)
     {
-        await _apiClient.Patch(new PatchRejectApprenticeshipPriceChangeRequest(apprenticeshipKey, request.Reason));
+        var response = await _apiClient.PatchWithResponseCode<RejectApprenticeshipPriceChangeRequest, PatchRejectApprenticeshipPriceChangeResponse>(request.ToApiRequest(apprenticeshipKey));
+
+        if (!string.IsNullOrEmpty(response.ErrorContent))
+        {
+            _logger.LogError("Error attempting to reject apprenticeship price change. {statusCode} returned from inner api.", response.StatusCode);
+            return BadRequest();
+        }
+
+        var notificationCommand = response.Body.ToNotificationCommand(apprenticeshipKey);
+        var notificationResponse = await _mediator.Send(notificationCommand);
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to send change of price rejected Notification(s) to the related part(ies)");
+            return BadRequest();
+        }
+
         return Ok();
     }
 
@@ -216,8 +244,26 @@ public class ApprenticeshipController : ControllerBase
     [Route("{apprenticeshipKey}/priceHistory/pending/approve")]
     public async Task<ActionResult> ApprovePendingPriceChange(Guid apprenticeshipKey, [FromBody] ApprovePriceChangeRequest request)
     {
-        await _apiClient.Patch(new PatchApproveApprenticeshipPriceChangeRequest(apprenticeshipKey, request.UserId, request.TrainingPrice, request.AssessmentPrice));
+
+        var response = await _apiClient.PatchWithResponseCode<ApproveApprenticeshipPriceChangeRequest, PatchApproveApprenticeshipPriceChangeResponse>(request.ToApiRequest(apprenticeshipKey));
+
+        if (!string.IsNullOrEmpty(response.ErrorContent))
+        {
+            _logger.LogError("Error attempting to approve apprenticeship price change. {statusCode} returned from inner api.", response.StatusCode);
+            return BadRequest();
+        }
+
+        var notificationCommand = response.Body.ToNotificationCommand(apprenticeshipKey);
+        var notificationResponse = await _mediator.Send(notificationCommand);
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to send change of price approved Notification(s) to the related part(ies)");
+            return BadRequest();
+        }
+
         return Ok();
+
     }
 
     [HttpPatch]

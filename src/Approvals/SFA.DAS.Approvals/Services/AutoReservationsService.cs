@@ -60,7 +60,7 @@ public class AutoReservationsService : IAutoReservationsService
             CourseId = command.CourseCode,
             IsLevyAccount = false,
             Id = id,
-            ProviderId = (uint)command.ProviderId,
+            ProviderId = null,
             StartDate = command.StartDate,
             TransferSenderAccountId = null,
             UserId = userId
@@ -126,7 +126,6 @@ public class AutoReservation
     public long AccountId { get; set; }
     public long AccountLegalEntityId { get; set; }
     public string CourseCode { get; set; }
-    public long ProviderId { get; set; }
     public DateTime? StartDate { get; set; }
     public UserInfo UserInfo { get; set; }
 }
