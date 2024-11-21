@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Approvals.InnerApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Interfaces;
 
 namespace SFA.DAS.Approvals.InnerApi.Responses
 {
