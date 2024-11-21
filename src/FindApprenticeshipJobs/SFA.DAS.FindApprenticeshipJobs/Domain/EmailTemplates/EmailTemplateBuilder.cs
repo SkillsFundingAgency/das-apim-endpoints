@@ -59,7 +59,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
 
         public static string GetSavedSearchVacanciesSnippet(
             EmailEnvironmentHelper environmentHelper,
-            List<PostSendSavedSearchNotificationCommand.Vacancy> vacancies)
+            List<PostSendSavedSearchNotificationCommand.Vacancy> vacancies,
+            bool hasSearchLocation)
         {
             var sb = new StringBuilder();
 
@@ -75,7 +76,11 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                     vacancy.Address.Postcode);
 
                 sb.AppendLine();
-                sb.AppendLine($"* Distance: {vacancy.Distance} miles");
+                if (hasSearchLocation)
+                {
+                    sb.AppendLine($"* Distance: {vacancy.Distance} miles");    
+                }
+                
                 sb.AppendLine($"* Training course: {vacancy.TrainingCourse}");
                 sb.AppendLine($"* Annual wage: {vacancy.Wage}");
 
@@ -87,6 +92,26 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
             }
 
             return sb.ToString();
+        }
+        
+        public static string BuildSearchAlertDescriptor(PostSendSavedSearchNotificationCommand command)
+        {
+            var definingCharacteristic = command switch
+            {
+                { SearchTerm: not null } => command.SearchTerm,
+                { Categories: { Count: 1 } } => command.Categories.First().Name,
+                { Categories: { Count: > 1 } } => $"{command.Categories.Count} categories",
+                { Levels.Count: 1 } => $"Level {command.Levels.First().Code}",
+                { Levels.Count: > 1 } => $"{command.Levels.Count} apprenticeship levels",
+                { DisabilityConfident: true } => "Disability Confident",
+                _ => "All apprenticeships"
+            };
+
+            var location = command.Location is null
+                ? "all of England"
+                : $"{command.Location}";
+            
+            return $"{definingCharacteristic} in {location}";
         }
     }
 }
