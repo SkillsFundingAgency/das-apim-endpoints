@@ -14,6 +14,7 @@ using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System.Collections.Generic;
+using Azure.Monitor.OpenTelemetry.Exporter;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
 
@@ -78,13 +79,16 @@ namespace SFA.DAS.ApprenticeFeedback.Api
                 options.LowercaseQueryStrings = true;
             }).AddMvc();
 
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
+
             services.AddLogging(options =>
             {
-                options.ClearProviders();
                 options.AddApplicationInsights();
+                options.AddOpenTelemetry(x =>
+                {
+                    x.AddAzureMonitorLogExporter();
+                });
             });
-
-            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
             services.AddSwaggerGen(c =>
             {
