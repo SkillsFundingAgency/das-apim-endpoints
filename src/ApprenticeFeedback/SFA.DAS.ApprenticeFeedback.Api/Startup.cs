@@ -78,8 +78,13 @@ namespace SFA.DAS.ApprenticeFeedback.Api
                 options.LowercaseQueryStrings = true;
             }).AddMvc();
 
+            services.AddLogging(options =>
+            {
+                options.ClearProviders();
+                options.AddApplicationInsights();
+            });
+
             services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
-            services.AddLogging(options => options.AddApplicationInsights());
 
             services.AddSwaggerGen(c =>
             {
