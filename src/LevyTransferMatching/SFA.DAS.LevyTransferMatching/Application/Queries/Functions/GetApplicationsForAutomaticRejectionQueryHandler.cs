@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
+using Microsoft.Extensions.Logging;
 
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
@@ -14,10 +15,13 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
     public  class GetApplicationsForAutomaticRejectionQueryHandler : IRequestHandler<GetApplicationsForAutomaticRejectionQuery, GetApplicationsForAutomaticRejectionQueryResult>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
+        private readonly ILogger<GetApplicationsForAutomaticRejectionQueryHandler> _logger;
         private static readonly DateTime ThreeMonthsAgo = DateTime.UtcNow.AddMonths(-3);
 
-        public GetApplicationsForAutomaticRejectionQueryHandler(ILevyTransferMatchingService levyTransferMatchingService)
+        public GetApplicationsForAutomaticRejectionQueryHandler(ILevyTransferMatchingService levyTransferMatchingService
+            , ILogger<GetApplicationsForAutomaticRejectionQueryHandler> logger)
         {
+            _logger = logger;
             _levyTransferMatchingService = levyTransferMatchingService;
         }
 
@@ -28,8 +32,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
                 SortOrder = ApplicationSortColumn.ApplicationDate,
                 SortDirection = SortOrder.Ascending
             });
-           
-            var applications = FilterApplications(getApplicationsResponse);
+            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler returns {count} pending applications from inner api", getApplicationsResponse?.Applications.Count());
+             var applications = FilterApplications(getApplicationsResponse);
+            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler filter returns {count_}", applications.Count);
 
             var result = applications.Select(application => GetApplicationsForAutomaticRejectionQueryResult.Application.BuildApplication(application)).ToList();
 
