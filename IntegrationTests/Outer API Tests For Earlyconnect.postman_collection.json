@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0960c2c8-b88f-475e-8484-16fcb6533280",
+		"_postman_id": "24c43b95-1cb6-411c-96e6-ce848fdc7023",
 		"name": "EarlyConnect-OuterApi",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "21174429"
@@ -243,7 +243,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Ik1jN2wzSXo5M2c3dXdnTmVFbW13X1dZR1BrbyIsImtpZCI6Ik1jN2wzSXo5M2c3dXdnTmVFbW13X1dZR1BrbyJ9.eyJhdWQiOiJodHRwczovL2NpdGl6ZW5henVyZXNmYWJpc2dvdi5vbm1pY3Jvc29mdC5jb20vZGFzLWF0LWFwaW1lbmRwLWVybHljb25hcGktYXMtYXIiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC8xYTkyODg5Yi04ZWExLTRhMTYtODEzMi0zNDc4MTQwNTE1NjcvIiwiaWF0IjoxNzI4NTc2MzgyLCJuYmYiOjE3Mjg1NzYzODIsImV4cCI6MTcyODU4MDQ4MiwiYWNyIjoiMSIsImFpbyI6IkFWUUFxLzhZQUFBQUtxbjNLc09jTlp1OXVvYjdYSEdha0piQmxKZW1Gc3RZWElyViswR0xLY2lrWnN0Vks2anNYM1ZSemZ5SkZCNDFxZldQS1JFSjhoNU9OWVVuMUpSblZqTmY2MGtQck1VQjRnNGE2aERvdXpNPSIsImFtciI6WyJwd2QiLCJtZmEiXSwiYXBwaWQiOiIwNGIwNzc5NS04ZGRiLTQ2MWEtYmJlZS0wMmY5ZTFiZjdiNDYiLCJhcHBpZGFjciI6IjAiLCJpcGFkZHIiOiI4Ni40LjE1Ni4xNDkiLCJuYW1lIjoiUmF0aGVlc2ggUmkiLCJvaWQiOiJjOWQxZmViMi0xMTI1LTQ4ZWMtYjRkNC00YjljMzI5MmEyZTkiLCJyaCI6IjAuQVhrQW00aVNHcUdPRmtxQk1qUjRGQVVWWjk1ZG9vVExJRHBPb2wzMENiUjFVMklNQVRNLiIsInJvbGVzIjpbIkFQSU0iXSwic2NwIjoidXNlcl9pbXBlcnNvbmF0aW9uIiwic3ViIjoiU3k1bmJOR0FTRGxlbjhCaWFJWHVpS2JvT2gtOEptTjVuSEpEb0tJTkk4SSIsInRpZCI6IjFhOTI4ODliLThlYTEtNGExNi04MTMyLTM0NzgxNDA1MTU2NyIsInVuaXF1ZV9uYW1lIjoicmF0aGVlc2gucmlAY2l0aXplbmF6dXJlc2ZhYmlzZ292Lm9ubWljcm9zb2Z0LmNvbSIsInVwbiI6InJhdGhlZXNoLnJpQGNpdGl6ZW5henVyZXNmYWJpc2dvdi5vbm1pY3Jvc29mdC5jb20iLCJ1dGkiOiJuYTF1dW9PbnhrZXlSRlhmaGtzYUFBIiwidmVyIjoiMS4wIn0.V0Dcs3e8ELz59ywrctPcCfXMvb0_kBITE00kYU-5FkwB0sSkjdMpxJIJJgBBIcrgLqAXiJ5pM7aC7Uagq71fE4t8xDRD35hIzE8K4pQBTpN2c1oCekixe-l8mxYBzs6Jnm1Y7m7WUtqpytt4jAhFbG6r91xHMqRqNj9Pw4Hh_w4UTOAY-LjfairlcXKY7y5_8vv3hlfMBItku7PK9BFrx01Ehq8pXHNxC3hHKMuDpUp0v1TPlQIsj_q_-6l7jn_4X8oQAQgPWr9uwaZPbI21u7pq5rwgIdPodwhO9IKCTiBuedSc78V9rr_ob9FS8NkHIMY0cr-KgZ3qQrhqq8B1BA",
+							"value": "",
 							"type": "string"
 						}
 					]
@@ -496,6 +496,95 @@
 						"early-connect",
 						"leps-data",
 						"student-feedback"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Student-triage-data",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 289,\r\n    \"lepsId\": 1,\r\n    \"logId\": 272,\r\n    \"firstName\": \"\",\r\n    \"lastName\": \"\",\r\n    \"dateOfBirth\": null,\r\n    \"schoolName\": \"\",\r\n    \"urn\": \"123\",\r\n    \"telephone\": \"\",\r\n    \"email\": \"test@example.com\",\r\n    \"postcode\": \"\",\r\n    \"dataSource\": \"Other\",\r\n    \"industry\": \"\",\r\n    \"dateInterest\": null,\r\n    \"surveyQuestions\": [\r\n        {\r\n            \"id\": 1,\r\n            \"surveyId\": 1,\r\n            \"questionTypeId\": 1,\r\n            \"questionText\": \"What is your favorite color?\",\r\n            \"shortDescription\": \"Color Question\",\r\n            \"summaryLabel\": \"Color Preference\",\r\n            \"validationMessage\": \"Please choose a color\",\r\n            \"defaultToggleAnswerId\": null,\r\n            \"sortOrder\": 0,\r\n            \"answers\": [\r\n                {\r\n                    \"id\": 1,\r\n                    \"questionId\": 1,\r\n                    \"answerText\": \"Red\",\r\n                    \"shortDescription\": \"Option for Red\",\r\n                    \"groupNumber\": 1,\r\n                    \"groupLabel\": \"101\",\r\n                    \"sortOrder\": 0\r\n                },\r\n                {\r\n                    \"id\": 2,\r\n                    \"questionId\": 1,\r\n                    \"answerText\": \"Blue\",\r\n                    \"shortDescription\": \"Option for Blue\",\r\n                    \"groupNumber\": 1,\r\n                    \"groupLabel\": \"102\",\r\n                    \"sortOrder\": 1\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": 2,\r\n            \"surveyId\": 1,\r\n            \"questionTypeId\": 2,\r\n            \"questionText\": \"What is your feedback?\",\r\n            \"shortDescription\": \"Feedback Question\",\r\n            \"summaryLabel\": \"Feedback Summary\",\r\n            \"validationMessage\": \"Provide your feedback\",\r\n            \"defaultToggleAnswerId\": null,\r\n            \"sortOrder\": 1,\r\n            \"answers\": [\r\n                {\r\n                    \"id\": 3,\r\n                    \"questionId\": 2,\r\n                    \"answerText\": \"Good\",\r\n                    \"shortDescription\": \"Positive Feedback\",\r\n                    \"groupNumber\": 0,\r\n                    \"groupLabel\": \"0\",\r\n                    \"sortOrder\": 0\r\n                },\r\n                {\r\n                    \"id\": 4,\r\n                    \"questionId\": 2,\r\n                    \"answerText\": \"Average\",\r\n                    \"shortDescription\": \"Neutral Feedback\",\r\n                    \"groupNumber\": 0,\r\n                    \"groupLabel\": \"0\",\r\n                    \"sortOrder\": 1\r\n                },\r\n                {\r\n                    \"id\": 5,\r\n                    \"questionId\": 2,\r\n                    \"answerText\": \"Poor\",\r\n                    \"shortDescription\": \"Negative Feedback\",\r\n                    \"groupNumber\": 0,\r\n                    \"groupLabel\": \"0\",\r\n                    \"sortOrder\": 2\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"id\": 3,\r\n            \"surveyId\": 1,\r\n            \"questionTypeId\": 3,\r\n            \"questionText\": \"Select your preferences:\",\r\n            \"shortDescription\": \"Preferences Question\",\r\n            \"summaryLabel\": \"Preferences Summary\",\r\n            \"validationMessage\": \"Select one or more preferences\",\r\n            \"defaultToggleAnswerId\": null,\r\n            \"sortOrder\": 2,\r\n            \"answers\": [\r\n                {\r\n                    \"id\": 6,\r\n                    \"questionId\": 3,\r\n                    \"answerText\": \"Option 1\",\r\n                    \"shortDescription\": \"Checkbox Option 1\",\r\n                    \"groupNumber\": 1,\r\n                    \"groupLabel\": \"201\",\r\n                    \"sortOrder\": 0\r\n                },\r\n                {\r\n                    \"id\": 7,\r\n                    \"questionId\": 3,\r\n                    \"answerText\": \"Option 2\",\r\n                    \"shortDescription\": \"Checkbox Option 2\",\r\n                    \"groupNumber\": 1,\r\n                    \"groupLabel\": \"202\",\r\n                    \"sortOrder\": 1\r\n                }\r\n            ]\r\n        }\r\n    ],\r\n    \"studentSurvey\": {\r\n        \"id\": \"1498b5bb-6316-4447-aa03-08dc20cc5a54\",\r\n        \"studentId\": 289,\r\n        \"surveyId\": 1,\r\n        \"lastUpdated\": null,\r\n        \"dateCompleted\": null,\r\n        \"dateEmailSent\": null,\r\n        \"dateAdded\": \"2024-01-29T14:03:19.877\",\r\n        \"responseAnswers\": []\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://test-apim-erlycon-api.apprenticeships.education.gov.uk/early-connect/student-triage-data/1498b5bb-6316-4447-aa03-08dc20cc5a54",
+					"protocol": "https",
+					"host": [
+						"test-apim-erlycon-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"early-connect",
+						"student-triage-data",
+						"1498b5bb-6316-4447-aa03-08dc20cc5a54"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get-student-triage-data",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 0,\r\n  \"lepsId\": 0,\r\n  \"logId\": 0,\r\n  \"firstName\": \"string\",\r\n  \"lastName\": \"string\",\r\n  \"dateOfBirth\": \"2024-01-31T13:20:43.840Z\",\r\n  \"telephone\": \"string\",\r\n  \"email\": \"string\",\r\n  \"postcode\": \"string\",\r\n  \"dataSource\": \"string\",\r\n  \"industry\": \"string\",\r\n  \"dateInterest\": \"2024-01-31T13:20:43.840Z\",\r\n  \"studentSurvey\": {\r\n    \"id\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n    \"studentId\": 0,\r\n    \"surveyId\": 0,\r\n    \"lastUpdated\": \"2024-01-31T13:20:43.840Z\",\r\n    \"dateCompleted\": \"2024-01-31T13:20:43.840Z\",\r\n    \"dateEmailSent\": \"2024-01-31T13:20:43.840Z\",\r\n    \"dateAdded\": \"2024-01-31T13:20:43.840Z\",\r\n    \"responseAnswers\": [\r\n      {\r\n        \"id\": 0,\r\n        \"studentSurveyId\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n        \"questionId\": 0,\r\n        \"answerId\": 0,\r\n        \"response\": \"string\",\r\n        \"dateAdded\": \"2024-01-31T13:20:43.840Z\"\r\n      }\r\n    ]\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://test-apim-erlycon-api.apprenticeships.education.gov.uk/early-connect/student-triage-data/7d87864a-475a-45cb-1782-08dc225f5c6f",
+					"protocol": "https",
+					"host": [
+						"test-apim-erlycon-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"early-connect",
+						"student-triage-data",
+						"7d87864a-475a-45cb-1782-08dc225f5c6f"
 					]
 				}
 			},
