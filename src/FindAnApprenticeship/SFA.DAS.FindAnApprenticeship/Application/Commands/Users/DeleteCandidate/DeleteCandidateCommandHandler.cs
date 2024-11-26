@@ -18,22 +18,24 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidate
 {
-    public record DeleteCandidateCommandHandler(
-        ILogger<DeleteCandidateCommandHandler> Logger,
-        IVacancyService VacancyService,
-        INotificationService NotificationService,
-        IRecruitApiClient<RecruitApiConfiguration> RecruitApiClient,
-        ICandidateApiClient<CandidateApiConfiguration> CandidateApiClient,
-        EmailEnvironmentHelper EmailEnvironmentHelper) : IRequestHandler<DeleteCandidateCommand, Unit>
+    public class DeleteCandidateCommandHandler(
+        ILogger<DeleteCandidateCommandHandler> logger,
+        IVacancyService vacancyService,
+        INotificationService notificationService,
+        IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
+        IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
+        EmailEnvironmentHelper emailEnvironmentHelper) : IRequestHandler<DeleteCandidateCommand, Unit>
     {
         public async Task<Unit> Handle(DeleteCandidateCommand command, CancellationToken cancellationToken)
         {
-            var applicationsTask = CandidateApiClient.Get<GetApplicationsApiResponse>(new GetApplicationsApiRequest(command.CandidateId));
+            var applicationsTask = candidateApiClient.Get<GetApplicationsApiResponse>(new GetApplicationsApiRequest(command.CandidateId));
 
-            var candidateTask = CandidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(command.CandidateId.ToString()));
+            var candidateTask = candidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(command.CandidateId.ToString()));
 
             await Task.WhenAll(applicationsTask, candidateTask);
 
@@ -51,12 +53,12 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidat
 
             foreach (var application in applicationList)
             {
-                var response = await RecruitApiClient.PostWithResponseCode<NullResponse>(
+                var response = await recruitApiClient.PostWithResponseCode<NullResponse>(
                     new PostWithdrawApplicationRequest(command.CandidateId, Convert.ToInt64(application.VacancyReference.Replace("VAC", ""))), false);
 
                 if (response.StatusCode != HttpStatusCode.NoContent)
                 {
-                    Logger.LogError("Unable to with draw application for candidate Id {CandidateId}", command.CandidateId);
+                    logger.LogError("Unable to with draw application for candidate Id {CandidateId}", command.CandidateId);
                     throw new HttpRequestContentException($"Unable to withdraw application for candidate Id {command.CandidateId}", response.StatusCode, response.ErrorContent);
                 }
 
@@ -64,14 +66,14 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidat
 
                 jsonPatchDocument.Replace(x => x.Status, ApplicationStatus.Withdrawn);
 
-                var vacancy = await VacancyService.GetVacancy(application.VacancyReference) as GetApprenticeshipVacancyItemResponse;
+                var vacancy = await vacancyService.GetVacancy(application.VacancyReference) as GetApprenticeshipVacancyItemResponse;
 
                 var patchRequest = new PatchApplicationApiRequest(application.Id, application.CandidateId, jsonPatchDocument);
 
-                await CandidateApiClient.PatchWithResponseCode(patchRequest);
+                await candidateApiClient.PatchWithResponseCode(patchRequest);
 
                 var email = new WithdrawApplicationEmail(
-                    EmailEnvironmentHelper.WithdrawApplicationEmailTemplateId,
+                    emailEnvironmentHelper.WithdrawApplicationEmailTemplateId,
                     candidate.Email,
                     candidate.FirstName,
                     vacancy?.Title, vacancy?.EmployerName,
@@ -83,8 +85,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidat
 
             if(emailNotifications.Count > 0) await SendApplicationWithDrawnNotificationEmail(emailNotifications);
 
-            var apiRequest = new DeleteAccountApiRequest(command.CandidateId);
-            await CandidateApiClient.Delete(apiRequest);
+            await Task.WhenAll(
+                findApprenticeshipApiClient.Delete(new DeleteSavedSearchesApiRequest(command.CandidateId)),
+                candidateApiClient.Delete(new DeleteAccountApiRequest(command.CandidateId)));
 
             return Unit.Value;
         }
@@ -93,7 +96,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidat
         {
             foreach (var notification in emailNotifications)
             {
-                await NotificationService.Send(new SendEmailCommand(notification.TemplateId, notification.RecipientAddress,
+                await notificationService.Send(new SendEmailCommand(notification.TemplateId, notification.RecipientAddress,
                     notification.Tokens));
             }
         }
