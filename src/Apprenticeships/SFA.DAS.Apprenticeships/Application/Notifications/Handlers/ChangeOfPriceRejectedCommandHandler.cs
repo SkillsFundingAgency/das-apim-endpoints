@@ -29,6 +29,10 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
             {
                 return await SendToEmployer(request, ProviderRejectedChangeOfPriceToEmployer.TemplateId, (_, apprenticeship) => GetEmployerTokens(apprenticeship));
             }
+            else
+            {
+                return await SendToProvider(request, EmployerRejectedChangeOfPriceToProvider.TemplateId, (_, apprenticeship) => GetProviderTokens(apprenticeship));
+            }
 
             return NotificationResponse.Ok();
         }
@@ -42,6 +46,19 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
             tokens.Add(ProviderRejectedChangeOfPriceToEmployer.Employer, apprenticeshipDetails.EmployerName);
             tokens.Add(ProviderRejectedChangeOfPriceToEmployer.Apprentice, $"{apprenticeshipDetails.ApprenticeFirstName} {apprenticeshipDetails.ApprenticeLastName}");
             tokens.Add(ProviderRejectedChangeOfPriceToEmployer.ApprenticeshipDetailsUrl, linkUrl);
+
+            return tokens;
+        }
+
+        private Dictionary<string, string> GetProviderTokens(CommitmentsApprenticeshipDetails apprenticeshipDetails)
+        {
+            var linkUrl = _externalEmployerUrlHelper.CommitmentsV2Link("ApprenticeDetails", apprenticeshipDetails.EmployerAccountHashedId, apprenticeshipDetails.ApprenticeshipHashedId);
+
+            var tokens = new Dictionary<string, string>();
+            tokens.Add(EmployerRejectedChangeOfPriceToProvider.TrainingProvider, apprenticeshipDetails.ProviderName);
+            tokens.Add(EmployerRejectedChangeOfPriceToProvider.Employer, apprenticeshipDetails.EmployerName);
+            tokens.Add(EmployerRejectedChangeOfPriceToProvider.Apprentice, $"{apprenticeshipDetails.ApprenticeFirstName} {apprenticeshipDetails.ApprenticeLastName}");
+            tokens.Add(EmployerRejectedChangeOfPriceToProvider.ApprenticeshipDetailsUrl, linkUrl);
 
             return tokens;
         }
