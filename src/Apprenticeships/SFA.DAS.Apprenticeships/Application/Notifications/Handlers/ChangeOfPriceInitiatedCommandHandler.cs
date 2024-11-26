@@ -28,10 +28,12 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
             if (request.Initiator == RequestParty.Provider && request.PriceChangeStatus == ChangeRequestStatus.Created)
             {
                 return await SendToEmployer(request, ProviderInitiatedChangeOfPriceToEmployer.TemplateId, (_, apprenticeship) => GetEmployerTokens(request, apprenticeship));
+            } else if (request.Initiator == RequestParty.Employer)
+            {
+                return await SendToProvider(request, EmployerInitiatedChangeOfPriceToProvider.TemplateId, (_, apprenticeship) => GetProviderTokens(request, apprenticeship));
             }
 
             //Send to employer on price reduction to be implemented in FLP-916
-            //Send to provider to be implemented in FLP-406
             return NotificationResponse.Ok();
         }
 
@@ -49,6 +51,18 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
             return tokens;
         }
 
+        private Dictionary<string, string> GetProviderTokens(ChangeOfPriceInitiatedCommand request, CommitmentsApprenticeshipDetails apprenticeshipDetails)
+        {
+            var linkUrl = _externalEmployerUrlHelper.CommitmentsV2Link("ApprenticeDetails", apprenticeshipDetails.EmployerAccountHashedId, apprenticeshipDetails.ApprenticeshipHashedId);
+
+            var tokens = new Dictionary<string, string>();
+            tokens.Add(EmployerInitiatedChangeOfPriceToProvider.TrainingProvider, apprenticeshipDetails.ProviderName);
+            tokens.Add(EmployerInitiatedChangeOfPriceToProvider.Employer, apprenticeshipDetails.EmployerName);
+            tokens.Add(EmployerInitiatedChangeOfPriceToProvider.Apprentice, $"{apprenticeshipDetails.ApprenticeFirstName} {apprenticeshipDetails.ApprenticeLastName}");
+            tokens.Add(EmployerInitiatedChangeOfPriceToProvider.ReviewChangesUrl, linkUrl);
+
+            return tokens;
+        }
     }
 
 }
