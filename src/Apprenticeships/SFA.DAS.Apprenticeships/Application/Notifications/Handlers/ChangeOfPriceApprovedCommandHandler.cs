@@ -41,10 +41,10 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
             var linkUrl = _externalEmployerUrlHelper.CommitmentsV2Link("ApprenticeDetails", apprenticeshipDetails.EmployerAccountHashedId, apprenticeshipDetails.ApprenticeshipHashedId);
 
             var tokens = new Dictionary<string, string>();
-            tokens.Add(ProviderApprovedChangeOfPriceToEmployer.TrainingProvider, apprenticeshipDetails.ProviderName);
-            tokens.Add(ProviderApprovedChangeOfPriceToEmployer.Employer, apprenticeshipDetails.EmployerName);
-            tokens.Add(ProviderApprovedChangeOfPriceToEmployer.Apprentice, $"{apprenticeshipDetails.ApprenticeFirstName} {apprenticeshipDetails.ApprenticeLastName}");
-            tokens.Add(ProviderApprovedChangeOfPriceToEmployer.ApprenticeDetailsUrl, linkUrl);
+            tokens.Add(EmployerApprovedChangeOfPriceToProvider.TrainingProvider, apprenticeshipDetails.ProviderName);
+            tokens.Add(EmployerApprovedChangeOfPriceToProvider.Employer, apprenticeshipDetails.EmployerName);
+            tokens.Add(EmployerApprovedChangeOfPriceToProvider.Apprentice, $"{apprenticeshipDetails.ApprenticeFirstName} {apprenticeshipDetails.ApprenticeLastName}");
+            tokens.Add(EmployerApprovedChangeOfPriceToProvider.ApprenticeDetailsUrl, linkUrl);
 
             return tokens;
         }
@@ -54,10 +54,10 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
             var linkUrl = _externalEmployerUrlHelper.CommitmentsV2Link("ApprenticeDetails", apprenticeshipDetails.EmployerAccountHashedId, apprenticeshipDetails.ApprenticeshipHashedId);
 
             var tokens = new Dictionary<string, string>();
-            tokens.Add(EmployerApprovedChangeOfPriceToProvider.TrainingProvider, apprenticeshipDetails.ProviderName);
-            tokens.Add(EmployerApprovedChangeOfPriceToProvider.Employer, apprenticeshipDetails.EmployerName);
-            tokens.Add(EmployerApprovedChangeOfPriceToProvider.Apprentice, $"{apprenticeshipDetails.ApprenticeFirstName} {apprenticeshipDetails.ApprenticeLastName}");
-            tokens.Add(EmployerApprovedChangeOfPriceToProvider.ReviewChangesUrl, linkUrl);
+            tokens.Add(ProviderApprovedChangeOfPriceToEmployer.TrainingProvider, apprenticeshipDetails.ProviderName);
+            tokens.Add(ProviderApprovedChangeOfPriceToEmployer.Employer, apprenticeshipDetails.EmployerName);
+            tokens.Add(ProviderApprovedChangeOfPriceToEmployer.Apprentice, $"{apprenticeshipDetails.ApprenticeFirstName} {apprenticeshipDetails.ApprenticeLastName}");
+            tokens.Add(ProviderApprovedChangeOfPriceToEmployer.ReviewChangesUrl, linkUrl);
 
             return tokens;
         }
