@@ -28,8 +28,17 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
             {
                 return await SendToEmployer(request, ProviderApprovedChangeOfPriceToEmployer.TemplateId, (_, apprenticeship) => GetEmployerTokens(apprenticeship));
             }
+            else
+            {
+                return await SendToProvider(request, EmployerApprovedChangeOfPriceToProvider.TemplateId, (_, apprenticeship) => GetProviderTokens(apprenticeship));
+            }
 
             return NotificationResponse.Ok();
+        }
+
+        private Dictionary<string, string> GetProviderTokens(CommitmentsApprenticeshipDetails apprenticeshipDetails)
+        {
+            throw new NotImplementedException();
         }
 
         private Dictionary<string, string> GetEmployerTokens(CommitmentsApprenticeshipDetails apprenticeshipDetails)

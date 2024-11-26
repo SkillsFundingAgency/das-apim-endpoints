@@ -33,5 +33,21 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
 
             return notificationResponse;
         }
+
+        protected async Task<NotificationResponse> SendToProvider(T request, string templateId, Func<Recipient, CommitmentsApprenticeshipDetails, Dictionary<string, string>> getTokensFunction)
+        {
+            var notificationResponse = new NotificationResponse { Success = true };
+            var currentParties = await _notificationService.GetCurrentPartyIds(request.ApprenticeshipKey);
+            var recepients = await _notificationService.GetProviderRecipients(currentParties.Ukprn);
+            var apprenticeship = await _notificationService.GetApprenticeship(currentParties);
+
+            foreach (var recipient in recepients)
+            {
+                var tokens = getTokensFunction(recipient, apprenticeship);
+                await _notificationService.Send(recipient, templateId, tokens);
+            }
+
+            return notificationResponse;
+        }
     }
 }
