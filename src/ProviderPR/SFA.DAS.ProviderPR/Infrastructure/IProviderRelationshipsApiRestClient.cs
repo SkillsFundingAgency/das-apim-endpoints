@@ -41,6 +41,10 @@ public interface IProviderRelationshipsApiRestClient
 
     [Get("requests")]
     [AllowAnyStatusCode]
+    Task<Response<GetRequestByUkprnAndAccountLegalEntityIdResponse?>> GetRequestByUkprnAndAccountLegalEntityId([Query] long ukprn, [Query] long accountLegalEntityId, CancellationToken cancellationToken);
+
+    [Get("requests")]
+    [AllowAnyStatusCode]
     Task<Response<GetRequestByUkprnAndEmailResponse?>> GetRequestByUkprnAndEmail([Query] long ukprn, [Query] string email, CancellationToken cancellationToken);
 
     [Post("requests/createaccount")]
