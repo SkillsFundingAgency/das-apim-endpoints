@@ -87,8 +87,6 @@ namespace SFA.DAS.ApprenticeApp.Api
 
             services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
-
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApprenticeAppOuterApi", Version = "v1" });
