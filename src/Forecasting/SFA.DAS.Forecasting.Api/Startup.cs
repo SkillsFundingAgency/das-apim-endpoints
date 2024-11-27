@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Logs;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Forecasting.Api.AppStart;
@@ -31,6 +33,12 @@ public class Startup
     {
         services.AddSingleton(_env);
         services.AddConfigurationOptions(_configuration);
+        
+        services.AddLogging(builder =>
+        {
+            builder.AddFilter<OpenTelemetryLoggerProvider>(string.Empty, LogLevel.Information);
+            builder.AddFilter<OpenTelemetryLoggerProvider>("Microsoft", LogLevel.Information);
+        });
 
         if (!_configuration.IsLocalOrDev())
         {
