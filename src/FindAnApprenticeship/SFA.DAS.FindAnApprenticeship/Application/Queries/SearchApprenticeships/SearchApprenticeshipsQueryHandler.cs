@@ -64,7 +64,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 }
             }
 
-            var categories = routes.Routes.Where(route => request.SelectedRouteIds != null && request.SelectedRouteIds.Contains(route.Id.ToString()))
+            var categories = routes.Routes.Where(route => request.SelectedRouteIds != null && request.SelectedRouteIds.Contains(route.Id))
                 .Select(route => route.Name).ToList();
 
             var totalWageTypeVacanciesCount = new GetApprenticeshipCountResponse { TotalVacancies = 0 };

@@ -12,7 +12,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
         int? pageNumber,
         int? pageSize,
         IReadOnlyCollection<string> categories,
-        IReadOnlyCollection<string> levels,
+        IReadOnlyCollection<int> levels,
         VacancySort sort,
         WageType? skipWageType,
         bool disabilityConfident)

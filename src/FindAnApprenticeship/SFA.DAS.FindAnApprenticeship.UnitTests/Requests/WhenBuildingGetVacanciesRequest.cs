@@ -19,7 +19,7 @@ public class WhenBuildingGetVacanciesRequest
         int pageNumber,
         int pageSize,
         List<string> categories,
-        List<string> levels,
+        List<int> levels,
         bool disabilityConfident)
     {
         var actual = new GetVacanciesRequest(lat, lon, distance,whatSearchTerm, pageNumber, pageSize, categories, levels, sort, skipWageType, disabilityConfident);
