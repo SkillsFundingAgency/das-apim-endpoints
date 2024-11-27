@@ -1,5 +1,6 @@
 using MediatR;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
@@ -16,6 +17,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
         public VacancySort Sort { get; set; } = VacancySort.DistanceAsc;
         public WageType? SkipWageType { get; set; } = null;
         public bool DisabilityConfident { get; set; }
-        public string? CandidateId { get; set; }
+        public Guid? CandidateId { get; set; }
     }
 }

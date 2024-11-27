@@ -38,7 +38,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
         {
             // Arrange
             query.Sort = VacancySort.SalaryAsc;
-            query.CandidateId = string.Empty;
+            query.CandidateId = null;
             locationLookupService
                 .Setup(service => service.GetLocationInformation(
                     query.Location, default, default, false))
@@ -123,6 +123,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 
         [Test, MoqAutoData]
         public async Task Then_The_Services_Are_Called_And_Data_Returned_Based_On_Request_When_Candidate_Id_Given(
+            SearchApprenticeshipsQuery query,
             Guid candidateId,
             LocationItem locationInfo,
             GetVacanciesResponse vacanciesResponse,
@@ -139,7 +140,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
         {
             // Arrange
             query.Sort = VacancySort.SalaryDesc;
-            query.CandidateId = candidateId.ToString();
+            query.CandidateId = candidateId;
             locationLookupService
                 .Setup(service => service.GetLocationInformation(
                     query.Location, default, default, false))
@@ -222,30 +223,23 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
         public async Task Then_The_Sort_Other_than_Salary_ApprenticeCount_Never_Called_And_Data_Returned_Based_On_Request(
            VacancySort sort,
            Guid candidateId,
-           SearchApprenticeshipsQuery query,
            LocationItem locationInfo,
            GetVacanciesResponse vacanciesResponse,
            GetRoutesListResponse routesResponse,
            GetApplicationsApiResponse getApplicationsApiResponse,
            GetSavedVacanciesApiResponse getSavedVacanciesApiResponse,
+           GetCandidateSavedSearchesApiResponse getSavedSearchesApiResponse,
            [Frozen] Mock<IMetrics> metricsService,
            [Frozen] Mock<ICourseService> courseService,
            [Frozen] Mock<ILocationLookupService> locationLookupService,
            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
            SearchApprenticeshipsQueryHandler handler)
-            GetCandidateSavedSearchesApiResponse getSavedSearchesApiResponse,
-            [Frozen] Mock<IMetrics> metricsService,
-            [Frozen] Mock<ICourseService> courseService,
-            [Frozen] Mock<ILocationLookupService> locationLookupService,
-            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
-            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-            SearchApprenticeshipsQueryHandler handler)
         {
             // Arrange
             var query = new SearchApprenticeshipsQuery
             {
-                CandidateId = candidateId.ToString(),
+                CandidateId = candidateId,
                 DisabilityConfident = true,
                 Distance = 20,
                 Location = "Hull",
@@ -258,7 +252,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             };
                         
             query.Sort = sort;
-            query.CandidateId = candidateId.ToString();
+            query.CandidateId = candidateId;
             locationLookupService
                 .Setup(service => service.GetLocationInformation(
                     query.Location, default, default, false))
