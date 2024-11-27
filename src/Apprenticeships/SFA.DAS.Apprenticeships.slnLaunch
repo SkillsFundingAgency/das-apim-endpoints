@@ -12,5 +12,19 @@
         "Action": "Start"
       }
     ]
+  },
+  {
+    "Name": "With Real Inner",
+    "Projects": [
+      {
+        "Path": "SFA.DAS.Apprenticeships.Api\\SFA.DAS.Apprenticeships.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "With Real Inner"
+      },
+      {
+        "Path": "SFA.DAS.Apprenticeships.Stubs\\SFA.DAS.Apprenticeships.Stubs.csproj",
+        "Action": "Start"
+      }
+    ]
   }
 ]

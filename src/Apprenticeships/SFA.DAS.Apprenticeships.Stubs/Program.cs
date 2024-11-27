@@ -31,6 +31,7 @@ namespace SFA.DAS.Apprenticeships.Stubs
                     Urls = new[] { "http://*:6011" },
                     StartAdminInterface = true,
                 });
+                SetUpCoursesResponses();
 
                 _fakeApprenticeshipsApi = WireMockServer.Start(new WireMockServerSettings
                 {
@@ -85,6 +86,18 @@ namespace SFA.DAS.Apprenticeships.Stubs
                 _fakeCollectionCalendarApi.Stop();
                 _fakeCollectionCalendarApi.Dispose();
             }
+        }
+
+        private static void SetUpCoursesResponses()
+        {
+            _fakeCoursesApi.Given(
+                    Request.Create().WithPath($"/api/courses/standards/*")
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetStandardsListItem>())));
         }
 
         private static void SetupCollectionCalendarResponses()
@@ -157,6 +170,114 @@ namespace SFA.DAS.Apprenticeships.Stubs
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/json")
                         .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetApprenticeshipStartDateResponse>())));
+
+            _fakeApprenticeshipsApi.Given(
+                    Request.Create().WithPath($"/*/priceHistory").UsingPost()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<PostCreateApprenticeshipPriceChangeApiResponse>())));
+
+            _fakeApprenticeshipsApi.Given(
+                    Request.Create().WithPath($"/*/startDateChange").UsingPost()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody("{}"));
+
+            _fakeApprenticeshipsApi.Given(
+                    Request.Create().WithPath($"/*/priceHistory/pending").UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetPendingPriceChangeApiResponse>())));
+
+            _fakeApprenticeshipsApi.Given(
+                    Request.Create().WithPath($"/*/startDateChange/pending").UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetPendingStartDateChangeApiResponse>())));
+
+            _fakeApprenticeshipsApi.Given(
+                    Request.Create().WithPath($"/*/priceHistory/pending").UsingDelete()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody("{}"));
+
+            _fakeApprenticeshipsApi.Given(
+                    Request.Create().WithPath($"/*/priceHistory/pending/reject").UsingPatch()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody("{}"));
+
+            _fakeApprenticeshipsApi.Given(
+                    Request.Create().WithPath($"/*/priceHistory/pending").UsingPatch()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody("{}"));
+
+            _fakeApprenticeshipsApi.Given(
+                    Request.Create().WithPath($"/*/startDateChange/pending").UsingDelete()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody("{}"));
+
+            _fakeApprenticeshipsApi.Given(
+                    Request.Create().WithPath($"/*/startDateChange/reject").UsingPatch()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody("{}"));
+
+            _fakeApprenticeshipsApi.Given(
+                    Request.Create().WithPath($"/*/startDateChange/pending").UsingPatch()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody("{}"));
+
+            _fakeApprenticeshipsApi.Given(
+                    Request.Create().WithPath($"/*/freeze").UsingPost()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody("{}"));
+
+            _fakeApprenticeshipsApi.Given(
+                    Request.Create().WithPath($"/*/unfreeze").UsingPost()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody("{}"));
         }
 
         private static void SetUpAccountsResponses()
