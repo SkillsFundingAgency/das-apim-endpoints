@@ -13,41 +13,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="nlog.Debug.config">
-      <DependentUpon>nlog.config</DependentUpon>
-      <IsTransformFile>true</IsTransformFile>
-    </None>
-    <None Include="nlog.Release.config">
-      <DependentUpon>nlog.config</DependentUpon>
-      <IsTransformFile>true</IsTransformFile>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MediatR" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Options" />
-    <PackageReference Include="NLog.Web.AspNetCore" />
     <PackageReference Include="SFA.DAS.Api.Common" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
-    <PackageReference Include="SFA.DAS.NLog.Targets.Redis" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Forecasting\SFA.DAS.Forecasting.csproj" />
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="nlog.config">
-      <TransformOnBuild>true</TransformOnBuild>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
 </Project>
