@@ -124,7 +124,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
         [Test, MoqAutoData]
         public async Task Then_The_Services_Are_Called_And_Data_Returned_Based_On_Request_When_Candidate_Id_Given(
             Guid candidateId,
-            SearchApprenticeshipsQuery query,
             LocationItem locationInfo,
             GetVacanciesResponse vacanciesResponse,
             GetRoutesListResponse routesResponse,
@@ -139,7 +138,19 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             SearchApprenticeshipsQueryHandler handler)
         {
             // Arrange
-            query.Sort = VacancySort.SalaryDesc;
+            var query = new SearchApprenticeshipsQuery
+            {
+                CandidateId = candidateId.ToString(),
+                DisabilityConfident = true,
+                Distance = 20,
+                Location = "Hull",
+                PageNumber = 2,
+                PageSize = 20,
+                SearchTerm = "Food",
+                SelectedRouteIds = new ReadOnlyCollection<string>(["1", "3"]),
+                SelectedLevelIds = new ReadOnlyCollection<string>(["1", "2"]),
+                Sort = VacancySort.SalaryDesc
+            };
             query.CandidateId = candidateId.ToString();
             locationLookupService
                 .Setup(service => service.GetLocationInformation(
