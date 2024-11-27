@@ -1,5 +1,4 @@
-﻿using System.Net;
-using MediatR;
+﻿using MediatR;
 using RestEase;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
@@ -9,6 +8,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Net;
 
 namespace SFA.DAS.ProviderPR.Application.Queries.GetRelationshipByEmail;
 public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfiguration> _accountsApiClient, IProviderRelationshipsApiRestClient _providerRelationshipsApiClient) : IRequestHandler<GetRelationshipByEmailQuery, GetRelationshipByEmailQueryResult>
@@ -78,7 +78,16 @@ public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfi
         queryResult.AccountLegalEntityPublicHashedId = legalEntity.AccountLegalEntityPublicHashedId;
         queryResult.AccountLegalEntityId = legalEntity.AccountLegalEntityId;
         queryResult.AccountLegalEntityName = legalEntity.Name;
-        queryResult.HasRelationship = false;
+
+        var existingRequestCheck = await _providerRelationshipsApiClient.GetRequestByUkprnAndAccountLegalEntityId(request.Ukprn, legalEntity.AccountLegalEntityId, cancellationToken);
+
+        var isExistingRequestPresent = IsExistingRequestPresent(existingRequestCheck!, request.Ukprn, legalEntity.AccountLegalEntityId);
+
+        if (isExistingRequestPresent)
+        {
+            queryResult.HasActiveRequest = true;
+            return queryResult;
+        }
 
         Response<GetRelationshipResponse> relationshipResponse = await _providerRelationshipsApiClient.GetRelationship(request.Ukprn, queryResult.AccountLegalEntityId.Value, cancellationToken);
 
@@ -86,6 +95,10 @@ public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfi
         {
             queryResult.HasRelationship = true;
             queryResult.Operations = relationshipResponse.GetContent().Operations.ToList();
+        }
+        else
+        {
+            queryResult.HasRelationship = false;
         }
 
         return queryResult;
@@ -99,6 +112,17 @@ public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfi
             HttpStatusCode.NotFound => false,
             _ => throw new InvalidOperationException(
                 $"Provider PR API threw unexpected response for ukprn {ukprn} and email {email}")
+        };
+    }
+
+    private static bool IsExistingRequestPresent(Response<GetRequestByUkprnAndAccountLegalEntityIdResponse> res, long ukprn, long accountLegalEntityId)
+    {
+        return res.ResponseMessage.StatusCode switch
+        {
+            HttpStatusCode.OK => true,
+            HttpStatusCode.NotFound => false,
+            _ => throw new InvalidOperationException(
+                $"Provider PR API threw unexpected response for ukprn {ukprn} and accountLegalEntityId {accountLegalEntityId}")
         };
     }
 }

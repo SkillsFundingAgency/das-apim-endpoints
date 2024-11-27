@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using NLog.Web;
 
 namespace SFA.DAS.EarlyConnect.Api;
 
@@ -13,6 +12,5 @@ public class Program
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
-            .UseNLog();
+            .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
 }
