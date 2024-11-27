@@ -57,7 +57,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageNumber,
                 query.PageSize,
                 categories,
-                query.SelectedLevelIds,
+                query.SelectedLevelIds?.Select(c=>Convert.ToInt32(c)).ToList(),
                 query.Sort,
                 query.SkipWageType,
                 query.DisabilityConfident);
@@ -173,7 +173,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageNumber,
                 query.PageSize,
                 categories,
-                query.SelectedLevelIds,
+                query.SelectedLevelIds?.Select(c=>Convert.ToInt32(c)).ToList(),
                 query.Sort,
                 query.SkipWageType,
                 query.DisabilityConfident);
@@ -285,7 +285,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageNumber,
                 query.PageSize,
                 categories,
-                query.SelectedLevelIds,
+                query.SelectedLevelIds?.Select(c=>Convert.ToInt32(c)).ToList(),
                 query.Sort,
                 query.SkipWageType,
                 query.DisabilityConfident);
