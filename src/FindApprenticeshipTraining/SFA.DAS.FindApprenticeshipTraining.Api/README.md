@@ -88,7 +88,6 @@ In the web project, if it does not exist already, add `AppSettings.Development.j
 * .NetCore 8.0
 * Azure Storage Account
 * NUnit
-* NLog
 * Moq
 * FluentAssertions
 * Azure App Insights
