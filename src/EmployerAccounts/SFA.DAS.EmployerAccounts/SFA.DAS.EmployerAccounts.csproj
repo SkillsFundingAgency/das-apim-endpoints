@@ -19,6 +19,7 @@
 
     <ItemGroup>
         <PackageReference Include="MediatR" />
+        <PackageReference Include="SFA.DAS.Common.Domain" />
     </ItemGroup>
 
 </Project>

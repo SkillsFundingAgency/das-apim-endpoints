@@ -85,6 +85,14 @@ public static class AddServiceCollectionExtensions
         return services;
     }
 
+    public static IServiceCollection AddTelemetryRegistration(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddOpenTelemetryRegistration(configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
+
+        return services;
+    }
+
     private static void AddProviderRelationshipsApiClient(IServiceCollection services, IConfiguration configuration)
     {
         var apiConfig = GetApiConfiguration(configuration, "ProviderRelationshipsApiConfiguration");

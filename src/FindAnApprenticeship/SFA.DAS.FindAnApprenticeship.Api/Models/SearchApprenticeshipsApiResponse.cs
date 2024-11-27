@@ -22,7 +22,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 VacancyReference = source.VacancyReference,
                 Levels = source.Levels.Select(l => (LevelApiResponse)l).ToList(),
                 TotalFound = source.TotalFound,
-                DisabilityConfident = source.DisabilityConfident
+                DisabilityConfident = source.DisabilityConfident,
+                SavedSearchesCount = source.SavedSearchesCount,
+                SearchAlreadySaved = source.SearchAlreadySaved
             };
         }
         [JsonPropertyName("totalFound")]
@@ -42,5 +44,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string? VacancyReference { get; init; }
         public List<GetVacanciesListResponseItem> Vacancies { get; init; }
         public bool DisabilityConfident { get; set; }
+        public int SavedSearchesCount { get; init; }
+        public bool SearchAlreadySaved { get; init; }
     }
 }

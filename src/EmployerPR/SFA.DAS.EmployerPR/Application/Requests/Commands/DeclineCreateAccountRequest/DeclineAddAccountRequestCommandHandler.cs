@@ -1,8 +1,8 @@
 ﻿using MediatR;
-using SFA.DAS.EmployerPR.Application.Notifications.Commands.PostNotifications;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinePermissionsRequest;
 using SFA.DAS.EmployerPR.Common;
 using SFA.DAS.EmployerPR.Infrastructure;
+using SFA.DAS.EmployerPR.InnerApi.Requests;
 
 namespace SFA.DAS.EmployerPR.Application.Requests.Commands.DeclineCreateAccountRequest;
 
@@ -17,7 +17,7 @@ public sealed class DeclineCreateAccountRequestCommandHandler(IProviderRelations
        );
 
         await _providerRelationshipsApiRestClient.PostNotifications(
-            new PostNotificationsCommand(
+            new PostNotificationsRequest(
                 [
                     new NotificationModel()
                     {

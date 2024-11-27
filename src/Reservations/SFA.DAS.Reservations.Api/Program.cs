@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using NLog.Web;
 
 namespace SFA.DAS.Reservations.Api
 {
@@ -16,8 +15,7 @@ namespace SFA.DAS.Reservations.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseApplicationInsights()
-                        .UseStartup<Startup>()
-                        .UseNLog();
+                        .UseStartup<Startup>();
                 });
     }
 }

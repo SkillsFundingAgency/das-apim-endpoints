@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -8,6 +9,9 @@ using MediatR;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses.Shared;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
@@ -89,17 +93,30 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 
             var apprenticeshipVacancies = new List<GetVacanciesListItem>();
 
+            var savedSearchesCount = 0;
+            var searchAlreadySaved = false;
+
             if (!string.IsNullOrEmpty(request.CandidateId))
             {
+                var candidateId = Guid.Parse(request.CandidateId);
+                
                 var candidateApplicationsTask =
                     candidateApiClient.Get<GetApplicationsApiResponse>(
-                        new GetApplicationsApiRequest(Guid.Parse(request.CandidateId)));
+                        new GetApplicationsApiRequest(candidateId));
 
                 var savedVacanciesResponseTask =
                     candidateApiClient.Get<GetSavedVacanciesApiResponse>(
-                        new GetSavedVacanciesApiRequest(Guid.Parse(request.CandidateId)));
+                        new GetSavedVacanciesApiRequest(candidateId));
 
-                await Task.WhenAll(candidateApplicationsTask, savedVacanciesResponseTask);
+                var savedSearchesResponseTask =
+                    findApprenticeshipApiClient.Get<GetCandidateSavedSearchesApiResponse>(
+                        new GetCandidateSavedSearchesApiRequest(candidateId));
+
+                await Task.WhenAll(
+                    candidateApplicationsTask,
+                    savedVacanciesResponseTask,
+                    savedSearchesResponseTask
+                );
 
                 var candidateApplications = candidateApplicationsTask.Result;
                 var savedVacanciesResponse = savedVacanciesResponseTask.Result;
@@ -120,7 +137,22 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     }
                     apprenticeshipVacancies.Add(vacancy);
                 }
-            }
+
+                var savedSearchesResponse = savedSearchesResponseTask.Result;
+                var searchParameters = new SearchParametersDto(
+                    request.SearchTerm,
+                    request.SelectedRouteIds?.Select(x => Convert.ToInt32(x)).ToList(),
+                    request.Distance,
+                    request.DisabilityConfident,
+                    request.SelectedLevelIds?.Select(x => Convert.ToInt32(x)).ToList(),
+                    request.Location,
+                    location?.GeoPoint?.FirstOrDefault().ToString(CultureInfo.InvariantCulture),
+                    location?.GeoPoint?.LastOrDefault().ToString(CultureInfo.InvariantCulture)
+                );
+                
+                savedSearchesCount = savedSearchesResponse.SavedSearches?.Count ?? 0;
+                searchAlreadySaved = savedSearchesResponse.SavedSearches?.Any(x => x.SearchParameters.Equals(searchParameters)) ?? false;
+            } 
             else
             {
                 apprenticeshipVacancies = vacancyResult.ApprenticeshipVacancies.ToList();
@@ -141,7 +173,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 PageSize = request.PageSize,
                 TotalPages = totalPages,
                 Levels = courseLevels.Levels.ToList(),
-                DisabilityConfident = request.DisabilityConfident
+                DisabilityConfident = request.DisabilityConfident,
+                SavedSearchesCount = savedSearchesCount,
+                SearchAlreadySaved = searchAlreadySaved
             };
         }
     }
