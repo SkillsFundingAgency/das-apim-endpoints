@@ -5,6 +5,7 @@ using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification
@@ -23,7 +24,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
             var patchRequest = new PatchSavedSearchApiRequest(command.Id, jsonPatchDocument);
 
             var vacanciesEmailSnippet = EmailTemplateBuilder.GetSavedSearchVacanciesSnippet(EmailEnvironmentHelper,
-                command.Vacancies);
+                command.Vacancies, command.Location != null);
 
             var searchParamsEmailSnippet = EmailTemplateBuilder.GetSavedSearchSearchParams(command.SearchTerm,
                 command.Distance,
@@ -43,8 +44,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
                 EmailEnvironmentHelper.SavedSearchEmailNotificationTemplateId,
                 command.User.Email,
                 command.User.FirstName,
-                command.Vacancies.Count.ToString(),
-                $"{command.SearchTerm} in {command.Location}",
+                $"{command.Vacancies.Count.ToString()} new {(command.Vacancies.Count == 1 ? "apprenticeship" : "apprenticeships")}",
+                $"{EmailTemplateBuilder.BuildSearchAlertDescriptor(command)}",
                 string.Concat(EmailEnvironmentHelper.SearchUrl, queryParameters), 
                 string.Concat(EmailEnvironmentHelper.SavedSearchUnSubscribeUrl, command.UnSubscribeToken),
                 vacanciesEmailSnippet,
@@ -57,5 +58,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
 
             return Unit.Value;
         }
+        
+        
     }
 }
