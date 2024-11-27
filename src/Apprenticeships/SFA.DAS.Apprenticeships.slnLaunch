@@ -1,0 +1,16 @@
+[
+  {
+    "Name": "With All Stubs",
+    "Projects": [
+      {
+        "Path": "SFA.DAS.Apprenticeships.Api\\SFA.DAS.Apprenticeships.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "With All Stubs"
+      },
+      {
+        "Path": "SFA.DAS.Apprenticeships.Stubs\\SFA.DAS.Apprenticeships.Stubs.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

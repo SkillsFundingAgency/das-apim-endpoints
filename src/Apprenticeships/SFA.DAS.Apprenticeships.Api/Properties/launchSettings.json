@@ -1,13 +1,4 @@
 {
-  "$schema": "https://json.schemastore.org/launchsettings.json",
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:22894",
-      "sslPort": 44333
-    }
-  },
   "profiles": {
     "SFA.DAS.Apprenticeships.Api": {
       "commandName": "Project",
@@ -25,6 +16,30 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "With All Stubs": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "CoursesApiConfiguration__Url": "http://localhost:6011",
+        "ApprenticeshipsApiConfiguration__Url": "http://localhost:6012",
+        "CommitmentsV2ApiConfiguration__Url": "http://localhost:6013",
+        "AccountsInnerApi__Url": "http://localhost:6014",
+        "EmployerProfilesApiConfiguration__Url": "http://localhost:6015",
+        "CollectionCalendarApiConfiguration__Url": "http://localhost:6016"
+      },
+      "applicationUrl": "https://localhost:7101;http://localhost:5101",
+      "dotnetRunMessages": true
+    }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:22894",
+      "sslPort": 44333
     }
   }
 }
