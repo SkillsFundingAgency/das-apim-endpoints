@@ -4,13 +4,19 @@ namespace SFA.DAS.Vacancies.Api.Models
 {
     public class GetVacancyWageItem
     {
-        public decimal? WageAmount { get; set; }
-        public decimal? WageAmountLowerBound { get; set; }
-        public decimal? WageAmountUpperBound { get; set; }
-        public string WageAdditionalInformation { get; set; }
         public WageType WageType { get; set; }
+        /// <summary>
+        /// If `wageType` is `Custom`, this will be the set annual wage for the apprenticeship.
+        /// </summary>
+        public decimal? WageAmount { get; set; }
+        /// <summary>
+        /// Additional information about pay, such as when the apprentice might get a pay rise. Will be less than or equal to 250 characters.
+        /// </summary>
+        public string WageAdditionalInformation { get; set; }
+        /// <summary>
+        /// Information about the working schedule, such as daily working hours. Will be less than or equal to 250 characters
+        /// </summary>
         public string WorkingWeekDescription { get; set; }
-        public WageUnit WageUnit { get; set; }
 
         public static implicit operator GetVacancyWageItem(GetVacanciesListItem source)
         {
@@ -19,10 +25,7 @@ namespace SFA.DAS.Vacancies.Api.Models
                 WageAmount = source.WageAmount,
                 WageType = source.WageType == 0 ? WageType.Custom : (WageType)source.WageType,
                 WageAdditionalInformation = source.WageText,
-                WorkingWeekDescription = source.WorkingWeek,
-                WageAmountLowerBound = source.WageAmountLowerBound,
-                WageAmountUpperBound = source.WageAmountUpperBound,
-                WageUnit = (WageUnit)source.WageUnit
+                WorkingWeekDescription = source.WorkingWeek
             };
         }
     }
