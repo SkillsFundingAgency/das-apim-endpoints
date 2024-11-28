@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -11,6 +10,7 @@ using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerFinance;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -19,33 +19,18 @@ namespace SFA.DAS.Approvals.UnitTests.Application.SelectFundingOptions;
 public class WhenGettingFundingOption
 {
     [Test, MoqAutoData]
-z    public async Task ThenDirectTransfersAreAvailable_WhenTransferConnectionsExist(
+    public async Task ThenDirectTransfersAreAvailable_WhenTransferConnectionsExist(
         GetSelectFundingOptionsQuery query,
-        GetAccountReservationsStatusResponse reservationsResponse,
         GetTransferConnectionsResponse directTransfersResponse,
-        GetAccountResponse accountResponse,
-        [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationsApiClient,
         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
-        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
         GetSelectFundingOptionsQueryHandler handler
     )
     {
-        reservationsApiClient.Setup(x =>
-                x.Get<GetAccountReservationsStatusResponse>(
-                    It.Is<GetAccountReservationsStatusRequest>(x =>
-                        x.AccountId == query.AccountId && x.TransferSenderId == null)))
-            .ReturnsAsync(reservationsResponse);
-
         financeApiClient.Setup(x =>
                 x.Get<GetTransferConnectionsResponse>(
                     It.Is<GetTransferConnectionsRequest>(x => x.AccountId == query.AccountId)))
             .ReturnsAsync(directTransfersResponse);
-
-        accountsApiClient.Setup(x =>
-                x.Get<GetAccountResponse>(
-                    It.Is<GetAccountRequest>(x => x.HashedAccountId == query.AccountId.ToString())))
-            .ReturnsAsync(accountResponse);
-
+        
         var actual = await handler.Handle(query, CancellationToken.None);
 
         actual.HasDirectTransfersAvailable.Should().BeTrue();
@@ -55,10 +40,7 @@ z    public async Task ThenDirectTransfersAreAvailable_WhenTransferConnectionsEx
     public async Task ThenHasReservationsAvailable_WhenLimitNotReached(
         GetSelectFundingOptionsQuery query,
         GetAccountReservationsStatusResponse reservationsResponse,
-        GetAccountResponse accountResponse,
         [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationsApiClient,
-        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
-        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
         GetSelectFundingOptionsQueryHandler handler
     )
     {
@@ -70,16 +52,6 @@ z    public async Task ThenDirectTransfersAreAvailable_WhenTransferConnectionsEx
                         x.AccountId == query.AccountId && x.TransferSenderId == null)))
             .ReturnsAsync(reservationsResponse);
 
-        financeApiClient.Setup(x =>
-                x.Get<GetTransferConnectionsResponse>(
-                    It.Is<GetTransferConnectionsRequest>(x => x.AccountId == query.AccountId)))
-            .ReturnsAsync(new GetTransferConnectionsResponse());
-
-        accountsApiClient.Setup(x =>
-                x.Get<GetAccountResponse>(
-                    It.Is<GetAccountRequest>(x => x.HashedAccountId == query.AccountId.ToString())))
-            .ReturnsAsync(accountResponse);
-
         var actual = await handler.Handle(query, CancellationToken.None);
 
         actual.HasAdditionalReservationFundsAvailable.Should().BeTrue();
@@ -89,10 +61,7 @@ z    public async Task ThenDirectTransfersAreAvailable_WhenTransferConnectionsEx
     public async Task ThenHasUnallocatedReservations_WhenPendingReservationsExist(
         GetSelectFundingOptionsQuery query,
         GetAccountReservationsStatusResponse reservationsResponse,
-        GetAccountResponse accountResponse,
         [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationsApiClient,
-        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
-        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
         GetSelectFundingOptionsQueryHandler handler
     )
     {
@@ -104,16 +73,6 @@ z    public async Task ThenDirectTransfersAreAvailable_WhenTransferConnectionsEx
                         x.AccountId == query.AccountId && x.TransferSenderId == null)))
             .ReturnsAsync(reservationsResponse);
 
-        financeApiClient.Setup(x =>
-                x.Get<GetTransferConnectionsResponse>(
-                    It.Is<GetTransferConnectionsRequest>(x => x.AccountId == query.AccountId)))
-            .ReturnsAsync(new GetTransferConnectionsResponse());
-
-        accountsApiClient.Setup(x =>
-                x.Get<GetAccountResponse>(
-                    It.Is<GetAccountRequest>(x => x.HashedAccountId == query.AccountId.ToString())))
-            .ReturnsAsync(accountResponse);
-
         var actual = await handler.Handle(query, CancellationToken.None);
 
         actual.HasUnallocatedReservationsAvailable.Should().BeTrue();
@@ -122,26 +81,12 @@ z    public async Task ThenDirectTransfersAreAvailable_WhenTransferConnectionsEx
     [Test, MoqAutoData]
     public async Task ThenIsLevyAccount_WhenEmploymentTypeIsLevy(
         GetSelectFundingOptionsQuery query,
-        GetAccountReservationsStatusResponse reservationsResponse,
         GetAccountResponse accountResponse,
-        [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationsApiClient,
-        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
         GetSelectFundingOptionsQueryHandler handler
     )
     {
         accountResponse.ApprenticeshipEmployerType = "LEVY";
-
-        reservationsApiClient.Setup(x =>
-                x.Get<GetAccountReservationsStatusResponse>(
-                    It.Is<GetAccountReservationsStatusRequest>(x =>
-                        x.AccountId == query.AccountId && x.TransferSenderId == null)))
-            .ReturnsAsync(reservationsResponse);
-
-        financeApiClient.Setup(x =>
-                x.Get<GetTransferConnectionsResponse>(
-                    It.Is<GetTransferConnectionsRequest>(x => x.AccountId == query.AccountId)))
-            .ReturnsAsync(new GetTransferConnectionsResponse());
 
         accountsApiClient.Setup(x =>
                 x.Get<GetAccountResponse>(
@@ -152,4 +97,23 @@ z    public async Task ThenDirectTransfersAreAvailable_WhenTransferConnectionsEx
 
         actual.IsLevyAccount.Should().BeTrue();
     }
+
+    [Test, MoqAutoData]
+    public async Task ThenHasLtmTransfers_WhenApprovedApplicationsExist(
+        GetSelectFundingOptionsQuery query,
+        GetApplicationsResponse ltmTransfersResponse,
+        [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> ltmApiClient,
+        GetSelectFundingOptionsQueryHandler handler
+    )
+    {
+        ltmApiClient.Setup(x =>
+                x.Get<GetApplicationsResponse>(
+                    It.Is<GetAcceptedEmployerAccountPledgeApplicationsRequest>(x => x.EmployerAccountId == query.AccountId)))
+            .ReturnsAsync(ltmTransfersResponse);
+
+        var actual = await handler.Handle(query, CancellationToken.None);
+
+        actual.HasLtmTransfersAvailable.Should().BeTrue();
+    }
+
 }
