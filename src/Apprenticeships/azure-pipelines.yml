@@ -19,6 +19,7 @@ pr:
   paths:
     include:
     - src/Apprenticeships
+    - Directory.Packages.props
     exclude:
     - azure
     - pipeline-templates
@@ -52,3 +53,5 @@ stages:
   parameters:
     OuterApiName: Apprenticeships
     AddXForwardedAuthorization: $True
+    ConfigurationSecrets:
+     NServiceBusLicense: $(NServiceBusLicense)

@@ -49,7 +49,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
         [JsonPropertyName("standardTitle")]
         public string CourseTitle { get; set; }
 
-        [JsonPropertyName("courseLevel")]
+        [JsonPropertyName("standardLevel")]
         public int CourseLevel { get; set; }
     }
 
