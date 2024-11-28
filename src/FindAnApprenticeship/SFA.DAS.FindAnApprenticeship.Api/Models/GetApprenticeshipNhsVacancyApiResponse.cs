@@ -154,26 +154,5 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 VacancyDataSource = source.ApprenticeshipVacancy.VacancySource
             };
         }
-
-        public class AddressApiResponse
-        {
-            public string AddressLine1 { get; init; }
-            public string AddressLine2 { get; init; }
-            public string AddressLine3 { get; init; }
-            public string AddressLine4 { get; init; }
-            public string Postcode { get; init; }
-
-            public static implicit operator AddressApiResponse(Address source)
-            {
-                return new AddressApiResponse
-                {
-                    AddressLine1 = source.AddressLine1,
-                    AddressLine2 = source.AddressLine2,
-                    AddressLine3 = source.AddressLine3,
-                    AddressLine4 = source.AddressLine4,
-                    Postcode = source.Postcode,
-                };
-            }
-        }
     }
 }
