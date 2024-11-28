@@ -117,7 +117,6 @@ namespace SFA.DAS.ApprenticeApp.Api
                     return Task.CompletedTask;
                 });
                 await next();
-
             });
             app.UseHttpsRedirection()
                 .UseApiGlobalExceptionHandler(loggerFactory.CreateLogger("Startup"))
