@@ -21,6 +21,7 @@ pr:
     - pipeline-templates
     - deployments
     - src/EmployerFinance
+    - Directory.Packages.props
 
 variables:
 - group: Release Management Resources
