@@ -38,14 +38,14 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
         {
             // Arrange
             query.Sort = VacancySort.SalaryAsc;
-            query.CandidateId = string.Empty;
+            query.CandidateId = null;
             locationLookupService
                 .Setup(service => service.GetLocationInformation(
                     query.Location, default, default, false))
                 .ReturnsAsync(locationInfo);
             courseService.Setup(x => x.GetRoutes()).ReturnsAsync(routesResponse);
 
-            var categories = routesResponse.Routes.Where(route => query.SelectedRouteIds != null && query.SelectedRouteIds.Contains(route.Id.ToString()))
+            var categories = routesResponse.Routes.Where(route => query.SelectedRouteIds != null && query.SelectedRouteIds.Contains(route.Id))
                 .Select(route => route.Name).ToList();
 
             // Pass locationInfo to the request
@@ -57,7 +57,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageNumber,
                 query.PageSize,
                 categories,
-                query.SelectedLevelIds,
+                query.SelectedLevelIds?.Select(c=>Convert.ToInt32(c)).ToList(),
                 query.Sort,
                 query.SkipWageType,
                 query.DisabilityConfident);
@@ -123,6 +123,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 
         [Test, MoqAutoData]
         public async Task Then_The_Services_Are_Called_And_Data_Returned_Based_On_Request_When_Candidate_Id_Given(
+            List<int> routesIds,
+            List<int> levelIds,
             Guid candidateId,
             LocationItem locationInfo,
             GetVacanciesResponse vacanciesResponse,
@@ -140,19 +142,18 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             // Arrange
             var query = new SearchApprenticeshipsQuery
             {
-                CandidateId = candidateId.ToString(),
+                CandidateId = candidateId,
                 DisabilityConfident = true,
                 Distance = 20,
                 Location = "Hull",
                 PageNumber = 2,
                 PageSize = 20,
                 SearchTerm = "Food",
-                SelectedRouteIds = new ReadOnlyCollection<string>(["1", "3"]),
-                SelectedLevelIds = new ReadOnlyCollection<string>(["1", "2"]),
+                SelectedRouteIds = new ReadOnlyCollection<int>([1, 3]),
+                SelectedLevelIds = new ReadOnlyCollection<int>([1, 2]),
                 Sort = VacancySort.SalaryDesc
             };
 
-            query.CandidateId = candidateId.ToString();
             locationLookupService
                 .Setup(service => service.GetLocationInformation(
                     query.Location, default, default, false))
@@ -171,7 +172,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                         It.Is<GetSavedVacanciesApiRequest>(r => r.GetUrl == expectedSavedApplicationsApiRequestUrl.GetUrl)))
                 .ReturnsAsync(getSavedVacanciesApiResponse);
 
-            var categories = routesResponse.Routes.Where(route => query.SelectedRouteIds != null && query.SelectedRouteIds.Contains(route.Id.ToString()))
+            var categories = routesResponse.Routes.Where(route => query.SelectedRouteIds != null && query.SelectedRouteIds.Contains(route.Id))
                 .Select(route => route.Name).ToList();
 
             // Pass locationInfo to the request
@@ -183,7 +184,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageNumber,
                 query.PageSize,
                 categories,
-                query.SelectedLevelIds,
+                query.SelectedLevelIds?.Select(c=>Convert.ToInt32(c)).ToList(),
                 query.Sort,
                 query.SkipWageType,
                 query.DisabilityConfident);
@@ -251,19 +252,20 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             // Arrange
             var query = new SearchApprenticeshipsQuery
             {
-                CandidateId = candidateId.ToString(),
+                CandidateId = candidateId,
                 DisabilityConfident = true,
                 Distance = 20,
                 Location = "Hull",
                 PageNumber = 2,
                 PageSize = 20,
                 SearchTerm = "Food",
-                SelectedRouteIds = new ReadOnlyCollection<string>(["1", "3"]),
-                SelectedLevelIds = new ReadOnlyCollection<string>(["1", "2"]),
+                SelectedRouteIds = new ReadOnlyCollection<int>([1, 3]),
+                SelectedLevelIds = new ReadOnlyCollection<int>([1, 2]),
                 Sort = VacancySort.DistanceAsc
             };
                         
-            query.CandidateId = candidateId.ToString();
+            query.Sort = sort;
+            query.CandidateId = candidateId;
             locationLookupService
                 .Setup(service => service.GetLocationInformation(
                     query.Location, default, default, false))
@@ -282,7 +284,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                         It.Is<GetSavedVacanciesApiRequest>(r => r.GetUrl == expectedSavedApplicationsApiRequestUrl.GetUrl)))
                 .ReturnsAsync(getSavedVacanciesApiResponse);
 
-            var categories = routesResponse.Routes.Where(route => query.SelectedRouteIds != null && query.SelectedRouteIds.Contains(route.Id.ToString()))
+            var categories = routesResponse.Routes.Where(route => query.SelectedRouteIds != null && query.SelectedRouteIds.Contains(route.Id))
                 .Select(route => route.Name).ToList();
 
             // Pass locationInfo to the request
@@ -294,7 +296,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageNumber,
                 query.PageSize,
                 categories,
-                query.SelectedLevelIds,
+                query.SelectedLevelIds?.Select(c=>Convert.ToInt32(c)).ToList(),
                 query.Sort,
                 query.SkipWageType,
                 query.DisabilityConfident);
