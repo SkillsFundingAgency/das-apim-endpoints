@@ -1,9 +1,3 @@
-using System.Collections.ObjectModel;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
@@ -17,7 +11,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
+using System.Collections.ObjectModel;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 {
@@ -72,7 +66,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 
             var totalPages = (int)Math.Ceiling((double)vacanciesResponse.TotalFound / query.PageSize);
 
-            var apprenticeCountRequest = new GetApprenticeshipCountRequest(WageType.CompetitiveSalary);
+            var apprenticeCountRequest = new GetApprenticeshipCountRequest(query.SkipWageType);
             apiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(
                         It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == apprenticeCountRequest.GetUrl)))
@@ -203,7 +197,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 
             var totalPages = (int)Math.Ceiling((double)vacanciesResponse.TotalFound / query.PageSize);
 
-            var apprenticeCountRequest = new GetApprenticeshipCountRequest(WageType.CompetitiveSalary);
+            var apprenticeCountRequest = new GetApprenticeshipCountRequest(query.SkipWageType);
             apiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(
                         It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == apprenticeCountRequest.GetUrl)))

@@ -1,6 +1,3 @@
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 
@@ -19,9 +16,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Requests
         [Test, AutoData]
         public void When_WageType_Is_Null_Or_Empty_Then_The_Request_Url_Is_Correctly_Built()
         {
-            var actual = new GetApprenticeshipCountRequest();
+            var actual = new GetApprenticeshipCountRequest(null);
 
-            actual.GetUrl.Should().Be("/api/vacancies/count");
+            actual.GetUrl.Should().Be("/api/vacancies/count?wageType=");
         }
     }
 }
