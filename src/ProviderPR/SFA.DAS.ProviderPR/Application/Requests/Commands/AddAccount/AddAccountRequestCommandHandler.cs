@@ -39,42 +39,17 @@ public class AddAccountRequestCommandHandler(
 
         IReadOnlyList<TeamMember> teamMembers = teamMembersResponse.Body;
 
-        // If the provided EmployerContactEmail is null - then we must run through each account owner and send out the 'AddAccountOwnerInvitation' notification.
+        TeamMember? associatedTeamMember = teamMembers.FirstOrDefault(a => a.Email == command.EmployerContactEmail);
 
-        if (string.IsNullOrWhiteSpace(command.EmployerContactEmail))
+        if (string.IsNullOrWhiteSpace(command.EmployerContactEmail) || associatedTeamMember is null || !associatedTeamMember.IsAccountOwner())
         {
             notificationCommand.Notifications.AddRange(GetNotificationsForAllOwners(teamMembers.Where(t => t.IsAcceptedOwnerWithNotifications()), command, CreateRequestResponse.RequestId));
         }
-        else
+
+        if (associatedTeamMember is not null && associatedTeamMember.CanReceiveNotifications)
         {
-            // EmployerContactEmail is not null, therefore we must check for a team member associated with the provided EmployerContactEmail.
-            // If a user matches the provided email then we must create a 'AddAccountInformation' notification for this team member.
-
-            TeamMember? associatedTeamMember = teamMembers.FirstOrDefault(a => a.Email == command.EmployerContactEmail);
-
-            if (associatedTeamMember is not null)
-            {
-                if (associatedTeamMember.CanReceiveNotifications)
-                {
-                    if (associatedTeamMember.IsAccountOwner())
-                    {
-                        notificationCommand.Notifications.Add(CreateNotification(NotificationConstants.AddAccountInvitationTemplateName, command, associatedTeamMember, CreateRequestResponse.RequestId));
-                    }
-                    else
-                    {
-                        notificationCommand.Notifications.Add(CreateNotification(NotificationConstants.AddAccountInformationTemplateName, command, associatedTeamMember));
-
-                        notificationCommand.Notifications.AddRange(GetNotificationsForAllOwners(teamMembers.Where(t => t.IsAcceptedOwnerWithNotifications()), command, CreateRequestResponse.RequestId));
-                    }
-                }
-            }
-            else
-            {
-                // Alternatively, if the team member is not an account owner,
-                // an 'AddAccountOwnerInvitation' notification will be sent to the account Owner(s) that allow notifications.
-
-                notificationCommand.Notifications.AddRange(GetNotificationsForAllOwners(teamMembers.Where(t => t.IsAcceptedOwnerWithNotifications()), command, CreateRequestResponse.RequestId));
-            }
+            var templateName = associatedTeamMember.IsAccountOwner() ? NotificationConstants.AddAccountInvitationTemplateName : NotificationConstants.AddAccountInformationTemplateName;
+            notificationCommand.Notifications.Add(CreateNotification(templateName, command, associatedTeamMember, CreateRequestResponse.RequestId));
         }
 
         if (notificationCommand.Notifications.Any())

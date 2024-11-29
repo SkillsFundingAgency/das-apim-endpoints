@@ -20,13 +20,15 @@ public class WhenEmailInRequestIsNotOwner
     private List<TeamMember> _otherOwnerMembers;
     private TeamMember _requestMember;
     private TeamMember _otherOwnerMemberWithNotificationTurnedOff;
+    private AddAccountRequestCommandHandler sut;
+    private AddAccountRequestCommand createRequestCommand;
 
     [SetUp]
     public async Task Setup()
     {
         Fixture fixture = new();
 
-        var createRequestCommand = fixture.Create<AddAccountRequestCommand>();
+        createRequestCommand = fixture.Create<AddAccountRequestCommand>();
         var createRequestCommandResult = fixture.Create<AddAccountRequestCommandResult>();
         _providerRelationshipsApiRestClient = new();
         _providerRelationshipsApiRestClient.Setup(x => x.CreateAddAccountRequest(createRequestCommand, CancellationToken.None)).ReturnsAsync(createRequestCommandResult);
@@ -56,26 +58,42 @@ public class WhenEmailInRequestIsNotOwner
         Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient = new();
         accountsApiClient.Setup(c => c.GetWithResponseCode<List<TeamMember>>(It.Is<GetAccountTeamMembersByInternalAccountIdRequest>(r => r.GetUrl.Contains(createRequestCommand.AccountId.ToString())))).ReturnsAsync(apiResponse);
 
-        AddAccountRequestCommandHandler sut = new(_providerRelationshipsApiRestClient.Object, accountsApiClient.Object);
+        sut = new(_providerRelationshipsApiRestClient.Object, accountsApiClient.Object);
 
-        await sut.Handle(createRequestCommand, CancellationToken.None);
     }
 
-    [Test]
-    public void Handle_EmailInRequestIsNotOwner_NotificationsSentToAllOwners()
+    [TestCase(true)]
+    [TestCase(false)]
+    public async Task Handle_EmailInRequestIsNotOwner_NotificationsSentToAllOwners(bool isNotificationPreferenceOn)
     {
+        _requestMember.CanReceiveNotifications = isNotificationPreferenceOn;
+
+        await sut.Handle(createRequestCommand, CancellationToken.None);
+
         _providerRelationshipsApiRestClient.Verify(c => c.PostNotifications(It.Is<PostNotificationsCommand>(c => c.Notifications.Count(n => n.TemplateName == NotificationConstants.AddAccountOwnerInvitationTemplateName) == _otherOwnerMembers.Count), It.IsAny<CancellationToken>()));
     }
 
     [Test]
-    public void Handle_EmailInRequestIsNotOwner_InformationNotificationsSentToEmailInRequest()
+    public async Task Handle_EmailInRequestIsNotOwnerAndSomeOwnersHaveNotificationTurnedOff_NotificationsNotSentToOwnersWithNotificationOff()
     {
+        await sut.Handle(createRequestCommand, CancellationToken.None);
+
+        _providerRelationshipsApiRestClient.Verify(c => c.PostNotifications(It.Is<PostNotificationsCommand>(c => !c.Notifications.Any(n => n.EmailAddress == _otherOwnerMemberWithNotificationTurnedOff.Email)), It.IsAny<CancellationToken>()));
+    }
+
+    [Test]
+    public async Task Handle_EmailInRequestIsNotOwner_InformationNotificationsSentToEmailInRequest()
+    {
+        await sut.Handle(createRequestCommand, CancellationToken.None);
+
         _providerRelationshipsApiRestClient.Verify(c => c.PostNotifications(It.Is<PostNotificationsCommand>(c => c.Notifications.Count(n => n.TemplateName == NotificationConstants.AddAccountInformationTemplateName) == 1), It.IsAny<CancellationToken>()));
     }
 
     [Test]
-    public void Handle_EmailInRequestIsNotOwner_NotificationNotSentToOtherOwnerWithNotificationPreferenceSetToFalse()
+    public async Task Handle_EmailInRequestIsNotOwner_NotificationNotSentToOtherOwnerWithNotificationPreferenceSetToFalseAsync()
     {
+        await sut.Handle(createRequestCommand, CancellationToken.None);
+
         _providerRelationshipsApiRestClient.Verify(c => c.PostNotifications(It.Is<PostNotificationsCommand>(c => !c.Notifications.Any(n => n.EmailAddress == _otherOwnerMemberWithNotificationTurnedOff.Email)), It.IsAny<CancellationToken>()));
     }
 }
