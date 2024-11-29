@@ -1,7 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using NLog.Web;
 
 namespace SFA.DAS.EmployerAccounts.Api
 {
@@ -15,7 +14,6 @@ namespace SFA.DAS.EmployerAccounts.Api
 
         private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .UseNLog();
+                .UseStartup<Startup>();
     }
 }

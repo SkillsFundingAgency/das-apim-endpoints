@@ -24,9 +24,9 @@ public class RelationshipsController(IMediator _mediator) : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("employeraccount/email/{email}")]
+    [HttpGet("employeraccount")]
     [ProducesResponseType(typeof(GetRelationshipByEmailQueryResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetRelationshipByEmail([FromRoute] string email, [FromQuery] long ukprn,
+    public async Task<IActionResult> GetRelationshipByEmail([FromQuery] string email, [FromQuery] long ukprn,
         CancellationToken cancellationToken)
     {
         var query = new GetRelationshipByEmailQuery(email, ukprn);

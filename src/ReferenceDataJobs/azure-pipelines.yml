@@ -19,6 +19,7 @@ pr:
   paths:
     include:
     - src/ReferenceDataJobs
+    - Directory.Packages.props
     exclude:
     - azure
     - pipeline-templates

@@ -12,7 +12,7 @@ var configuration = builder.Configuration.BuildSharedConfiguration();
 
 builder.Services
     .AddLogging()
-    .AddApplicationInsightsTelemetry()
+    .AddTelemetryRegistration(configuration)
     .AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetRoatpProvidersQuery).Assembly))
     .AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly))
     .AddConfigurationOptions(configuration)

@@ -19,6 +19,7 @@ pr:
   paths:
     include:
     - src/FindEpao
+    - Directory.Packages.props
     exclude:
     - azure
     - pipeline-templates
