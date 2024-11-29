@@ -8,7 +8,7 @@ IConfigurationRoot configuration = builder.Configuration.BuildSharedConfiguratio
 
 builder.Services
     .AddLogging()
-    .AddApplicationInsightsTelemetry()
+    .AddTelemetryRegistration(configuration)
     .AddConfigurationOptions(configuration)
     .AddServiceRegistration(configuration)
     .AddAuthentication(configuration)

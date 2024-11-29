@@ -68,14 +68,12 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             
             return Ok();
         }
-
         public class ApprenticeAddSubscriptionRequest
         {
             public string Endpoint { get; set; }
             public string PublicKey { get; set; }
             public string AuthenticationSecret { get; set; }
         }
-
         public class ApprenticeRemoveSubscriptionRequest
         {
             public string Endpoint { get; set; }
