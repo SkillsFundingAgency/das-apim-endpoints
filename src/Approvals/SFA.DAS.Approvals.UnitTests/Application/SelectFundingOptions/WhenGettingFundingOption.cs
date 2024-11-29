@@ -19,7 +19,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.SelectFundingOptions;
 public class WhenGettingFundingOption
 {
     [Test, MoqAutoData]
-z    public async Task ThenDirectTransfersAreAvailable_WhenTransferConnectionsExist(
+    public async Task ThenDirectTransfersAreAvailable_WhenTransferConnectionsExist(
         GetSelectFundingOptionsQuery query,
         GetAccountReservationsStatusResponse reservationsResponse,
         GetTransferConnectionsResponse directTransfersResponse,
