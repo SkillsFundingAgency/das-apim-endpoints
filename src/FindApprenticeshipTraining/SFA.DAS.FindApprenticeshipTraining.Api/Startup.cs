@@ -36,9 +36,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             services.AddSingleton(_env);
 
             services.AddConfigurationOptions(_configuration);
+
             services
                 .AddLogging()
-                .AddTelemetryRegistration(_configuration.BuildSharedConfiguration());
+                .AddOpenTelemetry();
+
+            services
+                .AddApplicationInsightsTelemetry();
 
             if (!_configuration.IsLocalOrDev())
             {
@@ -91,8 +95,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                     .AddCheck<ShortlistApiHealthCheck>("Shortlist API health check")
                     .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription);
             }
-
-            services.AddApplicationInsightsTelemetry();
 
             services.AddSwaggerGen(c =>
             {
