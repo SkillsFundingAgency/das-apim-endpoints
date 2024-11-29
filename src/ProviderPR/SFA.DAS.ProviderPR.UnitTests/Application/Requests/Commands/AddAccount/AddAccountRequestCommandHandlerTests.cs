@@ -14,7 +14,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using TeamMember = SFA.DAS.SharedOuterApi.InnerApi.Responses.GetAccountTeamMembersWhichReceiveNotificationsResponse.TeamMember;
 
-namespace SFA.DAS.ProviderPR.UnitTests.Application.Requests.Commands;
+namespace SFA.DAS.ProviderPR.UnitTests.Application.Requests.Commands.AddAccount;
 
 
 public class AddAccountRequestCommandHandlerTests

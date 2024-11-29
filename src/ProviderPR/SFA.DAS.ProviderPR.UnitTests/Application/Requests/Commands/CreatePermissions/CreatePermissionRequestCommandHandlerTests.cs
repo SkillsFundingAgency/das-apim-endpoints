@@ -1,4 +1,5 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Net;
+using AutoFixture.NUnit3;
 using Moq;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.CreatePermissions;
 using SFA.DAS.ProviderPR.Infrastructure;
@@ -8,10 +9,9 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Net;
 using TeamMember = SFA.DAS.SharedOuterApi.InnerApi.Responses.GetAccountTeamMembersWhichReceiveNotificationsResponse.TeamMember;
 
-namespace SFA.DAS.ProviderPR.UnitTests.Application.Requests.Commands;
+namespace SFA.DAS.ProviderPR.UnitTests.Application.Requests.Commands.CreatePermissions;
 
 public class CreatePermissionRequestCommandHandlerTests
 {

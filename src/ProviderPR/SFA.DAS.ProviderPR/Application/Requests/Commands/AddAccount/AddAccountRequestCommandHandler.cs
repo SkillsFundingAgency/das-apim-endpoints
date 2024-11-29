@@ -58,11 +58,12 @@ public class AddAccountRequestCommandHandler(
                 {
                     if (associatedTeamMember.IsAccountOwner())
                     {
-                        notificationCommand.Notifications.Add(CreateAddAccountInvitationNotification(command, associatedTeamMember, CreateRequestResponse.RequestId));
+                        notificationCommand.Notifications.Add(CreateNotification(NotificationConstants.AddAccountInvitationTemplateName, command, associatedTeamMember, CreateRequestResponse.RequestId));
                     }
                     else
                     {
-                        notificationCommand.Notifications.Add(CreateAddAccountInformationNotification(command, associatedTeamMember));
+                        notificationCommand.Notifications.Add(CreateNotification(NotificationConstants.AddAccountInformationTemplateName, command, associatedTeamMember));
+
                         notificationCommand.Notifications.AddRange(GetNotificationsForAllOwners(teamMembers.Where(t => t.IsAcceptedOwnerWithNotifications()), command, CreateRequestResponse.RequestId));
                     }
                 }
@@ -92,21 +93,6 @@ public class AddAccountRequestCommandHandler(
             notifications.Add(CreateNotification(NotificationConstants.AddAccountOwnerInvitationTemplateName, command, ownerMember, requestId));
         }
         return notifications;
-    }
-
-    private static NotificationModel CreateAddAccountOwnerInvitationNotification(AddAccountRequestCommand command, TeamMember member, Guid requestId)
-    {
-        return CreateNotification(NotificationConstants.AddAccountOwnerInvitationTemplateName, command, member, requestId);
-    }
-
-    private static NotificationModel CreateAddAccountInformationNotification(AddAccountRequestCommand command, TeamMember member)
-    {
-        return CreateNotification(NotificationConstants.AddAccountInformationTemplateName, command, member);
-    }
-
-    private static NotificationModel CreateAddAccountInvitationNotification(AddAccountRequestCommand command, TeamMember member, Guid? requestId)
-    {
-        return CreateNotification(NotificationConstants.AddAccountInvitationTemplateName, command, member, requestId);
     }
 
     private static NotificationModel CreateNotification(string templateName, AddAccountRequestCommand command, TeamMember member, Guid? requestId = null)
