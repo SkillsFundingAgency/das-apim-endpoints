@@ -64,8 +64,16 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 }
             }
 
-            var categories = routes.Routes.Where(route => request.SelectedRouteIds != null && request.SelectedRouteIds.Contains(route.Id.ToString()))
+            var categories = routes.Routes.Where(route => request.SelectedRouteIds != null && request.SelectedRouteIds.Contains(route.Id))
                 .Select(route => route.Name).ToList();
+
+            var totalWageTypeVacanciesCount = new GetApprenticeshipCountResponse { TotalVacancies = 0 };
+            if (request.Sort is VacancySort.SalaryAsc or VacancySort.SalaryDesc)
+            {
+                totalWageTypeVacanciesCount = await
+                    findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
+                        new GetApprenticeshipCountRequest(request.SkipWageType));
+            }
 
             var vacancyResult = await findApprenticeshipApiClient.Get<GetVacanciesResponse>(
                 new GetVacanciesRequest(
@@ -78,6 +86,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     categories,
                     request.SelectedLevelIds,
                     request.Sort,
+                    request.SkipWageType,
                     request.DisabilityConfident,
                     new List<VacancyDataSource>
                     {
@@ -91,9 +100,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var savedSearchesCount = 0;
             var searchAlreadySaved = false;
 
-            if (!string.IsNullOrEmpty(request.CandidateId))
+            if (request.CandidateId != null)
             {
-                var candidateId = Guid.Parse(request.CandidateId);
+                var candidateId = request.CandidateId.Value;
                 
                 var candidateApplicationsTask =
                     candidateApiClient.Get<GetApplicationsApiResponse>(
@@ -159,6 +168,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             return new SearchApprenticeshipsResult
             {
                 TotalApprenticeshipCount = vacancyResult.Total,
+                TotalWageTypeVacanciesCount = totalWageTypeVacanciesCount.TotalVacancies,
                 TotalFound = vacancyResult.TotalFound,
                 LocationItem = location,
                 Routes = routes.Routes.ToList(),

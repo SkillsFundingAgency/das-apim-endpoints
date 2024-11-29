@@ -1,4 +1,6 @@
 ﻿using System.Globalization;
+using System.Text.RegularExpressions;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -117,10 +119,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 Id = source.Id,
                 EmployerName = source.Employer,
                 VacancyReference = source.Reference,
-                Wage = new Application.Shared.Wage
-                {
-                    WageText   = source.Salary
-                },
+                Wage = GetWage(source.Salary),
                 ApplicationUrl = source.Url,
                 ClosingDate = DateTime.Parse(source.CloseDate),
                 PostedDate = DateTime.Parse(source.PostDate),
@@ -136,7 +135,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
             };
         }
 
-        private string GetApprenticeshipLevel(int level)
+        private static string GetApprenticeshipLevel(int level)
         {
             return level switch
             {
@@ -151,10 +150,54 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
             };
         }
 
-        private string SortTypicalJobTitles(string typicalJobTitles)
+        private static string SortTypicalJobTitles(string typicalJobTitles)
         {
             var orderedJobTitles = typicalJobTitles.Split("|").OrderBy(s => s);
             return string.Join("|", orderedJobTitles);
+        }
+
+        public static Application.Shared.Wage GetWage(string wageText)
+        {
+            // Regex to match numbers with decimals
+            var matches = Regex.Matches(wageText, @"\d+\.\d{2}");
+
+            if (matches.Count == 2)
+            {
+                var lowerBound = decimal.Parse(matches[0].Value);
+                var upperBound = decimal.Parse(matches[1].Value);
+                var middleBound = upperBound / 1.33M;
+                return new Application.Shared.Wage
+                {
+                    WageType = WageType.FixedWage.ToString(),
+                    WageText = wageText,
+                    ApprenticeMinimumWage = lowerBound,
+                    Under18NationalMinimumWage = lowerBound,
+                    Between18AndUnder21NationalMinimumWage = decimal.Round(middleBound, 2, MidpointRounding.AwayFromZero),
+                    Between21AndUnder25NationalMinimumWage = upperBound,
+                    Over25NationalMinimumWage = upperBound,
+                };
+            }
+
+            if(decimal.TryParse(wageText.TrimStart('£'), out var fixedWage))
+            {
+                return new Application.Shared.Wage
+                {
+                    WageType = WageType.FixedWage.ToString(),
+                    WageText = wageText,
+                    ApprenticeMinimumWage = fixedWage,
+                    Under18NationalMinimumWage = fixedWage,
+                    Between18AndUnder21NationalMinimumWage = fixedWage,
+                    Between21AndUnder25NationalMinimumWage = fixedWage,
+                    Over25NationalMinimumWage = fixedWage,
+                    FixedWageYearlyAmount = fixedWage,
+                };
+            }
+
+            return new Application.Shared.Wage
+            {
+                WageType = WageType.CompetitiveSalary.ToString(),
+                WageText = wageText,
+            };
         }
     }
 }
