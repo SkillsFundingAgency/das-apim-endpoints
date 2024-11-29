@@ -19,6 +19,7 @@ public class WhenEmailInRequestIsNotOwner
     private Mock<IProviderRelationshipsApiRestClient> _providerRelationshipsApiRestClient;
     private List<TeamMember> _otherOwnerMembers;
     private TeamMember _requestMember;
+    private TeamMember _otherOwnerMemberWithNotificationTurnedOff;
 
     [SetUp]
     public async Task Setup()
@@ -43,6 +44,12 @@ public class WhenEmailInRequestIsNotOwner
             .With(t => t.Status, InvitationStatus.Accepted)
             .With(t => t.CanReceiveNotifications, true)
             .CreateMany().ToList();
+        _otherOwnerMemberWithNotificationTurnedOff = fixture
+            .Build<TeamMember>()
+            .With(t => t.Role, nameof(Role.Owner))
+            .With(t => t.Status, InvitationStatus.Accepted)
+            .With(t => t.CanReceiveNotifications, false)
+            .Create();
         var allTeamMembers = new List<TeamMember>(_otherOwnerMembers);
         allTeamMembers.Add(_requestMember);
         var apiResponse = new ApiResponse<List<TeamMember>>(allTeamMembers, HttpStatusCode.OK, null);
@@ -57,12 +64,18 @@ public class WhenEmailInRequestIsNotOwner
     [Test]
     public void Handle_EmailInRequestIsNotOwner_NotificationsSentToAllOwners()
     {
-        _providerRelationshipsApiRestClient.Verify(c => c.PostNotifications(It.Is<PostNotificationsCommand>(c => c.Notifications.Count(n => n.TemplateName == NotificationConstants.AddAccountInformationTemplateName) == 1), It.IsAny<CancellationToken>()));
+        _providerRelationshipsApiRestClient.Verify(c => c.PostNotifications(It.Is<PostNotificationsCommand>(c => c.Notifications.Count(n => n.TemplateName == NotificationConstants.AddAccountOwnerInvitationTemplateName) == _otherOwnerMembers.Count), It.IsAny<CancellationToken>()));
     }
 
     [Test]
     public void Handle_EmailInRequestIsNotOwner_InformationNotificationsSentToEmailInRequest()
     {
-        _providerRelationshipsApiRestClient.Verify(c => c.PostNotifications(It.Is<PostNotificationsCommand>(c => c.Notifications.Count(n => n.TemplateName == NotificationConstants.AddAccountOwnerInvitationTemplateName) == _otherOwnerMembers.Count), It.IsAny<CancellationToken>()));
+        _providerRelationshipsApiRestClient.Verify(c => c.PostNotifications(It.Is<PostNotificationsCommand>(c => c.Notifications.Count(n => n.TemplateName == NotificationConstants.AddAccountInformationTemplateName) == 1), It.IsAny<CancellationToken>()));
+    }
+
+    [Test]
+    public void Handle_EmailInRequestIsNotOwner_NotificationNotSentToOtherOwnerWithNotificationPreferenceSetToFalse()
+    {
+        _providerRelationshipsApiRestClient.Verify(c => c.PostNotifications(It.Is<PostNotificationsCommand>(c => !c.Notifications.Any(n => n.EmailAddress == _otherOwnerMemberWithNotificationTurnedOff.Email)), It.IsAny<CancellationToken>()));
     }
 }
