@@ -1,11 +1,15 @@
+using System.Collections.ObjectModel;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
@@ -108,12 +112,12 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
         [Test, MoqAutoData]
         public async Task Then_The_Services_Are_Called_And_Data_Returned_Based_On_Request_When_Candidate_Id_Given(
             Guid candidateId,
-            SearchApprenticeshipsQuery query,
             LocationItem locationInfo,
             GetVacanciesResponse vacanciesResponse,
             GetRoutesListResponse routesResponse,
             GetApplicationsApiResponse getApplicationsApiResponse,
             GetSavedVacanciesApiResponse getSavedVacanciesApiResponse,
+            GetCandidateSavedSearchesApiResponse getSavedSearchesApiResponse,
             [Frozen] Mock<IMetrics> metricsService,
             [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<ILocationLookupService> locationLookupService,
@@ -122,6 +126,20 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             SearchApprenticeshipsQueryHandler handler)
         {
             // Arrange
+            var query = new SearchApprenticeshipsQuery
+            {
+                CandidateId = candidateId.ToString(),
+                DisabilityConfident = true,
+                Distance = 20,
+                Location = "Hull",
+                PageNumber = 2,
+                PageSize = 20,
+                SearchTerm = "Food",
+                SelectedRouteIds = new ReadOnlyCollection<string>(["1", "3"]),
+                SelectedLevelIds = new ReadOnlyCollection<string>(["1", "2"]),
+                Sort = VacancySort.DistanceAsc
+            };
+                        
             query.CandidateId = candidateId.ToString();
             locationLookupService
                 .Setup(service => service.GetLocationInformation(
@@ -161,6 +179,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
                 .ReturnsAsync(vacanciesResponse);
 
+            apiClient
+                .Setup(client => client.Get<GetCandidateSavedSearchesApiResponse>(
+                    It.Is<GetCandidateSavedSearchesApiRequest>(r => r.GetUrl == $"api/Users/{candidateId}/SavedSearches")))
+                .ReturnsAsync(getSavedSearchesApiResponse);
+
             var totalPages = (int)Math.Ceiling((double)vacanciesResponse.TotalFound / query.PageSize);
 
             // Act
@@ -178,6 +201,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 result.PageSize.Should().Be(query.PageSize);
                 result.TotalPages.Should().Be(totalPages);
                 result.DisabilityConfident.Should().Be(query.DisabilityConfident);
+                result.SavedSearchesCount.Should().Be(3);
+                result.SearchAlreadySaved.Should().BeFalse();
                 metricsService.Verify(x => x.IncreaseVacancySearchResultViews(It.IsAny<string>(), 1), Times.Exactly(vacanciesResponse.ApprenticeshipVacancies.Count()));
             }
         }

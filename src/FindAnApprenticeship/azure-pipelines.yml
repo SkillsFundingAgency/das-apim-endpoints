@@ -21,6 +21,7 @@ pr:
     - pipeline-templates
     - deployments
     - src/FindAnApprenticeship
+    - Directory.Packages.props
 
 variables:
 - group: Release Management Resources

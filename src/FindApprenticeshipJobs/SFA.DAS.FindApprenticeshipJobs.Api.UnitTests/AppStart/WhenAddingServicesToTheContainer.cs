@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration.Memory;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.FindApprenticeshipJobs.Configuration;
-using SFA.DAS.FindApprenticeshipJobs.Interfaces;
-using FluentAssertions;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
+using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -21,6 +20,7 @@ public class WhenAddingServicesToTheContainer
     [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
     [TestCase(typeof(ILocationApiClient<LocationApiConfiguration>))]
     [TestCase(typeof(ICandidateApiClient<CandidateApiConfiguration>))]
+    [TestCase(typeof(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>))]
     [TestCase(typeof(INhsJobsApiClient))]
     [TestCase(typeof(ICourseService))]
     [TestCase(typeof(EmailEnvironmentHelper))]
@@ -47,13 +47,14 @@ public class WhenAddingServicesToTheContainer
         var configSource = new MemoryConfigurationSource
         {
             InitialData = new List<KeyValuePair<string, string>>
-                {
-                    new("RecruitApiConfiguration:url", "http://localhost:1"),
-                    new("CoursesApiConfiguration:url", "http://localhost:2"),
-                    new("LocationApiConfiguration:url", "http://localhost:3"),
-                    new("CandidateApiConfiguration:url", "http://localhost:4"),
-                    new("ResourceEnvironmentName", "TEST"),
-                }
+            {
+                new("RecruitApiConfiguration:url", "http://localhost:1"),
+                new("CoursesApiConfiguration:url", "http://localhost:2"),
+                new("LocationApiConfiguration:url", "http://localhost:3"),
+                new("CandidateApiConfiguration:url", "http://localhost:4"),
+                new("FindApprenticeshipApiConfiguration:url", "http://localhost:5"),
+                new("ResourceEnvironmentName", "TEST"),
+            }!
         };
 
         var provider = new MemoryConfigurationProvider(configSource);
