@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -23,7 +25,7 @@ public class GetSelectDirectTransferConnectionQueryHandler : IRequestHandler<Get
     public async Task<GetSelectDirectTransferConnectionQueryResult> Handle(GetSelectDirectTransferConnectionQuery request, CancellationToken cancellationToken)
     {
         var accountTask = _accountsApiClient.Get<GetAccountResponse>(new GetAccountRequest(request.AccountId.ToString()));
-        var connectionsTask = _financeApiClient.Get<GetTransferConnectionsResponse>(new GetTransferConnectionsRequest { AccountId = request.AccountId});
+        var connectionsTask = _financeApiClient.Get<IEnumerable<GetTransferConnectionsResponse.TransferConnection>>(new GetTransferConnectionsRequest { AccountId = request.AccountId });
 
         await Task.WhenAll(accountTask, connectionsTask);
 
@@ -33,7 +35,7 @@ public class GetSelectDirectTransferConnectionQueryHandler : IRequestHandler<Get
         return new GetSelectDirectTransferConnectionQueryResult
         {
             IsLevyAccount = account.ApprenticeshipEmployerType.Equals("Levy", StringComparison.CurrentCultureIgnoreCase),
-            TransferConnections = connections.TransferConnections
+            TransferConnections = connections
         };
     }
 }
