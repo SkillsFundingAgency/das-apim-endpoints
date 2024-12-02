@@ -68,7 +68,18 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 
             var totalPages = (int)Math.Ceiling((double)vacanciesResponse.TotalFound / query.PageSize);
 
-            var apprenticeCountRequest = new GetApprenticeshipCountRequest(WageType.CompetitiveSalary);
+            var apprenticeCountRequest = new GetApprenticeshipCountRequest(
+                locationInfo.GeoPoint?.FirstOrDefault(),
+                locationInfo.GeoPoint?.LastOrDefault(),
+                query.Distance,
+                query.SearchTerm,
+                query.PageNumber,
+                query.PageSize,
+                categories,
+                query.SelectedLevelIds?.Select(c => Convert.ToInt32(c)).ToList(),
+                query.Sort,
+                query.SkipWageType,
+                query.DisabilityConfident);
             apiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(
                         It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == apprenticeCountRequest.GetUrl)))
@@ -184,7 +195,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageNumber,
                 query.PageSize,
                 categories,
-                query.SelectedLevelIds?.Select(c=>Convert.ToInt32(c)).ToList(),
+                query.SelectedLevelIds?.Select(Convert.ToInt32).ToList(),
                 query.Sort,
                 query.SkipWageType,
                 query.DisabilityConfident);
@@ -195,7 +206,18 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 
             var totalPages = (int)Math.Ceiling((double)vacanciesResponse.TotalFound / query.PageSize);
 
-            var apprenticeCountRequest = new GetApprenticeshipCountRequest(WageType.CompetitiveSalary);
+            var apprenticeCountRequest = new GetApprenticeshipCountRequest(
+                locationInfo.GeoPoint?.FirstOrDefault(),
+                locationInfo.GeoPoint?.LastOrDefault(),
+                query.Distance,
+                query.SearchTerm,
+                query.PageNumber,
+                query.PageSize,
+                categories,
+                query.SelectedLevelIds?.Select(Convert.ToInt32).ToList(),
+                query.Sort,
+                query.SkipWageType,
+                query.DisabilityConfident);
             apiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(
                         It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == apprenticeCountRequest.GetUrl)))

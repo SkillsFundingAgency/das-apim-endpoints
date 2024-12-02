@@ -67,12 +67,22 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var categories = routes.Routes.Where(route => request.SelectedRouteIds != null && request.SelectedRouteIds.Contains(route.Id))
                 .Select(route => route.Name).ToList();
 
-            var totalWageTypeVacanciesCount = new GetApprenticeshipCountResponse { TotalVacancies = 0 };
+            var totalVacanciesCount = new GetApprenticeshipCountResponse { TotalVacancies = 0 };
             if (request.Sort is VacancySort.SalaryAsc or VacancySort.SalaryDesc)
             {
-                totalWageTypeVacanciesCount = await
+                totalVacanciesCount = await
                     findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
-                        new GetApprenticeshipCountRequest(WageType.CompetitiveSalary));
+                        new GetApprenticeshipCountRequest(location?.GeoPoint?.FirstOrDefault(),
+                            location?.GeoPoint?.LastOrDefault(),
+                            request.Distance,
+                            request.SearchTerm,
+                            request.PageNumber,
+                            request.PageSize,
+                            categories,
+                            request.SelectedLevelIds,
+                            request.Sort,
+                            WageType.CompetitiveSalary,
+                            request.DisabilityConfident));
             }
 
             var vacancyResult = await findApprenticeshipApiClient.Get<GetVacanciesResponse>(
@@ -164,7 +174,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             return new SearchApprenticeshipsResult
             {
                 TotalApprenticeshipCount = vacancyResult.Total,
-                TotalWageTypeVacanciesCount = totalWageTypeVacanciesCount.TotalVacancies,
+                TotalWageTypeVacanciesCount = totalVacanciesCount.TotalVacancies,
                 TotalFound = vacancyResult.TotalFound,
                 LocationItem = location,
                 Routes = routes.Routes.ToList(),
