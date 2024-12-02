@@ -1,9 +1,8 @@
-﻿using System.Globalization;
-using System.Text.RegularExpressions;
-using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
+﻿using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using System.Text.RegularExpressions;
 using Address = SFA.DAS.FindApprenticeshipJobs.Application.Shared.Address;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Services
@@ -127,8 +126,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 {
                     AddressLine4 = location[0].Trim(),
                     Postcode = location[1].Trim(),
-                    Longitude = locationLookup?.Location?.GeoPoint?.FirstOrDefault() ?? 0,
-                    Latitude = locationLookup?.Location?.GeoPoint?.LastOrDefault() ?? 0
+                    Latitude = locationLookup?.Location?.GeoPoint?.FirstOrDefault() ?? 0,
+                    Longitude = locationLookup?.Location?.GeoPoint?.LastOrDefault() ?? 0
                 },
                 Qualifications = [],
                 Skills = []

@@ -60,8 +60,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             actual.Wage.WageText.Should().Be(source.Salary);
             actual.Address.AddressLine4.Should().Be(address1);
             actual.Address.Postcode.Should().Be($"{postCode1}{postCode2}");
-            actual.Address.Longitude.Should().Be(address.Location.GeoPoint.FirstOrDefault());
-            actual.Address.Latitude.Should().Be(address.Location.GeoPoint.LastOrDefault());
+            actual.Address.Latitude.Should().Be(address.Location.GeoPoint.FirstOrDefault());
+            actual.Address.Longitude.Should().Be(address.Location.GeoPoint.LastOrDefault());
             actual.Route.Should().Be(route.Name);
             actual.RouteCode.Should().Be(route.Id);
 
