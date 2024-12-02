@@ -2,8 +2,8 @@
 
 public class NotificationModel
 {
-    public required string TemplateName { get; set; }
-    public required string NotificationType { get; set; }
+    public string TemplateName { get; set; } = null!;
+    public string NotificationType { get; set; } = null!;
     public long? Ukprn { get; set; }
     public string? EmailAddress { get; set; }
     public string? Contact { get; set; }
@@ -12,5 +12,19 @@ public class NotificationModel
     public long? AccountLegalEntityId { get; set; }
     public int? PermitApprovals { get; set; }
     public int? PermitRecruit { get; set; }
-    public required string CreatedBy { get; set; }
+    public string CreatedBy { get; set; } = null!;
+
+    public NotificationModel() { }
+
+    public NotificationModel(string templateName, string notificationType, long? ukprn, string email, string contactName, long accountLegalEntityId, string createdBy, Guid? requestId)
+    {
+        TemplateName = templateName;
+        NotificationType = notificationType;
+        Ukprn = ukprn;
+        EmailAddress = email;
+        Contact = contactName;
+        AccountLegalEntityId = accountLegalEntityId;
+        CreatedBy = createdBy;
+        RequestId = requestId;
+    }
 }
