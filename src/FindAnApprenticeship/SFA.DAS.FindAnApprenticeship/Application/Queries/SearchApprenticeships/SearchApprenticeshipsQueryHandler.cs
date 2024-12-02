@@ -82,7 +82,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                             request.SelectedLevelIds,
                             request.Sort,
                             WageType.CompetitiveSalary,
-                            request.DisabilityConfident));
+                            request.DisabilityConfident,
+                            new List<VacancyDataSource>
+                            {
+                                VacancyDataSource.Nhs
+                            })); ;
             }
 
             var vacancyResult = await findApprenticeshipApiClient.Get<GetVacanciesResponse>(
