@@ -37,6 +37,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
 
             services.AddConfigurationOptions(_configuration);
 
+            services.AddTelemetryRegistration(_configuration.BuildSharedConfiguration());
+
             services
                 .AddLogging()
                 .AddOpenTelemetry();
