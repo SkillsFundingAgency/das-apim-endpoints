@@ -78,7 +78,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 categories,
                 query.SelectedLevelIds?.Select(c => Convert.ToInt32(c)).ToList(),
                 query.Sort,
-                query.SkipWageType,
+                WageType.CompetitiveSalary,
                 query.DisabilityConfident);
             apiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(
@@ -216,7 +216,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 categories,
                 query.SelectedLevelIds?.Select(Convert.ToInt32).ToList(),
                 query.Sort,
-                query.SkipWageType,
+                WageType.CompetitiveSalary,
                 query.DisabilityConfident);
             apiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(
