@@ -9,6 +9,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// If `wageType` is `Custom`, this will be the set annual wage for the apprenticeship.
         /// </summary>
         public decimal? WageAmount { get; set; }
+        public WageUnit WageUnit { get; set; }
         /// <summary>
         /// Additional information about pay, such as when the apprentice might get a pay rise. Will be less than or equal to 250 characters.
         /// </summary>
@@ -25,7 +26,8 @@ namespace SFA.DAS.Vacancies.Api.Models
                 WageAmount = source.WageAmount,
                 WageType = source.WageType == 0 ? WageType.Custom : (WageType)source.WageType,
                 WageAdditionalInformation = source.WageText,
-                WorkingWeekDescription = source.WorkingWeek
+                WorkingWeekDescription = source.WorkingWeek,
+                WageUnit = (WageUnit)source.WageUnit
             };
         }
     }

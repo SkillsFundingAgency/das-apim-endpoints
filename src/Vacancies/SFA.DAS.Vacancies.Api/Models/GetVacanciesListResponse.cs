@@ -184,4 +184,11 @@ namespace SFA.DAS.Vacancies.Api.Models
         Custom = 4,
         CompetitiveSalary = 6
     }
+    public enum WageUnit
+    {
+        Unspecified = 1,
+        Weekly = 2,
+        Monthly = 3,
+        Annually = 4
+    }
 }

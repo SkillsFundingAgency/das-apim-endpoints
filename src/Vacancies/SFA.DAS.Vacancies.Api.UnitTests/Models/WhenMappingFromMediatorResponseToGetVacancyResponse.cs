@@ -59,6 +59,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.Course.LarsCode.Should().Be(source.Vacancy.StandardLarsCode);
             actual.Wage.WageAmount.Should().Be(source.Vacancy.WageAmount);
             actual.Wage.WageType.Should().Be((WageType)source.Vacancy.WageType);
+            actual.Wage.WageUnit.Should().Be((WageUnit)source.Vacancy.WageUnit);
             actual.Wage.WageAdditionalInformation.Should().Be(source.Vacancy.WageText);
             actual.Ukprn.Should().Be(ukprn);
             actual.VacancyReference.Should().Be(source.Vacancy.VacancyReference.Replace("VAC", ""));
