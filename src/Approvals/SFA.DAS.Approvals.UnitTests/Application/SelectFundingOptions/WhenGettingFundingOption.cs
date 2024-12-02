@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -22,7 +23,7 @@ public class WhenGettingFundingOption
     public async Task ThenDirectTransfersAreAvailable_WhenTransferConnectionsExist(
         GetSelectFundingOptionsQuery query,
         GetAccountReservationsStatusResponse reservationsResponse,
-        GetTransferConnectionsResponse directTransfersResponse,
+        IEnumerable<GetTransferConnectionsResponse.TransferConnection> directTransfersResponse,
         GetAccountResponse accountResponse,
         [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationsApiClient,
         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
@@ -37,7 +38,7 @@ public class WhenGettingFundingOption
             .ReturnsAsync(reservationsResponse);
 
         financeApiClient.Setup(x =>
-                x.Get<GetTransferConnectionsResponse>(
+                x.Get<IEnumerable<GetTransferConnectionsResponse.TransferConnection>>(
                     It.Is<GetTransferConnectionsRequest>(x => x.AccountId == query.AccountId)))
             .ReturnsAsync(directTransfersResponse);
 
