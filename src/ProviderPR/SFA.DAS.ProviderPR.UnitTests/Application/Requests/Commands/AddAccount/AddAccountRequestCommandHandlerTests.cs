@@ -89,7 +89,7 @@ public class AddAccountRequestCommandHandlerTests
     {
         Fixture fixture = new();
 
-        _command.EmployerContactEmail = fixture.Create<string>();
+        _command.EmployerContactEmail = email;
 
         var allOwnerMembers = fixture
             .Build<TeamMember>()
