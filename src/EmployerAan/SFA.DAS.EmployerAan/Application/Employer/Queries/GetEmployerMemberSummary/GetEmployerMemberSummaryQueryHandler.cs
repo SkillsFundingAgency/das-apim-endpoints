@@ -24,7 +24,7 @@ public class GetEmployerMemberSummaryQueryHandler : IRequestHandler<GetEmployerM
         var outputEmployerAccount = responseEmployerAccountTask.Result;
 
         result.ActiveCount = outputEmployerAccount!.ApprenticeshipStatusSummaryResponse.Any() ?
-            outputEmployerAccount.ApprenticeshipStatusSummaryResponse.FirstOrDefault()!.ActiveCount : 0;
+            outputEmployerAccount.ApprenticeshipStatusSummaryResponse.Sum(a => a.ActiveCount) : 0;
 
         var outputEmployerSummary = responseEmployerSummaryTask.Result!;
 

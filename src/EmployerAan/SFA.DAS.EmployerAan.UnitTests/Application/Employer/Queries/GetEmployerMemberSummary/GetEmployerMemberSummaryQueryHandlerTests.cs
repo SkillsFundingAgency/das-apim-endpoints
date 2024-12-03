@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Employer.Queries.GetEmployer
             GetEmployerMemberSummaryQueryResult expectedEmployerAccount =
                 new GetEmployerMemberSummaryQueryResult()
                 {
-                    ActiveCount = expectedAccountsSummary.ApprenticeshipStatusSummaryResponse!.FirstOrDefault()!.ActiveCount,
+                    ActiveCount = expectedAccountsSummary.ApprenticeshipStatusSummaryResponse.Sum(a => a.ActiveCount),
                     Sectors = expectedApprenticeshipsFilterValues.Sectors!
                 };
 
