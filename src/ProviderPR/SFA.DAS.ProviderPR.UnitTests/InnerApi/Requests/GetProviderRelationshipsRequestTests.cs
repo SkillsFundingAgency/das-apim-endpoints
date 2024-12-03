@@ -65,7 +65,7 @@ public sealed class GetProviderRelationshipsRequestTests
     }
 
     [Test]
-    public void ToQuery_AddsHasRecruitmentPermission_WhenHasRecruitmentPermissionIsTrue()
+    public void ToDictionary_AddsHasRecruitmentPermission_WhenHasRecruitmentPermissionIsTrue()
     {
         GetProviderRelationshipsRequest providerRelationshipsRequest = new GetProviderRelationshipsRequest()
         {
