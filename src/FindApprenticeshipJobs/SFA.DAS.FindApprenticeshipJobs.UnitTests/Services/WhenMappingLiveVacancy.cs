@@ -64,7 +64,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             actual.Address.Longitude.Should().Be(address.Location.GeoPoint.LastOrDefault());
             actual.Route.Should().Be(route.Name);
             actual.RouteCode.Should().Be(route.Id);
-
+            actual.SearchTags.Should().Be("NHS National Health Service Health Medical Hospital");
         }
 
         private static void AssertResponse(FindApprenticeshipJobs.Application.Shared.LiveVacancy actual, LiveVacancy source, GetStandardsListResponse standardsListResponse)

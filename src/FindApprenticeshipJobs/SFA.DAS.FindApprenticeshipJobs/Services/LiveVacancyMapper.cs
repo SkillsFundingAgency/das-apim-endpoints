@@ -100,7 +100,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 TypicalJobTitles = getStandardsListItem.TypicalJobTitles == null ? "" : SortTypicalJobTitles(getStandardsListItem.TypicalJobTitles),
                 AdditionalQuestion1 = source.AdditionalQuestion1,
                 AdditionalQuestion2 = source.AdditionalQuestion2,
-                AdditionalTrainingDescription = source.AdditionalTrainingDescription
+                AdditionalTrainingDescription = source.AdditionalTrainingDescription,
+                SearchTags = string.Empty
             };
         }
 
@@ -130,7 +131,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Longitude = locationLookup?.Location?.GeoPoint?.LastOrDefault() ?? 0
                 },
                 Qualifications = [],
-                Skills = []
+                Skills = [],
+                SearchTags = "NHS National Health Service Health Medical Hospital",
             };
         }
 
