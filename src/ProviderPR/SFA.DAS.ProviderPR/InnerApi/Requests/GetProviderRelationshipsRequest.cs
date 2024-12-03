@@ -11,7 +11,7 @@ public class GetProviderRelationshipsRequest
     public int? PageSize { get; set; }
     public int? PageNumber { get; set; }
 
-    public Dictionary<string, string> ToQueryString()
+    public Dictionary<string, string> ToDictionary()
     {
         Dictionary<string, string> result = new();
 

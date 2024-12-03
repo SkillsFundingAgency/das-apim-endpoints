@@ -15,7 +15,7 @@ public class GetRelationshipQueryHandlerTests
     {
         Mock<IProviderRelationshipsApiRestClient> apiClientMock = new();
         Response<GetProviderRelationshipsResponse> result = new(null, new(HttpStatusCode.OK), () => expected);
-        apiClientMock.Setup(c => c.GetProviderRelationships(query.Ukprn, query.Request.ToQueryString(), cancellationToken)).ReturnsAsync(result);
+        apiClientMock.Setup(c => c.GetProviderRelationships(query.Ukprn, query.Request.ToDictionary(), cancellationToken)).ReturnsAsync(result);
 
         GetRelationshipsQueryHandler sut = new(apiClientMock.Object);
 
