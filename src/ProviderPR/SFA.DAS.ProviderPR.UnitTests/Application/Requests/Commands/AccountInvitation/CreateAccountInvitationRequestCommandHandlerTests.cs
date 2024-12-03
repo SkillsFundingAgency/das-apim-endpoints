@@ -6,7 +6,7 @@ using SFA.DAS.ProviderPR.Application.Requests.Commands.AccountInvitation;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Notifications.Commands;
 
-namespace SFA.DAS.ProviderPR.UnitTests.Application.Requests.Commands;
+namespace SFA.DAS.ProviderPR.UnitTests.Application.Requests.Commands.AccountInvitation;
 
 public class CreateAccountInvitationRequestCommandHandlerTests
 {

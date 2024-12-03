@@ -1,9 +1,8 @@
-﻿using System.Text.Json;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationship;
 using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipByEmail;
-using SFA.DAS.ProviderPR.Infrastructure;
+using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationships;
 using SFA.DAS.ProviderPR.InnerApi.Requests;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
 
@@ -11,19 +10,16 @@ namespace SFA.DAS.ProviderPR.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class RelationshipsController(IMediator _mediator, IProviderRelationshipsApiRestClient _prApiClient,
-    ILogger<RelationshipsController> _logger) : ControllerBase
+public class RelationshipsController(IMediator _mediator) : ControllerBase
 {
     [HttpGet("{ukprn:long}")]
     [ProducesResponseType(typeof(GetProviderRelationshipsResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetRelationships([FromRoute] long ukprn,
         [FromQuery] GetProviderRelationshipsRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Get relationships invoked for {Ukprn} with query parameters {Params}", ukprn,
-            JsonSerializer.Serialize(request));
+        var query = new GetRelationshipsQuery(ukprn, request);
 
-        GetProviderRelationshipsResponse result =
-            await _prApiClient.GetProviderRelationships(ukprn, Request.QueryString.ToString(), cancellationToken);
+        GetProviderRelationshipsResponse result = await _mediator.Send(query, cancellationToken);
 
         return Ok(result);
     }

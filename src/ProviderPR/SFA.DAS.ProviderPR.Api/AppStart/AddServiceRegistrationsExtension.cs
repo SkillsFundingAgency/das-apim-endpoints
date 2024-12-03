@@ -35,7 +35,7 @@ public static class AddServiceRegistrationsExtension
         var apiConfig = GetApiConfiguration(configuration, "ProviderRelationshipsApiConfiguration");
 
         services.AddRestEaseClient<IProviderRelationshipsApiRestClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
 
     private static InnerApiConfiguration GetApiConfiguration(IConfiguration configuration, string configurationName)
