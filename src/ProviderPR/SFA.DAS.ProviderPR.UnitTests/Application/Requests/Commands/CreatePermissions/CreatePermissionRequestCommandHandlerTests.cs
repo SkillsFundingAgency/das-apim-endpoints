@@ -1,7 +1,7 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Net;
+using AutoFixture.NUnit3;
 using Moq;
-using SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccount;
-using SFA.DAS.ProviderPR.Common;
+using SFA.DAS.ProviderPR.Application.Requests.Commands.CreatePermissions;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Notifications.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -9,15 +9,14 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Net;
 using TeamMember = SFA.DAS.SharedOuterApi.InnerApi.Responses.GetAccountTeamMembersWhichReceiveNotificationsResponse.TeamMember;
 
-namespace SFA.DAS.ProviderPR.UnitTests.Application.Requests.Commands;
+namespace SFA.DAS.ProviderPR.UnitTests.Application.Requests.Commands.CreatePermissions;
 
-public class AddAccountRequestCommandHandlerTests
+public class CreatePermissionRequestCommandHandlerTests
 {
-    private Mock<IProviderRelationshipsApiRestClient> _providerRelationshipsApiRestClient;
-    private Mock<IAccountsApiClient<AccountsConfiguration>> _accountsApiClient;
+    private static Mock<IProviderRelationshipsApiRestClient> _providerRelationshipsApiRestClient;
+    private static Mock<IAccountsApiClient<AccountsConfiguration>> _accountsApiClient;
 
     [SetUp]
     public void SetUp()
@@ -28,14 +27,14 @@ public class AddAccountRequestCommandHandlerTests
 
     [Test]
     [AutoData]
-    public async Task Handle_AddAccountRequestRequest_NoTeamMembers_Successful(
-        AddAccountRequestCommand command,
-        AddAccountRequestCommandResult response
+    public async Task Handle_CreatePermissionRequest_EmptyTeamMembers_SendsNoNotifications(
+        CreatePermissionRequestCommand command,
+        CreatePermissionRequestCommandResult response
     )
     {
         _providerRelationshipsApiRestClient.Setup(x =>
-            x.CreateAddAccountRequest(
-                It.IsAny<AddAccountRequestCommand>(),
+            x.CreatePermissionsRequest(
+                It.IsAny<CreatePermissionRequestCommand>(),
                 CancellationToken.None
             )
         ).ReturnsAsync(response);
@@ -48,7 +47,7 @@ public class AddAccountRequestCommandHandlerTests
             )
         ).ReturnsAsync(apiResponse);
 
-        AddAccountRequestCommandHandler sut = new(_providerRelationshipsApiRestClient.Object, _accountsApiClient.Object);
+        CreatePermissionRequestCommandHandler sut = CreateHandler();
         var result = await sut.Handle(command, CancellationToken.None);
 
         Assert.Multiple(() =>
@@ -62,20 +61,19 @@ public class AddAccountRequestCommandHandlerTests
 
     [Test]
     [AutoData]
-    public async Task Handle_AddAccountRequestRequest_WithTeamMemberThatIsOwnerAndAccepted_AddAccountOwnerInvitationNotification(
-        AddAccountRequestCommand command,
-        AddAccountRequestCommandResult response,
+    public async Task Handle_CreatePermissionRequest_AcceptedAccountOwner_SendsNotification(
+        CreatePermissionRequestCommand command,
+        CreatePermissionRequestCommandResult response,
         TeamMember teamMember
     )
     {
-        teamMember.CanReceiveNotifications = true;
         teamMember.Role = nameof(Role.Owner);
         teamMember.Status = InvitationStatus.Accepted;
-        command.EmployerContactEmail = null;
+        teamMember.CanReceiveNotifications = true;
 
         _providerRelationshipsApiRestClient.Setup(x =>
-            x.CreateAddAccountRequest(
-                It.IsAny<AddAccountRequestCommand>(),
+            x.CreatePermissionsRequest(
+                It.IsAny<CreatePermissionRequestCommand>(),
                 CancellationToken.None
             )
         ).ReturnsAsync(response);
@@ -88,7 +86,7 @@ public class AddAccountRequestCommandHandlerTests
             )
         ).ReturnsAsync(apiResponse);
 
-        AddAccountRequestCommandHandler sut = new(_providerRelationshipsApiRestClient.Object, _accountsApiClient.Object);
+        CreatePermissionRequestCommandHandler sut = CreateHandler();
         var result = await sut.Handle(command, CancellationToken.None);
 
         Assert.Multiple(() =>
@@ -97,31 +95,24 @@ public class AddAccountRequestCommandHandlerTests
             Assert.That(result.RequestId, Is.EqualTo(response.RequestId));
         });
 
-        _providerRelationshipsApiRestClient.Verify(a =>
-            a.PostNotifications(
-                It.Is<PostNotificationsCommand>(c => c.Notifications[0].TemplateName == NotificationConstants.AddAccountOwnerInvitationTemplateName),
-                CancellationToken.None
-            ),
-            Times.Once
-        );
+        _providerRelationshipsApiRestClient.Verify(a => a.PostNotifications(It.IsAny<PostNotificationsCommand>(), CancellationToken.None), Times.Once);
     }
 
     [Test]
     [AutoData]
-    public async Task Handle_AddAccountRequest_TeamMemberAssociatedWithEmployerContactEmailAndAccountOwner_AddAccountInvitationEmailSent(
-        AddAccountRequestCommand command,
-        AddAccountRequestCommandResult response,
+    public async Task Handle_CreatePermissionRequest_NonOwnerTeamMember_SendsNoNotifications(
+        CreatePermissionRequestCommand command,
+        CreatePermissionRequestCommandResult response,
         TeamMember teamMember
     )
     {
-        teamMember.CanReceiveNotifications = true;
-        teamMember.Role = nameof(Role.Owner);
+        teamMember.Role = "DefaultMember";
         teamMember.Status = InvitationStatus.Accepted;
-        teamMember.Email = command.EmployerContactEmail;
+        teamMember.CanReceiveNotifications = true;
 
         _providerRelationshipsApiRestClient.Setup(x =>
-            x.CreateAddAccountRequest(
-                It.IsAny<AddAccountRequestCommand>(),
+            x.CreatePermissionsRequest(
+                It.IsAny<CreatePermissionRequestCommand>(),
                 CancellationToken.None
             )
         ).ReturnsAsync(response);
@@ -134,7 +125,7 @@ public class AddAccountRequestCommandHandlerTests
             )
         ).ReturnsAsync(apiResponse);
 
-        AddAccountRequestCommandHandler sut = new(_providerRelationshipsApiRestClient.Object, _accountsApiClient.Object);
+        CreatePermissionRequestCommandHandler sut = CreateHandler();
         var result = await sut.Handle(command, CancellationToken.None);
 
         Assert.Multiple(() =>
@@ -142,32 +133,25 @@ public class AddAccountRequestCommandHandlerTests
             Assert.That(result, Is.Not.Null);
             Assert.That(result.RequestId, Is.EqualTo(response.RequestId));
         });
-        
-        _providerRelationshipsApiRestClient.Verify(a =>
-            a.PostNotifications(
-                It.Is<PostNotificationsCommand>(c => c.Notifications.Any(a => a.TemplateName == NotificationConstants.AddAccountInvitationTemplateName)),
-                CancellationToken.None
-            ),
-            Times.Once
-        );
+
+        _providerRelationshipsApiRestClient.Verify(a => a.PostNotifications(It.IsAny<PostNotificationsCommand>(), CancellationToken.None), Times.Never);
     }
 
     [Test]
     [AutoData]
-    public async Task Handle_AddAccountRequest_TeamMemberAssociatedWithEmployerContactEmailAndNotAccountOwner_AddAccountInformationEmailSent(
-        AddAccountRequestCommand command,
-        AddAccountRequestCommandResult response,
+    public async Task Handle_CreatePermissionRequest_PendingTeamMember_SendsNoNotifications(
+        CreatePermissionRequestCommand command,
+        CreatePermissionRequestCommandResult response,
         TeamMember teamMember
     )
     {
+        teamMember.Role = Role.Owner.ToString("D");
+        teamMember.Status = InvitationStatus.Pending;
         teamMember.CanReceiveNotifications = true;
-        teamMember.Role = nameof(Role.Viewer);
-        teamMember.Status = InvitationStatus.Accepted;
-        teamMember.Email = command.EmployerContactEmail;
 
         _providerRelationshipsApiRestClient.Setup(x =>
-            x.CreateAddAccountRequest(
-                It.IsAny<AddAccountRequestCommand>(),
+            x.CreatePermissionsRequest(
+                It.IsAny<CreatePermissionRequestCommand>(),
                 CancellationToken.None
             )
         ).ReturnsAsync(response);
@@ -180,7 +164,7 @@ public class AddAccountRequestCommandHandlerTests
             )
         ).ReturnsAsync(apiResponse);
 
-        AddAccountRequestCommandHandler sut = new(_providerRelationshipsApiRestClient.Object, _accountsApiClient.Object);
+        CreatePermissionRequestCommandHandler sut = CreateHandler();
         var result = await sut.Handle(command, CancellationToken.None);
 
         Assert.Multiple(() =>
@@ -189,31 +173,24 @@ public class AddAccountRequestCommandHandlerTests
             Assert.That(result.RequestId, Is.EqualTo(response.RequestId));
         });
 
-        _providerRelationshipsApiRestClient.Verify(a =>
-            a.PostNotifications(
-                It.Is<PostNotificationsCommand>(c => c.Notifications.Any(a => a.TemplateName == NotificationConstants.AddAccountInformationTemplateName)),
-                CancellationToken.None
-            ),
-            Times.Once
-        );
+        _providerRelationshipsApiRestClient.Verify(a => a.PostNotifications(It.IsAny<PostNotificationsCommand>(), CancellationToken.None), Times.Never);
     }
 
     [Test]
     [AutoData]
-    public async Task Handle_AddAccountRequestRequest_TeamMemberAssociatedWithEmployerContactEmail_MultipleNotificationsNonOwner(
-        AddAccountRequestCommand command,
-        AddAccountRequestCommandResult response,
+    public async Task Handle_CreatePermissionRequest_CannotReceiveNotificationsTeamMember_SendsNoNotifications(
+        CreatePermissionRequestCommand command,
+        CreatePermissionRequestCommandResult response,
         TeamMember teamMember
     )
     {
-        teamMember.CanReceiveNotifications = true;
-        teamMember.Role = nameof(Role.Owner);
+        teamMember.Role = Role.Owner.ToString("D");
         teamMember.Status = InvitationStatus.Accepted;
-        teamMember.Email = $"{command.EmployerContactEmail}1";
+        teamMember.CanReceiveNotifications = false;
 
         _providerRelationshipsApiRestClient.Setup(x =>
-            x.CreateAddAccountRequest(
-                It.IsAny<AddAccountRequestCommand>(),
+            x.CreatePermissionsRequest(
+                It.IsAny<CreatePermissionRequestCommand>(),
                 CancellationToken.None
             )
         ).ReturnsAsync(response);
@@ -226,7 +203,7 @@ public class AddAccountRequestCommandHandlerTests
             )
         ).ReturnsAsync(apiResponse);
 
-        AddAccountRequestCommandHandler sut = new(_providerRelationshipsApiRestClient.Object, _accountsApiClient.Object);
+        CreatePermissionRequestCommandHandler sut = CreateHandler();
         var result = await sut.Handle(command, CancellationToken.None);
 
         Assert.Multiple(() =>
@@ -235,12 +212,11 @@ public class AddAccountRequestCommandHandlerTests
             Assert.That(result.RequestId, Is.EqualTo(response.RequestId));
         });
 
-        _providerRelationshipsApiRestClient.Verify(a =>
-            a.PostNotifications(
-                It.Is<PostNotificationsCommand>(c => c.Notifications.Any(a => a.TemplateName == NotificationConstants.AddAccountOwnerInvitationTemplateName)),
-                CancellationToken.None
-            ),
-            Times.Once
-        );
+        _providerRelationshipsApiRestClient.Verify(a => a.PostNotifications(It.IsAny<PostNotificationsCommand>(), CancellationToken.None), Times.Never);
+    }
+
+    private static CreatePermissionRequestCommandHandler CreateHandler()
+    {
+        return new(_providerRelationshipsApiRestClient.Object, _accountsApiClient.Object);
     }
 }

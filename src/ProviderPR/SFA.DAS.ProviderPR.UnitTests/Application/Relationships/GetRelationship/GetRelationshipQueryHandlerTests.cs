@@ -3,7 +3,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using RestEase;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationship;
+using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationship;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
 
