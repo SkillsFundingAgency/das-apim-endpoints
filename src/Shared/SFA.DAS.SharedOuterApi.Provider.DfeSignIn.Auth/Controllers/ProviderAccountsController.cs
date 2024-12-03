@@ -26,12 +26,12 @@ namespace SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.Controllers
         {
             try
             {
-                //var result = await _mediator.Send(new GetRoatpV2ProviderQuery
-                //{
-                //    Ukprn = ukprn
-                //});
+                var result = await _mediator.Send(new GetRoatpV2ProviderQuery
+                {
+                    Ukprn = ukprn
+                });
 
-                return Ok(new ProviderAccountResponse { CanAccessService = true });
+                return Ok(new ProviderAccountResponse { CanAccessService = result });
 
             }
             catch (Exception ex)
