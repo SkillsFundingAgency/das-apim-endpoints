@@ -9,7 +9,7 @@ public class GetRelationshipsQueryHandler(IProviderRelationshipsApiRestClient _p
     public async Task<GetProviderRelationshipsResponse> Handle(GetRelationshipsQuery request, CancellationToken cancellationToken)
     {
         Response<GetProviderRelationshipsResponse> result =
-            await _providerRelationshipsApiRestClient.GetProviderRelationships(request.Ukprn, request.Request, cancellationToken);
+            await _providerRelationshipsApiRestClient.GetProviderRelationships(request.Ukprn, request.Request.ToQueryString(), cancellationToken);
 
         return result.GetContent();
     }
