@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.ProviderPR.Application.Queries.GetRelationshipsByUkprnPayeAorn;
+namespace SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipsByUkprnPayeAorn;
 public class GetRelationshipsByUkprnPayeAornQuery : IRequest<GetRelationshipsByUkprnPayeAornResult>
 {
     public long Ukprn { get; }
