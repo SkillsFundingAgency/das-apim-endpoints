@@ -25,16 +25,28 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
 
         public override async Task<NotificationResponse> Handle(ChangeOfPriceInitiatedCommand request, CancellationToken cancellationToken)
         {
-            if (request.Initiator == RequestParty.Provider && request.PriceChangeStatus == ChangeRequestStatus.Created)
+            if (ShouldNotifyEmployer(request))
             {
                 return await SendToEmployer(request, ProviderInitiatedChangeOfPriceToEmployer.TemplateId, (_, apprenticeship) => GetEmployerTokens(request, apprenticeship));
-            } else if (request.Initiator == RequestParty.Employer)
+            } 
+            
+            if (ShouldNotifyProvider(request))
             {
                 return await SendToProvider(request, EmployerInitiatedChangeOfPriceToProvider.TemplateId, (_, apprenticeship) => GetProviderTokens(request, apprenticeship));
             }
 
             //Send to employer on price reduction to be implemented in FLP-916
             return NotificationResponse.Ok();
+        }
+
+        private static bool ShouldNotifyProvider(ChangeOfPriceInitiatedCommand request)
+        {
+            return request.Initiator == RequestParty.Employer;
+        }
+
+        private static bool ShouldNotifyEmployer(ChangeOfPriceInitiatedCommand request)
+        {
+            return request.Initiator == RequestParty.Provider && request.PriceChangeStatus == ChangeRequestStatus.Created;
         }
 
 
