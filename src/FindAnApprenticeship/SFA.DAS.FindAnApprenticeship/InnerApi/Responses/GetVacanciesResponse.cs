@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 {
@@ -78,6 +79,9 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public string? CompanyBenefitsInformation { get; set; }
         public string? AdditionalTrainingDescription { get; set; }
         public bool IsSavedVacancy { get; set; } = false;
+
+        [JsonPropertyName("vacancySource")] 
+        public VacancyDataSource VacancySource { get; set; }
 
         public class CandidateApplication
         {

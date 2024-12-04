@@ -1,22 +1,16 @@
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
+﻿using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.FindAnApprenticeship.Services;
+using System.Text.Json.Serialization;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference
+
+namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetVacancyDetails
 {
-    public class GetApprenticeshipVacancyQueryResult
+    public record GetVacancyDetailsQueryResult
     {
         public Vacancy ApprenticeshipVacancy { get; init; }
-        public GetStandardsListItemResponse CourseDetail { get; init; }
-        public List<GetCourseLevelsListItem> Levels { get; init; }
-        public CandidateApplication Application { get; init; }
-        public string CandidatePostcode { get; set; }
-        public bool IsSavedVacancy { get; set; }
-
         public class Vacancy
         {
             public string Id { get; set; }
@@ -55,38 +49,38 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string SubCategory { get; init; }
             public string SubCategoryCode { get; init; }
             public string Ukprn { get; init; }
-            
+
             public decimal? WageAmountLowerBound { get; init; }
-            
+
             public decimal? WageAmountUpperBound { get; init; }
-            
+
             public string WageText { get; init; }
-            
+
             public int WageUnit { get; init; }
             public string WageAdditionalInformation { get; set; }
 
             public string WorkingWeek { get; init; }
-            
+
             public string ExpectedDuration { get; init; }
             public double Score { get; init; }
-            
+
             public string EmployerDescription { get; init; }
-            
+
             public string EmployerWebsiteUrl { get; init; }
-            
+
             public string EmployerContactPhone { get; init; }
-            
+
             public string EmployerContactEmail { get; init; }
-            
+
             public string EmployerContactName { get; init; }
-            
+
             public string ProviderContactPhone { get; init; }
 
             public string ProviderContactEmail { get; init; }
 
             public string ProviderContactName { get; init; }
 
-            public VacancyLocationType? VacancyLocationType { get; init; }
+            public VacancyLocationType? VacancyLocationType { get; init; } = null;
 
             public IEnumerable<string> Skills { get; init; }
 
@@ -101,38 +95,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string? AdditionalTrainingDescription { get; set; }
             public string ApplicationUrl { get; set; }
             public string ApplicationInstructions { get; set; }
-            
-            public static Vacancy FromIVacancy(IVacancy source)
-            {
-                return source switch
-                {
-                    GetClosedVacancyResponse response => response,
-                    GetApprenticeshipVacancyItemResponse response => response,
-                    _ => throw new InvalidCastException()
-                };
-            }
+            public VacancyDataSource VacancySource { get; set; }
 
-            public static implicit operator Vacancy(GetClosedVacancyResponse source)
-            {
-                return new Vacancy
-                {
-                    Id = source.VacancyReferenceNumeric.ToString(),
-                    VacancyReference = source.VacancyReference,
-                    EmployerName = source.EmployerName,
-                    Title = source.Title,
-                    ClosingDate = source.ClosedDate ?? source.ClosingDate,
-                    IsClosed = true,
-                    Address = new Address
-                    {
-                        AddressLine1 = source.EmployerLocation?.AddressLine1,
-                        AddressLine2 = source.EmployerLocation?.AddressLine2,
-                        AddressLine3 = source.EmployerLocation?.AddressLine3,
-                        AddressLine4 = source.EmployerLocation?.AddressLine4,
-                        Postcode = source.EmployerLocation?.Postcode
-                    },
-                    Ukprn = source.TrainingProvider.Ukprn.ToString()
-                };
-            }
 
             public static implicit operator Vacancy(GetApprenticeshipVacancyItemResponse source)
             {
@@ -205,7 +169,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     ApplicationUrl = source.ApplicationUrl,
                     ApplicationInstructions = source.ApplicationInstructions,
                     CompanyBenefitsInformation = source.CompanyBenefitsInformation,
-                    AdditionalTrainingDescription = source.AdditionalTrainingDescription
+                    AdditionalTrainingDescription = source.AdditionalTrainingDescription,
+                    VacancySource = source.VacancySource
                 };
             }
         }
@@ -217,13 +182,83 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string Grade { get; init; }
             public Weighting Weighting { get; init; }
         }
-		
-		public class CandidateApplication
+
+        public static implicit operator GetVacancyDetailsQueryResult(GetApprenticeshipVacancyItemResponse source)
         {
-            public string Status { get; set; }
-            public DateTime? SubmittedDate { get; set; }
-            public DateTime? WithdrawnDate { get; set; }
-            public Guid ApplicationId { get; set; }
+            return new GetVacancyDetailsQueryResult
+            {
+                ApprenticeshipVacancy = new Vacancy
+                {
+                    Id = source.Id,
+                    AnonymousEmployerName = source.AnonymousEmployerName,
+                    ApprenticeshipLevel = source.ApprenticeshipLevel,
+                    ClosingDate = source.ClosingDate,
+                    EmployerName = source.EmployerName,
+                    IsEmployerAnonymous = source.IsEmployerAnonymous,
+                    PostedDate = source.PostedDate,
+                    Title = source.Title,
+                    VacancyReference = source.VacancyReference,
+                    CourseTitle = source.CourseTitle,
+                    CourseId = source.CourseId,
+                    WageAmount = source.WageAmount,
+                    WageType = source.WageType,
+                    Address = source.Address,
+                    Distance = source.Distance,
+                    CourseRoute = source.CourseRoute,
+                    CourseLevel = source.CourseLevel,
+                    LongDescription = source.LongDescription,
+                    OutcomeDescription = source.OutcomeDescription,
+                    TrainingDescription = source.TrainingDescription,
+                    ThingsToConsider = source.ThingsToConsider,
+                    Category = source.Category,
+                    CategoryCode = source.CategoryCode,
+                    Description = source.Description,
+                    FrameworkLarsCode = source.FrameworkLarsCode,
+                    HoursPerWeek = source.HoursPerWeek,
+                    IsDisabilityConfident = source.IsDisabilityConfident,
+                    IsPositiveAboutDisability = source.IsPositiveAboutDisability,
+                    IsRecruitVacancy = source.IsRecruitVacancy,
+                    Location = source.Location,
+                    NumberOfPositions = source.NumberOfPositions,
+                    ProviderName = source.ProviderName,
+                    StartDate = source.StartDate,
+                    SubCategory = source.SubCategory,
+                    SubCategoryCode = source.SubCategoryCode,
+                    Ukprn = source.Ukprn,
+                    WageAmountLowerBound = source.WageAmountLowerBound,
+                    WageAmountUpperBound = source.WageAmountUpperBound,
+                    WageText = source.WageText,
+                    WageUnit = source.WageUnit,
+                    WageAdditionalInformation = source.WageAdditionalInformation,
+                    WorkingWeek = source.WorkingWeek,
+                    ExpectedDuration = source.ExpectedDuration,
+                    Score = source.Score,
+                    EmployerDescription = source.EmployerDescription,
+                    EmployerWebsiteUrl = source.EmployerWebsiteUrl,
+                    EmployerContactPhone = source.EmployerContactPhone,
+                    EmployerContactEmail = source.EmployerContactEmail,
+                    EmployerContactName = source.EmployerContactName,
+                    ProviderContactPhone = source.ProviderContactPhone,
+                    ProviderContactEmail = source.ProviderContactEmail,
+                    ProviderContactName = source.ProviderContactName,
+                    VacancyLocationType = source.VacancyLocationType,
+                    Skills = source.Skills,
+                    Qualifications = source.Qualifications?.Select(x => new VacancyQualification
+                    {
+                        QualificationType = x.QualificationType,
+                        Subject = x.Subject,
+                        Grade = x.Grade,
+                        Weighting = x.Weighting
+                    }),
+                    AdditionalQuestion1 = source.AdditionalQuestion1,
+                    AdditionalQuestion2 = source.AdditionalQuestion2,
+                    IsClosed = false,
+                    ApplicationUrl = source.ApplicationUrl,
+                    ApplicationInstructions = source.ApplicationInstructions,
+                    CompanyBenefitsInformation = source.CompanyBenefitsInformation,
+                    AdditionalTrainingDescription = source.AdditionalTrainingDescription
+                }
+            };
         }
     }
 }

@@ -1,5 +1,7 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
@@ -23,7 +25,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
 
         public static implicit operator SearchApprenticeshipsQuery(GetSearchApprenticeshipsModel model) => new()
         {
-            SelectedRouteIds = model.RouteIds,
+            SelectedRouteIds = model.RouteIds?.Select(c=>Convert.ToInt32(c)).ToList(),
             Location = model.Location,
             Distance = model.Distance,
             Sort = model.Sort ?? Constants.SearchApprenticeships.DefaultSortOrder,
@@ -31,9 +33,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
             PageNumber = model.PageNumber is null or <= 0 ? Constants.SearchApprenticeships.DefaultPageNumber : (int)model.PageNumber,
             PageSize = model.PageSize is null or <= 0 ? Constants.SearchApprenticeships.DefaultPageSize : (int)model.PageSize,
             SearchTerm = model.SearchTerm,
-            SelectedLevelIds = model.LevelIds,
+            SelectedLevelIds = model.LevelIds?.Select(c=>Convert.ToInt32(c)).ToList(),
             DisabilityConfident = model.DisabilityConfident,
-            CandidateId = model.CandidateId
+            CandidateId = model.CandidateId != null ? Guid.Parse(model.CandidateId) : null
         };
     }
 }
