@@ -12,7 +12,7 @@ builder.Host.UseServiceProviderFactory(new NServiceBusServiceProviderFactory());
 var configuration = builder.Configuration.BuildSharedConfiguration();
 builder.Host.ConfigureContainer<UpdateableServiceProvider>(containerBuilder =>
 {
-    Task.FromResult(containerBuilder.StartNServiceBus(configuration, "SFA.DAS.APIMRecruit")).GetAwaiter().GetResult();
+    Task.FromResult(containerBuilder.StartNServiceBus(configuration, "SFA.DAS.APIMRecruit"));
 });
 Startup.ConfigureServices(builder.Services, builder.Environment, configuration);
 
