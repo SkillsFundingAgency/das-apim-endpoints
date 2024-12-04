@@ -22,7 +22,20 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
         private readonly string _sort;
         private readonly List<string> _additionalDataSources;
 
-        public GetVacanciesRequest(int pageNumber, int pageSize, string accountLegalEntityPublicHashedId = "", int? ukprn = null, string accountPublicHashedId = "", List<int> standardLarsCode = null, bool? nationwideOnly = null, double? lat = null, double? lon = null, uint? distanceInMiles = null, List<string> categories = null, uint? postedInLastNumberOfDays = null, List<string> additionalDataSources = null, string sort = "")
+        public GetVacanciesRequest(int pageNumber,
+            int pageSize,
+            string accountLegalEntityPublicHashedId = "",
+            int? ukprn = null,
+            string accountPublicHashedId = "",
+            List<int> standardLarsCode = null,
+            bool? nationwideOnly = null,
+            double? lat = null,
+            double? lon = null,
+            uint? distanceInMiles = null,
+            List<string> categories = null,
+            uint? postedInLastNumberOfDays = null,
+            List<string> additionalDataSources = null,
+            string sort = "")
         {
             _pageNumber = pageNumber;
             _pageSize = pageSize;

@@ -33,13 +33,7 @@ namespace SFA.DAS.Approvals.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(_env);
-
-            services.AddLogging(builder =>
-            {
-                builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
-                builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
-            });
+            services.AddSingleton(_env);       
 
             services.AddConfigurationOptions(_configuration);
 
@@ -89,7 +83,7 @@ namespace SFA.DAS.Approvals.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApprovalsOuterApi", Version = "v1" });
             });
 
-            services.AddApplicationInsightsTelemetry();
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

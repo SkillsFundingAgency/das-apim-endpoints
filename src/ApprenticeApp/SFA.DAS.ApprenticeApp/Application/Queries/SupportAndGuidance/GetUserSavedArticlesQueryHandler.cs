@@ -41,7 +41,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
                     var page = await _contentService.GetPageById(entryId);
                     if (page != null)
                     {
-                        page.Order = orderId;
+                        page.ArticleOrder = orderId;
                         articles.Add(page);
                         orderId++;
                     }

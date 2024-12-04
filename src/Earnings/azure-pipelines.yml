@@ -57,6 +57,7 @@ pr:
     - azure
     - pipeline-templates
     - src/Earnings
+    - Directory.Packages.props
 
 variables:
 - group: Release Management Resources
