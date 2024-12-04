@@ -22,10 +22,26 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
         {
             var notificationResponse = new NotificationResponse { Success = true };
             var currentParties = await _notificationService.GetCurrentPartyIds(request.ApprenticeshipKey);
-            var recepients = await _notificationService.GetEmployerRecipients(currentParties.EmployerAccountId);
+            var recipients = await _notificationService.GetEmployerRecipients(currentParties.EmployerAccountId);
             var apprenticeship = await _notificationService.GetApprenticeship(currentParties);
 
-            foreach (var recipient in recepients)
+            foreach (var recipient in recipients)
+            {
+                var tokens = getTokensFunction(recipient, apprenticeship);
+                await _notificationService.Send(recipient, templateId, tokens);
+            }
+
+            return notificationResponse;
+        }
+
+        protected async Task<NotificationResponse> SendToProvider(T request, string templateId, Func<Recipient, CommitmentsApprenticeshipDetails, Dictionary<string, string>> getTokensFunction)
+        {
+            var notificationResponse = new NotificationResponse { Success = true };
+            var currentParties = await _notificationService.GetCurrentPartyIds(request.ApprenticeshipKey);
+            var recipients = await _notificationService.GetProviderRecipients(currentParties.Ukprn);
+            var apprenticeship = await _notificationService.GetApprenticeship(currentParties);
+
+            foreach (var recipient in recipients)
             {
                 var tokens = getTokensFunction(recipient, apprenticeship);
                 await _notificationService.Send(recipient, templateId, tokens);
