@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
@@ -152,7 +153,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api
         
         public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
         {
-            serviceProvider.StartNServiceBus(_configuration, EndpointName).GetAwaiter().GetResult();
+            Task.FromResult(serviceProvider.StartNServiceBus(_configuration, EndpointName));
         }
     }
 }
