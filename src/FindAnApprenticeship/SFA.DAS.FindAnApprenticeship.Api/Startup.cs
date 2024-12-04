@@ -153,7 +153,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api
         
         public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
         {
-            Task.FromResult(serviceProvider.StartNServiceBus(_configuration, EndpointName));
+            Task.FromResult(serviceProvider.StartNServiceBus(_configuration, EndpointName)).GetAwaiter().GetResult();
         }
     }
 }
