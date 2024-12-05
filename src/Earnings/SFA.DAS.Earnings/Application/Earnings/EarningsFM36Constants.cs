@@ -42,7 +42,7 @@ public class EarningsFM36Constants
     public static DateTime? LearnDelRedStartDate = new DateTime(9999, 9, 9);
 
     //LearningDeliveryPeriodisedTextValues
-    public const string LearnDelContType = "ACT1";
+    public const string LearnDelContType = "Contract for services with the employer";
 
     //CoInvestment Multipliers
     public const decimal CoInvestEmployerMultiplier = 0.05m;
@@ -77,7 +77,7 @@ public class EarningsFM36Constants
     public const int PriceEpisodeLevyNonPayInd = 0;
     public static DateTime? PriceEpisodeFirstAdditionalPaymentThresholdDate = null;
     public static DateTime? PriceEpisodeSecondAdditionalPaymentThresholdDate = null;
-    public const string PriceEpisodeContractType = "ACT1";
+    public const string PriceEpisodeContractType = "Contract for services with the employer";
     public const decimal PriceEpisodePreviousEarningsSameProvider = 0;
     public const decimal PriceEpisodeTotalPMRs = 0;
     public const decimal PriceEpisodeCumulativePMRs = 0;

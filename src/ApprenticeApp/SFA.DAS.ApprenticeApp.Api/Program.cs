@@ -18,7 +18,9 @@ namespace SFA.DAS.ApprenticeApp.Api
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>()
+                    webBuilder
+                     .ConfigureKestrel(c => c.AddServerHeader = false)
+                     .UseStartup<Startup>()
                         .UseNLog();
                 }).UseNServiceBusContainer();
     }
