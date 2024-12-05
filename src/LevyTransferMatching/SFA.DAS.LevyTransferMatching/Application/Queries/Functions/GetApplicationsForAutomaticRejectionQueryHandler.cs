@@ -44,20 +44,44 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
             };
         }
 
-        private static List<GetApplicationsResponse.Application> FilterApplications(GetApplicationsResponse getApplicationsResponse)
+        private List<GetApplicationsResponse.Application> FilterApplications(GetApplicationsResponse getApplicationsResponse)
         {
             if (getApplicationsResponse == null)
             {
+                _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler getApplicationsResponse == null");
+
                 return new List<GetApplicationsResponse.Application>();
             }
-          
-            return getApplicationsResponse.Applications
-                .Where(x =>
-                    (x.PledgeAutomaticApprovalOption == AutomaticApprovalOption.NotApplicable && x.CreatedOn < ThreeMonthsAgo)
-                    ||
-                    (x.PledgeAutomaticApprovalOption != AutomaticApprovalOption.NotApplicable && x.MatchPercentage < 100 && x.CreatedOn < ThreeMonthsAgo)
-                )
-                .ToList();
+
+            var initialCount = getApplicationsResponse.Applications.Count();
+            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler >FilterApplications: Initial count :{initialCount}", initialCount);
+
+
+            var notApplicableCount = getApplicationsResponse.Applications
+                .Count(x => x.PledgeAutomaticApprovalOption == AutomaticApprovalOption.NotApplicable && x.CreatedOn < ThreeMonthsAgo);
+            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler:  NotApplicable option: {notApplicableCount}", notApplicableCount);
+
+            var applicableCount = getApplicationsResponse.Applications
+        .Count(x => x.PledgeAutomaticApprovalOption != AutomaticApprovalOption.NotApplicable && x.MatchPercentage < 100 && x.CreatedOn < ThreeMonthsAgo);
+            _logger.LogInformation("FilterApplications: Count of APPLICAABLE applications: {otherCount}", applicableCount);
+
+
+            var filteredApplications = new List<GetApplicationsResponse.Application>();
+
+            foreach (var application in getApplicationsResponse.Applications)
+            {
+                if ((application.PledgeAutomaticApprovalOption == AutomaticApprovalOption.NotApplicable && application.CreatedOn < ThreeMonthsAgo) ||
+                    (application.PledgeAutomaticApprovalOption != AutomaticApprovalOption.NotApplicable && application.MatchPercentage < 100 && application.CreatedOn < ThreeMonthsAgo))
+                {
+                    _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler  adding application: Id = {filteredCount}", application.Id);
+
+                    filteredApplications.Add(application);
+                }
+            }
+
+            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler> FilterApplications: Final count of filtered applications: {filteredCount}", filteredApplications.Count);
+
+            return filteredApplications;
         }
 
     }
