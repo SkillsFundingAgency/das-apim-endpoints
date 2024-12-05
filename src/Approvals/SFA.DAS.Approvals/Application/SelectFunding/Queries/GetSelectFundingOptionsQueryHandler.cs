@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ public class GetSelectFundingOptionsQueryHandler : IRequestHandler<GetSelectFund
     public async Task<GetSelectFundingOptionsQueryResult> Handle(GetSelectFundingOptionsQuery request, CancellationToken cancellationToken)
     {
         var statusTask = _reservationsApiClient.Get<GetAccountReservationsStatusResponse>(new GetAccountReservationsStatusRequest(request.AccountId, null));
-        var connectionsTask = _financeApiClient.Get<GetTransferConnectionsResponse>(new GetTransferConnectionsRequest { AccountId = request.AccountId});
+        var connectionsTask = _financeApiClient.Get<IEnumerable<GetTransferConnectionsResponse.TransferConnection>>(new GetTransferConnectionsRequest { AccountId = request.AccountId});
         var accountTask = _accountsApiClient.Get<GetAccountResponse>(new GetAccountRequest(request.AccountId.ToString()));
         var ltmTask = _ltmApiClient.Get<GetApplicationsResponse>(new GetAcceptedEmployerAccountPledgeApplicationsRequest(request.AccountId));
 
@@ -47,7 +48,7 @@ public class GetSelectFundingOptionsQueryHandler : IRequestHandler<GetSelectFund
         return new GetSelectFundingOptionsQueryResult
         {
             IsLevyAccount = account.ApprenticeshipEmployerType?.Equals("Levy", StringComparison.InvariantCultureIgnoreCase) ?? false,
-            HasDirectTransfersAvailable = connections.TransferConnections?.Any() ?? false,
+            HasDirectTransfersAvailable = connections?.Any() ?? false,
             HasLtmTransfersAvailable = ltm.Applications?.Any() ?? false,
             HasAdditionalReservationFundsAvailable = !status.HasReachedReservationsLimit,
             HasUnallocatedReservationsAvailable = status.HasPendingReservations

@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -21,13 +23,13 @@ public class WhenGettingFundingOption
     [Test, MoqAutoData]
     public async Task ThenDirectTransfersAreAvailable_WhenTransferConnectionsExist(
         GetSelectFundingOptionsQuery query,
-        GetTransferConnectionsResponse directTransfersResponse,
+        IEnumerable<GetTransferConnectionsResponse.TransferConnection> directTransfersResponse,
         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
         GetSelectFundingOptionsQueryHandler handler
     )
     {
         financeApiClient.Setup(x =>
-                x.Get<GetTransferConnectionsResponse>(
+                x.Get<IEnumerable<GetTransferConnectionsResponse.TransferConnection>>(
                     It.Is<GetTransferConnectionsRequest>(x => x.AccountId == query.AccountId)))
             .ReturnsAsync(directTransfersResponse);
         

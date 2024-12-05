@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using Microsoft.Azure.Amqp.Framing;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application.SelectDirectTransferConnection.Queries;
@@ -22,7 +25,7 @@ public class WhenGettingDirectTransferConnection
     public async Task Then_The_Api_To_GetSelectDirectTransferConnection_Returns_ExpectedValues(
         GetSelectDirectTransferConnectionQuery query,
         GetAccountResponse accountResponse,
-        GetTransferConnectionsResponse directTransfersResponse,
+        IEnumerable<GetTransferConnectionsResponse.TransferConnection> directTransfersResponse,
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> reservationsApiClient,
         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
         GetSelectDirectTransferConnectionQueryHandler handler
@@ -35,7 +38,7 @@ public class WhenGettingDirectTransferConnection
             .ReturnsAsync(accountResponse);
 
         financeApiClient.Setup(x =>
-                x.Get<GetTransferConnectionsResponse>(
+                x.Get<IEnumerable<GetTransferConnectionsResponse.TransferConnection>>(
                     It.Is<GetTransferConnectionsRequest>(x => x.AccountId == query.AccountId)))
             .ReturnsAsync(directTransfersResponse);
 
@@ -43,6 +46,6 @@ public class WhenGettingDirectTransferConnection
         var actual = await handler.Handle(query, CancellationToken.None);
 
         actual.IsLevyAccount.Should().BeFalse();
-        actual.TransferConnections.Should().BeEquivalentTo(directTransfersResponse.TransferConnections);
+        actual.TransferConnections.Should().BeEquivalentTo(directTransfersResponse);
     }
 }
