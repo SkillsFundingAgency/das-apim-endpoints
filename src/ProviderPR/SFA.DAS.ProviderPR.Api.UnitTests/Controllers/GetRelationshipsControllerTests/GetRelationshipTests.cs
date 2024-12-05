@@ -2,10 +2,9 @@
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.ProviderPR.Api.Controllers;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationship;
+using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationship;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
 
@@ -17,7 +16,7 @@ public class GetRelationshipTests
     public async Task GetRelationship_InvokesInnerApi(int ukprn, int accountLEgalEntityId, CancellationToken cancellationToken)
     {
         Mock<IMediator> mediatorMock = new();
-        RelationshipsController sut = new(mediatorMock.Object, Mock.Of<IProviderRelationshipsApiRestClient>(), Mock.Of<ILogger<RelationshipsController>>());
+        RelationshipsController sut = new(mediatorMock.Object);
 
         await sut.GetRelationship(ukprn, accountLEgalEntityId, cancellationToken);
 
@@ -30,7 +29,7 @@ public class GetRelationshipTests
         Mock<IMediator> mediatorMock = new();
         mediatorMock.Setup(m => m.Send(It.Is<GetRelationshipQuery>(q => q.Ukprn == ukprn && q.AccountLegalEntityId == accountLEgalEntityId), cancellationToken)).ReturnsAsync(response);
 
-        RelationshipsController sut = new(mediatorMock.Object, Mock.Of<IProviderRelationshipsApiRestClient>(), Mock.Of<ILogger<RelationshipsController>>());
+        RelationshipsController sut = new(mediatorMock.Object);
 
         var result = await sut.GetRelationship(ukprn, accountLEgalEntityId, cancellationToken);
 
