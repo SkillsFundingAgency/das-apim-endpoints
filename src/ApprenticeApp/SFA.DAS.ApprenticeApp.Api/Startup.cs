@@ -20,6 +20,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using SFA.DAS.ApprenticeApp.Models;
 
 namespace SFA.DAS.ApprenticeApp.Api
@@ -112,6 +113,18 @@ namespace SFA.DAS.ApprenticeApp.Api
                 app.UseHsts();
             }
 
+            app.Use(async (context, next) =>
+            {
+                context.Response.OnStarting(() =>
+                {
+                    if (context.Response.Headers.ContainsKey("X-Powered-By"))
+                    {
+                        context.Response.Headers.Remove("X-Powered-By");
+                    }
+                    return Task.CompletedTask;
+                });
+                await next();
+            });
             app.UseHttpsRedirection()
                 .UseApiGlobalExceptionHandler(loggerFactory.CreateLogger("Startup"))
                 .UseHealthChecks()
