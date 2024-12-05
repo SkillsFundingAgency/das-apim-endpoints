@@ -19,6 +19,7 @@ pr:
   paths:
     include:
     - src/ApprenticeAan
+    - Directory.Packages.props
     exclude:
     - azure
     - pipeline-templates
@@ -51,3 +52,5 @@ stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
     OuterApiName: ApprenticeAan
+    ConfigurationSecrets:
+      ApimEndpointsRedisConnectionString: $(ApimEndpointsRedisConnectionString)

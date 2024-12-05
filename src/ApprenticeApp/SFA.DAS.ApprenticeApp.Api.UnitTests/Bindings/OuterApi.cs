@@ -30,7 +30,8 @@ namespace SFA.DAS.ApprenticeApp.Api.UnitTests.Bindings
                     {"TrainingProviderApi:url", _context?.TrainingProviderInnerApi?.BaseAddress + "/"},
                     {"CoursesApi:url", _context?.CoursesInnerApi?.BaseAddress + "/"},
                     {"AzureAD:tenant", ""},
-                    {"AzureAD:identifier", ""}
+                    {"AzureAD:identifier", ""},
+                    {"appInsightsConnectionString", "InstrumentationKey=testappinsightsconnectionstring"}
                 };
 
                 Factory = new LocalWebApplicationFactory<Startup>(config, _context);

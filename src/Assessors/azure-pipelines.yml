@@ -19,6 +19,7 @@ pr:
   paths:
     include:
     - src/Assessors
+    - Directory.Packages.props
     exclude:
     - azure
     - pipeline-templates

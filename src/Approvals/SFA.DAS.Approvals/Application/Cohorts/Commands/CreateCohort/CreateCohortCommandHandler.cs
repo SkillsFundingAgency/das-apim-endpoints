@@ -39,7 +39,6 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
                     AccountId = request.AccountId,
                     AccountLegalEntityId = request.AccountLegalEntityId,
                     CourseCode = request.CourseCode,
-                    ProviderId = request.ProviderId,
                     StartDate = request.StartDate,
                     UserInfo = request.UserInfo
 

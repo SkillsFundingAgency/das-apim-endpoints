@@ -19,6 +19,7 @@ pr:
   paths:
     include:
     - src/EmployerDemand
+    - Directory.Packages.props
     exclude:
     - azure
     - pipeline-templates

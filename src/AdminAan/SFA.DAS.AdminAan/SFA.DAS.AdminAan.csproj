@@ -8,9 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
     <PackageReference Include="RestEase" />
     <PackageReference Include="RestEase.HttpClientFactory" />
     <PackageReference Include="SFA.DAS.Api.Common" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
   </ItemGroup>
 
 </Project>
