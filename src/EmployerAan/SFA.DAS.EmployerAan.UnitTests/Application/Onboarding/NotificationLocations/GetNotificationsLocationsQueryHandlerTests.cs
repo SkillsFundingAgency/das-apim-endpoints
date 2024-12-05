@@ -31,7 +31,8 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Onboarding.NotificationLocat
             result.Locations.Should().BeEquivalentTo(apiResponse.Locations.Select(x => new GetNotificationsLocationsQueryResult.Location
             {
                 Name = x.DisplayName,
-                GeoPoint = x.Location.GeoPoint
+                GeoPoint = x.Location.GeoPoint,
+                Source = "apiClient"
             }).Take(GetNotificationsLocationsQueryHandler.MaxResults));
         }
     }
