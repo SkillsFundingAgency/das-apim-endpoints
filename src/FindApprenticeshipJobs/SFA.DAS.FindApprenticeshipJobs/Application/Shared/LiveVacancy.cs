@@ -53,5 +53,6 @@
         public string? AdditionalQuestion1 { get; set; }
         public string? AdditionalQuestion2 { get; set; }
         public string? AdditionalTrainingDescription { get; set; }
+        public string? SearchTags { get; set; }
     }
 }

@@ -1,14 +1,12 @@
-using Newtonsoft.Json;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.GetVacancyDetails;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models
 {
-    public class GetApprenticeshipVacancyApiResponse
+    public class GetApprenticeshipNhsVacancyApiResponse
     {
         public string Id { get; init; }
         public string Title { get; init; }
@@ -59,6 +57,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
 
         public VacancyLocationType? VacancyLocationType { get; init; }
 
+        public VacancyDataSource VacancyDataSource { get;init; }
+
         public string WorkingWeek { get; init; }
         public string ExpectedDuration { get; init; }
         public double Score { get; init; }
@@ -77,30 +77,18 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string AnonymousEmployerName { get; init; }
         public bool IsEmployerAnonymous { get; init; }
         public bool IsClosed { get; set; }
-        public bool IsSavedVacancy { get; set; } = false;
-
-        [JsonProperty("VacancyQualification")]
-        public IEnumerable<VacancyQualificationApiResponse> Qualifications { get; init; }
 
         public AddressApiResponse Address { get; init; }
-        public List<string> CourseSkills { get; set; }
-        public List<string> CourseCoreDuties { get; set; }
-        public string CourseOverviewOfRole { get; set; }
-        public string StandardPageUrl { get; set; }
+        
         public string? CompanyBenefitsInformation { get; set; }
         public string? AdditionalTrainingDescription { get; set; }
-
-        [JsonProperty("levels")] public List<GetCourseLevelsListItem> Levels { get; set; }
-       
-        public CandidateApplication Application { get; set; }
-        public string CandidatePostcode { get; set; }
 
         public string ApplicationUrl { get; set; }
         public string ApplicationInstructions { get; set; }
         
-        public static implicit operator GetApprenticeshipVacancyApiResponse(GetApprenticeshipVacancyQueryResult source)
+        public static implicit operator GetApprenticeshipNhsVacancyApiResponse(GetVacancyDetailsQueryResult source)
         {
-            return new GetApprenticeshipVacancyApiResponse
+            return new GetApprenticeshipNhsVacancyApiResponse
             {
                 LongDescription = source.ApprenticeshipVacancy.LongDescription,
                 OutcomeDescription = source.ApprenticeshipVacancy.OutcomeDescription,
@@ -158,81 +146,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 AnonymousEmployerName = source.ApprenticeshipVacancy.AnonymousEmployerName,
                 IsEmployerAnonymous = source.ApprenticeshipVacancy.IsEmployerAnonymous,
                 Address = source.ApprenticeshipVacancy.Address,
-                Qualifications = source.ApprenticeshipVacancy.Qualifications?.Select(l => (VacancyQualificationApiResponse) l),
-                CourseOverviewOfRole = source.CourseDetail.OverviewOfRole,
-                StandardPageUrl = source.CourseDetail.StandardPageUrl,
-                CourseCoreDuties = source.CourseDetail.CoreDuties,
-                CourseSkills = source.CourseDetail.Skills,
-                Levels = source.Levels,
-                Application = (CandidateApplication)source.Application,
 				IsClosed = source.ApprenticeshipVacancy.IsClosed,
-                IsSavedVacancy = source.IsSavedVacancy,
-                CandidatePostcode = source.CandidatePostcode,
                 ApplicationUrl = source.ApprenticeshipVacancy.ApplicationUrl,
                 ApplicationInstructions = source.ApprenticeshipVacancy.ApplicationInstructions,
                 CompanyBenefitsInformation = source.ApprenticeshipVacancy.CompanyBenefitsInformation,
-                AdditionalTrainingDescription = source.ApprenticeshipVacancy.AdditionalTrainingDescription
-            };
-        }
-    }
-
-    public class VacancyQualificationApiResponse
-    {
-        public string QualificationType { get; init; }
-        public string Subject { get; init; }
-        public string Grade { get; init; }
-        public Weighting Weighting { get; init; }
-
-        public static implicit operator VacancyQualificationApiResponse(GetApprenticeshipVacancyQueryResult.VacancyQualification source)
-        {
-            return new VacancyQualificationApiResponse
-            {
-                Grade = source.Grade,
-                Subject = source.Subject,
-                QualificationType = source.QualificationType,
-                Weighting = source.Weighting,
-            };
-        }
-    }
-
-    public class AddressApiResponse
-    {
-        public string AddressLine1 { get; init; }
-        public string AddressLine2 { get; init; }
-        public string AddressLine3 { get; init; }
-        public string AddressLine4 { get; init; }
-        public string Postcode { get; init; }
-
-        public static implicit operator AddressApiResponse(Address source)
-        {
-            return new AddressApiResponse
-            {
-                AddressLine1 = source.AddressLine1,
-                AddressLine2 = source.AddressLine2,
-                AddressLine3 = source.AddressLine3,
-                AddressLine4 = source.AddressLine4,
-                Postcode = source.Postcode,
-            };
-        }
-    }
-
-    public class CandidateApplication
-    {
-        public string Status { get; set; }
-        public DateTime? SubmittedDate { get; set; }
-        public DateTime? WithdrawnDate { get; set; }
-        public Guid ApplicationId { get; set; }
-
-        public static implicit operator CandidateApplication(GetApprenticeshipVacancyQueryResult.CandidateApplication source)
-        {
-            if (source is null) return null;
-
-            return new CandidateApplication
-            {
-                SubmittedDate = source.SubmittedDate,
-                WithdrawnDate = source.WithdrawnDate,
-                Status = source.Status,
-                ApplicationId = source.ApplicationId
+                AdditionalTrainingDescription = source.ApprenticeshipVacancy.AdditionalTrainingDescription,
+                VacancyDataSource = source.ApprenticeshipVacancy.VacancySource
             };
         }
     }
