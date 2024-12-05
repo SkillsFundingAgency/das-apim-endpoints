@@ -8,6 +8,7 @@ using SFA.DAS.ProviderPR.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.PayeSchemes;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -294,6 +295,7 @@ public class GetRelationshipByEmailQueryHandlerTests
         GetUserAccountsResponse getUserAccountsResponse,
         GetAccountLegalEntityResponse accountLegalEntityResponse,
         GetRelationshipByEmailQueryHandler handler,
+        string paye,
         CancellationToken cancellationToken
     )
     {
@@ -314,6 +316,18 @@ public class GetRelationshipByEmailQueryHandlerTests
             .ReturnsAsync(new List<GetUserAccountsResponse>
             {
                 getUserAccountsResponse
+            });
+
+        accountsApiClient
+            .Setup(x => x.GetAll<PayeScheme>(
+                It.Is<GetAccountPayeSchemesRequest>(c => c.GetAllUrl.Contains($"api/accounts/{getUserAccountsResponse.AccountId}/payeschemes"))))!
+            .ReturnsAsync(new List<PayeScheme>
+            {
+                new PayeScheme
+                {
+                    Id = paye,
+                    Href = Guid.NewGuid().ToString()
+                }
             });
 
         accountsApiClient
@@ -338,6 +352,7 @@ public class GetRelationshipByEmailQueryHandlerTests
             AccountLegalEntityPublicHashedId = accountLegalEntityResponse.AccountLegalEntityPublicHashedId,
             AccountLegalEntityId = accountLegalEntityResponse.AccountLegalEntityId,
             AccountLegalEntityName = accountLegalEntityResponse.Name,
+            Paye = paye,
             HasRelationship = false
         };
 
@@ -345,6 +360,7 @@ public class GetRelationshipByEmailQueryHandlerTests
         accountsApiClient.Verify(r => r.GetWithResponseCode<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
         accountsApiClient.Verify(r => r.GetAll<GetUserAccountsResponse>(It.IsAny<GetUserAccountsRequest>()), Times.Once);
         accountsApiClient.Verify(r => r.GetAll<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntitiesRequest>()), Times.Once);
+        accountsApiClient.Verify(r => r.GetAll<PayeScheme>(It.Is<GetAccountPayeSchemesRequest>(x => x.AccountId == getUserAccountsResponse.AccountId)), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -652,6 +668,7 @@ public class GetRelationshipByEmailQueryHandlerTests
             AccountLegalEntityId = getAccountLegalEntityResponse.AccountLegalEntityId,
             AccountLegalEntityName = getAccountLegalEntityResponse.Name,
             HasRelationship = true,
+            Paye = null,
             Operations = expected.Operations.ToList()
         };
 
