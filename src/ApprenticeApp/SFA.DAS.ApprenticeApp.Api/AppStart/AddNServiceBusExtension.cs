@@ -39,7 +39,9 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
                 {
                     endpointConfiguration.UseLicense(config.NServiceBusLicense);
                 }
-                
+
+                endpointConfiguration.SendOnly();
+
                 if (config.NServiceBusConnectionString.Equals("UseLearningEndpoint=true", StringComparison.CurrentCultureIgnoreCase) || string.IsNullOrEmpty(config.NServiceBusConnectionString))
                 {
                     endpointConfiguration.UseLearningTransport(s => s.AddRouting(endpointName));
