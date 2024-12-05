@@ -11,5 +11,6 @@ public class GetNotificationsLocationsQueryResult
         public string Name { get; set; }
         [JsonPropertyName("coordinates")]
         public double[] GeoPoint { get; set; }
+        public string Source { get; set; }
     }
 }
