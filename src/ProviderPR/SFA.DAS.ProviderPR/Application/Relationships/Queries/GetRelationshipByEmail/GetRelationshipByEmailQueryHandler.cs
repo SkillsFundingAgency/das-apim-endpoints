@@ -5,6 +5,7 @@ using SFA.DAS.ProviderPR.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.PayeSchemes;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -78,6 +79,9 @@ public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfi
         queryResult.AccountLegalEntityPublicHashedId = legalEntity.AccountLegalEntityPublicHashedId;
         queryResult.AccountLegalEntityId = legalEntity.AccountLegalEntityId;
         queryResult.AccountLegalEntityName = legalEntity.Name;
+
+        var payeSchemes = await _accountsApiClient.GetAll<PayeScheme>(new GetAccountPayeSchemesRequest(queryResult.AccountId.Value));
+        queryResult.Paye = payeSchemes.Any() ? payeSchemes.First().Id : null;
 
         var existingRequestCheck = await _providerRelationshipsApiClient.GetRequestByUkprnAndAccountLegalEntityId(request.Ukprn, legalEntity.AccountLegalEntityId, cancellationToken);
 
