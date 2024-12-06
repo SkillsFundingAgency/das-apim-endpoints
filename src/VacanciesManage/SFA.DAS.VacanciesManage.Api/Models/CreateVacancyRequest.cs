@@ -99,38 +99,42 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         [JsonPropertyName("address")]
         public CreateVacancyAddress Address { get; set; }
         /// <summary>
-        /// A short summary of the overall apprenticeship. This appears at the top of the vacancy on Find an apprenticeship. Must not exceed 350 characters
+        /// A short summary of the overall apprenticeship. This appears at the top of the vacancy on Find an apprenticeship.
         /// </summary>
         [JsonPropertyName("shortDescription")]
+        [MaxLength(350)]
         [Required]
         public string ShortDescription { get ; set ; }
         /// <summary>
-        /// What the apprentice will do at work. We suggest including day-to-day duties. Must include at least 3 bullet points (written in HTML). Must not exceed 4000 characters
+        /// What the apprentice will do at work. We suggest including day-to-day duties. Must include at least 3 bullet points (written in HTML).
         /// </summary>
         /// <example>Your daily tasks could include: <ul><li> working within a team to deliver a menu of high-quality food each service</li> <li> prepare food in a way that meets food hygiene standards</li> <li> storing food correctly</li> </ul></example>
         [JsonPropertyName("description")]
+        [MaxLength(4000)]
         [Required]
         public string Description { get ; set ; }
         /// <summary>
-        /// What progression or outcome the apprentice can expect at the end of the apprenticeship. Must not exceed 4000 characters
+        /// What progression or outcome the apprentice can expect at the end of the apprenticeship.
         /// </summary>
         [JsonPropertyName("outcomeDescription")]
+        [MaxLength(4000)]
         [Required]
         public string OutcomeDescription { get ; set ; }
         /// <summary>
         /// Where and when an apprentice’s training will take place. Don’t include any other information about the training here.
         /// If you submit an advert without providing this field, we’ll display a message on Find an apprenticeship saying that the training schedule hasn’t been agreed yet.
-        /// Must not exceed 4000 characters. 
         /// </summary>
         /// <example>One day per week, in-person at college</example>
         [JsonPropertyName("trainingDescription")]
+        [MaxLength(4000)]
         [Required]
         public string TrainingDescription { get ; set ; }
         /// <summary>
-        /// Further information about an apprentice’s training, such as details about the training provider or how the course will be structured. Must not exceed 4000 characters.
+        /// Further information about an apprentice’s training, such as details about the training provider or how the course will be structured.
         /// </summary>
         /// <example>You’ll have an apprenticeship advisor who will support you through your apprenticeship.</example>
         [JsonPropertyName("additionalTrainingDescription")]
+        [MaxLength(4000)]
         public string AdditionalTrainingDescription { get; set; }
         /// <summary>
         /// The code from the learning aim reference service (LARS) for the apprenticeship’s training course (also known as a ‘standard’). See all codes using `GET referencedata/courses`.
@@ -145,21 +149,25 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         [JsonPropertyName("employerNameOption")]
         public EmployerNameOption EmployerNameOption { get ; set ; }
         /// <summary>
-        /// When `employerNameOption` is set to `tradingName`, use this field to set the company’s name yourself with the correct formatting. Must not exceed 100 characters
+        /// When `employerNameOption` is set to `tradingName`, use this field to set the company’s name yourself with the correct formatting.
         /// </summary>
         [JsonPropertyName("alternativeEmployerName")]
+        [MaxLength(100)]
         public string EmployerName { get ; set ; }
         /// <summary>
-        /// When `employerNameOption` is set to `anonymousName`, give a brief description of the company to help people understand what they do. Must not exceed 100 characters 
+        /// When `employerNameOption` is set to `anonymousName`, give a brief description of the company to help people understand what they do.
         /// </summary>
         /// <example>Car manufacturer or clothes retailer</example>
         [JsonPropertyName("employerDescription")]
+        [MaxLength (100)]
         [Required]
         public string EmployerDescription { get ; set ; }
         /// <summary>
-        /// Provide the reason why the organisation would like to remain anonymous if chosen for <see cref="EmployerNameOption"/>. The reason must not be more than 4000 characters
+        /// When `employerNameOption` is set to `anonymousName`, tell us why you need to hide the company's name.
+        /// This will not appear on Find an apprenticeship but is needed for our quality assurance team to approve your vacancy.
         /// </summary>
         [JsonPropertyName("anonymousReason")]
+        [MaxLength(200)]
         public string AnonymousReason { get ; set ; }
         /// <summary>
         /// The web address for the employer’s website.
@@ -179,9 +187,8 @@ namespace SFA.DAS.VacanciesManage.Api.Models
 
         /// <summary>
         /// Skills and qualities an apprentice should have for this apprenticeship. We’ll show this on the vacancy.
-        /// If `applicationMethod` is `throughFindAnApprenticeship`, we’ll also ask applicants for examples of when they’ve used these skills.
+        /// If `applicationMethod` is `ThroughFindAnApprenticeship`, we’ll also ask applicants for examples of when they’ve used these skills.
         /// Use `GET referencedata/skills` to see our default selection of skills or add your own.
-        /// You must include at least one desired skill.
         /// </summary>
         [JsonPropertyName("skills")]
         [Required]
@@ -193,9 +200,10 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         [Required]
         public List<CreateVacancyQualification> Qualifications { get; set; }
         /// <summary>
-        /// Other requirements for the applicant, such as needing a Disclosure and Barring Service (DBS) check. Must not exceed 4000 characters 
+        /// Other requirements for the applicant, such as needing a Disclosure and Barring Service (DBS) check.
         /// </summary>
         [JsonPropertyName("thingsToConsider")]
+        [MaxLength(4000)]
         public string ThingsToConsider { get ; set ; }
         /// <summary>
         /// Select how the applications will be managed. This is either through Find an apprenticeship or an external site. If external `ApplicationUrl` must be set 
@@ -216,17 +224,19 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         /// <summary>
         /// If `applicationMethod` is `throughFindAnApprenticeship`, you can add questions for us to add to the application form.
         /// Note that we automatically ask all applicants ‘What are your skills and strengths?’ and ‘What interests you about this apprenticeship?’
-        /// Must include a question mark. Must not exceed 250 characters.
         /// </summary>
         /// <example>Do you have a driving licence?</example>
         [JsonPropertyName("additionalQuestion1")]
+        [MaxLength(250)]
+        [RegularExpression(@"^\w(.*)\w\?(\s\w(.*)\w[\.\?])*$", ErrorMessage = "Must include '?'")]
         public string AdditionalQuestion1 { get; set; }
         /// <summary>
         /// If `applicationMethod` is `throughFindAnApprenticeship`, add another question to the application form.
-        /// Must include a question mark. Must not exceed 250 characters.
         /// </summary>
         /// <example>What is your interest in this industry?</example>
         [JsonPropertyName("additionalQuestion2")]
+        [MaxLength(250)]
+        [RegularExpression(@"^\w(.*)\w\?(\s\w(.*)\w[\.\?])*$", ErrorMessage = "Must include '?'")]
         public string AdditionalQuestion2 { get; set; }
 
 
@@ -319,26 +329,29 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         [JsonPropertyName("fixedWageYearlyAmount")]
         public decimal? FixedWageYearlyAmount { get ; set ; }
         /// <summary>
-        /// Additional information about pay, such as when the apprentice might get a pay rise. 250 character limit
+        /// Additional information about pay, such as when the apprentice might get a pay rise.
         /// </summary>
         [JsonPropertyName("wageAdditionalInformation")]
         [MaxLength(250)]
         public string WageAdditionalInformation { get ; set ; }
         /// <summary>
-        /// Describe benefits the company offers. Must not exceed 250 characters.
+        /// Describe benefits the company offers.
         /// </summary>
         [JsonPropertyName("CompanyBenefitsInformation")]
+        [MaxLength(250)]
         public string CompanyBenefitsInformation { get; set; }
         /// <summary>
-        /// The total number of hours per week. This includes both work and training. Needs to be greater than 16 and less than 48.
+        /// The total number of hours per week. This includes both work and training.
         /// </summary>
         [JsonPropertyName("weeklyHours")]
+        [Length(16, 48, ErrorMessage = "Needs to be between 16 and 48 hours.")]
         [Required]
         public decimal WeeklyHours { get ; set ; }
         /// <summary>
-        /// Information about the working schedule, such as daily working hours. You have up to 250 characters
+        /// Information about the working schedule, such as daily working hours.
         /// </summary>
         [JsonPropertyName("workingWeekDescription")]
+        [MaxLength(250)]
         [Required]
         public string WorkingWeekDescription { get ; set ; }
         /// <summary>
@@ -378,11 +391,13 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         [JsonPropertyName("qualificationType")]
         public string QualificationType { get; set; }
         /// <summary>
-        /// If `qualificationType` is `BTEC`, you must tell us what level of BTEC you’re looking for. Allowed values: 1 to 7
+        /// If `qualificationType` is `BTEC`, you must tell us what level of BTEC you’re looking for.
         /// </summary>
         /// <example>7</example>
         [JsonPropertyName("level")]
-        public int? Level { get; set; }
+        [AllowedValues(1,2,3,4,5,6,7)]
+        [Required]
+        public int Level { get; set; }
         /// <summary>
         /// The name of the subject for the qualification.
         /// </summary>
@@ -406,14 +421,20 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         /// <summary>
         /// The name of a contact who applicants can contact to discuss the apprenticeship.
         /// </summary>
+        [JsonPropertyName("name")]
+        [Required]
         public string Name { get; set; }
         /// <summary>
         /// The contact's email address.
         /// </summary>
+        [JsonPropertyName("email")]
+        [Required]
         public string Email { get; set; }
         /// <summary>
         /// The contact's phone number.
         /// </summary>
+        [JsonPropertyName("phone")]
+        [Required]
         public string Phone { get; set; }
     }
 
@@ -441,8 +462,8 @@ namespace SFA.DAS.VacanciesManage.Api.Models
     }
     /// <summary>
     /// Choose from:
-    /// `throughFindAnApprenticeship` lets applicants apply through Find an apprenticeship.
-    /// `throughExternalApplicationSite` means you’ll use your own website to accept applications.
+    /// <ul><li>`throughFindAnApprenticeship` lets applicants apply through Find an apprenticeship.</li>
+    /// <li>`throughExternalApplicationSite` means you’ll use your own website to accept applications.</li></ul>
     /// </summary>
     public enum CreateVacancyApplicationMethod
     {
@@ -468,7 +489,7 @@ namespace SFA.DAS.VacanciesManage.Api.Models
     }
     
     /// <summary>
-    /// Set the unit of time for `Wage.Duration`. 
+    /// Set the unit of time for `duration`. 
     /// </summary>
     public enum DurationUnit
     {
@@ -489,8 +510,8 @@ namespace SFA.DAS.VacanciesManage.Api.Models
     }
     /// <summary>
     /// Say whether the employer is part of the Department for Work and Pension’s Disability Confident scheme. If Yes:
-    /// we’ll show a Disability Confident logo on the vacancy and
-    /// If `applicationMethod` is `throughFindAnApprenticeship`, we'll ask applicants whether they want to apply through the Disability Confident scheme.
+    /// <ul><li>we’ll show a Disability Confident logo on the vacancy</li>
+    /// <li>If `applicationMethod` is `throughFindAnApprenticeship`, we'll ask applicants whether they want to apply through the Disability Confident scheme.</li></ul>
     /// </summary>
     public enum CreateVacancyDisabilityConfident
     {

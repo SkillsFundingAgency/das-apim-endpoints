@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 using SFA.DAS.Vacancies.InnerApi.Responses;
@@ -30,14 +31,17 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// <summary>
         /// The title for the apprenticeship vacancy. Will be less than or equal to 100 characters.
         /// </summary>
+        [MaxLength(100)]
         public string Title { get; set; }
         /// <summary>
         /// A short summary of the overall apprenticeship. Will be less than or equal to 350 characters.
         /// </summary>
+        [MaxLength(350)]
         public string Description { get; set; }
         /// <summary>
         /// The number of apprentices being recruited for the apprenticeship. Will be 1 or higher.
         /// </summary>
+        [Required]
         public long NumberOfPositions { get; set; }
         /// <summary>
         /// The date the apprenticeship was added to Find an apprenticeship.
@@ -172,10 +176,10 @@ namespace SFA.DAS.Vacancies.Api.Models
 
     /// <summary>
     /// Will be either:
-    /// -	ApprenticeshipMinimum which is the National Minimum Wage for apprentices.
-    /// -	NationalMinimum which is the National Minimum Wage.
-    /// -	Custom which is a set salary set by the company.
-    /// -	CompetitiveSalary does not set an exact wage and shows the word ‘Competitive’.
+    /// <ul><li>ApprenticeshipMinimum which is the National Minimum Wage for apprentices.</li>
+    /// <li>NationalMinimum which is the National Minimum Wage.</li>
+    /// <li>Custom which is a set salary set by the company.</li>
+    /// <li>CompetitiveSalary does not set an exact wage and shows the word ‘Competitive’.</li></ul>
     /// </summary>
     public enum WageType
     {

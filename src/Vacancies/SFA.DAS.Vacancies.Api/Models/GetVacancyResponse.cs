@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 
@@ -10,6 +11,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// <summary>
         /// A description of the company the apprentice will work at. Will be less than or equal to 4000 characters.
         /// </summary>
+        [MaxLength(4000)]
         public string EmployerDescription { get; set; }
         /// <summary>
         /// The apprenticeship’s training plan, including where and when training will take place.

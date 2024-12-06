@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Vacancies.InnerApi.Responses;
+using System.ComponentModel.DataAnnotations;
 
 namespace SFA.DAS.Vacancies.Api.Models
 {
@@ -13,10 +14,12 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// <summary>
         /// Additional information about pay, such as when the apprentice might get a pay rise. Will be less than or equal to 250 characters.
         /// </summary>
+        [MaxLength(250)]
         public string WageAdditionalInformation { get; set; }
         /// <summary>
-        /// Information about the working schedule, such as daily working hours. Will be less than or equal to 250 characters
+        /// Information about the working schedule, such as daily working hours. Will be less than or equal to 250 characters.
         /// </summary>
+        [MaxLength(250)]
         public string WorkingWeekDescription { get; set; }
 
         public static implicit operator GetVacancyWageItem(GetVacanciesListItem source)
