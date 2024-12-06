@@ -1,10 +1,9 @@
-﻿namespace SFA.DAS.FindAnApprenticeship.Domain.Models;
+namespace SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 public enum WageType
 {
-    Unknown = 1,
-    NationalMinimumWageForApprentices = 2,
-    NationalMinimumWage = 3,
-    FixedWage = 4,
-    CompetitiveSalary = 6
+    FixedWage,
+    NationalMinimumWageForApprentices,
+    NationalMinimumWage,
+    CompetitiveSalary
 }
