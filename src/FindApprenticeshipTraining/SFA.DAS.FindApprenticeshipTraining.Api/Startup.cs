@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
+using SFA.DAS.FindApprenticeshipTraining.Api.HealthCheck;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
@@ -16,7 +16,6 @@ using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using SFA.DAS.FindApprenticeshipTraining.Api.HealthCheck;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api
 {
@@ -37,6 +36,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
             services.AddSingleton(_env);
 
             services.AddConfigurationOptions(_configuration);
+
+            services
+                .AddLogging()
+                .AddTelemetryRegistration(_configuration.BuildSharedConfiguration())
+                .AddApplicationInsightsTelemetry();
 
             if (!_configuration.IsLocalOrDev())
             {
@@ -89,8 +93,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                     .AddCheck<ShortlistApiHealthCheck>("Shortlist API health check")
                     .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription);
             }
-
-            services.AddApplicationInsightsTelemetry();
 
             services.AddSwaggerGen(c =>
             {

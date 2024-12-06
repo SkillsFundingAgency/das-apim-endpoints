@@ -10,6 +10,7 @@ using SFA.DAS.EmployerAan.Application.Members.Queries.GetMembers;
 using SFA.DAS.EmployerAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.EmployerAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.EmployerAan.InnerApi.Attendances;
+using SFA.DAS.EmployerAan.InnerApi.CalendarEvents;
 using SFA.DAS.EmployerAan.InnerApi.LeavingReasons;
 using SFA.DAS.EmployerAan.InnerApi.MemberProfiles;
 using SFA.DAS.EmployerAan.InnerApi.Members;
@@ -33,7 +34,7 @@ public interface IAanHubRestApiClient : IHealthChecker
     Task<List<Calendar>> GetCalendars(CancellationToken cancellationToken);
 
     [Get("/calendarEvents")]
-    Task<GetCalendarEventsQueryResult> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
+    Task<GetCalendarEventsApiResponse> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
 
     [Get("/employers/{userRef}")]
     [AllowAnyStatusCode]
