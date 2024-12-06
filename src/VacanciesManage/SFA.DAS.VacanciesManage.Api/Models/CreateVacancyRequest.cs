@@ -52,22 +52,23 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         }
 
         /// <summary>
-        /// The title for the apprenticeship vacancy on Find an apprenticeship. Must contain the word apprentice or apprenticeship and be less than 100 characters.
+        /// The title for the apprenticeship vacancy on Find an apprenticeship. Must include: <b>apprentice</b> or <b>apprenticeship</b>.
         /// </summary>
         /// <example>Library assistant apprenticeship</example>
         [JsonPropertyName("title")]
         [Required]
+        [MaxLength(100)]
         public string Title { get ; set ; }
 
         /// <summary>
-        /// The number of apprentices being recruited for the apprenticeship. Add as a numerical value, must be at least 1.
+        /// The number of apprentices being recruited for the apprenticeship.
         /// </summary>
         [JsonPropertyName("numberOfPositions")]
         [Required]
         public int NumberOfPositions { get; set; }
 
         /// <summary>
-        /// The last date people can apply for the apprenticeship. Closing date must be at least 2 weeks in the future.
+        /// The last date people can apply for the apprenticeship. Must be at least 2 weeks in the future.
         /// </summary>
         /// <example>2019-08-24T:14:15:22Z</example>
         [JsonPropertyName("closingDate")]
@@ -321,6 +322,7 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         /// Additional information about pay, such as when the apprentice might get a pay rise. 250 character limit
         /// </summary>
         [JsonPropertyName("wageAdditionalInformation")]
+        [MaxLength(250)]
         public string WageAdditionalInformation { get ; set ; }
         /// <summary>
         /// Describe benefits the company offers. Must not exceed 250 characters.
@@ -450,17 +452,19 @@ namespace SFA.DAS.VacanciesManage.Api.Models
 
     /// <summary>
     /// Choose from:
-    /// `WageType.NationalMinimumWageForApprentices` Sets the wage to the [National Minimum Wage for apprentices](https://www.gov.uk/national-minimum-wage-rates).
-    /// `WageType.NationalMinimumWage` Sets the wage to the [National Minimum Wage](https://www.gov.uk/national-minimum-wage-rates). 
-    /// `WageType.FixedWage` Lets you set a fixed wage for the apprenticeship.
-    /// `WageType.competitiveSalary` Does not set an exact wage and shows the word ‘Competitive’.
+    /// `WageType.NationalMinimumWageForApprentices` sets the wage to the National Minimum Wage for apprentices
+    /// `WageType.NationalMinimumWage` sets the wage to the National Minimum Wage 
+    /// `WageType.FixedWage` lets you set a fixed wage for the apprenticeship
+    /// `WageType.CompetitiveSalary` does not set an exact wage and shows the word ‘Competitive’
     /// National Minimum Wages will change every year on 1 April. We automatically update adverts to the correct National Minimum Wages.
     /// </summary>
+    /// <example>fixedWage</example>
     public enum WageType
     {
         FixedWage,
         NationalMinimumWageForApprentices,
-        NationalMinimumWage
+        NationalMinimumWage,
+        CompetitiveSalary
     }
     
     /// <summary>
