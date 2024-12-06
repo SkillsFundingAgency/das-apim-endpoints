@@ -4,6 +4,6 @@ namespace SFA.DAS.Approvals.Application.LevyTransferMatching.Queries.GetApproved
 {
     public class GetAcceptedEmployerAccountApplicationsQuery : IRequest<GetAcceptedEmployerAccountApplicationsQueryResult>
     {
-        public int EmployerAccountId { get; set; }
+        public long EmployerAccountId { get; set; }
     }
 }
