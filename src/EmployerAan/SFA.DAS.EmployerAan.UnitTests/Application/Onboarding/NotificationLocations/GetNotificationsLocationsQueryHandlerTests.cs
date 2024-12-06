@@ -47,9 +47,14 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Onboarding.NotificationLocat
         public async Task Handle_Return_A_Single_Match_From_LocationLookupService(
             GetNotificationsLocationsQuery query,
             LocationItem locationData,
+            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> apiClient,
             [Frozen] Mock<ILocationLookupService> mockLocationLookupService,
             [Frozen] GetNotificationsLocationsQueryHandler handler)
         {
+            apiClient
+                .Setup(x => x.Get<GetLocationsListResponse>(It.IsAny<GetLocationsQueryRequest>()))
+                .ReturnsAsync(new GetLocationsListResponse{Locations = [] });
+
             mockLocationLookupService
                 .Setup(x => x.GetLocationInformation(query.SearchTerm, 0, 0, false))
                 .ReturnsAsync(locationData);
