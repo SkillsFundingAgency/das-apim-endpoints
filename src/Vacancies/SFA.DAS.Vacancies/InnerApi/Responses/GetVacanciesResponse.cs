@@ -134,6 +134,9 @@ namespace SFA.DAS.Vacancies.InnerApi.Responses
         
         [JsonPropertyName("distance")]
         public decimal? Distance { get; set; }
+
+        [JsonPropertyName("score")]
+        public long Score { get; set; }
         
         [JsonIgnore]
         public string CourseTitle { get ; set ; }

@@ -1,12 +1,11 @@
 ﻿using SFA.DAS.EmployerAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.EmployerAan.Application.Members.Queries.GetMembers;
-using System.Globalization;
 
 namespace SFA.DAS.EmployerAan.Application.Services;
 public static class QueryStringParameterBuilder
 {
 
-    public static Dictionary<string, string[]> BuildQueryStringParameters(GetCalendarEventsQuery request, double? longitude = null, double? latitude = null, int? radius = null, string? orderBy = null)
+    public static Dictionary<string, string[]> BuildQueryStringParameters(GetCalendarEventsQuery request)
     {
         var parameters = new Dictionary<string, string[]>();
         if (!string.IsNullOrWhiteSpace(request.Keyword)) parameters.Add("keyword", new[] { request.Keyword });
@@ -26,12 +25,6 @@ public static class QueryStringParameterBuilder
         {
             parameters.Add("regionId", request.RegionIds.Select(region => region.ToString()).ToArray());
         }
-
-
-        if (longitude.HasValue) { parameters.Add("longitude", [longitude.Value.ToString(CultureInfo.InvariantCulture)]); }
-        if (latitude.HasValue) { parameters.Add("latitude", [latitude.Value.ToString(CultureInfo.InvariantCulture)]); }
-        if (radius.HasValue) { parameters.Add("radius", [radius.Value.ToString()]); }
-        if (!string.IsNullOrWhiteSpace(request.OrderBy)) { parameters.Add("orderBy", new[] { request.OrderBy }); }
 
         if (request.Page != null) parameters.Add("page", new[] { request.Page?.ToString() }!);
         if (request.PageSize != null) parameters.Add("pageSize", new[] { request.PageSize?.ToString() }!);

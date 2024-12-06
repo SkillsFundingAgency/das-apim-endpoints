@@ -108,6 +108,6 @@ public class Startup
 
     public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
     {
-        Task.FromResult(serviceProvider.StartNServiceBus(_configuration, EndpointName)).GetAwaiter().GetResult();
+        serviceProvider.StartNServiceBus(_configuration, EndpointName).GetAwaiter().GetResult();
     }
 }

@@ -3,7 +3,6 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models
 {
@@ -50,7 +49,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string? CompanyBenefitsInformation { get; set; }
         public string? AdditionalTrainingDescription { get; set; }
         public bool IsSavedVacancy { get; set; } = false;
-        public VacancyDataSource VacancySource { get; set; }
 
         public CandidateApplicationDetails? Application { get; set; }
 
@@ -87,9 +85,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 CompanyBenefitsInformation = source.CompanyBenefitsInformation,
                 AdditionalTrainingDescription = source.AdditionalTrainingDescription,
                 IsSavedVacancy = source.IsSavedVacancy,
-                VacancySource = source.VacancySource,
             };
         }
+
     }
 
     public class CandidateApplicationDetails

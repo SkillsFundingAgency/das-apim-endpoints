@@ -16,7 +16,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
             var actual = (SearchApprenticeshipsApiResponse)source;
 
             actual.TotalApprenticeshipCount.Should().Be(source.TotalApprenticeshipCount);
-            actual.TotalCompetitiveVacanciesCount.Should().Be(source.TotalWageTypeVacanciesCount);
             actual.TotalFound.Should().Be(source.TotalFound);
             actual.Routes.Should().BeEquivalentTo(source.Routes);
             actual.Levels.Should().BeEquivalentTo(source.Levels, options => options.Excluding(c => c.Code));
@@ -58,7 +57,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
                 .Excluding(c => c.PageSize)
                 .Excluding(c => c.PageNumber)
                 .Excluding(c => c.TotalPages)
-                .Excluding(c => c.TotalWageTypeVacanciesCount)
             );
             actual.Location.Should().BeNull();
         }

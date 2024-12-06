@@ -132,7 +132,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate.Should().Be(episodePrice.Price.StartDate);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeFirstAdditionalPaymentThresholdDate.Should().BeNull();
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeSecondAdditionalPaymentThresholdDate.Should().BeNull();
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeContractType.Should().Be("Contract for services with the employer");
+                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeContractType.Should().Be("ACT1");
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodePreviousEarningsSameProvider.Should().Be(0);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotProgFunding.Should().Be(earningEpisode.OnProgramTotal);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeProgFundIndMinCoInvest.Should().Be(earningEpisode.OnProgramTotal * 0.95m);

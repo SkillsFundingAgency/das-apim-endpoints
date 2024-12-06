@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using NLog.Web;
 
 namespace SFA.DAS.EmployerFeedback.Api
 {
@@ -15,7 +16,8 @@ namespace SFA.DAS.EmployerFeedback.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                        .UseStartup<Startup>();
+                        .UseStartup<Startup>()
+                        .UseNLog();
                 });
     }
 }

@@ -26,11 +26,11 @@ public class GetNhsJobsQueryHandler(INhsJobsApiClient nhsJobsApiClient, ILiveVac
         
         var vacancies = result.Vacancies.ToList();
         
-        for (var i = 2; result?.TotalPages >= i; i++)
+        for (var i = 2; result.TotalPages >= i; i++)
         {
             result = await GetNhsPageResult(i);
 
-            vacancies.AddRange(result?.Vacancies.ToList() ?? []);
+            vacancies.AddRange(result.Vacancies.ToList());
         }
         
         var postCodes = new List<string>();
@@ -47,7 +47,7 @@ public class GetNhsJobsQueryHandler(INhsJobsApiClient nhsJobsApiClient, ILiveVac
         await Task.WhenAll(locationsTask, routesTask);
         var route = routesTask.Result.Routes.FirstOrDefault(c => c.Name.Contains("health", StringComparison.CurrentCultureIgnoreCase));
 
-        var liveVacancies = vacancies.Select(c=> liveVacancyMapper.Map(c,locationsTask.Result.Body, route) ).ToList();
+        var liveVacancies = vacancies.Select(c=>liveVacancyMapper.Map(c,locationsTask.Result.Body, route) ).ToList();
         
 
         return new GetNhsJobsQueryResult

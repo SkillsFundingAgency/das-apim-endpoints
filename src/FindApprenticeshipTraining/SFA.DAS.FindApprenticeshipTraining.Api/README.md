@@ -25,23 +25,6 @@ The [SFA.DAS-FindApprenticeshipTraining-Api](https://github.com/SkillsFundingAge
 ### Config
 You can find the latest config file in [das-employer-config repository](https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-apim-endpoints/SFA.DAS.FindApprenticeshipTraining.OuterApi.json)
 
-In the SFA.DAS.FindApprenticeshipTraining.Api.API project, if it does not exist already, add appSettings.Development.json file with following content:
-```json
-{
-  "Logging": {
-    "LogLevel": {
-      "Default": "Warning"
-    }
-  },
-  "AllowedHosts": "*",
-  "ConfigurationStorageConnectionString": "UseDevelopmentStorage=true;",
-  "ConfigNames": "SFA.DAS.FindApprenticeshipTraining.OuterApi",
-  "Environment": "LOCAL",
-  "Version": "1.0", 
-  "APPINSIGHTS_INSTRUMENTATIONKEY": ""
-}
-```
-
 * If you are using Azure Storage Emulator for local development purpose, then In your Azure Storage Account, create a table called Configuration and Add the following
 
 ParitionKey: LOCAL
@@ -105,6 +88,7 @@ In the web project, if it does not exist already, add `AppSettings.Development.j
 * .NetCore 8.0
 * Azure Storage Account
 * NUnit
+* NLog
 * Moq
 * FluentAssertions
 * Azure App Insights

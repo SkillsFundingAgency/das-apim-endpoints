@@ -11,9 +11,6 @@ public class GetCalendarEventsQuery : IRequest<GetCalendarEventsQueryResult>
     public List<EventFormat>? EventFormat { get; set; }
     public List<int>? CalendarIds { get; set; }
     public List<int>? RegionIds { get; set; }
-    public string? Location { get; set; }
-    public int Radius { get; set; }
-    public string OrderBy { get; set; } = "";
     public int? Page { get; set; }
     public int? PageSize { get; set; }
 }

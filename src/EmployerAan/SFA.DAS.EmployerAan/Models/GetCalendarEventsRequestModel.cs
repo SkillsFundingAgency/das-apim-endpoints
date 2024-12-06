@@ -29,15 +29,6 @@ namespace SFA.DAS.EmployerAan.Application.Models
         public List<int> RegionId { get; set; } = new List<int>();
 
         [FromQuery]
-        public string Location { get; set; } = "";
-
-        [FromQuery]
-        public int Radius { get; set; } = 0;
-
-        [FromQuery]
-        public string OrderBy { get; set; } = "";
-
-        [FromQuery]
         public int? Page { get; set; }
 
         [FromQuery]
@@ -52,9 +43,6 @@ namespace SFA.DAS.EmployerAan.Application.Models
             EventFormat = requestModel.EventFormat,
             RegionIds = requestModel.RegionId,
             CalendarIds = requestModel.CalendarId,
-            Location = requestModel.Location,
-            Radius = requestModel.Radius,
-            OrderBy = requestModel.OrderBy,
             Page = requestModel.Page,
             PageSize = requestModel.PageSize
         };

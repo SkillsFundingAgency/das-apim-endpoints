@@ -7,11 +7,8 @@ using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.ApprenticeAan.Api.HealthCheck;
 using SFA.DAS.ApprenticeAan.Application.Extensions;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
-using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
-using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 using ApprenticeAccountsApiHealthCheck = SFA.DAS.ApprenticeAan.Api.HealthCheck.ApprenticeAccountsApiHealthCheck;
@@ -57,29 +54,6 @@ public static class ServiceCollectionExtensions
         AddApprenticeAccountsApiClient(services, configuration);
         AddCoursesApiClient(services, configuration);
         AddLocationApiClient(services, configuration);
-
-        services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
-        services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
-        services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
-        services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
-        services.AddTransient<ILocationLookupService, LocationLookupService>();
-        services.AddTransient<ICacheStorageService, CacheStorageService>();
-
-        if (configuration.IsLocalOrDev())
-        {
-            services.AddDistributedMemoryCache();
-        }
-        else
-        {
-            var aanConfig = configuration.GetSection(nameof(ApprenticeAanConfiguration)).Get<ApprenticeAanConfiguration>();
-
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = aanConfig.ApimEndpointsRedisConnectionString;
-            });
-        }
-
         return services;
     }
 

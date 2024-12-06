@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.AdminAan.Api.Controllers;
 using SFA.DAS.AdminAan.Application.Locations.Queries.GetAddresses;
-using SFA.DAS.AdminAan.Application.Locations.Queries.GetLocationsBySearch;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminAan.Api.UnitTests.Controllers;
@@ -60,22 +59,4 @@ public class LocationsControllerTests
         result.As<OkObjectResult>().Should().NotBeNull();
         result.As<OkObjectResult>().Value.As<GetAddressesQueryResult>().Addresses.Should().BeEmpty();
     }
-
-    [Test, MoqAutoData]
-    public async Task GetLocationsBySearchTask_ReturnsAddresses(
-        GetLocationsBySearchQueryResult response,
-        [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] LocationsController sut)
-    {
-        mockMediator
-            .Setup(m => m.Send(It.IsAny<GetLocationsBySearchQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(response);
-
-        var result = await sut.GetLocationsBySearch("thisIsAQuery");
-
-        result.As<OkObjectResult>().Should().NotBeNull();
-
-        result.As<OkObjectResult>().Value.Should().BeEquivalentTo(response);
-    }
-
 }

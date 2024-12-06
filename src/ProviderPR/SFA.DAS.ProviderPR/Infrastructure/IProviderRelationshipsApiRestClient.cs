@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RestEase;
+﻿using RestEase;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.AccountInvitation;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccount;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.CreatePermissions;
 using SFA.DAS.ProviderPR.InnerApi.Notifications.Commands;
-using SFA.DAS.ProviderPR.InnerApi.Requests;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
 
 namespace SFA.DAS.ProviderPR.Infrastructure;
@@ -16,7 +14,7 @@ public interface IProviderRelationshipsApiRestClient
     Task<HttpResponseMessage> GetHealth(CancellationToken cancellationToken);
 
     [Get("providers/{ukprn}/relationships")]
-    Task<Response<GetProviderRelationshipsResponse>> GetProviderRelationships([Path] long ukprn, [QueryMap] IDictionary<string, string> request, CancellationToken cancellationToken);
+    Task<GetProviderRelationshipsResponse> GetProviderRelationships([Path] long ukprn, [RawQueryString] string queryString, CancellationToken cancellationToken);
 
     [Post("requests/addaccount")]
     Task<AddAccountRequestCommandResult> CreateAddAccountRequest([Body] AddAccountRequestCommand command, CancellationToken cancellationToken);
@@ -40,10 +38,6 @@ public interface IProviderRelationshipsApiRestClient
     [Get("requests")]
     [AllowAnyStatusCode]
     Task<Response<GetRequestByUkprnAndPayeResponse?>> GetRequestByUkprnAndPaye([Query] long ukprn, [Query] string paye, CancellationToken cancellationToken);
-
-    [Get("requests")]
-    [AllowAnyStatusCode]
-    Task<Response<GetRequestByUkprnAndAccountLegalEntityIdResponse?>> GetRequestByUkprnAndAccountLegalEntityId([Query] long ukprn, [Query] long accountLegalEntityId, CancellationToken cancellationToken);
 
     [Get("requests")]
     [AllowAnyStatusCode]

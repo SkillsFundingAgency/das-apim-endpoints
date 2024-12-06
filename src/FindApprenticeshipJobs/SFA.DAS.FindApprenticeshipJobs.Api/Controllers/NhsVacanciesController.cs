@@ -18,7 +18,7 @@ public class NhsVacanciesController(IMediator mediator, ILogger<NhsVacanciesCont
 
         try
         {
-            var result = await mediator.Send(new GetNhsJobsQuery(), cancellationToken);
+            var result = await mediator.Send(new GetNhsJobsQuery {}, cancellationToken);
             var viewModel = (GetLiveVacanciesApiResponse)result;
             return Ok(viewModel);
         }

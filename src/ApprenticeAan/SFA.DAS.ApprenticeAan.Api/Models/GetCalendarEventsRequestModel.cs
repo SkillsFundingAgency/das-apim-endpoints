@@ -28,15 +28,6 @@ public class GetCalendarEventsRequestModel
     [FromQuery]
     public List<int> RegionId { get; set; } = new List<int>();
 
-    [FromQuery] 
-    public string Location { get; set; } = "";
-
-    [FromQuery] 
-    public int Radius { get; set; } = 0;
-
-    [FromQuery] 
-    public string OrderBy { get; set; } = "";
-
     [FromQuery]
     public int? Page { get; set; }
 
@@ -53,9 +44,6 @@ public class GetCalendarEventsRequestModel
         RegionIds = requestModel.RegionId,
         CalendarIds = requestModel.CalendarId,
         Page = requestModel.Page,
-        PageSize = requestModel.PageSize,
-        Location = requestModel.Location,
-        Radius = requestModel.Radius,
-        OrderBy = requestModel.OrderBy
+        PageSize = requestModel.PageSize
     };
 }

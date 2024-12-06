@@ -324,7 +324,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryPeriodisedTextValues.Should().Contain(x =>
                 x.AttributeName == "FundLineType" && x.AllValuesAreSetTo(earningsApprenticeship.FundingLineType));
             learningDelivery.LearningDeliveryPeriodisedTextValues.Should().Contain(x =>
-                x.AttributeName == "LearnDelContType" && x.AllValuesAreSetTo("Contract for services with the employer"));
+                x.AttributeName == "LearnDelContType" && x.AllValuesAreSetTo("ACT1"));
         }
     }
 }

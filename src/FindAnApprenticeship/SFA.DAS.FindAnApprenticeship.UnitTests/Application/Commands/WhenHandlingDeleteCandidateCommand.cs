@@ -1,9 +1,12 @@
-﻿using MediatR;
+﻿using AutoFixture.NUnit3;
+using FluentAssertions;
+using MediatR;
+using Moq;
+using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidate;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
@@ -12,6 +15,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
@@ -40,7 +44,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                 [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
                 [Frozen] Mock<INotificationService> notificationService,
                 [Frozen] Mock<IVacancyService> vacancyService,
-                [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
                 DeleteCandidateCommandHandler handler)
         {
             foreach (var application in applicationsApiResponse.Applications)
@@ -112,9 +115,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                 ), Times.Exactly(applicationsApiResponse.Applications.Count));
             }
 
-            var expectedDeleteSavedSearchesApiRequest = new DeleteSavedSearchesApiRequest(command.CandidateId);
-            findApprenticeshipApiClient.Verify(client => client.Delete(It.Is<DeleteSavedSearchesApiRequest>(r => r.DeleteUrl == expectedDeleteSavedSearchesApiRequest.DeleteUrl)), Times.Once);
-
             var expectedDeleteAccountApiRequest =
                 new DeleteAccountApiRequest(command.CandidateId);
             candidateApiClient
@@ -129,7 +129,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             [Frozen] Mock<INotificationService> notificationService,
-            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
             DeleteCandidateCommandHandler handler)
         {
             foreach (var application in applicationsApiResponse.Applications)
@@ -149,14 +148,12 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                 .ReturnsAsync(applicationsApiResponse);
 
 
-            await handler.Handle(command, CancellationToken.None);
+            var result = await handler.Handle(command, CancellationToken.None);
 
             candidateApiClient.Verify(x => x.Delete(It.IsAny<DeleteAccountApiRequest>()), Times.Once());
             candidateApiClient.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()), Times.Never());
             notificationService.Verify(x => x.Send(
                 It.IsAny<SendEmailCommand>()), Times.Never());
-
-            findApprenticeshipApiClient.Verify(client => client.Delete(It.IsAny<DeleteSavedSearchesApiRequest>()), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -167,7 +164,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             [Frozen] Mock<INotificationService> notificationService,
-            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
             DeleteCandidateCommandHandler handler)
         {
             applicationsApiResponse.Applications = [];
@@ -182,10 +178,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                 .ReturnsAsync(applicationsApiResponse);
 
 
-            await handler.Handle(command, CancellationToken.None);
+            var result = await handler.Handle(command, CancellationToken.None);
 
             candidateApiClient.Verify(x => x.Delete(It.IsAny<DeleteAccountApiRequest>()), Times.Once());
-            findApprenticeshipApiClient.Verify(client => client.Delete(It.IsAny<DeleteSavedSearchesApiRequest>()), Times.Once);
             candidateApiClient.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()), Times.Never());
             notificationService.Verify(x => x.Send(
                 It.IsAny<SendEmailCommand>()), Times.Never());
@@ -199,7 +194,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             [Frozen] Mock<INotificationService> notificationService,
-            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
             DeleteCandidateCommandHandler handler)
         {
             foreach (var application in applicationsApiResponse.Applications)
@@ -227,7 +221,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
             await act.Should().ThrowAsync<HttpRequestContentException>();
 
             candidateApiClient.Verify(x => x.Delete(It.IsAny<DeleteAccountApiRequest>()), Times.Never());
-            findApprenticeshipApiClient.Verify(client => client.Delete(It.IsAny<DeleteSavedSearchesApiRequest>()), Times.Never);
             candidateApiClient.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()), Times.Never());
             notificationService.Verify(x => x.Send(
                 It.IsAny<SendEmailCommand>()), Times.Never());

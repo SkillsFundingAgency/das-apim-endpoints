@@ -1,16 +1,10 @@
 ﻿using MediatR;
-using RestEase;
-using SFA.DAS.ProviderPR.Infrastructure;
-using SFA.DAS.ProviderPR.InnerApi.Responses;
 
 namespace SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationships;
-public class GetRelationshipsQueryHandler(IProviderRelationshipsApiRestClient _providerRelationshipsApiRestClient) : IRequestHandler<GetRelationshipsQuery, GetProviderRelationshipsResponse>
+public class GetRelationshipsQueryHandler : IRequestHandler<GetRelationshipsQuery, GetRelationshipsQueryResult>
 {
-    public async Task<GetProviderRelationshipsResponse> Handle(GetRelationshipsQuery request, CancellationToken cancellationToken)
+    public Task<GetRelationshipsQueryResult> Handle(GetRelationshipsQuery request, CancellationToken cancellationToken)
     {
-        Response<GetProviderRelationshipsResponse> result =
-            await _providerRelationshipsApiRestClient.GetProviderRelationships(request.Ukprn, request.Request.ToDictionary(), cancellationToken);
-
-        return result.GetContent();
+        return Task.FromResult(new GetRelationshipsQueryResult { Message = $"Invoked get relationship at {DateTime.UtcNow}" });
     }
 }
