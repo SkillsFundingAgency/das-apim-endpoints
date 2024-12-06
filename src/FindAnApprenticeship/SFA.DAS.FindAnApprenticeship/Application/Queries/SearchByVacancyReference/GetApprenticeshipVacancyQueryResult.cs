@@ -90,7 +90,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
 
             public string ProviderContactName { get; init; }
 
-            public VacancyLocationType VacancyLocationType { get; init; }
+            public VacancyLocationType? VacancyLocationType { get; init; }
 
             public IEnumerable<string> Skills { get; init; }
 
