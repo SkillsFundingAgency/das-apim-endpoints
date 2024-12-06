@@ -85,12 +85,12 @@ namespace SFA.DAS.ApprenticeApp.Api
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 });
 
-            services.AddOpenTelemetryRegistration(_configuration["appInsightsConnectionString"],nameof(MyApprenticeship), "MyApprenticeshipApp", "MyApprenticeship-Service"); 
+            services.AddOpenTelemetryRegistration(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"],nameof(MyApprenticeship), "MyApprenticeshipApp", "MyApprenticeship-Service"); 
 
-            if (!string.IsNullOrEmpty(_configuration["appInsightsConnectionString"]))
+            if (!string.IsNullOrEmpty(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]))
             {
                 // This service will collect and send telemetry data to Azure Monitor.
-                services.AddSingleton<IApprenticeAppMetrics, ApprenticeAppMetrics>();
+                services.AddSingleton<IApprenticeAppMetrics, ApprenticeAppMetrics>();   
             }
          
             services.AddSwaggerGen(c =>
