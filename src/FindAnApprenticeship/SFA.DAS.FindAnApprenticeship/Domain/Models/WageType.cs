@@ -1,6 +1,6 @@
 namespace SFA.DAS.FindAnApprenticeship.Domain.Models;
 
-internal enum WageType
+public enum WageType
 {
     FixedWage,
     NationalMinimumWageForApprentices,
