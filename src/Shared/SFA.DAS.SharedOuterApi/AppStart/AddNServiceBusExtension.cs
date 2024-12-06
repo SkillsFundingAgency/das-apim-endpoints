@@ -28,10 +28,8 @@ namespace SFA.DAS.SharedOuterApi.AppStart
                 .UseErrorQueue($"{endpointName}-errors")
                 .UseInstallers()
                 .UseMessageConventions()
-                .UseNewtonsoftJsonSerializer()
-                //.UseNLogFactory()
-                ;
-
+                .UseNewtonsoftJsonSerializer();
+            
             if (!string.IsNullOrEmpty(config.NServiceBusLicense))
             {
                 endpointConfiguration.UseLicense(config.NServiceBusLicense);
