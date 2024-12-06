@@ -15,24 +15,27 @@ public class GetNotificationsLocationsQueryHandler(ILocationApiClient<LocationAp
     public async Task<GetNotificationsLocationsQueryResult> Handle(GetNotificationsLocationsQuery request,
         CancellationToken cancellationToken)
     {
-        var locationData = await locationLookupService.GetLocationInformation(request.SearchTerm, 0, 0, false);
-
-        if (locationData != null)
-        {
-            return new GetNotificationsLocationsQueryResult
-            {
-                Locations = new List<GetNotificationsLocationsQueryResult.Location>
-                {
-                    new GetNotificationsLocationsQueryResult.Location
-                    {
-                        Name = locationData.Name,
-                        GeoPoint = locationData.GeoPoint
-                    }
-                }
-            };
-        }
-
         var result = await apiClient.Get<GetLocationsListResponse>(new GetLocationsQueryRequest(request.SearchTerm));
+
+        if (!result.Locations.Any())
+        {
+            var locationData = await locationLookupService.GetLocationInformation(request.SearchTerm, 0, 0, false);
+
+            if (locationData != null)
+            {
+                return new GetNotificationsLocationsQueryResult
+                {
+                    Locations = new List<GetNotificationsLocationsQueryResult.Location>
+                    {
+                        new GetNotificationsLocationsQueryResult.Location
+                        {
+                            Name = locationData.Name,
+                            GeoPoint = locationData.GeoPoint
+                        }
+                    }
+                };
+            }
+        }
 
         return new GetNotificationsLocationsQueryResult
         {
