@@ -1,5 +1,7 @@
 ﻿using Azure.Core;
+using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Encoding;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -19,6 +21,7 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
         Task<CommitmentsApprenticeshipDetails> GetApprenticeship(GetCurrentPartyIdsResponse currentPartyIds);
         Task<GetCurrentPartyIdsResponse> GetCurrentPartyIds(Guid apprenticeshipKey);
         Task<IEnumerable<Recipient>> GetEmployerRecipients(long accountId);
+        Task<IEnumerable<Recipient>> GetProviderRecipients(long providerId);
         Task<bool> Send(Recipient recipient, string templateId, Dictionary<string, string> tokens);
     }
 
@@ -28,6 +31,7 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
         private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
         private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apprenticeshipsApiClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
+        private readonly IProviderAccountApiClient<ProviderAccountApiConfiguration> _providerAccountApiClient;
         private readonly IEncodingService _encodingService;
         private readonly INotificationService _notificationService;
 
@@ -37,7 +41,8 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
             IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient,
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient,
             IEncodingService encodingService,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            IProviderAccountApiClient<ProviderAccountApiConfiguration> providerAccountApiClient)
         {
             _logger = logger;
             _accountsApiClient = accountsApiClient;
@@ -45,6 +50,7 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
             _apiCommitmentsClient = apiCommitmentsClient;
             _encodingService = encodingService;
             _notificationService = notificationService;
+            _providerAccountApiClient = providerAccountApiClient;
         }
 
         /// <summary>
@@ -73,11 +79,28 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
             return response.Where(x => x.CanReceiveNotifications).Select(x => new Recipient
             {
                 UserRef = x.UserRef,
-                FirstName = x.FirstName,
-                LastName = x.LastName,
-                Name = x.Name,
-                Email = x.Email,
-                Role = x.Role
+                Email = x.Email
+            });
+        }
+
+        public async Task<IEnumerable<Recipient>> GetProviderRecipients(long providerId)
+        {
+            var users = await _providerAccountApiClient.GetAll<GetProviderUsersListItem>(new GetProviderUsersRequest(providerId));
+
+            var recipients = users.Any(u => !u.IsSuperUser) ?
+                users.Where(x => !x.IsSuperUser).ToList() :
+                users.ToList();
+
+            var optedOutList = users.Where(x => !x.ReceiveNotifications).Select(x => x.EmailAddress).ToList();
+
+            var finalRecipients = recipients
+                .Where(x => !optedOutList.Exists(y => x.EmailAddress.Equals(y, StringComparison.CurrentCultureIgnoreCase)))
+                .ToList();
+
+            return finalRecipients.Select(x => new Recipient
+            {
+                Email = x.EmailAddress,
+                UserRef = x.UserRef
             });
         }
 
