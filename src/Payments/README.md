@@ -30,7 +30,7 @@ Most of the application configuration is taken from the [das-employer-config rep
 | Name                                                          | Description                                       | Stub Value                                |
 | ------------------------------------------------------------- | ------------------------------------------------- |-------------------------------------------|
 | LearnerDataApiConfiguration:Url                               | Url of the data endpoint                          | https://localhost:4000/learner-data-api   |
-| LearnerDataApiConfiguration:TokenSettings:Url                 | Url of the token endpoint                         |                                           |
+| LearnerDataApiConfiguration:TokenSettings:Url                 | Url of the token endpoint                         | http://localhost (if using stub api)      |
 | LearnerDataApiConfiguration:TokenSettings:Scope               | Token settings                                    |                                           |
 | LearnerDataApiConfiguration:TokenSettings:ClientId            | Token settings                                    |                                           |
 | LearnerDataApiConfiguration:TokenSettings:Tenant              | Token settings                                    |                                           |
@@ -38,17 +38,22 @@ Most of the application configuration is taken from the [das-employer-config rep
 | LearnerDataApiConfiguration:TokenSettings:GrantType           | Token settings                                    |                                           |
 | LearnerDataApiConfiguration:TokenSettings:ShouldSkipForLocal  | For local use only, skips calling token endpoint  | true                                      |
 
+### Local Running
 
+* Ensure you have the following appsettings.development.json in the API project root:
+
+```
+{
+  "Environment": "LOCAL",
+  "ConfigurationStorageConnectionString": "UseDevelopmentStorage=true"
+}
+```
+
+* Make sure Azure Storage Emulator is running
+* Make sure the config above is in Azure Storage
+* If you want to use a stub Learner Data api, select the "API with Stubs" Launch Profile (it'll manage config and start the stubs automatically), otherwise just run SFA.DAS.Payments.API with the https launch profile
 
 
 ## 🔗 External Dependencies
 
 The Outer API has many external dependancies which can all be configured to use stubs by following the config above.
-
-## Running Locally
-
-* Make sure Azure Storage Emulator (Azureite) is running
-* Make sure the config has been updated to call any Stub APIs required
-* Run the [Commitments Stubs](https://github.com/SkillsFundingAgency/das-commitments-stubs)
-* Run the Apprenticeships Inner API
-* Run the application

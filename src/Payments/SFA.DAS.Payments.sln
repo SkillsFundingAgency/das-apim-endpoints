@@ -20,6 +20,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{268E0F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{FBFA8D08-A342-4106-8805-5E4F424C3AB7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stubs", "Stubs", "{6B356F86-6F04-48A3-A6FF-0B7B8084862E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Stubs", "SFA.DAS.Payments.Stubs\SFA.DAS.Payments.Stubs.csproj", "{DDE95B5D-161B-41DD-A22A-055173988331}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,12 +50,17 @@ Global
 		{FBFA8D08-A342-4106-8805-5E4F424C3AB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBFA8D08-A342-4106-8805-5E4F424C3AB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBFA8D08-A342-4106-8805-5E4F424C3AB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDE95B5D-161B-41DD-A22A-055173988331}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDE95B5D-161B-41DD-A22A-055173988331}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDE95B5D-161B-41DD-A22A-055173988331}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDE95B5D-161B-41DD-A22A-055173988331}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FBFA8D08-A342-4106-8805-5E4F424C3AB7} = {268E0FE2-9159-48C2-A3BF-EDB6502E0011}
+		{DDE95B5D-161B-41DD-A22A-055173988331} = {6B356F86-6F04-48A3-A6FF-0B7B8084862E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1FBA9471-0084-450A-961B-4B248AA9922B}

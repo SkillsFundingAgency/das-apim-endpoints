@@ -11,8 +11,7 @@ namespace SFA.DAS.SharedOuterApi.AppStart
         {
             var config = new ConfigurationBuilder()
                 .AddConfiguration(configuration)
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddEnvironmentVariables();
+                .SetBasePath(Directory.GetCurrentDirectory());
 #if DEBUG
             config.AddJsonFile("appsettings.json", true);
             if (!configuration.IsLocalAcceptanceTests())
@@ -31,6 +30,8 @@ namespace SFA.DAS.SharedOuterApi.AppStart
                     }
                 );
             }
+
+            config.AddEnvironmentVariables();
 
             return config.Build();
         }
