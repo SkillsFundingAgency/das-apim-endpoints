@@ -1,8 +1,7 @@
-﻿namespace SFA.DAS.Forecasting.Application.Pledges.Constants
+﻿namespace SFA.DAS.Forecasting.Application.Pledges.Constants;
+
+public static class ApplicationStatus
 {
-    public static class ApplicationStatus
-    {
-        public static readonly string Approved = "Approved";
-        public static readonly string Accepted = "Accepted";
-    }
+    public static readonly string Approved = nameof(Approved);
+    public static readonly string Accepted = nameof(Accepted);
 }

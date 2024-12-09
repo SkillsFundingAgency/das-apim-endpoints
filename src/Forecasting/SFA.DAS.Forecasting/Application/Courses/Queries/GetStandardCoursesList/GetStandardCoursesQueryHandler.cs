@@ -6,24 +6,18 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Forecasting.Application.Courses.Queries.GetStandardCoursesList
+namespace SFA.DAS.Forecasting.Application.Courses.Queries.GetStandardCoursesList;
+
+public class GetStandardCoursesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
+    : IRequestHandler<GetStandardCoursesQuery, GetStandardCoursesResult>
 {
-    public class GetStandardCoursesQueryHandler :IRequestHandler<GetStandardCoursesQuery, GetStandardCoursesResult>
+    public async Task<GetStandardCoursesResult> Handle(GetStandardCoursesQuery request, CancellationToken cancellationToken)
     {
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
-        public GetStandardCoursesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
-        {
-            _coursesApiClient = coursesApiClient;
-        }
+        var standards = await coursesApiClient.Get<GetStandardsListResponse>(new GetAvailableToStartStandardsListRequest());
 
-        public async Task<GetStandardCoursesResult> Handle(GetStandardCoursesQuery request, CancellationToken cancellationToken)
+        return new GetStandardCoursesResult
         {
-            var standards = await _coursesApiClient.Get<GetStandardsListResponse>(new GetAvailableToStartStandardsListRequest());
-
-            return new GetStandardCoursesResult
-            {
-                Standards = standards.Standards
-            };
-        }
+            Standards = standards.Standards
+        };
     }
 }

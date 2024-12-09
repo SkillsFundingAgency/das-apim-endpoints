@@ -7,60 +7,50 @@ using SFA.DAS.Forecasting.Api.Models;
 using SFA.DAS.Forecasting.Application.Approvals.Queries.GetAccountIds;
 using SFA.DAS.Forecasting.Application.Approvals.Queries.GetApprenticeships;
 
-namespace SFA.DAS.Forecasting.Api.Controllers
+namespace SFA.DAS.Forecasting.Api.Controllers;
+
+[Route("[controller]")]
+[ApiController]
+public class ApprovalsController(IMediator mediator, ILogger<ApprovalsController> logger) : Controller
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class ApprovalsController : Controller
+    [HttpGet]
+    [Route("accountIds")]
+    public async Task<IActionResult> GetAccountsWithCohorts()
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<ApprovalsController> _logger;
-
-        public ApprovalsController(IMediator mediator, ILogger<ApprovalsController> logger)
+        try
         {
-            _mediator = mediator;
-            _logger = logger;
+            var queryResult = await mediator.Send(new GetAccountIdsQuery());
+            var result = new GetAccountsWithCohortsResponse { AccountIds = queryResult.AccountIds };
+            return Ok(result);
         }
-
-        [HttpGet]
-        [Route("accountIds")]
-        public async Task<IActionResult> GetAccountsWithCohorts()
+        catch (Exception e)
         {
-            try
-            {
-                var queryResult = await _mediator.Send(new GetAccountIdsQuery());
-                var result = new GetAccountsWithCohortsResponse { AccountIds = queryResult.AccountIds };
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Exception occurred getting accounts with cohorts");
-                throw;
-            }
+            logger.LogError(e, "Exception occurred getting accounts with cohorts");
+            throw;
         }
+    }
 
-        [HttpGet]
-        [Route("apprenticeships")]
-        public async Task<IActionResult> GetApprenticeships(long accountId, string status, int pageNumber, int pageItemCount)
+    [HttpGet]
+    [Route("apprenticeships")]
+    public async Task<IActionResult> GetApprenticeships(long accountId, string status, int pageNumber, int pageItemCount)
+    {
+        try
         {
-            try
+            var queryResult = await mediator.Send(new GetApprenticeshipsQuery
             {
-                var queryResult = await _mediator.Send(new GetApprenticeshipsQuery
-                {
-                    AccountId = accountId,
-                    Status = status,
-                    PageNumber = pageNumber,
-                    PageItemCount = pageItemCount
-                });
+                AccountId = accountId,
+                Status = status,
+                PageNumber = pageNumber,
+                PageItemCount = pageItemCount
+            });
 
-                var result = (GetApprenticeshipsResponse) queryResult;
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Exception occurred getting accounts with cohorts");
-                throw;
-            }
+            var result = (GetApprenticeshipsResponse) queryResult;
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Exception occurred getting accounts with cohorts");
+            throw;
         }
     }
 }

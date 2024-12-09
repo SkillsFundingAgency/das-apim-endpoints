@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.ProviderPR.Application.Queries.GetRelationshipByEmail;
+namespace SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipByEmail;
 public class GetRelationshipByEmailQuery : IRequest<GetRelationshipByEmailQueryResult>
 {
     public long Ukprn { get; }

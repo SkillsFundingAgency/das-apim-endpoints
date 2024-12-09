@@ -3,10 +3,9 @@ using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.ProviderPR.Api.Controllers;
-using SFA.DAS.ProviderPR.Infrastructure;
+using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationships;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
 
 namespace SFA.DAS.ProviderPR.Api.UnitTests.Controllers.GetRelationshipsControllerTests;
@@ -16,29 +15,25 @@ public class GetRelationshipsTests
     [Test, AutoData]
     public async Task GetRelationships_InvokesInnerApi_WithQueryString(long ukprn, CancellationToken cancellationToken)
     {
-        const string queryString = "?pageNumber=1";
-        var httpContext = new DefaultHttpContext();
-        httpContext.Request.QueryString = new(queryString);
+        var mediator = new Mock<IMediator>();
 
-        Mock<IProviderRelationshipsApiRestClient> clientMock = new();
-
-        RelationshipsController sut = new(Mock.Of<IMediator>(), clientMock.Object, Mock.Of<ILogger<RelationshipsController>>())
+        RelationshipsController sut = new(mediator.Object)
         {
-            ControllerContext = new ControllerContext() { HttpContext = httpContext }
+            ControllerContext = new ControllerContext() { HttpContext = new DefaultHttpContext() }
         };
 
         await sut.GetRelationships(ukprn, new(), cancellationToken);
 
-        clientMock.Verify(c => c.GetProviderRelationships(ukprn, queryString, cancellationToken), Times.Once);
+        mediator.Verify(c => c.Send(It.IsAny<GetRelationshipsQuery>(), cancellationToken), Times.Once);
     }
 
     [Test, AutoData]
     public async Task GetRelationships_ReturnsOkResponse(long ukprn, GetProviderRelationshipsResponse response, CancellationToken cancellationToken)
     {
-        Mock<IProviderRelationshipsApiRestClient> clientMock = new();
-        clientMock.Setup(c => c.GetProviderRelationships(ukprn, It.IsAny<string>(), cancellationToken)).ReturnsAsync(response);
+        var mediator = new Mock<IMediator>();
+        mediator.Setup(x => x.Send(It.IsAny<GetRelationshipsQuery>(), cancellationToken)).ReturnsAsync(response);
 
-        RelationshipsController sut = new(Mock.Of<IMediator>(), clientMock.Object, Mock.Of<ILogger<RelationshipsController>>())
+        RelationshipsController sut = new(mediator.Object)
         {
             ControllerContext = new ControllerContext() { HttpContext = new DefaultHttpContext() }
         };
