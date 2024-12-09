@@ -1,20 +1,13 @@
 ﻿using System.Net;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using FluentAssertions.Execution;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Newtonsoft.Json;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateSkillsAndStrengthsCommand;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
-using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply;
 public class WhenHandlingCreateSkillsAndStrengthsCommand
@@ -22,11 +15,11 @@ public class WhenHandlingCreateSkillsAndStrengthsCommand
     [Test, MoqAutoData]
     public async Task Then_The_SkillsAndStrengths_Is_Created(
         UpsertSkillsAndStrengthsCommand command,
-        Domain.Models.Application updateApplicationResponse,
+        FindAnApprenticeship.Domain.Models.Application updateApplicationResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         UpsertSkillsAndStrengthsCommandHandler handler)
     {
-        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Domain.Models.Application>());
+        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<FindAnApprenticeship.Domain.Models.Application>());
 
         candidateApiClient
             .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
@@ -49,7 +42,7 @@ public class WhenHandlingCreateSkillsAndStrengthsCommand
         [Frozen] Mock<ILogger<UpsertSkillsAndStrengthsCommandHandler>> loggerMock,
         [Frozen] UpsertSkillsAndStrengthsCommandHandler handler)
     {
-        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Domain.Models.Application>());
+        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<FindAnApprenticeship.Domain.Models.Application>());
 
         candidateApiClient
             .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
