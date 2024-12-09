@@ -12,7 +12,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.PensionsRegulator;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.ProviderPR.Application.Queries.GetRelationshipsByUkprnPayeAorn;
+namespace SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipsByUkprnPayeAorn;
 public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClient<PensionRegulatorApiConfiguration> pensionsRegulatorApiClient, IProviderRelationshipsApiRestClient providerRelationshipsApiClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient) : IRequestHandler<GetRelationshipsByUkprnPayeAornQuery, GetRelationshipsByUkprnPayeAornResult>
 {
     public async Task<GetRelationshipsByUkprnPayeAornResult> Handle(GetRelationshipsByUkprnPayeAornQuery request, CancellationToken cancellationToken)

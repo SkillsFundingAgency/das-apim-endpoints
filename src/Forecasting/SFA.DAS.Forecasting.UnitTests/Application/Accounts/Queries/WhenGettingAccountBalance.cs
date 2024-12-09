@@ -14,44 +14,43 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Forecasting.UnitTests.Application.Accounts.Queries
+namespace SFA.DAS.Forecasting.UnitTests.Application.Accounts.Queries;
+
+public class WhenGettingAccountBalance
 {
-    public class WhenGettingAccountBalance
+    [Test, MoqAutoData]
+    public async Task Then_The_EndPoint_Is_Called_And_Data_Returned(
+        GetAccountBalanceQuery query,
+        GetAccountBalanceResponse apiResponse,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
+        GetAccountBalanceQueryHandler handler)
     {
-        [Test, MoqAutoData]
-        public async Task Then_The_EndPoint_Is_Called_And_Data_Returned(
-            GetAccountBalanceQuery query,
-            GetAccountBalanceResponse apiResponse,
-            [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
-            GetAccountBalanceQueryHandler handler)
-        {
-            var expectedGetUrl = new PostAccountBalanceRequest(query.AccountId);
-            financeApiClient
-                .Setup(x => x.PostWithResponseCode<GetAccountBalanceResponse[]>(
-                    It.Is<PostAccountBalanceRequest>(c => c.PostUrl.Equals(expectedGetUrl.PostUrl)), true))
-                .ReturnsAsync(new ApiResponse<GetAccountBalanceResponse[]>(new []{apiResponse}, HttpStatusCode.OK,""));
+        var expectedGetUrl = new PostAccountBalanceRequest(query.AccountId);
+        financeApiClient
+            .Setup(x => x.PostWithResponseCode<GetAccountBalanceResponse[]>(
+                It.Is<PostAccountBalanceRequest>(c => c.PostUrl.Equals(expectedGetUrl.PostUrl)), true))
+            .ReturnsAsync(new ApiResponse<GetAccountBalanceResponse[]>([apiResponse], HttpStatusCode.OK,""));
 
-            var actual = await handler.Handle(query, CancellationToken.None);
+        var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.AccountBalance.Should().Be(apiResponse);
+        actual.AccountBalance.Should().Be(apiResponse);
 
-        }
+    }
 
-        [Test, MoqAutoData]
-        public async Task Then_If_Empty_List_Then_Null_Returned(
-            GetAccountBalanceQuery query,
-            [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
-            GetAccountBalanceQueryHandler handler)
-        {
-            var expectedGetUrl = new PostAccountBalanceRequest(query.AccountId);
-            financeApiClient
-                .Setup(x => x.PostWithResponseCode<GetAccountBalanceResponse[]>(
-                    It.Is<PostAccountBalanceRequest>(c => c.PostUrl.Equals(expectedGetUrl.PostUrl)), true))
-                .ReturnsAsync(new ApiResponse<GetAccountBalanceResponse[]>(Array.Empty<GetAccountBalanceResponse>(), HttpStatusCode.OK,""));
+    [Test, MoqAutoData]
+    public async Task Then_If_Empty_List_Then_Null_Returned(
+        GetAccountBalanceQuery query,
+        [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> financeApiClient,
+        GetAccountBalanceQueryHandler handler)
+    {
+        var expectedGetUrl = new PostAccountBalanceRequest(query.AccountId);
+        financeApiClient
+            .Setup(x => x.PostWithResponseCode<GetAccountBalanceResponse[]>(
+                It.Is<PostAccountBalanceRequest>(c => c.PostUrl.Equals(expectedGetUrl.PostUrl)), true))
+            .ReturnsAsync(new ApiResponse<GetAccountBalanceResponse[]>([], HttpStatusCode.OK,""));
 
-            var actual = await handler.Handle(query, CancellationToken.None);
+        var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.AccountBalance.Should().BeNull();
-        }
+        actual.AccountBalance.Should().BeNull();
     }
 }

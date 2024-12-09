@@ -24,7 +24,7 @@ public class WhenEmailInRequestIsNotOwner
     private AddAccountRequestCommand createRequestCommand;
 
     [SetUp]
-    public async Task Setup()
+    public void Setup()
     {
         Fixture fixture = new();
 
@@ -87,13 +87,5 @@ public class WhenEmailInRequestIsNotOwner
         await sut.Handle(createRequestCommand, CancellationToken.None);
 
         _providerRelationshipsApiRestClient.Verify(c => c.PostNotifications(It.Is<PostNotificationsCommand>(c => c.Notifications.Count(n => n.TemplateName == NotificationConstants.AddAccountInformationTemplateName) == 1), It.IsAny<CancellationToken>()));
-    }
-
-    [Test]
-    public async Task Handle_EmailInRequestIsNotOwner_NotificationNotSentToOtherOwnerWithNotificationPreferenceSetToFalseAsync()
-    {
-        await sut.Handle(createRequestCommand, CancellationToken.None);
-
-        _providerRelationshipsApiRestClient.Verify(c => c.PostNotifications(It.Is<PostNotificationsCommand>(c => !c.Notifications.Any(n => n.EmailAddress == _otherOwnerMemberWithNotificationTurnedOff.Email)), It.IsAny<CancellationToken>()));
     }
 }

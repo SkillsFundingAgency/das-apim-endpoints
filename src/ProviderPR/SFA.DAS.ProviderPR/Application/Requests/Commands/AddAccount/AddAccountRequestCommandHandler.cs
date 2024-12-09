@@ -43,7 +43,7 @@ public class AddAccountRequestCommandHandler(
 
         if (string.IsNullOrWhiteSpace(command.EmployerContactEmail) || associatedTeamMember is null || !associatedTeamMember.IsAccountOwner())
         {
-            notificationCommand.Notifications.AddRange(GetNotificationsForAllOwners(teamMembers.Where(t => t.IsAcceptedOwnerWithNotifications()), command, CreateRequestResponse.RequestId));
+            notificationCommand.Notifications.AddRange(CreateNotificationsForAllOwners(teamMembers.Where(t => t.IsAcceptedOwnerWithNotifications()), command, CreateRequestResponse.RequestId));
         }
 
         if (associatedTeamMember is not null && associatedTeamMember.CanReceiveNotifications)
@@ -60,7 +60,7 @@ public class AddAccountRequestCommandHandler(
         return new(CreateRequestResponse.RequestId);
     }
 
-    private static List<NotificationModel> GetNotificationsForAllOwners(IEnumerable<TeamMember> teamMembers, AddAccountRequestCommand command, Guid requestId)
+    private static List<NotificationModel> CreateNotificationsForAllOwners(IEnumerable<TeamMember> teamMembers, AddAccountRequestCommand command, Guid requestId)
     {
         List<NotificationModel> notifications = new();
         foreach (TeamMember ownerMember in teamMembers.Where(t => t.IsAcceptedOwnerWithNotifications()))

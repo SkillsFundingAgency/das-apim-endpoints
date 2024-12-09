@@ -7,30 +7,23 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Forecasting.Application.Pledges.Queries.GetPledges
+namespace SFA.DAS.Forecasting.Application.Pledges.Queries.GetPledges;
+
+public class GetPledgesQueryHandler(ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> levyTransferMatchingApiClient)
+    : IRequestHandler<GetPledgesQuery, GetPledgesQueryResult>
 {
-    public class GetPledgesQueryHandler : IRequestHandler<GetPledgesQuery, GetPledgesQueryResult>
+    public async Task<GetPledgesQueryResult> Handle(GetPledgesQuery request, CancellationToken cancellationToken)
     {
-        private readonly ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> _levyTransferMatchingApiClient;
+        var apiRequest = new GetPledgesRequest(request.AccountId);
+        var response = await levyTransferMatchingApiClient.Get<GetPledgesResponse>(apiRequest);
 
-        public GetPledgesQueryHandler(ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> levyTransferMatchingApiClient)
+        return new GetPledgesQueryResult
         {
-            _levyTransferMatchingApiClient = levyTransferMatchingApiClient;
-        }
-
-        public async Task<GetPledgesQueryResult> Handle(GetPledgesQuery request, CancellationToken cancellationToken)
-        {
-            var apiRequest = new GetPledgesRequest(request.AccountId);
-            var response = await _levyTransferMatchingApiClient.Get<GetPledgesResponse>(apiRequest);
-
-            return new GetPledgesQueryResult
+            Pledges = response.Pledges.Select(p => new GetPledgesQueryResult.Pledge
             {
-                Pledges = response.Pledges.Select(p => new GetPledgesQueryResult.Pledge
-                {
-                    Id = p.Id,
-                    AccountId = p.AccountId
-                })
-            };
-        }
+                Id = p.Id,
+                AccountId = p.AccountId
+            })
+        };
     }
 }
