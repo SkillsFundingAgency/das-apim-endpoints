@@ -207,5 +207,19 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
 
             return Ok(taskRemindersResult.TaskReminders);
         }
+
+        [HttpPost("/apprentices/{apprenticeId}/progress/tasks/taskReminders/{taskId}/{statusId}")]
+        public async Task<IActionResult> UpdateTaskReminder(Guid apprenticeId, int taskId, int statusId)
+        {
+            await _mediator.Send(new UpdateTaskReminderCommand
+            {
+                
+                TaskId = taskId,
+                StatusId = statusId
+            });
+
+            return Ok();
+        }
     }
+
 }
