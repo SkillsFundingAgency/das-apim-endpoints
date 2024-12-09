@@ -8,42 +8,35 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using ApplicationStatus = SFA.DAS.Forecasting.Application.Pledges.Constants.ApplicationStatus;
 
-namespace SFA.DAS.Forecasting.Application.Pledges.Queries.GetApplications
+namespace SFA.DAS.Forecasting.Application.Pledges.Queries.GetApplications;
+
+public class GetApplicationsQueryHandler(ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> levyTransferMatchingApiClient)
+    : IRequestHandler<GetApplicationsQuery, GetApplicationsQueryResult>
 {
-    public class GetApplicationsQueryHandler : IRequestHandler<GetApplicationsQuery, GetApplicationsQueryResult>
+    public async Task<GetApplicationsQueryResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
     {
-        private readonly ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> _levyTransferMatchingApiClient;
+        var apiRequest = new GetApplicationsRequest{ PledgeId = request.PledgeId};
+        var response = await levyTransferMatchingApiClient.Get<GetApplicationsResponse>(apiRequest);
 
-        public GetApplicationsQueryHandler(ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration> levyTransferMatchingApiClient)
+        return new GetApplicationsQueryResult
         {
-            _levyTransferMatchingApiClient = levyTransferMatchingApiClient;
-        }
-
-        public async Task<GetApplicationsQueryResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
-        {
-            var apiRequest = new GetApplicationsRequest{ PledgeId = request.PledgeId};
-            var response = await _levyTransferMatchingApiClient.Get<GetApplicationsResponse>(apiRequest);
-
-            return new GetApplicationsQueryResult
-            {
-                Applications = response.Applications
-                    .Where(a => a.Status == ApplicationStatus.Accepted || a.Status == ApplicationStatus.Approved)
-                    .Select(a => new GetApplicationsQueryResult.Application
+            Applications = response.Applications
+                .Where(application => application.Status == ApplicationStatus.Accepted || application.Status == ApplicationStatus.Approved)
+                .Select(application => new GetApplicationsQueryResult.Application
                 {
-                    Id = a.Id,
-                    PledgeId = a.PledgeId,
-                    EmployerAccountId = a.EmployerAccountId,
-                    StandardId = a.StandardId,
-                    StandardTitle = a.StandardTitle,
-                    StandardLevel = a.StandardLevel,
-                    StandardDuration = a.StandardDuration,
-                    StandardMaxFunding = a.StandardMaxFunding,
-                    StartDate = a.StartDate,
-                    NumberOfApprentices = a.NumberOfApprentices,
-                    NumberOfApprenticesUsed = a.NumberOfApprenticesUsed,
-                    Status = a.Status
+                    Id = application.Id,
+                    PledgeId = application.PledgeId,
+                    EmployerAccountId = application.EmployerAccountId,
+                    StandardId = application.StandardId,
+                    StandardTitle = application.StandardTitle,
+                    StandardLevel = application.StandardLevel,
+                    StandardDuration = application.StandardDuration,
+                    StandardMaxFunding = application.StandardMaxFunding,
+                    StartDate = application.StartDate,
+                    NumberOfApprentices = application.NumberOfApprentices,
+                    NumberOfApprenticesUsed = application.NumberOfApprenticesUsed,
+                    Status = application.Status
                 })
-            };
-        }
+        };
     }
 }

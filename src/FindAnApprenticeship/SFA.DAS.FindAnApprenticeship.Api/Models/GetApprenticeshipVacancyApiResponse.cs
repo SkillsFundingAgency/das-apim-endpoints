@@ -57,7 +57,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public int? StandardLarsCode { get; init; }
 
 
-        public VacancyLocationType VacancyLocationType { get; init; }
+        public VacancyLocationType? VacancyLocationType { get; init; }
 
         public string WorkingWeek { get; init; }
         public string ExpectedDuration { get; init; }

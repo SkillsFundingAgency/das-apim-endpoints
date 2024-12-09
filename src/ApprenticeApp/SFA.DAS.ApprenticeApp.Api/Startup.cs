@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Contentful.Core.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,9 +13,14 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.ApprenticeApp.Api.AppStart;
 using SFA.DAS.ApprenticeApp.Api.ErrorHandler;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
-using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
+using SFA.DAS.ApprenticeApp.Telemetry;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using SFA.DAS.ApprenticeApp.Models;
 
 namespace SFA.DAS.ApprenticeApp.Api
 {
@@ -34,7 +36,6 @@ namespace SFA.DAS.ApprenticeApp.Api
             _env = env;
             _configuration = configuration.BuildSharedConfiguration();
         }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -82,17 +83,23 @@ namespace SFA.DAS.ApprenticeApp.Api
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-                });           
+                });
 
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"],nameof(MyApprenticeship), "MyApprenticeshipApp", "MyApprenticeship-Service"); 
 
+            if (!string.IsNullOrEmpty(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
+            {
+                // This service will collect and send telemetry data to Azure Monitor.
+                services.AddSingleton<IApprenticeAppMetrics, ApprenticeAppMetrics>();
+            }
+         
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApprenticeAppOuterApi", Version = "v1" });
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
             });
         }
-
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
