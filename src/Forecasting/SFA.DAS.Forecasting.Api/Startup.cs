@@ -71,7 +71,7 @@ public class Startup
                 .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription);
         }
 
-        services.AddOpenTelemetryRegistration("APPLICATIONINSIGHTS_CONNECTION_STRING");
+        services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
         services.AddSwaggerGen(c =>
         {
