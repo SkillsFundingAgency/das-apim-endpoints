@@ -16,6 +16,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.Application.Queries.ProviderAccounts;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api
 {
@@ -159,7 +160,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api
 
         public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
         {
-            serviceProvider.StartNServiceBus(_configuration, EndpointName).GetAwaiter().GetResult();
+            Task.FromResult(serviceProvider.StartNServiceBus(_configuration, EndpointName)).GetAwaiter().GetResult();
         }
     }
 }

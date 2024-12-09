@@ -10,34 +10,33 @@ using SFA.DAS.Forecasting.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Forecasting.UnitTests.Application.Approvals.Queries
+namespace SFA.DAS.Forecasting.UnitTests.Application.Approvals.Queries;
+
+[TestFixture]
+public class WhenGettingAccountsWithCohorts
 {
-    [TestFixture]
-    public class WhenGettingAccountsWithCohorts
+    private GetAccountIdsQueryHandler _handler;
+    private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _apiClient;
+    private GetAccountsWithCohortsResponse _apiResponse;
+    private readonly Fixture _fixture = new();
+    private GetAccountIdsQuery _query;
+
+    [SetUp]
+    public void Setup()
     {
-        private GetAccountIdsQueryHandler _handler;
-        private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _apiClient;
-        private GetAccountsWithCohortsResponse _apiResponse;
-        private readonly Fixture _fixture = new Fixture();
-        private GetAccountIdsQuery _query;
+        _apiResponse = _fixture.Create<GetAccountsWithCohortsResponse>();
+        _apiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
+        _apiClient.Setup(x => x.Get<GetAccountsWithCohortsResponse>(It.IsAny<GetAccountsWithCohortsRequest>())).ReturnsAsync(_apiResponse);
 
-        [SetUp]
-        public void Setup()
-        {
-            _apiResponse = _fixture.Create<GetAccountsWithCohortsResponse>();
-            _apiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
-            _apiClient.Setup(x => x.Get<GetAccountsWithCohortsResponse>(It.IsAny<GetAccountsWithCohortsRequest>())).ReturnsAsync(_apiResponse);
+        _handler = new GetAccountIdsQueryHandler(_apiClient.Object);
 
-            _handler = new GetAccountIdsQueryHandler(_apiClient.Object);
+        _query = _fixture.Create<GetAccountIdsQuery>();
+    }
 
-            _query = _fixture.Create<GetAccountIdsQuery>();
-        }
-
-        [Test]
-        public async Task Then_AccountsWithCohorts_Are_Retrieved()
-        {
-            var result = await _handler.Handle(_query, CancellationToken.None);
-            result.AccountIds.Should().BeEquivalentTo(_apiResponse.AccountIds);
-        }
+    [Test]
+    public async Task Then_AccountsWithCohorts_Are_Retrieved()
+    {
+        var result = await _handler.Handle(_query, CancellationToken.None);
+        result.AccountIds.Should().BeEquivalentTo(_apiResponse.AccountIds);
     }
 }

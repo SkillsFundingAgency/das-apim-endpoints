@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 
-namespace SFA.DAS.ProviderPR.Application.Queries.GetRelationshipsByUkprnPayeAorn;
+namespace SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipsByUkprnPayeAorn;
 public class GetRelationshipsByUkprnPayeAornResult
 {
     public bool HasActiveRequest { get; set; }

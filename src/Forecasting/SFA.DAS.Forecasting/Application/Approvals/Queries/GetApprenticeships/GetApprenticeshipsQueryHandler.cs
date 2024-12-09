@@ -8,50 +8,40 @@ using SFA.DAS.Forecasting.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Forecasting.Application.Approvals.Queries.GetApprenticeships
+namespace SFA.DAS.Forecasting.Application.Approvals.Queries.GetApprenticeships;
+
+public class GetApprenticeshipsQueryHandler(
+    ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2Api,
+    ICourseLookupService courseLookupService)
+    : IRequestHandler<GetApprenticeshipsQuery, GetApprenticeshipsQueryResult>
 {
-    public class GetApprenticeshipsQueryHandler : IRequestHandler<GetApprenticeshipsQuery, GetApprenticeshipsQueryResult>
+    public async Task<GetApprenticeshipsQueryResult> Handle(GetApprenticeshipsQuery request, CancellationToken cancellationToken)
     {
-        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2Api;
-        private readonly ICourseLookupService _courseLookupService;
+        var courses = await courseLookupService.GetAllCourses();
+        var apiRequest = new GetApprenticeshipsRequest(request.AccountId, request.Status, request.PageNumber, request.PageItemCount);
+        var response = await commitmentsV2Api.Get<GetApprenticeshipsResponse>(apiRequest);
 
-        public GetApprenticeshipsQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2Api,
-            ICourseLookupService courseLookupService)
+        return new GetApprenticeshipsQueryResult
         {
-            _commitmentsV2Api = commitmentsV2Api;
-            _courseLookupService = courseLookupService;
-        }
-
-        public async Task<GetApprenticeshipsQueryResult> Handle(GetApprenticeshipsQuery request, CancellationToken cancellationToken)
-        {
-            var courses = await _courseLookupService.GetAllCourses();
-
-            var apiRequest = new GetApprenticeshipsRequest(request.AccountId, request.Status, request.PageNumber,
-                request.PageItemCount);
-            var response = await _commitmentsV2Api.Get<GetApprenticeshipsResponse>(apiRequest);
-
-            return new GetApprenticeshipsQueryResult
+            TotalApprenticeshipsFound = response.TotalApprenticeshipsFound,
+            Apprenticeships = response.Apprenticeships.Select(apprenticeship => new GetApprenticeshipsQueryResult.Apprenticeship
             {
-                TotalApprenticeshipsFound = response.TotalApprenticeshipsFound,
-                Apprenticeships = response.Apprenticeships.Select(a => new GetApprenticeshipsQueryResult.Apprenticeship
-                {
-                    Id = a.Id,
-                    TransferSenderId = a.TransferSenderId,
-                    Uln = a.Uln,
-                    ProviderId = a.ProviderId,
-                    ProviderName = a.ProviderName,
-                    FirstName = a.FirstName,
-                    LastName = a.LastName,
-                    CourseCode = a.CourseCode,
-                    CourseName = a.CourseName,
-                    CourseLevel = courses.FirstOrDefault(x => x.Id == a.CourseCode)?.Level ?? 0,
-                    StartDate = a.StartDate,
-                    EndDate = a.EndDate,
-                    Cost = a.Cost,
-                    PledgeApplicationId = a.PledgeApplicationId,
-                    HasHadDataLockSuccess = a.HasHadDataLockSuccess
-                })
-            };
-        }
+                Id = apprenticeship.Id,
+                TransferSenderId = apprenticeship.TransferSenderId,
+                Uln = apprenticeship.Uln,
+                ProviderId = apprenticeship.ProviderId,
+                ProviderName = apprenticeship.ProviderName,
+                FirstName = apprenticeship.FirstName,
+                LastName = apprenticeship.LastName,
+                CourseCode = apprenticeship.CourseCode,
+                CourseName = apprenticeship.CourseName,
+                CourseLevel = courses.FirstOrDefault(x => x.Id == apprenticeship.CourseCode)?.Level ?? 0,
+                StartDate = apprenticeship.StartDate,
+                EndDate = apprenticeship.EndDate,
+                Cost = apprenticeship.Cost,
+                PledgeApplicationId = apprenticeship.PledgeApplicationId,
+                HasHadDataLockSuccess = apprenticeship.HasHadDataLockSuccess
+            })
+        };
     }
 }

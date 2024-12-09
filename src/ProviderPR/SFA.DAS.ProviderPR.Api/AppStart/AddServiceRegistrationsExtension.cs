@@ -2,7 +2,7 @@
 using RestEase.HttpClientFactory;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationship;
+using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationship;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -35,7 +35,7 @@ public static class AddServiceRegistrationsExtension
         var apiConfig = GetApiConfiguration(configuration, "ProviderRelationshipsApiConfiguration");
 
         services.AddRestEaseClient<IProviderRelationshipsApiRestClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
 
     private static InnerApiConfiguration GetApiConfiguration(IConfiguration configuration, string configurationName)
