@@ -81,7 +81,7 @@ public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfi
         queryResult.AccountLegalEntityName = legalEntity.Name;
 
         var payeSchemes = await _accountsApiClient.GetAll<PayeScheme>(new GetAccountPayeSchemesRequest(queryResult.AccountId.Value));
-        queryResult.Paye = payeSchemes.Any() ? payeSchemes.First().Id : null;
+        queryResult.Paye = payeSchemes.Single().Id;
 
         var existingRequestCheck = await _providerRelationshipsApiClient.GetRequestByUkprnAndAccountLegalEntityId(request.Ukprn, legalEntity.AccountLegalEntityId, cancellationToken);
 
