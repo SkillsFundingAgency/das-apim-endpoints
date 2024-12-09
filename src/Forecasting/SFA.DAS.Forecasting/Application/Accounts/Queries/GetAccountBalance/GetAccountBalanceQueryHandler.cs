@@ -7,24 +7,17 @@ using SFA.DAS.Forecasting.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Forecasting.Application.Accounts.Queries.GetAccountBalance
+namespace SFA.DAS.Forecasting.Application.Accounts.Queries.GetAccountBalance;
+
+public class GetAccountBalanceQueryHandler(IFinanceApiClient<FinanceApiConfiguration> apiClient) : IRequestHandler<GetAccountBalanceQuery, GetAccountBalanceQueryResult>
 {
-    public class GetAccountBalanceQueryHandler : IRequestHandler<GetAccountBalanceQuery, GetAccountBalanceQueryResult>
+    public async Task<GetAccountBalanceQueryResult> Handle(GetAccountBalanceQuery request, CancellationToken cancellationToken)
     {
-        private readonly IFinanceApiClient<FinanceApiConfiguration> _apiClient;
+        var result = await apiClient.PostWithResponseCode<GetAccountBalanceResponse[]>(new PostAccountBalanceRequest(request.AccountId));
 
-        public GetAccountBalanceQueryHandler(IFinanceApiClient<FinanceApiConfiguration> apiClient)
+        return new GetAccountBalanceQueryResult
         {
-            _apiClient = apiClient;
-        }
-        public async Task<GetAccountBalanceQueryResult> Handle(GetAccountBalanceQuery request, CancellationToken cancellationToken)
-        {
-            var result = await _apiClient.PostWithResponseCode<GetAccountBalanceResponse[]>(new PostAccountBalanceRequest(request.AccountId));
-
-            return new GetAccountBalanceQueryResult
-            {
-                AccountBalance = result.Body.FirstOrDefault()
-            };
-        }
+            AccountBalance = result.Body.FirstOrDefault()
+        };
     }
 }
