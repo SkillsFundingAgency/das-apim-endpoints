@@ -75,7 +75,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 ProviderContactPhone = source.ProviderContactPhone,
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
-                Address = new Application.Shared.Address
+                Address = new Address
                 {
                     AddressLine1 = source.EmployerLocation?.AddressLine1,
                     AddressLine2 = source.EmployerLocation?.AddressLine2,
@@ -85,6 +85,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Latitude = source.EmployerLocation?.Latitude ?? 0,
                     Longitude = source.EmployerLocation?.Longitude ?? 0,
                 },
+                OtherAddresses = source.OtherAddresses is {Count: > 0} ? source.OtherAddresses.Select(add => (Address)add).ToList() : [],
                 Duration = source.Wage.Duration,
                 DurationUnit = source.Wage.DurationUnit,
                 ThingsToConsider = source.ThingsToConsider,
@@ -132,6 +133,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 },
                 Qualifications = [],
                 Skills = [],
+                OtherAddresses = [],
                 SearchTags = "NHS National Health Service Health Medical Hospital",
             };
         }
