@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.ObjectPool;
-
-namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
+﻿namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 public class GetLiveVacanciesApiResponse
 {
     public IEnumerable<LiveVacancy> Vacancies { get; set; } = null!;
