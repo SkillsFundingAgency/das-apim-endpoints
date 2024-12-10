@@ -86,9 +86,7 @@ namespace SFA.DAS.VacanciesManage.Api
                 });
             }
             
-            //todo obsolete, should use connectionstring instead https://github.com/microsoft/ApplicationInsights-dotnet/issues/2560
-            //services.AddApplicationInsightsTelemetry(options => options.ConnectionString = configuration.GetConnectionString("ApplicationInsights"));
-            services.AddApplicationInsightsTelemetry();
+            services.AddOpenTelemetryRegistration(configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
             services.AddSwaggerGen(c =>
             {
