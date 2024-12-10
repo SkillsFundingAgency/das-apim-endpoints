@@ -45,7 +45,8 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications
                 _apprenticeshipsApiClientMock.Object,
                 _apiCommitmentsClientMock.Object,
                 _encodingServiceMock.Object,
-                _notificationServiceMock.Object);
+                _notificationServiceMock.Object, 
+                Mock.Of<IProviderAccountApiClient<ProviderAccountApiConfiguration>>());
         }
 
 
