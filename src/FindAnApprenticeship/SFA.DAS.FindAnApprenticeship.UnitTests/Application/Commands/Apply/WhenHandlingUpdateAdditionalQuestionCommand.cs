@@ -1,11 +1,6 @@
 ﻿using System.Net;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using FluentAssertions.Execution;
 using Microsoft.AspNetCore.JsonPatch;
-using Moq;
 using Newtonsoft.Json;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateAdditionalQuestion;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
@@ -13,7 +8,6 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply;
 public class WhenHandlingUpdateAdditionalQuestionCommand
@@ -22,7 +16,7 @@ public class WhenHandlingUpdateAdditionalQuestionCommand
     public async Task Then_The_AdditionalQuestion_Is_Updated(
         UpdateAdditionalQuestionCommand command,
         PutUpsertAdditionalQuestionApiResponse additionalQuestionApiResponse,
-        Domain.Models.Application updateApplicationResponse,
+        FindAnApprenticeship.Domain.Models.Application updateApplicationResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         UpdateAdditionalQuestionCommandHandler handler)
     {
@@ -33,7 +27,7 @@ public class WhenHandlingUpdateAdditionalQuestionCommand
                         It.Is<PutUpsertAdditionalQuestionApiRequest>(r => r.PutUrl == expectedPostAdditionalQuestionRequest.PutUrl)))
                     .ReturnsAsync(new ApiResponse<PutUpsertAdditionalQuestionApiResponse>(additionalQuestionApiResponse, HttpStatusCode.OK, string.Empty));
 
-        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Domain.Models.Application>());
+        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<FindAnApprenticeship.Domain.Models.Application>());
 
         candidateApiClient
                 .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
@@ -52,11 +46,11 @@ public class WhenHandlingUpdateAdditionalQuestionCommand
     public async Task Then_The_Update_Application_Status_Api_Response_NotFound_CommandResult_Is_Returned_As_Expected(
         UpdateAdditionalQuestionCommand command,
         PutUpsertAdditionalQuestionApiResponse additionalQuestionApiResponse,
-        Domain.Models.Application updateApplicationResponse,
+        FindAnApprenticeship.Domain.Models.Application updateApplicationResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         UpdateAdditionalQuestionCommandHandler handler)
     {
-        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<Domain.Models.Application>());
+        var expectedPatchRequest = new PatchApplicationApiRequest(command.ApplicationId, command.CandidateId, new JsonPatchDocument<FindAnApprenticeship.Domain.Models.Application>());
 
         candidateApiClient
             .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))

@@ -100,7 +100,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public bool IsClosed { get; set; }
 
         [JsonProperty("closedDate")]
-        public DateTime? ClosedDate { get; }
+        public DateTime? ClosedDate { get; set; }
 
         [JsonPropertyName("vacancySource")]
         public VacancyDataSource VacancySource { get; set; }
@@ -129,7 +129,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 
     public enum Weighting
     {
-        Essential,
+        Essential = 0,
         Desired
     }
 
