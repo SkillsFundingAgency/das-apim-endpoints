@@ -7,24 +7,18 @@ using SFA.DAS.Forecasting.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Forecasting.Application.Courses.Queries.GetFrameworkCoursesList
+namespace SFA.DAS.Forecasting.Application.Courses.Queries.GetFrameworkCoursesList;
+
+public class GetFrameworkCoursesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
+    : IRequestHandler<GetFrameworkCoursesQuery, GetFrameworkCoursesResult>
 {
-    public class GetFrameworkCoursesQueryHandler :IRequestHandler<GetFrameworkCoursesQuery, GetFrameworkCoursesResult>
+    public async Task<GetFrameworkCoursesResult> Handle(GetFrameworkCoursesQuery request, CancellationToken cancellationToken)
     {
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
-        public GetFrameworkCoursesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
-        {
-            _coursesApiClient = coursesApiClient;
-        }
+        var frameworks = await coursesApiClient.Get<GetFrameworksListResponse>(new GetFrameworksRequest());
 
-        public async Task<GetFrameworkCoursesResult> Handle(GetFrameworkCoursesQuery request, CancellationToken cancellationToken)
+        return new GetFrameworkCoursesResult
         {
-            var frameworks = await _coursesApiClient.Get<GetFrameworksListResponse>(new GetFrameworksRequest());
-
-            return new GetFrameworkCoursesResult
-            {
-                Frameworks = frameworks.Frameworks.Where(f => f.IsActiveFramework && f.FundingPeriods.Count > 0)
-            };
-        }
+            Frameworks = frameworks.Frameworks.Where(f => f.IsActiveFramework && f.FundingPeriods.Count > 0)
+        };
     }
 }

@@ -21,7 +21,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         public TasksController(IMediator mediator)
             => _mediator = mediator;
 
-        
         [HttpGet("/apprentices/{apprenticeId}/progress/taskCategories")]
         public async Task<IActionResult> GetTaskCategories(Guid apprenticeId)
         {

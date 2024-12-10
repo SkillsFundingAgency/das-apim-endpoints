@@ -16,6 +16,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
             {
                 TaskId = 1,
                 ApprenticeshipId = 1,
+                ApprenticeAccountId = new Guid("9D2B0228-4D0D-4C23-8B49-01A698857709"),
                 DueDate = new DateTime(2019, 05, 09),
                 Title = "title",
                 ApprenticeshipCategoryId = 0,
@@ -28,6 +29,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
 
             ClassicAssert.AreEqual(1, sut.TaskId);
             ClassicAssert.AreEqual(1, sut.ApprenticeshipId);
+            ClassicAssert.AreEqual(new Guid("9D2B0228-4D0D-4C23-8B49-01A698857709"), sut.ApprenticeAccountId);
             ClassicAssert.AreEqual(new DateTime(2019, 05, 09), sut.DueDate);
             ClassicAssert.AreEqual("title", sut.Title);
             ClassicAssert.AreEqual(0, sut.ApprenticeshipCategoryId);

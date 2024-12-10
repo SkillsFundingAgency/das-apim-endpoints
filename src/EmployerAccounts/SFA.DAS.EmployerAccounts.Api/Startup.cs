@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -79,7 +78,7 @@ namespace SFA.DAS.EmployerAccounts.Api
                     .AddCheck<FinanceApiHealthCheck>(FinanceApiHealthCheck.HealthCheckResultDescription);
             }
 
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
             services.AddSwaggerGen(c =>
             {

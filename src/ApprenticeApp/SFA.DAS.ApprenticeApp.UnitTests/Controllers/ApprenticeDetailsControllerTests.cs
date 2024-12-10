@@ -4,9 +4,11 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Api.Controllers;
 using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts;
+using SFA.DAS.ApprenticeApp.Telemetry;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests
@@ -15,6 +17,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
     {
         [Test, MoqAutoData]
         public async Task Get_Apprentice_Details_Test(
+            [Frozen] Mock<IApprenticeAppMetrics> _apprenticeAppMetrics,
             [Greedy] ApprenticeDetailsController controller)
         {
             var httpContext = new DefaultHttpContext();

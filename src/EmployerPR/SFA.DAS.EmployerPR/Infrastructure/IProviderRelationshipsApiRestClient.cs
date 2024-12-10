@@ -1,14 +1,14 @@
 ﻿using MediatR;
 using RestEase;
 using SFA.DAS.EmployerPR.Application.EmployerRelationships.Queries.GetEmployerRelationships;
-using SFA.DAS.EmployerPR.Application.Notifications.Commands.PostNotifications;
 using SFA.DAS.EmployerPR.Application.Permissions.Commands.PostPermissions;
 using SFA.DAS.EmployerPR.Application.Permissions.Queries.GetPermissions;
 using SFA.DAS.EmployerPR.Application.Relationships.Queries.GetRelationships;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptAddAccountRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptPermissionsRequest;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.DeclinePermissionsRequest;
-using SFA.DAS.EmployerPR.Application.Requests.Queries.GetRequest;
+using SFA.DAS.EmployerPR.InnerApi.Requests;
+using SFA.DAS.EmployerPR.InnerApi.Responses;
 
 namespace SFA.DAS.EmployerPR.Infrastructure;
 
@@ -28,14 +28,14 @@ public interface IProviderRelationshipsApiRestClient
     Task<PostPermissionsCommandResult> PostPermissions([Body] PostPermissionsCommand command, CancellationToken cancellationToken);
 
     [Post("notifications")]
-    Task PostNotifications([Body] PostNotificationsCommand command, CancellationToken cancellationToken);
+    Task PostNotifications([Body] PostNotificationsRequest command, CancellationToken cancellationToken);
 
     [Delete("permissions")]
     Task RemovePermissions([Query] Guid userRef, [Query] long ukprn, [Query] long accountLegalEntityId, CancellationToken cancellationToken);
 
     [Get("requests/{requestId}")]
     [AllowAnyStatusCode]
-    Task<Response<GetRequestQueryResult?>> GetRequest([Path] Guid requestId, CancellationToken cancellationToken);
+    Task<Response<GetRequestResponse?>> GetRequest([Path] Guid requestId, CancellationToken cancellationToken);
 
     [Put("requests/{requestId}/declined")]
     Task<Unit> DeclineRequest([Path] Guid requestId, [Body] DeclinedRequestModel model, CancellationToken cancellationToken);
@@ -45,4 +45,7 @@ public interface IProviderRelationshipsApiRestClient
 
     [Post("requests/{requestId}/addaccount/accepted")]
     Task<Unit> AcceptAddAccountRequest([Path] Guid requestId, [Body] AcceptAddAccountRequestModel model, CancellationToken cancellationToken);
+
+    [Post("requests/{requestId}/createaccount/accepted")]
+    Task AcceptCreateAccountRequest([Path] Guid requestId, [Body] AcceptCreateAccountRequestBody model, CancellationToken cancellationToken);
 }
