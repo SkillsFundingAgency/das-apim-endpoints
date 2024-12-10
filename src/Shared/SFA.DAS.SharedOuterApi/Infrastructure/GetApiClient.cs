@@ -6,6 +6,8 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Text.Json.Serialization;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {
@@ -77,7 +79,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
                 responseBody = JsonSerializer.Deserialize<TResponse>(json, options);
             }
 
-            var getWithResponseCode = new ApiResponse<TResponse>(responseBody, response.StatusCode, errorContent);
+            var headers = response.Headers;
+
+            var getWithResponseCode = new ApiResponse<TResponse>(responseBody, response.StatusCode, errorContent, GetHeaders(response));
 
             return getWithResponseCode;
         }
@@ -89,5 +93,14 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         protected abstract Task AddAuthenticationHeader(HttpRequestMessage httpRequestMessage);
 
+        private static Dictionary<string,IEnumerable<string>> GetHeaders(HttpResponseMessage httpResponseMessage)
+        {
+            if(httpResponseMessage?.Headers == null && !httpResponseMessage.Headers.Any())
+            {
+                return new Dictionary<string, IEnumerable<string>>();
+            }
+
+            return httpResponseMessage.Headers.ToDictionary(h => h.Key, h => h.Value);
+        }
     }
 }
