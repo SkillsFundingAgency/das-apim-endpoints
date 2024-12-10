@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.Forecasting.Application.Pledges.Queries.GetAccountsWithPledges
+namespace SFA.DAS.Forecasting.Application.Pledges.Queries.GetAccountsWithPledges;
+
+public class GetAccountsWithPledgesQueryResult
 {
-    public class GetAccountsWithPledgesQueryResult
-    {
-        public List<long> AccountIds { get; set; }
-    }
+    public List<long> AccountIds { get; set; }
 }
