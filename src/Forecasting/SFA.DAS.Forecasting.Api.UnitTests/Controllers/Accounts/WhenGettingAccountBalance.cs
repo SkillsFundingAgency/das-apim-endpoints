@@ -13,67 +13,66 @@ using SFA.DAS.Forecasting.Api.Models;
 using SFA.DAS.Forecasting.Application.Accounts.Queries.GetAccountBalance;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Accounts
+namespace SFA.DAS.Forecasting.Api.UnitTests.Controllers.Accounts;
+
+public class WhenGettingAccountBalance
 {
-    public class WhenGettingAccountBalance
+    [Test, MoqAutoData]
+    public async Task Then_Gets_UserAccounts_From_Mediator(
+        string accountId,
+        GetAccountBalanceQueryResult mediatorResult,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] AccountsController controller)
     {
-        [Test, MoqAutoData]
-        public async Task Then_Gets_UserAccounts_From_Mediator(
-            string accountId,
-            GetAccountBalanceQueryResult mediatorResult,
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] AccountsController controller)
-        {
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.Is<GetAccountBalanceQuery>(c => c.AccountId.Equals(accountId)),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(mediatorResult);
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.Is<GetAccountBalanceQuery>(c => c.AccountId.Equals(accountId)),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetAccountBalance(accountId) as ObjectResult;
+        var controllerResult = await controller.GetAccountBalance(accountId) as ObjectResult;
 
-            Assert.That(controllerResult, Is.Not.Null);
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetAccountBalanceApiResponse;
-            Assert.That(model, Is.Not.Null);
-            model.Should().BeEquivalentTo((GetAccountBalanceApiResponse)mediatorResult);
-        }
+        Assert.That(controllerResult, Is.Not.Null);
+        controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        var model = controllerResult.Value as GetAccountBalanceApiResponse;
+        Assert.That(model, Is.Not.Null);
+        model.Should().BeEquivalentTo((GetAccountBalanceApiResponse)mediatorResult);
+    }
         
-        [Test, MoqAutoData]
-        public async Task And_Empty_Result_Then_Returns_NotFound_Result(
-            string accountId,
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] AccountsController controller)
-        {
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.IsAny<GetAccountBalanceQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetAccountBalanceQueryResult
-                {
-                    AccountBalance = null
-                });
+    [Test, MoqAutoData]
+    public async Task And_Empty_Result_Then_Returns_NotFound_Result(
+        string accountId,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] AccountsController controller)
+    {
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.IsAny<GetAccountBalanceQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new GetAccountBalanceQueryResult
+            {
+                AccountBalance = null
+            });
 
-            var controllerResult = await controller.GetAccountBalance(accountId) as StatusCodeResult;
+        var controllerResult = await controller.GetAccountBalance(accountId) as StatusCodeResult;
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
-        }
+        controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+    }
 
-        [Test, MoqAutoData]
-        public async Task And_Exception_Then_Returns_Internal_Server_Error(
-            string accountId,
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] AccountsController controller)
-        {
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.IsAny<GetAccountBalanceQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new InvalidOperationException());
+    [Test, MoqAutoData]
+    public async Task And_Exception_Then_Returns_Internal_Server_Error(
+        string accountId,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] AccountsController controller)
+    {
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.IsAny<GetAccountBalanceQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new InvalidOperationException());
 
-            var controllerResult = await controller.GetAccountBalance(accountId) as StatusCodeResult;
+        var controllerResult = await controller.GetAccountBalance(accountId) as StatusCodeResult;
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
-        }
+        controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }
 }

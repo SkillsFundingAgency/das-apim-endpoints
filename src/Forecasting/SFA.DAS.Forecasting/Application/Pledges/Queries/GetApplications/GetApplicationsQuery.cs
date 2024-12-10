@@ -1,9 +1,8 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.Forecasting.Application.Pledges.Queries.GetApplications
+namespace SFA.DAS.Forecasting.Application.Pledges.Queries.GetApplications;
+
+public class GetApplicationsQuery : IRequest<GetApplicationsQueryResult>
 {
-    public class GetApplicationsQuery : IRequest<GetApplicationsQueryResult>
-    {
-        public int PledgeId { get; set; }
-    }
+    public int PledgeId { get; set; }
 }

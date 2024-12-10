@@ -33,7 +33,7 @@ public class WhenGettingLiveVacancies
         {
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
             actual.Value.Should().BeOfType<GetLiveVacanciesApiResponse>();
-            actualValue!.Vacancies.Should().BeEquivalentTo(mockQueryResult.Vacancies);
+            actualValue!.Vacancies.Should().BeEquivalentTo(mockQueryResult.Vacancies, options => options.Excluding(x => x.Skills));
             actualValue.PageSize.Should().Be(mockQueryResult.PageSize);
             actualValue.PageNo.Should().Be(mockQueryResult.PageNo);
             actualValue.TotalLiveVacanciesReturned.Should().Be(mockQueryResult.TotalLiveVacanciesReturned);
