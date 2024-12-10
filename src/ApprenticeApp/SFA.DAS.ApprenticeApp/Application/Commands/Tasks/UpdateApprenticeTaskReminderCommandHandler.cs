@@ -19,8 +19,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands.Tasks
 
         public async Task<Unit> Handle(UpdateApprenticeTaskReminderCommand request, CancellationToken cancellationToken)
         {
-            ApprenticeTaskData data = new ApprenticeTaskData();
-            await _progressApi.PostWithResponseCode<PatchApprenticeTaskReminderRequest>(new PatchApprenticeTaskReminderRequest(request.TaskId, request.StatusId, data));
+            await _progressApi.PostWithResponseCode<PatchApprenticeTaskReminderRequest>(new PatchApprenticeTaskReminderRequest(request.TaskId, request.StatusId));
             return Unit.Value;
         }
     }

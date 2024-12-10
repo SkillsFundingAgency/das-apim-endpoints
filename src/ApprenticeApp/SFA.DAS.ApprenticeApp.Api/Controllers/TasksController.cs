@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Commands;
+using SFA.DAS.ApprenticeApp.Application.Commands.Tasks;
 using SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
@@ -210,9 +211,8 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         [HttpPost("/apprentices/{apprenticeId}/progress/tasks/taskReminders/{taskId}/{statusId}")]
         public async Task<IActionResult> UpdateTaskReminder(Guid apprenticeId, int taskId, int statusId)
         {
-            await _mediator.Send(new UpdateTaskReminderCommand
+            await _mediator.Send(new UpdateApprenticeTaskReminderCommand
             {
-                
                 TaskId = taskId,
                 StatusId = statusId
             });
