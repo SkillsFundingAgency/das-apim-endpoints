@@ -35,7 +35,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
             await pensionsRegulatorApiClient.GetWithResponseCode<List<PensionRegulatorOrganisation>>(
                 new GetPensionsRegulatorOrganisationsRequest(request.Aorn, request.Paye));
 
-        var hasInvalidPaye = CheckPensionOrganisationsHaveInvalidPaye(pensionRegulatorResponse);
+        var hasInvalidPaye = !IsValidPayeScheme(pensionRegulatorResponse);
 
         queryResult.HasInvalidPaye = hasInvalidPaye;
 
@@ -153,18 +153,8 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
         return organisationDetails;
     }
 
-    private static bool CheckPensionOrganisationsHaveInvalidPaye(ApiResponse<List<PensionRegulatorOrganisation>> result)
+    private static bool IsValidPayeScheme(ApiResponse<List<PensionRegulatorOrganisation>> result)
     {
-        if (result.StatusCode == HttpStatusCode.OK)
-        {
-            if (result.Body.TrueForAll(s => s.Status != ""))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        return true;
+        return result.StatusCode == HttpStatusCode.OK && result.Body.Any();
     }
 }

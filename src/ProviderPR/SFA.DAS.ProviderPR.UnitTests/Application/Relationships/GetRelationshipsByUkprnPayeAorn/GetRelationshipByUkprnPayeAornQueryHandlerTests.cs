@@ -17,17 +17,17 @@ using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderPR.UnitTests.Application.Queries.GetRelationshipsByUkprnPayeAorn;
+
 public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 {
-
     [Test, MoqAutoData]
     public async Task Handle_GetsRequestFoundFromPRApi_ReturnsHasActiveRequestTrue(
-       [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
-       long ukprn,
-       string paye,
-       string aorn,
-       GetRequestByUkprnAndPayeResponse expected,
-       CancellationToken cancellationToken
+        [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
+        long ukprn,
+        string paye,
+        string aorn,
+        GetRequestByUkprnAndPayeResponse expected,
+        CancellationToken cancellationToken
     )
     {
         var encodedPaye = Uri.EscapeDataString(paye);
@@ -76,59 +76,9 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 
         var pensionResponse = new ApiResponse<List<PensionRegulatorOrganisation>>(new List<PensionRegulatorOrganisation>(), HttpStatusCode.NotFound, "");
 
-        pensionRegulatorApiClientMock.Setup(
-                p => p.GetWithResponseCode<List<PensionRegulatorOrganisation>>(
-
-                    It.IsAny<GetPensionsRegulatorOrganisationsRequest>()
-                    ))
-            .ReturnsAsync(
-                pensionResponse
-                );
-
-        var request = new GetRelationshipsByUkprnPayeAornQuery(ukprn, aorn, paye);
-
-        GetRelationshipByUkprnPayeAornQueryHandler handler = new GetRelationshipByUkprnPayeAornQueryHandler(pensionRegulatorApiClientMock.Object, providerRelationshipsApiRestClientMock.Object, Mock.Of<IAccountsApiClient<AccountsConfiguration>>());
-
-        var actual = await handler.Handle(request, cancellationToken);
-
-        var expectedResponse = new GetRelationshipsByUkprnPayeAornResult { HasActiveRequest = false, HasInvalidPaye = true };
-
-        actual.Should().BeEquivalentTo(expectedResponse);
-        providerRelationshipsApiRestClientMock.Verify(r => r.GetRequestByUkprnAndPaye(ukprn, encodedPaye, cancellationToken), Times.Once);
-        pensionRegulatorApiClientMock.Verify(
-            r => r.GetWithResponseCode<List<PensionRegulatorOrganisation>>(
-                It.IsAny<GetPensionsRegulatorOrganisationsRequest>()), Times.Once);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Handle_GetsInvalidResultsFromPensionApi_ReturnsHasInvalidPayeTrue(
-     [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
-     [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
-     long ukprn,
-     string paye,
-     string aorn,
-     GetRequestByUkprnAndPayeResponse expected,
-     CancellationToken cancellationToken
- )
-    {
-        var encodedPaye = Uri.EscapeDataString(paye);
-
-        SetupPrMockForGetRequestByUkprnAndPaye(providerRelationshipsApiRestClientMock, ukprn, expected, encodedPaye, cancellationToken);
-
-        var pensionResponse = new ApiResponse<List<PensionRegulatorOrganisation>>(new List<PensionRegulatorOrganisation>
-        {
-            new(),
-            new() {Status="Status"}
-        }, HttpStatusCode.OK, "");
-
-        pensionRegulatorApiClientMock.Setup(
-                p => p.GetWithResponseCode<List<PensionRegulatorOrganisation>>(
-
-                    It.IsAny<GetPensionsRegulatorOrganisationsRequest>()
-                    ))
-            .ReturnsAsync(
-                pensionResponse
-                );
+        pensionRegulatorApiClientMock
+            .Setup(p => p.GetWithResponseCode<List<PensionRegulatorOrganisation>>(It.IsAny<GetPensionsRegulatorOrganisationsRequest>()))
+            .ReturnsAsync(pensionResponse);
 
         var request = new GetRelationshipsByUkprnPayeAornQuery(ukprn, aorn, paye);
 
@@ -147,15 +97,15 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 
     [Test, MoqAutoData]
     public async Task Handle_GetsValidResultsFromPensionApi_ReturnExpectedOrganisation(
-     [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
-     [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
-     [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClientMock,
-     long ukprn,
-     string paye,
-     string aorn,
-     PensionRegulatorOrganisation pensionOrganisationResponse,
-     GetRequestByUkprnAndPayeResponse expected,
-     CancellationToken cancellationToken
+        [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
+        [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
+        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClientMock,
+        long ukprn,
+        string paye,
+        string aorn,
+        PensionRegulatorOrganisation pensionOrganisationResponse,
+        GetRequestByUkprnAndPayeResponse expected,
+        CancellationToken cancellationToken
  )
     {
 
@@ -199,17 +149,16 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 
     [Test, MoqAutoData]
     public async Task Handle_GetsValidResultsFromAccountsApi_ReturnExpectedAccountDetailsAndHasOneLegalEntityFalse(
-     [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
-     [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
-     [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClientMock,
-     long ukprn,
-     string paye,
-     string aorn,
-     PensionRegulatorOrganisation pensionOrganisationResponse,
-     GetRequestByUkprnAndPayeResponse expected,
-     AccountHistory accountHistory,
-     CancellationToken cancellationToken
-     )
+        [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
+        [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
+        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClientMock,
+        long ukprn,
+        string paye,
+        string aorn,
+        PensionRegulatorOrganisation pensionOrganisationResponse,
+        GetRequestByUkprnAndPayeResponse expected,
+        AccountHistory accountHistory,
+        CancellationToken cancellationToken)
     {
 
         var encodedPaye = Uri.EscapeDataString(paye);
@@ -267,18 +216,17 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 
     [Test, MoqAutoData]
     public async Task Handle_GetsValidResultsFromAccountsApi_ReturnExpectedSingleLegalEntityDetails(
-    [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
-    [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
-    [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClientMock,
-    long ukprn,
-    string paye,
-    string aorn,
-    PensionRegulatorOrganisation pensionOrganisationResponse,
-    GetRequestByUkprnAndPayeResponse expected,
-    AccountHistory accountHistory,
-    GetAccountLegalEntityResponse legalEntityResponse,
-    CancellationToken cancellationToken
-)
+        [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
+        [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
+        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClientMock,
+        long ukprn,
+        string paye,
+        string aorn,
+        PensionRegulatorOrganisation pensionOrganisationResponse,
+        GetRequestByUkprnAndPayeResponse expected,
+        AccountHistory accountHistory,
+        GetAccountLegalEntityResponse legalEntityResponse,
+        CancellationToken cancellationToken)
     {
         var encodedPaye = Uri.EscapeDataString(paye);
 
@@ -351,19 +299,18 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 
     [Test, MoqAutoData]
     public async Task Handle_GetsValidResultsFromProviderApi_ReturnExpectedOperations(
-   [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
-   [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
-   [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClientMock,
-   long ukprn,
-   string paye,
-   string aorn,
-   PensionRegulatorOrganisation pensionOrganisationResponse,
-   GetRequestByUkprnAndPayeResponse expected,
-   AccountHistory accountHistory,
-   GetAccountLegalEntityResponse legalEntityResponse,
-   GetRelationshipResponse relationshipResponse,
-   CancellationToken cancellationToken
-)
+        [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
+        [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
+        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClientMock,
+        long ukprn,
+        string paye,
+        string aorn,
+        PensionRegulatorOrganisation pensionOrganisationResponse,
+        GetRequestByUkprnAndPayeResponse expected,
+        AccountHistory accountHistory,
+        GetAccountLegalEntityResponse legalEntityResponse,
+        GetRelationshipResponse relationshipResponse,
+        CancellationToken cancellationToken)
     {
         var encodedPaye = Uri.EscapeDataString(paye);
 
