@@ -33,6 +33,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
             public string? TrainingCourse { get; set; }
 
             public double? Distance { get; set; }
+
+            public string? VacancySource { get; set; }
         }
         public class Address
         {
@@ -105,6 +107,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
                         TrainingCourse = vacancy.TrainingCourse,
                         VacancyReference = vacancy.VacancyReference,
                         Wage = vacancy.Wage,
+                        VacancySource = vacancy.VacancySource,
                         Address = new PostSendSavedSearchNotificationCommand.Address
                         {
                             AddressLine1 = vacancy.Address.AddressLine1,

@@ -46,6 +46,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
             public string? TrainingCourse { get; set; }
 
             public double? Distance { get; set; }
+
+            public string? VacancySource { get; set; }
         }
 
         public class Address

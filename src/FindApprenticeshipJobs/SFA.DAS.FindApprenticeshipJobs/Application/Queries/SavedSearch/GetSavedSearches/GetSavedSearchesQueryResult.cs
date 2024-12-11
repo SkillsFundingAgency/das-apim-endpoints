@@ -33,6 +33,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                 public string? ClosingDate { get; set; }
                 public string? TrainingCourse { get; set; }
                 public decimal? Distance { get; set; }
+                public string? VacancySource { get; set; }
 
                 public static implicit operator ApprenticeshipVacancy(GetVacanciesListItem source)
                 {
@@ -47,6 +48,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                         Address = source.VacancyAddress,
                         TrainingCourse = $"{source.CourseTitle} (level {source.CourseLevel})",
                         Distance = source.Distance.HasValue ? Math.Round(source.Distance.Value, 1) : null,
+                        VacancySource = source.VacancySource,
                     };
                 }
             }

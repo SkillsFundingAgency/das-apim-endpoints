@@ -51,6 +51,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
 
         [JsonPropertyName("standardLevel")]
         public int CourseLevel { get; set; }
+
+        [JsonPropertyName("vacancySource")]
+        public string VacancySource { get; set; }
     }
 
     public class VacancyAddress
