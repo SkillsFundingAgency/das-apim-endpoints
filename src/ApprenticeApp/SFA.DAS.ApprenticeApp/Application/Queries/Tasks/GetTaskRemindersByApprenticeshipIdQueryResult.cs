@@ -4,6 +4,6 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Tasks
 {
     public class GetTaskRemindersByApprenticeshipIdQueryResult
     {
-        public ApprenticeTaskRemindersCollection TaskReminders { get; set; }
+        public ApprenticeTaskReminderCollection TaskReminders { get; set; }
     }
 }
