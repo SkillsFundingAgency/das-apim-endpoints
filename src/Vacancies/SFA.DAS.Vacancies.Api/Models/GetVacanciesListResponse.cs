@@ -41,7 +41,6 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// <summary>
         /// The number of apprentices being recruited for the apprenticeship. Will be 1 or higher.
         /// </summary>
-        [Required]
         public long NumberOfPositions { get; set; }
         /// <summary>
         /// The date the apprenticeship was added to Find an apprenticeship.
