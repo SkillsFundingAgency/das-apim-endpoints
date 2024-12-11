@@ -7,40 +7,30 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Forecasting.Api.Models;
 using SFA.DAS.Forecasting.Application.AccountUsers;
 
-namespace SFA.DAS.Forecasting.Api.Controllers
+namespace SFA.DAS.Forecasting.Api.Controllers;
+
+[ApiController]
+[Route("[controller]/")]
+public class AccountUsersController(IMediator mediator, ILogger<AccountUsersController> logger) : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]/")]
-    public class AccountUsersController: ControllerBase
+    [HttpGet]
+    [Route("{userId}/accounts")]
+    public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery] string email)
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<AccountUsersController> _logger;
-
-        public AccountUsersController(IMediator mediator, ILogger<AccountUsersController> logger)
+        try
         {
-            _mediator = mediator;
-            _logger = logger;
+            var result = await mediator.Send(new GetAccountsQuery
+            {
+                UserId = userId,
+                Email = email
+            });
+
+            return Ok((GetUserAccountsApiResponse) result);
         }
-
-        [HttpGet]
-        [Route("{userId}/accounts")]
-        public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery] string email)
+        catch (Exception e)
         {
-            try
-            {
-                var result = await _mediator.Send(new GetAccountsQuery
-                {
-                    UserId = userId,
-                    Email = email
-                });
-
-                return Ok((GetUserAccountsApiResponse) result);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error getting account information for {userId}");
-                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
-            }
+            logger.LogError(e, "Error getting account information for {UserId}", userId);
+            return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
         }
     }
 }

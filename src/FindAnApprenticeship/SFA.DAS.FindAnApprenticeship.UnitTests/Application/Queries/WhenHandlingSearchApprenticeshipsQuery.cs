@@ -1,9 +1,3 @@
-using System.Collections.ObjectModel;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
@@ -17,7 +11,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
+using System.Collections.ObjectModel;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 {
@@ -60,7 +54,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.SelectedLevelIds?.Select(c=>Convert.ToInt32(c)).ToList(),
                 query.Sort,
                 query.SkipWageType,
-                query.DisabilityConfident);
+                query.DisabilityConfident,
+                new List<VacancyDataSource>
+                {
+                    VacancyDataSource.Nhs
+                });
 
             apiClient
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
@@ -79,7 +77,12 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.SelectedLevelIds?.Select(c => Convert.ToInt32(c)).ToList(),
                 query.Sort,
                 WageType.CompetitiveSalary,
-                query.DisabilityConfident);
+                query.DisabilityConfident,
+                new List<VacancyDataSource>
+                {
+                    VacancyDataSource.Nhs
+                });
+            
             apiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(
                         It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == apprenticeCountRequest.GetUrl)))
@@ -198,7 +201,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.SelectedLevelIds?.Select(Convert.ToInt32).ToList(),
                 query.Sort,
                 query.SkipWageType,
-                query.DisabilityConfident);
+                query.DisabilityConfident,
+                new List<VacancyDataSource>
+                {
+                    VacancyDataSource.Nhs
+                });
 
             apiClient
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
@@ -217,7 +224,12 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.SelectedLevelIds?.Select(Convert.ToInt32).ToList(),
                 query.Sort,
                 WageType.CompetitiveSalary,
-                query.DisabilityConfident);
+                query.DisabilityConfident,
+                new List<VacancyDataSource>
+                {
+                    VacancyDataSource.Nhs
+                });
+
             apiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(
                         It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == apprenticeCountRequest.GetUrl)))
@@ -318,10 +330,14 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageNumber,
                 query.PageSize,
                 categories,
-                query.SelectedLevelIds?.Select(c=>Convert.ToInt32(c)).ToList(),
+                query.SelectedLevelIds?.Select(c => Convert.ToInt32(c)).ToList(),
                 query.Sort,
                 query.SkipWageType,
-                query.DisabilityConfident);
+                query.DisabilityConfident,
+                new List<VacancyDataSource>
+                {
+                    VacancyDataSource.Nhs
+                });
 
             apiClient
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
