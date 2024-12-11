@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.Forecasting.Application.Approvals.Queries.GetAccountIds
+namespace SFA.DAS.Forecasting.Application.Approvals.Queries.GetAccountIds;
+
+public class GetAccountIdsQueryResult
 {
-    public class GetAccountIdsQueryResult
-    {
-        public List<long> AccountIds { get; set; }
-    }
+    public List<long> AccountIds { get; set; }
 }

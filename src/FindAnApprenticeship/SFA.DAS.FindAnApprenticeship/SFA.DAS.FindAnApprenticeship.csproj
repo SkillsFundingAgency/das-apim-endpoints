@@ -9,8 +9,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Humanizer" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
+    <PackageReference Include="SFA.DAS.VacancyServices.Wage" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     <PackageReference Include="SFA.DAS.Notifications.Messages" />
     <PackageReference Include="SFA.DAS.NServiceBus" />

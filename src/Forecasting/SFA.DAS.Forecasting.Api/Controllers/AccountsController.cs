@@ -7,45 +7,36 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Forecasting.Api.Models;
 using SFA.DAS.Forecasting.Application.Accounts.Queries.GetAccountBalance;
 
-namespace SFA.DAS.Forecasting.Api.Controllers
+namespace SFA.DAS.Forecasting.Api.Controllers;
+
+[ApiController]
+[Route("[controller]/")]
+public class AccountsController(IMediator mediator, ILogger<AccountsController> logger) : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]/")]
-    public class AccountsController : ControllerBase
+    [HttpGet]
+    [Route("{accountId}/balance")]
+    public async Task<IActionResult> GetAccountBalance(string accountId)
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<AccountsController> _logger;
-
-        public AccountsController(IMediator mediator, ILogger<AccountsController> logger)
+        try
         {
-            _mediator = mediator;
-            _logger = logger;
+            var result = await mediator.Send(new GetAccountBalanceQuery
+            {
+                AccountId = accountId
+            });
+
+            var apiResponse = (GetAccountBalanceApiResponse) result;
+
+            if (apiResponse == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(apiResponse);
         }
-        [HttpGet]
-        [Route("{accountId}/balance")]
-        public async Task<IActionResult> GetAccountBalance(string accountId)
+        catch (Exception e)
         {
-            try
-            {
-                var result = await _mediator.Send(new GetAccountBalanceQuery
-                {
-                    AccountId = accountId
-                });
-
-                var apiResponse = (GetAccountBalanceApiResponse) result;
-
-                if (apiResponse == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(apiResponse);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error getting account balance information for {accountId}");
-                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
-            }
+            logger.LogError(e, "Error getting account balance information for {AccountId}", accountId);
+            return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
         }
     }
 }

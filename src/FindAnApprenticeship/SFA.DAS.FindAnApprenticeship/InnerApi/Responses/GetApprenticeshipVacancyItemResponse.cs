@@ -1,7 +1,9 @@
 using Newtonsoft.Json;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 {
@@ -79,9 +81,9 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 
         [JsonProperty("providerContactName")]
         public string ProviderContactName { get; init; }
-        
-        [JsonProperty("vacancyLocationType")]
-        public VacancyLocationType VacancyLocationType { get; init; }
+
+        [JsonProperty("vacancyLocationType")] 
+        public VacancyLocationType? VacancyLocationType { get; init; } = null;
 
         [JsonProperty("skills")]
         public IEnumerable<string> Skills { get; init; }
@@ -98,7 +100,10 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public bool IsClosed { get; set; }
 
         [JsonProperty("closedDate")]
-        public DateTime? ClosedDate { get; }
+        public DateTime? ClosedDate { get; set; }
+
+        [JsonPropertyName("vacancySource")]
+        public VacancyDataSource VacancySource { get; set; }
 
         public string Postcode => Address.Postcode;
         public string City => Address.AddressLine4;
@@ -124,7 +129,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 
     public enum Weighting
     {
-        Essential,
+        Essential = 0,
         Desired
     }
 

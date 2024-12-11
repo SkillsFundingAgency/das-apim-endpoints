@@ -64,8 +64,30 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 }
             }
 
-            var categories = routes.Routes.Where(route => request.SelectedRouteIds != null && request.SelectedRouteIds.Contains(route.Id.ToString()))
+            var categories = routes.Routes.Where(route => request.SelectedRouteIds != null && request.SelectedRouteIds.Contains(route.Id))
                 .Select(route => route.Name).ToList();
+
+            var totalVacanciesCount = new GetApprenticeshipCountResponse { TotalVacancies = 0 };
+            if (request.Sort is VacancySort.SalaryAsc or VacancySort.SalaryDesc)
+            {
+                totalVacanciesCount = await
+                    findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
+                        new GetApprenticeshipCountRequest(location?.GeoPoint?.FirstOrDefault(),
+                            location?.GeoPoint?.LastOrDefault(),
+                            request.Distance,
+                            request.SearchTerm,
+                            request.PageNumber,
+                            request.PageSize,
+                            categories,
+                            request.SelectedLevelIds,
+                            request.Sort,
+                            WageType.CompetitiveSalary,
+                            request.DisabilityConfident,
+                            new List<VacancyDataSource>
+                            {
+                                VacancyDataSource.Nhs
+                            })); ;
+            }
 
             var vacancyResult = await findApprenticeshipApiClient.Get<GetVacanciesResponse>(
                 new GetVacanciesRequest(
@@ -78,7 +100,12 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     categories,
                     request.SelectedLevelIds,
                     request.Sort,
-                    request.DisabilityConfident));
+                    request.SkipWageType,
+                    request.DisabilityConfident,
+                    new List<VacancyDataSource>
+                    {
+                        VacancyDataSource.Nhs
+                    }));
 
             var totalPages = (int)Math.Ceiling((double)vacancyResult.TotalFound / request.PageSize);
 
@@ -87,9 +114,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             var savedSearchesCount = 0;
             var searchAlreadySaved = false;
 
-            if (!string.IsNullOrEmpty(request.CandidateId))
+            if (request.CandidateId != null)
             {
-                var candidateId = Guid.Parse(request.CandidateId);
+                var candidateId = request.CandidateId.Value;
                 
                 var candidateApplicationsTask =
                     candidateApiClient.Get<GetApplicationsApiResponse>(
@@ -155,6 +182,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             return new SearchApprenticeshipsResult
             {
                 TotalApprenticeshipCount = vacancyResult.Total,
+                TotalWageTypeVacanciesCount = totalVacanciesCount.TotalVacancies,
                 TotalFound = vacancyResult.TotalFound,
                 LocationItem = location,
                 Routes = routes.Routes.ToList(),
