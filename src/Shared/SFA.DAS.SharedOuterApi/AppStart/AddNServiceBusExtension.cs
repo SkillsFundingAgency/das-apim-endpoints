@@ -29,7 +29,7 @@ namespace SFA.DAS.SharedOuterApi.AppStart
                 .UseInstallers()
                 .UseMessageConventions()
                 .UseNewtonsoftJsonSerializer();
-            
+
             if (!string.IsNullOrEmpty(config.NServiceBusLicense))
             {
                 endpointConfiguration.UseLicense(config.NServiceBusLicense);
