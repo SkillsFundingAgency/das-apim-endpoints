@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using RestEase;
 using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipsByUkprnPayeAorn;
@@ -49,7 +50,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 
         var request = new GetRelationshipsByUkprnPayeAornQuery(ukprn, aorn, paye);
 
-        GetRelationshipByUkprnPayeAornQueryHandler handler = new GetRelationshipByUkprnPayeAornQueryHandler(Mock.Of<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>>(), providerRelationshipsApiRestClientMock.Object, Mock.Of<IAccountsApiClient<AccountsConfiguration>>());
+        GetRelationshipByUkprnPayeAornQueryHandler handler = new GetRelationshipByUkprnPayeAornQueryHandler(Mock.Of<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>>(), providerRelationshipsApiRestClientMock.Object, Mock.Of<IAccountsApiClient<AccountsConfiguration>>(), Mock.Of<ILogger<GetRelationshipByUkprnPayeAornQueryHandler>>());
 
         var actual = await handler.Handle(request, cancellationToken);
 
@@ -63,6 +64,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
     public async Task Handle_GetsNoResultsFromPensionApi_ReturnsHasInvalidPayeTrue(
         [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
         [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
+        GetRelationshipByUkprnPayeAornQueryHandler sut,
         long ukprn,
         string paye,
         string aorn,
@@ -82,9 +84,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 
         var request = new GetRelationshipsByUkprnPayeAornQuery(ukprn, aorn, paye);
 
-        GetRelationshipByUkprnPayeAornQueryHandler handler = new GetRelationshipByUkprnPayeAornQueryHandler(pensionRegulatorApiClientMock.Object, providerRelationshipsApiRestClientMock.Object, Mock.Of<IAccountsApiClient<AccountsConfiguration>>());
-
-        var actual = await handler.Handle(request, cancellationToken);
+        var actual = await sut.Handle(request, cancellationToken);
 
         var expectedResponse = new GetRelationshipsByUkprnPayeAornResult { HasActiveRequest = false, HasInvalidPaye = true };
 
@@ -97,6 +97,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
     public async Task Handle_PensionsApiReturnsNoResults_ReturnsHasInvalidPayeTrue(
         [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
         [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
+        GetRelationshipByUkprnPayeAornQueryHandler sut,
         long ukprn,
         string paye,
         string aorn,
@@ -116,9 +117,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 
         var request = new GetRelationshipsByUkprnPayeAornQuery(ukprn, aorn, paye);
 
-        GetRelationshipByUkprnPayeAornQueryHandler handler = new GetRelationshipByUkprnPayeAornQueryHandler(pensionRegulatorApiClientMock.Object, providerRelationshipsApiRestClientMock.Object, Mock.Of<IAccountsApiClient<AccountsConfiguration>>());
-
-        var actual = await handler.Handle(request, cancellationToken);
+        var actual = await sut.Handle(request, cancellationToken);
 
         var expectedResponse = new GetRelationshipsByUkprnPayeAornResult { HasActiveRequest = false, HasInvalidPaye = true };
 
@@ -131,6 +130,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
     public async Task Handle_PensionsApiReturnsResultsWithInvalidStatus_ReturnsHasInvalidPayeTrue(
         [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
         [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
+        GetRelationshipByUkprnPayeAornQueryHandler sut,
         long ukprn,
         string paye,
         string aorn,
@@ -152,9 +152,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 
         var request = new GetRelationshipsByUkprnPayeAornQuery(ukprn, aorn, paye);
 
-        GetRelationshipByUkprnPayeAornQueryHandler handler = new GetRelationshipByUkprnPayeAornQueryHandler(pensionRegulatorApiClientMock.Object, providerRelationshipsApiRestClientMock.Object, Mock.Of<IAccountsApiClient<AccountsConfiguration>>());
-
-        var actual = await handler.Handle(request, cancellationToken);
+        var actual = await sut.Handle(request, cancellationToken);
 
         var expectedResponse = new GetRelationshipsByUkprnPayeAornResult { HasActiveRequest = false, HasInvalidPaye = true };
 
@@ -168,6 +166,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
         [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
         [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClientMock,
+        GetRelationshipByUkprnPayeAornQueryHandler sut,
         long ukprn,
         string paye,
         string aorn,
@@ -195,9 +194,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 
         var request = new GetRelationshipsByUkprnPayeAornQuery(ukprn, aorn, paye);
 
-        GetRelationshipByUkprnPayeAornQueryHandler handler = new GetRelationshipByUkprnPayeAornQueryHandler(pensionRegulatorApiClientMock.Object, providerRelationshipsApiRestClientMock.Object, accountsApiClientMock.Object);
-
-        var actual = await handler.Handle(request, cancellationToken);
+        var actual = await sut.Handle(request, cancellationToken);
 
         var expectedOrganisation = BuildOrganisationDetails(pensionOrganisationResponse);
 
@@ -219,6 +216,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
         [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
         [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClientMock,
+        GetRelationshipByUkprnPayeAornQueryHandler sut,
         long ukprn,
         string paye,
         string aorn,
@@ -256,9 +254,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 
         var request = new GetRelationshipsByUkprnPayeAornQuery(ukprn, aorn, paye);
 
-        GetRelationshipByUkprnPayeAornQueryHandler handler = new GetRelationshipByUkprnPayeAornQueryHandler(pensionRegulatorApiClientMock.Object, providerRelationshipsApiRestClientMock.Object, accountsApiClientMock.Object);
-
-        var actual = await handler.Handle(request, cancellationToken);
+        var actual = await sut.Handle(request, cancellationToken);
 
         var expectedOrganisation = BuildOrganisationDetails(pensionOrganisationResponse);
         var expectedAccount = new AccountDetails
@@ -286,6 +282,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
         [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
         [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClientMock,
+        GetRelationshipByUkprnPayeAornQueryHandler sut,
         long ukprn,
         string paye,
         string aorn,
@@ -335,9 +332,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 
         var request = new GetRelationshipsByUkprnPayeAornQuery(ukprn, aorn, paye);
 
-        GetRelationshipByUkprnPayeAornQueryHandler handler = new GetRelationshipByUkprnPayeAornQueryHandler(pensionRegulatorApiClientMock.Object, providerRelationshipsApiRestClientMock.Object, accountsApiClientMock.Object);
-
-        var actual = await handler.Handle(request, cancellationToken);
+        var actual = await sut.Handle(request, cancellationToken);
 
         var expectedOrganisation = BuildOrganisationDetails(pensionOrganisationResponse);
         var expectedAccount = new AccountDetails
@@ -369,6 +364,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
         [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClientMock,
         [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> pensionRegulatorApiClientMock,
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClientMock,
+        GetRelationshipByUkprnPayeAornQueryHandler sut,
         long ukprn,
         string paye,
         string aorn,
@@ -419,9 +415,7 @@ public class GetRelationshipByUkprnPayeAornQueryHandlerTests
 
         var request = new GetRelationshipsByUkprnPayeAornQuery(ukprn, aorn, paye);
 
-        GetRelationshipByUkprnPayeAornQueryHandler handler = new GetRelationshipByUkprnPayeAornQueryHandler(pensionRegulatorApiClientMock.Object, providerRelationshipsApiRestClientMock.Object, accountsApiClientMock.Object);
-
-        var actual = await handler.Handle(request, cancellationToken);
+        var actual = await sut.Handle(request, cancellationToken);
 
         var expectedOrganisation = BuildOrganisationDetails(pensionOrganisationResponse);
         var expectedAccount = new AccountDetails
