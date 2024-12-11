@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using RestEase.HttpClientFactory;
 using SFA.DAS.AdminAan.Api.HealthCheck;
 using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
@@ -7,7 +8,13 @@ using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
+using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Infrastructure.Services;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.AdminAan.Api.AppStart;
 
@@ -43,6 +50,28 @@ public static class ServiceCollectionExtensions
         AddCommitmentsV2ApiClient(services, configuration);
         AddCoursesApiClient(services, configuration);
         AddApprenticeAccountsApiClient(services, configuration);
+
+        services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
+        services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
+        services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
+        services.AddTransient<ILocationLookupService, LocationLookupService>();
+        services.AddTransient<ICacheStorageService, CacheStorageService>();
+        
+        if (configuration.IsLocalOrDev())
+        {
+            services.AddDistributedMemoryCache();
+        }
+        else
+        {
+            var aanConfig = configuration.GetSection(nameof(AdminAanConfiguration)).Get<AdminAanConfiguration>();
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = aanConfig.ApimEndpointsRedisConnectionString;
+            });
+        }
 
         return services;
     }

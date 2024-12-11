@@ -6,7 +6,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetAccountTeamMembersWhichReceiveNotificationsResponse;
+using TeamMember = SFA.DAS.SharedOuterApi.InnerApi.Responses.GetAccountTeamMembersWhichReceiveNotificationsResponse.TeamMember;
 
 namespace SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccount;
 
@@ -17,64 +17,39 @@ public class AddAccountRequestCommandHandler(
 {
     public async Task<AddAccountRequestCommandResult> Handle(AddAccountRequestCommand command, CancellationToken cancellationToken)
     {
-        var addAccountResponse = await _providerRelationshipsApiRestClient.CreateAddAccountRequest(command, cancellationToken);
+        var createRequestTask = _providerRelationshipsApiRestClient.CreateAddAccountRequest(command, cancellationToken);
+        var getTeamMembersTask = _accountsApiClient.GetWithResponseCode<List<TeamMember>>(new GetAccountTeamMembersByInternalAccountIdRequest(command.AccountId));
 
-        var teamMembersResponse = await _accountsApiClient.GetWithResponseCode<List<TeamMember>>(new GetAccountTeamMembersByInternalAccountIdRequest(command.AccountId));
+        await Task.WhenAll(createRequestTask, getTeamMembersTask);
 
-        if(teamMembersResponse.StatusCode != System.Net.HttpStatusCode.OK)
+        AddAccountRequestCommandResult CreateRequestResponse = createRequestTask.Result;
+        var teamMembersResponse = getTeamMembersTask.Result;
+
+        if (teamMembersResponse.StatusCode != System.Net.HttpStatusCode.OK)
         {
             throw new InvalidOperationException(teamMembersResponse.ErrorContent);
         }
 
         if (!teamMembersResponse.Body.Any())
         {
-            return new AddAccountRequestCommandResult(addAccountResponse.RequestId);
+            return new AddAccountRequestCommandResult(CreateRequestResponse.RequestId);
         }
 
         PostNotificationsCommand notificationCommand = new();
 
         IReadOnlyList<TeamMember> teamMembers = teamMembersResponse.Body;
 
-        // If the provided EmployerContactEmail is null - then we must run through each account owner and send out the 'AddAccountOwnerInvitation' notification.
+        TeamMember? associatedTeamMember = teamMembers.FirstOrDefault(a => a.Email == command.EmployerContactEmail);
 
-        if (string.IsNullOrWhiteSpace(command.EmployerContactEmail))
+        if (string.IsNullOrWhiteSpace(command.EmployerContactEmail) || associatedTeamMember is null || !associatedTeamMember.IsAccountOwner())
         {
-            foreach (TeamMember ownerMember in teamMembers.Where(t => t.IsAcceptedOwnerWithNotifications()))
-            {
-                notificationCommand.Notifications.Add(CreateAddAccountOwnerInvitationNotification(command, ownerMember));
-            }
+            notificationCommand.Notifications.AddRange(CreateNotificationsForAllOwners(teamMembers.Where(t => t.IsAcceptedOwnerWithNotifications()), command, CreateRequestResponse.RequestId));
         }
-        else
+
+        if (associatedTeamMember is not null && associatedTeamMember.CanReceiveNotifications)
         {
-            // EmployerContactEmail is not null, therefore we must check for a team member associated with the provided EmployerContactEmail.
-            // If a user matches the provided email then we must create a 'AddAccountInformation' notification for this team member.
-
-            TeamMember? associatedTeamMember = teamMembers.FirstOrDefault(a => a.Email == command.EmployerContactEmail);
-
-            if(associatedTeamMember is not null)
-            {
-                if(associatedTeamMember.CanReceiveNotifications)
-                {
-                    if (associatedTeamMember.IsAccountOwner())
-                    {
-                        notificationCommand.Notifications.Add(CreateAddAccountInvitationNotification(command, associatedTeamMember, addAccountResponse.RequestId));
-                    }
-                    else
-                    {
-                        notificationCommand.Notifications.Add(CreateAddAccountInformationNotification(command, associatedTeamMember));
-                    }
-                }
-            }
-            else
-            {
-                // Alternatively, if the team member is not an account owner,
-                // an 'AddAccountOwnerInvitation' notification will be sent to the account Owner(s) that allow notifications.
-
-                foreach (TeamMember ownerMember in teamMembers.Where(t => t.IsAcceptedOwnerWithNotifications()))
-                {
-                    notificationCommand.Notifications.Add(CreateAddAccountOwnerInvitationNotification(command, ownerMember));
-                }
-            }
+            var templateName = associatedTeamMember.IsAccountOwner() ? NotificationConstants.AddAccountInvitationTemplateName : NotificationConstants.AddAccountInformationTemplateName;
+            notificationCommand.Notifications.Add(CreateNotification(templateName, command, associatedTeamMember, CreateRequestResponse.RequestId));
         }
 
         if (notificationCommand.Notifications.Any())
@@ -82,36 +57,29 @@ public class AddAccountRequestCommandHandler(
             await _providerRelationshipsApiRestClient.PostNotifications(notificationCommand, cancellationToken);
         }
 
-        return new(addAccountResponse.RequestId);
+        return new(CreateRequestResponse.RequestId);
     }
 
-    private static NotificationModel CreateAddAccountOwnerInvitationNotification(AddAccountRequestCommand command, TeamMember member)
+    private static List<NotificationModel> CreateNotificationsForAllOwners(IEnumerable<TeamMember> teamMembers, AddAccountRequestCommand command, Guid requestId)
     {
-        return CreateNotification(NotificationConstants.AddAccountOwnerInvitationTemplateName, command, member);
-    }
-
-    private static NotificationModel CreateAddAccountInformationNotification(AddAccountRequestCommand command, TeamMember member)
-    {
-        return CreateNotification(NotificationConstants.AddAccountInformationTemplateName, command, member);
-    }
-
-    private static NotificationModel CreateAddAccountInvitationNotification(AddAccountRequestCommand command, TeamMember member, Guid? requestId)
-    {
-        return CreateNotification(NotificationConstants.AddAccountInvitationTemplateName, command, member, requestId);
+        List<NotificationModel> notifications = new();
+        foreach (TeamMember ownerMember in teamMembers.Where(t => t.IsAcceptedOwnerWithNotifications()))
+        {
+            notifications.Add(CreateNotification(NotificationConstants.AddAccountOwnerInvitationTemplateName, command, ownerMember, requestId));
+        }
+        return notifications;
     }
 
     private static NotificationModel CreateNotification(string templateName, AddAccountRequestCommand command, TeamMember member, Guid? requestId = null)
     {
-        return new NotificationModel()
-        {
-            TemplateName = templateName,
-            NotificationType = NotificationConstants.EmployerNotificationType,
-            Ukprn = command.Ukprn,
-            EmailAddress = member.Email,
-            Contact = member.Name,
-            AccountLegalEntityId = command.AccountLegalEntityId,
-            CreatedBy = command.RequestedBy,
-            RequestId = requestId
-        };
+        return new NotificationModel(
+            templateName,
+            NotificationConstants.EmployerNotificationType,
+            command.Ukprn,
+            member.Email,
+            member.Name,
+            command.AccountLegalEntityId,
+            command.RequestedBy,
+            requestId);
     }
 }

@@ -4,6 +4,7 @@ using SFA.DAS.Apprenticeships.Extensions;
 using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
@@ -58,7 +59,15 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 		var providerName = await GetProviderName(apprenticeStartDateInnerModel);
 
 		var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(DateTime.Now));
+        if (!currentAcademicYear.HardCloseDate.HasValue)
+        {
+            throw new AcademicYearDataIncompleteException(PreviousOrCurrentAcademicYear.Current);
+        }
         var previousAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(DateTime.Now.AddYears(-1)));
+        if (!previousAcademicYear.HardCloseDate.HasValue)
+        {
+            throw new AcademicYearDataIncompleteException(PreviousOrCurrentAcademicYear.Previous);
+        }
 
         var apprenticeshipStartDateOuterModel = new ApprenticeshipStartDateResponse
 		{
@@ -149,7 +158,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
             AcademicYear = response.AcademicYear,
             StartDate = response.StartDate,
             EndDate = response.EndDate,
-            HardCloseDate = response.HardCloseDate
+            HardCloseDate = response.HardCloseDate.Value
         };
     }
 

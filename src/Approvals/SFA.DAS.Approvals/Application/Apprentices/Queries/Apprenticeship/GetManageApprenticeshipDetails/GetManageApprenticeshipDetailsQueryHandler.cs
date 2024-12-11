@@ -12,6 +12,7 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
@@ -198,6 +199,11 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         }
 
         var previousAcademicYear = await collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(DateTime.Now.AddYears(-1)));
+        if (!previousAcademicYear.HardCloseDate.HasValue)
+        {
+            throw new AcademicYearDataIncompleteException(PreviousOrCurrentAcademicYear.Previous);
+        }
+
         var isStartDateInPreviousAcademicYear = previousAcademicYear.StartDate <= actualStartDate; 
         var isItR13R14PeriodOfPreviousAcademicYear = previousAcademicYear.HardCloseDate > DateTime.Now;
         if (isStartDateInPreviousAcademicYear && isItR13R14PeriodOfPreviousAcademicYear)

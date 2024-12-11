@@ -1,15 +1,15 @@
 ﻿using SFA.DAS.Apprenticeships.Api.Models;
-using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using PostCreateApprenticeshipPriceChangeRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships.PostCreateApprenticeshipPriceChangeRequest;
+using PatchApproveApprenticeshipPriceChangeRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships.PatchApproveApprenticeshipPriceChangeRequest;
+using PatchRejectApprenticeshipPriceChangeRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships.PatchRejectApprenticeshipPriceChangeRequest;
 
-namespace SFA.DAS.Apprenticeships.Api.Extensions
+namespace SFA.DAS.Apprenticeships.Api.Extensions;
+
+public static class MapperExtensions
 {
-    public static class MapperExtensions
+    public static PostCreateApprenticeshipPriceChangeRequest ToApiRequest(this CreateApprenticeshipPriceChangeRequest request, Guid apprenticeshipKey)
     {
-        public static PostCreateApprenticeshipPriceChangeRequest ToApiRequest(this CreateApprenticeshipPriceChangeRequest request, Guid apprenticeshipKey)
-        {
-            return new PostCreateApprenticeshipPriceChangeRequest(
+        return new PostCreateApprenticeshipPriceChangeRequest(
             apprenticeshipKey,
             request.Initiator,
             request.UserId,
@@ -18,16 +18,22 @@ namespace SFA.DAS.Apprenticeships.Api.Extensions
             request.TotalPrice,
             request.Reason,
             request.EffectiveFromDate);
-        }
-
-        public static ChangeOfPriceInitiatedCommand ToNotificationCommand(this CreateApprenticeshipPriceChangeRequest request, Guid apprenticeshipKey, PostCreateApprenticeshipPriceChangeApiResponse response)
-        {
-            return new ChangeOfPriceInitiatedCommand
-            {
-                Initiator = request.Initiator,
-                ApprenticeshipKey = apprenticeshipKey,
-                PriceChangeStatus = response.PriceChangeStatus
-            };
-        }
     }
+
+    public static PatchApproveApprenticeshipPriceChangeRequest ToApiRequest(this ApprovePriceChangeRequest request, Guid apprenticeshipKey)
+    {
+        return new PatchApproveApprenticeshipPriceChangeRequest(
+            apprenticeshipKey,
+            request.UserId,
+            request.TrainingPrice,
+            request.AssessmentPrice);
+    }
+
+    public static PatchRejectApprenticeshipPriceChangeRequest ToApiRequest(this RejectPriceChangeRequest request, Guid apprenticeshipKey)
+    {
+        return new PatchRejectApprenticeshipPriceChangeRequest(
+            apprenticeshipKey,
+            request.Reason);
+    }
+
 }

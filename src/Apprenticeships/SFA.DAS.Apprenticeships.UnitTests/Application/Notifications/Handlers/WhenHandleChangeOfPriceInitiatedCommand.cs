@@ -30,7 +30,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
             var command = new ChangeOfPriceInitiatedCommand
             {
                 ApprenticeshipKey = Guid.NewGuid(),
-                Initiator = RequestInitiator.Provider,
+                Initiator = RequestParty.Provider,
                 PriceChangeStatus = ChangeRequestStatus.Created
             };
             var handler = new ChangeOfPriceInitiatedCommandHandler(GetExtendedNotificationService(), _externalEmployerUrlHelper);
@@ -48,7 +48,32 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
             });
         }
 
-        [TestCase(RequestInitiator.Provider, "Invalid")]
+        [Test]
+        public async Task AndInitiatorIsEmployer_ShouldSendToProvider()
+        {
+            // Arrange
+            var command = new ChangeOfPriceInitiatedCommand
+            {
+                ApprenticeshipKey = Guid.NewGuid(),
+                Initiator = RequestParty.Employer,
+                PriceChangeStatus = ChangeRequestStatus.Created
+            };
+            var handler = new ChangeOfPriceInitiatedCommandHandler(GetExtendedNotificationService(), _externalEmployerUrlHelper);
+
+            // Act
+            var response = await handler.Handle(command, new System.Threading.CancellationToken());
+
+            // Assert
+            VerifySentToProvider("EmployerInitiatedChangeOfPriceToProvider", new Dictionary<string, string>
+            {
+                { "Training provider", ExpectedApprenticeshipDetails.ProviderName },
+                { "Employer", ExpectedApprenticeshipDetails.EmployerName },
+                { "apprentice", $"{ExpectedApprenticeshipDetails.ApprenticeFirstName} {ExpectedApprenticeshipDetails.ApprenticeLastName}" },
+                { "review changes URL", $"https://approvals.at-eas.apprenticeships.education.gov.uk/{ExpectedApprenticeshipDetails.EmployerAccountHashedId}/apprentices/{ExpectedApprenticeshipDetails.ApprenticeshipHashedId}/details" }
+            });
+        }
+
+        [TestCase(RequestParty.Provider, "Invalid")]
         [TestCase("Invalid", ChangeRequestStatus.Created)]
         public async Task AndInitiatorIsNotProvider_ShouldNotSendToEmployer(string initiator, string changeStatus)
         {
@@ -65,7 +90,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
             var response = await handler.Handle(command, new System.Threading.CancellationToken());
 
             // Assert
-            VerifyNoMessageSent();
+            VerifyNoMessageSentToEmployer();
         }
     }
 }

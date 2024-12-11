@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using NLog.Web;
 
 namespace SFA.DAS.Approvals.Api
 {
@@ -18,7 +17,6 @@ namespace SFA.DAS.Approvals.Api
                     webBuilder
                     .ConfigureKestrel(c => c.AddServerHeader = false)
                     .UseStartup<Startup>();
-                })
-                .UseNLog();
+                });
     }
 }
