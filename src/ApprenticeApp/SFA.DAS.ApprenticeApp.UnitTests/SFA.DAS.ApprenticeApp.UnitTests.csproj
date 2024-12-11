@@ -12,6 +12,7 @@
     </PackageReference>
     <PackageReference Include="AutoFixture.NUnit3" />
     <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.Testing" />
     <PackageReference Include="Moq" />
     <PackageReference Include="nunit" />
     <PackageReference Include="NUnit3TestAdapter" />

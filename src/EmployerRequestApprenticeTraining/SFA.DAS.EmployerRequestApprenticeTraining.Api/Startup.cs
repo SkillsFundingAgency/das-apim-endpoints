@@ -16,6 +16,7 @@ using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAcc
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
 {
@@ -161,7 +162,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
 
         public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
         {
-            serviceProvider.StartNServiceBus(_configuration, EndpointName).GetAwaiter().GetResult();
+            Task.FromResult(serviceProvider.StartNServiceBus(_configuration, EndpointName)).GetAwaiter().GetResult();
         }
     }
 }

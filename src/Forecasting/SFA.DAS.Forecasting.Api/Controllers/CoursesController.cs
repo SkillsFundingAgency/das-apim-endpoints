@@ -8,63 +8,53 @@ using SFA.DAS.Forecasting.Api.Models;
 using SFA.DAS.Forecasting.Application.Courses.Queries.GetFrameworkCoursesList;
 using SFA.DAS.Forecasting.Application.Courses.Queries.GetStandardCoursesList;
 
-namespace SFA.DAS.Forecasting.Api.Controllers
+namespace SFA.DAS.Forecasting.Api.Controllers;
+
+[ApiController]
+[Route("[controller]/")]
+public class CoursesController(IMediator mediator, ILogger<CoursesController> logger) : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]/")]
-    public class CoursesController : ControllerBase
+    [HttpGet]
+    [Route("standards")]
+    public async Task<IActionResult> GetStandardsList()
     {
-        private readonly ILogger<CoursesController> _logger;
-        private readonly IMediator _mediator;
-
-        public CoursesController(IMediator mediator, ILogger<CoursesController> logger)
+        try
         {
-            _logger = logger;
-            _mediator = mediator;
+            var queryResult = await mediator.Send(new GetStandardCoursesQuery());
+
+            var model = new GetStandardsListResponse
+            {
+                Standards = queryResult.Standards.Select(c => (ApprenticeshipCourse)c).ToList()
+            };
+
+            return Ok(model);
         }
-
-        [HttpGet]
-        [Route("standards")]
-        public async Task<IActionResult> GetStandardsList()
+        catch (Exception e)
         {
-            try
-            {
-                var queryResult = await _mediator.Send(new GetStandardCoursesQuery());
-
-                var model = new GetStandardsListResponse
-                {
-                    Standards = queryResult.Standards.Select(c => (ApprenticeshipCourse)c).ToList()
-                };
-
-                return Ok(model);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error attempting to get list of standards");
-                return BadRequest();
-            }
+            logger.LogError(e, "Error attempting to get list of standards");
+            return BadRequest();
         }
+    }
 
-        [HttpGet]
-        [Route("frameworks")]
-        public async Task<IActionResult> GetFrameworksList()
+    [HttpGet]
+    [Route("frameworks")]
+    public async Task<IActionResult> GetFrameworksList()
+    {
+        try
         {
-            try
-            {
-                var queryResult = await _mediator.Send(new GetFrameworkCoursesQuery());
+            var queryResult = await mediator.Send(new GetFrameworkCoursesQuery());
 
-                var model = new GetFrameworksListResponse
-                {
-                    Frameworks = queryResult.Frameworks.Select(c => (ApprenticeshipCourse)c).ToList()
-                };
-
-                return Ok(model);
-            }
-            catch (Exception e)
+            var model = new GetFrameworksListResponse
             {
-                _logger.LogError(e, "Error attempting to get list of frameworks");
-                return BadRequest();
-            }
+                Frameworks = queryResult.Frameworks.Select(c => (ApprenticeshipCourse)c).ToList()
+            };
+
+            return Ok(model);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error attempting to get list of frameworks");
+            return BadRequest();
         }
     }
 }

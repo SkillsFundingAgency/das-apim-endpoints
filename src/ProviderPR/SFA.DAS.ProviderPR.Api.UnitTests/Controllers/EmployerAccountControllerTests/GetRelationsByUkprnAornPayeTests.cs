@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.ProviderPR.Api.Controllers;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationshipsByUkprnPayeAorn;
+using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipsByUkprnPayeAorn;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderPR.Api.UnitTests.Controllers.EmployerAccountControllerTests;
