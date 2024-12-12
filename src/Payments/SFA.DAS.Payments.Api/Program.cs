@@ -1,4 +1,3 @@
-using NLog.Web;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.Payments.Api;
@@ -13,6 +12,5 @@ public class Program
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
-            .UseNLog();
+            .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
 }
