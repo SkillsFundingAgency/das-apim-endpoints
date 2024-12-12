@@ -1,5 +1,4 @@
-﻿using System;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.InnerApi.ApprenticeProgress.Requests;
@@ -115,9 +114,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
         {
             var taskId = 1;
             var statusId = 1;
-            
             var instance = new PatchApprenticeTaskReminderRequest(taskId, statusId);
-
             instance.PostUrl.Should().Be($"/apprenticeships/updatetaskreminders/tasks/1/status/1");
         }
     }

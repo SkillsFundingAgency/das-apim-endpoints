@@ -192,7 +192,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok(getTaskViewDataResult);
         }
 
-
         [HttpGet("/apprentices/{apprenticeId}/progress/tasks/taskReminders")]
         public async Task<IActionResult> GetTaskReminders(Guid apprenticeId)
         {
@@ -220,5 +219,4 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok();
         }
     }
-
 }
