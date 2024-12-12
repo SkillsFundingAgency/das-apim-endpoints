@@ -131,7 +131,7 @@ public class ValidatePermissionsRequestQueryHandlerTests
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_OrgFoundInTprWithStatus_SetsHasValidaPayeToFalse(
+    public async Task Handle_OrgFoundInTprWithInvalidStatus_SetsHasValidPayeToFalse(
         [Frozen] Mock<IProviderRelationshipsApiRestClient> prApiClientMock,
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClientMock,
         [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> tprApiClientMock,
@@ -147,7 +147,7 @@ public class ValidatePermissionsRequestQueryHandlerTests
         prApiClientMock.Setup(c => c.GetRequest(query.RequestId, cancellationToken)).ReturnsAsync(RestEaseResponseBuilder.GetOkResponse(getRequestQueryResult));
 
         /// key setup
-        pensionRegulatorOrganisation.Status = "has some status";
+        pensionRegulatorOrganisation.Status = "has some invalid status other than 'Not Closed'";
         tprApiClientMock.Setup(a => a.GetWithResponseCode<IEnumerable<PensionRegulatorOrganisation>>(It.Is<GetPensionsRegulatorOrganisationsRequest>(r => r.PayeRef == getRequestQueryResult.EmployerPAYE && r.Aorn == getRequestQueryResult.EmployerAORN))).ReturnsAsync(new ApiResponse<IEnumerable<PensionRegulatorOrganisation>>([pensionRegulatorOrganisation], HttpStatusCode.OK, null));
 
         /// action
@@ -157,7 +157,7 @@ public class ValidatePermissionsRequestQueryHandlerTests
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_OrgFoundInTprWithEmptyStatus_SetsHasValidaPayeToTrue(
+    public async Task Handle_OrgFoundInTprWithNotClosedStatus_SetsHasValidPayeToTrue(
         [Frozen] Mock<IProviderRelationshipsApiRestClient> prApiClientMock,
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClientMock,
         [Frozen] Mock<IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>> tprApiClientMock,
@@ -173,7 +173,7 @@ public class ValidatePermissionsRequestQueryHandlerTests
         prApiClientMock.Setup(c => c.GetRequest(query.RequestId, cancellationToken)).ReturnsAsync(RestEaseResponseBuilder.GetOkResponse(getRequestQueryResult));
 
         /// key setup
-        pensionRegulatorOrganisation.Status = string.Empty;
+        pensionRegulatorOrganisation.Status = TprOrganisationStatus.NotClosed;
         tprApiClientMock.Setup(a => a.GetWithResponseCode<IEnumerable<PensionRegulatorOrganisation>>(It.Is<GetPensionsRegulatorOrganisationsRequest>(r => r.PayeRef == getRequestQueryResult.EmployerPAYE && r.Aorn == getRequestQueryResult.EmployerAORN))).ReturnsAsync(new ApiResponse<IEnumerable<PensionRegulatorOrganisation>>([pensionRegulatorOrganisation], HttpStatusCode.OK, null));
 
         /// action

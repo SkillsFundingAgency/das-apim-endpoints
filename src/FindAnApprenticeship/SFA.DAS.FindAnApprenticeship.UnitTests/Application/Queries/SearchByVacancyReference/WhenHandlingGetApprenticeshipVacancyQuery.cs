@@ -1,9 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using Microsoft.Azure.Amqp.Framing;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
@@ -12,7 +7,6 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVacancyReference
 {
@@ -31,7 +25,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
         {
             // Arrange
             query.CandidateId = null;
-
+            vacancy.ClosedDate = null;
             courseApiClient
                 .Setup(x => x.Get<GetStandardsListItemResponse>(
                     It.Is<GetStandardRequest>(c => c.StandardId.Equals(vacancy.CourseId))))
@@ -50,8 +44,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => 
                 options
                     .Excluding(x => x.Application)
-                    .Excluding(x=>x.ClosingDate)
-                    .Excluding(x=>x.ClosedDate)
+                    .Excluding(x => x.ClosingDate)
+                    .Excluding(x => x.ClosedDate)
                     .Excluding(x => x.ExternalVacancyUrl)
                     .Excluding(x => x.IsExternalVacancy)
                     .Excluding(x => x.City)
@@ -83,6 +77,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             GetApprenticeshipVacancyQueryHandler handler)
         {
             // Arrange
+            vacancy.ClosedDate = null;
             courseApiClient
                 .Setup(x => x.Get<GetStandardsListItemResponse>(
                     It.Is<GetStandardRequest>(c => c.StandardId.Equals(vacancy.CourseId))))
