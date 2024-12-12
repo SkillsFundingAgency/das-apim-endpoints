@@ -639,5 +639,24 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             var result = await controller.GetTaskReminders(apprenticeId);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
         }
+
+        [Test, MoqAutoData]
+        public async Task Update_Task_Reminder(
+            [Frozen] Mock<IMediator> mediator,
+            [Greedy] TasksController controller)
+        {
+            var httpContext = new DefaultHttpContext();
+            var apprenticeId = Guid.NewGuid();
+            var taskId = 1;
+            var statusId = 1;
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = await controller.UpdateTaskReminder(apprenticeId, taskId, statusId);
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
+        }
     }
 }
