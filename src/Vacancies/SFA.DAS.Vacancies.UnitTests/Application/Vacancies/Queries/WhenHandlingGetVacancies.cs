@@ -177,8 +177,6 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             courseResponse.LarsCode = standardLarsCode;
             vacancyRaa.VacancySource = "RAA";
             vacancyNhs.VacancySource = "NHS";
-            vacancyRaa.VacancyReference = "VAC" + vacancyRaa.VacancyReference;
-            vacancyNhs.VacancyReference = "VAC" + vacancyNhs.VacancyReference;
             var apiResponse = new GetVacanciesResponse
             {
                 ApprenticeshipVacancies = new List<GetVacanciesListItem> { vacancyRaa, vacancyNhs },
@@ -200,10 +198,9 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             { Standards = new List<GetStandardsListItem> { courseResponse } });
 
             var actual = await handler.Handle(query, CancellationToken.None);
-
             
             actual.Vacancies.First(x => x.Id.Equals(vacancyRaa.Id)).VacancyUrl.Should().Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacancyRaa.VacancyReference}");
-            actual.Vacancies.First(x => x.Id.Equals(vacancyNhs.Id)).VacancyUrl.Should().Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/nhs/{vacancyNhs.VacancyReference.Replace("VAC","")}");
+            actual.Vacancies.First(x => x.Id.Equals(vacancyNhs.Id)).VacancyUrl.Should().Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/nhs/{vacancyNhs.VacancyReference.Replace("VAC","", StringComparison.CurrentCultureIgnoreCase)}");
         }
 
         [Test, MoqAutoData]
