@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetVacancyQueryHandler handler)
         {
             vacanciesConfiguration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl;
-            courseResponse.LarsCode = apiApiResponse.StandardLarsCode.Value;
+            courseResponse.LarsCode = apiApiResponse.StandardLarsCode!.Value;
             standardsService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse))).ReturnsAsync(new GetStandardsListResponse
                 { Standards = new List<GetStandardsListItem> { courseResponse } });
             
@@ -45,6 +46,39 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             actual.Vacancy.Should().BeEquivalentTo(apiApiResponse);
             actual.Vacancy.VacancyUrl.Should()
                 .Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/reference/{actual.Vacancy.VacancyReference}");
+            actual.Vacancy.CourseLevel.Should().Be(courseResponse.Level);
+            actual.Vacancy.CourseTitle.Should().Be(courseResponse.Title);
+            actual.Vacancy.Route.Should().Be(courseResponse.Route);
+        }
+        [Test, MoqAutoData]
+        public async Task Then_The_Vacancy_Url_Is_Correct_For_Nhs_Vacancy(
+            GetVacancyQuery query,
+            GetVacancyApiResponse apiApiResponse,
+            GetStandardsListItem courseResponse,
+            string findAnApprenticeshipBaseUrl,
+            List<string> categories,
+            [Frozen] Mock<ICourseService> standardsService,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            [Frozen] Mock<IOptions<VacanciesConfiguration>> vacanciesConfiguration,
+            GetVacancyQueryHandler handler)
+        {
+            vacanciesConfiguration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl;
+            courseResponse.LarsCode = apiApiResponse.StandardLarsCode!.Value;
+            apiApiResponse.VacancySource = "NhS";
+            apiApiResponse.VacancyReference = "Vac";
+            standardsService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse))).ReturnsAsync(new GetStandardsListResponse
+                { Standards = new List<GetStandardsListItem> { courseResponse } });
+            
+            var expectedGetRequest = new GetVacancyRequest(query.VacancyReference);
+            apiClient.Setup(x =>
+                x.Get<GetVacancyApiResponse>(It.Is<GetVacancyRequest>(c =>
+                    c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiApiResponse);
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.Vacancy.Should().BeEquivalentTo(apiApiResponse);
+            actual.Vacancy.VacancyUrl.Should()
+                .Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/nhs/{apiApiResponse.VacancyReference.Replace("VAC","", StringComparison.CurrentCultureIgnoreCase)}");
             actual.Vacancy.CourseLevel.Should().Be(courseResponse.Level);
             actual.Vacancy.CourseTitle.Should().Be(courseResponse.Title);
             actual.Vacancy.Route.Should().Be(courseResponse.Route);

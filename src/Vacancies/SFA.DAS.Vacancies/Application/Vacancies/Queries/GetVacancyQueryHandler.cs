@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,7 +44,9 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 };
             }
             
-            vacancyResponseTask.Result.VacancyUrl = vacancyResponseTask.Result.VacancyUrl = $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacancyResponseTask.Result.VacancyReference}";
+            vacancyResponseTask.Result.VacancyUrl = vacancyResponseTask.Result.VacancySource.Equals("NHS", StringComparison.CurrentCultureIgnoreCase) 
+                ? $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/nhs/{vacancyResponseTask.Result.VacancyReference.Replace("VAC","", StringComparison.CurrentCultureIgnoreCase)}" 
+                : $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacancyResponseTask.Result.VacancyReference}";
 
             if (vacancyResponseTask.Result.StandardLarsCode != null)
             {
