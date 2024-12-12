@@ -4,7 +4,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.EmployerAan.Application.Onboarding.NotificationsLocations;
+namespace SFA.DAS.EmployerAan.Application.Settings.NotificationsLocations;
 
 public class GetNotificationsLocationsQueryHandler(ILocationApiClient<LocationApiConfiguration> apiClient, ILocationLookupService locationLookupService) : IRequestHandler<GetNotificationsLocationsQuery,
     GetNotificationsLocationsQueryResult>
