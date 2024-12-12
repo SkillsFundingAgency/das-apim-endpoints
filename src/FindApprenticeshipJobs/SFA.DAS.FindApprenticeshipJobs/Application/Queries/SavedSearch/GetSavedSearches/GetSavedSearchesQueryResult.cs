@@ -30,6 +30,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                 public string? EmployerName { get; set; }
                 public Address Address { get; set; } = null!;
                 public string? Wage { get; set; }
+                public string? WageUnit { get; set; }
+                public string? WageType { get; set; }
                 public string? ClosingDate { get; set; }
                 public string? TrainingCourse { get; set; }
                 public decimal? Distance { get; set; }
@@ -45,6 +47,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                         Title = source.Title,
                         EmployerName = source.EmployerName,
                         Wage = source.WageText,
+                        WageUnit = source.WageUnit,
+                        WageType = source.WageType,
                         Address = source.VacancyAddress,
                         TrainingCourse = $"{source.CourseTitle} (level {source.CourseLevel})",
                         Distance = source.Distance.HasValue ? Math.Round(source.Distance.Value, 1) : null,

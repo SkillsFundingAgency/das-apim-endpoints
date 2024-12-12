@@ -37,6 +37,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
         [JsonPropertyName("wageText")]
         public string WageText { get; set; }
 
+        [JsonPropertyName("wageUnit")]
+        public string WageUnit { get; set; }
+
+        [JsonPropertyName("wageType")]
+        public string WageType { get; set; }
+
         [JsonPropertyName("address")]
         public VacancyAddress VacancyAddress { get; set; }
 

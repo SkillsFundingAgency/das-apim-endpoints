@@ -178,7 +178,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
 
                                            * Distance: 10 miles
                                            * Training course: Software Engineering
-                                           * Annual wage: �30,000
+                                           * Wage: �30,000 a year
 
                                            2022-12-31
 
@@ -228,7 +228,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                                            123 Main St, 12345
 
                                            * Training course: Software Engineering
-                                           * Annual wage: �30,000
+                                           * Wage: �30,000 a year
 
                                            2022-12-31
 
@@ -243,8 +243,68 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             snippet.Should().Be(expectedSnippet);
         }
 
-        [Test]
-        public void GetSavedSearchVacanciesSnippet_Should_Return_Correct_Snippet_With_Training_Course_Set_To_See_Details_On_Nhs_When_Vacancy_Source_Is_Nhs()
+        [TestCase("Competitive", "", "Competitive")]
+        [TestCase("", "month", "�30,000 a year")]
+        [TestCase("", "hour", "�30,000 a year")]
+        public void GetSavedSearchVacanciesSnippet_Should_Return_Snippet_With_Correct_Wage_Text_For_Faa_VacancySource_And_Different_WageTypes(
+            string wagetype, string wageUnit, string expectedWageText)
+        {
+            // Arrange
+            var environmentHelper = new EmailEnvironmentHelper("test")
+            {
+                VacancyDetailsUrl = "https://example.com/vacancy/{vacancy-reference}"
+            };
+
+            var vacancies = new List<PostSendSavedSearchNotificationCommand.Vacancy>
+            {
+                new()
+                {
+                    Title = "Software Developer",
+                    VacancyReference = "12345",
+                    EmployerName = "ABC Company",
+                    Address = new PostSendSavedSearchNotificationCommand.Address
+                    {
+                        AddressLine1 = "123 Main St",
+                        Postcode = "12345"
+                    },
+                    Distance = 10,
+                    TrainingCourse = "Software Engineering",
+                    Wage = "�30,000",
+                    ClosingDate = "2022-12-31",
+                    VacancySource = "FAA",
+                    WageUnit = wageUnit,
+                    WageType = wagetype
+                }
+            };
+
+            string expectedSnippet = $"""
+
+                                           #[Software Developer](https://example.com/vacancy/12345)
+                                           ABC Company
+                                           123 Main St, 12345
+
+                                           * Distance: 10 miles
+                                           * Training course: Software Engineering
+                                           * Wage: {expectedWageText}
+
+                                           2022-12-31
+
+                                           ---
+
+                                           """;
+
+            // Act
+            var snippet = EmailTemplateBuilder.GetSavedSearchVacanciesSnippet(environmentHelper, vacancies, true);
+
+            // Assert
+            snippet.Should().Be(expectedSnippet);
+        }
+
+        [TestCase("Competitive", "", "Depends on experience")]
+        [TestCase("", "month", "�30,000 a month")]
+        [TestCase("", "hour", "�30,000 an hour")]
+        public void GetSavedSearchVacanciesSnippet_Should_Return_Snippet_With_Correct_Wage_Text_For_Nhs_VacancySource_And_Different_WageTypes(
+            string wagetype, string wageUnit, string expectedWageText)
         {
             // Arrange
             var environmentHelper = new EmailEnvironmentHelper("test")
@@ -268,11 +328,13 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                     TrainingCourse = "",
                     Wage = "�30,000",
                     ClosingDate = "2022-12-31",
-                    VacancySource = "NHS"
+                    VacancySource = "NHS",
+                    WageUnit = wageUnit,
+                    WageType = wagetype
                 }
             };
 
-            const string expectedSnippet = """
+            string expectedSnippet = $"""
 
                                            #[Mental Health Nurse](https://example.com/vacancy/12345)
                                            NHS Jobs
@@ -280,7 +342,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
 
                                            * Distance: 10 miles
                                            * Training course: See more details on NHS Jobs
-                                           * Annual wage: �30,000
+                                           * Wage: {expectedWageText}
 
                                            2022-12-31
 

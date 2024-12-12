@@ -83,8 +83,14 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 
                 var trainingCourseText = (vacancy.VacancySource == "NHS") ? "See more details on NHS Jobs" : vacancy.TrainingCourse;
 
+                var wageText = 
+                    (vacancy.WageType == "Competitive") ?
+                    ((vacancy.VacancySource == "NHS") ? "Depends on experience" : vacancy.WageType) : 
+                    (vacancy.VacancySource == "NHS") ? 
+                    vacancy.Wage + ((vacancy.WageUnit == "hour") ? " an " : " a ") + vacancy.WageUnit : vacancy.Wage + " a year";
+
                 sb.AppendLine($"* Training course: {trainingCourseText}");
-                sb.AppendLine($"* Annual wage: {vacancy.Wage}");
+                sb.AppendLine($"* Wage: {wageText}");
 
                 sb.AppendLine();
                 sb.AppendLine($"{vacancy.ClosingDate}");
