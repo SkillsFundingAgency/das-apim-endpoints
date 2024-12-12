@@ -109,5 +109,16 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
             var instance = new GetKsbProgressForTaskQueryRequest(apprenticeshipId, taskId);
             instance.GetUrl.Should().Be($"apprenticeships/1/ksbs/taskid/1");
         }
+
+        [Test, AutoData]
+        public void PatchApprenticeTaskReminderRequestTestUrlIsCorrectlyBuilt()
+        {
+            var taskId = 1;
+            var statusId = 1;
+            
+            var instance = new PatchApprenticeTaskReminderRequest(taskId, statusId);
+
+            instance.PostUrl.Should().Be($"/apprenticeships/updatetaskreminders/tasks/1/status/1");
+        }
     }
 }

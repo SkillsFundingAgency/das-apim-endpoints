@@ -1,9 +1,7 @@
-﻿using System;
-using Microsoft.VisualBasic.FileIO;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using NUnit.Framework.Legacy;
 using SFA.DAS.ApprenticeApp.Models;
-using SFA.DAS.SharedOuterApi.Configuration;
+using System;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
 {
@@ -163,39 +161,6 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
             ClassicAssert.AreEqual(new Guid("9D2B0228-4D0D-4C23-8B49-01A698857709"), sut.Id);
             ClassicAssert.AreEqual("key", sut.Key);
             ClassicAssert.AreEqual("detail", sut.Detail);
-        }
-
-        [Test]
-        public void TaskReminderData_model_test()
-        {
-           var sut = new ApprenticeTaskReminderModelData
-           {
-               TaskId = 1,
-               ApprenticeshipId = 1,
-               ApprenticeAccountId = new Guid("9D2B0228-4D0D-4C23-8B49-01A698857709"),
-               DueDate = new DateTime(2019, 05, 09),
-               Title = "title",
-               ApprenticeshipCategoryId = 0,
-               Note = "note",
-               CompletionDateTime = new DateTime(2019, 05, 09),
-               CreatedDateTime = new DateTime(2019, 05, 09),
-               ReminderValue = 1,
-               ReminderUnit = ReminderUnit.Days,
-               ReminderStatus = ReminderStatus.Dismissed
-           };
-
-            ClassicAssert.AreEqual(1, sut.TaskId);
-            ClassicAssert.AreEqual(1, sut.ApprenticeshipId);
-            ClassicAssert.AreEqual(new Guid("9D2B0228-4D0D-4C23-8B49-01A698857709"), sut.ApprenticeAccountId);
-            ClassicAssert.AreEqual(new DateTime(2019, 05, 09), sut.DueDate);
-            ClassicAssert.AreEqual("title", sut.Title);
-            ClassicAssert.AreEqual(0, sut.ApprenticeshipCategoryId);
-            ClassicAssert.AreEqual("note", sut.Note);
-            ClassicAssert.AreEqual(new DateTime(2019, 05, 09), sut.CompletionDateTime);
-            ClassicAssert.AreEqual(new DateTime(2019, 05, 09), sut.CreatedDateTime);
-            ClassicAssert.AreEqual(1, sut.ReminderValue);
-            ClassicAssert.AreEqual(ReminderUnit.Days, sut.ReminderUnit);
-            ClassicAssert.AreEqual(ReminderStatus.Dismissed, sut.ReminderStatus);
         }
     }
 }

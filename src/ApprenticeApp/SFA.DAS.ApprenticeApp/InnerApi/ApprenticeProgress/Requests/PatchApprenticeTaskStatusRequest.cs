@@ -1,9 +1,5 @@
-﻿using System;
-using Contentful.Core.Models.Management;
-using System.Threading.Tasks;
-using SFA.DAS.ApprenticeApp.Models;
+﻿using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using Microsoft.Azure.Amqp.Framing;
 
 namespace SFA.DAS.ApprenticeApp.InnerApi.ApprenticeProgress.Requests
 {

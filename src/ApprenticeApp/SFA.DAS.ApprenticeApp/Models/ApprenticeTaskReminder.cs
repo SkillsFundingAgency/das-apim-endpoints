@@ -21,6 +21,6 @@ namespace SFA.DAS.ApprenticeApp.Models
 
     public class ApprenticeTaskReminderCollection
     {
-        public List<ApprenticeTaskReminder> ApprenticeTaskReminders { get; set; }
+        public List<ApprenticeTaskReminder> TaskReminders { get; set; }
     }
 }
