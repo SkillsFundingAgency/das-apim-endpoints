@@ -4,23 +4,17 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Application.Notifications;
+using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Encoding;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications
 {
     [TestFixture]
-    internal class WhenGetEmployerRecipients
+    internal class WhenGetProviderRecipients
     {
 #pragma warning disable CS8618 //Disable nullable check
         private Fixture _fixture;
@@ -30,6 +24,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _apiCommitmentsClientMock;
         private Mock<IEncodingService> _encodingServiceMock;
         private Mock<INotificationService> _notificationServiceMock;
+        private Mock<IProviderAccountApiClient<ProviderAccountApiConfiguration>> _providerAccountMock;
         private ExtendedNotificationService _service;
 #pragma warning restore CS8618
 
@@ -43,6 +38,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications
             _apiCommitmentsClientMock = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
             _encodingServiceMock = new Mock<IEncodingService>();
             _notificationServiceMock = new Mock<INotificationService>();
+            _providerAccountMock = new Mock<IProviderAccountApiClient<ProviderAccountApiConfiguration>>();
 
             _service = new ExtendedNotificationService(
                 _loggerMock.Object,
@@ -51,29 +47,29 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications
                 _apiCommitmentsClientMock.Object,
                 _encodingServiceMock.Object,
                 _notificationServiceMock.Object,
-                Mock.Of<IProviderAccountApiClient<ProviderAccountApiConfiguration>>());
+                _providerAccountMock.Object);
         }
 
         [Test]
         public async Task ShouldReturnRecipients()
         {
             // Arrange
-            var accountId = _fixture.Create<long>();
-            var response = _fixture.Create<GetAccountTeamMembersWhichReceiveNotificationsResponse>();
+            var providerId = _fixture.Create<long>();
+            var response = _fixture.CreateMany<GetProviderUsersListItem>();
             foreach(var recipient in response)
             {
-                recipient.CanReceiveNotifications = true;
+                recipient.ReceiveNotifications = true;
             }
 
-            _accountsApiClientMock
-                .Setup(x => x.Get<GetAccountTeamMembersWhichReceiveNotificationsResponse>(It.IsAny<GetAccountTeamMembersWhichReceiveNotificationsRequest>()))
+            _providerAccountMock
+                .Setup(x => x.GetAll<GetProviderUsersListItem>(It.IsAny<GetProviderUsersRequest>()))
                 .ReturnsAsync(response);
 
             // Act
-            var result = await _service.GetEmployerRecipients(accountId);
+            var result = await _service.GetProviderRecipients(providerId);
 
             // Assert
-            result.Should().HaveCount(response.Count);
+            result.Should().HaveCount(response.Count());
         }
     }
 }
