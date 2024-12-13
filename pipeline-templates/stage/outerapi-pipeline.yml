@@ -88,6 +88,7 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -118,6 +119,7 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
 
 - stage: Deploy_PP
   dependsOn: Build
@@ -148,6 +150,8 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
+
 
 - stage: Deploy_PROD
   dependsOn: Build
@@ -177,6 +181,7 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
 
 - stage: Deploy_MO
   dependsOn: Build
@@ -206,6 +211,7 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
 
 - stage: Deploy_DEMO
   dependsOn: Build
@@ -236,3 +242,4 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
