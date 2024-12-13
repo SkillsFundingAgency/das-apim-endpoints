@@ -66,8 +66,24 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
 
             foreach (var vacancy in vacancies)
             {
+                string? trainingCourseText;
+                string? wageText;
+
                 sb.AppendLine();
-                sb.AppendLine($"#[{vacancy.Title}]({environmentHelper.VacancyDetailsUrl.Replace("{vacancy-reference}", vacancy.VacancyReference)})");
+                if (vacancy.VacancySource == "NHS")
+                {
+                    sb.AppendLine($"#[{vacancy.Title}]({environmentHelper.VacancyDetailsNhsUrl.Replace("{vacancy-reference}", vacancy.VacancyReference)})");
+                    trainingCourseText = "See more details on NHS Jobs";
+                    wageText = (vacancy.WageType == "Competitive") ?
+                        "Depends on experience" :
+                        vacancy.Wage + ((vacancy.WageUnit == "hour") ? " an " : " a ") + vacancy.WageUnit;
+                }
+                else
+                { 
+                    sb.AppendLine($"#[{vacancy.Title}]({environmentHelper.VacancyDetailsUrl.Replace("{vacancy-reference}", vacancy.VacancyReference)})");
+                    trainingCourseText = vacancy.TrainingCourse;
+                    wageText = (vacancy.WageType == "Competitive") ? vacancy.WageType : vacancy.Wage + " a year";
+                }
                 sb.AppendLine(vacancy.EmployerName);
                 sb.AppendLine(!string.IsNullOrEmpty(vacancy.Address.AddressLine4) ? $"{vacancy.Address.AddressLine4}, {vacancy.Address.Postcode}" :
                     !string.IsNullOrEmpty(vacancy.Address.AddressLine3) ? $"{vacancy.Address.AddressLine3}, {vacancy.Address.Postcode}" :
@@ -80,14 +96,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 {
                     sb.AppendLine($"* Distance: {vacancy.Distance} miles");    
                 }
-                
-                var trainingCourseText = (vacancy.VacancySource == "NHS") ? "See more details on NHS Jobs" : vacancy.TrainingCourse;
-
-                var wageText = 
-                    (vacancy.WageType == "Competitive") ?
-                    ((vacancy.VacancySource == "NHS") ? "Depends on experience" : vacancy.WageType) : 
-                    (vacancy.VacancySource == "NHS") ? 
-                    vacancy.Wage + ((vacancy.WageUnit == "hour") ? " an " : " a ") + vacancy.WageUnit : vacancy.Wage + " a year";
 
                 sb.AppendLine($"* Training course: {trainingCourseText}");
                 sb.AppendLine($"* Wage: {wageText}");

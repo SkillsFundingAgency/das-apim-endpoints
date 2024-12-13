@@ -164,7 +164,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                     },
                     Distance = 10,
                     TrainingCourse = "Software Engineering",
-                    Wage = "�30,000",
+                    Wage = "£30,000",
                     ClosingDate = "2022-12-31",
                     VacancySource = "FAA"
                 }
@@ -178,7 +178,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
 
                                            * Distance: 10 miles
                                            * Training course: Software Engineering
-                                           * Wage: �30,000 a year
+                                           * Wage: £30,000 a year
 
                                            2022-12-31
 
@@ -216,7 +216,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                     },
                     Distance = 10,
                     TrainingCourse = "Software Engineering",
-                    Wage = "�30,000",
+                    Wage = "£30,000",
                     ClosingDate = "2022-12-31"
                 }
             };
@@ -228,7 +228,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                                            123 Main St, 12345
 
                                            * Training course: Software Engineering
-                                           * Wage: �30,000 a year
+                                           * Wage: £30,000 a year
 
                                            2022-12-31
 
@@ -244,8 +244,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
         }
 
         [TestCase("Competitive", "", "Competitive")]
-        [TestCase("", "month", "�30,000 a year")]
-        [TestCase("", "hour", "�30,000 a year")]
+        [TestCase("", "month", "£30,000 a year")]
+        [TestCase("", "hour", "£30,000 a year")]
         public void GetSavedSearchVacanciesSnippet_Should_Return_Snippet_With_Correct_Wage_Text_For_Faa_VacancySource_And_Different_WageTypes(
             string wagetype, string wageUnit, string expectedWageText)
         {
@@ -269,7 +269,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                     },
                     Distance = 10,
                     TrainingCourse = "Software Engineering",
-                    Wage = "�30,000",
+                    Wage = "£30,000",
                     ClosingDate = "2022-12-31",
                     VacancySource = "FAA",
                     WageUnit = wageUnit,
@@ -301,15 +301,15 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
         }
 
         [TestCase("Competitive", "", "Depends on experience")]
-        [TestCase("", "month", "�30,000 a month")]
-        [TestCase("", "hour", "�30,000 an hour")]
+        [TestCase("", "month", "£30,000 a month")]
+        [TestCase("", "hour", "£30,000 an hour")]
         public void GetSavedSearchVacanciesSnippet_Should_Return_Snippet_With_Correct_Wage_Text_For_Nhs_VacancySource_And_Different_WageTypes(
             string wagetype, string wageUnit, string expectedWageText)
         {
             // Arrange
             var environmentHelper = new EmailEnvironmentHelper("test")
             {
-                VacancyDetailsUrl = "https://example.com/vacancy/{vacancy-reference}"
+                VacancyDetailsUrl = "https://example.com/vacancy/nhs/{vacancy-reference}"
             };
 
             var vacancies = new List<PostSendSavedSearchNotificationCommand.Vacancy>
@@ -326,7 +326,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                     },
                     Distance = 10,
                     TrainingCourse = "",
-                    Wage = "�30,000",
+                    Wage = "£30,000",
                     ClosingDate = "2022-12-31",
                     VacancySource = "NHS",
                     WageUnit = wageUnit,
