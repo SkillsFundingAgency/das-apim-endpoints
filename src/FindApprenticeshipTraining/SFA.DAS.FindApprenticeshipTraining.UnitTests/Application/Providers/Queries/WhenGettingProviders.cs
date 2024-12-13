@@ -3,10 +3,14 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Providers.GetRoatpProviders;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,13 +19,18 @@ public class WhenGettingProviders
 {
     [Test, MoqAutoData]
     public async Task Then_Gets_Providers_From_RoatpTrainingProviderService(
-        [Frozen] Mock<IRoatpV2TrainingProviderService> trainingProviderService,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClient,
         [Greedy] GetRoatpProvidersQueryHandler handler,
         GetProvidersResponse expected,
         CancellationToken cancellationToken)
     {
         var query = new GetRoatpProvidersQuery();
-        trainingProviderService.Setup(x => x.GetProviders(cancellationToken)).ReturnsAsync(expected);
+
+        apiClient.Setup(x =>
+                x.GetWithResponseCode<GetProvidersResponse>(
+                    It.IsAny<GetRoatpProvidersRequest>()))
+            .ReturnsAsync(new ApiResponse<GetProvidersResponse>(expected, HttpStatusCode.OK, ""));
+
         var actual = await handler.Handle(query, cancellationToken);
         actual.Providers.Should().BeEquivalentTo(expected.RegisteredProviders.Select(provider => (RoatpProvider)provider));
     }
