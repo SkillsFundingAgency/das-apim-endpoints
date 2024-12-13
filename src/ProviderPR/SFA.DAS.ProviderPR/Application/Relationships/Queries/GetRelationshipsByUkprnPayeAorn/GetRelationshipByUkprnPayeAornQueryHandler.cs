@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using RestEase;
 using SFA.DAS.ProviderPR.Infrastructure;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
@@ -10,47 +11,47 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.PensionsRegulator;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipsByUkprnPayeAorn;
-public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClient<PensionRegulatorApiConfiguration> pensionsRegulatorApiClient, IProviderRelationshipsApiRestClient providerRelationshipsApiClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient) : IRequestHandler<GetRelationshipsByUkprnPayeAornQuery, GetRelationshipsByUkprnPayeAornResult>
+
+public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClient
+    <PensionRegulatorApiConfiguration> pensionsRegulatorApiClient,
+    IProviderRelationshipsApiRestClient providerRelationshipsApiClient,
+    IAccountsApiClient<AccountsConfiguration> accountsApiClient,
+    ILogger<GetRelationshipByUkprnPayeAornQueryHandler> logger)
+    : IRequestHandler<GetRelationshipsByUkprnPayeAornQuery, GetRelationshipsByUkprnPayeAornResult>
 {
+    public const string TprStatusNotClosed = "Not Closed";
     public async Task<GetRelationshipsByUkprnPayeAornResult> Handle(GetRelationshipsByUkprnPayeAornQuery request, CancellationToken cancellationToken)
     {
         var queryResult =
             new GetRelationshipsByUkprnPayeAornResult();
 
-        var res = await providerRelationshipsApiClient.GetRequestByUkprnAndPaye(request.Ukprn, request.Paye,
-            cancellationToken);
-
-        var isRequestPresent = IsRequestPresent(res!, request.Ukprn, request.Paye);
-
+        var isRequestPresent = await IsRequestPresent(request.Ukprn, request.Paye, cancellationToken);
         if (isRequestPresent)
         {
+            logger.LogInformation("Found an active request for Ukprn:{Ukprn} and Paye:{Paye}", request.Ukprn, request.Paye);
             queryResult.HasActiveRequest = true;
             return queryResult;
         }
 
-        var pensionRegulatorResponse =
-            await pensionsRegulatorApiClient.GetWithResponseCode<List<PensionRegulatorOrganisation>>(
-                new GetPensionsRegulatorOrganisationsRequest(request.Aorn, request.Paye));
+        var pensionRegulatorOrganisation = await GetOrganisationDetailsFromTpr(request.Aorn, request.Paye);
 
-        var hasInvalidPaye = CheckPensionOrganisationsHaveInvalidPaye(pensionRegulatorResponse);
+        queryResult.HasInvalidPaye = pensionRegulatorOrganisation is null;
 
-        queryResult.HasInvalidPaye = hasInvalidPaye;
-
-        if (hasInvalidPaye)
+        if (queryResult.HasInvalidPaye.Value)
         {
             return queryResult;
         }
 
-        queryResult.Organisation = GetPensionRegulatorOrganisationDetails(pensionRegulatorResponse.Body);
+        queryResult.Organisation = GetPensionRegulatorOrganisationDetails(pensionRegulatorOrganisation!);
 
         var accountHistoryFromPayeRefResult =
             await accountsApiClient.GetWithResponseCode<AccountHistory>(new GetPayeSchemeAccountByRefRequest(request.Paye));
 
         if (accountHistoryFromPayeRefResult.StatusCode != HttpStatusCode.OK)
         {
+            logger.LogInformation("Account history not found for Paye:{Paye}", request.Paye);
             return queryResult;
         }
 
@@ -68,12 +69,11 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
 
         UpdateSingleLegalEntityDetails(queryResult, accountLegalEntities);
 
-        Response<GetRelationshipResponse> relationshipResponse =
-            await providerRelationshipsApiClient.GetRelationship(request.Ukprn,
-                queryResult.AccountLegalEntityId!.Value, cancellationToken);
+        Response<GetRelationshipResponse> relationshipResponse = await providerRelationshipsApiClient.GetRelationship(request.Ukprn, queryResult.AccountLegalEntityId!.Value, cancellationToken);
 
         if (relationshipResponse.ResponseMessage.StatusCode == HttpStatusCode.OK)
         {
+            logger.LogInformation("Request not found for Ukprn:{Ukprn} and AccountLegalEntity {AccountLegalEntityId}", request.Ukprn, queryResult.AccountLegalEntityId!.Value);
             queryResult.HasRelationship = true;
             queryResult.Operations = relationshipResponse.GetContent().Operations.ToList();
         }
@@ -101,45 +101,19 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
         };
     }
 
-    private static bool IsRequestPresent(Response<GetRequestByUkprnAndPayeResponse>? res, long ukprn, string paye)
+    private async Task<bool> IsRequestPresent(long ukprn, string paye, CancellationToken cancellationToken)
     {
-        if (res != null)
-        {
-            switch (res.ResponseMessage.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    {
-                        GetRequestByUkprnAndPayeResponse getResponse = res.GetContent();
-                        if (getResponse.RequestType != "CreateAccount") return false;
-                        return true;
+        Response<GetRequestByUkprnAndPayeResponse?> res = await providerRelationshipsApiClient.GetRequestByUkprnAndPaye(ukprn, paye,
+            cancellationToken);
 
-                    }
-                case HttpStatusCode.NotFound:
-                    return false;
-            }
-        }
-
-        throw new InvalidOperationException(
-            $"Pensions regulator API threw unexpected response for ukprn {ukprn} and paye {paye}");
+        return res.ResponseMessage.StatusCode == HttpStatusCode.OK;
     }
 
-    private static OrganisationDetails? GetPensionRegulatorOrganisationDetails(List<PensionRegulatorOrganisation> pensionRegulatorOrganisations)
-    {
-        OrganisationDetails? organisationDetails = null;
-
-        var pensionRegulatorOrganisation = pensionRegulatorOrganisations.Find(b => b.Status == "");
-
-        if (pensionRegulatorOrganisation == null) return organisationDetails;
-
-
-        organisationDetails = new OrganisationDetails
+    private static OrganisationDetails GetPensionRegulatorOrganisationDetails(PensionRegulatorOrganisation pensionRegulatorOrganisation)
+        => new OrganisationDetails()
         {
-            Name = pensionRegulatorOrganisation.Name
-        };
-
-        if (pensionRegulatorOrganisation.Address != null)
-        {
-            organisationDetails.Address = new AddressDetails
+            Name = pensionRegulatorOrganisation.Name,
+            Address = new AddressDetails
             {
                 Line1 = pensionRegulatorOrganisation.Address.Line1,
                 Line2 = pensionRegulatorOrganisation.Address.Line2,
@@ -147,24 +121,20 @@ public class GetRelationshipByUkprnPayeAornQueryHandler(IPensionRegulatorApiClie
                 Line4 = pensionRegulatorOrganisation.Address.Line4,
                 Line5 = pensionRegulatorOrganisation.Address.Line5,
                 Postcode = pensionRegulatorOrganisation.Address.Postcode
-            };
-        }
-
-        return organisationDetails;
-    }
-
-    private static bool CheckPensionOrganisationsHaveInvalidPaye(ApiResponse<List<PensionRegulatorOrganisation>> result)
-    {
-        if (result.StatusCode == HttpStatusCode.OK)
-        {
-            if (result.Body.TrueForAll(s => s.Status != ""))
-            {
-                return true;
             }
+        };
 
-            return false;
+    private async Task<PensionRegulatorOrganisation?> GetOrganisationDetailsFromTpr(string aorn, string paye)
+    {
+        var pensionRegulatorResponse = await pensionsRegulatorApiClient.GetWithResponseCode<IEnumerable<PensionRegulatorOrganisation>>(
+                new GetPensionsRegulatorOrganisationsRequest(aorn, paye));
+
+        if (pensionRegulatorResponse == null || pensionRegulatorResponse.StatusCode != HttpStatusCode.OK || !pensionRegulatorResponse.Body.Any())
+        {
+            logger.LogInformation("Did not find any organisation in TPR with AORN:{Aorn} and Paye:{Paye}", aorn, paye);
+            return null;
         }
 
-        return true;
+        return pensionRegulatorResponse.Body.FirstOrDefault(p => p.Status.Equals(TprStatusNotClosed, StringComparison.OrdinalIgnoreCase));
     }
 }

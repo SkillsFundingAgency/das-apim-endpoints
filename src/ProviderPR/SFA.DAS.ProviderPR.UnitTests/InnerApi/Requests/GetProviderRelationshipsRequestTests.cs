@@ -48,7 +48,11 @@ public sealed class GetProviderRelationshipsRequestTests
 
         Dictionary<string, string> sut = providerRelationshipsRequest.ToDictionary();
 
-        Assert.That(sut.ContainsKey(nameof(GetProviderRelationshipsRequest.HasCreateCohortPermission)), Is.False);
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.ContainsKey(nameof(GetProviderRelationshipsRequest.HasCreateCohortPermission)), Is.True);
+            Assert.That(sut[nameof(GetProviderRelationshipsRequest.HasCreateCohortPermission)], Is.EqualTo("False"));
+        });
     }
 
     [Test]
