@@ -64,15 +64,31 @@
         },
         "applicationInsightsConnectionString": {
             "type": "securestring",
-            "defaultValue": ""
+            "defaultValue": "",
+            "metadata": {
+                "description": "Shared application insights connection string retrieved from the get-product-app-insights step"
+            }
         },
         "applicationInsightsResourceId": {
             "type": "string",
-            "defaultValue": ""
+            "defaultValue": "",
+            "metadata": {
+                "description": "Shared application insights resource ID retrieved from the get-product-app-insights step"
+            }
         },
         "alertActionGroupResourceId": {
             "type": "string",
-            "defaultValue": ""
+            "defaultValue": "",
+            "metadata": {
+                "description": "Alert group resource ID found in the management resources variable groups"
+            }
+        },
+        "enableFailedRequestAlert": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Enables alerting on app insights failed requests"
+            }
         }
     },
     "variables": {
@@ -259,10 +275,10 @@
             }
         },
         {
+            "condition": "[and( equals(parameters('enableFailedRequestAlert'), true()), greater(length(parameters('applicationInsightsResourceId')), 0) )]",
             "apiVersion": "2021-04-01",
             "name": "[concat('application-insights-', parameters('appServiceName'), '-alert-')]",
             "type": "Microsoft.Resources/deployments",
-            "condition": "[greater(length(parameters('applicationInsightsResourceId')), 0)]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
                 "mode": "Incremental",
