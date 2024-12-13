@@ -83,7 +83,7 @@ public class WhenGettingApprenticeshipStartDate
             ApprenticeDateOfBirth = _dateOfBirth,
             CourseCode = 456.ToString(),
             CourseVersion = "1.2",
-            SimplifiedPayentsMinimumStartDate = new DateTime(2024, 10, 1)
+            SimplifiedPaymentsMinimumStartDate = new DateTime(2024, 10, 1)
         };
 
         _mockApprenticeshipsApiClient.Setup(x => x.Get<GetApprenticeshipStartDateResponse>(It.IsAny<GetApprenticeshipStartDateRequest>()))

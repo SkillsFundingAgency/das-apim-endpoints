@@ -76,7 +76,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 			PlannedEndDate = apprenticeStartDateInnerModel.PlannedEndDate,
 			EmployerName = employerName,
 			ProviderName = providerName,
-			EarliestStartDate = await GetEarliestNewStartDate(apprenticeStartDateInnerModel.ActualStartDate, apprenticeStartDateInnerModel.SimplifiedPayentsMinimumStartDate),
+			EarliestStartDate = await GetEarliestNewStartDate(apprenticeStartDateInnerModel.ActualStartDate, apprenticeStartDateInnerModel.SimplifiedPaymentsMinimumStartDate),
 			LatestStartDate = await GetLatestNewStartDate(apprenticeStartDateInnerModel.ActualStartDate),
 			LastFridayOfSchool = apprenticeStartDateInnerModel.ApprenticeDateOfBirth.GetLastFridayInJuneOfSchoolYearApprenticeTurned16(),
 			Standard = ToStandardInfo(standard, apprenticeStartDateInnerModel.CourseVersion),
