@@ -27,7 +27,7 @@ public class AccountDetails
 public class OrganisationDetails
 {
     public string? Name { get; set; }
-    public AddressDetails? Address { get; set; }
+    public AddressDetails Address { get; set; } = new();
 }
 
 public class AddressDetails

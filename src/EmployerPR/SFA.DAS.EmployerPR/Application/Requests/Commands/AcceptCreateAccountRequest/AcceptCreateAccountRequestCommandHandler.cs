@@ -54,7 +54,7 @@ public class AcceptCreateAccountRequestCommandHandler(
         GetPensionsRegulatorOrganisationsRequest tprRequest = new(permissionRequest.EmployerAORN, permissionRequest.EmployerPAYE);
         var tprResponse = await _pensionRegulatorApiClient.GetWithResponseCode<IEnumerable<PensionRegulatorOrganisation>>(tprRequest);
 
-        PensionRegulatorOrganisation organisation = tprResponse.Body.First(r => r.Status == string.Empty);
+        PensionRegulatorOrganisation organisation = tprResponse.Body.First(r => r.Status.Equals(TprOrganisationStatus.NotClosed, StringComparison.OrdinalIgnoreCase));
         return organisation;
     }
 
