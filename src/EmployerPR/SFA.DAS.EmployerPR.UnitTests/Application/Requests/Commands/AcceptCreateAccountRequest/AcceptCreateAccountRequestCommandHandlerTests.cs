@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using RestEase;
 using SFA.DAS.EmployerPR.Application.Requests.Commands.AcceptCreateAccountRequest;
+using SFA.DAS.EmployerPR.Common;
 using SFA.DAS.EmployerPR.Infrastructure;
 using SFA.DAS.EmployerPR.InnerApi.Requests;
 using SFA.DAS.EmployerPR.InnerApi.Responses;
@@ -47,7 +48,7 @@ public class AcceptCreateAccountRequestCommandHandlerTests
         _command = fixture.Create<AcceptCreateAccountRequestCommand>();
         _prApiClientMock.Setup(m => m.GetRequest(_command.RequestId, It.IsAny<CancellationToken>())).ReturnsAsync(new Response<GetRequestResponse?>(null, new HttpResponseMessage(HttpStatusCode.OK), () => _permissionRequest));
 
-        IEnumerable<PensionRegulatorOrganisation> tprResponse = [fixture.Build<PensionRegulatorOrganisation>().With(t => t.Status, string.Empty).Create()];
+        IEnumerable<PensionRegulatorOrganisation> tprResponse = [fixture.Build<PensionRegulatorOrganisation>().With(t => t.Status, TprOrganisationStatus.NotClosed).Create()];
         _tprApiClientMock.Setup(t => t.GetWithResponseCode<IEnumerable<PensionRegulatorOrganisation>>(It.Is<GetPensionsRegulatorOrganisationsRequest>(r => r.PayeRef == _permissionRequest.EmployerPAYE && r.Aorn == _permissionRequest.EmployerAORN))).ReturnsAsync(new ApiResponse<IEnumerable<PensionRegulatorOrganisation>>(tprResponse, HttpStatusCode.OK, string.Empty));
 
         _createAccountResponse = fixture.Create<PostCreateAccountResponse>();
