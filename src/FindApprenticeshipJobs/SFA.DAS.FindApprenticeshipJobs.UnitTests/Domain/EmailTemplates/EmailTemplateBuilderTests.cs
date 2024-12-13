@@ -309,7 +309,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             // Arrange
             var environmentHelper = new EmailEnvironmentHelper("test")
             {
-                VacancyDetailsUrl = "https://example.com/vacancy/nhs/{vacancy-reference}"
+                VacancyDetailsNhsUrl = "https://example.com/vacancy/nhs/{vacancy-reference}"
             };
 
             var vacancies = new List<PostSendSavedSearchNotificationCommand.Vacancy>
