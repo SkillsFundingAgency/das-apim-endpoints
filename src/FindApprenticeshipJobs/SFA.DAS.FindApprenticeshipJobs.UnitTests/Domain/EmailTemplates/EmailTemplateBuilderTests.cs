@@ -336,7 +336,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
 
             string expectedSnippet = $"""
 
-                                           #[Mental Health Nurse](https://example.com/vacancy/12345)
+                                           #[Mental Health Nurse](https://example.com/vacancy/nhs/12345)
                                            NHS Jobs
                                            123 Main St, 12345
 
