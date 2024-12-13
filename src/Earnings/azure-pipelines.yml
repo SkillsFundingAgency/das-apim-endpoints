@@ -57,6 +57,7 @@ pr:
     - azure
     - pipeline-templates
     - src/Earnings
+    - Directory.Packages.props
 
 variables:
 - group: Release Management Resources
@@ -68,7 +69,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/1.0.7
+    ref: refs/tags/2.2.0
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
@@ -267,7 +268,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: AT
       SchemaFilePath: $(EarningsOuterApiSchemaFilePath)
-      ConfigurationSecrets: ${{ parameters.ConfigurationSecrets }}
+      ConfigurationSecrets: {}
       DeploymentName: Deploy_Earnings
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(EarningsOuterApiAppServiceName)
@@ -299,7 +300,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: TEST
       SchemaFilePath: $(EarningsOuterApiSchemaFilePath)
-      ConfigurationSecrets: ${{ parameters.ConfigurationSecrets }}
+      ConfigurationSecrets: {}
       DeploymentName: Deploy_Earnings
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(EarningsOuterApiAppServiceName)
@@ -331,7 +332,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: TEST2
       SchemaFilePath: $(EarningsOuterApiSchemaFilePath)
-      ConfigurationSecrets: ${{ parameters.ConfigurationSecrets }}
+      ConfigurationSecrets: {}
       DeploymentName: Deploy_Earnings
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(EarningsOuterApiAppServiceName)
@@ -363,7 +364,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: PP
       SchemaFilePath: $(EarningsOuterApiSchemaFilePath)
-      ConfigurationSecrets: ${{ parameters.ConfigurationSecrets }}
+      ConfigurationSecrets: {}
       DeploymentName: Deploy_Earnings
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(EarningsOuterApiAppServiceName)
@@ -395,7 +396,8 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: PROD
       SchemaFilePath: $(EarningsOuterApiSchemaFilePath)
-      ConfigurationSecrets: ${{ parameters.ConfigurationSecrets }}
+      ConfigurationSecrets:
+        UserBearerTokenSigningKey: $(UserBearerTokenSigningKey)
       DeploymentName: Deploy_Earnings
       AppServiceName: $(EarningsOuterApiAppServiceName)
       CustomHostName: $(EarningsOuterApiCustomHostname)
@@ -426,7 +428,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
       Environment: MO
       SchemaFilePath: $(EarningsOuterApiSchemaFilePath)
-      ConfigurationSecrets: ${{ parameters.ConfigurationSecrets }}
+      ConfigurationSecrets: {}
       DeploymentName: Deploy_Earnings
       AppServiceName: $(EarningsOuterApiAppServiceName)
       CustomHostName: $(EarningsOuterApiCustomHostname)
@@ -457,7 +459,7 @@ stages:
       AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
       Environment: DEMO
       SchemaFilePath: $(EarningsOuterApiSchemaFilePath)
-      ConfigurationSecrets: ${{ parameters.ConfigurationSecrets }}
+      ConfigurationSecrets: {}
       DeploymentName: Deploy_Earnings
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(EarningsOuterApiAppServiceName)

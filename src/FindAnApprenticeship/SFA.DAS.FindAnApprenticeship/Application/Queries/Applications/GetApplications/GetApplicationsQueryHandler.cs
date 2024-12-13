@@ -30,8 +30,9 @@ public class GetApplicationsQueryHandler(
         var totalApplicationCount = applicationsTask.Result.Applications.Count;
         var applicationList = applicationsTask.Result.Applications.Where(x =>
             x.Status == request.Status.ToString()
-            || (request.Status == ApplicationStatus.Submitted && x.Status == ApplicationStatus.Withdrawn.ToString()))
-            .ToList();
+            || (request.Status == ApplicationStatus.Submitted && x.Status == ApplicationStatus.Withdrawn.ToString())
+            || (request.Status == ApplicationStatus.Draft && x.Status == ApplicationStatus.Expired.ToString())
+            ).ToList();
 
         if (totalApplicationCount == 0)
         {
@@ -52,15 +53,16 @@ public class GetApplicationsQueryHandler(
 
         foreach (var application in applicationList)
         {
-            var vacancy = vacancies.FirstOrDefault(v => v.VacancyReference.Replace("VAC", string.Empty) == application.VacancyReference);
+            var vacancy = vacancies.First(v => v.VacancyReference.Replace("VAC", string.Empty) == application.VacancyReference);
             Enum.TryParse<ApplicationStatus>(application.Status, out var status);
             result.Applications.Add(new GetApplicationsQueryResult.Application
             {
                 Id = application.Id,
-                VacancyReference = vacancy?.VacancyReference,
-                EmployerName = vacancy?.EmployerName,
-                Title = vacancy?.Title,
-                ClosingDate = vacancy?.ClosedDate ?? vacancy!.ClosingDate,
+                VacancyReference = vacancy.VacancyReference,
+                EmployerName = vacancy.EmployerName,
+                Title = vacancy.Title,
+                ClosingDate = vacancy.ClosingDate,
+                ClosedDate = vacancy.ClosedDate,
                 CreatedDate = application.CreatedDate,
                 WithdrawnDate = application.WithdrawnDate,
                 Status = status,

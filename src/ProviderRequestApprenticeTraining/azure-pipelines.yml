@@ -19,6 +19,7 @@ pr:
   paths:
     include:
     - src/ProviderRequestApprenticeTraining
+    - Directory.Packages.props
     exclude:
     - azure
     - pipeline-templates
@@ -34,7 +35,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/1.0.5
+    ref: refs/tags/2.2.0
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
@@ -53,3 +54,5 @@ stages:
     OuterApiName: ProviderRequestApprenticeTraining
     AdditionalProjectPathToInclude: src/Shared/SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth/SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.csproj
     AdditionalTestProjectPathToInclude: src/Shared/SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.UnitTests/SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.UnitTests.csproj
+    ConfigurationSecrets:
+      NServiceBusLicense: $(NServiceBusLicense)

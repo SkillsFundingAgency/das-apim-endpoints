@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.Forecasting.Api.Models
+namespace SFA.DAS.Forecasting.Api.Models;
+
+public class GetAccountsWithCohortsResponse
 {
-    public class GetAccountsWithCohortsResponse
-    {
-        public List<long> AccountIds { get; set; }
-    }
+    public List<long> AccountIds { get; set; }
 }

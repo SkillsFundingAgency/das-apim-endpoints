@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
 {
-    internal class GetSavedVacanciesApiResponse
+    public class GetSavedVacanciesApiResponse
     {
         public List<SavedVacancy> SavedVacancies { get; set; } = [];
 

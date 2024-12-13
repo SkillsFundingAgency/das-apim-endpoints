@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using MediatR;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,7 +29,7 @@ namespace SFA.DAS.LevyTransferMatching.Api
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
         private const string EndpointName = "SFA.DAS.LevyTransferMatching.Api";
-        
+
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration.BuildSharedConfiguration();
@@ -41,7 +41,6 @@ namespace SFA.DAS.LevyTransferMatching.Api
         {
             var isLocalOrDev = _configuration.IsLocalOrDev();
 
-            services.AddNLog();
             services.AddSingleton(_env);
 
             services.AddConfigurationOptions(_configuration);
@@ -60,7 +59,7 @@ namespace SFA.DAS.LevyTransferMatching.Api
                 var azureAdConfiguration = _configuration
                     .GetSection("AzureAd")
                     .Get<AzureActiveDirectoryConfiguration>();
-                
+
                 var policies = new Dictionary<string, string>
                 {
                     {"default", "APIM"}
@@ -89,7 +88,7 @@ namespace SFA.DAS.LevyTransferMatching.Api
                 })
                 .AddJsonOptions
                 (
-                    options=>
+                    options =>
                     {
                         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                         options.JsonSerializerOptions.IgnoreNullValues = true;
@@ -104,8 +103,8 @@ namespace SFA.DAS.LevyTransferMatching.Api
 
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(IAccountsService).Assembly));
 
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
-            
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
+
             services
                 .AddSwaggerGen(c =>
                 {
@@ -144,10 +143,10 @@ namespace SFA.DAS.LevyTransferMatching.Api
                 c.RoutePrefix = string.Empty;
             });
         }
-        
+
         public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
         {
-            serviceProvider.StartNServiceBus(_configuration, EndpointName).GetAwaiter().GetResult();
+            Task.FromResult(serviceProvider.StartNServiceBus(_configuration, EndpointName)).GetAwaiter().GetResult();
         }
     }
 }

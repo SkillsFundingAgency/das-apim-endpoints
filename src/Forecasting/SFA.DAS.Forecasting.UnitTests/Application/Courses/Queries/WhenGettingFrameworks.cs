@@ -12,42 +12,42 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Forecasting.UnitTests.Application.Courses.Queries
+namespace SFA.DAS.Forecasting.UnitTests.Application.Courses.Queries;
+
+public class WhenGettingFrameworks
 {
-    public class WhenGettingFrameworks
+    [Test, MoqAutoData]
+    public void Then_Gets_All_Active_Frameworks_With_Funding_Periods_From_Courses_Api(
+        GetFrameworkCoursesQuery query,
+        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+        GetFrameworkCoursesQueryHandler handler)
     {
-        [Test, MoqAutoData]
-        public void Then_Gets_All_Active_Frameworks_With_Funding_Periods_From_Courses_Api(
-            GetFrameworkCoursesQuery query,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
-            GetFrameworkCoursesQueryHandler handler)
+        //Arrange
+        var fundingPeriods = new List<GetFrameworksListItem.FundingPeriod>
         {
-            //Arrange
-            var fundingPeriods = new List<GetFrameworksListItem.FundingPeriod>
+            new() {EffectiveFrom = DateTime.Today.AddDays(-1), EffectiveTo = DateTime.Today.AddDays(1), FundingCap = 10}
+        };
+        
+        var frameworksList = new GetFrameworksListResponse
+        {
+            Frameworks = new List<GetFrameworksListItem>
             {
-                new GetFrameworksListItem.FundingPeriod{EffectiveFrom = DateTime.Today.AddDays(-1), EffectiveTo = DateTime.Today.AddDays(1), FundingCap = 10}
-            };
-            var frameworksList = new GetFrameworksListResponse
-            {
-                Frameworks = new List<GetFrameworksListItem>
-                {
-                    new GetFrameworksListItem {Id = "1", IsActiveFramework = true, FundingPeriods = fundingPeriods},
-                    new GetFrameworksListItem {Id = "2", IsActiveFramework = false, FundingPeriods = fundingPeriods},
-                    new GetFrameworksListItem {Id = "3", IsActiveFramework = true, FundingPeriods = fundingPeriods},
-                    new GetFrameworksListItem {Id = "4", IsActiveFramework = true, FundingPeriods = new List<GetFrameworksListItem.FundingPeriod>()}
-                }
-            };
-            mockCoursesApiClient.Setup(client =>
-                    client.Get<GetFrameworksListResponse>(It.IsAny<GetFrameworksRequest>()))
-                .ReturnsAsync(frameworksList);
+                new() {Id = "1", IsActiveFramework = true, FundingPeriods = fundingPeriods},
+                new() {Id = "2", IsActiveFramework = false, FundingPeriods = fundingPeriods},
+                new() {Id = "3", IsActiveFramework = true, FundingPeriods = fundingPeriods},
+                new() {Id = "4", IsActiveFramework = true, FundingPeriods = [] }
+            }
+        };
+        mockCoursesApiClient.Setup(client =>
+                client.Get<GetFrameworksListResponse>(It.IsAny<GetFrameworksRequest>()))
+            .ReturnsAsync(frameworksList);
 
-            //Act
-            var actual = handler.Handle(query, CancellationToken.None);
+        //Act
+        var actual = handler.Handle(query, CancellationToken.None);
 
-            //Assert
-            Assert.That(2, Is.EqualTo(actual.Result.Frameworks.Count()));
-            Assert.That("1", Is.EquivalentTo(actual.Result.Frameworks.First().Id));
-            Assert.That("3", Is.EquivalentTo(actual.Result.Frameworks.Last().Id));
-        }
+        //Assert
+        Assert.That(2, Is.EqualTo(actual.Result.Frameworks.Count()));
+        Assert.That("1", Is.EquivalentTo(actual.Result.Frameworks.First().Id));
+        Assert.That("3", Is.EquivalentTo(actual.Result.Frameworks.Last().Id));
     }
 }

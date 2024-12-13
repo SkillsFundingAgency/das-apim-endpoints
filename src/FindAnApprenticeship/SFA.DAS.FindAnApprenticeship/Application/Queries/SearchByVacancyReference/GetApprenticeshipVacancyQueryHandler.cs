@@ -24,13 +24,17 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
         {
             var vacancy = await vacancyService.GetVacancy(request.VacancyReference);
 
-            if (vacancy == null) { return null; }
+            if (vacancy == null)
+            {
+                return null;
+            }
 
             var courseResult = await coursesApiClient.Get<GetStandardsListItemResponse>(new GetStandardRequest(vacancy.CourseId));
             var courseLevels = await courseService.GetLevels();
 
             GetApprenticeshipVacancyQueryResult.CandidateApplication candidateApplicationDetails = null;
             string candidatePostcode = null;
+            var isSavedVacancy = false;
 
             if (request.CandidateId.HasValue)
             {
@@ -42,8 +46,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
 
                 var candidateAddress = candidateApiClient.Get<GetCandidateAddressApiResponse>(
                     new GetCandidateAddressApiRequest(request.CandidateId.Value));
-                
-                await Task.WhenAll(application, candidateAddress);
+
+                var savedVacancy = candidateApiClient.Get<GetSavedVacancyApiResponse>(
+                    new GetSavedVacancyApiRequest(request.CandidateId.Value, vacancyReference));
+
+                await Task.WhenAll(application, candidateAddress, savedVacancy);
 
                 if (application.Result != null)
                 {
@@ -60,15 +67,21 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                 {
                     candidatePostcode = candidateAddress.Result.Postcode;
                 }
+
+                if (savedVacancy.Result != null)
+                {
+                    isSavedVacancy = true;
+                }
             }
 
             return new GetApprenticeshipVacancyQueryResult
             {
-                ApprenticeshipVacancy = GetApprenticeshipVacancyQueryResult.Vacancy.FromIVacancy(vacancy),
+                ApprenticeshipVacancy = GetApprenticeshipVacancyQueryResult.Vacancy.FromIVacancy(vacancy, courseResult),
                 CourseDetail = courseResult,
                 Levels = courseLevels.Levels.ToList(),
                 Application = candidateApplicationDetails,
-                CandidatePostcode = candidatePostcode
+                CandidatePostcode = candidatePostcode,
+                IsSavedVacancy = isSavedVacancy
             };
         }
     }
