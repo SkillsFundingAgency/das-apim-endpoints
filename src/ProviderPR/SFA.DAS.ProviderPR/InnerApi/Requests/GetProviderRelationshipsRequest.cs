@@ -20,9 +20,9 @@ public class GetProviderRelationshipsRequest
             result.Add(nameof(SearchTerm), SearchTerm.Trim());
         }
 
-        if (HasCreateCohortPermission.HasValue && HasCreateCohortPermission.Value)
+        if (HasCreateCohortPermission.HasValue)
         {
-            result.Add(nameof(HasCreateCohortPermission), true.ToString());
+            result.Add(nameof(HasCreateCohortPermission), HasCreateCohortPermission!.Value.ToString());
         }
 
         if (HasRecruitmentPermission)
