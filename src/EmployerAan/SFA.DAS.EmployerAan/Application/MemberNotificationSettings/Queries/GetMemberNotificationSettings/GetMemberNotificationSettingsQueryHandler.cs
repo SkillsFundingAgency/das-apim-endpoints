@@ -26,8 +26,8 @@ public class GetMemberNotificationSettingsQueryHandler : IRequestHandler<GetMemb
         var locationsTask = locations.Result;
         var outputMember = memberResponse.Result;
 
-        if (locationsTask.MemberNotificationLocations.Any())
-            result.MemberNotificationLocations = locationsTask.MemberNotificationLocations;
+        if (eventFormatsTask.MemberNotificationEventFormats.Any())
+            result.MemberNotificationEventFormats = eventFormatsTask.MemberNotificationEventFormats;
 
 
         if (locationsTask.MemberNotificationLocations.Any())
