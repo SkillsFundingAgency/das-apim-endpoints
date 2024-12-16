@@ -153,13 +153,10 @@ namespace SFA.DAS.ApprenticeApp.Api
                     context.Response.Headers.Remove("X-Frame-Options");
                 }
                 context.Response.Headers!.Append("X-Frame-Options", "SAMEORIGIN");
-
                 context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
                 context.Response.Headers.Add("X-Xss-Protection", "1");
                 context.Response.Headers.Add("X-Permitted-Cross-Domain-Policies", "none");
                 context.Response.Headers.Add("Referrer-Policy", "strict-origin-when-cross-origin");
-                context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; img-src 'self' *.googletagmanager.com *.google-analytics.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' *.googletagmanager.com *.google-analytics.com *.googleapis.com; font-src 'self' data:; connect-src 'self' 'unsafe-inline' *.googletagmanager.com *.google-analytics.com;");
-
                 await next();
             });
 
