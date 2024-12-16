@@ -21,6 +21,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using SFA.DAS.ApprenticeApp.Models;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeApp.Api
 {
@@ -92,7 +94,7 @@ namespace SFA.DAS.ApprenticeApp.Api
                 // This service will collect and send telemetry data to Azure Monitor.
                 services.AddSingleton<IApprenticeAppMetrics, ApprenticeAppMetrics>();
             }
-         
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApprenticeAppOuterApi", Version = "v1" });
@@ -128,6 +130,35 @@ namespace SFA.DAS.ApprenticeApp.Api
             });
 
             app.UseHealthChecks();
+
+            app.Use(async (context, next) =>
+            {
+                context.Response.OnStarting(() =>
+                {
+                    if (context.Response.Headers.ContainsKey("X-Powered-By"))
+                    {
+                        context.Response.Headers.Remove("X-Powered-By");
+                    }
+
+                    if (context.Response.Headers.ContainsKey("Server"))
+                    {
+                        context.Response.Headers.Remove("Server");
+                    }
+
+                    return Task.CompletedTask;
+                });
+
+                if (context.Response.Headers.ContainsKey("X-Frame-Options"))
+                {
+                    context.Response.Headers.Remove("X-Frame-Options");
+                }
+                context.Response.Headers!.Append("X-Frame-Options", "SAMEORIGIN");
+                context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+                context.Response.Headers.Add("X-Xss-Protection", "1");
+                context.Response.Headers.Add("X-Permitted-Cross-Domain-Policies", "none");
+                context.Response.Headers.Add("Referrer-Policy", "strict-origin-when-cross-origin");
+                await next();
+            });
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
