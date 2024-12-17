@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerAan.Application.Settings.NotificationsLocations
             {
                 SavedLocations = new List<GetNotificationsLocationsQueryResult.AddedLocation>
                 {
-                    new GetNotificationsLocationsQueryResult.AddedLocation{ Name = "Bromsgrove, Worcestershire", Coordinates = [51, 23], Radius = 10}
+                    new GetNotificationsLocationsQueryResult.AddedLocation{ Name = "Bromsgrove, Worcestershire", Coordinates = [52, -2], Radius = 10}
                 },
                 NotificationEventTypes = new List<GetNotificationsLocationsQueryResult.NotificationEventType>
                 {
