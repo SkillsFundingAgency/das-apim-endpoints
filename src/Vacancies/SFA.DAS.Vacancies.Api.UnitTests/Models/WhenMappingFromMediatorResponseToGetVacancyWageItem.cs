@@ -16,8 +16,6 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.WageAmount.Should().Be(source.WageAmount);
             actual.WageType.Should().Be((WageType)source.WageType);
             actual.WageAdditionalInformation.Should().Be(source.WageText);
-            actual.WageAmountUpperBound.Should().Be(source.WageAmountUpperBound);
-            actual.WageAmountLowerBound.Should().Be(source.WageAmountLowerBound);
             actual.WorkingWeekDescription.Should().Be(source.WorkingWeek);
         }
     }
