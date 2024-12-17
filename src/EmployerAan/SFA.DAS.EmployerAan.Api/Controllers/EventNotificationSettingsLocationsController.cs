@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerAan.Application.Settings.NotificationsLocations;
+using SFA.DAS.EmployerAan.Models.ApiRequests.Settings;
 
 namespace SFA.DAS.EmployerAan.Api.Controllers
 {
@@ -19,6 +20,12 @@ namespace SFA.DAS.EmployerAan.Api.Controllers
             });
 
             return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(long employerAccountId, [FromBody] NotificationsSettingsApiRequest request)
+        {
+            return Ok();
         }
     }
 }
