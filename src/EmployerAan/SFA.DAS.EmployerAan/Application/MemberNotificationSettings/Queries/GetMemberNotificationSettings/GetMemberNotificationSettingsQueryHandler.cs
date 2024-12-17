@@ -33,7 +33,7 @@ public class GetMemberNotificationSettingsQueryHandler : IRequestHandler<GetMemb
         if (locationsTask.MemberNotificationLocations.Any())
             result.MemberNotificationLocations = locationsTask.MemberNotificationLocations;
 
-        result.ReceiveMonthlyNotifications = outputMember.ReceiveNotifications ?? false;
+        result.ReceiveMonthlyNotifications = outputMember.ReceiveNotifications;
 
         return result;
     }
