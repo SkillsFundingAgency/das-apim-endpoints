@@ -9,11 +9,12 @@ namespace SFA.DAS.EmployerAan.Api.Controllers
     public class EventNotificationsSettingsLocationsController(IMediator mediator) : ControllerBase
     {
         [HttpGet]
-        public async Task<IActionResult> Get(long employerAccountId, [FromQuery] string searchTerm)
+        public async Task<IActionResult> Get(long employerAccountId, [FromQuery] string? searchTerm, [FromQuery] Guid memberId)
         {
             var result = await mediator.Send(new GetNotificationsLocationsQuery()
             {
                 EmployerAccountId = employerAccountId,
+                MemberId = memberId,
                 SearchTerm = searchTerm
             });
 
