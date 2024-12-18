@@ -11,8 +11,8 @@ public class EmailEnvironmentHelperTests
     {
         var actual = new EmailEnvironmentHelper("PRd");
 
-        actual.SuccessfulApplicationEmailTemplateId.Should().Be("7bc576f8-7bf5-4699-8a5b-6be8df7c1e50");
-        actual.UnsuccessfulApplicationEmailTemplateId.Should().Be("0ad70535-c9d6-4b2e-ad17-d73e023d3387");
+        actual.SuccessfulApplicationEmailTemplateId.Should().Be("b648c047-b2e3-4ebe-b9b4-a6cc59c2af94");
+        actual.UnsuccessfulApplicationEmailTemplateId.Should().Be("8387c857-b4f9-4cfb-8c44-df4c2560e446");
     }
     
     [Test]
@@ -20,7 +20,7 @@ public class EmailEnvironmentHelperTests
     {
         var actual = new EmailEnvironmentHelper("teST");
 
-        actual.SuccessfulApplicationEmailTemplateId.Should().Be("5b3a4259-286a-41f7-b593-dfc9b9fcd6f9");
-        actual.UnsuccessfulApplicationEmailTemplateId.Should().Be("9beb67ac-93c9-4704-ada9-6e417d29356b");
+        actual.SuccessfulApplicationEmailTemplateId.Should().Be("35e8b348-5f26-488a-8165-459522f8189b");
+        actual.UnsuccessfulApplicationEmailTemplateId.Should().Be("95d7ff0c-79fc-4585-9fff-5e583b478d23");
     }
 }
