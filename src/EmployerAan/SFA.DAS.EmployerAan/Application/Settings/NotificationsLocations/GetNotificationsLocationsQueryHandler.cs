@@ -1,12 +1,18 @@
-﻿using MediatR;
+﻿using Azure.Core;
+using MediatR;
+using SFA.DAS.EmployerAan.Application.MemberNotificationSettings.Queries.GetMemberNotificationSettings;
+using SFA.DAS.EmployerAan.Infrastructure;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Threading;
+using System.Xml.Linq;
 
 namespace SFA.DAS.EmployerAan.Application.Settings.NotificationsLocations
 {
-    public class GetNotificationsLocationsQueryHandler(ILocationApiClient<LocationApiConfiguration> apiClient, ILocationLookupService locationLookupService) : IRequestHandler<GetNotificationsLocationsQuery, GetNotificationsLocationsQueryResult>
+    public class GetNotificationsLocationsQueryHandler(ILocationApiClient<LocationApiConfiguration> apiClient, ILocationLookupService locationLookupService, IAanHubRestApiClient aanHubApiClient) : IRequestHandler<GetNotificationsLocationsQuery, GetNotificationsLocationsQueryResult>
     {
         public const int MaxResults = 10;
 
@@ -15,28 +21,39 @@ namespace SFA.DAS.EmployerAan.Application.Settings.NotificationsLocations
         {
             if (string.IsNullOrWhiteSpace(request.SearchTerm))
             {
-                return await GetCurrentSettings(request.MemberId);
+                return await GetCurrentSettings(request.MemberId, cancellationToken);
             }
 
             return await GetNotificationsLocationsAsync(request, cancellationToken);
         }
 
-        private async Task<GetNotificationsLocationsQueryResult> GetCurrentSettings(Guid memberId)
+        private async Task<GetNotificationsLocationsQueryResult> GetCurrentSettings(Guid memberId, CancellationToken cancellationToken)
         {
-            return new GetNotificationsLocationsQueryResult
+            var eventFormatsTask = aanHubApiClient.GetMemberNotificationEventFormat(memberId, cancellationToken);
+            var locationsTask = aanHubApiClient.GetMemberNotificationLocations(memberId, cancellationToken);
+            
+            await Task.WhenAll(eventFormatsTask, locationsTask);
+
+            var locations = locationsTask.Result;
+            var eventFormats = eventFormatsTask.Result;
+
+            var result = new GetNotificationsLocationsQueryResult
             {
-                SavedLocations = new List<GetNotificationsLocationsQueryResult.AddedLocation>
+                SavedLocations = locations.MemberNotificationLocations.Select(x => new GetNotificationsLocationsQueryResult.AddedLocation
                 {
-                    new GetNotificationsLocationsQueryResult.AddedLocation{ Name = "Bromsgrove, Worcestershire", Coordinates = [52, -2], Radius = 10}
-                },
-                NotificationEventTypes = new List<GetNotificationsLocationsQueryResult.NotificationEventType>
+                    Name = x.Name,
+                    Radius = x.Radius,
+                    Coordinates = [x.Latitude, x.Longitude]
+                }).ToList(),
+                NotificationEventTypes = eventFormats.MemberNotificationEventFormats.Select(x => new GetNotificationsLocationsQueryResult.NotificationEventType
                 {
-                    new GetNotificationsLocationsQueryResult.NotificationEventType{ EventFormat = "InPerson", Ordering = 1, ReceiveNotifications = true},
-                    new GetNotificationsLocationsQueryResult.NotificationEventType{ EventFormat = "Online", Ordering = 2, ReceiveNotifications = false},
-                    new GetNotificationsLocationsQueryResult.NotificationEventType{ EventFormat = "Hybrid", Ordering = 3, ReceiveNotifications = false},
-                    new GetNotificationsLocationsQueryResult.NotificationEventType{ EventFormat = "All", Ordering = 4, ReceiveNotifications = false}
-                }
+                    EventFormat = x.EventFormat,
+                    Ordering = x.Ordering,
+                    ReceiveNotifications = x.ReceiveNotifications
+                }).ToList()
             };
+
+            return result;
         }
 
         private async Task<GetNotificationsLocationsQueryResult> GetNotificationsLocationsAsync(GetNotificationsLocationsQuery request, CancellationToken cancellationToken)
