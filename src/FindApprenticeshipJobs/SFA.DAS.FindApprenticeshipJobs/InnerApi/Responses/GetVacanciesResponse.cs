@@ -4,12 +4,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
 {
     public class GetVacanciesResponse
     {
-        [JsonPropertyName("total")]
-        public long Total { get; set; }
-
-        [JsonPropertyName("totalFound")]
-        public long TotalFound { get; set; }
-
         [JsonPropertyName("apprenticeshipVacancies")]
         public IEnumerable<GetVacanciesListItem> ApprenticeshipVacancies { get; set; } = [];
     }
@@ -43,14 +37,11 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
         [JsonPropertyName("distance")]
         public decimal? Distance { get; set; }
 
-        [JsonPropertyName("score")]
-        public double Score { get; set; }
-
         [JsonPropertyName("standardTitle")]
         public string CourseTitle { get; set; }
 
         [JsonPropertyName("standardLevel")]
-        public int CourseLevel { get; set; }
+        public string CourseLevel { get; set; }
     }
 
     public class VacancyAddress
