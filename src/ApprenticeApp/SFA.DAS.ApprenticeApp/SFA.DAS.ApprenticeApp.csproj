@@ -35,7 +35,6 @@
     <Folder Include="Application\Queries\SupportAndGuidance\" />
     <Folder Include="Application\Commands\SupportAndGuidance\" />
     <Folder Include="Application\Queries\Tasks\" />
-    <Folder Include="Application\Commands\Tasks\" />
     <Folder Include="InnerApi\ApprenticeProgress\Responses\" />
     <Folder Include="Application\Commands\KsbProgress\" />
   </ItemGroup>
