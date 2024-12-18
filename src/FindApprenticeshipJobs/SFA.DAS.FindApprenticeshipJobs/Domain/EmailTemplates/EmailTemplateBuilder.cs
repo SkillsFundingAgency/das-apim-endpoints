@@ -66,8 +66,24 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
 
             foreach (var vacancy in vacancies)
             {
+                string? trainingCourseText;
+                string? wageText;
+
                 sb.AppendLine();
-                sb.AppendLine($"#[{vacancy.Title}]({environmentHelper.VacancyDetailsUrl.Replace("{vacancy-reference}", vacancy.VacancyReference)})");
+                if (vacancy.VacancySource == "NHS")
+                {
+                    sb.AppendLine($"#[{vacancy.Title}]({environmentHelper.VacancyDetailsNhsUrl.Replace("{vacancy-reference}", vacancy.VacancyReference)})");
+                    trainingCourseText = "See more details on NHS Jobs";
+                    wageText = (vacancy.WageType == "Competitive") ?
+                        "Depends on experience" :
+                        vacancy.Wage + ((vacancy.WageUnit == "hour") ? " an " : " a ") + vacancy.WageUnit;
+                }
+                else
+                { 
+                    sb.AppendLine($"#[{vacancy.Title}]({environmentHelper.VacancyDetailsUrl.Replace("{vacancy-reference}", vacancy.VacancyReference)})");
+                    trainingCourseText = vacancy.TrainingCourse;
+                    wageText = (vacancy.WageType == "Competitive") ? vacancy.WageType : vacancy.Wage + " a year";
+                }
                 sb.AppendLine(vacancy.EmployerName);
                 sb.AppendLine(!string.IsNullOrEmpty(vacancy.Address.AddressLine4) ? $"{vacancy.Address.AddressLine4}, {vacancy.Address.Postcode}" :
                     !string.IsNullOrEmpty(vacancy.Address.AddressLine3) ? $"{vacancy.Address.AddressLine3}, {vacancy.Address.Postcode}" :
@@ -80,9 +96,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 {
                     sb.AppendLine($"* Distance: {vacancy.Distance} miles");    
                 }
-                
-                sb.AppendLine($"* Training course: {vacancy.TrainingCourse}");
-                sb.AppendLine($"* Annual wage: {vacancy.Wage}");
+
+                sb.AppendLine($"* Training course: {trainingCourseText}");
+                sb.AppendLine($"* Wage: {wageText}");
 
                 sb.AppendLine();
                 sb.AppendLine($"{vacancy.ClosingDate}");
