@@ -1,14 +1,9 @@
-﻿using Azure.Core;
-using MediatR;
-using SFA.DAS.EmployerAan.Application.MemberNotificationSettings.Queries.GetMemberNotificationSettings;
+﻿using MediatR;
 using SFA.DAS.EmployerAan.Infrastructure;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Threading;
-using System.Xml.Linq;
 
 namespace SFA.DAS.EmployerAan.Application.Settings.NotificationsLocations
 {
