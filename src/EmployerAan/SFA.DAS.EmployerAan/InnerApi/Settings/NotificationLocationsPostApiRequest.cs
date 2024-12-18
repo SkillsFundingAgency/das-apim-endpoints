@@ -1,15 +1,14 @@
-﻿namespace SFA.DAS.EmployerAan.Models.ApiRequests.Settings
+﻿namespace SFA.DAS.EmployerAan.InnerApi.Settings
 {
-    public class NotificationsSettingsApiRequest
+    public class NotificationLocationsPostApiRequest
     {
-        public Guid MemberId { get; set; }
         public List<Location> Locations { get; set; } = [];
 
         public class Location
         {
             public string Name { get; set; }
             public int Radius { get; set; }
-            public double Latitude { get; set;}
+            public double Latitude { get; set; }
             public double Longitude { get; set; }
         }
     }

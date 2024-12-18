@@ -18,6 +18,7 @@ using SFA.DAS.EmployerAan.InnerApi.MemberProfiles;
 using SFA.DAS.EmployerAan.InnerApi.Members;
 using SFA.DAS.EmployerAan.InnerApi.Members.PostMemberLeaving;
 using SFA.DAS.EmployerAan.InnerApi.Notifications.Responses;
+using SFA.DAS.EmployerAan.InnerApi.Settings;
 using SFA.DAS.EmployerAan.Models;
 
 namespace SFA.DAS.EmployerAan.Infrastructure;
@@ -113,4 +114,7 @@ public interface IAanHubRestApiClient : IHealthChecker
 
     [Get("/MemberNotificationLocations/{memberId}")]
     Task<GetMemberNotificationLocationsQueryResult> GetMemberNotificationLocations([Path] Guid memberId, CancellationToken cancellationToken);
+
+    [Post("/MemberNotificationLocations/{memberId}")]
+    Task UpdateMemberNotificationLocations([Path] Guid memberId, [Body] NotificationLocationsPostApiRequest request, CancellationToken cancellationToken);
 }

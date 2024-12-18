@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.EmployerAan.Application.Settings.Commands;
 using SFA.DAS.EmployerAan.Application.Settings.NotificationsLocations;
 using SFA.DAS.EmployerAan.Models.ApiRequests.Settings;
 
@@ -25,6 +26,18 @@ namespace SFA.DAS.EmployerAan.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(long employerAccountId, [FromBody] NotificationsSettingsApiRequest request)
         {
+            await mediator.Send(new UpdateNotificationSettingsCommand
+            {
+                MemberId = request.MemberId,
+                Locations = request.Locations.Select(x => new UpdateNotificationSettingsCommand.Location
+                {
+                    Name = x.Name,
+                    Radius = x.Radius,
+                    Latitude = x.Latitude,
+                    Longitude = x.Longitude
+                }).ToList()
+            });
+
             return Ok();
         }
     }
