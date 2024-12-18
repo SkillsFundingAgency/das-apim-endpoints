@@ -8,6 +8,9 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.EmployerAan.Infrastructure;
+using SFA.DAS.EmployerAan.Application.MemberNotificationLocations.Queries;
+using SFA.DAS.EmployerAan.Application.MemberNotificationEventFormat.Queries.GetMemberNotificationEventFormats;
 
 namespace SFA.DAS.EmployerAan.UnitTests.Application.Settings.NotificationLocations
 {
@@ -27,7 +30,7 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Settings.NotificationLocatio
 
             mockLocationLookupService
                 .Setup(x => x.GetLocationInformation(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>(), It.IsAny<bool>()))
-                .ReturnsAsync(()=>null);
+                .ReturnsAsync(() => null);
 
             apiClient
                 .Setup(x => x.Get<GetLocationsListResponse>(It.Is<GetLocationsQueryRequest>(r => r.GetUrl == expectedApiRequest.GetUrl)))
@@ -53,7 +56,7 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Settings.NotificationLocatio
         {
             apiClient
                 .Setup(x => x.Get<GetLocationsListResponse>(It.IsAny<GetLocationsQueryRequest>()))
-                .ReturnsAsync(new GetLocationsListResponse{Locations = [] });
+                .ReturnsAsync(new GetLocationsListResponse { Locations = new List<GetLocationsListItem>() });
 
             mockLocationLookupService
                 .Setup(x => x.GetLocationInformation(query.SearchTerm, 0, 0, false))
@@ -69,6 +72,42 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Settings.NotificationLocatio
                     GeoPoint = locationData.GeoPoint
                 }
             });
+        }
+
+        [Test]
+        [MoqAutoData]
+        public async Task Handle_Return_Current_Settings_When_SearchTerm_Is_Empty(
+            GetNotificationsLocationsQuery query,
+            [Frozen] Mock<IAanHubRestApiClient> mockAanHubApiClient,
+            [Frozen] GetNotificationsLocationsQueryHandler handler,
+            GetMemberNotificationLocationsQueryResult locationsResponse,
+            GetMemberNotificationEventFormatsQueryResult eventFormatsResponse)
+        {
+            query.SearchTerm = string.Empty;
+
+            mockAanHubApiClient
+                .Setup(x => x.GetMemberNotificationLocations(query.MemberId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(locationsResponse);
+
+            mockAanHubApiClient
+                .Setup(x => x.GetMemberNotificationEventFormat(query.MemberId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(eventFormatsResponse);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.SavedLocations.Should().BeEquivalentTo(locationsResponse.MemberNotificationLocations.Select(x => new GetNotificationsLocationsQueryResult.AddedLocation
+            {
+                Name = x.Name,
+                Radius = x.Radius,
+                Coordinates = new[] { x.Latitude, x.Longitude }
+            }).ToList());
+
+            result.NotificationEventTypes.Should().BeEquivalentTo(eventFormatsResponse.MemberNotificationEventFormats.Select(x => new GetNotificationsLocationsQueryResult.NotificationEventType
+            {
+                EventFormat = x.EventFormat,
+                Ordering = x.Ordering,
+                ReceiveNotifications = x.ReceiveNotifications
+            }).ToList());
         }
     }
 }

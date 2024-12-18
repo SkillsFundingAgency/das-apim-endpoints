@@ -21,7 +21,7 @@ public class EventNotificationsSettingsLocationsControllerTests
             .Setup(m => m.Send(It.IsAny<GetNotificationsLocationsQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
-        var result = await sut.Get(12345, "exampleSearchTerm");
+        var result = await sut.Get(12345, "exampleSearchTerm", Guid.Empty);
 
         result.As<OkObjectResult>().Should().NotBeNull();
         result.As<OkObjectResult>().Value.Should().BeEquivalentTo(response);
