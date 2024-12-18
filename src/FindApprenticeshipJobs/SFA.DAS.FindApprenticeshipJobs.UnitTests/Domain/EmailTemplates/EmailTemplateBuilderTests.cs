@@ -309,7 +309,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             // Arrange
             var environmentHelper = new EmailEnvironmentHelper("test")
             {
-                VacancyDetailsNhsUrl = "https://example.com/vacancy/nhs/{vacancy-reference}"
+                VacancyDetailsUrl = "https://example.com/vacancy/{vacancy-reference}"
             };
 
             var vacancies = new List<PostSendSavedSearchNotificationCommand.Vacancy>
@@ -336,7 +336,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
 
             string expectedSnippet = $"""
 
-                                           #[Mental Health Nurse](https://example.com/vacancy/nhs/12345)
+                                           #[Mental Health Nurse](https://example.com/vacancy/12345)
                                            NHS Jobs
                                            123 Main St, 12345
 
