@@ -10,6 +10,7 @@ public class GetMemberQueryResult
     public int? RegionId { get; set; }
     public string UserType { get; set; } = null!;
     public bool? IsRegionalChair { get; set; }
+    public bool? ReceiveNotifications { get; set; }
     public string FullName { get; set; } = null!;
     public EmployerModel? Employer { get; set; }
     public ApprenticeModel Apprentice { get; set; } = null!;
