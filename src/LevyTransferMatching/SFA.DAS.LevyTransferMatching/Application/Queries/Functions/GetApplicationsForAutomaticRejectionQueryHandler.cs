@@ -26,12 +26,15 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 
         public async Task<GetApplicationsForAutomaticRejectionQueryResult> Handle(GetApplicationsForAutomaticRejectionQuery request, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler NOW : {now} ThreeMonthsAgo: {ThreeMonthsAgo}", DateTime.UtcNow.ToString(), ThreeMonthsAgo.ToString());
+
             var getApplicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest
             {
                 ApplicationStatusFilter = ApplicationStatus.Pending,
                 SortOrder = ApplicationSortColumn.ApplicationDate,
                 SortDirection = SortOrder.Ascending
             });
+
             _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler returns {count} pending applications from inner api", getApplicationsResponse?.Applications.Count());
             var applications = FilterApplications(getApplicationsResponse);
             _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler filter returns {count_}", applications.Count);
@@ -41,7 +44,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
             return new GetApplicationsForAutomaticRejectionQueryResult
             {
                 Applications = result
-            };
+            };  
         }
 
         private List<GetApplicationsResponse.Application> FilterApplications(GetApplicationsResponse getApplicationsResponse)
