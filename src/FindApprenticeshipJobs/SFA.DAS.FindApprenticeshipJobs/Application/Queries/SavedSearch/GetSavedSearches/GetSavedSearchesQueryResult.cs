@@ -1,4 +1,6 @@
 ﻿using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
+using SFA.DAS.VacancyServices.Wage;
+using WageType = SFA.DAS.FindApprenticeshipJobs.Domain.Models.WageType;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearches
 {
@@ -47,8 +49,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                         Title = source.Title,
                         EmployerName = source.EmployerName,
                         Wage = source.WageText,
-                        WageUnit = source.WageUnit,
-                        WageType = source.WageType,
+                        WageUnit = ((WageUnit)source.WageUnit).ToString(),
+                        WageType = ((WageType)source.WageType).ToString(),
                         Address = source.VacancyAddress,
                         TrainingCourse = $"{source.CourseTitle} (level {source.CourseLevel})",
                         Distance = source.Distance.HasValue ? Math.Round(source.Distance.Value, 1) : null,
