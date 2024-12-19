@@ -115,6 +115,6 @@ public interface IAanHubRestApiClient : IHealthChecker
     [Get("/MemberNotificationLocations/{memberId}")]
     Task<GetMemberNotificationLocationsQueryResult> GetMemberNotificationLocations([Path] Guid memberId, CancellationToken cancellationToken);
 
-    [Post("/MemberNotificationLocations/{memberId}")]
+    [Post("/MemberNotificationSettings/{memberId}")]
     Task UpdateMemberNotificationLocations([Path] Guid memberId, [Body] NotificationLocationsPostApiRequest request, CancellationToken cancellationToken);
 }
