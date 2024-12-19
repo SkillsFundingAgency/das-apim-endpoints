@@ -25,6 +25,12 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Settings.NotificationLocatio
                 command.MemberId,
                 It.Is<NotificationLocationsPostApiRequest>(request =>
                     request.Locations.Count == command.Locations.Count &&
+                    request.ReceiveNotifications == command.ReceiveNotifications &&
+                    request.EventTypes.All(et => command.EventTypes.Any(cmdEt => 
+                        cmdEt.EventType == et.EventType &&
+                        cmdEt.ReceiveNotifications == et.ReceiveNotifications &&
+                        cmdEt.Ordering == et.Ordering
+                        )) &&
                     request.Locations.All(loc => command.Locations.Any(cmdLoc =>
                         cmdLoc.Name == loc.Name &&
                         cmdLoc.Radius == loc.Radius &&

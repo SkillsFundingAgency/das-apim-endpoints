@@ -9,15 +9,15 @@ using SFA.DAS.EmployerAan.Models.ApiRequests.Settings;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.EmployerAan.Application.Settings.NotificationsLocations;
 
-namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.EventNotificationsSettingsLocationsControllerTests
+namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.EventNotificationsSettingsControllerTests
 {
-    public class EventNotificationsSettingsLocationsControllerTests
+    public class EventNotificationsSettingsControllerTests
     {
         [Test, MoqAutoData]
         public async Task Get_ReturnsCorrectViewModel(
             GetNotificationsLocationsQueryResult response,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] EventNotificationsSettingsLocationsController sut)
+            [Greedy] EventNotificationsSettingsController sut)
         {
             mockMediator
                 .Setup(m => m.Send(It.IsAny<GetNotificationsLocationsQuery>(), It.IsAny<CancellationToken>()))
@@ -32,7 +32,7 @@ namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.EventNotificationsSettin
         [Test, MoqAutoData]
         public async Task Post_InvokesCommandHandlerWithCorrectParameters(
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] EventNotificationsSettingsLocationsController sut,
+            [Greedy] MemberNotificationSettingsController sut,
             long employerAccountId,
             NotificationsSettingsApiRequest request,
             CancellationToken cancellationToken)
@@ -43,6 +43,12 @@ namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.EventNotificationsSettin
             // Assert
             mockMediator.Verify(m => m.Send(It.Is<UpdateNotificationSettingsCommand>(cmd =>
                 cmd.MemberId == request.MemberId &&
+                cmd.ReceiveNotifications == request.ReceiveNotifications &&
+                cmd.EventTypes.All(l => request.EventTypes.Any(reqEventType => 
+                    reqEventType.EventType == l.EventType &&
+                    reqEventType.ReceiveNotifications == l.ReceiveNotifications &&
+                    reqEventType.Ordering == l.Ordering)
+                ) &&
                 cmd.Locations.All(l => request.Locations.Any(reqLoc =>
                     reqLoc.Name == l.Name &&
                     reqLoc.Radius == l.Radius &&
