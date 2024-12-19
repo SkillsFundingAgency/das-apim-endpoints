@@ -4,6 +4,7 @@ using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSea
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using System.Net;
 using SFA.DAS.FindApprenticeshipJobs.Api.Models;
+using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.UnsubscribeSavedSearch;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
 {
@@ -60,6 +61,29 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error invoking Post Send saved Search notification");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("unsubscribe")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> PostUnsubscribeSavedSearch(
+            [FromBody] PostUnsubscribeSavedSearchApiRequest request,
+            CancellationToken cancellationToken = default)
+        {
+            logger.LogInformation("Post un-subscribe saved search invoked");
+
+            try
+            {
+                await mediator.Send(new UnsubscribeSavedSearchCommand(request.SavedSearchId), cancellationToken);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Post Unsubscribe Saved Search : An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
