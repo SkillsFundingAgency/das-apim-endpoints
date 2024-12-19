@@ -108,7 +108,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches
             var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
 
             actual.Should().NotBeNull();
-            actual.SavedSearchResults.Count.Should().Be(0);
+            actual.SavedSearchResults.Count.Should().Be(3);
+            actual.SavedSearchResults.TrueForAll(c => c.Vacancies.Count == 0).Should().BeTrue();
             actual.SavedSearchResults.FirstOrDefault()?.User.Should().NotBeNull();
             actual.SavedSearchResults.FirstOrDefault()?.User?.Should().BeEquivalentTo(getCandidateApiResponse, options => options.Excluding(ex => ex.Status));
             actual.PageIndex.Should().Be(mockGetSavedSearchesApiResponse.PageIndex);
@@ -251,7 +252,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches
                 categories.Select(cat => cat.Id.ToString()).ToList(),
                 savedSearch.SearchParameters.SelectedLevelIds,
                 mockQuery.ApprenticeshipSearchResultsSortOrder,
-                savedSearch.SearchParameters.DisabilityConfident);
+                savedSearch.SearchParameters.DisabilityConfident,
+                new List<VacancyDataSource> { VacancyDataSource.Nhs });
 
             mockFindApprenticeshipApiClient.Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c => c.GetUrl == getVacanciesExpectedUrl.GetUrl))).ReturnsAsync(getVacanciesResponse);
 

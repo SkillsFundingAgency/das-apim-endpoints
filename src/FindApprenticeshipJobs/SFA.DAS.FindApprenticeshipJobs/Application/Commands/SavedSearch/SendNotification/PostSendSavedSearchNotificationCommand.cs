@@ -41,11 +41,17 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
 
             public string? Wage { get; set; }
 
+            public string? WageUnit { get; set; }
+
+            public string? WageType { get; set; }
+
             public string? ClosingDate { get; set; }
 
             public string? TrainingCourse { get; set; }
 
             public double? Distance { get; set; }
+
+            public string? VacancySource { get; set; }
         }
 
         public class Address

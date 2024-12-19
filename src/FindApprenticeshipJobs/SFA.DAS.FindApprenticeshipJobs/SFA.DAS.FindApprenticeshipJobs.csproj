@@ -9,6 +9,7 @@
     <PackageReference Include="SFA.DAS.Notifications.Messages" />
     <PackageReference Include="SFA.DAS.NServiceBus" />
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
+    <PackageReference Include="SFA.DAS.VacancyServices.Wage" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />

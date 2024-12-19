@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Services;
 
@@ -17,4 +18,5 @@ public interface IVacancy
     string Postcode { get; }
     bool IsExternalVacancy { get; }
     string ExternalVacancyUrl { get; }
+    VacancyDataSource VacancySource { get; }
 }
