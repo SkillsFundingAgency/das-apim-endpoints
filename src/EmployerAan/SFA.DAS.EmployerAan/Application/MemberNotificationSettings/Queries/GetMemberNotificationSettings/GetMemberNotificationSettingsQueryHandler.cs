@@ -14,24 +14,22 @@ public class GetMemberNotificationSettingsQueryHandler : IRequestHandler<GetMemb
 
     public async Task<GetMemberNotificationSettingsQueryResult> Handle(GetMemberNotificationSettingsQuery request, CancellationToken cancellationToken)
     {
-        var eventFormats = _apiClient.GetMemberNotificationEventFormat(request.MemberId, cancellationToken);
-        var locations = _apiClient.GetMemberNotificationLocations(request.MemberId, cancellationToken);
+        var settings = _apiClient.GetMemberNotificationSettings(request.MemberId, cancellationToken);
         var memberResponse = _apiClient.GetMember(request.MemberId, cancellationToken);
 
-        await Task.WhenAll(eventFormats, locations, memberResponse);
+        await Task.WhenAll(settings, memberResponse);
 
         GetMemberNotificationSettingsQueryResult result = new();
 
-        var eventFormatsTask = eventFormats.Result;
-        var locationsTask = locations.Result;
+        var settingsTask = settings.Result;
         var outputMember = memberResponse.Result;
 
-        if (eventFormatsTask.MemberNotificationEventFormats.Any())
-            result.MemberNotificationEventFormats = eventFormatsTask.MemberNotificationEventFormats;
+        if (settingsTask.MemberNotificationEventFormats.Any())
+            result.MemberNotificationEventFormats = settingsTask.MemberNotificationEventFormats;
 
 
-        if (locationsTask.MemberNotificationLocations.Any())
-            result.MemberNotificationLocations = locationsTask.MemberNotificationLocations;
+        if (settingsTask.MemberNotificationLocations.Any())
+            result.MemberNotificationLocations = settingsTask.MemberNotificationLocations;
 
         result.ReceiveMonthlyNotifications = outputMember.ReceiveNotifications;
 

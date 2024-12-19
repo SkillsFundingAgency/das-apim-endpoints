@@ -1,7 +1,4 @@
-﻿using SFA.DAS.EmployerAan.Application.MemberNotificationEventFormat.Queries.GetMemberNotificationEventFormats;
-using SFA.DAS.EmployerAan.Application.MemberNotificationLocations.Queries;
-
-namespace SFA.DAS.EmployerAan.Application.MemberNotificationSettings.Queries.GetMemberNotificationSettings;
+﻿namespace SFA.DAS.EmployerAan.Application.MemberNotificationSettings.Queries.GetMemberNotificationSettings;
 
 public class GetMemberNotificationSettingsQueryResult
 {
