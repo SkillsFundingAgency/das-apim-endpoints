@@ -71,7 +71,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
 
                 sb.AppendLine();
                 sb.AppendLine($"#[{vacancy.Title}]({environmentHelper.VacancyDetailsUrl.Replace("{vacancy-reference}", vacancy.VacancyReference)})");
-                if (vacancy.VacancySource == "NHS")
+                if (vacancy.VacancySource !=null && vacancy.VacancySource.Equals("NHS", StringComparison.CurrentCultureIgnoreCase))
                 {
                     trainingCourseText = "See more details on NHS Jobs";
                     wageText = (vacancy.WageType == "Competitive") ?
