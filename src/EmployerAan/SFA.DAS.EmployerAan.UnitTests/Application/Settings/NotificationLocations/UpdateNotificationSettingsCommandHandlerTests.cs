@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Settings.NotificationLocatio
             await handler.Handle(command, cancellationToken);
 
             // Assert
-            aanHubApiClientMock.Verify(client => client.UpdateMemberNotificationLocations(
+            aanHubApiClientMock.Verify(client => client.UpdateMemberNotificationSettings(
                 command.MemberId,
                 It.Is<NotificationLocationsPostApiRequest>(request =>
                     request.Locations.Count == command.Locations.Count &&

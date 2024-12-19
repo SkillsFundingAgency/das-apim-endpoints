@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.EmployerAan.Application.MemberNotificationEventFormat.Queries.GetMemberNotificationEventFormats
+﻿namespace SFA.DAS.EmployerAan.Application.MemberNotificationSettings.Queries.GetMemberNotificationSettings
 {
     public class MemberNotificationEventFormatModel
     {

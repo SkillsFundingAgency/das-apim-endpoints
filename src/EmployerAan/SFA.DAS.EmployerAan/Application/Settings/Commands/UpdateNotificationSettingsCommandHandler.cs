@@ -26,6 +26,6 @@ public class UpdateNotificationSettingsCommandHandler(IAanHubRestApiClient aanHu
             }).ToList(),
         };
 
-        await aanHubApiClient.UpdateMemberNotificationLocations(request.MemberId, updateRequest, cancellationToken);
+        await aanHubApiClient.UpdateMemberNotificationSettings(request.MemberId, updateRequest, cancellationToken);
     }
 }

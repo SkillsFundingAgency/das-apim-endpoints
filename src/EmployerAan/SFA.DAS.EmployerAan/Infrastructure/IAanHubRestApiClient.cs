@@ -4,8 +4,7 @@ using SFA.DAS.EmployerAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.EmployerAan.Application.Employer.Commands.CreateEmployerMember;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
 using SFA.DAS.EmployerAan.Application.InnerApi.Notifications;
-using SFA.DAS.EmployerAan.Application.MemberNotificationEventFormat.Queries.GetMemberNotificationEventFormats;
-using SFA.DAS.EmployerAan.Application.MemberNotificationLocations.Queries;
+using SFA.DAS.EmployerAan.Application.MemberNotificationSettings.Queries.GetMemberNotificationSettings;
 using SFA.DAS.EmployerAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.EmployerAan.Application.Members.Queries.GetMember;
 using SFA.DAS.EmployerAan.Application.Members.Queries.GetMembers;
@@ -109,12 +108,9 @@ public interface IAanHubRestApiClient : IHealthChecker
     [Get("/leavingReasons")]
     Task<List<LeavingCategory>> GetLeavingReasons(CancellationToken cancellationToken);
 
-    [Get("/MemberNotificationEventFormats/{memberId}")]
-    Task<GetMemberNotificationEventFormatsQueryResult> GetMemberNotificationEventFormat([Path] Guid memberId, CancellationToken cancellationToken);
-
-    [Get("/MemberNotificationLocations/{memberId}")]
-    Task<GetMemberNotificationLocationsQueryResult> GetMemberNotificationLocations([Path] Guid memberId, CancellationToken cancellationToken);
+    [Get("/MemberNotificationSettings/{memberId}")]
+    Task<GetMemberNotificationSettingsQueryResult> GetMemberNotificationSettings([Path] Guid memberId, CancellationToken cancellationToken);
 
     [Post("/MemberNotificationSettings/{memberId}")]
-    Task UpdateMemberNotificationLocations([Path] Guid memberId, [Body] NotificationLocationsPostApiRequest request, CancellationToken cancellationToken);
+    Task UpdateMemberNotificationSettings([Path] Guid memberId, [Body] NotificationLocationsPostApiRequest request, CancellationToken cancellationToken);
 }
