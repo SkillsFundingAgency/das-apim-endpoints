@@ -70,9 +70,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 string? wageText;
 
                 sb.AppendLine();
+                sb.AppendLine($"#[{vacancy.Title}]({environmentHelper.VacancyDetailsUrl.Replace("{vacancy-reference}", vacancy.VacancyReference)})");
                 if (vacancy.VacancySource == "NHS")
                 {
-                    sb.AppendLine($"#[{vacancy.Title}]({environmentHelper.VacancyDetailsNhsUrl.Replace("{vacancy-reference}", vacancy.VacancyReference)})");
                     trainingCourseText = "See more details on NHS Jobs";
                     wageText = (vacancy.WageType == "Competitive") ?
                         "Depends on experience" :
@@ -80,7 +80,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 }
                 else
                 { 
-                    sb.AppendLine($"#[{vacancy.Title}]({environmentHelper.VacancyDetailsUrl.Replace("{vacancy-reference}", vacancy.VacancyReference)})");
                     trainingCourseText = vacancy.TrainingCourse;
                     wageText = (vacancy.WageType == "Competitive") ? vacancy.WageType : vacancy.Wage + " a year";
                 }
