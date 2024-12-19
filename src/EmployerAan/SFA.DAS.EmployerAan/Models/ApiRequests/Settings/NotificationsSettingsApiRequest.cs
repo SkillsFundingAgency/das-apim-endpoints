@@ -2,7 +2,6 @@
 {
     public class NotificationsSettingsApiRequest
     {
-        public Guid MemberId { get; set; }
         public bool ReceiveNotifications { get; set; }
         public List<NotificationEventType> EventTypes { get; set; } = [];
         public List<Location> Locations { get; set; } = [];

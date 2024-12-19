@@ -33,16 +33,16 @@ namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.EventNotificationsSettin
         public async Task Post_InvokesCommandHandlerWithCorrectParameters(
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] MemberNotificationSettingsController sut,
-            long employerAccountId,
+            Guid memberId,
             NotificationsSettingsApiRequest request,
             CancellationToken cancellationToken)
         {
             // Act
-            var result = await sut.Post(employerAccountId, request);
+            var result = await sut.Post(memberId, request);
 
             // Assert
             mockMediator.Verify(m => m.Send(It.Is<UpdateNotificationSettingsCommand>(cmd =>
-                cmd.MemberId == request.MemberId &&
+                cmd.MemberId == memberId &&
                 cmd.ReceiveNotifications == request.ReceiveNotifications &&
                 cmd.EventTypes.All(l => request.EventTypes.Any(reqEventType => 
                     reqEventType.EventType == l.EventType &&
