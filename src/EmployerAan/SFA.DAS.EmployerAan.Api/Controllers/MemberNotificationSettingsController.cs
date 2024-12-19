@@ -24,7 +24,7 @@ public class MemberNotificationSettingsController : ControllerBase
         return Ok(memberNotificationSettings);
     }
 
-    [HttpPost]
+    [HttpPost("{memberId}")]
     public async Task<IActionResult> Post([FromRoute] Guid memberId, [FromBody] NotificationsSettingsApiRequest request)
     {
         await _mediator.Send(new UpdateNotificationSettingsCommand
