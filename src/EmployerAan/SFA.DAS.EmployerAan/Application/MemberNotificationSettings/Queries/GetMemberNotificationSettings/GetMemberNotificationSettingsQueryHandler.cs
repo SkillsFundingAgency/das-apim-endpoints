@@ -12,11 +12,11 @@ public class GetMemberNotificationSettingsQueryHandler(IAanHubRestApiClient apiC
         {
             ReceiveMonthlyNotifications = settings.ReceiveNotifications,
             MemberNotificationEventFormats = settings.EventTypes.Any()
-                ? settings.EventTypes.Select(x => new GetMemberNotificationSettingsQueryResult.EventType
+                ? settings.EventTypes.Where(x => x.ReceiveNotifications).Select(x => new GetMemberNotificationSettingsQueryResult.EventType
                 {
                     EventFormat = x.EventType,
                     Ordering = x.Ordering,
-                    ReceiveNotifications = x.ReceiveNotifications
+                    ReceiveNotifications = true
                 }).ToList()
                 : [],
             MemberNotificationLocations = settings.Locations.Any()
