@@ -10,7 +10,6 @@ using System.Linq;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using AutoFixture;
-using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.GetApplicationsForAutomaticRejection
 {
@@ -26,9 +25,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Functions.G
         public void SetUp()
         {
             _levyTransferMatchingServiceMock = new Mock<ILevyTransferMatchingService>();
-            _handler = new GetApplicationsForAutomaticRejectionQueryHandler(
-                _levyTransferMatchingServiceMock.Object,
-                Mock.Of<ILogger<GetApplicationsForAutomaticRejectionQueryHandler>>());
+            _handler = new GetApplicationsForAutomaticRejectionQueryHandler(_levyTransferMatchingServiceMock.Object);
             _fixture = new Fixture();
         }
 

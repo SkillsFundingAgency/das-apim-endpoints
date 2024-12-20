@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
@@ -14,12 +13,9 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
     public class GetApplicationsForAutomaticRejectionQueryHandler : IRequestHandler<GetApplicationsForAutomaticRejectionQuery, GetApplicationsForAutomaticRejectionQueryResult>
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
-        private readonly ILogger<GetApplicationsForAutomaticRejectionQueryHandler> _logger;
 
-        public GetApplicationsForAutomaticRejectionQueryHandler(ILevyTransferMatchingService levyTransferMatchingService
-            , ILogger<GetApplicationsForAutomaticRejectionQueryHandler> logger)
+        public GetApplicationsForAutomaticRejectionQueryHandler(ILevyTransferMatchingService levyTransferMatchingService)
         {
-            _logger = logger;
             _levyTransferMatchingService = levyTransferMatchingService;
         }
 
@@ -32,9 +28,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
                 SortDirection = SortOrder.Ascending
             });
 
-            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler returns {count} pending applications from inner api", getApplicationsResponse?.Applications.Count());
             var applications = FilterApplications(getApplicationsResponse);
-            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler filter returns {count_}", applications.Count);
 
             var result = applications.Select(application => GetApplicationsForAutomaticRejectionQueryResult.Application.BuildApplication(application)).ToList();
 
@@ -44,45 +38,23 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
             };
         }
 
-        private List<GetApplicationsResponse.Application> FilterApplications(GetApplicationsResponse getApplicationsResponse)
+        private static List<GetApplicationsResponse.Application> FilterApplications(GetApplicationsResponse getApplicationsResponse)
         {
-            var now = DateTime.UtcNow;
-            var threeMonthsAgo = now.AddMonths(-3);
-            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler NOW : {now} ThreeMonthsAgo: {ThreeMonthsAgo}", now.ToString(), threeMonthsAgo.ToString());
+            var threeMonthsAgo = DateTime.UtcNow.AddMonths(-3);
 
             if (getApplicationsResponse == null)
             {
-                _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler getApplicationsResponse == null");
-
                 return new List<GetApplicationsResponse.Application>();
             }
 
-            var initialCount = getApplicationsResponse.Applications.Count();
-            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler >FilterApplications: Initial count :{initialCount}", initialCount);
-
-            var notApplicableCount = 0;
-            var applicableCount = 0;
-            var filteredApplications = new List<GetApplicationsResponse.Application>();
-
-            foreach (var application in getApplicationsResponse.Applications)
-            {
-                if ((application.PledgeAutomaticApprovalOption == AutomaticApprovalOption.NotApplicable && application.CreatedOn < threeMonthsAgo))
-                {
-                    notApplicableCount++;
-                    filteredApplications.Add(application);
-                }
-                else if ((application.PledgeAutomaticApprovalOption != AutomaticApprovalOption.NotApplicable && application.MatchPercentage < 100 && application.CreatedOn < threeMonthsAgo))
-                {
-                    applicableCount++;
-                    filteredApplications.Add(application);
-                }
-            }
-
-            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler: Count of NotApplicable applications: {notApplicableCount}", notApplicableCount);
-            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler: Count of Applicable applications: {applicableCount}", applicableCount);
-            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler: Final count of filtered applications: {filteredCount}", filteredApplications.Count);
-
-            return filteredApplications;
+            return getApplicationsResponse.Applications
+                .Where(x =>
+                    (x.PledgeAutomaticApprovalOption == AutomaticApprovalOption.NotApplicable && x.CreatedOn < threeMonthsAgo)
+                    ||
+                    (x.PledgeAutomaticApprovalOption != AutomaticApprovalOption.NotApplicable && x.MatchPercentage < 100 && x.CreatedOn < threeMonthsAgo)
+                )
+                .ToList();
         }
+
     }
 }
