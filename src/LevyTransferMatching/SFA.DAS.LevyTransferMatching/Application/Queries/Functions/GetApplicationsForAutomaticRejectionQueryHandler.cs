@@ -1,13 +1,13 @@
-﻿using MediatR;
-using SFA.DAS.LevyTransferMatching.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
-using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 {
@@ -15,7 +15,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
     {
         private readonly ILevyTransferMatchingService _levyTransferMatchingService;
         private readonly ILogger<GetApplicationsForAutomaticRejectionQueryHandler> _logger;
-        private static readonly DateTime ThreeMonthsAgo = DateTime.UtcNow.AddMonths(-3);
 
         public GetApplicationsForAutomaticRejectionQueryHandler(ILevyTransferMatchingService levyTransferMatchingService
             , ILogger<GetApplicationsForAutomaticRejectionQueryHandler> logger)
@@ -26,8 +25,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 
         public async Task<GetApplicationsForAutomaticRejectionQueryResult> Handle(GetApplicationsForAutomaticRejectionQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler NOW : {now} ThreeMonthsAgo: {ThreeMonthsAgo}", DateTime.UtcNow.ToString(), ThreeMonthsAgo.ToString());
-
             var getApplicationsResponse = await _levyTransferMatchingService.GetApplications(new GetApplicationsRequest
             {
                 ApplicationStatusFilter = ApplicationStatus.Pending,
@@ -44,11 +41,15 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
             return new GetApplicationsForAutomaticRejectionQueryResult
             {
                 Applications = result
-            };  
+            };
         }
 
         private List<GetApplicationsResponse.Application> FilterApplications(GetApplicationsResponse getApplicationsResponse)
         {
+            var now = DateTime.UtcNow;
+            var threeMonthsAgo = now.AddMonths(-3);
+            _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler NOW : {now} ThreeMonthsAgo: {ThreeMonthsAgo}", now.ToString(), threeMonthsAgo.ToString());
+
             if (getApplicationsResponse == null)
             {
                 _logger.LogInformation("GetApplicationsForAutomaticRejectionQueryHandler getApplicationsResponse == null");
@@ -65,12 +66,12 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions
 
             foreach (var application in getApplicationsResponse.Applications)
             {
-                if ((application.PledgeAutomaticApprovalOption == AutomaticApprovalOption.NotApplicable && application.CreatedOn < ThreeMonthsAgo))
+                if ((application.PledgeAutomaticApprovalOption == AutomaticApprovalOption.NotApplicable && application.CreatedOn < threeMonthsAgo))
                 {
                     notApplicableCount++;
                     filteredApplications.Add(application);
                 }
-                else if ((application.PledgeAutomaticApprovalOption != AutomaticApprovalOption.NotApplicable && application.MatchPercentage < 100 && application.CreatedOn < ThreeMonthsAgo))
+                else if ((application.PledgeAutomaticApprovalOption != AutomaticApprovalOption.NotApplicable && application.MatchPercentage < 100 && application.CreatedOn < threeMonthsAgo))
                 {
                     applicableCount++;
                     filteredApplications.Add(application);
