@@ -9,16 +9,16 @@ public class UpdateNotificationSettingsCommandHandler(IAanHubRestApiClient aanHu
 {
     public async Task Handle(UpdateNotificationSettingsCommand request, CancellationToken cancellationToken)
     {
-        var updateRequest = new NotificationLocationsPostApiRequest
+        var updateRequest = new PostNotificationSettingsApiRequest
         {
             ReceiveNotifications = request.ReceiveNotifications,
-            EventTypes = request.EventTypes.Select(x => new NotificationLocationsPostApiRequest.NotificationEventType
+            EventTypes = request.EventTypes.Select(x => new PostNotificationSettingsApiRequest.NotificationEventType
             {
                 EventType = x.EventType,
                 Ordering = x.Ordering,
                 ReceiveNotifications = x.ReceiveNotifications,
             }).ToList(),
-            Locations = request.Locations.Select(x => new NotificationLocationsPostApiRequest.Location{
+            Locations = request.Locations.Select(x => new PostNotificationSettingsApiRequest.Location{
                 Name = x.Name,
                 Radius = x.Radius,
                 Latitude = x.Latitude,

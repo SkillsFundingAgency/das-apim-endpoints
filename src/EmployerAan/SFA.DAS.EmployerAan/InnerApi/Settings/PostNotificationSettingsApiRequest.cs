@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.EmployerAan.InnerApi.Settings
 {
-    public class NotificationLocationsPostApiRequest
+    public class PostNotificationSettingsApiRequest
     {
         public bool ReceiveNotifications { get; set; }
         public List<NotificationEventType> EventTypes = [];

@@ -1,37 +1,34 @@
 ﻿using MediatR;
 using SFA.DAS.EmployerAan.Infrastructure;
+using SFA.DAS.EmployerAan.Application.MemberNotificationSettings.Queries.GetMemberNotificationSettings;
 
-namespace SFA.DAS.EmployerAan.Application.MemberNotificationSettings.Queries.GetMemberNotificationSettings;
-
-public class GetMemberNotificationSettingsQueryHandler : IRequestHandler<GetMemberNotificationSettingsQuery, GetMemberNotificationSettingsQueryResult>
+public class GetMemberNotificationSettingsQueryHandler(IAanHubRestApiClient apiClient) : IRequestHandler<GetMemberNotificationSettingsQuery, GetMemberNotificationSettingsQueryResult>
 {
-    private readonly IAanHubRestApiClient _apiClient;
-
-    public GetMemberNotificationSettingsQueryHandler(IAanHubRestApiClient apiClient)
-    {
-        _apiClient = apiClient;
-    }
-
     public async Task<GetMemberNotificationSettingsQueryResult> Handle(GetMemberNotificationSettingsQuery request, CancellationToken cancellationToken)
     {
-        var settings = _apiClient.GetMemberNotificationSettings(request.MemberId, cancellationToken);
-        var memberResponse = _apiClient.GetMember(request.MemberId, cancellationToken);
+        var settings = await apiClient.GetMemberNotificationSettings(request.MemberId, cancellationToken);
 
-        await Task.WhenAll(settings, memberResponse);
-
-        GetMemberNotificationSettingsQueryResult result = new();
-
-        var settingsTask = settings.Result;
-        var outputMember = memberResponse.Result;
-
-        if (settingsTask.MemberNotificationEventFormats.Any())
-            result.MemberNotificationEventFormats = settingsTask.MemberNotificationEventFormats;
-
-
-        if (settingsTask.MemberNotificationLocations.Any())
-            result.MemberNotificationLocations = settingsTask.MemberNotificationLocations;
-
-        result.ReceiveMonthlyNotifications = outputMember.ReceiveNotifications;
+        var result = new GetMemberNotificationSettingsQueryResult
+        {
+            ReceiveMonthlyNotifications = settings.ReceiveNotifications,
+            MemberNotificationEventFormats = settings.EventTypes.Any()
+                ? settings.EventTypes.Select(x => new GetMemberNotificationSettingsQueryResult.EventType
+                {
+                    EventFormat = x.EventType,
+                    Ordering = x.Ordering,
+                    ReceiveNotifications = x.ReceiveNotifications
+                }).ToList()
+                : [],
+            MemberNotificationLocations = settings.Locations.Any()
+                ? settings.Locations.Select(x => new GetMemberNotificationSettingsQueryResult.Location
+                {
+                    Name = x.Name,
+                    Radius = x.Radius,
+                    Latitude = x.Latitude,
+                    Longitude = x.Longitude
+                }).ToList()
+                : []
+        };
 
         return result;
     }

@@ -109,8 +109,8 @@ public interface IAanHubRestApiClient : IHealthChecker
     Task<List<LeavingCategory>> GetLeavingReasons(CancellationToken cancellationToken);
 
     [Get("/MemberNotificationSettings/{memberId}")]
-    Task<GetMemberNotificationSettingsQueryResult> GetMemberNotificationSettings([Path] Guid memberId, CancellationToken cancellationToken);
+    Task<GetNotificationSettingsApiResponse> GetMemberNotificationSettings([Path] Guid memberId, CancellationToken cancellationToken);
 
     [Post("/MemberNotificationSettings/{memberId}")]
-    Task UpdateMemberNotificationSettings([Path] Guid memberId, [Body] NotificationLocationsPostApiRequest request, CancellationToken cancellationToken);
+    Task UpdateMemberNotificationSettings([Path] Guid memberId, [Body] PostNotificationSettingsApiRequest request, CancellationToken cancellationToken);
 }
