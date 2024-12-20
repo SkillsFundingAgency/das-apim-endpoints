@@ -13,6 +13,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
     {
         [HttpGet]
         [Route("GetCandidatesByActivity")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<IActionResult> GetCandidatesByActivity(
             [FromQuery] DateTime cutOffDateTime,
             CancellationToken cancellationToken = default)

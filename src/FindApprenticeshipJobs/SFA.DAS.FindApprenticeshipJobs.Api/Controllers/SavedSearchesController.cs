@@ -79,7 +79,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
             {
                 await mediator.Send(new UnsubscribeSavedSearchCommand(request.SavedSearchId), cancellationToken);
 
-                return NoContent();
+                return Ok();
             }
             catch (Exception ex)
             {
