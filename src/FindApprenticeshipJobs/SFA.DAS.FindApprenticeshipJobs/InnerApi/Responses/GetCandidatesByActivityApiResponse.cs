@@ -28,7 +28,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
             [JsonProperty("updatedOn")]
             public DateTime UpdatedOn { get; set; }
             [JsonProperty("termsOfUseAcceptedOn")]
-            public DateTime TermsOfUseAcceptedOn { get; set; }
+            public DateTime? TermsOfUseAcceptedOn { get; set; }
             [JsonProperty("status")]
             public CandidateStatus Status { get; set; }
             [JsonProperty("migratedEmail")]

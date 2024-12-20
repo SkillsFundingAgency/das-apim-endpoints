@@ -26,7 +26,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetCand
             public DateTime DateOfBirth { get; set; }
             public DateTime CreatedOn { get; set; }
             public DateTime UpdatedOn { get; set; }
-            public DateTime TermsOfUseAcceptedOn { get; set; }
+            public DateTime? TermsOfUseAcceptedOn { get; set; }
             public CandidateStatus Status { get; set; }
             public string? MigratedEmail { get; set; }
             public string? Email { get; set; }
