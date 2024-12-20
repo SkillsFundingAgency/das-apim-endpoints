@@ -23,7 +23,7 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Settings.NotificationLocatio
             // Assert
             aanHubApiClientMock.Verify(client => client.UpdateMemberNotificationLocations(
                 command.MemberId,
-                It.Is<NotificationLocationsPostApiRequest>(request =>
+                It.Is<PostNotificationSettingsApiRequest>(request =>
                     request.Locations.Count == command.Locations.Count &&
                     request.ReceiveNotifications == command.ReceiveNotifications &&
                     request.EventTypes.All(et => command.EventTypes.Any(cmdEt => 
