@@ -51,6 +51,7 @@ public class GetLiveVacanciesApiResponse
                 Route = source.Route,
                 Description = source.Description,
                 Address = source.Address == null ? null : (Address)source.Address,
+                OtherAddresses =  source.OtherAddresses is {Count: > 0} ? source.OtherAddresses.Select(add => (Address)add).ToList() : [],
                 ClosingDate = source.ClosingDate,
                 StartDate = source.StartDate,
                 PostedDate = source.PostedDate,
@@ -118,6 +119,7 @@ public class GetLiveVacanciesApiResponse
         public string ApprenticeshipTitle { get; set; }
         public string? Description { get; set; }
         public Address? Address { get; set; }
+        public List<Address> OtherAddresses { get; set; } = [];
         public string? EmployerName { get; set; }
         public long? Ukprn { get; set; }
         public string? ProviderName { get; set; }

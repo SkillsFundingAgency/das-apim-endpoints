@@ -9,6 +9,7 @@
         public int NumberOfPositions { get; set; }
         public string? ApprenticeshipTitle { get; set; }
         public string? Description { get; set; }
+        public List<Address> OtherAddresses { get; set; } = [];
         public Address? Address { get; set; }
         public string? EmployerName { get; set; }
         public string ProviderName { get; set; } = null!;
