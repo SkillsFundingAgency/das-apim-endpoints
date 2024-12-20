@@ -24,7 +24,7 @@ builder.Services
                 Title = "EmployerAanOuterApi",
                 Version = "v1"
             });
-        c.CustomSchemaIds(x => x.FullName);
+        c.CustomSchemaIds(x => x.FullName.Replace('+', '_'));
     })
     .AddControllers(o =>
     {
