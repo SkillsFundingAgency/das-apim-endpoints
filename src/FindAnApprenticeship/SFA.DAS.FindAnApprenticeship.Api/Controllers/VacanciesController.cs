@@ -10,7 +10,6 @@ using SFA.DAS.FindAnApprenticeship.Services;
 using System;
 using System.Net;
 using System.Threading.Tasks;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.GetVacancyDetails;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -51,26 +50,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             finally
             {
                 _metrics.IncreaseVacancyViews(vacancyReference);
-            }
-        }
-
-        [HttpGet]
-        [Route("nhs/{vacancyReference}")]
-        [ProducesResponseType(typeof(GetApprenticeshipNhsVacancyApiResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetNhsVacancyByReference([FromRoute] string vacancyReference)
-        {
-            try
-            {
-                var result = await _mediator.Send(new GetVacancyDetailsQuery(vacancyReference));
-                if (result == null) return new StatusCodeResult((int)HttpStatusCode.NotFound);
-                return Ok((GetApprenticeshipNhsVacancyApiResponse)result);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error getting Nhs vacancy details by reference:{vacancyReference}", vacancyReference);
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
 

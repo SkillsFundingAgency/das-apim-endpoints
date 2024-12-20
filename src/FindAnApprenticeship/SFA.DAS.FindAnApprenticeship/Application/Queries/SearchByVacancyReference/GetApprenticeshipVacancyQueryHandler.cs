@@ -10,6 +10,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference
 {
@@ -27,6 +28,19 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             if (vacancy == null)
             {
                 return null;
+            }
+
+            if (vacancy.VacancySource == VacancyDataSource.Nhs)
+            {
+                return new GetApprenticeshipVacancyQueryResult
+                {
+                    ApprenticeshipVacancy = GetApprenticeshipVacancyQueryResult.Vacancy.FromIVacancy(vacancy),
+                    CourseDetail = null,
+                    Levels = null,
+                    Application = null,
+                    CandidatePostcode = null,
+                    IsSavedVacancy = false
+                };
             }
 
             var courseResult = await coursesApiClient.Get<GetStandardsListItemResponse>(new GetStandardRequest(vacancy.CourseId));

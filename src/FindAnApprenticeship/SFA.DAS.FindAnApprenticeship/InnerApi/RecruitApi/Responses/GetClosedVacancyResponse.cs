@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
@@ -30,6 +31,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
         public string Postcode => EmployerLocation.Postcode;
         public bool IsExternalVacancy => false;
         public string ExternalVacancyUrl => string.Empty;
+        public VacancyDataSource VacancySource { get; set; }
 
         public string AdditionalTrainingDescription { get; set; }
         public string ApplicationInstructions { get; set; }

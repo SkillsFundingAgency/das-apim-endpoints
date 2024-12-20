@@ -31,7 +31,14 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                     TotalCount = savedSearchResponse.TotalCount,
                     SavedSearchResults = []
                 };
+            
+            var routesTask = CourseService.GetRoutes();
+            var levelsTask = CourseService.GetLevels();
 
+            await Task.WhenAll(routesTask, levelsTask);
+            var routesList = routesTask.Result;
+            var levelsList = levelsTask.Result;
+            
             foreach (var savedSearch in savedSearchResponse.SavedSearches)
             {
                 var candidate =
@@ -39,14 +46,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                         new GetCandidateApiRequest(savedSearch.UserReference.ToString()));
 
                 if (candidate == null || candidate.Status == UserStatus.Deleted) continue;
-
-                var routesTask = CourseService.GetRoutes();
-                var levelsTask = CourseService.GetLevels();
-
-                await Task.WhenAll(routesTask, levelsTask);
-
-                var routesList = routesTask.Result;
-                var levelsList = levelsTask.Result;
 
                 var categories = routesList.Routes
                     .Where(route =>
@@ -79,9 +78,14 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                         categories.Select(cat => cat.Id.ToString()).ToList(),
                         savedSearch.SearchParameters.SelectedLevelIds,
                         request.ApprenticeshipSearchResultsSortOrder,
-                        savedSearch.SearchParameters.DisabilityConfident));
+                        savedSearch.SearchParameters.DisabilityConfident,
+                        new List<VacancyDataSource>
+                        {
+                            VacancyDataSource.Nhs
+                        }));
 
-                if (vacanciesResponse != null && vacanciesResponse.ApprenticeshipVacancies.Any())
+                if (vacanciesResponse != null)
+                {
                     searchResultList.Add(new GetSavedSearchesQueryResult.SearchResult
                     {
                         Id = savedSearch.Id,
@@ -97,6 +101,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                                 (GetSavedSearchesQueryResult.SearchResult.ApprenticeshipVacancy) x)
                             .ToList()
                     });
+                }
             }
 
             return new GetSavedSearchesQueryResult
