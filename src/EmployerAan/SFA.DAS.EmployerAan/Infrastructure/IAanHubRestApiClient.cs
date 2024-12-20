@@ -17,6 +17,7 @@ using SFA.DAS.EmployerAan.InnerApi.MemberProfiles;
 using SFA.DAS.EmployerAan.InnerApi.Members;
 using SFA.DAS.EmployerAan.InnerApi.Members.PostMemberLeaving;
 using SFA.DAS.EmployerAan.InnerApi.Notifications.Responses;
+using SFA.DAS.EmployerAan.InnerApi.Settings;
 using SFA.DAS.EmployerAan.Models;
 
 namespace SFA.DAS.EmployerAan.Infrastructure;
@@ -108,5 +109,8 @@ public interface IAanHubRestApiClient : IHealthChecker
     Task<List<LeavingCategory>> GetLeavingReasons(CancellationToken cancellationToken);
 
     [Get("/MemberNotificationSettings/{memberId}")]
-    Task<GetMemberNotificationSettingsQueryResult> GetMemberNotificationSettings([Path] Guid memberId, CancellationToken cancellationToken);
+    Task<GetNotificationSettingsApiResponse> GetMemberNotificationSettings([Path] Guid memberId, CancellationToken cancellationToken);
+
+    [Post("/MemberNotificationSettings/{memberId}")]
+    Task UpdateMemberNotificationSettings([Path] Guid memberId, [Body] PostNotificationSettingsApiRequest request, CancellationToken cancellationToken);
 }
