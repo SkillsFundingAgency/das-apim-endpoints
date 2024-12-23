@@ -24,7 +24,10 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
         {
             var vacancy = await vacancyService.GetVacancy(request.VacancyReference);
 
-            if (vacancy == null) { return null; }
+            if (vacancy == null)
+            {
+                return null;
+            }
 
             var courseResult = await coursesApiClient.Get<GetStandardsListItemResponse>(new GetStandardRequest(vacancy.CourseId));
             var courseLevels = await courseService.GetLevels();
@@ -73,7 +76,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
 
             return new GetApprenticeshipVacancyQueryResult
             {
-                ApprenticeshipVacancy = GetApprenticeshipVacancyQueryResult.Vacancy.FromIVacancy(vacancy),
+                ApprenticeshipVacancy = GetApprenticeshipVacancyQueryResult.Vacancy.FromIVacancy(vacancy, courseResult),
                 CourseDetail = courseResult,
                 Levels = courseLevels.Levels.ToList(),
                 Application = candidateApplicationDetails,
