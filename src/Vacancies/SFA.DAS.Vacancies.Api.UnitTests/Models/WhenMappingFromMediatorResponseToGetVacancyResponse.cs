@@ -47,6 +47,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(c => c.ClosingDate)
                 .Excluding(item => item.Ukprn)
                 .Excluding(item => item.VacancyReference)
+                .Excluding(item => item.VacancySource)
             );
             actual.FullDescription.Should().Be(source.Vacancy.LongDescription);
             actual.Qualifications.Should().BeEquivalentTo(source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());

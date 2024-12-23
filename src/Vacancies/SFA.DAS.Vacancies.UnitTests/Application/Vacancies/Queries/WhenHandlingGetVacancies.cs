@@ -157,7 +157,50 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             {
                 vacancy.VacancyUrl.Should().Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacancy.VacancyReference}");
             }
+        }
+        
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_VacancyUrl_Is_Correct_For_Each_Vacancy_Source(
+            int standardLarsCode,
+            string findAnApprenticeshipBaseUrl,
+            GetVacanciesQuery query,
+            GetVacanciesListItem vacancyRaa,
+            GetVacanciesListItem vacancyNhs,
+            GetStandardsListItem courseResponse,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            [Frozen] Mock<ICourseService> courseService,
+            [Frozen] Mock<IOptions<VacanciesConfiguration>> vacanciesConfiguration,
+            GetVacanciesQueryHandler handler)
+        {
+            vacanciesConfiguration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl;
+            courseResponse.LarsCode = standardLarsCode;
+            vacancyRaa.VacancySource = "RAA";
+            vacancyNhs.VacancySource = "NHS";
+            var apiResponse = new GetVacanciesResponse
+            {
+                ApprenticeshipVacancies = new List<GetVacanciesListItem> { vacancyRaa, vacancyNhs },
+                TotalFound = 2,
+                Total = 2
+            };
+            foreach (var vacanciesItem in apiResponse.ApprenticeshipVacancies)
+            {
+                vacanciesItem.StandardLarsCode = standardLarsCode;
+            }
+            query.AccountLegalEntityPublicHashedId = "";
+            var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
+                query.AccountLegalEntityPublicHashedId, query.Ukprn, query.AccountPublicHashedId, query.StandardLarsCode,
+                query.NationWideOnly, query.Lat, query.Lon, query.DistanceInMiles, query.Routes, query.PostedInLastNumberOfDays, query.AdditionalDataSources, query.Sort);
+            apiClient.Setup(x =>
+                x.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c =>
+                    c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(apiResponse);
+            courseService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse))).ReturnsAsync(new GetStandardsListResponse
+            { Standards = new List<GetStandardsListItem> { courseResponse } });
 
+            var actual = await handler.Handle(query, CancellationToken.None);
+            
+            actual.Vacancies.First(x => x.Id.Equals(vacancyRaa.Id)).VacancyUrl.Should().Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacancyRaa.VacancyReference}");
+            actual.Vacancies.First(x => x.Id.Equals(vacancyNhs.Id)).VacancyUrl.Should().Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacancyNhs.VacancyReference}");
         }
 
         [Test, MoqAutoData]
