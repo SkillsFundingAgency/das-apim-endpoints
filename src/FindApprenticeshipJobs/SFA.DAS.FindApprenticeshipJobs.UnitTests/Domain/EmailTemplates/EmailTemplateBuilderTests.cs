@@ -277,7 +277,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                 }
             };
 
-            string expectedSnippet = $"""
+            var expectedSnippet = $"""
 
                                            #[Software Developer](https://example.com/vacancy/12345)
                                            ABC Company
@@ -300,11 +300,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             snippet.Should().Be(expectedSnippet);
         }
 
-        [TestCase("Competitive", "", "Depends on experience")]
-        [TestCase("", "month", "£30,000 a month")]
-        [TestCase("", "hour", "£30,000 an hour")]
+        [TestCase("CompetitiveSalary", "Annually", "Negotiable","Negotiable")]
+        [TestCase("FixedWage", "Annually", "£10296.00","£10,296 a year")]
+        [TestCase("FixedWage", "Annually","£23615.00 to £23615.00", "£23,615 to £23,615 a year")]
+        [TestCase("FixedWage", "Annually","£6.40", "£6.40 an hour")]
         public void GetSavedSearchVacanciesSnippet_Should_Return_Snippet_With_Correct_Wage_Text_For_Nhs_VacancySource_And_Different_WageTypes(
-            string wagetype, string wageUnit, string expectedWageText)
+            string wagetype, string wageUnit, string wage, string expectedWageText)
         {
             // Arrange
             var environmentHelper = new EmailEnvironmentHelper("test")
@@ -325,8 +326,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         Postcode = "12345"
                     },
                     Distance = 10,
-                    TrainingCourse = "",
-                    Wage = "£30,000",
+                    TrainingCourse = " (level 0)",
+                    Wage = wage,
                     ClosingDate = "2022-12-31",
                     VacancySource = "NHS",
                     WageUnit = wageUnit,
@@ -334,9 +335,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                 }
             };
 
-            string expectedSnippet = $"""
+            var expectedSnippet = $"""
 
-                                           #[Mental Health Nurse](https://example.com/vacancy/12345)
+                                           #[Mental Health Nurse (from NHS Jobs)](https://example.com/vacancy/12345)
                                            NHS Jobs
                                            123 Main St, 12345
 
