@@ -339,5 +339,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
             return Ok();
         }
+
+        [Route("applications-for-auto-decline")]
+        [HttpGet]
+        public async Task<IActionResult> ApplicationsForAutomaticDecline()
+        {
+            var result = await _mediator.Send(new ApplicationsForAutomaticDeclineQuery());
+
+            return Ok((ApplicationsForAutomaticDeclineResponse)result);
+        }
     }
 }

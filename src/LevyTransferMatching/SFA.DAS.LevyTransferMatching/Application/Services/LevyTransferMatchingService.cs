@@ -86,8 +86,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
 
         public async Task<CreateApplicationResponse> CreateApplication(CreateApplicationRequest request)
         {
-           var response = await _levyTransferMatchingApiClient.PostWithResponseCode<CreateApplicationResponse>(request);
-           return response.Body;
+            var response = await _levyTransferMatchingApiClient.PostWithResponseCode<CreateApplicationResponse>(request);
+            return response.Body;
         }
 
         public async Task<GetApplicationResponse> GetApplication(GetApplicationRequest request)
@@ -100,6 +100,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         public async Task<GetApplicationsResponse> GetApplications(GetApplicationsRequest request)
         {
             return await _levyTransferMatchingApiClient.Get<GetApplicationsResponse>(request);
+        }
+        public async Task<GetApplicationsToAutoDeclineResponse> GetApplicationsToAutoDecline(GetApplicationsToAutoDeclineRequest request)
+        {
+            return await _levyTransferMatchingApiClient.Get<GetApplicationsToAutoDeclineResponse>(request);
         }
 
         public async Task<ApiResponse<DebitPledgeRequest>> DebitPledge(DebitPledgeRequest request)
