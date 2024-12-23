@@ -23,7 +23,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Candidates
             GetCandidateByActivityQueryHandler handler)
         {
             var expectedGetCandidatesByActivityApiRequest =
-                new GetCandidatesByActivityApiRequest(query.CutOffDateTime);
+                new GetCandidatesByActivityApiRequest(query.CutOffDateTime.ToString("O"), query.PageNumber, query.PageSize);
 
             mockCandidateApiClient
                 .Setup(client => client.Get<GetCandidatesByActivityApiResponse>(
@@ -36,6 +36,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Candidates
 
             actual.Should().NotBeNull();
             actual.Candidates.Should().BeEquivalentTo(mockCandidatesByActivityApiResponse.Candidates);
+            actual.PageSize.Should().Be(mockCandidatesByActivityApiResponse.PageSize);
+            actual.PageIndex.Should().Be(mockCandidatesByActivityApiResponse.PageIndex);
+            actual.TotalPages.Should().Be(mockCandidatesByActivityApiResponse.TotalPages);
+            actual.TotalCount.Should().Be(mockCandidatesByActivityApiResponse.TotalCount);
         }
     }
 }

@@ -2,8 +2,8 @@
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests
 {
-    public class GetCandidatesByActivityApiRequest(DateTime cutOffDateTime) : IGetApiRequest
+    public class GetCandidatesByActivityApiRequest(string cutOffDateTime, int pageNumber, int pageSize) : IGetApiRequest
     {
-        public string GetUrl => $"api/candidates/GetCandidatesByActivity?cutOffDateTime={cutOffDateTime:O}";
+        public string GetUrl => $"api/candidates/GetCandidatesByActivity?cutOffDateTime={cutOffDateTime}&pageNumber={pageNumber}&pageSize={pageSize}";
     }
 }

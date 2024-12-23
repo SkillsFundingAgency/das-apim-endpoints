@@ -1,4 +1,4 @@
 ﻿namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
 {
-    public record PostUnsubscribeSavedSearchApiRequest(Guid SavedSearchId);
+    public record PostUnsubscribeSavedSearchApiRequest(Guid UserReference);
 }

@@ -17,6 +17,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers
     {
         [Test, MoqAutoData]
         public async Task Then_Candidates_Returned_From_Mediator(
+            int pageNumber,
+            int pageSize,
             DateTime cutOffDateTime,
             GetCandidateByActivityQueryResult mockQueryResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -24,7 +26,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers
         {
             mockMediator.Setup(x => x.Send(It.IsAny<GetCandidateByActivityQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
 
-            var actual = await sut.GetCandidatesByActivity(cutOffDateTime, It.IsAny<CancellationToken>()) as ObjectResult;
+            var actual = await sut.GetCandidatesByActivity(cutOffDateTime, pageNumber, pageSize, It.IsAny<CancellationToken>()) as ObjectResult;
             var actualValue = actual!.Value as GetCandidateByActivityQueryResult;
 
             using (new AssertionScope())
@@ -37,6 +39,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public async Task And_Exception_Returned_Then_Returns_Internal_Server_Error(
+            int pageNumber,
+            int pageSize,
             DateTime cutOffDateTime,
             GetCandidateByActivityQueryResult mockQueryResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -44,7 +48,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers
         {
             mockMediator.Setup(x => x.Send(It.IsAny<GetCandidateByActivityQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException());
 
-            var actual = await sut.GetCandidatesByActivity(cutOffDateTime, It.IsAny<CancellationToken>()) as StatusCodeResult;
+            var actual = await sut.GetCandidatesByActivity(cutOffDateTime, pageNumber, pageSize, It.IsAny<CancellationToken>()) as StatusCodeResult;
 
             actual!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }

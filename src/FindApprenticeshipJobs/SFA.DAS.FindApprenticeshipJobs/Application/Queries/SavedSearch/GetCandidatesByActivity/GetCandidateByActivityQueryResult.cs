@@ -6,6 +6,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetCand
     public record GetCandidateByActivityQueryResult
     {
         public List<Candidate> Candidates { get; set; } = [];
+        public int TotalCount { get; set; }
+        public int PageIndex { get; set; }
+        public int PageSize { get; set; }
+        public int TotalPages { get; set; }
 
         public static implicit operator GetCandidateByActivityQueryResult(GetCandidatesByActivityApiResponse source)
         {
@@ -27,7 +31,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetCand
             public DateTime CreatedOn { get; set; }
             public DateTime UpdatedOn { get; set; }
             public DateTime? TermsOfUseAcceptedOn { get; set; }
-            public CandidateStatus Status { get; set; }
+            public UserStatus Status { get; set; }
             public string? MigratedEmail { get; set; }
             public string? Email { get; set; }
             public Guid Id { get; set; }

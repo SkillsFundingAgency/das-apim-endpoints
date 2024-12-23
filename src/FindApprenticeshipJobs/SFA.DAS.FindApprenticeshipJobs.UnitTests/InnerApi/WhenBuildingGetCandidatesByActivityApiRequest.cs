@@ -9,11 +9,11 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.InnerApi
     public class WhenBuildingGetCandidatesByActivityApiRequest
     {
         [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Built(DateTime cutOffDateTime)
+        public void Then_The_Url_Is_Correctly_Built(string cutOffDateTime, int pageNumber, int pageSize)
         {
-            var actual = new GetCandidatesByActivityApiRequest(cutOffDateTime);
+            var actual = new GetCandidatesByActivityApiRequest(cutOffDateTime, pageNumber, pageSize);
 
-            actual.GetUrl.Should().Be($"api/candidates/GetCandidatesByActivity?cutOffDateTime={cutOffDateTime:O}");
+            actual.GetUrl.Should().Be($"api/candidates/GetCandidatesByActivity?cutOffDateTime={cutOffDateTime}&pageNumber={pageNumber}&pageSize={pageSize}");
         }
     }
 }

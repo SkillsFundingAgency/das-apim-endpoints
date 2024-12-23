@@ -5,7 +5,20 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
 {
     public class GetCandidatesByActivityApiResponse
     {
+        [JsonProperty("candidates")]
         public List<Candidate> Candidates { get; set; } = [];
+
+        [JsonProperty("totalCount")]
+        public int TotalCount { get; set; }
+
+        [JsonProperty("pageIndex")]
+        public int PageIndex { get; set; }
+
+        [JsonProperty("pageSize")]
+        public int PageSize { get; set; }
+
+        [JsonProperty("totalPages")]
+        public int TotalPages { get; set; }
 
         public class Candidate
         {
@@ -30,7 +43,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
             [JsonProperty("termsOfUseAcceptedOn")]
             public DateTime? TermsOfUseAcceptedOn { get; set; }
             [JsonProperty("status")]
-            public CandidateStatus Status { get; set; }
+            public UserStatus Status { get; set; }
             [JsonProperty("migratedEmail")]
             public string? MigratedEmail { get; set; }
             [JsonProperty("email")]
