@@ -25,12 +25,27 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
 
         public override async Task<NotificationResponse> Handle(ChangeOfPriceRejectedCommand request, CancellationToken cancellationToken)
         {
-            if (request.Rejector == RequestParty.Provider)
+            if (ShouldNotifyEmployer(request))
             {
                 return await SendToEmployer(request, ProviderRejectedChangeOfPriceToEmployer.TemplateId, (_, apprenticeship) => GetEmployerTokens(apprenticeship));
             }
+            
+            if(ShouldNotifyProvider(request))
+            {
+                return await SendToProvider(request, EmployerRejectedChangeOfPriceToProvider.TemplateId, (_, apprenticeship) => GetProviderTokens(apprenticeship));
+            }
 
             return NotificationResponse.Ok();
+        }
+
+        private static bool ShouldNotifyEmployer(ChangeOfPriceRejectedCommand request)
+        {
+            return request.Rejector == RequestParty.Provider;
+        }
+
+        private static bool ShouldNotifyProvider(ChangeOfPriceRejectedCommand request)
+        {
+            return request.Rejector == RequestParty.Employer;
         }
 
         private Dictionary<string, string> GetEmployerTokens(CommitmentsApprenticeshipDetails apprenticeshipDetails)
@@ -42,6 +57,19 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
             tokens.Add(ProviderRejectedChangeOfPriceToEmployer.Employer, apprenticeshipDetails.EmployerName);
             tokens.Add(ProviderRejectedChangeOfPriceToEmployer.Apprentice, $"{apprenticeshipDetails.ApprenticeFirstName} {apprenticeshipDetails.ApprenticeLastName}");
             tokens.Add(ProviderRejectedChangeOfPriceToEmployer.ApprenticeshipDetailsUrl, linkUrl);
+
+            return tokens;
+        }
+
+        private Dictionary<string, string> GetProviderTokens(CommitmentsApprenticeshipDetails apprenticeshipDetails)
+        {
+            var linkUrl = _externalEmployerUrlHelper.CommitmentsV2Link("ApprenticeDetails", apprenticeshipDetails.EmployerAccountHashedId, apprenticeshipDetails.ApprenticeshipHashedId);
+
+            var tokens = new Dictionary<string, string>();
+            tokens.Add(EmployerRejectedChangeOfPriceToProvider.TrainingProvider, apprenticeshipDetails.ProviderName);
+            tokens.Add(EmployerRejectedChangeOfPriceToProvider.Employer, apprenticeshipDetails.EmployerName);
+            tokens.Add(EmployerRejectedChangeOfPriceToProvider.Apprentice, $"{apprenticeshipDetails.ApprenticeFirstName} {apprenticeshipDetails.ApprenticeLastName}");
+            tokens.Add(EmployerRejectedChangeOfPriceToProvider.ApprenticeshipDetailsUrl, linkUrl);
 
             return tokens;
         }
