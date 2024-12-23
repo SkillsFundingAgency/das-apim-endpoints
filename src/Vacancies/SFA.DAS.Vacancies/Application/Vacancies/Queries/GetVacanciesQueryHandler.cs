@@ -87,9 +87,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                     vacanciesItem.CourseLevel = standard.Level;
                 }
 
-                vacanciesItem.VacancyUrl = vacanciesItem.VacancySource.Equals("nhs", StringComparison.CurrentCultureIgnoreCase) 
-                    ? $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/nhs/{vacanciesItem.VacancyReference.Replace("VAC","", StringComparison.CurrentCultureIgnoreCase)}" 
-                    : $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacanciesItem.VacancyReference}";
+                vacanciesItem.VacancyUrl = $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacanciesItem.VacancyReference.Replace("VAC","")}";
 
                 // increase the count of vacancy appearing in search results counter metrics.
                 _metrics.IncreaseVacancySearchResultViews(vacanciesItem.Id);

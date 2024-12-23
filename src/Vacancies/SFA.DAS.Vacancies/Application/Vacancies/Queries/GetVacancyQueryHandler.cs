@@ -44,9 +44,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 };
             }
             
-            vacancyResponseTask.Result.VacancyUrl = vacancyResponseTask.Result.VacancySource.Equals("NHS", StringComparison.CurrentCultureIgnoreCase) 
-                ? $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/nhs/{vacancyResponseTask.Result.VacancyReference.Replace("VAC","", StringComparison.CurrentCultureIgnoreCase)}" 
-                : $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacancyResponseTask.Result.VacancyReference}";
+            vacancyResponseTask.Result.VacancyUrl = $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacancyResponseTask.Result.VacancyReference.Replace("VAC","")}";
 
             if (vacancyResponseTask.Result.StandardLarsCode != null)
             {
