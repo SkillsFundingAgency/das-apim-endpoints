@@ -1,9 +1,9 @@
 ﻿using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 
-namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetCandidatesByActivity
+namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetInactiveCandidates
 {
-    public record GetCandidateByActivityQueryResult
+    public record GetInactiveCandidatesQueryResult
     {
         public List<Candidate> Candidates { get; set; } = [];
         public int TotalCount { get; set; }
@@ -11,9 +11,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetCand
         public int PageSize { get; set; }
         public int TotalPages { get; set; }
 
-        public static implicit operator GetCandidateByActivityQueryResult(GetCandidatesByActivityApiResponse source)
+        public static implicit operator GetInactiveCandidatesQueryResult(GetInactiveCandidatesApiResponse source)
         {
-            return new GetCandidateByActivityQueryResult
+            return new GetInactiveCandidatesQueryResult
             {
                 Candidates = source.Candidates.Select(candidate => (Candidate)candidate).ToList()
             };
@@ -37,7 +37,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetCand
             public Guid Id { get; set; }
             public Guid? MigratedCandidateId { get; set; }
 
-            public static implicit operator Candidate(GetCandidatesByActivityApiResponse.Candidate source)
+            public static implicit operator Candidate(GetInactiveCandidatesApiResponse.Candidate source)
             {
                 return new Candidate
                 {
@@ -73,7 +73,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetCand
             public double Longitude { get; set; }
             public Guid CandidateId { get; set; }
 
-            public static implicit operator Address(GetCandidatesByActivityApiResponse.Address source)
+            public static implicit operator Address(GetInactiveCandidatesApiResponse.Address source)
             {
                 return new Address
                 {

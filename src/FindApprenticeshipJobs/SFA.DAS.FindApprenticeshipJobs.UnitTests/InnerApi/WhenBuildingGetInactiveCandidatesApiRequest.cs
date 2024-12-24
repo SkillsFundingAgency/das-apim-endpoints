@@ -6,14 +6,14 @@ using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.InnerApi
 {
     [TestFixture]
-    public class WhenBuildingGetCandidatesByActivityApiRequest
+    public class WhenBuildingGetInactiveCandidatesApiRequest
     {
         [Test, AutoData]
         public void Then_The_Url_Is_Correctly_Built(string cutOffDateTime, int pageNumber, int pageSize)
         {
-            var actual = new GetCandidatesByActivityApiRequest(cutOffDateTime, pageNumber, pageSize);
+            var actual = new GetInactiveCandidatesApiRequest(cutOffDateTime, pageNumber, pageSize);
 
-            actual.GetUrl.Should().Be($"api/candidates/GetCandidatesByActivity?cutOffDateTime={cutOffDateTime}&pageNumber={pageNumber}&pageSize={pageSize}");
+            actual.GetUrl.Should().Be($"api/candidates/GetInactiveCandidates?cutOffDateTime={cutOffDateTime}&pageNumber={pageNumber}&pageSize={pageSize}");
         }
     }
 }

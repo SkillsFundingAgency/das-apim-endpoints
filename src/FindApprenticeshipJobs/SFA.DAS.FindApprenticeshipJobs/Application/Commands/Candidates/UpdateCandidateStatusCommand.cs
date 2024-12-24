@@ -5,8 +5,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.Candidates
 {
     public record UpdateCandidateStatusCommand : IRequest
     {
-        public string GovUkIdentifier { get; set; }
-        public string Email { get; set; }
+        public required string GovUkIdentifier { get; set; }
+        public required string Email { get; set; }
         public UserStatus Status { get; set; }
     }
 }

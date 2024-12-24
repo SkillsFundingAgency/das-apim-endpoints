@@ -4,22 +4,22 @@ using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetCandidatesByActivity
+namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetInactiveCandidates
 {
-    public class GetCandidateByActivityQueryHandler(
+    public class GetInactiveCandidatesQueryHandler(
         ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
-        : IRequestHandler<GetCandidateByActivityQuery, GetCandidateByActivityQueryResult>
+        : IRequestHandler<GetInactiveCandidatesQuery, GetInactiveCandidatesQueryResult>
     {
-        public async Task<GetCandidateByActivityQueryResult> Handle(GetCandidateByActivityQuery request, CancellationToken cancellationToken)
+        public async Task<GetInactiveCandidatesQueryResult> Handle(GetInactiveCandidatesQuery request, CancellationToken cancellationToken)
         {
-            var candidatesResponse = await candidateApiClient.Get<GetCandidatesByActivityApiResponse>(
-                new GetCandidatesByActivityApiRequest(
+            var candidatesResponse = await candidateApiClient.Get<GetInactiveCandidatesApiResponse>(
+                new GetInactiveCandidatesApiRequest(
                     request.CutOffDateTime.ToString("O"),
                     request.PageNumber,
                     request.PageSize));
 
             if (candidatesResponse is not { Candidates.Count: > 0 })
-                return new GetCandidateByActivityQueryResult
+                return new GetInactiveCandidatesQueryResult
                 {
                     PageSize = candidatesResponse.PageSize,
                     PageIndex = candidatesResponse.PageIndex,
@@ -28,9 +28,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetCand
                     Candidates = []
                 };
 
-            return new GetCandidateByActivityQueryResult
+            return new GetInactiveCandidatesQueryResult
             {
-                Candidates = candidatesResponse.Candidates.Select(candidate => (GetCandidateByActivityQueryResult.Candidate)candidate).ToList(),
+                Candidates = candidatesResponse.Candidates.Select(candidate => (GetInactiveCandidatesQueryResult.Candidate)candidate).ToList(),
                 PageSize = candidatesResponse.PageSize,
                 PageIndex = candidatesResponse.PageIndex,
                 TotalPages = candidatesResponse.TotalPages,

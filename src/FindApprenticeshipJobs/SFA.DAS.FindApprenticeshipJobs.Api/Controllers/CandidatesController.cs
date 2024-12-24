@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetCandidatesByActivity;
 using System.Net;
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands.Candidates;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.Api.Models;
+using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetInactiveCandidates;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
 {
@@ -15,10 +15,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
         ILogger<CandidatesController> logger) : ControllerBase
     {
         [HttpGet]
-        [Route("GetCandidatesByActivity")]
+        [Route("GetInactiveCandidates")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> GetCandidatesByActivity(
+        public async Task<IActionResult> GetInactiveCandidates(
             [FromQuery] DateTime cutOffDateTime,
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
@@ -28,13 +28,13 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
 
             try
             {
-                var result = await mediator.Send(new GetCandidateByActivityQuery(cutOffDateTime, pageNumber, pageSize),
+                var result = await mediator.Send(new GetInactiveCandidatesQuery(cutOffDateTime, pageNumber, pageSize),
                     cancellationToken);
                 return Ok(result);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error invoking Get Candidates By Activity");
+                logger.LogError(ex, "Error invoking Get Inactive Candidates");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -43,7 +43,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
         [Route("{govIdentifier}/status")]
         public async Task<IActionResult> UpdateStatus(
             [FromRoute] string govIdentifier,
-            [FromBody] CandidateUpdateStatusRequest request)
+            [FromBody] CandidateUpdateStatusRequest request, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
                     GovUkIdentifier = govIdentifier,
                     Email = request.Email,
                     Status = request.Status
-                });
+                }, cancellationToken);
 
                 return NoContent();
             }

@@ -3,7 +3,7 @@ using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
 {
-    public class GetCandidatesByActivityApiResponse
+    public class GetInactiveCandidatesApiResponse
     {
         [JsonProperty("candidates")]
         public List<Candidate> Candidates { get; set; } = [];

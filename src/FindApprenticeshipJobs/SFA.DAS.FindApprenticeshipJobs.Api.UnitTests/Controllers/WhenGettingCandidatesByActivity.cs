@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Api.Controllers;
-using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetCandidatesByActivity;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
+using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetInactiveCandidates;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers
 {
@@ -20,19 +20,19 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers
             int pageNumber,
             int pageSize,
             DateTime cutOffDateTime,
-            GetCandidateByActivityQueryResult mockQueryResult,
+            GetInactiveCandidatesQueryResult mockQueryResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] CandidatesController sut)
         {
-            mockMediator.Setup(x => x.Send(It.IsAny<GetCandidateByActivityQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
+            mockMediator.Setup(x => x.Send(It.IsAny<GetInactiveCandidatesQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
 
-            var actual = await sut.GetCandidatesByActivity(cutOffDateTime, pageNumber, pageSize, It.IsAny<CancellationToken>()) as ObjectResult;
-            var actualValue = actual!.Value as GetCandidateByActivityQueryResult;
+            var actual = await sut.GetInactiveCandidates(cutOffDateTime, pageNumber, pageSize, It.IsAny<CancellationToken>()) as ObjectResult;
+            var actualValue = actual!.Value as GetInactiveCandidatesQueryResult;
 
             using (new AssertionScope())
             {
                 actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-                actual.Value.Should().BeOfType<GetCandidateByActivityQueryResult>();
+                actual.Value.Should().BeOfType<GetInactiveCandidatesQueryResult>();
                 actualValue!.Candidates.Should().BeEquivalentTo(mockQueryResult.Candidates);
             }
         }
@@ -42,13 +42,13 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers
             int pageNumber,
             int pageSize,
             DateTime cutOffDateTime,
-            GetCandidateByActivityQueryResult mockQueryResult,
+            GetInactiveCandidatesQueryResult mockQueryResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] CandidatesController sut)
         {
-            mockMediator.Setup(x => x.Send(It.IsAny<GetCandidateByActivityQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException());
+            mockMediator.Setup(x => x.Send(It.IsAny<GetInactiveCandidatesQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException());
 
-            var actual = await sut.GetCandidatesByActivity(cutOffDateTime, pageNumber, pageSize, It.IsAny<CancellationToken>()) as StatusCodeResult;
+            var actual = await sut.GetInactiveCandidates(cutOffDateTime, pageNumber, pageSize, It.IsAny<CancellationToken>()) as StatusCodeResult;
 
             actual!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
