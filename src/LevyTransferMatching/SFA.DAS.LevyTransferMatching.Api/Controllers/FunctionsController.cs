@@ -354,6 +354,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> DeclineAcceptedFunding(DeclineAcceptedFundingRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
             await _mediator.Send(new DeclineAcceptedFundingCommand
             {
                 ApplicationId = request.ApplicationId
