@@ -6,5 +6,6 @@
         Completed = 1,
         InProgress = 2,
         Deleted = 3,
+        Dormant = 4,
     }
 }

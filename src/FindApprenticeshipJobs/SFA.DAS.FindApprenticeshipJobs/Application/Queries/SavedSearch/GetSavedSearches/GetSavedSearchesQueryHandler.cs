@@ -38,7 +38,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                     await CandidateApiClient.Get<GetCandidateApiResponse>(
                         new GetCandidateApiRequest(savedSearch.UserReference.ToString()));
 
-                if (candidate == null || candidate.Status == UserStatus.Deleted) continue;
+                if (candidate == null || candidate.Status == UserStatus.Deleted || candidate.Status == UserStatus.Dormant) continue;
 
                 var routesTask = CourseService.GetRoutes();
                 var levelsTask = CourseService.GetLevels();

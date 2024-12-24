@@ -19,8 +19,14 @@ using SFA.DAS.Testing.AutoFixture;
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands;
 public class WhenHandlingPostCandidateCommand
 {
-    [Test, MoqAutoData]
+    [Test]
+    [MoqInlineAutoData(UserStatus.Completed)]
+    [MoqInlineAutoData(UserStatus.Deleted)]
+    [MoqInlineAutoData(UserStatus.InProgress)]
+    [MoqInlineAutoData(UserStatus.Incomplete)]
+    [MoqInlineAutoData(UserStatus.Dormant)]
     public async Task Then_If_Candidate_Already_Exists_Then_Details_Are_Returned(
+        UserStatus status,
         CreateCandidateCommand command,
         string govUkId,
         GetCandidateApiResponse candidate,
@@ -32,6 +38,8 @@ public class WhenHandlingPostCandidateCommand
     {
         command.GovUkIdentifier = govUkId;
         command.Email = candidate.Email;
+
+        candidate.Status = status;
 
         var expectedGetCandidateRequest = new GetCandidateApiRequest(govUkId);
         mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(
