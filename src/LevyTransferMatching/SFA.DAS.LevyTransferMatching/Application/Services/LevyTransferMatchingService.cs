@@ -144,6 +144,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         public async Task<ApiResponse<DeclineFundingRequest>> DeclineFunding(DeclineFundingRequest request)
         {
             return await _levyTransferMatchingApiClient.PostWithResponseCode<DeclineFundingRequest>(request, false);
+        }  
+        
+        public async Task<ApiResponse<DeclineAcceptedFundingRequest>> DeclineAcceptedFunding(DeclineAcceptedFundingRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<DeclineAcceptedFundingRequest>(request, false);
         }
 
         public async Task<ApiResponse<RecalculateApplicationCostProjectionRequest>> RecalculateApplicationCostProjection(RecalculateApplicationCostProjectionRequest request)

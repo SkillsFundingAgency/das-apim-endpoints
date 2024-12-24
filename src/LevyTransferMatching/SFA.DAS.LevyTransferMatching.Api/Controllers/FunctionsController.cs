@@ -13,6 +13,7 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
+using SFA.DAS.LevyTransferMatching.Application.Commands.DeclineAcceptedFunding;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RecalculateApplicationCostProjections;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectPledgeApplications;
@@ -54,7 +55,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     _logger.LogError($"Error attempting to Debit Pledge {result.ErrorContent}");
                 }
 
-                return new StatusCodeResult((int) result.StatusCode);
+                return new StatusCodeResult((int)result.StatusCode);
             }
             catch (Exception e)
             {
@@ -178,7 +179,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     _logger.LogError($"Error attempting to Debit Application {result.ErrorContent}");
                 }
 
-                return new StatusCodeResult((int) result.StatusCode);
+                return new StatusCodeResult((int)result.StatusCode);
             }
             catch (Exception e)
             {
@@ -275,7 +276,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> ApplicationsForAutomaticApproval(int? pledgeId = null)
         {
-            var result = await _mediator.Send(new ApplicationsWithAutomaticApprovalQuery { PledgeId = pledgeId});
+            var result = await _mediator.Send(new ApplicationsWithAutomaticApprovalQuery { PledgeId = pledgeId });
 
             return Ok((GetApplicationsForAutomaticApprovalResponse)result);
         }
@@ -287,7 +288,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             await _mediator.Send(new AutoApproveApplicationCommand
             {
                 ApplicationId = request.ApplicationId,
-                PledgeId = request.PledgeId             
+                PledgeId = request.PledgeId
             });
 
             return Ok();
@@ -310,7 +311,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> ApplicationsForAutomaticRejection()
         {
-            var result = await _mediator.Send(new GetApplicationsForAutomaticRejectionQuery{ });
+            var result = await _mediator.Send(new GetApplicationsForAutomaticRejectionQuery { });
 
             return Ok((GetApplicationsForAutomaticRejectionResponse)result);
         }
@@ -347,6 +348,18 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             var result = await _mediator.Send(new ApplicationsForAutomaticDeclineQuery());
 
             return Ok((ApplicationsForAutomaticDeclineResponse)result);
+        }
+
+        [Route("decline-accepted-funding")]
+        [HttpPost]
+        public async Task<IActionResult> DeclineAcceptedFunding(DeclineAcceptedFundingRequest request)
+        {
+            await _mediator.Send(new DeclineAcceptedFundingCommand
+            {
+                ApplicationId = request.ApplicationId
+            });
+
+            return Ok();
         }
     }
 }
