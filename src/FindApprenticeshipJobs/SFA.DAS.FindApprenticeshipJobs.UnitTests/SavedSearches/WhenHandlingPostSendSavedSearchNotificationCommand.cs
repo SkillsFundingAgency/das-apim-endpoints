@@ -20,7 +20,7 @@ public class WhenHandlingPostSendSavedSearchNotificationCommand
 {
     [Test]
     [MoqAutoData]
-    public async Task Then_The_SavedSearch_Is_Patched_LastEmailSent_Updated_And_Email_Sent(
+    public async Task Then_The_SavedSearch_Is_Patched_LastEmailSent_Updated_And_Email_Sent_And_ShowSearchLink_As_No_For_Five_Or_Less_Vacancies(
         PostSendSavedSearchNotificationCommand.Vacancy vacancy,
         PostSendSavedSearchNotificationCommand command,
         EmailEnvironmentHelper emailEnvironmentHelper,
