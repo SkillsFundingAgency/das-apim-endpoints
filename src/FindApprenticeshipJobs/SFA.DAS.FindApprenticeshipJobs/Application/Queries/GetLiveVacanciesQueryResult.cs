@@ -11,4 +11,3 @@ public class GetLiveVacanciesQueryResult
     public int TotalLiveVacancies { get; set; }
     public int TotalPages { get; set; }
 }
-

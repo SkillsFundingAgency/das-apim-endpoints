@@ -23,6 +23,7 @@ public class LiveVacancy
     public string? ProviderContactPhone { get; set; }
     public string? EmployerDescription { get; set; }
     public Address? EmployerLocation { get; set; }
+    public List<Address> OtherAddresses { get; set; } = [];
     public string? EmployerName { get; set; }
     public string? EmployerWebsiteUrl { get; set; }
     public bool IsAnonymous { get; set; } 
