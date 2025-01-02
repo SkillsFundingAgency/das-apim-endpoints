@@ -176,7 +176,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
 
                                            * Distance: 10 miles
                                            * Training course: Software Engineering
-                                           * Annual wage: �30,000
+                                           * Wage: �30,000
 
                                            2022-12-31
 
@@ -226,7 +226,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                                            123 Main St, 12345
 
                                            * Training course: Software Engineering
-                                           * Annual wage: �30,000
+                                           * Wage: �30,000
 
                                            2022-12-31
 
