@@ -82,7 +82,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 }
                 
                 sb.AppendLine($"* Training course: {vacancy.TrainingCourse}");
-                sb.AppendLine($"* Annual wage: {vacancy.Wage}");
+                sb.AppendLine($"* Wage: {vacancy.Wage}");
 
                 sb.AppendLine();
                 sb.AppendLine($"{vacancy.ClosingDate}");
