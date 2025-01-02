@@ -9,7 +9,6 @@ public class GetMemberNotificationSettingsQueryResult
     public class EventType
     {
         public string EventFormat { get; set; } = string.Empty;
-        public int Ordering { get; set; }
         public bool ReceiveNotifications { get; set; }
     }
 
