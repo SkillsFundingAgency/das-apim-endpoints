@@ -1,13 +1,8 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply;
 public class WhenHandlingGetTrainingCourseQuery
@@ -27,6 +22,6 @@ public class WhenHandlingGetTrainingCourseQuery
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Should().BeEquivalentTo((GetTrainingCourseQueryResult)trainingCourseApiResponse);
+        result.Should().BeEquivalentTo(GetTrainingCourseQueryResult.From(trainingCourseApiResponse));
     }
 }

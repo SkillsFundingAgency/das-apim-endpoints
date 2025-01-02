@@ -1,15 +1,11 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.DeleteTrainingCourse;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply;
+
 public class WhenHandlingGetDeleteTrainingCourseQuery
 {
     [Test, MoqAutoData]
@@ -27,6 +23,6 @@ public class WhenHandlingGetDeleteTrainingCourseQuery
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Should().BeEquivalentTo((GetDeleteTrainingCourseQueryResult)trainingCourseApiResponse);
+        result.Should().BeEquivalentTo(GetDeleteTrainingCourseQueryResult.From(trainingCourseApiResponse));
     }
 }
