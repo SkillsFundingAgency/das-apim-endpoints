@@ -19,7 +19,7 @@ builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen(c =>
     {
-        c.CustomSchemaIds(x => x.FullName);
+        c.CustomSchemaIds(x => x.FullName?.Replace("+", "_"));
         c.SwaggerDoc("v1",
             new OpenApiInfo
             {
