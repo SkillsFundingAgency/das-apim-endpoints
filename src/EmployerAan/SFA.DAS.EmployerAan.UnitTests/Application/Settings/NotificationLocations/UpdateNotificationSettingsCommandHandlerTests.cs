@@ -28,8 +28,7 @@ namespace SFA.DAS.EmployerAan.UnitTests.Application.Settings.NotificationLocatio
                     request.ReceiveNotifications == command.ReceiveNotifications &&
                     request.EventTypes.All(et => command.EventTypes.Any(cmdEt => 
                         cmdEt.EventType == et.EventType &&
-                        cmdEt.ReceiveNotifications == et.ReceiveNotifications &&
-                        cmdEt.Ordering == et.Ordering
+                        cmdEt.ReceiveNotifications == et.ReceiveNotifications
                         )) &&
                     request.Locations.All(loc => command.Locations.Any(cmdLoc =>
                         cmdLoc.Name == loc.Name &&

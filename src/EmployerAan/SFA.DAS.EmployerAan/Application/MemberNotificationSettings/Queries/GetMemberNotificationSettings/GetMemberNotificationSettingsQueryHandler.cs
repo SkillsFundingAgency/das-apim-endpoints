@@ -15,7 +15,6 @@ public class GetMemberNotificationSettingsQueryHandler(IAanHubRestApiClient apiC
                 ? settings.EventTypes.Where(x => x.ReceiveNotifications).Select(x => new GetMemberNotificationSettingsQueryResult.EventType
                 {
                     EventFormat = x.EventType,
-                    Ordering = x.Ordering,
                     ReceiveNotifications = true
                 }).ToList()
                 : [],

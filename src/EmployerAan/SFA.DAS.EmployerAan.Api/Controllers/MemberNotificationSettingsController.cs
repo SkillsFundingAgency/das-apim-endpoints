@@ -34,7 +34,6 @@ public class MemberNotificationSettingsController : ControllerBase
             EventTypes = request.EventTypes.Select(x => new UpdateNotificationSettingsCommand.NotificationEventType
             {
                 EventType = x.EventType,
-                Ordering = x.Ordering,
                 ReceiveNotifications = x.ReceiveNotifications
             }).ToList(),
             Locations = request.Locations.Select(x => new UpdateNotificationSettingsCommand.Location

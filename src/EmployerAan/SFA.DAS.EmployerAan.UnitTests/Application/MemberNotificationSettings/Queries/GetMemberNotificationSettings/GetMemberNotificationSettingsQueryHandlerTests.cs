@@ -24,8 +24,7 @@ public class GetMemberNotificationSettingsQueryHandlerTests
             MemberNotificationEventFormats = expectedSettings.EventTypes.Select(x => new GetMemberNotificationSettingsQueryResult.EventType
             {
                 EventFormat = x.EventType,
-                ReceiveNotifications = x.ReceiveNotifications,
-                Ordering = x.Ordering
+                ReceiveNotifications = x.ReceiveNotifications
             }).ToList(),
             MemberNotificationLocations = expectedSettings.Locations.Select(x => new GetMemberNotificationSettingsQueryResult.Location
             {

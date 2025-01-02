@@ -46,8 +46,7 @@ namespace SFA.DAS.EmployerAan.Api.UnitTests.Controllers.EventNotificationsSettin
                 cmd.ReceiveNotifications == request.ReceiveNotifications &&
                 cmd.EventTypes.All(l => request.EventTypes.Any(reqEventType => 
                     reqEventType.EventType == l.EventType &&
-                    reqEventType.ReceiveNotifications == l.ReceiveNotifications &&
-                    reqEventType.Ordering == l.Ordering)
+                    reqEventType.ReceiveNotifications == l.ReceiveNotifications)
                 ) &&
                 cmd.Locations.All(l => request.Locations.Any(reqLoc =>
                     reqLoc.Name == l.Name &&

@@ -19,7 +19,6 @@ public class GetNotificationsLocationsQueryResult
     public class NotificationEventType
     {
         public string EventFormat { get; set; }
-        public int Ordering { get; set; }
         public bool ReceiveNotifications { get; set; }
     }
 
