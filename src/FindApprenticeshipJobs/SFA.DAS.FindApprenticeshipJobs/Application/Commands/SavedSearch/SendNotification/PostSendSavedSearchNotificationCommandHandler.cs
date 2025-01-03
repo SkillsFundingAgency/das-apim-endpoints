@@ -59,7 +59,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
                 string.Concat(EmailEnvironmentHelper.SearchUrl, queryParameters), 
                 string.Concat(EmailEnvironmentHelper.SavedSearchUnSubscribeUrl, command.UnSubscribeToken),
                 vacanciesEmailSnippet,
-                searchParamsEmailSnippet);
+                searchParamsEmailSnippet,
+                command.Vacancies.Count > 5 ? "yes" : "no");
 
             await Task.WhenAll(
                 FindApprenticeshipApiClient.PatchWithResponseCode(patchRequest),
