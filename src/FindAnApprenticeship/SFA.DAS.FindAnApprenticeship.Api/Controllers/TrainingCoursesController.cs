@@ -8,9 +8,10 @@ using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.CreateTrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.PostDeleteTrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.UpdateTrainingCourse;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.DeleteTrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
 [ApiController]
