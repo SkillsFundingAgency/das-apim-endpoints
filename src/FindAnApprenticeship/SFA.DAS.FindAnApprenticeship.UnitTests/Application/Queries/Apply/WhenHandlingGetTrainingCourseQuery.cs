@@ -24,4 +24,22 @@ public class WhenHandlingGetTrainingCourseQuery
 
         result.Should().BeEquivalentTo(GetTrainingCourseQueryResult.From(trainingCourseApiResponse));
     }
+    
+    [Test, MoqAutoData]
+    public async Task Then_No_Response_Is_Handled(
+        GetTrainingCourseQuery query,
+        GetTrainingCourseApiResponse trainingCourseApiResponse,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+        GetTrainingCourseQueryHandler handler)
+    {
+        var expectedGetTrainingCourseRequest = new GetTrainingCourseApiRequest(query.ApplicationId, query.CandidateId, query.TrainingCourseId);
+        candidateApiClient
+            .Setup(client => client.Get<GetTrainingCourseApiResponse>(
+                It.Is<GetTrainingCourseApiRequest>(r => r.GetUrl == expectedGetTrainingCourseRequest.GetUrl)))
+            .ReturnsAsync((GetTrainingCourseApiResponse?)null);
+
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        result.Should().BeNull();
+    }
 }
