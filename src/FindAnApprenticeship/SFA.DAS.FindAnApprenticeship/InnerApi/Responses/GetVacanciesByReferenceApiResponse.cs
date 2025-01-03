@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
@@ -29,6 +30,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
             public Address Address { get; set; }
             public string ApplicationUrl { get; set; }
             public string ExternalVacancyUrl => ApplicationUrl;
+            public VacancyDataSource VacancySource { get; set; }
             public bool IsExternalVacancy => !string.IsNullOrWhiteSpace(ApplicationUrl);
         }
 
