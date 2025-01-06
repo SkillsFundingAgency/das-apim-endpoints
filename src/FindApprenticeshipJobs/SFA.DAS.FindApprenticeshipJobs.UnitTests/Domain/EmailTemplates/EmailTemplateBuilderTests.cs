@@ -92,33 +92,32 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             // Assert
             result.Trim().Should().BeEquivalentTo(expected.Trim());
         }
-
-
-        [Test]
-        public void Then_The_Location_Is_Null_GetSavedSearchSearchParams_WhenCalled_ReturnsExpectedResult()
+        
+        [TestCase(null, null, "Across all of England")]
+        [TestCase(null, 1, "Across all of England")]
+        [TestCase(null, 10, "Across all of England")]
+        [TestCase("", null, "Across all of England")]
+        [TestCase("", 1, "Across all of England")]
+        [TestCase("", 10, "Across all of England")]
+        [TestCase("Hull", null, "Hull")]
+        [TestCase("Hull", 1, $"Hull (within 1 mile)")]
+        [TestCase("Hull", 10, "Hull (within 10 miles)")]
+        public void Then_The_Location_Is_Output_Correctly(string? location, int? distance, string expectedLocation)
         {
             // Arrange
-            const string searchTerm = "Software Developer";
-            const int distance = 1;
-            const string location = "";
-            List<string> categories = ["IT", "Engineering"];
-            List<string> levels = ["Intermediate", "Advanced"];
-            const bool disabilityConfident = true;
-
-            const string expected = """
-
-                                    What: Software Developer
-                                    Categories: IT, Engineering
-                                    Apprenticeship levels: Intermediate, Advanced
-                                    Only show Disability Confident apprenticeships
-
-                                    """;
+            var expected = $"""
+                What: Software Developer
+                Where: {expectedLocation}
+                Categories: IT, Engineering
+                Apprenticeship levels: Intermediate, Advanced
+                Only show Disability Confident apprenticeships
+                """;
 
             // Act
-            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident);
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams("Software Developer",distance, location, ["IT", "Engineering"], ["Intermediate", "Advanced"], true);
 
             // Assert
-            result.Trim().Should().BeEquivalentTo(expected.Trim());
+            result.Trim().Should().BeEquivalentTo(expected);
         }
 
         [Test]
