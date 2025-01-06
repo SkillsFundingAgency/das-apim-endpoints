@@ -69,7 +69,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                 PageIndex = savedSearchResponse.PageIndex,
                 TotalPages = savedSearchResponse.TotalPages,
                 TotalCount = savedSearchResponse.TotalCount,
-                SavedSearchResults = []
+                SavedSearchResults = searchResultList.ToList()
             };
         }
 
