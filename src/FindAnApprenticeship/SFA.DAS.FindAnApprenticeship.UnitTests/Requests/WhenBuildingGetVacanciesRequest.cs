@@ -14,16 +14,18 @@ public class WhenBuildingGetVacanciesRequest
         double lon,
         int distance,
         VacancySort sort,
+        WageType skipWageType,
         string whatSearchTerm,
         int pageNumber,
         int pageSize,
         List<string> categories,
-        List<string> levels,
-        bool disabilityConfident)
+        List<int> levels,
+        bool disabilityConfident,
+        List<VacancyDataSource> additionalDataSources)
     {
-        var actual = new GetVacanciesRequest(lat, lon, distance,whatSearchTerm, pageNumber, pageSize, categories, levels, sort, disabilityConfident);
+        var actual = new GetVacanciesRequest(lat, lon, distance,whatSearchTerm, pageNumber, pageSize, categories, levels, sort, skipWageType, disabilityConfident, additionalDataSources);
 
-        actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&distanceInMiles={distance}&sort={sort}&pageNumber={pageNumber}&pageSize={pageSize}&categories={string.Join("&categories=", categories)}&levels={string.Join("&levels=", levels)}&searchTerm={whatSearchTerm}&disabilityConfident={disabilityConfident}");
+        actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&distanceInMiles={distance}&sort={sort}&pageNumber={pageNumber}&pageSize={pageSize}&categories={string.Join("&categories=", categories)}&levels={string.Join("&levels=", levels)}&searchTerm={whatSearchTerm}&disabilityConfident={disabilityConfident}&skipWageType={skipWageType}&additionalDataSources={string.Join("&additionalDataSources=", additionalDataSources)}");
         actual.Version.Should().Be("2.0");
     }
 }

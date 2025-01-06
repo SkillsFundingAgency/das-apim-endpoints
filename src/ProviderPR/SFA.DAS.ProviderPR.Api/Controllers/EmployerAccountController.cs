@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.ProviderPR.Application.Queries.GetRelationshipsByUkprnPayeAorn;
+using SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipsByUkprnPayeAorn;
 
 namespace SFA.DAS.ProviderPR.Api.Controllers;
 

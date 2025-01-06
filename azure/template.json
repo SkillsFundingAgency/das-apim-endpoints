@@ -61,6 +61,18 @@
         },
         "logAnalyticsWorkspaceName": {
             "type": "string"
+        },
+        "applicationInsightsConnectionString": {
+            "type": "securestring",
+            "defaultValue": ""
+        },
+        "applicationInsightsResourceId": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "alertActionGroupResourceId": {
+            "type": "string",
+            "defaultValue": ""
         }
     },
     "variables": {
@@ -143,44 +155,44 @@
                     },
                     "appServiceAppSettings": {
                         "value": {
-                          "array": [
-                            {
-                              "name": "Environment",
-                              "value": "[parameters('environmentName')]"
-                            },
-                            {
-                              "name": "ConfigNames",
-                              "value": "[parameters('configNames')]"
-                            },
-                            {
-                              "name": "LoggingRedisConnectionString",
-                              "value": "[parameters('loggingRedisConnectionString')]"
-                            },
-                            {
-                              "name": "LoggingRedisKey",
-                              "value": "[parameters('loggingRedisKey')]"
-                            },
-                            {
-                              "name": "EnvironmentName",
-                              "value": "[parameters('environmentName')]"
-                            },
-                            {
-                                "name": "ResourceEnvironmentName",
-                                "value": "[parameters('resourceEnvironmentName')]"
-                            },
-                            {
-                              "name": "ConfigurationStorageConnectionString",
-                              "value": "[parameters('configurationStorageConnectionString')]"
-                            },
-                            {
-                              "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                              "value": "[reference(concat('api-application-insights-', parameters('appServiceName'))).outputs.ConnectionString.value]"
-                            },
-                            {
-                              "name": "WEBSITE_LOAD_USER_PROFILE",
-                              "value": "1"
-                            }
-                          ]
+                            "array": [
+                                {
+                                    "name": "Environment",
+                                    "value": "[parameters('environmentName')]"
+                                },
+                                {
+                                    "name": "ConfigNames",
+                                    "value": "[parameters('configNames')]"
+                                },
+                                {
+                                    "name": "LoggingRedisConnectionString",
+                                    "value": "[parameters('loggingRedisConnectionString')]"
+                                },
+                                {
+                                    "name": "LoggingRedisKey",
+                                    "value": "[parameters('loggingRedisKey')]"
+                                },
+                                {
+                                    "name": "EnvironmentName",
+                                    "value": "[parameters('environmentName')]"
+                                },
+                                {
+                                    "name": "ResourceEnvironmentName",
+                                    "value": "[parameters('resourceEnvironmentName')]"
+                                },
+                                {
+                                    "name": "ConfigurationStorageConnectionString",
+                                    "value": "[parameters('configurationStorageConnectionString')]"
+                                },
+                                {
+                                    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                                    "value": "[if(greater(length(parameters('applicationInsightsConnectionString')), 0), parameters('applicationInsightsConnectionString'), reference(concat('api-application-insights-', parameters('appServiceName'))).outputs.ConnectionString.value)]"
+                                },
+                                {
+                                    "name": "WEBSITE_LOAD_USER_PROFILE",
+                                    "value": "1"
+                                }
+                            ]
                         }
                     },
                     "customHostName": {
@@ -242,6 +254,31 @@
                     },
                     "resourceName": {
                         "value": "[parameters('sharedServiceBusName')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2021-04-01",
+            "name": "[concat('application-insights-', parameters('appServiceName'), '-alert-')]",
+            "type": "Microsoft.Resources/deployments",
+            "condition": "[greater(length(parameters('applicationInsightsResourceId')), 0)]",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'application-insights-failed-requests-alert.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "serviceName": {
+                        "value": "[parameters('appServiceName')]"
+                    },
+                    "applicationInsightsResourceId": {
+                        "value": "[parameters('applicationInsightsResourceId')]"
+                    },
+                    "alertActionGroupResourceId": {
+                        "value": "[parameters('alertActionGroupResourceId')]"
                     }
                 }
             }

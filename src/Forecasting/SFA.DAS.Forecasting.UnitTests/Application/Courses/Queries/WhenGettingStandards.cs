@@ -10,27 +10,26 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Forecasting.UnitTests.Application.Courses.Queries
+namespace SFA.DAS.Forecasting.UnitTests.Application.Courses.Queries;
+
+public class WhenGettingStandards
 {
-    public class WhenGettingStandards
+    [Test, MoqAutoData]
+    public void Then_Gets_Standards_From_Courses_Api(
+        GetStandardCoursesQuery query,
+        GetStandardsListResponse coursesApiResponse,
+        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+        GetStandardCoursesQueryHandler handler)
     {
-        [Test, MoqAutoData]
-        public void Then_Gets_Standards_From_Courses_Api(
-            GetStandardCoursesQuery query,
-            GetStandardsListResponse coursesApiResponse,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
-            GetStandardCoursesQueryHandler handler)
-        {
-            //Arrange
-            mockCoursesApiClient.Setup(client =>
-                    client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
-                .ReturnsAsync(coursesApiResponse);
+        //Arrange
+        mockCoursesApiClient.Setup(client =>
+                client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()))
+            .ReturnsAsync(coursesApiResponse);
 
-            //Act
-            var actual = handler.Handle(query, CancellationToken.None);
+        //Act
+        var actual = handler.Handle(query, CancellationToken.None);
 
-            //Assert
-            actual.Result.Should().BeEquivalentTo(coursesApiResponse);
-        }
+        //Assert
+        actual.Result.Should().BeEquivalentTo(coursesApiResponse);
     }
 }

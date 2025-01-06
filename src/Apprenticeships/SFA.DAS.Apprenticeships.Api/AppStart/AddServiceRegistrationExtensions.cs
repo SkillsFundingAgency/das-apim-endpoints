@@ -1,8 +1,13 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.Apprenticeships.Application.Notifications;
+using SFA.DAS.Employer.Shared.UI;
+using SFA.DAS.Encoding;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -25,8 +30,18 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
         services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
-		    services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
-	  }
+        services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
+        services.AddTransient<INotificationService, NotificationService>();
+        services.AddTransient<IProviderAccountApiClient<ProviderAccountApiConfiguration>, ProviderAccountApiClient>();
+        services.AddTransient<IExtendedNotificationService, ExtendedNotificationService>();
+
+
+        services.AddSingleton(new UrlBuilder(configuration["ResourceEnvironmentName"]));
+
+        var encodingList = configuration.GetSection(nameof(EncodingConfig.Encodings)).Get<List<SFA.DAS.Encoding.Encoding>>();
+        var encodingConfig = new EncodingConfig { Encodings = encodingList };
+        services.AddSingleton<IEncodingService, EncodingService>((sp)=>new EncodingService(encodingConfig));
+    }
 }
 
 [ExcludeFromCodeCoverage]
@@ -56,6 +71,12 @@ public static class AddConfigurationOptionsExtension
 
 		services.Configure<CollectionCalendarApiConfiguration>(configuration.GetSection(nameof(CollectionCalendarApiConfiguration)));
 		services.AddSingleton(cfg => cfg.GetService<IOptions<CollectionCalendarApiConfiguration>>()!.Value);
-	}
+
+        services.Configure<NServiceBusConfiguration>(configuration.GetSection(nameof(NServiceBusConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<NServiceBusConfiguration>>()!.Value);
+
+        services.Configure<ProviderAccountApiConfiguration>(configuration.GetSection(nameof(ProviderAccountApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderAccountApiConfiguration>>()!.Value);
+    }
 
 }

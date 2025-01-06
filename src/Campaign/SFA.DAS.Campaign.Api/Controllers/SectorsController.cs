@@ -29,6 +29,7 @@ namespace SFA.DAS.Campaign.Api.Controllers
         {
             try
             {
+                _logger.LogInformation("About to get sectors");
                 var result = await _mediator.Send(new GetSectorsQuery());
                 return Ok(new GetSectorsResponse
                 {

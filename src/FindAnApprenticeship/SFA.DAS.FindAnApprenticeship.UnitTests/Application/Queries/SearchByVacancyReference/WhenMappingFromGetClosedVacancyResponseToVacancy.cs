@@ -1,7 +1,8 @@
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
+using Humanizer;
+using Microsoft.OpenApi.Extensions;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
+using SFA.DAS.FindAnApprenticeship.Domain;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVacancyReference;
@@ -11,20 +12,64 @@ public class WhenMappingFromGetClosedVacancyResponseToVacancy
     [Test, AutoData]
     public void Then_The_Fields_Are_Mapped_For_Closed_Vacancy(GetClosedVacancyResponse source)
     {
-        var actual = (GetApprenticeshipVacancyQueryResult.Vacancy)source;
+        // arrange
+        source.Wage.DurationUnit = (int)DurationUnit.Year;
+        source.ProgrammeId = "1";
+        foreach (var sourceQualification in source.Qualifications)
+        {
+            sourceQualification.Weighting = 0;
+        }
         
-        actual.ClosingDate.Should().Be(source.ClosedDate);
-        actual.Id.Should().Be(source.VacancyReferenceNumeric.ToString());
-        actual.VacancyReference.Should().Be(source.VacancyReference);
+        // act
+        var actual = GetApprenticeshipVacancyQueryResult.Vacancy.FromIVacancy(source);
+        
+        // assert
+        actual.AdditionalTrainingDescription.Should().Be(source.AdditionalTrainingDescription);
+        actual.AdditionalQuestion1.Should().Be(source.AdditionalQuestion1);
+        actual.AdditionalQuestion2.Should().Be(source.AdditionalQuestion2);
+        actual.Address.Should().BeEquivalentTo(source.EmployerLocation, options => options.ExcludingMissingMembers());
+        actual.AnonymousEmployerName.Should().Be(source.IsAnonymous ? source.EmployerName : null);
+        actual.ApplicationInstructions.Should().Be(source.ApplicationInstructions);
+        actual.ApplicationUrl.Should().Be(source.ApplicationUrl);
+        actual.ClosingDate.Should().Be(source.ClosedDate ?? source.ClosingDate);
+        actual.Description.Should().Be(source.ShortDescription);
+        actual.EmployerContactEmail.Should().Be(source.EmployerContact?.Email);
+        actual.EmployerContactName.Should().Be(source.EmployerContact?.Name);
+        actual.EmployerContactPhone.Should().Be(source.EmployerContact?.Phone);
+        actual.EmployerDescription.Should().Be(source.EmployerDescription);
         actual.EmployerName.Should().Be(source.EmployerName);
+        actual.EmployerWebsiteUrl.Should().Be(source.EmployerWebsiteUrl);
+        actual.ExpectedDuration.Should().Be(((DurationUnit)source.Wage.DurationUnit).GetDisplayName().ToLower().ToQuantity(source.Wage.Duration));
+        actual.HoursPerWeek.Should().Be(source.Wage.WeeklyHours);
+        actual.Id.Should().Be(source.VacancyReference.Replace("VAC", ""));
+        actual.IsClosed.Should().Be(source.ClosedDate.HasValue);
+        actual.IsDisabilityConfident.Should().Be(source.IsDisabilityConfident);
+        actual.IsEmployerAnonymous.Should().Be(source.IsAnonymous);
+        actual.IsPositiveAboutDisability.Should().Be(false);
+        actual.IsRecruitVacancy.Should().Be(true);
+        actual.Location.Lat.Should().Be(source.EmployerLocation.Latitude);
+        actual.Location.Lon.Should().Be(source.EmployerLocation.Longitude);
+        actual.LongDescription.Should().Be(source.Description);
+        actual.NumberOfPositions.Should().Be(source.NumberOfPositions);
+        actual.OutcomeDescription.Should().Be(source.OutcomeDescription);
+        actual.PostedDate.Should().Be(source.LiveDate);
+        actual.ProviderContactEmail.Should().Be(source.ProviderContact?.Email);
+        actual.ProviderContactName.Should().Be(source.ProviderContact?.Name);
+        actual.ProviderContactPhone.Should().Be(source.ProviderContact?.Phone);
+        actual.ProviderName.Should().Be(source.TrainingProvider.Name);
+        actual.Qualifications.Should().BeEquivalentTo(source.Qualifications, options => options.Excluding(x => x.Weighting));
+        actual.Skills.Should().BeEquivalentTo(source.Skills);
+        actual.StartDate.Should().Be(source.StartDate);
+        actual.ThingsToConsider.Should().Be(source.ThingsToConsider);
         actual.Title.Should().Be(source.Title);
-        actual.IsClosed.Should().BeTrue();
-        actual.Address.AddressLine1.Should().Be(source.EmployerLocation?.AddressLine1);
-        actual.Address.AddressLine2.Should().Be(source.EmployerLocation?.AddressLine2);
-        actual.Address.AddressLine3.Should().Be(source.EmployerLocation?.AddressLine3);
-        actual.Address.AddressLine4.Should().Be(source.EmployerLocation?.AddressLine4);
-        actual.Address.Postcode.Should().Be(source.EmployerLocation?.Postcode);
+        actual.TrainingDescription.Should().Be(source.TrainingDescription);
         actual.Ukprn.Should().Be(source.TrainingProvider.Ukprn.ToString());
+        actual.VacancyLocationType.Should().Be(source.VacancyLocationType);
+        actual.VacancyReference.Should().Be(source.VacancyReference.Replace("VAC", ""));
+        actual.WageAdditionalInformation.Should().Be(source.Wage.WageAdditionalInformation);
+        actual.WageType.Should().Be(source.Wage.WageType);
+        actual.WageUnit.Should().Be(source.Wage.DurationUnit);
+        actual.WageText.Should().Be(source.Wage.ToDisplayText(source.StartDate));
+        actual.WorkingWeek.Should().Be(source.Wage.WorkingWeekDescription);
     }
-
 }

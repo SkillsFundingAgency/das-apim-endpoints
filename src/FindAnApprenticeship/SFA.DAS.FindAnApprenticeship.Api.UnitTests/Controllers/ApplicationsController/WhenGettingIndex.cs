@@ -7,6 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -32,9 +33,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplicationsCon
             var actual = await controller.Index(candidateId, status);
 
             actual.Should().BeOfType<OkObjectResult>();
-            var actualObject = ((OkObjectResult)actual).Value as GetApplicationsQueryResult;
+            var actualObject = ((OkObjectResult)actual).Value as GetApplicationsApiResponse;
             actualObject.Should().NotBeNull();
-            actualObject.Should().Be(queryResult);
+            actualObject.Should().BeEquivalentTo(queryResult);
         }
     }
 }

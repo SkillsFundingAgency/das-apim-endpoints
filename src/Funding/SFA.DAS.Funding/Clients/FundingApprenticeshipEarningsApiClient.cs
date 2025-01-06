@@ -85,5 +85,10 @@ namespace SFA.DAS.Funding.Clients
         {
             return _client.GetPaged<TResponse>(request);
         }
+
+        public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
