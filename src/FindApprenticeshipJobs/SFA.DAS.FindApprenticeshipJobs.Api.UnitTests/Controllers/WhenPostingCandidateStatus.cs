@@ -27,6 +27,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers
             using (new AssertionScope())
             {
                 actual.Should().BeOfType<NoContentResult>();
+                mediator.Verify(x => x.Send(It.Is<UpdateCandidateStatusCommand>(command => command.GovUkIdentifier == govIdentifier
+                        && command.Email == model.Email
+                        && command.Status == model.Status),
+                    It.IsAny<CancellationToken>()), Times.Once);
             }
         }
 
@@ -45,8 +49,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers
 
             var actual = await controller.UpdateStatus(govIdentifier, model) as StatusCodeResult;
 
-            Assert.That(actual, Is.Not.Null);
-            actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+            actual.Should().NotBeNull();
+            actual!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+            mediator.Verify(x => x.Send(It.Is<UpdateCandidateStatusCommand>(command => command.GovUkIdentifier == govIdentifier
+                    && command.Email == model.Email
+                    && command.Status == model.Status),
+                It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
