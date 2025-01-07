@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.32126.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeCommitments", "SFA.DAS.ApprenticeCommitments\SFA.DAS.ApprenticeCommitments.csproj", "{4EF11FD1-20DE-446A-B5DF-02CF9B289059}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeCommitments.Api", "SFA.DAS.ApprenticeCommitments.Api\SFA.DAS.ApprenticeCommitments.Api.csproj", "{8097F35C-39A4-4A20-A443-48C2BD32070E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApprenticeCommitments.Api", "SFA.DAS.ApprenticeCommitments.Api\SFA.DAS.ApprenticeCommitments.Api.csproj", "{8097F35C-39A4-4A20-A443-48C2BD32070E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests", "SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests\SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.csproj", "{EA634DDE-8FD7-482F-9B2E-1AA061825B7C}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DA12142C-C24A-4E3F-9C8C-7536F3915FDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth", "..\Shared\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.csproj", "{9A8DA95E-D09D-4CFD-8061-313564A75617}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,6 +54,10 @@ Global
 		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A8DA95E-D09D-4CFD-8061-313564A75617}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A8DA95E-D09D-4CFD-8061-313564A75617}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A8DA95E-D09D-4CFD-8061-313564A75617}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A8DA95E-D09D-4CFD-8061-313564A75617}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

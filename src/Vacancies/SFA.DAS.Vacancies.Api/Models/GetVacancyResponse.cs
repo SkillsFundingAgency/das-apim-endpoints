@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 
@@ -7,15 +8,28 @@ namespace SFA.DAS.Vacancies.Api.Models
 {
     public class GetVacancyResponse : GetVacanciesListResponseItem
     {
-        public string TrainingDescription { get ; set ; }
-        public string FullDescription { get ; set ; }
-        public string OutcomeDescription { get ; set ; }
+        /// <summary>
+        /// A description of the company the apprentice will work at. Will be less than or equal to 4000 characters.
+        /// </summary>
+        [MaxLength(4000)]
         public string EmployerDescription { get; set; }
+        /// <summary>
+        /// The apprenticeship’s training plan, including where and when training will take place.
+        /// </summary>
+        public string TrainingDescription { get ; set ; }
+        /// <summary>
+        /// Additional information about the training, such as details about the provider.
+        /// </summary>
+        public string AdditionalTrainingDescription { get; set; }
+        /// <summary>
+        /// What progress or outcome the apprentice can expect at the end of the apprenticeship.
+        /// </summary>
+        public string OutcomeDescription { get ; set ; }
+        public string FullDescription { get ; set ; }
         public List<string> Skills { get ; set ; }
         public List<GetVacancyQualification> Qualifications { get ; set ; }
         public string ThingsToConsider { get; set; }
         public string CompanyBenefitsInformation { get; set; }
-        public string AdditionalTrainingDescription { get; set; }
 
         public static implicit operator GetVacancyResponse(GetVacancyQueryResult source)
         {

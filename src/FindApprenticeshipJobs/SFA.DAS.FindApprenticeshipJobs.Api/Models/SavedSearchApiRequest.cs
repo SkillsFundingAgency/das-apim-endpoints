@@ -33,6 +33,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
             public string? TrainingCourse { get; set; }
 
             public double? Distance { get; set; }
+            public string? VacancySource { get; set; }
+            public string? WageType { get; set; }
+            public string? WageUnit { get; set; }
         }
         public class Address
         {
@@ -112,7 +115,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
                             AddressLine3 = vacancy.Address.AddressLine3,
                             AddressLine4 = vacancy.Address.AddressLine4,
                             Postcode = vacancy.Address.Postcode,
-                        }
+                        },
+                        VacancySource = vacancy.VacancySource,
+                        WageUnit = vacancy.WageUnit,
+                        WageType = vacancy.WageType
                     }).ToList()
             };
         }
