@@ -16,6 +16,7 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
+        <PackageReference Include="ESFA.DC.ILR.2425.FundingService.FM36.FundingOutput.Model" />
         <PackageReference Include="MediatR" />
         <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" />
         <PackageReference Include="Microsoft.Extensions.Http" />
