@@ -11,7 +11,6 @@ namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses
         public GetCalculatedVersionOfTrainingProgrammeRequest(string courseCode, DateTime? startDate)
         {
             CourseCode = courseCode;
-
             StartDate = startDate.HasValue ? startDate.Value : DateTime.Today;
         }
 
