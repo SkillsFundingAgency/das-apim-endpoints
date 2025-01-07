@@ -4,5 +4,5 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Functions;
 
 public class ApplicationsForAutomaticDeclineResult
 {
-    public IEnumerable<int> ApplicationsToDecline { get; set; }
+    public IEnumerable<int> ApplicationIdsToDecline { get; set; }
 }

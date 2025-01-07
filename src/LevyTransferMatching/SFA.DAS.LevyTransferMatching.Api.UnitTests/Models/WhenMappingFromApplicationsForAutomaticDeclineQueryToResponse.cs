@@ -13,6 +13,6 @@ public class WhenMappingFromApplicationsForAutomaticDeclineQueryToResponse
     {
         var actual = (ApplicationsForAutomaticDeclineResponse)source;
 
-        actual.ApplicationsToDecline.Should().BeEquivalentTo(source.ApplicationsToDecline);
+        actual.ApplicationIdsToDecline.Should().BeEquivalentTo(source.ApplicationIdsToDecline);
     }
 }

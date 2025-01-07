@@ -59,6 +59,6 @@ public class ApplicationsForAutomaticDeclineTests
         var okResult = result as OkObjectResult;
         var response = okResult.Value as ApplicationsForAutomaticDeclineResponse;
         response.Should().NotBeNull();
-        response.ApplicationsToDecline.Count().Should().Be(expectedResult.ApplicationsToDecline.Count());
+        response.ApplicationIdsToDecline.Count().Should().Be(expectedResult.ApplicationIdsToDecline.Count());
     }
 }

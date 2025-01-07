@@ -13,11 +13,11 @@ public class ApplicationsForAutomaticDeclineQueryHandler(ILevyTransferMatchingSe
     {
         var getApplicationsResponse = await levyTransferMatchingService.GetApplicationsToAutoDecline(new GetApplicationsToAutoDeclineRequest());
 
-        var applicationsToDecline = getApplicationsResponse != null ? getApplicationsResponse.ApplicationsToDecline : [];
+        var applicationIdsToDecline = getApplicationsResponse != null ? getApplicationsResponse.ApplicationsToDecline : [];
 
         return new ApplicationsForAutomaticDeclineResult
         {
-            ApplicationsToDecline = applicationsToDecline
+            ApplicationIdsToDecline = applicationIdsToDecline
         };
     }
 }
