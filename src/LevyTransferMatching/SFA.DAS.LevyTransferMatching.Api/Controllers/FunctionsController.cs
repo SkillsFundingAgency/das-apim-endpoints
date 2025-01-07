@@ -13,6 +13,7 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
+using SFA.DAS.LevyTransferMatching.Application.Commands.ExpireAcceptedFunding;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RecalculateApplicationCostProjections;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectPledgeApplications;
@@ -347,6 +348,18 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             var result = await _mediator.Send(new ApplicationsForAutomaticExpireQuery());
 
             return Ok((ApplicationsForAutomaticExpireResponse)result);
+        }
+
+        [Route("expire-accepted-funding")]
+        [HttpPost]
+        public async Task<IActionResult> ExpireAcceptedFunding(ExpireAcceptedFundingRequest request)
+        {
+            await _mediator.Send(new ExpireAcceptedFundingCommand
+            {
+                ApplicationId = request.ApplicationId
+            });
+
+            return Ok();
         }
     }
 }

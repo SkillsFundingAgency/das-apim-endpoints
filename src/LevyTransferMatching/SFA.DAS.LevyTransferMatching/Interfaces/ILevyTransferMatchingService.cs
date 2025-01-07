@@ -43,5 +43,6 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<ApiResponse<DeclineFundingRequest>> DeclineFunding(DeclineFundingRequest request);
         Task<ApiResponse<RecalculateApplicationCostProjectionRequest>> RecalculateApplicationCostProjection(RecalculateApplicationCostProjectionRequest request);
         Task<GetApplicationsToAutoExpireResponse> GetApplicationsToAutoExpire(GetApplicationsToAutoExpireRequest request);
+        Task<ApiResponse<ExpireAcceptedFundingRequest>> ExpireAcceptedFunding(ExpireAcceptedFundingRequest request);
     }
 }
