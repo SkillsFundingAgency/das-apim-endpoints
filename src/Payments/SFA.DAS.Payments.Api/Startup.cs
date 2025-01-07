@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
+using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Payments.Api.AppStart;
 using SFA.DAS.Payments.Application.Learners;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
@@ -24,7 +26,6 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddNLog();
         services.AddOptions();
         services.AddSingleton(_env);
 
@@ -39,6 +40,8 @@ public class Startup
             {
                 {"default", "APIM"}
             };
+
+            services.AddAuthentication(azureAdConfiguration, policies);
         }
 
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetLearnersQueryHandler).Assembly));
@@ -53,15 +56,23 @@ public class Startup
                 }
             });
 
+        if (_configuration["Environment"] != "DEV")
+        {
+            services.AddHealthChecks()
+                .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription);
+        }
+
         services.AddControllers().AddJsonOptions(options =>
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-        services.AddApplicationInsightsTelemetry(x => x.ConnectionString = _configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+        services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "PaymentsOuterApi", Version = "v1" });
         });
+
+        services.AddLogging();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
@@ -76,6 +87,11 @@ public class Startup
         }
 
         app.UseAuthentication();
+
+        if (!_configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
+        {
+            app.UseHealthChecks();
+        }
 
         app.UseRouting();
         app.UseEndpoints(endpoints =>

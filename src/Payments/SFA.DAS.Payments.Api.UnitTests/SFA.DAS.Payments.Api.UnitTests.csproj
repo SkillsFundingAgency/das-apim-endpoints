@@ -8,6 +8,7 @@
 
   <ItemGroup>
 	<PackageReference Include="AutoFixture" />
+	<PackageReference Include="AutoFixture.AutoMoq" />
     <PackageReference Include="FluentAssertions" />
 	<PackageReference Include="coverlet.msbuild">
 		<PrivateAssets>all</PrivateAssets>
@@ -19,6 +20,7 @@
     <PackageReference Include="Moq" />
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
   </ItemGroup>
 
   <ItemGroup>
