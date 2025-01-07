@@ -5,7 +5,7 @@ using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.InnerApi.Requests.ApplicationTests;
 
-public class WhenBuildingDeclineAcceptedFundingRequest
+public class WhenBuildingDeclineApprovedFundingRequest
 {
     [Test, AutoData]
     public void Then_The_PostUrl_Is_Correctly_Built(int applicationId)

@@ -11,7 +11,7 @@ using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.DeclineAcceptedFunding;
+namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.DeclineApprovedFunding;
 
 [TestFixture]
 public class WhenCallingHandle
@@ -35,7 +35,7 @@ public class WhenCallingHandle
 
         _levyTransferMatchingService = new Mock<ILevyTransferMatchingService>();
 
-        _levyTransferMatchingService.Setup(x => x.DeclineAcceptedFunding(It.IsAny<DeclineApprovedFundingRequest>()))
+        _levyTransferMatchingService.Setup(x => x.DeclineApprovedFunding(It.IsAny<DeclineApprovedFundingRequest>()))
             .Callback<DeclineApprovedFundingRequest>(r => _request = r)
             .ReturnsAsync(apiResponse);
 

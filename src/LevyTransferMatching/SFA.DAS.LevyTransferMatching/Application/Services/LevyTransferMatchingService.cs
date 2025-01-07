@@ -146,7 +146,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
             return await _levyTransferMatchingApiClient.PostWithResponseCode<DeclineFundingRequest>(request, false);
         }  
         
-        public async Task<ApiResponse<DeclineApprovedFundingRequest>> DeclineAcceptedFunding(DeclineApprovedFundingRequest request)
+        public async Task<ApiResponse<DeclineApprovedFundingRequest>> DeclineApprovedFunding(DeclineApprovedFundingRequest request)
         {
             return await _levyTransferMatchingApiClient.PostWithResponseCode<DeclineApprovedFundingRequest>(request, false);
         }

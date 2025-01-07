@@ -11,7 +11,7 @@ public class DeclineApprovedFundingCommandHandler(ILevyTransferMatchingService l
 {
     public async Task<Unit> Handle(DeclineApprovedFundingCommand request, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Declining Accepted Application {id}", request.ApplicationId);
+        logger.LogInformation("Declining Approved Application {id}", request.ApplicationId);
 
         var apiRequestData = new DeclineApprovedFundingRequestData
         {
@@ -22,7 +22,7 @@ public class DeclineApprovedFundingCommandHandler(ILevyTransferMatchingService l
 
         var declineRequest = new DeclineApprovedFundingRequest(request.ApplicationId, apiRequestData);
 
-        await levyTransferMatchingService.DeclineAcceptedFunding(declineRequest);
+        await levyTransferMatchingService.DeclineApprovedFunding(declineRequest);
 
         return Unit.Value;
     }
