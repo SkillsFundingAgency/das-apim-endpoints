@@ -13,7 +13,7 @@ public class ApplicationsForAutomaticDeclineQueryHandler(ILevyTransferMatchingSe
     {
         var getApplicationsResponse = await levyTransferMatchingService.GetApplicationsToAutoDecline(new GetApplicationsToAutoDeclineRequest());
 
-        var applicationIdsToDecline = getApplicationsResponse != null ? getApplicationsResponse.ApplicationsToDecline : [];
+        var applicationIdsToDecline = getApplicationsResponse != null ? getApplicationsResponse.ApplicationIdsToDecline : [];
 
         return new ApplicationsForAutomaticDeclineResult
         {

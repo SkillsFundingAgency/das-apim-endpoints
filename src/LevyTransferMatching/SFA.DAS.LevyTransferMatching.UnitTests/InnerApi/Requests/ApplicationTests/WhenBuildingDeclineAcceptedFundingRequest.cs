@@ -10,8 +10,8 @@ public class WhenBuildingDeclineAcceptedFundingRequest
     [Test, AutoData]
     public void Then_The_PostUrl_Is_Correctly_Built(int applicationId)
     {
-        var actual = new DeclineAcceptedFundingRequest(applicationId, new DeclineAcceptedFundingRequestData());
-        var expectedPostUrl = $"/applications/{applicationId}/decline-accepted-funding";
+        var actual = new DeclineApprovedFundingRequest(applicationId, new DeclineApprovedFundingRequestData());
+        var expectedPostUrl = $"/applications/{applicationId}/decline-approved-funding";
         actual.PostUrl.Should().Be(expectedPostUrl);
     }
 }

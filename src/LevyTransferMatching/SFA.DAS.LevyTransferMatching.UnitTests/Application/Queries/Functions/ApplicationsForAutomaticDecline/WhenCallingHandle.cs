@@ -35,7 +35,7 @@ public class WhenCallingHandle
     public async Task Handle_Returns_Levels()
     {
         var result = await _handler.Handle(new ApplicationsForAutomaticDeclineQuery(), CancellationToken.None);
-        result.ApplicationIdsToDecline.Should().BeEquivalentTo(_applicationsToDeclineApiResponse.ApplicationsToDecline);
+        result.ApplicationIdsToDecline.Should().BeEquivalentTo(_applicationsToDeclineApiResponse.ApplicationIdsToDecline);
 
     }
 }

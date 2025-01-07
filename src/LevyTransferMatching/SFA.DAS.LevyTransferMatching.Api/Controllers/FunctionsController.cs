@@ -13,7 +13,7 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
-using SFA.DAS.LevyTransferMatching.Application.Commands.DeclineAcceptedFunding;
+using SFA.DAS.LevyTransferMatching.Application.Commands.DeclineApprovedFunding;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RecalculateApplicationCostProjections;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectPledgeApplications;
@@ -350,16 +350,11 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             return Ok((ApplicationsForAutomaticDeclineResponse)result);
         }
 
-        [Route("decline-accepted-funding")]
+        [Route("decline-approved-funding")]
         [HttpPost]
-        public async Task<IActionResult> DeclineAcceptedFunding(DeclineAcceptedFundingRequest request)
+        public async Task<IActionResult> DeclineApprovedFunding(DeclineApprovedFundingRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            await _mediator.Send(new DeclineAcceptedFundingCommand
+            await _mediator.Send(new DeclineApprovedFundingCommand
             {
                 ApplicationId = request.ApplicationId
             });
