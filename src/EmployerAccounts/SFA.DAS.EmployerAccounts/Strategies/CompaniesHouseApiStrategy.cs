@@ -9,18 +9,12 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 
 namespace SFA.DAS.EmployerAccounts.Strategies
 {
-    public class CompaniesHouseApiStrategy : IOrganisationApiStrategy
+    public class CompaniesHouseApiStrategy(ICompaniesHouseApiClient<CompaniesHouseApiConfiguration> companiesHouseApi)
+        : IOrganisationApiStrategy
     {
-        private readonly ICompaniesHouseApiClient<CompaniesHouseApiConfiguration> _companiesHouseApi;
-
-        public CompaniesHouseApiStrategy(ICompaniesHouseApiClient<CompaniesHouseApiConfiguration> companiesHouseApi)
-        {
-            _companiesHouseApi = companiesHouseApi;
-        }
-
         public async Task<GetLatestDetailsResult> GetOrganisationDetails(string identifier, OrganisationType orgType)
         {
-            var response = await _companiesHouseApi.GetWithResponseCode<GetCompanyInfoResponse>(new GetCompanyInformationRequest(identifier));
+            var response = await companiesHouseApi.GetWithResponseCode<GetCompanyInfoResponse>(new GetCompanyInformationRequest(identifier));
             OrganisationApiResponseHelper.CheckApiResponseStatus(response.StatusCode, orgType, identifier, response.ErrorContent);
             return new GetLatestDetailsResult
             {
