@@ -21,7 +21,7 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<IEnumerable<ReferenceDataItem>> GetLevels();
         Task<IEnumerable<ReferenceDataItem>> GetSectors();
         Task<IEnumerable<ReferenceDataItem>> GetJobRoles();
-		Task<GetPledgesResponse> GetPledges(GetPledgesRequest request);
+        Task<GetPledgesResponse> GetPledges(GetPledgesRequest request);
         Task<CreatePledgeResponse> CreatePledge(CreatePledgeRequest pledge);
         Task<ApiResponse<ClosePledgeRequest>> ClosePledge(ClosePledgeRequest request);
         Task<GetAccountResponse> GetAccount(GetAccountRequest request);
@@ -42,5 +42,6 @@ namespace SFA.DAS.LevyTransferMatching.Interfaces
         Task<ApiResponse<DebitApplicationRequest>> DebitApplication(DebitApplicationRequest request);
         Task<ApiResponse<DeclineFundingRequest>> DeclineFunding(DeclineFundingRequest request);
         Task<ApiResponse<RecalculateApplicationCostProjectionRequest>> RecalculateApplicationCostProjection(RecalculateApplicationCostProjectionRequest request);
+        Task<GetApplicationsToAutoExpireResponse> GetApplicationsToAutoExpire(GetApplicationsToAutoExpireRequest request);
     }
 }

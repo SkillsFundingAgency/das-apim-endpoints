@@ -151,5 +151,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         {
             return await _levyTransferMatchingApiClient.PostWithResponseCode<CreditPledgeRequest>(request, false);
         }
+
+        public async Task<GetApplicationsToAutoExpireResponse> GetApplicationsToAutoExpire(GetApplicationsToAutoExpireRequest request)
+        {
+            return await _levyTransferMatchingApiClient.Get<GetApplicationsToAutoExpireResponse>(request);
+        }
     }
 }

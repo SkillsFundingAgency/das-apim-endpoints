@@ -339,5 +339,14 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
             return Ok();
         }
+
+        [Route("applications-for-auto-expire")]
+        [HttpGet]
+        public async Task<IActionResult> ApplicationsForAutomaticExpire()
+        {
+            var result = await _mediator.Send(new ApplicationsForAutomaticExpireQuery());
+
+            return Ok((ApplicationsForAutomaticExpireResponse)result);
+        }
     }
 }
