@@ -16,8 +16,7 @@ public class WhenBuildingApplicationUnsuccessfulResponseEmailTemplate
             {"firstName", firstName },
             {"vacancy", vacancy },
             {"employer", employer },
-            {"city", city },
-            {"postcode", postcode },
+            {"location", $"{city}, {postcode}" },
             {"feedback", feedback },
             {"applicationUrl", applicationUrl },
         };
@@ -29,4 +28,43 @@ public class WhenBuildingApplicationUnsuccessfulResponseEmailTemplate
         actual.RecipientAddress.Should().Be(recipientEmail);
     }
 
+    [Test, AutoData]
+    public void Then_The_Values_Are_Set_Correctly_With_No_City(string templateId,string recipientEmail, string firstName, string vacancy, string employer, string city, string postcode, string feedback, string applicationUrl)
+    {
+        var expectedTokens = new Dictionary<string, string>
+        {
+            {"firstName", firstName },
+            {"vacancy", vacancy },
+            {"employer", employer },
+            {"location", postcode },
+            {"feedback", feedback },
+            {"applicationUrl", applicationUrl },
+        };
+        
+        var actual = new ApplicationResponseUnsuccessfulEmailTemplate(templateId, recipientEmail, firstName, vacancy, employer, null!, postcode, feedback, applicationUrl);
+        
+        actual.TemplateId.Should().Be(templateId);
+        actual.Tokens.Should().BeEquivalentTo(expectedTokens);
+        actual.RecipientAddress.Should().Be(recipientEmail);
+    }
+    
+    [Test, AutoData]
+    public void Then_The_Values_Are_Set_Correctly_With_No_Postcode(string templateId,string recipientEmail, string firstName, string vacancy, string employer, string city, string postcode, string feedback, string applicationUrl)
+    {
+        var expectedTokens = new Dictionary<string, string>
+        {
+            {"firstName", firstName },
+            {"vacancy", vacancy },
+            {"employer", employer },
+            {"location", city },
+            {"feedback", feedback },
+            {"applicationUrl", applicationUrl },
+        };
+        
+        var actual = new ApplicationResponseUnsuccessfulEmailTemplate(templateId, recipientEmail, firstName, vacancy, employer, city, null!, feedback, applicationUrl);
+        
+        actual.TemplateId.Should().Be(templateId);
+        actual.Tokens.Should().BeEquivalentTo(expectedTokens);
+        actual.RecipientAddress.Should().Be(recipientEmail);
+    }
 }
