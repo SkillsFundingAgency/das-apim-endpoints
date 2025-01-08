@@ -2,8 +2,8 @@
 {
     public class ApplicationFundingExpiredRequest
     {
-        public int PledgeId { get; set; }
-        public int ApplicationId { get; set; }
-        public int Amount { get; set; }
+        public required int PledgeId { get; set; }
+        public required int ApplicationId { get; set; }
+        public required int Amount { get; set; }
     }
 }
