@@ -1,8 +1,11 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.Extensions;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
@@ -16,6 +19,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraft
     {
         public long CohortId { get; set; }
         public string CourseCode { get; set; }
+        public DateTime? StartDate { get; set; }
     }
 
     public class GetAddDraftApprenticeshipDetailsQueryResult
@@ -24,6 +28,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraft
         public string LegalEntityName { get; set; }
         public string ProviderName { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
+        public string StandardPageUrl { get; set; }
+        public int? ProposedMaxFunding { get; set; }
     }
 
     public class GetAddDraftApprenticeshipDetailsQueryHandler : IRequestHandler<GetAddDraftApprenticeshipDetailsQuery, GetAddDraftApprenticeshipDetailsQueryResult>
@@ -42,7 +48,12 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraft
         public async Task<GetAddDraftApprenticeshipDetailsQueryResult> Handle(GetAddDraftApprenticeshipDetailsQuery request, CancellationToken cancellationToken)
         {
             var cohortRequest = new GetCohortRequest(request.CohortId);
-            var cohortResponse = await _apiClient.GetWithResponseCode<GetCohortResponse>(cohortRequest);
+            var cohortResponseTask = _apiClient.GetWithResponseCode<GetCohortResponse>(cohortRequest);
+            var courseTask = _apiClient.Get<GetTrainingProgrammeResponse>(new GetCalculatedVersionOfTrainingProgrammeRequest(request.CourseCode, request.StartDate));
+
+            await Task.WhenAll(cohortResponseTask, courseTask);
+            var cohortResponse = await cohortResponseTask;
+            var course = (await courseTask)?.TrainingProgramme;
 
             if (cohortResponse.StatusCode == HttpStatusCode.NotFound)
             {
@@ -66,7 +77,9 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraft
                 AccountLegalEntityId = cohort.AccountLegalEntityId,
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
-                HasMultipleDeliveryModelOptions = deliveryModels.Count > 1
+                HasMultipleDeliveryModelOptions = deliveryModels.Count > 1,
+                StandardPageUrl = course?.StandardPageUrl,
+                ProposedMaxFunding = course?.FundingPeriods.GetFundingBandForDate(request.StartDate)
             };
         }
     }

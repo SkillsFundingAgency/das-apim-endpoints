@@ -8,6 +8,8 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public string LegalEntityName { get; set; }
         public string ProviderName { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
+        public string StandardPageUrl { get; set; }
+        public int? ProposedMaxFunding { get; set; }
 
         public static implicit operator GetAddDraftApprenticeshipDetailsResponse(GetAddDraftApprenticeshipDetailsQueryResult source)
         {
@@ -16,7 +18,9 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 AccountLegalEntityId = source.AccountLegalEntityId,
                 LegalEntityName = source.LegalEntityName,
                 ProviderName = source.ProviderName,
-                HasMultipleDeliveryModelOptions = source.HasMultipleDeliveryModelOptions
+                HasMultipleDeliveryModelOptions = source.HasMultipleDeliveryModelOptions,
+                StandardPageUrl = source.StandardPageUrl,
+                ProposedMaxFunding = source.ProposedMaxFunding
             };
         }
     }
