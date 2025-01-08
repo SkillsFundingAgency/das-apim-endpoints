@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.Models.Requests
         private readonly short _academicYear;
         private readonly int _pageNumber;
 
-        public string GetUrl => $"learners/{_academicYear}?ukprn={_ukprn}&pageNumber={_pageNumber}&pageSize=1000";
+        public string GetUrl => $"learners/{_academicYear}?ukprn={_ukprn}&fundModel=36&progType=-1&standardCode=-1&pageNumber={_pageNumber}&pageSize=1000";
 
         public GetLearnersRequest(string ukprn, short academicYear, int pageNumber)
         {
