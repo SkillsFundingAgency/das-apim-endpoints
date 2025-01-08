@@ -28,6 +28,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraft
         public string LegalEntityName { get; set; }
         public string ProviderName { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
+        public bool IsFundedByTransfer { get; set; }
+        public long? TransferSenderId { get; set; }
         public string StandardPageUrl { get; set; }
         public int? ProposedMaxFunding { get; set; }
     }
@@ -68,7 +70,6 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraft
             {
                 return null;
             }
-
             var deliveryModels = await _deliveryModelService.GetDeliveryModels(cohort.ProviderId,
                 request.CourseCode, cohort.AccountLegalEntityId, null);
 
@@ -78,6 +79,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraft
                 LegalEntityName = cohort.LegalEntityName,
                 ProviderName = cohort.ProviderName,
                 HasMultipleDeliveryModelOptions = deliveryModels.Count > 1,
+                IsFundedByTransfer = cohort.IsFundedByTransfer,
+                TransferSenderId = cohort.TransferSenderId,
                 StandardPageUrl = course?.StandardPageUrl,
                 ProposedMaxFunding = course?.FundingPeriods.GetFundingBandForDate(request.StartDate)
             };

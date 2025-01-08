@@ -107,6 +107,20 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         }
 
         [Test]
+        public async Task Handle_IsFundedByTransfer_Should_Be_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            result.IsFundedByTransfer.Should().Be(_cohort.IsFundedByTransfer);
+        }
+
+        [Test]
+        public async Task Handle_TransferSenderId_Should_Be_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            result.TransferSenderId.Should().Be(_cohort.TransferSenderId);
+        }
+
+        [Test]
         public async Task Handle_ProposedMaxFunding_Should_Be_Mapped_To_Null()
         {
             _trainingProgrammeResponse.TrainingProgramme.FundingPeriods = new List<TrainingProgrammeFundingPeriod>();
