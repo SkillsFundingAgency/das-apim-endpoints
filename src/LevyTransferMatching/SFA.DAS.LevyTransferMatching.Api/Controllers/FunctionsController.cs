@@ -368,28 +368,28 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new CreditPledgeCommand
+                var creditResult = await _mediator.Send(new CreditPledgeCommand
                 {
-                    PledgeId = request.PledgeId,
                     Amount = request.Amount,
-                    ApplicationId = request.ApplicationId
+                    ApplicationId = request.ApplicationId,
+                    PledgeId = request.PledgeId                    
                 });
 
-                if (result.CreditPledgeSkipped)
+                if (creditResult.CreditPledgeSkipped)
                 {
                     return Ok();
                 }
 
-                if (!result.StatusCode.IsSuccess())
+                if (!creditResult.StatusCode.IsSuccess())
                 {
-                    _logger.LogError($"Error attempting to Credit Pledge {result.ErrorContent}");
+                    _logger.LogError("Error attempting to Credit Pledge {ErrorContent}", creditResult.ErrorContent);
                 }
 
-                return new StatusCodeResult((int)result.StatusCode);
+                return new StatusCodeResult((int)creditResult.StatusCode);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to Credit Pledge");
+                _logger.LogError(e, $"Error in ApplicationFundingExpired attempting to Credit Pledge");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
