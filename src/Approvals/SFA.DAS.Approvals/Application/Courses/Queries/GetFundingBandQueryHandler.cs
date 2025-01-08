@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Approvals.Extensions;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -32,17 +30,7 @@ public class GetFundingBandQueryHandler : IRequestHandler<GetFundingBandQuery, G
             StandardUId = result.TrainingProgramme.StandardUId,
             Version = result.TrainingProgramme.Version,
             StandardPageUrl = result.TrainingProgramme.StandardPageUrl,
-            ProposedMaxFunding = GetFundingBandForDate(result.TrainingProgramme.FundingPeriods, request.StartDate),
+            ProposedMaxFunding = result.TrainingProgramme.FundingPeriods.GetFundingBandForDate(request.StartDate),
         };
     }
-
-    private static int? GetFundingBandForDate(List<TrainingProgrammeFundingPeriod> bands, DateTime? forDate)
-    {
-        forDate ??= DateTime.Today;
-        var match = bands.FirstOrDefault(x =>
-            x.EffectiveFrom <= forDate && (x.EffectiveTo ?? DateTime.Today.AddYears(5)) >= forDate);
-        return match?.FundingCap;
-    }
 }
-
-
