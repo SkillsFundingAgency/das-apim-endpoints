@@ -52,8 +52,7 @@ public class WhenHandlingCandidateApplicationStatusCommand
                 && c.Tokens["firstName"] == candidateResponse.FirstName
                 && c.Tokens["vacancy"] == request.VacancyTitle
                 && c.Tokens["employer"] == request.VacancyEmployerName
-                && c.Tokens["city"] == request.VacancyCity
-                && c.Tokens["postcode"] == request.VacancyPostcode
+                && c.Tokens["location"] == $"{request.VacancyCity}, {request.VacancyPostcode}"
             )
         ), Times.Once);
     }
@@ -90,8 +89,7 @@ public class WhenHandlingCandidateApplicationStatusCommand
                 && c.Tokens["firstName"] == candidateResponse.FirstName
                 && c.Tokens["vacancy"] == request.VacancyTitle
                 && c.Tokens["employer"] == request.VacancyEmployerName
-                && c.Tokens["city"] == request.VacancyCity
-                && c.Tokens["postcode"] == request.VacancyPostcode
+                && c.Tokens["location"] == $"{request.VacancyCity}, {request.VacancyPostcode}"
             )
         ), Times.Once);
     }
