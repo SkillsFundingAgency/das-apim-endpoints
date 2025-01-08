@@ -25,17 +25,28 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
 
             sb.AppendLine();
             if (!string.IsNullOrEmpty(searchTerm)) sb.AppendLine($"What: {searchTerm}");
-            if (!string.IsNullOrEmpty(location) && distance is not null)
+            if (!string.IsNullOrEmpty(location))
             {
-                switch (distance)
+                if (distance.HasValue)
                 {
-                    case > 1:
+                    if (distance > 1)
+                    {
                         sb.AppendLine($"Where: {location} (within {distance} miles)");
-                        break;
-                    default:
+                    }
+
+                    if (distance == 1)
+                    {
                         sb.AppendLine($"Where: {location} (within {distance} mile)");
-                        break;
+                    }
                 }
+                else
+                {
+                    sb.AppendLine($"Where: {location} (Across all of England)");
+                }
+            }
+            else
+            {
+                sb.AppendLine("Where: All of England");
             }
             if (categories is { Count: > 0 }) sb.AppendLine($"Categories: {string.Join(", ", categories)}");
             if (levels is { Count: > 0 }) sb.AppendLine($"Apprenticeship levels: {string.Join(", ", levels)}");
@@ -101,7 +112,15 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 sb.AppendLine();
                 if (hasSearchLocation)
                 {
-                    sb.AppendLine($"* Distance: {vacancy.Distance} miles");    
+                    if (vacancy.Distance == 1)
+                    {
+                        sb.AppendLine($"* Distance: {vacancy.Distance} mile");    
+                    }
+                    else
+                    {
+                        sb.AppendLine($"* Distance: {vacancy.Distance} miles");
+                    }
+                        
                 }
 
                 sb.AppendLine($"* Training course: {trainingCourseText}");
