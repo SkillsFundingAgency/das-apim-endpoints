@@ -25,6 +25,7 @@ public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfi
 
         if (isRequestPresent)
         {
+            queryResult.RequestId = res.GetContent()!.RequestId;
             queryResult.HasActiveRequest = true;
             return queryResult;
         }
@@ -89,6 +90,7 @@ public class GetRelationshipByEmailQueryHandler(IAccountsApiClient<AccountsConfi
 
         if (isExistingRequestPresent)
         {
+            queryResult.RequestId = existingRequestCheck.GetContent()!.RequestId;
             queryResult.HasActiveRequest = true;
             return queryResult;
         }
