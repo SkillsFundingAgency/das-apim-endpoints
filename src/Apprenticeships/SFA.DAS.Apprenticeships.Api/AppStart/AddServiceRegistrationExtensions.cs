@@ -32,6 +32,7 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
         services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
         services.AddTransient<INotificationService, NotificationService>();
+        services.AddTransient<IProviderAccountApiClient<ProviderAccountApiConfiguration>, ProviderAccountApiClient>();
         services.AddTransient<IExtendedNotificationService, ExtendedNotificationService>();
 
 
@@ -73,6 +74,9 @@ public static class AddConfigurationOptionsExtension
 
         services.Configure<NServiceBusConfiguration>(configuration.GetSection(nameof(NServiceBusConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<NServiceBusConfiguration>>()!.Value);
+
+        services.Configure<ProviderAccountApiConfiguration>(configuration.GetSection(nameof(ProviderAccountApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<ProviderAccountApiConfiguration>>()!.Value);
     }
 
 }

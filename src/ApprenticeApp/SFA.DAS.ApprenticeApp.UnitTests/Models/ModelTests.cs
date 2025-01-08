@@ -1,9 +1,7 @@
-﻿using System;
-using Microsoft.VisualBasic.FileIO;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using NUnit.Framework.Legacy;
 using SFA.DAS.ApprenticeApp.Models;
-using SFA.DAS.SharedOuterApi.Configuration;
+using System;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
 {
@@ -163,7 +161,6 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
             ClassicAssert.AreEqual(new Guid("9D2B0228-4D0D-4C23-8B49-01A698857709"), sut.Id);
             ClassicAssert.AreEqual("key", sut.Key);
             ClassicAssert.AreEqual("detail", sut.Detail);
-
         }
     }
 }
