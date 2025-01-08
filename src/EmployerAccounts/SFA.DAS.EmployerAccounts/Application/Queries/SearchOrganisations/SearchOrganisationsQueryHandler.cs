@@ -14,12 +14,10 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Charities;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EducationalOrganisations;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.PublicSectorOrganisations;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ReferenceData;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Charities;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.PublicSectorOrganisation;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerAccounts.Application.Queries.SearchOrganisations;
@@ -58,23 +56,25 @@ public class SearchOrganisationsQueryHandler(
     }
 
     private static SearchOrganisationsResult CombineMatches(
-        IEnumerable<EducationalOrganisation> educationalOrganisations,
-        IEnumerable<OrganisationResult> companiesResults,
-        IEnumerable<OrganisationResult> charityResults,
-        IEnumerable<PublicSectorOrganisation> psOrganisations,
-        int maxResults)
+    IEnumerable<EducationalOrganisation> educationalOrganisations,
+    IEnumerable<OrganisationResult> companiesResults,
+    IEnumerable<OrganisationResult> charityResults,
+    IEnumerable<PublicSectorOrganisation> psOrganisations,
+    int maxResults)
+{
+    var allOrganisations = educationalOrganisations
+        .Select(o => (OrganisationResult)o)
+        .Concat(psOrganisations.Select(o => (OrganisationResult)o))
+        .Concat(charityResults)
+        .Concat(companiesResults);
+    
+
+    return new SearchOrganisationsResult
     {
-        var allOrganisations = educationalOrganisations
-            .Select(o => (OrganisationResult)o)
-            .Concat(psOrganisations.Select(o => (OrganisationResult)o))
-            .Concat(charityResults)
-            .Concat(companiesResults);
-        
-        return new SearchOrganisationsResult
-        {
-            Organisations = allOrganisations.OrderBy(o => o.Name).Take(maxResults).ToList()
-        };
-    }
+        Organisations = allOrganisations.OrderBy(o => o.Name).Take(maxResults).ToList()
+    };
+}
+
 
     private Task<object> GetCharitiesSearchTask(string searchTerm, int maximumResults)
     {
@@ -117,7 +117,7 @@ public class SearchOrganisationsQueryHandler(
         return result switch
         {
             GetCompanyInfoResponse singleCompany => new List<OrganisationResult> { singleCompany },
-            SearchCompaniesResponse multipleCompanies => multipleCompanies?.Companies.Select(c => (OrganisationResult)c),
+            SearchCompaniesResponse multipleCompanies => multipleCompanies.Companies.Select(c => (OrganisationResult)c),
             _ => []
         };
     }
