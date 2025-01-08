@@ -11,7 +11,7 @@ public class ExpireAcceptedFundingCommandHandler(ILevyTransferMatchingService le
 {
     public async Task<Unit> Handle(ExpireAcceptedFundingCommand request, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Declining Approved Application {id}", request.ApplicationId);
+        logger.LogInformation("Expiring Approved Application {id}", request.ApplicationId);
 
         var apiRequestData = new ExpireAcceptedFundingRequestData
         {
