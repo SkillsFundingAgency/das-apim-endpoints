@@ -191,7 +191,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                     },
                     Distance = 10,
                     TrainingCourse = "Software Engineering",
-                    Wage = "£30,000",
+                    Wage = "£30,000 a year",
                     ClosingDate = "2022-12-31",
                     VacancySource = "FAA"
                 }
@@ -243,7 +243,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                     },
                     Distance = 10,
                     TrainingCourse = "Software Engineering",
-                    Wage = "£30,000",
+                    Wage = "£30,000 a year",
                     ClosingDate = "2022-12-31"
                 }
             };
@@ -296,7 +296,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                     },
                     Distance = 1,
                     TrainingCourse = "Software Engineering",
-                    Wage = "£30,000",
+                    Wage = "£30,000 a year",
                     ClosingDate = "2022-12-31",
                     VacancySource = "FAA",
                     WageUnit = wageUnit,

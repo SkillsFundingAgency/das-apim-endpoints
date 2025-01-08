@@ -100,7 +100,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 { 
                     sb.AppendLine($"#[{vacancy.Title}]({environmentHelper.VacancyDetailsUrl.Replace("{vacancy-reference}", vacancy.VacancyReference)})");
                     trainingCourseText = vacancy.TrainingCourse;
-                    wageText = (vacancy.WageType == "Competitive") ? vacancy.WageType : vacancy.Wage + " a year";
+                    wageText = (vacancy.WageType == "Competitive") ? vacancy.WageType : vacancy.Wage;
                 }
                 sb.AppendLine(vacancy.EmployerName);
                 sb.AppendLine(!string.IsNullOrEmpty(vacancy.Address.AddressLine4) ? $"{vacancy.Address.AddressLine4}, {vacancy.Address.Postcode}" :
