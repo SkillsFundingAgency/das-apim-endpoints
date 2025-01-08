@@ -36,6 +36,32 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             // Assert
             result.Trim().Should().BeEquivalentTo(expected.Trim());
         }
+        [Test]
+        public void GetSavedSearchSearchParams_WhenCalled_ReturnsExpectedResult_Across_All_Of_England()
+        {
+            // Arrange
+            const string searchTerm = "Software Developer";
+            const string location = "London";
+            List<string> categories = ["IT", "Engineering"];
+            List<string> levels = ["Intermediate", "Advanced"];
+            const bool disabilityConfident = true;
+
+            const string expected = """
+
+                                    What: Software Developer
+                                    Where: London (Across all of England)
+                                    Categories: IT, Engineering
+                                    Apprenticeship levels: Intermediate, Advanced
+                                    Only show Disability Confident apprenticeships
+
+                                    """;
+
+            // Act
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, null, location, categories, levels, disabilityConfident);
+
+            // Assert
+            result.Trim().Should().BeEquivalentTo(expected.Trim());
+        }
         
         [Test]
         public void GetSavedSearchSearchParams_WhenCalled_ReturnsExpectedResult_No_Location()
@@ -108,6 +134,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             const string expected = """
 
                                     What: Software Developer
+                                    Where: All of England
                                     Categories: IT, Engineering
                                     Apprenticeship levels: Intermediate, Advanced
                                     Only show Disability Confident apprenticeships
@@ -164,7 +191,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                     },
                     Distance = 10,
                     TrainingCourse = "Software Engineering",
-                    Wage = "£30,000",
+                    Wage = "£30,000 a year",
                     ClosingDate = "2022-12-31",
                     VacancySource = "FAA"
                 }
@@ -216,7 +243,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                     },
                     Distance = 10,
                     TrainingCourse = "Software Engineering",
-                    Wage = "£30,000",
+                    Wage = "£30,000 a year",
                     ClosingDate = "2022-12-31"
                 }
             };
@@ -267,9 +294,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         AddressLine1 = "123 Main St",
                         Postcode = "12345"
                     },
-                    Distance = 10,
+                    Distance = 1,
                     TrainingCourse = "Software Engineering",
-                    Wage = "£30,000",
+                    Wage = "£30,000 a year",
                     ClosingDate = "2022-12-31",
                     VacancySource = "FAA",
                     WageUnit = wageUnit,
@@ -283,7 +310,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                                            ABC Company
                                            123 Main St, 12345
 
-                                           * Distance: 10 miles
+                                           * Distance: 1 mile
                                            * Training course: Software Engineering
                                            * Wage: {expectedWageText}
 
