@@ -361,5 +361,37 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
             return Ok();
         }
+
+        [Route("application-funding-expired")]
+        [HttpPost]
+        public async Task<IActionResult> ApplicationFundingExpired(ApplicationFundingExpiredRequest request)
+        {
+            try
+            {
+                var result = await _mediator.Send(new CreditPledgeCommand
+                {
+                    PledgeId = request.PledgeId,
+                    Amount = request.Amount,
+                    ApplicationId = request.ApplicationId
+                });
+
+                if (result.CreditPledgeSkipped)
+                {
+                    return Ok();
+                }
+
+                if (!result.StatusCode.IsSuccess())
+                {
+                    _logger.LogError($"Error attempting to Credit Pledge {result.ErrorContent}");
+                }
+
+                return new StatusCodeResult((int)result.StatusCode);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to Credit Pledge");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }
