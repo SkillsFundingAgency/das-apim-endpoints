@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Models.Messages;
 
-namespace SFA.DAS.FindAnApprenticeship.Domain.EmailTemplates;
+namespace SFA.DAS.Recruit.Domain.EmailTemplates;
 
-public class SubmitApplicationEmail : EmailTemplateArguments
+public class ApplicationResponseUnsuccessfulEmailTemplate : EmailTemplateArguments
 {
-    public SubmitApplicationEmail(string templateId,string recipientEmail, string firstName, string vacancy, string employer, string city, string postcode, string applicationUrl)
+    public ApplicationResponseUnsuccessfulEmailTemplate(string templateId,string recipientEmail, string firstName, string vacancy, string employer, string city, string postcode, string feedback, string applicationUrl)
     {
         var location = string.IsNullOrEmpty(city) ? postcode :
             string.IsNullOrEmpty(postcode) ? city : $"{city}, {postcode}";
@@ -17,7 +17,8 @@ public class SubmitApplicationEmail : EmailTemplateArguments
             {"vacancy", vacancy },
             {"employer", employer },
             {"location", location },
-            {"yourApplicationsURL", applicationUrl }
+            {"feedback", feedback },
+            {"applicationUrl", applicationUrl },
         };
     }
 }

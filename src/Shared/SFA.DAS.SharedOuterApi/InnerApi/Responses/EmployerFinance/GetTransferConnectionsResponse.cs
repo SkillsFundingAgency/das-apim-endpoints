@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance
 {
@@ -11,6 +12,8 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance
             public string FundingEmployerHashedAccountId { get; set; }
             public string FundingEmployerPublicHashedAccountId { get; set; }
             public string FundingEmployerAccountName { get; set; }
+            public short? Status { get; set; }
+            public DateTime? StatusAssignedOn { get; set; }
         }
     }
 }
