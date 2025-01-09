@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.EmployerAan.Application.Members.Queries.GetMemberByMemberId;
 using SFA.DAS.EmployerAan.Application.Members.Queries.GetMembers;
 using SFA.DAS.EmployerAan.Application.Models;
 using SFA.DAS.EmployerAan.Infrastructure;
@@ -29,6 +30,16 @@ public class MembersController : ControllerBase
     public async Task<IActionResult> GetMembers([FromQuery] GetMembersRequestModel requestModel, CancellationToken cancellationToken)
     {
         var response = await _mediator.Send((GetMembersQuery)requestModel, cancellationToken);
+        return Ok(response);
+    }
+
+
+    [HttpGet("{memberId}")]
+    [ProducesResponseType(typeof(GetMemberByIdQueryResult), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetMemberById([FromRoute] Guid memberId, CancellationToken cancellationToken)
+    {
+        var query = new GetMemberByIdQuery { MemberId = memberId };
+        var response = await _mediator.Send(query, cancellationToken);
         return Ok(response);
     }
 
