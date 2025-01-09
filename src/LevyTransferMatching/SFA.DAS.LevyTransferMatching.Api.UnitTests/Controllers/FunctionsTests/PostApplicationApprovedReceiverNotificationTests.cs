@@ -34,8 +34,13 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
             await _controller.ApplicationApprovedReceiverNotification(_request);
 
             _mediator.Verify(x =>
-                x.Send(It.Is<ReceiverApplicationApprovedEmailCommand>(c => c.PledgeId == _request.PledgeId && c.ApplicationId == _request.ApplicationId &&
-                                                                           c.EncodedApplicationId == _request.EncodedApplicationId && c.ReceiverId == _request.ReceiverId),
+                x.Send(It.Is<ReceiverApplicationApprovedEmailCommand>(c => c.PledgeId == _request.PledgeId 
+                && c.ApplicationId == _request.ApplicationId &&
+                c.EncodedApplicationId == _request.EncodedApplicationId
+                && c.ReceiverId == _request.ReceiverId
+                && c.BaseUrl == _request.BaseUrl
+                && c.EncodedAccountId == _request.EncodedAccountId
+                && c.UnsubscribeNotificationsUrl == _request.UnsubscribeNotificationsUrl),
                     It.IsAny<CancellationToken>()));
         }
     }

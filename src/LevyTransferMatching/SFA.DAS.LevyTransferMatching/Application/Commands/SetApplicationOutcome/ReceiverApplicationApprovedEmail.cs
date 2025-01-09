@@ -7,16 +7,22 @@ namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcom
     {
         public ReceiverApplicationApprovedEmail(
              string recipientEmail,
-            string userName,
-            string reference
+            string employerName,
+            string reference,
+            string baseUrl,
+            string encodedAccountId,
+            string unsubscribeUrl
             )
         {
             TemplateId = "ReceiverApplicationApproved";
             RecipientAddress = recipientEmail;
             Tokens = new Dictionary<string, string>
             {
-                {"user_name", userName },
-                {"reference", reference }
+                {"employer", employerName },
+                {"reference", reference },
+                {"base_url", baseUrl },
+                {"encodedAccountId", encodedAccountId },
+                {"unsubscribe_url", unsubscribeUrl }
             };
         }
     }
