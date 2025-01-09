@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <Folder Include="Application\Commands\Apply\PatchApplicationDisabilityConfidence\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
 
 </Project>
