@@ -15,7 +15,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
     public class GetApprenticeshipVacancyQueryResult
     {
         public Vacancy ApprenticeshipVacancy { get; init; }
-        public GetStandardsListItemResponse CourseDetail { get; init; }
+        public GetStandardsListItemResponse CourseDetail { get; set; }
         public List<GetCourseLevelsListItem> Levels { get; init; }
         public CandidateApplication Application { get; init; }
         public string CandidatePostcode { get; set; }
@@ -105,6 +105,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string? AdditionalTrainingDescription { get; set; }
             public string ApplicationUrl { get; set; }
             public string ApplicationInstructions { get; set; }
+            public VacancyDataSource VacancySource { get; set; }
             
             public static Vacancy FromIVacancy(IVacancy source, GetStandardsListItemResponse courseResult = null)
             {
@@ -189,6 +190,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     WageUnit = source.Wage.DurationUnit,
                     WageText = source.Wage.ToDisplayText(source.StartDate),
                     WorkingWeek = source.Wage.WorkingWeekDescription,
+                    VacancySource = source.VacancySource,
                 };
             }
             
@@ -278,7 +280,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     ApplicationUrl = source.ApplicationUrl,
                     ApplicationInstructions = source.ApplicationInstructions,
                     CompanyBenefitsInformation = source.CompanyBenefitsInformation,
-                    AdditionalTrainingDescription = source.AdditionalTrainingDescription
+                    AdditionalTrainingDescription = source.AdditionalTrainingDescription,
+                    VacancySource = source.VacancySource,
                 };
             }
         }
