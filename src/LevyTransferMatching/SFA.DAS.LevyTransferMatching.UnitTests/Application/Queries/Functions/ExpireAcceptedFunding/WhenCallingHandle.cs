@@ -49,13 +49,13 @@ public class WhenCallingHandle
     {
         await _handler.Handle(_command, CancellationToken.None);
 
-        var declineData = (ExpireAcceptedFundingRequestData)_request.Data;
+        var expireData = (ExpireAcceptedFundingRequestData)_request.Data;
 
         var expectedUrl = $"/applications/{_command.ApplicationId}/expire-accepted-funding";
         _request.PostUrl.Should().Be(expectedUrl);
 
-        declineData.ApplicationId.Should().Be(_command.ApplicationId);
-        declineData.UserId.Should().Be(string.Empty);
-        declineData.UserDisplayName.Should().Be(string.Empty);
+        expireData.ApplicationId.Should().Be(_command.ApplicationId);
+        expireData.UserId.Should().Be(string.Empty);
+        expireData.UserDisplayName.Should().Be(string.Empty);
     }
 }

@@ -36,6 +36,5 @@ public class WhenCallingHandle
     {
         var result = await _handler.Handle(new ApplicationsForAutomaticExpireQuery(), CancellationToken.None);
         result.ApplicationIdsToExpire.Should().BeEquivalentTo(_applicationsToExpireApiResponse.ApplicationIdsToExpire);
-
     }
 }

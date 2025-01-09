@@ -20,7 +20,7 @@ public class ExpireAcceptedFundingCommandHandler(ILevyTransferMatchingService le
             UserDisplayName = string.Empty
         };
 
-        var declineRequest = new ExpireAcceptedFundingRequest(request.ApplicationId, apiRequestData);
+        var expireRequest = new ExpireAcceptedFundingRequest(request.ApplicationId, apiRequestData);
 
         await levyTransferMatchingService.ExpireAcceptedFunding(declineRequest);
 
