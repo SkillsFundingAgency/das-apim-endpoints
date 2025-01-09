@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Azure;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Apprenticeships.Api.Extensions;
 using SFA.DAS.Apprenticeships.Api.Models;
@@ -270,7 +271,21 @@ public class ApprenticeshipController : ControllerBase
     [Route("{apprenticeshipKey}/startDateChange/pending/approve")]
     public async Task<ActionResult> ApprovePendingStartDateChange(Guid apprenticeshipKey, [FromBody] ApproveStartDateChangeRequest request)
     {
-        await _apiClient.Patch(new PatchApproveApprenticeshipStartDateChangeRequest(apprenticeshipKey, request.UserId));
+        var response = await _apiClient.PatchWithResponseCode<ApproveApprenticeshipStartDateChangeRequest>(new PatchApproveApprenticeshipStartDateChangeRequest(apprenticeshipKey, request.UserId));
+        if (!string.IsNullOrEmpty(response.ErrorContent))
+        {            
+            _logger.LogError($"Error attempting to approve apprenticeship start date change. {response.StatusCode} returned from inner api.", response.StatusCode);
+            return BadRequest();
+        }
+
+        var changeOfStartDateApprovedNotificationCommand = request.ToNotificationCommand(apprenticeshipKey);
+        var notificationResponse = await _mediator.Send(changeOfStartDateApprovedNotificationCommand);
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to send approval of start date Notification(s) to the related party(ies)");
+            return BadRequest();
+        }
         return Ok();
     }
 
