@@ -7,6 +7,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using Address = SFA.DAS.FindApprenticeshipJobs.Application.Shared.Address;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 
@@ -49,6 +50,21 @@ public class GetNhsJobsQueryHandler(INhsJobsApiClient nhsJobsApiClient, ILiveVac
 
         var liveVacancies = vacancies.Select(c=> liveVacancyMapper.Map(c,locationsTask.Result.Body, route) ).ToList();
         
+        var testVacancy = liveVacancies.FirstOrDefault();
+        testVacancy.VacancyReference = "TEST-01-00001";
+        testVacancy.Title = "Test Vacancy";
+        testVacancy.Id = "12345678";
+        testVacancy.EmployerName = "Test Employer Trust";
+        testVacancy.Address = new Address()
+        {
+            AddressLine4 = "Cardiff",
+            Postcode = "CF3 0AH",
+            Longitude = -3.1791934,
+            Latitude = 51.4816546,
+            Country = "Wales"
+        };
+
+        liveVacancies.Add(testVacancy);
 
         return new GetNhsJobsQueryResult
         {
