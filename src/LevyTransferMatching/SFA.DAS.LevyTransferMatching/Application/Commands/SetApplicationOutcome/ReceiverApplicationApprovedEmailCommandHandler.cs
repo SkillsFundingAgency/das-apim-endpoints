@@ -17,7 +17,7 @@ public class ReceiverApplicationApprovedEmailCommandHandler(
 {
     public async Task<Unit> Handle(ReceiverApplicationApprovedEmailCommand request, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Sending email for application {applicationId} approved to receiver {request.ReceiverId} for Pledge {pledgeId}",
+        logger.LogInformation("Sending email for application {applicationId} approved to receiver {receiverId} for Pledge {pledgeId}",
             request.ApplicationId, request.ReceiverId, request.PledgeId);
 
         var getAccountUsersTask = accountsService.GetAccountUsers(request.ReceiverId);
