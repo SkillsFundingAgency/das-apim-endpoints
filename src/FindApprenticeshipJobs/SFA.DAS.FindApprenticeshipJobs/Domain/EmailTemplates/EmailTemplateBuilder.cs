@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
@@ -88,7 +88,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 { 
                     sb.AppendLine($"#[{vacancy.Title}]({environmentHelper.VacancyDetailsUrl.Replace("{vacancy-reference}", vacancy.VacancyReference)})");
                     trainingCourseText = vacancy.TrainingCourse;
-                    wageText = (vacancy.WageType == "Competitive") ? vacancy.WageType : vacancy.Wage + " a year";
+                    wageText = (vacancy.WageType == "Competitive") ? vacancy.WageType : vacancy.Wage;
                 }
                 sb.AppendLine(vacancy.EmployerName);
                 sb.AppendLine(!string.IsNullOrEmpty(vacancy.Address.AddressLine4) ? $"{vacancy.Address.AddressLine4}, {vacancy.Address.Postcode}" :
@@ -100,7 +100,15 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 sb.AppendLine();
                 if (hasSearchLocation)
                 {
-                    sb.AppendLine($"* Distance: {vacancy.Distance} miles");    
+                    if (vacancy.Distance == 1)
+                    {
+                        sb.AppendLine($"* Distance: {vacancy.Distance} mile");    
+                    }
+                    else
+                    {
+                        sb.AppendLine($"* Distance: {vacancy.Distance} miles");
+                    }
+                        
                 }
 
                 sb.AppendLine($"* Training course: {trainingCourseText}");
