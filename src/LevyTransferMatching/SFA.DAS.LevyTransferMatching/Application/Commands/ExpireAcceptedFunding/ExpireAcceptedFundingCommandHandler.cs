@@ -22,7 +22,7 @@ public class ExpireAcceptedFundingCommandHandler(ILevyTransferMatchingService le
 
         var expireRequest = new ExpireAcceptedFundingRequest(request.ApplicationId, apiRequestData);
 
-        await levyTransferMatchingService.ExpireAcceptedFunding(declineRequest);
+        await levyTransferMatchingService.ExpireAcceptedFunding(expireRequest);
 
         return Unit.Value;
     }
