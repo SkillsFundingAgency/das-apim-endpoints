@@ -8,40 +8,39 @@ using SFA.DAS.LevyTransferMatching.Api.Controllers;
 using SFA.DAS.LevyTransferMatching.Api.Models.Functions;
 using SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
 
-namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests
+namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.FunctionsTests;
+
+[TestFixture]
+public class PostApplicationApprovedReceiverNotificationTests
 {
-    [TestFixture]
-    public class PostApplicationApprovedReceiverNotificationTests
+    private FunctionsController _controller;
+    private Mock<IMediator> _mediator;
+    private ApplicationApprovedReceiverNotificationRequest _request;
+    private readonly Fixture _fixture = new Fixture();
+
+    [SetUp]
+    public void Setup()
     {
-        private FunctionsController _controller;
-        private Mock<IMediator> _mediator;
-        private ApplicationApprovedReceiverNotificationRequest _request;
-        private readonly Fixture _fixture = new Fixture();
+        _request = _fixture.Create<ApplicationApprovedReceiverNotificationRequest>();
 
-        [SetUp]
-        public void Setup()
-        {
-            _request = _fixture.Create<ApplicationApprovedReceiverNotificationRequest>();
+        _mediator = new Mock<IMediator>();
 
-            _mediator = new Mock<IMediator>();
-            
-            _controller = new FunctionsController(_mediator.Object, Mock.Of<Microsoft.Extensions.Logging.ILogger<FunctionsController>>());
-        }
+        _controller = new FunctionsController(_mediator.Object, Mock.Of<Microsoft.Extensions.Logging.ILogger<FunctionsController>>());
+    }
 
-        [Test]
-        public async Task Post_ApplicationApprovedReceiverNotificationRequest()
-        {
-            await _controller.ApplicationApprovedReceiverNotification(_request);
+    [Test]
+    public async Task Post_ApplicationApprovedReceiverNotificationRequest()
+    {
+        await _controller.ApplicationApprovedReceiverNotification(_request);
 
-            _mediator.Verify(x =>
-                x.Send(It.Is<ReceiverApplicationApprovedEmailCommand>(c => c.PledgeId == _request.PledgeId 
-                && c.ApplicationId == _request.ApplicationId &&
-                c.EncodedApplicationId == _request.EncodedApplicationId
-                && c.ReceiverId == _request.ReceiverId
-                && c.BaseUrl == _request.BaseUrl
-                && c.EncodedAccountId == _request.EncodedAccountId
-                && c.UnsubscribeNotificationsUrl == _request.UnsubscribeNotificationsUrl),
-                    It.IsAny<CancellationToken>()));
-        }
+        _mediator.Verify(x =>
+            x.Send(It.Is<ReceiverApplicationApprovedEmailCommand>(c => c.PledgeId == _request.PledgeId
+            && c.ApplicationId == _request.ApplicationId &&
+            c.EncodedApplicationId == _request.EncodedApplicationId
+            && c.ReceiverId == _request.ReceiverId
+            && c.TransfersBaseUrl == _request.TransfersBaseUrl
+            && c.EncodedAccountId == _request.EncodedAccountId
+            && c.AccountBaseUrl == _request.AccountBaseUrl),
+                It.IsAny<CancellationToken>()));
     }
 }

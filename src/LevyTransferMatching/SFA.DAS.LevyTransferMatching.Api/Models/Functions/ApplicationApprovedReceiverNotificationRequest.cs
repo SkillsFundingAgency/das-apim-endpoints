@@ -7,6 +7,6 @@ public class ApplicationApprovedReceiverNotificationRequest
     public long ReceiverId { get; set; }
     public string EncodedAccountId { get; set; }
     public string EncodedApplicationId { get; set; }
-    public string BaseUrl { get; set; }
-    public string UnsubscribeNotificationsUrl { get; set; }
+    public string TransfersBaseUrl { get; set; }
+    public string AccountBaseUrl { get; set; }
 }
