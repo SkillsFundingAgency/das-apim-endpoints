@@ -62,6 +62,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             actual.Address.Postcode.Should().Be($"{postCode1}{postCode2}");
             actual.Address.Latitude.Should().Be(address.Location.GeoPoint.FirstOrDefault());
             actual.Address.Longitude.Should().Be(address.Location.GeoPoint.LastOrDefault());
+            actual.Address.Country.Should().Be(address.Country);
             actual.Route.Should().Be(route.Name);
             actual.RouteCode.Should().Be(route.Id);
             actual.SearchTags.Should().Be("NHS National Health Service Health Medical Hospital");
@@ -139,6 +140,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                     Postcode = source.EmployerLocation?.Postcode,
                     Latitude = source.EmployerLocation?.Latitude ?? 0,
                     Longitude = source.EmployerLocation?.Longitude ?? 0,
+                    Country = source.EmployerLocation?.Country
                 },
                 source.AdditionalQuestion1,
                 source.AdditionalQuestion2,
