@@ -49,10 +49,8 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.ReceiverAp
                 .Setup(x => x.GetAccount(It.IsAny<string>()))
                 .ReturnsAsync(_account);
 
-            _handler = new ReceiverApplicationApprovedEmailCommandHandler(
-                _logger.Object,
-                _notificationService.Object,
-                _accountsService.Object);
+            _handler = new ReceiverApplicationApprovedEmailCommandHandler(                               
+                _accountsService.Object, _logger.Object, _notificationService.Object);
         }
 
         [Test]
