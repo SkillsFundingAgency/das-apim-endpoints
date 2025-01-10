@@ -9,18 +9,13 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerAccounts.Strategies
 {
-    public class EducationOrganisationApiStrategy : IOrganisationApiStrategy
+    public class EducationOrganisationApiStrategy(
+        IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration> eduOrgApi)
+        : IOrganisationApiStrategy
     {
-        private readonly IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration> _eduOrgApi;
-
-        public EducationOrganisationApiStrategy(IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration> eduOrgApi)
-        {
-            _eduOrgApi = eduOrgApi;
-        }
-
         public async Task<GetLatestDetailsResult> GetOrganisationDetails(string identifier, OrganisationType orgType)
         {
-            var eduResponse = await _eduOrgApi.GetWithResponseCode<GetLatestDetailsForEducationalOrgResponse>(new GetLatestDetailsForEducationalOrgRequest(identifier));
+            var eduResponse = await eduOrgApi.GetWithResponseCode<GetLatestDetailsForEducationalOrgResponse>(new GetLatestDetailsForEducationalOrgRequest(identifier));
             OrganisationApiResponseHelper.CheckApiResponseStatus(eduResponse.StatusCode, orgType, identifier, eduResponse.ErrorContent);
             var eduOrgDetail = eduResponse.Body.EducationalOrganisation;
 

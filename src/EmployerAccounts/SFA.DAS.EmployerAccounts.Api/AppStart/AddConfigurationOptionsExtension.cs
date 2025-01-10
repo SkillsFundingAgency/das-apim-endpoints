@@ -30,8 +30,6 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
         services.Configure<LevyTransferMatchingApiConfiguration>(configuration.GetSection(nameof(LevyTransferMatchingApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<LevyTransferMatchingApiConfiguration>>().Value);
-        services.Configure<ReferenceDataApiConfiguration>(configuration.GetSection(nameof(ReferenceDataApiConfiguration)));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<ReferenceDataApiConfiguration>>().Value);
         services.Configure<EducationalOrganisationApiConfiguration>(configuration.GetSection(nameof(EducationalOrganisationApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<EducationalOrganisationApiConfiguration>>().Value);
         services.Configure<PublicSectorOrganisationApiConfiguration>(configuration.GetSection(nameof(PublicSectorOrganisationApiConfiguration)));

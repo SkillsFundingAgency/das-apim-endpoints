@@ -13,24 +13,20 @@ namespace SFA.DAS.EmployerAccounts.Strategies
         IOrganisationApiStrategy CreateStrategy(OrganisationType orgType);
     }
 
-    public class OrganisationApiStrategyFactory : IOrganisationApiStrategyFactory
+    public class OrganisationApiStrategyFactory(
+        ICompaniesHouseApiClient<CompaniesHouseApiConfiguration> companiesHouseApi,
+        IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration> eduOrgApi,
+        IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration> psOrgApi,
+        ICharitiesApiClient<CharitiesApiConfiguration> charityApi)
+        : IOrganisationApiStrategyFactory
     {
-        private readonly Dictionary<OrganisationType, Func<IOrganisationApiStrategy>> _strategyFactories;
-
-        public OrganisationApiStrategyFactory(
-            ICompaniesHouseApiClient<CompaniesHouseApiConfiguration> companiesHouseApi,
-            IReferenceDataApiClient<ReferenceDataApiConfiguration> refDataApi,
-            IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration> eduOrgApi,
-            IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration> psOrgApi)
+        private readonly Dictionary<OrganisationType, Func<IOrganisationApiStrategy>> _strategyFactories = new()
         {
-            _strategyFactories = new Dictionary<OrganisationType, Func<IOrganisationApiStrategy>>
-            {
-                { OrganisationType.Company, () => new CompaniesHouseApiStrategy(companiesHouseApi) },
-                { OrganisationType.Charity, () => new ReferenceDataApiStrategy(refDataApi) },
-                { OrganisationType.PublicSector, () => new PublicSectorOrganisationApiStrategy(psOrgApi) },
-                { OrganisationType.EducationOrganisation, () => new EducationOrganisationApiStrategy(eduOrgApi) }
-            };
-        }
+            { OrganisationType.Company, () => new CompaniesHouseApiStrategy(companiesHouseApi) },
+            { OrganisationType.Charity, () => new CharitiesApiStrategy(charityApi) },
+            { OrganisationType.PublicSector, () => new PublicSectorOrganisationApiStrategy(psOrgApi) },
+            { OrganisationType.EducationOrganisation, () => new EducationOrganisationApiStrategy(eduOrgApi) }
+        };
 
         public IOrganisationApiStrategy CreateStrategy(OrganisationType orgType)
         {

@@ -9,18 +9,13 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerAccounts.Strategies
 {
-    public class PublicSectorOrganisationApiStrategy : IOrganisationApiStrategy
+    public class PublicSectorOrganisationApiStrategy(
+        IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration> psOrgApi)
+        : IOrganisationApiStrategy
     {
-        private readonly IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration> _psOrgApi;
-
-        public PublicSectorOrganisationApiStrategy(IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration> psOrgApi)
-        {
-            _psOrgApi = psOrgApi;
-        }
-
         public async Task<GetLatestDetailsResult> GetOrganisationDetails(string identifier, OrganisationType orgType)
         {
-            var response = await _psOrgApi.GetWithResponseCode<PublicSectorOrganisation>(new GetLatestDetailsForPublicSectorOrganisationRequest(identifier));
+            var response = await psOrgApi.GetWithResponseCode<PublicSectorOrganisation>(new GetLatestDetailsForPublicSectorOrganisationRequest(identifier));
             OrganisationApiResponseHelper.CheckApiResponseStatus(response.StatusCode, orgType, identifier, response.ErrorContent);
 
             return new GetLatestDetailsResult
