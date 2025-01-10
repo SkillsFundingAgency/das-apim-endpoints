@@ -35,7 +35,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.TrainingCourses
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetFundingBandResult;
-            Assert.That(model, Is.Not.Null);
+            model.Should().NotBeNull();
             model.Should().BeEquivalentTo(mediatorResult);
         }
 
