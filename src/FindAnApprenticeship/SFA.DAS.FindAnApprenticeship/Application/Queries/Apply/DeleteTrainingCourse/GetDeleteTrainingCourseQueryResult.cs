@@ -1,24 +1,24 @@
-﻿using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using System;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
+namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.DeleteTrainingCourse;
 public class GetDeleteTrainingCourseQueryResult
 {
     public CourseResponse Course { get; set; }
 
-    public static implicit operator GetDeleteTrainingCourseQueryResult(GetTrainingCourseApiResponse source)
+    public static GetDeleteTrainingCourseQueryResult From(GetTrainingCourseApiResponse source)
     {
-        return new GetDeleteTrainingCourseQueryResult
-        {
-            Course = new CourseResponse
+        return source is null
+            ? null
+            : new GetDeleteTrainingCourseQueryResult
             {
-                Id = source.Id,
-                ApplicationId = source.ApplicationId,
-                CourseName = source.CourseName,
-                YearAchieved = source.YearAchieved
-            }
-
-        };
+                Course = new CourseResponse
+                {
+                    Id = source.Id,
+                    ApplicationId = source.ApplicationId,
+                    CourseName = source.CourseName,
+                    YearAchieved = source.YearAchieved
+                }
+            };
     }
-
 }

@@ -129,8 +129,7 @@ public class WhenHandlingSubmitApplicationCommand
                 && c.Tokens["firstName"] == applicationApiResponse.Candidate.FirstName
                 && c.Tokens["vacancy"] == vacancyResponse.Title
                 && c.Tokens["employer"] == vacancyResponse.EmployerName 
-                && c.Tokens["city"] == expectedAddress
-                && c.Tokens["postcode"] == vacancyResponse.Address.Postcode
+                && c.Tokens["location"] == $"{expectedAddress}, {vacancyResponse.Address.Postcode}"
                 && !string.IsNullOrEmpty(c.Tokens["yourApplicationsURL"])
                 )
             ), Times.Once);
