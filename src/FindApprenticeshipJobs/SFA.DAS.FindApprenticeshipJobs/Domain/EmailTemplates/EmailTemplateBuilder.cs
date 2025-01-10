@@ -31,7 +31,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 "" => "Where: Across all of England",
                 not null when distance is >1 => $"Where: {location} (within {distance} miles)",
                 not null when distance is 1 => $"Where: {location} (within 1 mile)",
-                not null => $"Where: {location}",
+                not null => $"Where: {location} (Across all of England)",
                 null => "Where: Across all of England"
             };
             sb.AppendLine(locationText);

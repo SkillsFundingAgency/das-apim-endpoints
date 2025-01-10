@@ -125,7 +125,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
         [TestCase("", null, "Across all of England")]
         [TestCase("", 1, "Across all of England")]
         [TestCase("", 10, "Across all of England")]
-        [TestCase("Hull", null, "Hull")]
+        [TestCase("Hull", null, "Hull (Across all of England)")]
         [TestCase("Hull", 1, $"Hull (within 1 mile)")]
         [TestCase("Hull", 10, "Hull (within 10 miles)")]
         public void Then_The_Location_Is_Output_Correctly(string? location, int? distance, string expectedLocation)
