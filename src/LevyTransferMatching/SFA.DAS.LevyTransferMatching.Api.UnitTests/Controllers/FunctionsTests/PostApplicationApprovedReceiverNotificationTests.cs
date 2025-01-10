@@ -40,7 +40,7 @@ public class PostApplicationApprovedReceiverNotificationTests
             && c.ReceiverId == _request.ReceiverId
             && c.TransfersBaseUrl == _request.TransfersBaseUrl
             && c.EncodedAccountId == _request.EncodedAccountId
-            && c.AccountBaseUrl == _request.AccountBaseUrl),
+            && c.UnsubscribeUrl == _request.UnsubscribeUrl),
                 It.IsAny<CancellationToken>()));
     }
 }

@@ -30,8 +30,6 @@ public class ReceiverApplicationApprovedEmailCommandHandler(
 
         var account = await getAccountTask;
 
-        var unsubscribeUrl = request.AccountBaseUrl + "/settings/notifications";
-
         foreach (var user in users)
         {
             var email = new ReceiverApplicationApprovedEmail(
@@ -40,7 +38,7 @@ public class ReceiverApplicationApprovedEmailCommandHandler(
                 request.EncodedApplicationId,
                 request.TransfersBaseUrl,
                 account.EncodedAccountId,
-                unsubscribeUrl);
+                request.UnsubscribeUrl);
 
             var command = new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens);
 

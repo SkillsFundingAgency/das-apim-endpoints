@@ -77,7 +77,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     EncodedApplicationId = request.EncodedApplicationId,
                     EncodedAccountId = request.EncodedAccountId,
                     TransfersBaseUrl = request.TransfersBaseUrl,
-                    AccountBaseUrl = request.AccountBaseUrl
+                    UnsubscribeUrl = request.UnsubscribeUrl
                 });
 
                 return Ok();
