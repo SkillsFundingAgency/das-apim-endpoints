@@ -70,7 +70,6 @@ public class CreateCandidateCommandHandler(
             FirstName = candidateResult.Body.FirstName,
             LastName = candidateResult.Body.LastName,
             PhoneNumber = candidateResult.Body.PhoneNumber,
-            DateOfBirth = null,
             Status = UserStatus.Incomplete
         };
     }
