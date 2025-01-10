@@ -29,7 +29,7 @@ public class CreateCandidateCommandHandler(
 
         if (existingUser.StatusCode != HttpStatusCode.NotFound)
         {
-            if (existingUser.Body.Email != request.Email)
+            if (existingUser.Body.Email != request.Email || existingUser.Body.Status == UserStatus.Dormant)
             {
                 var updateEmailRequest = new PutCandidateApiRequest(existingUser.Body.Id, new PutCandidateApiRequestData
                 {

@@ -24,7 +24,6 @@ public class WhenHandlingPostCandidateCommand
     [MoqInlineAutoData(UserStatus.Deleted)]
     [MoqInlineAutoData(UserStatus.InProgress)]
     [MoqInlineAutoData(UserStatus.Incomplete)]
-    [MoqInlineAutoData(UserStatus.Dormant)]
     public async Task Then_If_Candidate_Already_Exists_Then_Details_Are_Returned(
         UserStatus status,
         CreateCandidateCommand command,
