@@ -18,7 +18,7 @@ public class ApplicationCreatedEmail : EmailTemplateArguments
         {
             {"employer", employer },
             {"reference", reference },
-            {"unsubscribe_url", reference }
+            {"unsubscribe_url", unsubscribeUrl }
         };
     }
 }
