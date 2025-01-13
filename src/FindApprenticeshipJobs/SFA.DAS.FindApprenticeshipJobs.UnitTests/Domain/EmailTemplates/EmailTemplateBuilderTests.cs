@@ -49,7 +49,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             const string expected = """
 
                                     What: Software Developer
-                                    Where: London (Across all of England)
+                                    Where: London (All of England)
                                     Categories: IT, Engineering
                                     Apprenticeship levels: Intermediate, Advanced
                                     Only show Disability Confident apprenticeships
@@ -119,13 +119,13 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             result.Trim().Should().BeEquivalentTo(expected.Trim());
         }
         
-        [TestCase(null, null, "Across all of England")]
-        [TestCase(null, 1, "Across all of England")]
-        [TestCase(null, 10, "Across all of England")]
-        [TestCase("", null, "Across all of England")]
-        [TestCase("", 1, "Across all of England")]
-        [TestCase("", 10, "Across all of England")]
-        [TestCase("Hull", null, "Hull (Across all of England)")]
+        [TestCase(null, null, "All of England")]
+        [TestCase(null, 1, "All of England")]
+        [TestCase(null, 10, "All of England")]
+        [TestCase("", null, "All of England")]
+        [TestCase("", 1, "All of England")]
+        [TestCase("", 10, "All of England")]
+        [TestCase("Hull", null, "Hull (All of England)")]
         [TestCase("Hull", 1, $"Hull (within 1 mile)")]
         [TestCase("Hull", 10, "Hull (within 10 miles)")]
         public void Then_The_Location_Is_Output_Correctly(string? location, int? distance, string expectedLocation)
