@@ -7,6 +7,7 @@ using SFA.DAS.Apprenticeships.Application.Apprenticeship;
 using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -272,9 +273,10 @@ public class ApprenticeshipController : ControllerBase
     public async Task<ActionResult> ApprovePendingStartDateChange(Guid apprenticeshipKey, [FromBody] ApproveStartDateChangeRequest request)
     {
         var response = await _apiClient.PatchWithResponseCode<ApproveApprenticeshipStartDateChangeRequest>(new PatchApproveApprenticeshipStartDateChangeRequest(apprenticeshipKey, request.UserId));
-        if (!string.IsNullOrEmpty(response.ErrorContent))
-        {            
-            _logger.LogError($"Error attempting to approve apprenticeship start date change. {response.StatusCode} returned from inner api.", response.StatusCode);
+        if (!ApiResponseErrorChecking.IsSuccessStatusCode(response.StatusCode))
+        {
+            var errorMessage = string.IsNullOrWhiteSpace(response.ErrorContent) ? response.Body : response.ErrorContent;
+            _logger.LogError($"Error attempting to approve apprenticeship start date change. {response.StatusCode} returned from inner api with reason: {errorMessage}");
             return BadRequest();
         }
 
