@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
@@ -28,11 +28,11 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
 
             var locationText = location?.Trim() switch
             {
-                "" => "Where: Across all of England",
+                "" => "Where: All of England",
                 not null when distance is >1 => $"Where: {location} (within {distance} miles)",
                 not null when distance is 1 => $"Where: {location} (within 1 mile)",
-                not null => $"Where: {location} (Across all of England)",
-                null => "Where: Across all of England"
+                not null => $"Where: {location} (All of England)",
+                null => "Where: All of England"
             };
             sb.AppendLine(locationText);
             
