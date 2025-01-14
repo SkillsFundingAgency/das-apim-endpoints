@@ -8,14 +8,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
 public class GetApplicationsApiResponse
 {
-    public bool ShowAccountRecoveryBanner { get; set; }
     public List<Application> Applications { get; set; } = [];
     
     public static GetApplicationsApiResponse From(GetApplicationsQueryResult source)
     {
         var result = new GetApplicationsApiResponse
         {
-            ShowAccountRecoveryBanner = source.ShowAccountRecoveryBanner,
             Applications = source.Applications.Select(Application.From).ToList()
         };
 

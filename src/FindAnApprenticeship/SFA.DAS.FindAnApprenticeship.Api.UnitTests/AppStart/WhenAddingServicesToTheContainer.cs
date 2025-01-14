@@ -1,17 +1,15 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.FindAnApprenticeship.Api.AppStart;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.AppStart
 {
@@ -19,7 +17,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.AppStart
     {
         [TestCase(typeof(IAzureClientCredentialHelper))]
         [TestCase(typeof(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>))]
-        [TestCase(typeof(IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>))]
         [TestCase(typeof(ILocationApiClient<LocationApiConfiguration>))]
         [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
         [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
@@ -54,8 +51,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.AppStart
                     new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:1"),
                     new KeyValuePair<string, string>("FindApprenticeshipApiConfiguration:url", "http://localhost:2"),
                     new KeyValuePair<string, string>("LocationApiConfiguration:url", "http://localhost:3"),
-                    new KeyValuePair<string, string>("FindApprenticeshipLegacyApiConfiguration:url", "http://localhost:4"),
-                    new KeyValuePair<string, string>("RecruitApiConfiguration:url", "http://localhost:5"),
+                    new KeyValuePair<string, string>("RecruitApiConfiguration:url", "http://localhost:4"),
                     new KeyValuePair<string, string>("ResourceEnvironmentName", "DEV")
                 }
             };

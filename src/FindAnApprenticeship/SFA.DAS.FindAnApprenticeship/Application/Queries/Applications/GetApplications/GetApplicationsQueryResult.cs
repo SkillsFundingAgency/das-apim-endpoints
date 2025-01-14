@@ -6,7 +6,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
 
 public class GetApplicationsQueryResult
 {
-    public bool ShowAccountRecoveryBanner { get; set; }
     public List<Application> Applications { get; set; } = [];
 
 
