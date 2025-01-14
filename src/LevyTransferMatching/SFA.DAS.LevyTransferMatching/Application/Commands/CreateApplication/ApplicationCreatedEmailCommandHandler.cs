@@ -9,58 +9,49 @@ using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication
+namespace SFA.DAS.LevyTransferMatching.Application.Commands.CreateApplication;
+
+public class ApplicationCreatedEmailCommandHandler(
+    ILevyTransferMatchingService levyTransferMatchingService,
+    ILogger<ApplicationCreatedEmailCommandHandler> logger,
+     INotificationService notificationService,
+    IAccountsService accountsService
+    ) : IRequestHandler<ApplicationCreatedEmailCommand, Unit>
 {
-    public class ApplicationCreatedEmailCommandHandler : IRequestHandler<ApplicationCreatedEmailCommand, Unit>
+    public async Task<Unit> Handle(ApplicationCreatedEmailCommand request, CancellationToken cancellationToken)
     {
-        private readonly ILevyTransferMatchingService _levyTransferMatchingService;
-        private readonly IAccountsService _accountsService;
-        private readonly ILogger<ApplicationCreatedEmailCommandHandler> _logger;
-        private readonly INotificationService _notificationService;
+        logger.LogInformation("Sending email for application {applicationId} created to receiver {receiverId} for Pledge {pledgeId}",
+            request.ApplicationId, request.ReceiverId, request.PledgeId);
 
-        public ApplicationCreatedEmailCommandHandler(ILevyTransferMatchingService levyTransferMatchingService, ILogger<ApplicationCreatedEmailCommandHandler> logger, 
-            INotificationService notificationService, IAccountsService accountsService)
+        var getApplicationTask = levyTransferMatchingService.GetApplication(new GetApplicationRequest(request.ApplicationId));
+        var getAccountUsersTask = accountsService.GetAccountUsers(request.ReceiverId);
+
+        await Task.WhenAll(getApplicationTask, getAccountUsersTask);
+
+        var application = getApplicationTask.Result;
+        var users = getAccountUsersTask.Result.Where(x => (x.Role == "Owner" || x.Role == "Transactor") && x.CanReceiveNotifications).ToList();
+
+        foreach (var user in users)
         {
-            _levyTransferMatchingService = levyTransferMatchingService;
-            _accountsService = accountsService;
-            _logger = logger;
-            _notificationService = notificationService;
-        }
-
-        public async Task<Unit> Handle(ApplicationCreatedEmailCommand request, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation($"Sending email for application {request.ApplicationId} created to receiver {request.ReceiverId} for Pledge {request.PledgeId}");
-
-            var getApplicationTask = _levyTransferMatchingService.GetApplication(new GetApplicationRequest(request.ApplicationId));
-            var getAccountUsersTask = _accountsService.GetAccountUsers(request.ReceiverId);
-
-            await Task.WhenAll(getApplicationTask, getAccountUsersTask);
-
-            var application = getApplicationTask.Result;
-            var users = getAccountUsersTask.Result.Where(x => (x.Role == "Owner" || x.Role == "Transactor") && x.CanReceiveNotifications).ToList();
-
-            foreach (var user in users)
+            var templateID = "";
+            if (application.MatchPercentage < 100)
             {
-                var templateID = "";
-                if (application.MatchPercentage < 100)
-                {
-                    templateID = "PartialMatchApplicationCreated";
-                }
-                else if (application.MatchPercentage == 100 && application.AutomaticApprovalOption == AutomaticApprovalOption.DelayedAutoApproval)
-                {
-                    templateID = "ApplicationCreatedForDelayedPledge";
-                }
-                if (!string.IsNullOrEmpty(templateID))
-                {
-                    var email = new ApplicationCreatedEmail(user.Email, user.Name, request.EncodedApplicationId, templateID);
-                    var command = new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens);
-
-                    _logger.LogInformation($"Sending {templateID} email for application {request.ApplicationId}");
-                    await _notificationService.Send(command);
-                }               
+                templateID = "PartialMatchApplicationCreated";
             }
+            else if (application.MatchPercentage == 100 && application.AutomaticApprovalOption == AutomaticApprovalOption.DelayedAutoApproval)
+            {
+                templateID = "ApplicationCreatedForDelayedPledge";
+            }
+            if (!string.IsNullOrEmpty(templateID))
+            {
+                var email = new ApplicationCreatedEmail(user.Email, application.EmployerAccountName, request.EncodedApplicationId, request.UnsubscribeUrl, templateID);
+                var command = new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens);
 
-            return Unit.Value;
+                logger.LogInformation("Sending {templateID} email for application {applicationId}", templateID, request.ApplicationId);
+                await notificationService.Send(command);
+            }
         }
+
+        return Unit.Value;
     }
 }
