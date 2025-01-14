@@ -29,11 +29,14 @@ public class CreateCandidateCommandHandler(
 
         if (existingUser.StatusCode != HttpStatusCode.NotFound)
         {
-            if (existingUser.Body.Email != request.Email)
+            if (existingUser.Body.Email != request.Email || existingUser.Body.Status == UserStatus.Dormant)
             {
                 var updateEmailRequest = new PutCandidateApiRequest(existingUser.Body.Id, new PutCandidateApiRequestData
                 {
-                    Email = request.Email
+                    Email = request.Email,
+                    Status = existingUser.Body.Status == UserStatus.Dormant
+                        ? UserStatus.Completed
+                        : existingUser.Body.Status
                 });
 
                 await candidateApiClient.PutWithResponseCode<PutCandidateApiResponse>(updateEmailRequest);    
