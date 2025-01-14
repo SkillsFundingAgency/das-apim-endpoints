@@ -14,7 +14,7 @@ public class ReceiverApplicationApprovedEmail : EmailTemplateArguments
         string unsubscribeUrl
         )
     {
-        TemplateId = "ReceiverApplicationApproved_dev";
+        TemplateId = "ReceiverApplicationApproved";
         RecipientAddress = recipientEmail;
         Tokens = new Dictionary<string, string>
         {
