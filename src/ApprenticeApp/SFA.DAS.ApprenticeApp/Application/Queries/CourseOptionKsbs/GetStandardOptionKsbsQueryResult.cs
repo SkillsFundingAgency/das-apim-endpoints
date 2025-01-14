@@ -1,6 +1,4 @@
-﻿using SFA.DAS.ApprenticeApp.Models;
-
-namespace SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs
+﻿namespace SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs
 {
     public class GetStandardOptionKsbsQueryResult
     {

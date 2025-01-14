@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Commands;
+using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeshipDetails;
 using SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
@@ -81,10 +82,14 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             if (apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship == null)
                 return Ok();
 
+            var apprenticeshipDetailsResult = await _mediator.Send(new GetApprenticeshipQuery { ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId });
+            if (apprenticeshipDetailsResult == null)
+                return Ok();
+
             var ksbQueryResult = await _mediator.Send(new GetStandardOptionKsbsQuery
             {
                 Id = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId,
-                Option = "core" //to be updated when commitments api added
+                Option = apprenticeshipDetailsResult.Option
             });
 
             if (ksbQueryResult.KsbsResult != null && ksbQueryResult.KsbsResult.Ksbs.Count > 0)
