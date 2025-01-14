@@ -98,7 +98,9 @@ namespace SFA.DAS.ApprenticeCommitments.Api
 
             services.AddControllersWithViews().AddNewtonsoftJson();
 
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            services
+                .AddTelemetryRegistration(_configuration)
+                .AddApplicationInsightsTelemetry();
 
             services.AddSwaggerGen(c =>
             {
