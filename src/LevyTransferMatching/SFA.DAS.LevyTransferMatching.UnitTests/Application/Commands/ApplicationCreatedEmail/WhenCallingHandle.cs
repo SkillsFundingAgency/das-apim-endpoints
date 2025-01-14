@@ -92,7 +92,7 @@ public class WhenCallingHandle
         foreach (var user in _accountUsers)
         {
             _notificationService.Verify(x => x.Send(It.Is<SendEmailCommand>(cmd =>
-                    cmd.TemplateId == "ApplicationCreatedForDelayedPledge_dev")), Times.Once);
+                    cmd.TemplateId == "ApplicationCreatedForDelayedPledge")), Times.Once);
         }
     }
 }

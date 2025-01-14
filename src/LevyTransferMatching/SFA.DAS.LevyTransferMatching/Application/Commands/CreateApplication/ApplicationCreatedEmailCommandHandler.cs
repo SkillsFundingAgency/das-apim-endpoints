@@ -40,7 +40,7 @@ public class ApplicationCreatedEmailCommandHandler(
             }
             else if (application.MatchPercentage == 100 && application.AutomaticApprovalOption == AutomaticApprovalOption.DelayedAutoApproval)
             {
-                templateID = "ApplicationCreatedForDelayedPledge_dev";
+                templateID = "ApplicationCreatedForDelayedPledge";
             }
             if (!string.IsNullOrEmpty(templateID))
             {
