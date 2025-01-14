@@ -74,7 +74,7 @@ public class WhenCallingHandle
         foreach (var user in _accountUsers)
         {
             _notificationService.Verify(x => x.Send(It.Is<SendEmailCommand>(cmd =>
-                     cmd.TemplateId == "PartialMatchApplicationCreated_dev")), Times.Once);
+                     cmd.TemplateId == "PartialMatchApplicationCreated")), Times.Once);
         }
     }
 

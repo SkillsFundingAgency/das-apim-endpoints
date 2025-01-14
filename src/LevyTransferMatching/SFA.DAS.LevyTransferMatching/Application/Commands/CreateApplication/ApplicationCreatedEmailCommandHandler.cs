@@ -36,7 +36,7 @@ public class ApplicationCreatedEmailCommandHandler(
             var templateID = "";
             if (application.MatchPercentage < 100)
             {
-                templateID = "PartialMatchApplicationCreated_dev";
+                templateID = "PartialMatchApplicationCreated";
             }
             else if (application.MatchPercentage == 100 && application.AutomaticApprovalOption == AutomaticApprovalOption.DelayedAutoApproval)
             {
