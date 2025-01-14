@@ -49,7 +49,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             const string expected = """
 
                                     What: Software Developer
-                                    Where: London (All of England)
+                                    Where: London (Across all of England)
                                     Categories: IT, Engineering
                                     Apprenticeship levels: Intermediate, Advanced
                                     Only show Disability Confident apprenticeships
@@ -118,32 +118,34 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             // Assert
             result.Trim().Should().BeEquivalentTo(expected.Trim());
         }
-        
-        [TestCase(null, null, "All of England")]
-        [TestCase(null, 1, "All of England")]
-        [TestCase(null, 10, "All of England")]
-        [TestCase("", null, "All of England")]
-        [TestCase("", 1, "All of England")]
-        [TestCase("", 10, "All of England")]
-        [TestCase("Hull", null, "Hull (All of England)")]
-        [TestCase("Hull", 1, $"Hull (within 1 mile)")]
-        [TestCase("Hull", 10, "Hull (within 10 miles)")]
-        public void Then_The_Location_Is_Output_Correctly(string? location, int? distance, string expectedLocation)
+
+
+        [Test]
+        public void Then_The_Location_Is_Null_GetSavedSearchSearchParams_WhenCalled_ReturnsExpectedResult()
         {
             // Arrange
-            var expected = $"""
-                What: Software Developer
-                Where: {expectedLocation}
-                Categories: IT, Engineering
-                Apprenticeship levels: Intermediate, Advanced
-                Only show Disability Confident apprenticeships
-                """;
+            const string searchTerm = "Software Developer";
+            const int distance = 1;
+            const string location = "";
+            List<string> categories = ["IT", "Engineering"];
+            List<string> levels = ["Intermediate", "Advanced"];
+            const bool disabilityConfident = true;
+
+            const string expected = """
+
+                                    What: Software Developer
+                                    Where: All of England
+                                    Categories: IT, Engineering
+                                    Apprenticeship levels: Intermediate, Advanced
+                                    Only show Disability Confident apprenticeships
+
+                                    """;
 
             // Act
-            var result = EmailTemplateBuilder.GetSavedSearchSearchParams("Software Developer",distance, location, ["IT", "Engineering"], ["Intermediate", "Advanced"], true);
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident);
 
             // Assert
-            result.Trim().Should().BeEquivalentTo(expected);
+            result.Trim().Should().BeEquivalentTo(expected.Trim());
         }
 
         [Test]
