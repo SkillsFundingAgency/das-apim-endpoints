@@ -25,29 +25,17 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
 
             sb.AppendLine();
             if (!string.IsNullOrEmpty(searchTerm)) sb.AppendLine($"What: {searchTerm}");
-            if (!string.IsNullOrEmpty(location))
-            {
-                if (distance.HasValue)
-                {
-                    if (distance > 1)
-                    {
-                        sb.AppendLine($"Where: {location} (within {distance} miles)");
-                    }
 
-                    if (distance == 1)
-                    {
-                        sb.AppendLine($"Where: {location} (within {distance} mile)");
-                    }
-                }
-                else
-                {
-                    sb.AppendLine($"Where: {location} (Across all of England)");
-                }
-            }
-            else
+            var locationText = location?.Trim() switch
             {
-                sb.AppendLine("Where: All of England");
-            }
+                "" => "Where: All of England",
+                not null when distance is >1 => $"Where: {location} (within {distance} miles)",
+                not null when distance is 1 => $"Where: {location} (within 1 mile)",
+                not null => $"Where: {location} (All of England)",
+                null => "Where: All of England"
+            };
+            sb.AppendLine(locationText);
+            
             if (categories is { Count: > 0 }) sb.AppendLine($"Categories: {string.Join(", ", categories)}");
             if (levels is { Count: > 0 }) sb.AppendLine($"Apprenticeship levels: {string.Join(", ", levels)}");
             if (disabilityConfident != null && disabilityConfident.Value) sb.AppendLine("Only show Disability Confident apprenticeships");
