@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models;
+using SFA.DAS.Approvals.Application.Courses.Queries;
 using SFA.DAS.Approvals.Application.TrainingCourses.Queries;
 
 namespace SFA.DAS.Approvals.Api.Controllers
@@ -88,6 +90,28 @@ namespace SFA.DAS.Approvals.Api.Controllers
             {
                 _logger.LogError(e, "Error attempting to get list of standards");
                 return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("{courseCode}/funding-band")]
+        public async Task<IActionResult> GetFundingBand(string courseCode, [FromQuery] DateTime? startDate)
+        {
+            try
+            {
+                _logger.LogInformation("Getting Funding Band details for course {courseId} with start date of {startDate}", courseCode, startDate);
+                var result = await _mediator.Send(new GetFundingBandQuery { CourseCode = courseCode, StartDate = startDate });
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error gettingFunding Band details {courseId}", courseCode);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
     }

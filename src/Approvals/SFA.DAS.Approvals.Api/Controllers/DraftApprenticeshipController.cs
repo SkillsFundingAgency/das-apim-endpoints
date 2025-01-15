@@ -149,11 +149,11 @@ namespace SFA.DAS.Approvals.Api.Controllers
         [HttpGet]
         [Route("employer/{accountId}/unapproved/{cohortId}/apprentices/add/details")]
         [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/add/details")]
-        public async Task<IActionResult> GetAddDraftApprenticeshipDetails(long cohortId, [FromQuery] string courseCode)
+        public async Task<IActionResult> GetAddDraftApprenticeshipDetails(long cohortId, [FromQuery] string courseCode, [FromQuery] DateTime? startDate)
         {
             try
             {
-                var result = await _mediator.Send(new GetAddDraftApprenticeshipDetailsQuery { CohortId = cohortId, CourseCode = courseCode });
+                var result = await _mediator.Send(new GetAddDraftApprenticeshipDetailsQuery { CohortId = cohortId, CourseCode = courseCode, StartDate = startDate });
 
                 if (result == null)
                 {

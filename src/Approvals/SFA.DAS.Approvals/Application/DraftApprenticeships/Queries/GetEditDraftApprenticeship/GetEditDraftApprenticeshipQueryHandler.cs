@@ -3,6 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.Extensions;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
@@ -58,6 +60,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
             var deliveryModels = await _deliveryModelService.GetDeliveryModels(cohort.ProviderId,
                 courseCode, cohort.AccountLegalEntityId, apprenticeship.ContinuationOfId);
 
+            var course = (await _apiClient.Get<GetTrainingProgrammeResponse>(new GetCalculatedVersionOfTrainingProgrammeRequest(courseCode, apprenticeship.StartDate)))?.TrainingProgramme;
+
             return new GetEditDraftApprenticeshipQueryResult
             {
                 FirstName = apprenticeship.FirstName,
@@ -99,7 +103,9 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 EmailAddressConfirmed = apprenticeship.EmailAddressConfirmed,
                 TrainingTotalHours = apprenticeship.TrainingTotalHours,
                 DurationReducedByHours = apprenticeship.DurationReducedByHours,
-                IsDurationReducedByRpl = apprenticeship.IsDurationReducedByRpl
+                IsDurationReducedByRpl = apprenticeship.IsDurationReducedByRpl,
+                StandardPageUrl = course?.StandardPageUrl,
+                ProposedMaxFunding = course?.FundingPeriods.GetFundingBandForDate(apprenticeship.StartDate)
             };
         }
     }

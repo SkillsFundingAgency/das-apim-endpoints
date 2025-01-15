@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using KellermanSoftware.CompareNetObjects;
@@ -22,6 +23,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
 
         private long _cohortId;
         private string _courseCode;
+        private DateTime? _startDate;
 
         [SetUp]
         public void Setup()
@@ -30,11 +32,13 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
             _queryResult = fixture.Create<GetAddDraftApprenticeshipDetailsQueryResult>();
 
             _cohortId = fixture.Create<long>();
+            _startDate = fixture.Create<DateTime?>();
 
             _mediator = new Mock<IMediator>();
             _mediator.Setup(x => x.Send(It.Is<GetAddDraftApprenticeshipDetailsQuery>(q =>
                         q.CohortId == _cohortId
-                        && q.CourseCode == _courseCode),
+                        && q.CourseCode == _courseCode
+                        && q.StartDate == _startDate),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_queryResult);
 
@@ -44,7 +48,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeships
         [Test]
         public async Task AddDraftApprenticeshipDetailsResponseIsReturned()
         {
-            var result = await _controller.GetAddDraftApprenticeshipDetails(_cohortId, _courseCode);
+            var result = await _controller.GetAddDraftApprenticeshipDetails(_cohortId, _courseCode, _startDate);
 
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okObjectResult = (OkObjectResult) result;

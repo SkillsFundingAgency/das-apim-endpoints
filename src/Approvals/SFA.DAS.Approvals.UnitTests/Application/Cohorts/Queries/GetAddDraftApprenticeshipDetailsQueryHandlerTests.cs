@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDetails;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
@@ -27,6 +31,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
         private GetProviderResponse _provider;
         private GetAccountLegalEntityResponse _accountLegalEntity;
+        private GetTrainingProgrammeResponse _trainingProgrammeResponse;
         private GetAddDraftApprenticeshipDetailsQuery _query;
         private List<string> _deliveryModels;
 
@@ -37,6 +42,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             _provider = fixture.Create<GetProviderResponse>();
             _accountLegalEntity = fixture.Create<GetAccountLegalEntityResponse>();
+            _trainingProgrammeResponse = fixture.Create<GetTrainingProgrammeResponse>();
 
             _query = fixture.Create<GetAddDraftApprenticeshipDetailsQuery>();
             _deliveryModels = fixture.Create<List<string>>();
@@ -50,6 +56,10 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             _apiClient.Setup(x =>
                     x.GetWithResponseCode<GetAccountLegalEntityResponse>(It.Is<GetAccountLegalEntityRequest>(r => r.AccountLegalEntityId == _query.AccountLegalEntityId)))
                 .ReturnsAsync(new ApiResponse<GetAccountLegalEntityResponse>(_accountLegalEntity, HttpStatusCode.OK, string.Empty));
+            _apiClient.Setup(x =>
+                    x.Get<GetTrainingProgrammeResponse>(It.Is<GetCalculatedVersionOfTrainingProgrammeRequest>(r =>
+                        r.CourseCode == _query.CourseCode && r.StartDate == _query.StartDate)))
+                .ReturnsAsync(_trainingProgrammeResponse);
 
             _deliveryModelService = new Mock<IDeliveryModelService>();
             _deliveryModelService.Setup(x => x.GetDeliveryModels(
@@ -74,22 +84,54 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             _deliveryModels.AddRange(fixture.CreateMany<string>(optionCount));
 
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.That(expectedHasMultiple, Is.EqualTo(result.HasMultipleDeliveryModelOptions));
+            result.HasMultipleDeliveryModelOptions.Should().Be(expectedHasMultiple);
         }
 
         [Test]
         public async Task Handle_ProviderName_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.That(_provider.Name, Is.EqualTo(result.ProviderName));
+            result.ProviderName.Should().Be(_provider.Name);
         }
 
         [Test]
         public async Task Handle_LegalEntityName_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.That(_accountLegalEntity.LegalEntityName, Is.EqualTo(result.LegalEntityName));
+            result.LegalEntityName.Should().Be(_accountLegalEntity.LegalEntityName);
         }
-       
+
+        [Test]
+        public async Task Handle_StandardPageUrl_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            result.StandardPageUrl.Should().Be(_trainingProgrammeResponse.TrainingProgramme.StandardPageUrl);
+        }
+
+        [Test]
+        public async Task Handle_ProposedMaxFunding_Should_Be_Mapped_To_Null()
+        {
+            _trainingProgrammeResponse.TrainingProgramme.FundingPeriods = new List<TrainingProgrammeFundingPeriod>();
+
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            result.ProposedMaxFunding.Should().BeNull();
+        }
+
+        [Test]
+        public async Task Handle_ProposedMaxFunding_Should_Be_Mapped()
+        {
+            _trainingProgrammeResponse.TrainingProgramme.FundingPeriods =
+            [
+                new TrainingProgrammeFundingPeriod
+                {
+                    EffectiveFrom = DateTime.MinValue,
+                    EffectiveTo = DateTime.MaxValue,
+                    FundingCap = 10000
+                }
+            ];
+
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            result.ProposedMaxFunding.Should().Be(10000);
+        }
     }
 }

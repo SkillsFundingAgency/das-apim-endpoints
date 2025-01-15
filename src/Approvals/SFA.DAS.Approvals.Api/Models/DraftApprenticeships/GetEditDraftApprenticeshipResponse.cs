@@ -56,7 +56,8 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public int? TrainingTotalHours { get; set; }
         public int? DurationReducedByHours { get; set; }
         public bool? IsDurationReducedByRpl { get; set; }
-
+        public string StandardPageUrl { get; set; }
+        public int? ProposedMaxFunding { get; set; }
 
         public static implicit operator GetEditDraftApprenticeshipResponse(GetEditDraftApprenticeshipQueryResult source)
         {
@@ -101,7 +102,9 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 EmailAddressConfirmed = source.EmailAddressConfirmed,
                 TrainingTotalHours = source.TrainingTotalHours,
                 DurationReducedByHours = source.DurationReducedByHours,
-                IsDurationReducedByRpl = source.IsDurationReducedByRpl
+                IsDurationReducedByRpl = source.IsDurationReducedByRpl,
+                StandardPageUrl = source.StandardPageUrl,
+                ProposedMaxFunding = source.ProposedMaxFunding
             };
         }
     }

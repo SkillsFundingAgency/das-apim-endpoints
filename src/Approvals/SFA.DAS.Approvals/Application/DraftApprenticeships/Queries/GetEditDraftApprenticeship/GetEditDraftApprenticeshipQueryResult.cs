@@ -53,5 +53,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
         public int? TrainingTotalHours { get; set; }
         public int? DurationReducedByHours { get; set; }
         public bool? IsDurationReducedByRpl { get; set; }
+        public string StandardPageUrl { get; set; }
+        public int? ProposedMaxFunding { get; set; }
+
     }
 }

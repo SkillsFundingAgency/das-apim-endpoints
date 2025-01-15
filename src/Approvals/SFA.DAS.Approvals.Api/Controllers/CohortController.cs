@@ -101,12 +101,12 @@ public class CohortController(
     [HttpGet]
     [Route("employer/{accountId}/unapproved/add/apprenticeship")]
     [Route("provider/{providerId}/unapproved/add/apprenticeship")]
-    public async Task<IActionResult> GetAddDraftApprenticeshipDetails([FromQuery] long accountLegalEntityId, [FromQuery] long? providerId, [FromQuery] string courseCode)
+    public async Task<IActionResult> GetAddDraftApprenticeshipDetails([FromQuery] long accountLegalEntityId, [FromQuery] long? providerId, [FromQuery] string courseCode, [FromQuery] DateTime? startDate)
     {
         try
         {
             var result = await mediator.Send(new GetAddDraftApprenticeshipDetailsQuery
-                { ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId, CourseCode = courseCode });
+                { ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId, CourseCode = courseCode, StartDate = startDate });
 
             if (result == null)
             {
