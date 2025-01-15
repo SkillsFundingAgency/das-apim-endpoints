@@ -89,7 +89,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             var ksbQueryResult = await _mediator.Send(new GetStandardOptionKsbsQuery
             {
                 Id = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId,
-                Option = apprenticeshipDetailsResult.Option
+                Option = apprenticeshipDetailsResult.Option == null ? "core" : apprenticeshipDetailsResult.Option
             });
 
             if (ksbQueryResult.KsbsResult != null && ksbQueryResult.KsbsResult.Ksbs.Count > 0)
