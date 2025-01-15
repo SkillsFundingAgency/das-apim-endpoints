@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using CreateApprenticeshipPriceChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipPriceChangeRequest;
 using CreateApprenticeshipStartDateChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipStartDateChangeRequest;
@@ -33,6 +34,13 @@ namespace SFA.DAS.Apprenticeships.Api.Extensions
             {
                 ApprenticeshipKey = apprenticeshipKey,
                 Approver = response.Approver
+            };
+        }
+        public static ChangeOfDateApprovedCommand ToNotificationCommand(this ApproveStartDateChangeRequest request, Guid apprenticeshipKey)
+        {
+            return new ChangeOfDateApprovedCommand
+            {
+                ApprenticeshipKey = apprenticeshipKey,                
             };
         }
 
