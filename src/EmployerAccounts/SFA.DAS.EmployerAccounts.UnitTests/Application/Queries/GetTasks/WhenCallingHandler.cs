@@ -51,6 +51,108 @@ public class WhenCallingHandler
     }
 
     [Test, MoqAutoData]
+    public async Task Then_Gets_Tasks_Returns_NumberOfTransferPledgeApplicationsApproved_When_Valid(
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+        [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
+        GetApplicationsResponse ltmApplicationsResponse,
+        GetTasksQuery request,
+        GetTasksQueryHandler handler)
+    {
+        // Arrange
+        mockLTMApi
+            .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
+                r.SenderAccountId == request.AccountId
+                && r.ApplicationStatusFilter == ApplicationStatus.Approved)))
+            .ReturnsAsync(ltmApplicationsResponse);
+
+        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+            .ReturnsAsync(new GetCohortsResponse());
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        result.NumberOfTransferPledgeApplicationsApproved.Should().Be(ltmApplicationsResponse.TotalItems);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Gets_Tasks_Returns_Null_SingleApprovedTransferPledgeHashedId_When_NumberOfTransferPledgeApplicationsApproved_More_Than_One(
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+        [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
+        GetApplicationsResponse ltmApplicationsResponse,
+        GetTasksQuery request,
+        GetTasksQueryHandler handler)
+    {
+        // Arrange
+        mockLTMApi
+            .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
+                r.SenderAccountId == request.AccountId
+                && r.ApplicationStatusFilter == ApplicationStatus.Approved)))
+            .ReturnsAsync(ltmApplicationsResponse);
+
+        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+            .ReturnsAsync(new GetCohortsResponse());
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        result.SingleApprovedTransferPledgeId.Should().BeNull();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Gets_Tasks_Returns_Null_SingleApprovedTransferPledgeHashedId_When_NumberOfTransferPledgeApplicationsApproved_Is_Zero(
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+        [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
+        GetTasksQuery request,
+        GetTasksQueryHandler handler)
+    {
+        // Arrange
+        mockLTMApi
+            .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
+                r.SenderAccountId == request.AccountId
+                && r.ApplicationStatusFilter == ApplicationStatus.Approved)))
+            .ReturnsAsync(() => null);
+
+        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+            .ReturnsAsync(new GetCohortsResponse());
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        result.NumberOfTransferPledgeApplicationsApproved.Should().Be(0);
+        result.SingleApprovedTransferPledgeId.Should().BeNull();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Gets_Tasks_Returns_SingleApprovedTransferPledgeHashedId_When_NumberOfTransferPledgeApplicationsApproved_Is_One(
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+        [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
+        GetApplicationsResponse.Application application,
+        GetTasksQuery request,
+        GetTasksQueryHandler handler)
+    {
+        // Arrange
+        var response = new GetApplicationsResponse
+        {
+            Applications = [application],
+            TotalItems = 1
+        };
+        
+        mockLTMApi
+            .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
+                r.SenderAccountId == request.AccountId
+                && r.ApplicationStatusFilter == ApplicationStatus.Approved)))
+            .ReturnsAsync(response);
+
+        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+            .ReturnsAsync(new GetCohortsResponse());
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        result.SingleApprovedTransferPledgeId.Should().Be(application.PledgeId);
+    }
+
+    [Test, MoqAutoData]
     public async Task Then_NumberOfApprenticesToReview_Is_Returned(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
         GetApprenticeshipUpdatesResponse apprenticeshipUpdatesResponse,
@@ -95,118 +197,6 @@ public class WhenCallingHandler
         var result = await handler.Handle(request, CancellationToken.None);
 
         result.NumberOfTransferRequestToReview.Should().Be(3);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_Gets_Tasks_Returns_NumberOfTransferPledgeApplicationsApproved_When_Valid(
-        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
-        GetTransferRequestSummaryResponse transferRequestResponse,
-        GetTasksQuery request,
-        GetTasksQueryHandler handler)
-    {
-        // Arrange
-        foreach (var tr in transferRequestResponse.TransferRequestSummaryResponse)
-        {
-            tr.Status = TransferApprovalStatus.Approved;
-        }
-
-        mockCommitmentsApi
-            .Setup(m => m.Get<GetTransferRequestSummaryResponse>(It.Is<GetTransferRequestsRequest>(r =>
-                r.AccountId == request.AccountId && r.Originator == TransferType.AsSender)))
-            .ReturnsAsync(transferRequestResponse);
-
-        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
-            .ReturnsAsync(new GetCohortsResponse());
-
-        // Act
-        var result = await handler.Handle(request, CancellationToken.None);
-
-        result.NumberOfTransferPledgeApplicationsApproved.Should().Be(3);
-        result.SingleApprovedTransferPledgeHashedId.Should().BeNullOrEmpty();
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_Gets_Tasks_Returns_Null_SingleApprovedTransferPledgeHashedId_When_NumberOfTransferPledgeApplicationsApproved_More_Than_One(
-        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
-        GetTransferRequestSummaryResponse transferRequestResponse,
-        GetTasksQuery request,
-        GetTasksQueryHandler handler)
-    {
-        // Arrange
-        foreach (var tr in transferRequestResponse.TransferRequestSummaryResponse)
-        {
-            tr.Status = TransferApprovalStatus.Approved;
-        }
-
-        mockCommitmentsApi
-            .Setup(m => m.Get<GetTransferRequestSummaryResponse>(It.Is<GetTransferRequestsRequest>(r =>
-                r.AccountId == request.AccountId && r.Originator == TransferType.AsSender)))
-            .ReturnsAsync(transferRequestResponse);
-
-        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
-            .ReturnsAsync(new GetCohortsResponse());
-
-        // Act
-        var result = await handler.Handle(request, CancellationToken.None);
-
-        result.SingleApprovedTransferPledgeHashedId.Should().BeNullOrEmpty();
-    }
-    
-    [Test, MoqAutoData]
-    public async Task Then_Gets_Tasks_Returns_Null_SingleApprovedTransferPledgeHashedId_When_NumberOfTransferPledgeApplicationsApproved_Is_Zero(
-        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
-        GetTransferRequestSummaryResponse transferRequestResponse,
-        GetTasksQuery request,
-        GetTasksQueryHandler handler)
-    {
-        // Arrange
-        foreach (var tr in transferRequestResponse.TransferRequestSummaryResponse)
-        {
-            tr.Status = TransferApprovalStatus.Pending;
-        }
-
-        mockCommitmentsApi
-            .Setup(m => m.Get<GetTransferRequestSummaryResponse>(It.Is<GetTransferRequestsRequest>(r =>
-                r.AccountId == request.AccountId && r.Originator == TransferType.AsSender)))
-            .ReturnsAsync(transferRequestResponse);
-
-        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
-            .ReturnsAsync(new GetCohortsResponse());
-
-        // Act
-        var result = await handler.Handle(request, CancellationToken.None);
-
-        result.NumberOfTransferPledgeApplicationsApproved.Should().Be(0);
-        result.SingleApprovedTransferPledgeHashedId.Should().BeNullOrEmpty();
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_Gets_Tasks_Returns_SingleApprovedTransferPledgeHashedId_When_NumberOfTransferPledgeApplicationsApproved_Is_One(
-        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
-        GetTransferRequestSummaryResponse transferRequestResponse,
-        GetTasksQuery request,
-        GetTasksQueryHandler handler)
-    {
-        transferRequestResponse.TransferRequestSummaryResponse = [transferRequestResponse.TransferRequestSummaryResponse.First()];
-
-        // Arrange
-        foreach (var tr in transferRequestResponse.TransferRequestSummaryResponse)
-        {
-            tr.Status = TransferApprovalStatus.Approved;
-        }
-
-        mockCommitmentsApi
-            .Setup(m => m.Get<GetTransferRequestSummaryResponse>(It.Is<GetTransferRequestsRequest>(r =>
-                r.AccountId == request.AccountId && r.Originator == TransferType.AsSender)))
-            .ReturnsAsync(transferRequestResponse);
-
-        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
-            .ReturnsAsync(new GetCohortsResponse());
-
-        // Act
-        var result = await handler.Handle(request, CancellationToken.None);
-
-        result.SingleApprovedTransferPledgeHashedId.Should().Be(transferRequestResponse.TransferRequestSummaryResponse.First().HashedTransferRequestId);
     }
 
     [Test, MoqAutoData]
