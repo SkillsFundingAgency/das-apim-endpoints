@@ -291,7 +291,6 @@ public class WhenCallingHandler
         result.NumberOfCohortsReadyToReview.Should().Be(3);
     }
 
-
     [Test, MoqAutoData]
     public async Task Then_Only_Returns_Pending_Employer_Cohorts(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
