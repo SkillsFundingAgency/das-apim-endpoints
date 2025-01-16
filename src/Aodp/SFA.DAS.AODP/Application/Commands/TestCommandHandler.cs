@@ -1,7 +1,6 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.Application.Commands;
 
-namespace SFA.DAS.ReferenceDataJobs.Application.Commands;
+namespace SFA.DAS.AODP.Application.Commands;
 public class TestCommandHandler : IRequestHandler<TestCommand>
 {
     public async Task Handle(TestCommand request, CancellationToken cancellationToken)

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.AODP.Api.AppStart;
-using SFA.DAS.ReferenceDataJobs.Application.Commands;
+using SFA.DAS.AODP.Application.Commands;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;
 

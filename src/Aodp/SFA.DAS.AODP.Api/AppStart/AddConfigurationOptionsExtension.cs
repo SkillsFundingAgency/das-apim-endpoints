@@ -12,7 +12,7 @@ namespace SFA.DAS.AODP.Api.AppStart
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
 
-            services.Configure<AodpApiConfiguration>(configuration.GetSection("PublicSectorOrganisationsInnerApi"));
+            services.Configure<AodpApiConfiguration>(configuration.GetSection("AodpInnerApiConfiguration"));
             services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<AodpApiConfiguration>>().Value);
         }
     }
