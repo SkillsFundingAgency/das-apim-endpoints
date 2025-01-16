@@ -13,64 +13,63 @@ using SFA.DAS.EmployerAccounts.Api.Models;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetTasks;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts
+namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.Accounts;
+
+public class WhenGetTeams
 {
-    public class WhenGetTeams
+    [Test, MoqAutoData]
+    public async Task Then_Gets_Tasks_From_Mediator(
+        long accountId,
+        GetTasksQueryResult mediatorResult,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] AccountsController controller)
     {
-        [Test, MoqAutoData]
-        public async Task Then_Gets_Tasks_From_Mediator(
-            long accountId,
-            GetTasksQueryResult mediatorResult,
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] AccountsController controller)
-        {
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.Is<GetTasksQuery>(p => p.AccountId == accountId),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(mediatorResult);
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.Is<GetTasksQuery>(p => p.AccountId == accountId),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetTeams(accountId) as ObjectResult;
+        var controllerResult = await controller.GetTeams(accountId) as ObjectResult;
 
-            Assert.That(controllerResult, Is.Not.Null);
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetTasksResponse;
-            Assert.That(model, Is.Not.Null);
-            model.Should().BeEquivalentTo((GetTasksResponse)mediatorResult);
-        }
+        Assert.That(controllerResult, Is.Not.Null);
+        controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        var model = controllerResult.Value as GetTasksResponse;
+        Assert.That(model, Is.Not.Null);
+        model.Should().BeEquivalentTo((GetTasksResponse)mediatorResult);
+    }
 
-        [Test, MoqAutoData]
-        public async Task And_Then_No_Tasks_Are_Returned_From_Mediator(
-            long accountId,
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] AccountsController controller)
-        {
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.Is<GetTasksQuery>(p => p.AccountId == accountId),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(() => null);
+    [Test, MoqAutoData]
+    public async Task And_Then_No_Tasks_Are_Returned_From_Mediator(
+        long accountId,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] AccountsController controller)
+    {
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.Is<GetTasksQuery>(p => p.AccountId == accountId),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(() => null);
 
-            var controllerResult = await controller.GetTeams(accountId) as NotFoundResult;
+        var controllerResult = await controller.GetTeams(accountId) as NotFoundResult;
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
-        }
+        controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+    }
 
-        [Test, MoqAutoData]
-        public async Task And_Exception_Then_Returns_Bad_Request(
-            long accountId,
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] AccountsController controller)
-        {
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.IsAny<GetTasksQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .Throws<InvalidOperationException>();
+    [Test, MoqAutoData]
+    public async Task And_Exception_Then_Returns_Bad_Request(
+        long accountId,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] AccountsController controller)
+    {
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.IsAny<GetTasksQuery>(),
+                It.IsAny<CancellationToken>()))
+            .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetTeams(accountId) as BadRequestResult;
+        var controllerResult = await controller.GetTeams(accountId) as BadRequestResult;
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
-        }
+        controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
     }
 }
