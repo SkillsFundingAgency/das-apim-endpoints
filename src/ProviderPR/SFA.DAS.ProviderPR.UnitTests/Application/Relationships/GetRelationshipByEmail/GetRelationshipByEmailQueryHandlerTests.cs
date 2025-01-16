@@ -8,6 +8,7 @@ using SFA.DAS.ProviderPR.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.PayeSchemes;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -47,7 +48,7 @@ public class GetRelationshipByEmailQueryHandlerTests
 
         var actual = await handler.Handle(request, cancellationToken);
 
-        var expectedResponse = new GetRelationshipByEmailQueryResult { HasActiveRequest = true };
+        var expectedResponse = new GetRelationshipByEmailQueryResult { HasActiveRequest = true, RequestId = requestResponse.RequestId };
 
         actual.Should().BeEquivalentTo(expectedResponse);
         accountsApiClient.Verify(r => r.GetWithResponseCode<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Never);
@@ -102,12 +103,12 @@ public class GetRelationshipByEmailQueryHandlerTests
     {
         var request = new GetRelationshipByEmailQuery(email, ukprn);
 
-        var response = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse(), HttpStatusCode.NotFound, "");
+        var getUserByEmailResponse = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse(), HttpStatusCode.NotFound, "");
 
         accountsApiClient
             .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
                 It.Is<GetUserByEmailRequest>(c => c.GetUrl.Contains($"api/user?email={email}"))))!
-            .ReturnsAsync(response);
+            .ReturnsAsync(getUserByEmailResponse);
 
         SetupPrRestApiToReturnRequestNotFound(providerRelationshipsApiRestClient, email, ukprn, requestResponse, cancellationToken);
         SetupPrRestApiToReturnExistingRequestNotFound(providerRelationshipsApiRestClient, accountLegalEntityId, ukprn, requestUkprnAccountLegalEntityIdResponse, cancellationToken);
@@ -134,12 +135,12 @@ public class GetRelationshipByEmailQueryHandlerTests
     {
         var request = new GetRelationshipByEmailQuery(email, ukprn);
 
-        var response = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse(), HttpStatusCode.InternalServerError, "");
+        var getUserByEmailResponse = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse(), HttpStatusCode.InternalServerError, "");
 
         accountsApiClient
             .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
                 It.Is<GetUserByEmailRequest>(c => c.GetUrl.Contains($"api/user?email={email}"))))!
-            .ReturnsAsync(response);
+            .ReturnsAsync(getUserByEmailResponse);
 
         SetupPrRestApiToReturnRequestNotFound(providerRelationshipsApiRestClient, email, ukprn, requestResponse, new CancellationToken());
 
@@ -161,12 +162,12 @@ public class GetRelationshipByEmailQueryHandlerTests
     {
         var request = new GetRelationshipByEmailQuery(email, ukprn);
 
-        var response = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
+        var getUserByEmailResponse = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
 
         accountsApiClient
             .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
                 It.IsAny<GetUserByEmailRequest>()))!
-            .ReturnsAsync(response);
+            .ReturnsAsync(getUserByEmailResponse);
 
         accountsApiClient
             .Setup(x => x.GetAll<GetUserAccountsResponse>(
@@ -198,12 +199,12 @@ public class GetRelationshipByEmailQueryHandlerTests
     {
         var request = new GetRelationshipByEmailQuery(email, ukprn);
 
-        var response = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
+        var getUserByEmailResponse = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
 
         accountsApiClient
             .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
                 It.IsAny<GetUserByEmailRequest>()))!
-            .ReturnsAsync(response);
+            .ReturnsAsync(getUserByEmailResponse);
 
         accountsApiClient
             .Setup(x => x.GetAll<GetUserAccountsResponse>(
@@ -240,12 +241,12 @@ public class GetRelationshipByEmailQueryHandlerTests
     {
         var request = new GetRelationshipByEmailQuery(email, ukprn);
 
-        var response = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
+        var getUserByEmailResponse = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
 
         accountsApiClient
             .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
                 It.IsAny<GetUserByEmailRequest>()))!
-            .ReturnsAsync(response);
+            .ReturnsAsync(getUserByEmailResponse);
 
         accountsApiClient
             .Setup(x => x.GetAll<GetUserAccountsResponse>(
@@ -294,6 +295,7 @@ public class GetRelationshipByEmailQueryHandlerTests
         GetUserAccountsResponse getUserAccountsResponse,
         GetAccountLegalEntityResponse accountLegalEntityResponse,
         GetRelationshipByEmailQueryHandler handler,
+        string paye,
         CancellationToken cancellationToken
     )
     {
@@ -301,29 +303,9 @@ public class GetRelationshipByEmailQueryHandlerTests
         requestResponse.AccountLegalEntityId = accountLegalEntityId;
         var request = new GetRelationshipByEmailQuery(email, ukprn);
 
-        var response = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
+        var getUserByEmailResponse = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
 
-        accountsApiClient
-            .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
-                It.IsAny<GetUserByEmailRequest>()))!
-            .ReturnsAsync(response);
-
-        accountsApiClient
-            .Setup(x => x.GetAll<GetUserAccountsResponse>(
-                It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"api/user/{userRef}/accounts"))))!
-            .ReturnsAsync(new List<GetUserAccountsResponse>
-            {
-                getUserAccountsResponse
-            });
-
-        accountsApiClient
-            .Setup(x => x.GetAll<GetAccountLegalEntityResponse>(
-                It.Is<GetAccountLegalEntitiesRequest>(c => c.GetAllUrl.Contains($"api/accounts/{getUserAccountsResponse.AccountId}/legalentities?includeDetails=true"))))!
-            .ReturnsAsync(new List<GetAccountLegalEntityResponse>
-            {
-                accountLegalEntityResponse
-            });
-
+        SetupAccountsApiResponses(accountsApiClient, userRef, getUserAccountsResponse, accountLegalEntityResponse, paye, getUserByEmailResponse);
         SetupPrRestApiToReturnRequestNotFound(providerRelationshipsApiRestClient, email, ukprn, requestResponse, cancellationToken);
         SetupPrRestApiToReturnExistingRequestNotFound(providerRelationshipsApiRestClient, accountLegalEntityId, ukprn, requestUkprnAccountLegalEntityIdResponse, cancellationToken);
 
@@ -338,6 +320,7 @@ public class GetRelationshipByEmailQueryHandlerTests
             AccountLegalEntityPublicHashedId = accountLegalEntityResponse.AccountLegalEntityPublicHashedId,
             AccountLegalEntityId = accountLegalEntityResponse.AccountLegalEntityId,
             AccountLegalEntityName = accountLegalEntityResponse.Name,
+            Paye = paye,
             HasRelationship = false
         };
 
@@ -345,6 +328,7 @@ public class GetRelationshipByEmailQueryHandlerTests
         accountsApiClient.Verify(r => r.GetWithResponseCode<GetUserByEmailResponse>(It.IsAny<GetUserByEmailRequest>()), Times.Once);
         accountsApiClient.Verify(r => r.GetAll<GetUserAccountsResponse>(It.IsAny<GetUserAccountsRequest>()), Times.Once);
         accountsApiClient.Verify(r => r.GetAll<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntitiesRequest>()), Times.Once);
+        accountsApiClient.Verify(r => r.GetAll<PayeScheme>(It.Is<GetAccountPayeSchemesRequest>(x => x.AccountId == getUserAccountsResponse.AccountId)), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -354,6 +338,7 @@ public class GetRelationshipByEmailQueryHandlerTests
         string email,
         long ukprn,
         Guid userRef,
+        string paye,
         GetRequestByUkprnAndEmailResponse requestResponse,
         GetRequestByUkprnAndAccountLegalEntityIdResponse requestUkprnAccountLegalEntityIdResponse,
         GetAccountLegalEntityResponse getAccountLegalEntityResponse,
@@ -366,29 +351,9 @@ public class GetRelationshipByEmailQueryHandlerTests
 
         var request = new GetRelationshipByEmailQuery(email, ukprn);
 
-        var response = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
+        var getUserByEmailResponse = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
 
-        accountsApiClient
-            .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
-                It.IsAny<GetUserByEmailRequest>()))!
-            .ReturnsAsync(response);
-
-        accountsApiClient
-            .Setup(x => x.GetAll<GetUserAccountsResponse>(
-                It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"api/user/{userRef}/accounts"))))!
-            .ReturnsAsync(new List<GetUserAccountsResponse>
-            {
-                getUserAccountsResponse
-            });
-
-        accountsApiClient
-            .Setup(x => x.GetAll<GetAccountLegalEntityResponse>(
-                It.Is<GetAccountLegalEntitiesRequest>(c => c.GetAllUrl.Contains($"api/accounts/{getUserAccountsResponse.AccountId}/legalentities?includeDetails=true"))))!
-            .ReturnsAsync(new List<GetAccountLegalEntityResponse>
-            {
-                getAccountLegalEntityResponse
-            });
-
+        SetupAccountsApiResponses(accountsApiClient, userRef, getUserAccountsResponse, getAccountLegalEntityResponse, paye, getUserByEmailResponse);
         SetupPrRestApiToReturnRequestNotFound(providerRelationshipsApiRestClient, email, ukprn, requestResponse, cancellationToken);
         SetupPrRestApiToReturnExistingRequestNotFound(providerRelationshipsApiRestClient, accountLegalEntityId, ukprn, requestUkprnAccountLegalEntityIdResponse, cancellationToken);
 
@@ -420,7 +385,8 @@ public class GetRelationshipByEmailQueryHandlerTests
             AccountLegalEntityPublicHashedId = getAccountLegalEntityResponse.AccountLegalEntityPublicHashedId,
             AccountLegalEntityId = getAccountLegalEntityResponse.AccountLegalEntityId,
             AccountLegalEntityName = getAccountLegalEntityResponse.Name,
-            HasRelationship = false
+            HasRelationship = false,
+            Paye = paye
         };
 
         actual.Should().BeEquivalentTo(expectedResponse);
@@ -434,6 +400,7 @@ public class GetRelationshipByEmailQueryHandlerTests
         string email,
         long ukprn,
         Guid userRef,
+        string paye,
         GetRequestByUkprnAndEmailResponse requestResponse,
         GetRequestByUkprnAndAccountLegalEntityIdResponse requestUkprnAccountLegalEntityIdResponse,
         GetAccountLegalEntityResponse getAccountLegalEntityResponse,
@@ -445,33 +412,11 @@ public class GetRelationshipByEmailQueryHandlerTests
         requestResponse.AccountLegalEntityId = accountLegalEntityId;
         var request = new GetRelationshipByEmailQuery(email, ukprn);
 
-        var response =
+        var getUserByEmailResponse =
             new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK,
                 "");
 
-        accountsApiClient
-            .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
-                It.IsAny<GetUserByEmailRequest>()))!
-            .ReturnsAsync(response);
-
-        accountsApiClient
-            .Setup(x => x.GetAll<GetUserAccountsResponse>(
-                It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"api/user/{userRef}/accounts"))))!
-            .ReturnsAsync(new List<GetUserAccountsResponse>
-            {
-                getUserAccountsResponse
-            });
-
-        accountsApiClient
-            .Setup(x => x.GetAll<GetAccountLegalEntityResponse>(
-                It.Is<GetAccountLegalEntitiesRequest>(c =>
-                    c.GetAllUrl.Contains(
-                        $"api/accounts/{getUserAccountsResponse.AccountId}/legalentities?includeDetails=true"))))!
-            .ReturnsAsync(new List<GetAccountLegalEntityResponse>
-            {
-                getAccountLegalEntityResponse
-            });
-
+        SetupAccountsApiResponses(accountsApiClient, userRef, getUserAccountsResponse, getAccountLegalEntityResponse, paye, getUserByEmailResponse);
         SetupPrRestApiToReturnRequestNotFound(providerRelationshipsApiRestClient, email, ukprn, requestResponse,
             cancellationToken);
 
@@ -504,7 +449,9 @@ public class GetRelationshipByEmailQueryHandlerTests
             AccountLegalEntityId = getAccountLegalEntityResponse.AccountLegalEntityId,
             AccountLegalEntityName = getAccountLegalEntityResponse.Name,
             HasRelationship = null,
-            Operations = []
+            Paye = paye,
+            Operations = [],
+            RequestId = requestUkprnAccountLegalEntityIdResponse.RequestId
         };
 
         actual.Should().BeEquivalentTo(expectedResponse);
@@ -517,6 +464,7 @@ public class GetRelationshipByEmailQueryHandlerTests
        string email,
        long ukprn,
        Guid userRef,
+       string paye,
        GetRequestByUkprnAndEmailResponse requestResponse,
        GetRequestByUkprnAndAccountLegalEntityIdResponse requestUkprnAccountLegalEntityIdResponse,
        GetAccountLegalEntityResponse getAccountLegalEntityResponse,
@@ -528,33 +476,11 @@ public class GetRelationshipByEmailQueryHandlerTests
         requestResponse.AccountLegalEntityId = accountLegalEntityId;
         var request = new GetRelationshipByEmailQuery(email, ukprn);
 
-        var response =
+        var getUserByEmailResponse =
             new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK,
                 "");
 
-        accountsApiClient
-            .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
-                It.IsAny<GetUserByEmailRequest>()))!
-            .ReturnsAsync(response);
-
-        accountsApiClient
-            .Setup(x => x.GetAll<GetUserAccountsResponse>(
-                It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"api/user/{userRef}/accounts"))))!
-            .ReturnsAsync(new List<GetUserAccountsResponse>
-            {
-                getUserAccountsResponse
-            });
-
-        accountsApiClient
-            .Setup(x => x.GetAll<GetAccountLegalEntityResponse>(
-                It.Is<GetAccountLegalEntitiesRequest>(c =>
-                    c.GetAllUrl.Contains(
-                        $"api/accounts/{getUserAccountsResponse.AccountId}/legalentities?includeDetails=true"))))!
-            .ReturnsAsync(new List<GetAccountLegalEntityResponse>
-            {
-                getAccountLegalEntityResponse
-            });
-
+        SetupAccountsApiResponses(accountsApiClient, userRef, getUserAccountsResponse, getAccountLegalEntityResponse, paye, getUserByEmailResponse);
         SetupPrRestApiToReturnRequestNotFound(providerRelationshipsApiRestClient, email, ukprn, requestResponse,
             cancellationToken);
 
@@ -585,6 +511,7 @@ public class GetRelationshipByEmailQueryHandlerTests
        string email,
        long ukprn,
        Guid userRef,
+       string paye,
        GetRequestByUkprnAndEmailResponse requestResponse,
        GetRequestByUkprnAndAccountLegalEntityIdResponse requestUkprnAccountLegalEntityIdResponse,
        GetAccountLegalEntityResponse getAccountLegalEntityResponse,
@@ -597,29 +524,9 @@ public class GetRelationshipByEmailQueryHandlerTests
         requestResponse.AccountLegalEntityId = accountLegalEntityId;
         var request = new GetRelationshipByEmailQuery(email, ukprn);
 
-        var response = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
+        var getUserByEmailResponse = new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK, "");
 
-        accountsApiClient
-            .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
-                It.IsAny<GetUserByEmailRequest>()))!
-            .ReturnsAsync(response);
-
-        accountsApiClient
-            .Setup(x => x.GetAll<GetUserAccountsResponse>(
-                It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"api/user/{userRef}/accounts"))))!
-            .ReturnsAsync(new List<GetUserAccountsResponse>
-            {
-                 getUserAccountsResponse
-            });
-
-        accountsApiClient
-            .Setup(x => x.GetAll<GetAccountLegalEntityResponse>(
-                It.Is<GetAccountLegalEntitiesRequest>(c => c.GetAllUrl.Contains($"api/accounts/{getUserAccountsResponse.AccountId}/legalentities?includeDetails=true"))))!
-            .ReturnsAsync(new List<GetAccountLegalEntityResponse>
-            {
-                 getAccountLegalEntityResponse
-            });
-
+        SetupAccountsApiResponses(accountsApiClient, userRef, getUserAccountsResponse, getAccountLegalEntityResponse, paye, getUserByEmailResponse);
         SetupPrRestApiToReturnRequestNotFound(providerRelationshipsApiRestClient, email, ukprn, requestResponse, cancellationToken);
         SetupPrRestApiToReturnExistingRequestNotFound(providerRelationshipsApiRestClient, accountLegalEntityId, ukprn, requestUkprnAccountLegalEntityIdResponse, cancellationToken);
 
@@ -637,6 +544,7 @@ public class GetRelationshipByEmailQueryHandlerTests
              )
          );
 
+
         GetRelationshipByEmailQueryHandler handler = new GetRelationshipByEmailQueryHandler(accountsApiClient.Object, providerRelationshipsApiRestClient.Object);
 
         var actual = await handler.Handle(request, cancellationToken);
@@ -652,10 +560,131 @@ public class GetRelationshipByEmailQueryHandlerTests
             AccountLegalEntityId = getAccountLegalEntityResponse.AccountLegalEntityId,
             AccountLegalEntityName = getAccountLegalEntityResponse.Name,
             HasRelationship = true,
+            Paye = paye,
             Operations = expected.Operations.ToList()
         };
 
         actual.Should().BeEquivalentTo(expectedResponse);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_GetsNoRecordsFromGetAllPayeSchemes_ThrowSequenceContainsNoElementsException(
+       [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+       [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClient,
+       string email,
+       long ukprn,
+       Guid userRef,
+       string paye,
+       GetRequestByUkprnAndEmailResponse requestResponse,
+       GetRequestByUkprnAndAccountLegalEntityIdResponse requestUkprnAccountLegalEntityIdResponse,
+       GetAccountLegalEntityResponse getAccountLegalEntityResponse,
+       GetUserAccountsResponse getUserAccountsResponse,
+       CancellationToken cancellationToken
+   )
+    {
+        var accountLegalEntityId = getAccountLegalEntityResponse.AccountLegalEntityId;
+        requestResponse.AccountLegalEntityId = accountLegalEntityId;
+        var request = new GetRelationshipByEmailQuery(email, ukprn);
+
+        var getUserByEmailResponse =
+            new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK,
+                "");
+
+        SetupAccountsApiResponses(accountsApiClient, userRef, getUserAccountsResponse, getAccountLegalEntityResponse, paye, getUserByEmailResponse);
+        SetupPrRestApiToReturnRequestNotFound(providerRelationshipsApiRestClient, email, ukprn, requestResponse,
+            cancellationToken);
+
+        accountsApiClient
+            .Setup(x => x.GetAll<PayeScheme>(
+                It.IsAny<GetAccountPayeSchemesRequest>()))!
+            .ReturnsAsync(new List<PayeScheme>());
+
+        GetRelationshipByEmailQueryHandler handler = new GetRelationshipByEmailQueryHandler(accountsApiClient.Object, providerRelationshipsApiRestClient.Object);
+
+        Func<Task> act = async () => await handler.Handle(request, cancellationToken);
+        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("Sequence contains no elements");
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_GetsMoreThanOneRecordFromGetAllPayeSchemes_ThrowSequenceContainsMoreThanOneElementException(
+        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+        [Frozen] Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClient,
+        string email,
+        long ukprn,
+        Guid userRef,
+        string paye,
+        GetRequestByUkprnAndEmailResponse requestResponse,
+        GetRequestByUkprnAndAccountLegalEntityIdResponse requestUkprnAccountLegalEntityIdResponse,
+        GetAccountLegalEntityResponse getAccountLegalEntityResponse,
+        GetUserAccountsResponse getUserAccountsResponse,
+        CancellationToken cancellationToken
+    )
+    {
+        var accountLegalEntityId = getAccountLegalEntityResponse.AccountLegalEntityId;
+        requestResponse.AccountLegalEntityId = accountLegalEntityId;
+        var request = new GetRelationshipByEmailQuery(email, ukprn);
+
+        var getUserByEmailResponse =
+            new ApiResponse<GetUserByEmailResponse>(new GetUserByEmailResponse { Ref = userRef }, HttpStatusCode.OK,
+                "");
+
+        SetupAccountsApiResponses(accountsApiClient, userRef, getUserAccountsResponse, getAccountLegalEntityResponse, paye, getUserByEmailResponse);
+        SetupPrRestApiToReturnRequestNotFound(providerRelationshipsApiRestClient, email, ukprn, requestResponse,
+            cancellationToken);
+
+        accountsApiClient
+            .Setup(x => x.GetAll<PayeScheme>(
+                It.IsAny<GetAccountPayeSchemesRequest>()))!
+            .ReturnsAsync(new List<PayeScheme>{
+                new(),
+                new()
+                });
+
+        GetRelationshipByEmailQueryHandler handler = new GetRelationshipByEmailQueryHandler(accountsApiClient.Object, providerRelationshipsApiRestClient.Object);
+
+        Func<Task> act = async () => await handler.Handle(request, cancellationToken);
+        await act.Should().ThrowAsync<InvalidOperationException>().WithMessage("Sequence contains more than one element");
+    }
+
+    private static void SetupAccountsApiResponses(Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient, Guid userRef,
+        GetUserAccountsResponse getUserAccountsResponse, GetAccountLegalEntityResponse accountLegalEntityResponse,
+        string paye, ApiResponse<GetUserByEmailResponse> getUserByEmailResponse)
+    {
+        accountsApiClient
+            .Setup(x => x.GetWithResponseCode<GetUserByEmailResponse>(
+                It.IsAny<GetUserByEmailRequest>()))!
+            .ReturnsAsync(getUserByEmailResponse);
+
+        accountsApiClient
+            .Setup(x => x.GetAll<GetUserAccountsResponse>(
+                It.Is<GetUserAccountsRequest>(c => c.GetAllUrl.Contains($"api/user/{userRef}/accounts"))))!
+            .ReturnsAsync(new List<GetUserAccountsResponse>
+            {
+                getUserAccountsResponse
+            });
+
+        accountsApiClient
+            .Setup(x => x.GetAll<PayeScheme>(
+                It.Is<GetAccountPayeSchemesRequest>(c =>
+                    c.GetAllUrl.Contains($"api/accounts/{getUserAccountsResponse.AccountId}/payeschemes"))))!
+            .ReturnsAsync(new List<PayeScheme>
+            {
+                new()
+                {
+                    Id = paye,
+                    Href = Guid.NewGuid().ToString()
+                }
+            });
+
+        accountsApiClient
+            .Setup(x => x.GetAll<GetAccountLegalEntityResponse>(
+                It.Is<GetAccountLegalEntitiesRequest>(c =>
+                    c.GetAllUrl.Contains(
+                        $"api/accounts/{getUserAccountsResponse.AccountId}/legalentities?includeDetails=true"))))!
+            .ReturnsAsync(new List<GetAccountLegalEntityResponse>
+            {
+                accountLegalEntityResponse
+            });
     }
 
     private static void SetupPrRestApiToReturnRequestNotFound(Mock<IProviderRelationshipsApiRestClient> providerRelationshipsApiRestClient, string email,

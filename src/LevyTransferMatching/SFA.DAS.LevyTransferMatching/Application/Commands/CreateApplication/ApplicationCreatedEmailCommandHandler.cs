@@ -17,7 +17,7 @@ public class ApplicationCreatedEmailCommandHandler(
      INotificationService notificationService,
     IAccountsService accountsService
     ) : IRequestHandler<ApplicationCreatedEmailCommand, Unit>
-{
+    
     public async Task<Unit> Handle(ApplicationCreatedEmailCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Sending email for application {applicationId} created to receiver {receiverId} for Pledge {pledgeId}",
