@@ -9,4 +9,5 @@ public class GetTasksQueryResult
     public int NumberOfTransferRequestToReview { get; set; }
     public int NumberTransferPledgeApplicationsToReview { get; set; }
     public int NumberOfTransferPledgeApplicationsApproved { get; set; }
+    public string SingleApprovedTransferPledgeHashedId { get; set; }
 }

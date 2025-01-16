@@ -81,7 +81,7 @@ public class GetTasksQueryHandler : IRequestHandler<GetTasksQuery, GetTasksQuery
         var transferRequests = await transferRequestsTask;
 
         var pendingTransferRequestsRequestsToReviewCount = transferRequests?.TransferRequestSummaryResponse?.Count(x => x.Status == TransferApprovalStatus.Pending);
-        var approvedTransferRequestsRequestsCount = transferRequests?.TransferRequestSummaryResponse?.Count(x => x.Status == TransferApprovalStatus.Approved);
+        var approvedTransferRequestsRequests = transferRequests?.TransferRequestSummaryResponse?.Where(x => x.Status == TransferApprovalStatus.Approved).ToList();
 
         return new GetTasksQueryResult
         {
@@ -90,8 +90,9 @@ public class GetTasksQueryHandler : IRequestHandler<GetTasksQuery, GetTasksQuery
             NumberOfPendingTransferConnections = pendingTransferConnections?.Count ?? 0,
             ShowLevyDeclarationTask = account?.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy && IsInDateRange(),
             NumberOfTransferRequestToReview = pendingTransferRequestsRequestsToReviewCount ?? 0,
-            NumberOfTransferPledgeApplicationsApproved = approvedTransferRequestsRequestsCount ?? 0,
+            NumberOfTransferPledgeApplicationsApproved = approvedTransferRequestsRequests?.Count ?? 0,
             NumberOfApprenticesToReview = apprenticeChangesCount,
+            SingleApprovedTransferPledgeHashedId = approvedTransferRequestsRequests?.Count == 1 ? approvedTransferRequestsRequests.First().HashedTransferRequestId : string.Empty
         };
     }
 
