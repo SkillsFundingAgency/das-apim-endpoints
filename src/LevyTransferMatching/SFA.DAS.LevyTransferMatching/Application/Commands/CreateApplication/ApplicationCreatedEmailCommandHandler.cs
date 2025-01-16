@@ -17,11 +17,11 @@ public class ApplicationCreatedEmailCommandHandler(
      INotificationService notificationService,
     IAccountsService accountsService
     ) : IRequestHandler<ApplicationCreatedEmailCommand, Unit>
-{    
+    
     public async Task<Unit> Handle(ApplicationCreatedEmailCommand request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Sending email for application {applicationId} created to receiver {receiverId} for Pledge {pledgeId}",
-                   request.ApplicationId, request.ReceiverId, request.PledgeId);
+            request.ApplicationId, request.ReceiverId, request.PledgeId);
 
         var getApplicationTask = levyTransferMatchingService.GetApplication(new GetApplicationRequest(request.ApplicationId));
         var getAccountUsersTask = accountsService.GetAccountUsers(request.ReceiverId);
@@ -49,7 +49,7 @@ public class ApplicationCreatedEmailCommandHandler(
 
                 logger.LogInformation("Sending {templateID} email for application {applicationId}", templateID, request.ApplicationId);
                 await notificationService.Send(command);
-            }               
+            }
         }
 
         return Unit.Value;
