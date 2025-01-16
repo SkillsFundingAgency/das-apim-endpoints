@@ -55,6 +55,42 @@ public class CreateCandidateCommandHandler(
             };
         }
 
+        if (existingUser.StatusCode == HttpStatusCode.NotFound)
+        {
+            existingUser =
+                await candidateApiClient.GetWithResponseCode<GetCandidateApiResponse>(
+                    new GetCandidateByEmailApiRequest(request.Email));
+            if (existingUser.StatusCode != HttpStatusCode.NotFound)
+            {
+                if (existingUser.Body.GovUkIdentifier != null)
+                {
+                    return new CreateCandidateCommandResult
+                    {
+                        IsEmailAddressMigrated = true
+                    };
+                }
+                
+                var updateEmailRequest = new PutCandidateApiRequest(existingUser.Body.Id, new PutCandidateApiRequestData
+                {
+                    GovUkIdentifier = request.GovUkIdentifier
+                });
+
+                await candidateApiClient.PutWithResponseCode<PutCandidateApiResponse>(updateEmailRequest);  
+                
+                return new CreateCandidateCommandResult
+                {
+                    Id = existingUser.Body.Id,
+                    GovUkIdentifier = request.GovUkIdentifier,
+                    Email = request.Email,
+                    FirstName = existingUser.Body.FirstName,
+                    LastName = existingUser.Body.LastName,
+                    PhoneNumber = existingUser.Body.PhoneNumber,
+                    DateOfBirth = existingUser.Body.DateOfBirth,
+                    Status = existingUser.Body.Status
+                };
+            }
+        }
+
         var userWithMigratedEmail =
             await candidateApiClient.GetWithResponseCode<GetCandidateByMigratedEmailApiResponse>(
                 new GetCandidateByMigratedEmailApiRequest(request.Email));
