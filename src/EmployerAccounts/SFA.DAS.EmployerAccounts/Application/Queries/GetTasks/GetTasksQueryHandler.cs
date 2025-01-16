@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SFA.DAS.EmployerAccounts.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
@@ -74,6 +76,8 @@ public class GetTasksQueryHandler(
         var apprenticeChangesCount = apprenticeChanges?.ApprenticeshipUpdates?.Count ?? 0;
         var pendingTransferConnections = await pendingTransferConnectionsTask;
         var approvedPledgeApplications = await approvedPledgeApplicationsTask;
+        
+        logger.LogInformation("GetTasksQueryHandler approvedPledgeApplications: {Data}", JsonConvert.SerializeObject(approvedPledgeApplications));
 
         var pledgeApplicationsToReview = await pledgeApplicationsToReviewTask;
         var account = await accountTask;
