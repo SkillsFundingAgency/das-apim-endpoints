@@ -5,6 +5,7 @@ namespace SFA.DAS.ProviderPR.Application.Relationships.Queries.GetRelationshipBy
 public record GetRelationshipByEmailQueryResult
 {
     public bool HasActiveRequest { get; set; }
+    public Guid? RequestId { get; set; }
     public bool? HasUserAccount { get; set; }
     public bool? HasOneEmployerAccount { get; set; }
     public long? AccountId { get; set; }
@@ -12,6 +13,8 @@ public record GetRelationshipByEmailQueryResult
     public string? AccountLegalEntityPublicHashedId { get; set; }
     public long? AccountLegalEntityId { get; set; }
     public string? AccountLegalEntityName { get; set; }
+
+    public string? Paye { get; set; }
     public bool? HasRelationship { get; set; }
     public List<Operation> Operations { get; set; } = new List<Operation>();
 }

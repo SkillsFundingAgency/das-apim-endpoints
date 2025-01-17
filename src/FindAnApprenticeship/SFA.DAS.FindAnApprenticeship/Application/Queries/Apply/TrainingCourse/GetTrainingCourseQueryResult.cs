@@ -6,19 +6,20 @@ public class GetTrainingCourseQueryResult
 {
     public CourseResponse Course { get; set; }
 
-    public static implicit operator GetTrainingCourseQueryResult(GetTrainingCourseApiResponse source)
+    public static GetTrainingCourseQueryResult From(GetTrainingCourseApiResponse source)
     {
-        return new GetTrainingCourseQueryResult
-        {
-            Course = new CourseResponse
+        return source is null
+            ? null
+            : new GetTrainingCourseQueryResult
             {
-                Id = source.Id,
-                ApplicationId = source.ApplicationId,
-                CourseName = source.CourseName,
-                YearAchieved = source.YearAchieved
-            }
-
-        };
+                Course = new CourseResponse
+                {
+                    Id = source.Id,
+                    ApplicationId = source.ApplicationId,
+                    CourseName = source.CourseName,
+                    YearAchieved = source.YearAchieved
+                }
+            };
     }
 }
 
