@@ -34,17 +34,26 @@ public class GetTasksQueryHandler(
         logger.LogInformation("Getting Tasks for account {AccountId}", request.AccountId);
 
         var accountTask = accountsApi.Get<GetAccountByIdResponse>(new GetAccountByIdRequest(request.AccountId));
-        var pledgeApplicationsToReviewTask = ltmApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
+        
+        var getPendingApplicationsRequest = new GetApplicationsRequest
         {
             SenderAccountId = request.AccountId,
             ApplicationStatusFilter = ApplicationStatus.Pending
-        });
+        };
+        
+        logger.LogInformation("GetTasksQueryHandler getPendingApplicationsRequest.Url: {Data}", getPendingApplicationsRequest.GetUrl);
+        
+        var pledgeApplicationsToReviewTask = ltmApiClient.Get<GetApplicationsResponse>(getPendingApplicationsRequest);
 
-        var approvedPledgeApplicationsTask = ltmApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
+        var getApprovedApplicationsRequest = new GetApplicationsRequest
         {
             SenderAccountId = request.AccountId,
             ApplicationStatusFilter = ApplicationStatus.Approved
-        });
+        };
+        
+        logger.LogInformation("GetTasksQueryHandler getApprovedApplicationsRequest.Url: {Data}", getApprovedApplicationsRequest.GetUrl);
+        
+        var approvedPledgeApplicationsTask = ltmApiClient.Get<GetApplicationsResponse>(getApprovedApplicationsRequest);
 
         var apprenticeChangesTask = commitmentsV2ApiClient.Get<GetApprenticeshipUpdatesResponse>(new GetPendingApprenticeChangesRequest(request.AccountId));
 
