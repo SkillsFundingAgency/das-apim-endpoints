@@ -11,7 +11,7 @@ public class GetTasksResponse
     public int NumberOfTransferRequestToReview { get; set; }
     public int NumberTransferPledgeApplicationsToReview { get; set; }
     public int NumberOfTransferPledgeApplicationsApproved { get; set; }
-    public int? SingleApprovedTransferPledgeId { get; set; }
+    public int? SingleApprovedTransferApplicationId { get; set; }
 
     public static implicit operator GetTasksResponse(GetTasksQueryResult source)
     {
@@ -24,7 +24,7 @@ public class GetTasksResponse
             NumberOfTransferRequestToReview = source.NumberOfTransferRequestToReview,
             NumberTransferPledgeApplicationsToReview = source.NumberTransferPledgeApplicationsToReview,
             NumberOfTransferPledgeApplicationsApproved = source.NumberOfTransferPledgeApplicationsApproved,
-            SingleApprovedTransferPledgeId = source.SingleApprovedTransferPledgeId
+            SingleApprovedTransferApplicationId = source.SingleApprovedTransferApplicationId
         };
     }
 }

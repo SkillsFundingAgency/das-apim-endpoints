@@ -91,7 +91,7 @@ public class GetTasksQueryHandler(
             NumberOfTransferRequestToReview = pendingTransferRequestsRequestsToReviewCount ?? 0,
             NumberOfTransferPledgeApplicationsApproved = approvedPledgeApplications?.TotalItems ?? 0,
             NumberOfApprenticesToReview = apprenticeChangesCount,
-            SingleApprovedTransferPledgeId = approvedPledgeApplications?.TotalItems == 1 ? approvedPledgeApplications.Applications.First().PledgeId : null
+            SingleApprovedTransferApplicationId = approvedPledgeApplications?.TotalItems == 1 ? approvedPledgeApplications.Applications.First().Id : null
         };
     }
 

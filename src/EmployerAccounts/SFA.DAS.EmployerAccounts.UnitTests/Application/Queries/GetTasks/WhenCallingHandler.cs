@@ -95,7 +95,7 @@ public class WhenCallingHandler
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
 
-        result.SingleApprovedTransferPledgeId.Should().BeNull();
+        result.SingleApprovedTransferApplicationId.Should().BeNull();
     }
 
     [Test, MoqAutoData]
@@ -119,7 +119,7 @@ public class WhenCallingHandler
         var result = await handler.Handle(request, CancellationToken.None);
 
         result.NumberOfTransferPledgeApplicationsApproved.Should().Be(0);
-        result.SingleApprovedTransferPledgeId.Should().BeNull();
+        result.SingleApprovedTransferApplicationId.Should().BeNull();
     }
 
     [Test, MoqAutoData]
@@ -149,7 +149,7 @@ public class WhenCallingHandler
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
 
-        result.SingleApprovedTransferPledgeId.Should().Be(application.PledgeId);
+        result.SingleApprovedTransferApplicationId.Should().Be(application.Id);
     }
 
     [Test, MoqAutoData]
