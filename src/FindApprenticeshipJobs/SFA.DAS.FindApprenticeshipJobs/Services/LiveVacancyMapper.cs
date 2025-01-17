@@ -75,7 +75,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 ProviderContactPhone = source.ProviderContactPhone,
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
-                Address = new Application.Shared.Address
+                Address = new Address
                 {
                     AddressLine1 = source.EmployerLocation?.AddressLine1,
                     AddressLine2 = source.EmployerLocation?.AddressLine2,
@@ -84,6 +84,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Postcode = source.EmployerLocation?.Postcode,
                     Latitude = source.EmployerLocation?.Latitude ?? 0,
                     Longitude = source.EmployerLocation?.Longitude ?? 0,
+                    Country = source.EmployerLocation?.Country
                 },
                 Duration = source.Wage.Duration,
                 DurationUnit = source.Wage.DurationUnit,
@@ -128,7 +129,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     AddressLine4 = location[0].Trim(),
                     Postcode = location[1].Trim(),
                     Latitude = locationLookup?.Location?.GeoPoint?.FirstOrDefault() ?? 0,
-                    Longitude = locationLookup?.Location?.GeoPoint?.LastOrDefault() ?? 0
+                    Longitude = locationLookup?.Location?.GeoPoint?.LastOrDefault() ?? 0,
+                    Country = locationLookup?.Country
                 },
                 Qualifications = [],
                 Skills = [],

@@ -106,8 +106,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                         && c.Tokens["firstName"] == candidateApiResponse.FirstName
                         && c.Tokens["vacancy"] == vacancyResponse.Title
                         && c.Tokens["employer"] == vacancyResponse.EmployerName
-                        && c.Tokens["city"] == expectedAddress
-                        && c.Tokens["postcode"] == vacancyResponse.Address.Postcode
+                        && c.Tokens["location"] == $"{expectedAddress}, {vacancyResponse.Address.Postcode}"
                     )
                 ), Times.Exactly(applicationsApiResponse.Applications.Count));
             }
