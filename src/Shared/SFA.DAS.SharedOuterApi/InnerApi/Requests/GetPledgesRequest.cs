@@ -7,7 +7,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
     public class GetPledgesRequest : IGetApiRequest
     {
-        public GetPledgesRequest(long? accountId = null, IEnumerable<string> sectors = null, string sortBy = null, string pledgeStatusFilter = null, int page = 1, int? pageSize = null)
+        public GetPledgesRequest(long? accountId = null, IEnumerable<string> sectors = null, string pledgeStatusFilter = null, int page = 1, int? pageSize = null, string sortBy = null)
         {
             AccountId = accountId;
 
