@@ -61,7 +61,7 @@ public class WhenCallingHandler
         // Arrange
         mockLTMApi
             .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
-Fixin                r.AccountId == request.AccountId
+           r.AccountId == request.AccountId
                 && r.ApplicationStatusFilter == ApplicationStatus.Approved)))
             .ReturnsAsync(ltmApplicationsResponse);
 
