@@ -21,7 +21,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex
 
         public async Task<GetIndexQueryResult> Handle(GetIndexQuery request, CancellationToken cancellationToken)
         {
-            var opportunitiesTask = _levyTransferMatchingService.GetPledges(new GetPledgesRequest(null, request.Sectors));
+            var opportunitiesTask = _levyTransferMatchingService.GetPledges(new GetPledgesRequest(null, request.Sectors, request.SortBy));
             var sectorsTask = _referenceDataService.GetSectors();
             var jobRolesTask = _referenceDataService.GetJobRoles();
             var levelsTask = _referenceDataService.GetLevels();
