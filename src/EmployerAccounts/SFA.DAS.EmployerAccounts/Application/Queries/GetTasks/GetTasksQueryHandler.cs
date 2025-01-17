@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -34,26 +33,18 @@ public class GetTasksQueryHandler(
         logger.LogInformation("Getting Tasks for account {AccountId}", request.AccountId);
 
         var accountTask = accountsApi.Get<GetAccountByIdResponse>(new GetAccountByIdRequest(request.AccountId));
-        
-        var getPendingApplicationsRequest = new GetApplicationsRequest
+
+        var pledgeApplicationsToReviewTask = ltmApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
         {
             SenderAccountId = request.AccountId,
             ApplicationStatusFilter = ApplicationStatus.Pending
-        };
-        
-        logger.LogInformation("GetTasksQueryHandler getPendingApplicationsRequest.Url: {Data}", getPendingApplicationsRequest.GetUrl);
-        
-        var pledgeApplicationsToReviewTask = ltmApiClient.Get<GetApplicationsResponse>(getPendingApplicationsRequest);
+        });
 
-        var getApprovedApplicationsRequest = new GetApplicationsRequest
+        var approvedPledgeApplicationsTask = ltmApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
         {
             AccountId = request.AccountId,
             ApplicationStatusFilter = ApplicationStatus.Approved
-        };
-        
-        logger.LogInformation("GetTasksQueryHandler getApprovedApplicationsRequest.Url: {Data}", getApprovedApplicationsRequest.GetUrl);
-        
-        var approvedPledgeApplicationsTask = ltmApiClient.Get<GetApplicationsResponse>(getApprovedApplicationsRequest);
+        });
 
         var apprenticeChangesTask = commitmentsV2ApiClient.Get<GetApprenticeshipUpdatesResponse>(new GetPendingApprenticeChangesRequest(request.AccountId));
 
@@ -85,8 +76,6 @@ public class GetTasksQueryHandler(
         var pendingTransferConnections = await pendingTransferConnectionsTask;
         var approvedPledgeApplications = await approvedPledgeApplicationsTask;
         
-        logger.LogInformation("GetTasksQueryHandler approvedPledgeApplications: {Data}", JsonSerializer.Serialize(approvedPledgeApplications));
-        
         var pledgeApplicationsToReview = await pledgeApplicationsToReviewTask;
         var account = await accountTask;
         var transferRequests = await transferRequestsTask;
@@ -108,8 +97,7 @@ public class GetTasksQueryHandler(
 
     private bool IsInDateRange()
     {
-        int dayOfMonth = currentDateTime.Now.Day;
-        var isInDateRange = dayOfMonth >= 16 && dayOfMonth < 20;
-        return isInDateRange;
+        var dayOfMonth = currentDateTime.Now.Day;
+        return dayOfMonth is >= 16 and < 20;
     }
 }
