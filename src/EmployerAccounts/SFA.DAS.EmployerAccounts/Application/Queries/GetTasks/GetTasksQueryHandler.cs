@@ -47,7 +47,7 @@ public class GetTasksQueryHandler(
 
         var getApprovedApplicationsRequest = new GetApplicationsRequest
         {
-            SenderAccountId = request.AccountId,
+            AccountId = request.AccountId,
             ApplicationStatusFilter = ApplicationStatus.Approved
         };
         
