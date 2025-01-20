@@ -3,7 +3,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SFA.DAS.AODP.Api.AppStart
+namespace SFA.DAS.Aodp.Api.AppStart
 {
     [ExcludeFromCodeCoverage]
     public static class AuthenticationServiceExtension

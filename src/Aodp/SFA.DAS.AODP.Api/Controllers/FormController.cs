@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.AODP.Application.Queries.FormBuilder.Form;
-using SFA.DAS.AODP.InnerApi.AodpApi.Responses;
+using SFA.DAS.Aodp.Application.Queries.FormBuilder.Form;
+using SFA.DAS.Aodp.InnerApi.AodpApi.Responses;
 
-namespace SFA.DAS.AODP.Api.AppStart
+namespace SFA.DAS.Aodp.Api.AppStart
 {
     [ApiController]
     [Route("api/[controller]")]

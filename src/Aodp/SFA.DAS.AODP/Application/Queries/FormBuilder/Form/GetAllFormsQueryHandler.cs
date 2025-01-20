@@ -1,18 +1,18 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.InnerApi.AodpApi.Request;
-using SFA.DAS.AODP.InnerApi.AodpApi.Responses;
+using SFA.DAS.Aodp.InnerApi.AodpApi.Request;
+using SFA.DAS.Aodp.InnerApi.AodpApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AODP.Application.Queries.FormBuilder.Form;
+namespace SFA.DAS.Aodp.Application.Queries.FormBuilder.Form;
 
 public class GetAllFormsQueryHandler : IRequestHandler<GetAllFormsQuery, GetAllFormsQueryResponse>
 {
-    private readonly IAodpApiClient<AodpApiConfiguration> _aodpApiClient;
+    private readonly IAodpApiClient<AodpApiConfiguration> _AodpApiClient;
 
-    public GetAllFormsQueryHandler(IAodpApiClient<AodpApiConfiguration> aodpApiClient)
+    public GetAllFormsQueryHandler(IAodpApiClient<AodpApiConfiguration> AodpApiClient)
     {
-        _aodpApiClient = aodpApiClient;
+        _AodpApiClient = AodpApiClient;
     }
 
     public async Task<GetAllFormsQueryResponse> Handle(GetAllFormsQuery request, CancellationToken cancellationToken)
@@ -23,7 +23,7 @@ public class GetAllFormsQueryHandler : IRequestHandler<GetAllFormsQuery, GetAllF
         };
         try
         {
-            var data = await _aodpApiClient.Get<GetAllFormsResponse>(new GetAllFormsRequest());
+            var data = await _AodpApiClient.Get<GetAllFormsResponse>(new GetAllFormsRequest());
 
             queryResponse.Forms = new();
             foreach (var form in data.Forms)

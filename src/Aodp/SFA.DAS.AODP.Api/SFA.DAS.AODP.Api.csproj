@@ -22,7 +22,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
-	  <ProjectReference Include="..\SFA.DAS.AODP\SFA.DAS.AODP.csproj" />
+	  <ProjectReference Include="..\SFA.DAS.Aodp\SFA.DAS.Aodp.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.AODP.InnerApi.AodpApi.Responses
+﻿namespace SFA.DAS.Aodp.InnerApi.AodpApi.Responses
 {
     public class GetAllFormsResponse
     {

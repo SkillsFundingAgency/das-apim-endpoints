@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.AODP.Application;
+﻿namespace SFA.DAS.Aodp.Application;
 
 public abstract class BaseResponse
 {

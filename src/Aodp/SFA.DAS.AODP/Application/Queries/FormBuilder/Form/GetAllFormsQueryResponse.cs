@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.AODP.Application.Queries.FormBuilder.Form;
+﻿namespace SFA.DAS.Aodp.Application.Queries.FormBuilder.Form;
 
 public class GetAllFormsQueryResponse : BaseResponse
 {

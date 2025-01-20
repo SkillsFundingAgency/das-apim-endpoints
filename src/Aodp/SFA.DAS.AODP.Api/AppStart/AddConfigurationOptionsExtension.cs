@@ -2,7 +2,7 @@
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
 
-namespace SFA.DAS.AODP.Api.AppStart
+namespace SFA.DAS.Aodp.Api.AppStart
 {
     public static class AddConfigurationOptionsExtension
     {

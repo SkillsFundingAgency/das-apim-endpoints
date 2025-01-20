@@ -5,7 +5,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 
-namespace SFA.DAS.AODP.Api.AppStart
+namespace SFA.DAS.Aodp.Api.AppStart
 {
     public static class ServiceCollectionExtensions
     {

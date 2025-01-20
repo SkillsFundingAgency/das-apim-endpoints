@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AODP.InnerApi.AodpApi.Request
+namespace SFA.DAS.Aodp.InnerApi.AodpApi.Request
 {
     public class GetAllFormsRequest : IGetApiRequest
     {
