@@ -11,7 +11,6 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
-using GetVacanciesRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.GetVacanciesRequest;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches
 {
@@ -108,7 +107,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches
             var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
 
             actual.Should().NotBeNull();
-            actual.SavedSearchResults.Count.Should().Be(0);
+            actual.SavedSearchResults.Count.Should().Be(3);
+            actual.SavedSearchResults.TrueForAll(c => c.Vacancies.Count == 0).Should().BeTrue();
             actual.SavedSearchResults.FirstOrDefault()?.User.Should().NotBeNull();
             actual.SavedSearchResults.FirstOrDefault()?.User?.Should().BeEquivalentTo(getCandidateApiResponse, options => options.Excluding(ex => ex.Status));
             actual.PageIndex.Should().Be(mockGetSavedSearchesApiResponse.PageIndex);
@@ -248,10 +248,11 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches
                 savedSearch.SearchParameters.SearchTerm,
                 1,  // Defaulting to top results.
                 mockQuery.MaxApprenticeshipSearchResultsCount, // Default page size set to 5.
-                categories.Select(cat => cat.Id.ToString()).ToList(),
+                categories.Select(cat => cat.Name!).ToList(),
                 savedSearch.SearchParameters.SelectedLevelIds,
                 mockQuery.ApprenticeshipSearchResultsSortOrder,
-                savedSearch.SearchParameters.DisabilityConfident);
+                savedSearch.SearchParameters.DisabilityConfident,
+                new List<VacancyDataSource> { VacancyDataSource.Nhs });
 
             mockFindApprenticeshipApiClient.Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c => c.GetUrl == getVacanciesExpectedUrl.GetUrl))).ReturnsAsync(getVacanciesResponse);
 
@@ -263,5 +264,46 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches
             actual.TotalPages.Should().Be(mockGetSavedSearchesApiResponse.TotalPages);
             actual.TotalCount.Should().Be(mockGetSavedSearchesApiResponse.TotalCount);
         }
+        
+        [Test, MoqAutoData]
+        public async Task When_Searching_Route_Ids_Are_Converted_To_The_Category_Name(
+            GetSavedSearchesQuery query,
+            GetSavedSearchesApiResponse getSavedSearchesApiResponse,
+            GetCandidateApiResponse getCandidateApiResponse,
+            GetRoutesListResponse getRoutesListResponse,
+            GetCourseLevelsListResponse getCourseLevelsListResponse,
+            GetSavedSearchesApiResponse.SavedSearch savedSearch,
+            [Frozen] Mock<ICourseService> courseService,
+            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
+            GetSavedSearchesQueryHandler sut)
+        {
+            // arrange
+            courseService.Setup(x => x.GetRoutes()).ReturnsAsync(getRoutesListResponse);
+            courseService.Setup(x => x.GetLevels()).ReturnsAsync(getCourseLevelsListResponse);
+            findApprenticeshipApiClient.Setup(client => client.Get<GetSavedSearchesApiResponse>(It.IsAny<GetSavedSearchesApiRequest>())).ReturnsAsync(getSavedSearchesApiResponse);
+            candidateApiClient.Setup(client => client.Get<GetCandidateApiResponse>(It.IsAny<GetCandidateApiRequest>( ))).ReturnsAsync(getCandidateApiResponse);
+
+            getCandidateApiResponse.Status = UserStatus.Completed;
+            getSavedSearchesApiResponse.SavedSearches = [savedSearch];
+            savedSearch.SearchParameters.SelectedRouteIds = [getRoutesListResponse.Routes.First().Id];
+            savedSearch.SearchParameters.Latitude = null;
+            savedSearch.SearchParameters.Longitude = null;
+            
+            GetVacanciesRequest? request = null;
+            findApprenticeshipApiClient
+                .Setup(x => x.Get<GetVacanciesResponse>(It.IsAny<IGetApiRequest>()))
+                .Callback<IGetApiRequest>(x => request = x as GetVacanciesRequest);
+                
+            // act
+            await sut.Handle(query, It.IsAny<CancellationToken>());
+            
+            // assert
+            request.Should().NotBeNull();
+            request!.GetUrl.Should().Contain($"categories={getRoutesListResponse.Routes.First().Name}");
+        }
     }
+    
+    
+    
 }

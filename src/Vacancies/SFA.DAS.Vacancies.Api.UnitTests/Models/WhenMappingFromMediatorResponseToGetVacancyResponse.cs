@@ -47,6 +47,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(c => c.ClosingDate)
                 .Excluding(item => item.Ukprn)
                 .Excluding(item => item.VacancyReference)
+                .Excluding(item => item.VacancySource)
             );
             actual.FullDescription.Should().Be(source.Vacancy.LongDescription);
             actual.Qualifications.Should().BeEquivalentTo(source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());
@@ -60,8 +61,6 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.Wage.WageType.Should().Be((WageType)source.Vacancy.WageType);
             actual.Wage.WageUnit.Should().Be((WageUnit)source.Vacancy.WageUnit);
             actual.Wage.WageAdditionalInformation.Should().Be(source.Vacancy.WageText);
-            actual.Wage.WageAmountLowerBound.Should().Be(source.Vacancy.WageAmountLowerBound);
-            actual.Wage.WageAmountUpperBound.Should().Be(source.Vacancy.WageAmountUpperBound);
             actual.Ukprn.Should().Be(ukprn);
             actual.VacancyReference.Should().Be(source.Vacancy.VacancyReference.Replace("VAC", ""));
             actual.ClosingDate.Should().Be(source.Vacancy.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)));

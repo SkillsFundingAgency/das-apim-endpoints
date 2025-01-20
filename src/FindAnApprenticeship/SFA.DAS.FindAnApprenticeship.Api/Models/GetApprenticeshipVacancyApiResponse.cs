@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models
@@ -90,13 +91,16 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string? CompanyBenefitsInformation { get; set; }
         public string? AdditionalTrainingDescription { get; set; }
 
-        [JsonProperty("levels")] public List<GetCourseLevelsListItem> Levels { get; set; }
-       
-        public CandidateApplication Application { get; set; }
+        [JsonProperty("levels")] 
+        public List<GetCourseLevelsListItem>? Levels { get; set; } = [];
+
+        public CandidateApplication? Application { get; set; } = null;
         public string CandidatePostcode { get; set; }
 
         public string ApplicationUrl { get; set; }
         public string ApplicationInstructions { get; set; }
+
+        public VacancyDataSource VacancySource { get; set; }
         
         public static implicit operator GetApprenticeshipVacancyApiResponse(GetApprenticeshipVacancyQueryResult source)
         {
@@ -138,6 +142,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 SubCategory = source.ApprenticeshipVacancy.SubCategory,
                 SubCategoryCode = source.ApprenticeshipVacancy.SubCategoryCode,
                 Ukprn = source.ApprenticeshipVacancy.Ukprn,
+
                 VacancyLocationType = source.ApprenticeshipVacancy.VacancyLocationType,
                 WageAmountLowerBound = source.ApprenticeshipVacancy.WageAmountLowerBound,
                 WageAmountUpperBound = source.ApprenticeshipVacancy.WageAmountUpperBound,
@@ -156,22 +161,25 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 ProviderContactPhone = source.ApprenticeshipVacancy.ProviderContactPhone,
                 EmployerWebsiteUrl = source.ApprenticeshipVacancy.EmployerWebsiteUrl,
                 AnonymousEmployerName = source.ApprenticeshipVacancy.AnonymousEmployerName,
+
                 IsEmployerAnonymous = source.ApprenticeshipVacancy.IsEmployerAnonymous,
                 Address = source.ApprenticeshipVacancy.Address,
                 Qualifications = source.ApprenticeshipVacancy.Qualifications?.Select(l => (VacancyQualificationApiResponse) l),
-                CourseOverviewOfRole = source.CourseDetail.OverviewOfRole,
-                StandardPageUrl = source.CourseDetail.StandardPageUrl,
-                CourseCoreDuties = source.CourseDetail.CoreDuties,
-                CourseSkills = source.CourseDetail.Skills,
+                CourseOverviewOfRole = source.CourseDetail?.OverviewOfRole ?? string.Empty,
+                StandardPageUrl = source.CourseDetail?.StandardPageUrl ?? string.Empty,
+                CourseCoreDuties = source.CourseDetail?.CoreDuties ?? [],
+                CourseSkills = source.CourseDetail?.Skills ?? [],
                 Levels = source.Levels,
                 Application = (CandidateApplication)source.Application,
-				IsClosed = source.ApprenticeshipVacancy.IsClosed,
+
+                IsClosed = source.ApprenticeshipVacancy.IsClosed,
                 IsSavedVacancy = source.IsSavedVacancy,
                 CandidatePostcode = source.CandidatePostcode,
                 ApplicationUrl = source.ApprenticeshipVacancy.ApplicationUrl,
                 ApplicationInstructions = source.ApprenticeshipVacancy.ApplicationInstructions,
                 CompanyBenefitsInformation = source.ApprenticeshipVacancy.CompanyBenefitsInformation,
-                AdditionalTrainingDescription = source.ApprenticeshipVacancy.AdditionalTrainingDescription
+                AdditionalTrainingDescription = source.ApprenticeshipVacancy.AdditionalTrainingDescription,
+                VacancySource = source.ApprenticeshipVacancy.VacancySource,
             };
         }
     }

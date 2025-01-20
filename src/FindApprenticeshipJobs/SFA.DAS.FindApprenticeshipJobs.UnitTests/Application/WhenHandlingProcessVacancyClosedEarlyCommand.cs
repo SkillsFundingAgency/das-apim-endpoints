@@ -78,9 +78,8 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
                     && c.Tokens["firstName"] == candidate.Candidate.FirstName
                     && c.Tokens["vacancy"] == recruitApiResponse.Title
                     && c.Tokens["employer"] == recruitApiResponse.EmployerName 
-                    && c.Tokens["city"] == expectedAddress
                     && c.Tokens["dateApplicationStarted"] == candidate.ApplicationCreatedDate.ToString("d MMM yyyy") 
-                    && c.Tokens["postcode"] == recruitApiResponse.EmployerLocation!.Postcode
+                    && c.Tokens["location"] == $"{expectedAddress}, {recruitApiResponse.EmployerLocation!.Postcode}"
                     && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
                     && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
                 )

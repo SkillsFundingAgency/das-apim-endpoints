@@ -1,7 +1,7 @@
 ﻿using System;
 using MediatR;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.TrainingCourse;
+namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.DeleteTrainingCourse;
 public class GetDeleteTrainingCourseQuery : IRequest<GetDeleteTrainingCourseQueryResult>
 {
     public Guid ApplicationId { get; set; }
