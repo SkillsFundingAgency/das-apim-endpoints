@@ -1,14 +1,20 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using SFA.DAS.AODP.Api;
+using SFA.DAS.AODP.Domain.FormBuilder.Requests.Pages;
+using SFA.DAS.AODP.Domain.FormBuilder.Responses.Pages;
 
 namespace SFA.DAS.AODP.Application.FormBuilder.Pages.Queries;
 
 public class GetAllPagesQueryHandler : IRequestHandler<GetAllPagesQuery, GetAllPagesQueryResponse>
 {
     private readonly IApiClient _apiClient;
-    public GetAllPagesQueryHandler(IApiClient apiClient)
+    private readonly IMapper _mapper;
+
+    public GetAllPagesQueryHandler(IApiClient apiClient, IMapper mapper)
     {
         _apiClient = apiClient;
+        _mapper = mapper;
     }
 
     public async Task<GetAllPagesQueryResponse> Handle(GetAllPagesQuery request, CancellationToken cancellationToken)
@@ -17,7 +23,8 @@ public class GetAllPagesQueryHandler : IRequestHandler<GetAllPagesQuery, GetAllP
         response.Success = false;
         try
         {
-            // response.Data = await _sectionRepository.GetSectionsForFormAsync(request.FormId);
+            var result = await _apiClient.Get<GetAllPagesApiResponse>(new GetAllPagesApiRequest(request.SectionId));
+            _mapper.Map(result.Data, response.Data);
             response.Success = true;
         }
         catch (Exception ex)

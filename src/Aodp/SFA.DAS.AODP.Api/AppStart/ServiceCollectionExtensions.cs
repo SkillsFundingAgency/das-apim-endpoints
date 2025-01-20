@@ -12,6 +12,7 @@ namespace SFA.DAS.AODP.Api.AppStart
         public static IServiceCollection AddServiceRegistration(this IServiceCollection services)
         {
             services.AddHttpClient();
+            services.AddHttpClient<IApiClient, ApiClient>();
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IAodpApiClient<AodpApiConfiguration>, AodpApiClient>();

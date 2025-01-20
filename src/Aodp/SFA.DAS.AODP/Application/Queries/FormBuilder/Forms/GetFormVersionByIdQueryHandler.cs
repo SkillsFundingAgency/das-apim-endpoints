@@ -23,8 +23,6 @@ public class GetFormVersionByIdQueryHandler : IRequestHandler<GetFormVersionById
         response.Success = false;
         try
         {
-            //var formVersion = await _formRepository.GetFormVersionByIdAsync(request.Id);
-            //response.Data = _mapper.Map<FormVersion?, ViewModels.FormVersion?>(formVersion);
             var result = await _apiClient.Get<GetFormVersionByIdApiResponse>(new GetFormVersionByIdApiRequest(request.FormVersionId));
             _mapper.Map(result.Data, response.Data);
             response.Success = true;
