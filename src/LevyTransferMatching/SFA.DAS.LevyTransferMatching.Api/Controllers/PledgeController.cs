@@ -64,7 +64,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     Page = queryResult.Page,
                     PageSize = queryResult.PageSize,
                     TotalPages = queryResult.TotalPages,
-                    TotalPledges = queryResult.TotalPledges
+                    TotalItems = queryResult.TotalPledges
                 };
 
                 return Ok(response);
@@ -298,9 +298,18 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpGet]
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications")]
-        public async Task<IActionResult> PledgeApplications(int pledgeId, string sortOrder, string sortDirection)
+        public async Task<IActionResult> PledgeApplications(int pledgeId, string sortOrder, string sortDirection, int page = 1, int? pageSize = null)
         {
-            var queryResult = await _mediator.Send(new GetApplicationsQuery { PledgeId = pledgeId, SortOrder = sortOrder, SortDirection = sortDirection });
+            var queryResult = await _mediator.Send(
+                new GetApplicationsQuery
+                {
+                    PledgeId = pledgeId,
+                    SortOrder = sortOrder,
+                    SortDirection = sortDirection,
+                    Page = page,
+                    PageSize = pageSize
+                }
+            );
 
             return Ok((GetApplicationsResponse)queryResult);
         }

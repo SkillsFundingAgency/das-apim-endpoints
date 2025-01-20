@@ -48,7 +48,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             okObjectResult.Should().NotBeNull();
             var response = okObjectResult.Value as GetPledgesResponse;
             response.Should().NotBeNull();
-            response.TotalPledges.Should().Be(_queryResult.TotalPledges);
+            response.TotalItems.Should().Be(_queryResult.TotalPledges);
             response.TotalPages.Should().Be(_queryResult.TotalPages);
             response.Page.Should().Be(_queryResult.Page);
             response.PageSize.Should().Be(_queryResult.PageSize);

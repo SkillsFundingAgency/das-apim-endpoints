@@ -45,7 +45,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             Assert.That(okObjectResult, Is.Not.Null);
             Assert.That(response, Is.Not.Null);
             Assert.That(response.AutomaticApprovalOption, Is.Not.Null);
-            Assert.That(response.Applications.Count(), Is.EqualTo(_queryResult.Applications.Count()));
+            Assert.That(response.Applications.Count(), Is.EqualTo(_queryResult.Items.Count()));
             Assert.That(response.PledgeRemainingAmount, Is.EqualTo(_queryResult.RemainingAmount));
             Assert.That(response.PledgeTotalAmount, Is.EqualTo(_queryResult.TotalAmount));
         }
