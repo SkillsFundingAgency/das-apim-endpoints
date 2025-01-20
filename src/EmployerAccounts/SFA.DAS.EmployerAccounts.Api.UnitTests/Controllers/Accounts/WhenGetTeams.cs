@@ -32,10 +32,10 @@ public class WhenGetTeams
 
         var controllerResult = await controller.GetTeams(accountId) as ObjectResult;
 
-        Assert.That(controllerResult, Is.Not.Null);
+        controllerResult.Should().NotBeNull();
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
         var model = controllerResult.Value as GetTasksResponse;
-        Assert.That(model, Is.Not.Null);
+        model.Should().NotBeNull();
         model.Should().BeEquivalentTo((GetTasksResponse)mediatorResult);
     }
 
