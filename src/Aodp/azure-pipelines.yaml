@@ -51,4 +51,4 @@ resources:
 stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
-    OuterApiName: AODP
+    OuterApiName: Aodp
