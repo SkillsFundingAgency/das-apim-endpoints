@@ -8,6 +8,6 @@ public class GetTasksQueryResult
     public int NumberOfPendingTransferConnections { get; set; }
     public int NumberOfTransferRequestToReview { get; set; }
     public int NumberTransferPledgeApplicationsToReview { get; set; }
-    public int NumberOfTransferPledgeApplicationsAccepted  { get; set; }
-    public int? SingleAcceptedTransferApplicationIdWithNoApprentices { get; set; } 
+    public int NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices  { get; set; }
+    public int? SingleAcceptedTransferPledgeApplicationIdWithNoApprentices { get; set; } 
 }

@@ -10,8 +10,8 @@ public class GetTasksResponse
     public int NumberOfPendingTransferConnections { get; set; }
     public int NumberOfTransferRequestToReview { get; set; }
     public int NumberTransferPledgeApplicationsToReview { get; set; }
-    public int NumberOfTransferPledgeApplicationsAccepted  { get; set; }
-    public int? SingleAcceptedTransferApplicationIdWithNoApprentices { get; set; }
+    public int NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices  { get; set; }
+    public int? SingleAcceptedTransferPledgeApplicationIdWithNoApprentices { get; set; }
 
     public static implicit operator GetTasksResponse(GetTasksQueryResult source)
     {
@@ -23,8 +23,8 @@ public class GetTasksResponse
             NumberOfPendingTransferConnections = source.NumberOfPendingTransferConnections,
             NumberOfTransferRequestToReview = source.NumberOfTransferRequestToReview,
             NumberTransferPledgeApplicationsToReview = source.NumberTransferPledgeApplicationsToReview,
-            NumberOfTransferPledgeApplicationsAccepted = source.NumberOfTransferPledgeApplicationsAccepted,
-            SingleAcceptedTransferApplicationIdWithNoApprentices = source.SingleAcceptedTransferApplicationIdWithNoApprentices
+            NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices = source.NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices,
+            SingleAcceptedTransferPledgeApplicationIdWithNoApprentices = source.SingleAcceptedTransferPledgeApplicationIdWithNoApprentices
         };
     }
 }
