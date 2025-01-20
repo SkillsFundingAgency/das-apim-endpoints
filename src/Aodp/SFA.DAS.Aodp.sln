@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Aodp.Api", "SFA.DAS.Aodp.Api\SFA.DAS.Aodp.Api.csproj", "{710D3AD3-376B-4368-953D-66C2194BDBA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{DD79EE54-172C-4360-87BF-EAF76C3FC455}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{768B7054-6F9C-48B8-A565-9D4F729CD39A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Aodp", "SFA.DAS.Aodp\SFA.DAS.Aodp.csproj", "{832B2A05-0AE2-4B5A-9F0F-09B7ED8CA983}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{710D3AD3-376B-4368-953D-66C2194BDBA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{710D3AD3-376B-4368-953D-66C2194BDBA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{710D3AD3-376B-4368-953D-66C2194BDBA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{710D3AD3-376B-4368-953D-66C2194BDBA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD79EE54-172C-4360-87BF-EAF76C3FC455}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD79EE54-172C-4360-87BF-EAF76C3FC455}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD79EE54-172C-4360-87BF-EAF76C3FC455}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD79EE54-172C-4360-87BF-EAF76C3FC455}.Release|Any CPU.Build.0 = Release|Any CPU
+		{832B2A05-0AE2-4B5A-9F0F-09B7ED8CA983}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{832B2A05-0AE2-4B5A-9F0F-09B7ED8CA983}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{832B2A05-0AE2-4B5A-9F0F-09B7ED8CA983}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{832B2A05-0AE2-4B5A-9F0F-09B7ED8CA983}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DD79EE54-172C-4360-87BF-EAF76C3FC455} = {768B7054-6F9C-48B8-A565-9D4F729CD39A}
+	EndGlobalSection
+EndGlobal
