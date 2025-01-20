@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -39,11 +40,15 @@ public class GetTasksQueryHandler(
             ApplicationStatusFilter = ApplicationStatus.Pending
         });
 
-        var acceptedPledgeApplicationsTask = ltmApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
+        var getApplicationsRequest = new GetApplicationsRequest
         {
             AccountId = request.AccountId,
             ApplicationStatusFilter = ApplicationStatus.Accepted
-        });
+        };
+        
+        logger.LogInformation("GetTasksQueryHandler getApplicationsRequest: {Data}", JsonSerializer.Serialize(getApplicationsRequest));
+        
+        var acceptedPledgeApplicationsTask = ltmApiClient.Get<GetApplicationsResponse>(getApplicationsRequest);
 
         var apprenticeChangesTask = commitmentsV2ApiClient.Get<GetApprenticeshipUpdatesResponse>(new GetPendingApprenticeChangesRequest(request.AccountId));
 
@@ -77,8 +82,12 @@ public class GetTasksQueryHandler(
         var pledgeApplicationsToReview = await pledgeApplicationsToReviewTask;
         var account = await accountTask;
         var transferRequests = await transferRequestsTask;
+        
+        logger.LogInformation("GetTasksQueryHandler pledgeApplicationsAccepted: {Data}", JsonSerializer.Serialize(pledgeApplicationsAccepted));
 
-        var acceptedApplicationIdsWithoutApprentices = GetAcceptedLevyTransfersWithoutApprenticeships(pledgeApplicationsAccepted, cohortsForThisAccount);
+        var pledgeApplicationsAcceptedIdsWithoutApprentices = GetAcceptedLevyTransfersWithoutApprenticeships(pledgeApplicationsAccepted, cohortsForThisAccount);
+        
+        logger.LogInformation("GetTasksQueryHandler pledgeApplicationsAcceptedIdsWithoutApprentices: {Data}", JsonSerializer.Serialize(pledgeApplicationsAcceptedIdsWithoutApprentices));
 
         var pendingTransferRequestsRequestsToReview = transferRequests?.TransferRequestSummaryResponse?.Where(x => x.Status == TransferApprovalStatus.Pending);
 
@@ -90,14 +99,14 @@ public class GetTasksQueryHandler(
             ShowLevyDeclarationTask = account?.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy && IsInDateRange(),
             NumberOfTransferRequestToReview = pendingTransferRequestsRequestsToReview?.Count() ?? 0,
             NumberOfApprenticesToReview = apprenticeChangesCount,
-            NumberOfTransferPledgeApplicationsAccepted = acceptedApplicationIdsWithoutApprentices.Count,
-            SingleAcceptedTransferApplicationIdWithNoApprentices = acceptedApplicationIdsWithoutApprentices.Count == 1 ? acceptedApplicationIdsWithoutApprentices.First() : null
+            NumberOfTransferPledgeApplicationsAccepted = pledgeApplicationsAcceptedIdsWithoutApprentices.Count,
+            SingleAcceptedTransferApplicationIdWithNoApprentices = pledgeApplicationsAcceptedIdsWithoutApprentices.Count == 1 ? pledgeApplicationsAcceptedIdsWithoutApprentices.First() : null
         };
     }
 
     private static List<int> GetAcceptedLevyTransfersWithoutApprenticeships(GetApplicationsResponse acceptedPledgeApplicationsResponse, List<GetCohortsResponse.CohortSummary> cohortsForThisAccount)
     {
-        if (acceptedPledgeApplicationsResponse == null || acceptedPledgeApplicationsResponse.Applications == null || !acceptedPledgeApplicationsResponse.Applications.Any())
+        if (acceptedPledgeApplicationsResponse?.Applications == null || !acceptedPledgeApplicationsResponse.Applications.Any())
         {
             return [];
         }
