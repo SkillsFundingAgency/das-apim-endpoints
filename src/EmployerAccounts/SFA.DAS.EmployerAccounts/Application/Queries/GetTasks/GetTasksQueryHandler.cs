@@ -40,15 +40,11 @@ public class GetTasksQueryHandler(
             ApplicationStatusFilter = ApplicationStatus.Pending
         });
 
-        var getApplicationsRequest = new GetApplicationsRequest
+        var acceptedPledgeApplicationsTask = ltmApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
         {
             AccountId = request.AccountId,
             ApplicationStatusFilter = ApplicationStatus.Accepted
-        };
-        
-        logger.LogInformation("GetTasksQueryHandler getApplicationsRequest: {Data}", JsonSerializer.Serialize(getApplicationsRequest));
-        
-        var acceptedPledgeApplicationsTask = ltmApiClient.Get<GetApplicationsResponse>(getApplicationsRequest);
+        });
 
         var apprenticeChangesTask = commitmentsV2ApiClient.Get<GetApprenticeshipUpdatesResponse>(new GetPendingApprenticeChangesRequest(request.AccountId));
 
@@ -78,17 +74,17 @@ public class GetTasksQueryHandler(
         var apprenticeChanges = await apprenticeChangesTask;
         var apprenticeChangesCount = apprenticeChanges?.ApprenticeshipUpdates?.Count ?? 0;
         var pendingTransferConnections = await pendingTransferConnectionsTask;
-        var pledgeApplicationsAccepted = await acceptedPledgeApplicationsTask;
-        var pledgeApplicationsToReview = await pledgeApplicationsToReviewTask;
+        var pledgeApplicationsAcceptedResponse = await acceptedPledgeApplicationsTask;
+        var pledgeApplicationsToReviewResponse = await pledgeApplicationsToReviewTask;
         var account = await accountTask;
         var transferRequests = await transferRequestsTask;
-        
-        logger.LogInformation("GetTasksQueryHandler pledgeApplicationsAccepted: {Data}", JsonSerializer.Serialize(pledgeApplicationsAccepted));
 
-        var pledgeApplicationsAcceptedIdsWithoutApprentices = GetAcceptedLevyTransfersWithoutApprenticeships(pledgeApplicationsAccepted, cohortsForThisAccount);
-        
+        logger.LogInformation("GetTasksQueryHandler pledgeApplicationsAccepted: {Data}", JsonSerializer.Serialize(pledgeApplicationsAcceptedResponse));
+
+        var pledgeApplicationsAcceptedIdsWithoutApprentices = GetAcceptedLevyTransfersWithoutApprenticeships(pledgeApplicationsAcceptedResponse, cohortsForThisAccount);
+
         logger.LogInformation("GetTasksQueryHandler pledgeApplicationsAcceptedIdsWithoutApprentices: {Data}", JsonSerializer.Serialize(pledgeApplicationsAcceptedIdsWithoutApprentices));
-        
+
         logger.LogInformation("GetTasksQueryHandler cohortsForThisAccount: {Data}", JsonSerializer.Serialize(cohortsForThisAccount));
 
         var pendingTransferRequestsRequestsToReview = transferRequests?.TransferRequestSummaryResponse?.Where(x => x.Status == TransferApprovalStatus.Pending);
@@ -96,7 +92,7 @@ public class GetTasksQueryHandler(
         return new GetTasksQueryResult
         {
             NumberOfCohortsReadyToReview = cohortsToReview?.Count ?? 0,
-            NumberTransferPledgeApplicationsToReview = pledgeApplicationsToReview?.TotalItems ?? 0,
+            NumberTransferPledgeApplicationsToReview = pledgeApplicationsToReviewResponse?.TotalItems ?? 0,
             NumberOfPendingTransferConnections = pendingTransferConnections?.Count ?? 0,
             ShowLevyDeclarationTask = account?.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy && IsInDateRange(),
             NumberOfTransferRequestToReview = pendingTransferRequestsRequestsToReview?.Count() ?? 0,
@@ -117,8 +113,9 @@ public class GetTasksQueryHandler(
 
         foreach (var acceptedApplication in acceptedPledgeApplicationsResponse.Applications)
         {
-            var cohortsForApplication = cohortsForThisAccount.Where(x => x.PledgeApplicationId == acceptedApplication.Id);
-            if (cohortsForApplication.Any(x => x.NumberOfDraftApprentices == 0))
+            var cohortsForApplication = cohortsForThisAccount.Where(x => x.PledgeApplicationId == acceptedApplication.Id).ToList();
+
+            if (cohortsForApplication.Count == 0 || cohortsForApplication.Any(x => x.NumberOfDraftApprentices == 0))
             {
                 acceptedApplicationIdsWithoutApprentices.Add(acceptedApplication.Id);
             }
