@@ -50,10 +50,10 @@ public class GetTasksQueryHandler(
         var transferRequestsTask = commitmentsV2ApiClient.Get<GetTransferRequestSummaryResponse>(new GetTransferRequestsRequest(request.AccountId, TransferType.AsSender));
 
         var pendingTransferConnectionsTask = financeApiClient.Get<List<GetTransferConnectionsResponse.TransferConnection>>(new GetTransferConnectionsRequest
-            {
-                AccountId = request.AccountId,
-                Status = TransferConnectionInvitationStatus.Pending
-            });
+        {
+            AccountId = request.AccountId,
+            Status = TransferConnectionInvitationStatus.Pending
+        });
 
         var cohortsToReviewTask = commitmentsV2ApiClient.Get<GetCohortsResponse>(new GetCohortsRequest { AccountId = request.AccountId });
 
@@ -68,7 +68,7 @@ public class GetTasksQueryHandler(
         );
 
         var cohortsForThisAccountResponse = await cohortsToReviewTask;
-        var cohortsForThisAccount = cohortsForThisAccountResponse.Cohorts.ToList();
+        var cohortsForThisAccount = cohortsForThisAccountResponse.Cohorts?.ToList();
         var cohortsToReview = cohortsForThisAccountResponse.Cohorts?.Where(x => !x.IsDraft && x.WithParty == Party.Employer).ToList();
         var apprenticeChanges = await apprenticeChangesTask;
         var apprenticeChangesCount = apprenticeChanges?.ApprenticeshipUpdates?.Count ?? 0;
@@ -77,7 +77,7 @@ public class GetTasksQueryHandler(
         var pledgeApplicationsToReview = await pledgeApplicationsToReviewTask;
         var account = await accountTask;
         var transferRequests = await transferRequestsTask;
-        
+
         var acceptedApplicationIdsWithoutApprentices = GetAcceptedLevyTransfersWithoutApprenticeships(pledgeApplicationsAccepted, cohortsForThisAccount);
 
         var pendingTransferRequestsRequestsToReview = transferRequests?.TransferRequestSummaryResponse?.Where(x => x.Status == TransferApprovalStatus.Pending);
@@ -97,6 +97,11 @@ public class GetTasksQueryHandler(
 
     private static List<int> GetAcceptedLevyTransfersWithoutApprenticeships(GetApplicationsResponse acceptedPledgeApplicationsResponse, List<GetCohortsResponse.CohortSummary> cohortsForThisAccount)
     {
+        if (acceptedPledgeApplicationsResponse == null || acceptedPledgeApplicationsResponse.Applications == null || !acceptedPledgeApplicationsResponse.Applications.Any())
+        {
+            return [];
+        }
+
         var acceptedApplicationIdsWithoutApprentices = new List<int>();
 
         foreach (var acceptedApplication in acceptedPledgeApplicationsResponse.Applications)
