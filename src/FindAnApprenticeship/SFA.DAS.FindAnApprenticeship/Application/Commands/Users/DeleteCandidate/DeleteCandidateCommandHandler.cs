@@ -19,6 +19,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidate
 {
@@ -66,21 +67,16 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidat
 
                 jsonPatchDocument.Replace(x => x.Status, ApplicationStatus.Withdrawn);
 
-                var vacancy = await vacancyService.GetVacancy(application.VacancyReference) as GetApprenticeshipVacancyItemResponse;
+                var vacancy = await vacancyService.GetVacancy(application.VacancyReference);
+                var withDrawnApplicationEmail = vacancy is GetApprenticeshipVacancyItemResponse apprenticeshipVacancy
+                    ? GetWithdrawApplicationEmail(candidate, apprenticeshipVacancy)
+                    : GetWithdrawApplicationEmail(candidate, await vacancyService.GetClosedVacancy(application.VacancyReference) as GetClosedVacancyResponse);
 
                 var patchRequest = new PatchApplicationApiRequest(application.Id, application.CandidateId, jsonPatchDocument);
 
                 await candidateApiClient.PatchWithResponseCode(patchRequest);
 
-                var email = new WithdrawApplicationEmail(
-                    emailEnvironmentHelper.WithdrawApplicationEmailTemplateId,
-                    candidate.Email,
-                    candidate.FirstName,
-                    vacancy?.Title, vacancy?.EmployerName,
-                    vacancy?.Address.AddressLine4 ?? vacancy?.Address.AddressLine3 ?? vacancy?.Address.AddressLine2 ?? vacancy?.Address.AddressLine1 ?? "Unknown",
-                    vacancy?.Address.Postcode);
-
-                emailNotifications.Add(new EmailNotification(email.TemplateId, email.RecipientAddress, email.Tokens));
+                emailNotifications.Add(new EmailNotification(withDrawnApplicationEmail.TemplateId, withDrawnApplicationEmail.RecipientAddress, withDrawnApplicationEmail.Tokens));
             }
 
             if(emailNotifications.Count > 0) await SendApplicationWithDrawnNotificationEmail(emailNotifications);
@@ -99,6 +95,30 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidat
                 await notificationService.Send(new SendEmailCommand(notification.TemplateId, notification.RecipientAddress,
                     notification.Tokens));
             }
+        }
+
+        private WithdrawApplicationEmail GetWithdrawApplicationEmail(GetCandidateApiResponse candidateApiResponse, GetClosedVacancyResponse vacancyResponse)
+        {
+            return new WithdrawApplicationEmail(
+                emailEnvironmentHelper.WithdrawApplicationEmailTemplateId,
+                candidateApiResponse.Email,
+                candidateApiResponse.FirstName,
+                vacancyResponse.Title,
+                vacancyResponse.EmployerName,
+                vacancyResponse.EmployerLocation.AddressLine4 ?? vacancyResponse.EmployerLocation.AddressLine3 ?? vacancyResponse.EmployerLocation.AddressLine2 ?? vacancyResponse.EmployerLocation.AddressLine1 ?? "Unknown",
+                vacancyResponse.EmployerLocation.Postcode);
+        }
+
+        private WithdrawApplicationEmail GetWithdrawApplicationEmail(GetCandidateApiResponse candidateApiResponse, GetApprenticeshipVacancyItemResponse vacancyResponse)
+        {
+            return new WithdrawApplicationEmail(
+                emailEnvironmentHelper.WithdrawApplicationEmailTemplateId,
+                candidateApiResponse.Email,
+                candidateApiResponse.FirstName,
+                vacancyResponse.Title,
+                vacancyResponse.EmployerName,
+                vacancyResponse.Address.AddressLine4 ?? vacancyResponse.Address.AddressLine3 ?? vacancyResponse.Address.AddressLine2 ?? vacancyResponse.Address.AddressLine1 ?? "Unknown",
+                vacancyResponse.Address.Postcode);
         }
     }
 }
