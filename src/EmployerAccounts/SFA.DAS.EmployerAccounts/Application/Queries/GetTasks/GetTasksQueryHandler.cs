@@ -88,6 +88,8 @@ public class GetTasksQueryHandler(
         var pledgeApplicationsAcceptedIdsWithoutApprentices = GetAcceptedLevyTransfersWithoutApprenticeships(pledgeApplicationsAccepted, cohortsForThisAccount);
         
         logger.LogInformation("GetTasksQueryHandler pledgeApplicationsAcceptedIdsWithoutApprentices: {Data}", JsonSerializer.Serialize(pledgeApplicationsAcceptedIdsWithoutApprentices));
+        
+        logger.LogInformation("GetTasksQueryHandler cohortsForThisAccount: {Data}", JsonSerializer.Serialize(cohortsForThisAccount));
 
         var pendingTransferRequestsRequestsToReview = transferRequests?.TransferRequestSummaryResponse?.Where(x => x.Status == TransferApprovalStatus.Pending);
 
