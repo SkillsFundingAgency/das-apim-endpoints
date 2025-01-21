@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AODP.Application.Commands.FormBuilder.Forms;
 using SFA.DAS.AODP.Application.Queries.FormBuilder.Forms;
@@ -11,10 +10,12 @@ namespace SFA.DAS.AODP.Api.Controllers;
 public class FormsController : Controller
 {
     private readonly IMediator _mediator;
+    private readonly ILogger<FormsController> _logger;
 
-    public FormsController(IMediator mediator)
+    public FormsController(IMediator mediator, ILogger<FormsController> logger)
     {
         _mediator = mediator;
+        _logger = logger;
     }
 
     [HttpGet("/api/forms")]
@@ -22,17 +23,20 @@ public class FormsController : Controller
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllAsync()
     {
-        var query = new GetAllFormVersionsQuery();
-        var response = await _mediator.Send(query);
-        if (response.Success)
+        try
         {
-            return Ok(response);
+            var query = new GetAllFormVersionsQuery();
+            var response = await _mediator.Send(query);
+            if (response.Success)
+                return Ok(response);
+            else
+                throw new Exception(response.ErrorMessage);
         }
-
-        var errorObjectResult = new ObjectResult(response.ErrorMessage);
-        errorObjectResult.StatusCode = StatusCodes.Status500InternalServerError;
-
-        return errorObjectResult;
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
     }
 
     [HttpGet("/api/forms/{formVersionId}")]
