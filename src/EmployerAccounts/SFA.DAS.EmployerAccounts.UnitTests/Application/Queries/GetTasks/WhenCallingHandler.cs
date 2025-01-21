@@ -51,6 +51,263 @@ public class WhenCallingHandler
     }
 
     [Test, MoqAutoData]
+    public async Task Then_NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices_Should_Be_Zero_When_Zero_Accepted_Pledge_Transfers(
+        [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+        GetCohortsResponse getCohortsResponse,
+        GetTasksQuery request,
+        GetTasksQueryHandler handler)
+    {
+        mockLTMApi
+            .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
+                r.AccountId == request.AccountId
+                && r.ApplicationStatusFilter == ApplicationStatus.Accepted)))
+            .ReturnsAsync(new GetApplicationsResponse())
+            .Verifiable();
+
+        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+            .ReturnsAsync(getCohortsResponse);
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        result.NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices.Should().Be(0);
+        result.SingleAcceptedTransferPledgeApplicationIdWithNoApprentices.Should().BeNull();
+
+        mockLTMApi.Verify();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices_Should_Be_Zero_When_Pledge_Applications_Are_Null(
+        [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+        GetApplicationsResponse applicationsResponse,
+        GetCohortsResponse getCohortsResponse,
+        GetTasksQuery request,
+        GetTasksQueryHandler handler)
+    {
+        applicationsResponse.Applications = null;
+
+        mockLTMApi
+            .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
+                r.AccountId == request.AccountId
+                && r.ApplicationStatusFilter == ApplicationStatus.Accepted)))
+            .ReturnsAsync(applicationsResponse)
+            .Verifiable();
+
+        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+            .ReturnsAsync(getCohortsResponse);
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        result.NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices.Should().Be(0);
+        result.SingleAcceptedTransferPledgeApplicationIdWithNoApprentices.Should().BeNull();
+
+        mockLTMApi.Verify();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices_Should_Be_Zero_When_Pledge_Applications_Any_Is_False(
+        [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+        GetApplicationsResponse applicationsResponse,
+        GetCohortsResponse getCohortsResponse,
+        GetTasksQuery request,
+        GetTasksQueryHandler handler)
+    {
+        applicationsResponse.Applications = [];
+
+        mockLTMApi
+            .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
+                r.AccountId == request.AccountId
+                && r.ApplicationStatusFilter == ApplicationStatus.Accepted)))
+            .ReturnsAsync(applicationsResponse)
+            .Verifiable();
+
+        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+            .ReturnsAsync(getCohortsResponse);
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        result.NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices.Should().Be(0);
+        result.SingleAcceptedTransferPledgeApplicationIdWithNoApprentices.Should().BeNull();
+
+        mockLTMApi.Verify();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices_Should_Be_Zero_When_Single_Accepted_Pledge_Application_With_Cohort_And_Apprentices(
+        [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+        GetApplicationsResponse applicationsResponse,
+        GetCohortsResponse getCohortsResponse,
+        GetTasksQuery request,
+        GetTasksQueryHandler handler)
+    {
+        var application = applicationsResponse.Applications.First();
+        var cohort = getCohortsResponse.Cohorts.First();
+        
+        cohort.PledgeApplicationId = application.Id;
+        cohort.NumberOfDraftApprentices = 1;
+        
+        applicationsResponse.Applications = [application];
+        getCohortsResponse.Cohorts = [cohort];
+
+        mockLTMApi
+            .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
+                r.AccountId == request.AccountId
+                && r.ApplicationStatusFilter == ApplicationStatus.Accepted)))
+            .ReturnsAsync(applicationsResponse)
+            .Verifiable();
+
+        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+            .ReturnsAsync(getCohortsResponse)
+            .Verifiable();
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        result.NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices.Should().Be(0);
+        result.SingleAcceptedTransferPledgeApplicationIdWithNoApprentices.Should().BeNull();
+
+        mockLTMApi.Verify();
+        mockCommitmentsApi.Verify();
+    }
+    
+    [Test, MoqAutoData]
+    public async Task Then_NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices_Should_Be_One_When_Single_Accepted_Pledge_Application_With_Cohort_But_No_Apprentices(
+        [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+        GetApplicationsResponse applicationsResponse,
+        GetCohortsResponse getCohortsResponse,
+        GetTasksQuery request,
+        GetTasksQueryHandler handler)
+    {
+        var application = applicationsResponse.Applications.First();
+        var cohort = getCohortsResponse.Cohorts.First();
+        
+        cohort.PledgeApplicationId = application.Id;
+        cohort.NumberOfDraftApprentices = 0;
+        
+        applicationsResponse.Applications = [application];
+        getCohortsResponse.Cohorts = [cohort];
+
+        mockLTMApi
+            .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
+                r.AccountId == request.AccountId
+                && r.ApplicationStatusFilter == ApplicationStatus.Accepted)))
+            .ReturnsAsync(applicationsResponse)
+            .Verifiable();
+
+        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+            .ReturnsAsync(getCohortsResponse)
+            .Verifiable();
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        result.NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices.Should().Be(1);
+        result.SingleAcceptedTransferPledgeApplicationIdWithNoApprentices.Should().Be(application.Id);
+
+        mockLTMApi.Verify();
+        mockCommitmentsApi.Verify();
+    }
+    
+    [Test, MoqAutoData]
+    public async Task Then_NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices_Should_Be_Correct_When_Multiple_Accepted_Pledge_Applications_With_Cohort_But_No_Apprentices(
+        [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+        GetApplicationsResponse applicationsResponse,
+        GetCohortsResponse getCohortsResponse,
+        GetTasksQuery request,
+        GetTasksQueryHandler handler)
+    {
+        mockLTMApi
+            .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
+                r.AccountId == request.AccountId
+                && r.ApplicationStatusFilter == ApplicationStatus.Accepted)))
+            .ReturnsAsync(applicationsResponse)
+            .Verifiable();
+
+        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+            .ReturnsAsync(getCohortsResponse)
+            .Verifiable();
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        result.NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices.Should().Be(applicationsResponse.Applications.Count());
+        result.SingleAcceptedTransferPledgeApplicationIdWithNoApprentices.Should().BeNull();
+
+        mockLTMApi.Verify();
+        mockCommitmentsApi.Verify();
+    }
+    
+    [Test, MoqAutoData]
+    public async Task Then_NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices_Should_Be_Correct_When_Multiple_Accepted_Pledge_Applications_With_No_Cohorts(
+        [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+        GetApplicationsResponse applicationsResponse,
+        GetTasksQuery request,
+        GetTasksQueryHandler handler)
+    {
+        mockLTMApi
+            .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
+                r.AccountId == request.AccountId
+                && r.ApplicationStatusFilter == ApplicationStatus.Accepted)))
+            .ReturnsAsync(applicationsResponse)
+            .Verifiable();
+
+        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+            .ReturnsAsync(new GetCohortsResponse())
+            .Verifiable();
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        result.NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices.Should().Be(applicationsResponse.Applications.Count());
+        result.SingleAcceptedTransferPledgeApplicationIdWithNoApprentices.Should().BeNull();
+
+        mockLTMApi.Verify();
+        mockCommitmentsApi.Verify();
+    }
+    
+    [Test, MoqAutoData]
+    public async Task Then_NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices_Should_Be_One_When_Single_Accepted_Pledge_Application_With_No_Cohorts(
+        [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
+        GetApplicationsResponse applicationsResponse,
+        GetTasksQuery request,
+        GetTasksQueryHandler handler)
+    {
+        var application = applicationsResponse.Applications.First();
+        
+        applicationsResponse.Applications = [application];
+
+        mockLTMApi
+            .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
+                r.AccountId == request.AccountId
+                && r.ApplicationStatusFilter == ApplicationStatus.Accepted)))
+            .ReturnsAsync(applicationsResponse)
+            .Verifiable();
+
+        mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
+            .ReturnsAsync(new GetCohortsResponse())
+            .Verifiable();
+
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
+
+        result.NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices.Should().Be(1);
+        result.SingleAcceptedTransferPledgeApplicationIdWithNoApprentices.Should().Be(application.Id);
+
+        mockLTMApi.Verify();
+        mockCommitmentsApi.Verify();
+    }
+
+    [Test, MoqAutoData]
     public async Task Then_NumberOfApprenticesToReview_Is_Returned(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
         GetApprenticeshipUpdatesResponse apprenticeshipUpdatesResponse,
@@ -121,7 +378,6 @@ public class WhenCallingHandler
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
         result.NumberOfTransferRequestToReview.Should().Be(2);
-
     }
 
     [Test, MoqAutoData]
@@ -147,7 +403,6 @@ public class WhenCallingHandler
     public async Task Then_Gets_Tasks_Returns_NumberOfPendingTransferConnections(
         [Frozen] Mock<IFinanceApiClient<FinanceApiConfiguration>> _financeApiClient,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
-
         List<GetTransferConnectionsResponse.TransferConnection> transferConnectionsResponse,
         GetTasksQuery request,
         GetTasksQueryHandler handler)

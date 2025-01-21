@@ -102,11 +102,17 @@ public class GetTasksQueryHandler(
         {
             return [];
         }
-
+        
         var acceptedApplicationIdsWithoutApprentices = new List<int>();
 
         foreach (var acceptedApplication in acceptedPledgeApplicationsResponse.Applications)
         {
+            if (cohortsForThisAccount == null || cohortsForThisAccount.Count == 0)
+            {
+                acceptedApplicationIdsWithoutApprentices.Add(acceptedApplication.Id);
+                continue;
+            }
+            
             var cohortsForApplication = cohortsForThisAccount.Where(x => x.PledgeApplicationId == acceptedApplication.Id).ToList();
 
             if (cohortsForApplication.Count == 0 || cohortsForApplication.Any(x => x.NumberOfDraftApprentices == 0))
