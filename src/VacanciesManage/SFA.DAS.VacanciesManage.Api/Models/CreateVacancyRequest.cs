@@ -395,8 +395,7 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         /// <example>7</example>
         [JsonPropertyName("level")]
         [AllowedValues(1,2,3,4,5,6,7)]
-        [Required]
-        public int Level { get; set; }
+        public int? Level { get; set; }
         /// <summary>
         /// The name of the subject for the qualification.
         /// </summary>
