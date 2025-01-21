@@ -79,13 +79,7 @@ public class GetTasksQueryHandler(
         var account = await accountTask;
         var transferRequests = await transferRequestsTask;
 
-        logger.LogInformation("GetTasksQueryHandler pledgeApplicationsAccepted: {Data}", JsonSerializer.Serialize(pledgeApplicationsAcceptedResponse));
-
         var pledgeApplicationsAcceptedIdsWithoutApprentices = GetAcceptedLevyTransfersWithoutApprenticeships(pledgeApplicationsAcceptedResponse, cohortsForThisAccount);
-
-        logger.LogInformation("GetTasksQueryHandler pledgeApplicationsAcceptedIdsWithoutApprentices: {Data}", JsonSerializer.Serialize(pledgeApplicationsAcceptedIdsWithoutApprentices));
-
-        logger.LogInformation("GetTasksQueryHandler cohortsForThisAccount: {Data}", JsonSerializer.Serialize(cohortsForThisAccount));
 
         var pendingTransferRequestsRequestsToReview = transferRequests?.TransferRequestSummaryResponse?.Where(x => x.Status == TransferApprovalStatus.Pending);
 
