@@ -21,7 +21,7 @@ public class FormsController : Controller
     }
 
     [HttpGet("/api/forms")]
-    [ProducesResponseType(typeof(List<GetAllFormVersionsApiResponse.FormVersion>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetAllFormVersionsQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllAsync()
     {
@@ -29,8 +29,8 @@ public class FormsController : Controller
         var response = await _mediator.Send(query);
         if (response.Success)
         {
-            var result = _mapper.Map<GetAllFormVersionsApiResponse>(response);
-            return Ok(result.Data);
+            //var result = _mapper.Map<GetAllFormVersionsApiResponse>(response);
+            return Ok(response);
         }
 
         var errorObjectResult = new ObjectResult(response.ErrorMessage);
@@ -40,7 +40,7 @@ public class FormsController : Controller
     }
 
     [HttpGet("/api/forms/{formVersionId}")]
-    [ProducesResponseType(typeof(GetFormVersionByIdApiResponse.FormVersion), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetFormVersionByIdQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetByIdAsync(Guid formVersionId)
     {
@@ -50,12 +50,12 @@ public class FormsController : Controller
 
         if (response.Success)
         {
-            var result = _mapper.Map<GetFormVersionByIdApiResponse>(response);
-            if (result.Data is null)
+            //var result = _mapper.Map<GetFormVersionByIdApiResponse>(response);
+            if (response.Data is null)
                 return NotFound();
 
 
-            return Ok(result.Data);
+            return Ok(response);
         }
 
         var errorObjectResult = new ObjectResult(response.ErrorMessage);
@@ -64,30 +64,30 @@ public class FormsController : Controller
         return errorObjectResult;
     }
 
-    //[HttpPost("/api/forms")]
-    //[ProducesResponseType(typeof(CreateFormVersionApiResponse.FormVersion), StatusCodes.Status200OK)]
-    //[ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
-    //public async Task<IActionResult> CreateAsync([FromBody] CreateFormVersionCommand.FormVersion formVersion)
-    //{
-    //    var command = new CreateFormVersionCommand(formVersion);
+    [HttpPost("/api/forms")]
+    [ProducesResponseType(typeof(CreateFormVersionCommandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CreateAsync([FromBody] CreateFormVersionCommand.FormVersion formVersion)
+    {
+        var command = new CreateFormVersionCommand(formVersion);
 
-    //    var response = await _mediator.Send(command);
-    //    if (response.Success)
-    //    {
-    //        var result = _mapper.Map<CreateFormVersionApiResponse>(response);
-    //        if (result.Data is null)
-    //            return NotFound();
-    //        return Ok(result.Data);
-    //    }
+        var response = await _mediator.Send(command);
+        if (response.Success)
+        {
+            //var result = _mapper.Map<CreateFormVersionApiResponse>(response);
+            if (response.Data is null)
+                return NotFound();
+            return Ok(response);
+        }
 
-    //    var errorObjectResult = new ObjectResult(response.ErrorMessage);
-    //    errorObjectResult.StatusCode = StatusCodes.Status500InternalServerError;
+        var errorObjectResult = new ObjectResult(response.ErrorMessage);
+        errorObjectResult.StatusCode = StatusCodes.Status500InternalServerError;
 
-    //    return errorObjectResult;
-    //}
+        return errorObjectResult;
+    }
 
     [HttpPut("/api/forms/{formVersionId}")]
-    [ProducesResponseType(typeof(UpdateFormVersionApiResponse.FormVersion), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(UpdateFormVersionCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateAsync(Guid formVersionId, [FromBody] UpdateFormVersionCommand.FormVersion formVersion)
     {
@@ -97,10 +97,10 @@ public class FormsController : Controller
 
         if (response.Success)
         {
-            var result = _mapper.Map<UpdateFormVersionApiResponse>(response);
-            if (result.Data is null)
+            //var result = _mapper.Map<UpdateFormVersionApiResponse>(response);
+            if (response.Data is null)
                 return NotFound();
-            return Ok(result.Data);
+            return Ok(response);
         }
 
         var errorObjectResult = new ObjectResult(response.ErrorMessage);
@@ -122,7 +122,7 @@ public class FormsController : Controller
     }
 
     [HttpDelete("/api/forms/{formVersionId}")]
-    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DeleteFormVersionCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> RemoveAsync(Guid formVersionId)
     {
@@ -131,9 +131,7 @@ public class FormsController : Controller
         var response = await _mediator.Send(command);
         if (response.Success)
         {
-            var result = new DeleteFormVersionApiResponse();
-            result.Data = response.Data;
-            return Ok(result.Data);
+            return Ok(response);
         }
 
         var errorObjectResult = new ObjectResult(response.ErrorMessage);

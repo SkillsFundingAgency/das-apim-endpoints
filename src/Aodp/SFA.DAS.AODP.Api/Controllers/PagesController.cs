@@ -22,7 +22,7 @@ public class PagesController : Controller
     }
 
     [HttpGet("/api/pages/section/{sectionId}")]
-    [ProducesResponseType(typeof(List<GetAllPagesApiResponse.Page>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetAllPagesQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllAsync(Guid sectionId)
     {
@@ -31,8 +31,7 @@ public class PagesController : Controller
         var response = await _mediator.Send(query);
         if (response.Success)
         {
-            var result = _mapper.Map<GetAllPagesApiResponse>(response);
-            return Ok(result.Data);
+            return Ok(response);
         }
 
         var errorObjectResult = new ObjectResult(response.ErrorMessage);
@@ -42,7 +41,7 @@ public class PagesController : Controller
     }
 
     [HttpGet("/api/pages/{pageId}/section/{sectionId}")]
-    [ProducesResponseType(typeof(List<GetPageByIdApiResponse.Page>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetPageByIdQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetByIdAsync(Guid pageId, Guid sectionId)
     {
@@ -52,10 +51,9 @@ public class PagesController : Controller
 
         if (response.Success)
         {
-            var result = _mapper.Map<GetPageByIdApiResponse>(response);
-            if (result.Data is null)
+            if (response.Data is null)
                 return NotFound();
-            return Ok(result.Data);
+            return Ok(response);
         }
 
         var errorObjectResult = new ObjectResult(response.ErrorMessage);
@@ -65,7 +63,7 @@ public class PagesController : Controller
     }
 
     [HttpPost("/api/pages")]
-    [ProducesResponseType(typeof(CreatePageApiResponse.Page), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(CreatePageCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateAsync([FromBody] CreatePageCommand.Page page)
     {
@@ -74,10 +72,9 @@ public class PagesController : Controller
         var response = await _mediator.Send(command);
         if (response.Success)
         {
-            var result = _mapper.Map<CreatePageApiResponse>(response);
-            if (result.Data is null)
+            if (response.Data is null)
                 return NotFound();
-            return Ok(result.Data);
+            return Ok(response);
         }
 
         var errorObjectResult = new ObjectResult(response.ErrorMessage);
@@ -87,7 +84,7 @@ public class PagesController : Controller
     }
 
     [HttpPut("/api/pages/{pageId}")]
-    [ProducesResponseType(typeof(UpdatePageApiResponse.Page), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(UpdatePageCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateAsync([FromRoute] Guid pageId, [FromBody] UpdatePageCommand.Page page)
     {
@@ -97,10 +94,9 @@ public class PagesController : Controller
 
         if (response.Success)
         {
-            var result = _mapper.Map<UpdatePageApiResponse>(response);
-            if (result.Data is null)
+            if (response.Data is null)
                 return NotFound();
-            return Ok(result.Data);
+            return Ok(response);
         }
 
         var errorObjectResult = new ObjectResult(response.ErrorMessage);
@@ -110,7 +106,7 @@ public class PagesController : Controller
     }
 
     [HttpDelete("/api/pages/{pageId}")]
-    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DeletePageCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> RemoveAsync([FromRoute] Guid pageId)
     {
@@ -119,9 +115,7 @@ public class PagesController : Controller
         var response = await _mediator.Send(command);
         if (response.Success)
         {
-            var result = new DeletePageApiResponse();
-            result.Data = response.Data;
-            return Ok(result.Data);
+            return Ok(response);
         }
 
         var errorObjectResult = new ObjectResult(response.ErrorMessage);

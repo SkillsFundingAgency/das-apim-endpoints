@@ -22,7 +22,7 @@ public class SectionsController : ControllerBase
     }
 
     [HttpGet("/api/sections/form/{formId}")]
-    [ProducesResponseType(typeof(List<GetAllSectionsApiResponse.Section>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetAllSectionsQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllAsync([FromRoute] Guid formVersionId)
     {
@@ -30,8 +30,7 @@ public class SectionsController : ControllerBase
         var response = await _mediator.Send(query);
         if (response.Success)
         {
-            var result = _mapper.Map<GetAllSectionsApiResponse>(response);
-            return Ok(response.Data);
+            return Ok(response);
         }
 
         var errorObjectResult = new ObjectResult(response.ErrorMessage);
@@ -41,7 +40,7 @@ public class SectionsController : ControllerBase
     }
 
     [HttpGet("/api/sections/{sectionId}/form/{formId}")]
-    [ProducesResponseType(typeof(List<GetSectionByIdApiResponse.Section>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(GetSectionByIdQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid sectionId, [FromRoute] Guid formVersionId)
     {
@@ -51,10 +50,9 @@ public class SectionsController : ControllerBase
 
         if (response.Success)
         {
-            var result = _mapper.Map<GetSectionByIdApiResponse>(response);
-            if (result.Data is null)
+            if (response.Data is null)
                 return NotFound();
-            return Ok(result.Data);
+            return Ok(response);
         }
 
         var errorObjectResult = new ObjectResult(response.ErrorMessage);
@@ -64,7 +62,7 @@ public class SectionsController : ControllerBase
     }
 
     [HttpPost("/api/sections")]
-    [ProducesResponseType(typeof(CreateSectionApiResponse.Section), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(CreateSectionCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateAsync([FromBody] CreateSectionCommand.Section section)
     {
@@ -73,10 +71,9 @@ public class SectionsController : ControllerBase
         var response = await _mediator.Send(command);
         if (response.Success)
         {
-            var result = _mapper.Map<CreateSectionApiResponse>(response);
-            if (result.Data is null)
+            if (response.Data is null)
                 return NotFound();
-            return Ok(result.Data);
+            return Ok(response);
         }
 
         var errorObjectResult = new ObjectResult(response.ErrorMessage);
@@ -86,7 +83,7 @@ public class SectionsController : ControllerBase
     }
 
     [HttpPut("/api/sections/{formId}")]
-    [ProducesResponseType(typeof(UpdateSectionApiResponse.Section), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(UpdateSectionCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateAsync([FromRoute] Guid formVersionId, [FromBody] UpdateSectionCommand.Section section)
     {
@@ -96,10 +93,9 @@ public class SectionsController : ControllerBase
 
         if (response.Success)
         {
-            var result = _mapper.Map<UpdateSectionApiResponse>(response);
-            if (result.Data is null)
+            if (response.Data is null)
                 return NotFound();
-            return Ok(result.Data);
+            return Ok(response);
         }
 
         var errorObjectResult = new ObjectResult(response.ErrorMessage);
@@ -109,7 +105,7 @@ public class SectionsController : ControllerBase
     }
 
     [HttpDelete("/api/sections/{sectionId}")]
-    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DeleteSectionCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> RemoveAsync([FromRoute] Guid sectionId)
     {
@@ -118,9 +114,7 @@ public class SectionsController : ControllerBase
         var response = await _mediator.Send(command);
         if (response.Success)
         {
-            var result = new DeleteSectionApiResponse();
-            result.Data = response.Data;
-            return Ok(result.Data);
+            return Ok(response);
         }
 
         var errorObjectResult = new ObjectResult(response.ErrorMessage);
