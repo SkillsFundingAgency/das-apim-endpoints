@@ -4,6 +4,7 @@ parameters:
   UnitTestProjects:
   PublishProject:
   AcceptanceTestProjects:
+  AzureArtifactsFeed:
 
 jobs:
 - job: CodeBuild
@@ -28,6 +29,7 @@ jobs:
       AcceptanceTestProjects: ${{ parameters.AcceptanceTestProjects }}
       RunAcceptanceTests: true
       ContinueOnVulnerablePackageScanError: true
+      AzureArtifactsFeed: ${{ parameters.AzureArtifactsFeed }}
 
   - task: DotNetCoreCLI@2
     displayName: 'Publish Outer Api'

@@ -15,7 +15,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
         ICandidateApiClient<CandidateApiConfiguration> CandidateApiClient)
         : IRequestHandler<GetSavedSearchesQuery, GetSavedSearchesQueryResult>
     {
-        public async Task<GetSavedSearchesQueryResult> Handle(GetSavedSearchesQuery request, CancellationToken cancellationToken)
+        public async Task<GetSavedSearchesQueryResult> Handle(GetSavedSearchesQuery request,
+            CancellationToken cancellationToken)
         {
             var searchResultList = new ConcurrentBag<GetSavedSearchesQueryResult.SearchResult>();
 
@@ -24,7 +25,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                     request.PageNumber,
                     request.PageSize));
 
-            if (savedSearchResponse is not { SavedSearches.Count: > 0 })
+            if (savedSearchResponse is not {SavedSearches.Count: > 0})
                 return new GetSavedSearchesQueryResult
                 {
                     PageSize = savedSearchResponse.PageSize,
@@ -33,15 +34,35 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                     TotalCount = savedSearchResponse.TotalCount,
                     SavedSearchResults = []
                 };
-            
-            var routesTask = CourseService.GetRoutes();
-            var levelsTask = CourseService.GetLevels();
 
-            await Task.WhenAll(routesTask, levelsTask);
-            var routesList = routesTask.Result;
-            var levelsList = levelsTask.Result;
-            var taskList = savedSearchResponse.SavedSearches.Select(savedSearch => GetSavedSearchResults(request, savedSearch, routesList, levelsList, searchResultList)).ToList();
-            await Task.WhenAll(taskList);
+            foreach (var savedSearch in savedSearchResponse.SavedSearches)
+            {
+                var candidate =
+                    await CandidateApiClient.Get<GetCandidateApiResponse>(
+                        new GetCandidateApiRequest(savedSearch.UserReference.ToString()));
+
+                if (candidate == null || candidate.Status == UserStatus.Deleted ||
+                    candidate.Status == UserStatus.Dormant) continue;
+
+                var routesTask = CourseService.GetRoutes();
+                var levelsTask = CourseService.GetLevels();
+
+                await Task.WhenAll(routesTask, levelsTask);
+                var routesList = routesTask.Result;
+                var levelsList = levelsTask.Result;
+                var taskList = savedSearchResponse.SavedSearches.Select(savedSearch =>
+                    GetSavedSearchResults(request, savedSearch, routesList, levelsList, searchResultList)).ToList();
+                await Task.WhenAll(taskList);
+                return new GetSavedSearchesQueryResult
+                {
+                    PageSize = savedSearchResponse.PageSize,
+                    PageIndex = savedSearchResponse.PageIndex,
+                    TotalPages = savedSearchResponse.TotalPages,
+                    TotalCount = savedSearchResponse.TotalCount,
+                    SavedSearchResults = searchResultList.ToList()
+                };
+            }
+
             return new GetSavedSearchesQueryResult
             {
                 PageSize = savedSearchResponse.PageSize,
@@ -52,8 +73,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
             };
         }
 
-        private async Task GetSavedSearchResults(GetSavedSearchesQuery request, GetSavedSearchesApiResponse.SavedSearch savedSearch,
-            GetRoutesListResponse routesList, GetCourseLevelsListResponse levelsList, ConcurrentBag<GetSavedSearchesQueryResult.SearchResult> searchResultList)
+        private async Task GetSavedSearchResults(GetSavedSearchesQuery request,
+            GetSavedSearchesApiResponse.SavedSearch savedSearch,
+            GetRoutesListResponse routesList, GetCourseLevelsListResponse levelsList,
+            ConcurrentBag<GetSavedSearchesQueryResult.SearchResult> searchResultList)
         {
             var candidate =
                 await CandidateApiClient.Get<GetCandidateApiResponse>(
@@ -62,9 +85,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
             if (candidate == null || candidate.Status == UserStatus.Deleted) return;
 
             var categories = routesList.Routes
-                .Where(route =>
-                    savedSearch.SearchParameters.SelectedRouteIds != null
-                    && savedSearch.SearchParameters.SelectedRouteIds.Contains(route.Id))
+                .Where(route => savedSearch.SearchParameters.SelectedRouteIds?.Contains(route.Id) ?? false)
                 .Select(route => new GetSavedSearchesQueryResult.SearchResult.Category
                 {
                     Id = route.Id,
@@ -72,9 +93,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                 }).ToList();
 
             var levels = levelsList.Levels
-                .Where(level =>
-                    savedSearch.SearchParameters.SelectedLevelIds != null &&
-                    savedSearch.SearchParameters.SelectedLevelIds.Contains(level.Code))
+                .Where(level => savedSearch.SearchParameters.SelectedLevelIds?.Contains(level.Code) ?? false)
                 .Select(level => new GetSavedSearchesQueryResult.SearchResult.Level
                 {
                     Code = level.Code,
@@ -83,14 +102,18 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
 
             var vacanciesResponse = await FindApprenticeshipApiClient.Get<GetVacanciesResponse>(
                 new GetVacanciesRequest(
-                    !string.IsNullOrEmpty(savedSearch.SearchParameters.Latitude) ? Convert.ToDouble(savedSearch.SearchParameters.Latitude) : null,
-                    !string.IsNullOrEmpty(savedSearch.SearchParameters.Longitude) ? Convert.ToDouble(savedSearch.SearchParameters.Longitude) : null,
+                    !string.IsNullOrEmpty(savedSearch.SearchParameters.Latitude)
+                        ? Convert.ToDouble(savedSearch.SearchParameters.Latitude)
+                        : null,
+                    !string.IsNullOrEmpty(savedSearch.SearchParameters.Longitude)
+                        ? Convert.ToDouble(savedSearch.SearchParameters.Longitude)
+                        : null,
                     savedSearch.SearchParameters.Distance,
                     savedSearch.SearchParameters.SearchTerm,
-                    1,  // Defaulting to top results.
+                    1, // Defaulting to top results.
                     request.MaxApprenticeshipSearchResultsCount, // Default page size set to 5.
-                    categories.Select(cat => cat.Id.ToString()).ToList(),
-                    savedSearch.SearchParameters.SelectedLevelIds,
+                    categories.Select(cat => cat.Name!).ToList(),
+                    levels.Select(level => level.Code).ToList(),
                     request.ApprenticeshipSearchResultsSortOrder,
                     savedSearch.SearchParameters.DisabilityConfident,
                     new List<VacancyDataSource>
@@ -118,5 +141,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                 searchResultList.Add(searchResult);
             }
         }
+
     }
 }

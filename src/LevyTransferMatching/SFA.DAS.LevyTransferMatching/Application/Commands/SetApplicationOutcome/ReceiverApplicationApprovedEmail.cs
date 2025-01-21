@@ -1,23 +1,28 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Models.Messages;
 
-namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome
+namespace SFA.DAS.LevyTransferMatching.Application.Commands.SetApplicationOutcome;
+
+public class ReceiverApplicationApprovedEmail : EmailTemplateArguments
 {
-    public class ReceiverApplicationApprovedEmail : EmailTemplateArguments
+    public ReceiverApplicationApprovedEmail(
+        string recipientEmail,
+        string employerName,
+        string reference,
+        string baseUrl,
+        string encodedAccountId,
+        string unsubscribeUrl
+        )
     {
-        public ReceiverApplicationApprovedEmail(
-             string recipientEmail,
-            string userName,
-            string reference
-            )
+        TemplateId = "ReceiverApplicationApproved";
+        RecipientAddress = recipientEmail;
+        Tokens = new Dictionary<string, string>
         {
-            TemplateId = "ReceiverApplicationApproved";
-            RecipientAddress = recipientEmail;
-            Tokens = new Dictionary<string, string>
-            {
-                {"user_name", userName },
-                {"reference", reference }
-            };
-        }
+            {"employer", employerName },
+            {"reference", reference },
+            {"base_url", baseUrl },
+            {"encodedAccountId", encodedAccountId },
+            {"unsubscribe_url", unsubscribeUrl }
+        };
     }
 }
