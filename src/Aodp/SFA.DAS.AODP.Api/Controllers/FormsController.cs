@@ -3,21 +3,18 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AODP.Application.Commands.FormBuilder.Forms;
 using SFA.DAS.AODP.Application.Queries.FormBuilder.Forms;
-using SFA.DAS.AODP.Domain.FormBuilder.Responses.Forms;
 
-namespace SFA.DAS.AODP.Api.AppStart;
+namespace SFA.DAS.AODP.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class FormsController : Controller
 {
     private readonly IMediator _mediator;
-    private readonly IMapper _mapper;
 
-    public FormsController(IMediator mediator, IMapper mapper)
+    public FormsController(IMediator mediator)
     {
         _mediator = mediator;
-        _mapper = mapper;
     }
 
     [HttpGet("/api/forms")]
@@ -29,7 +26,6 @@ public class FormsController : Controller
         var response = await _mediator.Send(query);
         if (response.Success)
         {
-            //var result = _mapper.Map<GetAllFormVersionsApiResponse>(response);
             return Ok(response);
         }
 
@@ -50,10 +46,8 @@ public class FormsController : Controller
 
         if (response.Success)
         {
-            //var result = _mapper.Map<GetFormVersionByIdApiResponse>(response);
             if (response.Data is null)
                 return NotFound();
-
 
             return Ok(response);
         }
@@ -74,7 +68,6 @@ public class FormsController : Controller
         var response = await _mediator.Send(command);
         if (response.Success)
         {
-            //var result = _mapper.Map<CreateFormVersionApiResponse>(response);
             if (response.Data is null)
                 return NotFound();
             return Ok(response);
@@ -97,7 +90,6 @@ public class FormsController : Controller
 
         if (response.Success)
         {
-            //var result = _mapper.Map<UpdateFormVersionApiResponse>(response);
             if (response.Data is null)
                 return NotFound();
             return Ok(response);
@@ -110,15 +102,43 @@ public class FormsController : Controller
     }
 
     [HttpPut("/api/forms/{formVersionId}/publish")]
+    [ProducesResponseType(typeof(PublishFormVersionCommandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> PublishAsync(Guid formVersionId)
     {
-        return Ok();
+        var command = new PublishFormVersionCommand(formVersionId);
+
+        var response = await _mediator.Send(command);
+
+        if (response.Success)
+        {
+            return Ok(response);
+        }
+
+        var errorObjectResult = new ObjectResult(response.ErrorMessage);
+        errorObjectResult.StatusCode = StatusCodes.Status500InternalServerError;
+
+        return errorObjectResult;
     }
 
     [HttpPut("/api/forms/{formVersionId}/unpublish")]
+    [ProducesResponseType(typeof(UnpublishFormVersionCommandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UnpublishAsync(Guid formVersionId)
     {
-        return Ok();
+        var command = new UnpublishFormVersionCommand(formVersionId);
+
+        var response = await _mediator.Send(command);
+
+        if (response.Success)
+        {
+            return Ok(response);
+        }
+
+        var errorObjectResult = new ObjectResult(response.ErrorMessage);
+        errorObjectResult.StatusCode = StatusCodes.Status500InternalServerError;
+
+        return errorObjectResult;
     }
 
     [HttpDelete("/api/forms/{formVersionId}")]

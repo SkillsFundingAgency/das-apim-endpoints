@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.AODP.Api.AppStart;
 using SFA.DAS.AODP.Application.Commands;
+using SFA.DAS.AODP.Application.Commands.FormBuilder.Forms;
 using SFA.DAS.AODP.AutoMapper.Profiles;
 using SFA.DAS.AODP.Swashbuckle;
 using SFA.DAS.SharedOuterApi.AppStart;
@@ -52,7 +53,7 @@ builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
-builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(TestCommandHandler).Assembly));
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(CreateFormVersionCommandHandler).Assembly));
 
 var app = builder.Build();
 

@@ -1,10 +1,7 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AODP.Application.Commands.FormBuilder.Sections;
 using SFA.DAS.AODP.Application.Queries.FormBuilder.Sections;
-using SFA.DAS.AODP.Domain.FormBuilder.Responses.Forms;
-using SFA.DAS.AODP.Domain.FormBuilder.Responses.Sections;
 
 namespace SFA.DAS.AODP.Api.Controllers;
 
@@ -13,12 +10,10 @@ namespace SFA.DAS.AODP.Api.Controllers;
 public class SectionsController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IMapper _mapper;
 
-    public SectionsController(IMediator mediator, IMapper mapper)
+    public SectionsController(IMediator mediator)
     {
         _mediator = mediator;
-        _mapper = mapper;
     }
 
     [HttpGet("/api/sections/form/{formId}")]

@@ -13,12 +13,10 @@ namespace SFA.DAS.AODP.Api.Controllers;
 public class PagesController : Controller
 {
     private readonly IMediator _mediator;
-    private readonly IMapper _mapper;
 
-    public PagesController(IMediator mediator, IMapper mapper)
+    public PagesController(IMediator mediator)
     {
         _mediator = mediator;
-        _mapper = mapper;
     }
 
     [HttpGet("/api/pages/section/{sectionId}")]
