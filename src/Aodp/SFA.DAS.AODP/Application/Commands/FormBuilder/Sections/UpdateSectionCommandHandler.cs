@@ -1,17 +1,18 @@
 ﻿using AutoMapper;
 using MediatR;
-using SFA.DAS.AODP.Api;
 using SFA.DAS.AODP.Domain.FormBuilder.Requests.Sections;
 using SFA.DAS.AODP.Domain.FormBuilder.Responses.Sections;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Sections;
 
 public class UpdateSectionCommandHandler : IRequestHandler<UpdateSectionCommand, UpdateSectionCommandResponse>
 {
-    private readonly IApiClient _apiClient;
+    private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
     private readonly IMapper _mapper;
 
-    public UpdateSectionCommandHandler(IApiClient apiClient, IMapper mapper)
+    public UpdateSectionCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient, IMapper mapper)
     {
         _apiClient = apiClient;
         _mapper = mapper;
@@ -28,8 +29,8 @@ public class UpdateSectionCommandHandler : IRequestHandler<UpdateSectionCommand,
         {
             var apiRequestData = _mapper.Map<UpdateSectionApiRequest.Section>(request.Data);
             var apiRequest = new UpdateSectionApiRequest(request.FormVersionId, apiRequestData);
-            var result = await _apiClient.Put<UpdateSectionApiResponse>(apiRequest);
-            _mapper.Map(result.Data, response.Data);
+            var result = await _apiClient.PutWithResponseCode<UpdateSectionApiResponse>(apiRequest);
+            _mapper.Map(result.Body.Data, response.Data);
             response.Success = true;
         }
         catch (Exception ex)

@@ -1,17 +1,18 @@
 ﻿using AutoMapper;
 using MediatR;
-using SFA.DAS.AODP.Api;
 using SFA.DAS.AODP.Domain.FormBuilder.Requests.Pages;
 using SFA.DAS.AODP.Domain.FormBuilder.Responses.Pages;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AODP.Application.FormBuilder.Pages.Queries;
 
 public class GetAllPagesQueryHandler : IRequestHandler<GetAllPagesQuery, GetAllPagesQueryResponse>
 {
-    private readonly IApiClient _apiClient;
+    private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
     private readonly IMapper _mapper;
 
-    public GetAllPagesQueryHandler(IApiClient apiClient, IMapper mapper)
+    public GetAllPagesQueryHandler(IAodpApiClient<AodpApiConfiguration> apiClient, IMapper mapper)
     {
         _apiClient = apiClient;
         _mapper = mapper;

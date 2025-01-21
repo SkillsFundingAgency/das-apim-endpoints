@@ -1,15 +1,16 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.Api;
 using SFA.DAS.AODP.Domain.FormBuilder.Requests.Sections;
 using SFA.DAS.AODP.Domain.FormBuilder.Responses.Sections;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Sections;
 
 public class DeleteSectionCommandHandler : IRequestHandler<DeleteSectionCommand, DeleteSectionCommandResponse>
 {
-    private readonly IApiClient _apiClient;
+    private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
-    public DeleteSectionCommandHandler(IApiClient apiClient)
+    public DeleteSectionCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
     {
         _apiClient = apiClient;
     }
@@ -23,8 +24,8 @@ public class DeleteSectionCommandHandler : IRequestHandler<DeleteSectionCommand,
 
         try
         {
-            var result = await _apiClient.Delete<DeleteSectionApiResponse>(new DeleteSectionApiRequest(request.SectionId));
-            response.Data = result!.Data;
+            await _apiClient.Delete(new DeleteSectionApiRequest(request.SectionId));
+            response.Data = true;
             response.Success = true;
         }
         catch (Exception ex)

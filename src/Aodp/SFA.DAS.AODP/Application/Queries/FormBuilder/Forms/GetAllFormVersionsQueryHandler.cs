@@ -1,19 +1,20 @@
 ﻿using AutoMapper;
 using MediatR;
-using SFA.DAS.AODP.Api;
 using SFA.DAS.AODP.Domain.FormBuilder.Requests.Forms;
 using SFA.DAS.AODP.Domain.FormBuilder.Responses.Forms;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AODP.Application.Queries.FormBuilder.Forms;
 
 public class GetAllFormVersionsQueryHandler : IRequestHandler<GetAllFormVersionsQuery, GetAllFormVersionsQueryResponse>
 {
-    private readonly IApiClient _apiClient;
+    private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
     private readonly IMapper _mapper;
 
-    public GetAllFormVersionsQueryHandler(IApiClient apiClient, IMapper mapper)
+    public GetAllFormVersionsQueryHandler(IAodpApiClient<AodpApiConfiguration> aodpApiClient, IMapper mapper)
     {
-        _apiClient = apiClient;
+        _apiClient = aodpApiClient;
         _mapper = mapper;
     }
 

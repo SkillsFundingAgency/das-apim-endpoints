@@ -1,15 +1,16 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.Api;
 using SFA.DAS.AODP.Domain.FormBuilder.Requests.Forms;
 using SFA.DAS.AODP.Domain.FormBuilder.Responses.Forms;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Forms;
 
 public class DeleteFormVersionCommandHandler : IRequestHandler<DeleteFormVersionCommand, DeleteFormVersionCommandResponse>
 {
-    private readonly IApiClient _apiClient;
+    private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
-    public DeleteFormVersionCommandHandler(IApiClient apiClient)
+    public DeleteFormVersionCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
     {
         _apiClient = apiClient;
     }
@@ -21,8 +22,8 @@ public class DeleteFormVersionCommandHandler : IRequestHandler<DeleteFormVersion
 
         try
         {
-            var result = await _apiClient.Delete<DeleteFormVersionApiResponse>(new DeleteFormVersionApiRequest(request.FormVersionId));
-            response.Data = result!.Data;
+            await _apiClient.Delete(new DeleteFormVersionApiRequest(request.FormVersionId));
+            response.Data = true;
             response.Success = true;
         }
         catch (Exception ex)

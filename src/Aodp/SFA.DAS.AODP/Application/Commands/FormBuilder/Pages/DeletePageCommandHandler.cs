@@ -1,15 +1,16 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.Api;
 using SFA.DAS.AODP.Domain.FormBuilder.Requests.Pages;
 using SFA.DAS.AODP.Domain.FormBuilder.Responses.Pages;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Pages;
 
 public class DeletePageCommandHandler : IRequestHandler<DeletePageCommand, DeletePageCommandResponse>
 {
-    private readonly IApiClient _apiClient;
+    private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
-    public DeletePageCommandHandler(IApiClient apiClient)
+    public DeletePageCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
     {
         _apiClient = apiClient;
     }
@@ -20,8 +21,8 @@ public class DeletePageCommandHandler : IRequestHandler<DeletePageCommand, Delet
 
         try
         {
-            var result = await _apiClient.Delete<DeletePageApiResponse>(new DeletePageApiRequest(request.PageId));
-            response.Data = result!.Data;
+            await _apiClient.Delete(new DeletePageApiRequest(request.PageId));
+            response.Data = true;
             response.Success = true;
         }
         catch (Exception ex)

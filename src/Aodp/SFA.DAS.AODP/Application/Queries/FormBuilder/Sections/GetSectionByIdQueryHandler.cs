@@ -1,17 +1,18 @@
 ﻿using AutoMapper;
 using MediatR;
-using SFA.DAS.AODP.Api;
 using SFA.DAS.AODP.Domain.FormBuilder.Requests.Sections;
 using SFA.DAS.AODP.Domain.FormBuilder.Responses.Sections;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AODP.Application.Queries.FormBuilder.Sections;
 
 public class GetSectionByIdQueryHandler : IRequestHandler<GetSectionByIdQuery, GetSectionByIdQueryResponse>
 {
-    private readonly IApiClient _apiClient;
+    private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
     private readonly IMapper _mapper;
 
-    public GetSectionByIdQueryHandler(IApiClient apiClient, IMapper mapper)
+    public GetSectionByIdQueryHandler(IAodpApiClient<AodpApiConfiguration> apiClient, IMapper mapper)
     {
         _apiClient = apiClient;
         _mapper = mapper;

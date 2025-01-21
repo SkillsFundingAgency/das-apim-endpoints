@@ -1,19 +1,20 @@
 ﻿using AutoMapper;
 using MediatR;
-using SFA.DAS.AODP.Api;
 using SFA.DAS.AODP.Domain.FormBuilder.Requests.Forms;
 using SFA.DAS.AODP.Domain.FormBuilder.Responses.Forms;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Forms;
 
 public class CreateFormVersionCommandHandler : IRequestHandler<CreateFormVersionCommand, CreateFormVersionCommandResponse>
 {
-    private readonly IApiClient _apiClient;
+    private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
     private readonly IMapper _mapper;
 
-    public CreateFormVersionCommandHandler(IApiClient apiClient, IMapper mapper)
+    public CreateFormVersionCommandHandler(IAodpApiClient<AodpApiConfiguration> aodpApiClient, IMapper mapper)
     {
-        _apiClient = apiClient;
+        _apiClient = aodpApiClient;
         _mapper = mapper;
     }
 
@@ -28,7 +29,7 @@ public class CreateFormVersionCommandHandler : IRequestHandler<CreateFormVersion
         {
             var apiRequestData = _mapper.Map<CreateFormVersionApiRequest.FormVersion>(request.Data);
             var result = await _apiClient.PostWithResponseCode<CreateFormVersionApiResponse>(new CreateFormVersionApiRequest(apiRequestData));
-            _mapper.Map(result!.Data, response.Data);
+            _mapper.Map(result.Body.Data, response.Data);
             response.Success = true;
         }
         catch (Exception ex)

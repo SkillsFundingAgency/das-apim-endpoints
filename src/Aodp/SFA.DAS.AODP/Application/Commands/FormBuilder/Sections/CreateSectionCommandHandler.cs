@@ -1,17 +1,18 @@
 ﻿using AutoMapper;
 using MediatR;
-using SFA.DAS.AODP.Api;
 using SFA.DAS.AODP.Domain.FormBuilder.Requests.Sections;
 using SFA.DAS.AODP.Domain.FormBuilder.Responses.Sections;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Sections;
 
 public class CreateSectionCommandHandler : IRequestHandler<CreateSectionCommand, CreateSectionCommandResponse>
 {
-    private readonly IApiClient _apiClient;
+    private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
     private readonly IMapper _mapper;
 
-    public CreateSectionCommandHandler(IApiClient apiClient, IMapper mapper)
+    public CreateSectionCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient, IMapper mapper)
     {
         _apiClient = apiClient;
         _mapper = mapper;
@@ -28,7 +29,7 @@ public class CreateSectionCommandHandler : IRequestHandler<CreateSectionCommand,
         {
             var apiRequestData = _mapper.Map<CreateSectionApiRequest.Section>(request.Data);
             var result = await _apiClient.PostWithResponseCode<CreateSectionApiResponse>(new CreateSectionApiRequest(apiRequestData));
-            _mapper.Map(result!.Data, response.Data);
+            _mapper.Map(result.Body.Data, response.Data);
             response.Success = true;
         }
         catch (Exception ex)
