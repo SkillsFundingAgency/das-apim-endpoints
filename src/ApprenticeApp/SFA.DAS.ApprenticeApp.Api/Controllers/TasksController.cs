@@ -1,9 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Commands;
+using SFA.DAS.ApprenticeApp.Application.Commands.Tasks;
 using SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
+using SFA.DAS.ApprenticeApp.Application.Queries.Tasks;
 using SFA.DAS.ApprenticeApp.Models;
 using System;
 using System.Collections.Generic;
@@ -188,6 +190,33 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             };
 
             return Ok(getTaskViewDataResult);
+        }
+
+        [HttpGet("/apprentices/{apprenticeId}/progress/tasks/taskReminders")]
+        public async Task<IActionResult> GetTaskReminders(Guid apprenticeId)
+        {
+            var apprenticeDetailsResult = await _mediator.Send(new GetApprenticeDetailsQuery { ApprenticeId = apprenticeId }); ;
+            if (apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship == null)
+                return Ok();
+
+            var taskRemindersResult = await _mediator.Send(new GetTaskRemindersByApprenticeshipIdQuery
+            {
+                ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId
+            });
+
+            return Ok(taskRemindersResult.TaskReminders);
+        }
+
+        [HttpPost("/apprentices/{apprenticeId}/progress/tasks/taskReminders/{taskId}/{statusId}")]
+        public async Task<IActionResult> UpdateTaskReminder(Guid apprenticeId, int taskId, int statusId)
+        {
+            await _mediator.Send(new UpdateApprenticeTaskReminderCommand
+            {
+                TaskId = taskId,
+                StatusId = statusId
+            });
+
+            return Ok();
         }
     }
 }

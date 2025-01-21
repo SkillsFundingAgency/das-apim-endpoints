@@ -1,23 +1,18 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetAdditionalQuestion;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetAdditionalQuestion;
+using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply;
 public class WhenHandlingGetAdditionalQuestionQuery
 {
     [Test]
-    [MoqInlineAutoData(1, Domain.Constants.SectionStatus.Completed, true)]
-    [MoqInlineAutoData(1, Domain.Constants.SectionStatus.Incomplete, false)]
-    [MoqInlineAutoData(2, Domain.Constants.SectionStatus.Completed, true)]
-    [MoqInlineAutoData(2, Domain.Constants.SectionStatus.Incomplete, false)]
+    [MoqInlineAutoData(1, Constants.SectionStatus.Completed, true)]
+    [MoqInlineAutoData(1, Constants.SectionStatus.Incomplete, false)]
+    [MoqInlineAutoData(2, Constants.SectionStatus.Completed, true)]
+    [MoqInlineAutoData(2, Constants.SectionStatus.Incomplete, false)]
     public async Task Then_The_QueryResult_Is_Returned_As_Expected(
         int additionalQuestion,
         string sectionStatus,

@@ -4,6 +4,10 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Humanizer;
+using Microsoft.OpenApi.Extensions;
+using SFA.DAS.FindAnApprenticeship.Domain;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference
@@ -11,7 +15,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
     public class GetApprenticeshipVacancyQueryResult
     {
         public Vacancy ApprenticeshipVacancy { get; init; }
-        public GetStandardsListItemResponse CourseDetail { get; init; }
+        public GetStandardsListItemResponse CourseDetail { get; set; }
         public List<GetCourseLevelsListItem> Levels { get; init; }
         public CandidateApplication Application { get; init; }
         public string CandidatePostcode { get; set; }
@@ -101,40 +105,111 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string? AdditionalTrainingDescription { get; set; }
             public string ApplicationUrl { get; set; }
             public string ApplicationInstructions { get; set; }
+            public VacancyDataSource VacancySource { get; set; }
             
-            public static Vacancy FromIVacancy(IVacancy source)
+            public static Vacancy FromIVacancy(IVacancy source, GetStandardsListItemResponse courseResult = null)
             {
                 return source switch
                 {
-                    GetClosedVacancyResponse response => response,
-                    GetApprenticeshipVacancyItemResponse response => response,
+                    GetClosedVacancyResponse response => From(response, courseResult),
+                    GetApprenticeshipVacancyItemResponse response => From(response),
                     _ => throw new InvalidCastException()
                 };
             }
 
-            public static implicit operator Vacancy(GetClosedVacancyResponse source)
+            private static Vacancy From(GetClosedVacancyResponse source, GetStandardsListItemResponse courseResult)
             {
+                var durationUnit = (DurationUnit)source.Wage.DurationUnit;
+                
                 return new Vacancy
                 {
-                    Id = source.VacancyReferenceNumeric.ToString(),
-                    VacancyReference = source.VacancyReference,
-                    EmployerName = source.EmployerName,
-                    Title = source.Title,
-                    ClosingDate = source.ClosedDate ?? source.ClosingDate,
-                    IsClosed = true,
+                    AdditionalTrainingDescription = source.AdditionalTrainingDescription,
+                    AdditionalQuestion1 = source.AdditionalQuestion1,
+                    AdditionalQuestion2 = source.AdditionalQuestion2,
                     Address = new Address
                     {
                         AddressLine1 = source.EmployerLocation?.AddressLine1,
                         AddressLine2 = source.EmployerLocation?.AddressLine2,
                         AddressLine3 = source.EmployerLocation?.AddressLine3,
                         AddressLine4 = source.EmployerLocation?.AddressLine4,
-                        Postcode = source.EmployerLocation?.Postcode
+                        Postcode = source.EmployerLocation?.Postcode,
                     },
-                    Ukprn = source.TrainingProvider.Ukprn.ToString()
+                    AnonymousEmployerName = source.IsAnonymous ? source.EmployerName : null,
+                    ApplicationInstructions = source.ApplicationInstructions,
+                    ApplicationUrl = source.ApplicationUrl,
+                    ApprenticeshipLevel = GetApprenticeshipLevel(courseResult?.Level),
+                    ClosingDate = source.ClosedDate ?? source.ClosingDate,
+                    CourseId = source.CourseId,
+                    CourseLevel = courseResult?.Level.ToString(),
+                    CourseTitle = courseResult?.Title,
+                    Description = source.ShortDescription,
+                    EmployerContactEmail = source.EmployerContact?.Email,
+                    EmployerContactName = source.EmployerContact?.Name,
+                    EmployerContactPhone = source.EmployerContact?.Phone,
+                    EmployerDescription = source.EmployerDescription,
+                    EmployerName = source.EmployerName,
+                    EmployerWebsiteUrl = source.EmployerWebsiteUrl,
+                    ExpectedDuration = durationUnit.GetDisplayName().ToLower().ToQuantity(source.Wage.Duration),
+                    HoursPerWeek = source.Wage.WeeklyHours,
+                    Id = source.VacancyReference.Replace("VAC", ""),
+                    IsClosed = source.ClosedDate.HasValue,
+                    IsDisabilityConfident = source.IsDisabilityConfident,
+                    IsEmployerAnonymous = source.IsAnonymous,
+                    IsPositiveAboutDisability = false,
+                    IsRecruitVacancy = true,
+                    Location = new Location
+                    {
+                        Lat = source.EmployerLocation?.Latitude ?? 0,
+                        Lon = source.EmployerLocation?.Longitude ?? 0,
+                    },
+                    LongDescription = source.Description,
+                    NumberOfPositions = source.NumberOfPositions,
+                    OutcomeDescription = source.OutcomeDescription,
+                    PostedDate = source.LiveDate,
+                    ProviderContactEmail = source.ProviderContact?.Email,
+                    ProviderContactName = source.ProviderContact?.Name,
+                    ProviderContactPhone = source.ProviderContact?.Phone,
+                    ProviderName = source.TrainingProvider.Name,
+                    Qualifications = source.Qualifications.Select(q => new VacancyQualification
+                    {
+                        QualificationType = q.QualificationType,
+                        Subject = q.Subject,
+                        Grade = q.Grade,
+                        Weighting = (Weighting)q.Weighting
+                    }),
+                    Skills = source.Skills,
+                    StartDate = source.StartDate,
+                    ThingsToConsider = source.ThingsToConsider,
+                    Title = source.Title,
+                    TrainingDescription = source.TrainingDescription,
+                    Ukprn = source.TrainingProvider.Ukprn.ToString(),
+                    VacancyLocationType = source.VacancyLocationType,
+                    VacancyReference = source.VacancyReference.Replace("VAC", ""),
+                    WageAdditionalInformation = source.Wage.WageAdditionalInformation,
+                    WageType = source.Wage.WageType,
+                    WageUnit = source.Wage.DurationUnit,
+                    WageText = source.Wage.ToDisplayText(source.StartDate),
+                    WorkingWeek = source.Wage.WorkingWeekDescription,
+                    VacancySource = source.VacancySource,
+                };
+            }
+            
+            private static string GetApprenticeshipLevel(int? level)
+            {
+                return level switch
+                {
+                    0 => "Unknown",
+                    2 => "Intermediate",
+                    3 => "Advanced",
+                    4 => "Higher",
+                    5 => "Higher",
+                    6 => "Degree",
+                    7 => "Degree",
+                    _ => string.Empty
                 };
             }
 
-            public static implicit operator Vacancy(GetApprenticeshipVacancyItemResponse source)
+            private static Vacancy From(GetApprenticeshipVacancyItemResponse source)
             {
                 return new Vacancy
                 {
@@ -205,7 +280,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     ApplicationUrl = source.ApplicationUrl,
                     ApplicationInstructions = source.ApplicationInstructions,
                     CompanyBenefitsInformation = source.CompanyBenefitsInformation,
-                    AdditionalTrainingDescription = source.AdditionalTrainingDescription
+                    AdditionalTrainingDescription = source.AdditionalTrainingDescription,
+                    VacancySource = source.VacancySource,
                 };
             }
         }

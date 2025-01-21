@@ -7,6 +7,8 @@ parameters:
   AdditionalProjectPathToInclude: ''
   AdditionalTestProjectPathToInclude: ''
   ConfigurationSecrets: {}
+  useProductAppInsights: ''
+  AzureArtifactsFeed: ''
 
 stages:
 - stage: Build
@@ -26,6 +28,7 @@ stages:
         ${{ parameters.AdditionalTestProjectPathToInclude }}
       AcceptanceTestProjects: 'src/${{ parameters.OuterApiName }}/**/*AcceptanceTests.csproj'
       PublishProject: 'src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.Api/SFA.DAS.${{ parameters.OuterApiName }}.Api.csproj'
+      AzureArtifactsFeed: ${{ parameters.AzureArtifactsFeed }}
 
 - stage: Deploy_AT
   dependsOn: Build
@@ -56,6 +59,7 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -86,6 +90,7 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -116,6 +121,7 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
 
 - stage: Deploy_PP
   dependsOn: Build
@@ -146,6 +152,8 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
+
 
 - stage: Deploy_PROD
   dependsOn: Build
@@ -175,6 +183,7 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
 
 - stage: Deploy_MO
   dependsOn: Build
@@ -204,6 +213,7 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
 
 - stage: Deploy_DEMO
   dependsOn: Build
@@ -234,3 +244,4 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}

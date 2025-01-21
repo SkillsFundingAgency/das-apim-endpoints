@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
 {
@@ -20,8 +22,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
         public TrainingProviderDetails TrainingProvider { get; set; }
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
-        [JsonIgnore]
-        public bool IsDisabilityConfident => DisabilityConfident is "Yes";
+        public bool IsDisabilityConfident { get; set; }
+
         [JsonPropertyName("disabilityConfident")]
         public dynamic DisabilityConfident { get; set; }
 		public DateTime? ClosedDate { get; set; }
@@ -29,6 +31,28 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
         public string Postcode => EmployerLocation.Postcode;
         public bool IsExternalVacancy => false;
         public string ExternalVacancyUrl => string.Empty;
+        public VacancyDataSource VacancySource { get; set; }
+
+        public string AdditionalTrainingDescription { get; set; }
+        public string ApplicationInstructions { get; set; }
+        public string ApplicationUrl { get; set; }
+        public string Description { get; set; }
+        public ContactDetail EmployerContact { get; set; }
+        public string EmployerDescription { get; set; }
+        public string EmployerWebsiteUrl { get; set; }
+        public bool IsAnonymous { get; set; }
+        public DateTime LiveDate { get; set; }
+        public int NumberOfPositions { get; set; }
+        public string OutcomeDescription { get; set; }
+        public ContactDetail ProviderContact { get; set; }
+        public IEnumerable<Qualification> Qualifications { get; init; } = [];
+        public string ShortDescription { get; set; }
+        public IEnumerable<string> Skills { get; init; } = [];
+        public DateTime StartDate { get; set; }
+        public string ThingsToConsider { get; set; }
+        public string TrainingDescription { get; set; }
+        public VacancyLocationType VacancyLocationType { get; set; }
+        public Wage Wage { get; set; }
 
         public class Address
         {
@@ -42,6 +66,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
             public string AddressLine4 { get; set; }
             [JsonPropertyName("postcode")]
             public string Postcode { get; set; }
+            public double? Latitude { get; set; }
+            public double? Longitude { get; set; }
         }
 
         public class TrainingProviderDetails
@@ -49,6 +75,32 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
             public string Name { get; set; }
             public int Ukprn { get; set; }
         }
+
+        public class Qualification
+        {
+            public string QualificationType { get; set; }
+            public string Subject { get; set; }
+            public string Grade { get; set; }
+            public int Weighting { get; set; }
+        }
+        
+        public class ContactDetail
+        {
+            public string Name { get; set; }
+            public string Email { get; set; }
+            public string Phone { get; set; }
+        }
+    }
+    
+    public class Wage
+    {
+        public decimal? FixedWageYearlyAmount { get; set; }
+        public int Duration { get; set; }
+        public int DurationUnit { get; set; }
+        public string WageAdditionalInformation { get; set; }
+        public int WageType { get; set; }
+        public decimal? WeeklyHours { get; set; }
+        public string WorkingWeekDescription { get; set; }
     }
 
     public class GetClosedVacanciesByReferenceResponse

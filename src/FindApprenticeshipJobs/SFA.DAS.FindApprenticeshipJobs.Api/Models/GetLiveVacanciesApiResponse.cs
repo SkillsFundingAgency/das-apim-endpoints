@@ -173,6 +173,7 @@ public class GetLiveVacanciesApiResponse
                 AddressLine2 = source.AddressLine2,
                 AddressLine3 = source.AddressLine3,
                 AddressLine4 = source.AddressLine4,
+                Country = source.Country,
                 Postcode = source.Postcode,
                 Latitude = source.Latitude,
                 Longitude = source.Longitude
@@ -183,6 +184,7 @@ public class GetLiveVacanciesApiResponse
         public string? AddressLine2 { get; set; }
         public string? AddressLine3 { get; set; }
         public string? AddressLine4 { get; set; }
+        public string? Country { get; set; }
         public string? Postcode { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }

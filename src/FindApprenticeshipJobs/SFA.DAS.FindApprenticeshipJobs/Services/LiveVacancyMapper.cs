@@ -84,6 +84,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Postcode = source.EmployerLocation?.Postcode,
                     Latitude = source.EmployerLocation?.Latitude ?? 0,
                     Longitude = source.EmployerLocation?.Longitude ?? 0,
+                    Country = source.EmployerLocation?.Country
                 },
                 OtherAddresses = source.OtherAddresses is {Count: > 0} ? source.OtherAddresses.Select(add => (Address)add).ToList() : [],
                 Duration = source.Wage.Duration,
@@ -129,7 +130,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     AddressLine4 = location[0].Trim(),
                     Postcode = location[1].Trim(),
                     Latitude = locationLookup?.Location?.GeoPoint?.FirstOrDefault() ?? 0,
-                    Longitude = locationLookup?.Location?.GeoPoint?.LastOrDefault() ?? 0
+                    Longitude = locationLookup?.Location?.GeoPoint?.LastOrDefault() ?? 0,
+                    Country = locationLookup?.Country
                 },
                 Qualifications = [],
                 Skills = [],

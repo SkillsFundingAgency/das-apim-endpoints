@@ -5,7 +5,6 @@ using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification
@@ -18,10 +17,21 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
         public async Task<Unit> Handle(PostSendSavedSearchNotificationCommand command, CancellationToken cancellationToken)
         {
             var jsonPatchDocument = new JsonPatchDocument<PatchSavedSearch>();
-            jsonPatchDocument.Replace(x => x.EmailLastSendDate, DateTime.UtcNow);
+            if (command.Vacancies.Count != 0)
+            {
+                jsonPatchDocument.Replace(x => x.EmailLastSendDate, DateTime.UtcNow);    
+            }
+            
             jsonPatchDocument.Replace(x => x.LastRunDate, DateTime.UtcNow);
-
+            
             var patchRequest = new PatchSavedSearchApiRequest(command.Id, jsonPatchDocument);
+
+            if (command.Vacancies.Count == 0)
+            {
+                await FindApprenticeshipApiClient.PatchWithResponseCode(patchRequest);
+                return Unit.Value;
+            }
+            
 
             var vacanciesEmailSnippet = EmailTemplateBuilder.GetSavedSearchVacanciesSnippet(EmailEnvironmentHelper,
                 command.Vacancies, command.Location != null);
@@ -49,7 +59,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
                 string.Concat(EmailEnvironmentHelper.SearchUrl, queryParameters), 
                 string.Concat(EmailEnvironmentHelper.SavedSearchUnSubscribeUrl, command.UnSubscribeToken),
                 vacanciesEmailSnippet,
-                searchParamsEmailSnippet);
+                searchParamsEmailSnippet,
+                command.Vacancies.Count > 5 ? "yes" : "no");
 
             await Task.WhenAll(
                 FindApprenticeshipApiClient.PatchWithResponseCode(patchRequest),
@@ -58,7 +69,5 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
 
             return Unit.Value;
         }
-        
-        
     }
 }
