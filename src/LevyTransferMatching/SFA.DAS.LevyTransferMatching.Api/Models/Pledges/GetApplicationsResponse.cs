@@ -56,19 +56,19 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
             public IEnumerable<string> Sectors { get; set; }
         }
 
-        public static explicit operator GetApplicationsResponse(GetApplicationsQueryResult v)
+        public static explicit operator GetApplicationsResponse(GetApplicationsQueryResult queryResult)
         {
             return new GetApplicationsResponse
             {
-                TotalItems = v.TotalItems,
-                TotalPages = v.TotalPages,
-                PageSize = v.PageSize,
-                Page = v.Page,
-                PledgeStatus = v.PledgeStatus,
-                PledgeRemainingAmount = v.RemainingAmount,
-                PledgeTotalAmount = v.TotalAmount,
-                AutomaticApprovalOption = v.AutomaticApprovalOption,
-                Applications = v.Items.Select(application => new Application
+                TotalItems = queryResult.TotalItems,
+                TotalPages = queryResult.TotalPages,
+                PageSize = queryResult.PageSize,
+                Page = queryResult.Page,
+                PledgeStatus = queryResult.PledgeStatus,
+                PledgeRemainingAmount = queryResult.RemainingAmount,
+                PledgeTotalAmount = queryResult.TotalAmount,
+                AutomaticApprovalOption = queryResult.AutomaticApprovalOption,
+                Applications = queryResult.Items.Select(application => new Application
                 {
                     Id = application.Id,
                     DasAccountName = application.DasAccountName,
