@@ -298,7 +298,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
         [Authorize(Policy = PolicyNames.PledgeAccess)]
         [HttpGet]
         [Route("accounts/{accountId}/pledges/{pledgeId}/applications")]
-        public async Task<IActionResult> PledgeApplications(int pledgeId, string sortOrder, string sortDirection, int page = 1, int? pageSize = null)
+        public async Task<IActionResult> PledgeApplications(int pledgeId, string sortOrder, string sortDirection, int? page = 1, int? pageSize = null)
         {
             var queryResult = await _mediator.Send(
                 new GetApplicationsQuery
@@ -306,7 +306,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     PledgeId = pledgeId,
                     SortOrder = sortOrder,
                     SortDirection = sortDirection,
-                    Page = page,
+                    Page = page.Value,
                     PageSize = pageSize
                 }
             );
