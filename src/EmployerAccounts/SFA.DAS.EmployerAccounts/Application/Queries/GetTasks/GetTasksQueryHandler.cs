@@ -92,7 +92,7 @@ public class GetTasksQueryHandler(
             NumberOfTransferRequestToReview = pendingTransferRequestsRequestsToReview?.Count() ?? 0,
             NumberOfApprenticesToReview = apprenticeChangesCount,
             NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices = pledgeApplicationsAcceptedIdsWithoutApprentices.Count,
-            SingleAcceptedTransferPledgeApplicationIdWithNoApprentices = pledgeApplicationsAcceptedIdsWithoutApprentices.Count == 1 ? pledgeApplicationsAcceptedIdsWithoutApprentices.First() : null
+            SingleAcceptedTransferPledgeApplicationIdWithNoApprentices = pledgeApplicationsAcceptedIdsWithoutApprentices.Count == 1 ? pledgeApplicationsAcceptedIdsWithoutApprentices[0] : null
         };
     }
 
@@ -105,19 +105,19 @@ public class GetTasksQueryHandler(
         
         var acceptedApplicationIdsWithoutApprentices = new List<int>();
 
-        foreach (var acceptedApplication in acceptedPledgeApplicationsResponse.Applications)
+        foreach (var acceptedApplicationId in acceptedPledgeApplicationsResponse.Applications.Select(x=> x.Id))
         {
             if (cohortsForThisAccount == null || cohortsForThisAccount.Count == 0)
             {
-                acceptedApplicationIdsWithoutApprentices.Add(acceptedApplication.Id);
+                acceptedApplicationIdsWithoutApprentices.Add(acceptedApplicationId);
                 continue;
             }
             
-            var cohortsForApplication = cohortsForThisAccount.Where(x => x.PledgeApplicationId == acceptedApplication.Id).ToList();
+            var cohortsForApplication = cohortsForThisAccount.Where(x => x.PledgeApplicationId == acceptedApplicationId).ToList();
 
             if (cohortsForApplication.Count == 0 || cohortsForApplication.Any(x => x.NumberOfDraftApprentices == 0))
             {
-                acceptedApplicationIdsWithoutApprentices.Add(acceptedApplication.Id);
+                acceptedApplicationIdsWithoutApprentices.Add(acceptedApplicationId);
             }
         }
 
