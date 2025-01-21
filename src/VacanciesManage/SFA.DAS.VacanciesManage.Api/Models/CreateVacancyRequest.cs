@@ -341,10 +341,9 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         [MaxLength(250)]
         public string CompanyBenefitsInformation { get; set; }
         /// <summary>
-        /// The total number of hours per week. This includes both work and training.
+        /// The total number of hours per week. This includes both work and training. Needs to be between 16 and 48 hours.
         /// </summary>
         [JsonPropertyName("weeklyHours")]
-        [Length(16, 48, ErrorMessage = "Needs to be between 16 and 48 hours.")]
         [Required]
         public decimal WeeklyHours { get ; set ; }
         /// <summary>
