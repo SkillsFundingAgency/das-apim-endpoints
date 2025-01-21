@@ -9,6 +9,7 @@ public class Address
     public string? Postcode { get; set; }
     public double Latitude { get; set; }
     public double Longitude { get; set; }
+    public string? Country { get; set; }
 
     public static implicit operator Address(InnerApi.Responses.Address source)
     {
@@ -20,7 +21,8 @@ public class Address
             AddressLine4 = source.AddressLine4,
             Postcode = source.Postcode,
             Latitude = source.Latitude,
-            Longitude = source.Longitude
+            Longitude = source.Longitude,
+            Country = source.Country
         };
     }
 }
