@@ -159,7 +159,6 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         /// </summary>
         /// <example>Car manufacturer or clothes retailer</example>
         [JsonPropertyName("employerDescription")]
-        [MaxLength (100)]
         [Required]
         public string EmployerDescription { get ; set ; }
         /// <summary>
@@ -167,7 +166,6 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         /// This will not appear on Find an apprenticeship but is needed for our quality assurance team to approve your vacancy.
         /// </summary>
         [JsonPropertyName("anonymousReason")]
-        [MaxLength(200)]
         public string AnonymousReason { get ; set ; }
         /// <summary>
         /// The web address for the employer’s website.
