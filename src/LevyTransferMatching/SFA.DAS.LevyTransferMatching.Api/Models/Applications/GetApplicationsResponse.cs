@@ -8,12 +8,20 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
     public class GetApplicationsResponse
     {
         public IEnumerable<Application> Applications { get; set; }
+        public int TotalItems { get; set; }
+        public int Page { get; set; }
+        public int TotalPages { get; set; }
+        public int PageSize { get; set; }
 
         public static implicit operator GetApplicationsResponse(GetApplicationsQueryResult source)
         {
             return new GetApplicationsResponse
             {
-                Applications = source.Applications.Select(x => (Application) x)
+                TotalItems = source.TotalItems,
+                TotalPages = source.TotalPages,
+                PageSize = source.PageSize,
+                Page = source.Page,
+                Applications = source.Items.Select(x => (Application) x)
             };
         }
 
