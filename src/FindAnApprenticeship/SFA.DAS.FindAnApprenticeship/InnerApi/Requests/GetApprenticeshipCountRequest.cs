@@ -12,19 +12,18 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
     int? pageSize,
     IReadOnlyCollection<string> categories,
     IReadOnlyCollection<int> levels,
-    VacancySort sort,
     WageType? wageType,
     bool disabilityConfident,
-    IReadOnlyCollection<VacancyDataSource> additionalDataSources)
+    IReadOnlyCollection<VacancyDataSource> dataSources)
     : IGetApiRequest
     {
         private readonly string _categories = categories is { Count: > 0 } ? string.Join("&categories=", categories) : string.Empty;
         private readonly string _levels = levels is { Count: > 0 } ? string.Join("&levels=", levels) : string.Empty;
-        private readonly string _additionalDataSources = additionalDataSources is { Count: > 0 } ? string.Join("&additionalDataSources=", additionalDataSources) : string.Empty;
+        private readonly string _dataSources = dataSources is { Count: > 0 } ? string.Join("&dataSources=", dataSources) : string.Empty;
 
 
         public string Version => "2.0";
         public string GetUrl =>
-            $"/api/vacancies/count?lat={lat}&lon={lon}&distanceInMiles={distance}&sort={sort}&pageNumber={pageNumber}&pageSize={pageSize}&categories={_categories}&levels={_levels}&searchTerm={searchTerm}&disabilityConfident={disabilityConfident}&wageType={wageType}&additionalDataSources={_additionalDataSources}";
+            $"/api/vacancies/count?lat={lat}&lon={lon}&distanceInMiles={distance}&pageNumber={pageNumber}&pageSize={pageSize}&categories={_categories}&levels={_levels}&searchTerm={searchTerm}&disabilityConfident={disabilityConfident}&wageType={wageType}&dataSources={_dataSources}";
     }
 }

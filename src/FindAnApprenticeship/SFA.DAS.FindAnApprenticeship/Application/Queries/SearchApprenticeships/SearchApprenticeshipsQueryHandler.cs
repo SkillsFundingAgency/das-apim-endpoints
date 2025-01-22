@@ -80,11 +80,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                             request.PageSize,
                             categories,
                             request.SelectedLevelIds,
-                            request.Sort,
                             WageType.CompetitiveSalary,
                             request.DisabilityConfident,
                             new List<VacancyDataSource>
                             {
+                                VacancyDataSource.Raa,
                                 VacancyDataSource.Nhs
                             })); ;
             }
