@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.AODP.Application.Queries.FormBuilder.Sections;
+﻿using SFA.DAS.Aodp.Application;
+
+namespace SFA.DAS.AODP.Application.Queries.FormBuilder.Sections;
 
 public class GetSectionByIdQueryResponse : BaseResponse
 {

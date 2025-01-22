@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.AODP.Application.FormBuilder.Pages.Queries;
+﻿using SFA.DAS.Aodp.Application;
+
+namespace SFA.DAS.AODP.Application.FormBuilder.Pages.Queries;
 
 public class GetAllPagesQueryResponse : BaseResponse
 {
