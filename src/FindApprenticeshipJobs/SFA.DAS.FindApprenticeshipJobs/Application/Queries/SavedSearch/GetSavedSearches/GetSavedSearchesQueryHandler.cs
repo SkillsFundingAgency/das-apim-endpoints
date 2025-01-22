@@ -85,9 +85,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
             if (candidate == null || candidate.Status == UserStatus.Deleted) return;
 
             var categories = routesList.Routes
-                .Where(route =>
-                    savedSearch.SearchParameters.SelectedRouteIds != null
-                    && savedSearch.SearchParameters.SelectedRouteIds.Contains(route.Id))
+                .Where(route => savedSearch.SearchParameters.SelectedRouteIds?.Contains(route.Id) ?? false)
                 .Select(route => new GetSavedSearchesQueryResult.SearchResult.Category
                 {
                     Id = route.Id,
@@ -95,9 +93,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                 }).ToList();
 
             var levels = levelsList.Levels
-                .Where(level =>
-                    savedSearch.SearchParameters.SelectedLevelIds != null &&
-                    savedSearch.SearchParameters.SelectedLevelIds.Contains(level.Code))
+                .Where(level => savedSearch.SearchParameters.SelectedLevelIds?.Contains(level.Code) ?? false)
                 .Select(level => new GetSavedSearchesQueryResult.SearchResult.Level
                 {
                     Code = level.Code,
@@ -116,8 +112,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
                     savedSearch.SearchParameters.SearchTerm,
                     1, // Defaulting to top results.
                     request.MaxApprenticeshipSearchResultsCount, // Default page size set to 5.
-                    categories.Select(cat => cat.Id.ToString()).ToList(),
-                    savedSearch.SearchParameters.SelectedLevelIds,
+                    categories.Select(cat => cat.Name!).ToList(),
+                    levels.Select(level => level.Code).ToList(),
                     request.ApprenticeshipSearchResultsSortOrder,
                     savedSearch.SearchParameters.DisabilityConfident,
                     new List<VacancyDataSource>
