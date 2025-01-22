@@ -1,7 +1,11 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Approvals.Extensions;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
@@ -16,6 +20,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshi
         public long AccountLegalEntityId { get; set; }
         public long? ProviderId { get; set; }
         public string CourseCode { get; set; }
+        public DateTime? StartDate { get; set; }
     }
 
     public class GetAddDraftApprenticeshipDetailsQueryResult
@@ -23,6 +28,8 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshi
         public string LegalEntityName { get; set; }
         public string ProviderName { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
+        public string StandardPageUrl { get; set; }
+        public int? ProposedMaxFunding { get; set; }
     }
 
     public class GetAddDraftApprenticeshipDetailsQueryHandler : IRequestHandler<GetAddDraftApprenticeshipDetailsQuery, GetAddDraftApprenticeshipDetailsQueryResult>
@@ -46,8 +53,9 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshi
 
             var providerResponseTask = _apiClient.GetWithResponseCode<GetProviderResponse>(new GetProviderRequest(providerId));
             var accountLegalEntityResponseTask = _apiClient.GetWithResponseCode<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(request.AccountLegalEntityId));
+            var courseTask = _apiClient.Get<GetTrainingProgrammeResponse>(new GetCalculatedVersionOfTrainingProgrammeRequest(request.CourseCode, request.StartDate));
 
-            await Task.WhenAll(providerResponseTask, accountLegalEntityResponseTask);
+            await Task.WhenAll(providerResponseTask, accountLegalEntityResponseTask, courseTask);
 
             if (providerResponseTask.Result.StatusCode == HttpStatusCode.NotFound || accountLegalEntityResponseTask.Result.StatusCode == HttpStatusCode.NotFound)
             {
@@ -59,6 +67,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshi
 
             var provider = providerResponseTask.Result.Body;
             var accountLegalEntity = accountLegalEntityResponseTask.Result.Body;
+            var course = courseTask.Result?.TrainingProgramme;
 
             if (provider == null || accountLegalEntity == null) return null;
 
@@ -74,7 +83,9 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshi
             {
                 LegalEntityName = accountLegalEntity.LegalEntityName,
                 ProviderName = provider.Name,
-                HasMultipleDeliveryModelOptions = deliveryModels.Count > 1
+                HasMultipleDeliveryModelOptions = deliveryModels.Count > 1,
+                StandardPageUrl = course?.StandardPageUrl,
+                ProposedMaxFunding = course?.FundingPeriods.GetFundingBandForDate(request.StartDate)
             };
         }
 

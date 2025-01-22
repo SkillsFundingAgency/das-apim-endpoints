@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using SFA.DAS.Aodp.Api.AppStart;
-using SFA.DAS.Aodp.Application.Commands;
+using SFA.DAS.AODP.Api.AppStart;
+using SFA.DAS.AODP.Application.Commands;
+using SFA.DAS.AODP.Application.Commands.FormBuilder.Forms;
+using SFA.DAS.AODP.AutoMapper.Profiles;
+using SFA.DAS.AODP.Swashbuckle;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;
 
@@ -20,10 +24,13 @@ builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen(c =>
     {
+        //Helps with schema's of the same name by adding a number at the end
+        var schemaHelper = new SwashbuckleSchemaHelper();
+        c.CustomSchemaIds(type => schemaHelper.GetSchemaId(type));
         c.SwaggerDoc("v1",
             new OpenApiInfo
             {
-                Title = "AodpOuterApi",
+                Title = "AODP Outer Api",
                 Version = "v1"
             });
     })
@@ -44,7 +51,9 @@ builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLev
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
-builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(TestCommandHandler).Assembly));
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(CreateFormVersionCommandHandler).Assembly));
 
 var app = builder.Build();
 
