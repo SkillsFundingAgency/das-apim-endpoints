@@ -17,11 +17,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Requests
             List<string> categories,
             List<int> levels,
             bool disabilityConfident,
-            List<VacancyDataSource> additionalDataSources)
+            List<VacancyDataSource> dataSources)
         {
-            var actual = new GetApprenticeshipCountRequest(lat, lon, distance, whatSearchTerm, pageNumber, pageSize, categories, levels, sort, wageType, disabilityConfident, additionalDataSources);
+            var actual = new GetApprenticeshipCountRequest(lat, lon, distance, whatSearchTerm, pageNumber, pageSize, categories, levels, wageType, disabilityConfident, dataSources);
 
-            actual.GetUrl.Should().Be($"/api/vacancies/count?lat={lat}&lon={lon}&distanceInMiles={distance}&sort={sort}&pageNumber={pageNumber}&pageSize={pageSize}&categories={string.Join("&categories=", categories)}&levels={string.Join("&levels=", levels)}&searchTerm={whatSearchTerm}&disabilityConfident={disabilityConfident}&wageType={wageType}&additionalDataSources={string.Join("&additionalDataSources=", additionalDataSources)}");
+            actual.GetUrl.Should().Be($"/api/vacancies/count?lat={lat}&lon={lon}&distanceInMiles={distance}&pageNumber={pageNumber}&pageSize={pageSize}&categories={string.Join("&categories=", categories)}&levels={string.Join("&levels=", levels)}&searchTerm={whatSearchTerm}&disabilityConfident={disabilityConfident}&wageType={wageType}&dataSources={string.Join("&dataSources=", dataSources)}");
             actual.Version.Should().Be("2.0");
         }
     }
