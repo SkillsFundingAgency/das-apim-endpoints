@@ -164,12 +164,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
 
                 IsEmployerAnonymous = source.ApprenticeshipVacancy.IsEmployerAnonymous,
                 Address = source.ApprenticeshipVacancy.Address,
-                Qualifications = source.ApprenticeshipVacancy?.Qualifications?.Select(l => (VacancyQualificationApiResponse) l),
-                
-                CourseOverviewOfRole = source.CourseDetail?.OverviewOfRole,
-                StandardPageUrl = source.CourseDetail?.StandardPageUrl,
-                CourseCoreDuties = source.CourseDetail?.CoreDuties,
-                CourseSkills = source.CourseDetail?.Skills,
+                Qualifications = source.ApprenticeshipVacancy.Qualifications?.Select(l => (VacancyQualificationApiResponse) l),
+                CourseOverviewOfRole = source.CourseDetail?.OverviewOfRole ?? string.Empty,
+                StandardPageUrl = source.CourseDetail?.StandardPageUrl ?? string.Empty,
+                CourseCoreDuties = source.CourseDetail?.CoreDuties ?? [],
+                CourseSkills = source.CourseDetail?.Skills ?? [],
                 Levels = source.Levels,
                 Application = (CandidateApplication)source.Application,
 
