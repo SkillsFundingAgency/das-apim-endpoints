@@ -25,4 +25,8 @@
 	  <ProjectReference Include="..\SFA.DAS.Aodp\SFA.DAS.Aodp.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Controllers\" />
+	</ItemGroup>
+
 </Project>
