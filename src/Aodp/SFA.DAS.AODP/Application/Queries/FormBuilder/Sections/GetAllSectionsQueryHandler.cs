@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using SFA.DAS.AODP.Application.FormBuilder.Pages.Queries;
 using SFA.DAS.AODP.Domain.FormBuilder.Requests.Sections;
 using SFA.DAS.AODP.Domain.FormBuilder.Responses.Sections;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -25,7 +26,7 @@ public class GetAllSectionsQueryHandler : IRequestHandler<GetAllSectionsQuery, G
         try
         {
             var result = await _apiClient.Get<GetAllSectionsApiResponse>(new GetAllSectionsApiRequest(request.FormVersionId));
-            _mapper.Map(result.Data, response.Data);
+            response.Data = _mapper.Map<List<GetAllSectionsQueryResponse.Section>>(result.Data);
             response.Success = true;
         }
         catch (Exception ex)

@@ -30,7 +30,7 @@ public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, Updat
             var apiRequestData = _mapper.Map<UpdatePageApiRequest.Page>(request.Data);
             var apiRequest = new UpdatePageApiRequest(request.PageId, apiRequestData);
             var result = await _apiClient.PutWithResponseCode<UpdatePageApiResponse>(apiRequest);
-            _mapper.Map(result.Body.Data, response.Data);
+            response.Data = _mapper.Map<UpdatePageCommandResponse.Page>(result.Body.Data);
             response.Success = true;
         }
         catch (Exception ex)

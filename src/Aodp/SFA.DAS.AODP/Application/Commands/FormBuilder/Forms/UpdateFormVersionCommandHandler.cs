@@ -28,7 +28,7 @@ public class UpdateFormVersionCommandHandler : IRequestHandler<UpdateFormVersion
             var apiRequestData = _mapper.Map<UpdateFormVersionApiRequest.FormVersion>(request.Data);
             var apiRequest = new UpdateFormVersionApiRequest(request.FormVersionId, apiRequestData);
             var result = await _apiClient.PutWithResponseCode<UpdateFormVersionApiResponse>(apiRequest);
-            _mapper.Map(result.Body.Data, response.Data);
+            response.Data = _mapper.Map<UpdateFormVersionCommandResponse.FormVersion>(result.Body.Data);
             response.Success = true;
         }
         catch (Exception ex)

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using SFA.DAS.AODP.Application.Commands.FormBuilder.Forms;
 using SFA.DAS.AODP.Domain.FormBuilder.Requests.Pages;
 using SFA.DAS.AODP.Domain.FormBuilder.Responses.Pages;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -25,7 +26,7 @@ public class CreatePageCommandHandler : IRequestHandler<CreatePageCommand, Creat
         {
             var apiRequestData = _mapper.Map<CreatePageApiRequest.Page>(request.Data);
             var result = await _apiClient.PostWithResponseCode<CreatePageApiResponse>(new CreatePageApiRequest(apiRequestData));
-            _mapper.Map(result.Body.Data, response.Data);
+            response.Data = _mapper.Map<CreatePageCommandResponse.Page>(result.Body.Data);
             response.Success = true;
         }
         catch (Exception ex)

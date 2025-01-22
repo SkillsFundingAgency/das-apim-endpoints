@@ -25,7 +25,7 @@ public class GetFormVersionByIdQueryHandler : IRequestHandler<GetFormVersionById
         try
         {
             var result = await _apiClient.Get<GetFormVersionByIdApiResponse>(new GetFormVersionByIdApiRequest(request.FormVersionId));
-            _mapper.Map(result.Data, response.Data);
+            response.Data = _mapper.Map<GetFormVersionByIdQueryResponse.FormVersion>(result.Data);
             response.Success = true;
         }
         catch (Exception ex)

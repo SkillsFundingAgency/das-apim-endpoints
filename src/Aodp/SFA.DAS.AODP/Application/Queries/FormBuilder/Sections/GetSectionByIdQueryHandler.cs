@@ -25,7 +25,7 @@ public class GetSectionByIdQueryHandler : IRequestHandler<GetSectionByIdQuery, G
         try
         {
             var result = await _apiClient.Get<GetSectionByIdApiResponse>(new GetSectionByIdApiRequest(request.SectionId, request.FormVersionId));
-            _mapper.Map(result.Data, response.Data);
+            response.Data = _mapper.Map<GetSectionByIdQueryResponse.Section>(result.Data);
             response.Success = true;
         }
         catch (Exception ex)

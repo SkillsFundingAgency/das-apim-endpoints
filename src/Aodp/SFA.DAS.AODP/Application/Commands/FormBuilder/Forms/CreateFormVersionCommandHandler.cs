@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using SFA.DAS.AODP.Application.Queries.FormBuilder.Sections;
 using SFA.DAS.AODP.Domain.FormBuilder.Requests.Forms;
 using SFA.DAS.AODP.Domain.FormBuilder.Responses.Forms;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -29,7 +30,7 @@ public class CreateFormVersionCommandHandler : IRequestHandler<CreateFormVersion
         {
             var apiRequestData = _mapper.Map<CreateFormVersionApiRequest.FormVersion>(request.Data);
             var result = await _apiClient.PostWithResponseCode<CreateFormVersionApiResponse>(new CreateFormVersionApiRequest(apiRequestData));
-            _mapper.Map(result.Body.Data, response.Data);
+            response.Data = _mapper.Map<CreateFormVersionCommandResponse.FormVersion>(result.Body.Data);
             response.Success = true;
         }
         catch (Exception ex)

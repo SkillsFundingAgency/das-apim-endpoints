@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using SFA.DAS.AODP.Application.Commands.FormBuilder.Pages;
 using SFA.DAS.AODP.Domain.FormBuilder.Requests.Sections;
 using SFA.DAS.AODP.Domain.FormBuilder.Responses.Sections;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -29,7 +30,7 @@ public class CreateSectionCommandHandler : IRequestHandler<CreateSectionCommand,
         {
             var apiRequestData = _mapper.Map<CreateSectionApiRequest.Section>(request.Data);
             var result = await _apiClient.PostWithResponseCode<CreateSectionApiResponse>(new CreateSectionApiRequest(apiRequestData));
-            _mapper.Map(result.Body.Data, response.Data);
+            response.Data = _mapper.Map<CreateSectionCommandResponse.Section>(result.Body.Data);
             response.Success = true;
         }
         catch (Exception ex)

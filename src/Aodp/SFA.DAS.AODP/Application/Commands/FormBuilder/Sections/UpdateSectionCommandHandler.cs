@@ -30,7 +30,7 @@ public class UpdateSectionCommandHandler : IRequestHandler<UpdateSectionCommand,
             var apiRequestData = _mapper.Map<UpdateSectionApiRequest.Section>(request.Data);
             var apiRequest = new UpdateSectionApiRequest(request.FormVersionId, apiRequestData);
             var result = await _apiClient.PutWithResponseCode<UpdateSectionApiResponse>(apiRequest);
-            _mapper.Map(result.Body.Data, response.Data);
+            response.Data = _mapper.Map<UpdateSectionCommandResponse.Section>(result.Body.Data);
             response.Success = true;
         }
         catch (Exception ex)

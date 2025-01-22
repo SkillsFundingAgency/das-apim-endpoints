@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using SFA.DAS.AODP.Application.Queries.FormBuilder.Forms;
 using SFA.DAS.AODP.Domain.FormBuilder.Requests.Pages;
 using SFA.DAS.AODP.Domain.FormBuilder.Responses.Pages;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -25,7 +26,7 @@ public class GetPageByIdQueryHandler : IRequestHandler<GetPageByIdQuery, GetPage
         try
         {
             var result = await _apiClient.Get<GetPageByIdApiResponse>(new GetPageByIdApiRequest(request.PageId, request.SectionId));
-            _mapper.Map(result.Data, response.Data);
+            response.Data = _mapper.Map<GetPageByIdQueryResponse.Page>(result.Data);
             response.Success = true;
         }
         catch (Exception ex)
