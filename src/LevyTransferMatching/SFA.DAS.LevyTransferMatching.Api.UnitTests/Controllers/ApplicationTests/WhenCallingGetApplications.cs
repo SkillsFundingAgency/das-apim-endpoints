@@ -28,9 +28,9 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.ApplicationTest
             Assert.That(result, Is.Not.Null);
 
             var expected = (GetApplicationsResponse) queryResult;
-            var x = expected.Applications.First();
-            var y = result.Applications.First();
-            Assert.That(expected.Applications.Count(), Is.EqualTo(result.Applications.Count()));
+            var x = expected.Items.First();
+            var y = result.Items.First();
+            Assert.That(expected.Items.Count(), Is.EqualTo(result.Items.Count()));
             Assert.That(x.DasAccountName, Is.EqualTo(y.DasAccountName));
             Assert.That(x.Details, Is.EqualTo(y.Details));
             Assert.That(x.Amount, Is.EqualTo(y.Amount));

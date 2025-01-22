@@ -7,7 +7,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
 {
     public class GetApplicationsResponse
     {
-        public IEnumerable<Application> Applications { get; set; }
+        public IEnumerable<Application> Items { get; set; }
         public int TotalItems { get; set; }
         public int Page { get; set; }
         public int TotalPages { get; set; }
@@ -21,7 +21,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Applications
                 TotalPages = source.TotalPages,
                 PageSize = source.PageSize,
                 Page = source.Page,
-                Applications = source.Items.Select(x => (Application) x)
+                Items = source.Items.Select(x => (Application) x)
             };
         }
 
