@@ -159,7 +159,6 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         /// </summary>
         /// <example>Car manufacturer or clothes retailer</example>
         [JsonPropertyName("employerDescription")]
-        [MaxLength (100)]
         [Required]
         public string EmployerDescription { get ; set ; }
         /// <summary>
@@ -167,7 +166,6 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         /// This will not appear on Find an apprenticeship but is needed for our quality assurance team to approve your vacancy.
         /// </summary>
         [JsonPropertyName("anonymousReason")]
-        [MaxLength(200)]
         public string AnonymousReason { get ; set ; }
         /// <summary>
         /// The web address for the employer’s website.
@@ -341,10 +339,9 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         [MaxLength(250)]
         public string CompanyBenefitsInformation { get; set; }
         /// <summary>
-        /// The total number of hours per week. This includes both work and training.
+        /// The total number of hours per week. This includes both work and training. Needs to be between 16 and 48 hours.
         /// </summary>
         [JsonPropertyName("weeklyHours")]
-        [Length(16, 48, ErrorMessage = "Needs to be between 16 and 48 hours.")]
         [Required]
         public decimal WeeklyHours { get ; set ; }
         /// <summary>
@@ -395,9 +392,8 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         /// </summary>
         /// <example>7</example>
         [JsonPropertyName("level")]
-        [AllowedValues(1,2,3,4,5,6,7)]
-        [Required]
-        public int Level { get; set; }
+        [AllowedValues(null,1,2,3,4,5,6,7)]
+        public int? Level { get; set; }
         /// <summary>
         /// The name of the subject for the qualification.
         /// </summary>

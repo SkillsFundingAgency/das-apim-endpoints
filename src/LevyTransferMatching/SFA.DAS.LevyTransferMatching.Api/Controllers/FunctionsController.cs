@@ -74,7 +74,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     PledgeId = request.PledgeId,
                     ApplicationId = request.ApplicationId,
                     ReceiverId = request.ReceiverId,
-                    EncodedApplicationId = request.EncodedApplicationId
+                    EncodedApplicationId = request.EncodedApplicationId,
+                    EncodedAccountId = request.EncodedAccountId,
+                    TransfersBaseUrl = request.TransfersBaseUrl,
+                    UnsubscribeUrl = request.UnsubscribeUrl
                 });
 
                 return Ok();
@@ -97,7 +100,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                     PledgeId = request.PledgeId,
                     ApplicationId = request.ApplicationId,
                     ReceiverId = request.ReceiverId,
-                    EncodedApplicationId = request.EncodedApplicationId
+                    EncodedApplicationId = request.EncodedApplicationId,
+                    UnsubscribeUrl = request.UnsubscribeUrl
                 });
 
                 return Ok();

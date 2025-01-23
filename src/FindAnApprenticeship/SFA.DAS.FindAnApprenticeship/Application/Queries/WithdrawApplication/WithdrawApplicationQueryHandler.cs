@@ -1,15 +1,13 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.FindAnApprenticeship.Services;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.WithdrawApplication;
 
@@ -25,7 +23,8 @@ public class WithdrawApplicationQueryHandler(
             return new WithdrawApplicationQueryResult();
         }
 
-        var vacancy = await vacancyService.GetVacancy(application.VacancyReference);
+        var vacancy = await vacancyService.GetVacancy(application.VacancyReference) as GetApprenticeshipVacancyItemResponse ??
+                      await vacancyService.GetClosedVacancy(application.VacancyReference);
 
         return new WithdrawApplicationQueryResult
         {
