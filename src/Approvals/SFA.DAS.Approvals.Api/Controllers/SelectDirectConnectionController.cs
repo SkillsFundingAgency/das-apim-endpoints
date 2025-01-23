@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.SelectDirectTransferConnection.Queries;
 
 namespace SFA.DAS.Approvals.Api.Controllers
@@ -28,7 +29,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             {
                 _logger.LogInformation("Getting Direct Transfer Connections for Account {accountId}", accountId);
                 var result = await _mediator.Send(new GetSelectDirectTransferConnectionQuery {AccountId = accountId});
-                return Ok(result);
+                return Ok((GetSelectDirectConnectionResponse)result);
             }
             catch (Exception e)
             {

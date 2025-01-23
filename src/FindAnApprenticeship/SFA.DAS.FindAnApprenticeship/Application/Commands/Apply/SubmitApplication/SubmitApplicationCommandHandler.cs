@@ -1,7 +1,3 @@
-using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.FindAnApprenticeship.Domain.EmailTemplates;
@@ -15,6 +11,9 @@ using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.SubmitApplication;
 
@@ -46,7 +45,11 @@ public class SubmitApplicationCommandHandler(
             return false;
         }
 
-        var vacancy = await vacancyService.GetVacancy(application.VacancyReference) as GetApprenticeshipVacancyItemResponse;
+        if (await vacancyService.GetVacancy(application.VacancyReference) is not GetApprenticeshipVacancyItemResponse vacancy)
+        {
+            return false;
+        }
+
         var email = new SubmitApplicationEmail(
             helper.SubmitApplicationEmailTemplateId,
             application.Candidate.Email,
