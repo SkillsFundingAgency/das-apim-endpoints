@@ -16,7 +16,7 @@ public class SectionsController : ControllerBase
         _mediator = mediator;
     }
 
-    [HttpGet("/api/sections/form/{formId}")]
+    [HttpGet("/api/sections/form/{formVersionId}")]
     [ProducesResponseType(typeof(GetAllSectionsQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetAllAsync([FromRoute] Guid formVersionId)
@@ -34,7 +34,7 @@ public class SectionsController : ControllerBase
         return errorObjectResult;
     }
 
-    [HttpGet("/api/sections/{sectionId}/form/{formId}")]
+    [HttpGet("/api/sections/{sectionId}/form/{formVersionId}")]
     [ProducesResponseType(typeof(GetSectionByIdQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetByIdAsync([FromRoute] Guid sectionId, [FromRoute] Guid formVersionId)
@@ -77,7 +77,7 @@ public class SectionsController : ControllerBase
         return errorObjectResult;
     }
 
-    [HttpPut("/api/sections/{formId}")]
+    [HttpPut("/api/sections/{formVersionId}")]
     [ProducesResponseType(typeof(UpdateSectionCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateAsync([FromRoute] Guid formVersionId, [FromBody] UpdateSectionCommand.Section section)
