@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
+using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Models.Opportunity
@@ -24,6 +25,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Opportunity
             public IEnumerable<string> JobRoles { get; set; }
             public IEnumerable<string> Levels { get; set; }
             public IEnumerable<string> Locations { get; set; }
+            public DateTime CreatedOn { get; set; }
         }
     }
 }

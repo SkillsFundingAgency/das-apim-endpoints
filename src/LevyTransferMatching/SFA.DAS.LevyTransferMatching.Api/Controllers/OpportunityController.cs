@@ -53,7 +53,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                         Sectors = x.Sectors,
                         JobRoles = x.JobRoles,
                         Levels = x.Levels,
-                        Locations = x.Locations
+                        Locations = x.Locations,
+                        CreatedOn = x.CreatedOn
                     }),
                     TotalOpportunities = result.TotalItems,
                     TotalPages = result.TotalPages,

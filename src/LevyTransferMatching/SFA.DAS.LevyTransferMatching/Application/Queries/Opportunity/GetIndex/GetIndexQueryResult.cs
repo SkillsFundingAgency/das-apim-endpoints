@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
+using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex
@@ -20,6 +21,7 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex
             public IEnumerable<string> JobRoles { get; set; }
             public IEnumerable<string> Levels { get; set; }
             public IEnumerable<string> Locations { get; set; }
+            public DateTime CreatedOn { get; set; }
         }
     }
 }
