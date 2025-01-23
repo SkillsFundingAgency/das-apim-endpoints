@@ -14,7 +14,7 @@ public class GetApplicationsQueryHandler(ILevyTransferMatchingService levyTransf
         {
             AccountId = request.AccountId,
             Page = request.Page,
-            PageSize = request.PageSize.Value
+            PageSize = request.PageSize ?? 15
         });
 
         return applicationsResponse;
