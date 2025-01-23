@@ -26,6 +26,8 @@ public class AutoMapperProfile : Profile
         #region Forms Response Mapping
         CreateMap<GetAllFormVersionsQueryResponse.FormVersion, GetAllFormVersionsApiResponse.FormVersion>().ReverseMap();
         CreateMap<GetFormVersionByIdQueryResponse.FormVersion, GetFormVersionByIdApiResponse.FormVersion>().ReverseMap();
+        CreateMap<GetFormVersionByIdQueryResponse.Section, GetFormVersionByIdApiResponse.Section>().ReverseMap();
+
         CreateMap<CreateFormVersionCommandResponse.FormVersion, CreateFormVersionApiResponse.FormVersion>().ReverseMap();
         CreateMap<UpdateFormVersionCommandResponse.FormVersion, UpdateFormVersionApiResponse.FormVersion>().ReverseMap();
         #endregion
