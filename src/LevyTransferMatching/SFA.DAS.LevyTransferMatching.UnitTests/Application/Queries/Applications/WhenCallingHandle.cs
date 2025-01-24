@@ -46,13 +46,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Application
             [Frozen] Mock<ILevyTransferMatchingService> levyTransferMatchingService,
             GetApplicationsQueryHandler handler)
         {
-            query.PageSize = pageSize;
-
-            //response.Applications = new List<GetApplicationsResponse.Application>()
-            //{
-            //    response.Applications.First()
-            //};
-            
+            query.PageSize = pageSize;         
             response.Page = query.Page;
             response.PageSize = query.PageSize.Value;
             response.TotalItems = response.Applications.Count();
