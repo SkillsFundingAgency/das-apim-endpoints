@@ -35,7 +35,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             query.CandidateId = null;
             locationLookupService
                 .Setup(service => service.GetLocationInformation(
-                    query.Location, default, default, false))
+                    query.Location, 0, 0, false))
                 .ReturnsAsync(locationInfo);
             courseService.Setup(x => x.GetRoutes()).ReturnsAsync(routesResponse);
 
@@ -51,7 +51,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageNumber,
                 query.PageSize,
                 categories,
-                query.SelectedLevelIds?.Select(c=>Convert.ToInt32(c)).ToList(),
+                query.SelectedLevelIds?.Select(Convert.ToInt32).ToList(),
                 query.Sort,
                 query.SkipWageType,
                 query.DisabilityConfident,
@@ -74,13 +74,13 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageNumber,
                 query.PageSize,
                 categories,
-                query.SelectedLevelIds?.Select(c => Convert.ToInt32(c)).ToList(),
-                query.Sort,
+                query.SelectedLevelIds?.Select(Convert.ToInt32).ToList(),
                 WageType.CompetitiveSalary,
                 query.DisabilityConfident,
                 new List<VacancyDataSource>
                 {
-                    VacancyDataSource.Nhs
+                    VacancyDataSource.Raa,
+                    VacancyDataSource.Nhs,
                 });
             
             apiClient.Setup(client =>
@@ -222,12 +222,12 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageSize,
                 categories,
                 query.SelectedLevelIds?.Select(Convert.ToInt32).ToList(),
-                query.Sort,
                 WageType.CompetitiveSalary,
                 query.DisabilityConfident,
                 new List<VacancyDataSource>
                 {
-                    VacancyDataSource.Nhs
+                    VacancyDataSource.Raa, 
+                    VacancyDataSource.Nhs,
                 });
 
             apiClient.Setup(client =>
