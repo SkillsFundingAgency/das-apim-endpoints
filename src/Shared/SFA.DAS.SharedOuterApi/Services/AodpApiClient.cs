@@ -56,14 +56,15 @@ namespace SFA.DAS.SharedOuterApi.Services
             return _apiClient.Delete(request);
         }
 
+
         public Task Patch<TData>(IPatchApiRequest<TData> request)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task Put(IPutApiRequest request)
+        public async Task Put(IPutApiRequest request)
         {
-            throw new System.NotImplementedException();
+            await _apiClient.Put(request);
         }
 
         public Task Put<TData>(IPutApiRequest<TData> request)

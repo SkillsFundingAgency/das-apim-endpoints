@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Aodp.Api.AppStart;
-using SFA.DAS.Aodp.Application.Commands;
+using SFA.DAS.AODP.Application.Commands.FormBuilder.Forms;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;
 
@@ -44,7 +44,7 @@ builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLev
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
-builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(TestCommandHandler).Assembly));
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(CreateFormVersionCommandHandler).Assembly));
 
 var app = builder.Build();
 
