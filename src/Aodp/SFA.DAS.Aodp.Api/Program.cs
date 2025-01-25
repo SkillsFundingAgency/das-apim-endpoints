@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Aodp.Api.AppStart;
 using SFA.DAS.AODP.Application.Commands.FormBuilder.Forms;
-using SFA.DAS.AODP.AutoMapper.Profiles;
 using SFA.DAS.AODP.Swashbuckle;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;
@@ -49,8 +48,6 @@ builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLev
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
-
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(CreateFormVersionCommandHandler).Assembly));
 
 var app = builder.Build();
