@@ -33,6 +33,6 @@ public sealed class WhenGettingCourseLevels
 
         var result = await sut.Handle(query, CancellationToken.None);
 
-        CollectionAssert.AreEquivalent(result.Levels, response.Levels);
+        Assert.That(result.Levels, Is.EqualTo(response.Levels));
     }
 }
