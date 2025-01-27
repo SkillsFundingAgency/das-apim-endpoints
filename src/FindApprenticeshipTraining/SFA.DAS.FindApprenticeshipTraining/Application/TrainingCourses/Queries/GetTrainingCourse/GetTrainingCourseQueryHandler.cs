@@ -8,6 +8,8 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourse
@@ -35,18 +37,25 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
         {
             var standardTask = _apiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
             
-            var ukprnsCountTask = _roatpCourseManagementApiClient.Get<GetTotalProvidersForStandardResponse>(
-                new GetTotalProvidersForStandardRequest(request.Id));
-
+            var ukprnsCountTask = _roatpCourseManagementApiClient.Get<GetCourseTrainingProvidersCountResponse>(
+                new GetCourseTrainingProvidersCountRequest(
+                    [request.Id],
+                    null,
+                    null,
+                    null
+                )
+            );
 
             var levelsTask = _cacheHelper.GetRequest<GetLevelsListResponse>(_apiClient,
-                new InnerApi.Requests.GetLevelsListRequest(), nameof(GetLevelsListResponse), out _);
+                new GetLevelsListRequest(), nameof(GetLevelsListResponse), out _);
 
             var shortlistTask =  request.ShortlistUserId.HasValue
                 ? _shortlistApiClient.Get<int>(new GetShortlistUserItemCountRequest(request.ShortlistUserId.Value))
                 : Task.FromResult(0);
 
             await Task.WhenAll(standardTask, ukprnsCountTask,  levelsTask, shortlistTask);
+
+            var providersCountResponse = ukprnsCountTask?.Result?.Courses?.FirstOrDefault();
 
             if (standardTask.Result == null)
             {
@@ -58,8 +67,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             return new GetTrainingCourseResult
             {
                 Course = standardTask.Result,
-                ProvidersCount = ukprnsCountTask.Result.ProvidersCount, 
-                ProvidersCountAtLocation = ukprnsCountTask.Result.ProvidersCount,
+                ProvidersCount = providersCountResponse?.TotalProvidersCount ?? 0, 
+                ProvidersCountAtLocation = providersCountResponse?.TotalProvidersCount ?? 0,
                 ShortlistItemCount = shortlistTask.Result
             };
         }

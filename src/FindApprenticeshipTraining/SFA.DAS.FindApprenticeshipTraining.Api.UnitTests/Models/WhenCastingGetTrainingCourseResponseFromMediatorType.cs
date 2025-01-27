@@ -26,6 +26,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 .Excluding(tc => tc.LarsCode)
                 .Excluding(tc => tc.StandardUId)
                 .Excluding(tc => tc.SectorSubjectAreaTier1)
+                .Excluding(tc => tc.IfateReferenceNumber)
+                .Excluding(tc => tc.SearchScore)
+                .Excluding(tc => tc.RouteCode)
             );
 
             response.Id.Should().Be(source.LarsCode);

@@ -9,9 +9,12 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,7 +29,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             GetTrainingCourseQuery query,
             GetStandardsListItem coursesApiResponse,
             GetLevelsListResponse levelsApiResponse,
-            GetTotalProvidersForStandardResponse providersCountResponse,
+            CourseTrainingProviderCountModel providerCountModel,
             int shortlistItemCount,
             LocationItem locationItem,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
@@ -34,8 +37,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             [Frozen] Mock<ILocationLookupService> locationLookupService,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
-            GetTrainingCourseQueryHandler handler)
+            GetTrainingCourseQueryHandler handler
+        )
         {
+            providerCountModel.LarsCode = query.Id;
+
             //Arrange
             cacheStorageService.Setup(x => x.RetrieveFromCache<GetLevelsListResponse>(It.IsAny<string>()))
                 .ReturnsAsync((GetLevelsListResponse)null);
@@ -45,22 +51,35 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             coursesApiResponse.Level = levelsApiResponse.Levels.First().Code;
             coursesApiResponse.LevelEquivalent = levelsApiResponse.Levels
                 .Single(x => x.Code == coursesApiResponse.Level).Name;
-            var url = new GetTotalProvidersForStandardRequest(query.Id).GetUrl;
+
+            var url = new GetCourseTrainingProvidersCountRequest([query.Id]).GetUrl;
 
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains($"api/courses/standards/{query.Id}"))))
                 .ReturnsAsync(coursesApiResponse);
+
             mockShortlistApiClient
                 .Setup(client=>client.Get<int>(It.Is<GetShortlistUserItemCountRequest>(c => c.GetUrl.Contains($"api/Shortlist/users/{query.ShortlistUserId}/count"))))
                 .ReturnsAsync(shortlistItemCount);
+
             mockRoatpV2ApiClient
-                .Setup(client =>
-                    client.Get<GetTotalProvidersForStandardResponse>(
-                        It.Is<GetTotalProvidersForStandardRequest>((c =>
-                            c.GetUrl.Equals(url)))))
-                .ReturnsAsync(providersCountResponse);
+                .Setup(client => client.Get<GetCourseTrainingProvidersCountResponse>(
+                    It.Is<GetCourseTrainingProvidersCountRequest>(
+                        c => c.GetUrl.Contains(url)
+                    ))
+                )
+                .ReturnsAsync(
+                    new GetCourseTrainingProvidersCountResponse
+                    {
+                        Courses = new List<CourseTrainingProviderCountModel>
+                        {
+                            providerCountModel
+                        }
+                    }
+                );
+
             mockCoursesApiClient
-                .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<FindApprenticeshipTraining.InnerApi.Requests.GetLevelsListRequest>()))
+                .Setup(client => client.Get<GetLevelsListResponse>(It.IsAny<GetLevelsListRequest>()))
                 .ReturnsAsync(levelsApiResponse);
 
             //Act
@@ -69,8 +88,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             //Assert
             result.Course.Should().BeEquivalentTo(coursesApiResponse);
             result.Course.LevelEquivalent.Should().Be("GCSE");
-            result.ProvidersCount.Should().Be(providersCountResponse.ProvidersCount);
-            result.ProvidersCountAtLocation.Should().Be(providersCountResponse.ProvidersCount);
+            result.ProvidersCount.Should().Be(providerCountModel.TotalProvidersCount);
+            result.ProvidersCountAtLocation.Should().Be(providerCountModel.TotalProvidersCount);
             result.ShortlistItemCount.Should().Be(shortlistItemCount);
         }
 
@@ -79,7 +98,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
         public async Task Then_If_No_Standard_Found_Returns_Empty_Response(
             GetTrainingCourseQuery query,
             GetLevelsListResponse levelsApiResponse,
-            GetTotalProvidersForStandardResponse roatpCourseManagementApiResponse,
+            GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,
             GetTrainingCourseQueryHandler handler)
@@ -90,14 +109,13 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
                 .Setup(client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(c => c.GetUrl.Contains($"api/courses/standards/{query.Id}"))))
                 .ReturnsAsync((GetStandardsListItem) null);
 
-
-            var url = new GetTotalProvidersForStandardRequest(query.Id).GetUrl;
+            var url = new GetCourseTrainingProvidersCountRequest([query.Id]).GetUrl;
             mockRoatpV2ApiClient
                 .Setup(client =>
-                    client.Get<GetTotalProvidersForStandardResponse>(
-                        It.Is<GetTotalProvidersForStandardRequest>((c =>
+                    client.Get<GetCourseTrainingProvidersCountResponse>(
+                        It.Is<GetCourseTrainingProvidersCountRequest>((c =>
                             c.GetUrl.Equals(url)))))
-                .ReturnsAsync(roatpCourseManagementApiResponse);
+                .ReturnsAsync(courseTrainingProvidersCountResponse);
 
             //Act
             var result = await handler.Handle(query, CancellationToken.None);
