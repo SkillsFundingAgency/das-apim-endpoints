@@ -1,4 +1,5 @@
 ﻿using AutoFixture.NUnit3;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using NUnit.Framework.Legacy;
@@ -33,6 +34,6 @@ public sealed class WhenGettingCourseLevels
 
         var result = await sut.Handle(query, CancellationToken.None);
 
-        Assert.That(result.Levels, Is.EqualTo(response.Levels));
+        result.Levels.Should().Equal(response.Levels);
     }
 }
