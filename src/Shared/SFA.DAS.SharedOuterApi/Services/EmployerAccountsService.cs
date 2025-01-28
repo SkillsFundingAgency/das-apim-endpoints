@@ -3,7 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -23,13 +25,14 @@ public interface IEmployerAccountsService
 
 public class EmployerAccountsService(
     IEmployerProfilesApiClient<EmployerProfilesApiConfiguration> employerProfilesApiClient,
-    IAccountsApiClient<AccountsConfiguration> accountsApiClient)
+    IAccountsApiClient<AccountsConfiguration> accountsApiClient,
+    ILogger<EmployerAccountsService> logger)
     : IEmployerAccountsService
 {
     public async Task<IEnumerable<TeamMember>> GetTeamMembers(long accountId)
     {
         var response = await accountsApiClient.GetAll<GetAccountTeamMembersResponse>(new GetAccountTeamMembersRequest(accountId));
-        
+
         return response.Select(usersResponse => new TeamMember
         {
             Name = usersResponse.Name,
@@ -57,10 +60,17 @@ public class EmployerAccountsService(
         {
             if (!Guid.TryParse(employerProfile.UserId, out _))
             {
-                var employerUserResponse =
-                    await employerProfilesApiClient.PutWithResponseCode<EmployerProfileUsersApiResponse>(
-                        new PutUpsertEmployerUserAccountRequest(Guid.NewGuid(), employerProfile.UserId,
-                            employerProfile.Email, employerProfile.FirstName, employerProfile.LastName));
+                var putRequest = new PutUpsertEmployerUserAccountRequest(
+                    Guid.NewGuid(),
+                    employerProfile.UserId,
+                    employerProfile.Email,
+                    employerProfile.FirstName,
+                    employerProfile.LastName);
+
+                logger.LogInformation("EmployerAccountsService - User Profile response was NotFound. Could not parse userId {UserId} into guid. PUT request data {Data}",
+                    employerProfile.UserId, JsonSerializer.Serialize(putRequest));
+
+                var employerUserResponse = await employerProfilesApiClient.PutWithResponseCode<EmployerProfileUsersApiResponse>(putRequest);
 
                 userId = employerUserResponse.Body.Id;
                 firstName = employerUserResponse.Body.FirstName;
@@ -79,6 +89,14 @@ public class EmployerAccountsService(
                 employerProfile.FirstName = userResponse.Body.FirstName;
                 employerProfile.LastName = userResponse.Body.LastName;
                 employerProfile.GovIdentifier = userResponse.Body.GovUkIdentifier;
+
+                logger.LogInformation("EmployerAccountsService - User Profile response was {StatusCode}. userResponse.Body.Email: {UserResponseEmail}, employerProfile.Email: {EmployerProfileEmail}. PUT request data: {Data}",
+                    userResponse.StatusCode,
+                    userResponse.Body.Email,
+                    employerProfile.Email,
+                    JsonSerializer.Serialize(employerProfile)
+                    );
+
                 await PutEmployerAccount(employerProfile);
             }
 
@@ -99,7 +117,7 @@ public class EmployerAccountsService(
                 var teamMembers =
                     await accountsApiClient.GetAll<GetAccountTeamMembersResponse>(
                         new GetAccountTeamMembersRequest(userAccount.AccountId));
-                
+
                 var member = teamMembers.FirstOrDefault(c =>
                     c.UserRef.Equals(userId, StringComparison.CurrentCultureIgnoreCase));
 
@@ -143,6 +161,8 @@ public class EmployerAccountsService(
     /// <returns>typeof EmployerProfile.</returns>
     public async Task<EmployerProfile> PutEmployerAccount(EmployerProfile employerProfile)
     {
+        logger.LogInformation("EmployerAccountsService - User Profile not found. Upserting with following data {Data}", JsonSerializer.Serialize(employerProfile));
+
         var employerUserResponse = await employerProfilesApiClient.PutWithResponseCode<EmployerProfileUsersApiResponse>(
             new PutUpsertEmployerUserAccountRequest(
                 new Guid(employerProfile.UserId),
