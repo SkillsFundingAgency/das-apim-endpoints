@@ -1,5 +1,5 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.AODP.Application.Queries.FormBuilder.Forms;
+namespace SFA.DAS.Aodp.Application.Queries.FormBuilder.Forms;
 
-public class GetAllFormVersionsQuery : IRequest<GetAllFormVersionsQueryResponse> { }
+public class GetAllFormVersionsQuery : IRequest<BaseMediatrResponse<GetAllFormVersionsQueryResponse>> { }

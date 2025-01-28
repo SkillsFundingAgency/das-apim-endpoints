@@ -1,13 +1,12 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.Domain.FormBuilder.Requests.Forms;
-using SFA.DAS.AODP.Domain.FormBuilder.Responses.Forms;
+using SFA.DAS.Aodp.Domain.FormBuilder.Requests.Forms;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Forms;
+namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Forms;
 
-public class CreateFormVersionCommandHandler : IRequestHandler<CreateFormVersionCommand, CreateFormVersionCommandResponse>
+public class CreateFormVersionCommandHandler : IRequestHandler<CreateFormVersionCommand, BaseMediatrResponse<CreateFormVersionCommandResponse>>
 {
     private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
@@ -18,9 +17,9 @@ public class CreateFormVersionCommandHandler : IRequestHandler<CreateFormVersion
 
     }
 
-    public async Task<CreateFormVersionCommandResponse> Handle(CreateFormVersionCommand request, CancellationToken cancellationToken)
+    public async Task<BaseMediatrResponse<CreateFormVersionCommandResponse>> Handle(CreateFormVersionCommand request, CancellationToken cancellationToken)
     {
-        var response = new CreateFormVersionCommandResponse
+        var response = new BaseMediatrResponse<CreateFormVersionCommandResponse>
         {
             Success = false
         };
@@ -29,16 +28,11 @@ public class CreateFormVersionCommandHandler : IRequestHandler<CreateFormVersion
         {
             var apiRequest = new CreateFormVersionApiRequest()
             {
-                Data = new CreateFormVersionApiRequest.FormVersion()
-                {
-                    Description = request.Description,
-                    Title = request.Title
-                }
+                Data = request
             };
-            var result = await _apiClient.PostWithResponseCode<CreateFormVersionApiResponse>(apiRequest);
+            var result = await _apiClient.PostWithResponseCode<CreateFormVersionCommandResponse>(apiRequest);
             result.EnsureSuccessStatusCode();
-
-            response.Id = result.Body.Id!;
+            response.Value.Id = result.Body.Id!;
             response.Success = true;
         }
         catch (Exception ex)

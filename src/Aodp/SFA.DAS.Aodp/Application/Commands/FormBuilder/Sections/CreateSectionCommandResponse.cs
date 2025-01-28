@@ -1,8 +1,6 @@
-﻿using SFA.DAS.Aodp.Application;
+﻿namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Sections;
 
-namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Sections;
-
-public class CreateSectionCommandResponse : BaseResponse {
+public class CreateSectionCommandResponse  {
     public Guid Id { get; set; }
 
 }

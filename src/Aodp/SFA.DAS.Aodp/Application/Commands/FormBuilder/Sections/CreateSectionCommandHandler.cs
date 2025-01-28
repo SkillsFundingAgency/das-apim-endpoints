@@ -1,13 +1,12 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.Domain.FormBuilder.Requests.Sections;
-using SFA.DAS.AODP.Domain.FormBuilder.Responses.Sections;
+using SFA.DAS.Aodp.Domain.FormBuilder.Requests.Sections;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Sections;
+namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Sections;
 
-public class CreateSectionCommandHandler : IRequestHandler<CreateSectionCommand, CreateSectionCommandResponse>
+public class CreateSectionCommandHandler : IRequestHandler<CreateSectionCommand, BaseMediatrResponse<CreateSectionCommandResponse>>
 {
     private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
@@ -18,9 +17,9 @@ public class CreateSectionCommandHandler : IRequestHandler<CreateSectionCommand,
 
     }
 
-    public async Task<CreateSectionCommandResponse> Handle(CreateSectionCommand request, CancellationToken cancellationToken)
+    public async Task<BaseMediatrResponse<CreateSectionCommandResponse>> Handle(CreateSectionCommand request, CancellationToken cancellationToken)
     {
-        var response = new CreateSectionCommandResponse()
+        var response = new BaseMediatrResponse<CreateSectionCommandResponse>()
         {
             Success = false
         };
@@ -29,18 +28,13 @@ public class CreateSectionCommandHandler : IRequestHandler<CreateSectionCommand,
         {
             var apiRequest = new CreateSectionApiRequest()
             {
-                Data = new CreateSectionApiRequest.Section()
-                {
-                    Description = request.Description,
-                    Title = request.Title,
-
-                },
+                Data = request,
                 FormVersionId = request.FormVersionId,
             };
 
-            var result = await _apiClient.PostWithResponseCode<CreateSectionApiResponse>(apiRequest);
+            var result = await _apiClient.PostWithResponseCode<CreateSectionCommandResponse>(apiRequest);
             result.EnsureSuccessStatusCode();
-            response.Id = result.Body.Id;
+            response.Value.Id = result.Body.Id!;
             response.Success = true;
         }
         catch (Exception ex)

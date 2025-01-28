@@ -1,5 +1,3 @@
-﻿using SFA.DAS.Aodp.Application;
+﻿namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Forms;
 
-namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Forms;
-
-public class PublishFormVersionCommandResponse : BaseResponse { }
+public class PublishFormVersionCommandResponse { }

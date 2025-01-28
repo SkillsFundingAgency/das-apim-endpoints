@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AODP.Domain.FormBuilder.Requests.Pages;
+namespace SFA.DAS.Aodp.Domain.FormBuilder.Requests.Pages;
 
 public class UpdatePageApiRequest : IPutApiRequest
 {
@@ -11,10 +11,4 @@ public class UpdatePageApiRequest : IPutApiRequest
     public string PutUrl => $"/api/forms/{FormVersionId}/sections/{SectionId}/Pages/{PageId}";
 
     public object Data { get; set; }
-
-    public class Page
-    {
-        public string Title { get; set; }
-        public string Description { get; set; }
-    }
 }

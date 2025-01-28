@@ -1,8 +1,8 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.AODP.Application.Queries.FormBuilder.Sections;
+namespace SFA.DAS.Aodp.Application.Queries.FormBuilder.Sections;
 
-public class GetAllSectionsQuery : IRequest<GetAllSectionsQueryResponse>
+public class GetAllSectionsQuery : IRequest<BaseMediatrResponse<GetAllSectionsQueryResponse>>
 {
     public readonly Guid FormVersionId;
 

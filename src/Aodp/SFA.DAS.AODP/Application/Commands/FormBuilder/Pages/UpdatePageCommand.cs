@@ -1,8 +1,8 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Pages;
+namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Pages;
 
-public class UpdatePageCommand : IRequest<UpdatePageCommandResponse>
+public class UpdatePageCommand : IRequest<BaseMediatrResponse<UpdatePageCommandResponse>>
 {
     public Guid Id { get; set; }
     public Guid FormVersionId { get; set; }

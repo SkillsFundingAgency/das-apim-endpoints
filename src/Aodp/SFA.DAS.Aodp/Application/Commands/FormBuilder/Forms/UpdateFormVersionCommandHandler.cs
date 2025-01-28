@@ -1,11 +1,10 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.Domain.FormBuilder.Requests.Forms;
+using SFA.DAS.Aodp.Domain.FormBuilder.Requests.Forms;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Forms;
 
-namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Forms;
-
-public class UpdateFormVersionCommandHandler : IRequestHandler<UpdateFormVersionCommand, UpdateFormVersionCommandResponse>
+public class UpdateFormVersionCommandHandler : IRequestHandler<UpdateFormVersionCommand, BaseMediatrResponse<UpdateFormVersionCommandResponse>>
 {
     private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
@@ -16,21 +15,16 @@ public class UpdateFormVersionCommandHandler : IRequestHandler<UpdateFormVersion
 
     }
 
-    public async Task<UpdateFormVersionCommandResponse> Handle(UpdateFormVersionCommand request, CancellationToken cancellationToken)
+    public async Task<BaseMediatrResponse<UpdateFormVersionCommandResponse>> Handle(UpdateFormVersionCommand request, CancellationToken cancellationToken)
     {
-        var response = new UpdateFormVersionCommandResponse();
+        var response = new BaseMediatrResponse<UpdateFormVersionCommandResponse>();
         response.Success = false;
 
         try
         {
             var apiRequest = new UpdateFormVersionApiRequest()
             {
-                Data = new UpdateFormVersionApiRequest.FormVersion()
-                {
-                    Description = request.Description,
-                    Name = request.Name,
-                    Order = request.Order,
-                },
+                Data = request,
                 FormVersionId = request.FormVersionId,
             };
             await _apiClient.Put(apiRequest);
