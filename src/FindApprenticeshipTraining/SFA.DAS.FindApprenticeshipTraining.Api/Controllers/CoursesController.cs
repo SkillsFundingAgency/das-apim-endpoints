@@ -1,13 +1,14 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseLevels;
+using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseRoutes;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/")]
-public class CoursesController(IMediator _mediator) : ControllerBase
+public sealed class CoursesController(IMediator _mediator) : ControllerBase
 {
     [HttpGet]
     [Route("levels")]
@@ -15,5 +16,13 @@ public class CoursesController(IMediator _mediator) : ControllerBase
     {
         var response = await _mediator.Send(new GetCourseLevelsQuery());
         return Ok(response);
+    }
+
+    [HttpGet]
+    [Route("routes")]
+    public async Task<IActionResult> GetCourseRoutes()
+    {
+        var result = await _mediator.Send(new GetCourseRoutesQuery());
+        return Ok(result);
     }
 }
