@@ -6,7 +6,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses;
+namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseRoutes;
 
 public sealed class GetCourseRoutesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient) : IRequestHandler<GetCourseRoutesQuery, GetRoutesListResponse>
 {
