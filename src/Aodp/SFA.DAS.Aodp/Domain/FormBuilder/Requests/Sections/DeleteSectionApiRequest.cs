@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AODP.Domain.FormBuilder.Requests.Sections;
+namespace SFA.DAS.Aodp.Domain.FormBuilder.Requests.Sections;
 
 public class DeleteSectionApiRequest : IDeleteApiRequest
 {

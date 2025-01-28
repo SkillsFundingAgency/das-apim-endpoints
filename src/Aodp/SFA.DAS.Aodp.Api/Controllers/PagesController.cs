@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.AODP.Application.Commands.FormBuilder.Pages;
-using SFA.DAS.AODP.Application.Queries.FormBuilder.Pages;
+using SFA.DAS.Aodp.Application.Commands.FormBuilder.Pages;
+using SFA.DAS.Aodp.Application.Queries.FormBuilder.Pages;
 
-namespace SFA.DAS.AODP.Api.Controllers;
+namespace SFA.DAS.Aodp.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -32,7 +32,7 @@ public class PagesController : Controller
         var response = await _mediator.Send(query);
         if (response.Success)
         {
-            return Ok(response);
+            return Ok(response.Value);
         }
 
         _logger.LogError(message: $"Error thrown getting all pages for section Id `{sectionId}`.");
@@ -55,7 +55,7 @@ public class PagesController : Controller
 
         if (response.Success)
         {
-            return Ok(response);
+            return Ok(response.Value);
         }
 
         _logger.LogError(message: $"Error thrown getting page for section Id `{sectionId}` and page Id `{pageId}`: {response.ErrorMessage}");
@@ -71,9 +71,9 @@ public class PagesController : Controller
         command.SectionId = sectionId;
 
         var response = await _mediator.Send(command);
-        if (response.Success && response.Id != default)
+        if (response.Success && response.Value.Id != default)
         {
-            return Ok(response);
+            return Ok(response.Value);
         }
         _logger.LogError(message: $"Request to add page with section Id `{command.SectionId}` but no section with this Id can be found: {response.ErrorMessage}");
         return StatusCode(StatusCodes.Status500InternalServerError);
@@ -92,7 +92,7 @@ public class PagesController : Controller
 
         if (response.Success)
         {
-            return Ok(response);
+            return Ok(response.Value);
         }
 
         _logger.LogError($"Request to edit page with page Id `{pageId}` but no page with this Id can be found: {response.ErrorMessage}");
@@ -117,7 +117,7 @@ public class PagesController : Controller
         var response = await _mediator.Send(command);
         if (response.Success)
         {
-            return Ok(response);
+            return Ok(response.Value);
         }
 
         _logger.LogError($"Request to delete page with page Id `{pageId}` but no page with this Id can be found: {response.ErrorMessage}");

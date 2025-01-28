@@ -1,6 +1,4 @@
-﻿using SFA.DAS.Aodp.Application;
+﻿namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Forms;
 
-namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Forms;
-
-public class DeleteFormVersionCommandResponse : BaseResponse {
-}
+public class DeleteFormVersionCommandResponse
+{ }

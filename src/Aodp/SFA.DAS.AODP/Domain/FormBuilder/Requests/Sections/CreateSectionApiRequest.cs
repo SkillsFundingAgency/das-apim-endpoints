@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AODP.Domain.FormBuilder.Requests.Sections;
+namespace SFA.DAS.Aodp.Domain.FormBuilder.Requests.Sections;
 
 public class CreateSectionApiRequest : IPostApiRequest
 {
@@ -9,11 +9,4 @@ public class CreateSectionApiRequest : IPostApiRequest
     public string PostUrl => $"/api/forms/{FormVersionId}/sections";
 
     public object Data { get; set; }
-
-    public class Section
-    {
-
-        public string Title { get; set; }
-        public string Description { get; set; }
-    }
 }

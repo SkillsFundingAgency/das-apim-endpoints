@@ -1,42 +1,36 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.Domain.FormBuilder.Requests.Pages;
-using SFA.DAS.AODP.Domain.FormBuilder.Responses.Pages;
+using SFA.DAS.Aodp.Domain.FormBuilder.Requests.Pages;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Pages;
 
-namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Pages;
-
-public class CreatePageCommandHandler : IRequestHandler<CreatePageCommand, CreatePageCommandResponse>
+public class CreatePageCommandHandler : IRequestHandler<CreatePageCommand, BaseMediatrResponse<CreatePageCommandResponse>>
 {
     private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
-    
+
 
     public CreatePageCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
     {
         _apiClient = apiClient;
-       
+
     }
 
-    public async Task<CreatePageCommandResponse> Handle(CreatePageCommand request, CancellationToken cancellationToken)
+    public async Task<BaseMediatrResponse<CreatePageCommandResponse>> Handle(CreatePageCommand request, CancellationToken cancellationToken)
     {
-        var response = new CreatePageCommandResponse();
+        var response = new BaseMediatrResponse<CreatePageCommandResponse>();
         try
         {
             var apiRequestData = new CreatePageApiRequest()
             {
-                Data = new CreatePageApiRequest.Page()
-                {
-                    Description = request.Description,
-                    Title = request.Title
-                },
+                Data = request,
                 SectionId = request.SectionId,
                 FormVersionId = request.FormVersionId
             };
 
-            var result = await _apiClient.PostWithResponseCode<CreatePageApiResponse>(apiRequestData);
+            var result = await _apiClient.PostWithResponseCode<CreatePageCommandResponse>(apiRequestData);
             result.EnsureSuccessStatusCode();
-            response.Id = result!.Body.Id;
+            response.Value.Id = result!.Body.Id;
             response.Success = true;
         }
         catch (Exception ex)

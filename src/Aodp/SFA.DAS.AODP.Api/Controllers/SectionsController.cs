@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.AODP.Application.Commands.FormBuilder.Sections;
-using SFA.DAS.AODP.Application.Queries.FormBuilder.Sections;
+using SFA.DAS.Aodp.Application.Commands.FormBuilder.Sections;
+using SFA.DAS.Aodp.Application.Queries.FormBuilder.Sections;
 
-namespace SFA.DAS.AODP.Api.Controllers;
+namespace SFA.DAS.Aodp.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -28,7 +28,7 @@ public class SectionsController : ControllerBase
         var response = await _mediator.Send(query);
         if (response.Success)
         {
-            return Ok(response);
+            return Ok(response.Value);
         }
 
         _logger.LogError(message: $"Error thrown getting all sections for form version Id `{formVersionId}`.");
@@ -47,7 +47,7 @@ public class SectionsController : ControllerBase
 
         if (response.Success)
         {
-            return Ok(response);
+            return Ok(response.Value);
         }
 
         _logger.LogError(message: $"Error thrown getting section with form version Id `{formVersionId}` and section Id `{sectionId}`: {response.ErrorMessage}");
@@ -65,7 +65,7 @@ public class SectionsController : ControllerBase
         var response = await _mediator.Send(command);
         if (response.Success)
         {
-            return Ok(response);
+            return Ok(response.Value);
         }
 
         _logger.LogError(message: $"Error thrown creating new section on form version Id `{command.FormVersionId}`: {response.ErrorMessage}");
@@ -85,7 +85,7 @@ public class SectionsController : ControllerBase
 
         if (response.Success)
         {
-            return Ok(response);
+            return Ok(response.Value);
         }
 
         _logger.LogError(message: $"Error thrown updating section with form version Id `{formVersionId}` and section Id `{sectionId}`: {response.ErrorMessage}");
@@ -107,7 +107,7 @@ public class SectionsController : ControllerBase
         var response = await _mediator.Send(command);
         if (response.Success)
         {
-            return Ok(response);
+            return Ok(response.Value);
         }
 
         _logger.LogError(message: $"Error thrown deleting section with the section Id `{sectionId}`: {response.ErrorMessage}");

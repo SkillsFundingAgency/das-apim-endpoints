@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.AODP.Application.Commands.FormBuilder.Forms;
-using SFA.DAS.AODP.Application.Queries.FormBuilder.Forms;
+using SFA.DAS.Aodp.Application.Commands.FormBuilder.Forms;
+using SFA.DAS.Aodp.Application.Queries.FormBuilder.Forms;
 
-namespace SFA.DAS.AODP.Api.Controllers;
+namespace SFA.DAS.Aodp.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -27,7 +27,7 @@ public class FormsController : Controller
         var response = await _mediator.Send(query);
         if (response.Success)
         {
-            return Ok(response);
+            return Ok(response.Value);
         }
 
         _logger.LogError(message: $"Error thrown getting all forms versions: {response.ErrorMessage}");
@@ -45,7 +45,7 @@ public class FormsController : Controller
 
         if (response.Success)
         {
-            return Ok(response);
+            return Ok(response.Value);
         }
 
         _logger.LogError(message: $"Error thrown getting a form version with the Id `{formVersionId}`: {response.ErrorMessage}");
@@ -60,7 +60,7 @@ public class FormsController : Controller
         var response = await _mediator.Send(command);
         if (response.Success)
         {
-            return Ok(response);
+            return Ok(response.Value);
         }
 
         _logger.LogError(message: $"Error thrown creating a form and form version: {response.ErrorMessage}");
@@ -78,7 +78,7 @@ public class FormsController : Controller
 
         if (response.Success)
         {
-            return Ok(response);
+            return Ok(response.Value);
         }
 
         _logger.LogError(message: $"Error thrown updating a form version with the Id `{formVersionId}`: {response.ErrorMessage}");
@@ -96,7 +96,7 @@ public class FormsController : Controller
         var response = await _mediator.Send(command);
 
         if (response.Success)
-            return Ok(response);
+            return Ok(response.Value);
 
         _logger.LogError(message: $"Error thrown publishing a form version with the Id `{formVersionId}`: : {response.ErrorMessage}");
         return StatusCode(StatusCodes.Status500InternalServerError);
@@ -113,7 +113,7 @@ public class FormsController : Controller
         var response = await _mediator.Send(command);
 
         if (response.Success)
-            return Ok(response);
+            return Ok(response.Value);
 
         _logger.LogError(message: $"Error thrown unpublishing a form version with the Id `{formVersionId}`: : {response.ErrorMessage}");
         return StatusCode(StatusCodes.Status500InternalServerError);
@@ -130,7 +130,7 @@ public class FormsController : Controller
         var response = await _mediator.Send(command);
         if (response.Success)
         {
-            return Ok(response);
+            return Ok(response.Value);
         }
 
         _logger.LogError(message: $"Error thrown deleting a form version with the Id `{formVersionId}`: {response.ErrorMessage}");

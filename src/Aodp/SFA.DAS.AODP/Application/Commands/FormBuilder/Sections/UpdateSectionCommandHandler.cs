@@ -1,11 +1,11 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.Domain.FormBuilder.Requests.Sections;
+using SFA.DAS.Aodp.Domain.FormBuilder.Requests.Sections;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Sections;
+namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Sections;
 
-public class UpdateSectionCommandHandler : IRequestHandler<UpdateSectionCommand, UpdateSectionCommandResponse>
+public class UpdateSectionCommandHandler : IRequestHandler<UpdateSectionCommand, BaseMediatrResponse<UpdateSectionCommandResponse>>
 {
     private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
@@ -16,9 +16,9 @@ public class UpdateSectionCommandHandler : IRequestHandler<UpdateSectionCommand,
 
     }
 
-    public async Task<UpdateSectionCommandResponse> Handle(UpdateSectionCommand request, CancellationToken cancellationToken)
+    public async Task<BaseMediatrResponse<UpdateSectionCommandResponse>> Handle(UpdateSectionCommand request, CancellationToken cancellationToken)
     {
-        var response = new UpdateSectionCommandResponse()
+        var response = new BaseMediatrResponse<UpdateSectionCommandResponse>()
         {
             Success = false
         };
@@ -27,11 +27,7 @@ public class UpdateSectionCommandHandler : IRequestHandler<UpdateSectionCommand,
         {
             var apiRequest = new UpdateSectionApiRequest()
             {
-                Data = new UpdateSectionApiRequest.Section()
-                {
-                    Title = request.Title,
-                    Description = request.Description
-                }
+                Data = request
             };
 
             await _apiClient.Put(apiRequest);

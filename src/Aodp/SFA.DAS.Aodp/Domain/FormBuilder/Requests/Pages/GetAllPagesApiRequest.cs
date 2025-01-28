@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AODP.Domain.FormBuilder.Requests.Pages;
+namespace SFA.DAS.Aodp.Domain.FormBuilder.Requests.Pages;
 
 public class GetAllPagesApiRequest : IGetApiRequest
 {
