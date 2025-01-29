@@ -282,6 +282,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     CompanyBenefitsInformation = source.CompanyBenefitsInformation,
                     AdditionalTrainingDescription = source.AdditionalTrainingDescription,
                     VacancySource = source.VacancySource,
+                    
                 };
             }
         }
