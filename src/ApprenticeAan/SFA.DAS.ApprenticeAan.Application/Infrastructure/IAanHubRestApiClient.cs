@@ -11,6 +11,7 @@ using SFA.DAS.ApprenticeAan.Application.InnerApi.MemberProfiles;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Members;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Notifications;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Settings.Requests;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Settings.Responses;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.StagedApprentices;
 using SFA.DAS.ApprenticeAan.Application.MemberNotificationSettings.Queries.GetMemberNotificationSettings;
 using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
@@ -110,7 +111,7 @@ public interface IAanHubRestApiClient : IHealthChecker
     Task<List<LeavingCategory>> GetLeavingReasons(CancellationToken cancellationToken);
 
     [Get("/MemberNotificationSettings/{memberId}")]
-    Task<GetMemberNotificationSettingsQueryResult> GetMemberNotificationSettings([Path] Guid memberId, CancellationToken cancellationToken);
+    Task<GetNotificationSettingsApiResponse> GetMemberNotificationSettings([Path] Guid memberId, CancellationToken cancellationToken);
 
     [Post("/MemberNotificationSettings/{memberId}")]
     Task UpdateMemberNotificationSettings([Path] Guid memberId, [Body] PostNotificationSettingsApiRequest request, CancellationToken cancellationToken);

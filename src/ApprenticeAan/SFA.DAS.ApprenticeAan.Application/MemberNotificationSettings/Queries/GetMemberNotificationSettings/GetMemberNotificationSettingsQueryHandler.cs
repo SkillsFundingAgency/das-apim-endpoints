@@ -3,32 +3,35 @@ using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 
 namespace SFA.DAS.ApprenticeAan.Application.MemberNotificationSettings.Queries.GetMemberNotificationSettings;
 
-public class GetMemberNotificationSettingsQueryHandler : IRequestHandler<GetMemberNotificationSettingsQuery, GetMemberNotificationSettingsQueryResult>
+public class GetMemberNotificationSettingsQueryHandler(IAanHubRestApiClient apiClient)
+    : IRequestHandler<GetMemberNotificationSettingsQuery, GetMemberNotificationSettingsQueryResult>
 {
-    private readonly IAanHubRestApiClient _apiClient;
-    public GetMemberNotificationSettingsQueryHandler(IAanHubRestApiClient apiClient)
-    {
-        _apiClient = apiClient;
-    }
     public async Task<GetMemberNotificationSettingsQueryResult> Handle(GetMemberNotificationSettingsQuery request, CancellationToken cancellationToken)
     {
-        var settings = _apiClient.GetMemberNotificationSettings(request.MemberId, cancellationToken);
-        var memberResponse = _apiClient.GetMember(request.MemberId, cancellationToken);
+        var settings = apiClient.GetMemberNotificationSettings(request.MemberId, cancellationToken);
+        var memberResponse = apiClient.GetMember(request.MemberId, cancellationToken);
 
         await Task.WhenAll(settings, memberResponse);
-
-        GetMemberNotificationSettingsQueryResult result = new();
 
         var settingsTask = settings.Result;
         var outputMember = memberResponse.Result;
 
-        if (settingsTask.MemberNotificationEventFormats.Any())
-            result.MemberNotificationEventFormats = settingsTask.MemberNotificationEventFormats;
-
-        if (settingsTask.MemberNotificationLocations.Any())
-            result.MemberNotificationLocations = settingsTask.MemberNotificationLocations;
-
-        result.ReceiveMonthlyNotifications = outputMember.ReceiveNotifications;
+        GetMemberNotificationSettingsQueryResult result = new()
+        {
+            MemberNotificationEventFormats = settingsTask.EventTypes.Select(x => new MemberNotificationEventFormatModel
+            {
+                EventFormat = x.EventType,
+                ReceiveNotifications = x.ReceiveNotifications
+            }),
+            MemberNotificationLocations = settingsTask.Locations.Select(x => new MemberNotificationLocationsModel
+            {
+                Latitude = x.Latitude,
+                Longitude = x.Longitude,
+                Name = x.Name,
+                Radius = x.Radius
+            }),
+            ReceiveMonthlyNotifications = outputMember.ReceiveNotifications
+        };
 
         return result;
     }
