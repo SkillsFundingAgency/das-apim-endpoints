@@ -36,13 +36,15 @@ public class GetTasksQueryHandler(
         var accountTask = accountsApi.Get<GetAccountByIdResponse>(new GetAccountByIdRequest(request.AccountId));
         var pledgeApplicationsToReviewTask = ltmApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
         {
+            AccountId = request.AccountId,
             SenderAccountId = request.AccountId,
-            ApplicationStatusFilter = ApplicationStatus.Pending
+            ApplicationStatusFilter = ApplicationStatus.Pending,
         });
 
         var acceptedPledgeApplicationsTask = ltmApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
         {
             AccountId = request.AccountId,
+            SenderAccountId = request.AccountId,
             ApplicationStatusFilter = ApplicationStatus.Accepted
         });
 
