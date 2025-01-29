@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.Unit
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DA12142C-C24A-4E3F-9C8C-7536F3915FDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth", "..\Shared\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.csproj", "{9A8DA95E-D09D-4CFD-8061-313564A75617}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth", "..\Shared\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.csproj", "{B979A577-1FEC-443F-90BF-306B8BD4906E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,10 +54,10 @@ Global
 		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9A8DA95E-D09D-4CFD-8061-313564A75617}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9A8DA95E-D09D-4CFD-8061-313564A75617}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9A8DA95E-D09D-4CFD-8061-313564A75617}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9A8DA95E-D09D-4CFD-8061-313564A75617}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B979A577-1FEC-443F-90BF-306B8BD4906E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B979A577-1FEC-443F-90BF-306B8BD4906E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B979A577-1FEC-443F-90BF-306B8BD4906E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B979A577-1FEC-443F-90BF-306B8BD4906E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
