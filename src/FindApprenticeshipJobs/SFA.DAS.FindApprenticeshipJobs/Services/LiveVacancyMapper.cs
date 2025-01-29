@@ -3,7 +3,10 @@ using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System.Text.RegularExpressions;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using Address = SFA.DAS.FindApprenticeshipJobs.Application.Shared.Address;
+using DisabilityConfident = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.DisabilityConfident;
+using LiveVacancy = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.LiveVacancy;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Services
 {
@@ -12,7 +15,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
         public Application.Shared.LiveVacancy Map(LiveVacancy source, GetStandardsListResponse standards)
         {
             var getStandardsListItem = standards.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId);
-
+            
             return new Application.Shared.LiveVacancy
             {
                 Id = source.VacancyReference.ToString(),
@@ -30,7 +33,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 IsPositiveAboutDisability = false,
                 
                 IsEmployerAnonymous = source.IsAnonymous,
-                VacancyLocationType = "NonNational",
+                VacancyLocationType = source.EmployerLocationOption == AvailableWhere.AcrossEngland ? "National" : "NonNational",
                 ApprenticeshipLevel = GetApprenticeshipLevel(getStandardsListItem.Level),
                 Wage = new Application.Shared.Wage
                 {
@@ -75,7 +78,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 ProviderContactPhone = source.ProviderContactPhone,
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
-                Address = new Address
+                Address = source.EmployerLocation is not null ? new Address
                 {
                     AddressLine1 = source.EmployerLocation?.AddressLine1,
                     AddressLine2 = source.EmployerLocation?.AddressLine2,
@@ -85,8 +88,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Latitude = source.EmployerLocation?.Latitude ?? 0,
                     Longitude = source.EmployerLocation?.Longitude ?? 0,
                     Country = source.EmployerLocation?.Country
-                },
-                OtherAddresses = source.OtherAddresses is {Count: > 0} ? source.OtherAddresses.Select(add => (Address)add).ToList() : [],
+                } : null,
+                EmploymentLocations = source.EmployerLocations?.Select(x => (Address)x).ToList() ?? [],
+                EmploymentLocationInformation = source.EmployerLocationInformation,
+                EmploymentLocationOption = source.EmployerLocationOption,
                 Duration = source.Wage.Duration,
                 DurationUnit = source.Wage.DurationUnit,
                 ThingsToConsider = source.ThingsToConsider,
@@ -135,7 +140,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 },
                 Qualifications = [],
                 Skills = [],
-                OtherAddresses = [],
                 SearchTags = "NHS National Health Service Health Medical Hospital",
             };
         }
