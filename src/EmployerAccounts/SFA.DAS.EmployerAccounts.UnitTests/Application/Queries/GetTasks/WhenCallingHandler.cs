@@ -220,6 +220,7 @@ public class WhenCallingHandler
         [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> mockLTMApi,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsApi,
         GetApplicationsResponse applicationsResponse,
+        GetApplicationsResponse senderApplicationsResponse,
         GetCohortsResponse getCohortsResponse,
         GetTasksQuery request,
         GetTasksQueryHandler handler)
@@ -230,6 +231,13 @@ public class WhenCallingHandler
                 && r.ApplicationStatusFilter == ApplicationStatus.Accepted)))
             .ReturnsAsync(applicationsResponse)
             .Verifiable();
+        
+        mockLTMApi
+            .Setup(m => m.Get<GetApplicationsResponse>(It.Is<GetApplicationsRequest>(r =>
+                r.SenderAccountId == request.AccountId
+                && r.ApplicationStatusFilter == ApplicationStatus.Accepted)))
+            .ReturnsAsync(senderApplicationsResponse)
+            .Verifiable();
 
         mockCommitmentsApi.Setup(m => m.Get<GetCohortsResponse>(It.Is<GetCohortsRequest>(r => r.AccountId == request.AccountId)))
             .ReturnsAsync(getCohortsResponse)
@@ -238,7 +246,7 @@ public class WhenCallingHandler
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
 
-        result.NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices.Should().Be(applicationsResponse.Applications.Count());
+        result.NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices.Should().Be(applicationsResponse.Applications.Count() + senderApplicationsResponse.Applications.Count());
         result.SingleAcceptedTransferPledgeApplicationIdWithNoApprentices.Should().BeNull();
 
         mockLTMApi.Verify();
