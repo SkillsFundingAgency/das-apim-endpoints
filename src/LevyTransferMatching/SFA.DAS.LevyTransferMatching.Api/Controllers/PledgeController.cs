@@ -53,7 +53,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 {
                     StartingTransferAllowance = queryResult.StartingTransferAllowance,
                     CurrentYearEstimatedCommittedSpend = queryResult.CurrentYearEstimatedCommittedSpend,
-                    Pledges = queryResult.Pledges.Select(x => new GetPledgesResponse.Pledge
+                    Items = queryResult.Pledges.Select(x => new GetPledgesResponse.Pledge
                     {
                         Id = x.Id,
                         Amount = x.Amount,

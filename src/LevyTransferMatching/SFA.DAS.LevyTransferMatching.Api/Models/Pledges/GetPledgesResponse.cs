@@ -5,7 +5,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
     public class GetPledgesResponse
     {
-        public IEnumerable<Pledge> Pledges { get; set; }
+        public IEnumerable<Pledge> Items { get; set; }
         public decimal? StartingTransferAllowance { get; set; }
         public decimal CurrentYearEstimatedCommittedSpend { get; set; }     
         public int TotalItems { get; set; }
