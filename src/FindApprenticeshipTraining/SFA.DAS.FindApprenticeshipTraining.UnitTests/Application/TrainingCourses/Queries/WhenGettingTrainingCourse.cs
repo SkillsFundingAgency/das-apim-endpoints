@@ -88,7 +88,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
             //Assert
             result.Course.Should().BeEquivalentTo(coursesApiResponse);
             result.Course.LevelEquivalent.Should().Be("GCSE");
-            result.ProvidersCount.Should().Be(providerCountModel.TotalProvidersCount);
+            result.ProvidersCount.Should().Be(providerCountModel.ProvidersCount);
             result.ProvidersCountAtLocation.Should().Be(providerCountModel.TotalProvidersCount);
             result.ShortlistItemCount.Should().Be(shortlistItemCount);
         }
