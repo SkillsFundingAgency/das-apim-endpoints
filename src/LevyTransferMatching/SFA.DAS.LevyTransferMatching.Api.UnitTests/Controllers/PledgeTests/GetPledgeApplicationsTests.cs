@@ -48,7 +48,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
 
             okObjectResult.Should().NotBeNull();
             response.Should().NotBeNull();
-            response.TotalItems.Should().Be(response.Applications.Count());
+            response.TotalItems.Should().Be(response.Items.Count());
             response.PledgeRemainingAmount.Should().Be(_queryResult.RemainingAmount);
             response.PledgeTotalAmount.Should().Be(_queryResult.TotalAmount);           
         }

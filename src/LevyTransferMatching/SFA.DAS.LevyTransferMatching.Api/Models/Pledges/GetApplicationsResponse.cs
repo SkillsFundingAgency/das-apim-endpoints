@@ -9,7 +9,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
     public class GetApplicationsResponse
     {
-        public IEnumerable<Application> Applications { get; set; }
+        public IEnumerable<Application> Items { get; set; }
         public int TotalItems{ get; set; }
         public int Page { get; set; }
         public int TotalPages { get; set; }
@@ -68,7 +68,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 PledgeRemainingAmount = queryResult.RemainingAmount,
                 PledgeTotalAmount = queryResult.TotalAmount,
                 AutomaticApprovalOption = queryResult.AutomaticApprovalOption,
-                Applications = queryResult.Items.Select(application => new Application
+                Items = queryResult.Items.Select(application => new Application
                 {
                     Id = application.Id,
                     DasAccountName = application.DasAccountName,
