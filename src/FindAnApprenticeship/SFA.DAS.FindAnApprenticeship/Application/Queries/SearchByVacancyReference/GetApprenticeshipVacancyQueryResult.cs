@@ -37,6 +37,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string WageAmount { get; set; }
             public int WageType { get; set; }
             public Address Address { get; set; }
+            public List<Address>? OtherAddresses { get; set; }
+            public string? EmploymentLocationInformation { get; set; }
             public decimal? Distance { get; set; }
             public string CourseRoute { get; set; }
             public string CourseLevel { get; set; }
@@ -106,7 +108,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string ApplicationUrl { get; set; }
             public string ApplicationInstructions { get; set; }
             public VacancyDataSource VacancySource { get; set; }
-            
+
             public static Vacancy FromIVacancy(IVacancy source, GetStandardsListItemResponse courseResult = null)
             {
                 return source switch
@@ -119,8 +121,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
 
             private static Vacancy From(GetClosedVacancyResponse source, GetStandardsListItemResponse courseResult)
             {
+                // TODO: this doesn't quite map from a closed vacancy anymore
                 var durationUnit = (DurationUnit)source.Wage.DurationUnit;
-                
                 return new Vacancy
                 {
                     AdditionalTrainingDescription = source.AdditionalTrainingDescription,
@@ -213,60 +215,50 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             {
                 return new Vacancy
                 {
-                    Id = source.Id,
-                    AnonymousEmployerName = source.AnonymousEmployerName,
-                    ApprenticeshipLevel = source.ApprenticeshipLevel,
-                    ClosingDate = source.ClosingDate,
-                    EmployerName = source.EmployerName,
-                    IsEmployerAnonymous = source.IsEmployerAnonymous,
-                    PostedDate = source.PostedDate,
-                    Title = source.Title,
-                    VacancyReference = source.VacancyReference,
-                    CourseTitle = source.CourseTitle,
-                    CourseId = source.CourseId,
-                    WageAmount = source.WageAmount,
-                    WageType = source.WageType,
+                    AdditionalQuestion1 = source.AdditionalQuestion1,
+                    AdditionalQuestion2 = source.AdditionalQuestion2,
+                    AdditionalTrainingDescription = source.AdditionalTrainingDescription,
                     Address = source.Address,
-                    Distance = source.Distance,
-                    CourseRoute = source.CourseRoute,
-                    CourseLevel = source.CourseLevel,
-                    LongDescription = source.LongDescription,
-                    OutcomeDescription = source.OutcomeDescription,
-                    TrainingDescription = source.TrainingDescription,
-                    ThingsToConsider = source.ThingsToConsider,
+                    AnonymousEmployerName = source.AnonymousEmployerName,
+                    ApplicationInstructions = source.ApplicationInstructions,
+                    ApplicationUrl = source.ApplicationUrl,
+                    ApprenticeshipLevel = source.ApprenticeshipLevel,
                     Category = source.Category,
                     CategoryCode = source.CategoryCode,
+                    ClosingDate = source.ClosingDate,
+                    CompanyBenefitsInformation = source.CompanyBenefitsInformation,
+                    CourseId = source.CourseId,
+                    CourseLevel = source.CourseLevel,
+                    CourseRoute = source.CourseRoute,
+                    CourseTitle = source.CourseTitle,
                     Description = source.Description,
+                    Distance = source.Distance,
+                    EmployerContactEmail = source.EmployerContactEmail,
+                    EmployerContactName = source.EmployerContactName,
+                    EmployerContactPhone = source.EmployerContactPhone,
+                    EmployerDescription = source.EmployerDescription,
+                    EmployerName = source.EmployerName,
+                    EmployerWebsiteUrl = source.EmployerWebsiteUrl,
+                    EmploymentLocationInformation = source.EmploymentLocationInformation,
+                    ExpectedDuration = source.ExpectedDuration,
                     FrameworkLarsCode = source.FrameworkLarsCode,
                     HoursPerWeek = source.HoursPerWeek,
+                    Id = source.Id,
+                    IsClosed = false,
                     IsDisabilityConfident = source.IsDisabilityConfident,
+                    IsEmployerAnonymous = source.IsEmployerAnonymous,
                     IsPositiveAboutDisability = source.IsPositiveAboutDisability,
                     IsRecruitVacancy = source.IsRecruitVacancy,
                     Location = source.Location,
+                    LongDescription = source.LongDescription,
                     NumberOfPositions = source.NumberOfPositions,
-                    ProviderName = source.ProviderName,
-                    StartDate = source.StartDate,
-                    SubCategory = source.SubCategory,
-                    SubCategoryCode = source.SubCategoryCode,
-                    Ukprn = source.Ukprn,
-                    WageAmountLowerBound = source.WageAmountLowerBound,
-                    WageAmountUpperBound = source.WageAmountUpperBound,
-                    WageText = source.WageText,
-                    WageUnit = source.WageUnit,
-                    WageAdditionalInformation = source.WageAdditionalInformation,
-                    WorkingWeek = source.WorkingWeek,
-                    ExpectedDuration = source.ExpectedDuration,
-                    Score = source.Score,
-                    EmployerDescription = source.EmployerDescription,
-                    EmployerWebsiteUrl = source.EmployerWebsiteUrl,
-                    EmployerContactPhone = source.EmployerContactPhone,
-                    EmployerContactEmail = source.EmployerContactEmail,
-                    EmployerContactName = source.EmployerContactName,
-                    ProviderContactPhone = source.ProviderContactPhone,
+                    OtherAddresses = source.OtherAddresses,
+                    OutcomeDescription = source.OutcomeDescription,
+                    PostedDate = source.PostedDate,
                     ProviderContactEmail = source.ProviderContactEmail,
                     ProviderContactName = source.ProviderContactName,
-                    VacancyLocationType = source.VacancyLocationType,
-                    Skills = source.Skills,
+                    ProviderContactPhone = source.ProviderContactPhone,
+                    ProviderName = source.ProviderName,
                     Qualifications = source.Qualifications?.Select(x => new VacancyQualification
                     {
                         QualificationType = x.QualificationType,
@@ -274,15 +266,26 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                         Grade = x.Grade,
                         Weighting = x.Weighting
                     }),
-                    AdditionalQuestion1 = source.AdditionalQuestion1,
-                    AdditionalQuestion2 = source.AdditionalQuestion2,
-                    IsClosed = false,
-                    ApplicationUrl = source.ApplicationUrl,
-                    ApplicationInstructions = source.ApplicationInstructions,
-                    CompanyBenefitsInformation = source.CompanyBenefitsInformation,
-                    AdditionalTrainingDescription = source.AdditionalTrainingDescription,
+                    Score = source.Score,
+                    Skills = source.Skills,
+                    StartDate = source.StartDate,
+                    SubCategory = source.SubCategory,
+                    SubCategoryCode = source.SubCategoryCode,
+                    ThingsToConsider = source.ThingsToConsider,
+                    Title = source.Title,
+                    TrainingDescription = source.TrainingDescription,
+                    Ukprn = source.Ukprn,
+                    VacancyLocationType = source.VacancyLocationType,
+                    VacancyReference = source.VacancyReference,
                     VacancySource = source.VacancySource,
-                    
+                    WageAdditionalInformation = source.WageAdditionalInformation,
+                    WageAmount = source.WageAmount,
+                    WageAmountLowerBound = source.WageAmountLowerBound,
+                    WageAmountUpperBound = source.WageAmountUpperBound,
+                    WageText = source.WageText,
+                    WageType = source.WageType,
+                    WageUnit = source.WageUnit,
+                    WorkingWeek = source.WorkingWeek,
                 };
             }
         }
