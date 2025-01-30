@@ -43,7 +43,7 @@ public class GetTasksQueryHandler(
         var acceptedPledgeApplicationsTask = ltmApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
         {
             AccountId = request.AccountId,
-            SenderAccountId = request.AccountId,
+            //SenderAccountId = request.AccountId,
             ApplicationStatusFilter = ApplicationStatus.Accepted
         });
 
