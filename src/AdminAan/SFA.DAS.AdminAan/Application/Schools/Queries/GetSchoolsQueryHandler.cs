@@ -1,34 +1,38 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.AdminAan.Infrastructure;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.EducationalOrganisations;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AdminAan.Application.Schools.Queries;
-public class GetSchoolsQueryHandler : IRequestHandler<GetSchoolsQuery, GetSchoolsQueryApiResult>
+public class GetSchoolsQueryHandler(ICharitiesApiClient<CharitiesApiConfiguration> apiClient, ILogger<GetSchoolsQueryHandler> logger)
+    : IRequestHandler<GetSchoolsQuery, GetSchoolsQueryApiResult>
 {
-    private readonly IReferenceDataApiClient _apiClient;
-    private readonly ILogger<GetSchoolsQueryHandler> _logger;
-
-    public const int PageSize = 100;
-    public const int PageNumber = 1;
-    public GetSchoolsQueryHandler(IReferenceDataApiClient apiClient, ILogger<GetSchoolsQueryHandler> logger)
-    {
-        _apiClient = apiClient;
-        _logger = logger;
-    }
+    private const int PageSize = 100;
 
     public async Task<GetSchoolsQueryApiResult> Handle(GetSchoolsQuery request, CancellationToken cancellationToken)
     {
-        var result = await _apiClient.GetSchools(request.SearchTerm, PageSize, PageNumber, cancellationToken);
+        var result = await apiClient.GetWithResponseCode<EducationalOrganisationResponse>(new SearchEducationalOrganisationsRequest(request.SearchTerm, PageSize));
 
-        if (result.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+        if (result.StatusCode == System.Net.HttpStatusCode.OK)
         {
-            var response = result.GetContent();
-            var schools = response.Data;
-            return new GetSchoolsQueryApiResult(schools.Where(s => s.Urn.Length == 6).ToList());
+            var response = result.Body;
+            var educationalOrganisations = response.EducationalOrganisations;
+            var schools = educationalOrganisations
+                .Where(eduOrg => eduOrg.URN.Length == 6)
+                .Select(eduOrg => new School
+                {
+                    Name = eduOrg.Name,
+                    Urn = eduOrg.URN
+                }).ToList();
+            
+            return new GetSchoolsQueryApiResult(schools);
         }
 
-        _logger.LogInformation("Call to ReferenceData Api was not successful. There has been status returned of StatusCode {StatusCode}", result.ResponseMessage.StatusCode);
+        logger.LogInformation("Call to ReferenceData Api was not successful. There has been status returned of StatusCode {StatusCode}", result.ResponseMessage.StatusCode);
 
-        return new GetSchoolsQueryApiResult(new List<School>());
+        return new GetSchoolsQueryApiResult([]);
     }
 }
