@@ -18,6 +18,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
         public int PledgeRemainingAmount { get; set; }
         public int PledgeTotalAmount { get; set; }
         public AutomaticApprovalOption AutomaticApprovalOption { get; set; }
+        public int TotalPendingApplications { get; set; }
 
         public class Application
         {
@@ -68,6 +69,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
                 PledgeRemainingAmount = queryResult.RemainingAmount,
                 PledgeTotalAmount = queryResult.TotalAmount,
                 AutomaticApprovalOption = queryResult.AutomaticApprovalOption,
+                TotalPendingApplications = queryResult.TotalPendingApplications,
                 Items = queryResult.Items.Select(application => new Application
                 {
                     Id = application.Id,

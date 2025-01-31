@@ -38,7 +38,8 @@ public class GetApplicationsQueryHandler(ILevyTransferMatchingService levyTransf
             PledgeStatus = pledgeTask.Result.Status,
             TotalAmount = pledgeTask.Result.Amount,
             RemainingAmount = pledgeTask.Result.RemainingAmount,
-            AutomaticApprovalOption = pledgeTask.Result.AutomaticApprovalOption
+            AutomaticApprovalOption = pledgeTask.Result.AutomaticApprovalOption,
+            TotalPendingApplications = pledgeTask.Result.TotalPendingApplications
         };
     }
 }
