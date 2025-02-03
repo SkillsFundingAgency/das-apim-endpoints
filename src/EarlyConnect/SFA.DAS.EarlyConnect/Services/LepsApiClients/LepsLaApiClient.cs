@@ -1,6 +1,7 @@
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using System.Net.Security;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -155,7 +156,15 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                 var httpClientHandler = new HttpClientHandler
                 {
                     SslProtocols = System.Security.Authentication.SslProtocols.Tls12 |
-                                   System.Security.Authentication.SslProtocols.Tls13
+                                   System.Security.Authentication.SslProtocols.Tls13,
+                    ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
+                    {
+                        if (sslPolicyErrors != SslPolicyErrors.None)
+                        {
+                            throw new Exception($"❌ SSL Policy Error: {sslPolicyErrors}");
+                        }
+                        return true; // Accept the certificate if no errors
+                    }
                 };
 
                 httpClientHandler.ClientCertificates.Add(certificate);
