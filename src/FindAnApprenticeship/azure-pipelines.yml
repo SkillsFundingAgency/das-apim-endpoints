@@ -27,6 +27,8 @@ variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
 - group: RELEASE das-apim-endpoints-FindAnApprenticeship
+- name: ProductShortName
+  value: faa
 
 resources:
   repositories:
@@ -54,3 +56,4 @@ stages:
     ConfigurationSecrets:
       NServiceBusLicense: $(NServiceBusLicense)
       ApimEndpointsRedisConnectionString: $(ApimEndpointsRedisConnectionString)
+    useProductAppInsights: 'True'

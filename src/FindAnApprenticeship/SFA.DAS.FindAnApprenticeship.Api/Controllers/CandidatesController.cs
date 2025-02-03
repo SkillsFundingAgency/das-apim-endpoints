@@ -9,7 +9,6 @@ using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Status;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.Inform;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.SignIntoYourOldAccount;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers;
 
@@ -89,28 +88,6 @@ public class CandidatesController : ControllerBase
         catch (Exception e)
         {
             _logger.LogError(e, "Error attempting to update candidate status");
-            return StatusCode((int)HttpStatusCode.InternalServerError);
-        }
-    }
-
-    [HttpPost]
-    [Route("sign-in-to-your-old-account")]
-    public async Task<IActionResult> SignIntoYourOldAccount(PostSignIntoYourOldAccountRequest request)
-    {
-        try
-        {
-            var queryResponse = await _mediator.Send(new GetSignIntoYourOldAccountQuery
-            {
-                CandidateId = request.CandidateId,
-                Email = request.Email,
-                Password = request.Password
-            });
-
-            return Ok(queryResponse);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error attempting to get sign into your old account");
             return StatusCode((int)HttpStatusCode.InternalServerError);
         }
     }

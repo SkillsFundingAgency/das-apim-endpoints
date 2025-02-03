@@ -1,37 +1,33 @@
-﻿using System.Net;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Commands.Candidate;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Requests;
-using SFA.DAS.FindAnApprenticeship.InnerApi.LegacyApi.Responses;
-using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands;
 public class WhenHandlingPostCandidateCommand
 {
-    [Test, MoqAutoData]
+    [Test]
+    [MoqInlineAutoData(UserStatus.Completed)]
+    [MoqInlineAutoData(UserStatus.Deleted)]
+    [MoqInlineAutoData(UserStatus.InProgress)]
+    [MoqInlineAutoData(UserStatus.Incomplete)]
     public async Task Then_If_Candidate_Already_Exists_Then_Details_Are_Returned(
+        UserStatus status,
         CreateCandidateCommand command,
         string govUkId,
         GetCandidateApiResponse candidate,
         PostCandidateApiResponse response,
-        GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
-        [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
         CreateCandidateCommandHandler handler)
     {
         command.GovUkIdentifier = govUkId;
         command.Email = candidate.Email;
+
+        candidate.Status = status;
 
         var expectedGetCandidateRequest = new GetCandidateApiRequest(govUkId);
         mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(
@@ -57,9 +53,7 @@ public class WhenHandlingPostCandidateCommand
         string govUkId,
         GetCandidateApiResponse candidate,
         PostCandidateApiResponse response,
-        GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
-        [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
         CreateCandidateCommandHandler handler)
     {
         command.GovUkIdentifier = govUkId;
@@ -89,177 +83,6 @@ public class WhenHandlingPostCandidateCommand
     }
 
     [Test, MoqAutoData]
-    public async Task Then_If_Candidate_Email_Address_Has_Already_Been_Migrated_Then_IsMigrated_Property_Is_Set(
-        CreateCandidateCommand command,
-        string govUkId,
-        GetCandidateByMigratedEmailApiResponse migratedCandidate,
-        PostCandidateApiResponse response,
-        GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
-        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
-        [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
-        CreateCandidateCommandHandler handler)
-    {
-        command.GovUkIdentifier = govUkId;
-        command.Email = migratedCandidate.Email;
-
-        var expectedGetCandidateRequest = new GetCandidateApiRequest(govUkId);
-        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(
-                It.Is<GetCandidateApiRequest>(r => r.GetUrl == expectedGetCandidateRequest.GetUrl)))
-            .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
-
-        var expectedGetMigratedCandidateRequest = new GetCandidateByMigratedEmailApiRequest(command.Email);
-        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateByMigratedEmailApiResponse>(
-                It.Is<GetCandidateByMigratedEmailApiRequest>(r => r.GetUrl == expectedGetMigratedCandidateRequest.GetUrl)))
-            .ReturnsAsync(new ApiResponse<GetCandidateByMigratedEmailApiResponse>(migratedCandidate, HttpStatusCode.OK, string.Empty));
-
-        var result = await handler.Handle(command, CancellationToken.None);
-
-        using (new AssertionScope())
-        {
-            result.IsEmailAddressMigrated.Should().BeTrue();
-        }
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_If_Legacy_User_Exists_Details_Are_Migrated_With_Address(
-        CreateCandidateCommand command,
-        string govUkId,
-        PostCandidateApiResponse response,
-        GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
-        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
-        [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
-        CreateCandidateCommandHandler handler)
-    {
-        command.GovUkIdentifier = govUkId;
-
-        var expectedPostData = new PostCandidateApiRequestData
-        {
-            Email = command.Email
-        };
-
-        var expectedGetCandidateRequest = new GetCandidateApiRequest(govUkId);
-        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(
-                It.Is<GetCandidateApiRequest>(r => r.GetUrl == expectedGetCandidateRequest.GetUrl)))
-                .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
-
-        var expectedGetMigratedCandidateRequest = new GetCandidateByMigratedEmailApiRequest(command.Email);
-        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateByMigratedEmailApiResponse>(
-                It.Is<GetCandidateByMigratedEmailApiRequest>(r => r.GetUrl == expectedGetMigratedCandidateRequest.GetUrl)))
-            .ReturnsAsync(new ApiResponse<GetCandidateByMigratedEmailApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
-
-        var expectedRequest = new PostCandidateApiRequest(command.GovUkIdentifier, expectedPostData);
-
-        mockApiClient
-                .Setup(client => client.PostWithResponseCode<PostCandidateApiResponse>(
-                    It.Is<PostCandidateApiRequest>(r => r.PostUrl == expectedRequest.PostUrl
-                    && ((PostCandidateApiRequestData)r.Data).FirstName == legacyUserByEmailApiResponse.RegistrationDetails!.FirstName
-                    && ((PostCandidateApiRequestData)r.Data).LastName == legacyUserByEmailApiResponse.RegistrationDetails!.LastName
-                    && ((PostCandidateApiRequestData)r.Data).DateOfBirth == legacyUserByEmailApiResponse.RegistrationDetails!.DateOfBirth
-                    && ((PostCandidateApiRequestData)r.Data).PhoneNumber == legacyUserByEmailApiResponse.RegistrationDetails!.PhoneNumber
-                    && ((PostCandidateApiRequestData)r.Data).MigratedEmail == command.Email
-                    && ((PostCandidateApiRequestData)r.Data).MigratedCandidateId == legacyUserByEmailApiResponse.Id
-                    ), true))
-                .ReturnsAsync(new ApiResponse<PostCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
-
-        mockApiClient
-            .Setup(x => x.PutWithResponseCode<PostCandidateAddressApiResponse>(
-                It.Is<PutCandidateAddressApiRequest>(c => c.PutUrl.Contains(response.Id.ToString()))))
-            .ReturnsAsync(new ApiResponse<PostCandidateAddressApiResponse>(null, HttpStatusCode.Accepted, ""));
-        
-        var legacyGetRequest = new GetLegacyUserByEmailApiRequest(command.Email);
-        mockLegacyApiClient
-            .Setup(client => client.Get<GetLegacyUserByEmailApiResponse>(
-                It.Is<GetLegacyUserByEmailApiRequest>(r => r.GetUrl == legacyGetRequest.GetUrl)))
-            .ReturnsAsync(legacyUserByEmailApiResponse);
-
-        var result = await handler.Handle(command, CancellationToken.None);
-
-        using (new AssertionScope())
-        {
-            result.GovUkIdentifier.Should().BeEquivalentTo(response.GovUkIdentifier);
-            result.Email.Should().BeEquivalentTo(response.Email);
-            result.FirstName.Should().BeEquivalentTo(response.FirstName);
-            result.LastName.Should().BeEquivalentTo(response.LastName);
-            result.Status.Should().Be(UserStatus.InProgress);
-            result.IsEmailAddressMigrated.Should().BeFalse();
-            mockApiClient
-                .Verify(x => x.PutWithResponseCode<PostCandidateAddressApiResponse>(
-                    It.Is<PutCandidateAddressApiRequest>(c => c.PutUrl.Contains(response.Id.ToString())
-                    && ((PutCandidateAddressApiRequestData)c.Data).AddressLine1 == legacyUserByEmailApiResponse.RegistrationDetails!.Address.AddressLine1
-                    && ((PutCandidateAddressApiRequestData)c.Data).AddressLine2 == legacyUserByEmailApiResponse.RegistrationDetails!.Address.AddressLine2
-                    && ((PutCandidateAddressApiRequestData)c.Data).AddressLine3 == legacyUserByEmailApiResponse.RegistrationDetails!.Address.AddressLine3
-                    && ((PutCandidateAddressApiRequestData)c.Data).AddressLine4 == legacyUserByEmailApiResponse.RegistrationDetails!.Address.AddressLine4
-                    && ((PutCandidateAddressApiRequestData)c.Data).Latitude == legacyUserByEmailApiResponse.RegistrationDetails!.Address.GeoPoint.Latitude
-                    && ((PutCandidateAddressApiRequestData)c.Data).Longitude == legacyUserByEmailApiResponse.RegistrationDetails!.Address.GeoPoint.Longitude
-                    && ((PutCandidateAddressApiRequestData)c.Data).Postcode == legacyUserByEmailApiResponse.RegistrationDetails!.Address.Postcode
-                    && ((PutCandidateAddressApiRequestData)c.Data).Uprn == legacyUserByEmailApiResponse.RegistrationDetails!.Address.Uprn
-                    )), Times.Once);
-        }
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_The_Post_Is_Sent_And_If_Legacy_Api_Has_DateOfBirth_As_DateTime_Min_Value_Then_Null_Sent(
-        CreateCandidateCommand command,
-        string govUkId,
-        PostCandidateApiResponse response,
-        GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
-        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
-        [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
-        CreateCandidateCommandHandler handler)
-    {
-        command.GovUkIdentifier = govUkId;
-
-        legacyUserByEmailApiResponse.RegistrationDetails.DateOfBirth = DateTime.MinValue;
-        response.FirstName = legacyUserByEmailApiResponse.RegistrationDetails?.FirstName;
-        response.LastName = legacyUserByEmailApiResponse.RegistrationDetails?.LastName;
-
-        var expectedPostData = new PostCandidateApiRequestData
-        {
-            Email = command.Email
-        };
-
-        var expectedGetCandidateRequest = new GetCandidateApiRequest(govUkId);
-        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(
-                It.Is<GetCandidateApiRequest>(r => r.GetUrl == expectedGetCandidateRequest.GetUrl)))
-            .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
-
-        var expectedGetMigratedCandidateRequest = new GetCandidateByMigratedEmailApiRequest(command.Email);
-        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateByMigratedEmailApiResponse>(
-                It.Is<GetCandidateByMigratedEmailApiRequest>(r => r.GetUrl == expectedGetMigratedCandidateRequest.GetUrl)))
-            .ReturnsAsync(new ApiResponse<GetCandidateByMigratedEmailApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
-
-        var expectedRequest = new PostCandidateApiRequest(command.GovUkIdentifier, expectedPostData);
-        mockApiClient
-            .Setup(x => x.PutWithResponseCode<PostCandidateAddressApiResponse>(
-                It.Is<PutCandidateAddressApiRequest>(c => c.PutUrl.Contains(response.Id.ToString()))))
-            .ReturnsAsync(new ApiResponse<PostCandidateAddressApiResponse>(null, HttpStatusCode.Accepted, ""));
-        mockApiClient
-                .Setup(client => client.PostWithResponseCode<PostCandidateApiResponse>(
-                    It.Is<PostCandidateApiRequest>(r => 
-                        r.PostUrl == expectedRequest.PostUrl
-                        && ((PostCandidateApiRequestData)r.Data).DateOfBirth == null), true))
-                .ReturnsAsync(new ApiResponse<PostCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
-
-        var legacyGetRequest = new GetLegacyUserByEmailApiRequest(command.Email);
-        mockLegacyApiClient
-            .Setup(client => client.Get<GetLegacyUserByEmailApiResponse>(
-                It.Is<GetLegacyUserByEmailApiRequest>(r => r.GetUrl == legacyGetRequest.GetUrl)))
-            .ReturnsAsync(legacyUserByEmailApiResponse);
-
-        var result = await handler.Handle(command, CancellationToken.None);
-
-        using (new AssertionScope())
-        {
-            result.GovUkIdentifier.Should().BeEquivalentTo(response.GovUkIdentifier);
-            result.Email.Should().BeEquivalentTo(response.Email);
-            result.FirstName.Should().BeEquivalentTo(legacyUserByEmailApiResponse.RegistrationDetails?.FirstName);
-            result.LastName.Should().BeEquivalentTo(legacyUserByEmailApiResponse.RegistrationDetails?.LastName);
-            result.IsEmailAddressMigrated.Should().BeFalse();
-            result.Status.Should().Be(UserStatus.InProgress);
-        }
-    }
-
-    [Test, MoqAutoData]
     public async Task And_Api_Returns_Null_Then_Return_Null(
         CreateCandidateCommand command,
         string govUkId,
@@ -278,11 +101,6 @@ public class WhenHandlingPostCandidateCommand
                 It.Is<GetCandidateApiRequest>(r => r.GetUrl == expectedGetCandidateRequest.GetUrl)))
             .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
 
-        var expectedGetMigratedCandidateRequest = new GetCandidateByMigratedEmailApiRequest(command.Email);
-        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateByMigratedEmailApiResponse>(
-                It.Is<GetCandidateByMigratedEmailApiRequest>(r => r.GetUrl == expectedGetMigratedCandidateRequest.GetUrl)))
-            .ReturnsAsync(new ApiResponse<GetCandidateByMigratedEmailApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
-
         var expectedRequest = new PostCandidateApiRequest(command.GovUkIdentifier, expectedPostData);
 
         mockApiClient
@@ -296,18 +114,18 @@ public class WhenHandlingPostCandidateCommand
     }
 
     [Test, MoqAutoData]
-    public async Task Then_LegacyApi_Returns_Null_The_Post_Is_Sent_And_Data_Returned(
+    public async Task Then_Candidate_Not_Exist_The_Post_Is_Sent_And_Data_Returned(
         CreateCandidateCommand command,
         string govUkId,
         PostCandidateApiResponse response,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
-        [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
         CreateCandidateCommandHandler handler)
     {
         command.GovUkIdentifier = govUkId;
 
         response.FirstName = null;
         response.LastName = null;
+        response.PhoneNumber = null;
         var expectedPostData = new PostCandidateApiRequestData
         {
             Email = command.Email
@@ -318,23 +136,12 @@ public class WhenHandlingPostCandidateCommand
                 It.Is<GetCandidateApiRequest>(r => r.GetUrl == expectedGetCandidateRequest.GetUrl)))
             .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
 
-        var expectedGetMigratedCandidateRequest = new GetCandidateByMigratedEmailApiRequest(command.Email);
-        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateByMigratedEmailApiResponse>(
-                It.Is<GetCandidateByMigratedEmailApiRequest>(r => r.GetUrl == expectedGetMigratedCandidateRequest.GetUrl)))
-            .ReturnsAsync(new ApiResponse<GetCandidateByMigratedEmailApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
-
         var expectedRequest = new PostCandidateApiRequest(command.GovUkIdentifier, expectedPostData);
 
         mockApiClient
             .Setup(client => client.PostWithResponseCode<PostCandidateApiResponse>(
                 It.Is<PostCandidateApiRequest>(r => r.PostUrl == expectedRequest.PostUrl), true))
             .ReturnsAsync(new ApiResponse<PostCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
-
-        var legacyGetRequest = new GetLegacyUserByEmailApiRequest(command.Email);
-        mockLegacyApiClient
-            .Setup(client => client.Get<GetLegacyUserByEmailApiResponse>(
-                It.Is<GetLegacyUserByEmailApiRequest>(r => r.GetUrl == legacyGetRequest.GetUrl)))
-            .ReturnsAsync(() => null);
 
         var result = await handler.Handle(command, CancellationToken.None);
 
@@ -343,115 +150,10 @@ public class WhenHandlingPostCandidateCommand
             result.GovUkIdentifier.Should().BeEquivalentTo(response.GovUkIdentifier);
             result.Email.Should().BeEquivalentTo(response.Email);
             result.FirstName.Should().BeNull();
-            result.LastName.Should().BeNull();
+            result.LastName.Should().BeNull(); 
+            result.PhoneNumber.Should().BeNull();
+            result.DateOfBirth.Should().BeNull();
             result.Status.Should().Be(UserStatus.Incomplete);
         }
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_Legacy_Applications_Are_Migrated(
-        CreateCandidateCommand command,
-        string govUkId,
-        PostCandidateApiResponse response,
-        GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
-        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
-        [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
-        [Frozen] Mock<ILegacyApplicationMigrationService> legacyApplicationMigrationService,
-        CreateCandidateCommandHandler handler)
-    {
-        command.GovUkIdentifier = govUkId;
-        response.FirstName = legacyUserByEmailApiResponse.RegistrationDetails?.FirstName;
-        response.LastName = legacyUserByEmailApiResponse.RegistrationDetails?.LastName;
-
-        var expectedPostData = new PostCandidateApiRequestData
-        {
-            Email = command.Email
-        };
-
-        var expectedGetCandidateRequest = new GetCandidateApiRequest(govUkId);
-        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(
-                It.Is<GetCandidateApiRequest>(r => r.GetUrl == expectedGetCandidateRequest.GetUrl)))
-                .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
-
-        var expectedGetMigratedCandidateRequest = new GetCandidateByMigratedEmailApiRequest(command.Email);
-        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateByMigratedEmailApiResponse>(
-                It.Is<GetCandidateByMigratedEmailApiRequest>(r => r.GetUrl == expectedGetMigratedCandidateRequest.GetUrl)))
-            .ReturnsAsync(new ApiResponse<GetCandidateByMigratedEmailApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
-
-        var expectedRequest = new PostCandidateApiRequest(command.GovUkIdentifier, expectedPostData);
-
-        mockApiClient
-                .Setup(client => client.PostWithResponseCode<PostCandidateApiResponse>(
-                    It.Is<PostCandidateApiRequest>(r => r.PostUrl == expectedRequest.PostUrl), true))
-                .ReturnsAsync(new ApiResponse<PostCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
-        mockApiClient
-            .Setup(x => x.PutWithResponseCode<PostCandidateAddressApiResponse>(
-                It.Is<PutCandidateAddressApiRequest>(c => c.PutUrl.Contains(response.Id.ToString()))))
-            .ReturnsAsync(new ApiResponse<PostCandidateAddressApiResponse>(null, HttpStatusCode.Accepted, ""));
-        var legacyGetRequest = new GetLegacyUserByEmailApiRequest(command.Email);
-        mockLegacyApiClient
-            .Setup(client => client.Get<GetLegacyUserByEmailApiResponse>(
-                It.Is<GetLegacyUserByEmailApiRequest>(r => r.GetUrl == legacyGetRequest.GetUrl)))
-            .ReturnsAsync(legacyUserByEmailApiResponse);
-
-        await handler.Handle(command, CancellationToken.None);
-
-        legacyApplicationMigrationService.Verify(
-            x => x.MigrateLegacyApplications(response.Id, command.Email), Times.Once);
-
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_Legacy_UserDetails_Found_Status_Return_As_InProgress(
-       CreateCandidateCommand command,
-       string govUkId,
-       PostCandidateApiResponse response,
-       GetLegacyUserByEmailApiResponse legacyUserByEmailApiResponse,
-       [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockApiClient,
-       [Frozen] Mock<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>> mockLegacyApiClient,
-       [Frozen] Mock<ILegacyApplicationMigrationService> legacyApplicationMigrationService,
-       CreateCandidateCommandHandler handler)
-    {
-        command.GovUkIdentifier = govUkId;
-        response.FirstName = legacyUserByEmailApiResponse.RegistrationDetails?.FirstName;
-        response.LastName = legacyUserByEmailApiResponse.RegistrationDetails?.LastName;
-
-        var expectedPostData = new PostCandidateApiRequestData
-        {
-            Email = command.Email
-        };
-
-        var expectedGetCandidateRequest = new GetCandidateApiRequest(govUkId);
-        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(
-                It.Is<GetCandidateApiRequest>(r => r.GetUrl == expectedGetCandidateRequest.GetUrl)))
-                .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
-
-        var expectedGetMigratedCandidateRequest = new GetCandidateByMigratedEmailApiRequest(command.Email);
-        mockApiClient.Setup(x => x.GetWithResponseCode<GetCandidateByMigratedEmailApiResponse>(
-                It.Is<GetCandidateByMigratedEmailApiRequest>(r => r.GetUrl == expectedGetMigratedCandidateRequest.GetUrl)))
-            .ReturnsAsync(new ApiResponse<GetCandidateByMigratedEmailApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
-
-        var expectedRequest = new PostCandidateApiRequest(command.GovUkIdentifier, expectedPostData);
-
-        mockApiClient
-                .Setup(client => client.PostWithResponseCode<PostCandidateApiResponse>(
-                    It.Is<PostCandidateApiRequest>(r => r.PostUrl == expectedRequest.PostUrl), true))
-                .ReturnsAsync(new ApiResponse<PostCandidateApiResponse>(response, HttpStatusCode.OK, string.Empty));
-        mockApiClient
-            .Setup(x => x.PutWithResponseCode<PostCandidateAddressApiResponse>(
-                It.Is<PutCandidateAddressApiRequest>(c => c.PutUrl.Contains(response.Id.ToString()))))
-            .ReturnsAsync(new ApiResponse<PostCandidateAddressApiResponse>(null, HttpStatusCode.Accepted, ""));
-        var legacyGetRequest = new GetLegacyUserByEmailApiRequest(command.Email);
-        mockLegacyApiClient
-            .Setup(client => client.Get<GetLegacyUserByEmailApiResponse>(
-                It.Is<GetLegacyUserByEmailApiRequest>(r => r.GetUrl == legacyGetRequest.GetUrl)))
-            .ReturnsAsync(legacyUserByEmailApiResponse);
-
-        var result = await handler.Handle(command, CancellationToken.None);
-        result.Status.Should().Be(UserStatus.InProgress);
-
-        legacyApplicationMigrationService.Verify(
-            x => x.MigrateLegacyApplications(response.Id, command.Email), Times.Once);
-
     }
 }

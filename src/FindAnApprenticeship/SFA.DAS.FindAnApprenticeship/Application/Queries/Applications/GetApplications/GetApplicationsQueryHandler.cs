@@ -36,20 +36,14 @@ public class GetApplicationsQueryHandler(
 
         if (totalApplicationCount == 0)
         {
-            return new GetApplicationsQueryResult
-            {
-                ShowAccountRecoveryBanner = string.IsNullOrWhiteSpace(candidateApiResponse.MigratedEmail)
-            };
+            return new GetApplicationsQueryResult();
         }
 
         var vacancyReferences = applicationList.Select(x => $"{x.VacancyReference}").ToList();
         
         var vacancies = await vacancyService.GetVacancies(vacancyReferences);
 
-        var result = new GetApplicationsQueryResult
-        {
-            ShowAccountRecoveryBanner = false
-        };
+        var result = new GetApplicationsQueryResult();
 
         foreach (var application in applicationList)
         {

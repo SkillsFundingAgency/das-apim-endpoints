@@ -16,13 +16,12 @@ namespace SFA.DAS.FindAnApprenticeship.Services
     {
         public async Task<IVacancy> GetVacancy(string vacancyReference)
         {
-            var result = await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(vacancyReference));
+            return await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(vacancyReference));
+        }
 
-            if (result != null) return result;
-
-            var closedVacancy = await recruitApiClient.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(vacancyReference.Replace("VAC","")));
-
-            return closedVacancy;
+        public async Task<IVacancy> GetClosedVacancy(string vacancyReference)
+        {
+            return await recruitApiClient.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(vacancyReference.Replace("VAC", "")));
         }
 
         public async Task<List<IVacancy>> GetVacancies(List<string> vacancyReferences)
@@ -34,7 +33,7 @@ namespace SFA.DAS.FindAnApprenticeship.Services
 
             var vacancies = await findApprenticeshipApiClient.PostWithResponseCode<PostGetVacanciesByReferenceApiResponse>(vacanciesRequest);
 
-            var result = vacancies.Body.ApprenticeshipVacancies.Select(x => (IVacancy)x).ToList();
+            var result = vacancies.Body.ApprenticeshipVacancies.Select(IVacancy (x) => x).ToList();
 
             var notFoundVacancies = vacancyReferences.Where(x => result.All(y => y.VacancyReference != $"VAC{x}")).ToList();
 
