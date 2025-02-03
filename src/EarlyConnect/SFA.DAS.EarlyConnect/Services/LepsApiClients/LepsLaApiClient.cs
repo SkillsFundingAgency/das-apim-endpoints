@@ -146,7 +146,18 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                 {
                     throw new Exception("Certificate was not properly returned from the Key Vault.");
                 }
-                var httpClientHandler = new HttpClientHandler();
+
+                if (!certificate.Value.HasPrivateKey)
+                {
+                    throw new Exception("Certificate has no private key.");
+                }
+
+                var httpClientHandler = new HttpClientHandler
+                {
+                    SslProtocols = System.Security.Authentication.SslProtocols.Tls12 |
+                                   System.Security.Authentication.SslProtocols.Tls13
+                };
+
                 httpClientHandler.ClientCertificates.Add(certificate);
 
                 HttpClient = new HttpClient(httpClientHandler);
