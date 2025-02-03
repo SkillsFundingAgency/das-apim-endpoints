@@ -86,6 +86,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public AddressApiResponse Address { get; init; }
         public List<AddressApiResponse>? OtherAddresses { get; init; } = [];
         public bool IsPrimaryLocation { get; set; }
+        public string? EmploymentLocationInformation { get; set; }
         public List<string> CourseSkills { get; set; }
         public List<string> CourseCoreDuties { get; set; }
         public string CourseOverviewOfRole { get; set; }
@@ -168,6 +169,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 Address = source.ApprenticeshipVacancy.Address,
                 OtherAddresses = source.ApprenticeshipVacancy.OtherAddresses?.Select(a => (AddressApiResponse) a)
                     .ToList(),
+                EmploymentLocationInformation = source.ApprenticeshipVacancy.EmploymentLocationInformation,
                 IsPrimaryLocation = source.ApprenticeshipVacancy.IsPrimaryLocation,
                 Qualifications = source.ApprenticeshipVacancy.Qualifications?.Select(l => (VacancyQualificationApiResponse) l),
                 CourseOverviewOfRole = source.CourseDetail?.OverviewOfRole ?? string.Empty,
