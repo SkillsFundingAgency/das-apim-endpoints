@@ -27,7 +27,9 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
                 !string.IsNullOrEmpty(Address?.AddressLine1) ? Address.AddressLine1 :
                 string.Empty;
             public string Postcode => Address?.Postcode ?? string.Empty;
+            public bool IsPrimaryLocation { get; set; }
             public Address Address { get; set; }
+            public List<Address>? OtherAddresses { get; set; } = [];
             public string ApplicationUrl { get; set; }
             public string ExternalVacancyUrl => ApplicationUrl;
             public VacancyDataSource VacancySource { get; set; }

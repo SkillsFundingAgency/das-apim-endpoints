@@ -43,6 +43,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
             actual.Vacancies.FirstOrDefault().ApprenticeshipLevel.Should().Be(source.Vacancies.FirstOrDefault().ApprenticeshipLevel);
             actual.Vacancies.FirstOrDefault().Lat.Should().Be(source.Vacancies.FirstOrDefault().Location.Lat);
             actual.Vacancies.FirstOrDefault().Lon.Should().Be(source.Vacancies.FirstOrDefault().Location.Lon);
+            actual.Vacancies.FirstOrDefault().IsPrimaryLocation.Should().Be(source.Vacancies.FirstOrDefault().IsPrimaryLocation);
         }
         
         [Test, AutoData]

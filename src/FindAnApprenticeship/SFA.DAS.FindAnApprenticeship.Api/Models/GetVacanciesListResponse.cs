@@ -64,6 +64,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string? AddressLine4 { get; private set; }
         public string PostCode { get; private set; }
         public List<GetVacanciesListAddressItem> OtherAddresses { get; set; }
+        public bool IsPrimaryLocation { get; set; }
         public string? EmploymentLocationInformation { get; private set; }
         public decimal? Distance { get; set; }
         public string CourseLevel { get; set; }
@@ -107,6 +108,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 AddressLine4 = source.Address.AddressLine4,
                 EmploymentLocationInformation = source.EmploymentLocationInformation,
                 OtherAddresses = source.OtherAddresses?.Select(GetVacanciesListAddressItem.From).ToList(),
+                IsPrimaryLocation = source.IsPrimaryLocation,
                 PostCode = source.Address.Postcode,
                 CourseRoute = source.CourseRoute,
                 CourseLevel = source.CourseLevel,

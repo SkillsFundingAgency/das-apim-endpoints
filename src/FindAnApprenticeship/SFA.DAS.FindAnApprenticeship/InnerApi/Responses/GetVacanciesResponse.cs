@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 {
@@ -58,10 +59,12 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public string WageText { get; set; }
         [JsonPropertyName("address")]
         public Address Address { get; set; }
-        
-        [JsonPropertyName("otherAddresses")]
-        public List<Address>? OtherAddresses { get; set; }
-        
+
+        [JsonPropertyName("otherAddresses")] 
+        public List<Address>? OtherAddresses { get; set; } = [];
+        [JsonPropertyName("isPrimaryLocation")]
+        public bool IsPrimaryLocation { get; set; }
+
         [JsonPropertyName("employmentLocationInformation")]
         public string? EmploymentLocationInformation { get; set; }
 
@@ -107,6 +110,18 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public string AddressLine4 { get; set; }
         [JsonPropertyName("postcode")]
         public string Postcode { get; set; }
+
+        public static implicit operator Address(GetClosedVacancyResponse.Address source)
+        {
+            return new Address
+            {
+                AddressLine1 = source.AddressLine1,
+                AddressLine2 = source.AddressLine2,
+                AddressLine3 = source.AddressLine3,
+                AddressLine4 = source.AddressLine4,
+                Postcode = source.Postcode,
+            };
+        }
     }
 
     public class Location
