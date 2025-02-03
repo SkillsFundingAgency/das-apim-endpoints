@@ -52,12 +52,7 @@ public class GetTasksQueryHandler(
             AccountId = request.AccountId,
             ApplicationStatusFilter = ApplicationStatus.Accepted
         });
-
-        var acceptedSenderPledgeApplicationsTask = ltmApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
-        {
-            SenderAccountId = request.AccountId,
-            ApplicationStatusFilter = ApplicationStatus.Accepted
-        });
+        
 
         var apprenticeChangesTask = commitmentsV2ApiClient.Get<GetApprenticeshipUpdatesResponse>(new GetPendingApprenticeChangesRequest(request.AccountId));
 
@@ -79,7 +74,6 @@ public class GetTasksQueryHandler(
             pendingTransferConnectionsTask,
             cohortsToReviewTask,
             acceptedPledgeApplicationsTask,
-            acceptedSenderPledgeApplicationsTask,
             approvedPledgeApplicationsTask
         );
 
@@ -90,14 +84,13 @@ public class GetTasksQueryHandler(
         var apprenticeChangesCount = apprenticeChanges?.ApprenticeshipUpdates?.Count ?? 0;
         var pendingTransferConnections = await pendingTransferConnectionsTask;
         var pledgeApplicationsAcceptedResponse = await acceptedPledgeApplicationsTask;
-        var senderPledgeApplicationsAcceptedResponse = await acceptedSenderPledgeApplicationsTask;
         var pledgeApplicationsToReviewResponse = await pledgeApplicationsToReviewTask;
         var account = await accountTask;
         var transferRequests = await transferRequestsTask;
         var approvedPledgeApplications = await approvedPledgeApplicationsTask;
 
         var pledgeApplicationsAcceptedIdsWithoutApprentices = GetAcceptedLevyTransfersWithoutApprenticeships(
-            [pledgeApplicationsAcceptedResponse, senderPledgeApplicationsAcceptedResponse],
+            [pledgeApplicationsAcceptedResponse],
             cohortsForThisAccount
         );
 
