@@ -24,6 +24,23 @@ The Find Apprenticeship Training outer api relies on the following inner apis:
 
 You are able to run the API by doing the following:
 
+In the SFA.DAS.FindApprenticeshipTraining.API project, if not exist already, add appSettings.Development.json file with following content:
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConfigurationStorageConnectionString": "UseDevelopmentStorage=true;",
+  "ConfigNames": "SFA.DAS.FindApprenticeshipTraining.OuterApi",
+  "Environment": "LOCAL",
+  "Version": "1.0",
+  "APPINSIGHTS_INSTRUMENTATIONKEY": ""
+}
+```
 
 * In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
 ```

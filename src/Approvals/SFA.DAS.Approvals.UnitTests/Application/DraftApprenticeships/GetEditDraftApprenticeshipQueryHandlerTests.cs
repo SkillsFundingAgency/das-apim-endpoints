@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeship;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
@@ -28,6 +32,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         private GetCohortResponse _cohort;
         private GetDraftApprenticeshipResponse _draftApprenticeship;
         private GetEditDraftApprenticeshipQuery _query;
+        private GetTrainingProgrammeResponse _trainingProgrammeResponse;
+
         private List<string> _deliveryModels;
 
         [SetUp]
@@ -41,6 +47,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             _draftApprenticeship = fixture.Create<GetDraftApprenticeshipResponse>();
             _query = fixture.Create<GetEditDraftApprenticeshipQuery>();
             _deliveryModels = fixture.Create<List<string>>();
+            _trainingProgrammeResponse = fixture.Create<GetTrainingProgrammeResponse>();
 
             _apiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
 
@@ -51,6 +58,11 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             _apiClient.Setup(x =>
                     x.GetWithResponseCode<GetDraftApprenticeshipResponse>(It.Is<GetDraftApprenticeshipRequest>(r => r.CohortId == _query.CohortId && r.DraftApprenticeshipId == _query.DraftApprenticeshipId)))
                 .ReturnsAsync(new ApiResponse<GetDraftApprenticeshipResponse>(_draftApprenticeship, HttpStatusCode.OK, string.Empty));
+
+            _apiClient.Setup(x =>
+                    x.Get<GetTrainingProgrammeResponse>(It.Is<GetCalculatedVersionOfTrainingProgrammeRequest>(r =>
+                        r.CourseCode == _query.CourseCode && r.StartDate == _draftApprenticeship.StartDate)))
+                .ReturnsAsync(_trainingProgrammeResponse);
 
             _deliveryModelService = new Mock<IDeliveryModelService>();
             _deliveryModelService.Setup(x => x.GetDeliveryModels(
@@ -286,6 +298,39 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.That(_draftApprenticeship.RecognisingPriorLearningExtendedStillNeedsToBeConsidered, Is.EqualTo(result.RecognisingPriorLearningExtendedStillNeedsToBeConsidered));
+        }
+
+        [Test]
+        public async Task Handle_StandardPageUrl_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            result.StandardPageUrl.Should().Be(_trainingProgrammeResponse.TrainingProgramme.StandardPageUrl);
+        }
+
+        [Test]
+        public async Task Handle_ProposedMaxFunding_Should_Be_Mapped_To_Null()
+        {
+            _trainingProgrammeResponse.TrainingProgramme.FundingPeriods = new List<TrainingProgrammeFundingPeriod>();
+
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            result.ProposedMaxFunding.Should().BeNull();
+        }
+
+        [Test]
+        public async Task Handle_ProposedMaxFunding_Should_Be_Mapped()
+        {
+            _trainingProgrammeResponse.TrainingProgramme.FundingPeriods =
+            [
+                new TrainingProgrammeFundingPeriod
+                {
+                    EffectiveFrom = DateTime.MinValue,
+                    EffectiveTo = DateTime.MaxValue,
+                    FundingCap = 10000
+                }
+            ];
+
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            result.ProposedMaxFunding.Should().Be(10000);
         }
     }
 }

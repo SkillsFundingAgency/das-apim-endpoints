@@ -13,7 +13,7 @@
     <PackageVersion Include="SFA.DAS.Apprenticeships.Types" Version="6.8.5-prerelease-73" />
     <PackageVersion Include="SFA.DAS.Employer.Shared.UI" Version="17.1.109" />
     <PackageVersion Include="SFA.DAS.Encoding" Version="1.1.76" />
-    <PackageVersion Include="SFA.DAS.VacancyServices.Wage" Version="1.0.33" />
+    <PackageVersion Include="SFA.DAS.VacancyServices.Wage" Version="1.0.35" />
     <PackageVersion Include="System.Text.Json" Version="8.0.5" />
     <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageVersion Include="Azure.Identity" Version="1.12.1" />
@@ -78,7 +78,7 @@
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="4.7.1" />
     <PackageVersion Include="System.Net.Security" Version="4.3.1" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageVersion Include="WireMock.Net" Version="1.5.48" />
+    <PackageVersion Include="WireMock.Net" Version="1.6.7" />
     <PackageVersion Include="WireMock.Net.FluentAssertions" Version="1.5.48" />
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="FluentAssertions.Web" Version="1.2.1" />

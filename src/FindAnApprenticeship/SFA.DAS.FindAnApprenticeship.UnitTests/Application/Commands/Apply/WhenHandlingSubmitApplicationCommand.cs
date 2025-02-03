@@ -1,7 +1,3 @@
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.SubmitApplication;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
@@ -14,7 +10,6 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply;
@@ -26,6 +21,8 @@ public class WhenHandlingSubmitApplicationCommand
         string vacancyReference,
         SubmitApplicationCommand request,
         GetApplicationApiResponse applicationApiResponse,
+        GetApprenticeshipVacancyItemResponse vacancyResponse,
+        [Frozen] Mock<IVacancyService> vacancyService,
         [Frozen] Mock<IMetrics> metricsService,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
@@ -52,6 +49,8 @@ public class WhenHandlingSubmitApplicationCommand
                     c.PostUrl.Contains(request.CandidateId.ToString())
                     && ((PostSubmitApplicationRequestData)c.Data).VacancyReference == vacancyReference
                 ), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
+
+        vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
 
         candidateApiClient.Setup(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
             c.PatchUrl.Contains(request.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
@@ -129,8 +128,7 @@ public class WhenHandlingSubmitApplicationCommand
                 && c.Tokens["firstName"] == applicationApiResponse.Candidate.FirstName
                 && c.Tokens["vacancy"] == vacancyResponse.Title
                 && c.Tokens["employer"] == vacancyResponse.EmployerName 
-                && c.Tokens["city"] == expectedAddress
-                && c.Tokens["postcode"] == vacancyResponse.Address.Postcode
+                && c.Tokens["location"] == $"{expectedAddress}, {vacancyResponse.Address.Postcode}"
                 && !string.IsNullOrEmpty(c.Tokens["yourApplicationsURL"])
                 )
             ), Times.Once);
@@ -219,6 +217,47 @@ public class WhenHandlingSubmitApplicationCommand
         
         var actual = await handler.Handle(request, CancellationToken.None);
         
+        recruitApiClient
+            .Verify(x => x.PostWithResponseCode<NullResponse>(
+                It.IsAny<PostSubmitApplicationRequest>(), true), Times.Never);
+        candidateApiClient.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()), Times.Never);
+        actual.Should().BeFalse();
+        notificationService.Verify(x => x.Send(
+            It.IsAny<SendEmailCommand>()), Times.Never());
+        metricsService.Verify(x => x.IncreaseVacancySubmitted(It.IsAny<string>(), 1), Times.Never);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Vacancy_Is_Not_Found_Application_Is_Not_Submitted_Email_Not_Sent(
+        GetApplicationApiResponse applicationApiResponse,
+        SubmitApplicationCommand request,
+        [Frozen] Mock<IVacancyService> vacancyService,
+        [Frozen] Mock<IMetrics> metricsService,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+        [Frozen] Mock<INotificationService> notificationService,
+        SubmitApplicationCommandHandler handler)
+    {
+        candidateApiClient
+            .Setup(x => x.Get<GetApplicationApiResponse>(
+                It.Is<GetApplicationApiRequest>(c =>
+                    c.GetUrl.Contains(request.CandidateId.ToString()) && c.GetUrl.Contains(request.ApplicationId.ToString()))))
+            .ReturnsAsync(applicationApiResponse);
+        candidateApiClient.Setup(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
+            c.PatchUrl.Contains(request.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+            c.PatchUrl.Contains(request.CandidateId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+            c.Data.Operations[0].path == "/Status" &&
+            (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Submitted
+        ))).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
+        recruitApiClient
+            .Setup(x => x.PostWithResponseCode<NullResponse>(
+                It.Is<PostSubmitApplicationRequest>(c =>
+                    c.PostUrl.Contains(request.CandidateId.ToString())
+                ), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
+
+        vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
+        var actual = await handler.Handle(request, CancellationToken.None);
+
         recruitApiClient
             .Verify(x => x.PostWithResponseCode<NullResponse>(
                 It.IsAny<PostSubmitApplicationRequest>(), true), Times.Never);
