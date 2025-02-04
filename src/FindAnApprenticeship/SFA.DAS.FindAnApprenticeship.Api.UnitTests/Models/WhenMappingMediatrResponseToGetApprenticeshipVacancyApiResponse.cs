@@ -66,6 +66,10 @@ public class WhenMappingMediatrResponseToGetApprenticeshipVacancyApiResponse
             result.WageAmount.Should().Be(source.ApprenticeshipVacancy.WageAmount);
             result.WageType.Should().Be(source.ApprenticeshipVacancy.WageType);
             result.Address.Should().BeEquivalentTo(source.ApprenticeshipVacancy.Address);
+            result.IsPrimaryLocation.Should().Be(source.ApprenticeshipVacancy.IsPrimaryLocation);
+            result.EmploymentLocationInformation.Should().Be(source.ApprenticeshipVacancy.EmploymentLocationInformation);
+            result.EmploymentLocationOption.Should().Be(source.ApprenticeshipVacancy.EmploymentLocationOption);
+            result.OtherAddresses.Should().BeEquivalentTo(source.ApprenticeshipVacancy.OtherAddresses);
             result.Distance.Should().Be(source.ApprenticeshipVacancy.Distance);
             result.CourseRoute.Should().Be(source.ApprenticeshipVacancy.CourseRoute);
             result.CourseLevel.Should().Be(source.ApprenticeshipVacancy.CourseLevel);
