@@ -56,7 +56,7 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             var startTime = DateTime.UtcNow;
 
             // Log Request Details
-            _logger.LogInformation("🔹 [API Request] Sending HTTP {Method} request to: {Url}", requestMessage.Method, request.PostUrl);
+            _logger.LogInformation("🔹 [API Request] Sending HTTP {Method} request to: {Url}", requestMessage.Method, HttpClient.BaseAddress);
             _logger.LogInformation("🔹 [Request Headers] {Headers}", string.Join("; ", requestMessage.Headers.Select(h => $"{h.Key}: {string.Join(",", h.Value)}")));
 
             if (stringContent != null)
@@ -72,18 +72,35 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "❌ [API Call Failed] Exception while making request to {Url}: {Error}", request.PostUrl, ex.Message);
+                _logger.LogError(ex,
+                    "❌ [API Call Failed] Exception while making request to {Url}. Error: {Error} \n StackTrace: {StackTrace}",
+                    request.PostUrl, ex.Message, ex.StackTrace);
 
-                // Log inner exceptions recursively
+                // Log inner exceptions recursively with stack traces
                 Exception innerEx = ex.InnerException;
                 while (innerEx != null)
                 {
-                    _logger.LogError("❌ [Inner Exception] {Error}", innerEx.Message);
+                    _logger.LogError("❌ [Inner Exception] {Error} \n StackTrace: {StackTrace}",
+                        innerEx.Message, innerEx.StackTrace);
                     innerEx = innerEx.InnerException;
                 }
 
+                // Log request details for debugging
+                _logger.LogError("🔹 [Request Details] URL: {Url}, Method: {Method}",
+                    requestMessage.RequestUri, requestMessage.Method);
+
+                if (requestMessage.Content != null)
+                {
+                    var requestBody = await requestMessage.Content.ReadAsStringAsync();
+                    _logger.LogError("🔹 [Request Body] {RequestBody}", requestBody);
+                }
+
+                _logger.LogError("🔹 [Request Headers] {Headers}",
+                    string.Join("; ", requestMessage.Headers.Select(h => $"{h.Key}: {string.Join(",", h.Value)}")));
+
                 throw;
             }
+
 
 
             var endTime = DateTime.UtcNow;
