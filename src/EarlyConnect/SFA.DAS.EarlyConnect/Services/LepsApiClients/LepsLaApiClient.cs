@@ -11,6 +11,7 @@ using Azure.Identity;
 using SFA.DAS.EarlyConnect.Services.Interfaces;
 using SFA.DAS.EarlyConnect.Services.Configuration;
 using System.Net.Security;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 {
@@ -19,11 +20,13 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         private IInternalApiClient<LepsLaApiConfiguration> _apiClient;
         protected LepsLaApiConfiguration Configuration;
         protected HttpClient HttpClient;
+        private readonly ILogger<LepsLaApiClient> _logger;
         public LepsLaApiClient(IInternalApiClient<LepsLaApiConfiguration> apiClient,
-            LepsLaApiConfiguration apiConfiguration)
+            LepsLaApiConfiguration apiConfiguration, ILogger<LepsLaApiClient> logger)
         {
             _apiClient = apiClient;
             Configuration = apiConfiguration;
+            _logger = logger;
         }
 
         public Task<TResponse> Get<TResponse>(IGetApiRequest request)
@@ -167,13 +170,11 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                     }
                 };
 
-
-                Console.WriteLine($"🔹 Subject: {certificate.Value.Subject}");
-                Console.WriteLine($"🔹 Issuer: {certificate.Value.Issuer}");
-                Console.WriteLine($"🔹 NotBefore: {certificate.Value.NotBefore}");
-                Console.WriteLine($"🔹 NotAfter: {certificate.Value.NotAfter}");
-                Console.WriteLine($"🔹 PrivateKey: {certificate.Value.HasPrivateKey}");
-
+                _logger.LogInformation($"🔹 Subject: {certificate.Value.Subject}");
+                _logger.LogInformation($"🔹 Issuer: {certificate.Value.Issuer}");
+                _logger.LogInformation($"🔹 NotBefore: {certificate.Value.NotBefore}");
+                _logger.LogInformation($"🔹 NotAfter: {certificate.Value.NotAfter}");
+                _logger.LogInformation($"🔹 PrivateKey: {certificate.Value.HasPrivateKey}");
 
                 httpClientHandler.ClientCertificates.Add(certificate);
 
