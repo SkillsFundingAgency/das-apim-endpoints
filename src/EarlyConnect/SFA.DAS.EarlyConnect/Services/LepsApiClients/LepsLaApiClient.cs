@@ -167,6 +167,14 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                     }
                 };
 
+
+                Console.WriteLine($"🔹 Subject: {certificate.Value.Subject}");
+                Console.WriteLine($"🔹 Issuer: {certificate.Value.Issuer}");
+                Console.WriteLine($"🔹 NotBefore: {certificate.Value.NotBefore}");
+                Console.WriteLine($"🔹 NotAfter: {certificate.Value.NotAfter}");
+                Console.WriteLine($"🔹 PrivateKey: {certificate.Value.HasPrivateKey}");
+
+
                 httpClientHandler.ClientCertificates.Add(certificate);
 
                 HttpClient = new HttpClient(httpClientHandler);
