@@ -1,7 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
-using System.Net.Security;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -11,6 +10,7 @@ using Azure.Security.KeyVault.Certificates;
 using Azure.Identity;
 using SFA.DAS.EarlyConnect.Services.Interfaces;
 using SFA.DAS.EarlyConnect.Services.Configuration;
+using System.Net.Security;
 
 namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 {
