@@ -101,6 +101,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         {
             return await _levyTransferMatchingApiClient.Get<GetApplicationsResponse>(request);
         }
+        public async Task<GetApplicationsToAutoDeclineResponse> GetApplicationsToAutoDecline(GetApplicationsToAutoDeclineRequest request)
+        {
+            return await _levyTransferMatchingApiClient.Get<GetApplicationsToAutoDeclineResponse>(request);
+        }
 
         public async Task<ApiResponse<DebitPledgeRequest>> DebitPledge(DebitPledgeRequest request)
         {
@@ -140,6 +144,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         public async Task<ApiResponse<DeclineFundingRequest>> DeclineFunding(DeclineFundingRequest request)
         {
             return await _levyTransferMatchingApiClient.PostWithResponseCode<DeclineFundingRequest>(request, false);
+        }  
+        
+        public async Task<ApiResponse<DeclineApprovedFundingRequest>> DeclineApprovedFunding(DeclineApprovedFundingRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<DeclineApprovedFundingRequest>(request, false);
         }
 
         public async Task<ApiResponse<ExpireAcceptedFundingRequest>> ExpireAcceptedFunding(ExpireAcceptedFundingRequest request)
