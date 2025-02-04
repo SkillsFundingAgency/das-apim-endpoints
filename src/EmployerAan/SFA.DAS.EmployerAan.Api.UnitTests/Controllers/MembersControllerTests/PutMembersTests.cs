@@ -114,11 +114,11 @@ public class PutMembersTests
         var result = await sut.UpdateMemberProfileAndPreferences(memberId, request, cancellationToken);
 
         //Assert
-        aanHubRestApiClientMock.Verify(a => a.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.Count == 1), It.IsAny<CancellationToken>()), Times.Once, "The Organisation Name is not added in the Operations array");
+        aanHubRestApiClientMock.Verify(a => a.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.Count == 1), It.IsAny<CancellationToken>()), Times.Once, "The Organisation LocationName is not added in the Operations array");
 
-        aanHubRestApiClientMock.Verify(a => a.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.First().path == "/OrganisationName"), It.IsAny<CancellationToken>()), Times.Once, "The Organisation Name path is not added to the Operations array ");
+        aanHubRestApiClientMock.Verify(a => a.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.First().path == "/OrganisationName"), It.IsAny<CancellationToken>()), Times.Once, "The Organisation LocationName path is not added to the Operations array ");
 
-        aanHubRestApiClientMock.Verify(a => a.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.First().value.ToString() == organisationName), It.IsAny<CancellationToken>()), Times.Once, "The Organisation Name value is not added to the Operations array ");
+        aanHubRestApiClientMock.Verify(a => a.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.First().value.ToString() == organisationName), It.IsAny<CancellationToken>()), Times.Once, "The Organisation LocationName value is not added to the Operations array ");
     }
 
     [Test, MoqAutoData]
@@ -140,11 +140,11 @@ public class PutMembersTests
         var result = await sut.UpdateMemberProfileAndPreferences(memberId, request, cancellationToken);
 
         // Assert
-        aanHubRestApiClientMock.Verify(a => a.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.Count == 2), It.IsAny<CancellationToken>()), Times.Once, "The Region Id and Organisation Name is not added in the Operations array");
+        aanHubRestApiClientMock.Verify(a => a.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.Count == 2), It.IsAny<CancellationToken>()), Times.Once, "The Region Id and Organisation LocationName is not added in the Operations array");
 
-        aanHubRestApiClientMock.Verify(a => a.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.First().path == "/RegionId" && j.Operations.Last().path == "/OrganisationName"), It.IsAny<CancellationToken>()), Times.Once, "The Region Id and Organisation Name path is not added to the Operations array ");
+        aanHubRestApiClientMock.Verify(a => a.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.First().path == "/RegionId" && j.Operations.Last().path == "/OrganisationName"), It.IsAny<CancellationToken>()), Times.Once, "The Region Id and Organisation LocationName path is not added to the Operations array ");
 
-        aanHubRestApiClientMock.Verify(a => a.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.First().value.ToString() == regionId.ToString() && j.Operations.Last().value.ToString() == organisationName), It.IsAny<CancellationToken>()), Times.Once, "The Region Id and Organisation Name value is not added to the Operations array ");
+        aanHubRestApiClientMock.Verify(a => a.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.First().value.ToString() == regionId.ToString() && j.Operations.Last().value.ToString() == organisationName), It.IsAny<CancellationToken>()), Times.Once, "The Region Id and Organisation LocationName value is not added to the Operations array ");
     }
 
     [Test, MoqAutoData]
@@ -164,7 +164,7 @@ public class PutMembersTests
         var result = await sut.UpdateMemberProfileAndPreferences(memberId, request, cancellationToken);
 
         // Assert
-        aanHubRestApiClientMock.Verify(a => a.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.Count == 0), It.IsAny<CancellationToken>()), Times.Never, "The Region Id and Organisation Name is added in the operations array");
+        aanHubRestApiClientMock.Verify(a => a.PatchMember(It.IsAny<Guid>(), It.IsAny<Guid>(), It.Is<JsonPatchDocument<PatchMemberRequest>>(j => j.Operations.Count == 0), It.IsAny<CancellationToken>()), Times.Never, "The Region Id and Organisation LocationName is added in the operations array");
     }
 
     [Test, MoqAutoData]
