@@ -1,6 +1,6 @@
-﻿namespace SFA.DAS.EmployerAan.Application.Members.Queries.GetMember;
+﻿namespace SFA.DAS.EmployerAan.Application.Members.Queries.GetMemberByMemberId;
 
-public class GetMemberQueryResult
+public class GetMemberByIdQueryResult
 {
     public Guid MemberId { get; set; }
     public string Email { get; set; } = null!;
@@ -10,11 +10,7 @@ public class GetMemberQueryResult
     public int? RegionId { get; set; }
     public string UserType { get; set; } = null!;
     public bool? IsRegionalChair { get; set; }
-    public bool? ReceiveNotifications { get; set; }
     public string FullName { get; set; } = null!;
-    public EmployerModel? Employer { get; set; }
-    public ApprenticeModel Apprentice { get; set; } = null!;
-
+    public long EmployerAccountId { get; set; }
+    public Guid UserRef { get; set; }
 }
-public record EmployerModel(long AccountId, Guid UserRef);
-public record ApprenticeModel(Guid ApprenticeId);
