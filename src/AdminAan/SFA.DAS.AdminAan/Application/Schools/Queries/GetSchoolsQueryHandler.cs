@@ -1,13 +1,12 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EducationalOrganisations;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AdminAan.Application.Schools.Queries;
-public class GetSchoolsQueryHandler(ICharitiesApiClient<CharitiesApiConfiguration> apiClient, ILogger<GetSchoolsQueryHandler> logger)
+public class GetSchoolsQueryHandler(IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration> apiClient, ILogger<GetSchoolsQueryHandler> logger)
     : IRequestHandler<GetSchoolsQuery, GetSchoolsQueryApiResult>
 {
     private const int PageSize = 100;
@@ -31,7 +30,7 @@ public class GetSchoolsQueryHandler(ICharitiesApiClient<CharitiesApiConfiguratio
             return new GetSchoolsQueryApiResult(schools);
         }
 
-        logger.LogInformation("Call to ReferenceData Api was not successful. There has been status returned of StatusCode {StatusCode}", result.ResponseMessage.StatusCode);
+        logger.LogInformation("Call to ReferenceData Api was not successful. There has been status returned of StatusCode {StatusCode}", result.StatusCode);
 
         return new GetSchoolsQueryApiResult([]);
     }
