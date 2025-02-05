@@ -6,7 +6,7 @@ info:
 paths:
   /providers/{ukprn}/learners/{uln}:
     put:
-      summary: External authenticated endpoint for SLD service to post data into
+      summary: External authenticated endpoint for SLD service to put updates for specific learners
       security:
         - ApiKeyAuth: []  # Require API Key authentication
       parameters:
