@@ -37,7 +37,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string WageAmount { get; set; }
             public int WageType { get; set; }
             public Address Address { get; set; }
-            public bool IsPrimaryLocation { get; set; }
             public List<Address>? OtherAddresses { get; set; }
             public string? EmploymentLocationInformation { get; set; }
             public AvailableWhere? EmploymentLocationOption { get; set; }
@@ -138,7 +137,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                         AddressLine4 = source.EmployerLocation?.AddressLine4,
                         Postcode = source.EmployerLocation?.Postcode,
                     },
-                    IsPrimaryLocation = source.IsPrimaryLocation,
                     OtherAddresses = source.OtherAddresses.Select(a => (Address)a).ToList(),
                     EmploymentLocationInformation = string.Empty, //TBC
                     EmploymentLocationOption = null, //TBC
@@ -258,7 +256,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     LongDescription = source.LongDescription,
                     NumberOfPositions = source.NumberOfPositions,
                     OtherAddresses = source.OtherAddresses,
-                    IsPrimaryLocation = source.IsPrimaryLocation,
                     EmploymentLocationOption = source.EmploymentLocationOption,
                     EmploymentLocationInformation = source.EmploymentLocationInformation,
                     OutcomeDescription = source.OutcomeDescription,

@@ -20,8 +20,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
         public int CourseId => Convert.ToInt32(ProgrammeId);
         public Address EmployerLocation { get; set; }
         public List<Address> OtherAddresses { get; set; }
-
-        public bool IsPrimaryLocation { get; set; }
         public TrainingProviderDetails TrainingProvider { get; set; }
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
