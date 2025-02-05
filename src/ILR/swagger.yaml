@@ -7,6 +7,8 @@ paths:
   /providers/{ukprn}/learners/{uln}:
     put:
       summary: External authenticated endpoint for SLD service to post data into
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
       parameters:
         - name: ukprn
           in: path
@@ -29,6 +31,8 @@ paths:
           $ref: '#/components/responses/rateLimitExceededResponse'          
     post:
       summary: External authenticated endpoint for SLD service to post data into
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
       parameters:
         - name: ukprn
           in: path
@@ -50,10 +54,11 @@ paths:
         '401':
           $ref: '#/components/responses/unauthorized'
         '429':
-          $ref: '#/components/responses/rateLimitExceededResponse' 
-          
+          $ref: '#/components/responses/rateLimitExceededResponse'           
     get:
       summary: Returns the unique learner for this provider
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
       parameters:
         - name: ukprn
           in: path
@@ -75,11 +80,12 @@ paths:
         '404':
           $ref: '#/components/responses/notFound'
         '429':
-          $ref: '#/components/responses/rateLimitExceededResponse'
-  
+          $ref: '#/components/responses/rateLimitExceededResponse'  
   /providers/{ukprn}:
     get:
       summary: Returns a paged list of learners for this provider
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
       parameters:
         - name: ukprn
           in: path
@@ -94,8 +100,13 @@ paths:
           $ref: '#/components/responses/unauthorized'
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse'
-  
-components:
+components:  
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: "Enter your API key in the `X-API-Key` header."
   headers:
     location:
       schema:
@@ -122,7 +133,6 @@ components:
       schema:
         type: integer
         example: 60
-  
   requestBodies:
     learnerRequest:
       description: The ilr record to be submitted to AS
@@ -131,7 +141,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/learner'
-            
   responses:
     createUpdateResponse:
       description: The update
@@ -144,7 +153,6 @@ components:
           $ref: '#/components/headers/X-RateLimit-Remaining'
         X-RateLimit-Reset:
           $ref: '#/components/headers/X-RateLimit-Reset'
-
     rateLimitExceededResponse:
       description: Too many requests - rate limit exceeded
       content:
@@ -155,7 +163,6 @@ components:
               error:
                 type: string
                 example: "Rate limit exceeded. Try again later."
-
     pagedLearnerResponse:
       description: A single response to a specific learner
       content:
@@ -182,7 +189,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/error'
-
   schemas:
     error:
       type: object
@@ -194,7 +200,6 @@ components:
       required:
         - code
         - message
-
     pagedLearner:
       type: object
       properties:
@@ -220,7 +225,6 @@ components:
         - total
         - pageSize  
         - totalPages  
-    
     learner:
       type: object
       properties:
@@ -265,3 +269,5 @@ components:
         - epaoPrice
         - startDate
         - plannedEndDate
+security:
+  - ApiKeyAuth: []  # Apply API Key security globally
