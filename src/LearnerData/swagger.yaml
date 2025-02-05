@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   version: '1.0'
-  title: ILR APIM
+  title: Learner data external API for consumption from an authenticated consumer
   description: 'This service will provide a contract to the Data Collections team for submission to the Apprenticeship service'
 paths:
   /providers/{ukprn}/learners/{uln}:
