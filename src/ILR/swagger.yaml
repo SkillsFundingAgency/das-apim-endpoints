@@ -22,12 +22,11 @@ paths:
             type: string
       responses:
         '200':
-          description: The update
-          headers:
-            Location:
-              $ref: '#/components/headers/location'
+          $ref: '#/components/responses/createUpdateResponse'
         '401':
           $ref: '#/components/responses/unauthorized'
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse'          
     post:
       summary: External authenticated endpoint for SLD service to post data into
       parameters:
@@ -47,12 +46,11 @@ paths:
         $ref: '#/components/requestBodies/learnerRequest'
       responses:
         '201':
-          description: Created
-          headers:
-            Location:
-              $ref: '#/components/headers/location'
+          $ref: '#/components/responses/createUpdateResponse'
         '401':
           $ref: '#/components/responses/unauthorized'
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse' 
           
     get:
       summary: Returns the unique learner for this provider
@@ -76,6 +74,8 @@ paths:
           $ref: '#/components/responses/unauthorized'
         '404':
           $ref: '#/components/responses/notFound'
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse'
   
   /providers/{ukprn}:
     get:
@@ -92,6 +92,8 @@ paths:
           $ref: '#/components/responses/pagedLearnerResponse'  
         '401':
           $ref: '#/components/responses/unauthorized'
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse'
   
 components:
   headers:
@@ -115,6 +117,11 @@ components:
       schema:
         type: integer
         example: 1712345678
+    Retry-After:
+      description: The number of seconds to wait before making a new request
+      schema:
+        type: integer
+        example: 60
   
   requestBodies:
     learnerRequest:
@@ -126,6 +133,29 @@ components:
             $ref: '#/components/schemas/learner'
             
   responses:
+    createUpdateResponse:
+      description: The update
+      headers:
+        Location:
+          $ref: '#/components/headers/location'
+        X-RateLimit-Limit:
+          $ref: '#/components/headers/X-RateLimit-Limit'
+        X-RateLimit-Remaining:
+          $ref: '#/components/headers/X-RateLimit-Remaining'
+        X-RateLimit-Reset:
+          $ref: '#/components/headers/X-RateLimit-Reset'
+
+    rateLimitExceededResponse:
+      description: Too many requests - rate limit exceeded
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Rate limit exceeded. Try again later."
+
     pagedLearnerResponse:
       description: A single response to a specific learner
       content:
