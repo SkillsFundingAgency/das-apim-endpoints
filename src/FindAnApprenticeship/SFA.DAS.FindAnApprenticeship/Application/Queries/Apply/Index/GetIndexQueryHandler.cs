@@ -41,10 +41,14 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
         if (application.PreviousAnswersSourceId.HasValue)
         {
             previousApplication = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, application.PreviousAnswersSourceId.Value, false));
-            if (previousApplication == null) return null;
-
-            previousVacancy = GetApprenticeshipVacancyQueryResult.Vacancy.FromIVacancy(await _vacancyService.GetVacancy(previousApplication.VacancyReference));
-            if (previousVacancy == null) return null;
+            if (previousApplication != null)
+            {
+                var previousVacancyFromApi = await _vacancyService.GetVacancy(previousApplication.VacancyReference);
+                if (previousVacancyFromApi != null)
+                {
+                    previousVacancy = GetApprenticeshipVacancyQueryResult.Vacancy.FromIVacancy(previousVacancyFromApi);
+                }
+            }
         }
 
         var additionalQuestions = application.AdditionalQuestions.ToList();

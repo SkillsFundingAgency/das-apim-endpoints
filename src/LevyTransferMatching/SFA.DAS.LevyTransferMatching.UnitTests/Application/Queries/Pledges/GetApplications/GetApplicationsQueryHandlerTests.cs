@@ -1,102 +1,88 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications;
-using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models;
-using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Pledges.GetApplications
 {
     [TestFixture]
     public class GetApplicationsQueryHandlerTests
     {
-        private Mock<ILevyTransferMatchingService> _service;
-        private Mock<ICoursesApiClient<CoursesApiConfiguration>> _coursesApiClient;
-        private Mock<IReferenceDataService> _referenceDataService;
-        private GetApplicationsQuery _query;
-        private Models.Account _account;
-        private readonly Fixture _fixture = new Fixture();
+        private Mock<ILevyTransferMatchingService> _levyTransferMatchingServiceMock;
+        private GetApplicationsQueryHandler _handler;
+        private Fixture _fixture;
 
         [SetUp]
         public void SetUp()
         {
-            _query = _fixture.Create<GetApplicationsQuery>();
-            _account = _fixture.Create<Models.Account>();
+            _levyTransferMatchingServiceMock = new Mock<ILevyTransferMatchingService>();
+            _handler = new GetApplicationsQueryHandler(_levyTransferMatchingServiceMock.Object);
+            _fixture = new Fixture();
+        }
 
-            _service = new Mock<ILevyTransferMatchingService>();
-            _service.Setup(x => x.GetApplications(It.Is<GetApplicationsRequest>(p => p.PledgeId == _query.PledgeId)))
-                .ReturnsAsync(new GetApplicationsResponse()
-                {
-                    Applications = new List<GetApplicationsResponse.Application>
-                    {
-                        new GetApplicationsResponse.Application
-                        {
-                            StandardId = "1"
-                        },
-                        new GetApplicationsResponse.Application
-                        {
-                            StandardId = "2"
-                        }
-                    }
-                });
+        [Test]
+        public async Task Handle_Should_Return_Correct_Result()
+        {
+            // Arrange
+            var request = _fixture.Create<GetApplicationsQuery>();
+            var applicationsResponse = _fixture.Create<GetApplicationsResponse>();
+            var pledgeResponse = _fixture.Create<Pledge>();
 
-            _service.Setup(x => x.GetPledge(_query.PledgeId))
-                .ReturnsAsync(new Pledge
-                {
-                    Locations = new List<LocationDataItem>(),
-                    Sectors = new List<string>(),
-                    JobRoles = new List<string>(),
-                    Levels = new List<string>()
-                });
+            _levyTransferMatchingServiceMock
+                .Setup(x => x.GetApplications(It.IsAny<GetApplicationsRequest>()))
+                .ReturnsAsync(applicationsResponse);
 
-            _coursesApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
+            _levyTransferMatchingServiceMock
+                .Setup(x => x.GetPledge(It.IsAny<int>()))
+                .ReturnsAsync(pledgeResponse);
 
-            _coursesApiClient.Setup(x =>
-                    x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(p => p.Id == "1")))
-                    .ReturnsAsync(new GetStandardsListItem()
-                    {
-                        StandardUId = "1",
-                        Title = _fixture.Create<string>(),
-                        LarsCode = _fixture.Create<int>(),
-                        Level = _fixture.Create<int>(),
-                        StandardDates = _fixture.Create<StandardDate>()
-                    })
-                ;
+            // Act
+            var result = await _handler.Handle(request, CancellationToken.None);
 
-            _coursesApiClient.Setup(x =>
-                    x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(p => p.Id == "2")))
-                .ReturnsAsync(new GetStandardsListItem()
-                {
-                    StandardUId = "2",
-                    Title = _fixture.Create<string>(),
-                    LarsCode = _fixture.Create<int>(),
-                    Level = _fixture.Create<int>(),
-                    StandardDates = _fixture.Create<StandardDate>()
-                })
-                ;
+            // Assert
+            result.TotalItems.Should().Be(applicationsResponse.Applications.Count());
+            result.PageSize.Should().Be(request.PageSize ?? int.MaxValue);
+            result.Page.Should().Be(request.Page);
+            result.PledgeStatus.Should().Be(pledgeResponse.Status);
+            result.TotalAmount.Should().Be(pledgeResponse.Amount);
+            result.RemainingAmount.Should().Be(pledgeResponse.RemainingAmount);
+            result.AutomaticApprovalOption.Should().Be(pledgeResponse.AutomaticApprovalOption);
+        }
 
-            _coursesApiClient.Setup(x =>
-                    x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(p => p.Id == "2")))
-                .ReturnsAsync(new GetStandardsListItem()
-                {
-                    StandardUId = "2",
-                    Title = _fixture.Create<string>(),
-                    LarsCode = _fixture.Create<int>(),
-                    Level = _fixture.Create<int>(),
-                    StandardDates = _fixture.Create<StandardDate>()
-                });
+        [Test]
+        public async Task Handle_Should_Call_GetApplications_And_GetPledge()
+        {
+            // Arrange
+            var request = _fixture.Create<GetApplicationsQuery>();
+            var applicationsResponse = _fixture.Create<GetApplicationsResponse>();
+            var pledgeResponse = _fixture.Create<Pledge>();
 
-            _referenceDataService = new Mock<IReferenceDataService>();
-            _referenceDataService.Setup(x => x.GetJobRoles()).ReturnsAsync(new List<ReferenceDataItem>());
+            _levyTransferMatchingServiceMock
+                .Setup(x => x.GetApplications(It.IsAny<GetApplicationsRequest>()))
+                .ReturnsAsync(applicationsResponse);
+
+            _levyTransferMatchingServiceMock
+                .Setup(x => x.GetPledge(It.IsAny<int>()))
+                .ReturnsAsync(pledgeResponse);
+
+            // Act
+            await _handler.Handle(request, CancellationToken.None);
+
+            // Assert
+            _levyTransferMatchingServiceMock.Verify(x => x.GetApplications(It.Is<GetApplicationsRequest>(r =>
+                r.PledgeId == request.PledgeId &&
+                r.SortOrder == request.SortOrder &&
+                r.SortDirection == request.SortDirection)), Times.Once);
+
+            _levyTransferMatchingServiceMock.Verify(x => x.GetPledge(request.PledgeId), Times.Once);
         }
     }
 }
