@@ -13,6 +13,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandar
         public string RegulatorName { get; set; }
         public string Sector { get; set; }
         public bool IsRegulatedForProvider { get; set; }
+        public bool Regulated { get; set; }
 
         public static implicit operator GetStandardInformationQueryResult(GetStandardResponse source) =>
             new GetStandardInformationQueryResult()
@@ -25,7 +26,8 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandar
                 Version = source.Version,
                 RegulatorName = source.ApprovalBody,
                 Sector = source.Route,
-                IsRegulatedForProvider = source.IsRegulatedForProvider
+                IsRegulatedForProvider = source.IsRegulatedForProvider,
+                Regulated = source.Regulated
             };
     }
 }

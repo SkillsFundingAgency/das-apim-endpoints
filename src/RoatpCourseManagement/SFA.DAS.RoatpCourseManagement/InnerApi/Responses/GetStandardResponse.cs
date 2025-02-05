@@ -12,5 +12,6 @@
         public string Route { get; set; }
         public int SectorSubjectAreaTier1 { get; set; }
         public bool IsRegulatedForProvider { get; set; }
+        public bool Regulated { get; set; }
     }
 }
