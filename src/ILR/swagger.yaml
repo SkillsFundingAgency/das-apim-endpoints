@@ -81,6 +81,21 @@ paths:
           $ref: '#/components/responses/notFound'
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse'  
+  /providers/{ukprn}:
+    get:
+      summary: Returns a paged list of learners for this provider
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/pagedLearnerResponse'  
 components:  
   securitySchemes:
     ApiKeyAuth:
@@ -123,6 +138,14 @@ components:
           schema:
             $ref: '#/components/schemas/learner'
   responses:
+    pagedLearnerResponse:
+      description: A single response to a specific learner
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/pagedLearner'
     createUpdateResponse:
       description: The update
       headers:
@@ -173,6 +196,31 @@ components:
       required:
         - code
         - message
+    pagedLearner:
+      type: object
+      properties:
+        learners:
+          type: array
+          items:
+              $ref: '#/components/schemas/learner'
+        total:
+          type: integer
+          minimum: 0
+        page: 
+          type: integer
+          minimum: 1
+        pageSize: 
+          type: integer
+          minimum: 1
+          maximum: 20
+        totalPages: 
+          type: integer
+          minimum: 1
+      required:
+        - page
+        - total
+        - pageSize  
+        - totalPages  
     learner:
       type: object
       properties:
