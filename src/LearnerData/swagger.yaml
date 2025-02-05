@@ -81,9 +81,9 @@ paths:
           $ref: '#/components/responses/notFound'
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse'  
-  /providers/{ukprn}:
+  /providers/{ukprn}/approved-candidates:
     get:
-      summary: Returns a paged list of learners for this provider
+      summary: Returns a paged list of approved candidates for this provider
       security:
         - ApiKeyAuth: []  # Require API Key authentication
       parameters:
@@ -95,7 +95,7 @@ paths:
             type: string
       responses:
         '200':
-          $ref: '#/components/responses/pagedLearnerResponse'  
+          $ref: '#/components/responses/pagedApprovedCandidatesResponse'  
 components:  
   securitySchemes:
     ApiKeyAuth:
@@ -138,14 +138,14 @@ components:
           schema:
             $ref: '#/components/schemas/learner'
   responses:
-    pagedLearnerResponse:
-      description: A single response to a specific learner
+    pagedApprovedCandidatesResponse:
+      description: A paged approved candidate response
       content:
         application/json:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/pagedLearner'
+              $ref: '#/components/schemas/pagedApprovedCandidate'
     createUpdateResponse:
       description: The update
       headers:
@@ -196,13 +196,13 @@ components:
       required:
         - code
         - message
-    pagedLearner:
+    pagedApprovedCandidate:
       type: object
       properties:
         learners:
           type: array
           items:
-              $ref: '#/components/schemas/learner'
+              $ref: '#/components/schemas/approvedCandidate'
         total:
           type: integer
           minimum: 0
@@ -221,6 +221,21 @@ components:
         - total
         - pageSize  
         - totalPages  
+    approvedCandidate:
+      type: object
+      properties:
+        uln:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        learnerEmail:
+          type: string
+          format: date
     learner:
       type: object
       properties:
