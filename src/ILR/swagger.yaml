@@ -1,0 +1,237 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: ILR APIM
+  description: 'This service will provide a contract to the Data Collections team for submission to the Apprenticeship service'
+paths:
+  /providers/{ukprn}/learners/{uln}:
+    put:
+      summary: External authenticated endpoint for SLD service to post data into
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: uln
+          in: path
+          required: true
+          description: The Unique Learner Number for this learner
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The update
+          headers:
+            Location:
+              $ref: '#/components/headers/location'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+    post:
+      summary: External authenticated endpoint for SLD service to post data into
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: uln
+          in: path
+          required: true
+          description: The Unique Learner Number for this learner
+          schema:
+            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/learnerRequest'
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              $ref: '#/components/headers/location'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+          
+    get:
+      summary: Returns the unique learner for this provider
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: uln
+          in: path
+          required: true
+          description: The Unique Learner Number for this learner
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/learnerResponse'  
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '404':
+          $ref: '#/components/responses/notFound'
+  
+  /providers/{ukprn}:
+    get:
+      summary: Returns a paged list of learners for this provider
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/pagedLearnerResponse'  
+        '401':
+          $ref: '#/components/responses/unauthorized'
+  
+components:
+  headers:
+    location:
+      schema:
+        type: string
+        format: url
+        example: /providers/234324/leaners/24321432
+    X-RateLimit-Limit:
+      description: The maximum number of requests allowed in a time window
+      schema:
+        type: integer
+        example: 100
+    X-RateLimit-Remaining:
+      description: The number of requests remaining in the current time window
+      schema:
+        type: integer
+        example: 99
+    X-RateLimit-Reset:
+      description: The time (in UNIX timestamp) when the rate limit resets
+      schema:
+        type: integer
+        example: 1712345678
+  
+  requestBodies:
+    learnerRequest:
+      description: The ilr record to be submitted to AS
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/learner'
+            
+  responses:
+    pagedLearnerResponse:
+      description: A single response to a specific learner
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/pagedLearner'
+    learnerResponse:
+      description: A single response to a specific learner
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/learner'
+    notFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+
+  schemas:
+    error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+
+    pagedLearner:
+      type: object
+      properties:
+        learners:
+          type: array
+          items:
+              $ref: '#/components/schemas/learner'
+        total:
+          type: integer
+          minimum: 0
+        page: 
+          type: integer
+          minimum: 1
+        pageSize: 
+          type: integer
+          minimum: 1
+          maximum: 20
+        totalPages: 
+          type: integer
+          minimum: 1
+      required:
+        - page
+        - total
+        - pageSize  
+        - totalPages  
+    
+    learner:
+      type: object
+      properties:
+        uln:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dateOfBirth:
+          type: string
+          format: date
+        learnerEmail:
+          type: string
+          format: date
+        priorLearningValue:
+          type: integer
+        ukprn:
+          type: string
+        standardCode:
+          type: string
+        trainingPrice:
+          type: integer
+        epaoPrice:
+          type: string
+        startDate:
+          type: string
+          format: date
+        plannedEndDate:
+          type: string
+          format: date
+      required:
+        - uln,
+        - firstName
+        - lastName
+        - dateOfBirth
+        - learnerEmail
+        - ukprn
+        - priorLearningValue
+        - standardCode
+        - trainingPrice
+        - epaoPrice
+        - startDate
+        - plannedEndDate
