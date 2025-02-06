@@ -1,0 +1,109 @@
+using System.Collections.Concurrent;
+using MediatR;
+using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearches;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
+using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
+using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Interfaces;
+
+namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearchVacancies;
+
+public class GetSavedSearchVacanciesQueryHandler(
+    IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
+    ICourseService courseService,
+    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient) : IRequestHandler<GetSavedSearchVacanciesQuery, GetSavedSearchVacanciesQueryResult>
+{
+    public async Task<GetSavedSearchVacanciesQueryResult> Handle(GetSavedSearchVacanciesQuery request, CancellationToken cancellationToken)
+    {
+        var candidate =
+            await candidateApiClient.Get<GetCandidateApiResponse>(
+                new GetCandidateApiRequest(request.UserId.ToString()));
+
+        if (candidate == null || candidate.Status == UserStatus.Deleted || candidate.Status == UserStatus.Dormant)
+        {
+            return new GetSavedSearchVacanciesQueryResult();
+        }
+
+        var routesTask = courseService.GetRoutes();
+        var levelsTask = courseService.GetLevels();
+
+        await Task.WhenAll(routesTask, levelsTask);
+        var routesList = routesTask.Result;
+        var levelsList = levelsTask.Result;
+        var searchResult = await GetSavedSearchResults(request, routesList, levelsList);
+        
+        return searchResult ?? new GetSavedSearchVacanciesQueryResult();
+    }
+    private async Task<GetSavedSearchVacanciesQueryResult?> GetSavedSearchResults(GetSavedSearchVacanciesQuery request, GetRoutesListResponse routesList, GetCourseLevelsListResponse levelsList)
+    {
+        var candidate =
+            await candidateApiClient.Get<GetCandidateApiResponse>(
+                new GetCandidateApiRequest(request.UserId.ToString()));
+
+        if (candidate == null || candidate.Status == UserStatus.Deleted)
+        {
+            return null;
+        }
+
+        var categories = routesList.Routes
+            .Where(route => request.SelectedRouteIds?.Contains(route.Id) ?? false)
+            .Select(route => new GetSavedSearchVacanciesQueryResult.Category
+            {
+                Id = route.Id,
+                Name = route.Name,
+            }).ToList();
+
+        var levels = levelsList.Levels
+            .Where(level => request.SelectedLevelIds?.Contains(level.Code) ?? false)
+            .Select(level => new GetSavedSearchVacanciesQueryResult.Level
+            {
+                Code = level.Code,
+                Name = level.Name,
+            }).ToList();
+
+        var vacanciesResponse = await findApprenticeshipApiClient.Get<GetVacanciesResponse>(
+            new GetVacanciesRequest(
+                !string.IsNullOrEmpty(request.Latitude)
+                    ? Convert.ToDouble(request.Latitude)
+                    : null,
+                !string.IsNullOrEmpty(request.Longitude)
+                    ? Convert.ToDouble(request.Longitude)
+                    : null,
+                request.Distance,
+                request.SearchTerm,
+                1, // Defaulting to top results.
+                request.MaxApprenticeshipSearchResultsCount, // Default page size set to 5.
+                categories.Select(cat => cat.Name!).ToList(),
+                levels.Select(level => level.Code).ToList(),
+                request.ApprenticeshipSearchResultsSortOrder,
+                request.DisabilityConfident,
+                new List<VacancyDataSource>
+                {
+                    VacancyDataSource.Nhs
+                }));
+
+        if (vacanciesResponse != null)
+        {
+            var searchResult = new GetSavedSearchVacanciesQueryResult
+            {
+                Id = request.Id,
+                User = candidate,
+                SearchTerm = request.SearchTerm,
+                Location = request.Location,
+                Categories = categories,
+                Levels = levels,
+                DisabilityConfident = request.DisabilityConfident,
+                Distance = request.Distance,
+                UnSubscribeToken = request.UnSubscribeToken,
+                Vacancies = vacanciesResponse.ApprenticeshipVacancies.Select(x =>
+                        (GetSavedSearchVacanciesQueryResult.ApprenticeshipVacancy) x)
+                    .ToList()
+            };
+            return searchResult;
+        }
+
+        return null;
+    }
+}
