@@ -1,18 +1,18 @@
-﻿using MediatR;
-using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
+using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models.Constants;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex;
 
 public class GetIndexQueryHandler(ILevyTransferMatchingService levyTransferMatchingService, IReferenceDataService referenceDataService) : IRequestHandler<GetIndexQuery, GetIndexQueryResult>
-{  
+{
     public async Task<GetIndexQueryResult> Handle(GetIndexQuery request, CancellationToken cancellationToken)
     {
-        var opportunitiesTask = levyTransferMatchingService.GetPledges(new GetPledgesRequest(null, request.Sectors));
+        var opportunitiesTask = levyTransferMatchingService.GetPledges(new GetPledgesRequest(sectors: request.Sectors, sortBy: request.SortBy));
         var sectorsTask = referenceDataService.GetSectors();
         var jobRolesTask = referenceDataService.GetJobRoles();
         var levelsTask = referenceDataService.GetLevels();

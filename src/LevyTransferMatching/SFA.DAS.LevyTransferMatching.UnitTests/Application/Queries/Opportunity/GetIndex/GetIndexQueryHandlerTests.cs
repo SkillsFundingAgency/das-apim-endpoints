@@ -36,6 +36,7 @@ public class GetIndexQueryHandlerTests
         _levels = _autoFixture.Create<List<ReferenceDataItem>>();
         _query = _autoFixture.Build<GetIndexQuery>()
             .Without(p => p.PageSize)
+            .With(p => p.SortBy, "AtoZ")
             .With(p => p.Page, 1).Create();
         _pledges = _autoFixture.Create<GetPledgesResponse>();
 

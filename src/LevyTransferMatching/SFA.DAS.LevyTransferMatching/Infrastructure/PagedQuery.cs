@@ -10,6 +10,7 @@ public abstract class PagedQuery
 
     public int Limit => PageSize ?? int.MaxValue;
     public int Offset => PageSize.HasValue ? (Page - 1) * PageSize.Value : 0;
+    public string SortBy { get; set; }
 }
 
 public abstract class PagedQueryResult<T>
