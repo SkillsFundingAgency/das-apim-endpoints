@@ -4,6 +4,7 @@ using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSea
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using System.Net;
 using SFA.DAS.FindApprenticeshipJobs.Api.Models;
+using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearchVacancies;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
 {
@@ -22,7 +23,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
             [FromQuery] VacancySort sortOrder = VacancySort.AgeDesc, 
             CancellationToken cancellationToken = default)
         {
-            logger.LogInformation("Get Saved Searches invoked");
+            logger.LogInformation("Get Candidates for Saved Searches invoked");
 
             try
             {
@@ -36,10 +37,50 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, "Error invoking Get Candidates for Saved Searches");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+        
+        [HttpPost]
+        [Route("GetSavedSearchResult")]
+        public async Task<IActionResult> GetSavedSearchResult([FromBody] GetCandidateSavedVacanciesRequest request, CancellationToken cancellationToken = default)
+        {
+            logger.LogInformation("Get Saved Searches invoked");
+
+            try
+            {
+                var result = await mediator.Send(new GetSavedSearchVacanciesQuery(
+                        request.MaxApprenticeshipSearchResultsCount,
+                        request.ApprenticeshipSearchResultsSortOrder,
+                        request.Id,
+                        request.UserId,
+                        request.Distance,
+                        request.SearchTerm,
+                        request.Location,
+                        request.DisabilityConfident,
+                        request.Longitude,
+                        request.Latitude,
+                        request.SelectedLevelIds,
+                        request.SelectedRouteIds,
+                        request.UnSubscribeToken,
+                        request.LastRunDateFilter,
+                        request.PageNumber,
+                        request.PageSize),
+                    cancellationToken);
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
                 logger.LogError(ex, "Error invoking Get Saved Searches");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+        
 
         [HttpPost]
         [Route("sendNotification")]
