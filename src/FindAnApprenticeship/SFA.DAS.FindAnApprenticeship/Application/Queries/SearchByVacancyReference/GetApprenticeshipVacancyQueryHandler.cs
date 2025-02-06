@@ -23,7 +23,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
     {
         public async Task<GetApprenticeshipVacancyQueryResult> Handle(GetApprenticeshipVacancyQuery request, CancellationToken cancellationToken)
         {
-            var vacancy = await vacancyService.GetVacancy(request.VacancyReference);
+            var vacancy = await vacancyService.GetVacancy(request.VacancyReference) 
+                          ?? await vacancyService.GetClosedVacancy(request.VacancyReference);
 
             if (vacancy == null)
             {
