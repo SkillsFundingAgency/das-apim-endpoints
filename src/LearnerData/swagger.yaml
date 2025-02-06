@@ -206,7 +206,7 @@ components:
       required:
         - code
         - message
-    pagedAppprenticeship:
+    pagedAppprenticeships:
       type: object
       properties:
         learners:
