@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
@@ -28,7 +29,7 @@ public sealed class WhenQueryingCourseRoutes
             ))
             .ReturnsAsync(expectedResponse);
 
-        var sut = new CoursesController(mockMediator.Object);
+        var sut = new CoursesController(mockMediator.Object, Mock.Of<ILogger<CoursesController>>());
 
         var result = await sut.GetCourseRoutes() as ObjectResult;
 

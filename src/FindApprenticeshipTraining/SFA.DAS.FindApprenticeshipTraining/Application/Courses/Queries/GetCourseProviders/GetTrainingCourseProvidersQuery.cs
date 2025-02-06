@@ -1,37 +1,25 @@
-using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
+using MediatR;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests
+namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders
 {
-    public class GetCourseProvidersRequest
+    public class GetTrainingCourseProvidersQuery : IRequest<GetProvidersListFromCourseIdResponse>
     {
-        [FromQuery]
-        public ProviderOrderBy OrderBy { get; set; }
-        [FromQuery]
+        public int Id { get; set; }
+        public ProviderOrderBy? OrderBy { get; set; }
         public decimal? Distance { get; set; }
-        [FromQuery]
         public decimal? Latitude { get; set; }
-        [FromQuery]
         public decimal? Longitude { get; set; }
-        [FromQuery]
         public List<DeliveryMode?> DeliveryModes { get; set; }
 
-        [FromQuery]
         public List<ProviderRating?> EmployerProviderRatings { get; set; }
 
-        [FromQuery]
         public List<ProviderRating?> ApprenticeProviderRatings { get; set; }
-        [FromQuery]
         public List<QarRating?> Qar { get; set; }
-        [FromQuery]
         public int? Page { get; set; }
-        [FromQuery]
         public int? PageSize { get; set; }
-
-        [FromQuery]
         public Guid? ShortlistUserId { get; set; }
-
     }
 }
