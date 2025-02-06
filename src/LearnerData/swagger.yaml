@@ -261,8 +261,10 @@ components:
         learnerEmail:
           type: string
           format: date
-        priorLearningValue:
+        priorLearningPercent:
+          description: This is the percentage of learning already complete before this course starts
           type: integer
+          example: 10
         ukprn:
           type: string
         standardCode:
@@ -284,7 +286,7 @@ components:
         - dateOfBirth
         - learnerEmail
         - ukprn
-        - priorLearningValue
+        - priorLearningPercent
         - standardCode
         - trainingPrice
         - epaoPrice
