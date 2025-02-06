@@ -32,7 +32,6 @@ public class WhenCallingHandler
     public async Task Then_should_replace_education_and_public_section_organisations_from_new_endpoints_and_ignore_ones_in_reference_data(
         [Frozen] Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>> mockEduOrgApiClient,
         [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockPSOrgApiClient,
-        [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockRefApiClient,
         [Frozen] Mock<ICompaniesHouseApiClient<CompaniesHouseApiConfiguration>> mockCompaniesHouseApi,
         GetSearchOrganisationsResponse refApiOrgs,
         EducationalOrganisationResponse eduOrgApiResponse,
@@ -57,11 +56,6 @@ public class WhenCallingHandler
                 client.Get<PublicSectorOrganisationsResponse>(
                     It.Is<SearchPublicSectorOrganisationsRequest>(p => p.SearchTerm == query.SearchTerm)))
             .ReturnsAsync(psOrgApiResponse);
-
-        mockRefApiClient
-            .Setup(client => client.Get<GetSearchOrganisationsResponse>(It.Is<GetSearchOrganisationsRequest>(p =>
-                p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
-            .ReturnsAsync(refApiOrgs);
 
         mockCompaniesHouseApi
             .Setup(client => client.Get<SearchCompaniesResponse>(It.Is<SearchCompanyInformationRequest>(p =>
@@ -88,7 +82,6 @@ public class WhenCallingHandler
     public async Task Then_should_return_top_2(
     [Frozen] Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>> mockEduOrgApiClient,
     [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockPSOrgApiClient,
-    [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockRefApiClient,
     [Frozen] Mock<ICompaniesHouseApiClient<CompaniesHouseApiConfiguration>> mockCompaniesHouseApi,
     [Frozen] Mock<ICharitiesApiClient<CharitiesApiConfiguration>> mockCharitiesApiClient,
     GetSearchOrganisationsResponse refApiOrgs,
@@ -116,11 +109,6 @@ public class WhenCallingHandler
                     It.Is<SearchPublicSectorOrganisationsRequest>(p => p.SearchTerm == query.SearchTerm)))
             .ReturnsAsync(psOrgApiResponse);
 
-        mockRefApiClient
-            .Setup(client => client.Get<GetSearchOrganisationsResponse>(It.Is<GetSearchOrganisationsRequest>(p =>
-                p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
-            .ReturnsAsync(refApiOrgs);
-
         mockCompaniesHouseApi
             .Setup(client => client.Get<SearchCompaniesResponse>(It.Is<SearchCompanyInformationRequest>(p =>
                 p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
@@ -141,7 +129,6 @@ public class WhenCallingHandler
     public async Task Then_Company_Number_Should_Return_One_Company(
     [Frozen] Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>> mockEduOrgApiClient,
     [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockPSOrgApiClient,
-    [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockRefApiClient,
     [Frozen] Mock<ICompaniesHouseApiClient<CompaniesHouseApiConfiguration>> mockCompaniesHouseApi,
     GetSearchOrganisationsResponse refApiOrgs,
     GetCompanyInfoResponse companyInfoResponse,
@@ -167,11 +154,6 @@ public class WhenCallingHandler
                     It.Is<SearchPublicSectorOrganisationsRequest>(p => p.SearchTerm == query.SearchTerm)))
             .ReturnsAsync(psOrgApiResponse);
 
-        mockRefApiClient
-            .Setup(client => client.Get<GetSearchOrganisationsResponse>(It.Is<GetSearchOrganisationsRequest>(p =>
-                p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
-            .ReturnsAsync(refApiOrgs);
-
         mockCompaniesHouseApi
             .Setup(client => client.Get<GetCompanyInfoResponse>(It.Is<GetCompanyInformationRequest>(p =>
                 p.Id == query.SearchTerm)))
@@ -179,7 +161,7 @@ public class WhenCallingHandler
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Organisations.Where(x => x.Type == OrganisationType.Company).Count().Should().Be(1);
+        result.Organisations.Count(x => x.Type == OrganisationType.Company).Should().Be(1);
     }
 
 
@@ -187,7 +169,6 @@ public class WhenCallingHandler
     public async Task Then_StringSearchTerm_Should_Search_For_Multiple_Companies(
     [Frozen] Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>> mockEduOrgApiClient,
     [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockPSOrgApiClient,
-    [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockRefApiClient,
     [Frozen] Mock<ICompaniesHouseApiClient<CompaniesHouseApiConfiguration>> mockCompaniesHouseApi,
     GetSearchOrganisationsResponse refApiOrgs,
     EducationalOrganisationResponse eduOrgApiResponse,
@@ -213,11 +194,6 @@ public class WhenCallingHandler
                     It.Is<SearchPublicSectorOrganisationsRequest>(p => p.SearchTerm == query.SearchTerm)))
             .ReturnsAsync(psOrgApiResponse);
 
-        mockRefApiClient
-            .Setup(client => client.Get<GetSearchOrganisationsResponse>(It.Is<GetSearchOrganisationsRequest>(p =>
-                p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
-            .ReturnsAsync(refApiOrgs);
-
         mockCompaniesHouseApi
            .Setup(client => client.Get<SearchCompaniesResponse>(It.Is<SearchCompanyInformationRequest>(p =>
                p.SearchTerm == query.SearchTerm.ToUpper()
@@ -226,14 +202,13 @@ public class WhenCallingHandler
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Organisations.Where(x => x.Type == OrganisationType.Company).Count().Should().Be(searchCompaniesResponse.Companies.Count());
+        result.Organisations.Count(x => x.Type == OrganisationType.Company).Should().Be(searchCompaniesResponse.Companies.Count());
     }
 
     [Test, MoqAutoData]
     public async Task Then_RegistrationNumber_Should_Return_One_Charity(
     [Frozen] Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>> mockEduOrgApiClient,
     [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockPSOrgApiClient,
-    [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockRefApiClient,
     [Frozen] Mock<ICharitiesApiClient<CharitiesApiConfiguration>> mockCharitiesApiClient,
     [Frozen] Mock<ICompaniesHouseApiClient<CompaniesHouseApiConfiguration>> mockCompaniesHouseApi,
     GetSearchOrganisationsResponse refApiOrgs,
@@ -261,11 +236,6 @@ public class WhenCallingHandler
                     It.Is<SearchPublicSectorOrganisationsRequest>(p => p.SearchTerm == query.SearchTerm)))
             .ReturnsAsync(psOrgApiResponse);
 
-        mockRefApiClient
-            .Setup(client => client.Get<GetSearchOrganisationsResponse>(It.Is<GetSearchOrganisationsRequest>(p =>
-                p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
-            .ReturnsAsync(refApiOrgs);
-
         mockCharitiesApiClient
             .Setup(client => client.Get<GetCharityResponse>(It.Is<GetCharityByRegistrationNumberRequest>(p =>
                 p.RegistrationNumber == int.Parse(query.SearchTerm))))
@@ -279,7 +249,7 @@ public class WhenCallingHandler
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Organisations.Where(x => x.Type == OrganisationType.Charity).Count().Should().Be(1);
+        result.Organisations.Count(x => x.Type == OrganisationType.Charity).Should().Be(1);
     }
 
 
@@ -287,7 +257,6 @@ public class WhenCallingHandler
     public async Task Then_StringSearchTerm_Should_Search_For_Multiple_Charities(
     [Frozen] Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>> mockEduOrgApiClient,
     [Frozen] Mock<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>> mockPSOrgApiClient,
-    [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockRefApiClient,
     [Frozen] Mock<ICharitiesApiClient<CharitiesApiConfiguration>> mockCharitiesApiClient,
     [Frozen] Mock<ICompaniesHouseApiClient<CompaniesHouseApiConfiguration>> mockCompaniesHouseApi,
     GetSearchOrganisationsResponse refApiOrgs,
@@ -315,11 +284,6 @@ public class WhenCallingHandler
                     It.Is<SearchPublicSectorOrganisationsRequest>(p => p.SearchTerm == query.SearchTerm)))
             .ReturnsAsync(psOrgApiResponse);
 
-        mockRefApiClient
-            .Setup(client => client.Get<GetSearchOrganisationsResponse>(It.Is<GetSearchOrganisationsRequest>(p =>
-                p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
-            .ReturnsAsync(refApiOrgs);
-
         mockCharitiesApiClient
             .Setup(client => client.Get<SearchCharitiesResponse>(It.Is<SearchCharitiesRequest>(p =>
                 p.SearchTerm == query.SearchTerm && p.MaximumResults == query.MaximumResults)))
@@ -333,6 +297,6 @@ public class WhenCallingHandler
 
         var result = await handler.Handle(query, CancellationToken.None);
 
-        result.Organisations.Where(x => x.Type == OrganisationType.Charity).Count().Should().Be(charitiesResponse.Count);
+        result.Organisations.Count(x => x.Type == OrganisationType.Charity).Should().Be(charitiesResponse.Count);
     }
 }

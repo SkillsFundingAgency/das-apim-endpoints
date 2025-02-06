@@ -33,6 +33,6 @@ namespace SFA.DAS.Campaign.InnerApi.Requests
 
 
         public string Version => "2.0";
-        public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&distanceInMiles={_distance}&pageNumber={_pageNumber}&pageSize={_pageSize}&categories={_categories}";
+        public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&distanceInMiles={_distance}&pageNumber={_pageNumber}&pageSize={_pageSize}&categories={_categories}&sort=DistanceAsc";
     }
 }

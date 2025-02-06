@@ -1,19 +1,17 @@
-﻿using AutoFixture;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex;
 using SFA.DAS.LevyTransferMatching.Interfaces;
+using SFA.DAS.LevyTransferMatching.Models.Constants;
 using SFA.DAS.LevyTransferMatching.Models.ReferenceData;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
-using NUnit.Framework.Legacy;
-using SFA.DAS.LevyTransferMatching.Models.Constants;
-using static SFA.DAS.SharedOuterApi.InnerApi.Responses.GetPledgesResponse;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity.GetIndex
 {
@@ -38,6 +36,7 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
             _levels = _autoFixture.Create<List<ReferenceDataItem>>();
             _query = _autoFixture.Build<GetIndexQuery>()
                 .Without(p => p.PageSize)
+                .With(p => p.SortBy, "AtoZ")
                 .With(p => p.Page, 1).Create();
             _pledges = _autoFixture.Create<GetPledgesResponse>();
 
@@ -64,34 +63,33 @@ namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.Opportunity
         public async Task Handle_Returns_Sectors()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.That(result.Sectors, Is.EqualTo(_sectors));
+            result.Sectors.Should().BeEquivalentTo(_sectors);
         }
 
         [Test]
         public async Task Handle_Returns_JobRoles()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.That(result.JobRoles, Is.EqualTo(_jobRoles));
+            result.JobRoles.Should().BeEquivalentTo(_jobRoles);
         }
 
         [Test]
         public async Task Handle_Returns_Levels()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.That(result.Levels, Is.EqualTo(_levels));
+            result.Levels.Should().BeEquivalentTo(_levels);
         }
 
         [Test]
         public async Task Handle_Does_Not_Return_Closed_Opportunities()
         {
-            foreach(var pledge in _pledges.Pledges)
+            foreach (var pledge in _pledges.Pledges)
             {
                 pledge.Status = PledgeStatus.Closed;
             }
 
             var result = await _handler.Handle(_query, CancellationToken.None);
-
-            CollectionAssert.AreEqual(result.Items, Enumerable.Empty<Pledge>());
+            result.Items.Should().BeEmpty();
         }
     }
 }
