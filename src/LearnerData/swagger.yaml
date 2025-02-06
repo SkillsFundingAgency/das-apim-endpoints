@@ -85,9 +85,9 @@ paths:
           $ref: '#/components/responses/notFound'
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse'  
-  /providers/{ukprn}/approved-candidates:
+  /providers/{ukprn}/apprenticeships:
     get:
-      summary: Returns a paged list of approved candidates for this provider
+      summary: Returns a paged list of apprenticeships for this provider
       security:
         - ApiKeyAuth: []  # Require API Key authentication
       parameters:
@@ -99,7 +99,7 @@ paths:
             type: string
       responses:
         '200':
-          $ref: '#/components/responses/pagedApprovedCandidatesResponse'  
+          $ref: '#/components/responses/pagedApprenticeshipsResponse'  
 components:  
   securitySchemes:
     ApiKeyAuth:
@@ -142,14 +142,14 @@ components:
           schema:
             $ref: '#/components/schemas/learner'
   responses:
-    pagedApprovedCandidatesResponse:
-      description: A paged approved candidate response
+    pagedApprenticeshipsResponse:
+      description: A paged apprenticeship response
       content:
         application/json:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/pagedApprovedCandidate'
+              $ref: '#/components/schemas/pagedAppprenticeship'
     createUpdateResponse:
       description: The update
       headers:
@@ -206,13 +206,13 @@ components:
       required:
         - code
         - message
-    pagedApprovedCandidate:
+    pagedAppprenticeship:
       type: object
       properties:
         learners:
           type: array
           items:
-              $ref: '#/components/schemas/approvedCandidate'
+              $ref: '#/components/schemas/apprenticeship'
         total:
           type: integer
           minimum: 0
@@ -231,7 +231,7 @@ components:
         - total
         - pageSize  
         - totalPages  
-    approvedCandidate:
+    apprenticeship:
       type: object
       properties:
         uln:
