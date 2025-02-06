@@ -149,7 +149,7 @@ components:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/pagedAppprenticeship'
+              $ref: '#/components/schemas/pagedAppprenticeships'
     createUpdateResponse:
       description: The update
       headers:
