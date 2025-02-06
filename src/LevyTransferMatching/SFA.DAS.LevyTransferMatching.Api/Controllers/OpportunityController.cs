@@ -44,8 +44,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                 var result = await _mediator.Send(new GetIndexQuery() { 
                     Sectors = sectors, 
                     Page = page, 
-                    PageSize = 
-                    pagesize, SortBy = sortBy 
+                    PageSize = pagesize, 
+                    SortBy = sortBy 
                 });
 
                 var response = new GetIndexResponse
@@ -59,7 +59,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                         Sectors = x.Sectors,
                         JobRoles = x.JobRoles,
                         Levels = x.Levels,
-                        Locations = x.Locations
+                        Locations = x.Locations,
+                        CreatedOn = x.CreatedOn
                     }),
                     TotalOpportunities = result.TotalItems,
                     TotalPages = result.TotalPages,
