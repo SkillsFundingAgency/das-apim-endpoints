@@ -31,8 +31,8 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
         GetSavedSearchVacanciesQueryHandler sut)
     {
         mockGetSavedSearchesApiResponse.SavedSearches = [];
-        mockQuery.Latitude = latitude.ToString(CultureInfo.InvariantCulture);
-        mockQuery.Longitude = longitude.ToString(CultureInfo.InvariantCulture);
+        mockQuery = mockQuery with { Latitude = latitude.ToString(CultureInfo.InvariantCulture) };
+        mockQuery = mockQuery with { Longitude = longitude.ToString(CultureInfo.InvariantCulture) };
 
         var expectedUrl = new GetSavedSearchesApiRequest(mockQuery.LastRunDateFilter.ToString("O"), mockQuery.PageNumber, mockQuery.PageSize);
         mockFindApprenticeshipApiClient.Setup(client => client.Get<GetSavedSearchesApiResponse>(It.Is<GetSavedSearchesApiRequest>(c => c.GetUrl == expectedUrl.GetUrl))).ReturnsAsync(mockGetSavedSearchesApiResponse);
@@ -59,9 +59,8 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
         [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> mockFindApprenticeshipApiClient,
         GetSavedSearchVacanciesQueryHandler sut)
     {
-            
-        mockQuery.Latitude = latitude.ToString(CultureInfo.InvariantCulture);
-        mockQuery.Longitude = longitude.ToString(CultureInfo.InvariantCulture);
+        mockQuery = mockQuery with { Latitude = latitude.ToString(CultureInfo.InvariantCulture) };
+        mockQuery = mockQuery with { Longitude = longitude.ToString(CultureInfo.InvariantCulture) };
         
         getCandidateApiResponse.Status = UserStatus.Completed;
 
@@ -132,16 +131,16 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
         GetSavedSearchVacanciesQueryHandler sut)
     {
         // arrange
-        query.Latitude = latitude.ToString(CultureInfo.InvariantCulture);
-        query.Longitude = longitude.ToString(CultureInfo.InvariantCulture);
+        query = query with { Latitude = latitude.ToString(CultureInfo.InvariantCulture) };
+        query = query with { Longitude = longitude.ToString(CultureInfo.InvariantCulture) };
         courseService.Setup(x => x.GetRoutes()).ReturnsAsync(getRoutesListResponse);
         courseService.Setup(x => x.GetLevels()).ReturnsAsync(getCourseLevelsListResponse);
         candidateApiClient.Setup(client => client.Get<GetCandidateApiResponse>(It.IsAny<GetCandidateApiRequest>( ))).ReturnsAsync(getCandidateApiResponse);
 
         getCandidateApiResponse.Status = UserStatus.Completed;
-        query.SelectedRouteIds = [getRoutesListResponse.Routes.First().Id];
-        query.Latitude = null;
-        query.Longitude = null;
+        query = query with { SelectedRouteIds = [getRoutesListResponse.Routes.First().Id] };
+        query = query with { Latitude = null };
+        query = query with { Longitude = null };
         
         GetVacanciesRequest? request = null;
         findApprenticeshipApiClient

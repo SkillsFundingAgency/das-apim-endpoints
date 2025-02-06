@@ -3,22 +3,20 @@ using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearchVacancies;
 
-public class GetSavedSearchVacanciesQuery : IRequest<GetSavedSearchVacanciesQueryResult>
-{
-    public int? MaxApprenticeshipSearchResultsCount { get; set; }
-    public VacancySort ApprenticeshipSearchResultsSortOrder { get; set; }
-    public Guid Id { get; set; }
-    public Guid UserId { get; set; }
-    public decimal? Distance { get; set; }
-    public string? SearchTerm { get; set; }
-    public string? Location { get; set; }
-    public bool DisabilityConfident { get; set; }
-    public string? Longitude { get; set; }
-    public string? Latitude { get; set; }
-    public List<int>? SelectedLevelIds { get; set; } = [];
-    public List<int>? SelectedRouteIds { get; set; } = [];
-    public string? UnSubscribeToken { get; set; }
-    public DateTime LastRunDateFilter { get; set; }
-    public int PageNumber { get; set; }
-    public int PageSize { get; set; }
-}
+public record GetSavedSearchVacanciesQuery(
+    int? MaxApprenticeshipSearchResultsCount,
+    VacancySort ApprenticeshipSearchResultsSortOrder,
+    Guid Id,
+    Guid UserId,
+    decimal? Distance,
+    string? SearchTerm,
+    string? Location,
+    bool DisabilityConfident,
+    string? Longitude,
+    string? Latitude,
+    List<int>? SelectedLevelIds,
+    List<int>? SelectedRouteIds,
+    string? UnSubscribeToken,
+    DateTime LastRunDateFilter,
+    int PageNumber,
+    int PageSize) : IRequest<GetSavedSearchVacanciesQueryResult?>;

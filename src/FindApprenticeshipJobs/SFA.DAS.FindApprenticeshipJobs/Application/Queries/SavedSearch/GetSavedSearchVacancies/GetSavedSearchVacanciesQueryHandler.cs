@@ -13,9 +13,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSave
 public class GetSavedSearchVacanciesQueryHandler(
     IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
     ICourseService courseService,
-    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient) : IRequestHandler<GetSavedSearchVacanciesQuery, GetSavedSearchVacanciesQueryResult>
+    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient) : IRequestHandler<GetSavedSearchVacanciesQuery, GetSavedSearchVacanciesQueryResult?>
 {
-    public async Task<GetSavedSearchVacanciesQueryResult> Handle(GetSavedSearchVacanciesQuery request, CancellationToken cancellationToken)
+    public async Task<GetSavedSearchVacanciesQueryResult?> Handle(GetSavedSearchVacanciesQuery request, CancellationToken cancellationToken)
     {
         var candidate =
             await candidateApiClient.Get<GetCandidateApiResponse>(
@@ -32,21 +32,13 @@ public class GetSavedSearchVacanciesQueryHandler(
         await Task.WhenAll(routesTask, levelsTask);
         var routesList = routesTask.Result;
         var levelsList = levelsTask.Result;
-        var searchResult = await GetSavedSearchResults(request, routesList, levelsList);
+        var searchResult = await GetSavedSearchResults(request, routesList, levelsList,candidate);
         
         return searchResult ?? new GetSavedSearchVacanciesQueryResult();
     }
-    private async Task<GetSavedSearchVacanciesQueryResult?> GetSavedSearchResults(GetSavedSearchVacanciesQuery request, GetRoutesListResponse routesList, GetCourseLevelsListResponse levelsList)
+    private async Task<GetSavedSearchVacanciesQueryResult?> GetSavedSearchResults(GetSavedSearchVacanciesQuery request,
+        GetRoutesListResponse routesList, GetCourseLevelsListResponse levelsList, GetCandidateApiResponse candidate)
     {
-        var candidate =
-            await candidateApiClient.Get<GetCandidateApiResponse>(
-                new GetCandidateApiRequest(request.UserId.ToString()));
-
-        if (candidate == null || candidate.Status == UserStatus.Deleted)
-        {
-            return null;
-        }
-
         var categories = routesList.Routes
             .Where(route => request.SelectedRouteIds?.Contains(route.Id) ?? false)
             .Select(route => new GetSavedSearchVacanciesQueryResult.Category
