@@ -86,8 +86,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
 
         public async Task<CreateApplicationResponse> CreateApplication(CreateApplicationRequest request)
         {
-           var response = await _levyTransferMatchingApiClient.PostWithResponseCode<CreateApplicationResponse>(request);
-           return response.Body;
+            var response = await _levyTransferMatchingApiClient.PostWithResponseCode<CreateApplicationResponse>(request);
+            return response.Body;
         }
 
         public async Task<GetApplicationResponse> GetApplication(GetApplicationRequest request)
@@ -100,6 +100,10 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         public async Task<GetApplicationsResponse> GetApplications(GetApplicationsRequest request)
         {
             return await _levyTransferMatchingApiClient.Get<GetApplicationsResponse>(request);
+        }
+        public async Task<GetApplicationsToAutoDeclineResponse> GetApplicationsToAutoDecline(GetApplicationsToAutoDeclineRequest request)
+        {
+            return await _levyTransferMatchingApiClient.Get<GetApplicationsToAutoDeclineResponse>(request);
         }
 
         public async Task<ApiResponse<DebitPledgeRequest>> DebitPledge(DebitPledgeRequest request)
@@ -140,6 +144,16 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         public async Task<ApiResponse<DeclineFundingRequest>> DeclineFunding(DeclineFundingRequest request)
         {
             return await _levyTransferMatchingApiClient.PostWithResponseCode<DeclineFundingRequest>(request, false);
+        }  
+        
+        public async Task<ApiResponse<DeclineApprovedFundingRequest>> DeclineApprovedFunding(DeclineApprovedFundingRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<DeclineApprovedFundingRequest>(request, false);
+        }
+
+        public async Task<ApiResponse<ExpireAcceptedFundingRequest>> ExpireAcceptedFunding(ExpireAcceptedFundingRequest request)
+        {
+            return await _levyTransferMatchingApiClient.PostWithResponseCode<ExpireAcceptedFundingRequest>(request, false);
         }
 
         public async Task<ApiResponse<RecalculateApplicationCostProjectionRequest>> RecalculateApplicationCostProjection(RecalculateApplicationCostProjectionRequest request)
@@ -150,6 +164,11 @@ namespace SFA.DAS.LevyTransferMatching.Application.Services
         public async Task<ApiResponse<CreditPledgeRequest>> CreditPledge(CreditPledgeRequest request)
         {
             return await _levyTransferMatchingApiClient.PostWithResponseCode<CreditPledgeRequest>(request, false);
+        }
+
+        public async Task<GetApplicationsToAutoExpireResponse> GetApplicationsToAutoExpire(GetApplicationsToAutoExpireRequest request)
+        {
+            return await _levyTransferMatchingApiClient.Get<GetApplicationsToAutoExpireResponse>(request);
         }
     }
 }

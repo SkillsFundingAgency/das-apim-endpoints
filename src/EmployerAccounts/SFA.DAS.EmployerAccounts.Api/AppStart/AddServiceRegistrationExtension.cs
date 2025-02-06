@@ -33,7 +33,6 @@ namespace SFA.DAS.EmployerAccounts.Api.AppStart
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
             services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
             services.AddTransient<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>, LevyTransferMatchingApiClient>();
-            services.AddTransient<IReferenceDataApiClient<ReferenceDataApiConfiguration>, ReferenceDataApiClient>();
             services.AddTransient<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>, EducationalOrganisationApiClient>();
             services.AddTransient<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>, PublicSectorOrganisationApiClient>();
             services.AddTransient<ICompaniesHouseApiClient<CompaniesHouseApiConfiguration>, CompaniesHouseApiClient<CompaniesHouseApiConfiguration>>();
