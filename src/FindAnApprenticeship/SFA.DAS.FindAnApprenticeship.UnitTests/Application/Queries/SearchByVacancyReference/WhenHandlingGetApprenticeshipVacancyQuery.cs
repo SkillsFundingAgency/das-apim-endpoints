@@ -55,6 +55,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                     .Excluding(x => x.ApplicationUrl)
                     .Excluding(x => x.IsSavedVacancy)
                     .Excluding(x => x.VacancySource)
+                    .Excluding(x => x.IsPrimaryLocation)
                 );
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
@@ -130,6 +131,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                     .Excluding(x => x.ApplicationUrl)
                     .Excluding(x => x.IsSavedVacancy)
                     .Excluding(x => x.VacancySource)
+                    .Excluding(x => x.IsPrimaryLocation)
                 );
 
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);

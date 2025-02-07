@@ -31,6 +31,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
                 .Excluding(c => c.EmployerName)
                 .Excluding(c => c.ApprenticeshipLevel)
                 .Excluding(c => c.Location)
+                .Excluding(c => c.EmploymentLocationOption) //TBC : should be removed in the later stages
             );
                 
             actual.Vacancies.FirstOrDefault().AddressLine1.Should().Be(source.Vacancies.FirstOrDefault().Address.AddressLine1);
@@ -43,6 +44,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
             actual.Vacancies.FirstOrDefault().ApprenticeshipLevel.Should().Be(source.Vacancies.FirstOrDefault().ApprenticeshipLevel);
             actual.Vacancies.FirstOrDefault().Lat.Should().Be(source.Vacancies.FirstOrDefault().Location.Lat);
             actual.Vacancies.FirstOrDefault().Lon.Should().Be(source.Vacancies.FirstOrDefault().Location.Lon);
+            actual.Vacancies.FirstOrDefault().IsPrimaryLocation.Should().Be(source.Vacancies.FirstOrDefault().IsPrimaryLocation);
+            actual.Vacancies.FirstOrDefault().EmploymentLocationInformation.Should().Be(source.Vacancies.FirstOrDefault().EmploymentLocationInformation);
+            //actual.Vacancies.FirstOrDefault().EmploymentLocationOption.Should().Be(source.Vacancies.FirstOrDefault().EmploymentLocationOption); TBC
         }
         
         [Test, AutoData]
@@ -75,6 +79,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
                 .Excluding(c => c.AnonymousEmployerName)
                 .Excluding(c => c.IsEmployerAnonymous)
                 .Excluding(c => c.Location)
+                .Excluding(c => c.EmploymentLocationOption) //TBC : should be removed in the later stages
             );
         }
 
