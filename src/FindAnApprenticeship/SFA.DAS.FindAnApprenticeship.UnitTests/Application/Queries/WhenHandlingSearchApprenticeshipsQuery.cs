@@ -58,7 +58,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 new List<VacancyDataSource>
                 {
                     VacancyDataSource.Nhs
-                });
+                },
+                query.ExcludeNational);
 
             apiClient
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
@@ -81,7 +82,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 {
                     VacancyDataSource.Raa,
                     VacancyDataSource.Nhs,
-                });
+                },
+                query.ExcludeNational);
             
             apiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(
@@ -205,7 +207,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 new List<VacancyDataSource>
                 {
                     VacancyDataSource.Nhs
-                });
+                },
+                query.ExcludeNational);
 
             apiClient
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
@@ -228,7 +231,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 {
                     VacancyDataSource.Raa, 
                     VacancyDataSource.Nhs,
-                });
+                },
+                query.ExcludeNational);
 
             apiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(
@@ -337,7 +341,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 new List<VacancyDataSource>
                 {
                     VacancyDataSource.Nhs
-                });
+                },
+                query.ExcludeNational);
 
             apiClient
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
