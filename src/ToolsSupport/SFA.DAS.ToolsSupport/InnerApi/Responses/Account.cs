@@ -9,6 +9,7 @@ public class Account
     public string OwnerEmail { get; set; } = "";
     public required List<ResourceViewModel> LegalEntities { get; set; }
     public required List<ResourceViewModel> PayeSchemes { get; set; }
+    public string ApprenticeshipEmployerType { get; set; } = "";
 
     //public string PublicHashedAccountId { get; set; } = "";
     //public decimal RemainingTransferAllowance { get; set; }

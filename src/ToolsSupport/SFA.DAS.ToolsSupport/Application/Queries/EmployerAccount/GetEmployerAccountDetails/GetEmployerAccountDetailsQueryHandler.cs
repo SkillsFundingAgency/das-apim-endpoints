@@ -38,6 +38,7 @@ public class GetEmployerAccountDetailsQueryHandler(
         result.DasAccountName = account.DasAccountName;
         result.DateRegistered = account.DateRegistered;
         result.OwnerEmail = account.OwnerEmail;
+        result.ApprenticeshipEmployerType = account.ApprenticeshipEmployerType;
         return result;
     }
 }
