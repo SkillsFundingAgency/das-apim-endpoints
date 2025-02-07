@@ -19,6 +19,7 @@ using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetApplicatio
 using System.Linq;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetSelectAccount;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 {
@@ -36,11 +37,16 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("opportunities")]
-        public async Task<IActionResult> GetIndex([FromQuery] IEnumerable<string> sectors = null, int page = 1, int? pagesize = null)
+        public async Task<IActionResult> GetIndex([FromQuery] IEnumerable<string> sectors = null, string sortBy = null, int page = 1, int? pagesize = null)
         {
             try
             {
-                var result = await _mediator.Send(new GetIndexQuery() { Sectors = sectors, Page = page, PageSize = pagesize });
+                var result = await _mediator.Send(new GetIndexQuery() { 
+                    Sectors = sectors, 
+                    Page = page, 
+                    PageSize = pagesize, 
+                    SortBy = sortBy 
+                });
 
                 var response = new GetIndexResponse
                 {
@@ -53,7 +59,8 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
                         Sectors = x.Sectors,
                         JobRoles = x.JobRoles,
                         Levels = x.Levels,
-                        Locations = x.Locations
+                        Locations = x.Locations,
+                        CreatedOn = x.CreatedOn
                     }),
                     TotalOpportunities = result.TotalItems,
                     TotalPages = result.TotalPages,

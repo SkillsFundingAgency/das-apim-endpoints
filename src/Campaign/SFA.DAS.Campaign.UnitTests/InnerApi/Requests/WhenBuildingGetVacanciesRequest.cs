@@ -19,7 +19,7 @@ namespace SFA.DAS.Campaign.UnitTests.Requests
         {
             var actual = new GetVacanciesRequest(lat, lon, distance, pageNumber, pageSize, categories);
 
-            actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&distanceInMiles={distance}&pageNumber={pageNumber}&pageSize={pageSize}&categories={categories}");
+            actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&distanceInMiles={distance}&pageNumber={pageNumber}&pageSize={pageSize}&categories={categories}&sort=DistanceAsc");
             actual.Version.Should().Be("2.0");
         }
     }

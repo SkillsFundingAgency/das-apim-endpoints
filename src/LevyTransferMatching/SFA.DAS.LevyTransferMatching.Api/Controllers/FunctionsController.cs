@@ -14,6 +14,7 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.CreditPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DebitPledge;
 using SFA.DAS.LevyTransferMatching.Application.Commands.DeclineApprovedFunding;
+using SFA.DAS.LevyTransferMatching.Application.Commands.ExpireAcceptedFunding;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RecalculateApplicationCostProjections;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication;
 using SFA.DAS.LevyTransferMatching.Application.Commands.RejectPledgeApplications;
@@ -343,6 +344,59 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
             });
 
             return Ok();
+        }
+
+        [Route("applications-for-auto-expire")]
+        [HttpGet]
+        public async Task<IActionResult> ApplicationsForAutomaticExpire()
+        {
+            var result = await _mediator.Send(new ApplicationsForAutomaticExpireQuery());
+
+            return Ok((ApplicationsForAutomaticExpireResponse)result);
+        }
+
+        [Route("expire-accepted-funding")]
+        [HttpPost]
+        public async Task<IActionResult> ExpireAcceptedFunding(ExpireAcceptedFundingRequest request)
+        {
+            await _mediator.Send(new ExpireAcceptedFundingCommand
+            {
+                ApplicationId = request.ApplicationId
+            });
+
+            return Ok();
+        }
+
+        [Route("application-funding-expired")]
+        [HttpPost]
+        public async Task<IActionResult> ApplicationFundingExpired(ApplicationFundingExpiredRequest request)
+        {
+            try
+            {
+                var creditResult = await _mediator.Send(new CreditPledgeCommand
+                {
+                    Amount = request.Amount,
+                    ApplicationId = request.ApplicationId,
+                    PledgeId = request.PledgeId
+                });
+
+                if (creditResult.CreditPledgeSkipped)
+                {
+                    return Ok();
+                }
+
+                if (!creditResult.StatusCode.IsSuccess())
+                {
+                    _logger.LogError("Error attempting to Credit Pledge {ErrorContent}", creditResult.ErrorContent);
+                }
+
+                return new StatusCodeResult((int)creditResult.StatusCode);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error in ApplicationFundingExpired attempting to Credit Pledge");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
 
         [Route("applications-for-auto-decline")]
