@@ -16,5 +16,5 @@ public class LegalEntity
     public string Status { get; set; } = "";
     public long AccountLegalEntityId { get; set; }
     public string AccountLegalEntityPublicHashedId { get; set; } = "";
-    public string AgreementStatus { get; set; } = "";
+    public int AgreementStatus { get; set; }
 }

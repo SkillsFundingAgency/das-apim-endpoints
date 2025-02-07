@@ -35,6 +35,7 @@ public class GetEmployerAccountDetailsQueryHandler(
     {
         result.AccountId = account.AccountId;
         result.HashedAccountId = account.HashedAccountId;
+        result.PublicHashedAccountId = account.PublicHashedAccountId;
         result.DasAccountName = account.DasAccountName;
         result.DateRegistered = account.DateRegistered;
         result.OwnerEmail = account.OwnerEmail;
