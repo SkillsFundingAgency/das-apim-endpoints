@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration.BuildSharedConfiguration();
 
 builder.Services
-    .AddLogging()
+    
     .AddApplicationInsightsTelemetry()
     .AddServiceRegistration(configuration)
     .AddEndpointsApiExplorer()
@@ -35,6 +35,7 @@ builder.Services
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
+builder.Services.AddLogging();
 
 builder.Logging.AddApplicationInsights();
 builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("SFA.DAS", LogLevel.Information);

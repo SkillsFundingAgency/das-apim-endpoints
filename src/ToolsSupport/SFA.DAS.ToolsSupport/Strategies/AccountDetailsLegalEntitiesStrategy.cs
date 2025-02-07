@@ -5,12 +5,10 @@ using SFA.DAS.ToolsSupport.Interfaces;
 
 namespace SFA.DAS.ToolsSupport.Strategies;
 
-public class AccountDetailsLegalEntitiesStrategy(IAccountsService accountsService, ILogger logger) : IAccountDetailsStrategy
+public class AccountDetailsLegalEntitiesStrategy(IAccountsService accountsService) : IAccountDetailsStrategy
 {
     public async Task<GetEmployerAccountDetailsResult> ExecuteAsync(Account account)
     {
-        logger.LogInformation("Getting Organisations for the account {AccountId}", account.AccountId);
-
         var legalEntitiesList = new List<LegalEntity>();
 
         var legalEntities = account.LegalEntities;

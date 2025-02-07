@@ -7,8 +7,8 @@ public class Account
     public string DasAccountName { get; set; } = "";
     public DateTime DateRegistered { get; set; }
     public string OwnerEmail { get; set; } = "";
-    public required ResourceList LegalEntities { get; set; }
-    public required ResourceList PayeSchemes { get; set; }
+    public required List<ResourceViewModel> LegalEntities { get; set; }
+    public required List<ResourceViewModel> PayeSchemes { get; set; }
 
     //public string PublicHashedAccountId { get; set; } = "";
     //public decimal RemainingTransferAllowance { get; set; }

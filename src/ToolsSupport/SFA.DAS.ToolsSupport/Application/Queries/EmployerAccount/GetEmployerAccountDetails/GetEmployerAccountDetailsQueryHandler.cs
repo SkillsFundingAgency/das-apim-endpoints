@@ -9,7 +9,7 @@ namespace SFA.DAS.ToolsSupport.Application.Queries.EmployerAccount.GetEmployerAc
 public class GetEmployerAccountDetailsQueryHandler(
     IAccountDetailsStrategyFactory strategyFactory,
     IAccountsService accountsService,
-    ILogger logger)
+    ILogger<GetEmployerAccountDetailsQueryHandler> logger)
         : IRequestHandler<GetEmployerAccountDetailsQuery, GetEmployerAccountDetailsResult>
 {
     public async Task<GetEmployerAccountDetailsResult> Handle(GetEmployerAccountDetailsQuery query, CancellationToken cancellationToken)
@@ -18,14 +18,17 @@ public class GetEmployerAccountDetailsQueryHandler(
 
         // get account details
         var account = await accountsService.GetAccount(query.AccountId);
+        if (account != null)
+        {
+            // populate Ienumerable
+            var accountDetailsStrategy = strategyFactory.CreateStrategy(query.SelectedField);
+            var result = await accountDetailsStrategy.ExecuteAsync(account);
 
-        // populate Ienumerable
-        var accountDetailsStrategy = strategyFactory.CreateStrategy(query.SelectedField);
-        var result = await accountDetailsStrategy.ExecuteAsync(account);
+            result = MapCommonAccountDetails(account, result);
 
-        result = MapCommonAccountDetails(account, result);
-
-        return result;
+            return result;
+        }
+        return new GetEmployerAccountDetailsResult();
     }
 
     private static GetEmployerAccountDetailsResult MapCommonAccountDetails(Account account, GetEmployerAccountDetailsResult result )

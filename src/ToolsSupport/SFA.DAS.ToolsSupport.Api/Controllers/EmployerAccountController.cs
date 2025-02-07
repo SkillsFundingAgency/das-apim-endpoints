@@ -10,7 +10,7 @@ namespace SFA.DAS.ToolsSupport.Api.Controllers;
 
 [Route("[controller]/")]
 [ApiController]
-public class EmployerAccountController(IMediator mediator, ILogger logger) : ControllerBase
+public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccountController> logger) : ControllerBase
 {
     [HttpGet]
     [Route("{accountId}/accountdetails")]

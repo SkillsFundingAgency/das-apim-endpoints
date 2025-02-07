@@ -14,12 +14,11 @@ public class AccountDetailsStrategyFactory : IAccountDetailsStrategyFactory
     private readonly Dictionary<AccountFieldSelection, Func<IAccountDetailsStrategy>> _strategyFactories;
 
     public AccountDetailsStrategyFactory(
-        IAccountsService accountService,
-        ILogger logger)
+        IAccountsService accountService)
     {
         _strategyFactories = new Dictionary<AccountFieldSelection, Func<IAccountDetailsStrategy>>
             {
-                { AccountFieldSelection.EmployerAccount, () => new AccountDetailsLegalEntitiesStrategy(accountService, logger) }
+                { AccountFieldSelection.EmployerAccount, () => new AccountDetailsLegalEntitiesStrategy(accountService) }
             };
     }
 

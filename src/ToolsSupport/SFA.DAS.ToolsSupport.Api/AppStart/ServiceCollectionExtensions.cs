@@ -1,7 +1,9 @@
 ﻿using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.ToolsSupport.Application.Services;
 using SFA.DAS.ToolsSupport.Interfaces;
 using SFA.DAS.ToolsSupport.Strategies;
@@ -17,6 +19,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IAccountsService, AccountsService>();
         services.AddTransient<IAccountDetailsStrategyFactory, AccountDetailsStrategyFactory>();
+        services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
 
         return services;
     }
