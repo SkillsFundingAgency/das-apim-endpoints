@@ -16,6 +16,7 @@
 	
   <ItemGroup>
     <Folder Include="Application\Commands\" />
+    <Folder Include="Application\Models\" />
   </ItemGroup>
 	
 </Project>

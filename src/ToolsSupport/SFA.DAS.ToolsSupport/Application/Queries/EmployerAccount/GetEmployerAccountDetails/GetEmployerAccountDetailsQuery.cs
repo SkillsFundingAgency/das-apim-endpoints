@@ -5,6 +5,6 @@ namespace SFA.DAS.ToolsSupport.Application.Queries.EmployerAccount.GetEmployerAc
 
 public class GetEmployerAccountDetailsQuery : IRequest<GetEmployerAccountDetailsResult>
 {
-    public string AccountHashedId { get; set; } = "";
-    public string SelectedField { get; set; } = AccountFieldSelection.EmployerAccount;
+    public long AccountId { get; set; }
+    public AccountFieldSelection SelectedField { get; set; } = AccountFieldSelection.EmployerAccount;
 }

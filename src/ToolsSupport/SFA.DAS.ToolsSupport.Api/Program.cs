@@ -1,9 +1,10 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.SharedOuterApi.AppStart;
-using System.Text.Json.Serialization;
 using SFA.DAS.ToolsSupport.Api.AppStart;
+using SFA.DAS.ToolsSupport.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,11 +43,11 @@ builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLev
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
-//builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetLiveVacanciesQuery).Assembly));
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(IAccountsService).Assembly));
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment()) 
+if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 
 app
