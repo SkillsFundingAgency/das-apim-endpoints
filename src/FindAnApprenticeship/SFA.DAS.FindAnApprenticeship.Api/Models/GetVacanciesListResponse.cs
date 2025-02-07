@@ -20,6 +20,33 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         }
 
     }
+
+    public class GetVacanciesListAddressItem
+    {
+        public string AddressLine1 { get; set; }
+        public string? AddressLine2 { get; set; }
+        public string? AddressLine3 { get; set; }
+        public string AddressLine4 { get; set; }
+        public string Postcode { get; set; }
+
+        public static GetVacanciesListAddressItem From(Address address)
+        {
+            if (address is null)
+            {
+                return null;
+            }
+
+            return new GetVacanciesListAddressItem
+            {
+                AddressLine1 = address.AddressLine1,
+                AddressLine2 = address.AddressLine2,
+                AddressLine3 = address.AddressLine3,
+                AddressLine4 = address.AddressLine4,
+                Postcode = address.Postcode
+            };
+        }
+    }
+    
     public class GetVacanciesListResponseItem
     {
         public string Id { get; set; }
@@ -36,6 +63,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string AddressLine3 { get; private set; }
         public string? AddressLine4 { get; private set; }
         public string PostCode { get; private set; }
+        public List<GetVacanciesListAddressItem> OtherAddresses { get; set; }
+        public string? EmploymentLocationInformation { get; private set; }
         public decimal? Distance { get; set; }
         public string CourseLevel { get; set; }
         public int CourseId { get; set; }
@@ -72,17 +101,19 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 WageType = source.WageType,
                 WageAmount = source.WageAmount,
                 WageText = source.WageText,
-                AddressLine1 = source.Address.AddressLine1,
-                AddressLine2 = source.Address.AddressLine2,
-                AddressLine3 = source.Address.AddressLine3,
-                AddressLine4 = source.Address.AddressLine4,
-                PostCode = source.Address.Postcode,
+                AddressLine1 = source.Address?.AddressLine1,
+                AddressLine2 = source.Address?.AddressLine2,
+                AddressLine3 = source.Address?.AddressLine3,
+                AddressLine4 = source.Address?.AddressLine4,
+                EmploymentLocationInformation = source.EmploymentLocationInformation,
+                OtherAddresses = source.OtherAddresses?.Select(GetVacanciesListAddressItem.From).ToList(),
+                PostCode = source.Address?.Postcode,
                 CourseRoute = source.CourseRoute,
                 CourseLevel = source.CourseLevel,
                 IsDisabilityConfident = source.IsDisabilityConfident,
                 Application = source.Application,
-                Lat = source.Location.Lat,
-                Lon = source.Location.Lon,
+                Lat = source.Location?.Lat,
+                Lon = source.Location?.Lon,
                 ApplicationUrl = source.ApplicationUrl,
                 CompanyBenefitsInformation = source.CompanyBenefitsInformation,
                 AdditionalTrainingDescription = source.AdditionalTrainingDescription,
