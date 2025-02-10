@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Strategies
 
 
         [Test, MoqAutoData]
-        public void CreateStrategy_ShouldReturnReferenceDataApiStrategy_ForCharity(
+        public void CreateStrategy_ShouldReturnCharitiesApiStrategy_ForCharity(
         OrganisationApiStrategyFactory factory)
         {
             var orgType = OrganisationType.Charity;
@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Strategies
             var strategy = factory.CreateStrategy(orgType);
 
             // Assert
-            strategy.Should().BeOfType<ReferenceDataApiStrategy>();
+            strategy.Should().BeOfType<CharitiesApiStrategy>();
         }
 
 

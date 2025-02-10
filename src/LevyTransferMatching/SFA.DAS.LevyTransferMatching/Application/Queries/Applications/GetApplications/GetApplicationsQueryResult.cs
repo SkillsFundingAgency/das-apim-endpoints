@@ -1,22 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications
 {
-    public class GetApplicationsQueryResult
+    public class GetApplicationsQueryResult : PagedQueryResult<GetApplicationsQueryResult.Application>
     {
         public static implicit operator GetApplicationsQueryResult(GetApplicationsResponse applications)
         {
             return new GetApplicationsQueryResult
             {
-                Applications = applications.Applications.Select(x => (Application) x)
+                Items = applications.Applications.Select(x => (Application)x).ToList(),
+                TotalItems = applications.TotalItems,
+                PageSize = applications.PageSize,
+                Page = applications.Page
             };
         }
-
-        public IEnumerable<Application> Applications { get; set; }
-
         public class Application
         {
             public int Id { get; set; }

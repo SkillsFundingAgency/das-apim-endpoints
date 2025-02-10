@@ -34,10 +34,10 @@ public class GetApplicationsRequest : IGetApiRequest
                 queryParameters.Add("accountId", AccountId.Value.ToString());
             }
 
-            if (SenderAccountId.HasValue)
-            {
-                queryParameters.Add("senderAccountId", SenderAccountId.Value.ToString());
-            }
+                if (SenderAccountId.HasValue)
+                {
+                    queryParameters.Add("senderAccountId", SenderAccountId.Value.ToString());
+                }
 
             if (ApplicationStatusFilter != null)
             {

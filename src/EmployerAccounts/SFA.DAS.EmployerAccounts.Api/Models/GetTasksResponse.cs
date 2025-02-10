@@ -10,6 +10,8 @@ public class GetTasksResponse
     public int NumberOfPendingTransferConnections { get; set; }
     public int NumberOfTransferRequestToReview { get; set; }
     public int NumberTransferPledgeApplicationsToReview { get; set; }
+    public int NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices  { get; set; }
+    public int? SingleAcceptedTransferPledgeApplicationIdWithNoApprentices { get; set; }
     public int NumberOfTransferPledgeApplicationsApproved { get; set; }
     public int? SingleApprovedTransferApplicationId { get; set; }
 
@@ -23,6 +25,8 @@ public class GetTasksResponse
             NumberOfPendingTransferConnections = source.NumberOfPendingTransferConnections,
             NumberOfTransferRequestToReview = source.NumberOfTransferRequestToReview,
             NumberTransferPledgeApplicationsToReview = source.NumberTransferPledgeApplicationsToReview,
+            NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices = source.NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices,
+            SingleAcceptedTransferPledgeApplicationIdWithNoApprentices = source.SingleAcceptedTransferPledgeApplicationIdWithNoApprentices,
             NumberOfTransferPledgeApplicationsApproved = source.NumberOfTransferPledgeApplicationsApproved,
             SingleApprovedTransferApplicationId = source.SingleApprovedTransferApplicationId
         };
