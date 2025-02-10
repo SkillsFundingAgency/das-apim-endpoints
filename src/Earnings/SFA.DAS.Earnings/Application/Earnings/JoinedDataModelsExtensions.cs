@@ -141,7 +141,7 @@ namespace SFA.DAS.Earnings.Application.Earnings
                 ApplicCompDate = EarningsFM36Constants.ApplicCompDate,
                 CombinedAdjProp = EarningsFM36Constants.CombinedAdjProp,
                 Completed = EarningsFM36Constants.Completed,
-                FundStart = daysInLearning > Constants.QualifyingPeriod,
+                FundStart = daysInLearning.FundingStart(),
                 LDApplic1618FrameworkUpliftTotalActEarnings = EarningsFM36Constants.LDApplic1618FrameworkUpliftTotalActEarnings,
                 LearnAimRef = EarningsFM36Constants.LearnAimRef,
                 LearnStartDate = joinedEarningsApprenticeship.Apprenticeship.StartDate,
@@ -240,6 +240,18 @@ namespace SFA.DAS.Earnings.Application.Earnings
                 return 1 + (joinedEarningsApprenticeship.Apprenticeship.WithdrawnDate.Value - joinedEarningsApprenticeship.Apprenticeship.StartDate).Days;
             }
             return 0;// Default to zero if still in learning
+        }
+
+        public static bool FundingStart(this int daysInLearning)  
+        {
+            if (daysInLearning == 0)
+            {
+                // if we dont have a days in learning value, then we assume the funding start is true. If later the days in learning
+                // does not meet the qualifying period, then the funding start will be false and payments will be clawed back
+                return true; 
+            }
+
+            return daysInLearning > Constants.QualifyingPeriod;
         }
 
         private static decimal GetPreviousEarnings(SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship? apprenticeship, short academicYear, short collectionPeriod)
