@@ -2,8 +2,8 @@
 
 public enum AccountFieldSelection
 {
-     EmployerAccount = 0,
-     EmployerAccountFinance = 1,
-     EmployerAccountTeam = 2,
-     CommitmentSearch = 3
+     EmployerAccount = 1,
+     EmployerAccountFinance = 2,
+     EmployerAccountTeam = 3,
+     CommitmentSearch = 4
 }

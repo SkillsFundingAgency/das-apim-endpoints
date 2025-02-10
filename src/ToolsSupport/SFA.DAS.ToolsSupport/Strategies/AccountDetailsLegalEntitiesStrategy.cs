@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using SFA.DAS.ToolsSupport.Application.Queries.EmployerAccount.GetEmployerAccountDetails;
+﻿using SFA.DAS.ToolsSupport.Application.Queries.EmployerAccount.GetEmployerAccountDetails;
 using SFA.DAS.ToolsSupport.InnerApi.Responses;
 using SFA.DAS.ToolsSupport.Interfaces;
 
@@ -20,7 +19,7 @@ public class AccountDetailsLegalEntitiesStrategy(IAccountsService accountsServic
         }
 
         return new GetEmployerAccountDetailsResult
-        {          
+        {
             LegalEntities = legalEntitiesList
         };
     }
