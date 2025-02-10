@@ -31,17 +31,16 @@ namespace SFA.DAS.LevyTransferMatching.Api.Controllers
 
         [HttpGet]
         [Route("accounts/{accountId}/applications")]
-        public async Task<IActionResult> GetApplications(long accountId)
+        public async Task<IActionResult> GetApplications(long accountId, int? page = 1, int? pageSize = null)
         {
             var result = await _mediator.Send(new GetApplicationsQuery
             {
-                AccountId = accountId
+                AccountId = accountId,
+                Page = page.Value,
+                PageSize = pageSize
             });
 
-            return Ok(new GetApplicationsResponse
-            {
-                Applications = result?.Applications.Select(x => (GetApplicationsResponse.Application)x)
-            });
+            return Ok((GetApplicationsResponse)result);
         }
 
         [HttpGet]

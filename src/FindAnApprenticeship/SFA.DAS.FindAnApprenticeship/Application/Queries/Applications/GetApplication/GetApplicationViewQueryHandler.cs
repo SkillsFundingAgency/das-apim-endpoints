@@ -31,7 +31,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
 
             if (application == null) return null;
 
-            var vacancy = await vacancyService.GetVacancy(application.VacancyReference);
+            var vacancy = await vacancyService.GetVacancy(application.VacancyReference) 
+                          ?? await vacancyService.GetClosedVacancy(application.VacancyReference);
 
             if (vacancy == null) { return null; }
 

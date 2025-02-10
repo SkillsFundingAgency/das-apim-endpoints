@@ -48,19 +48,19 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             okObjectResult.Should().NotBeNull();
             var response = okObjectResult.Value as GetPledgesResponse;
             response.Should().NotBeNull();
-            response.TotalPledges.Should().Be(_queryResult.TotalPledges);
+            response.TotalItems.Should().Be(_queryResult.TotalPledges);
             response.TotalPages.Should().Be(_queryResult.TotalPages);
             response.Page.Should().Be(_queryResult.Page);
             response.PageSize.Should().Be(_queryResult.PageSize);
 
-            response.Pledges.Should().NotBeNull();
-            response.Pledges.Should().NotBeEmpty(); response.StartingTransferAllowance.Should().Be(_queryResult.StartingTransferAllowance);
-            response.Pledges.Should().NotBeEmpty();
-            response.Pledges.Any(x => x.Id == 0).Should().BeFalse();
-            response.Pledges.Any(x => x.Amount == 0).Should().BeFalse();
-            response.Pledges.Any(x => x.RemainingAmount == 0).Should().BeFalse();
-            response.Pledges.Any(x => x.ApplicationCount == 0).Should().BeFalse();
-            response.Pledges.Any(x => x.Status == string.Empty).Should().BeFalse();
+            response.Items.Should().NotBeNull();
+            response.Items.Should().NotBeEmpty(); response.StartingTransferAllowance.Should().Be(_queryResult.StartingTransferAllowance);
+            response.Items.Should().NotBeEmpty();
+            response.Items.Any(x => x.Id == 0).Should().BeFalse();
+            response.Items.Any(x => x.Amount == 0).Should().BeFalse();
+            response.Items.Any(x => x.RemainingAmount == 0).Should().BeFalse();
+            response.Items.Any(x => x.ApplicationCount == 0).Should().BeFalse();
+            response.Items.Any(x => x.Status == string.Empty).Should().BeFalse();
             response.CurrentYearEstimatedCommittedSpend.Should().Be(_queryResult.CurrentYearEstimatedCommittedSpend);
         }
     }

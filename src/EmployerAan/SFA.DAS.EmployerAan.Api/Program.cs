@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.EmployerAan.Api.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
@@ -18,6 +19,7 @@ builder.Services
     .AddEndpointsApiExplorer()
     .AddSwaggerGen(c =>
     {
+        c.CustomSchemaIds(x => x.FullName?.Replace("+", "_"));
         c.SwaggerDoc("v1",
             new OpenApiInfo
             {
