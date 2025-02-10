@@ -1,7 +1,9 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.Earnings.Application.Extensions;
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
+using System.Runtime.CompilerServices;
 
 namespace SFA.DAS.Earnings.Application.Earnings
 {
@@ -128,9 +130,10 @@ namespace SFA.DAS.Earnings.Application.Earnings
             this JoinedEarningsApprenticeship joinedEarningsApprenticeship, 
             GetAcademicYearsResponse currentAcademicYear)
         {
+            var daysInLearning = joinedEarningsApprenticeship.DaysInLearning();
             return new LearningDeliveryValues
             {
-                ActualDaysIL = EarningsFM36Constants.ActualDaysIL,
+                ActualDaysIL = daysInLearning,
                 AdjStartDate = joinedEarningsApprenticeship.Apprenticeship.StartDate,
                 AgeAtProgStart = joinedEarningsApprenticeship.Apprenticeship.AgeAtStartOfApprenticeship,
                 AppAdjLearnStartDate = joinedEarningsApprenticeship.Apprenticeship.StartDate,
@@ -138,7 +141,7 @@ namespace SFA.DAS.Earnings.Application.Earnings
                 ApplicCompDate = EarningsFM36Constants.ApplicCompDate,
                 CombinedAdjProp = EarningsFM36Constants.CombinedAdjProp,
                 Completed = EarningsFM36Constants.Completed,
-                FundStart = EarningsFM36Constants.FundStart,
+                FundStart = daysInLearning > Constants.QualifyingPeriod,
                 LDApplic1618FrameworkUpliftTotalActEarnings = EarningsFM36Constants.LDApplic1618FrameworkUpliftTotalActEarnings,
                 LearnAimRef = EarningsFM36Constants.LearnAimRef,
                 LearnStartDate = joinedEarningsApprenticeship.Apprenticeship.StartDate,
@@ -170,7 +173,7 @@ namespace SFA.DAS.Earnings.Application.Earnings
                 PwayCode = EarningsFM36Constants.PwayCode,
                 SecondIncentiveThresholdDate = EarningsFM36Constants.SecondIncentiveThresholdDate,
                 StdCode = int.TryParse(joinedEarningsApprenticeship.Apprenticeship.Episodes.MinBy(x => x.Prices.Min(price => price.StartDate))?.TrainingCode, out int parsedTrainingCode) ? parsedTrainingCode : null,
-                ThresholdDays = EarningsFM36Constants.ThresholdDays,
+                ThresholdDays = Constants.QualifyingPeriod,
                 LearnDelApplicCareLeaverIncentive = EarningsFM36Constants.LearnDelApplicCareLeaverIncentive,
                 LearnDelHistDaysCareLeavers = EarningsFM36Constants.LearnDelHistDaysCareLeavers,
                 LearnDelAccDaysILCareLeavers = EarningsFM36Constants.LearnDelAccDaysILCareLeavers,
@@ -225,6 +228,18 @@ namespace SFA.DAS.Earnings.Application.Earnings
                     LearningDeliveryPeriodisedTextValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.FundLineType, joinedEarningsApprenticeship.EarningsApprenticeship.FundingLineType),
                     LearningDeliveryPeriodisedTextValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelContType, EarningsFM36Constants.LearnDelContType)
                 };
+        }
+
+        /// <summary>
+        /// Currently only returns days in learning for withdrawn apprenticeship, in future this will need to be expanded to include completed apprenticeships
+        /// </summary>
+        internal static int DaysInLearning(this JoinedEarningsApprenticeship joinedEarningsApprenticeship)
+        {
+            if(joinedEarningsApprenticeship.Apprenticeship.WithdrawnDate.HasValue)
+            {
+                return 1 + (joinedEarningsApprenticeship.Apprenticeship.WithdrawnDate.Value - joinedEarningsApprenticeship.Apprenticeship.StartDate).Days;
+            }
+            return 0;// Default to zero if still in learning
         }
 
         private static decimal GetPreviousEarnings(SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship? apprenticeship, short academicYear, short collectionPeriod)
