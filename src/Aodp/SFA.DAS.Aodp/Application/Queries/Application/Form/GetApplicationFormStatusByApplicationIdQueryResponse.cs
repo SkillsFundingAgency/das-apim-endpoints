@@ -14,6 +14,8 @@
     {
         public Guid SectionId { get; set; }
         public int PagesRemaining { get; set; }
+        public int SkippedPages { get; set; }
+        public int TotalPages { get; set; }
     }
 
 }
