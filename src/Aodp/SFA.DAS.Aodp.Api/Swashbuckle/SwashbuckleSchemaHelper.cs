@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Aodp;
+﻿namespace SFA.DAS.Aodp.Api;
 
 public class SwashbuckleSchemaHelper
 {
