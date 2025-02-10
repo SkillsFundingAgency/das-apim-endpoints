@@ -1,33 +1,31 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.Domain.FormBuilder.Requests.Forms;
-using SFA.DAS.AODP.Domain.FormBuilder.Responses.Forms;
+using SFA.DAS.Aodp.InnerApi.AodpApi.FormBuilder.Forms;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AODP.Application.Queries.FormBuilder.Forms;
+namespace SFA.DAS.Aodp.Application.Queries.FormBuilder.Forms;
 
-public class GetAllFormVersionsQueryHandler : IRequestHandler<GetAllFormVersionsQuery, GetAllFormVersionsQueryResponse>
+public class GetAllFormVersionsQueryHandler : IRequestHandler<GetAllFormVersionsQuery, BaseMediatrResponse<GetAllFormVersionsQueryResponse>>
 {
     private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
-
-    public GetAllFormVersionsQueryHandler(IAodpApiClient<AodpApiConfiguration> aodpApiClient)
+    public GetAllFormVersionsQueryHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
     {
-        _apiClient = aodpApiClient;
+        _apiClient = apiClient;
 
     }
 
-    public async Task<GetAllFormVersionsQueryResponse> Handle(GetAllFormVersionsQuery request, CancellationToken cancellationToken)
+    public async Task<BaseMediatrResponse<GetAllFormVersionsQueryResponse>> Handle(GetAllFormVersionsQuery request, CancellationToken cancellationToken)
     {
-        var response = new GetAllFormVersionsQueryResponse
+        var response = new BaseMediatrResponse<GetAllFormVersionsQueryResponse>
         {
             Success = false
         };
 
         try
         {
-            var result = await _apiClient.Get<GetAllFormVersionsApiResponse>(new GetAllFormVersionsApiRequest());
-            response.Data = [.. result.Data];
+            var result = await _apiClient.Get<GetAllFormVersionsQueryResponse>(new GetAllFormVersionsApiRequest());
+            response.Value = result;
             response.Success = true;
         }
         catch (Exception ex)

@@ -1,8 +1,8 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.AODP.Application.Queries.FormBuilder.Forms;
+namespace SFA.DAS.Aodp.Application.Queries.FormBuilder.Forms;
 
-public class GetFormVersionByIdQuery : IRequest<GetFormVersionByIdQueryResponse>
+public class GetFormVersionByIdQuery : IRequest<BaseMediatrResponse<GetFormVersionByIdQueryResponse>>
 {
     public readonly Guid FormVersionId;
 

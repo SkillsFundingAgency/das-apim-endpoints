@@ -1,8 +1,6 @@
-﻿using SFA.DAS.Aodp.Application;
+﻿namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Pages;
 
-namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Pages;
-
-public class CreatePageCommandResponse : BaseResponse
+public class CreatePageCommandResponse 
 {
     public Guid Id { get; set; }
 

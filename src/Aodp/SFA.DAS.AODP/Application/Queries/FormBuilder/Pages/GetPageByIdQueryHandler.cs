@@ -1,12 +1,11 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.Domain.FormBuilder.Requests.Pages;
-using SFA.DAS.AODP.Domain.FormBuilder.Responses.Pages;
+using SFA.DAS.Aodp.InnerApi.AodpApi.FormBuilder.Pages;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AODP.Application.Queries.FormBuilder.Pages;
+namespace SFA.DAS.Aodp.Application.Queries.FormBuilder.Pages;
 
-public class GetPageByIdQueryHandler : IRequestHandler<GetPageByIdQuery, GetPageByIdQueryResponse>
+public class GetPageByIdQueryHandler : IRequestHandler<GetPageByIdQuery, BaseMediatrResponse<GetPageByIdQueryResponse>>
 {
     private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
@@ -17,19 +16,19 @@ public class GetPageByIdQueryHandler : IRequestHandler<GetPageByIdQuery, GetPage
 
     }
 
-    public async Task<GetPageByIdQueryResponse> Handle(GetPageByIdQuery request, CancellationToken cancellationToken)
+    public async Task<BaseMediatrResponse<GetPageByIdQueryResponse>> Handle(GetPageByIdQuery request, CancellationToken cancellationToken)
     {
-        var response = new GetPageByIdQueryResponse();
+        var response = new BaseMediatrResponse<GetPageByIdQueryResponse>();
         response.Success = false;
         try
         {
-            var result = await _apiClient.Get<GetPageByIdApiResponse>(new GetPageByIdApiRequest()
+            var result = await _apiClient.Get<GetPageByIdQueryResponse>(new GetPageByIdApiRequest()
             {
                 FormVersionId = request.FormVersionId,
                 SectionId = request.SectionId,
                 PageId = request.PageId
             });
-            response.Data = result.Data;
+            response.Value = result;
             response.Success = true;
         }
         catch (Exception ex)
