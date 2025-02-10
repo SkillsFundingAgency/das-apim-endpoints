@@ -4,6 +4,7 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;
 using SFA.DAS.ToolsSupport.Api.AppStart;
+using SFA.DAS.ToolsSupport.Application.Queries;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +43,7 @@ builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLev
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
-//builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetLiveVacanciesQuery).Assembly));
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetUsersByEmailQuery).Assembly));
 
 var app = builder.Build();
 

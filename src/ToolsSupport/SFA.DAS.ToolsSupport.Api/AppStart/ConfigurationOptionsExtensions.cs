@@ -12,8 +12,10 @@ public static class AddConfigurationOptionsExtension
         services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
         services.Configure<CommitmentsV2ApiConfiguration>(configuration.GetSection("CommitmentsV2InnerApi"));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiConfiguration>>().Value);
+        services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
         services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiConfiguration>>().Value);
+        services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
+        services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection("EmployerProfilesInnerApi"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
     }
 }
