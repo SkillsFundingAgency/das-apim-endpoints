@@ -1,16 +1,11 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 using static SFA.DAS.FindAnApprenticeship.InnerApi.Responses.PostGetVacanciesByReferenceApiResponse;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Applications
@@ -71,8 +66,19 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     ClosedDate = vacancy.ClosedDate,
                     WithdrawnDate = application.WithdrawnDate,
                     SubmittedDate = application.SubmittedDate,
+                    OtherAddresses = vacancy.OtherAddresses?.Select(x => new GetApplicationsQueryResult.Address
+                    {
+                        AddressLine1 = x.AddressLine1,
+                        AddressLine2 = x.AddressLine2,
+                        AddressLine3 = x.AddressLine3,
+                        AddressLine4 = x.AddressLine4,
+                        Postcode = x.Postcode
+                    }).ToList(),
                     ResponseDate = application.ResponseDate,
                     ResponseNotes = application.ResponseNotes,
+                    Address = vacancy.Address,
+                    EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
+                    EmploymentLocationOption = vacancy.EmploymentLocationOption,
                 });
             }
 

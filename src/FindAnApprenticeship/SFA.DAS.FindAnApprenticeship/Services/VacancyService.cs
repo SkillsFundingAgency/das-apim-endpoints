@@ -8,6 +8,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using static SFA.DAS.FindAnApprenticeship.InnerApi.Responses.PostGetVacanciesByReferenceApiResponse;
 
 namespace SFA.DAS.FindAnApprenticeship.Services
 {
@@ -24,7 +25,7 @@ namespace SFA.DAS.FindAnApprenticeship.Services
             return await recruitApiClient.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(vacancyReference.Replace("VAC", "")));
         }
 
-        public async Task<List<IVacancy>> GetVacancies(List<string> vacancyReferences)
+        public async Task<List<ApprenticeshipVacancy>> GetVacancies(List<string> vacancyReferences)
         {
             var vacanciesRequest = new PostGetVacanciesByReferenceApiRequest(new PostGetVacanciesByReferenceApiRequestBody
             {
@@ -33,23 +34,25 @@ namespace SFA.DAS.FindAnApprenticeship.Services
 
             var vacancies = await findApprenticeshipApiClient.PostWithResponseCode<PostGetVacanciesByReferenceApiResponse>(vacanciesRequest);
 
-            var result = vacancies.Body.ApprenticeshipVacancies.Select(IVacancy (x) => x).ToList();
+            var result = vacancies.Body.ApprenticeshipVacancies.ToList();
 
-            var notFoundVacancies = vacancyReferences.Where(x => result.All(y => y.VacancyReference != $"VAC{x}")).ToList();
+            return result;
+        }
 
-            if (notFoundVacancies.Any())
-            {
-                var recruitRequest = new PostGetClosedVacanciesByReferenceApiRequest(
-                    new PostGetClosedVacanciesByReferenceApiRequestBody
-                    {
-                        VacancyReferences = notFoundVacancies.Select(x => Convert.ToInt64(x)).ToList()
-                    });
+        public async Task<List<IVacancy>> GetClosedVacancies(List<string> vacancyReferences)
+        {
+            var result = new List<IVacancy>();
 
-                var recruitResponse =
-                    await recruitApiClient.PostWithResponseCode<GetClosedVacanciesByReferenceResponse>(recruitRequest);
+            var recruitRequest = new PostGetClosedVacanciesByReferenceApiRequest(
+                new PostGetClosedVacanciesByReferenceApiRequestBody
+                {
+                    VacancyReferences = vacancyReferences.Select(x => Convert.ToInt64(x)).ToList()
+                });
 
-                result.AddRange(recruitResponse.Body.Vacancies);
-            }
+            var recruitResponse =
+                await recruitApiClient.PostWithResponseCode<GetClosedVacanciesByReferenceResponse>(recruitRequest);
+
+            result.AddRange(recruitResponse.Body.Vacancies);
 
             return result;
         }

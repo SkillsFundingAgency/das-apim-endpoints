@@ -30,6 +30,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
             public bool IsPrimaryLocation { get; set; }
             public Address Address { get; set; }
             public List<Address>? OtherAddresses { get; set; } = [];
+            public string? EmploymentLocationInformation { get; set; }
+            public AvailableWhere? EmploymentLocationOption { get; set; }
             public string ApplicationUrl { get; set; }
             public string ExternalVacancyUrl => ApplicationUrl;
             public VacancyDataSource VacancySource { get; set; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
@@ -9,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
+using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 
@@ -19,14 +21,10 @@ public class GetApplicationsQueryHandler(
 {
     public async Task<GetApplicationsQueryResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
     {
-        var candidateApiResponseTask =
-            candidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId.ToString()));
-
         var applicationsTask =
             candidateApiClient.Get<GetApplicationsApiResponse>(
                 new GetApplicationsApiRequest(request.CandidateId));
 
-        var candidateApiResponse = candidateApiResponseTask.Result;
         var totalApplicationCount = applicationsTask.Result.Applications.Count;
         var applicationList = applicationsTask.Result.Applications.Where(x =>
             x.Status == request.Status.ToString()
@@ -42,6 +40,11 @@ public class GetApplicationsQueryHandler(
         var vacancyReferences = applicationList.Select(x => $"{x.VacancyReference}").ToList();
         
         var vacancies = await vacancyService.GetVacancies(vacancyReferences);
+
+        if (vacancies.Count != vacancyReferences.Count)
+        {
+
+        }
 
         var result = new GetApplicationsQueryResult();
 
@@ -62,7 +65,11 @@ public class GetApplicationsQueryHandler(
                 Status = status,
                 SubmittedDate = application.SubmittedDate,
                 ResponseDate = application.ResponseDate,
-                ResponseNotes = application.ResponseNotes
+                ResponseNotes = application.ResponseNotes,
+                Address = vacancy.Address,
+                EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
+                EmploymentLocationOption = vacancy.EmploymentLocationOption,
+                OtherAddresses = vacancy.OtherAddresses.Select()
             });
         }
 

@@ -9,7 +9,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 public class GetApplicationsApiResponse
 {
     public List<Application> Applications { get; set; } = [];
-    
+
     public static GetApplicationsApiResponse From(GetApplicationsQueryResult source)
     {
         var result = new GetApplicationsApiResponse
@@ -32,8 +32,11 @@ public class GetApplicationsApiResponse
         DateTime? ResponseDate,
         string? ResponseNotes,
         ApplicationStatus Status,
-        DateTime? WithdrawnDate
-    )
+        DateTime? WithdrawnDate,
+        GetApplicationsQueryResult.Address Address,
+        List<GetApplicationsQueryResult.Address>? OtherAddresses,
+        string? EmploymentLocationInformation,
+        AvailableWhere? EmploymentLocationOption)
     {
         public static Application From(GetApplicationsQueryResult.Application source)
         {
@@ -49,7 +52,11 @@ public class GetApplicationsApiResponse
                 source.ResponseDate,
                 source.ResponseNotes,
                 source.Status,
-                source.WithdrawnDate
+                source.WithdrawnDate,
+                source.Address,
+                source.OtherAddresses,
+                source.EmploymentLocationInformation,
+                source.EmploymentLocationOption
             );
         }
     }
