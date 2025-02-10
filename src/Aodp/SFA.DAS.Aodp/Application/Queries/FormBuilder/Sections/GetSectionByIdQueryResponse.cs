@@ -1,39 +1,16 @@
-﻿using SFA.DAS.Aodp.Application;
-using SFA.DAS.AODP.Domain.FormBuilder.Responses.Sections;
+﻿namespace SFA.DAS.Aodp.Application.Queries.FormBuilder.Sections;
 
-namespace SFA.DAS.AODP.Application.Queries.FormBuilder.Sections;
-
-public class GetSectionByIdQueryResponse : BaseResponse
+public class GetSectionByIdQueryResponse
 {
-    public Section Data { get; set; }
 
-
-    public class Section
-    {
-        public Guid Id { get; set; }
-        public Guid FormVersionId { get; set; }
-        public Guid Key { get; set; }
-        public int Order { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public List<Page> Pages { get; set; }
-
-        public static implicit operator Section(GetSectionByIdApiResponse.Section entity)
-        {
-            return new()
-            {
-                Id = entity.Id,
-                FormVersionId = entity.FormVersionId,
-                Title = entity.Title,
-                Key = entity.Key,
-                Description = entity.Description,
-                Order = entity.Order,
-                Pages = entity.Pages != null ? [.. entity.Pages] : new()
-
-            };
-        }
-    }
-
+    public Guid Id { get; set; }
+    public Guid FormVersionId { get; set; }
+    public Guid Key { get; set; }
+    public int Order { get; set; }
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public List<Page> Pages { get; set; }
+    public bool Editable { get; set; }
 
     public class Page
     {
@@ -41,16 +18,5 @@ public class GetSectionByIdQueryResponse : BaseResponse
         public Guid Key { get; set; }
         public int Order { get; set; }
         public string Title { get; set; }
-
-        public static implicit operator Page(GetSectionByIdApiResponse.Page entity)
-        {
-            return new()
-            {
-                Id = entity.Id,
-                Key = entity.Key,
-                Order = entity.Order,
-                Title = entity.Title
-            };
-        }
     }
 }

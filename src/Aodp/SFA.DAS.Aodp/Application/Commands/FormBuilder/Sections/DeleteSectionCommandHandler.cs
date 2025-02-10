@@ -1,11 +1,11 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.Domain.FormBuilder.Requests.Sections;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Aodp.InnerApi.AodpApi.FormBuilder.Sections;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Sections;
+namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Sections;
 
-public class DeleteSectionCommandHandler : IRequestHandler<DeleteSectionCommand, DeleteSectionCommandResponse>
+public class DeleteSectionCommandHandler : IRequestHandler<DeleteSectionCommand, BaseMediatrResponse<DeleteSectionCommandResponse>>
 {
     private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
@@ -14,9 +14,9 @@ public class DeleteSectionCommandHandler : IRequestHandler<DeleteSectionCommand,
         _apiClient = apiClient;
     }
 
-    public async Task<DeleteSectionCommandResponse> Handle(DeleteSectionCommand request, CancellationToken cancellationToken)
+    public async Task<BaseMediatrResponse<DeleteSectionCommandResponse>> Handle(DeleteSectionCommand request, CancellationToken cancellationToken)
     {
-        var response = new DeleteSectionCommandResponse()
+        var response = new BaseMediatrResponse<DeleteSectionCommandResponse>()
         {
             Success = false
         };

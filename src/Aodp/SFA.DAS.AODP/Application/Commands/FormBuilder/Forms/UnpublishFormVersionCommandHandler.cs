@@ -1,11 +1,11 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.Domain.FormBuilder.Requests.Forms;
+using SFA.DAS.Aodp.InnerApi.AodpApi.FormBuilder.Forms;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Forms;
+namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Forms;
 
-public class UnpublishFormVersionCommandHandler : IRequestHandler<UnpublishFormVersionCommand, UnpublishFormVersionCommandResponse>
+public class UnpublishFormVersionCommandHandler : IRequestHandler<UnpublishFormVersionCommand, BaseMediatrResponse<UnpublishFormVersionCommandResponse>>
 {
     private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
@@ -14,9 +14,9 @@ public class UnpublishFormVersionCommandHandler : IRequestHandler<UnpublishFormV
         _apiClient = apiClient;
     }
 
-    public async Task<UnpublishFormVersionCommandResponse> Handle(UnpublishFormVersionCommand request, CancellationToken cancellationToken)
+    public async Task<BaseMediatrResponse<UnpublishFormVersionCommandResponse>> Handle(UnpublishFormVersionCommand request, CancellationToken cancellationToken)
     {
-        var response = new UnpublishFormVersionCommandResponse();
+        var response = new BaseMediatrResponse<UnpublishFormVersionCommandResponse>();
         response.Success = false;
 
         try

@@ -1,24 +1,24 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.Domain.FormBuilder.Requests.Pages;
+using SFA.DAS.Aodp.InnerApi.AodpApi.FormBuilder.Pages;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Pages;
+namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Pages;
 
-public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, UpdatePageCommandResponse>
+public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, BaseMediatrResponse<UpdatePageCommandResponse>>
 {
     private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
-    
+
 
     public UpdatePageCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
     {
         _apiClient = apiClient;
-       
+
     }
 
-    public async Task<UpdatePageCommandResponse> Handle(UpdatePageCommand request, CancellationToken cancellationToken)
+    public async Task<BaseMediatrResponse<UpdatePageCommandResponse>> Handle(UpdatePageCommand request, CancellationToken cancellationToken)
     {
-        var response = new UpdatePageCommandResponse()
+        var response = new BaseMediatrResponse<UpdatePageCommandResponse>()
         {
             Success = false
         };
@@ -30,12 +30,7 @@ public class UpdatePageCommandHandler : IRequestHandler<UpdatePageCommand, Updat
                 PageId = request.Id,
                 FormVersionId = request.FormVersionId,
                 SectionId = request.SectionId,
-                Data = new UpdatePageApiRequest.Page()
-                {
-                    Description = request.Description,
-                    Title = request.Title
-
-                }
+                Data = request
             };
             await _apiClient.Put(apiRequest);
             response.Success = true;

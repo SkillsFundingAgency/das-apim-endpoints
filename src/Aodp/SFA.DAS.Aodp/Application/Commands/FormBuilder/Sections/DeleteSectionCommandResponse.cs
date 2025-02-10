@@ -1,6 +1,4 @@
-﻿using SFA.DAS.Aodp.Application;
+﻿namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Sections;
 
-namespace SFA.DAS.AODP.Application.Commands.FormBuilder.Sections;
-
-public class DeleteSectionCommandResponse : BaseResponse {
+public class DeleteSectionCommandResponse  {
 }
