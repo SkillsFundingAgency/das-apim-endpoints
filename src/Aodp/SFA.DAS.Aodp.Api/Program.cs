@@ -27,7 +27,7 @@ builder.Services
         c.SwaggerDoc("v1",
             new OpenApiInfo
             {
-                Title = "AODP Outer Api",
+                Title = "AodpOuterApi",
                 Version = "v1"
             });
     })
