@@ -29,6 +29,7 @@ public class FormsController : Controller
             return Ok(response.Value);
         }
 
+        _logger.LogError(response.ErrorMessage);
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
@@ -46,7 +47,7 @@ public class FormsController : Controller
         {
             return Ok(response.Value);
         }
-
+        _logger.LogError(response.ErrorMessage);
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
@@ -60,7 +61,7 @@ public class FormsController : Controller
         {
             return Ok(response.Value);
         }
-
+        _logger.LogError(response.ErrorMessage);
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
@@ -79,6 +80,7 @@ public class FormsController : Controller
             return Ok(response.Value);
         }
 
+        _logger.LogError(response.ErrorMessage);
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
@@ -95,6 +97,7 @@ public class FormsController : Controller
         if (response.Success)
             return Ok(response.Value);
 
+        _logger.LogError(response.ErrorMessage);
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
@@ -111,6 +114,7 @@ public class FormsController : Controller
         if (response.Success)
             return Ok(response.Value);
 
+        _logger.LogError(response.ErrorMessage);
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
@@ -127,6 +131,7 @@ public class FormsController : Controller
         if (response.Success)
             return Ok(response.Value);
 
+        _logger.LogError(response.ErrorMessage);
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
@@ -143,6 +148,7 @@ public class FormsController : Controller
         if (response.Success)
             return Ok(response.Value);
 
+        _logger.LogError(response.ErrorMessage);
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
@@ -160,6 +166,7 @@ public class FormsController : Controller
         if (response.Success)
             return Ok(response.Value);
 
+        _logger.LogError(response.ErrorMessage);
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
@@ -176,7 +183,7 @@ public class FormsController : Controller
         {
             return Ok(response.Value);
         }
-
+        _logger.LogError(response.ErrorMessage);
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 }
