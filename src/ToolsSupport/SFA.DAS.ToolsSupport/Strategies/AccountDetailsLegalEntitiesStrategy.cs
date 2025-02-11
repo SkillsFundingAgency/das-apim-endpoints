@@ -8,19 +8,15 @@ public class AccountDetailsLegalEntitiesStrategy(IAccountsService accountsServic
 {
     public async Task<GetEmployerAccountDetailsResult> ExecuteAsync(Account account)
     {
-        var legalEntitiesList = new List<LegalEntity>();
-
         var legalEntities = account.LegalEntities;
 
-        foreach (var entity in legalEntities)
-        {
-            var legalResponse = await accountsService.GetEmployerAccountLegalEntity(entity.Href);
-            legalEntitiesList.Add(legalResponse);
-        }
+        var tasks = legalEntities.Select(entity => accountsService.GetEmployerAccountLegalEntity(entity.Href)).ToArray();
+
+        var legalEntitiesList = await Task.WhenAll(tasks);
 
         return new GetEmployerAccountDetailsResult
         {
-            LegalEntities = legalEntitiesList
+            LegalEntities = [.. legalEntitiesList]
         };
     }
 }

@@ -2,7 +2,7 @@
 using FluentAssertions;
 using Moq;
 using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.ToolsSupport.Application.Queries.EmployerAccount.GetEmployerAccountDetails;
+using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
 using SFA.DAS.ToolsSupport.InnerApi.Responses;
 using SFA.DAS.ToolsSupport.Interfaces;
 using SFA.DAS.ToolsSupport.Strategies;
@@ -22,7 +22,6 @@ public class GetEmployerAccountDetailsQueryHandlerTests
           GetEmployerAccountDetailsQueryHandler handler)
     {
         accountsService.Setup(x => x.GetAccount(query.AccountId)).ReturnsAsync(account);
-
 
         factory.Setup(x => x.CreateStrategy(query.SelectedField)).Returns(strategy.Object);
 
