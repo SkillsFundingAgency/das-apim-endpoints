@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
@@ -33,8 +34,8 @@ public class GetApplicationsApiResponse
         string? ResponseNotes,
         ApplicationStatus Status,
         DateTime? WithdrawnDate,
-        GetApplicationsQueryResult.Address Address,
-        List<GetApplicationsQueryResult.Address>? OtherAddresses,
+        Address Address,
+        List<Address>? OtherAddresses,
         string? EmploymentLocationInformation,
         AvailableWhere? EmploymentLocationOption)
     {

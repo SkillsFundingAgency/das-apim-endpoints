@@ -66,17 +66,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     ClosedDate = vacancy.ClosedDate,
                     WithdrawnDate = application.WithdrawnDate,
                     SubmittedDate = application.SubmittedDate,
-                    OtherAddresses = vacancy.OtherAddresses?.Select(x => new GetApplicationsQueryResult.Address
-                    {
-                        AddressLine1 = x.AddressLine1,
-                        AddressLine2 = x.AddressLine2,
-                        AddressLine3 = x.AddressLine3,
-                        AddressLine4 = x.AddressLine4,
-                        Postcode = x.Postcode
-                    }).ToList(),
                     ResponseDate = application.ResponseDate,
                     ResponseNotes = application.ResponseNotes,
                     Address = vacancy.Address,
+                    OtherAddresses = vacancy.OtherAddresses,
                     EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
                     EmploymentLocationOption = vacancy.EmploymentLocationOption,
                 });
@@ -140,7 +133,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     WithdrawnDate = application.WithdrawnDate,
                     ResponseDate = application.ResponseDate,
                     ResponseNotes = application.ResponseNotes,
-                    Status = Enum.Parse<ApplicationStatus>(application.Status)
+                    Status = Enum.Parse<ApplicationStatus>(application.Status),
+                    Address = vacancy.Address,
+                    OtherAddresses = vacancy.OtherAddresses,
+                    EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
+                    EmploymentLocationOption = vacancy.EmploymentLocationOption,
                 });
             }
 
@@ -202,7 +199,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     WithdrawnDate = application.WithdrawnDate,
                     ResponseDate = application.ResponseDate,
                     ResponseNotes = application.ResponseNotes,
-                    Status = Enum.Parse<ApplicationStatus>(application.Status)
+                    Status = Enum.Parse<ApplicationStatus>(application.Status),
+                    Address = vacancy.Address,
+                    OtherAddresses = vacancy.OtherAddresses,
+                    EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
+                    EmploymentLocationOption = vacancy.EmploymentLocationOption,
                 });
             }
 

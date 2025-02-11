@@ -41,8 +41,10 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDelet
                 result.SubmittedApplications.Add(new GetAccountDeletionQueryResult.Application
                 {
                     Id = application.Id,
-                    City = vacancy?.City,
-                    Postcode = vacancy?.Postcode,
+                    Address = vacancy?.Address,
+                    OtherAddresses = vacancy?.OtherAddresses,
+                    EmploymentLocationOption = vacancy?.EmploymentLocationOption,
+                    EmploymentLocationInformation = vacancy?.EmploymentLocationInformation,
                     VacancyReference = vacancy?.VacancyReference,
                     EmployerName = vacancy?.EmployerName,
                     Title = vacancy?.Title,

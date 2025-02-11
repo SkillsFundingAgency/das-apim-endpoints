@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 {
@@ -27,24 +28,14 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
                 !string.IsNullOrEmpty(Address?.AddressLine1) ? Address.AddressLine1 :
                 string.Empty;
             public string Postcode => Address?.Postcode ?? string.Empty;
-            public bool IsPrimaryLocation { get; set; }
-            public Address Address { get; set; }
-            public List<Address>? OtherAddresses { get; set; } = [];
-            public string? EmploymentLocationInformation { get; set; }
-            public AvailableWhere? EmploymentLocationOption { get; set; }
             public string ApplicationUrl { get; set; }
             public string ExternalVacancyUrl => ApplicationUrl;
             public VacancyDataSource VacancySource { get; set; }
+            public Address Address { get; set; }
+            public List<Address> OtherAddresses { get; set; }
+            public string EmploymentLocationInformation { get; set; }
+            public AvailableWhere? EmploymentLocationOption { get; set; }
             public bool IsExternalVacancy => !string.IsNullOrWhiteSpace(ApplicationUrl);
-        }
-
-        public class Address
-        {
-            public string AddressLine1 { get; set; }
-            public string AddressLine2 { get; set; }
-            public string AddressLine3 { get; set; }
-            public string AddressLine4 { get; set; }
-            public string Postcode { get; set; }
         }
     }
 }

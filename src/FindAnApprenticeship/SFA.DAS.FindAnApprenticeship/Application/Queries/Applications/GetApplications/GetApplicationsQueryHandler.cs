@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using MediatR;
+﻿using MediatR;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.FindAnApprenticeship.Domain.Models;
-using SFA.DAS.FindAnApprenticeship.Services;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 
@@ -41,11 +39,6 @@ public class GetApplicationsQueryHandler(
         
         var vacancies = await vacancyService.GetVacancies(vacancyReferences);
 
-        if (vacancies.Count != vacancyReferences.Count)
-        {
-
-        }
-
         var result = new GetApplicationsQueryResult();
 
         foreach (var application in applicationList)
@@ -69,7 +62,7 @@ public class GetApplicationsQueryHandler(
                 Address = vacancy.Address,
                 EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
                 EmploymentLocationOption = vacancy.EmploymentLocationOption,
-                OtherAddresses = vacancy.OtherAddresses.Select()
+                OtherAddresses = vacancy.OtherAddresses?.ToList(),
             });
         }
 

@@ -70,8 +70,8 @@ public class WithdrawApplicationCommandHandler(
             application.Candidate.FirstName,
             vacancyResponse.Title,
             vacancyResponse.EmployerName,
-            vacancyResponse.EmployerLocation.AddressLine4 ?? vacancyResponse.EmployerLocation.AddressLine3 ?? vacancyResponse.EmployerLocation.AddressLine2 ?? vacancyResponse.EmployerLocation.AddressLine1 ?? "Unknown",
-            vacancyResponse.EmployerLocation.Postcode);
+            vacancyResponse.Address.AddressLine4 ?? vacancyResponse.Address.AddressLine3 ?? vacancyResponse.Address.AddressLine2 ?? vacancyResponse.Address.AddressLine1 ?? "Unknown",
+            vacancyResponse.Address.Postcode);
     }
 
     private WithdrawApplicationEmail GetWithdrawApplicationEmail(GetApplicationApiResponse application, GetApprenticeshipVacancyItemResponse vacancyResponse)

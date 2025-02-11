@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
 {
     public class GetClosedVacancyResponse: IVacancy
     {
+
         [JsonPropertyName("vacancyReference")]
         public long VacancyReferenceNumeric { get; set; }
         [JsonIgnore]
@@ -18,10 +20,11 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
         public DateTime ClosingDate { get; set; }
         public string ProgrammeId { get; set; }
         public int CourseId => Convert.ToInt32(ProgrammeId);
-        public Address EmployerLocation { get; set; }
-        public List<Address> OtherAddresses { get; set; }
-        [JsonPropertyName("isPrimaryLocation")]
-        public bool IsPrimaryLocation { get; set; }
+        [JsonPropertyName("employerLocation")]
+        public Address Address { get; set; }
+
+        public List<Address>? OtherAddresses { get; set; }
+        
         [JsonPropertyName("employmentLocationInformation")]
         public string? EmploymentLocationInformation { get; set; }
         [JsonPropertyName("availableWhere")]
@@ -34,8 +37,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
         [JsonPropertyName("disabilityConfident")]
         public dynamic DisabilityConfident { get; set; }
 		public DateTime? ClosedDate { get; set; }
-        public string City => EmployerLocation.AddressLine4;
-        public string Postcode => EmployerLocation.Postcode;
+        public string City => Address.AddressLine4;
+        public string Postcode => Address.Postcode;
         public bool IsExternalVacancy => false;
         public string ExternalVacancyUrl => string.Empty;
         public VacancyDataSource VacancySource { get; set; }
@@ -60,22 +63,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses
         public string TrainingDescription { get; set; }
         public VacancyLocationType VacancyLocationType { get; set; }
         public Wage Wage { get; set; }
-
-        public class Address
-        {
-            [JsonPropertyName("addressLine1")]
-            public string AddressLine1 { get; set; }
-            [JsonPropertyName("addressLine2")]
-            public string AddressLine2 { get; set; }
-            [JsonPropertyName("addressLine3")]
-            public string AddressLine3 { get; set; }
-            [JsonPropertyName("addressLine4")]
-            public string AddressLine4 { get; set; }
-            [JsonPropertyName("postcode")]
-            public string Postcode { get; set; }
-            public double? Latitude { get; set; }
-            public double? Longitude { get; set; }
-        }
 
         public class TrainingProviderDetails
         {

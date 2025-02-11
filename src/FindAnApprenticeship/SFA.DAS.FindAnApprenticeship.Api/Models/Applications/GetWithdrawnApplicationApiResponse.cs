@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.WithdrawApplication;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
@@ -11,7 +14,11 @@ public class GetWithdrawnApplicationApiResponse
     public DateTime? SubmittedDate { get; set; }
     public DateTime ClosingDate { get; set; }
     public DateTime? ClosedDate { get; set; }
-    
+    public Address Address { get; set; }
+    public List<Address>? OtherAddresses { get; set; } = [];
+    public string? EmploymentLocationInformation { get; set; }
+    public AvailableWhere? EmploymentLocationOption { get; set; }
+
     public static implicit operator GetWithdrawnApplicationApiResponse(WithdrawApplicationQueryResult source)
     {
         return new GetWithdrawnApplicationApiResponse
@@ -21,7 +28,11 @@ public class GetWithdrawnApplicationApiResponse
             ClosedDate = source.ClosedDate,
             EmployerName = source.EmployerName,
             SubmittedDate = source.SubmittedDate,
-            AdvertTitle = source.AdvertTitle
+            AdvertTitle = source.AdvertTitle,
+            Address = source.Address,
+            OtherAddresses = source.OtherAddresses,
+            EmploymentLocationOption = source.EmploymentLocationOption,
+            EmploymentLocationInformation = source.EmploymentLocationInformation,
         };
     }
 }

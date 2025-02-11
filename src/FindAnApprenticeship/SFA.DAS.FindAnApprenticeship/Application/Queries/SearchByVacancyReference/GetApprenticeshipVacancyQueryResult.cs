@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Extensions;
 using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference
 {
@@ -131,11 +132,13 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     AdditionalQuestion2 = source.AdditionalQuestion2,
                     Address = new Address
                     {
-                        AddressLine1 = source.EmployerLocation?.AddressLine1,
-                        AddressLine2 = source.EmployerLocation?.AddressLine2,
-                        AddressLine3 = source.EmployerLocation?.AddressLine3,
-                        AddressLine4 = source.EmployerLocation?.AddressLine4,
-                        Postcode = source.EmployerLocation?.Postcode,
+                        AddressLine1 = source.Address?.AddressLine1,
+                        AddressLine2 = source.Address?.AddressLine2,
+                        AddressLine3 = source.Address?.AddressLine3,
+                        AddressLine4 = source.Address?.AddressLine4,
+                        Postcode = source.Address?.Postcode,
+                        Latitude = source.Address?.Latitude,
+                        Longitude = source.Address?.Longitude
                     },
                     OtherAddresses = source.OtherAddresses?.Select(x => (Address)x).ToList(),
                     EmploymentLocationInformation = source.EmploymentLocationInformation,
@@ -165,8 +168,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     IsRecruitVacancy = true,
                     Location = new Location
                     {
-                        Lat = source.EmployerLocation?.Latitude ?? 0,
-                        Lon = source.EmployerLocation?.Longitude ?? 0,
+                        Lat = source.Address?.Latitude ?? 0,
+                        Lon = source.Address?.Longitude ?? 0,
                     },
                     LongDescription = source.Description,
                     NumberOfPositions = source.NumberOfPositions,

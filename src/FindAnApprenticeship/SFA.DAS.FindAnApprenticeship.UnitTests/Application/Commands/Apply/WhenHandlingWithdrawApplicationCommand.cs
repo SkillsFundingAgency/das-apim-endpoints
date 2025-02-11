@@ -1,8 +1,3 @@
-using System.Net;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.WithdrawApplication;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
@@ -16,7 +11,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply;
 
@@ -207,10 +202,10 @@ public class WhenHandlingWithdrawApplicationCommand
         [Frozen] Mock<IVacancyService> vacancyService,
         WithdrawApplicationCommandHandler handler)
     {
-        closedVacancyResponse.EmployerLocation.AddressLine1 = address1;
-        closedVacancyResponse.EmployerLocation.AddressLine2 = address2;
-        closedVacancyResponse.EmployerLocation.AddressLine3 = address3;
-        closedVacancyResponse.EmployerLocation.AddressLine4 = address4;
+        closedVacancyResponse.Address.AddressLine1 = address1;
+        closedVacancyResponse.Address.AddressLine2 = address2;
+        closedVacancyResponse.Address.AddressLine3 = address3;
+        closedVacancyResponse.Address.AddressLine4 = address4;
         applicationApiResponse.VacancyReference = $"VAC{vacancyRef}";
         applicationApiResponse.Status = ApplicationStatus.Submitted;
         var expectedGetApplicationRequest =
@@ -251,7 +246,7 @@ public class WhenHandlingWithdrawApplicationCommand
                 && c.Tokens["firstName"] == applicationApiResponse.Candidate.FirstName
                 && c.Tokens["vacancy"] == closedVacancyResponse.Title
                 && c.Tokens["employer"] == closedVacancyResponse.EmployerName
-                && c.Tokens["location"] == $"{expectedAddress}, {closedVacancyResponse.EmployerLocation.Postcode}"
+                && c.Tokens["location"] == $"{expectedAddress}, {closedVacancyResponse.Address.Postcode}"
             )
         ), Times.Once);
     }

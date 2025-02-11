@@ -1,10 +1,7 @@
-using System.Linq;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
+using System.Linq;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
 {
@@ -26,6 +23,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
             actual.VacancyReference.Should().Be(source.VacancyReference);
             actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options => options
                 .Excluding(c => c.Address)
+                .Excluding(c => c.OtherAddresses)
                 .Excluding(c => c.AnonymousEmployerName)
                 .Excluding(c => c.IsEmployerAnonymous)
                 .Excluding(c => c.EmployerName)
@@ -46,7 +44,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
             actual.Vacancies.FirstOrDefault().Lon.Should().Be(source.Vacancies.FirstOrDefault().Location.Lon);
             actual.Vacancies.FirstOrDefault().IsPrimaryLocation.Should().Be(source.Vacancies.FirstOrDefault().IsPrimaryLocation);
             actual.Vacancies.FirstOrDefault().EmploymentLocationInformation.Should().Be(source.Vacancies.FirstOrDefault().EmploymentLocationInformation);
-            //actual.Vacancies.FirstOrDefault().EmploymentLocationOption.Should().Be(source.Vacancies.FirstOrDefault().EmploymentLocationOption); TBC
         }
         
         [Test, AutoData]
@@ -80,6 +77,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
                 .Excluding(c => c.IsEmployerAnonymous)
                 .Excluding(c => c.Location)
                 .Excluding(c => c.EmploymentLocationOption) //TBC : should be removed in the later stages
+                .Excluding(c => c.OtherAddresses)
             );
         }
 
