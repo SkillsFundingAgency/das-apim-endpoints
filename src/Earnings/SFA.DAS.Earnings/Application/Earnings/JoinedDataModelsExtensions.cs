@@ -3,7 +3,6 @@ using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
-using System.Runtime.CompilerServices;
 
 namespace SFA.DAS.Earnings.Application.Earnings
 {
@@ -173,7 +172,7 @@ namespace SFA.DAS.Earnings.Application.Earnings
                 PwayCode = EarningsFM36Constants.PwayCode,
                 SecondIncentiveThresholdDate = EarningsFM36Constants.SecondIncentiveThresholdDate,
                 StdCode = int.TryParse(joinedEarningsApprenticeship.Apprenticeship.Episodes.MinBy(x => x.Prices.Min(price => price.StartDate))?.TrainingCode, out int parsedTrainingCode) ? parsedTrainingCode : null,
-                ThresholdDays = Constants.QualifyingPeriod,
+                ThresholdDays = Constants.QualifyingPeriod, // This will eventually change to a calculated value, but for now is using a global constant instead of the local EarningsFM36Constants as other components refer to QualifyingPeriod
                 LearnDelApplicCareLeaverIncentive = EarningsFM36Constants.LearnDelApplicCareLeaverIncentive,
                 LearnDelHistDaysCareLeavers = EarningsFM36Constants.LearnDelHistDaysCareLeavers,
                 LearnDelAccDaysILCareLeavers = EarningsFM36Constants.LearnDelAccDaysILCareLeavers,
@@ -233,7 +232,7 @@ namespace SFA.DAS.Earnings.Application.Earnings
         /// <summary>
         /// Currently only returns days in learning for withdrawn apprenticeship, in future this will need to be expanded to include completed apprenticeships
         /// </summary>
-        internal static int DaysInLearning(this JoinedEarningsApprenticeship joinedEarningsApprenticeship)
+        private static int DaysInLearning(this JoinedEarningsApprenticeship joinedEarningsApprenticeship)
         {
             if(joinedEarningsApprenticeship.Apprenticeship.WithdrawnDate.HasValue)
             {
@@ -242,7 +241,7 @@ namespace SFA.DAS.Earnings.Application.Earnings
             return 0;// Default to zero if still in learning
         }
 
-        public static bool FundingStart(this int daysInLearning)  
+        private static bool FundingStart(this int daysInLearning)  
         {
             if (daysInLearning == 0)
             {
