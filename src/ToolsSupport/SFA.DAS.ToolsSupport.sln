@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ToolsSupport.Api", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ToolsSupport", "SFA.DAS.ToolsSupport\SFA.DAS.ToolsSupport.csproj", "{54355990-C510-4700-8390-A827433794DE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ToolsSupport.UnitTests", "SFA.DAS.ToolsSupport.UnitTests\SFA.DAS.ToolsSupport.UnitTests.csproj", "{EF5B5D37-2E44-4888-A69A-F7CCA1178630}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ToolsSupport.Api.UnitTests", "SFA.DAS.ToolsSupport.Api.UnitTests\SFA.DAS.ToolsSupport.Api.UnitTests.csproj", "{CD0B64AF-F01C-4923-9DA1-D04BA2DCF68D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{54355990-C510-4700-8390-A827433794DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54355990-C510-4700-8390-A827433794DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54355990-C510-4700-8390-A827433794DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF5B5D37-2E44-4888-A69A-F7CCA1178630}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF5B5D37-2E44-4888-A69A-F7CCA1178630}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF5B5D37-2E44-4888-A69A-F7CCA1178630}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF5B5D37-2E44-4888-A69A-F7CCA1178630}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD0B64AF-F01C-4923-9DA1-D04BA2DCF68D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD0B64AF-F01C-4923-9DA1-D04BA2DCF68D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD0B64AF-F01C-4923-9DA1-D04BA2DCF68D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD0B64AF-F01C-4923-9DA1-D04BA2DCF68D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

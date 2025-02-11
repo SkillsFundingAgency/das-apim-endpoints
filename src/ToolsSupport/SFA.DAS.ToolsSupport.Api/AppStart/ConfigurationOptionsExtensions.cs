@@ -18,5 +18,8 @@ public static class AddConfigurationOptionsExtension
 
         services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
+
+        services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection("EmployerProfilesInnerApi"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
     }
 }
