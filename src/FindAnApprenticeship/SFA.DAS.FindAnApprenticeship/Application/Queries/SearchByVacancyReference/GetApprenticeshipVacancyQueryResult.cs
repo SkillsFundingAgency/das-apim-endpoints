@@ -39,6 +39,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public Address Address { get; set; }
             public List<Address>? OtherAddresses { get; set; }
             public string? EmploymentLocationInformation { get; set; }
+            public AvailableWhere? EmploymentLocationOption { get; set; }
             public decimal? Distance { get; set; }
             public string CourseRoute { get; set; }
             public string CourseLevel { get; set; }
@@ -136,6 +137,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                         AddressLine4 = source.EmployerLocation?.AddressLine4,
                         Postcode = source.EmployerLocation?.Postcode,
                     },
+                    OtherAddresses = source.OtherAddresses.Select(a => (Address)a).ToList(),
+                    EmploymentLocationInformation = string.Empty, //TBC
+                    EmploymentLocationOption = null, //TBC
                     AnonymousEmployerName = source.IsAnonymous ? source.EmployerName : null,
                     ApplicationInstructions = source.ApplicationInstructions,
                     ApplicationUrl = source.ApplicationUrl,
@@ -239,7 +243,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     EmployerDescription = source.EmployerDescription,
                     EmployerName = source.EmployerName,
                     EmployerWebsiteUrl = source.EmployerWebsiteUrl,
-                    EmploymentLocationInformation = source.EmploymentLocationInformation,
                     ExpectedDuration = source.ExpectedDuration,
                     FrameworkLarsCode = source.FrameworkLarsCode,
                     HoursPerWeek = source.HoursPerWeek,
@@ -253,6 +256,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     LongDescription = source.LongDescription,
                     NumberOfPositions = source.NumberOfPositions,
                     OtherAddresses = source.OtherAddresses,
+                    EmploymentLocationOption = source.EmploymentLocationOption,
+                    EmploymentLocationInformation = source.EmploymentLocationInformation,
                     OutcomeDescription = source.OutcomeDescription,
                     PostedDate = source.PostedDate,
                     ProviderContactEmail = source.ProviderContactEmail,
