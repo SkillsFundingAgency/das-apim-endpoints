@@ -42,7 +42,7 @@ resources:
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/5.1.14
+    ref: refs/heads/DASD-12694
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-employer-config

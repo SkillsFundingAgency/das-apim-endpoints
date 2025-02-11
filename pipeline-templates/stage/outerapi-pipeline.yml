@@ -2,6 +2,7 @@ parameters:
   OuterApiName:
   SandboxEnabled: $False
   AddXForwardedAuthorization: $False
+  CheckClientCert: $False
   SharedOuterApiProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi/SFA.DAS.SharedOuterApi.csproj'
   SharedOuterApiTestProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj'
   AdditionalProjectPathToInclude: ''
@@ -60,6 +61,7 @@ stages:
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
       useProductAppInsights: ${{ parameters.useProductAppInsights }}
+      CheckClientCert: ${{ parameters.CheckClientCert }}
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -91,6 +93,7 @@ stages:
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
       useProductAppInsights: ${{ parameters.useProductAppInsights }}
+      CheckClientCert: ${{ parameters.CheckClientCert }}
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -122,6 +125,7 @@ stages:
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
       useProductAppInsights: ${{ parameters.useProductAppInsights }}
+      CheckClientCert: ${{ parameters.CheckClientCert }}
 
 - stage: Deploy_PP
   dependsOn: Build
@@ -153,7 +157,7 @@ stages:
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
       useProductAppInsights: ${{ parameters.useProductAppInsights }}
-
+      CheckClientCert: ${{ parameters.CheckClientCert }}
 
 - stage: Deploy_PROD
   dependsOn: Build
@@ -184,6 +188,7 @@ stages:
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
       useProductAppInsights: ${{ parameters.useProductAppInsights }}
+      CheckClientCert: ${{ parameters.CheckClientCert }}
 
 - stage: Deploy_MO
   dependsOn: Build
@@ -214,6 +219,7 @@ stages:
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
       useProductAppInsights: ${{ parameters.useProductAppInsights }}
+      CheckClientCert: ${{ parameters.CheckClientCert }}
 
 - stage: Deploy_DEMO
   dependsOn: Build
@@ -245,3 +251,4 @@ stages:
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
       useProductAppInsights: ${{ parameters.useProductAppInsights }}
+      CheckClientCert: ${{ parameters.CheckClientCert }}

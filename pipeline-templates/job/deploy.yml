@@ -19,6 +19,7 @@ parameters:
   SandboxEnabled: $False
   AddXForwardedAuthorization: $False
   useProductAppInsights:
+  CheckClientCert: $False
 
 jobs:
 - deployment: DeployInfrastructure
@@ -113,6 +114,9 @@ jobs:
               -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }} `
               -SandboxEnabled ${{ parameters.SandboxEnabled }} `
               -AddXForwardedAuthorization ${{ parameters.AddXForwardedAuthorization }} `
+              -CheckClientCert ${{ parameters.CheckClientCert }} `
+              -ApimKeyVaultUri $(ApimKeyVaultUri) `
+              -ApimKeyVaultClientCertName $(ApimKeyVaultClientCertName) `
               -Verbose
             azurePowerShellVersion: LatestVersion
             pwsh: true
