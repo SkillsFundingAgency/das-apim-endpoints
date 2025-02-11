@@ -13,7 +13,7 @@ namespace SFA.DAS.ToolsSupport.Api.Controllers;
 public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccountController> logger) : ControllerBase
 {
     [HttpGet]
-    [Route("{accountId}/accountdetails")]
+    [Route("{accountId}/account-details")]
     public async Task<IActionResult> GetAccountDetails(long accountId, [FromQuery, Required] AccountFieldSelection accountFieldSelection)
     {
         try
