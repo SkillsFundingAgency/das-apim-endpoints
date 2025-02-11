@@ -8,6 +8,7 @@ using SFA.DAS.ToolsSupport.Application.Queries;
 using SFA.DAS.ToolsSupport.InnerApi.Requests;
 using SFA.DAS.ToolsSupport.InnerApi.Responses;
 using FluentAssertions;
+using System.Net;
 
 namespace SFA.DAS.ToolsSupport.UnitTests.Application.Queries;
 
@@ -47,4 +48,46 @@ public class WhenGettingEmployerAccounts
         actual.Accounts.Count.Should().Be(0);
     }
 
+    [Test, MoqAutoData]
+    public async Task Then_Gets_None_When_No_Matching_PayeSchemeRef_Found(
+        string payeSchemeRef,
+        GetEmployerAccountByPayeResponse mockPayeApiResponse,
+        GetEmployerAccountByIdResponse mockAccountApiResponse,
+        [Frozen] Mock<IInternalApiClient<AccountsConfiguration>> mockApiClient,
+        GetEmployerAccountsQueryHandler sut)
+    {
+        var mockQuery = new GetEmployerAccountsQuery { AccountId = null, PayeSchemeRef = payeSchemeRef };
+        var expectedPayeUrl = $"api/accounthistories?payeRef={WebUtility.UrlEncode(payeSchemeRef)}";
+        var expectedAccountUrl = $"api/accounts/{mockPayeApiResponse.AccountId}";
+        mockApiClient.Setup(client => client.Get<GetEmployerAccountByPayeResponse>(It.Is<GetEmployerAccountByPayeRequest>(c => c.GetUrl == expectedPayeUrl)))
+            .ReturnsAsync((GetEmployerAccountByPayeResponse)null!);
+        mockApiClient.Setup(client => client.Get<GetEmployerAccountByIdResponse>(It.Is<GetEmployerAccountByIdRequest>(c => c.GetUrl == expectedAccountUrl)))
+            .ReturnsAsync(mockAccountApiResponse);
+
+        var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
+
+        actual.Accounts.Count.Should().Be(0);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Gets_SingleAccount_With_Matching_PayeSchemeRef(
+        string payeSchemeRef,
+        GetEmployerAccountByPayeResponse mockPayeApiResponse,
+        GetEmployerAccountByIdResponse mockAccountApiResponse,
+        [Frozen] Mock<IInternalApiClient<AccountsConfiguration>> mockApiClient,
+        GetEmployerAccountsQueryHandler sut)
+    {
+        var mockQuery = new GetEmployerAccountsQuery { AccountId = null, PayeSchemeRef = payeSchemeRef };
+        var expectedPayeUrl = $"api/accounthistories?payeRef={WebUtility.UrlEncode(payeSchemeRef)}";
+        var expectedAccountUrl = $"api/accounts/{mockPayeApiResponse.AccountId}";
+        mockApiClient.Setup(client => client.Get<GetEmployerAccountByPayeResponse>(It.Is<GetEmployerAccountByPayeRequest>(c => c.GetUrl == expectedPayeUrl)))
+            .ReturnsAsync(mockPayeApiResponse);
+        mockApiClient.Setup(client => client.Get<GetEmployerAccountByIdResponse>(It.Is<GetEmployerAccountByIdRequest>(c => c.GetUrl == expectedAccountUrl)))
+            .ReturnsAsync(mockAccountApiResponse);
+
+        var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
+
+        actual.Accounts.Count.Should().Be(1);
+        actual.Accounts[0].Should().BeEquivalentTo(mockAccountApiResponse);
+    }
 }
