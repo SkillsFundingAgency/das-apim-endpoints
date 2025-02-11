@@ -25,7 +25,6 @@ public class WhenGettingUsersByEmail
         mockMediator.Setup(x => x.Send(It.Is<GetUsersByEmailQuery>(p=>p.Email == email), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
 
         var actual = await sut.Get(email) as ObjectResult;
-        var actualValue = actual!.Value as GetUsersByEmailQueryResult;
 
         using (new AssertionScope())
         {
