@@ -137,9 +137,9 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                         AddressLine4 = source.EmployerLocation?.AddressLine4,
                         Postcode = source.EmployerLocation?.Postcode,
                     },
-                    OtherAddresses = source.OtherAddresses?.Select(x => (Address)x).ToList(),
-                    EmploymentLocationInformation = source.EmploymentLocationInformation,
-                    EmploymentLocationOption = source.EmploymentLocationOption,
+                    OtherAddresses = source.OtherAddresses.Select(a => (Address)a).ToList(),
+                    EmploymentLocationInformation = string.Empty, //TBC
+                    EmploymentLocationOption = null, //TBC
                     AnonymousEmployerName = source.IsAnonymous ? source.EmployerName : null,
                     ApplicationInstructions = source.ApplicationInstructions,
                     ApplicationUrl = source.ApplicationUrl,
