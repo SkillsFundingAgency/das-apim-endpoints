@@ -3,7 +3,7 @@ using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ToolsSupport.Api.Models.EmployerAccount;
-using SFA.DAS.ToolsSupport.Application.Queries.EmployerAccount.GetEmployerAccountDetails;
+using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
 using SFA.DAS.ToolsSupport.Models.Constants;
 
 namespace SFA.DAS.ToolsSupport.Api.Controllers;

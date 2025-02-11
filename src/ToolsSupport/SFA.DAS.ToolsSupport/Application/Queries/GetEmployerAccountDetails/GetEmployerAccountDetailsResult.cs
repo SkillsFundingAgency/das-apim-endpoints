@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.ToolsSupport.InnerApi.Responses;
 
-namespace SFA.DAS.ToolsSupport.Application.Queries.EmployerAccount.GetEmployerAccountDetails;
+namespace SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
 
 public class GetEmployerAccountDetailsResult
 {

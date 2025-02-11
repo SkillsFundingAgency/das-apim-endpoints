@@ -4,7 +4,7 @@ using SFA.DAS.ToolsSupport.InnerApi.Responses;
 using SFA.DAS.ToolsSupport.Interfaces;
 using SFA.DAS.ToolsSupport.Strategies;
 
-namespace SFA.DAS.ToolsSupport.Application.Queries.EmployerAccount.GetEmployerAccountDetails;
+namespace SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
 
 public class GetEmployerAccountDetailsQueryHandler(
     IAccountDetailsStrategyFactory strategyFactory,
@@ -31,7 +31,7 @@ public class GetEmployerAccountDetailsQueryHandler(
         return new GetEmployerAccountDetailsResult();
     }
 
-    private static GetEmployerAccountDetailsResult MapCommonAccountDetails(Account account, GetEmployerAccountDetailsResult result )
+    private static GetEmployerAccountDetailsResult MapCommonAccountDetails(Account account, GetEmployerAccountDetailsResult result)
     {
         result.AccountId = account.AccountId;
         result.HashedAccountId = account.HashedAccountId;

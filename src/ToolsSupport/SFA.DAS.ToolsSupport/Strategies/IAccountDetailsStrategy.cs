@@ -1,4 +1,4 @@
-﻿using SFA.DAS.ToolsSupport.Application.Queries.EmployerAccount.GetEmployerAccountDetails;
+﻿using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
 using SFA.DAS.ToolsSupport.InnerApi.Responses;
 
 namespace SFA.DAS.ToolsSupport.Strategies;

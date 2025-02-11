@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.ToolsSupport.Models.Constants;
 
-namespace SFA.DAS.ToolsSupport.Application.Queries.EmployerAccount.GetEmployerAccountDetails;
+namespace SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
 
 public class GetEmployerAccountDetailsQuery : IRequest<GetEmployerAccountDetailsResult>
 {
