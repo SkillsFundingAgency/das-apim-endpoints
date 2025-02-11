@@ -15,12 +15,11 @@ public class GetEmployerAccountsQueryHandler(IInternalApiClient<AccountsConfigur
 
         if (request.AccountId != null)
         {
-            var accountResponse = await client.GetWithResponseCode<GetEmployerAccountByIdResponse>(
+            var account = await client.Get<GetEmployerAccountByIdResponse>(
                     new GetEmployerAccountByIdRequest(request.AccountId.Value));
 
-            if (accountResponse.StatusCode == HttpStatusCode.OK)
+            if (account != null)
             {
-                var account = accountResponse.Body;
                 response.Accounts.Add(new EmployerAccount
                 {
                     AccountId = account.AccountId,
