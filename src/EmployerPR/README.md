@@ -14,9 +14,11 @@
 * A storage emulator like Azurite
 
 ### Dependencies
-* Provider Relationships Api: https://github.com/SkillsFundingAgency/das-pr-api
-* Accounts Api: https://github.com/SkillsFundingAgency/das-apprentice-accounts-api
-* Employer Profiles Api: https://github.com/SkillsFundingAgency/das-employerusers (within folder 'src/EmployerProfiles')
+* [Provider Relationships API](https://github.com/SkillsFundingAgency/das-pr-api)
+* [Accounts API](https://github.com/SkillsFundingAgency/das-apprentice-accounts-api)
+* [Employer Profiles API](https://github.com/SkillsFundingAgency/das-employerusers) (within folder 'src/EmployerProfiles')
+* [Roatp V2 API](https://github.com/SkillsFundingAgency/das-roatp-api) 
+* [Pensions Regulator API](https://github.com/SkillsFundingAgency/das-pensionsregulator)
 
 
 ### Config
