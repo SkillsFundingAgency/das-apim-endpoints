@@ -28,6 +28,8 @@ pr:
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
+- name: ProductShortName
+  value: ea
 
 resources:
   repositories:
@@ -52,3 +54,4 @@ stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
     OuterApiName: EmployerProfiles
+    useProductAppInsights: 'True'
