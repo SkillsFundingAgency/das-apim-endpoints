@@ -19,5 +19,6 @@ namespace SFA.DAS.LevyTransferMatching.Models
         public string Status { get; set; }
         public int ApplicationCount { get; set; }
         public AutomaticApprovalOption AutomaticApprovalOption { get; set; }
+        public int TotalPendingApplications { get; set; }
     }
 }

@@ -93,6 +93,8 @@ namespace SFA.DAS.Approvals.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            app.UseMiddleware<SecurityHeadersMiddleware>();
 
             app.Use(async (context, next) =>
             {
