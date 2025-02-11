@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
+﻿using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+
+namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 public class GetLiveVacanciesApiResponse
 {
     public IEnumerable<LiveVacancy> Vacancies { get; set; } = null!;
@@ -23,6 +25,10 @@ public class LiveVacancy
     public string? ProviderContactPhone { get; set; }
     public string? EmployerDescription { get; set; }
     public Address? EmployerLocation { get; set; }
+    
+    public List<Address>? EmployerLocations { get; set; }
+    public AvailableWhere? EmployerLocationOption { get; set; }
+    public string? EmployerLocationInformation { get; set; }
     public string? EmployerName { get; set; }
     public string? EmployerWebsiteUrl { get; set; }
     public bool IsAnonymous { get; set; } 
