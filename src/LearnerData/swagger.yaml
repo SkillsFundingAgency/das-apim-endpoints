@@ -4,6 +4,38 @@ info:
   title: Learner data external API for consumption from an authenticated consumer
   description: 'This service will provide a contract to the Data Collections team for submission to the Apprenticeship service'
 paths:
+  /info:
+    get:
+      description: information regarding this API. The version will be returned
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      responses:
+        '200':
+          $ref: '#/components/responses/infoResponse'
+    
+  /liveness:
+    get:
+      description: The system is responsive and accepting incoming requests; however, this endpoint does not perform a dependency check, so the system may not be fully ready to process requests correctly.
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      responses:
+        '200':
+          $ref: '#/components/responses/okResponse'
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse' 
+  /readiness:
+    get:
+      description: The system is fully ready to accept requests and all the dependencies are healthy
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      responses:
+        '200':
+          $ref: '#/components/responses/healthCheckResponse'
+        '503':
+          $ref: '#/components/responses/healthCheckResponse'
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse' 
+
   /providers/{ukprn}/learners/{uln}:
     put:
       summary: External authenticated endpoint for updating specific learners. The individual key is combined by ukprn and uln
@@ -85,7 +117,7 @@ paths:
           $ref: '#/components/responses/notFound'
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse'  
-  /providers/{ukprn}/apprenticeships:
+  /providers/{ukprn}/academicyears/{academicyear}/apprenticeships:
     get:
       summary: Returns a paged list of apprenticeships for this provider
       security:
@@ -97,6 +129,12 @@ paths:
           description: The UK Provider Reference Number for the provider entering this learner
           schema:
             type: string
+        - name: academicyear
+          in: path
+          required: true
+          example: 2425
+          schema:
+            type: integer
       responses:
         '200':
           $ref: '#/components/responses/pagedApprenticeshipsResponse'  
@@ -133,6 +171,7 @@ components:
       schema:
         type: integer
         example: 60
+
   requestBodies:
     learnerRequest:
       description: The ilr record to be submitted to AS
@@ -141,6 +180,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/learner'
+
   responses:
     pagedApprenticeshipsResponse:
       description: A paged apprenticeship response
@@ -150,6 +190,7 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/pagedAppprenticeships'
+
     createUpdateResponse:
       description: The update
       headers:
@@ -161,6 +202,7 @@ components:
           $ref: '#/components/headers/X-RateLimit-Remaining'
         X-RateLimit-Reset:
           $ref: '#/components/headers/X-RateLimit-Reset'
+
     rateLimitExceededResponse:
       description: Too many requests - rate limit exceeded
       content:
@@ -171,30 +213,58 @@ components:
               error:
                 type: string
                 example: "Rate limit exceeded. Try again later."
+
     learnerResponse:
       description: A single response to a specific learner
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/learner'
+
     notFound:
       description: The specified resource was not found
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/error'
+
+    okResponse:
+      description: OK
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: OK
+
     badRequest:
       description: A bad request was detected
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/error'
+    
     unauthorized:
       description: Unauthorized
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/error'
+
+    healthCheckResponse:
+      description: Results of a health check
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/healthcheckResults'
+
+    infoResponse:
+      description: Information response
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: Leaner data APIM for the apprenticeship service - Version 3.0.2
+
   schemas:
     error:
       type: object
@@ -206,6 +276,7 @@ components:
       required:
         - code
         - message
+    
     pagedAppprenticeships:
       type: object
       properties:
@@ -231,26 +302,31 @@ components:
         - total
         - pageSize  
         - totalPages  
+    
+    healthcheckResults:
+      type: array
+      items:
+        $ref: '#/components/schemas/healthcheck' 
+  
+    healthcheck:
+      type: object
+      properties:
+        description: 
+          type: string
+        result: 
+          type: string    
+    
     apprenticeship:
       type: object
       properties:
         uln:
           type: string
-        firstName:
-          type: string
-        lastName:
-          type: string
-        dateOfBirth:
-          type: string
-          format: date
-        learnerEmail:
-          type: string
-          format: date
+    
     learner:
       type: object
       properties:
         uln:
-          type: string
+          type: integer
         firstName:
           type: string
         lastName:
@@ -260,19 +336,22 @@ components:
           format: date
         learnerEmail:
           type: string
-          format: date
         priorLearningPercent:
           description: This is the percentage of learning already complete before this course starts
           type: integer
           example: 10
         ukprn:
-          type: string
-        standardCode:
-          type: string
+          type: integer
+        aggreementId:
+          type: integer
         trainingPrice:
           type: integer
+          description: This is the earliest price
         epaoPrice:
-          type: string
+          type: integer
+          description: This is the earliest price
+        standardCode:
+          type: integer
         startDate:
           type: string
           format: date
