@@ -166,7 +166,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     QualificationReference = qualificationReferenceId
                 });
 
-                if (multipleQuery is null) return NotFound();
+                if (multipleQuery == null || multipleQuery.Qualifications.Count == 0) return NotFound();
 
                 return Ok((GetDeleteQualificationsApiResponse)multipleQuery);
             }
