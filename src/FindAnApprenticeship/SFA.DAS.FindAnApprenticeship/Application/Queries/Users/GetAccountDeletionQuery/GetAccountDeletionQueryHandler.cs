@@ -43,7 +43,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDelet
                     Id = application.Id,
                     Address = vacancy?.Address,
                     OtherAddresses = vacancy?.OtherAddresses,
-                    EmploymentLocationOption = vacancy?.EmploymentLocationOption,
+                    EmployerLocationOption = vacancy?.EmployerLocationOption,
                     EmploymentLocationInformation = vacancy?.EmploymentLocationInformation,
                     VacancyReference = vacancy?.VacancyReference,
                     EmployerName = vacancy?.EmployerName,

@@ -36,7 +36,7 @@ public class WithdrawApplicationQueryHandler(
             AdvertTitle = vacancy.Title,
             Address = vacancy.Address,
             OtherAddresses = vacancy.OtherAddresses,
-            EmploymentLocationOption = vacancy.EmploymentLocationOption,
+            EmployerLocationOption = vacancy.EmployerLocationOption,
             EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
         };
     }

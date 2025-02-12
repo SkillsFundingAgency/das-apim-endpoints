@@ -61,7 +61,7 @@ public class GetApplicationsQueryHandler(
                 ResponseNotes = application.ResponseNotes,
                 Address = vacancy.Address,
                 EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
-                EmploymentLocationOption = vacancy.EmploymentLocationOption,
+                EmployerLocationOption = vacancy.EmployerLocationOption,
                 OtherAddresses = vacancy.OtherAddresses?.ToList(),
             });
         }

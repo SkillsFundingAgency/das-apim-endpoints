@@ -40,7 +40,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public Address Address { get; set; }
             public List<Address>? OtherAddresses { get; set; }
             public string? EmploymentLocationInformation { get; set; }
-            public AvailableWhere? EmploymentLocationOption { get; set; }
+            public AvailableWhere? EmployerLocationOption { get; set; }
             public decimal? Distance { get; set; }
             public string CourseRoute { get; set; }
             public string CourseLevel { get; set; }
@@ -123,26 +123,16 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
 
             private static Vacancy From(GetClosedVacancyResponse source, GetStandardsListItemResponse courseResult)
             {
-                // TODO: this doesn't quite map from a closed vacancy anymore
                 var durationUnit = (DurationUnit)source.Wage.DurationUnit;
                 return new Vacancy
                 {
                     AdditionalTrainingDescription = source.AdditionalTrainingDescription,
                     AdditionalQuestion1 = source.AdditionalQuestion1,
                     AdditionalQuestion2 = source.AdditionalQuestion2,
-                    Address = new Address
-                    {
-                        AddressLine1 = source.Address?.AddressLine1,
-                        AddressLine2 = source.Address?.AddressLine2,
-                        AddressLine3 = source.Address?.AddressLine3,
-                        AddressLine4 = source.Address?.AddressLine4,
-                        Postcode = source.Address?.Postcode,
-                        Latitude = source.Address?.Latitude,
-                        Longitude = source.Address?.Longitude
-                    },
-                    OtherAddresses = source.OtherAddresses?.Select(x => (Address)x).ToList(),
+                    Address = source.Address,
+                    OtherAddresses = source.OtherAddresses,
                     EmploymentLocationInformation = source.EmploymentLocationInformation,
-                    EmploymentLocationOption = source.EmploymentLocationOption,
+                    EmployerLocationOption = source.EmployerLocationOption,
                     AnonymousEmployerName = source.IsAnonymous ? source.EmployerName : null,
                     ApplicationInstructions = source.ApplicationInstructions,
                     ApplicationUrl = source.ApplicationUrl,
@@ -259,7 +249,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     LongDescription = source.LongDescription,
                     NumberOfPositions = source.NumberOfPositions,
                     OtherAddresses = source.OtherAddresses,
-                    EmploymentLocationOption = source.EmploymentLocationOption,
+                    EmployerLocationOption = source.EmployerLocationOption,
                     EmploymentLocationInformation = source.EmploymentLocationInformation,
                     OutcomeDescription = source.OutcomeDescription,
                     PostedDate = source.PostedDate,

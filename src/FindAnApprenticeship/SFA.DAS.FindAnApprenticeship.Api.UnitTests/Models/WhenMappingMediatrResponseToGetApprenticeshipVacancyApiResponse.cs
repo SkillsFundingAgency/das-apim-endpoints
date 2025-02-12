@@ -70,7 +70,7 @@ public class WhenMappingMediatrResponseToGetApprenticeshipVacancyApiResponse
                 .Excluding(c => c.Longitude)
             );
             result.EmploymentLocationInformation.Should().Be(source.ApprenticeshipVacancy.EmploymentLocationInformation);
-            result.EmploymentLocationOption.Should().Be(source.ApprenticeshipVacancy.EmploymentLocationOption);
+            result.EmployerLocationOption.Should().Be(source.ApprenticeshipVacancy.EmployerLocationOption);
             result.OtherAddresses.Should().BeEquivalentTo(source.ApprenticeshipVacancy.OtherAddresses, options => options
                 .Excluding(c => c.Latitude)
                 .Excluding(c => c.Longitude)

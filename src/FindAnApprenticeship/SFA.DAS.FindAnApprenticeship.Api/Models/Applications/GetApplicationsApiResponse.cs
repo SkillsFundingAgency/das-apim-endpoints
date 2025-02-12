@@ -37,7 +37,7 @@ public class GetApplicationsApiResponse
         Address Address,
         List<Address>? OtherAddresses,
         string? EmploymentLocationInformation,
-        AvailableWhere? EmploymentLocationOption)
+        AvailableWhere? EmployerLocationOption)
     {
         public static Application From(GetApplicationsQueryResult.Application source)
         {
@@ -57,7 +57,7 @@ public class GetApplicationsApiResponse
                 source.Address,
                 source.OtherAddresses,
                 source.EmploymentLocationInformation,
-                source.EmploymentLocationOption
+                source.EmployerLocationOption
             );
         }
     }

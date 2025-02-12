@@ -22,8 +22,8 @@ public interface IVacancy
     string ExternalVacancyUrl { get; }
     VacancyDataSource VacancySource { get; }
 
-    public Address Address { get; }
+    public Address? Address { get; }
     public List<Address>? OtherAddresses { get; } 
     public string? EmploymentLocationInformation { get; }
-    public AvailableWhere? EmploymentLocationOption { get; }
+    public AvailableWhere? EmployerLocationOption { get; }
 }

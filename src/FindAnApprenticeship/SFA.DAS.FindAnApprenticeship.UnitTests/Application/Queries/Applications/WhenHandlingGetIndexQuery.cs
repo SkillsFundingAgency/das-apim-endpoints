@@ -71,7 +71,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     Address = vacancy.Address,
                     OtherAddresses = vacancy.OtherAddresses,
                     EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
-                    EmploymentLocationOption = vacancy.EmploymentLocationOption,
+                    EmployerLocationOption = vacancy.EmployerLocationOption,
                 });
             }
 
@@ -137,7 +137,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     Address = vacancy.Address,
                     OtherAddresses = vacancy.OtherAddresses,
                     EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
-                    EmploymentLocationOption = vacancy.EmploymentLocationOption,
+                    EmployerLocationOption = vacancy.EmployerLocationOption,
                 });
             }
 
@@ -203,7 +203,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     Address = vacancy.Address,
                     OtherAddresses = vacancy.OtherAddresses,
                     EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
-                    EmploymentLocationOption = vacancy.EmploymentLocationOption,
+                    EmployerLocationOption = vacancy.EmployerLocationOption,
                 });
             }
 
