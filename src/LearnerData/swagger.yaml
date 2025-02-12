@@ -344,7 +344,7 @@ components:
           example: 10
         ukprn:
           type: integer
-        aggreementId:
+        agreementId:
           type: integer
         trainingPrice:
           type: integer
@@ -373,6 +373,6 @@ components:
         - epaoPrice
         - startDate
         - plannedEndDate
-        - aggreementId
+        - agreementId
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
