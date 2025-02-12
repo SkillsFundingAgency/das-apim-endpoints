@@ -191,7 +191,7 @@ components:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/pagedAppprenticeships'
+              $ref: '#/components/schemas/pagedApprenticeships'
 
     createUpdateResponse:
       description: The update
@@ -279,7 +279,7 @@ components:
         - code
         - message
     
-    pagedAppprenticeships:
+    pagedApprenticeships:
       type: object
       properties:
         learners:
@@ -373,5 +373,6 @@ components:
         - epaoPrice
         - startDate
         - plannedEndDate
+        - aggreementId
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
