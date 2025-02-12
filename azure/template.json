@@ -89,13 +89,21 @@
             "metadata": {
                 "description": "Enables alerting on app insights failed requests"
             }
+        },
+        "productShortName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "preProdAlertActionGroupResourceId": {
+            "type": "string"
         }
     },
     "variables": {
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
-        "appServicePlanName": "[if(empty(parameters('appServicePlanName')), concat(variables('resourceNamePrefix'), '-asp'), parameters('appServicePlanName'))]"
+        "appServicePlanName": "[if(empty(parameters('appServicePlanName')), concat(variables('resourceNamePrefix'), '-asp'), parameters('appServicePlanName'))]",
+        "alertActionGroupResourceId": "[if(and(equals(parameters('environmentName'), 'PROD'), equals(parameters('productShortName'), 'ea')), parameters('preProdAlertActionGroupResourceId'), parameters('alertActionGroupResourceId'))]"
 
     },
     "resources": [
@@ -294,7 +302,7 @@
                         "value": "[parameters('applicationInsightsResourceId')]"
                     },
                     "alertActionGroupResourceId": {
-                        "value": "[parameters('alertActionGroupResourceId')]"
+                        "value": "[variables('alertActionGroupResourceId')]"
                     }
                 }
             }

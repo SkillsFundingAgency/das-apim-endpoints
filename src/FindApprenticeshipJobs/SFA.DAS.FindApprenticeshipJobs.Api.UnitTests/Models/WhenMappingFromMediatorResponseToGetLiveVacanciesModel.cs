@@ -36,6 +36,5 @@ public class WhenMappingFromMediatorResponseToGetLiveVacanciesModel
         actual.TotalLiveVacanciesReturned.Should().Be(source.NhsVacancies.Count);
         actual.PageSize.Should().Be(source.NhsVacancies.Count);
         actual.TotalLiveVacancies.Should().Be(source.NhsVacancies.Count);
-        
     }
 }
