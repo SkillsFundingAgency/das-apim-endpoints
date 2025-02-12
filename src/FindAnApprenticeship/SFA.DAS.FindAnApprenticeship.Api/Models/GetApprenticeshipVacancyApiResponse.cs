@@ -3,6 +3,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -88,8 +89,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public List<AddressApiResponse>? OtherAddresses { get; init; } = [];
         public string? EmploymentLocationInformation { get; set; }
         
-        [JsonProperty("availableWhere")]
-        public AvailableWhere? EmploymentLocationOption { get; set; }
+        [JsonProperty("availableWhere"), System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter<AvailableWhere>))]
+        public AvailableWhere? EmployerLocationOption { get; set; }
         public List<string> CourseSkills { get; set; }
         public List<string> CourseCoreDuties { get; set; }
         public string CourseOverviewOfRole { get; set; }
@@ -140,7 +141,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 EmployerName = source.ApprenticeshipVacancy.EmployerName,
                 EmployerWebsiteUrl = source.ApprenticeshipVacancy.EmployerWebsiteUrl,
                 EmploymentLocationInformation = source.ApprenticeshipVacancy.EmploymentLocationInformation,
-                EmploymentLocationOption = source.ApprenticeshipVacancy.EmploymentLocationOption,
+                EmployerLocationOption = source.ApprenticeshipVacancy.EmployerLocationOption,
                 ExpectedDuration = source.ApprenticeshipVacancy.ExpectedDuration,
                 FrameworkLarsCode = source.ApprenticeshipVacancy.FrameworkLarsCode,
                 HoursPerWeek = source.ApprenticeshipVacancy.HoursPerWeek,

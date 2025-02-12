@@ -17,7 +17,7 @@ public class GetWithdrawnApplicationApiResponse
     public Address Address { get; set; }
     public List<Address>? OtherAddresses { get; set; } = [];
     public string? EmploymentLocationInformation { get; set; }
-    public AvailableWhere? EmploymentLocationOption { get; set; }
+    public AvailableWhere? EmployerLocationOption { get; set; }
 
     public static implicit operator GetWithdrawnApplicationApiResponse(WithdrawApplicationQueryResult source)
     {
@@ -31,7 +31,7 @@ public class GetWithdrawnApplicationApiResponse
             AdvertTitle = source.AdvertTitle,
             Address = source.Address,
             OtherAddresses = source.OtherAddresses,
-            EmploymentLocationOption = source.EmploymentLocationOption,
+            EmployerLocationOption = source.EmployerLocationOption,
             EmploymentLocationInformation = source.EmploymentLocationInformation,
         };
     }

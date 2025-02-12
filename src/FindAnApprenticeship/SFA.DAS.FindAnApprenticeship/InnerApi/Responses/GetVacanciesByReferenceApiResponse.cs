@@ -34,7 +34,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
             public Address Address { get; set; }
             public List<Address> OtherAddresses { get; set; }
             public string EmploymentLocationInformation { get; set; }
-            public AvailableWhere? EmploymentLocationOption { get; set; }
+            public AvailableWhere? EmployerLocationOption { get; set; }
             public bool IsExternalVacancy => !string.IsNullOrWhiteSpace(ApplicationUrl);
         }
     }

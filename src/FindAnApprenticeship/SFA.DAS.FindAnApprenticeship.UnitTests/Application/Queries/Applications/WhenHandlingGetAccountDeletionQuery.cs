@@ -60,7 +60,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     SubmittedDate = application.SubmittedDate,
                     Address = vacancy?.Address,
                     OtherAddresses = vacancy?.OtherAddresses,
-                    EmploymentLocationOption = vacancy?.EmploymentLocationOption,
+                    EmployerLocationOption = vacancy?.EmployerLocationOption,
                     EmploymentLocationInformation = vacancy?.EmploymentLocationInformation,
                     Status = Enum.Parse<ApplicationStatus>(application.Status)
                 });

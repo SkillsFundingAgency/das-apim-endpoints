@@ -29,7 +29,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
                 .Excluding(c => c.EmployerName)
                 .Excluding(c => c.ApprenticeshipLevel)
                 .Excluding(c => c.Location)
-                .Excluding(c => c.EmploymentLocationOption) //TBC : should be removed in the later stages
+                .Excluding(c => c.EmployerLocationOption) //TBC : should be removed in the later stages
             );
                 
             actual.Vacancies.FirstOrDefault().AddressLine1.Should().Be(source.Vacancies.FirstOrDefault().Address.AddressLine1);
@@ -76,7 +76,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
                 .Excluding(c => c.AnonymousEmployerName)
                 .Excluding(c => c.IsEmployerAnonymous)
                 .Excluding(c => c.Location)
-                .Excluding(c => c.EmploymentLocationOption) //TBC : should be removed in the later stages
+                .Excluding(c => c.EmployerLocationOption) //TBC : should be removed in the later stages
                 .Excluding(c => c.OtherAddresses)
             );
         }
