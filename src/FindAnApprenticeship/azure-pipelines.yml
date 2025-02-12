@@ -57,3 +57,4 @@ stages:
       NServiceBusLicense: $(NServiceBusLicense)
       ApimEndpointsRedisConnectionString: $(ApimEndpointsRedisConnectionString)
     useProductAppInsights: 'True'
+    CheckClientCert: $True
