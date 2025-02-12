@@ -120,7 +120,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         result.CanActualStartDateBeChanged = canActualStartDateBeChanged;
         result.PendingStartDateChange = ToResponse(pendingStartDateResponse.Body);
         result.PaymentsStatus = ToResponse(paymentStatusResponse.Body);
-        result.LearnerStatus = ToResponse(learnerStatusResponse.Body);
+        result.LearnerStatusDetails = ToResponse(learnerStatusResponse.Body);
 
         return result;
     }
@@ -171,11 +171,16 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         };
     }
 
-    private LearnerStatus ToResponse(GetLearnerStatusResponse source)
+    private LearnerStatusDetails ToResponse(GetLearnerStatusResponse source)
     {
-        if (source == null) return LearnerStatus.None;
+        if (source.LearnerStatus == null) return new LearnerStatusDetails{ LearnerStatus = LearnerStatus.None };
 
-        return source.LearnerStatus;
+        return new LearnerStatusDetails
+        {
+            LearnerStatus = source.LearnerStatus.Value,
+            WithdrawalChangedDate = source.WithdrawalChangedDate,
+            WithdrawalReason = source.WithdrawalReason
+        };
     }
 
     private async Task<bool?> CanActualStartDateBeChanged(DateTime? actualStartDate)
