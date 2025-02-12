@@ -12,6 +12,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/infoResponse'
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse'
     
   /liveness:
     get:
@@ -22,7 +24,7 @@ paths:
         '200':
           $ref: '#/components/responses/okResponse'
         '429':
-          $ref: '#/components/responses/rateLimitExceededResponse' 
+          $ref: '#/components/responses/rateLimitExceededResponse'
   /readiness:
     get:
       description: The system is fully ready to accept requests and all the dependencies are healthy
