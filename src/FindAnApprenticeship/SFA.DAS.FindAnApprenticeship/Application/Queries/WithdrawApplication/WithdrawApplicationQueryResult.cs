@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.WithdrawApplication;
 
@@ -10,4 +13,8 @@ public class WithdrawApplicationQueryResult
     public DateTime? SubmittedDate { get; set; }
     public DateTime ClosingDate { get; set; }
     public DateTime? ClosedDate { get; set; }
+    public Address Address { get; set; }
+    public List<Address>? OtherAddresses { get; set; } = [];
+    public string? EmploymentLocationInformation { get; set; }
+    public AvailableWhere? EmploymentLocationOption { get; set; }
 }

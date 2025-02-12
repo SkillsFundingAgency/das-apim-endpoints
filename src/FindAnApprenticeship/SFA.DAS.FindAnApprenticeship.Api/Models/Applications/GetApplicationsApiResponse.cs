@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
 public class GetApplicationsApiResponse
 {
     public List<Application> Applications { get; set; } = [];
-    
+
     public static GetApplicationsApiResponse From(GetApplicationsQueryResult source)
     {
         var result = new GetApplicationsApiResponse
@@ -32,8 +33,11 @@ public class GetApplicationsApiResponse
         DateTime? ResponseDate,
         string? ResponseNotes,
         ApplicationStatus Status,
-        DateTime? WithdrawnDate
-    )
+        DateTime? WithdrawnDate,
+        Address Address,
+        List<Address>? OtherAddresses,
+        string? EmploymentLocationInformation,
+        AvailableWhere? EmploymentLocationOption)
     {
         public static Application From(GetApplicationsQueryResult.Application source)
         {
@@ -49,7 +53,11 @@ public class GetApplicationsApiResponse
                 source.ResponseDate,
                 source.ResponseNotes,
                 source.Status,
-                source.WithdrawnDate
+                source.WithdrawnDate,
+                source.Address,
+                source.OtherAddresses,
+                source.EmploymentLocationInformation,
+                source.EmploymentLocationOption
             );
         }
     }

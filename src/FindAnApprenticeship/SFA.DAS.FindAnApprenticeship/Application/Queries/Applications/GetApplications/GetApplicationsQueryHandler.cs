@@ -1,14 +1,14 @@
-﻿using System;
-using MediatR;
+﻿using MediatR;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.FindAnApprenticeship.Domain.Models;
-using SFA.DAS.FindAnApprenticeship.Services;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 
@@ -19,14 +19,10 @@ public class GetApplicationsQueryHandler(
 {
     public async Task<GetApplicationsQueryResult> Handle(GetApplicationsQuery request, CancellationToken cancellationToken)
     {
-        var candidateApiResponseTask =
-            candidateApiClient.Get<GetCandidateApiResponse>(new GetCandidateApiRequest(request.CandidateId.ToString()));
-
         var applicationsTask =
             candidateApiClient.Get<GetApplicationsApiResponse>(
                 new GetApplicationsApiRequest(request.CandidateId));
 
-        var candidateApiResponse = candidateApiResponseTask.Result;
         var totalApplicationCount = applicationsTask.Result.Applications.Count;
         var applicationList = applicationsTask.Result.Applications.Where(x =>
             x.Status == request.Status.ToString()
@@ -62,7 +58,11 @@ public class GetApplicationsQueryHandler(
                 Status = status,
                 SubmittedDate = application.SubmittedDate,
                 ResponseDate = application.ResponseDate,
-                ResponseNotes = application.ResponseNotes
+                ResponseNotes = application.ResponseNotes,
+                Address = vacancy.Address,
+                EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
+                EmploymentLocationOption = vacancy.EmploymentLocationOption,
+                OtherAddresses = vacancy.OtherAddresses?.ToList(),
             });
         }
 

@@ -263,10 +263,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                 application.Status = ApplicationStatus.Submitted.ToString();
                 application.CandidateId = command.CandidateId;
             }
-            closedVacancyResponse.EmployerLocation.AddressLine1 = address1;
-            closedVacancyResponse.EmployerLocation.AddressLine2 = address2;
-            closedVacancyResponse.EmployerLocation.AddressLine3 = address3;
-            closedVacancyResponse.EmployerLocation.AddressLine4 = address4;
+            closedVacancyResponse.Address.AddressLine1 = address1;
+            closedVacancyResponse.Address.AddressLine2 = address2;
+            closedVacancyResponse.Address.AddressLine3 = address3;
+            closedVacancyResponse.Address.AddressLine4 = address4;
 
             var expectedGetApplicationsRequest =
                 new GetApplicationsApiRequest(command.CandidateId);
@@ -322,7 +322,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                         && c.Tokens["firstName"] == candidateApiResponse.FirstName
                         && c.Tokens["vacancy"] == closedVacancyResponse.Title
                         && c.Tokens["employer"] == closedVacancyResponse.EmployerName
-                        && c.Tokens["location"] == $"{expectedAddress}, {closedVacancyResponse.EmployerLocation.Postcode}"
+                        && c.Tokens["location"] == $"{expectedAddress}, {closedVacancyResponse.Address.Postcode}"
                     )
                 ), Times.Exactly(applicationsApiResponse.Applications.Count));
             }

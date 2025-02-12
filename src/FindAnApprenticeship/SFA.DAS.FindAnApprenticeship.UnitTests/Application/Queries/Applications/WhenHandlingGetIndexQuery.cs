@@ -1,16 +1,11 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 using static SFA.DAS.FindAnApprenticeship.InnerApi.Responses.PostGetVacanciesByReferenceApiResponse;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Applications
@@ -73,6 +68,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     SubmittedDate = application.SubmittedDate,
                     ResponseDate = application.ResponseDate,
                     ResponseNotes = application.ResponseNotes,
+                    Address = vacancy.Address,
+                    OtherAddresses = vacancy.OtherAddresses,
+                    EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
+                    EmploymentLocationOption = vacancy.EmploymentLocationOption,
                 });
             }
 
@@ -134,7 +133,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     WithdrawnDate = application.WithdrawnDate,
                     ResponseDate = application.ResponseDate,
                     ResponseNotes = application.ResponseNotes,
-                    Status = Enum.Parse<ApplicationStatus>(application.Status)
+                    Status = Enum.Parse<ApplicationStatus>(application.Status),
+                    Address = vacancy.Address,
+                    OtherAddresses = vacancy.OtherAddresses,
+                    EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
+                    EmploymentLocationOption = vacancy.EmploymentLocationOption,
                 });
             }
 
@@ -196,7 +199,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     WithdrawnDate = application.WithdrawnDate,
                     ResponseDate = application.ResponseDate,
                     ResponseNotes = application.ResponseNotes,
-                    Status = Enum.Parse<ApplicationStatus>(application.Status)
+                    Status = Enum.Parse<ApplicationStatus>(application.Status),
+                    Address = vacancy.Address,
+                    OtherAddresses = vacancy.OtherAddresses,
+                    EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
+                    EmploymentLocationOption = vacancy.EmploymentLocationOption,
                 });
             }
 
