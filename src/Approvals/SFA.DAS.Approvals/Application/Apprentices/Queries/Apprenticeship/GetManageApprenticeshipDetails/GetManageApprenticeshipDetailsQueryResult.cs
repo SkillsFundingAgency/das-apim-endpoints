@@ -62,5 +62,6 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
         public LearnerStatus LearnerStatus { get; set; }
         public DateTime? WithdrawalChangedDate { get; set; }
         public string WithdrawalReason { get; set; }
+        public DateTime? LastCensusDateOfLearning { get; set; }
     }
 }
