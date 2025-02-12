@@ -1,0 +1,28 @@
+﻿@Api_HostAddress = https://localhost:5003
+
+@LarsCode = 119
+@OrderByDistance = Distance
+@ProviderRatingsExcellent = Excellent
+@ProviderRatingsInvalidValue = Swordfish
+@ProviderRatingsNotYetReviewed = NotYetReviewed
+@ProviderRatingsGood = Good
+@ProviderRatingsPoor = Poor
+@ProviderRatingsVeryPoor = VeryPoor
+@DeliveryModesWorkpace = Workplace
+@DeliveryModesProvider = Provider
+@DeliveryModesDayRelease = DayRelease
+@DeliveryModesBlockRelease = BlockRelease
+@QarExcellent = Excellent
+@QarNone = None
+@QarGood = Good
+@QarPoor = Poor
+@QarVeryPoor = VeryPoor
+@Distance100 = 100
+@DistanceZero =  0
+@LatitudeValid = 89
+@LongitudeValid = 179
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&ApprenticeProviderRatings={{ProviderRatingsExcellent}}&ApprenticeProviderRatings={{ProviderRatingsNotYetReviewed}}&ApprenticeProviderRatings={{ProviderRatingsGood}}&ApprenticeProviderRatings={{ProviderRatingsPoor}}&ApprenticeProviderRatings={{ProviderRatingsVeryPoor}}&ApprenticeProviderRatings={{ProviderRatingsExcellent}}&ApprenticeProviderRatings={{ProviderRatingsNotYetReviewed}}&ApprenticeProviderRatings={{ProviderRatingsGood}}&ApprenticeProviderRatings={{ProviderRatingsPoor}}&ApprenticeProviderRatings={{ProviderRatingsVeryPoor}}&EmployerProviderRatings={{ProviderRatingsExcellent}}&EmployerProviderRatings={{ProviderRatingsNotYetReviewed}}&EmployerProviderRatings={{ProviderRatingsGood}}&EmployerProviderRatings={{ProviderRatingsPoor}}&EmployerProviderRatings={{ProviderRatingsVeryPoor}}&EmployerProviderRatings={{ProviderRatingsExcellent}}&EmployerProviderRatings={{ProviderRatingsNotYetReviewed}}&EmployerProviderRatings={{ProviderRatingsGood}}&EmployerProviderRatings={{ProviderRatingsPoor}}&EmployerProviderRatings={{ProviderRatingsVeryPoor}}&DeliveryModes={{DeliveryModesWorkpace}}&DeliveryModes={{DeliveryModesProvider}}&DeliveryModes={{DeliveryModesDayRelease}}&DeliveryModes={{DeliveryModesBlockRelease}}&Qar={{QarExcellent}}&Qar={{QarNone}}&Qar={{QarGood}}&Qar={{QarPoor}}&Qar={{QarVeryPoor}}&Distance={{Distance100}}&Latitude={{LatitudeValid}}&Longitude={{LongitudeValid}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for expected multiple parameters
+### 
