@@ -26,6 +26,8 @@ pr:
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
+- name: ProductShortName
+  value: ea
 
 resources:
   repositories:
@@ -52,3 +54,4 @@ stages:
     OuterApiName: LevyTransferMatching
     ConfigurationSecrets:
       NServiceBusLicense: $(NServiceBusLicense)
+    useProductAppInsights: 'True'

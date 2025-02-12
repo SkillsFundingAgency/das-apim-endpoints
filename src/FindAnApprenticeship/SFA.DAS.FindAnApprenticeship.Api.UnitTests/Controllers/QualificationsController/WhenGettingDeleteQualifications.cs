@@ -59,6 +59,26 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.QualificationsC
         }
 
         [Test, MoqAutoData]
+        public async Task When_Getting_Multiple_Then_Mediator_Returns_Empty_Response_So_NotFound_Is_Returned(
+            Guid candidateId,
+            Guid applicationId,
+            Guid qualificationReferenceId,
+            GetDeleteQualificationsQueryResult queryResult,
+            [Frozen] Mock<IMediator> mediator,
+            [Greedy] Api.Controllers.QualificationsController controller)
+        {
+            queryResult.Qualifications = [];
+            mediator.Setup(x => x.Send(It.Is<GetDeleteQualificationsQuery>(q =>
+                        q.CandidateId == candidateId && q.ApplicationId == applicationId && q.QualificationReference == qualificationReferenceId),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(queryResult);
+
+            var actual = await controller.GetDeleteQualifications(applicationId, qualificationReferenceId, candidateId, null);
+
+            actual.As<StatusCodeResult>().StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        }
+
+        [Test, MoqAutoData]
         public async Task When_Getting_One_Of_A_Type_Then_The_Query_Response_Is_Returned(
             Guid candidateId,
             Guid applicationId,
