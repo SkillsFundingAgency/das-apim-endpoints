@@ -16,11 +16,9 @@ public class GetEmployerAccountDetailsQueryHandler(
     {
         logger.LogInformation("Getting Account Details for Account {account}", query.AccountId);
 
-        // get account details
         var account = await accountsService.GetAccount(query.AccountId);
         if (account != null)
         {
-            // populate Ienumerable
             var accountDetailsStrategy = strategyFactory.CreateStrategy(query.SelectedField);
             var result = await accountDetailsStrategy.ExecuteAsync(account);
 

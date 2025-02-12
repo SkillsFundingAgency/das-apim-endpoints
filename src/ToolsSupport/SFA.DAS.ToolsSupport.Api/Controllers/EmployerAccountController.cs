@@ -22,7 +22,6 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
             {
               AccountId = accountId,
               SelectedField = accountFieldSelection
-
             });
 
             return Ok((GetEmployerAccountDetailsResponse)result);

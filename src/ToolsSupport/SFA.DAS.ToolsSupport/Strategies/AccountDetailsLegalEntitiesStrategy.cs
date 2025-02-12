@@ -10,13 +10,11 @@ public class AccountDetailsLegalEntitiesStrategy(IAccountsService accountsServic
     {
         var legalEntities = account.LegalEntities;
 
-        var tasks = legalEntities.Select(entity => accountsService.GetEmployerAccountLegalEntity(entity.Href)).ToArray();
-
+       var tasks = legalEntities.Select(entity => accountsService.GetEmployerAccountLegalEntity(entity.Href));
         var legalEntitiesList = await Task.WhenAll(tasks);
-
         return new GetEmployerAccountDetailsResult
         {
-            LegalEntities = [.. legalEntitiesList]
+            LegalEntities = legalEntitiesList
         };
     }
 }

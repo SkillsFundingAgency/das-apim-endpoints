@@ -4,8 +4,7 @@ using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.ToolsSupport.Api.AppStart;
-using SFA.DAS.ToolsSupport.Application.Queries;
-using SFA.DAS.ToolsSupport.Interfaces;
+using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration.BuildSharedConfiguration();
 
 builder.Services
-    
+
     .AddApplicationInsightsTelemetry()
     .AddServiceRegistration(configuration)
     .AddEndpointsApiExplorer()
@@ -45,7 +44,7 @@ builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLev
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
-builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(IAccountsService).Assembly));
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEmployerAccountDetailsQueryHandler).Assembly));
 
 var app = builder.Build();
 
