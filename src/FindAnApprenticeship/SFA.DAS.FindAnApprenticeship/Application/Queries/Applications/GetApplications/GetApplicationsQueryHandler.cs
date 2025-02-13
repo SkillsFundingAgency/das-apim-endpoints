@@ -5,10 +5,10 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Enum;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 
@@ -43,8 +43,11 @@ public class GetApplicationsQueryHandler(
 
         foreach (var application in applicationList)
         {
-            var vacancy = vacancies.First(v => v.VacancyReference.Replace("VAC", string.Empty) == application.VacancyReference);
-            Enum.TryParse<ApplicationStatus>(application.Status, out var status);
+            var vacancy = vacancies.FirstOrDefault(v => v.VacancyReference.Replace("VAC", string.Empty) == application.VacancyReference);
+            
+            if(vacancy is null) continue;
+
+            TryParse<ApplicationStatus>(application.Status, out var status);
             result.Applications.Add(new GetApplicationsQueryResult.Application
             {
                 Id = application.Id,

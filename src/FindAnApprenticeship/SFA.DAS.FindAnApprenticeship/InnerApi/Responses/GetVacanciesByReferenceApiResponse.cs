@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Models;
@@ -34,6 +35,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
             public Address Address { get; set; }
             public List<Address> OtherAddresses { get; set; }
             public string EmploymentLocationInformation { get; set; }
+            [JsonPropertyName("availableWhere"), JsonConverter(typeof(JsonStringEnumConverter<AvailableWhere>))]
             public AvailableWhere? EmployerLocationOption { get; set; }
             public bool IsExternalVacancy => !string.IsNullOrWhiteSpace(ApplicationUrl);
         }
