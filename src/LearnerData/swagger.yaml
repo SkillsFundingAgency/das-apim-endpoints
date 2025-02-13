@@ -13,8 +13,7 @@ paths:
         '200':
           $ref: '#/components/responses/infoResponse'
         '429':
-          $ref: '#/components/responses/rateLimitExceededResponse'
-    
+          $ref: '#/components/responses/rateLimitExceededResponse'   
   /liveness:
     get:
       description: The system is responsive and accepting incoming requests; however, this endpoint does not perform a dependency check, so the system may not be fully ready to process requests correctly.
@@ -56,6 +55,9 @@ paths:
           description: The Unique Learner Number for this learner
           schema:
             type: string
+      requestBody:
+        require: true
+        $ref: '#/components/requestBodies/learnerRequest'
       responses:
         '200':
           description: The resource has been updated
@@ -93,6 +95,7 @@ paths:
           $ref: '#/components/responses/notFound'
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse'  
+  
   /providers/{ukprn}/academicyears/{academicyear}/apprenticeships:
     get:
       summary: Returns a paged list of apprenticeships for this provider
@@ -114,6 +117,7 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/pagedApprenticeshipsResponse'  
+
 components:  
   securitySchemes:
     ApiKeyAuth:
@@ -348,5 +352,6 @@ components:
         - startDate
         - plannedEndDate
         - agreementId
+
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
