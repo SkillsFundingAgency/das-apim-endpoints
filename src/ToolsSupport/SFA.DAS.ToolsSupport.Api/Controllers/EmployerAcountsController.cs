@@ -19,17 +19,17 @@ public class EmployerAccountsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] long accountId, [FromQuery] string paySchemeRef)
+    public async Task<IActionResult> Get([FromQuery] long? accountId, [FromQuery] string? payeSchemeRef)
     {
         try
         {
-            var response = await _mediator.Send(new GetEmployerAccountsQuery {AccountId = accountId, PayeSchemeRef = paySchemeRef});
+            var response = await _mediator.Send(new GetEmployerAccountsQuery {AccountId = accountId, PayeSchemeRef = payeSchemeRef});
 
             return Ok(response);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error attempting to query by email");
+            _logger.LogError(ex, "Error attempting to query Employer Account using accountId {0} or PayeSchemeRef {1}", accountId, payeSchemeRef);
             return StatusCode((int) HttpStatusCode.InternalServerError);
         }
     }
