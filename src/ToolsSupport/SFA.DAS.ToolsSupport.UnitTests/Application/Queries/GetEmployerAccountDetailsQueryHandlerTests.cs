@@ -7,7 +7,7 @@ using SFA.DAS.ToolsSupport.InnerApi.Responses;
 using SFA.DAS.ToolsSupport.Interfaces;
 using SFA.DAS.ToolsSupport.Strategies;
 
-namespace SFA.DAS.ToolsSupport.UnitTests.Application.Queries.EmployerAccount.GetEmployerAccountDetails;
+namespace SFA.DAS.ToolsSupport.UnitTests.Application.Queries;
 
 public class GetEmployerAccountDetailsQueryHandlerTests
 {
