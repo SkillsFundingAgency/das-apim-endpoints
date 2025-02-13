@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ToolsSupport.Application.Queries;
+using SFA.DAS.ToolsSupport.Application.Queries.GetUserSummary;
 using System.Net;
 
 namespace SFA.DAS.ToolsSupport.Api.Controllers;
@@ -30,6 +31,27 @@ public class UsersQueryController : ControllerBase
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error attempting to query by email");
+            return StatusCode((int) HttpStatusCode.InternalServerError);
+        }
+    }
+    
+    [HttpGet]
+    [Route("user-summary")]
+    public async Task<IActionResult> GetUserSummary([FromQuery] Guid userId)
+    {
+        try
+        {
+            var response = await _mediator.Send(
+                new GetUserSummaryQuery 
+                { 
+                    UserId = userId
+                });
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error attempting to get user summary");
             return StatusCode((int) HttpStatusCode.InternalServerError);
         }
     }
