@@ -1,8 +1,6 @@
-﻿using SFA.DAS.ToolsSupport.InnerApi.Responses;
+﻿namespace SFA.DAS.ToolsSupport.InnerApi.Responses;
 
-namespace SFA.DAS.ToolsSupport.Application.Queries.GetUserSummary;
-
-public class GetUserSummaryQueryResult
+public class GetUserOverviewResponse
 {
     public string Id { get; set; } = "";
     public string FirstName { get; set; } = "";
@@ -11,6 +9,5 @@ public class GetUserSummaryQueryResult
     public bool IsActive { get; set; }
     public bool IsLocked { get; set; }
     public bool IsSuspended { get; set; }
-    public List<AccountSummary> AccountSummaries { get; set; } = [];
-
 }
+

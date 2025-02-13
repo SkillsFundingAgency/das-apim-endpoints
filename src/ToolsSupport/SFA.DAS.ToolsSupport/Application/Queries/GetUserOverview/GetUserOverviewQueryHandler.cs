@@ -5,25 +5,29 @@ using SFA.DAS.ToolsSupport.InnerApi.Requests;
 using SFA.DAS.ToolsSupport.InnerApi.Responses;
 using SFA.DAS.ToolsSupport.Interfaces;
 
-namespace SFA.DAS.ToolsSupport.Application.Queries.GetUserSummary;
+namespace SFA.DAS.ToolsSupport.Application.Queries.GetUserOverview;
 
-public class GetUserSummaryQueryHandler(
+public class GetUserOverviewQueryHandler(
     IInternalApiClient<EmployerProfilesApiConfiguration> client,
      IAccountsService accountsService
-    ) : IRequestHandler<GetUserSummaryQuery, GetUserSummaryQueryResult>
+    ) : IRequestHandler<GetUserOverviewQuery, GetUserOverviewQueryResult>
 {
-    public async Task<GetUserSummaryQueryResult> Handle(GetUserSummaryQuery query, CancellationToken cancellationToken)
+    public async Task<GetUserOverviewQueryResult> Handle(GetUserOverviewQuery query, CancellationToken cancellationToken)
     {
         var accountsTask = accountsService.GetUserAccounts(query.UserId);
 
-        var userResponseTask = client.Get<GetUserSummaryResponse>(new GetUserByIdRequest(query.UserId));
+        var userResponseTask = client.Get<GetUserOverviewResponse>(new GetUserByIdRequest(query.UserId));
 
         await Task.WhenAll(accountsTask, userResponseTask);
 
         var accounts = await accountsTask;
         var userResponse = await userResponseTask;
+        if (userResponse == null)
+        {
+            return new GetUserOverviewQueryResult();
+        }
 
-        return new GetUserSummaryQueryResult
+        return new GetUserOverviewQueryResult
         {
             Id = userResponse.Id,
             FirstName = userResponse.FirstName,

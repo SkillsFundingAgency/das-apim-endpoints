@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ToolsSupport.Application.Queries;
-using SFA.DAS.ToolsSupport.Application.Queries.GetUserSummary;
+using SFA.DAS.ToolsSupport.Application.Queries.GetUserOverview;
 using System.Net;
 
 namespace SFA.DAS.ToolsSupport.Api.Controllers;
@@ -36,13 +36,13 @@ public class UsersQueryController : ControllerBase
     }
     
     [HttpGet]
-    [Route("user-summary")]
-    public async Task<IActionResult> GetUserSummary([FromQuery] Guid userId)
+    [Route("user-overview")]
+    public async Task<IActionResult> GetUserOverview([FromQuery] Guid userId)
     {
         try
         {
             var response = await _mediator.Send(
-                new GetUserSummaryQuery 
+                new GetUserOverviewQuery 
                 { 
                     UserId = userId
                 });
