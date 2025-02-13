@@ -58,41 +58,17 @@ paths:
             type: string
       responses:
         '200':
+          description: The resource has been updated
+          $ref: '#/components/responses/createUpdateResponse'
+        '201':
+          description: The resource has been created
           $ref: '#/components/responses/createUpdateResponse'
         '404':
           $ref: '#/components/responses/notFound'
         '401':
           $ref: '#/components/responses/unauthorized'
         '429':
-          $ref: '#/components/responses/rateLimitExceededResponse'          
-    post:
-      summary: External authenticated endpoint for creating an ILR record
-      security:
-        - ApiKeyAuth: []  # Require API Key authentication
-      parameters:
-        - name: ukprn
-          in: path
-          required: true
-          description: The UK Provider Reference Number for the provider entering this learner
-          schema:
-            type: string
-        - name: uln
-          in: path
-          required: true
-          description: The Unique Learner Number for this learner
-          schema:
-            type: string
-      requestBody:
-        $ref: '#/components/requestBodies/learnerRequest'
-      responses:
-        '201':
-          $ref: '#/components/responses/createUpdateResponse'
-        '400':
-          $ref: '#/components/responses/badRequest'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '429':
-          $ref: '#/components/responses/rateLimitExceededResponse'           
+          $ref: '#/components/responses/rateLimitExceededResponse'                       
     get:
       summary: Returns the unique learner for this provider
       security:
@@ -194,7 +170,7 @@ components:
               $ref: '#/components/schemas/pagedApprenticeships'
 
     createUpdateResponse:
-      description: The update
+      description: A resource has been created or updated through the service
       headers:
         Location:
           $ref: '#/components/headers/location'
