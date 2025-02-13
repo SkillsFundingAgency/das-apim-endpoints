@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Services
@@ -21,7 +23,26 @@ namespace SFA.DAS.FindAnApprenticeship.Services
 
         public async Task<IVacancy> GetClosedVacancy(string vacancyReference)
         {
-            return await recruitApiClient.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(vacancyReference.Replace("VAC", "")));
+            var response = await recruitApiClient.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(vacancyReference.Replace("VAC", "")));
+            if (response is not { IsAnonymous: true })
+            {
+                return response;
+            }
+            
+            switch (response.EmployerLocationOption)
+            {
+                case AvailableWhere.OneLocation:
+                case AvailableWhere.MultipleLocations:
+                    response.EmployerLocations?.ForEach(x => x.Anonymise());
+                    break;
+                case AvailableWhere.AcrossEngland:
+                    break;
+                default:
+                    response.EmployerLocation.Anonymise();
+                    break;
+            }
+
+            return response;
         }
 
         public async Task<List<IVacancy>> GetVacancies(List<string> vacancyReferences)
