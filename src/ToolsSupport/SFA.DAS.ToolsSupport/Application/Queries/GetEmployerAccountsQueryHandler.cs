@@ -1,5 +1,4 @@
-﻿using System.Net;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.ToolsSupport.InnerApi.Requests;
@@ -15,26 +14,33 @@ public class GetEmployerAccountsQueryHandler(IInternalApiClient<AccountsConfigur
 
         if (request.AccountId != null)
         {
-            var accountResponse = await client.GetWithResponseCode<GetEmployerAccountByIdResponse>(
-                    new GetEmployerAccountByIdRequest(request.AccountId.Value));
-
-            if (accountResponse.StatusCode == HttpStatusCode.OK)
-            {
-                var account = accountResponse.Body;
-                response.Accounts.Add(new EmployerAccount
-                {
-                    AccountId = account.AccountId,
-                    DasAccountName = account.DasAccountName,
-                    HashedAccountId = account.HashedAccountId,
-                    PublicHashedAccountId = account.PublicHashedAccountId
-                });
-            }
+            await AddAccountDetails(request.AccountId.Value, response);
         }
         else if (request.PayeSchemeRef != null)
         {
-
+            var payeDetail = await client.Get<GetEmployerAccountByPayeResponse>(new GetEmployerAccountByPayeRequest(request.PayeSchemeRef));
+            if (payeDetail != null)
+            {
+                await AddAccountDetails(payeDetail.AccountId, response);
+            }
         }
-
         return response;
+    }
+
+    private async Task AddAccountDetails(long accountId, GetEmployerAccountsQueryResult response)
+    {
+        var account = await client.Get<GetEmployerAccountByIdResponse>(
+            new GetEmployerAccountByIdRequest(accountId));
+
+        if (account != null)
+        {
+            response.Accounts.Add(new EmployerAccount
+            {
+                AccountId = account.AccountId,
+                DasAccountName = account.DasAccountName,
+                HashedAccountId = account.HashedAccountId,
+                PublicHashedAccountId = account.PublicHashedAccountId
+            });
+        }
     }
 }
