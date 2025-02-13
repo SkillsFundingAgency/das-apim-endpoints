@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using SFA.DAS.ToolsSupport.Interfaces;
+﻿using SFA.DAS.ToolsSupport.Interfaces;
 using SFA.DAS.ToolsSupport.Models.Constants;
 
 namespace SFA.DAS.ToolsSupport.Strategies;
@@ -18,7 +17,8 @@ public class AccountDetailsStrategyFactory : IAccountDetailsStrategyFactory
     {
         _strategyFactories = new Dictionary<AccountFieldSelection, Func<IAccountDetailsStrategy>>
             {
-                { AccountFieldSelection.EmployerAccount, () => new AccountDetailsLegalEntitiesStrategy(accountService) }
+                { AccountFieldSelection.EmployerAccount, () => new AccountDetailsLegalEntitiesStrategy(accountService) },
+                { AccountFieldSelection.EmployerAccountTeam, () => new AccountDetailsTeamMembersStrategy(accountService) }
             };
     }
 

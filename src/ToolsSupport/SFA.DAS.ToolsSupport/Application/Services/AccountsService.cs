@@ -27,5 +27,12 @@ public class AccountsService(IAccountsApiClient<AccountsConfiguration> client) :
         var response = await client.Get<List<Account>>(new GetUserAccountsRequest(userId));
 
         return response;
+    } 
+    
+    public async Task<List<TeamMember>> GetAccountTeamMembers(long accountId)
+    {
+        var response = await client.Get<List<TeamMember>>(new GetAccountTeamMembersRequest(accountId));
+
+        return response;
     }
 }
