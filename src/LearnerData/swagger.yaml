@@ -63,8 +63,6 @@ paths:
         '201':
           description: The resource has been created
           $ref: '#/components/responses/createUpdateResponse'
-        '404':
-          $ref: '#/components/responses/notFound'
         '401':
           $ref: '#/components/responses/unauthorized'
         '429':
