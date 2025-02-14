@@ -3,7 +3,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
-using SFA.DAS.FindApprenticeshipJobs.Extensions;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Models;
 

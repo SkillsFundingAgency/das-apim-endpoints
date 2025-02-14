@@ -54,9 +54,9 @@ public class SubmitApplicationCommandHandler(
             helper.SubmitApplicationEmailTemplateId,
             application.Candidate.Email,
             application.Candidate.FirstName,
-            vacancy?.Title, vacancy?.EmployerName,
-            vacancy?.Address.AddressLine4 ?? vacancy?.Address.AddressLine3 ?? vacancy?.Address.AddressLine2 ?? vacancy?.Address.AddressLine1 ?? "Unknown",
-            vacancy?.Address.Postcode,
+            vacancy.Title,
+            vacancy.EmployerName,
+            vacancyService.GetVacancyWorkLocation(vacancy),
             helper.CandidateApplicationUrl);
         await notificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens));
         var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();

@@ -1,7 +1,3 @@
-using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.FindAnApprenticeship.Domain.EmailTemplates;
@@ -16,6 +12,10 @@ using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.WithdrawApplication;
 
@@ -70,8 +70,7 @@ public class WithdrawApplicationCommandHandler(
             application.Candidate.FirstName,
             vacancyResponse.Title,
             vacancyResponse.EmployerName,
-            vacancyResponse.Address.AddressLine4 ?? vacancyResponse.Address.AddressLine3 ?? vacancyResponse.Address.AddressLine2 ?? vacancyResponse.Address.AddressLine1 ?? "Unknown",
-            vacancyResponse.Address.Postcode);
+            vacancyService.GetVacancyWorkLocation(vacancyResponse));
     }
 
     private WithdrawApplicationEmail GetWithdrawApplicationEmail(GetApplicationApiResponse application, GetApprenticeshipVacancyItemResponse vacancyResponse)
@@ -82,7 +81,6 @@ public class WithdrawApplicationCommandHandler(
             application.Candidate.FirstName,
             vacancyResponse.Title,
             vacancyResponse.EmployerName,
-            vacancyResponse.Address.AddressLine4 ?? vacancyResponse.Address.AddressLine3 ?? vacancyResponse.Address.AddressLine2 ?? vacancyResponse.Address.AddressLine1 ?? "Unknown",
-            vacancyResponse.Address.Postcode);
+            vacancyService.GetVacancyWorkLocation(vacancyResponse));
     }
 }
