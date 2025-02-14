@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
+using SFA.DAS.FindApprenticeshipJobs.Extensions;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.Notifications.Messages.Commands;
@@ -23,10 +25,16 @@ public class ProcessVacancyClosedEarlyCommandHandler(
         var allCandidateApplicationsTask = candidateApiClient.Get<GetCandidateApplicationApiResponse>(new GetCandidateApplicationsByVacancyRequest(request.VacancyReference.ToString(), null, false));
 
         await Task.WhenAll(vacancyTask, allCandidateApplicationsTask);
-
         var notificationTasks = new List<Task>();
         var updateCandidate = new List<Task>();
-        
+
+        var employmentWorkLocation = vacancyTask.Result.EmployerLocationOption switch
+        {
+            AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancyTask.Result.EmployerLocations),
+            AvailableWhere.AcrossEngland => "Recruiting nationally",
+            _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancyTask.Result.EmployerLocation)
+        };
+
         foreach (var candidate in allCandidateApplicationsTask.Result.Candidates)
         {
             var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
@@ -40,8 +48,7 @@ public class ProcessVacancyClosedEarlyCommandHandler(
                 vacancyTask.Result.Title,
                 helper.VacancyUrl,
                 vacancyTask.Result.EmployerName,
-                vacancyTask.Result.EmployerLocation.AddressLine4 ?? vacancyTask.Result.EmployerLocation.AddressLine3 ?? vacancyTask.Result.EmployerLocation.AddressLine2 ?? vacancyTask.Result.EmployerLocation.AddressLine1, 
-                vacancyTask.Result.EmployerLocation?.Postcode, 
+                employmentWorkLocation, 
                 candidate.ApplicationCreatedDate,
                 helper.SettingsUrl);
             notificationTasks.Add(notificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens)));

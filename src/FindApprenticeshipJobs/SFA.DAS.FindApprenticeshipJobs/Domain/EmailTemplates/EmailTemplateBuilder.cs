@@ -2,6 +2,10 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.FindApprenticeshipJobs.Extensions;
+using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
 {
@@ -75,6 +79,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
             {
                 string? trainingCourseText;
                 string? wageText;
+                var employmentWorkLocation = vacancy.EmployerLocationOption switch
+                {
+                    AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocations(vacancy.EmployerLocations),
+                    AvailableWhere.AcrossEngland => "Recruiting nationally",
+                    _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.EmployerLocation)
+                };
 
                 sb.AppendLine();
 
@@ -91,11 +101,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                     wageText = (vacancy.WageType == "Competitive") ? vacancy.WageType : vacancy.Wage;
                 }
                 sb.AppendLine(vacancy.EmployerName);
-                sb.AppendLine(!string.IsNullOrEmpty(vacancy.Address.AddressLine4) ? $"{vacancy.Address.AddressLine4}, {vacancy.Address.Postcode}" :
-                    !string.IsNullOrEmpty(vacancy.Address.AddressLine3) ? $"{vacancy.Address.AddressLine3}, {vacancy.Address.Postcode}" :
-                    !string.IsNullOrEmpty(vacancy.Address.AddressLine2) ? $"{vacancy.Address.AddressLine2}, {vacancy.Address.Postcode}" :
-                    !string.IsNullOrEmpty(vacancy.Address.AddressLine1) ? $"{vacancy.Address.AddressLine1}, {vacancy.Address.Postcode}" :
-                    vacancy.Address.Postcode);
+                sb.AppendLine(employmentWorkLocation);
 
                 sb.AppendLine();
                 if (hasSearchLocation)
