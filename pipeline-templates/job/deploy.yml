@@ -115,7 +115,8 @@ jobs:
               -SandboxEnabled ${{ parameters.SandboxEnabled }} `
               -AddXForwardedAuthorization ${{ parameters.AddXForwardedAuthorization }} `
               -CheckClientCert ${{ parameters.CheckClientCert }} `
-              -KeyVaultSecretApimClientCertUri "https://das-at-shared-apim-kv.vault.azure.net/certificates/das-at-shared-apim-client-cert?api-version=7.3" `
+              -ApimKeyVaultUri $(ApimKeyVaultUri) `
+              -ApimKeyVaultClientCertName $(ApimKeyVaultClientCertName) `
               -Verbose
             azurePowerShellVersion: LatestVersion
             pwsh: true
