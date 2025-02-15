@@ -23,7 +23,7 @@ public class GetSavedSearchVacanciesQueryHandler(
 
         if (candidate == null || candidate.Status == UserStatus.Deleted || candidate.Status == UserStatus.Dormant)
         {
-            return new GetSavedSearchVacanciesQueryResult();
+            return null;
         }
 
         var routesTask = courseService.GetRoutes();
@@ -34,7 +34,7 @@ public class GetSavedSearchVacanciesQueryHandler(
         var levelsList = levelsTask.Result;
         var searchResult = await GetSavedSearchResults(request, routesList, levelsList,candidate);
         
-        return searchResult ?? new GetSavedSearchVacanciesQueryResult();
+        return searchResult;
     }
     private async Task<GetSavedSearchVacanciesQueryResult?> GetSavedSearchResults(GetSavedSearchVacanciesQuery request,
         GetRoutesListResponse routesList, GetCourseLevelsListResponse levelsList, GetCandidateApiResponse candidate)

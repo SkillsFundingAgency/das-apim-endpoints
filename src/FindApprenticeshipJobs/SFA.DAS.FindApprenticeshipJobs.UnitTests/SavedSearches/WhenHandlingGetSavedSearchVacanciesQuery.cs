@@ -17,7 +17,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches;
 public class WhenHandlingGetSavedSearchVacanciesQuery
 {
     [Test, MoqAutoData]
-    public async Task When_Saved_Search_Results_Returns_Null_Then_Gets_Saved_Searches_Returns_Empty(
+    public async Task When_Saved_Search_Results_Returns_Null_Then_Gets_Saved_Searches_Returns_Null(
         Guid candidateId,
         double longitude,
         double latitude,
@@ -34,15 +34,16 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
         mockQuery = mockQuery with { Latitude = latitude.ToString(CultureInfo.InvariantCulture) };
         mockQuery = mockQuery with { Longitude = longitude.ToString(CultureInfo.InvariantCulture) };
 
-        var expectedUrl = new GetSavedSearchesApiRequest(mockQuery.LastRunDateFilter.ToString("O"), mockQuery.PageNumber, mockQuery.PageSize);
-        mockFindApprenticeshipApiClient.Setup(client => client.Get<GetSavedSearchesApiResponse>(It.Is<GetSavedSearchesApiRequest>(c => c.GetUrl == expectedUrl.GetUrl))).ReturnsAsync(mockGetSavedSearchesApiResponse);
+        mockFindApprenticeshipApiClient
+            .Setup(x => x.Get<GetVacanciesResponse>(It.IsAny<IGetApiRequest>()))
+            .ReturnsAsync((GetVacanciesResponse)null!);
 
         var candidateExpectedUrl = new GetCandidateApiRequest(candidateId.ToString());
         mockCandidateApiClient.Setup(client => client.Get<GetCandidateApiResponse>(It.Is<GetCandidateApiRequest>(c => c.GetUrl == candidateExpectedUrl.GetUrl))).ReturnsAsync(getCandidateApiResponse);
 
         var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
 
-        actual.Should().NotBeNull();
+        actual.Should().BeNull();
     }
 
     [Test, MoqAutoData]
