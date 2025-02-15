@@ -76,26 +76,22 @@ public class GetSavedSearchVacanciesQueryHandler(
                     VacancyDataSource.Nhs
                 }));
 
-        if (vacanciesResponse != null)
+        var searchResult = new GetSavedSearchVacanciesQueryResult
         {
-            var searchResult = new GetSavedSearchVacanciesQueryResult
-            {
-                Id = request.Id,
-                User = candidate,
-                SearchTerm = request.SearchTerm,
-                Location = request.Location,
-                Categories = categories,
-                Levels = levels,
-                DisabilityConfident = request.DisabilityConfident,
-                Distance = request.Distance,
-                UnSubscribeToken = request.UnSubscribeToken,
-                Vacancies = vacanciesResponse.ApprenticeshipVacancies.Select(x =>
-                        (GetSavedSearchVacanciesQueryResult.ApprenticeshipVacancy) x)
-                    .ToList()
-            };
-            return searchResult;
-        }
-
-        return null;
+            Id = request.Id,
+            User = candidate,
+            SearchTerm = request.SearchTerm,
+            Location = request.Location,
+            Categories = categories,
+            Levels = levels,
+            DisabilityConfident = request.DisabilityConfident,
+            Distance = request.Distance,
+            UnSubscribeToken = request.UnSubscribeToken,
+            Vacancies = vacanciesResponse?.ApprenticeshipVacancies != null ? vacanciesResponse.ApprenticeshipVacancies.Select(x =>
+                    (GetSavedSearchVacanciesQueryResult.ApprenticeshipVacancy) x)
+                .ToList() : []
+        };
+        return searchResult;
+        
     }
 }

@@ -43,7 +43,8 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
 
         var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
 
-        actual.Should().BeNull();
+        actual.Should().NotBeNull();
+        actual!.Vacancies.Should().BeEmpty();
     }
 
     [Test, MoqAutoData]
