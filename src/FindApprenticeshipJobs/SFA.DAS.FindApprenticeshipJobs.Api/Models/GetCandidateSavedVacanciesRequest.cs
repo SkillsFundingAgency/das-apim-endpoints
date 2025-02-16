@@ -4,7 +4,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models;
 
 public class GetCandidateSavedVacanciesRequest
 {
-    public int? MaxApprenticeshipSearchResultsCount { get; set; }
     public VacancySort ApprenticeshipSearchResultsSortOrder { get; set; }
     public Guid Id { get; set; }
     public Guid UserId { get; set; }

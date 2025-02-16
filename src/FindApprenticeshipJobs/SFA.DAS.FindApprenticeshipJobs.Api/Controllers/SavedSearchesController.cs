@@ -51,7 +51,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
             try
             {
                 var result = await mediator.Send(new GetSavedSearchVacanciesQuery(
-                        request.MaxApprenticeshipSearchResultsCount,
                         request.ApprenticeshipSearchResultsSortOrder,
                         request.Id,
                         request.UserId,

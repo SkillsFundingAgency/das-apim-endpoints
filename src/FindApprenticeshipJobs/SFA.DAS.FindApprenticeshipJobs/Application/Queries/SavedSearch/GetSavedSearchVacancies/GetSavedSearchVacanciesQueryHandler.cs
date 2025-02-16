@@ -66,7 +66,7 @@ public class GetSavedSearchVacanciesQueryHandler(
                 request.Distance,
                 request.SearchTerm,
                 1, // Defaulting to top results.
-                request.MaxApprenticeshipSearchResultsCount, // Default page size set to 5.
+                5, // Default page size set to 5.
                 categories.Select(cat => cat.Name!).ToList(),
                 levels.Select(level => level.Code).ToList(),
                 request.ApprenticeshipSearchResultsSortOrder,

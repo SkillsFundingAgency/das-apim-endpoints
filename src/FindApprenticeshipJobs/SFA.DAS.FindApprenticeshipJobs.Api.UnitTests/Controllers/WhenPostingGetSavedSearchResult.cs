@@ -22,7 +22,6 @@ public class WhenPostingGetSavedSearchResult
         [Greedy] SavedSearchesController controller)
     {
         mediator.Setup(x => x.Send(It.Is<GetSavedSearchVacanciesQuery>(c =>
-            c.MaxApprenticeshipSearchResultsCount == request.MaxApprenticeshipSearchResultsCount &&
             c.ApprenticeshipSearchResultsSortOrder == request.ApprenticeshipSearchResultsSortOrder &&
             c.Id == request.Id &&
             c.UserId == request.UserId &&

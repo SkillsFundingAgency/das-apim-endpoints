@@ -4,7 +4,6 @@ using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearchVacancies;
 
 public record GetSavedSearchVacanciesQuery(
-    int? MaxApprenticeshipSearchResultsCount,
     VacancySort ApprenticeshipSearchResultsSortOrder,
     Guid Id,
     Guid UserId,

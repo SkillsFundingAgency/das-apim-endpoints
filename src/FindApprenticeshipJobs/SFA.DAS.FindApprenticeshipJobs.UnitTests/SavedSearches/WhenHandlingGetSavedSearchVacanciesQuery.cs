@@ -102,7 +102,7 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
             mockQuery.Distance,
             mockQuery.SearchTerm,
             1,  // Defaulting to top results.
-            mockQuery.MaxApprenticeshipSearchResultsCount, // Default page size set to 5.
+            5, // Default page size set to 5.
             categories.Select(cat => cat.Name!).ToList(),
             levels.Select(c=>c.Code).ToList(),
             mockQuery.ApprenticeshipSearchResultsSortOrder,
