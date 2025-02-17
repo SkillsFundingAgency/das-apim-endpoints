@@ -18,17 +18,22 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application;
 public class WhenHandlingProcessApplicationReminder
 {
     [Test]
-    [MoqInlineAutoData("address1", "address2", "address3", "address4", "postcode", "address4 (postcode)")]
-    [MoqInlineAutoData("address1", "address2", "address3", null, "postcode", "address3 (postcode)")]
-    [MoqInlineAutoData("address1", "address2", null, null, "postcode", "address2 (postcode)")]
-    [MoqInlineAutoData("address1", null, null, null, "postcode", "address1 (postcode)")]
-    public async Task Then_The_Vacancy_With_OneLocation_Candidates_Are_Found_And_Emails_Sent(
+    [MoqInlineAutoData("address1", "address2", "address3", "address4", "postcode", "address4 (postcode)", AvailableWhere.OneLocation)]
+    [MoqInlineAutoData("address1", "address2", "address3", null, "postcode", "address3 (postcode)", AvailableWhere.OneLocation)]
+    [MoqInlineAutoData("address1", "address2", null, null, "postcode", "address2 (postcode)", AvailableWhere.OneLocation)]
+    [MoqInlineAutoData("address1", null, null, null, "postcode", "address1 (postcode)", AvailableWhere.OneLocation)]
+    [MoqInlineAutoData("address1", "address2", "address3", "address4", "postcode", "Recruiting nationally", AvailableWhere.AcrossEngland)]
+    [MoqInlineAutoData("address1", "address2", "address3", null, "postcode", "Recruiting nationally", AvailableWhere.AcrossEngland)]
+    [MoqInlineAutoData("address1", "address2", null, null, "postcode", "Recruiting nationally", AvailableWhere.AcrossEngland)]
+    [MoqInlineAutoData("address1", null, null, null, "postcode", "Recruiting nationally", AvailableWhere.AcrossEngland)]
+    public async Task Then_The_Vacancy_Candidates_Are_Found_And_Emails_Sent(
         string address1,
         string address2,
         string address3,
         string address4,
         string postcode,
         string expectedAddress,
+        AvailableWhere employerLocationOption,
         ProcessApplicationReminderCommand command,
         Preference candidatePreference,
         Preference candidatePreference1,
@@ -40,7 +45,7 @@ public class WhenHandlingProcessApplicationReminder
         [Frozen] Mock<INotificationService> notificationService,
         ProcessApplicationReminderCommandHandler handler)
     {
-        recruitApiResponse.EmployerLocationOption = AvailableWhere.OneLocation;
+        recruitApiResponse.EmployerLocationOption = employerLocationOption;
 
         recruitApiResponse.EmployerLocation.AddressLine1 = address1;
         recruitApiResponse.EmployerLocation.AddressLine2 = address2;
@@ -80,76 +85,6 @@ public class WhenHandlingProcessApplicationReminder
                     && c.Tokens["employer"] == recruitApiResponse.EmployerName 
                     && c.Tokens["location"] == $"{expectedAddress}"
                     && c.Tokens["closingDate"] == recruitApiResponse.ClosingDate.ToString("d MMM yyyy") 
-                    && !string.IsNullOrEmpty(c.Tokens["continueApplicationLink"])
-                    && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
-                    && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
-                )
-            ), Times.Once);
-        }
-    }
-
-    [Test]
-    [MoqInlineAutoData("address1", "address2", "address3", "address4", "postcode", "Recruiting nationally")]
-    public async Task Then_The_Vacancy_With_RecruitNationally_And_Candidates_Are_Found_And_Emails_Sent(
-        string address1,
-        string address2,
-        string address3,
-        string address4,
-        string postcode,
-        string expectedAddress,
-        ProcessApplicationReminderCommand command,
-        Preference candidatePreference,
-        Preference candidatePreference1,
-        GetCandidateApplicationApiResponse candidateApiResponse,
-        GetLiveVacancyApiResponse recruitApiResponse,
-        EmailEnvironmentHelper emailEnvironmentHelper,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
-        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        [Frozen] Mock<INotificationService> notificationService,
-        ProcessApplicationReminderCommandHandler handler)
-    {
-        recruitApiResponse.EmployerLocationOption = AvailableWhere.AcrossEngland;
-
-        recruitApiResponse.EmployerLocation.AddressLine1 = address1;
-        recruitApiResponse.EmployerLocation.AddressLine2 = address2;
-        recruitApiResponse.EmployerLocation.AddressLine3 = address3;
-        recruitApiResponse.EmployerLocation.AddressLine4 = address4;
-        recruitApiResponse.EmployerLocation.Postcode = postcode;
-
-
-        candidatePreference.PreferenceType = "Closing";
-        candidateApiClient
-            .Setup(x => x.Get<GetCandidateApplicationApiResponse>(
-                It.Is<GetCandidateApplicationsByVacancyRequest>(c =>
-                    c.GetUrl.Contains(command.VacancyReference.ToString())
-                    && c.GetUrl.Contains(candidatePreference.PreferenceId.ToString())))).ReturnsAsync(candidateApiResponse);
-        candidateApiClient
-            .Setup(x => x.Get<GetPreferencesApiResponse>(
-                It.IsAny<GetCandidatePreferencesRequest>())).ReturnsAsync(new GetPreferencesApiResponse
-                {
-                    Preferences =
-                [candidatePreference, candidatePreference1]
-                });
-        recruitApiClient
-            .Setup(x => x.Get<GetLiveVacancyApiResponse>(
-                It.Is<GetLiveVacancyApiRequest>(c =>
-                    c.GetUrl.Contains(command.VacancyReference.ToString()))))
-            .ReturnsAsync(recruitApiResponse);
-
-        await handler.Handle(command, CancellationToken.None);
-
-        foreach (var candidate in candidateApiResponse.Candidates)
-        {
-            notificationService.Verify(x => x.Send(
-                It.Is<SendEmailCommand>(c =>
-                    c.RecipientsAddress == candidate.Candidate.Email
-                    && c.TemplateId == emailEnvironmentHelper.ApplicationReminderEmailTemplateId
-                    && c.Tokens["firstName"] == candidate.Candidate.FirstName
-                    && c.Tokens["daysRemaining"] == command.DaysUntilClosing.ToString()
-                    && c.Tokens["vacancy"] == recruitApiResponse.Title
-                    && c.Tokens["employer"] == recruitApiResponse.EmployerName
-                    && c.Tokens["location"] == $"{expectedAddress}"
-                    && c.Tokens["closingDate"] == recruitApiResponse.ClosingDate.ToString("d MMM yyyy")
                     && !string.IsNullOrEmpty(c.Tokens["continueApplicationLink"])
                     && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
                     && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])

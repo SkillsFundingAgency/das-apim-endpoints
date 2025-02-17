@@ -66,16 +66,22 @@ public class WhenHandlingSubmitApplicationCommand
     }
     
     [Test]
-    [MoqInlineAutoData("address1","address2","address3","address4","address4")]
-    [MoqInlineAutoData("address1","address2","address3",null,"address3")]
-    [MoqInlineAutoData("address1","address2",null,null,"address2")]
-    [MoqInlineAutoData("address1",null,null,null,"address1")]
+    [MoqInlineAutoData("address1", "address2", "address3", "address4", "postcode", "address4 (postcode)", AvailableWhere.OneLocation)]
+    [MoqInlineAutoData("address1", "address2", "address3", null, "postcode", "address3 (postcode)", AvailableWhere.OneLocation)]
+    [MoqInlineAutoData("address1", "address2", null, null, "postcode", "address2 (postcode)", AvailableWhere.OneLocation)]
+    [MoqInlineAutoData("address1", null, null, null, "postcode", "address1 (postcode)", AvailableWhere.OneLocation)]
+    [MoqInlineAutoData("address1", "address2", "address3", "address4", "postcode", "Recruiting nationally", AvailableWhere.AcrossEngland)]
+    [MoqInlineAutoData("address1", "address2", "address3", null, "postcode", "Recruiting nationally", AvailableWhere.AcrossEngland)]
+    [MoqInlineAutoData("address1", "address2", null, null, "postcode", "Recruiting nationally", AvailableWhere.AcrossEngland)]
+    [MoqInlineAutoData("address1", null, null, null, "postcode", "Recruiting nationally", AvailableWhere.AcrossEngland)]
     public async Task Then_The_ApplicationStatus_Is_Updated_If_Submitted_To_Recruit_And_Notification_Sent(
         string address1,
         string address2,
         string address3,
         string address4,
+        string postcode,
         string expectedAddress,
+        AvailableWhere employerLocationOption,
         SubmitApplicationCommand request,
         GetApplicationApiResponse applicationApiResponse,
         GetApprenticeshipVacancyItemResponse vacancyResponse,
@@ -91,6 +97,8 @@ public class WhenHandlingSubmitApplicationCommand
         vacancyResponse.Address.AddressLine2 = address2;
         vacancyResponse.Address.AddressLine3 = address3;
         vacancyResponse.Address.AddressLine4 = address4;
+        vacancyResponse.Address.Postcode = postcode;
+        vacancyResponse.EmployerLocationOption = employerLocationOption;
         candidateApiClient
             .Setup(x => x.Get<GetApplicationApiResponse>(
                 It.Is<GetApplicationApiRequest>(c => 
@@ -109,6 +117,7 @@ public class WhenHandlingSubmitApplicationCommand
                 ), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
 
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
+        vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse)).Returns(expectedAddress);
 
 
         var actual = await handler.Handle(request, CancellationToken.None);
@@ -128,7 +137,7 @@ public class WhenHandlingSubmitApplicationCommand
                 && c.Tokens["firstName"] == applicationApiResponse.Candidate.FirstName
                 && c.Tokens["vacancy"] == vacancyResponse.Title
                 && c.Tokens["employer"] == vacancyResponse.EmployerName 
-                && c.Tokens["location"] == $"{expectedAddress}, {vacancyResponse.Address.Postcode}"
+                && c.Tokens["location"] == $"{expectedAddress}"
                 && !string.IsNullOrEmpty(c.Tokens["yourApplicationsURL"])
                 )
             ), Times.Once);
