@@ -3,6 +3,7 @@ using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ToolsSupport.Api.Models.EmployerAccount;
+using SFA.DAS.ToolsSupport.Application.Commands.ChangeUserRole;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportCreateInvitation;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportResendInvitation;
 using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
@@ -89,6 +90,35 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
         catch (Exception ex)
         {
             logger.LogError(ex, "Error in ResendInvitation for AccountId Id: {Id}", request.HashedAccountId);
+            return BadRequest();
+        }
+    }
+
+    [HttpPost]
+    [Route("change-role")]
+    public async Task<IActionResult> ChangeUserRole([FromBody] ChangeUserRoleRequest request)
+    {
+        try
+        {
+            logger.LogInformation("ChangeUserRole starting for AccountId {Id}", request.HashedAccountId);
+
+            var command = new ChangeUserRoleCommand
+            {
+                HashedAccountId = request.HashedAccountId,
+                Email = Uri.UnescapeDataString(request.Email),
+                Role = request.Role
+            };
+
+            var responseStatus = await mediator.Send(command);
+            if (responseStatus != HttpStatusCode.OK)
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error in ChangeUserRole for AccountId Id: {Id}", request.HashedAccountId);
             return BadRequest();
         }
     }

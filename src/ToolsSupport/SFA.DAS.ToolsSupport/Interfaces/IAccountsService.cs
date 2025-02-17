@@ -12,4 +12,5 @@ public interface IAccountsService
     Task<List<InnerApi.Responses.TeamMember>> GetAccountTeamMembers(long accountId);
     Task<ApiResponse<SendInvitationRequest>> SendInvitation(SendInvitationRequest request);
     Task<ApiResponse<ResendInvitationRequest>> ResendInvitation(ResendInvitationRequest request);
+    Task<ApiResponse<ChangeUserRoleRequest>> ChangeUserRole(ChangeUserRoleRequest request);
 }

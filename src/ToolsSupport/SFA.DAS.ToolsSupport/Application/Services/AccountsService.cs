@@ -46,4 +46,9 @@ public class AccountsService(IAccountsApiClient<AccountsConfiguration> client) :
     {
         return await client.PostWithResponseCode<ResendInvitationRequest>(request, false);
     }
+    
+    public async Task<ApiResponse<ChangeUserRoleRequest>> ChangeUserRole(ChangeUserRoleRequest request)
+    {
+        return await client.PostWithResponseCode<ChangeUserRoleRequest>(request, false);
+    }
 }
