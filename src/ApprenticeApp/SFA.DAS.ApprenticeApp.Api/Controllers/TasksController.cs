@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Commands;
 using SFA.DAS.ApprenticeApp.Application.Commands.Tasks;
+using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeshipDetails;
 using SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
@@ -146,7 +147,11 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             if (categoriesResult.TaskCategories == null)
                 return NotFound();
 
-            var ksbResult = await _mediator.Send(new GetStandardOptionKsbsQuery { Id = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId, Option = "core" });
+            var apprenticeshipDetailsResult = await _mediator.Send(new GetApprenticeshipQuery { ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId });
+            if (apprenticeshipDetailsResult == null)
+                return Ok();
+
+            var ksbResult = await _mediator.Send(new GetStandardOptionKsbsQuery { Id = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId, Option = apprenticeshipDetailsResult.Option == null ? "core" : apprenticeshipDetailsResult.Option });
 
             if (ksbResult.KsbsResult == null)
                 return NotFound();

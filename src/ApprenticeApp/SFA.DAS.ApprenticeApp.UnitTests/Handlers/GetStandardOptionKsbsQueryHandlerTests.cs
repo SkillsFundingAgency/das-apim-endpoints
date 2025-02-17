@@ -16,7 +16,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             CancellationToken cancellationToken)
         {
                query.Id = "StandardUid";
-            query.Option ="core";
+               query.Option ="core";
 
             await sut.Handle(query, cancellationToken);
             sut.Should().NotBeNull();
