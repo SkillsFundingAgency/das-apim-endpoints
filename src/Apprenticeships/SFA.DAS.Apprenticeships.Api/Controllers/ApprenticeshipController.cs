@@ -313,13 +313,22 @@ public class ApprenticeshipController : ControllerBase
     {
         var response = await _apiClient.PostWithResponseCode<object>(new PostFreezePaymentsRequest(apprenticeshipKey, request.Reason), false);
 
-        if (string.IsNullOrEmpty(response.ErrorContent))
+        if (!string.IsNullOrEmpty(response.ErrorContent))
         {
-            return Ok();
+            _logger.LogError("Error attempting to freeze apprenticeship {apprenticeshipKey} payments. {statusCode} returned from inner api. {message}", apprenticeshipKey, response.StatusCode, response.ErrorContent);
+            return BadRequest();
         }
 
-        _logger.LogError("Error attempting to freeze apprenticeship {apprenticeshipKey} payments. {statusCode} returned from inner api. {message}", apprenticeshipKey, response.StatusCode, response.ErrorContent);
-        return BadRequest();
+        var notificationCommand = response.Body.ToNotificationCommand(apprenticeshipKey);
+        var notificationResponse = await _mediator.Send(notificationCommand);
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to freeze apprenticeship payments Notification(s) to the related part(ies)");
+            return BadRequest();
+        }
+
+        return Ok();
     }
 
     [HttpPost]

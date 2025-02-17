@@ -52,5 +52,13 @@ namespace SFA.DAS.Apprenticeships.Api.Extensions
                 Rejector = response.Rejector
             };
         }
+
+        public static PaymentsFrozenCommand ToNotificationCommand(this PostFreezePaymentsRequest request)
+        {
+            return new PaymentsFrozenCommand
+            {
+                ApprenticeshipKey = request.ApprenticeshipKey
+            };
+        };
     }
 }
