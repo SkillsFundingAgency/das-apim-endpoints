@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.ToolsSupport.Api.Models.EmployerAccount;
 using SFA.DAS.ToolsSupport.Application.Queries;
 using SFA.DAS.ToolsSupport.Application.Queries.GetUserOverview;
 using System.Net;
@@ -47,7 +48,7 @@ public class UsersQueryController : ControllerBase
                     UserId = userId
                 });
 
-            return Ok(response);
+            return Ok((GetUserOverviewResponse)response);
         }
         catch (Exception ex)
         {
