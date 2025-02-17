@@ -319,7 +319,7 @@ public class ApprenticeshipController : ControllerBase
             return BadRequest();
         }
 
-        var notificationCommand = response.Body.ToNotificationCommand(apprenticeshipKey);
+        var notificationCommand = request.ToNotificationCommand(apprenticeshipKey);
         var notificationResponse = await _mediator.Send(notificationCommand);
 
         if (!notificationResponse.Success)
