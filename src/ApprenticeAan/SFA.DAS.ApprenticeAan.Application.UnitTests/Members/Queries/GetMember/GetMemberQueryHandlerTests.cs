@@ -21,6 +21,6 @@ public class GetMemberQueryHandlerTests
         var actual = await handler.Handle(query, cancellationToken);
 
         actual.Should().Be(expected);
-        apiClientMock.Verify(x => x.GetMember(query.MemberId, new CancellationToken()), Times.Once());
+        apiClientMock.Verify(x => x.GetMember(query.MemberId, cancellationToken), Times.Once());
     }
 }

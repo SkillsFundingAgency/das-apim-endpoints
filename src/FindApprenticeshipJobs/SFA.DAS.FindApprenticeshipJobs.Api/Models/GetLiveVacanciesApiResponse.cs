@@ -1,4 +1,6 @@
 ﻿using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Models;
 
 public class GetLiveVacanciesApiResponse
@@ -51,6 +53,9 @@ public class GetLiveVacanciesApiResponse
                 Route = source.Route,
                 Description = source.Description,
                 Address = source.Address == null ? null : (Address)source.Address,
+                EmploymentLocations = source.EmploymentLocations?.Select(x => (Address)x).ToList(),
+                EmploymentLocationInformation = source.EmploymentLocationInformation,
+                EmploymentLocationOption = source.EmploymentLocationOption,
                 ClosingDate = source.ClosingDate,
                 StartDate = source.StartDate,
                 PostedDate = source.PostedDate,
@@ -118,6 +123,9 @@ public class GetLiveVacanciesApiResponse
         public string ApprenticeshipTitle { get; set; }
         public string? Description { get; set; }
         public Address? Address { get; set; }
+        public List<Address>? EmploymentLocations { get; set; }
+        public string? EmploymentLocationInformation { get; set; }
+        public AvailableWhere? EmploymentLocationOption { get; set; }
         public string? EmployerName { get; set; }
         public long? Ukprn { get; set; }
         public string? ProviderName { get; set; }
