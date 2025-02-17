@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.ToolsSupport.InnerApi.Requests;
 using SFA.DAS.ToolsSupport.InnerApi.Responses;
 using SFA.DAS.ToolsSupport.Interfaces;
@@ -27,12 +28,22 @@ public class AccountsService(IAccountsApiClient<AccountsConfiguration> client) :
         var response = await client.Get<List<Account>>(new GetUserAccountsRequest(userId));
 
         return response;
-    } 
-    
-    public async Task<List<TeamMember>> GetAccountTeamMembers(long accountId)
+    }
+
+    public async Task<List<InnerApi.Responses.TeamMember>> GetAccountTeamMembers(long accountId)
     {
-        var response = await client.Get<List<TeamMember>>(new GetAccountTeamMembersRequest(accountId));
+        var response = await client.Get<List<InnerApi.Responses.TeamMember>>(new GetAccountTeamMembersRequest(accountId));
 
         return response;
+    }
+
+    public async Task<ApiResponse<SendInvitationRequest>> SendInvitation(SendInvitationRequest request)
+    {
+        return await client.PostWithResponseCode<SendInvitationRequest>(request, false);
+    }
+
+    public async Task<ApiResponse<ResendInvitationRequest>> ResendInvitation(ResendInvitationRequest request)
+    {
+        return await client.PostWithResponseCode<ResendInvitationRequest>(request, false);
     }
 }
