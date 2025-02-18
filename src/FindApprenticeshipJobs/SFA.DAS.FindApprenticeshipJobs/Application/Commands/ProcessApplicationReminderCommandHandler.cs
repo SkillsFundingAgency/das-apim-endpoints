@@ -1,9 +1,11 @@
 using MediatR;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands;
@@ -30,6 +32,13 @@ public class ProcessApplicationReminderCommandHandler(
 
         await Task.WhenAll(vacancyTask, candidatesTask);
 
+        var employmentWorkLocation = vacancyTask.Result.EmployerLocationOption switch
+        {
+            AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancyTask.Result.EmployerLocations),
+            AvailableWhere.AcrossEngland => "Recruiting nationally",
+            _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancyTask.Result.EmployerLocation)
+        };
+
         foreach (var candidate in candidatesTask.Result.Candidates)
         {
             var email = new SendSubmitApplicationEmailReminderTemplate(
@@ -40,8 +49,7 @@ public class ProcessApplicationReminderCommandHandler(
                 vacancyTask.Result.Title,
                 helper.VacancyUrl,
                 vacancyTask.Result.EmployerName,
-                vacancyTask.Result.EmployerLocation.AddressLine4 ?? vacancyTask.Result.EmployerLocation.AddressLine3 ?? vacancyTask.Result.EmployerLocation.AddressLine2 ?? vacancyTask.Result.EmployerLocation.AddressLine1, 
-                vacancyTask.Result.EmployerLocation?.Postcode, 
+                employmentWorkLocation,
                 helper.CandidateApplicationUrl,
                 vacancyTask.Result.ClosingDate,
                 helper.SettingsUrl);

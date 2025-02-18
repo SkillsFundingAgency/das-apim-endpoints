@@ -71,4 +71,15 @@ public static class AddressExtensions
         address.Latitude = null;
         address.Longitude = null;
     }
+
+    public static string? GetLastNonEmptyField(this Address address)
+    {
+        return new[]
+        {
+            address.AddressLine4,
+            address.AddressLine3,
+            address.AddressLine2,
+            address.AddressLine1,
+        }.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
+    }
 }

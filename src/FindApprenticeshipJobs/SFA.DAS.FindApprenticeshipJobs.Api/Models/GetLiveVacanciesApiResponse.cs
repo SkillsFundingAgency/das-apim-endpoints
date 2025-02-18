@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Models;
 
@@ -52,8 +53,8 @@ public class GetLiveVacanciesApiResponse
                 StandardLarsCode = source.StandardLarsCode,
                 Route = source.Route,
                 Description = source.Description,
-                Address = source.Address == null ? null : (Address)source.Address,
-                EmploymentLocations = source.EmploymentLocations?.Select(x => (Address)x).ToList(),
+                Address = source.Address,
+                EmploymentLocations = source.EmploymentLocations,
                 EmploymentLocationInformation = source.EmploymentLocationInformation,
                 EmploymentLocationOption = source.EmploymentLocationOption,
                 ClosingDate = source.ClosingDate,
@@ -167,33 +168,6 @@ public class GetLiveVacanciesApiResponse
         public string? AdditionalTrainingDescription { get; set; }
         public string? SearchTags { get; set; }
 
-    }
-
-    public class Address
-    {
-        public static implicit operator Address(Application.Shared.Address source)
-        {
-            return new Address
-            {
-                AddressLine1 = source.AddressLine1,
-                AddressLine2 = source.AddressLine2,
-                AddressLine3 = source.AddressLine3,
-                AddressLine4 = source.AddressLine4,
-                Country = source.Country,
-                Postcode = source.Postcode,
-                Latitude = source.Latitude,
-                Longitude = source.Longitude
-            };
-        }
-
-        public string? AddressLine1 { get; set; }
-        public string? AddressLine2 { get; set; }
-        public string? AddressLine3 { get; set; }
-        public string? AddressLine4 { get; set; }
-        public string? Country { get; set; }
-        public string? Postcode { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
     }
 
     public class Wage

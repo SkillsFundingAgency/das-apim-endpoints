@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification
 {
@@ -37,7 +39,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
 
             public string? EmployerName { get; set; }
 
-            public Address Address { get; set; } = new();
+            public Address? EmployerLocation { get; set; }
+            public List<Address>? EmployerLocations { get; set; }
+            public AvailableWhere? EmployerLocationOption { get; set; }
+
 
             public string? Wage { get; set; }
 
@@ -53,20 +58,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
 
             public string? VacancySource { get; set; }
         }
-
-        public class Address
-        {
-            public string? AddressLine1 { get; set; }
-
-            public string? AddressLine2 { get; set; }
-
-            public string? AddressLine3 { get; set; }
-
-            public string? AddressLine4 { get; set; }
-
-            public string? Postcode { get; set; }
-        }
-
         public class UserDetails
         {
             public Guid Id { get; set; }
