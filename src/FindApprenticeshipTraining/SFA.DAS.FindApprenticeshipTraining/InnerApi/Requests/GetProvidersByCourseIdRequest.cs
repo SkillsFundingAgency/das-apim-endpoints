@@ -1,5 +1,6 @@
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,12 +13,15 @@ public class GetProvidersByCourseIdRequest : IGetApiRequest
     public decimal? Distance { get; set; }
     public decimal? Latitude { get; set; }
     public decimal? Longitude { get; set; }
+
+    public string Location { get; set; }
     public List<DeliveryMode?> DeliveryModes { get; set; }
     public List<ProviderRating?> EmployerProviderRatings { get; set; }
     public List<ProviderRating?> ApprenticeProviderRatings { get; set; }
     public List<QarRating?> Qar { get; set; }
     public int? Page { get; set; }
     public int? PageSize { get; set; }
+    public Guid? UserId { get; set; }
 
     public string GetUrl => BuildUrl();
 
@@ -68,6 +72,16 @@ public class GetProvidersByCourseIdRequest : IGetApiRequest
         if (PageSize != null)
         {
             url += $"&pageSize={PageSize}";
+        }
+
+        if (!string.IsNullOrEmpty(Location))
+        {
+            url += $"&location={Location}";
+        }
+
+        if (UserId != null)
+        {
+            url += $"&userId={UserId}";
         }
 
         return url;
