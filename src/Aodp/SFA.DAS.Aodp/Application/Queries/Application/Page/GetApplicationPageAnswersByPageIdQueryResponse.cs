@@ -12,7 +12,7 @@
     {
         public string? TextValue { get; set; }
         public decimal? NumberValue { get; set; }
-        public DateTime? DateValue { get; set; }
+        public DateOnly? DateValue { get; set; }
         public List<string>? MultipleChoiceValue { get; set; }
         public string? RadioChoiceValue { get; set; }
     }
