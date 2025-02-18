@@ -201,4 +201,22 @@ public class ApplicationsController : Controller
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
+
+    [HttpGet("/api/applications/{applicationId}/metadata")]
+    [ProducesResponseType(typeof(GetApplicationMetadataByIdQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetApplicationMetadataByIdAsync(Guid applicationId)
+    {
+        var query = new GetApplicationMetadataByIdQuery(applicationId);
+
+        var response = await _mediator.Send(query);
+
+        if (response.Success)
+        {
+            return Ok(response.Value);
+        }
+        _logger.LogError(response.ErrorMessage);
+        return StatusCode(StatusCodes.Status500InternalServerError);
+    }
 }
