@@ -180,7 +180,8 @@ public class GetManageApprenticeshipDetailsQueryHandler(
             LearnerStatus = source.LearnerStatus.Value,
             WithdrawalChangedDate = source.WithdrawalChangedDate,
             WithdrawalReason = source.WithdrawalReason,
-            LastCensusDateOfLearning = source.LastCensusDateOfLearning
+            LastCensusDateOfLearning = source.LastCensusDateOfLearning,
+            LastDayOfLearning = source.LastDayOfLearning
         };
     }
 

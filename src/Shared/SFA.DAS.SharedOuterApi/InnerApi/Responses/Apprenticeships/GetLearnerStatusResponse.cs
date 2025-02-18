@@ -9,4 +9,5 @@ public class GetLearnerStatusResponse
     public DateTime? WithdrawalChangedDate { get; set; }
     public string WithdrawalReason { get; set; }
     public DateTime? LastCensusDateOfLearning { get; set; }
+    public DateTime? LastDayOfLearning { get; set; }
 }
