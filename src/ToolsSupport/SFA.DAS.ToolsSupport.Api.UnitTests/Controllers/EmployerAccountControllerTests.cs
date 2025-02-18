@@ -26,7 +26,7 @@ public class EmployerAccountControllerTests
                    It.Is<GetEmployerAccountDetailsQuery>(x =>
                    x.AccountId == accountId
                    && x.SelectedField == AccountFieldSelection.EmployerAccount),
-                   It.IsAny<CancellationToken>()));
+                   It.IsAny<CancellationToken>())).ReturnsAsync(getDetailsResult);
 
         var controllerResult = await controller.GetAccountDetails(accountId, AccountFieldSelection.EmployerAccount) as ObjectResult;
 
@@ -34,5 +34,6 @@ public class EmployerAccountControllerTests
         var model = controllerResult.Value as GetEmployerAccountDetailsResponse;
 
         model.Account.Should().NotBeNull();
+        model.Account.Should().BeEquivalentTo(getDetailsResult);
     }
 }
