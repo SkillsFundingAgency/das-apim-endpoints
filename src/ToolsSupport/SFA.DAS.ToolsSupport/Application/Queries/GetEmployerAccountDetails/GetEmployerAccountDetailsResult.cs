@@ -11,10 +11,11 @@ public class GetEmployerAccountDetailsResult
     public DateTime DateRegistered { get; set; }
     public string OwnerEmail { get; set; } = "";
     public IEnumerable<LegalEntity> LegalEntities { get; set; } = [];
+    public ICollection<TeamMember> TeamMembers { get; set; } = [];
+
     public string ApprenticeshipEmployerType { get; set; } = "";
 
 
     //public IEnumerable<PayeSchemeViewModel> PayeSchemes { get; set; }
-    //public ICollection<TeamMemberViewModel> TeamMembers { get; set; }
     //public IEnumerable<TransactionViewModel> Transactions { get; set; }
 }

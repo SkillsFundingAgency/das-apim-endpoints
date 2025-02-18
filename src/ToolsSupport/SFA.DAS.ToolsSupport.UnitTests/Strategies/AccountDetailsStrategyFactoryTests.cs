@@ -20,6 +20,19 @@ public class AccountDetailsStrategyFactoryTests
         strategy.Should().BeOfType<AccountDetailsLegalEntitiesStrategy>();
     }
 
+     [Test, MoqAutoData]
+    public void CreateStrategy_ShouldReturn_TeamMembersStrategy_For_EmployerAccountTeam(
+          AccountDetailsStrategyFactory factory)
+    {
+        var selection = AccountFieldSelection.EmployerAccountTeam;
+
+        // Act
+        var strategy = factory.CreateStrategy(selection);
+
+        // Assert
+        strategy.Should().BeOfType<AccountDetailsTeamMembersStrategy>();
+    }
+
 
     [Test, MoqAutoData]
     public void CreateStrategy_ShouldThrowException_ForUnknown_AccountFieldSelection(
