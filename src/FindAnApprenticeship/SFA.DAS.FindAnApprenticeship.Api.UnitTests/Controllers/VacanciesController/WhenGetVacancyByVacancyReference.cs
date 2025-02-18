@@ -1,18 +1,14 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
-using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.FindAnApprenticeship.Services;
 using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.FindAnApprenticeship.Services;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesController
 {
@@ -26,6 +22,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.VacanciesController controller)
         {
+            result.ApprenticeshipVacancy.VacancySource = VacancyDataSource.Raa;
             mediator.Setup(x => x.Send(It.Is<GetApprenticeshipVacancyQuery>(c =>
                 c.VacancyReference.Equals(vacancyReference)),
                     CancellationToken.None))
@@ -67,7 +64,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
                     c.VacancyReference == vacancyReference),
                 CancellationToken.None));
 
-            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference, 1), Times.Once);
+            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference, 1), Times.Never);
         }
 
         [Test, MoqAutoData]
@@ -91,7 +88,35 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VacanciesContro
                     c.VacancyReference == vacancyReference),
                 CancellationToken.None));
 
-            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference, 1), Times.Once);
+            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference, 1), Times.Never);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Vacancy_Is_Non_Raa_Query_Response_Is_Returned(
+            string vacancyReference,
+            GetApprenticeshipVacancyQueryResult result,
+            [Frozen] Mock<IMetrics> metrics,
+            [Frozen] Mock<IMediator> mediator,
+            [Greedy] Api.Controllers.VacanciesController controller)
+        {
+            result.ApprenticeshipVacancy.VacancySource = VacancyDataSource.Nhs;
+            mediator.Setup(x => x.Send(It.Is<GetApprenticeshipVacancyQuery>(c =>
+                        c.VacancyReference.Equals(vacancyReference)),
+                    CancellationToken.None))
+                .ReturnsAsync(result);
+
+            var actual = await controller.SearchByVacancyReference(vacancyReference) as OkObjectResult;
+
+            Assert.That(actual, Is.Not.Null);
+            var actualModel = actual.Value as GetApprenticeshipVacancyApiResponse;
+            Assert.That(actualModel, Is.Not.Null);
+            actualModel.Should().BeEquivalentTo((GetApprenticeshipVacancyApiResponse)result);
+
+            mediator.Verify(m => m.Send(It.Is<GetApprenticeshipVacancyQuery>(c =>
+                    c.VacancyReference == vacancyReference),
+                CancellationToken.None));
+
+            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference, 1), Times.Never);
         }
     }
 }
