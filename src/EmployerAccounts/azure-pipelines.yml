@@ -28,6 +28,8 @@ pr:
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
+- name: ProductShortName
+  value: ea
 
 resources:
   repositories:
@@ -54,3 +56,4 @@ stages:
     OuterApiName: EmployerAccounts
     ConfigurationSecrets:
       CompaniesHouseApiKey: $(CompaniesHouseApiKey)
+    useProductAppInsights: 'True'

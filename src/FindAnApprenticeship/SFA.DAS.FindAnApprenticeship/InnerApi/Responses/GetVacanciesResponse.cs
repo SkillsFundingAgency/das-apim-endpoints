@@ -56,8 +56,14 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public int WageType { get; set; }
         [JsonPropertyName("wageText")]
         public string WageText { get; set; }
-        [JsonPropertyName("address")] 
+        [JsonPropertyName("address")]
         public Address Address { get; set; }
+        
+        [JsonPropertyName("otherAddresses")]
+        public List<Address>? OtherAddresses { get; set; }
+        
+        [JsonPropertyName("employmentLocationInformation")]
+        public string? EmploymentLocationInformation { get; set; }
 
         [JsonPropertyName("distance")] 
         public decimal? Distance { get; set; }
