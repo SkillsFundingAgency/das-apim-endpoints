@@ -39,27 +39,27 @@ public class QuestionsController : Controller
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
-    [HttpPut("/api/forms/{formVersionId}/sections/{sectionId}/pages/{pageId}/questions/{questionId}")]
-    [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> UpdateAsync([FromRoute] Guid formVersionId, [FromRoute] Guid sectionId, [FromRoute] Guid pageId, [FromRoute] Guid questionId, [FromBody] UpdateQuestionCommand command)
-    {
-        command.FormVersionId = formVersionId;
-        command.SectionId = sectionId;
-        command.Id = questionId;
-        command.PageId = pageId;
+    //[HttpPut("/api/forms/{formVersionId}/sections/{sectionId}/pages/{pageId}/questions/{questionId}")]
+    //[ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
+    //[ProducesResponseType(StatusCodes.Status403Forbidden)]
+    //[ProducesResponseType(StatusCodes.Status404NotFound)]
+    //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    //public async Task<IActionResult> UpdateAsync([FromRoute] Guid formVersionId, [FromRoute] Guid sectionId, [FromRoute] Guid pageId, [FromRoute] Guid questionId, [FromBody] UpdateQuestionCommand command)
+    //{
+    //    command.FormVersionId = formVersionId;
+    //    command.SectionId = sectionId;
+    //    command.Id = questionId;
+    //    command.PageId = pageId;
 
-        var response = await _mediator.Send(command);
+    //    var response = await _mediator.Send(command);
 
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
+    //    if (response.Success)
+    //    {
+    //        return Ok(response.Value);
+    //    }
 
-        return StatusCode(StatusCodes.Status500InternalServerError);
-    }
+    //    return StatusCode(StatusCodes.Status500InternalServerError);
+    //}
 
     [HttpPut("/api/forms/{formVersionId}/sections/{sectionId}/pages/{pageId}/questions/{questionId}/MoveDown")]
     [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
