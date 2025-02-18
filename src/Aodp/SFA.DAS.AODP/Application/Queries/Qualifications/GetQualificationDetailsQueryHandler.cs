@@ -5,6 +5,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Aodp.Application.Queries.Qualifications
 {
+
     public class GetQualificationDetailsQueryHandler : IRequestHandler<GetQualificationDetailsQuery, BaseMediatrResponse<GetQualificationDetailsQueryResponse>>
     {
         private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
