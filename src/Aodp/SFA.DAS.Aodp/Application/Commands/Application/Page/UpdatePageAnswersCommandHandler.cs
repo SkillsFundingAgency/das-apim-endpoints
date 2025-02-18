@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 public class UpdatePageAnswersCommandHandler : IRequestHandler<UpdatePageAnswersCommand, BaseMediatrResponse<UpdatePageAnswersCommandResponse>>
 {

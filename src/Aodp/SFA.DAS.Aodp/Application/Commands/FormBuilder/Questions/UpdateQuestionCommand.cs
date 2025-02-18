@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using SFA.DAS.Aodp.Application;
 
 namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Questions;
 
-public class UpdateQuestionCommand : IRequest<BaseMediatrResponse<EmptyResponse>>
+public class UpdateQuestionCommand : IRequest<BaseMediatrResponse<UpdateQuestionCommandResponse>>
 {
     public Guid Id { get; set; }
     public Guid FormVersionId { get; set; }
