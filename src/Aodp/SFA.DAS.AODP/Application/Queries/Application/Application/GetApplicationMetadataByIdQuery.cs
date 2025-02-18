@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.Aodp.Application;
 
 
 public class GetApplicationMetadataByIdQuery : IRequest<BaseMediatrResponse<GetApplicationMetadataByIdQueryResponse>>
