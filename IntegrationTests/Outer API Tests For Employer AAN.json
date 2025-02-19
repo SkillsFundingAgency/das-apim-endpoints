@@ -1,0 +1,2490 @@
+{
+	"info": {
+		"_postman_id": "24309826-c313-4246-bb4a-78b8f228b706",
+		"name": "EmployerAanOuterApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31157588"
+	},
+	"item": [
+		{
+			"name": "Attendances",
+			"item": [
+				{
+					"name": "/Attendances",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RequestedByMemberId",
+								"value": "<uuid>"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/Attendances?fromDate=<dateTime>&toDate=<dateTime>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"Attendances"
+							],
+							"query": [
+								{
+									"key": "fromDate",
+									"value": "<dateTime>"
+								},
+								{
+									"key": "toDate",
+									"value": "<dateTime>"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RequestedByMemberId",
+										"value": "<uuid>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/Attendances?fromDate=<dateTime>&toDate=<dateTime>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Attendances"
+									],
+									"query": [
+										{
+											"key": "fromDate",
+											"value": "<dateTime>"
+										},
+										{
+											"key": "toDate",
+											"value": "<dateTime>"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "CalendarEvents",
+			"item": [
+				{
+					"name": "{calendarEventId}",
+					"item": [
+						{
+							"name": "attendance",
+							"item": [
+								{
+									"name": "/CalendarEvents/:calendarEventId/attendance",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "X-RequestedByMemberId",
+												"value": "<uuid>"
+											},
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"isAttending\": \"<boolean>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/CalendarEvents/:calendarEventId/attendance",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"CalendarEvents",
+												":calendarEventId",
+												"attendance"
+											],
+											"variable": [
+												{
+													"key": "calendarEventId",
+													"value": "<uuid>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "No Content",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [
+													{
+														"key": "X-RequestedByMemberId",
+														"value": "<uuid>"
+													},
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"isAttending\": \"<boolean>\"\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/CalendarEvents/:calendarEventId/attendance",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"CalendarEvents",
+														":calendarEventId",
+														"attendance"
+													],
+													"variable": [
+														{
+															"key": "calendarEventId"
+														}
+													]
+												}
+											},
+											"status": "No Content",
+											"code": 204,
+											"_postman_previewlanguage": "text",
+											"header": [],
+											"cookie": [],
+											"body": ""
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "/CalendarEvents/:calendarEventId",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RequestedByMemberId",
+										"value": "<uuid>"
+									},
+									{
+										"key": "Accept",
+										"value": "text/plain"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/CalendarEvents/:calendarEventId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"CalendarEvents",
+										":calendarEventId"
+									],
+									"variable": [
+										{
+											"key": "calendarEventId",
+											"value": "<uuid>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "X-RequestedByMemberId",
+												"value": "<uuid>"
+											},
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/CalendarEvents/:calendarEventId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"CalendarEvents",
+												":calendarEventId"
+											],
+											"variable": [
+												{
+													"key": "calendarEventId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"calendarEventId\": \"<uuid>\",\n  \"calendarName\": \"<string>\",\n  \"eventFormat\": \"<string>\",\n  \"startDate\": \"<dateTime>\",\n  \"endDate\": \"<dateTime>\",\n  \"title\": \"<string>\",\n  \"description\": \"<string>\",\n  \"summary\": \"<string>\",\n  \"regionId\": \"<integer>\",\n  \"location\": \"<string>\",\n  \"postcode\": \"<string>\",\n  \"latitude\": \"<double>\",\n  \"longitude\": \"<double>\",\n  \"eventLink\": \"<string>\",\n  \"contactName\": \"<string>\",\n  \"contactEmail\": \"<string>\",\n  \"isActive\": \"<boolean>\",\n  \"cancelReason\": \"<string>\",\n  \"attendees\": [\n    {\n      \"memberId\": \"<uuid>\",\n      \"userType\": \"<string>\",\n      \"memberName\": \"<string>\",\n      \"addedDate\": \"<dateTime>\"\n    },\n    {\n      \"memberId\": \"<uuid>\",\n      \"userType\": \"<string>\",\n      \"memberName\": \"<string>\",\n      \"addedDate\": \"<dateTime>\"\n    }\n  ],\n  \"eventGuests\": [\n    {\n      \"guestName\": \"<string>\",\n      \"guestJobTitle\": \"<string>\"\n    },\n    {\n      \"guestName\": \"<string>\",\n      \"guestJobTitle\": \"<string>\"\n    }\n  ]\n}"
+								},
+								{
+									"name": "Not Found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "X-RequestedByMemberId",
+												"value": "<uuid>"
+											},
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/CalendarEvents/:calendarEventId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"CalendarEvents",
+												":calendarEventId"
+											],
+											"variable": [
+												{
+													"key": "calendarEventId"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"calendarEventId\": \"<uuid>\",\n  \"calendarName\": \"<string>\",\n  \"eventFormat\": \"<string>\",\n  \"startDate\": \"<dateTime>\",\n  \"endDate\": \"<dateTime>\",\n  \"title\": \"<string>\",\n  \"description\": \"<string>\",\n  \"summary\": \"<string>\",\n  \"regionId\": \"<integer>\",\n  \"location\": \"<string>\",\n  \"postcode\": \"<string>\",\n  \"latitude\": \"<double>\",\n  \"longitude\": \"<double>\",\n  \"eventLink\": \"<string>\",\n  \"contactName\": \"<string>\",\n  \"contactEmail\": \"<string>\",\n  \"isActive\": \"<boolean>\",\n  \"cancelReason\": \"<string>\",\n  \"attendees\": [\n    {\n      \"memberId\": \"<uuid>\",\n      \"userType\": \"<string>\",\n      \"memberName\": \"<string>\",\n      \"addedDate\": \"<dateTime>\"\n    },\n    {\n      \"memberId\": \"<uuid>\",\n      \"userType\": \"<string>\",\n      \"memberName\": \"<string>\",\n      \"addedDate\": \"<dateTime>\"\n    }\n  ],\n  \"eventGuests\": [\n    {\n      \"guestName\": \"<string>\",\n      \"guestJobTitle\": \"<string>\"\n    },\n    {\n      \"guestName\": \"<string>\",\n      \"guestJobTitle\": \"<string>\"\n    }\n  ]\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "/CalendarEvents",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-RequestedByMemberId",
+								"value": "<uuid>"
+							},
+							{
+								"key": "Accept",
+								"value": "text/plain"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/CalendarEvents?Keyword=<string>&FromDate=<dateTime>&ToDate=<dateTime>&EventFormat=InPerson&EventFormat=Online&CalendarId=<integer>&CalendarId=<integer>&RegionId=<integer>&RegionId=<integer>&Location=<string>&Radius=<integer>&OrderBy=<string>&Page=<integer>&PageSize=<integer>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"CalendarEvents"
+							],
+							"query": [
+								{
+									"key": "Keyword",
+									"value": "<string>"
+								},
+								{
+									"key": "FromDate",
+									"value": "<dateTime>"
+								},
+								{
+									"key": "ToDate",
+									"value": "<dateTime>"
+								},
+								{
+									"key": "EventFormat",
+									"value": "InPerson"
+								},
+								{
+									"key": "EventFormat",
+									"value": "Online"
+								},
+								{
+									"key": "CalendarId",
+									"value": "<integer>"
+								},
+								{
+									"key": "CalendarId",
+									"value": "<integer>"
+								},
+								{
+									"key": "RegionId",
+									"value": "<integer>"
+								},
+								{
+									"key": "RegionId",
+									"value": "<integer>"
+								},
+								{
+									"key": "Location",
+									"value": "<string>"
+								},
+								{
+									"key": "Radius",
+									"value": "<integer>"
+								},
+								{
+									"key": "OrderBy",
+									"value": "<string>"
+								},
+								{
+									"key": "Page",
+									"value": "<integer>"
+								},
+								{
+									"key": "PageSize",
+									"value": "<integer>"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RequestedByMemberId",
+										"value": "<uuid>"
+									},
+									{
+										"key": "Accept",
+										"value": "text/plain"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/CalendarEvents?Keyword=<string>&FromDate=<dateTime>&ToDate=<dateTime>&EventFormat=Online&CalendarId=<integer>&RegionId=<integer>&Location=<string>&Radius=<integer>&OrderBy=<string>&Page=<integer>&PageSize=<integer>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"CalendarEvents"
+									],
+									"query": [
+										{
+											"key": "Keyword",
+											"value": "<string>"
+										},
+										{
+											"key": "FromDate",
+											"value": "<dateTime>"
+										},
+										{
+											"key": "ToDate",
+											"value": "<dateTime>"
+										},
+										{
+											"key": "EventFormat",
+											"value": "Online"
+										},
+										{
+											"key": "CalendarId",
+											"value": "<integer>"
+										},
+										{
+											"key": "RegionId",
+											"value": "<integer>"
+										},
+										{
+											"key": "Location",
+											"value": "<string>"
+										},
+										{
+											"key": "Radius",
+											"value": "<integer>"
+										},
+										{
+											"key": "OrderBy",
+											"value": "<string>"
+										},
+										{
+											"key": "Page",
+											"value": "<integer>"
+										},
+										{
+											"key": "PageSize",
+											"value": "<integer>"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"page\": \"<integer>\",\n  \"pageSize\": \"<integer>\",\n  \"totalPages\": \"<integer>\",\n  \"totalCount\": \"<integer>\",\n  \"calendarEvents\": [\n    {\n      \"calendarEventId\": \"<uuid>\",\n      \"calendarName\": \"<string>\",\n      \"eventFormat\": \"<string>\",\n      \"start\": \"<dateTime>\",\n      \"end\": \"<dateTime>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"summary\": \"<string>\",\n      \"location\": \"<string>\",\n      \"postcode\": \"<string>\",\n      \"longitude\": \"<double>\",\n      \"latitude\": \"<double>\",\n      \"distance\": \"<double>\",\n      \"isAttending\": \"<boolean>\"\n    },\n    {\n      \"calendarEventId\": \"<uuid>\",\n      \"calendarName\": \"<string>\",\n      \"eventFormat\": \"<string>\",\n      \"start\": \"<dateTime>\",\n      \"end\": \"<dateTime>\",\n      \"title\": \"<string>\",\n      \"description\": \"<string>\",\n      \"summary\": \"<string>\",\n      \"location\": \"<string>\",\n      \"postcode\": \"<string>\",\n      \"longitude\": \"<double>\",\n      \"latitude\": \"<double>\",\n      \"distance\": \"<double>\",\n      \"isAttending\": \"<boolean>\"\n    }\n  ],\n  \"isInvalidLocation\": \"<boolean>\",\n  \"regions\": [\n    {\n      \"id\": \"<integer>\",\n      \"area\": \"<string>\",\n      \"ordering\": \"<integer>\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"area\": \"<string>\",\n      \"ordering\": \"<integer>\"\n    }\n  ],\n  \"calendars\": [\n    {\n      \"id\": \"<integer>\",\n      \"calendarName\": \"<string>\",\n      \"effectiveFrom\": \"<dateTime>\",\n      \"effectiveTo\": \"<dateTime>\",\n      \"ordering\": \"<integer>\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"calendarName\": \"<string>\",\n      \"effectiveFrom\": \"<dateTime>\",\n      \"effectiveTo\": \"<dateTime>\",\n      \"ordering\": \"<integer>\"\n    }\n  ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Calendars",
+			"item": [
+				{
+					"name": "/Calendars",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/Calendars",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"Calendars"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/Calendars",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Calendars"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"minSupportedDateTime\": \"<dateTime>\",\n    \"maxSupportedDateTime\": \"<dateTime>\",\n    \"algorithmType\": \"LunarCalendar\",\n    \"isReadOnly\": \"<boolean>\",\n    \"eras\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"twoDigitYearMax\": \"<integer>\"\n  },\n  {\n    \"minSupportedDateTime\": \"<dateTime>\",\n    \"maxSupportedDateTime\": \"<dateTime>\",\n    \"algorithmType\": \"SolarCalendar\",\n    \"isReadOnly\": \"<boolean>\",\n    \"eras\": [\n      \"<integer>\",\n      \"<integer>\"\n    ],\n    \"twoDigitYearMax\": \"<integer>\"\n  }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "accounts",
+			"item": [
+				{
+					"name": "{employerAccountId}",
+					"item": [
+						{
+							"name": "onboarding",
+							"item": [
+								{
+									"name": "confirm-details",
+									"item": [
+										{
+											"name": "/accounts/:employerAccountId/onboarding/confirm-details",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/accounts/:employerAccountId/onboarding/confirm-details",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"accounts",
+														":employerAccountId",
+														"onboarding",
+														"confirm-details"
+													],
+													"variable": [
+														{
+															"key": "employerAccountId",
+															"value": "<long>",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [],
+														"url": {
+															"raw": "{{baseUrl}}/accounts/:employerAccountId/onboarding/confirm-details",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"accounts",
+																":employerAccountId",
+																"onboarding",
+																"confirm-details"
+															],
+															"variable": [
+																{
+																	"key": "employerAccountId"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								},
+								{
+									"name": "notifications-locations",
+									"item": [
+										{
+											"name": "/accounts/:employerAccountId/onboarding/notifications-locations",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/accounts/:employerAccountId/onboarding/notifications-locations?searchTerm=<string>",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"accounts",
+														":employerAccountId",
+														"onboarding",
+														"notifications-locations"
+													],
+													"query": [
+														{
+															"key": "searchTerm",
+															"value": "<string>"
+														}
+													],
+													"variable": [
+														{
+															"key": "employerAccountId",
+															"value": "<long>",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [],
+														"url": {
+															"raw": "{{baseUrl}}/accounts/:employerAccountId/onboarding/notifications-locations?searchTerm=<string>",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"accounts",
+																":employerAccountId",
+																"onboarding",
+																"notifications-locations"
+															],
+															"query": [
+																{
+																	"key": "searchTerm",
+																	"value": "<string>"
+																}
+															],
+															"variable": [
+																{
+																	"key": "employerAccountId"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "event-notifications-settings",
+							"item": [
+								{
+									"name": "locations",
+									"item": [
+										{
+											"name": "/accounts/:employerAccountId/event-notifications-settings/locations",
+											"request": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{baseUrl}}/accounts/:employerAccountId/event-notifications-settings/locations?searchTerm=<string>&memberId=<uuid>",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"accounts",
+														":employerAccountId",
+														"event-notifications-settings",
+														"locations"
+													],
+													"query": [
+														{
+															"key": "searchTerm",
+															"value": "<string>"
+														},
+														{
+															"key": "memberId",
+															"value": "<uuid>"
+														}
+													],
+													"variable": [
+														{
+															"key": "employerAccountId",
+															"value": "<long>",
+															"description": "(Required) "
+														}
+													]
+												}
+											},
+											"response": [
+												{
+													"name": "OK",
+													"originalRequest": {
+														"method": "GET",
+														"header": [],
+														"url": {
+															"raw": "{{baseUrl}}/accounts/:employerAccountId/event-notifications-settings/locations?searchTerm=<string>&memberId=<uuid>",
+															"host": [
+																"{{baseUrl}}"
+															],
+															"path": [
+																"accounts",
+																":employerAccountId",
+																"event-notifications-settings",
+																"locations"
+															],
+															"query": [
+																{
+																	"key": "searchTerm",
+																	"value": "<string>"
+																},
+																{
+																	"key": "memberId",
+																	"value": "<uuid>"
+																}
+															],
+															"variable": [
+																{
+																	"key": "employerAccountId"
+																}
+															]
+														}
+													},
+													"status": "OK",
+													"code": 200,
+													"_postman_previewlanguage": "text",
+													"header": [],
+													"cookie": [],
+													"body": ""
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "EmployerAccounts",
+			"item": [
+				{
+					"name": "{userId}",
+					"item": [
+						{
+							"name": "/EmployerAccounts/:userId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/EmployerAccounts/:userId?email=<string>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"EmployerAccounts",
+										":userId"
+									],
+									"query": [
+										{
+											"key": "email",
+											"value": "<string>"
+										}
+									],
+									"variable": [
+										{
+											"key": "userId",
+											"value": "<string>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/EmployerAccounts/:userId?email=<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"EmployerAccounts",
+												":userId"
+											],
+											"query": [
+												{
+													"key": "email",
+													"value": "<string>"
+												}
+											],
+											"variable": [
+												{
+													"key": "userId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Employers",
+			"item": [
+				{
+					"name": "{userRef}",
+					"item": [
+						{
+							"name": "/Employers/:userRef",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "text/plain"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/Employers/:userRef",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Employers",
+										":userRef"
+									],
+									"variable": [
+										{
+											"key": "userRef",
+											"value": "<uuid>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/Employers/:userRef",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Employers",
+												":userRef"
+											],
+											"variable": [
+												{
+													"key": "userRef"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"memberId\": \"<uuid>\",\n  \"status\": \"<string>\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "{employerAccountId}",
+					"item": [
+						{
+							"name": "summary",
+							"item": [
+								{
+									"name": "/Employers/:employerAccountId/summary",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/Employers/:employerAccountId/summary",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Employers",
+												":employerAccountId",
+												"summary"
+											],
+											"variable": [
+												{
+													"key": "employerAccountId",
+													"value": "<integer>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/Employers/:employerAccountId/summary",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"Employers",
+														":employerAccountId",
+														"summary"
+													],
+													"variable": [
+														{
+															"key": "employerAccountId"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"activeCount\": \"<integer>\",\n  \"sectors\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}"
+										}
+									]
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "/Employers",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "text/plain"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"<string>\",\n  \"firstName\": \"<string>\",\n  \"lastName\": \"<string>\",\n  \"joinedDate\": \"<dateTime>\",\n  \"regionId\": \"<integer>\",\n  \"organisationName\": \"<string>\",\n  \"profileValues\": [\n    {\n      \"id\": \"<integer>\",\n      \"value\": \"<string>\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"value\": \"<string>\"\n    }\n  ],\n  \"memberNotificationEventFormatValues\": [\n    {\n      \"eventFormat\": \"<string>\",\n      \"ordering\": \"<integer>\",\n      \"receiveNotifications\": \"<boolean>\"\n    },\n    {\n      \"eventFormat\": \"<string>\",\n      \"ordering\": \"<integer>\",\n      \"receiveNotifications\": \"<boolean>\"\n    }\n  ],\n  \"memberNotificationLocationValues\": [\n    {\n      \"name\": \"<string>\",\n      \"radius\": \"<integer>\",\n      \"latitude\": \"<double>\",\n      \"longitude\": \"<double>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"radius\": \"<integer>\",\n      \"latitude\": \"<double>\",\n      \"longitude\": \"<double>\"\n    }\n  ],\n  \"receiveNotifications\": \"<boolean>\",\n  \"accountId\": \"<long>\",\n  \"userRef\": \"<uuid>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/Employers",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"Employers"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "text/plain"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"<string>\",\n  \"firstName\": \"<string>\",\n  \"lastName\": \"<string>\",\n  \"joinedDate\": \"<dateTime>\",\n  \"regionId\": \"<integer>\",\n  \"organisationName\": \"<string>\",\n  \"profileValues\": [\n    {\n      \"id\": \"<integer>\",\n      \"value\": \"<string>\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"value\": \"<string>\"\n    }\n  ],\n  \"memberNotificationEventFormatValues\": [\n    {\n      \"eventFormat\": \"<string>\",\n      \"ordering\": \"<integer>\",\n      \"receiveNotifications\": \"<boolean>\"\n    },\n    {\n      \"eventFormat\": \"<string>\",\n      \"ordering\": \"<integer>\",\n      \"receiveNotifications\": \"<boolean>\"\n    }\n  ],\n  \"memberNotificationLocationValues\": [\n    {\n      \"name\": \"<string>\",\n      \"radius\": \"<integer>\",\n      \"latitude\": \"<double>\",\n      \"longitude\": \"<double>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"radius\": \"<integer>\",\n      \"latitude\": \"<double>\",\n      \"longitude\": \"<double>\"\n    }\n  ],\n  \"receiveNotifications\": \"<boolean>\",\n  \"accountId\": \"<long>\",\n  \"userRef\": \"<uuid>\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/Employers",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Employers"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"memberId\": \"<uuid>\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "LeavingReasons",
+			"item": [
+				{
+					"name": "/LeavingReasons",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/LeavingReasons",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"LeavingReasons"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/LeavingReasons",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"LeavingReasons"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n  {\n    \"category\": \"<string>\",\n    \"leavingReasons\": [\n      {\n        \"id\": \"<integer>\",\n        \"description\": \"<string>\",\n        \"ordering\": \"<integer>\"\n      },\n      {\n        \"id\": \"<integer>\",\n        \"description\": \"<string>\",\n        \"ordering\": \"<integer>\"\n      }\n    ]\n  },\n  {\n    \"category\": \"<string>\",\n    \"leavingReasons\": [\n      {\n        \"id\": \"<integer>\",\n        \"description\": \"<string>\",\n        \"ordering\": \"<integer>\"\n      },\n      {\n        \"id\": \"<integer>\",\n        \"description\": \"<string>\",\n        \"ordering\": \"<integer>\"\n      }\n    ]\n  }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Locations",
+			"item": [
+				{
+					"name": "search",
+					"item": [
+						{
+							"name": "/Locations/search",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/Locations/search?query=<string>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Locations",
+										"search"
+									],
+									"query": [
+										{
+											"key": "query",
+											"value": "<string>"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/Locations/search?query=<string>",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Locations",
+												"search"
+											],
+											"query": [
+												{
+													"key": "query",
+													"value": "<string>"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "MemberNotificationSettings",
+			"item": [
+				{
+					"name": "{memberId}",
+					"item": [
+						{
+							"name": "/MemberNotificationSettings/:memberId",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "text/plain"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/MemberNotificationSettings/:memberId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"MemberNotificationSettings",
+										":memberId"
+									],
+									"variable": [
+										{
+											"key": "memberId",
+											"value": "<uuid>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/MemberNotificationSettings/:memberId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"MemberNotificationSettings",
+												":memberId"
+											],
+											"variable": [
+												{
+													"key": "memberId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"memberNotificationEventFormats\": [\n    {\n      \"eventFormat\": \"<string>\",\n      \"receiveNotifications\": \"<boolean>\"\n    },\n    {\n      \"eventFormat\": \"<string>\",\n      \"receiveNotifications\": \"<boolean>\"\n    }\n  ],\n  \"memberNotificationLocations\": [\n    {\n      \"name\": \"<string>\",\n      \"radius\": \"<integer>\",\n      \"latitude\": \"<double>\",\n      \"longitude\": \"<double>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"radius\": \"<integer>\",\n      \"latitude\": \"<double>\",\n      \"longitude\": \"<double>\"\n    }\n  ],\n  \"receiveMonthlyNotifications\": \"<boolean>\"\n}"
+								}
+							]
+						},
+						{
+							"name": "/MemberNotificationSettings/:memberId",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"receiveNotifications\": \"<boolean>\",\n  \"eventTypes\": [\n    {\n      \"eventType\": \"<string>\",\n      \"receiveNotifications\": \"<boolean>\"\n    },\n    {\n      \"eventType\": \"<string>\",\n      \"receiveNotifications\": \"<boolean>\"\n    }\n  ],\n  \"locations\": [\n    {\n      \"name\": \"<string>\",\n      \"radius\": \"<integer>\",\n      \"latitude\": \"<double>\",\n      \"longitude\": \"<double>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"radius\": \"<integer>\",\n      \"latitude\": \"<double>\",\n      \"longitude\": \"<double>\"\n    }\n  ]\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/MemberNotificationSettings/:memberId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"MemberNotificationSettings",
+										":memberId"
+									],
+									"variable": [
+										{
+											"key": "memberId",
+											"value": "<uuid>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"receiveNotifications\": \"<boolean>\",\n  \"eventTypes\": [\n    {\n      \"eventType\": \"<string>\",\n      \"receiveNotifications\": \"<boolean>\"\n    },\n    {\n      \"eventType\": \"<string>\",\n      \"receiveNotifications\": \"<boolean>\"\n    }\n  ],\n  \"locations\": [\n    {\n      \"name\": \"<string>\",\n      \"radius\": \"<integer>\",\n      \"latitude\": \"<double>\",\n      \"longitude\": \"<double>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"radius\": \"<integer>\",\n      \"latitude\": \"<double>\",\n      \"longitude\": \"<double>\"\n    }\n  ]\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/MemberNotificationSettings/:memberId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"MemberNotificationSettings",
+												":memberId"
+											],
+											"variable": [
+												{
+													"key": "memberId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "members",
+			"item": [
+				{
+					"name": "{memberId}",
+					"item": [
+						{
+							"name": "profile",
+							"item": [
+								{
+									"name": "/members/:memberId/profile",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "X-RequestedByMemberId",
+												"value": "<uuid>"
+											},
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/members/:memberId/profile?public=true",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"members",
+												":memberId",
+												"profile"
+											],
+											"query": [
+												{
+													"key": "public",
+													"value": "true"
+												}
+											],
+											"variable": [
+												{
+													"key": "memberId",
+													"value": "<uuid>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "OK",
+											"originalRequest": {
+												"method": "GET",
+												"header": [
+													{
+														"key": "X-RequestedByMemberId",
+														"value": "<uuid>"
+													},
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/members/:memberId/profile?public=true",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"members",
+														":memberId",
+														"profile"
+													],
+													"query": [
+														{
+															"key": "public",
+															"value": "true"
+														}
+													],
+													"variable": [
+														{
+															"key": "memberId"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"fullName\": \"<string>\",\n  \"email\": \"<string>\",\n  \"firstName\": \"<string>\",\n  \"lastName\": \"<string>\",\n  \"organisationName\": \"<string>\",\n  \"regionId\": \"<integer>\",\n  \"regionName\": \"<string>\",\n  \"userType\": \"Apprentice\",\n  \"isRegionalChair\": \"<boolean>\",\n  \"apprenticeship\": {\n    \"sector\": \"<string>\",\n    \"programme\": \"<string>\",\n    \"level\": \"<string>\",\n    \"activeApprenticesCount\": \"<integer>\",\n    \"sectors\": [\n      \"<string>\",\n      \"<string>\"\n    ]\n  },\n  \"profiles\": [\n    {\n      \"profileId\": \"<integer>\",\n      \"value\": \"<string>\",\n      \"preferenceId\": \"<integer>\"\n    },\n    {\n      \"profileId\": \"<integer>\",\n      \"value\": \"<string>\",\n      \"preferenceId\": \"<integer>\"\n    }\n  ],\n  \"preferences\": [\n    {\n      \"preferenceId\": \"<integer>\",\n      \"value\": \"<boolean>\"\n    },\n    {\n      \"preferenceId\": \"<integer>\",\n      \"value\": \"<boolean>\"\n    }\n  ]\n}"
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Members",
+			"item": [
+				{
+					"name": "{memberId}",
+					"item": [
+						{
+							"name": "Leaving",
+							"item": [
+								{
+									"name": "/Members/:memberId/Leaving",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"leavingReasons\": [\n    \"<integer>\",\n    \"<integer>\"\n  ]\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/Members/:memberId/Leaving",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Members",
+												":memberId",
+												"Leaving"
+											],
+											"variable": [
+												{
+													"key": "memberId",
+													"value": "<uuid>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "No Content",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"leavingReasons\": [\n    \"<integer>\",\n    \"<integer>\"\n  ]\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/Members/:memberId/Leaving",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"Members",
+														":memberId",
+														"Leaving"
+													],
+													"variable": [
+														{
+															"key": "memberId"
+														}
+													]
+												}
+											},
+											"status": "No Content",
+											"code": 204,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"statusCode\": \"<integer>\"\n}"
+										},
+										{
+											"name": "Bad Request",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"leavingReasons\": [\n    \"<integer>\",\n    \"<integer>\"\n  ]\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/Members/:memberId/Leaving",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"Members",
+														":memberId",
+														"Leaving"
+													],
+													"variable": [
+														{
+															"key": "memberId"
+														}
+													]
+												}
+											},
+											"status": "Bad Request",
+											"code": 400,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"type\": \"<string>\",\n  \"title\": \"<string>\",\n  \"status\": \"<integer>\",\n  \"detail\": \"<string>\",\n  \"instance\": \"<string>\",\n  \"consequatbb\": {}\n}"
+										},
+										{
+											"name": "Not Found",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json"
+													},
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\n  \"leavingReasons\": [\n    \"<integer>\",\n    \"<integer>\"\n  ]\n}",
+													"options": {
+														"raw": {
+															"headerFamily": "json",
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{baseUrl}}/Members/:memberId/Leaving",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"Members",
+														":memberId",
+														"Leaving"
+													],
+													"variable": [
+														{
+															"key": "memberId"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"statusCode\": \"<integer>\"\n}"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "reinstate",
+							"item": [
+								{
+									"name": "/Members/:memberId/reinstate",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/Members/:memberId/reinstate",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Members",
+												":memberId",
+												"reinstate"
+											],
+											"variable": [
+												{
+													"key": "memberId",
+													"value": "<uuid>",
+													"description": "(Required) "
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "No Content",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/Members/:memberId/reinstate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"Members",
+														":memberId",
+														"reinstate"
+													],
+													"variable": [
+														{
+															"key": "memberId"
+														}
+													]
+												}
+											},
+											"status": "No Content",
+											"code": 204,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"statusCode\": \"<integer>\"\n}"
+										},
+										{
+											"name": "Bad Request",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/Members/:memberId/reinstate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"Members",
+														":memberId",
+														"reinstate"
+													],
+													"variable": [
+														{
+															"key": "memberId"
+														}
+													]
+												}
+											},
+											"status": "Bad Request",
+											"code": 400,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"statusCode\": \"<integer>\"\n}"
+										},
+										{
+											"name": "Not Found",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Accept",
+														"value": "text/plain"
+													}
+												],
+												"url": {
+													"raw": "{{baseUrl}}/Members/:memberId/reinstate",
+													"host": [
+														"{{baseUrl}}"
+													],
+													"path": [
+														"Members",
+														":memberId",
+														"reinstate"
+													],
+													"variable": [
+														{
+															"key": "memberId"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												}
+											],
+											"cookie": [],
+											"body": "{\n  \"statusCode\": \"<integer>\"\n}"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "/Members/:memberId",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "text/plain"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/Members/:memberId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Members",
+										":memberId"
+									],
+									"variable": [
+										{
+											"key": "memberId",
+											"value": "<uuid>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/Members/:memberId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Members",
+												":memberId"
+											],
+											"variable": [
+												{
+													"key": "memberId"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"memberId\": \"<uuid>\",\n  \"email\": \"<string>\",\n  \"firstName\": \"<string>\",\n  \"lastName\": \"<string>\",\n  \"organisationName\": \"<string>\",\n  \"regionId\": \"<integer>\",\n  \"userType\": \"<string>\",\n  \"isRegionalChair\": \"<boolean>\",\n  \"fullName\": \"<string>\",\n  \"employerAccountId\": \"<long>\",\n  \"userRef\": \"<uuid>\"\n}"
+								}
+							]
+						},
+						{
+							"name": "/Members/:memberId",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"patchMemberRequest\": {\n    \"regionId\": \"<integer>\",\n    \"organisationName\": \"<string>\"\n  },\n  \"updateMemberProfileRequest\": {\n    \"memberProfiles\": [\n      {\n        \"memberProfileId\": \"<integer>\",\n        \"value\": \"<string>\"\n      },\n      {\n        \"memberProfileId\": \"<integer>\",\n        \"value\": \"<string>\"\n      }\n    ],\n    \"memberPreferences\": [\n      {\n        \"preferenceId\": \"<integer>\",\n        \"value\": \"<boolean>\"\n      },\n      {\n        \"preferenceId\": \"<integer>\",\n        \"value\": \"<boolean>\"\n      }\n    ]\n  }\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/Members/:memberId",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Members",
+										":memberId"
+									],
+									"variable": [
+										{
+											"key": "memberId",
+											"value": "<uuid>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "No Content",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"patchMemberRequest\": {\n    \"regionId\": \"<integer>\",\n    \"organisationName\": \"<string>\"\n  },\n  \"updateMemberProfileRequest\": {\n    \"memberProfiles\": [\n      {\n        \"memberProfileId\": \"<integer>\",\n        \"value\": \"<string>\"\n      },\n      {\n        \"memberProfileId\": \"<integer>\",\n        \"value\": \"<string>\"\n      }\n    ],\n    \"memberPreferences\": [\n      {\n        \"preferenceId\": \"<integer>\",\n        \"value\": \"<boolean>\"\n      },\n      {\n        \"preferenceId\": \"<integer>\",\n        \"value\": \"<boolean>\"\n      }\n    ]\n  }\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/Members/:memberId",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Members",
+												":memberId"
+											],
+											"variable": [
+												{
+													"key": "memberId"
+												}
+											]
+										}
+									},
+									"status": "No Content",
+									"code": 204,
+									"_postman_previewlanguage": "text",
+									"header": [],
+									"cookie": [],
+									"body": ""
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "/Members",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "text/plain"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/Members?Keyword=<string>&RegionId=<integer>&RegionId=<integer>&UserType=Employer&UserType=Employer&IsRegionalChair=<boolean>&Page=<integer>&PageSize=<integer>",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"Members"
+							],
+							"query": [
+								{
+									"key": "Keyword",
+									"value": "<string>"
+								},
+								{
+									"key": "RegionId",
+									"value": "<integer>"
+								},
+								{
+									"key": "RegionId",
+									"value": "<integer>"
+								},
+								{
+									"key": "UserType",
+									"value": "Employer"
+								},
+								{
+									"key": "UserType",
+									"value": "Employer"
+								},
+								{
+									"key": "IsRegionalChair",
+									"value": "<boolean>"
+								},
+								{
+									"key": "Page",
+									"value": "<integer>"
+								},
+								{
+									"key": "PageSize",
+									"value": "<integer>"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "text/plain"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/Members?Keyword=<string>&RegionId=<integer>&UserType=Employer&IsRegionalChair=<boolean>&Page=<integer>&PageSize=<integer>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Members"
+									],
+									"query": [
+										{
+											"key": "Keyword",
+											"value": "<string>"
+										},
+										{
+											"key": "RegionId",
+											"value": "<integer>"
+										},
+										{
+											"key": "UserType",
+											"value": "Employer"
+										},
+										{
+											"key": "IsRegionalChair",
+											"value": "<boolean>"
+										},
+										{
+											"key": "Page",
+											"value": "<integer>"
+										},
+										{
+											"key": "PageSize",
+											"value": "<integer>"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"page\": \"<integer>\",\n  \"pageSize\": \"<integer>\",\n  \"totalPages\": \"<integer>\",\n  \"totalCount\": \"<integer>\",\n  \"members\": [\n    {\n      \"memberId\": \"<uuid>\",\n      \"fullName\": \"<string>\",\n      \"regionId\": \"<integer>\",\n      \"regionName\": \"<string>\",\n      \"userType\": \"<string>\",\n      \"isRegionalChair\": \"<boolean>\",\n      \"joinedDate\": \"<dateTime>\"\n    },\n    {\n      \"memberId\": \"<uuid>\",\n      \"fullName\": \"<string>\",\n      \"regionId\": \"<integer>\",\n      \"regionName\": \"<string>\",\n      \"userType\": \"<string>\",\n      \"isRegionalChair\": \"<boolean>\",\n      \"joinedDate\": \"<dateTime>\"\n    }\n  ]\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "{id}",
+					"item": [
+						{
+							"name": "/Notifications/:id",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-RequestedByMemberId",
+										"value": "<uuid>"
+									},
+									{
+										"key": "Accept",
+										"value": "text/plain"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/Notifications/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Notifications",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "<uuid>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "X-RequestedByMemberId",
+												"value": "<uuid>"
+											},
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/Notifications/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Notifications",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"memberId\": \"<uuid>\",\n  \"templateName\": \"<string>\",\n  \"sentTime\": \"<dateTime>\",\n  \"referenceId\": \"<string>\",\n  \"employerAccountId\": \"<long>\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "/Notifications",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-RequestedByMemberId",
+								"value": "<uuid>"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "text/plain"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"memberId\": \"<uuid>\",\n  \"notificationTemplateId\": \"<integer>\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/Notifications",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"Notifications"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-RequestedByMemberId",
+										"value": "<uuid>"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "text/plain"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"memberId\": \"<uuid>\",\n  \"notificationTemplateId\": \"<integer>\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/Notifications",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Notifications"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"memberId\": \"<uuid>\",\n  \"templateName\": \"<string>\",\n  \"sentTime\": \"<dateTime>\",\n  \"referenceId\": \"<string>\",\n  \"employerAccountId\": \"<long>\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Profiles",
+			"item": [
+				{
+					"name": "{userType}",
+					"item": [
+						{
+							"name": "/Profiles/:userType",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/Profiles/:userType",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Profiles",
+										":userType"
+									],
+									"variable": [
+										{
+											"key": "userType",
+											"value": "<string>",
+											"description": "(Required) "
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "OK",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/Profiles/:userType",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"Profiles",
+												":userType"
+											],
+											"variable": [
+												{
+													"key": "userType"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"profiles\": [\n    {\n      \"id\": \"<long>\",\n      \"description\": \"<string>\",\n      \"category\": \"<string>\",\n      \"ordering\": \"<integer>\"\n    },\n    {\n      \"id\": \"<long>\",\n      \"description\": \"<string>\",\n      \"category\": \"<string>\",\n      \"ordering\": \"<integer>\"\n    }\n  ]\n}"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Regions",
+			"item": [
+				{
+					"name": "/Regions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/Regions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"Regions"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/Regions",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"Regions"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"regions\": [\n    {\n      \"id\": \"<integer>\",\n      \"area\": \"<string>\",\n      \"ordering\": \"<integer>\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"area\": \"<string>\",\n      \"ordering\": \"<integer>\"\n    }\n  ]\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "Bearer {{AuthToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "/"
+		}
+	]
+}

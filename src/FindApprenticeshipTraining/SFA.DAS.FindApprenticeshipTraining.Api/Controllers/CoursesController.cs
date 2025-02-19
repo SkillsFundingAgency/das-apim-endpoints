@@ -26,7 +26,7 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
         var result = await _mediator.Send(new GetCourseRoutesQuery());
         return Ok(result);
     }
-    
+
     [HttpGet]
     public async Task<IActionResult> GetCourses([FromQuery] GetCoursesQuery query)
     {

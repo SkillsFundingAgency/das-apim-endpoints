@@ -7,7 +7,9 @@ using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Exceptions;
 using SFA.DAS.EmployerAccounts.Strategies;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.ReferenceData;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -16,38 +18,37 @@ using SFA.DAS.Testing.AutoFixture;
 namespace SFA.DAS.EmployerAccounts.UnitTests.Strategies
 {
     [TestFixture]
-    public class ReferenceDataApiStrategyTests
+    public class CharitiesApiStrategyTests
     {
 
         [Test, MoqAutoData]
         public async Task Then_GetOrganisationDetails_Returns(
-             [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockApi,
-             string identifier,
-             OrganisationType organisationType,
-             ReferenceDataApiStrategy strategy,
-             Organisation response)
+             [Frozen] Mock<ICharitiesApiClient<CharitiesApiConfiguration>> mockApi,
+             int registrationNumber,
+             CharitiesApiStrategy strategy,
+             GetCharityResponse response)
         {
-            var apiResponse = new ApiResponse<Organisation>(response, System.Net.HttpStatusCode.OK, null);
+            var identifier = registrationNumber.ToString();
+            var apiResponse = new ApiResponse<GetCharityResponse>(response, System.Net.HttpStatusCode.OK, null);
 
             mockApi
-                .Setup(m => m.GetWithResponseCode<Organisation>(
-                    It.Is<GetLatestDetailsRequest>(r => r.Identifier == identifier)))
+                .Setup(m => m.GetWithResponseCode<GetCharityResponse>(
+                    It.Is<GetCharityRequest>(r => r.RegistrationNumber == registrationNumber)))
                 .ReturnsAsync(apiResponse);
 
             // Act
-            var result = await strategy.GetOrganisationDetails(identifier, organisationType);
+            var result = await strategy.GetOrganisationDetails(identifier, OrganisationType.Charity);
 
             result.OrganisationDetail.Should().NotBeNull();
-            result.OrganisationDetail.Should().BeEquivalentTo(response);
+            result.OrganisationDetail.Name.Should().Be(response.Name);
         }
 
 
         [Test, MoqAutoData]
         public void Then_GetOrganisationDetails_ShouldThrowInvalidGetOrganisationException_WhenApiResponseIsBadRequest(
-             [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockApi,
+             [Frozen] Mock<ICharitiesApiClient<CharitiesApiConfiguration>> mockApi,
              string identifier,
-             OrganisationType organisationType,
-             ReferenceDataApiStrategy strategy,
+             CharitiesApiStrategy strategy,
              Organisation response)
         {
             var errorMessage = "Error Message";
@@ -60,7 +61,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Strategies
                 .ReturnsAsync(apiResponse);
 
             // Act
-            Func<Task> act = async () => await strategy.GetOrganisationDetails(identifier, organisationType);
+            Func<Task> act = async () => await strategy.GetOrganisationDetails(identifier, OrganisationType.Charity);
 
             act.Should().ThrowAsync<InvalidGetOrganisationException>();
         }
@@ -68,10 +69,9 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Strategies
 
         [Test, MoqAutoData]
         public void Then_GetOrganisationDetails_ShouldThrowOrganisationNotFoundException_WhenApiResponse_Is_NotFound(
-           [Frozen] Mock<IReferenceDataApiClient<ReferenceDataApiConfiguration>> mockApi,
+           [Frozen] Mock<ICharitiesApiClient<CharitiesApiConfiguration>> mockApi,
            string identifier,
-           OrganisationType organisationType,
-           ReferenceDataApiStrategy strategy,
+           CharitiesApiStrategy strategy,
            Organisation response)
         {
             var errorMessage = "Error Message";
@@ -84,7 +84,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.Strategies
                 .ReturnsAsync(apiResponse);
 
             // Act
-            Func<Task> act = async () => await strategy.GetOrganisationDetails(identifier, organisationType);
+            Func<Task> act = async () => await strategy.GetOrganisationDetails(identifier, OrganisationType.Charity);
 
             act.Should().ThrowAsync<OrganisationNotFoundException>();
         }
