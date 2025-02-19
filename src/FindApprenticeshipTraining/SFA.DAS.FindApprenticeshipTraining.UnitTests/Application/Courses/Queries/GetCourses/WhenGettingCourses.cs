@@ -9,6 +9,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Linq;
@@ -63,7 +64,7 @@ public sealed class WhenGettingCourses
             x.GetWithResponseCode<GetStandardsListResponse>(
                 It.Is<GetAvailableToStartStandardsListRequest>(r =>
                     r.Keyword == (query.Keyword ?? string.Empty) &&
-                    r.OrderBy == (query.OrderBy ?? CoursesOrderBy.Title) &&
+                    r.OrderBy == query.OrderBy &&
                     r.RouteIds == query.RouteIds &&
                     r.Levels == query.Levels)
                 ), 
@@ -75,7 +76,9 @@ public sealed class WhenGettingCourses
     public async Task Then_Calls_RoatpApi_With_Correct_Request(
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpCourseManagementApiClient,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+        [Frozen] Mock<ILocationLookupService> _locationLookupService,
         [Greedy] GetCoursesQueryHandler sut,
+        LocationItem locationItem,
         GetStandardsListResponse coursesResponse,
         GetCourseTrainingProvidersCountResponse providerCountResponse,
         CancellationToken cancellationToken
@@ -101,6 +104,12 @@ public sealed class WhenGettingCourses
             )
         );
 
+        _locationLookupService
+            .Setup(a => 
+                a.GetLocationInformation(query.Location, 0, 0, false)
+            )
+            .ReturnsAsync(locationItem);
+
         roatpCourseManagementApiClient
             .Setup(x => 
                 x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
@@ -120,10 +129,11 @@ public sealed class WhenGettingCourses
         roatpCourseManagementApiClient.Verify(x => 
             x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
                 It.Is<GetCourseTrainingProvidersCountRequest>(r =>
-                    r.LarsCodes.SequenceEqual(pagedStandards.Select(s => s.LarsCode).ToArray()) &&
-                    r.Distance == query.Distance &&
-                    r.Latitude == query.Latitude &&
-                    r.Longitude == query.Longitude)
+                        r.LarsCodes.SequenceEqual(pagedStandards.Select(s => s.LarsCode).ToArray()) &&
+                        r.Distance == query.Distance &&
+                        r.Latitude == (decimal?)locationItem.GeoPoint[0] &&
+                        r.Longitude == (decimal?)locationItem.GeoPoint[1]
+                    )
                 ), 
                 Times.Once
             );

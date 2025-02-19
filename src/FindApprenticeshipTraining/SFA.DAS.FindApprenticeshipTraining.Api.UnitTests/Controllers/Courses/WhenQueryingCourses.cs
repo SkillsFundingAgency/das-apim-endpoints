@@ -29,8 +29,7 @@ public sealed class WhenQueryingCourses
                     c.Levels.Equals(query.Levels) &&
                     c.OrderBy.Equals(query.OrderBy) &&
                     c.Distance.Equals(query.Distance) &&
-                    c.Longitude.Equals(query.Longitude) &&
-                    c.Latitude.Equals(query.Latitude) &&
+                    c.Location.Equals(query.Location) &&
                     c.Page.Equals(query.Page) &&
                     c.PageSize.Equals(query.PageSize)
                 ), 
@@ -48,8 +47,7 @@ public sealed class WhenQueryingCourses
                     c.Levels.Equals(query.Levels) &&
                     c.OrderBy.Equals(query.OrderBy) &&
                     c.Distance.Equals(query.Distance) &&
-                    c.Longitude.Equals(query.Longitude) &&
-                    c.Latitude.Equals(query.Latitude) &&
+                    c.Location.Equals(query.Location) &&
                     c.Page.Equals(query.Page) &&
                     c.PageSize.Equals(query.PageSize)
                 ),

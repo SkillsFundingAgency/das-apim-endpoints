@@ -14,13 +14,11 @@ public sealed class GetCoursesQuery : IRequest<GetCoursesQueryResult>
 
     public List<int> Levels { get; set; } = new List<int>();
 
-    public CoursesOrderBy? OrderBy { get; set; }
-
     public int? Distance { get; set; }
 
-    public decimal? Longitude { get; set; }
+    public string? Location { get; set; }
 
-    public decimal? Latitude { get; set; }
+    public CoursesOrderBy OrderBy { get; set; }
 
     public int Page { get; set; } = 1;
 

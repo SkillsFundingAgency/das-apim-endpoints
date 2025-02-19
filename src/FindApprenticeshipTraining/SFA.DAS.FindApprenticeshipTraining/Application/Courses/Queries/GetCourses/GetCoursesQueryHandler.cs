@@ -6,6 +6,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,22 +15,38 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.GetCourses;
 
-public sealed class GetCoursesQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient, ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient) : IRequestHandler<GetCoursesQuery, GetCoursesQueryResult>
+public sealed class GetCoursesQueryHandler(
+    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient, 
+    ILocationLookupService _locationLookupService, 
+    ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient
+) : IRequestHandler<GetCoursesQuery, GetCoursesQueryResult>
 {
     public async Task<GetCoursesQueryResult> Handle(GetCoursesQuery query, CancellationToken cancellationToken)
     {
+        LocationItem locationItem = await _locationLookupService.GetLocationInformation(query.Location, 0, 0);
+
+        if (locationItem is null && !string.IsNullOrWhiteSpace(query.Location))
+        {
+            return GetEmptyResponse(query.PageSize);
+        }
+
         var coursesStandardsResponse = 
             await _coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(
                 new GetAvailableToStartStandardsListRequest()
                 {
                     Keyword = query.Keyword ?? string.Empty,
-                    OrderBy = query.OrderBy ?? CoursesOrderBy.Title,
+                    OrderBy = query.OrderBy,
                     RouteIds = query.RouteIds,
                     Levels = query.Levels
                 }
         );
 
         coursesStandardsResponse.EnsureSuccessStatusCode();
+
+        if (!coursesStandardsResponse.Body.Standards.Any())
+        {
+            return GetEmptyResponse(query.PageSize);
+        }
 
         var pagedStandards = coursesStandardsResponse.Body.Standards
             .Skip(query.Page == 1 ? 0 : query.Page * query.PageSize)
@@ -40,9 +57,9 @@ public sealed class GetCoursesQueryHandler(IRoatpCourseManagementApiClient<Roatp
             await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
                 new GetCourseTrainingProvidersCountRequest(
                     pagedStandards.Select(a => a.LarsCode).ToArray(), 
-                    query.Distance, 
-                    query.Latitude, 
-                    query.Longitude
+                    query.Distance,
+                    (decimal?)locationItem?.GeoPoint?[0] ?? null,
+                    (decimal?)locationItem?.GeoPoint?[1] ?? null
                 )
         );
 
@@ -93,5 +110,17 @@ public sealed class GetCoursesQueryHandler(IRoatpCourseManagementApiClient<Roatp
         }
 
         return (int)Math.Ceiling((double)totalItems / pageSize);
+    }
+
+    private static GetCoursesQueryResult GetEmptyResponse(int pageSize)
+    {
+        return new GetCoursesQueryResult()
+        {
+            Page = 1,
+            PageSize = pageSize,
+            TotalPages = 0,
+            TotalCount = 0,
+            Standards = []
+        };
     }
 }
