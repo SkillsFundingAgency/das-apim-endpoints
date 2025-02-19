@@ -24,11 +24,11 @@ public class ApplyCommandHandler(
             await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(
                 new GetVacancyRequest(request.VacancyReference));
 
-        var additionalQuestions = new List<string>();
-        if (result.AdditionalQuestion1 != null) { additionalQuestions.Add(result.AdditionalQuestion1); }
-        if (result.AdditionalQuestion2 != null) { additionalQuestions.Add(result.AdditionalQuestion2); }
+        var additionalQuestions = new List<KeyValuePair<int, string>>();
+        if (result.AdditionalQuestion1 != null) { additionalQuestions.Add(new KeyValuePair<int, string>(1, result.AdditionalQuestion1)); }
+        if (result.AdditionalQuestion2 != null) { additionalQuestions.Add(new KeyValuePair<int, string>(2, result.AdditionalQuestion2)); }
 
-        PutApplicationApiRequest.PutApplicationApiRequestData putApplicationApiRequestData = new PutApplicationApiRequest.PutApplicationApiRequestData
+        var putApplicationApiRequestData = new PutApplicationApiRequest.PutApplicationApiRequestData
         {
             CandidateId = request.CandidateId,
             AdditionalQuestions = additionalQuestions,
@@ -36,10 +36,9 @@ public class ApplyCommandHandler(
             IsAdditionalQuestion2Complete = string.IsNullOrEmpty(result.AdditionalQuestion2) ? (short)4 : (short)0,
             IsDisabilityConfidenceComplete = result.IsDisabilityConfident ? (short)0 : (short)4
         };
-        var putData = putApplicationApiRequestData;
         var vacancyReference =
             request.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
-        var putRequest = new PutApplicationApiRequest(vacancyReference, putData);
+        var putRequest = new PutApplicationApiRequest(vacancyReference, putApplicationApiRequestData);
 
         var applicationResult =
             await candidateApiClient.PutWithResponseCode<PutApplicationApiResponse>(putRequest);
