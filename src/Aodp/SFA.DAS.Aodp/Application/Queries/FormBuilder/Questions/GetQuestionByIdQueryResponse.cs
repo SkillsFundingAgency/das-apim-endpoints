@@ -16,6 +16,7 @@
     public FileUploadOptions FileUpload { get; set; } = new();
 
     public List<Option> Options { get; set; } = new();
+    public List<RouteInformation> Routes { get; set; } = new();
     public bool Editable { get; set; }
 
     public class TextInputOptions
@@ -58,5 +59,29 @@
         public int? MaxSize { get; set; }
         public string? FileNamePrefix { get; set; }
         public int? NumberOfFiles { get; set; }
+    }
+
+    public class RouteInformation
+    {
+        public Page? NextPage { get; set; }
+        public Section? NextSection { get; set; }
+        public bool EndForm { get; set; }
+        public bool EndSection { get; set; }
+        public Option Option { get; set; }
+    }
+
+    public class Section
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public int Order { get; set; }
+        public List<Page> Pages { get; set; } = new();
+    }
+
+    public class Page
+    {
+        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public int Order { get; set; }
     }
 }
