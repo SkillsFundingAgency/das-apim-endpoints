@@ -8,6 +8,7 @@ public interface IAccountsService
 {
     Task<Account> GetAccount(long accountId);
     Task<LegalEntity> GetEmployerAccountLegalEntity(string url);
+    Task<PayeScheme> GetEmployerAccountPayeScheme(string url);
     Task<List<Account>> GetUserAccounts(Guid userId);
     Task<List<InnerApi.Responses.TeamMember>> GetAccountTeamMembers(long accountId);
     Task<ApiResponse<SendInvitationRequest>> SendInvitation(SendInvitationRequest request);

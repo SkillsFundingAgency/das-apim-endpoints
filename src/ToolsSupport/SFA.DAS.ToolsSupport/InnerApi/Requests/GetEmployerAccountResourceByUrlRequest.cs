@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.ToolsSupport.InnerApi.Requests;
 
-public class GetEmployerAccountLegalEntityRequest(string href) : IGetApiRequest
+public class GetEmployerAccountResourceByUrlRequest(string href) : IGetApiRequest
 {
     public string GetUrl => href;
 }

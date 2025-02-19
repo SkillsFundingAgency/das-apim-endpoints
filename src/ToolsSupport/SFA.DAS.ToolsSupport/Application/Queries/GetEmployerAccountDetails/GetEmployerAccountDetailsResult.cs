@@ -10,12 +10,13 @@ public class GetEmployerAccountDetailsResult
     public string DasAccountName { get; set; } = "";
     public DateTime DateRegistered { get; set; }
     public string OwnerEmail { get; set; } = "";
-    public IEnumerable<LegalEntity> LegalEntities { get; set; } = [];
-    public ICollection<TeamMember> TeamMembers { get; set; } = [];
-
+    public decimal Balance { get; set; }
     public string ApprenticeshipEmployerType { get; set; } = "";
 
+    public IEnumerable<LegalEntity> LegalEntities { get; set; } = [];
+    public ICollection<TeamMember> TeamMembers { get; set; } = [];
+    public IEnumerable<PayeScheme> PayeSchemes { get; set; } = [];
+    public IEnumerable<Transaction> Transactions { get; set; } = [];
 
-    //public IEnumerable<PayeSchemeViewModel> PayeSchemes { get; set; }
-    //public IEnumerable<TransactionViewModel> Transactions { get; set; }
+
 }

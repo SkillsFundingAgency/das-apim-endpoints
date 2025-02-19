@@ -18,7 +18,14 @@ public class AccountsService(IAccountsApiClient<AccountsConfiguration> client) :
 
     public async Task<LegalEntity> GetEmployerAccountLegalEntity(string url)
     {
-        var response = await client.Get<LegalEntity>(new GetEmployerAccountLegalEntityRequest(url));
+        var response = await client.Get<LegalEntity>(new GetEmployerAccountResourceByUrlRequest(url));
+
+        return response;
+    }
+
+    public async Task<PayeScheme> GetEmployerAccountPayeScheme(string url)
+    {
+        var response = await client.Get<PayeScheme>(new GetEmployerAccountResourceByUrlRequest(url));
 
         return response;
     }
@@ -46,7 +53,7 @@ public class AccountsService(IAccountsApiClient<AccountsConfiguration> client) :
     {
         return await client.PostWithResponseCode<ResendInvitationRequest>(request, false);
     }
-    
+
     public async Task<ApiResponse<ChangeUserRoleRequest>> ChangeUserRole(ChangeUserRoleRequest request)
     {
         return await client.PostWithResponseCode<ChangeUserRoleRequest>(request, false);

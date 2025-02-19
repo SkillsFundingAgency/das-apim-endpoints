@@ -19,10 +19,16 @@ public static class AddConfigurationOptionsExtension
         services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
 
+        services.Configure<FinanceApiConfiguration>(configuration.GetSection(nameof(FinanceApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<FinanceApiConfiguration>>().Value);
+    
         services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection("EmployerProfilesInnerApi"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
         
         services.Configure<EmployerUsersApiConfiguration>(configuration.GetSection("EmployerUsersInnerApi"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerUsersApiConfiguration>>().Value);
+
+        services.Configure<HashingServiceConfiguration>(configuration.GetSection(nameof(HashingServiceConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<HashingServiceConfiguration>>().Value);
     }
 }
