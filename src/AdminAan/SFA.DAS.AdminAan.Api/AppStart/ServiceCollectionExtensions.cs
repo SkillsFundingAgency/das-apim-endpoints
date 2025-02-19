@@ -45,7 +45,7 @@ public static class ServiceCollectionExtensions
 
         services.AddHttpClient();
         AddAanHubApiClient(services, configuration);
-        AddReferenceDataApiClient(services, configuration);
+        AddEducationalOrganisationApiClient(services, configuration);
         AddLocationApiClient(services, configuration);
         AddCommitmentsV2ApiClient(services, configuration);
         AddCoursesApiClient(services, configuration);
@@ -81,22 +81,25 @@ public static class ServiceCollectionExtensions
         services.AddHealthChecks()
             .AddCheck<AanHubApiHealthCheck>(AanHubApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { Ready })
+                tags: [Ready])
             .AddCheck<CommitmentsV2InnerApiHealthCheck>(CommitmentsV2InnerApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { Ready })
+                tags: [Ready])
             .AddCheck<ApprenticeAccountsApiHealthCheck>(ApprenticeAccountsApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { Ready })
+                tags: [Ready])
             .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { Ready })
-            .AddCheck<ReferenceDataApiHealthCheck>(ReferenceDataApiHealthCheck.HealthCheckResultDescription,
+                tags: [Ready])
+            .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { Ready })
+                tags: [Ready])
+            .AddCheck<EducationalOrganisationApiHealthCheck>(EducationalOrganisationApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: [Ready])
             .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { Ready });
+                tags: [Ready]);
 
         return services;
     }
@@ -109,13 +112,11 @@ public static class ServiceCollectionExtensions
         services.AddRestEaseClient<IAanHubRestApiClient>(apiConfig.Url)
             .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
     }
-    private static void AddReferenceDataApiClient(IServiceCollection services, IConfigurationRoot configuration)
+    private static void AddEducationalOrganisationApiClient(IServiceCollection services, IConfigurationRoot configuration)
     {
-        var apiConfig = GetApiConfiguration(configuration, "ReferenceDataApiConfiguration");
-
-        services
-            .AddRestEaseClient<IReferenceDataApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+        services.Configure<EducationalOrganisationApiConfiguration>(configuration.GetSection(nameof(EducationalOrganisationApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<EducationalOrganisationApiConfiguration>>().Value);
+        services.AddTransient<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>, EducationalOrganisationApiClient>();
     }
 
     private static void AddLocationApiClient(IServiceCollection services, IConfiguration configuration)
