@@ -1,12 +1,17 @@
-﻿using AutoFixture;
+﻿using System.Net;
+using AutoFixture;
 using FluentAssertions;
 using Moq;
-using RestEase;
 using SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvent;
 using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.AdminAan.Application.Schools.Queries;
 using SFA.DAS.AdminAan.Domain.InnerApi.AanHubApi.Responses;
 using SFA.DAS.AdminAan.Infrastructure;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.EducationalOrganisations;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.AdminAan.UnitTests.Application.CalendarEvents.Queries.GetCalendarEvent;
 
@@ -23,9 +28,9 @@ public class GetCalendarEventQueryHandlerTests
     {
         var fixture = new Fixture();
 
-        var cancellationToken = new CancellationToken();
+        var cancellationToken = CancellationToken.None;
         var aanHubRestApiClientMock = new Mock<IAanHubRestApiClient>();
-        var referenceDataApiClient = new Mock<IReferenceDataApiClient>();
+        var educationalOrgsApiClientMock = new Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>>();
         var apiResponse = fixture.Create<GetCalendarEventByIdApiResponse>();
         var requestedByMemberId = Guid.NewGuid();
         var calendarEventId = Guid.NewGuid();
@@ -44,7 +49,7 @@ public class GetCalendarEventQueryHandlerTests
         aanHubRestApiClientMock.Setup(x => x.GetCalendarEvent(requestedByMemberId, calendarEventId, cancellationToken))
             .ReturnsAsync(apiResponse);
 
-        var handler = new GetCalendarEventQueryHandler(aanHubRestApiClientMock.Object, referenceDataApiClient.Object);
+        var handler = new GetCalendarEventQueryHandler(aanHubRestApiClientMock.Object, educationalOrgsApiClientMock.Object);
         var query = new GetCalendarEventQuery(requestedByMemberId, calendarEventId);
 
         var actual = await handler.Handle(query, cancellationToken);
@@ -53,7 +58,8 @@ public class GetCalendarEventQueryHandlerTests
         var callCount = regionId == null ? 0 : 1;
         aanHubRestApiClientMock.Verify(x => x.GetRegions(cancellationToken), Times.Exactly(callCount));
         aanHubRestApiClientMock.Verify(x => x.GetCalendarEvent(requestedByMemberId, calendarEventId, cancellationToken), Times.Once);
-        referenceDataApiClient.Verify(x => x.GetSchoolFromUrn(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
+        educationalOrgsApiClientMock 
+            .Verify(x => x.GetWithResponseCode<GetLatestDetailsForEducationalOrgResponse>(It.IsAny<GetLatestDetailsForEducationalOrgRequest>()), Times.Never);
     }
 
     [TestCase(null, null, false)]
@@ -64,10 +70,10 @@ public class GetCalendarEventQueryHandlerTests
         var fixture = new Fixture();
 
         const int OrganisationEducationType = 4;
-        var cancellationToken = new CancellationToken();
+        var cancellationToken = CancellationToken.None;
         var aanHubRestApiClientMock = new Mock<IAanHubRestApiClient>();
         var apiResponse = fixture.Create<GetCalendarEventByIdApiResponse>();
-        var referenceDataApiClient = new Mock<IReferenceDataApiClient>();
+        var educationalOrgsApiClientMock = new Mock<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>>();
         var requestedByMemberId = Guid.NewGuid();
         var calendarEventId = Guid.NewGuid();
 
@@ -82,30 +88,39 @@ public class GetCalendarEventQueryHandlerTests
         {
             var schoolResult = new GetSchoolApiResult(schoolName!);
 
-            var status = System.Net.HttpStatusCode.OK;
+            var status = HttpStatusCode.OK;
             if (schoolApiReturnsBadRequest)
             {
-                status = System.Net.HttpStatusCode.BadRequest;
+                status = HttpStatusCode.BadRequest;
             }
 
-            var response = new Response<GetSchoolApiResult>(
-                "not used",
-                new HttpResponseMessage(status),
-                () => schoolResult);
-
-            referenceDataApiClient.Setup(x => x.GetSchoolFromUrn(urn.Value.ToString(), OrganisationEducationType, cancellationToken))
-                .ReturnsAsync(response);
+            var response = new ApiResponse<GetLatestDetailsForEducationalOrgResponse>(
+                new GetLatestDetailsForEducationalOrgResponse
+                {
+                    EducationalOrganisation = new()
+                    {
+                        Name = schoolName!
+                    }
+                },
+                status,
+                string.Empty);
+                
+            educationalOrgsApiClientMock
+                .Setup(x => x.GetWithResponseCode<GetLatestDetailsForEducationalOrgResponse>(
+                    It.Is<GetLatestDetailsForEducationalOrgRequest>(x => x.Identifier == urn.Value.ToString())))
+                .ReturnsAsync(response)
+                .Verifiable();
         }
 
-        var handler = new GetCalendarEventQueryHandler(aanHubRestApiClientMock.Object, referenceDataApiClient.Object);
+        var handler = new GetCalendarEventQueryHandler(aanHubRestApiClientMock.Object, educationalOrgsApiClientMock.Object);
         var query = new GetCalendarEventQuery(requestedByMemberId, calendarEventId);
 
         var actual = await handler.Handle(query, cancellationToken);
         actual.Should().BeEquivalentTo(apiResponse, options => options.ExcludingMissingMembers());
-        actual?.SchoolName.Should().Be(schoolName);
+        actual.SchoolName.Should().Be(schoolName);
         aanHubRestApiClientMock.Verify(x => x.GetRegions(cancellationToken), Times.Never);
         aanHubRestApiClientMock.Verify(x => x.GetCalendarEvent(requestedByMemberId, calendarEventId, cancellationToken), Times.Once);
-        var callCount = urn == null ? 0 : 1;
-        referenceDataApiClient.Verify(x => x.GetSchoolFromUrn(It.IsAny<string>(), OrganisationEducationType, cancellationToken), Times.Exactly(callCount));
+        educationalOrgsApiClientMock.Verify();
+        educationalOrgsApiClientMock.VerifyNoOtherCalls();
     }
 }
