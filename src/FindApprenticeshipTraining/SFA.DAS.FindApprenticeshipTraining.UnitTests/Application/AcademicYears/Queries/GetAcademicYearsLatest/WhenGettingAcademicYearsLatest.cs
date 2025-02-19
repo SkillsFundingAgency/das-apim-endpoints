@@ -16,7 +16,7 @@ public class WhenGettingAcademicYearsLatest
 {
     [Test]
     [MoqAutoData]
-    public async Task Then_Gets_AcademicYearsLatest_From_RoatpV2_Api(
+    public async Task GetAcademicYearsLatest_ReturnsResult(
         GetAcademicYearsLatestQuery query,
         GetAcademicYearsLatestQueryResponse response,
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> mockRoatpV2ApiClient,

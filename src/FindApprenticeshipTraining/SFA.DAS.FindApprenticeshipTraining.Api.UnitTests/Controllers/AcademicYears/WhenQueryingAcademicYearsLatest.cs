@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using FluentAssertions;
+using FluentAssertions.Execution;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -15,7 +17,7 @@ public sealed class WhenQueryingAcademicYearsLatest
 
     [Test]
     [MoqAutoData]
-    public async Task Then_Passes_Query_To_Mediator_And_Returns_AcademicYearsLatest(
+    public async Task GetLatestAcademicYears_CallsMediator_ReturnsAcademicYearsLatest(
         GetAcademicYearsLatestQueryResult expectedResult
     )
     {
@@ -31,14 +33,15 @@ public sealed class WhenQueryingAcademicYearsLatest
 
         var result = await sut.GetAcademicYearsLatest() as ObjectResult;
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
+        mockMediator.Verify(x => x.Send(It.IsAny<GetAcademicYearsLatestQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+        var model = result!.Value as GetAcademicYearsLatestQueryResult;
 
-            var model = result.Value as GetAcademicYearsLatestQueryResult;
-            Assert.That(model, Is.Not.Null);
-            Assert.That(model, Is.EqualTo(expectedResult));
-        });
+        using (new AssertionScope())
+        {
+            result.Should().NotBeNull();
+            result!.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            model.Should().NotBeNull();
+            model.Should().Be(expectedResult);
+        }
     }
 }
