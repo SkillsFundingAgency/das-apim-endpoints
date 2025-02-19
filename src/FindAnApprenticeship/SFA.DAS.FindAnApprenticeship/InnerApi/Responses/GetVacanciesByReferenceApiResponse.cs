@@ -41,14 +41,11 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
             {
                 get
                 {
-
                     if (EmployerLocationOption is not AvailableWhere.MultipleLocations)
                     {
                         return null;
                     }
-
                     return _otherAddresses
-                        .Skip(1)
                         .DistinctBy(x => x.ToSingleLineAddress())
                         .ToList();
                 }

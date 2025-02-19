@@ -35,7 +35,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
             public string ExternalVacancyUrl { get; set; }
             public string ApplicationStatus { get; set; }
             public Address Address { get; set; }
-            public List<Address> OtherAddresses { get; set; } = [];
+            public List<Address>? OtherAddresses { get; set; } = [];
             public string? EmploymentLocationInformation { get; set; }
             public AvailableWhere? EmployerLocationOption { get; set; }
         }
@@ -57,7 +57,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
             if (savedVacancyList.Count == 0) { return new GetSavedVacanciesQueryResult(); }
 
             var vacancyReferences = savedVacancyList.Select(x => $"{x.VacancyReference}").ToList();
-
             var vacancies = await vacancyService.GetVacancies(vacancyReferences);
 
             var result = new GetSavedVacanciesQueryResult();
@@ -83,7 +82,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
                     ClosingDate = vacancy.ClosedDate ?? vacancy.ClosingDate,
                     CreatedDate = application.CreatedOn,
                     Address = vacancy.Address,
-                    OtherAddresses = vacancy.OtherAddresses,
+                    OtherAddresses = vacancy.OtherAddresses?.ToList(),
                     EmployerLocationOption = vacancy.EmployerLocationOption,
                     EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
                     IsExternalVacancy = vacancy.IsExternalVacancy,
