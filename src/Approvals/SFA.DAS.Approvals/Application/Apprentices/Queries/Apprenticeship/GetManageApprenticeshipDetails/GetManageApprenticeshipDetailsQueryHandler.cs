@@ -172,7 +172,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
 
     private LearnerStatusDetails ToResponse(GetLearnerStatusResponse source)
     {
-        if (source.LearnerStatus == null) return new LearnerStatusDetails{ LearnerStatus = LearnerStatus.None };
+        if (source?.LearnerStatus == null) return new LearnerStatusDetails{ LearnerStatus = LearnerStatus.None };
 
         return new LearnerStatusDetails
         {
