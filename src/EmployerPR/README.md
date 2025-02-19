@@ -4,8 +4,8 @@
 
 <img src="https://avatars.githubusercontent.com/u/9841374?s=200&v=4" align="right" alt="UK Government logo">
 
-## Build and sonar cloud statuses to be added at a later date, once available
-
+[![Build Status](https://sfa-gov-uk.visualstudio.com/Digital%20Apprenticeship%20Service/_apis/build/status%2Fdas-apim-endpoints-EmployerPR?repoName=SkillsFundingAgency%2Fdas-apim-endpoints&branchName=refs%2Fpull%2F1939%2Fmerge)](https://sfa-gov-uk.visualstudio.com/Digital%20Apprenticeship%20Service/_build/latest?definitionId=3696&repoName=SkillsFundingAgency%2Fdas-apim-endpoints&branchName=refs%2Fpull%2F1939%2Fmerge)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SkillsFundingAgency_das-apim-endpoints_EmployerPR&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=SkillsFundingAgency_das-apim-endpoints_EmployerPR)
 
 ## 🚀 Installation
 
@@ -14,9 +14,11 @@
 * A storage emulator like Azurite
 
 ### Dependencies
-* Provider Relationships Api: https://github.com/SkillsFundingAgency/das-pr-api
-* Accounts Api: https://github.com/SkillsFundingAgency/das-apprentice-accounts-api
-* Employer Profiles Api: https://github.com/SkillsFundingAgency/das-employerusers (within folder 'src/EmployerProfiles')
+* [Provider Relationships API](https://github.com/SkillsFundingAgency/das-pr-api)
+* [Accounts API](https://github.com/SkillsFundingAgency/das-apprentice-accounts-api)
+* [Employer Profiles API](https://github.com/SkillsFundingAgency/das-employerusers) (within folder 'src/EmployerProfiles')
+* [Roatp V2 API](https://github.com/SkillsFundingAgency/das-roatp-api) 
+* [Pensions Regulator API](https://github.com/SkillsFundingAgency/das-pensionsregulator)
 
 
 ### Config

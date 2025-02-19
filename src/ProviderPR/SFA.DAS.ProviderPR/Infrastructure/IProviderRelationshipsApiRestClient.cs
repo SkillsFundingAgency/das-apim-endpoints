@@ -1,20 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RestEase;
+﻿using RestEase;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.AccountInvitation;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.AddAccount;
 using SFA.DAS.ProviderPR.Application.Requests.Commands.CreatePermissions;
 using SFA.DAS.ProviderPR.InnerApi.Notifications.Commands;
-using SFA.DAS.ProviderPR.InnerApi.Requests;
 using SFA.DAS.ProviderPR.InnerApi.Responses;
 
 namespace SFA.DAS.ProviderPR.Infrastructure;
 
 public interface IProviderRelationshipsApiRestClient
 {
-    [Get("/health")]
-    [AllowAnyStatusCode]
-    Task<HttpResponseMessage> GetHealth(CancellationToken cancellationToken);
-
     [Get("providers/{ukprn}/relationships")]
     Task<Response<GetProviderRelationshipsResponse>> GetProviderRelationships([Path] long ukprn, [QueryMap] IDictionary<string, string> request, CancellationToken cancellationToken);
 
