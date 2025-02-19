@@ -9,6 +9,8 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -46,8 +48,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             await Task.WhenAll(locationTask, courseTask);
 
-            var ukprnsCountTask = _roatpCourseManagementApiClient.Get<GetTotalProvidersForStandardResponse>(
-                new GetTotalProvidersForStandardRequest(request.CourseId));
+            var ukprnsCountTask = _roatpCourseManagementApiClient.Get<GetCourseTrainingProvidersCountResponse>(
+                new GetCourseTrainingProvidersCountRequest([request.CourseId])
+            );
 
             var providerCoursesTask = _roatpCourseManagementApiClient.Get<List<GetProviderAdditionalStandardsItem>>(
                 new GetProviderAdditionalStandardsRequest(request.ProviderId));
@@ -64,6 +67,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             await Task.WhenAll(providerCoursesTask, ukprnsCountTask, overallAchievementRatesTask, shortlistTask, apprenticeFeedbackTask, employerFeedbackTask);
 
+            var providersCountResponse = ukprnsCountTask?.Result?.Courses?.FirstOrDefault();
+
             var providerDetails = await GetProviderDetails(request.ProviderId, request.CourseId, locationTask.Result, shortlistTask.Result);
 
             if (providerDetails != null && apprenticeFeedbackTask.Result?.StatusCode == System.Net.HttpStatusCode.OK && apprenticeFeedbackTask.Result.Body != null)
@@ -76,7 +81,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 providerDetails.EmployerFeedback = employerFeedbackTask.Result.Body;
             }
 
-
             var additionalCourses = BuildAdditionalCoursesResponse(providerCoursesTask.Result
                 .Where(x => x.IsApprovedByRegulator != false || string.IsNullOrEmpty(x.ApprovalBody)).ToList());
 
@@ -86,8 +90,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Course = courseTask.Result,
                 AdditionalCourses = additionalCourses,
                 OverallAchievementRates = overallAchievementRatesTask.Result.OverallAchievementRates,
-                TotalProviders = ukprnsCountTask.Result.ProvidersCount,
-                TotalProvidersAtLocation = ukprnsCountTask.Result.ProvidersCount,
+                TotalProviders = providersCountResponse?.TotalProvidersCount ?? 0,
+                TotalProvidersAtLocation = providersCountResponse?.TotalProvidersCount ?? 0,
                 Location = locationTask.Result,
                 ShortlistItemCount = shortlistTask.Result?.Count ?? 0
             };
