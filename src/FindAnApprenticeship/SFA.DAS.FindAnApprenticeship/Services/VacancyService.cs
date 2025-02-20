@@ -10,6 +10,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Services
 {
@@ -76,6 +77,25 @@ namespace SFA.DAS.FindAnApprenticeship.Services
             }
 
             return response;
+        }
+
+        public string GetVacancyWorkLocation(IVacancy vacancy)
+        {
+            switch (vacancy.EmployerLocationOption)
+            {
+                case AvailableWhere.AcrossEngland:
+                    return "Recruiting nationally";
+                case AvailableWhere.MultipleLocations:
+                {
+                    var addresses = new List<Address> { vacancy.Address };
+                    if (vacancy.OtherAddresses != null) addresses.AddRange(vacancy.OtherAddresses);
+                    return EmailTemplateAddressExtension.GetEmploymentLocations(addresses);
+                }
+                case null:
+                case AvailableWhere.OneLocation:
+                default:
+                    return EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.Address);
+            }
         }
     }
 }
