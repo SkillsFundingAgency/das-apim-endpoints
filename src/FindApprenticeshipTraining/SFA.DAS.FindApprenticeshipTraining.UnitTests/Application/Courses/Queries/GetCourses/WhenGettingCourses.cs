@@ -9,7 +9,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Models.RequestApprenticeTraining;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Linq;
@@ -24,18 +24,32 @@ public sealed class WhenGettingCourses
     [Test, MoqAutoData]
     public async Task Then_Calls_CoursesApi_With_Correct_Request(
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+        [Frozen] Mock<ILocationLookupService> _locationLookupService,
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpApiClient,
         [Greedy] GetCoursesQueryHandler sut,
+        LocationItem locationItem,
         GetStandardsListResponse coursesResponse,
         GetCourseTrainingProvidersCountResponse roatpResponse,
         CancellationToken cancellationToken
     )
     {
-        GetCoursesQuery query = new GetCoursesQuery();
+        GetCoursesQuery query = new GetCoursesQuery()
+        {
+            Keyword = "Construction", 
+            RouteIds = [1],
+            Levels = [2],
+            Distance = 40,
+            Location = "SW1"
+        };
 
         coursesApiClient
             .Setup(x => x.GetWithResponseCode<GetStandardsListResponse>(
-                It.IsAny<GetAvailableToStartStandardsListRequest>()
+                It.Is<GetActiveStandardsListRequest>(a => 
+                    a.Keyword.Equals(query.Keyword) &&
+                    a.OrderBy.Equals(query.OrderBy) &&
+                    a.Levels.SequenceEqual(query.Levels) &&
+                    a.RouteIds.SequenceEqual(query.RouteIds)
+                )
              ))
             .ReturnsAsync(
                 new ApiResponse<GetStandardsListResponse>(
@@ -62,13 +76,168 @@ public sealed class WhenGettingCourses
 
         coursesApiClient.Verify(x => 
             x.GetWithResponseCode<GetStandardsListResponse>(
-                It.Is<GetAvailableToStartStandardsListRequest>(r =>
+                It.Is<GetActiveStandardsListRequest>(r =>
                     r.Keyword == (query.Keyword ?? string.Empty) &&
                     r.OrderBy == query.OrderBy &&
                     r.RouteIds == query.RouteIds &&
                     r.Levels == query.Levels)
                 ), 
                 Times.Once
+        );
+    }
+
+    [Test, MoqAutoData]
+    public async Task When_Location_Is_Set_And_Location_Item_Is_Null_Then_Empty_Response_Is_Returned(
+        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+        [Frozen] Mock<ILocationLookupService> _locationLookupService,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpApiClient,
+        [Greedy] GetCoursesQueryHandler sut,
+        GetStandardsListResponse coursesResponse,
+        GetCourseTrainingProvidersCountResponse roatpResponse,
+        CancellationToken cancellationToken
+    )
+    {
+        GetCoursesQuery query = new GetCoursesQuery()
+        {
+            Keyword = "Construction",
+            RouteIds = [1],
+            Levels = [2],
+            Distance = 40,
+            Location = "SW1"
+        };
+
+        _locationLookupService
+            .Setup(a =>
+                a.GetLocationInformation(query.Location, 0, 0, false)
+            )
+            .ReturnsAsync((LocationItem)null);
+
+        coursesApiClient
+            .Setup(x => x.GetWithResponseCode<GetStandardsListResponse>(
+                It.Is<GetActiveStandardsListRequest>(a =>
+                    a.Keyword.Equals(query.Keyword) &&
+                    a.OrderBy.Equals(query.OrderBy) &&
+                    a.Levels.SequenceEqual(query.Levels) &&
+                    a.RouteIds.SequenceEqual(query.RouteIds)
+                )
+             ))
+            .ReturnsAsync(
+                new ApiResponse<GetStandardsListResponse>(
+                    coursesResponse,
+                    HttpStatusCode.OK,
+                    string.Empty
+            ));
+
+        roatpApiClient
+            .Setup(x =>
+                x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                    It.IsAny<GetCourseTrainingProvidersCountRequest>()
+                )
+            )
+            .ReturnsAsync(
+                new ApiResponse<GetCourseTrainingProvidersCountResponse>(
+                    roatpResponse,
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        var result = await sut.Handle(query, cancellationToken);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Page, Is.EqualTo(1));
+            Assert.That(result.PageSize, Is.EqualTo(query.PageSize));
+            Assert.That(result.TotalPages, Is.EqualTo(0));
+            Assert.That(result.TotalCount, Is.EqualTo(0));
+            Assert.That(result.Standards, Has.Count.EqualTo(0));
+        });
+
+        coursesApiClient.Verify(x =>
+            x.GetWithResponseCode<GetStandardsListResponse>(
+                    It.IsAny<GetActiveStandardsListRequest>()
+                ),
+            Times.Never
+        );
+    }
+
+    [Test, MoqAutoData]
+    public async Task When_Courses_Api_Returns_No_Standards_Then_Empty_Response_Is_Returned(
+        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+        [Frozen] Mock<ILocationLookupService> _locationLookupService,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpApiClient,
+        [Greedy] GetCoursesQueryHandler sut,
+        LocationItem locationItem,
+        GetStandardsListResponse coursesResponse,
+        GetCourseTrainingProvidersCountResponse roatpResponse,
+        CancellationToken cancellationToken
+    )
+    {
+        coursesResponse.Standards = [];
+
+        GetCoursesQuery query = new GetCoursesQuery()
+        {
+            Keyword = "Construction",
+            RouteIds = [1],
+            Levels = [2],
+            Distance = 40,
+            Location = "SW1"
+        };
+
+        _locationLookupService
+            .Setup(a =>
+                a.GetLocationInformation(query.Location, 0, 0, false)
+            )
+            .ReturnsAsync(locationItem);
+
+        coursesApiClient
+            .Setup(x => x.GetWithResponseCode<GetStandardsListResponse>(
+                It.Is<GetActiveStandardsListRequest>(a =>
+                    a.Keyword.Equals(query.Keyword) &&
+                    a.OrderBy.Equals(query.OrderBy) &&
+                    a.Levels.SequenceEqual(query.Levels) &&
+                    a.RouteIds.SequenceEqual(query.RouteIds)
+                )
+             ))
+            .ReturnsAsync(
+                new ApiResponse<GetStandardsListResponse>(
+                    coursesResponse,
+                    HttpStatusCode.OK,
+                    string.Empty
+            ));
+
+        roatpApiClient
+            .Setup(x =>
+                x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                    It.IsAny<GetCourseTrainingProvidersCountRequest>()
+                )
+            )
+            .ReturnsAsync(
+                new ApiResponse<GetCourseTrainingProvidersCountResponse>(
+                    roatpResponse,
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        var result = await sut.Handle(query, cancellationToken);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result.Page, Is.EqualTo(1));
+            Assert.That(result.PageSize, Is.EqualTo(query.PageSize));
+            Assert.That(result.TotalPages, Is.EqualTo(0));
+            Assert.That(result.TotalCount, Is.EqualTo(0));
+            Assert.That(result.Standards, Has.Count.EqualTo(0));
+        });
+
+        roatpApiClient.Verify(x =>
+            x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                    It.IsAny<GetCourseTrainingProvidersCountRequest>()
+                ),
+            Times.Never
         );
     }
 
@@ -84,7 +253,14 @@ public sealed class WhenGettingCourses
         CancellationToken cancellationToken
     )
     {
-        GetCoursesQuery query = new GetCoursesQuery();
+        GetCoursesQuery query = new GetCoursesQuery()
+        {
+            Keyword = "Construction",
+            RouteIds = [1],
+            Levels = [2],
+            Distance = 40,
+            Location = "SW1"
+        };
 
         var pagedStandards = coursesResponse.Standards
             .Skip(query.Page == 1 ? 0 : query.Page * query.PageSize)
@@ -94,7 +270,12 @@ public sealed class WhenGettingCourses
         coursesApiClient
             .Setup(x => 
                 x.GetWithResponseCode<GetStandardsListResponse>(
-                    It.IsAny<GetAvailableToStartStandardsListRequest>()
+                    It.Is<GetActiveStandardsListRequest>(a =>
+                        a.Keyword.Equals(query.Keyword) &&
+                        a.OrderBy.Equals(query.OrderBy) &&
+                        a.Levels.SequenceEqual(query.Levels) &&
+                        a.RouteIds.SequenceEqual(query.RouteIds)
+                    )
                 )
             )
             .ReturnsAsync(new ApiResponse<GetStandardsListResponse>(
@@ -142,23 +323,43 @@ public sealed class WhenGettingCourses
     [Test, MoqAutoData]
     public async Task Then_Returns_Correct_Mapped_Result(
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+        [Frozen] Mock<ILocationLookupService> _locationLookupService,
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpCourseManagementApiClient,
         [Greedy] GetCoursesQueryHandler sut,
+        LocationItem locationItem,
         GetStandardsListResponse coursesResponse,
         GetCourseTrainingProvidersCountResponse providerCountResponse,
         CancellationToken cancellationToken
     )
     {
-        GetCoursesQuery query = new GetCoursesQuery();
+        GetCoursesQuery query = new GetCoursesQuery()
+        {
+            Keyword = "Construction",
+            RouteIds = [1],
+            Levels = [2],
+            Distance = 40,
+            Location = "SW1"
+        };
 
         var pagedStandards = coursesResponse.Standards
             .Skip(query.Page == 1 ? 0 : query.Page * query.PageSize)
             .Take(query.PageSize).ToArray();
 
+        _locationLookupService
+            .Setup(a =>
+                a.GetLocationInformation(query.Location, 0, 0, false)
+            )
+        .ReturnsAsync(locationItem);
+
         coursesApiClient
             .Setup(x =>
                 x.GetWithResponseCode<GetStandardsListResponse>(
-                    It.IsAny<GetAvailableToStartStandardsListRequest>()
+                    It.Is<GetActiveStandardsListRequest>(a =>
+                        a.Keyword.Equals(query.Keyword) &&
+                        a.OrderBy.Equals(query.OrderBy) &&
+                        a.Levels.SequenceEqual(query.Levels) &&
+                        a.RouteIds.SequenceEqual(query.RouteIds)
+                    )
                 )
             )
             .ReturnsAsync(
@@ -171,7 +372,12 @@ public sealed class WhenGettingCourses
         roatpCourseManagementApiClient
             .Setup(x =>
                 x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
-                    It.IsAny<GetCourseTrainingProvidersCountRequest>()
+                    It.Is<GetCourseTrainingProvidersCountRequest>(a => 
+                        a.LarsCodes.SequenceEqual(pagedStandards.Select(a => a.LarsCode).ToArray()) &&
+                        a.Distance.Equals(query.Distance) &&
+                        a.Latitude.Equals((decimal)locationItem.GeoPoint[0]) &&
+                        a.Longitude.Equals((decimal)locationItem.GeoPoint[1])
+                    )
                 )
             )
             .ReturnsAsync(
