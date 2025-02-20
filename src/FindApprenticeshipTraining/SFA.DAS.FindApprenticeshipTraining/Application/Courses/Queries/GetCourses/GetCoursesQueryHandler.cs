@@ -49,7 +49,7 @@ public sealed class GetCoursesQueryHandler(
         }
 
         var pagedStandards = coursesStandardsResponse.Body.Standards
-            .Skip(query.Page == 1 ? 0 : query.Page * query.PageSize)
+            .Skip((query.Page - 1) * query.PageSize)
             .Take(query.PageSize)
             .ToArray();
 
