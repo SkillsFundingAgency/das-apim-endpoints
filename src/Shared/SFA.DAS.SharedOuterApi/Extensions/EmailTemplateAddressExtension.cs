@@ -26,7 +26,6 @@ namespace SFA.DAS.SharedOuterApi.Extensions
         {
             var cityNames = addresses
                 .Select(address => address.GetLastNonEmptyField())
-                .OfType<string>()
                 .Distinct()
                 .OrderBy(city => city)
                 .ToList();
