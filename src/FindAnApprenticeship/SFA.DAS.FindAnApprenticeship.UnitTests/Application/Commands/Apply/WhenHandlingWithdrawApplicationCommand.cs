@@ -334,4 +334,74 @@ public class WhenHandlingWithdrawApplicationCommand
             )
         ), Times.Once);
     }
+
+    [Test]
+    [MoqAutoData]
+    public async Task Then_The_Vacancy_With_Anon_ML_Is_Closed_Application_Status_Updated_And_Email_Sent(
+        long vacancyRef,
+        WithdrawApplicationCommand request,
+        GetApplicationApiResponse applicationApiResponse,
+        EmailEnvironmentHelper emailEnvironmentHelper,
+        GetClosedVacancyResponse closedVacancyResponse,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+        [Frozen] Mock<INotificationService> notificationService,
+        [Frozen] Mock<IVacancyService> vacancyService,
+        WithdrawApplicationCommandHandler handler)
+    {
+        const string expectedAddress = "Leeds and 2 other available locations";
+        closedVacancyResponse.EmployerLocations =
+        [
+            new Address {AddressLine3 = "Leeds", Postcode = "LS6"},
+            new Address {AddressLine3 = "Leeds", Postcode = "LS6"},
+            new Address {AddressLine3 = "Leeds", Postcode = "LS16"},
+            new Address {AddressLine3 = "Leeds", Postcode = "LS9"},
+            new Address {AddressLine3 = "Leeds", Postcode = "LS9"}
+        ];
+        closedVacancyResponse.EmployerLocationOption = AvailableWhere.MultipleLocations;
+        applicationApiResponse.VacancyReference = $"VAC{vacancyRef}";
+        applicationApiResponse.Status = ApplicationStatus.Submitted;
+        var expectedGetApplicationRequest =
+            new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true);
+        candidateApiClient
+            .Setup(x => x.Get<GetApplicationApiResponse>(
+                It.Is<GetApplicationApiRequest>(c =>
+                    c.GetUrl == expectedGetApplicationRequest.GetUrl
+                )))
+            .ReturnsAsync(applicationApiResponse);
+        candidateApiClient.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>())).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
+        recruitApiClient
+            .Setup(x => x.PostWithResponseCode<NullResponse>(
+                It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
+
+        vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
+        vacancyService.Setup(x => x.GetClosedVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(closedVacancyResponse);
+        vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse)).Returns(expectedAddress);
+
+        var actual = await handler.Handle(request, CancellationToken.None);
+
+        actual.Should().BeTrue();
+        candidateApiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
+            c.PatchUrl.Contains(request.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+            c.PatchUrl.Contains(request.CandidateId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+            c.Data.Operations[0].path == "/Status" &&
+            (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Withdrawn
+        )), Times.Once);
+        recruitApiClient
+            .Verify(x => x.PostWithResponseCode<NullResponse>(
+                It.Is<PostWithdrawApplicationRequest>(c =>
+                    c.PostUrl.Contains(request.CandidateId.ToString())
+                    && c.PostUrl.Contains(vacancyRef.ToString())
+                ), false), Times.Once);
+        notificationService.Verify(x => x.Send(
+            It.Is<SendEmailCommand>(c =>
+                c.RecipientsAddress == applicationApiResponse.Candidate.Email
+                && c.TemplateId == emailEnvironmentHelper.WithdrawApplicationEmailTemplateId
+                && c.Tokens["firstName"] == applicationApiResponse.Candidate.FirstName
+                && c.Tokens["vacancy"] == closedVacancyResponse.Title
+                && c.Tokens["employer"] == closedVacancyResponse.EmployerName
+                && c.Tokens["location"] == $"{expectedAddress}"
+            )
+        ), Times.Once);
+    }
 }

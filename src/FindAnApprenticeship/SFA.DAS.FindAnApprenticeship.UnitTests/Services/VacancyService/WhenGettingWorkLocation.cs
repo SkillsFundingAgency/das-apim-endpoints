@@ -48,6 +48,31 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Services.VacancyService
         }
 
         [Test, MoqAutoData]
+        public void GetVacancyWorkLocation_Anon_MultipleLocations_ReturnsEmploymentLocations(
+            Mock<IVacancy> vacancy,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            FindAnApprenticeship.Services.VacancyService service)
+        {
+            // Arrange
+            var address = new Address { AddressLine3 = "Leeds", Postcode = "LS6" };
+            var otherAddresses = new List<Address>
+            {
+                new Address {AddressLine3 = "Leeds", Postcode = "LS16"},
+                new Address {AddressLine3 = "Leeds", Postcode = "LS9"}
+            };
+            vacancy.Setup(v => v.EmployerLocationOption).Returns(AvailableWhere.MultipleLocations);
+            vacancy.Setup(v => v.Address).Returns(address);
+            vacancy.Setup(v => v.OtherAddresses).Returns(otherAddresses);
+
+            // Act
+            var result = service.GetVacancyWorkLocation(vacancy.Object);
+
+            // Assert
+            result.Should().Be("Leeds (LS6) and 2 other available locations");
+        }
+
+        [Test, MoqAutoData]
         public void GetVacancyWorkLocation_OneLocation_ReturnsOneLocationCityName(
             Mock<IVacancy> vacancy,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,

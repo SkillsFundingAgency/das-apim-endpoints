@@ -163,6 +163,76 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
     }
 
     [Test, MoqAutoData]
+    public async Task Then_The_Vacancy_With_Anon_Multiple_Locations_And_Candidates_Are_Found_Emails_Sent_And_Application_Status_Updated(
+        ProcessVacancyClosedEarlyCommand command,
+        GetCandidateApplicationApiResponse candidateApiResponseAll,
+        GetLiveVacancyApiResponse recruitApiResponse,
+        EmailEnvironmentHelper emailEnvironmentHelper,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+        [Frozen] Mock<INotificationService> notificationService,
+        ProcessVacancyClosedEarlyCommandHandler handler)
+    {
+        recruitApiResponse.EmployerLocationOption = AvailableWhere.MultipleLocations;
+        const string expectedAddress = "Leeds and 2 other available locations";
+        recruitApiResponse.EmployerLocations =
+        [
+            new Address {AddressLine3 = "Leeds", Postcode = "LS6"},
+            new Address {AddressLine3 = "Leeds", Postcode = "LS6"},
+            new Address {AddressLine3 = "Leeds", Postcode = "LS16"},
+            new Address {AddressLine3 = "Leeds", Postcode = "LS9"},
+            new Address {AddressLine3 = "Leeds", Postcode = "LS9"}
+        ];
+
+        candidateApiClient.Setup(x =>
+                x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
+
+        var candidateGetRequestAll =
+            new GetCandidateApplicationsByVacancyRequest(command.VacancyReference.ToString(), null,
+                false);
+        candidateApiClient
+             .Setup(x => x.Get<GetCandidateApplicationApiResponse>(
+                 It.Is<GetCandidateApplicationsByVacancyRequest>(c =>
+                     c.GetUrl == candidateGetRequestAll.GetUrl))).ReturnsAsync(candidateApiResponseAll);
+        recruitApiClient
+            .Setup(x => x.Get<GetLiveVacancyApiResponse>(
+                It.Is<GetLiveVacancyApiRequest>(c =>
+                    c.GetUrl.Contains(command.VacancyReference.ToString()))))
+            .ReturnsAsync(recruitApiResponse);
+
+        await handler.Handle(command, CancellationToken.None);
+
+        foreach (var candidate in candidateApiResponseAll.Candidates)
+        {
+            var employmentWorkLocation =
+                EmailTemplateAddressExtension.GetEmploymentLocationCityNames(recruitApiResponse.EmployerLocations);
+
+            candidateApiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
+                    c.PatchUrl.Contains(candidate.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                    c.PatchUrl.Contains(candidate.Candidate.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                    c.Data.Operations[0].path == "/Status" &&
+                    (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Expired
+                )), Times.Once
+
+            );
+            notificationService.Verify(x => x.Send(
+                It.Is<SendEmailCommand>(c =>
+                    c.RecipientsAddress == candidate.Candidate.Email
+                    && c.TemplateId == emailEnvironmentHelper.VacancyClosedEarlyTemplateId
+                    && c.Tokens["firstName"] == candidate.Candidate.FirstName
+                    && c.Tokens["vacancy"] == recruitApiResponse.Title
+                    && c.Tokens["employer"] == recruitApiResponse.EmployerName
+                    && c.Tokens["dateApplicationStarted"] == candidate.ApplicationCreatedDate.ToString("d MMM yyyy")
+                    && c.Tokens["location"] == employmentWorkLocation
+                    && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
+                    && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
+                )
+            ), Times.Once);
+        }
+    }
+
+    [Test, MoqAutoData]
     public async Task Then_If_No_Candidates_Are_Found_No_Emails_Sent(
         ProcessVacancyClosedEarlyCommand command,
         GetLiveVacancyApiResponse recruitApiResponse,

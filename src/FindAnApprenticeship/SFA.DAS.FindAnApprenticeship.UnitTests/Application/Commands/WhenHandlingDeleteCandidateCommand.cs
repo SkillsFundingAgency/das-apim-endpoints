@@ -546,5 +546,108 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
             candidateApiClient
                 .Verify(client => client.Delete(It.Is<DeleteAccountApiRequest>(r => r.DeleteUrl == expectedDeleteAccountApiRequest.DeleteUrl)), Times.Once);
         }
+
+        [Test]
+        [MoqAutoData]
+        public async Task Then_ClosedVacancy_With_Anon_MultipleLocations_The_Application_Is_Withdrawn_From_Recruit_Status_Updated_And_Email_Sent_AccountDeleted(
+               List<Address> addresses,
+               long vacancyRef,
+               DeleteCandidateCommand command,
+               GetApplicationsApiResponse applicationsApiResponse,
+               GetCandidateApiResponse candidateApiResponse,
+               EmailEnvironmentHelper emailEnvironmentHelper,
+               GetClosedVacancyResponse closedVacancyResponse,
+               [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+               [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+               [Frozen] Mock<INotificationService> notificationService,
+               [Frozen] Mock<IVacancyService> vacancyService,
+               [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
+               DeleteCandidateCommandHandler handler)
+        {
+            foreach (var application in applicationsApiResponse.Applications)
+            {
+                application.VacancyReference = $"VAC{vacancyRef}";
+                application.Status = ApplicationStatus.Submitted.ToString();
+                application.CandidateId = command.CandidateId;
+            }
+            const string expectedAddress = "Leeds and 2 other available locations";
+            closedVacancyResponse.EmployerLocations =
+            [
+                new Address {AddressLine3 = "Leeds", Postcode = "LS6"},
+                new Address {AddressLine3 = "Leeds", Postcode = "LS6"},
+                new Address {AddressLine3 = "Leeds", Postcode = "LS16"},
+                new Address {AddressLine3 = "Leeds", Postcode = "LS9"},
+                new Address {AddressLine3 = "Leeds", Postcode = "LS9"}
+            ];
+            closedVacancyResponse.EmployerLocationOption = AvailableWhere.MultipleLocations;
+
+            var expectedGetApplicationsRequest =
+                new GetApplicationsApiRequest(command.CandidateId);
+            candidateApiClient
+                .Setup(x => x.Get<GetApplicationsApiResponse>(
+                    It.Is<GetApplicationsApiRequest>(c =>
+                        c.GetUrl == expectedGetApplicationsRequest.GetUrl
+                    )))
+                .ReturnsAsync(applicationsApiResponse);
+
+
+            var expectedGetCandidateRequest =
+                new GetCandidateApiRequest(command.CandidateId.ToString());
+            candidateApiClient
+                .Setup(x => x.Get<GetCandidateApiResponse>(
+                    It.Is<GetCandidateApiRequest>(c =>
+                        c.GetUrl == expectedGetCandidateRequest.GetUrl
+                    )))
+                .ReturnsAsync(candidateApiResponse);
+
+            candidateApiClient.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>())).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
+            recruitApiClient
+                .Setup(x => x.PostWithResponseCode<NullResponse>(
+                    It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
+
+            vacancyService.Setup(x => x.GetVacancy($"VAC{vacancyRef}")).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
+            vacancyService.Setup(x => x.GetClosedVacancy($"VAC{vacancyRef}")).ReturnsAsync(closedVacancyResponse);
+            vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse)).Returns(expectedAddress);
+
+            var actual = await handler.Handle(command, CancellationToken.None);
+
+            actual.Should().Be(Unit.Value);
+
+            foreach (var application in applicationsApiResponse.Applications)
+            {
+                candidateApiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
+                    c.PatchUrl.Contains(application.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                    c.PatchUrl.Contains(command.CandidateId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                    c.Data.Operations[0].path == "/Status" &&
+                    (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Withdrawn
+                )), Times.AtLeastOnce);
+
+                recruitApiClient
+                    .Verify(x => x.PostWithResponseCode<NullResponse>(
+                        It.Is<PostWithdrawApplicationRequest>(c =>
+                            c.PostUrl.Contains(command.CandidateId.ToString())
+                            && c.PostUrl.Contains(vacancyRef.ToString())
+                        ), false), Times.Exactly(applicationsApiResponse.Applications.Count));
+
+                notificationService.Verify(x => x.Send(
+                    It.Is<SendEmailCommand>(c =>
+                        c.RecipientsAddress == candidateApiResponse.Email
+                        && c.TemplateId == emailEnvironmentHelper.WithdrawApplicationEmailTemplateId
+                        && c.Tokens["firstName"] == candidateApiResponse.FirstName
+                        && c.Tokens["vacancy"] == closedVacancyResponse.Title
+                        && c.Tokens["employer"] == closedVacancyResponse.EmployerName
+                        && c.Tokens["location"] == $"{expectedAddress}"
+                    )
+                ), Times.Exactly(applicationsApiResponse.Applications.Count));
+            }
+
+            var expectedDeleteSavedSearchesApiRequest = new DeleteSavedSearchesApiRequest(command.CandidateId);
+            findApprenticeshipApiClient.Verify(client => client.Delete(It.Is<DeleteSavedSearchesApiRequest>(r => r.DeleteUrl == expectedDeleteSavedSearchesApiRequest.DeleteUrl)), Times.Once);
+
+            var expectedDeleteAccountApiRequest =
+                new DeleteAccountApiRequest(command.CandidateId);
+            candidateApiClient
+                .Verify(client => client.Delete(It.Is<DeleteAccountApiRequest>(r => r.DeleteUrl == expectedDeleteAccountApiRequest.DeleteUrl)), Times.Once);
+        }
     }
 }
