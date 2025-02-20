@@ -6,6 +6,8 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Earnings.Api.AppStart;
+using SFA.DAS.Earnings.Api.Controllers;
+using SFA.DAS.Earnings.Api.Learnerdata;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
@@ -30,7 +32,7 @@ public class Startup
         services.AddSingleton(_env);
 
         services.AddConfigurationOptions(_configuration);
-
+        
         if (!_configuration.IsLocalOrDev())
         {
             var azureAdConfiguration = _configuration
@@ -55,6 +57,8 @@ public class Startup
                     o.Filters.Add(new AuthorizeFilter("default"));
                 }
             });
+
+        services.AddSingleton<ILearnerDataSearchService>(new LearnerDataSearchService(new LearnerDataStore("SFA.DAS.Earnings.Api.cannedLearnerData.csv")));
 
         services.AddControllers().AddJsonOptions(options =>
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));

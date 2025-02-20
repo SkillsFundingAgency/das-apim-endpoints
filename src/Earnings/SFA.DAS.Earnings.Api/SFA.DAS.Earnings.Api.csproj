@@ -21,4 +21,8 @@
     <ProjectReference Include="..\SFA.DAS.Earnings\SFA.DAS.Earnings.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="cannedLearnerData.csv" />
+  </ItemGroup>
+
 </Project>
