@@ -20,6 +20,7 @@ parameters:
   AddXForwardedAuthorization: $False
   useProductAppInsights:
   CheckClientCert: $False
+  MandateCheckClientCert: $False
 
 jobs:
 - deployment: DeployInfrastructure
@@ -115,6 +116,7 @@ jobs:
               -SandboxEnabled ${{ parameters.SandboxEnabled }} `
               -AddXForwardedAuthorization ${{ parameters.AddXForwardedAuthorization }} `
               -CheckClientCert ${{ parameters.CheckClientCert }} `
+              -MandateCheckClientCert ${{ parameters.MandateCheckClientCert }} `
               -ApimKeyVaultUri $(ApimKeyVaultUri) `
               -ApimKeyVaultClientCertName $(ApimKeyVaultClientCertName) `
               -Verbose
