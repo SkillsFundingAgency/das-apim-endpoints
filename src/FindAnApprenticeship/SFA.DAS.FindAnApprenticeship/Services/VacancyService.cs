@@ -25,11 +25,44 @@ namespace SFA.DAS.FindAnApprenticeship.Services
         public async Task<IVacancy> GetClosedVacancy(string vacancyReference)
         {
             var response = await recruitApiClient.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(vacancyReference.Replace("VAC", "")));
-            if (response is not { IsAnonymous: true })
+            return AnonymizeClosedVacancy(response);
+        }
+
+        public async Task<List<IVacancy>> GetVacancies(List<string> vacancyReferences)
+        {
+            var vacanciesRequest = new PostGetVacanciesByReferenceApiRequest(new PostGetVacanciesByReferenceApiRequestBody
             {
-                return response;
-            }
+                VacancyReferences = vacancyReferences.Select(x => $"VAC{x}").ToList()
+            });
+
+            var vacancies = await findApprenticeshipApiClient.PostWithResponseCode<PostGetVacanciesByReferenceApiResponse>(vacanciesRequest);
+
+            if (vacancies?.Body?.ApprenticeshipVacancies == null) return [];
             
+            var result = vacancies.Body.ApprenticeshipVacancies.Select(IVacancy (x) => x).ToList();
+
+            var notFoundVacancies = vacancyReferences.Where(x => result.All(y => y.VacancyReference != $"VAC{x}")).ToList();
+
+            if (notFoundVacancies.Count == 0) return result;
+            
+            var recruitRequest = new PostGetClosedVacanciesByReferenceApiRequest(
+                new PostGetClosedVacanciesByReferenceApiRequestBody
+                {
+                    VacancyReferences = notFoundVacancies.Select(x => Convert.ToInt64(x)).ToList()
+                });
+
+            var recruitResponse =
+                await recruitApiClient.PostWithResponseCode<GetClosedVacanciesByReferenceResponse>(recruitRequest);
+
+            result.AddRange(recruitResponse.Body.Vacancies.Select(AnonymizeClosedVacancy));
+
+            return result;
+        }
+
+        private static IVacancy AnonymizeClosedVacancy(GetClosedVacancyResponse response)
+        {
+            if (response is not { IsAnonymous: true }) return response;
+
             switch (response.EmployerLocationOption)
             {
                 case AvailableWhere.OneLocation:
@@ -44,36 +77,6 @@ namespace SFA.DAS.FindAnApprenticeship.Services
             }
 
             return response;
-        }
-
-        public async Task<List<IVacancy>> GetVacancies(List<string> vacancyReferences)
-        {
-            var vacanciesRequest = new PostGetVacanciesByReferenceApiRequest(new PostGetVacanciesByReferenceApiRequestBody
-            {
-                VacancyReferences = vacancyReferences.Select(x => $"VAC{x}").ToList()
-            });
-
-            var vacancies = await findApprenticeshipApiClient.PostWithResponseCode<PostGetVacanciesByReferenceApiResponse>(vacanciesRequest);
-
-            var result = vacancies.Body.ApprenticeshipVacancies.Select(IVacancy (x) => x).ToList();
-
-            var notFoundVacancies = vacancyReferences.Where(x => result.All(y => y.VacancyReference != $"VAC{x}")).ToList();
-
-            if (notFoundVacancies.Any())
-            {
-                var recruitRequest = new PostGetClosedVacanciesByReferenceApiRequest(
-                    new PostGetClosedVacanciesByReferenceApiRequestBody
-                    {
-                        VacancyReferences = notFoundVacancies.Select(x => Convert.ToInt64(x)).ToList()
-                    });
-
-                var recruitResponse =
-                    await recruitApiClient.PostWithResponseCode<GetClosedVacanciesByReferenceResponse>(recruitRequest);
-
-                result.AddRange(recruitResponse.Body.Vacancies);
-            }
-
-            return result;
         }
 
         public string GetVacancyWorkLocation(IVacancy vacancy)
