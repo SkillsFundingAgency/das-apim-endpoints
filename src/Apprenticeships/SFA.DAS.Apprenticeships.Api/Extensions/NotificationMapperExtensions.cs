@@ -52,5 +52,14 @@ namespace SFA.DAS.Apprenticeships.Api.Extensions
                 Rejector = response.Rejector
             };
         }
+
+        public static ApprenticeshipWithdrawnCommand ToNotificationCommand(this HandleWithdrawalNotificationsRequest request, Guid apprenticeshipKey)
+        {
+            return new ApprenticeshipWithdrawnCommand
+            {
+                ApprenticeshipKey = apprenticeshipKey,
+                LastDayOfLearning = request.LastDayOfLearning
+            };
+        }
     }
 }
