@@ -56,13 +56,13 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             var startTime = DateTime.UtcNow;
 
             // Log Request Details
-            _logger.LogInformation("🔹 [API Request] Sending HTTP {Method} request to: {Url}", requestMessage.Method, HttpClient.BaseAddress);
-            _logger.LogInformation("🔹 [Request Headers] {Headers}", string.Join("; ", requestMessage.Headers.Select(h => $"{h.Key}: {string.Join(",", h.Value)}")));
+            _logger.LogInformation("Certificate [API Request] Sending HTTP {Method} request to: {Url}", requestMessage.Method, HttpClient.BaseAddress);
+            _logger.LogInformation("Certificate [Request Headers] {Headers}", string.Join("; ", requestMessage.Headers.Select(h => $"{h.Key}: {string.Join(",", h.Value)}")));
 
             if (stringContent != null)
             {
                 var requestBody = await stringContent.ReadAsStringAsync();
-                _logger.LogInformation("🔹 [Request Body] {Body}", requestBody);
+                _logger.LogInformation("Certificate [Request Body] {Body}", requestBody);
             }
 
             HttpResponseMessage response;
@@ -73,29 +73,29 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             catch (Exception ex)
             {
                 _logger.LogError(ex,
-                    "❌ [API Call Failed] Exception while making request to {Url}. Error: {Error} \n StackTrace: {StackTrace}",
+                    "Certificate [API Call Failed] Exception while making request to {Url}. Error: {Error} \n StackTrace: {StackTrace}",
                     request.PostUrl, ex.Message, ex.StackTrace);
 
                 // Log inner exceptions recursively with stack traces
                 Exception innerEx = ex.InnerException;
                 while (innerEx != null)
                 {
-                    _logger.LogError("❌ [Inner Exception] {Error} \n StackTrace: {StackTrace}",
+                    _logger.LogError("Certificate [Inner Exception] {Error} \n StackTrace: {StackTrace}",
                         innerEx.Message, innerEx.StackTrace);
                     innerEx = innerEx.InnerException;
                 }
 
                 // Log request details for debugging
-                _logger.LogError("🔹 [Request Details] URL: {Url}, Method: {Method}",
+                _logger.LogError("Certificate [Request Details] URL: {Url}, Method: {Method}",
                     requestMessage.RequestUri, requestMessage.Method);
 
                 if (requestMessage.Content != null)
                 {
                     var requestBody = await requestMessage.Content.ReadAsStringAsync();
-                    _logger.LogError("🔹 [Request Body] {RequestBody}", requestBody);
+                    _logger.LogError("Certificate [Request Body] {RequestBody}", requestBody);
                 }
 
-                _logger.LogError("🔹 [Request Headers] {Headers}",
+                _logger.LogError("Certificate [Request Headers] {Headers}",
                     string.Join("; ", requestMessage.Headers.Select(h => $"{h.Key}: {string.Join(",", h.Value)}")));
 
                 throw;
@@ -109,9 +109,9 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             // Log Response Details
-            _logger.LogInformation("🔹 [API Response] Status Code: {StatusCode}, Execution Time: {ExecutionTime} ms", response.StatusCode, executionTime);
-            _logger.LogInformation("🔹 [Response Headers] {Headers}", string.Join("; ", response.Headers.Select(h => $"{h.Key}: {string.Join(",", h.Value)}")));
-            _logger.LogInformation("🔹 [Response Body] {Body}", json);
+            _logger.LogInformation("Certificate [API Response] Status Code: {StatusCode}, Execution Time: {ExecutionTime} ms", response.StatusCode, executionTime);
+            _logger.LogInformation("Certificate [Response Headers] {Headers}", string.Join("; ", response.Headers.Select(h => $"{h.Key}: {string.Join(",", h.Value)}")));
+            _logger.LogInformation("Certificate [Response Body] {Body}", json);
 
             var errorContent = "";
             var responseBody = (TResponse)default;
@@ -151,6 +151,122 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 
         public virtual string HandleException(HttpResponseMessage response, string json) => json;
 
+        //private void AddAuthenticationCertificate()
+        //{
+        //    try
+        //    {
+        //        var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
+        //        var certificateClient = new CertificateClient(new Uri(Configuration.KeyVaultIdentifier), new DefaultAzureCredential(defaultAzureCredentialOptions));
+        //        var certificate = certificateClient.DownloadCertificate(Configuration.CertificateName);
+
+        //        if (certificate == null || certificate.Value == null)
+        //        {
+        //            _logger.LogInformation("Certificate was not properly returned from the Key Vault.");
+        //            throw new Exception("❌ Certificate was not properly returned from the Key Vault.");
+        //        }
+
+        //        if (!certificate.Value.HasPrivateKey)
+        //        {
+        //            _logger.LogInformation("Certificate has no private key.");
+        //            throw new Exception("❌ Certificate has no private key.");
+        //        }
+
+        //        var httpClientHandler = new HttpClientHandler
+        //        {
+
+        //            //Proxy = new WebProxy("http://127.0.0.1:8888"), // Default port for Fiddler Everywhere
+        //            //UseProxy = true,
+
+        //            SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
+        //            ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
+        //            {
+        //                if (chain == null)
+        //                {
+        //                    Console.WriteLine("No chain...");
+        //                }
+        //                else
+        //                {
+        //                    foreach (X509ChainElement element in chain.ChainElements)
+        //                    {
+        //                        Console.WriteLine();
+        //                        _logger.LogInformation(
+        //                            $"Certificate Subject:  {element.Certificate.Subject}");
+        //                        _logger.LogInformation(
+        //                            $"Certificate Length:  {element.ChainElementStatus.Length}");
+        //                        //Console.WriteLine(element.ChainElementStatus.Length);
+        //                        foreach (X509ChainStatus status in element.ChainElementStatus)
+        //                        {
+        //                            //Console.WriteLine($"Status:  {status.Status}: {status.StatusInformation}");
+        //                            _logger.LogInformation(
+        //                                $"Certificate Status:  {status.Status}: {status.StatusInformation}");
+        //                        }
+        //                    }
+        //                }
+
+        //                // Check if the certificate is expired
+        //                if (DateTime.Now > cert.NotAfter)
+        //                {
+        //                    _logger.LogInformation(
+        //                              $"Certificate expired:  Certificate has expired.");
+        //                    return false;
+        //                }
+
+        //                // Check if the certificate is not yet valid
+        //                if (DateTime.Now < cert.NotBefore)
+        //                {
+        //                    _logger.LogInformation(
+        //                           $"Certificate is not yet valid.");
+        //                    return false;
+        //                }
+
+        //                if (sslPolicyErrors != SslPolicyErrors.None)
+        //                {
+        //                    _logger.LogError("Certificate [TLS Error] SSL Policy Error: {Error}", sslPolicyErrors);
+        //                    return false;
+        //                }
+
+        //                _logger.LogInformation("Certificate [TLS Handshake] Successful with Server Certificate: {Subject}", cert.Subject);
+        //                _logger.LogInformation("Certificate [TLS Version] {TlsVersion}", message.Version);
+
+        //                return true;
+        //            }
+        //        };
+
+        //        //try
+        //        //{
+        //        //    using (var tcpClient = new System.Net.Sockets.TcpClient("dfedata-uat.lancashire.gov.uk", 443))
+        //        //    using (var sslStream = new SslStream(tcpClient.GetStream(), false, (sender, certificate, chain, errors) => true))
+        //        //    {
+        //        //        sslStream.AuthenticateAsClient("dfedata-uat.lancashire.gov.uk");
+        //        //        _logger.LogInformation("🔹 [Actual TLS Version] {TlsVersion}", sslStream.SslProtocol);
+        //        //    }
+        //        //}
+        //        //catch (Exception ex)
+        //        //{
+        //        //    _logger.LogError("❌ [TLS Detection Error] Failed to determine TLS version: {Error}", ex.Message);
+        //        //}
+
+        //        // Log Certificate Information
+        //        _logger.LogInformation("Certificate[Certificate Info] Using Certificate for Authentication:");
+        //        _logger.LogInformation("Certificate Subject: {Subject}", certificate.Value.Subject);
+        //        _logger.LogInformation("Certificate Issuer: {Issuer}", certificate.Value.Issuer);
+        //        _logger.LogInformation("Certificate Valid From: {NotBefore}", certificate.Value.NotBefore);
+        //        _logger.LogInformation("Certificate Expiry Date: {NotAfter}", certificate.Value.NotAfter);
+        //        _logger.LogInformation("Certificate Has Private Key: {HasPrivateKey}", certificate.Value.HasPrivateKey);
+
+        //        httpClientHandler.ClientCertificates.Add(certificate);
+
+        //        HttpClient = new HttpClient(httpClientHandler)
+        //        {
+        //            BaseAddress = new Uri(Configuration.Url)
+        //        };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError("Certificate [Certificate Error] Failed to load certificate: {Error}", ex.Message);
+        //        throw;
+        //    }
+        //}
         private void AddAuthenticationCertificate()
         {
             try
@@ -161,11 +277,13 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 
                 if (certificate == null || certificate.Value == null)
                 {
+                    _logger.LogInformation("Certificate was not properly returned from the Key Vault.");
                     throw new Exception("❌ Certificate was not properly returned from the Key Vault.");
                 }
 
                 if (!certificate.Value.HasPrivateKey)
                 {
+                    _logger.LogInformation("Certificate has no private key.");
                     throw new Exception("❌ Certificate has no private key.");
                 }
 
@@ -174,41 +292,84 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                     SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
                     ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
                     {
-                        if (sslPolicyErrors != SslPolicyErrors.None)
+                        if (chain == null)
                         {
-                            _logger.LogError("❌ [TLS Error] SSL Policy Error: {Error}", sslPolicyErrors);
+                            _logger.LogError("❌ Certificate validation chain is null.");
                             return false;
                         }
 
-                        _logger.LogInformation("🔹 [TLS Handshake] Successful with Server Certificate: {Subject}", cert.Subject);
-                        _logger.LogInformation("🔹 [TLS Version] {TlsVersion}", message.Version);
+                        foreach (X509ChainElement element in chain.ChainElements)
+                        {
+                            _logger.LogInformation($"🔍 Certificate Subject: {element.Certificate.Subject}");
+                            _logger.LogInformation($"🔍 Issuer: {element.Certificate.Issuer}");
 
+                            foreach (X509ChainStatus status in element.ChainElementStatus)
+                            {
+                                _logger.LogError($"⚠️ Certificate Status: {status.Status} - {status.StatusInformation}");
+                                if (status.Status == X509ChainStatusFlags.Revoked)
+                                {
+                                    _logger.LogError("❌ Certificate has been revoked.");
+                                    return false;
+                                }
+                            }
+                        }
+
+                        // Check if the certificate is expired
+                        if (DateTime.Now > cert.NotAfter)
+                        {
+                            _logger.LogError("❌ Certificate has expired.");
+                            return false;
+                        }
+
+                        // Check if the certificate is not yet valid
+                        if (DateTime.Now < cert.NotBefore)
+                        {
+                            _logger.LogError("❌ Certificate is not yet valid.");
+                            return false;
+                        }
+
+                        // Verify SSL Policy Errors
+                        if (sslPolicyErrors != SslPolicyErrors.None)
+                        {
+                            _logger.LogError("❌ SSL Policy Errors Detected: {Error}", sslPolicyErrors);
+                            return false;
+                        }
+
+                        //// Check if the certificate is issued by a trusted authority
+                        //if (!chain.ChainElements[chain.ChainElements.Count - 1].Certificate.Subject.Contains("CN=TrustedRootCA"))
+                        //{
+                        //    _logger.LogError("❌ Certificate is not issued by a trusted authority.");
+                        //    return false;
+                        //}
+
+                        // Check if the certificate key length is strong (2048 bits or higher)
+                        if (cert.PublicKey.Key.KeySize < 2048)
+                        {
+                            _logger.LogError("❌ Certificate key size is too weak. Minimum 2048 bits required.");
+                            return false;
+                        }
+
+                        // Check key usage (digital signature, key encipherment)
+                        if (!cert.Extensions.OfType<X509KeyUsageExtension>().Any(usage => usage.KeyUsages.HasFlag(X509KeyUsageFlags.DigitalSignature)))
+                        {
+                            _logger.LogError("❌ Certificate does not allow digital signature usage.");
+                            return false;
+                        }
+
+                        _logger.LogInformation("✅ Certificate validation passed successfully.");
                         return true;
                     }
                 };
 
-                //try
-                //{
-                //    using (var tcpClient = new System.Net.Sockets.TcpClient("dfedata-uat.lancashire.gov.uk", 443))
-                //    using (var sslStream = new SslStream(tcpClient.GetStream(), false, (sender, certificate, chain, errors) => true))
-                //    {
-                //        sslStream.AuthenticateAsClient("dfedata-uat.lancashire.gov.uk");
-                //        _logger.LogInformation("🔹 [Actual TLS Version] {TlsVersion}", sslStream.SslProtocol);
-                //    }
-                //}
-                //catch (Exception ex)
-                //{
-                //    _logger.LogError("❌ [TLS Detection Error] Failed to determine TLS version: {Error}", ex.Message);
-                //}
-
                 // Log Certificate Information
-                _logger.LogInformation("🔹 [Certificate Info] Using Certificate for Authentication:");
-                _logger.LogInformation("   🔸 Subject: {Subject}", certificate.Value.Subject);
-                _logger.LogInformation("   🔸 Issuer: {Issuer}", certificate.Value.Issuer);
-                _logger.LogInformation("   🔸 Valid From: {NotBefore}", certificate.Value.NotBefore);
-                _logger.LogInformation("   🔸 Expiry Date: {NotAfter}", certificate.Value.NotAfter);
-                _logger.LogInformation("   🔸 Has Private Key: {HasPrivateKey}", certificate.Value.HasPrivateKey);
+                _logger.LogInformation("🔑 Using Certificate for Authentication:");
+                _logger.LogInformation("Certificate Subject: {Subject}", certificate.Value.Subject);
+                _logger.LogInformation("Certificate Issuer: {Issuer}", certificate.Value.Issuer);
+                _logger.LogInformation("Certificate Valid From: {NotBefore}", certificate.Value.NotBefore);
+                _logger.LogInformation("Certificate Expiry Date: {NotAfter}", certificate.Value.NotAfter);
+                _logger.LogInformation("Certificate Has Private Key: {HasPrivateKey}", certificate.Value.HasPrivateKey);
 
+                // Add certificate to handler
                 httpClientHandler.ClientCertificates.Add(certificate);
 
                 HttpClient = new HttpClient(httpClientHandler)
@@ -218,10 +379,11 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             }
             catch (Exception ex)
             {
-                _logger.LogError("❌ [Certificate Error] Failed to load certificate: {Error}", ex.Message);
+                _logger.LogError("❌ Failed to load certificate: {Error}", ex.Message);
                 throw;
             }
         }
+
 
 
         public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true) => throw new NotImplementedException();
