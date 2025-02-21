@@ -48,10 +48,22 @@ public sealed class GetCoursesQueryHandler(
             return GetEmptyResponse(query.PageSize);
         }
 
+        int maxPages = (int)Math.Ceiling((double)coursesStandardsResponse.Body.TotalFiltered / query.PageSize);
+
+        if(query.Page > maxPages)
+        {
+            return GetEmptyResponse(query.PageSize);
+        }
+
         var pagedStandards = coursesStandardsResponse.Body.Standards
             .Skip((query.Page - 1) * query.PageSize)
             .Take(query.PageSize)
             .ToArray();
+
+        if (pagedStandards.Length < 1)
+        {
+            return GetEmptyResponse(query.PageSize);
+        }
 
         var courseTrainingProvidersCountResponse =
             await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(

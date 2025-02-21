@@ -9,7 +9,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.SharedOuterApi.Models.RequestApprenticeTraining;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Linq;
@@ -365,7 +364,8 @@ public sealed class WhenGettingCourses
             .ReturnsAsync(
                 new ApiResponse<GetStandardsListResponse>(
                     coursesResponse,
-                    HttpStatusCode.OK, string.Empty
+                    HttpStatusCode.OK, 
+                    string.Empty
                 )
             );
 
@@ -398,6 +398,89 @@ public sealed class WhenGettingCourses
             Assert.That(result.TotalPages, Is.EqualTo((int)Math.Ceiling((double)coursesResponse.TotalFiltered / query.PageSize)));
             Assert.That(result.TotalCount, Is.EqualTo(coursesResponse.TotalFiltered));
             Assert.That(result.Standards.Count, Is.EqualTo(pagedStandards.Length));
+        });
+    }
+
+    [Test, MoqAutoData]
+    public async Task When_Request_Page_Exceeds_Max_Page_Then_Empty_Response_Is_Returned(
+        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+        [Frozen] Mock<ILocationLookupService> _locationLookupService,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpCourseManagementApiClient,
+        [Greedy] GetCoursesQueryHandler sut,
+        LocationItem locationItem,
+        GetStandardsListResponse coursesResponse,
+        GetCourseTrainingProvidersCountResponse providerCountResponse,
+        CancellationToken cancellationToken
+    )
+    {
+        GetCoursesQuery query = new GetCoursesQuery()
+        {
+            Keyword = "Construction",
+            RouteIds = [1],
+            Levels = [2],
+            Distance = 40,
+            Location = "SW1",
+            Page = 43431
+        };
+
+        var pagedStandards = coursesResponse.Standards
+            .Skip(query.Page == 1 ? 0 : query.Page * query.PageSize)
+            .Take(query.PageSize).ToArray();
+
+        _locationLookupService
+            .Setup(a =>
+                a.GetLocationInformation(query.Location, 0, 0, false)
+            )
+        .ReturnsAsync(locationItem);
+
+        coursesApiClient
+            .Setup(x =>
+                x.GetWithResponseCode<GetStandardsListResponse>(
+                    It.Is<GetActiveStandardsListRequest>(a =>
+                        a.Keyword.Equals(query.Keyword) &&
+                        a.OrderBy.Equals(query.OrderBy) &&
+                        a.Levels.SequenceEqual(query.Levels) &&
+                        a.RouteIds.SequenceEqual(query.RouteIds)
+                    )
+                )
+            )
+            .ReturnsAsync(
+                new ApiResponse<GetStandardsListResponse>(
+                    coursesResponse,
+                    HttpStatusCode.OK, 
+                    string.Empty
+                )
+            );
+
+        roatpCourseManagementApiClient
+            .Setup(x =>
+                x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                    It.Is<GetCourseTrainingProvidersCountRequest>(a =>
+                        a.LarsCodes.SequenceEqual(pagedStandards.Select(a => a.LarsCode).ToArray()) &&
+                        a.Distance.Equals(query.Distance) &&
+                        a.Latitude.Equals((decimal)locationItem.GeoPoint[0]) &&
+                        a.Longitude.Equals((decimal)locationItem.GeoPoint[1])
+                    )
+                )
+            )
+            .ReturnsAsync(
+                new ApiResponse<GetCourseTrainingProvidersCountResponse>(
+                    providerCountResponse,
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        var _sut = await sut.Handle(query, cancellationToken);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_sut, Is.Not.Null);
+            Assert.That(_sut.Page, Is.EqualTo(1));
+            Assert.That(_sut.PageSize, Is.EqualTo(query.PageSize));
+            Assert.That(_sut.TotalPages, Is.EqualTo(0));
+            Assert.That(_sut.TotalCount, Is.EqualTo(0));
+            Assert.That(_sut.Standards, Has.Count.EqualTo(0));
         });
     }
 }
