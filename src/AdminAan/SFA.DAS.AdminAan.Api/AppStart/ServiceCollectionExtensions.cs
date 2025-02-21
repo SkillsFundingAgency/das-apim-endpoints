@@ -91,9 +91,6 @@ public static class ServiceCollectionExtensions
             .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
                 tags: [Ready])
-            .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription,
-                failureStatus: HealthStatus.Unhealthy,
-                tags: [Ready])
             .AddCheck<EducationalOrganisationApiHealthCheck>(EducationalOrganisationApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
                 tags: [Ready])
