@@ -29,7 +29,10 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
             
             if (application == null) return null;
 
-            var additionalQuestions = application.AdditionalQuestions.ToList();
+            var additionalQuestions = application
+                .AdditionalQuestions
+                .OrderBy(ord => ord.QuestionOrder)
+                .ToList();
 
             var candidate = application.Candidate;
             var address = application.Candidate.Address;
