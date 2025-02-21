@@ -64,13 +64,13 @@ public class GetAllEarningsQueryTestFixture
                 Key = Guid.NewGuid(),
                 Episodes = new List<Episode>
                 {
-                    new Episode
+                    new()
                     {
                         Key = Guid.NewGuid(),
                         TrainingCode = $"{Fixture.Create<int>()}    ",
                         Prices = new List<EpisodePrice>
                         {
-                            new EpisodePrice
+                            new()
                             {
                                 StartDate = new DateTime(2020, 1, 1),
                                 EndDate = new DateTime(2021, 1, 1),
@@ -95,13 +95,13 @@ public class GetAllEarningsQueryTestFixture
                 Key = Guid.NewGuid(),
                 Episodes = new List<Episode>
                 {
-                    new Episode
+                    new()
                     {
                         Key = Guid.NewGuid(),
                         TrainingCode = $"{Fixture.Create<int>()}    ",
                         Prices = new List<EpisodePrice>
                         {
-                            new EpisodePrice
+                            new()
                             {
                                 StartDate = new DateTime(2020, 8, 1),
                                 EndDate = new DateTime(2021, 5, 2),
@@ -110,7 +110,7 @@ public class GetAllEarningsQueryTestFixture
                                 TotalPrice = 22500,
                                 FundingBandMaximum = 30000
                             },
-                            new EpisodePrice
+                            new()
                             {
                                 StartDate = new DateTime(2021, 5, 3),
                                 EndDate = new DateTime(2021, 7, 31),
@@ -154,7 +154,7 @@ public class GetAllEarningsQueryTestFixture
                 FundingLineType = Fixture.Create<string>(),
                 Episodes = new List<SharedOuterApi.InnerApi.Responses.Earnings.Episode>
                 {
-                    new SharedOuterApi.InnerApi.Responses.Earnings.Episode
+                    new()
                     {
                         Key = apprenticeshipsResponse.Apprenticeships[0].Episodes[0].Key,
                         NumberOfInstalments = 12,
@@ -162,18 +162,18 @@ public class GetAllEarningsQueryTestFixture
                         OnProgramTotal = 12000,
                         Instalments = new List<Instalment>
                         {
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 6, Amount = 1000 },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 7, Amount = 1000 },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 8, Amount = 1000 },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 9, Amount = 1000 },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 10, Amount = 1000 },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 11, Amount = 1000 },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 12, Amount = 1000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 1000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 1000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 1000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 1000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 1000 }
+                            new() { AcademicYear = 1920, DeliveryPeriod = 6, Amount = 1000 },
+                            new() { AcademicYear = 1920, DeliveryPeriod = 7, Amount = 1000 },
+                            new() { AcademicYear = 1920, DeliveryPeriod = 8, Amount = 1000 },
+                            new() { AcademicYear = 1920, DeliveryPeriod = 9, Amount = 1000 },
+                            new() { AcademicYear = 1920, DeliveryPeriod = 10, Amount = 1000 },
+                            new() { AcademicYear = 1920, DeliveryPeriod = 11, Amount = 1000 },
+                            new() { AcademicYear = 1920, DeliveryPeriod = 12, Amount = 1000 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 1, Amount = 1000 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 2, Amount = 1000 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 3, Amount = 1000 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 4, Amount = 1000 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 5, Amount = 1000 }
                         }
                     }
                 }
@@ -185,7 +185,7 @@ public class GetAllEarningsQueryTestFixture
                 FundingLineType = Fixture.Create<string>(),
                 Episodes = new List<SharedOuterApi.InnerApi.Responses.Earnings.Episode>
                 {
-                    new SharedOuterApi.InnerApi.Responses.Earnings.Episode
+                    new()
                     {
                         Key = apprenticeshipsResponse.Apprenticeships[1].Episodes[0].Key,
                         NumberOfInstalments = 12,
@@ -193,18 +193,18 @@ public class GetAllEarningsQueryTestFixture
                         OnProgramTotal = 24000,
                         Instalments = new List<Instalment>
                         {
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 6, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 8, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 9, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 10, Amount = 4375 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 11, Amount = 4375 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 12, Amount = 4375 }
+                            new() { AcademicYear = 2021, DeliveryPeriod = 1, Amount = 1875 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 2, Amount = 1875 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 3, Amount = 1875 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 4, Amount = 1875 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 5, Amount = 1875 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 6, Amount = 1875 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 7, Amount = 1875 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 8, Amount = 1875 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 9, Amount = 1875 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 10, Amount = 4375 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 11, Amount = 4375 },
+                            new() { AcademicYear = 2021, DeliveryPeriod = 12, Amount = 4375 }
                         }
                     }
                 }
