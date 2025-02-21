@@ -9,8 +9,6 @@ public class LearnerDataStore : ILearnerDataStore
 
     public LearnerDataStore(string resourcePath)
     {
-        var loader = new ResourceLoader();
-
         try
         {
             using (var stream = Assembly.GetAssembly(typeof(LearnerDataStore)).GetManifestResourceStream(resourcePath))
