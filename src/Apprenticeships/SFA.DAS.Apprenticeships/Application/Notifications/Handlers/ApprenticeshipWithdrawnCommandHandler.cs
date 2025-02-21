@@ -1,0 +1,45 @@
+﻿using MediatR;
+using SFA.DAS.Apprenticeships.Application.Notifications.Templates;
+using SFA.DAS.Employer.Shared.UI;
+
+namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
+{
+
+    public class ApprenticeshipWithdrawnCommand : NotificationCommandBase, IRequest<NotificationResponse>
+    {
+        public DateTime LastDayOfLearning { get; set; }
+    }
+
+    public class ApprenticeshipWithdrawnCommandHandler : NotificationCommandHandlerBase<ApprenticeshipWithdrawnCommand>
+    {
+        private readonly UrlBuilder _externalEmployerUrlHelper;
+
+        public ApprenticeshipWithdrawnCommandHandler(
+            IExtendedNotificationService notificationService,
+            UrlBuilder externalEmployerUrlHelper)
+            : base(notificationService)
+        {
+            _externalEmployerUrlHelper = externalEmployerUrlHelper;
+        }
+
+        public override async Task<NotificationResponse> Handle(ApprenticeshipWithdrawnCommand request, CancellationToken cancellationToken)
+        {
+            return await SendToEmployer(request, ApprenticeshipStatusWithdrawnToEmployer.TemplateId, (_, apprenticeship) => GetEmployerTokens(apprenticeship, request.LastDayOfLearning));
+        }
+
+        private Dictionary<string, string> GetEmployerTokens(CommitmentsApprenticeshipDetails apprenticeshipDetails, DateTime lastDayOfLearning)
+        {
+            var linkUrl = _externalEmployerUrlHelper.CommitmentsV2Link("ApprenticeDetails", apprenticeshipDetails.EmployerAccountHashedId, apprenticeshipDetails.ApprenticeshipHashedId);
+
+            var tokens = new Dictionary<string, string>();
+            tokens.Add(ApprenticeshipStatusWithdrawnToEmployer.TrainingProvider, apprenticeshipDetails.ProviderName);
+            tokens.Add(ApprenticeshipStatusWithdrawnToEmployer.Employer, apprenticeshipDetails.EmployerName);
+            tokens.Add(ApprenticeshipStatusWithdrawnToEmployer.Apprentice, $"{apprenticeshipDetails.ApprenticeFirstName} {apprenticeshipDetails.ApprenticeLastName}");
+            tokens.Add(ApprenticeshipStatusWithdrawnToEmployer.Date, lastDayOfLearning.ToString("d MMMM yyyy"));
+            tokens.Add(ApprenticeshipStatusWithdrawnToEmployer.ApprenticeDetailsUrl, linkUrl);
+
+
+            return tokens;
+        }
+    }
+}
