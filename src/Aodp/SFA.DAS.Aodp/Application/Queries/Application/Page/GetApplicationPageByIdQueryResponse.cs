@@ -15,6 +15,8 @@
         public string Type { get; set; }
         public bool Required { get; set; }
         public string? Hint { get; set; } = string.Empty;
+        public string? Helper { get; set; }
+        public string? HelperHTML { get; set; }
         public int Order { get; set; }
         public TextInputOptions TextInput { get; set; } = new();
         public NumberInputOptions NumberInput { get; set; } = new();
