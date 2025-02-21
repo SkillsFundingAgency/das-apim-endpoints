@@ -1,16 +1,9 @@
-using SFA.DAS.Earnings.Api.Controllers;
-
-namespace SFA.DAS.Earnings.Api.Learnerdata;
+namespace SFA.DAS.Earnings.Api.LearnerData;
 
 public class PagedResult {
-    public IList<Apprenticeship> Apprenticeships { get; set; }
-    public uint TotalRecords { get; set; }   
-    public uint Page { get; set; }   
-    public uint PageSize { get; set; }   
-    public uint TotalPages { get; set; }
-
-    public PagedResult()
-    {
-        Apprenticeships = new List<Apprenticeship>();
-    }
+    public List<Apprenticeship> Apprenticeships { get; set; } = [];
+    public long TotalRecords { get; set; }   
+    public int Page { get; set; }   
+    public int PageSize { get; set; }   
+    public int TotalPages { get; set; }
 }
