@@ -1,24 +1,20 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Earnings.Api.Learnerdata;
+using SFA.DAS.Earnings.Api.LearnerData;
+using SFA.DAS.Earnings.Application.LearnerData.GetLearnerData;
 
 namespace SFA.DAS.Earnings.Api.Controllers;
 
 [ApiController]
 [Route("leanerdata")]
-public class LearnerDataController : Controller
+public class LearnerDataController(
+    IMediator mediator) : Controller
 {
-    private readonly ILearnerDataSearchService _service;
-
-    public LearnerDataController(ILearnerDataSearchService service)
-    {
-        _service = service;
-    }
-    
     [HttpGet]
     [Route("/providers/{ukprn}/academicyears/{academicyear}/apprenticeships")]
-    public IActionResult Search(uint ukprn, uint academicyear, [FromQuery] uint page, [FromQuery] uint pageSize)
+    public async  Task<IActionResult> Search(long ukprn, int academicyear, [FromQuery] int page, [FromQuery] int pageSize)
     {
-        if (pageSize < 1 || pageSize > 100)
+        if (pageSize is < 1 or > 100)
         {
             return BadRequest("Page size must be between 1 and 100");
         }
@@ -28,7 +24,15 @@ public class LearnerDataController : Controller
             return BadRequest("Invalid page requested");
         }
         
-        var result = _service.Search(ukprn, academicyear, page==0?1:page, pageSize==0?20:pageSize);
+        var result = await mediator.Send(new GetLearnerDataQuery(ukprn, academicyear, page, pageSize));
+        var response = new PagedResult
+        {
+            Apprenticeships = result.Apprenticeships.ConvertAll(app => new Apprenticeship { Uln = app.Uln }),
+            TotalRecords = result.TotalRecords,
+            Page = page,
+            PageSize = pageSize,
+            TotalPages = (int)Math.Ceiling((double)result.TotalRecords / pageSize)
+        };
                 
         // Add Link headers for pagination
         var baseUrl = $"{Request.Scheme}://{Request.Host}{Request.PathBase}{Request.Path}";
@@ -54,9 +58,9 @@ public class LearnerDataController : Controller
 
         if (header.Length > 0)
         {
-            Response.Headers["Link"] = header;
+            Response.Headers.Link = header;
         }
         
-        return Ok(result);
+        return Ok(response);
     }   
 }
