@@ -24,8 +24,8 @@ namespace SFA.DAS.Vacancies.Api.Models
                 TotalPages = source.TotalPages
             };
         }
-
     }
+    
     public class GetVacanciesListResponseItem
     {
         /// <summary>
@@ -68,6 +68,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// <example>21 months</example>
         public string ExpectedDuration { get ; set ; }
         public GetVacancyAddressItem Address { get; set; }
+        public List<GetVacancyAddressItem>? OtherAddresses { get; set; } // TODO: document
         public VacancyLocation Location { get; set; }
         /// <summary>
         /// If you provide a `lat` and `lon` for a location when using `GET list of vacancies` or `GET vacancy by reference number`, this will be the distance between the apprenticeship and your defined location. Will be in miles.
@@ -143,7 +144,8 @@ namespace SFA.DAS.Vacancies.Api.Models
                 Course = source,
                 Wage = source,
                 Distance = source.Distance,
-                Address = source,
+                Address = GetVacancyAddressItem.From(source.Address),
+                OtherAddresses = source.OtherAddresses?.Select(GetVacancyAddressItem.From).ToList(),
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
                 EmployerContactEmail = source.EmployerContactEmail,
                 EmployerContactName = source.EmployerContactName,
