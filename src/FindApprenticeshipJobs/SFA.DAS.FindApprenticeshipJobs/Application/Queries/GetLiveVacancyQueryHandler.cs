@@ -1,41 +1,55 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
+using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Retry;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 
-public class GetLiveVacancyQueryHandler : IRequestHandler<GetLiveVacancyQuery, GetLiveVacancyQueryResult>
+public class GetLiveVacancyQueryHandler(
+    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+    ILiveVacancyMapper liveVacancyMapper,
+    ICourseService courseService,
+    ILogger<GetLiveVacancyQueryHandler> logger)
+    : IRequestHandler<GetLiveVacancyQuery, GetLiveVacancyQueryResult>
 {
-    private readonly IRecruitApiClient<RecruitApiConfiguration> _recruitApiClient;
-    private readonly ILiveVacancyMapper _liveVacancyMapper;
-    private readonly ICourseService _courseService;
-
-    public GetLiveVacancyQueryHandler(IRecruitApiClient<RecruitApiConfiguration> recruitApiClient, ILiveVacancyMapper liveVacancyMapper, ICourseService courseService)
-    {
-        _recruitApiClient = recruitApiClient;
-        _liveVacancyMapper = liveVacancyMapper;
-        _courseService = courseService;
-    }
-
     public async Task<GetLiveVacancyQueryResult> Handle(GetLiveVacancyQuery request, CancellationToken cancellationToken)
     {
-        var responseTask = _recruitApiClient.GetWithResponseCode<GetLiveVacancyApiResponse>(new GetLiveVacancyApiRequest(request.VacancyReference));
-        var standardsTask = _courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
+        var liveVacancyNotFoundPolicy = GetLiveVacancyNotFoundPolicy(request);
 
-        await Task.WhenAll(responseTask, standardsTask);
+        var vacancy = await liveVacancyNotFoundPolicy.ExecuteAsync(
+            () => recruitApiClient.GetWithResponseCode<GetLiveVacancyApiResponse>(
+                new GetLiveVacancyApiRequest(request.VacancyReference)));
 
-        var response = responseTask.Result;
-        var standards = standardsTask.Result;
+        if (vacancy.StatusCode == HttpStatusCode.NotFound)
+        {
+            throw new Exception($"Vacancy not found: {request.VacancyReference} while processing live vacancy handler");
+        }
         
-        var result = _liveVacancyMapper.Map(response.Body, standards);
+        var standards = await courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
+        
+        var result = liveVacancyMapper.Map(vacancy.Body, standards);
 
         return new GetLiveVacancyQueryResult
         {
             LiveVacancy = result
         };
 
+    }
+    private AsyncRetryPolicy<ApiResponse<GetLiveVacancyApiResponse>> GetLiveVacancyNotFoundPolicy(GetLiveVacancyQuery request)
+    {
+        return Policy
+            .HandleResult<ApiResponse<GetLiveVacancyApiResponse>>(r => r.StatusCode == HttpStatusCode.NotFound)
+            .WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(4), 
+                (_, _, retryCount, _) =>
+                {
+                    logger.LogInformation($"GetLiveVacancyQueryHandler: Unable to find {request.VacancyReference}. Retry {retryCount} due to 404 response");
+                });
     }
 }
