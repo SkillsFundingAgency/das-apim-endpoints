@@ -11,21 +11,26 @@ public class GetCohortAndSupportStatusQueryHandler(IInternalApiClient<Commitment
 {
     public async Task<GetCohortAndSupportStatusQueryResult?> Handle(GetCohortAndSupportStatusQuery request, CancellationToken cancellationToken)
     {
-        var response = await client.Get<GetCohortByIdResponse>(new GetCohortByIdRequest(request.CohortId));
-        var status = await client.Get<GetCohortSupportStatusByIdResponse>(new GetCohortSupportStatusByIdRequest(request.CohortId));
+        var cohortTask = client.Get<GetCohortByIdResponse>(new GetCohortByIdRequest(request.CohortId));
+        var statusTask = client.Get<GetCohortSupportStatusByIdResponse>(new GetCohortSupportStatusByIdRequest(request.CohortId));
 
-        if (response == null || status == null)
+        await Task.WhenAll(cohortTask, statusTask);
+
+        var cohort = await cohortTask;
+        var status = await statusTask;
+
+        if (cohort == null)
         {
             return null;
         }
 
         return new GetCohortAndSupportStatusQueryResult
         {
-            CohortId = response.CohortId, 
-            CohortReference = response.CohortReference,
-            EmployerAccountName = response.LegalEntityName,
-            ProviderName = response.ProviderName,
-            UkPrn = response.ProviderId,
+            CohortId = cohort.CohortId, 
+            CohortReference = cohort.CohortReference,
+            EmployerAccountName = cohort.LegalEntityName,
+            ProviderName = cohort.ProviderName,
+            UkPrn = cohort.ProviderId,
             NoOfApprentices = status.NoOfApprentices,
             CohortStatus = status.CohortStatus
         };

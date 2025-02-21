@@ -4,7 +4,7 @@ namespace SFA.DAS.ToolsSupport.InnerApi.Responses;
 
 
 // TODO remove unused fields
-public class GetCohortByIdResponse : IPartyResource
+public class GetCohortByIdResponse 
 {
     public long AccountId { get; set; }
     public TransferApprovalStatus? TransferApprovalStatus { get; set; }
