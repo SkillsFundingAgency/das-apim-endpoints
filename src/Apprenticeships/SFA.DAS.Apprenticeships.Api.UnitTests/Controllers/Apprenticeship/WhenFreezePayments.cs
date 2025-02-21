@@ -10,6 +10,8 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Api.Controllers;
 using SFA.DAS.Apprenticeships.Api.Models;
+using SFA.DAS.Apprenticeships.Application.Notifications;
+using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -22,6 +24,7 @@ public class WhenFreezePayments
     private readonly Fixture _fixture;
     private readonly Mock<ILogger<ApprenticeshipController>> _mockLogger;
     private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _mockApiClient;
+    private Mock<IMediator> _mockMediator;
 
     public WhenFreezePayments()
     {
@@ -34,19 +37,22 @@ public class WhenFreezePayments
     public void Arrange()
     {
         _mockApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        _mockMediator = new Mock<IMediator>();
     }
 
     [Test]
     public async Task ThenSendsPostRequest()
     {
         // Arrange
-        var sut = new ApprenticeshipController(_mockLogger.Object, _mockApiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), Mock.Of<IMediator>());
+        var sut = new ApprenticeshipController(_mockLogger.Object, _mockApiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), _mockMediator.Object);
 
         var apprenticeshipKey = Guid.NewGuid();
         var request = _fixture.Create<FreezePaymentsRequest>();
 
         _mockApiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<IPostApiRequest>(), false))
             .ReturnsAsync(new ApiResponse<object>("", HttpStatusCode.OK, ""));
+        _mockMediator.Setup(x => x.Send(It.IsAny<PaymentStatusInactiveCommand>(), default))
+            .ReturnsAsync(new NotificationResponse { Success = true });
 
         // Act
         var response = await sut.FreezeApprenticeshipPayments(apprenticeshipKey, request);
@@ -59,10 +65,31 @@ public class WhenFreezePayments
     }
 
     [Test]
+    public async Task ThenSendsNotification()
+    {
+        // Arrange
+        var sut = new ApprenticeshipController(_mockLogger.Object, _mockApiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), _mockMediator.Object);
+
+        var apprenticeshipKey = Guid.NewGuid();
+        var request = _fixture.Create<FreezePaymentsRequest>();
+
+        _mockApiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<IPostApiRequest>(), false))
+            .ReturnsAsync(new ApiResponse<object>("", HttpStatusCode.OK, ""));
+        _mockMediator.Setup(x => x.Send(It.IsAny<PaymentStatusInactiveCommand>(), default))
+            .ReturnsAsync(new NotificationResponse { Success = true });
+
+        // Act
+        await sut.FreezeApprenticeshipPayments(apprenticeshipKey, request);
+
+        // Assert
+        _mockMediator.Verify(x => x.Send(It.Is<PaymentStatusInactiveCommand>(cmd => cmd.ApprenticeshipKey == apprenticeshipKey), default), Times.Once);
+    }
+
+    [Test]
     public async Task IfRequestFailsReturnsBadRequest()
     {
         // Arrange
-        var sut = new ApprenticeshipController(_mockLogger.Object, _mockApiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), Mock.Of<IMediator>());
+        var sut = new ApprenticeshipController(_mockLogger.Object, _mockApiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), _mockMediator.Object);
 
         var apprenticeshipKey = Guid.NewGuid();
         var request = _fixture.Create<FreezePaymentsRequest>();
