@@ -2,7 +2,7 @@
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using System.Collections.Generic;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.GetCourses;
+namespace SFA.DAS.FindApprenticeshipTraining.Application.Queries.Courses.GetCourses;
 
 #nullable enable
 

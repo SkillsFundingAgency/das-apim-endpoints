@@ -9,7 +9,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
 using SFA.DAS.FindApprenticeshipTraining.Api.HealthCheck;
-using SFA.DAS.FindApprenticeshipTraining.Application.Courses.GetCourses;
+using SFA.DAS.FindApprenticeshipTraining.Application.Queries.Courses.GetCourses;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
-using SFA.DAS.FindApprenticeshipTraining.Application.Courses.GetCourses;
+using SFA.DAS.FindApprenticeshipTraining.Application.Queries.Courses.GetCourses;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;

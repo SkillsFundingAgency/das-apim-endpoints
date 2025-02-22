@@ -13,7 +13,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.GetCourses;
+namespace SFA.DAS.FindApprenticeshipTraining.Application.Queries.Courses.GetCourses;
 
 public sealed class GetCoursesQueryHandler(
     IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient, 

@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using System.Collections.Generic;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.GetCourses;
+namespace SFA.DAS.FindApprenticeshipTraining.Application.Queries.Courses.GetCourses;
 
 public sealed class GetCoursesQueryResult
 {

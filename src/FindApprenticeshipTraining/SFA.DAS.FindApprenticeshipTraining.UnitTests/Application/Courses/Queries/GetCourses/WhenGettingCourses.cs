@@ -1,7 +1,7 @@
 ﻿using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FindApprenticeshipTraining.Application.Courses.GetCourses;
+using SFA.DAS.FindApprenticeshipTraining.Application.Queries.Courses.GetCourses;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;

@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using SFA.DAS.FindApprenticeshipTraining.Application.Courses.GetCourses;
+using SFA.DAS.FindApprenticeshipTraining.Application.Queries.Courses.GetCourses;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 
