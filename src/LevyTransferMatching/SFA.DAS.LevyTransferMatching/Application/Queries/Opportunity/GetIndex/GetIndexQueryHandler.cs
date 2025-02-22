@@ -38,7 +38,8 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex
                     Sectors = x.Sectors,
                     JobRoles = x.JobRoles,
                     Levels = x.Levels,
-                    Locations = x.Locations?.Select(x => x.Name)
+                    Locations = x.Locations?.Select(x => x.Name),
+                    CreatedOn = x.CreatedOn
                 }).ToList();
 
             return new GetIndexQueryResult
