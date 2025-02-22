@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseLevels;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseRoutes;
+using SFA.DAS.FindApprenticeshipTraining.Application.Queries.Courses.GetCourses;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
@@ -24,5 +25,12 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
     {
         var result = await _mediator.Send(new GetCourseRoutesQuery());
         return Ok(result);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetCourses([FromQuery] GetCoursesQuery query)
+    {
+        var response = await _mediator.Send(query);
+        return Ok(response);
     }
 }
