@@ -36,25 +36,11 @@ paths:
           $ref: '#/components/responses/healthCheckResponse'
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse' 
-
-  /providers/{ukprn}/learners/{uln}:
+  /learners:
     put:
       summary: External authenticated endpoint for updating specific learners. The individual key is combined by ukprn and uln
       security:
         - ApiKeyAuth: []  # Require API Key authentication
-      parameters:
-        - name: ukprn
-          in: path
-          required: true
-          description: The UK Provider Reference Number for the provider entering this learner
-          schema:
-            type: string
-        - name: uln
-          in: path
-          required: true
-          description: The Unique Learner Number for this learner
-          schema:
-            type: string
       requestBody:
         require: true
         $ref: '#/components/requestBodies/learnerRequest'
@@ -65,34 +51,7 @@ paths:
         '401':
           $ref: '#/components/responses/unauthorized'
         '429':
-          $ref: '#/components/responses/rateLimitExceededResponse'                       
-    get:
-      summary: Returns the unique learner for this provider
-      security:
-        - ApiKeyAuth: []  # Require API Key authentication
-      parameters:
-        - name: ukprn
-          in: path
-          required: true
-          description: The UK Provider Reference Number for the provider entering this learner
-          schema:
-            type: string
-        - name: uln
-          in: path
-          required: true
-          description: The Unique Learner Number for this learner
-          schema:
-            type: string
-      responses:
-        '200':
-          $ref: '#/components/responses/learnerResponse'  
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '404':
-          $ref: '#/components/responses/notFound'
-        '429':
-          $ref: '#/components/responses/rateLimitExceededResponse'  
-  
+          $ref: '#/components/responses/rateLimitExceededResponse'     
   /providers/{ukprn}/academicyears/{academicyear}/apprenticeships:
     get:
       summary: Returns a paged list of apprenticeships for this provider
