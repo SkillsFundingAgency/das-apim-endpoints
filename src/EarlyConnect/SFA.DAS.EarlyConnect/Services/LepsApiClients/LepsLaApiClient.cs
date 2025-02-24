@@ -74,7 +74,8 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             }
             catch (HttpRequestException ex) when (ex.InnerException is AuthenticationException authEx && authEx.InnerException is Win32Exception win32Ex)
             {
-                _logger.LogError("❌ [Win32Exception] Error Code: {ErrorCode}", win32Ex.NativeErrorCode);
+                _logger.LogError("❌ [Win32Exception] NativeErrorCode: {NativeErrorCode}", win32Ex.NativeErrorCode);
+                _logger.LogError("❌ [Win32Exception] Error Code: {ErrorCode}", win32Ex.ErrorCode);
                 _logger.LogError("❌ [Win32Exception] Message: {Message}", win32Ex.Message);
                 _logger.LogError("❌ [Win32Exception] StackTrace: {StackTrace}", win32Ex.StackTrace);
 
