@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models
 {
@@ -64,6 +65,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string? AddressLine4 { get; private set; }
         public string PostCode { get; private set; }
         public List<GetVacanciesListAddressItem> OtherAddresses { get; set; }
+        public bool IsPrimaryLocation { get; set; }
         public string? EmploymentLocationInformation { get; private set; }
         public decimal? Distance { get; set; }
         public string CourseLevel { get; set; }
@@ -101,19 +103,20 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 WageType = source.WageType,
                 WageAmount = source.WageAmount,
                 WageText = source.WageText,
-                AddressLine1 = source.Address.AddressLine1,
-                AddressLine2 = source.Address.AddressLine2,
-                AddressLine3 = source.Address.AddressLine3,
-                AddressLine4 = source.Address.AddressLine4,
+                AddressLine1 = source.Address?.AddressLine1,
+                AddressLine2 = source.Address?.AddressLine2,
+                AddressLine3 = source.Address?.AddressLine3,
+                AddressLine4 = source.Address?.AddressLine4,
                 EmploymentLocationInformation = source.EmploymentLocationInformation,
                 OtherAddresses = source.OtherAddresses?.Select(GetVacanciesListAddressItem.From).ToList(),
-                PostCode = source.Address.Postcode,
+                IsPrimaryLocation = source.IsPrimaryLocation,
+                PostCode = source.Address?.Postcode,
                 CourseRoute = source.CourseRoute,
                 CourseLevel = source.CourseLevel,
                 IsDisabilityConfident = source.IsDisabilityConfident,
                 Application = source.Application,
-                Lat = source.Location.Lat,
-                Lon = source.Location.Lon,
+                Lat = source.Location?.Lat,
+                Lon = source.Location?.Lon,
                 ApplicationUrl = source.ApplicationUrl,
                 CompanyBenefitsInformation = source.CompanyBenefitsInformation,
                 AdditionalTrainingDescription = source.AdditionalTrainingDescription,

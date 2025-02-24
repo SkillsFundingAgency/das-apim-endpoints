@@ -17,11 +17,28 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Requests
             List<string> categories,
             List<int> levels,
             bool disabilityConfident,
-            List<VacancyDataSource> dataSources)
+            List<VacancyDataSource> dataSources,
+            bool? excludeNational)
         {
-            var actual = new GetApprenticeshipCountRequest(lat, lon, distance, whatSearchTerm, pageNumber, pageSize, categories, levels, wageType, disabilityConfident, dataSources);
+            // arrange
+            var expectedUrl = $"/api/vacancies/count?lat={lat}" +
+                              $"&lon={lon}" +
+                              $"&distanceInMiles={distance}" +
+                              $"&pageNumber={pageNumber}" +
+                              $"&pageSize={pageSize}" +
+                              $"&categories={string.Join("&categories=", categories)}" +
+                              $"&levels={string.Join("&levels=", levels)}" +
+                              $"&searchTerm={whatSearchTerm}" +
+                              $"&disabilityConfident={disabilityConfident}" +
+                              $"&wageType={wageType}" +
+                              $"&dataSources={string.Join("&dataSources=", dataSources)}" +
+                              $"&excludeNational={excludeNational}";
+            
+            // act
+            var actual = new GetApprenticeshipCountRequest(lat, lon, distance, whatSearchTerm, pageNumber, pageSize, categories, levels, wageType, disabilityConfident, dataSources, excludeNational);
 
-            actual.GetUrl.Should().Be($"/api/vacancies/count?lat={lat}&lon={lon}&distanceInMiles={distance}&pageNumber={pageNumber}&pageSize={pageSize}&categories={string.Join("&categories=", categories)}&levels={string.Join("&levels=", levels)}&searchTerm={whatSearchTerm}&disabilityConfident={disabilityConfident}&wageType={wageType}&dataSources={string.Join("&dataSources=", dataSources)}");
+            // assert
+            actual.GetUrl.Should().Be(expectedUrl);
             actual.Version.Should().Be("2.0");
         }
     }
