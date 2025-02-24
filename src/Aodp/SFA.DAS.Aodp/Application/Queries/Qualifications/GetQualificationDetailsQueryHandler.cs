@@ -22,8 +22,16 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
             try
             {
                 var result = await _apiClient.Get<BaseMediatrResponse<GetQualificationDetailsQueryResponse>>(new GetQualificationDetailsApiRequest(request.QualificationReference));
-                response.Value = result.Value;
-                response.Success = true;
+                if (result != null && result.Value != null)
+                {
+                    response.Value = result.Value;
+                    response.Success = true;
+                }
+                else
+                {
+                    response.Success = false;
+                    response.ErrorMessage = $"No details found for qualification reference: {request.QualificationReference}";
+                }
             }
             catch (Exception ex)
             {
