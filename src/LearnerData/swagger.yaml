@@ -38,7 +38,7 @@ paths:
           $ref: '#/components/responses/rateLimitExceededResponse' 
   /learners/{guid}:
     put:
-      summary: External authenticated endpoint for creating or updating individual learnersß
+      summary: External authenticated endpoint for creating or updating individual learners
       parameters:
         - name: guid
           in: path
@@ -103,11 +103,6 @@ components:
       name: X-API-Key
       description: "Enter your API key in the `X-API-Key` header."
   headers:
-    location:
-      schema:
-        type: string
-        format: url
-        example: /providers/234324/leaners/24321432
     X-RateLimit-Limit:
       description: The maximum number of requests allowed in a time window
       schema:
@@ -158,8 +153,6 @@ components:
     acceptedResponse:
       description: A resource has been created or updated through the service
       headers:
-        Location:
-          $ref: '#/components/headers/location'
         X-RateLimit-Limit:
           $ref: '#/components/headers/X-RateLimit-Limit'
         X-RateLimit-Remaining:
