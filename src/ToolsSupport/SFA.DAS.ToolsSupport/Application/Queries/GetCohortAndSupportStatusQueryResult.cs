@@ -3,6 +3,7 @@
 public class GetCohortAndSupportStatusQueryResult
 {
     public long CohortId { get; set; }
+    public long EmployerAccountId { get; set; }
     public string EmployerAccountName { get; set; }
     public string ProviderName { get; set; }
     public long UkPrn { get; set; }

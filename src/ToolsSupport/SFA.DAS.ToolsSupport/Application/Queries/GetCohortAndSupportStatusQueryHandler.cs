@@ -28,6 +28,7 @@ public class GetCohortAndSupportStatusQueryHandler(IInternalApiClient<Commitment
         {
             CohortId = cohort.CohortId, 
             CohortReference = cohort.CohortReference,
+            EmployerAccountId = cohort.AccountId,
             EmployerAccountName = cohort.LegalEntityName,
             ProviderName = cohort.ProviderName,
             UkPrn = cohort.ProviderId,
