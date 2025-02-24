@@ -6,17 +6,21 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Application\Commands\**" />
+    <Compile Remove="Application\Models\**" />
+    <EmbeddedResource Remove="Application\Commands\**" />
+    <EmbeddedResource Remove="Application\Models\**" />
+    <None Remove="Application\Commands\**" />
+    <None Remove="Application\Models\**" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="MediatR" />
 	</ItemGroup>
 	
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
-  </ItemGroup>
-	
-  <ItemGroup>
-    <Folder Include="Application\Commands\" />
-    <Folder Include="Application\Models\" />
   </ItemGroup>
 	
 </Project>
