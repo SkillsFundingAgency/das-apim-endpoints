@@ -289,7 +289,7 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 
                 var httpClientHandler = new HttpClientHandler
                 {
-                    SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
+                    //SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
                     ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
                     {
                         if (certificate == null || certificate.Value == null)
