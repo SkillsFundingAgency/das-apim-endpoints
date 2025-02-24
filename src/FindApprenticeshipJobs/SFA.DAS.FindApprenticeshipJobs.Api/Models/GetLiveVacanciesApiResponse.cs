@@ -1,4 +1,7 @@
 ﻿using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.SharedOuterApi.Models;
+
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Models;
 
 public class GetLiveVacanciesApiResponse
@@ -50,7 +53,10 @@ public class GetLiveVacanciesApiResponse
                 StandardLarsCode = source.StandardLarsCode,
                 Route = source.Route,
                 Description = source.Description,
-                Address = source.Address == null ? null : (Address)source.Address,
+                Address = source.Address,
+                EmploymentLocations = source.EmploymentLocations,
+                EmploymentLocationInformation = source.EmploymentLocationInformation,
+                EmploymentLocationOption = source.EmploymentLocationOption,
                 ClosingDate = source.ClosingDate,
                 StartDate = source.StartDate,
                 PostedDate = source.PostedDate,
@@ -118,6 +124,9 @@ public class GetLiveVacanciesApiResponse
         public string ApprenticeshipTitle { get; set; }
         public string? Description { get; set; }
         public Address? Address { get; set; }
+        public List<Address>? EmploymentLocations { get; set; }
+        public string? EmploymentLocationInformation { get; set; }
+        public AvailableWhere? EmploymentLocationOption { get; set; }
         public string? EmployerName { get; set; }
         public long? Ukprn { get; set; }
         public string? ProviderName { get; set; }
@@ -159,33 +168,6 @@ public class GetLiveVacanciesApiResponse
         public string? AdditionalTrainingDescription { get; set; }
         public string? SearchTags { get; set; }
 
-    }
-
-    public class Address
-    {
-        public static implicit operator Address(Application.Shared.Address source)
-        {
-            return new Address
-            {
-                AddressLine1 = source.AddressLine1,
-                AddressLine2 = source.AddressLine2,
-                AddressLine3 = source.AddressLine3,
-                AddressLine4 = source.AddressLine4,
-                Country = source.Country,
-                Postcode = source.Postcode,
-                Latitude = source.Latitude,
-                Longitude = source.Longitude
-            };
-        }
-
-        public string? AddressLine1 { get; set; }
-        public string? AddressLine2 { get; set; }
-        public string? AddressLine3 { get; set; }
-        public string? AddressLine4 { get; set; }
-        public string? Country { get; set; }
-        public string? Postcode { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
     }
 
     public class Wage

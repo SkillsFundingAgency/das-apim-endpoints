@@ -31,18 +31,21 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
 
             if (application == null) return null;
 
-            var vacancy = await vacancyService.GetVacancy(application.VacancyReference);
+            var vacancy = await vacancyService.GetVacancy(application.VacancyReference) 
+                          ?? await vacancyService.GetClosedVacancy(application.VacancyReference);
 
             if (vacancy == null) { return null; }
 
-            var additionalQuestions = application.AdditionalQuestions.ToList();
+            var additionalQuestions = application
+                .AdditionalQuestions
+                .OrderBy(ord => ord.QuestionOrder)
+                .ToList();
 
             var candidate = application.Candidate;
             var address = application.Candidate.Address;
             var trainingCourses = application.TrainingCourses;
             var jobs = application.WorkHistory?.Where(c => c.WorkHistoryType == WorkHistoryType.Job);
             var volunteeringExperiences = application.WorkHistory?.Where(c => c.WorkHistoryType == WorkHistoryType.WorkExperience);
-            var otherDetails = application.AboutYou;
 
             GetApplicationViewQueryResult.ApplicationQuestionsSection.Question additionalQuestion1 = null;
             GetApplicationViewQueryResult.ApplicationQuestionsSection.Question additionalQuestion2 = null;

@@ -17,7 +17,7 @@ public class GetMemberProfileWithPreferencesQueryHandlerTests
     readonly string firstName = "Last";
     readonly string lastName = "First";
     readonly string organisationName = "organisation";
-    readonly string fullName = "Full Name";
+    readonly string fullName = "Full LocationName";
     readonly string email = "My_Email@domain.com";
     readonly int regionId = 1;
     readonly string regionName = "London";

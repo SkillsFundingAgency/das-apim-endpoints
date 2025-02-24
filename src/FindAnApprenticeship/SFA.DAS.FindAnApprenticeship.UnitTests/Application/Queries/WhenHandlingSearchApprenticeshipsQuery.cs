@@ -58,7 +58,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 new List<VacancyDataSource>
                 {
                     VacancyDataSource.Nhs
-                });
+                },
+                query.ExcludeNational);
 
             apiClient
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
@@ -81,7 +82,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 {
                     VacancyDataSource.Raa,
                     VacancyDataSource.Nhs,
-                });
+                },
+                query.ExcludeNational);
             
             apiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(
@@ -105,7 +107,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 result.TotalPages.Should().Be(totalPages);
                 result.DisabilityConfident.Should().Be(query.DisabilityConfident);
                 result.TotalWageTypeVacanciesCount.Should().Be(apprenticeshipCountResponse.TotalVacancies);
-                metricsService.Verify(x => x.IncreaseVacancySearchResultViews(It.IsAny<string>(), 1), Times.Exactly(vacanciesResponse.ApprenticeshipVacancies.Count()));
+                metricsService.Verify(x => x.IncreaseVacancySearchResultViews(It.IsAny<string>(), 1), Times.Exactly(vacanciesResponse.ApprenticeshipVacancies.Count(fil => fil.VacancySource == VacancyDataSource.Raa)));
                 apiClient.Verify(client =>
                     client.Get<GetApprenticeshipCountResponse>(
                         It.IsAny<GetApprenticeshipCountRequest>()), Times.Once);
@@ -205,7 +207,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 new List<VacancyDataSource>
                 {
                     VacancyDataSource.Nhs
-                });
+                },
+                query.ExcludeNational);
 
             apiClient
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
@@ -228,7 +231,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 {
                     VacancyDataSource.Raa, 
                     VacancyDataSource.Nhs,
-                });
+                },
+                query.ExcludeNational);
 
             apiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(
@@ -251,7 +255,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 result.TotalPages.Should().Be(totalPages);
                 result.DisabilityConfident.Should().Be(query.DisabilityConfident);
                 result.TotalWageTypeVacanciesCount.Should().Be(apprenticeshipCountResponse.TotalVacancies);
-                metricsService.Verify(x => x.IncreaseVacancySearchResultViews(It.IsAny<string>(), 1), Times.Exactly(vacanciesResponse.ApprenticeshipVacancies.Count()));
+                metricsService.Verify(x => x.IncreaseVacancySearchResultViews(It.IsAny<string>(), 1), Times.Exactly(vacanciesResponse.ApprenticeshipVacancies.Count(fil => fil.VacancySource == VacancyDataSource.Raa)));
                 apiClient.Verify(client =>
                     client.Get<GetApprenticeshipCountResponse>(
                         It.IsAny<GetApprenticeshipCountRequest>()), Times.Once);
@@ -337,7 +341,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 new List<VacancyDataSource>
                 {
                     VacancyDataSource.Nhs
-                });
+                },
+                query.ExcludeNational);
 
             apiClient
                 .Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(r => r.GetUrl == vacancyRequest.GetUrl)))
@@ -368,7 +373,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 result.SavedSearchesCount.Should().Be(3);
                 result.SearchAlreadySaved.Should().BeFalse();
                 result.TotalWageTypeVacanciesCount.Should().Be(0);
-                metricsService.Verify(x => x.IncreaseVacancySearchResultViews(It.IsAny<string>(), 1), Times.Exactly(vacanciesResponse.ApprenticeshipVacancies.Count()));
+                metricsService.Verify(x => x.IncreaseVacancySearchResultViews(It.IsAny<string>(), 1), Times.Exactly(vacanciesResponse.ApprenticeshipVacancies.Count(fil => fil.VacancySource == VacancyDataSource.Raa)));
                 apiClient.Verify(client =>
                     client.Get<GetApprenticeshipCountResponse>(
                         It.IsAny<GetApprenticeshipCountRequest>()), Times.Never);

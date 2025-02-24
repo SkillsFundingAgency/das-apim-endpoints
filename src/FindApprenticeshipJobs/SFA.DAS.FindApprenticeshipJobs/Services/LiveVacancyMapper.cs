@@ -3,7 +3,10 @@ using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System.Text.RegularExpressions;
-using Address = SFA.DAS.FindApprenticeshipJobs.Application.Shared.Address;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.SharedOuterApi.Models;
+using DisabilityConfident = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.DisabilityConfident;
+using LiveVacancy = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.LiveVacancy;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Services
 {
@@ -12,7 +15,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
         public Application.Shared.LiveVacancy Map(LiveVacancy source, GetStandardsListResponse standards)
         {
             var getStandardsListItem = standards.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId);
-
+            
             return new Application.Shared.LiveVacancy
             {
                 Id = source.VacancyReference.ToString(),
@@ -30,7 +33,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 IsPositiveAboutDisability = false,
                 
                 IsEmployerAnonymous = source.IsAnonymous,
-                VacancyLocationType = "NonNational",
+                VacancyLocationType = source.EmployerLocationOption == AvailableWhere.AcrossEngland ? "National" : "NonNational",
                 ApprenticeshipLevel = GetApprenticeshipLevel(getStandardsListItem.Level),
                 Wage = new Application.Shared.Wage
                 {
@@ -75,17 +78,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 ProviderContactPhone = source.ProviderContactPhone,
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
-                Address = new Address
-                {
-                    AddressLine1 = source.EmployerLocation?.AddressLine1,
-                    AddressLine2 = source.EmployerLocation?.AddressLine2,
-                    AddressLine3 = source.EmployerLocation?.AddressLine3,
-                    AddressLine4 = source.EmployerLocation?.AddressLine4,
-                    Postcode = source.EmployerLocation?.Postcode,
-                    Latitude = source.EmployerLocation?.Latitude ?? 0,
-                    Longitude = source.EmployerLocation?.Longitude ?? 0,
-                    Country = source.EmployerLocation?.Country
-                },
+                Address = source.Address,
+                EmploymentLocations = source.EmployerLocations,
+                EmploymentLocationInformation = source.EmployerLocationInformation,
+                EmploymentLocationOption = source.EmployerLocationOption,
                 Duration = source.Wage.Duration,
                 DurationUnit = source.Wage.DurationUnit,
                 ThingsToConsider = source.ThingsToConsider,

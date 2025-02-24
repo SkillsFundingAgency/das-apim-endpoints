@@ -9,12 +9,16 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
 {
     public class GetApplicationsResponse
     {
-        public IEnumerable<Application> Applications { get; set; }
-
+        public IEnumerable<Application> Items { get; set; }
+        public int TotalItems{ get; set; }
+        public int Page { get; set; }
+        public int TotalPages { get; set; }
+        public int PageSize { get; set; }
         public string PledgeStatus { get; set; }
         public int PledgeRemainingAmount { get; set; }
         public int PledgeTotalAmount { get; set; }
         public AutomaticApprovalOption AutomaticApprovalOption { get; set; }
+        public int TotalPendingApplications { get; set; }
 
         public class Application
         {
@@ -53,15 +57,20 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
             public IEnumerable<string> Sectors { get; set; }
         }
 
-        public static explicit operator GetApplicationsResponse(GetApplicationsQueryResult v)
+        public static explicit operator GetApplicationsResponse(GetApplicationsQueryResult queryResult)
         {
             return new GetApplicationsResponse
             {
-                PledgeStatus = v.PledgeStatus,
-                PledgeRemainingAmount = v.RemainingAmount,
-                PledgeTotalAmount = v.TotalAmount,
-                AutomaticApprovalOption = v.AutomaticApprovalOption,
-                Applications = v.Applications.Select(application => new Application
+                TotalItems = queryResult.TotalItems,
+                TotalPages = queryResult.TotalPages,
+                PageSize = queryResult.PageSize,
+                Page = queryResult.Page,
+                PledgeStatus = queryResult.PledgeStatus,
+                PledgeRemainingAmount = queryResult.RemainingAmount,
+                PledgeTotalAmount = queryResult.TotalAmount,
+                AutomaticApprovalOption = queryResult.AutomaticApprovalOption,
+                TotalPendingApplications = queryResult.TotalPendingApplications,
+                Items = queryResult.Items.Select(application => new Application
                 {
                     Id = application.Id,
                     DasAccountName = application.DasAccountName,
