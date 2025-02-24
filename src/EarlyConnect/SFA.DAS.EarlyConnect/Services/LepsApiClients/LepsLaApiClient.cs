@@ -74,7 +74,13 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             }
             catch (HttpRequestException ex) when (ex.InnerException is AuthenticationException authEx && authEx.InnerException is Win32Exception win32Ex)
             {
-                _logger.LogError("❌ [Win32Exception] NativeErrorCode: {NativeErrorCode}", win32Ex.NativeErrorCode);
+                // Get the readable error message from the Win32 error code
+                int errorCode = win32Ex.NativeErrorCode;
+                //string errorDescription = Win32ErrorHelper.GetErrorMessage(errorCode);
+
+                // Log detailed Win32 Exception details
+                _logger.LogError("❌ [Win32Exception] NativeErrorCode: {NativeErrorCode}", errorCode);
+                //_logger.LogError("❌ [Win32Exception] Readable Error: {ErrorDescription}", errorDescription);
                 _logger.LogError("❌ [Win32Exception] Error Code: {ErrorCode}", win32Ex.ErrorCode);
                 _logger.LogError("❌ [Win32Exception] Message: {Message}", win32Ex.Message);
                 _logger.LogError("❌ [Win32Exception] StackTrace: {StackTrace}", win32Ex.StackTrace);
@@ -86,8 +92,22 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                 // Log HttpRequestException details
                 _logger.LogError("🌐 [HttpRequestException] Message: {Message}", ex.Message);
                 _logger.LogError("🌐 [HttpRequestException] StackTrace: {StackTrace}", ex.StackTrace);
-                return new ApiResponse<TResponse>(default, HttpStatusCode.InternalServerError, $"HttpRequestException: {ex.Message}");
+
+                // Log inner exceptions recursively for deeper debugging
+                //LogInnerExceptions(ex);
+
+                // Log environment details for context
+                _logger.LogInformation("💻 [Environment] OS Version: {OSVersion}", Environment.OSVersion);
+                _logger.LogInformation("💻 [Environment] .NET Version: {DotNetVersion}", Environment.Version);
+                _logger.LogInformation("🔐 [Security] TLS Version: {TLSVersion}", System.Net.ServicePointManager.SecurityProtocol);
+
+                // Log timestamp for when the error occurred
+                _logger.LogInformation("🕒 [Timestamp] Error Occurred At: {Timestamp}", DateTime.UtcNow);
+
+                return new ApiResponse<TResponse>(default, HttpStatusCode.InternalServerError,
+                    $"HttpRequestException: {ex.Message} | Win32 Error: {errorDescription}");
             }
+
             catch (Exception ex)
             {
                 _logger.LogError(ex,
@@ -302,7 +322,17 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                 if (!certificate.Value.HasPrivateKey)
                 {
                     _logger.LogInformation("Certificate has no private key.");
+                    _logger.LogInformation("Certificate Thumbprint: {Thumbprint}", certificate.Value.Thumbprint);
+                    _logger.LogInformation("Certificate Subject: {Subject}", certificate.Value.Subject);
+                    _logger.LogInformation("Certificate Issuer: {Issuer}", certificate.Value.Issuer);
                     throw new Exception("❌ Certificate has no private key.");
+                }
+                else
+                {
+                    _logger.LogInformation("✅ Certificate has a private key.");
+                    _logger.LogInformation("Certificate Thumbprint: {Thumbprint}", certificate.Value.Thumbprint);
+                    _logger.LogInformation("Certificate Subject: {Subject}", certificate.Value.Subject);
+                    _logger.LogInformation("Certificate Issuer: {Issuer}", certificate.Value.Issuer);
                 }
 
                 var httpClientHandler = new HttpClientHandler
