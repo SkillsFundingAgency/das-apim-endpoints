@@ -76,6 +76,8 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             {
                 _logger.LogError("Certificate Win32 Error Code: {ErrorCode}", win32Ex.NativeErrorCode);
                 _logger.LogError("Certificate Win32 Error Message: {Message}", win32Ex.Message);
+                _logger.LogError("Certificate InnerException: {Message}", win32Ex.InnerException);
+                _logger.LogError("Certificate StackTrace: {Message}", win32Ex.StackTrace);
                 _logger.LogError("Certificate Win32 Error Message: {Message}", ex.Message);
                 return new ApiResponse<TResponse>(default, HttpStatusCode.InternalServerError, $"HttpRequestException: {ex.Message}");
             }
