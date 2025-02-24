@@ -292,7 +292,7 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                     SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
                     ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
                     {
-                        if (chain == null)
+                        if (certificate == null || certificate.Value == null)
                         {
                             _logger.LogError("❌ Certificate validation chain is null.");
                             return false;
@@ -370,7 +370,9 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                 _logger.LogInformation("Certificate Has Private Key: {HasPrivateKey}", certificate.Value.HasPrivateKey);
 
                 // Add certificate to handler
-                httpClientHandler.ClientCertificates.Add(certificate);
+                //httpClientHandler.ClientCertificates.Add(certificate);
+                httpClientHandler.ClientCertificates.Add(certificate.Value);
+
 
                 HttpClient = new HttpClient(httpClientHandler)
                 {
