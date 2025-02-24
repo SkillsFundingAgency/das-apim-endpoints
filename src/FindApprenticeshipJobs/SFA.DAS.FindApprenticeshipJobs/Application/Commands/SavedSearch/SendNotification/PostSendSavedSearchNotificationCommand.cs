@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.SharedOuterApi.Models;
 
