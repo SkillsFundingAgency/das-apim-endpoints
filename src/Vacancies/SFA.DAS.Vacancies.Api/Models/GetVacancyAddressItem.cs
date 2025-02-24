@@ -29,6 +29,16 @@ public class GetVacancyAddressItem
     /// Postcode of an address where the apprentice will work.
     /// </summary>
     public string Postcode { get; set; }
+    
+    /// <summary>
+    /// The latitude of the address where the apprentice will work.
+    /// </summary>
+    public double? Latitude { get; set; }
+    
+    /// <summary>
+    /// The longitude of the address where the apprentice will work.
+    /// </summary>
+    public double? Longitude { get; set; }
 
     public static GetVacancyAddressItem From(Address source)
     {
@@ -40,7 +50,9 @@ public class GetVacancyAddressItem
                     AddressLine2 = string.IsNullOrWhiteSpace(source.AddressLine2) ? null : source.AddressLine2,
                     AddressLine3 = string.IsNullOrWhiteSpace(source.AddressLine3) ? null : source.AddressLine3,
                     AddressLine4 = string.IsNullOrWhiteSpace(source.AddressLine4) ? null : source.AddressLine4,
-                    Postcode = source.Postcode
+                    Postcode = source.Postcode,
+                    Latitude = source.Latitude.ToGeoWithMetreAccuracy(),
+                    Longitude = source.Longitude.ToGeoWithMetreAccuracy(),
                 };
     }
 }

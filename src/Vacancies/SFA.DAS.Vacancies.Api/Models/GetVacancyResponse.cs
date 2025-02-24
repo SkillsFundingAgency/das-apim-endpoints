@@ -60,7 +60,7 @@ namespace SFA.DAS.Vacancies.Api.Models
                 IsNationalVacancy = source.Vacancy.VacancyLocationType?.Equals("National", StringComparison.CurrentCultureIgnoreCase) ?? false,
                 Location = !source.Vacancy.IsEmployerAnonymous ? new VacancyLocation { Lat = source.Vacancy.Location.Lat, Lon = source.Vacancy.Location.Lon } : null,
                 NumberOfPositions = source.Vacancy.NumberOfPositions,
-                OtherAddresses = source.Vacancy.OtherAddresses?.Select(GetVacancyAddressItem.From).ToList(),
+                OtherAddresses = source.Vacancy.OtherAddresses?.Select(GetVacancyAddressItem.From).ToList() ?? [],
                 OutcomeDescription = source.Vacancy.OutcomeDescription,
                 PostedDate = source.Vacancy.PostedDate,
                 ProviderName = source.Vacancy.ProviderName,
