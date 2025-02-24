@@ -12,6 +12,8 @@ using SFA.DAS.EarlyConnect.Services.Configuration;
 using System.Net.Security;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
+using System.ComponentModel;
+using System.Security.Authentication;
 
 namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 {
@@ -69,6 +71,12 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             try
             {
                 response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
+            }
+            catch (HttpRequestException ex) when (ex.InnerException is AuthenticationException authEx && authEx.InnerException is Win32Exception win32Ex)
+            {
+                _logger.LogError("Certificate Win32 Error Code: {ErrorCode}", win32Ex.NativeErrorCode);
+                _logger.LogError("Certificate Win32 Error Message: {Message}", win32Ex.Message);
+                throw;
             }
             catch (Exception ex)
             {
