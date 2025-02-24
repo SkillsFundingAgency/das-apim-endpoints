@@ -104,8 +104,9 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                 // Log timestamp for when the error occurred
                 _logger.LogInformation("🕒 [Timestamp] Error Occurred At: {Timestamp}", DateTime.UtcNow);
 
-                return new ApiResponse<TResponse>(default, HttpStatusCode.InternalServerError,
-                    $"HttpRequestException: {ex.Message} | Win32 Error: {errorDescription}");
+                //return new ApiResponse<TResponse>(default, HttpStatusCode.InternalServerError,
+                //    $"HttpRequestException: {ex.Message} | Win32 Error: {errorDescription}");
+                throw;
             }
 
             catch (Exception ex)
@@ -136,7 +137,8 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                 _logger.LogError("Certificate [Request Headers] {Headers}",
                     string.Join("; ", requestMessage.Headers.Select(h => $"{h.Key}: {string.Join(",", h.Value)}")));
 
-                return new ApiResponse<TResponse>(default, HttpStatusCode.InternalServerError, $"HttpRequestException: {ex.Message}");
+                //return new ApiResponse<TResponse>(default, HttpStatusCode.InternalServerError, $"HttpRequestException: {ex.Message}");
+                throw;
             }
 
 
@@ -325,6 +327,8 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                     _logger.LogInformation("Certificate Thumbprint: {Thumbprint}", certificate.Value.Thumbprint);
                     _logger.LogInformation("Certificate Subject: {Subject}", certificate.Value.Subject);
                     _logger.LogInformation("Certificate Issuer: {Issuer}", certificate.Value.Issuer);
+                    _logger.LogInformation("🔐 [Certificate] PrivateKey Algorithm: {Algorithm}", certificate.Value.GetRSAPrivateKey()?.KeyExchangeAlgorithm);
+                    _logger.LogInformation("🔐 [Certificate] PrivateKey KeySize: {KeySize}", certificate.Value.GetRSAPrivateKey()?.KeySize);
                     throw new Exception("❌ Certificate has no private key.");
                 }
                 else
