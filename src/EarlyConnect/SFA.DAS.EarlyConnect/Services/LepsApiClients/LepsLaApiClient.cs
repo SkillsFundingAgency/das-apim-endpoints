@@ -74,11 +74,17 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             }
             catch (HttpRequestException ex) when (ex.InnerException is AuthenticationException authEx && authEx.InnerException is Win32Exception win32Ex)
             {
-                _logger.LogError("Certificate Win32 Error Code: {ErrorCode}", win32Ex.NativeErrorCode);
-                _logger.LogError("Certificate Win32 Error Message: {Message}", win32Ex.Message);
-                _logger.LogError("Certificate InnerException: {Message}", win32Ex.InnerException);
-                _logger.LogError("Certificate StackTrace: {Message}", win32Ex.StackTrace);
-                _logger.LogError("Certificate Win32 Error Message: {Message}", ex.Message);
+                _logger.LogError("❌ [Win32Exception] Error Code: {ErrorCode}", win32Ex.NativeErrorCode);
+                _logger.LogError("❌ [Win32Exception] Message: {Message}", win32Ex.Message);
+                _logger.LogError("❌ [Win32Exception] StackTrace: {StackTrace}", win32Ex.StackTrace);
+
+                // Log Authentication Exception details
+                _logger.LogError("🔒 [AuthenticationException] Message: {Message}", authEx.Message);
+                _logger.LogError("🔒 [AuthenticationException] StackTrace: {StackTrace}", authEx.StackTrace);
+
+                // Log HttpRequestException details
+                _logger.LogError("🌐 [HttpRequestException] Message: {Message}", ex.Message);
+                _logger.LogError("🌐 [HttpRequestException] StackTrace: {StackTrace}", ex.StackTrace);
                 return new ApiResponse<TResponse>(default, HttpStatusCode.InternalServerError, $"HttpRequestException: {ex.Message}");
             }
             catch (Exception ex)
