@@ -38,7 +38,7 @@ paths:
           $ref: '#/components/responses/rateLimitExceededResponse' 
   /learners/{guid}:
     put:
-      summary: External authenticated endpoint for updating specific learners. The individual key is combined by ukprn and uln
+      summary: External authenticated endpoint for creating or updating individual learnersß
       parameters:
         - name: guid
           in: path
