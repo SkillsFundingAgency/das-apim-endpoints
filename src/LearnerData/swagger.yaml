@@ -36,9 +36,17 @@ paths:
           $ref: '#/components/responses/healthCheckResponse'
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse' 
-  /learners:
+  /learners/{guid}:
     put:
       summary: External authenticated endpoint for updating specific learners. The individual key is combined by ukprn and uln
+      parameters:
+        - name: guid
+          in: path
+          required: true
+          description: A unique record id from the ILR
+          schema:
+            type: string
+            format: guid
       security:
         - ApiKeyAuth: []  # Require API Key authentication
       requestBody:
