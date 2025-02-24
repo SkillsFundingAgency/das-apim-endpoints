@@ -1,19 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests;
-using SFA.DAS.FindApprenticeshipTraining.Api.Extensions;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourse;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
-using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProviders;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
 {
@@ -93,55 +89,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
                     {
                         TotalProviders = result.ProvidersCount,
                         ProvidersAtLocation = result.ProvidersCountAtLocation
-                    },
-                    ShortlistItemCount = result.ShortlistItemCount
-                };
-                return Ok(model);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error attempting to get a training course {id}");
-                return BadRequest();
-            }
-        }
-
-        [HttpGet]
-        [Route("{id}/providers")]
-        public async Task<IActionResult> GetProviders(int id, [FromQuery] GetCourseProvidersRequest request)
-        {
-            try
-            {
-                var result = await _mediator.Send(new GetTrainingCourseProvidersQuery
-                {
-                    Id = id,
-                    Location = request.Location,
-                    Lat = request.Lat,
-                    Lon = request.Lon,
-                    ShortlistUserId = request.ShortlistUserId
-                });
-
-                var sortedProviders = (request.SortOrder == ProviderCourseSortOrder.SortOrder.Name || request.Lat == 0) ?
-                    result.Providers.OrderBy(x => x.Name).ThenByDescending(x => x.DeliveryModels.Any(d => d.LocationType == LocationType.National)) :
-                    result.Providers.OrderBy(x => x.DeliveryModelsShortestDistance).ThenByDescending(x => x.DeliveryModels.Any(d => d.LocationType == LocationType.National));
-
-                var mappedProviders = sortedProviders
-                    .Select(provider => new GetTrainingCourseProviderListItem().Map(provider, request.DeliveryModes, request.EmployerProviderRatings, request.ApprenticeProviderRatings, result.Location?.GeoPoint != null))
-                    .Where(x => x != null)
-                    .OrderByProviderScore(request.DeliveryModes)
-                    .ToList();
-                var model = new GetTrainingCourseProvidersResponse
-                {
-                    TrainingCourse = result.Course,
-                    TrainingCourseProviders = mappedProviders,
-                    Total = result.Total,
-                    TotalFiltered = mappedProviders.Count,
-                    Location = new GetLocationSearchResponseItem
-                    {
-                        Name = result.Location?.Name,
-                        Location = new GetLocationSearchResponseItem.LocationResponse
-                        {
-                            GeoPoint = result.Location?.GeoPoint
-                        }
                     },
                     ShortlistItemCount = result.ShortlistItemCount
                 };
