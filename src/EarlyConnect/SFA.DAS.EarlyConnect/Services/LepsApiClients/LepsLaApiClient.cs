@@ -22,6 +22,7 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         private IInternalApiClient<LepsLaApiConfiguration> _apiClient;
         protected LepsLaApiConfiguration Configuration;
         protected HttpClient HttpClient;
+        private SocketsHttpHandler _httpHandler;
         private readonly ILogger<LepsLaApiClient> _logger;
 
         public LepsLaApiClient(IInternalApiClient<LepsLaApiConfiguration> apiClient,
@@ -307,139 +308,186 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         //        throw;
         //    }
         //}
+        //private void AddAuthenticationCertificate()
+        //{
+        //    try
+        //    {
+        //        var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
+        //        var certificateClient = new CertificateClient(new Uri(Configuration.KeyVaultIdentifier), new DefaultAzureCredential(defaultAzureCredentialOptions));
+        //        var certificate = certificateClient.DownloadCertificate(Configuration.CertificateName);
+
+        //        if (certificate == null || certificate.Value == null)
+        //        {
+        //            _logger.LogInformation("Certificate was not properly returned from the Key Vault.");
+        //            throw new Exception("❌ Certificate was not properly returned from the Key Vault.");
+        //        }
+
+        //        if (!certificate.Value.HasPrivateKey)
+        //        {
+        //            _logger.LogInformation("Certificate has no private key.");
+        //            _logger.LogInformation("Certificate Thumbprint: {Thumbprint}", certificate.Value.Thumbprint);
+        //            _logger.LogInformation("Certificate Subject: {Subject}", certificate.Value.Subject);
+        //            _logger.LogInformation("Certificate Issuer: {Issuer}", certificate.Value.Issuer);
+        //            _logger.LogInformation("🔐 [Certificate] PrivateKey Algorithm: {Algorithm}", certificate.Value.GetRSAPrivateKey()?.KeyExchangeAlgorithm);
+        //            _logger.LogInformation("🔐 [Certificate] PrivateKey KeySize: {KeySize}", certificate.Value.GetRSAPrivateKey()?.KeySize);
+        //            throw new Exception("❌ Certificate has no private key.");
+        //        }
+        //        else
+        //        {
+        //            _logger.LogInformation("✅ Certificate has a private key.");
+        //            _logger.LogInformation("Certificate Thumbprint: {Thumbprint}", certificate.Value.Thumbprint);
+        //            _logger.LogInformation("Certificate Subject: {Subject}", certificate.Value.Subject);
+        //            _logger.LogInformation("Certificate Issuer: {Issuer}", certificate.Value.Issuer);
+        //        }
+
+        //        var httpClientHandler = new HttpClientHandler
+        //        {
+        //            //SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
+        //            ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
+        //            {
+        //                if (certificate == null || certificate.Value == null)
+        //                {
+        //                    _logger.LogError("❌ Certificate validation chain is null.");
+        //                    return false;
+        //                }
+
+        //                foreach (X509ChainElement element in chain.ChainElements)
+        //                {
+        //                    _logger.LogInformation($"🔍 Certificate Subject: {element.Certificate.Subject}");
+        //                    _logger.LogInformation($"🔍 Issuer: {element.Certificate.Issuer}");
+
+        //                    foreach (X509ChainStatus status in element.ChainElementStatus)
+        //                    {
+        //                        _logger.LogError($"⚠️ Certificate Status: {status.Status} - {status.StatusInformation}");
+        //                        if (status.Status == X509ChainStatusFlags.Revoked)
+        //                        {
+        //                            _logger.LogError("❌ Certificate has been revoked.");
+        //                            return false;
+        //                        }
+        //                    }
+        //                }
+
+        //                // Check if the certificate is expired
+        //                if (DateTime.Now > cert.NotAfter)
+        //                {
+        //                    _logger.LogError("❌ Certificate has expired.");
+        //                    return false;
+        //                }
+
+        //                // Check if the certificate is not yet valid
+        //                if (DateTime.Now < cert.NotBefore)
+        //                {
+        //                    _logger.LogError("❌ Certificate is not yet valid.");
+        //                    return false;
+        //                }
+
+        //                // Verify SSL Policy Errors
+        //                if (sslPolicyErrors != SslPolicyErrors.None)
+        //                {
+        //                    _logger.LogError("❌ SSL Policy Errors Detected: {Error}", sslPolicyErrors);
+        //                    return false;
+        //                }
+
+        //                //// Check if the certificate is issued by a trusted authority
+        //                //if (!chain.ChainElements[chain.ChainElements.Count - 1].Certificate.Subject.Contains("CN=TrustedRootCA"))
+        //                //{
+        //                //    _logger.LogError("❌ Certificate is not issued by a trusted authority.");
+        //                //    return false;
+        //                //}
+
+        //                // Check if the certificate key length is strong (2048 bits or higher)
+        //                if (cert.PublicKey.Key.KeySize < 2048)
+        //                {
+        //                    _logger.LogError("❌ Certificate key size is too weak. Minimum 2048 bits required.");
+        //                    return false;
+        //                }
+
+        //                // Check key usage (digital signature, key encipherment)
+        //                if (!cert.Extensions.OfType<X509KeyUsageExtension>().Any(usage => usage.KeyUsages.HasFlag(X509KeyUsageFlags.DigitalSignature)))
+        //                {
+        //                    _logger.LogError("❌ Certificate does not allow digital signature usage.");
+        //                    return false;
+        //                }
+
+        //                _logger.LogInformation("✅ Certificate validation passed successfully.");
+        //                return true;
+        //            }
+        //        };
+
+        //        // Log Certificate Information
+        //        _logger.LogInformation("🔑 Using Certificate for Authentication:");
+        //        _logger.LogInformation("Certificate Subject: {Subject}", certificate.Value.Subject);
+        //        _logger.LogInformation("Certificate Issuer: {Issuer}", certificate.Value.Issuer);
+        //        _logger.LogInformation("Certificate Valid From: {NotBefore}", certificate.Value.NotBefore);
+        //        _logger.LogInformation("Certificate Expiry Date: {NotAfter}", certificate.Value.NotAfter);
+        //        _logger.LogInformation("Certificate Has Private Key: {HasPrivateKey}", certificate.Value.HasPrivateKey);
+
+        //        // Add certificate to handler
+        //        //httpClientHandler.ClientCertificates.Add(certificate);
+        //        httpClientHandler.ClientCertificates.Add(certificate.Value);
+
+
+        //        HttpClient = new HttpClient(httpClientHandler)
+        //        {
+        //            BaseAddress = new Uri(Configuration.Url)
+        //        };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError("❌ Failed to load certificate: {Error}", ex.Message);
+        //        throw;
+        //    }
+        //}
+
+
         private void AddAuthenticationCertificate()
         {
             try
             {
-                var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
-                var certificateClient = new CertificateClient(new Uri(Configuration.KeyVaultIdentifier), new DefaultAzureCredential(defaultAzureCredentialOptions));
+                var certificateClient = new CertificateClient(
+                    new Uri(Configuration.KeyVaultIdentifier),
+                    new DefaultAzureCredential());
+
                 var certificate = certificateClient.DownloadCertificate(Configuration.CertificateName);
 
                 if (certificate == null || certificate.Value == null)
                 {
-                    _logger.LogInformation("Certificate was not properly returned from the Key Vault.");
-                    throw new Exception("❌ Certificate was not properly returned from the Key Vault.");
+                    throw new Exception("❌ Certificate not retrieved from Key Vault.");
                 }
 
-                if (!certificate.Value.HasPrivateKey)
+                // Use SocketsHttpHandler
+                _httpHandler = new SocketsHttpHandler
                 {
-                    _logger.LogInformation("Certificate has no private key.");
-                    _logger.LogInformation("Certificate Thumbprint: {Thumbprint}", certificate.Value.Thumbprint);
-                    _logger.LogInformation("Certificate Subject: {Subject}", certificate.Value.Subject);
-                    _logger.LogInformation("Certificate Issuer: {Issuer}", certificate.Value.Issuer);
-                    _logger.LogInformation("🔐 [Certificate] PrivateKey Algorithm: {Algorithm}", certificate.Value.GetRSAPrivateKey()?.KeyExchangeAlgorithm);
-                    _logger.LogInformation("🔐 [Certificate] PrivateKey KeySize: {KeySize}", certificate.Value.GetRSAPrivateKey()?.KeySize);
-                    throw new Exception("❌ Certificate has no private key.");
-                }
-                else
-                {
-                    _logger.LogInformation("✅ Certificate has a private key.");
-                    _logger.LogInformation("Certificate Thumbprint: {Thumbprint}", certificate.Value.Thumbprint);
-                    _logger.LogInformation("Certificate Subject: {Subject}", certificate.Value.Subject);
-                    _logger.LogInformation("Certificate Issuer: {Issuer}", certificate.Value.Issuer);
-                }
-
-                var httpClientHandler = new HttpClientHandler
-                {
-                    //SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
-                    ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
+                    SslOptions = new SslClientAuthenticationOptions
                     {
-                        if (certificate == null || certificate.Value == null)
+                        ClientCertificates = new X509CertificateCollection { certificate.Value },
+                        EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls13,
+                        RemoteCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
                         {
-                            _logger.LogError("❌ Certificate validation chain is null.");
-                            return false;
-                        }
-
-                        foreach (X509ChainElement element in chain.ChainElements)
-                        {
-                            _logger.LogInformation($"🔍 Certificate Subject: {element.Certificate.Subject}");
-                            _logger.LogInformation($"🔍 Issuer: {element.Certificate.Issuer}");
-
-                            foreach (X509ChainStatus status in element.ChainElementStatus)
+                            if (sslPolicyErrors == SslPolicyErrors.None)
                             {
-                                _logger.LogError($"⚠️ Certificate Status: {status.Status} - {status.StatusInformation}");
-                                if (status.Status == X509ChainStatusFlags.Revoked)
-                                {
-                                    _logger.LogError("❌ Certificate has been revoked.");
-                                    return false;
-                                }
+                                return true;
                             }
-                        }
 
-                        // Check if the certificate is expired
-                        if (DateTime.Now > cert.NotAfter)
-                        {
-                            _logger.LogError("❌ Certificate has expired.");
+                            _logger.LogError("❌ SSL Policy Error: {Error}", sslPolicyErrors);
                             return false;
                         }
-
-                        // Check if the certificate is not yet valid
-                        if (DateTime.Now < cert.NotBefore)
-                        {
-                            _logger.LogError("❌ Certificate is not yet valid.");
-                            return false;
-                        }
-
-                        // Verify SSL Policy Errors
-                        if (sslPolicyErrors != SslPolicyErrors.None)
-                        {
-                            _logger.LogError("❌ SSL Policy Errors Detected: {Error}", sslPolicyErrors);
-                            return false;
-                        }
-
-                        //// Check if the certificate is issued by a trusted authority
-                        //if (!chain.ChainElements[chain.ChainElements.Count - 1].Certificate.Subject.Contains("CN=TrustedRootCA"))
-                        //{
-                        //    _logger.LogError("❌ Certificate is not issued by a trusted authority.");
-                        //    return false;
-                        //}
-
-                        // Check if the certificate key length is strong (2048 bits or higher)
-                        if (cert.PublicKey.Key.KeySize < 2048)
-                        {
-                            _logger.LogError("❌ Certificate key size is too weak. Minimum 2048 bits required.");
-                            return false;
-                        }
-
-                        // Check key usage (digital signature, key encipherment)
-                        if (!cert.Extensions.OfType<X509KeyUsageExtension>().Any(usage => usage.KeyUsages.HasFlag(X509KeyUsageFlags.DigitalSignature)))
-                        {
-                            _logger.LogError("❌ Certificate does not allow digital signature usage.");
-                            return false;
-                        }
-
-                        _logger.LogInformation("✅ Certificate validation passed successfully.");
-                        return true;
                     }
                 };
 
-                // Log Certificate Information
-                _logger.LogInformation("🔑 Using Certificate for Authentication:");
-                _logger.LogInformation("Certificate Subject: {Subject}", certificate.Value.Subject);
-                _logger.LogInformation("Certificate Issuer: {Issuer}", certificate.Value.Issuer);
-                _logger.LogInformation("Certificate Valid From: {NotBefore}", certificate.Value.NotBefore);
-                _logger.LogInformation("Certificate Expiry Date: {NotAfter}", certificate.Value.NotAfter);
-                _logger.LogInformation("Certificate Has Private Key: {HasPrivateKey}", certificate.Value.HasPrivateKey);
-
-                // Add certificate to handler
-                //httpClientHandler.ClientCertificates.Add(certificate);
-                httpClientHandler.ClientCertificates.Add(certificate.Value);
-
-
-                HttpClient = new HttpClient(httpClientHandler)
+                HttpClient = new HttpClient(_httpHandler)
                 {
                     BaseAddress = new Uri(Configuration.Url)
                 };
+
+                _logger.LogInformation("✅ Successfully loaded certificate: {Subject}", certificate.Value.Subject);
             }
             catch (Exception ex)
             {
-                _logger.LogError("❌ Failed to load certificate: {Error}", ex.Message);
+                _logger.LogError("❌ Failed to set up secure connection: {Error}", ex.Message);
                 throw;
             }
         }
-
-
-
         public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true) => throw new NotImplementedException();
     }
 }
