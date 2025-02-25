@@ -28,7 +28,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.InnerApi
 
             actual.GetUrl
                 .Should()
-                .Be($"/api/vacancies?lat={lat}&lon={lon}&distanceInMiles={distance}&sort={sort}&pageNumber={pageNumber}&pageSize={pageSize}&categories={string.Join("&categories=", categories)}&levels={string.Join("&levels=", levels)}&searchTerm={whatSearchTerm}&disabilityConfident={disabilityConfident}&additionalDataSources=Nhs&postedInLastNumberOfDays=7");
+                .Be($"/api/vacancies?lat={lat}&lon={lon}&distanceInMiles={distance}&sort={sort}&pageNumber={pageNumber}&pageSize={pageSize}&categories={string.Join("&categories=", categories)}&levels={string.Join("&levels=", levels)}&searchTerm={whatSearchTerm}&disabilityConfident={disabilityConfident}&additionalDataSources=Nhs&postedInLastNumberOfDays=8");
             actual.Version.Should().Be("2.0");
         }
     }
