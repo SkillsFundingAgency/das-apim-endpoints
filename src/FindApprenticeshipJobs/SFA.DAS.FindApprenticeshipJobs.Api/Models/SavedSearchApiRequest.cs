@@ -1,4 +1,6 @@
-﻿using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
+using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
 {
@@ -14,6 +16,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
         public bool DisabilityConfident { get; set; }
         public string? UnSubscribeToken { get; set; }
         public List<Vacancy> Vacancies { get; set; } = [];
+
         public class Vacancy
         {
             public string? Id { get; set; }
@@ -24,7 +27,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
 
             public string? EmployerName { get; set; }
 
-            public Address Address { get; set; } = new();
+            public Address? EmployerLocation { get; set; }
+            public List<Address>? EmployerLocations { get; set; }
+            public AvailableWhere? EmployerLocationOption { get; set; }
 
             public string? Wage { get; set; }
 
@@ -37,18 +42,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
             public string? WageType { get; set; }
             public string? WageUnit { get; set; }
         }
-        public class Address
-        {
-            public string? AddressLine1 { get; set; }
-
-            public string? AddressLine2 { get; set; }
-
-            public string? AddressLine3 { get; set; }
-
-            public string? AddressLine4 { get; set; }
-
-            public string? Postcode { get; set; }
-        }
+        
         public class Category
         {
             public int Id { get; set; }
@@ -108,14 +102,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
                         TrainingCourse = vacancy.TrainingCourse,
                         VacancyReference = vacancy.VacancyReference,
                         Wage = vacancy.Wage,
-                        Address = new PostSendSavedSearchNotificationCommand.Address
-                        {
-                            AddressLine1 = vacancy.Address.AddressLine1,
-                            AddressLine2 = vacancy.Address.AddressLine2,
-                            AddressLine3 = vacancy.Address.AddressLine3,
-                            AddressLine4 = vacancy.Address.AddressLine4,
-                            Postcode = vacancy.Address.Postcode,
-                        },
+                        EmployerLocation = vacancy.EmployerLocation,
+                        EmployerLocations = vacancy.EmployerLocations,
+                        EmployerLocationOption = vacancy.EmployerLocationOption,
                         VacancySource = vacancy.VacancySource,
                         WageUnit = vacancy.WageUnit,
                         WageType = vacancy.WageType

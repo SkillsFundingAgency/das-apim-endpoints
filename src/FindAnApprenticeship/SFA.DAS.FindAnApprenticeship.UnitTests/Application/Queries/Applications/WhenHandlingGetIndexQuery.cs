@@ -2,7 +2,6 @@
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -233,6 +232,30 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
 
             vacancyService.Setup(x => x.GetVacancies(It.IsAny<List<string>>()))
                 .ReturnsAsync(vacancies.Select(x => (IVacancy)x).ToList());
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            using var scope = new AssertionScope();
+
+            result.Applications.Count.Should().Be(0);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Applications_Are_Empty_Then_Empty_Returned(
+            GetApplicationsQuery query,
+            GetApplicationsApiResponse applicationApiResponse,
+            List<ApprenticeshipVacancy> vacancies,
+            [Frozen] Mock<IVacancyService> vacancyService,
+            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            GetApplicationsQueryHandler handler)
+        {
+            applicationApiResponse.Applications = [];
+
+            var expectedGetApplicationRequest = new GetApplicationsApiRequest(query.CandidateId);
+            candidateApiClient
+                .Setup(client => client.Get<GetApplicationsApiResponse>(
+                    It.Is<GetApplicationsApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
+                .ReturnsAsync(applicationApiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 

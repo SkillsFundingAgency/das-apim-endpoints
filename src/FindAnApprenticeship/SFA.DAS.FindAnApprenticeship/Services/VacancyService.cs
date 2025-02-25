@@ -10,6 +10,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Services
 {
@@ -24,11 +25,44 @@ namespace SFA.DAS.FindAnApprenticeship.Services
         public async Task<IVacancy> GetClosedVacancy(string vacancyReference)
         {
             var response = await recruitApiClient.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(vacancyReference.Replace("VAC", "")));
-            if (response is not { IsAnonymous: true })
+            return AnonymizeClosedVacancy(response);
+        }
+
+        public async Task<List<IVacancy>> GetVacancies(List<string> vacancyReferences)
+        {
+            var vacanciesRequest = new PostGetVacanciesByReferenceApiRequest(new PostGetVacanciesByReferenceApiRequestBody
             {
-                return response;
-            }
+                VacancyReferences = vacancyReferences.Select(x => $"VAC{x}").ToList()
+            });
+
+            var vacancies = await findApprenticeshipApiClient.PostWithResponseCode<PostGetVacanciesByReferenceApiResponse>(vacanciesRequest);
+
+            if (vacancies?.Body?.ApprenticeshipVacancies == null) return [];
             
+            var result = vacancies.Body.ApprenticeshipVacancies.Select(IVacancy (x) => x).ToList();
+
+            var notFoundVacancies = vacancyReferences.Where(x => result.All(y => y.VacancyReference != $"VAC{x}")).ToList();
+
+            if (notFoundVacancies.Count == 0) return result;
+            
+            var recruitRequest = new PostGetClosedVacanciesByReferenceApiRequest(
+                new PostGetClosedVacanciesByReferenceApiRequestBody
+                {
+                    VacancyReferences = notFoundVacancies.Select(x => Convert.ToInt64(x)).ToList()
+                });
+
+            var recruitResponse =
+                await recruitApiClient.PostWithResponseCode<GetClosedVacanciesByReferenceResponse>(recruitRequest);
+
+            result.AddRange(recruitResponse.Body.Vacancies.Select(AnonymizeClosedVacancy));
+
+            return result;
+        }
+
+        private static IVacancy AnonymizeClosedVacancy(GetClosedVacancyResponse response)
+        {
+            if (response is not { IsAnonymous: true }) return response;
+
             switch (response.EmployerLocationOption)
             {
                 case AvailableWhere.OneLocation:
@@ -45,34 +79,23 @@ namespace SFA.DAS.FindAnApprenticeship.Services
             return response;
         }
 
-        public async Task<List<IVacancy>> GetVacancies(List<string> vacancyReferences)
+        public string GetVacancyWorkLocation(IVacancy vacancy)
         {
-            var vacanciesRequest = new PostGetVacanciesByReferenceApiRequest(new PostGetVacanciesByReferenceApiRequestBody
+            switch (vacancy.EmployerLocationOption)
             {
-                VacancyReferences = vacancyReferences.Select(x => $"VAC{x}").ToList()
-            });
-
-            var vacancies = await findApprenticeshipApiClient.PostWithResponseCode<PostGetVacanciesByReferenceApiResponse>(vacanciesRequest);
-
-            var result = vacancies.Body.ApprenticeshipVacancies.Select(IVacancy (x) => x).ToList();
-
-            var notFoundVacancies = vacancyReferences.Where(x => result.All(y => y.VacancyReference != $"VAC{x}")).ToList();
-
-            if (notFoundVacancies.Any())
-            {
-                var recruitRequest = new PostGetClosedVacanciesByReferenceApiRequest(
-                    new PostGetClosedVacanciesByReferenceApiRequestBody
-                    {
-                        VacancyReferences = notFoundVacancies.Select(x => Convert.ToInt64(x)).ToList()
-                    });
-
-                var recruitResponse =
-                    await recruitApiClient.PostWithResponseCode<GetClosedVacanciesByReferenceResponse>(recruitRequest);
-
-                result.AddRange(recruitResponse.Body.Vacancies);
+                case AvailableWhere.AcrossEngland:
+                    return "Recruiting nationally";
+                case AvailableWhere.MultipleLocations:
+                {
+                    var addresses = new List<Address> { vacancy.Address };
+                    if (vacancy.OtherAddresses != null) addresses.AddRange(vacancy.OtherAddresses);
+                    return EmailTemplateAddressExtension.GetEmploymentLocations(addresses);
+                }
+                case null:
+                case AvailableWhere.OneLocation:
+                default:
+                    return EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.Address);
             }
-
-            return result;
         }
     }
 }

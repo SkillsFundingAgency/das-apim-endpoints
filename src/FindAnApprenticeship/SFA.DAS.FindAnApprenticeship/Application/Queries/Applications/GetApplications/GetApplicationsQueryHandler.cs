@@ -30,7 +30,7 @@ public class GetApplicationsQueryHandler(
             || (request.Status == ApplicationStatus.Draft && x.Status == ApplicationStatus.Expired.ToString())
             ).ToList();
 
-        if (totalApplicationCount == 0)
+        if (totalApplicationCount == 0 || applicationList.Count == 0)
         {
             return new GetApplicationsQueryResult();
         }
