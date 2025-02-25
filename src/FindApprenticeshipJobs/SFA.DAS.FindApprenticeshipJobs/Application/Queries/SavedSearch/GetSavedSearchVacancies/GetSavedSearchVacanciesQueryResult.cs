@@ -1,4 +1,6 @@
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.VacancyServices.Wage;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearchVacancies;
@@ -33,7 +35,10 @@ public class GetSavedSearchVacanciesQueryResult
         public string? VacancyReference { get; set; }
         public string? Title { get; set; }
         public string? EmployerName { get; set; }
-        public Address Address { get; set; } = null!;
+        public Address Address { get; set; }
+        public List<Address>? OtherAddresses { get; set; }
+        public string? EmploymentLocationInformation { get; set; }
+        public AvailableWhere? EmploymentLocationOption { get; set; }
         public string? Wage { get; set; }
         public string? WageUnit { get; set; }
         public string? WageType { get; set; }
@@ -54,7 +59,10 @@ public class GetSavedSearchVacanciesQueryResult
                 Wage = source.WageText,
                 WageUnit = ((WageUnit)source.WageUnit).ToString(),
                 WageType = ((WageType)source.WageType).ToString(),
-                Address = source.VacancyAddress,
+                Address = source.Address,
+                OtherAddresses = source.OtherAddresses,
+                EmploymentLocationOption = source.EmploymentLocationOption,
+                EmploymentLocationInformation = source.EmploymentLocationInformation,
                 TrainingCourse = $"{source.CourseTitle} (level {source.CourseLevel})",
                 Distance = source.Distance.HasValue ? Math.Round(source.Distance.Value, 1) : null,
                 VacancySource = source.VacancySource,
@@ -76,27 +84,6 @@ public class GetSavedSearchVacanciesQueryResult
             };
         }
     }
-    public class Address
-    {
-        public string? AddressLine1 { get; set; }
-        public string? AddressLine2 { get; set; }
-        public string? AddressLine3 { get; set; }
-        public string? AddressLine4 { get; set; }
-        public string? Postcode { get; set; }
-
-        public static implicit operator Address(VacancyAddress source)
-        {
-            return new Address
-            {
-                AddressLine1 = source.AddressLine1,
-                AddressLine2 = source.AddressLine2,
-                AddressLine3 = source.AddressLine3,
-                AddressLine4 = source.AddressLine4,
-                Postcode = source.Postcode,
-            };
-        }
-    }
-    
     public class UserDetails
     {
         public Guid Id { get; set; }
@@ -118,5 +105,3 @@ public class GetSavedSearchVacanciesQueryResult
         }
     }
 }
-
-
