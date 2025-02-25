@@ -5,10 +5,11 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.ToolsSupport.Application.Services;
+using SFA.DAS.ToolsSupport.Configuration;
+using SFA.DAS.ToolsSupport.ExternalApi;
 using SFA.DAS.ToolsSupport.Helpers;
 using SFA.DAS.ToolsSupport.Interfaces;
 using SFA.DAS.ToolsSupport.Services;
-using SFA.DAS.ToolsSupport.Strategies;
 
 namespace SFA.DAS.ToolsSupport.Api.AppStart;
 
@@ -23,9 +24,11 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IPayeSchemeObfuscator, PayeSchemeObfuscator>();
         services.AddTransient<IDatetimeService, DatetimeService>();
         services.AddTransient<IEmployerFinanceService, EmployerFinanceService>();
-        services.AddTransient<IAccountDetailsStrategyFactory, AccountDetailsStrategyFactory>();
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         services.AddTransient<IFinanceApiClient<FinanceApiConfiguration>, FinanceApiClient>();
+        services.AddTransient<IHmrcApiClient<HmrcApiConfiguration>, HmrcApiClient<HmrcApiConfiguration>>();
+        services.AddTransient<ITokenService, TokenService>();
+        services.AddTransient<ISecureTokenHttpClient, SecureTokenHttpClient>();
 
         services.AddSingleton<IPayRefHashingService, PayRefHashingService>(static sp =>
         {

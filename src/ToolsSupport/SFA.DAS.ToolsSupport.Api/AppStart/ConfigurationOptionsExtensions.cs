@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.ToolsSupport.Configuration;
 
 namespace SFA.DAS.ToolsSupport.Api.AppStart;
 
@@ -30,5 +31,11 @@ public static class AddConfigurationOptionsExtension
 
         services.Configure<HashingServiceConfiguration>(configuration.GetSection(nameof(HashingServiceConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<HashingServiceConfiguration>>().Value);
+        
+        services.Configure<TokenServiceApiConfiguration>(configuration.GetSection("TokenServiceApi"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<TokenServiceApiConfiguration>>().Value);
+        
+        services.Configure<HmrcApiConfiguration>(configuration.GetSection("HmrcApi"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<HmrcApiConfiguration>>().Value);
     }
 }

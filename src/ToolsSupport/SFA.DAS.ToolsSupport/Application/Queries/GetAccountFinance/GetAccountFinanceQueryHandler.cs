@@ -1,20 +1,34 @@
-﻿using Microsoft.Extensions.Logging;
-using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
+﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.ToolsSupport.InnerApi.Requests;
 using SFA.DAS.ToolsSupport.InnerApi.Responses;
 using SFA.DAS.ToolsSupport.Interfaces;
 
-namespace SFA.DAS.ToolsSupport.Strategies;
+namespace SFA.DAS.ToolsSupport.Application.Queries.GetAccountFinance;
 
-public class AccountDetailsFinanceStrategy(
-    IAccountsService accountsService,
-    IEmployerFinanceService employerFinanceService,
+public class GetAccountFinanceQueryHandler(
+        IAccountsService accountsService,
+     IEmployerFinanceService employerFinanceService,
     IPayRefHashingService hashingService,
     IPayeSchemeObfuscator payeSchemeObfuscator,
     IDatetimeService datetimeService,
-    ILogger<AccountDetailsFinanceStrategy> logger) : IAccountDetailsStrategy
+    ILogger<GetAccountFinanceQueryHandler> logger)
+        : IRequestHandler<GetAccountFinanceQuery, GetAccountFinanceQueryResult>
 {
-    public async Task<GetEmployerAccountDetailsResult> ExecuteAsync(Account account)
+    public async Task<GetAccountFinanceQueryResult> Handle(GetAccountFinanceQuery query, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("Getting Finance data for Account {account}", query.AccountId);
+
+        var account = await accountsService.GetAccount(query.AccountId);
+        if (account != null)
+        {
+            return await GetFinanceData(account);
+        }
+
+        return new GetAccountFinanceQueryResult();
+    }
+
+    private async Task<GetAccountFinanceQueryResult> GetFinanceData(Account account)
     {
         var payeSchemesTasks = GetPayeSchemeTasks(account);
 
@@ -24,7 +38,7 @@ public class AccountDetailsFinanceStrategy(
 
         await Task.WhenAll(payeSchemesTasks, transactionTasks, balanceTask);
 
-        return new GetEmployerAccountDetailsResult
+        return new GetAccountFinanceQueryResult
         {
             PayeSchemes = payeSchemesTasks.Result,
             Transactions = transactionTasks.Result,
@@ -113,21 +127,17 @@ public class AccountDetailsFinanceStrategy(
         var financialYearIterator = datetimeService.GetBeginningFinancialYear(new DateTime(2017, 4, 1));
         var response = new List<Transaction>();
 
-        while (financialYearIterator <= endDate)
+        try
         {
-            try
-            {
-                var transactions = await employerFinanceService.GetTransactions(accountId, financialYearIterator.Year,
-                    financialYearIterator.Month);
-                response.AddRange(transactions);
-            }
-            catch (Exception exception)
-            {
-                logger.LogError(exception, "Exception occured in Finance API type of {TransactionsViewModel} for period {FinancialYearIteratorYear}.{FinancialYearIteratorMonth} id {AccountId}", nameof(TransactionsViewModel), financialYearIterator.Year, financialYearIterator.Month, accountId);
-            }
-
-            financialYearIterator = financialYearIterator.AddMonths(1);
+            var transactions = await employerFinanceService.GetTransactions(accountId, financialYearIterator.Year,
+                financialYearIterator.Month);
+            response.AddRange(transactions);
         }
+        catch (Exception exception)
+        {
+            logger.LogError(exception, "Exception occured in Finance API type of {TransactionsViewModel} for period {FinancialYearIteratorYear}.{FinancialYearIteratorMonth} id {AccountId}", nameof(TransactionsViewModel), financialYearIterator.Year, financialYearIterator.Month, accountId);
+        }
+
 
         return GetFilteredTransactions(response);
     }

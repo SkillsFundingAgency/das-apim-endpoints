@@ -3,11 +3,14 @@ using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ToolsSupport.Api.Models.EmployerAccount;
+using SFA.DAS.ToolsSupport.Api.sources.EmployerAccount;
 using SFA.DAS.ToolsSupport.Application.Commands.ChangeUserRole;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportCreateInvitation;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportResendInvitation;
+using SFA.DAS.ToolsSupport.Application.Queries.GetAccountOrganisations;
 using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
-using SFA.DAS.ToolsSupport.Models.Constants;
+using SFA.DAS.ToolsSupport.Application.Queries.GetPayeSchemeLevyDeclarations;
+using SFA.DAS.ToolsSupport.Application.Queries.GetTeamMembers;
 
 namespace SFA.DAS.ToolsSupport.Api.Controllers;
 
@@ -17,14 +20,13 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
 {
     [HttpGet]
     [Route("{accountId}/account-details")]
-    public async Task<IActionResult> GetAccountDetails(long accountId, [FromQuery, Required] AccountFieldSelection accountFieldSelection)
+    public async Task<IActionResult> GetAccountDetails(long accountId)
     {
         try
         {
             var result = await mediator.Send(new GetEmployerAccountDetailsQuery
             {
-                AccountId = accountId,
-                SelectedField = accountFieldSelection
+                AccountId = accountId
             });
 
             return Ok((GetEmployerAccountDetailsResponse)result);
@@ -32,6 +34,87 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
         catch (Exception e)
         {
             logger.LogError("Error: GetAccountDetails: {error}", e);
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpGet]
+    [Route("{accountId}/organisations")]
+    public async Task<IActionResult> GetAccountOrganisations(long accountId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetAccountOrganisationsQuery
+            {
+                AccountId = accountId,
+            });
+
+            return Ok((GetAccountOrganisationsResponse)result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError("Error: GetAccountOrganisations: {error}", e);
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpGet]
+    [Route("{accountId}/team-members")]
+    public async Task<IActionResult> GetTeamMembers(long accountId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetTeamMembersQuery
+            {
+                AccountId = accountId,
+            });
+
+            return Ok((GetTeamMembersResponse)result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError("Error: GetAccountOrganisations: {error}", e);
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpGet]
+    [Route("{accountId}/finance")]
+    public async Task<IActionResult> GetAccountFinance(long accountId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetTeamMembersQuery
+            {
+                AccountId = accountId,
+            });
+
+            return Ok((GetTeamMembersResponse)result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError("Error: GetAccountOrganisations: {error}", e);
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpGet]
+    [Route("{accountId}/paye-levy-declarations")]
+    public async Task<IActionResult> GetPayeLevyDeclarations(long accountId, [FromQuery, Required] string hashedPayeRef)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetPayeSchemeLevyDeclarationsQuery
+            {
+                AccountId = accountId,
+                HashedPayeRef = hashedPayeRef,
+            });
+            return Ok((GetPayeLevyDeclarationsResponse)result);
+
+        }
+        catch (Exception e)
+        {
+            logger.LogError("Error: GetPayeLevyDeclarations: {error}", e);
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }

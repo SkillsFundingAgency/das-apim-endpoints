@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.ToolsSupport.Api.AppStart;
+﻿namespace SFA.DAS.ToolsSupport.Configuration;
 public class HashingServiceConfiguration
 {
     public string Hashstring { get; set; } = "";
