@@ -76,11 +76,11 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             {
                 // Get the readable error message from the Win32 error code
                 int errorCode = win32Ex.NativeErrorCode;
-                //string errorDescription = Win32ErrorHelper.GetErrorMessage(errorCode);
+                string errorDescription = Win32ErrorHelper.GetErrorMessage(errorCode);
 
                 // Log detailed Win32 Exception details
                 _logger.LogError("❌ [Win32Exception] NativeErrorCode: {NativeErrorCode}", errorCode);
-                //_logger.LogError("❌ [Win32Exception] Readable Error: {ErrorDescription}", errorDescription);
+                _logger.LogError("❌ [Win32Exception] Readable Error: {ErrorDescription}", errorDescription);
                 _logger.LogError("❌ [Win32Exception] Error Code: {ErrorCode}", win32Ex.ErrorCode);
                 _logger.LogError("❌ [Win32Exception] Message: {Message}", win32Ex.Message);
                 _logger.LogError("❌ [Win32Exception] StackTrace: {StackTrace}", win32Ex.StackTrace);
