@@ -1,13 +1,15 @@
 ﻿using MediatR;
 using SFA.DAS.AdminAan.Infrastructure;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.EducationalOrganisations;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using static SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvent.GetCalendarEventQueryResult;
 
 namespace SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvent;
-public class GetCalendarEventQueryHandler(IAanHubRestApiClient apiClient, IReferenceDataApiClient apiReferenceDataApiClient)
+public class GetCalendarEventQueryHandler(IAanHubRestApiClient apiClient, IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration> educationalOrganisationApiClient)
     : IRequestHandler<GetCalendarEventQuery, GetCalendarEventQueryResult>
 {
-    private const int OrganisationTypeEducational = 4;
-
     public async Task<GetCalendarEventQueryResult> Handle(GetCalendarEventQuery request, CancellationToken cancellationToken)
     {
         var apiResponse = await apiClient.GetCalendarEvent(request.RequestedByMemberId, request.CalendarEventId, cancellationToken);
@@ -49,12 +51,13 @@ public class GetCalendarEventQueryHandler(IAanHubRestApiClient apiClient, IRefer
 
         if (string.IsNullOrEmpty(result.Urn.ToString())) return result;
 
-        var response = await apiReferenceDataApiClient.GetSchoolFromUrn(result.Urn.ToString()!,
-            OrganisationTypeEducational, cancellationToken);
+        var response =
+            await educationalOrganisationApiClient.GetWithResponseCode<GetLatestDetailsForEducationalOrgResponse>(
+                new GetLatestDetailsForEducationalOrgRequest(identifier: result.Urn.ToString()));
 
-        if (response.ResponseMessage.StatusCode == System.Net.HttpStatusCode.OK)
+        if (response.StatusCode == System.Net.HttpStatusCode.OK)
         {
-            result.SchoolName = response.GetContent().Name;
+            result.SchoolName = response.Body.EducationalOrganisation.Name;
         }
 
         return result;
