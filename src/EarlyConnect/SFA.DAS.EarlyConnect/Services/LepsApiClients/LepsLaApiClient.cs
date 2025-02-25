@@ -105,6 +105,14 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                 // Log timestamp for when the error occurred
                 _logger.LogInformation("🕒 [Timestamp] Error Occurred At: {Timestamp}", DateTime.UtcNow);
 
+                Exception innerEx = ex.InnerException;
+                while (innerEx != null)
+                {
+                    _logger.LogError("Certificate [Inner Exception] {Error} \n StackTrace: {StackTrace}",
+                        innerEx.Message, innerEx.StackTrace);
+                    innerEx = innerEx.InnerException;
+                }
+
                 //return new ApiResponse<TResponse>(default, HttpStatusCode.InternalServerError,
                 //    $"HttpRequestException: {ex.Message} | Win32 Error: {errorDescription}");
                 throw;
@@ -346,71 +354,71 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                     UseProxy = false,
                     ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
                     {
-                        if (certificate == null || certificate.Value == null)
-                        {
-                            _logger.LogError("❌ Certificate validation chain is null.");
-                            return false;
-                        }
+                        //    if (certificate == null || certificate.Value == null)
+                        //    {
+                        //        _logger.LogError("❌ Certificate validation chain is null.");
+                        //        return false;
+                        //    }
 
-                        foreach (X509ChainElement element in chain.ChainElements)
-                        {
-                            _logger.LogInformation($"🔍 Certificate Subject: {element.Certificate.Subject}");
-                            _logger.LogInformation($"🔍 Issuer: {element.Certificate.Issuer}");
+                        //    foreach (X509ChainElement element in chain.ChainElements)
+                        //    {
+                        //        _logger.LogInformation($"🔍 Certificate Subject: {element.Certificate.Subject}");
+                        //        _logger.LogInformation($"🔍 Issuer: {element.Certificate.Issuer}");
 
-                            foreach (X509ChainStatus status in element.ChainElementStatus)
-                            {
-                                _logger.LogError($"⚠️ Certificate Status: {status.Status} - {status.StatusInformation}");
-                                if (status.Status == X509ChainStatusFlags.Revoked)
-                                {
-                                    _logger.LogError("❌ Certificate has been revoked.");
-                                    return false;
-                                }
-                            }
-                        }
+                        //        foreach (X509ChainStatus status in element.ChainElementStatus)
+                        //        {
+                        //            _logger.LogError($"⚠️ Certificate Status: {status.Status} - {status.StatusInformation}");
+                        //            if (status.Status == X509ChainStatusFlags.Revoked)
+                        //            {
+                        //                _logger.LogError("❌ Certificate has been revoked.");
+                        //                return false;
+                        //            }
+                        //        }
+                        //    }
 
-                        // Check if the certificate is expired
-                        if (DateTime.Now > cert.NotAfter)
-                        {
-                            _logger.LogError("❌ Certificate has expired.");
-                            return false;
-                        }
+                        //    // Check if the certificate is expired
+                        //    if (DateTime.Now > cert.NotAfter)
+                        //    {
+                        //        _logger.LogError("❌ Certificate has expired.");
+                        //        return false;
+                        //    }
 
-                        // Check if the certificate is not yet valid
-                        if (DateTime.Now < cert.NotBefore)
-                        {
-                            _logger.LogError("❌ Certificate is not yet valid.");
-                            return false;
-                        }
+                        //    // Check if the certificate is not yet valid
+                        //    if (DateTime.Now < cert.NotBefore)
+                        //    {
+                        //        _logger.LogError("❌ Certificate is not yet valid.");
+                        //        return false;
+                        //    }
 
-                        // Verify SSL Policy Errors
-                        if (sslPolicyErrors != SslPolicyErrors.None)
-                        {
-                            _logger.LogError("❌ SSL Policy Errors Detected: {Error}", sslPolicyErrors);
-                            return false;
-                        }
+                        //    // Verify SSL Policy Errors
+                        //    if (sslPolicyErrors != SslPolicyErrors.None)
+                        //    {
+                        //        _logger.LogError("❌ SSL Policy Errors Detected: {Error}", sslPolicyErrors);
+                        //        return false;
+                        //    }
 
-                        //// Check if the certificate is issued by a trusted authority
-                        //if (!chain.ChainElements[chain.ChainElements.Count - 1].Certificate.Subject.Contains("CN=TrustedRootCA"))
-                        //{
-                        //    _logger.LogError("❌ Certificate is not issued by a trusted authority.");
-                        //    return false;
-                        //}
+                        //    //// Check if the certificate is issued by a trusted authority
+                        //    //if (!chain.ChainElements[chain.ChainElements.Count - 1].Certificate.Subject.Contains("CN=TrustedRootCA"))
+                        //    //{
+                        //    //    _logger.LogError("❌ Certificate is not issued by a trusted authority.");
+                        //    //    return false;
+                        //    //}
 
-                        // Check if the certificate key length is strong (2048 bits or higher)
-                        if (cert.PublicKey.Key.KeySize < 2048)
-                        {
-                            _logger.LogError("❌ Certificate key size is too weak. Minimum 2048 bits required.");
-                            return false;
-                        }
+                        //    // Check if the certificate key length is strong (2048 bits or higher)
+                        //    if (cert.PublicKey.Key.KeySize < 2048)
+                        //    {
+                        //        _logger.LogError("❌ Certificate key size is too weak. Minimum 2048 bits required.");
+                        //        return false;
+                        //    }
 
-                        // Check key usage (digital signature, key encipherment)
-                        if (!cert.Extensions.OfType<X509KeyUsageExtension>().Any(usage => usage.KeyUsages.HasFlag(X509KeyUsageFlags.DigitalSignature)))
-                        {
-                            _logger.LogError("❌ Certificate does not allow digital signature usage.");
-                            return false;
-                        }
+                        //    // Check key usage (digital signature, key encipherment)
+                        //    if (!cert.Extensions.OfType<X509KeyUsageExtension>().Any(usage => usage.KeyUsages.HasFlag(X509KeyUsageFlags.DigitalSignature)))
+                        //    {
+                        //        _logger.LogError("❌ Certificate does not allow digital signature usage.");
+                        //        return false;
+                        //    }
 
-                        _logger.LogInformation("✅ Certificate validation passed successfully.");
+                        //    _logger.LogInformation("✅ Certificate validation passed successfully.");
                         return true;
                     }
                 };
