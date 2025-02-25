@@ -139,7 +139,23 @@ public class ApplicationsController : Controller
         return StatusCode(StatusCodes.Status500InternalServerError);
     }
 
+    [HttpGet("/api/applications/{applicationId}/form-preview")]
+    [ProducesResponseType(typeof(GetApplicationFormPreviewByIdQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetApplicationFormPreviewByIdAsync(Guid applicationId)
+    {
+        var query = new GetApplicationFormPreviewByIdQuery(applicationId);
 
+        var response = await _mediator.Send(query);
+
+        if (response.Success)
+        {
+            return Ok(response.Value);
+        }
+
+        return StatusCode(StatusCodes.Status500InternalServerError);
+    }
 
     [HttpGet("/api/applications/{applicationId}/forms/{formVersionId}/sections/{sectionId}/pages/{pageId}/answers")]
     [ProducesResponseType(typeof(GetApplicationPageAnswersByPageIdQueryResponse), StatusCodes.Status200OK)]
