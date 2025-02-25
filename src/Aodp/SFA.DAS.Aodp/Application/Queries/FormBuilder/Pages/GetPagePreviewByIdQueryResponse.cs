@@ -15,6 +15,7 @@ public class GetPagePreviewByIdQueryResponse
         public bool Required { get; set; }
         public string? Hint { get; set; } = string.Empty;
         public int Order { get; set; }
+        public string? HelperHTML { get; set; }
 
         public List<Option> Options { get; set; } = new();
 
