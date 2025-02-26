@@ -7,6 +7,7 @@ using SFA.DAS.ToolsSupport.Api.sources.EmployerAccount;
 using SFA.DAS.ToolsSupport.Application.Commands.ChangeUserRole;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportCreateInvitation;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportResendInvitation;
+using SFA.DAS.ToolsSupport.Application.Queries.GetAccountFinance;
 using SFA.DAS.ToolsSupport.Application.Queries.GetAccountOrganisations;
 using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
 using SFA.DAS.ToolsSupport.Application.Queries.GetPayeSchemeLevyDeclarations;
@@ -84,12 +85,12 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
     {
         try
         {
-            var result = await mediator.Send(new GetTeamMembersQuery
+            var result = await mediator.Send(new GetAccountFinanceQuery
             {
                 AccountId = accountId,
             });
 
-            return Ok((GetTeamMembersResponse)result);
+            return Ok((GetAccountFinanceResponse)result);
         }
         catch (Exception e)
         {

@@ -7,5 +7,5 @@ namespace SFA.DAS.ToolsSupport.Interfaces;
 public interface IEmployerFinanceService
 {
     Task<ApiResponse<List<AccountBalance>>> GetAccountBalances(GetAccountBalancesRequest request);
-    Task<TransactionsViewModel> GetTransactions(string accountId, int year, int month);
+    Task<TransactionsViewModel> GetAllTransactions(string accountId, int year, int month);
 }

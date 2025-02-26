@@ -14,9 +14,9 @@ public class EmployerFinanceService(IFinanceApiClient<FinanceApiConfiguration> c
         return await client.PostWithResponseCode<List<AccountBalance>>(request, false);
     }
 
-    public async Task<TransactionsViewModel> GetTransactions(string accountId, int year, int month)
+    public async Task<TransactionsViewModel> GetAllTransactions(string accountId, int year, int month)
     {
-        var response = await client.Get<TransactionsViewModel>(new GetTransactionRequest(accountId, year, month));
+        var response = await client.Get<TransactionsViewModel>(new GetAllTransactionsRequest(accountId, year, month));
 
         return response;
     }

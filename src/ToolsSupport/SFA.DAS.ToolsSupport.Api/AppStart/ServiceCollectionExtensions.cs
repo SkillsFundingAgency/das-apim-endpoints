@@ -29,6 +29,8 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IHmrcApiClient<HmrcApiConfiguration>, HmrcApiClient<HmrcApiConfiguration>>();
         services.AddTransient<ITokenService, TokenService>();
         services.AddTransient<ISecureTokenHttpClient, SecureTokenHttpClient>();
+        services.AddTransient<IChallengeService, ChallengeService>();
+        services.AddTransient<IFinanceDataService, FinanceDataService>();
 
         services.AddSingleton<IPayRefHashingService, PayRefHashingService>(static sp =>
         {
