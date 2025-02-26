@@ -8,9 +8,8 @@ public class GetUlnSupportApprenticeshipsQueryResult
 public class ApprovedApprenticeshipUlnSummary
 {
     public long Id { get; set; }
-    public long CohortId { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public long EmployerAccountId { get; set; }
+    public string DisplayName { get; set; }
     public string Uln { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }

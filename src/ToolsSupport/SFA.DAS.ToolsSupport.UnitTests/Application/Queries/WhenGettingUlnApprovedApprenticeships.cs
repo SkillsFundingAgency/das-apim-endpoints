@@ -34,6 +34,8 @@ public class WhenGettingUlnApprovedApprenticeships
                 new
                 {
                     x.Id,
+                    DisplayName = $"{x.FirstName} {x.LastName}",
+                    x.EmployerAccountId,
                     x.Uln,
                     x.DateOfBirth,
                     x.StartDate,

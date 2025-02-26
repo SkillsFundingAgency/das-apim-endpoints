@@ -46,7 +46,7 @@ public class SupportApprenticeshipDetails
     public string TrainingCourseVersion { get; set; }
     public bool TrainingCourseVersionConfirmed { get; set; }
     public string TrainingCourseOption { get; set; }
-    public long EmployerAccountId { get; internal set; }
+    public long EmployerAccountId { get; set; }
     public int? EmploymentPrice { get; set; }
     public DateTime? EmploymentEndDate { get; set; }
 }

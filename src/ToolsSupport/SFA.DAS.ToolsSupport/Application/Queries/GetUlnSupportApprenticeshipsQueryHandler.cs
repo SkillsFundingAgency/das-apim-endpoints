@@ -18,6 +18,8 @@ public class GetUlnSupportApprenticeshipsQueryHandler(IInternalApiClient<Commitm
             ApprovedApprenticeships = apprentices.ApprovedApprenticeships.Select(x => new ApprovedApprenticeshipUlnSummary
             {
                 Id = x.Id,
+                DisplayName = $"{x.FirstName} {x.LastName}",
+                EmployerAccountId = x.EmployerAccountId,
                 Uln = x.Uln,
                 DateOfBirth = x.DateOfBirth,
                 StartDate = x.StartDate,
