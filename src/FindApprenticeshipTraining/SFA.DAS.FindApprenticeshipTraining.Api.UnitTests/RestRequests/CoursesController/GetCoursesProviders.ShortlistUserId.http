@@ -1,0 +1,11 @@
+﻿@Api_HostAddress = https://localhost:5003
+
+@LarsCode = 1
+@OrderByDistance = Distance
+@ShortlistUserId = 037DB32A-C7CE-444F-9A0C-F51D507ED6EF
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&ShortlistUserId={{ShortlistUserId}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, potentially with shortlistuserid returned for matching details
+
+### 
