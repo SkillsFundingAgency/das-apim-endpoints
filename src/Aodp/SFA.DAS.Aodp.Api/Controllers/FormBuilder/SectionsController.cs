@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Application.Commands.FormBuilder.Sections;
 using SFA.DAS.Aodp.Application.Queries.FormBuilder.Sections;
+using SFA.DAS.AODP.Api;
 
 namespace SFA.DAS.Aodp.Api.Controllers.FormBuilder;
 
@@ -9,12 +10,12 @@ namespace SFA.DAS.Aodp.Api.Controllers.FormBuilder;
 
 [Route("api/[controller]")]
 [ApiController]
-public class SectionsController : ControllerBase
+public class SectionsController : BaseController
 {
     private readonly IMediator _mediator;
     private readonly ILogger<SectionsController> _logger;
 
-    public SectionsController(IMediator mediator, ILogger<SectionsController> logger)
+    public SectionsController(IMediator mediator, ILogger<SectionsController> logger) : base(mediator, logger)
     {
         _mediator = mediator;
         _logger = logger;

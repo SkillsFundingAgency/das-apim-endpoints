@@ -2,16 +2,17 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Application.Commands.FormBuilder.Pages;
 using SFA.DAS.Aodp.Application.Queries.FormBuilder.Pages;
+using SFA.DAS.AODP.Api;
 
 namespace SFA.DAS.Aodp.Api.Controllers.FormBuilder;
 [ApiController]
 [Route("api/[controller]")]
-public class PagesController : Controller
+public class PagesController : BaseController
 {
     private readonly IMediator _mediator;
     private readonly ILogger<FormsController> _logger;
 
-    public PagesController(IMediator mediator, ILogger<FormsController> logger)
+    public PagesController(IMediator mediator, ILogger<FormsController> logger) : base(mediator, logger)
     {
         _mediator = mediator;
         _logger = logger;

@@ -2,17 +2,18 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Application.Commands.FormBuilder.Routes;
 using SFA.DAS.Aodp.Application.Queries.FormBuilder.Routes;
+using SFA.DAS.AODP.Api;
 
 namespace SFA.DAS.Aodp.Api.Controllers.FormBuilder;
 
 [ApiController]
 [Route("api/[controller]")]
-public class RoutesController : Controller
+public class RoutesController : BaseController
 {
     private readonly IMediator _mediator;
     private readonly ILogger<RoutesController> _logger;
 
-    public RoutesController(IMediator mediator, ILogger<RoutesController> logger)
+    public RoutesController(IMediator mediator, ILogger<RoutesController> logger) : base(mediator, logger)
     {
         _mediator = mediator;
         _logger = logger;

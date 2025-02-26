@@ -2,16 +2,18 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Application.Commands.FormBuilder.Forms;
 using SFA.DAS.Aodp.Application.Queries.FormBuilder.Forms;
+using SFA.DAS.AODP.Api;
 
 namespace SFA.DAS.Aodp.Api.Controllers.FormBuilder;
+
 [ApiController]
 [Route("api/[controller]")]
-public class FormsController : Controller
+public class FormsController : BaseController
 {
     private readonly IMediator _mediator;
     private readonly ILogger<FormsController> _logger;
 
-    public FormsController(IMediator mediator, ILogger<FormsController> logger)
+    public FormsController(IMediator mediator, ILogger<FormsController> logger) : base(mediator, logger)
     {
         _mediator = mediator;
         _logger = logger;
@@ -35,7 +37,6 @@ public class FormsController : Controller
 
     [HttpGet("/api/forms/{formVersionId}")]
     [ProducesResponseType(typeof(GetFormVersionByIdQueryResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetByIdAsync(Guid formVersionId)
     {
@@ -67,7 +68,6 @@ public class FormsController : Controller
 
     [HttpPut("/api/forms/{formVersionId}")]
     [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateAsync(Guid formVersionId, [FromBody] UpdateFormVersionCommand command)
     {
@@ -86,7 +86,6 @@ public class FormsController : Controller
 
     [HttpPut("/api/forms/{formVersionId}/publish")]
     [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> PublishAsync(Guid formVersionId)
     {
@@ -103,7 +102,6 @@ public class FormsController : Controller
 
     [HttpPut("/api/forms/{formVersionId}/unpublish")]
     [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UnpublishAsync(Guid formVersionId)
     {
@@ -120,7 +118,6 @@ public class FormsController : Controller
 
     [HttpPut("/api/forms/{formId}/MoveUp")]
     [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> MoveUpAsync(Guid formId)
     {
@@ -137,7 +134,6 @@ public class FormsController : Controller
 
     [HttpPut("/api/forms/{formId}/MoveDown")]
     [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> MoveDownAsync(Guid formId)
     {
@@ -155,7 +151,6 @@ public class FormsController : Controller
 
     [HttpPut("/api/forms/{formId}/new-version")]
     [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateDraftAsync([FromRoute] Guid formId)
     {
@@ -172,7 +167,6 @@ public class FormsController : Controller
 
     [HttpDelete("/api/forms/{formVersionId}")]
     [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> RemoveAsync(Guid formVersionId)
     {

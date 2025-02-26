@@ -1,16 +1,18 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.AODP.Api;
+using SFA.DAS.NServiceBus;
 
 namespace SFA.DAS.Aodp.Api.Controllers.Application;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ApplicationsController : Controller
+public class ApplicationsController : BaseController
 {
     private readonly IMediator _mediator;
     private readonly ILogger<ApplicationsController> _logger;
 
-    public ApplicationsController(IMediator mediator, ILogger<ApplicationsController> logger)
+    public ApplicationsController(IMediator mediator, ILogger<ApplicationsController> logger) : base(mediator, logger)
     {
         _mediator = mediator;
         _logger = logger;
@@ -23,13 +25,7 @@ public class ApplicationsController : Controller
     public async Task<IActionResult> GetAllAsync()
     {
         var query = new GetApplicationFormsQuery();
-        var response = await _mediator.Send(query);
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
 
@@ -41,13 +37,7 @@ public class ApplicationsController : Controller
         var query = new GetApplicationPageByIdQuery(pageOrder, sectionId, formVersionId);
 
         var response = await _mediator.Send(query);
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
 
@@ -57,15 +47,7 @@ public class ApplicationsController : Controller
     public async Task<IActionResult> GetFormVersionByIdAsync(Guid formVersionId)
     {
         var query = new GetApplicationFormByIdQuery(formVersionId);
-
-        var response = await _mediator.Send(query);
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
     [HttpGet("/api/applications/organisations/{organisationId}")]
@@ -74,15 +56,7 @@ public class ApplicationsController : Controller
     public async Task<IActionResult> GetApplicationsByOrganisationId(Guid organisationId)
     {
         var query = new GetApplicationsByOrganisationIdQuery(organisationId);
-
-        var response = await _mediator.Send(query);
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
 
@@ -93,15 +67,7 @@ public class ApplicationsController : Controller
     public async Task<IActionResult> GetSectionByIdAsync(Guid sectionId, Guid formVersionId)
     {
         var query = new GetApplicationSectionByIdQuery(sectionId, formVersionId);
-
-        var response = await _mediator.Send(query);
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
 
@@ -112,14 +78,7 @@ public class ApplicationsController : Controller
     public async Task<IActionResult> GetApplicationPagesForSectionByIdAsync(Guid applicationId, Guid sectionId, Guid formVersionId)
     {
         var query = new GetApplicationSectionStatusByApplicationIdQuery(sectionId, formVersionId, applicationId);
-
-        var response = await _mediator.Send(query);
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
 
@@ -129,14 +88,7 @@ public class ApplicationsController : Controller
     public async Task<IActionResult> GetApplicationSectionsForFormByIdAsync(Guid applicationId, Guid formVersionId)
     {
         var query = new GetApplicationFormStatusByApplicationIdQuery(formVersionId, applicationId);
-
-        var response = await _mediator.Send(query);
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
     [HttpGet("/api/applications/{applicationId}/form-preview")]
@@ -146,15 +98,7 @@ public class ApplicationsController : Controller
     public async Task<IActionResult> GetApplicationFormPreviewByIdAsync(Guid applicationId)
     {
         var query = new GetApplicationFormPreviewByIdQuery(applicationId);
-
-        var response = await _mediator.Send(query);
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
     [HttpGet("/api/applications/{applicationId}/forms/{formVersionId}/sections/{sectionId}/pages/{pageId}/answers")]
@@ -163,15 +107,7 @@ public class ApplicationsController : Controller
     public async Task<IActionResult> GetApplicationPageAnswersByIdAsync(Guid applicationId, Guid pageId, Guid sectionId, Guid formVersionId)
     {
         var query = new GetApplicationPageAnswersByPageIdQuery(applicationId, pageId, sectionId, formVersionId);
-
-        var response = await _mediator.Send(query);
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
     [HttpPut("/api/applications/{applicationId}/forms/{formVersionId}/sections/{sectionId}/pages/{pageId}")]
@@ -184,14 +120,7 @@ public class ApplicationsController : Controller
         command.ApplicationId = applicationId;
         command.PageId = pageId;
 
-        var response = await _mediator.Send(command);
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(command);
     }
 
     [HttpPost("/api/applications")]
@@ -199,13 +128,7 @@ public class ApplicationsController : Controller
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateAsync([FromBody] CreateApplicationCommand command)
     {
-        var response = await _mediator.Send(command);
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(command);
     }
 
 
@@ -215,15 +138,7 @@ public class ApplicationsController : Controller
     public async Task<IActionResult> GetApplicationMetadataByIdAsync(Guid applicationId)
     {
         var query = new GetApplicationMetadataByIdQuery(applicationId);
-
-        var response = await _mediator.Send(query);
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-        _logger.LogError(response.ErrorMessage);
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
     [HttpGet("/api/applications/{applicationId}")]
@@ -233,15 +148,7 @@ public class ApplicationsController : Controller
     public async Task<IActionResult> GetApplicationByIdAsync(Guid applicationId)
     {
         var query = new GetApplicationByIdQuery(applicationId);
-
-        var response = await _mediator.Send(query);
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-        _logger.LogError(response.ErrorMessage);
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
 
@@ -251,15 +158,7 @@ public class ApplicationsController : Controller
     public async Task<IActionResult> DeleteApplicationByIdAsync(Guid applicationId)
     {
         var query = new DeleteApplicationCommand(applicationId);
-
-        var response = await _mediator.Send(query);
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-        _logger.LogError(response.ErrorMessage);
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
     [HttpPut("/api/applications/{applicationId}")]
@@ -268,14 +167,6 @@ public class ApplicationsController : Controller
     public async Task<IActionResult> EditAsync([FromBody] EditApplicationCommand command, [FromRoute] Guid applicationId)
     {
         command.ApplicationId = applicationId;
-
-        var response = await _mediator.Send(command);
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        _logger.LogError(response.ErrorMessage);
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(command);
     }
 }

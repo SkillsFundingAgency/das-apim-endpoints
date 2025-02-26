@@ -2,17 +2,18 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Application.Commands.FormBuilder.Questions;
 using SFA.DAS.Aodp.Application.Queries.FormBuilder.Questions;
+using SFA.DAS.AODP.Api;
 
 namespace SFA.DAS.Aodp.Api.Controllers.FormBuilder;
 
 [ApiController]
 [Route("api/[controller]")]
-public class QuestionsController : Controller
+public class QuestionsController : BaseController
 {
     private readonly IMediator _mediator;
     private readonly ILogger<QuestionsController> _logger;
 
-    public QuestionsController(IMediator mediator, ILogger<QuestionsController> logger)
+    public QuestionsController(IMediator mediator, ILogger<QuestionsController> logger) : base(mediator, logger)
     {
         _mediator = mediator;
         _logger = logger;
