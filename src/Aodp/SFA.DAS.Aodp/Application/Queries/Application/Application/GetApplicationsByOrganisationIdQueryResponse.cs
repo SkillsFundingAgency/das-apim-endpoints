@@ -1,6 +1,6 @@
-﻿using SFA.DAS.Aodp.Application;
+﻿
 
-public class GetApplicationsByOrganisationIdQueryResponse
+public partial class GetApplicationsByOrganisationIdQueryResponse
 {
     public List<Application> Applications { get; set; } = new();
 
