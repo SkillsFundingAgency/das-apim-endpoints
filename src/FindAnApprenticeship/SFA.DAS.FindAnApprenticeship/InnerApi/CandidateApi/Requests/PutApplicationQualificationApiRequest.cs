@@ -16,6 +16,7 @@ public class PutApplicationQualificationApiRequestData
     public string? Grade { get; set; }
     public string? Subject { get; set; }
     public bool? IsPredicted { get; set; }
+    public short? QualificationOrder { get; set; }
     public string? AdditionalInformation { get; set; }
     public Guid QualificationReferenceId { get; set; }
 }

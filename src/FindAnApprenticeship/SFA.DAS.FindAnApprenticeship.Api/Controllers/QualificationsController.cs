@@ -124,6 +124,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                         Id = c.Id,
                         Name = c.Name,
                         AdditionalInformation = c.AdditionalInformation,
+                        QualificationOrder = c.QualificationOrder,
                         IsPredicted = c.IsPredicted,
                         IsDeleted = c.IsDeleted
                     }).ToList(),
