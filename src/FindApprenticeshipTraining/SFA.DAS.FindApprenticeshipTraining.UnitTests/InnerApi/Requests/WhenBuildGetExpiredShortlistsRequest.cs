@@ -12,7 +12,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
         {
             //Act
             var actual = new GetExpiredShortlistsRequest(expiryInDays);
-            
+
             //Assert
             actual.GetUrl.Should().Be($"api/Shortlist/users/expired?expiryInDays={expiryInDays}");
         }

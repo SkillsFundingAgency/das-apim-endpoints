@@ -1,8 +1,9 @@
-using System.Linq;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
+using System.Linq;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
+
     public class GetProviderCourseItem : ProviderCourseBase
     {
         public string Email { get; set; }
