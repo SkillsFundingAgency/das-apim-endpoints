@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseLevels;
+using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseRoutes;
 using System.Threading.Tasks;
 
@@ -23,6 +25,29 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
     public async Task<IActionResult> GetCourseRoutes()
     {
         var result = await _mediator.Send(new GetCourseRoutesQuery());
+        return Ok(result);
+    }
+
+    [HttpGet]
+    [Route("{id}/providers")]
+    public async Task<IActionResult> GetCourseProviders(int id, [FromQuery] GetCourseProvidersModel model)
+    {
+
+        var result = await _mediator.Send(new GetCourseProvidersQuery
+        {
+            Id = id,
+            OrderBy = model.OrderBy,
+            Distance = model.Distance,
+            Location = model.Location,
+            DeliveryModes = model.DeliveryModes,
+            EmployerProviderRatings = model.EmployerProviderRatings,
+            ApprenticeProviderRatings = model.ApprenticeProviderRatings,
+            Qar = model.Qar,
+            Page = model.Page,
+            PageSize = model.PageSize,
+            ShortlistUserId = model.ShortlistUserId
+        });
+
         return Ok(result);
     }
 }
