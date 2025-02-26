@@ -1,4 +1,5 @@
 ﻿using Azure;
+using Azure.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Apprenticeships.Api.Extensions;
@@ -324,7 +325,7 @@ public class ApprenticeshipController : ControllerBase
 
         if (!notificationResponse.Success)
         {
-            _logger.LogError("Error attempting to freeze apprenticeship payments Notification(s) to the related part(ies)");
+            _logger.LogError("Error attempting to send freeze apprenticeship payments Notification(s) to the related part(ies)");
             return BadRequest();
         }
 
@@ -335,14 +336,24 @@ public class ApprenticeshipController : ControllerBase
     [Route("{apprenticeshipKey}/unfreeze")]
     public async Task<ActionResult> UnfreezeApprenticeshipPayments(Guid apprenticeshipKey)
     {
-        var response = await _apiClient.PostWithResponseCode<object>(new PostUnfreezePaymentsRequest(apprenticeshipKey), false);
+        var request = new PostUnfreezePaymentsRequest(apprenticeshipKey);
+        var response = await _apiClient.PostWithResponseCode<object>(request, false);
 
-        if (string.IsNullOrEmpty(response.ErrorContent))
+        if (!string.IsNullOrEmpty(response.ErrorContent))
         {
-            return Ok();
+            _logger.LogError("Error attempting to unfreeze apprenticeship {apprenticeshipKey} payments. {statusCode} returned from inner api. {message}", apprenticeshipKey, response.StatusCode, response.ErrorContent);
+            return BadRequest();
         }
 
-        _logger.LogError("Error attempting to unfreeze apprenticeship {apprenticeshipKey} payments. {statusCode} returned from inner api. {message}", apprenticeshipKey, response.StatusCode, response.ErrorContent);
-        return BadRequest();
+        var notificationCommand = request.ToNotificationCommand(apprenticeshipKey);
+        var notificationResponse = await _mediator.Send(notificationCommand);
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to send unfreeze apprenticeship payments Notification(s) to the related part(ies)");
+            return BadRequest();
+        }
+
+        return Ok();
     }
 }
