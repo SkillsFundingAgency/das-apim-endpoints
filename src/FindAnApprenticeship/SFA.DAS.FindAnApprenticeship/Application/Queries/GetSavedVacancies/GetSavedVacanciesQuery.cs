@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
 {
@@ -29,11 +31,13 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
             public string EmployerName { get; set; }
             public DateTime CreatedDate { get; set; }
             public DateTime ClosingDate { get; set; }
-            public string City { get; set; }
-            public string Postcode { get; set; }
             public bool IsExternalVacancy { get; set; }
             public string ExternalVacancyUrl { get; set; }
             public string ApplicationStatus { get; set; }
+            public Address Address { get; set; }
+            public List<Address>? OtherAddresses { get; set; } = [];
+            public string? EmploymentLocationInformation { get; set; }
+            public AvailableWhere? EmployerLocationOption { get; set; }
         }
     }
 
@@ -53,7 +57,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
             if (savedVacancyList.Count == 0) { return new GetSavedVacanciesQueryResult(); }
 
             var vacancyReferences = savedVacancyList.Select(x => $"{x.VacancyReference}").ToList();
-
             var vacancies = await vacancyService.GetVacancies(vacancyReferences);
 
             var result = new GetSavedVacanciesQueryResult();
@@ -61,6 +64,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
             foreach (var application in savedVacancyList)
             {
                 var vacancy = vacancies.FirstOrDefault(v => v.VacancyReference.Replace("VAC", string.Empty) == application.VacancyReference);
+
+                if (vacancy == null) continue;
 
                 var vacancyReference =
                     application.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
@@ -71,17 +76,20 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
                 result.SavedVacancies.Add(new GetSavedVacanciesQueryResult.SavedVacancy
                 {
                     Id = application.Id,
-                    VacancyReference = vacancy!.VacancyReference,
-                    EmployerName = vacancy!.EmployerName,
-                    Title = vacancy!.Title,
-                    ClosingDate = vacancy!.ClosedDate ?? vacancy!.ClosingDate,
+                    VacancyReference = vacancy.VacancyReference,
+                    EmployerName = vacancy.EmployerName,
+                    Title = vacancy.Title,
+                    ClosingDate = vacancy.ClosedDate ?? vacancy.ClosingDate,
                     CreatedDate = application.CreatedOn,
-                    City = vacancy!.City,
-                    Postcode = vacancy!.Postcode,
-                    IsExternalVacancy = vacancy!.IsExternalVacancy,
-                    ExternalVacancyUrl = vacancy!.ExternalVacancyUrl,
+                    Address = vacancy.Address,
+                    OtherAddresses = vacancy.OtherAddresses?.ToList(),
+                    EmployerLocationOption = vacancy.EmployerLocationOption,
+                    EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
+                    IsExternalVacancy = vacancy.IsExternalVacancy,
+                    ExternalVacancyUrl = vacancy.ExternalVacancyUrl,
                     ApplicationStatus = applicationResult != null ? applicationResult.Status : string.Empty
                 });
+
             }
 
             return result;

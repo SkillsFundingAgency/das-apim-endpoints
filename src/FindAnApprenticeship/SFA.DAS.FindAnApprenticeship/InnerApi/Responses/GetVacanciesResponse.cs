@@ -1,7 +1,8 @@
-﻿using System;
+﻿using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.SharedOuterApi.Models;
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 {
@@ -58,12 +59,17 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public string WageText { get; set; }
         [JsonPropertyName("address")]
         public Address Address { get; set; }
-        
-        [JsonPropertyName("otherAddresses")]
-        public List<Address>? OtherAddresses { get; set; }
-        
+
+        [JsonPropertyName("otherAddresses")] 
+        public List<Address>? OtherAddresses { get; set; } = [];
+        [JsonPropertyName("isPrimaryLocation")]
+        public bool IsPrimaryLocation { get; set; }
+
         [JsonPropertyName("employmentLocationInformation")]
         public string? EmploymentLocationInformation { get; set; }
+        
+        [JsonPropertyName("availableWhere"), JsonConverter(typeof(JsonStringEnumConverter<AvailableWhere>))]
+        public AvailableWhere? EmployerLocationOption { get; set; }
 
         [JsonPropertyName("distance")] 
         public decimal? Distance { get; set; }
@@ -94,21 +100,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
             public string Status { get; set; }
         }
     }
-
-    public class Address
-    {
-        [JsonPropertyName("addressLine1")]
-        public string AddressLine1 { get; set; }
-        [JsonPropertyName("addressLine2")]
-        public string AddressLine2 { get; set; }
-        [JsonPropertyName("addressLine3")]
-        public string AddressLine3 { get; set; }
-        [JsonPropertyName("addressLine4")]
-        public string AddressLine4 { get; set; }
-        [JsonPropertyName("postcode")]
-        public string Postcode { get; set; }
-    }
-
     public class Location
     {
         [JsonPropertyName("lat")]
@@ -116,5 +107,4 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonPropertyName("lon")]
         public double? Lon { get; set; }
     }
-
 }

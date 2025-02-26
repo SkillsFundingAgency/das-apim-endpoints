@@ -1,10 +1,7 @@
-using System.Linq;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
+using System.Linq;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
 {
@@ -26,11 +23,13 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
             actual.VacancyReference.Should().Be(source.VacancyReference);
             actual.Vacancies.Should().BeEquivalentTo(source.Vacancies, options => options
                 .Excluding(c => c.Address)
+                .Excluding(c => c.OtherAddresses)
                 .Excluding(c => c.AnonymousEmployerName)
                 .Excluding(c => c.IsEmployerAnonymous)
                 .Excluding(c => c.EmployerName)
                 .Excluding(c => c.ApprenticeshipLevel)
                 .Excluding(c => c.Location)
+                .Excluding(c => c.EmployerLocationOption) //TBC : should be removed in the later stages
             );
                 
             actual.Vacancies.FirstOrDefault().AddressLine1.Should().Be(source.Vacancies.FirstOrDefault().Address.AddressLine1);
@@ -43,6 +42,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
             actual.Vacancies.FirstOrDefault().ApprenticeshipLevel.Should().Be(source.Vacancies.FirstOrDefault().ApprenticeshipLevel);
             actual.Vacancies.FirstOrDefault().Lat.Should().Be(source.Vacancies.FirstOrDefault().Location.Lat);
             actual.Vacancies.FirstOrDefault().Lon.Should().Be(source.Vacancies.FirstOrDefault().Location.Lon);
+            actual.Vacancies.FirstOrDefault().IsPrimaryLocation.Should().Be(source.Vacancies.FirstOrDefault().IsPrimaryLocation);
+            actual.Vacancies.FirstOrDefault().EmploymentLocationInformation.Should().Be(source.Vacancies.FirstOrDefault().EmploymentLocationInformation);
         }
         
         [Test, AutoData]
@@ -75,6 +76,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
                 .Excluding(c => c.AnonymousEmployerName)
                 .Excluding(c => c.IsEmployerAnonymous)
                 .Excluding(c => c.Location)
+                .Excluding(c => c.EmployerLocationOption) //TBC : should be removed in the later stages
+                .Excluding(c => c.OtherAddresses)
             );
         }
 

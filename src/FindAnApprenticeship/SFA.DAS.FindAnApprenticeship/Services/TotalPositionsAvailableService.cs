@@ -39,7 +39,8 @@ namespace SFA.DAS.FindAnApprenticeship.Services
                         new List<VacancyDataSource>
                         {
                             VacancyDataSource.Nhs
-                        }));
+                        },
+                        null));
 
             await Task.WhenAll(raaVacanciesCountTask, nhsVacanciesCountTask);
             

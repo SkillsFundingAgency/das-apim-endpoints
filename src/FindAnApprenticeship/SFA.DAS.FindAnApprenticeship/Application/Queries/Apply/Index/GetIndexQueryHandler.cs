@@ -51,7 +51,10 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
             }
         }
 
-        var additionalQuestions = application.AdditionalQuestions.ToList();
+        var additionalQuestions = application
+            .AdditionalQuestions
+            .OrderBy(ord => ord.QuestionOrder)
+            .ToList();
 
         return new GetIndexQueryResult
         {
