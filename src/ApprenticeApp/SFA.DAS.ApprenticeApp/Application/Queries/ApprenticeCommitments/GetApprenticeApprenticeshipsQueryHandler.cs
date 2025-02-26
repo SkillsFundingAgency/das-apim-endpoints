@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeCommitments
 {
-    public class GetApprenticeApprenticeshipsHandler : IRequestHandler<GetApprenticeApprenticeshipsQuery, GetApprenticeApprenticeshipsQueryResult>
+    public class GetApprenticeApprenticeshipsQueryHandler : IRequestHandler<GetApprenticeApprenticeshipsQuery, GetApprenticeApprenticeshipsQueryResult>
     {
         private readonly IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> _apprenticeCommitmentsApiClient;
 
-        public GetApprenticeApprenticeshipsHandler(IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> apprenticeCommitmentsApiClient)
+        public GetApprenticeApprenticeshipsQueryHandler(IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> apprenticeCommitmentsApiClient)
         {
             _apprenticeCommitmentsApiClient = apprenticeCommitmentsApiClient;
         }
