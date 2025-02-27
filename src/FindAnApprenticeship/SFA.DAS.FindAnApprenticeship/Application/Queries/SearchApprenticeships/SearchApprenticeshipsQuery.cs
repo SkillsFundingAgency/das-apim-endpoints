@@ -18,5 +18,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
         public WageType? SkipWageType { get; set; } = null;
         public bool DisabilityConfident { get; set; }
         public Guid? CandidateId { get; set; }
+        public bool? ExcludeNational { get; set; }
     }
 }

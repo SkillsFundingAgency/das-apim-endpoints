@@ -21,7 +21,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         [FromQuery] public WageType? SkipWageType { get; set; } = null;
         [FromQuery] public bool DisabilityConfident { get; set; }
         [FromQuery] public string? CandidateId { get; set; }
-        
+        [FromQuery] public bool? ExcludeNational { get; set; }
 
         public static implicit operator SearchApprenticeshipsQuery(GetSearchApprenticeshipsModel model) => new()
         {
@@ -35,7 +35,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
             SearchTerm = model.SearchTerm,
             SelectedLevelIds = model.LevelIds?.Select(c=>Convert.ToInt32(c)).ToList(),
             DisabilityConfident = model.DisabilityConfident,
-            CandidateId = model.CandidateId != null ? Guid.Parse(model.CandidateId) : null
+            CandidateId = model.CandidateId != null ? Guid.Parse(model.CandidateId) : null,
+            ExcludeNational = model.ExcludeNational,
         };
     }
 }

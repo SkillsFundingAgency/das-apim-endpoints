@@ -1,9 +1,4 @@
-﻿using System.Net;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
+﻿using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
@@ -11,7 +6,7 @@ using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 using static SFA.DAS.FindAnApprenticeship.InnerApi.Responses.PostGetVacanciesByReferenceApiResponse;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Services.VacancyService
@@ -85,6 +80,29 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Services.VacancyService
             result.Should().BeOfType<List<IVacancy>>();
             result.Should().AllBeAssignableTo<GetClosedVacancyResponse>();
             result.Should().BeEquivalentTo(closedVacancyResponse.Vacancies);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Vacancies_Not_Found_From_FindApprenticeshipApi(
+            List<long> vacancyReferences,
+            PostGetVacanciesByReferenceApiResponse apiResponse,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            FindAnApprenticeship.Services.VacancyService service)
+        {
+            // Arrange
+            apiClient
+                .Setup(client =>
+                    client.PostWithResponseCode<PostGetVacanciesByReferenceApiResponse>(
+                        It.IsAny<PostGetVacanciesByReferenceApiRequest>(), true))
+                .ReturnsAsync(new ApiResponse<PostGetVacanciesByReferenceApiResponse>((PostGetVacanciesByReferenceApiResponse)null!, HttpStatusCode.OK, ""));
+
+            // Act
+            var result = await service.GetVacancies(vacancyReferences.Select(x => x.ToString()).ToList());
+
+            // Assert
+            result.Should().AllBeAssignableTo<GetClosedVacancyResponse>();
+            result.Count.Should().Be(0);
         }
     }
 }

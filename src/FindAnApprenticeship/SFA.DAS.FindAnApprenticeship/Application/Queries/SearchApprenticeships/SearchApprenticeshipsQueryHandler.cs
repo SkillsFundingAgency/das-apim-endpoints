@@ -86,7 +86,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                             {
                                 VacancyDataSource.Raa,
                                 VacancyDataSource.Nhs
-                            })); ;
+                            },
+                            request.ExcludeNational)); ;
             }
 
             var vacancyResult = await findApprenticeshipApiClient.Get<GetVacanciesResponse>(
@@ -105,7 +106,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     new List<VacancyDataSource>
                     {
                         VacancyDataSource.Nhs
-                    }));
+                    },
+                    request.ExcludeNational));
 
             var totalPages = (int)Math.Ceiling((double)vacancyResult.TotalFound / request.PageSize);
 

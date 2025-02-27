@@ -1,4 +1,4 @@
-﻿using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
+﻿using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Shared
 {

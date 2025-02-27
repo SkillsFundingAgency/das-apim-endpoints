@@ -12,18 +12,20 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandar
         public string Version { get; set; }
         public string RegulatorName { get; set; }
         public string Sector { get; set; }
+        public bool IsRegulatedForProvider { get; set; }
 
-        public static implicit operator GetStandardInformationQueryResult(GetStandardResponse source) => 
-            new GetStandardInformationQueryResult() 
+        public static implicit operator GetStandardInformationQueryResult(GetStandardResponse source) =>
+            new GetStandardInformationQueryResult()
             {
                 StandardUId = source.StandardUId,
                 IfateReferenceNumber = source.IfateReferenceNumber,
                 LarsCode = source.LarsCode,
-                Title = source.Title, 
+                Title = source.Title,
                 Level = source.Level,
                 Version = source.Version,
                 RegulatorName = source.ApprovalBody,
-                Sector = source.Route
+                Sector = source.Route,
+                IsRegulatedForProvider = source.IsRegulatedForProvider
             };
     }
 }
