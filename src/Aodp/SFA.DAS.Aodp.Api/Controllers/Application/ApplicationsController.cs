@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.NServiceBus;
 
 namespace SFA.DAS.Aodp.Api.Controllers.Application;
 
