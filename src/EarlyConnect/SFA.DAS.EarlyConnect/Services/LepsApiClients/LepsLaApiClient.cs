@@ -10,6 +10,8 @@ using Azure.Security.KeyVault.Certificates;
 using Azure.Identity;
 using SFA.DAS.EarlyConnect.Services.Interfaces;
 using SFA.DAS.EarlyConnect.Services.Configuration;
+using System.Net.Http;
+using Azure.Security.KeyVault.Secrets;
 
 namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 {
@@ -134,18 +136,53 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             return json;
         }
 
+        //private void AddAuthenticationCertificate()
+        //{
+        //    try
+        //    {
+        //        var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
+        //        var certificateClient = new CertificateClient(vaultUri: new Uri(Configuration.KeyVaultIdentifier), credential: new DefaultAzureCredential(defaultAzureCredentialOptions));
+        //        var certificate = certificateClient.DownloadCertificate(Configuration.CertificateName);
+
+        //        if (certificate == null || certificate.Value == null)
+        //        {
+        //            throw new Exception("Certificate was not properly returned from the Key Vault.");
+        //        }
+        //        var httpClientHandler = new HttpClientHandler();
+        //        httpClientHandler.ClientCertificates.Add(certificate);
+
+        //        HttpClient = new HttpClient(httpClientHandler);
+        //        HttpClient.BaseAddress = new Uri(Configuration.Url);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine("An error occurred while reading certificate: " + ex.Message);
+        //        throw;
+        //    }
+        //}
+
         private void AddAuthenticationCertificate()
         {
             try
             {
-                var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
-                var certificateClient = new CertificateClient(vaultUri: new Uri(Configuration.KeyVaultIdentifier), credential: new DefaultAzureCredential(defaultAzureCredentialOptions));
-                var certificate = certificateClient.DownloadCertificate(Configuration.CertificateName);
+                // Authenticate with Azure Key Vault
+                var credential = new DefaultAzureCredential();
+                var secretClient = new SecretClient(new Uri(Configuration.KeyVaultIdentifier), credential);
+                
+                // Retrieve the certificate as a secret (Base64 encoded PFX)
+                KeyVaultSecret certificateSecret = secretClient.GetSecret(Configuration.CertificateName);
+                byte[] certificateBytes = Convert.FromBase64String(certificateSecret.Value);
 
-                if (certificate == null || certificate.Value == null)
+                // Load certificate with private key
+                X509Certificate2 certificate = new X509Certificate2(certificateBytes, (string)null,
+                    X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
+
+                if (!certificate.HasPrivateKey)
                 {
-                    throw new Exception("Certificate was not properly returned from the Key Vault.");
+                    throw new Exception("Certificate does not contain a private key.");
                 }
+
+                // Add the certificate to HttpClient
                 var httpClientHandler = new HttpClientHandler();
                 httpClientHandler.ClientCertificates.Add(certificate);
 
@@ -154,11 +191,10 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error occurred while reading certificate: " + ex.Message);
+                Console.WriteLine("Error loading client certificate: " + ex.Message);
                 throw;
             }
         }
-
         public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
         {
             throw new NotImplementedException();
