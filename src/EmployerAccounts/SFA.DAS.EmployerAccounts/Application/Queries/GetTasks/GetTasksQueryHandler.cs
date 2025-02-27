@@ -157,7 +157,10 @@ public class GetTasksQueryHandler(
     private bool IsInDateRange()
     {
         int dayOfMonth = currentDateTime.Now.Day;
-        var isInDateRange = dayOfMonth >= 16 && dayOfMonth < 20;
+        //var isInDateRange = dayOfMonth >= 16 && dayOfMonth < 20;
+        // TODO REMOVE THE BELOW TESTING CODE
+        var isInDateRange = dayOfMonth >= 1 && dayOfMonth < 30;
+        
         return isInDateRange;
     }
 }
