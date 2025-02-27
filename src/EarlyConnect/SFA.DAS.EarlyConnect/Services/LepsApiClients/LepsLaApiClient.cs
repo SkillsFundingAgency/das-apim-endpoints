@@ -66,13 +66,13 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             }
 
             HttpResponseMessage response;
+
             try
             {
                 response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
             }
             catch (HttpRequestException ex) when (ex.InnerException is AuthenticationException authEx && authEx.InnerException is Win32Exception win32Ex)
             {
-
                 // Log detailed Win32 Exception details
                 _logger.LogError("Certificate [Win32Exception] NativeErrorCode: {NativeErrorCode}", win32Ex.NativeErrorCode);
                 _logger.LogError("Certificate [Win32Exception] Error Code: {ErrorCode}", win32Ex.ErrorCode);
@@ -140,7 +140,6 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                 //return new ApiResponse<TResponse>(default, HttpStatusCode.InternalServerError, $"HttpRequestException: {ex.Message}");
                 throw;
             }
-
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
