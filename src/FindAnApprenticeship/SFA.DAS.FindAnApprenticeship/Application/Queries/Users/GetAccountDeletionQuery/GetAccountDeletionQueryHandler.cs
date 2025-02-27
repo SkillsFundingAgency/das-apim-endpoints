@@ -8,6 +8,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDeletionQuery
@@ -36,7 +37,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDelet
             foreach (var application in applicationList)
             {
                 var vacancy = vacancies.FirstOrDefault(v =>
-                    v.VacancyReference.Replace("VAC", string.Empty) == application.VacancyReference);
+                    v.VacancyReference.TrimVacancyReference() == application.VacancyReference);
                 Enum.TryParse<ApplicationStatus>(application.Status, out var status);
                 result.SubmittedApplications.Add(new GetAccountDeletionQueryResult.Application
                 {

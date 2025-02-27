@@ -20,6 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
+using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidate
 {
@@ -55,7 +56,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidat
             foreach (var application in applicationList)
             {
                 var response = await recruitApiClient.PostWithResponseCode<NullResponse>(
-                    new PostWithdrawApplicationRequest(command.CandidateId, Convert.ToInt64(application.VacancyReference.Replace("VAC", ""))), false);
+                    new PostWithdrawApplicationRequest(command.CandidateId, Convert.ToInt64(application.VacancyReference.TrimVacancyReference())), false);
 
                 if (response.StatusCode != HttpStatusCode.NoContent)
                 {

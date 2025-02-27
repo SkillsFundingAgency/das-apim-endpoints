@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference
 {
@@ -54,7 +55,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             if (request.CandidateId.HasValue)
             {
                 var vacancyReference =
-                    request.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
+                    request.VacancyReference.TrimVacancyReference();
 
                 var application = candidateApiClient.Get<GetApplicationByReferenceApiResponse>(
                     new GetApplicationByReferenceApiRequest(request.CandidateId.Value, vacancyReference));

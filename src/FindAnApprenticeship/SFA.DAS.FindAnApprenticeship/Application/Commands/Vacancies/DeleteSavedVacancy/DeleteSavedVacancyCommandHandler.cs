@@ -5,6 +5,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies.DeleteSavedVacancy
 {
@@ -12,8 +13,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies.DeleteSave
     {
         public async Task<Unit> Handle(DeleteSavedVacancyCommand request, CancellationToken cancellationToken)
         {
-            var vacancyReference =
-                request.VacancyReference.Replace("VAC", string.Empty, StringComparison.CurrentCultureIgnoreCase);
+            var vacancyReference = request.VacancyReference.TrimVacancyReference();
 
             var postRequest = new PostDeleteSavedVacancyApiRequest(request.CandidateId, vacancyReference);
 

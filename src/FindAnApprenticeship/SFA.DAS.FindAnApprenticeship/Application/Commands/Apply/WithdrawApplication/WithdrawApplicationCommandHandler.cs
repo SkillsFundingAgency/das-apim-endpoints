@@ -16,6 +16,7 @@ using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.WithdrawApplication;
 
@@ -37,7 +38,7 @@ public class WithdrawApplicationCommandHandler(
         }
 
         var response = await recruitApiClient.PostWithResponseCode<NullResponse>(
-            new PostWithdrawApplicationRequest(request.CandidateId, Convert.ToInt64(application.VacancyReference.Replace("VAC", ""))), false);
+            new PostWithdrawApplicationRequest(request.CandidateId, Convert.ToInt64(application.VacancyReference.TrimVacancyReference())), false);
 
         if (response.StatusCode != HttpStatusCode.NoContent)
         {

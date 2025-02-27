@@ -4,6 +4,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using static SFA.DAS.FindAnApprenticeship.InnerApi.Responses.PostGetVacanciesByReferenceApiResponse;
 
@@ -24,6 +25,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
         {
             for (var i = 0; i < applicationApiResponse.Applications.Count; i++)
             {
+                applicationApiResponse.Applications[i].VacancyReference = applicationApiResponse.Applications[i]
+                    .VacancyReference.TrimVacancyReference();
                 applicationApiResponse.Applications[i].Status = ApplicationStatus.Draft.ToString();
                 vacancies[i].VacancyReference = applicationApiResponse.Applications[i].VacancyReference;
             }
@@ -90,6 +93,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
             query.Status = ApplicationStatus.Submitted;
             for (var i = 0; i < applicationApiResponse.Applications.Count; i++)
             {
+                applicationApiResponse.Applications[i].VacancyReference = applicationApiResponse.Applications[i]
+                    .VacancyReference.TrimVacancyReference();
                 applicationApiResponse.Applications[i].Status = i == 0 ? ApplicationStatus.Submitted.ToString() : ApplicationStatus.Withdrawn.ToString();
                 vacancies[i].VacancyReference = applicationApiResponse.Applications[i].VacancyReference;
             }
@@ -156,6 +161,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
             query.Status = ApplicationStatus.Draft;
             for (var i = 0; i < applicationApiResponse.Applications.Count; i++)
             {
+                applicationApiResponse.Applications[i].VacancyReference = applicationApiResponse.Applications[i]
+                    .VacancyReference.TrimVacancyReference();
                 applicationApiResponse.Applications[i].Status = i == 0 ? ApplicationStatus.Draft.ToString() : ApplicationStatus.Expired.ToString();
                 vacancies[i].VacancyReference = applicationApiResponse.Applications[i].VacancyReference;
             }
