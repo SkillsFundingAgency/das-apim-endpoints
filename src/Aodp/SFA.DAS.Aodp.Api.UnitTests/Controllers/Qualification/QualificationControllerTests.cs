@@ -7,10 +7,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.AODP.Api.Controllers.Qualification;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
 {
