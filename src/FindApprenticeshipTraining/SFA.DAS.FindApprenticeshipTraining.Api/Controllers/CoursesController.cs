@@ -4,6 +4,7 @@ using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseLevels;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseRoutes;
+using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
@@ -49,5 +50,12 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
         });
 
         return Ok(result);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetCourses([FromQuery] GetCoursesQuery query)
+    {
+        var response = await _mediator.Send(query);
+        return Ok(response);
     }
 }
