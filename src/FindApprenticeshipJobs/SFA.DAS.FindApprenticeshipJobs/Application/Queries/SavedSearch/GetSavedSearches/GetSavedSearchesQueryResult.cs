@@ -1,4 +1,4 @@
-﻿using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.VacancyServices.Wage;
 using WageType = SFA.DAS.FindApprenticeshipJobs.Domain.Models.WageType;
 
