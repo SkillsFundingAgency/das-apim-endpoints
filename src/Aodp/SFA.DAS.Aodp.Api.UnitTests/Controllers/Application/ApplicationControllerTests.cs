@@ -37,7 +37,6 @@ public class ApplicationControllerTests
     public async Task GetAllAsync_ReturnsOkResult()
     {
         // Arrange
-        var request = _fixture.Create<GetApplicationFormsQuery>();
         var response = _fixture.Create<GetApplicationFormsQueryResponse>();
         BaseMediatrResponse<GetApplicationFormsQueryResponse> wrapper = new()
         {
@@ -53,7 +52,7 @@ public class ApplicationControllerTests
         var result = await _controller.GetAllAsync();
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
+        _mediatorMock.Verify(m => m.Send(It.IsAny<GetApplicationFormsQuery>(), default), Times.Once());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetApplicationFormsQueryResponse>());
@@ -289,7 +288,14 @@ public class ApplicationControllerTests
         var result = await _controller.GetApplicationPageAnswersByIdAsync(request.ApplicationId, request.PageId, request.SectionId, request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
+        _mediatorMock.Verify(m => m.Send(It.IsAny<GetApplicationPageAnswersByPageIdQuery>(), default), Times.Once());
+        _mediatorMock.Verify(m => 
+            m.Send(It.Is<GetApplicationPageAnswersByPageIdQuery>(q => 
+                    q.ApplicationId == request.ApplicationId 
+                    && q.PageId == request.PageId 
+                    && q.SectionId == request.SectionId 
+                    && q.FormVersionId == request.FormVersionId), default), Times.Once());
+
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetApplicationPageAnswersByPageIdQueryResponse>());
@@ -366,7 +372,7 @@ public class ApplicationControllerTests
     public async Task RemoveAsync_ReturnsOkResult()
     {
         // Arrange
-        var request = _fixture.Create<DeleteApplicationCommand>();
+        var id = Guid.NewGuid();
         var response = _fixture.Create<EmptyResponse>();
         BaseMediatrResponse<EmptyResponse> wrapper = new()
         {
@@ -379,10 +385,12 @@ public class ApplicationControllerTests
             .ReturnsAsync(wrapper);
 
         // Act
-        var result = await _controller.DeleteApplicationByIdAsync(request.ApplicationId);
+        var result = await _controller.DeleteApplicationByIdAsync(id);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
+        _mediatorMock.Verify(m => m.Send(It.IsAny<DeleteApplicationCommand>(), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(It.Is<DeleteApplicationCommand>(c => c.ApplicationId == id), default), Times.Once());
+
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<EmptyResponse>());
