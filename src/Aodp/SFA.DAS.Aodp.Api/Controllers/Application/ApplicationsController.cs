@@ -37,6 +37,16 @@ public class ApplicationsController : BaseController
         return await SendRequestAsync(query);
     }
 
+    [HttpGet("/api/applications/{applicationId}/metadata")]
+    [ProducesResponseType(typeof(GetApplicationMetadataByIdQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetApplicationMetadataByIdAsync(Guid applicationId)
+    {
+        var query = new GetApplicationMetadataByIdQuery(applicationId);
+
+        return await SendRequestAsync(query);
+    }
+
     [HttpGet("/api/applications/forms/{formVersionId}")]
     [ProducesResponseType(typeof(GetApplicationFormByIdQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -96,16 +106,6 @@ public class ApplicationsController : BaseController
         return await SendRequestAsync(query);
     }
 
-
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        return StatusCode(StatusCodes.Status500InternalServerError);
-    }
-
     [HttpGet("/api/applications/{applicationId}/forms/{formVersionId}/sections/{sectionId}/pages/{pageId}/answers")]
     [ProducesResponseType(typeof(GetApplicationPageAnswersByPageIdQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -133,13 +133,26 @@ public class ApplicationsController : BaseController
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateAsync([FromBody] CreateApplicationCommand command)
     {
-        var response = await _mediator.Send(command);
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(command);
     }
 
+    [HttpDelete("/api/applications/{applicationId}")]
+    [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteApplicationByIdAsync(Guid applicationId)
+    {
+        var query = new DeleteApplicationCommand(applicationId);
+
+        return await SendRequestAsync(query);
+    }
+
+    [HttpPut("/api/applications/{applicationId}")]
+    [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> EditAsync([FromBody] EditApplicationCommand command, [FromRoute] Guid applicationId)
+    {
+        command.ApplicationId = applicationId;
+
+        return await SendRequestAsync(command);
+    }
 }
