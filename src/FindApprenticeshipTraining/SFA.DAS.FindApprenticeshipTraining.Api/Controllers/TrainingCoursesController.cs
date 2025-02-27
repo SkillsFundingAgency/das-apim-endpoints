@@ -2,12 +2,9 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
-using SFA.DAS.FindApprenticeshipTraining.Application;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourse;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
-using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,39 +23,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         {
             _logger = logger;
             _mediator = mediator;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetList([FromQuery] string keyword = "", [FromQuery] List<string> routeIds = null, [FromQuery] List<int> levels = null, [FromQuery] string orderBy = "relevance", [FromQuery] Guid? shortlistUserId = null)
-        {
-            try
-            {
-                var queryResult = await _mediator.Send(new GetTrainingCoursesListQuery
-                {
-                    Keyword = keyword,
-                    RouteIds = routeIds ?? [],
-                    Levels = levels ?? [],
-                    OrderBy = orderBy.Equals("relevance", StringComparison.CurrentCultureIgnoreCase) ? OrderBy.Score : OrderBy.Title,
-                    ShortlistUserId = shortlistUserId
-                });
-
-                var model = new GetTrainingCoursesListResponse
-                {
-                    TrainingCourses = queryResult.Courses.Select(response => (GetTrainingCourseListItem)response),
-                    Sectors = queryResult.Sectors.Select(response => (GetTrainingSectorsListItem)response),
-                    Levels = queryResult.Levels.Select(response => (GetTrainingLevelsListItem)response),
-                    Total = queryResult.Total,
-                    TotalFiltered = queryResult.TotalFiltered,
-                    ShortlistItemCount = queryResult.ShortlistItemCount
-                };
-
-                return Ok(model);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error attempting to get list of training courses");
-                return BadRequest();
-            }
         }
 
         [HttpGet]
