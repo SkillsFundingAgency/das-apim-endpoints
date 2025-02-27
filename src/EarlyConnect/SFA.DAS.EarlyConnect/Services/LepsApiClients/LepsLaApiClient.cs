@@ -11,7 +11,6 @@ using SFA.DAS.EarlyConnect.Services.Interfaces;
 using SFA.DAS.EarlyConnect.Services.Configuration;
 using System.Net.Security;
 using Microsoft.Extensions.Logging;
-using System.Net.Http;
 using System.ComponentModel;
 using System.Security.Authentication;
 
@@ -55,8 +54,6 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 
             AddAuthenticationCertificate();
 
-            // Capture start time
-            var startTime = DateTime.UtcNow;
 
             // Log Request Details
             _logger.LogInformation("Certificate [API Request] Sending HTTP {Method} request to: {Url}", requestMessage.Method, HttpClient.BaseAddress);
@@ -75,35 +72,31 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             }
             catch (HttpRequestException ex) when (ex.InnerException is AuthenticationException authEx && authEx.InnerException is Win32Exception win32Ex)
             {
-                // Get the readable error message from the Win32 error code
-                int errorCode = win32Ex.NativeErrorCode;
-                string errorDescription = Win32ErrorHelper.GetErrorMessage(errorCode);
 
                 // Log detailed Win32 Exception details
-                _logger.LogError("❌ [Win32Exception] NativeErrorCode: {NativeErrorCode}", errorCode);
-                _logger.LogError("❌ [Win32Exception] Readable Error: {ErrorDescription}", errorDescription);
-                _logger.LogError("❌ [Win32Exception] Error Code: {ErrorCode}", win32Ex.ErrorCode);
-                _logger.LogError("❌ [Win32Exception] Message: {Message}", win32Ex.Message);
-                _logger.LogError("❌ [Win32Exception] StackTrace: {StackTrace}", win32Ex.StackTrace);
+                _logger.LogError("Certificate [Win32Exception] NativeErrorCode: {NativeErrorCode}", win32Ex.NativeErrorCode);
+                _logger.LogError("Certificate [Win32Exception] Error Code: {ErrorCode}", win32Ex.ErrorCode);
+                _logger.LogError("Certificate [Win32Exception] Message: {Message}", win32Ex.Message);
+                _logger.LogError("Certificate [Win32Exception] StackTrace: {StackTrace}", win32Ex.StackTrace);
 
                 // Log Authentication Exception details
-                _logger.LogError("🔒 [AuthenticationException] Message: {Message}", authEx.Message);
-                _logger.LogError("🔒 [AuthenticationException] StackTrace: {StackTrace}", authEx.StackTrace);
+                _logger.LogError("Certificate [AuthenticationException] Message: {Message}", authEx.Message);
+                _logger.LogError("Certificate [AuthenticationException] StackTrace: {StackTrace}", authEx.StackTrace);
 
                 // Log HttpRequestException details
-                _logger.LogError("🌐 [HttpRequestException] Message: {Message}", ex.Message);
-                _logger.LogError("🌐 [HttpRequestException] StackTrace: {StackTrace}", ex.StackTrace);
+                _logger.LogError("Certificate [HttpRequestException] Message: {Message}", ex.Message);
+                _logger.LogError("Certificate [HttpRequestException] StackTrace: {StackTrace}", ex.StackTrace);
 
                 // Log inner exceptions recursively for deeper debugging
                 //LogInnerExceptions(ex);
 
                 // Log environment details for context
-                _logger.LogInformation("💻 [Environment] OS Version: {OSVersion}", Environment.OSVersion);
-                _logger.LogInformation("💻 [Environment] .NET Version: {DotNetVersion}", Environment.Version);
-                _logger.LogInformation("🔐 [Security] TLS Version: {TLSVersion}", System.Net.ServicePointManager.SecurityProtocol);
+                _logger.LogError("Certificate [Environment] OS Version: {OSVersion}", Environment.OSVersion);
+                _logger.LogError("Certificate [Environment] .NET Version: {DotNetVersion}", Environment.Version);
+                _logger.LogError("Certificate [Security] TLS Version: {TLSVersion}", System.Net.ServicePointManager.SecurityProtocol);
 
                 // Log timestamp for when the error occurred
-                _logger.LogInformation("🕒 [Timestamp] Error Occurred At: {Timestamp}", DateTime.UtcNow);
+                _logger.LogError("Certificate [Timestamp] Error Occurred At: {Timestamp}", DateTime.UtcNow);
 
                 Exception innerEx = ex.InnerException;
                 while (innerEx != null)
@@ -113,8 +106,6 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                     innerEx = innerEx.InnerException;
                 }
 
-                //return new ApiResponse<TResponse>(default, HttpStatusCode.InternalServerError,
-                //    $"HttpRequestException: {ex.Message} | Win32 Error: {errorDescription}");
                 throw;
             }
 
@@ -151,14 +142,10 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             }
 
 
-
-            var endTime = DateTime.UtcNow;
-            var executionTime = (endTime - startTime).TotalMilliseconds;
-
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             // Log Response Details
-            _logger.LogInformation("Certificate [API Response] Status Code: {StatusCode}, Execution Time: {ExecutionTime} ms", response.StatusCode, executionTime);
+            _logger.LogInformation("Certificate [API Response] Status Code: {StatusCode}", response.StatusCode);
             _logger.LogInformation("Certificate [Response Headers] {Headers}", string.Join("; ", response.Headers.Select(h => $"{h.Key}: {string.Join(",", h.Value)}")));
             _logger.LogInformation("Certificate [Response Body] {Body}", json);
 
@@ -327,7 +314,7 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                 if (certificate == null || certificate.Value == null)
                 {
                     _logger.LogInformation("Certificate was not properly returned from the Key Vault.");
-                    throw new Exception("❌ Certificate was not properly returned from the Key Vault.");
+                    throw new Exception("Certificate was not properly returned from the Key Vault.");
                 }
 
                 if (!certificate.Value.HasPrivateKey)
@@ -336,16 +323,19 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                     _logger.LogInformation("Certificate Thumbprint: {Thumbprint}", certificate.Value.Thumbprint);
                     _logger.LogInformation("Certificate Subject: {Subject}", certificate.Value.Subject);
                     _logger.LogInformation("Certificate Issuer: {Issuer}", certificate.Value.Issuer);
-                    _logger.LogInformation("🔐 [Certificate] PrivateKey Algorithm: {Algorithm}", certificate.Value.GetRSAPrivateKey()?.KeyExchangeAlgorithm);
-                    _logger.LogInformation("🔐 [Certificate] PrivateKey KeySize: {KeySize}", certificate.Value.GetRSAPrivateKey()?.KeySize);
-                    throw new Exception("❌ Certificate has no private key.");
+                    _logger.LogInformation("Certificate PrivateKey Algorithm: {Algorithm}", certificate.Value.GetRSAPrivateKey()?.KeyExchangeAlgorithm);
+                    _logger.LogInformation("Certificate PrivateKey: {Key}", certificate.Value.GetRSAPrivateKey());
+                    _logger.LogInformation("Certificate PrivateKey KeySize: {KeySize}", certificate.Value.GetRSAPrivateKey()?.KeySize);
+                    throw new Exception("Certificate has no private key.");
                 }
                 else
                 {
-                    _logger.LogInformation("✅ Certificate has a private key.");
+                    _logger.LogInformation("Certificate has a private key.");
                     _logger.LogInformation("Certificate Thumbprint: {Thumbprint}", certificate.Value.Thumbprint);
                     _logger.LogInformation("Certificate Subject: {Subject}", certificate.Value.Subject);
                     _logger.LogInformation("Certificate Issuer: {Issuer}", certificate.Value.Issuer);
+                    _logger.LogInformation("Certificate PrivateKey Algorithm: {Algorithm}", certificate.Value.GetRSAPrivateKey()?.KeyExchangeAlgorithm);
+                    _logger.LogInformation("Certificate PrivateKey: {Key}", certificate.Value.GetRSAPrivateKey());
                 }
 
                 var httpClientHandler = new HttpClientHandler
@@ -354,71 +344,85 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                     UseProxy = false,
                     ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
                     {
-                        //    if (certificate == null || certificate.Value == null)
-                        //    {
-                        //        _logger.LogError("❌ Certificate validation chain is null.");
-                        //        return false;
-                        //    }
+                        _logger.LogInformation("Certificate validation chain is null.");
+                        //_logger.LogError("❌ Certificate validation message: {Message}", message.Content);
 
-                        //    foreach (X509ChainElement element in chain.ChainElements)
-                        //    {
-                        //        _logger.LogInformation($"🔍 Certificate Subject: {element.Certificate.Subject}");
-                        //        _logger.LogInformation($"🔍 Issuer: {element.Certificate.Issuer}");
+                        if (chain == null)
+                        {
+                            _logger.LogInformation("Certificate validation chain is null.");
+                            return false;
+                        }
 
-                        //        foreach (X509ChainStatus status in element.ChainElementStatus)
-                        //        {
-                        //            _logger.LogError($"⚠️ Certificate Status: {status.Status} - {status.StatusInformation}");
-                        //            if (status.Status == X509ChainStatusFlags.Revoked)
-                        //            {
-                        //                _logger.LogError("❌ Certificate has been revoked.");
-                        //                return false;
-                        //            }
-                        //        }
-                        //    }
+                        if (certificate == null || certificate.Value == null)
+                        {
+                            _logger.LogInformation("Certificate validation Certificate is null.");
+                            return false;
+                        }
 
-                        //    // Check if the certificate is expired
-                        //    if (DateTime.Now > cert.NotAfter)
-                        //    {
-                        //        _logger.LogError("❌ Certificate has expired.");
-                        //        return false;
-                        //    }
+                        if (cert == null)
+                        {
+                            _logger.LogInformation("Certificate validation cert is null.");
+                            return false;
+                        }
+                        foreach (X509ChainElement element in chain.ChainElements)
+                        {
+                            _logger.LogInformation($"Certificate Subject: {element.Certificate.Subject}");
+                            _logger.LogInformation($"Certificate Issuer: {element.Certificate.Issuer}");
 
-                        //    // Check if the certificate is not yet valid
-                        //    if (DateTime.Now < cert.NotBefore)
-                        //    {
-                        //        _logger.LogError("❌ Certificate is not yet valid.");
-                        //        return false;
-                        //    }
+                            foreach (X509ChainStatus status in element.ChainElementStatus)
+                            {
+                                _logger.LogInformation($"Certificate Status: {status.Status} - {status.StatusInformation}");
+                                if (status.Status == X509ChainStatusFlags.Revoked)
+                                {
+                                    _logger.LogInformation("Certificate has been revoked.");
+                                    return false;
+                                }
+                            }
+                        }
 
-                        //    // Verify SSL Policy Errors
-                        //    if (sslPolicyErrors != SslPolicyErrors.None)
-                        //    {
-                        //        _logger.LogError("❌ SSL Policy Errors Detected: {Error}", sslPolicyErrors);
-                        //        return false;
-                        //    }
+                        // Check if the certificate is expired
+                        if (DateTime.Now > cert.NotAfter)
+                        {
+                            _logger.LogInformation("Certificate has expired.");
+                            return false;
+                        }
 
-                        //    //// Check if the certificate is issued by a trusted authority
-                        //    //if (!chain.ChainElements[chain.ChainElements.Count - 1].Certificate.Subject.Contains("CN=TrustedRootCA"))
-                        //    //{
-                        //    //    _logger.LogError("❌ Certificate is not issued by a trusted authority.");
-                        //    //    return false;
-                        //    //}
+                        // Check if the certificate is not yet valid
+                        if (DateTime.Now < cert.NotBefore)
+                        {
+                            _logger.LogInformation("Certificate is not yet valid.");
+                            return false;
+                        }
 
-                        //    // Check if the certificate key length is strong (2048 bits or higher)
-                        //    if (cert.PublicKey.Key.KeySize < 2048)
-                        //    {
-                        //        _logger.LogError("❌ Certificate key size is too weak. Minimum 2048 bits required.");
-                        //        return false;
-                        //    }
+                        // Verify SSL Policy Errors
+                        if (sslPolicyErrors != SslPolicyErrors.None)
+                        {
+                            _logger.LogInformation("SSL Policy Errors Detected: {Error}", sslPolicyErrors);
+                            return false;
+                        }
 
-                        //    // Check key usage (digital signature, key encipherment)
-                        //    if (!cert.Extensions.OfType<X509KeyUsageExtension>().Any(usage => usage.KeyUsages.HasFlag(X509KeyUsageFlags.DigitalSignature)))
-                        //    {
-                        //        _logger.LogError("❌ Certificate does not allow digital signature usage.");
-                        //        return false;
-                        //    }
+                        //// Check if the certificate is issued by a trusted authority
+                        //if (!chain.ChainElements[chain.ChainElements.Count - 1].Certificate.Subject.Contains("CN=TrustedRootCA"))
+                        //{
+                        //    _logger.LogError("❌ Certificate is not issued by a trusted authority.");
+                        //    return false;
+                        //}
 
-                        //    _logger.LogInformation("✅ Certificate validation passed successfully.");
+                        // Check if the certificate key length is strong (2048 bits or higher)
+                        if (cert.PublicKey.Key.KeySize < 2048)
+                        {
+                            _logger.LogInformation("❌ Certificate key size is too weak. Minimum 2048 bits required.");
+                            return false;
+                        }
+
+                        // Check key usage (digital signature, key encipherment)
+                        if (!cert.Extensions.OfType<X509KeyUsageExtension>().Any(usage => usage.KeyUsages.HasFlag(X509KeyUsageFlags.DigitalSignature)))
+                        {
+                            _logger.LogInformation("❌ Certificate does not allow digital signature usage.");
+                            return false;
+                        }
+
+                        _logger.LogInformation("Certificate validation passed successfully.");
                         return true;
                     }
                 };
