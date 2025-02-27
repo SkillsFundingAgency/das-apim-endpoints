@@ -1,4 +1,4 @@
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -12,6 +12,7 @@ using SFA.DAS.EarlyConnect.Services.Interfaces;
 using SFA.DAS.EarlyConnect.Services.Configuration;
 using System.Net.Http;
 using Azure.Security.KeyVault.Secrets;
+using System.Security.Cryptography;
 
 namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 {
@@ -168,7 +169,7 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                 // Authenticate with Azure Key Vault
                 var credential = new DefaultAzureCredential();
                 var secretClient = new SecretClient(new Uri(Configuration.KeyVaultIdentifier), credential);
-                
+
                 // Retrieve the certificate as a secret (Base64 encoded PFX)
                 KeyVaultSecret certificateSecret = secretClient.GetSecret(Configuration.CertificateName);
                 byte[] certificateBytes = Convert.FromBase64String(certificateSecret.Value);
@@ -182,7 +183,17 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
                     throw new Exception("Certificate does not contain a private key.");
                 }
 
-                // Add the certificate to HttpClient
+                // Extract Private Key (RSA or ECDSA)
+                RSA rsaKey = certificate.GetRSAPrivateKey();
+                ECDsa ecdsaKey = certificate.GetECDsaPrivateKey();
+
+                if (rsaKey == null && ecdsaKey == null)
+                {
+                    throw new Exception("❌ No valid private key found in the certificate.");
+                };
+           
+
+                // Add certificate to HttpClient
                 var httpClientHandler = new HttpClientHandler();
                 httpClientHandler.ClientCertificates.Add(certificate);
 
@@ -191,7 +202,7 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error loading client certificate: " + ex.Message);
+                Console.WriteLine("❌ Error loading client certificate: " + ex.Message);
                 throw;
             }
         }
