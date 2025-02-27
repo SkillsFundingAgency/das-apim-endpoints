@@ -32,7 +32,7 @@ public class GetTasksQueryHandler(
     public async Task<GetTasksQueryResult> Handle(GetTasksQuery request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting Tasks for account {AccountId}", request.AccountId);
-
+        
         var accountTask = accountsApi.Get<GetAccountByIdResponse>(new GetAccountByIdRequest(request.AccountId));
 
         var pledgeApplicationsToReviewTask = ltmApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
@@ -96,12 +96,23 @@ public class GetTasksQueryHandler(
 
         var pendingTransferRequestsRequestsToReviewCount = transferRequests?.TransferRequestSummaryResponse?.Count(x => x.Status == TransferApprovalStatus.Pending);
 
+        
+        var isInDateRange = IsInDateRange();
+        var showLevyDeclarationTask = account?.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy && isInDateRange;
+        
+        logger.LogInformation("GetTasksQueryHandler.Handle Tasks for account {AccountId}. ApprenticeshipEmployerType: {ApprenticeshipEmployerType}. isInDateRange: {IsInDateRange}. showLevyDeclarationTask: {ShowLevyDeclarationTask}",
+            request.AccountId,
+            account.ApprenticeshipEmployerType,
+            isInDateRange,
+            showLevyDeclarationTask);
+
+        
         return new GetTasksQueryResult
         {
             NumberOfCohortsReadyToReview = cohortsToReview?.Count ?? 0,
             NumberTransferPledgeApplicationsToReview = pledgeApplicationsToReviewResponse?.TotalItems ?? 0,
             NumberOfPendingTransferConnections = pendingTransferConnections?.Count ?? 0,
-            ShowLevyDeclarationTask = account?.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy && IsInDateRange(),
+            ShowLevyDeclarationTask = showLevyDeclarationTask,
             NumberOfTransferRequestToReview = pendingTransferRequestsRequestsToReviewCount ?? 0,
             NumberOfApprenticesToReview = apprenticeChangesCount,
             NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices = pledgeApplicationsAcceptedIdsWithoutApprentices.Count,
