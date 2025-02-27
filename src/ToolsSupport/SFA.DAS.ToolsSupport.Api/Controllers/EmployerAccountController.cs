@@ -74,7 +74,7 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
         }
         catch (Exception e)
         {
-            logger.LogError("Error: GetAccountOrganisations: {error}", e);
+            logger.LogError("Error: GetTeamMembers: {error}", e);
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -94,7 +94,7 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
         }
         catch (Exception e)
         {
-            logger.LogError("Error: GetAccountOrganisations: {error}", e);
+            logger.LogError("Error: GetAccountFinance: {error}", e);
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }

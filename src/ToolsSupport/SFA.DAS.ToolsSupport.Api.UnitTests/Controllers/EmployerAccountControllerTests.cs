@@ -8,10 +8,15 @@ using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.ToolsSupport.Api.Controllers;
 using SFA.DAS.ToolsSupport.Api.Models.EmployerAccount;
+using SFA.DAS.ToolsSupport.Api.sources.EmployerAccount;
 using SFA.DAS.ToolsSupport.Application.Commands.ChangeUserRole;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportCreateInvitation;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportResendInvitation;
+using SFA.DAS.ToolsSupport.Application.Queries.GetAccountFinance;
+using SFA.DAS.ToolsSupport.Application.Queries.GetAccountOrganisations;
 using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
+using SFA.DAS.ToolsSupport.Application.Queries.GetPayeSchemeLevyDeclarations;
+using SFA.DAS.ToolsSupport.Application.Queries.GetTeamMembers;
 
 namespace SFA.DAS.ToolsSupport.Api.UnitTests.Controllers;
 
@@ -20,10 +25,11 @@ public class EmployerAccountControllerTests
     [Test, MoqAutoData]
     public async Task Then_Gets_Account_Details_From_Mediator(
            long accountId,
-           GetEmployerAccountDetailsResult getDetailsResult,
            [Frozen] Mock<IMediator> mockMediator,
            [Greedy] EmployerAccountController controller)
     {
+        var getDetailsResult = new GetEmployerAccountDetailsResult();
+
         mockMediator
                .Setup(mediator => mediator.Send(
                    It.Is<GetEmployerAccountDetailsQuery>(x =>
@@ -37,6 +43,104 @@ public class EmployerAccountControllerTests
 
         model.Account.Should().NotBeNull();
         model.Account.Should().BeEquivalentTo(getDetailsResult);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Gets_Organisations_From_Mediator(
+       long accountId,
+       GetAccountOrganisationsQueryResult getOrganisationsResult,
+       [Frozen] Mock<IMediator> mockMediator,
+       [Greedy] EmployerAccountController controller)
+    {
+        mockMediator
+               .Setup(mediator => mediator.Send(
+                   It.Is<GetAccountOrganisationsQuery>(x =>
+                   x.AccountId == accountId),
+                   It.IsAny<CancellationToken>())).ReturnsAsync(getOrganisationsResult);
+
+        var controllerResult = await controller.GetAccountOrganisations(accountId) as ObjectResult;
+
+        controllerResult.Should().NotBeNull();
+        var model = controllerResult.Value as GetAccountOrganisationsResponse;
+
+        model.LegalEntities.Should().NotBeNull();
+        model.LegalEntities.Should().BeEquivalentTo(getOrganisationsResult.LegalEntities);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Gets_TeamMembers_From_Mediator(
+       long accountId,
+       GetTeamMembersQueryResult getTeamMembersResult,
+       [Frozen] Mock<IMediator> mockMediator,
+       [Greedy] EmployerAccountController controller)
+    {
+        mockMediator
+               .Setup(mediator => mediator.Send(
+                   It.Is<GetTeamMembersQuery>(x =>
+                   x.AccountId == accountId),
+                   It.IsAny<CancellationToken>())).ReturnsAsync(getTeamMembersResult);
+
+        var controllerResult = await controller.GetTeamMembers(accountId) as ObjectResult;
+
+        controllerResult.Should().NotBeNull();
+        var model = controllerResult.Value as GetTeamMembersResponse;
+
+        model.TeamMembers.Should().NotBeNull();
+        model.TeamMembers.Should().BeEquivalentTo(getTeamMembersResult.TeamMembers);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Gets_FinanceData_From_Mediator(
+       long accountId,
+       [Frozen] Mock<IMediator> mockMediator,
+       [Greedy] EmployerAccountController controller)
+    {
+        var getAccountFinanceResult = new GetAccountFinanceQueryResult();
+        mockMediator
+               .Setup(mediator => mediator.Send(
+                   It.Is<GetAccountFinanceQuery>(x =>
+                   x.AccountId == accountId),
+                   It.IsAny<CancellationToken>())).ReturnsAsync(getAccountFinanceResult);
+
+        var controllerResult = await controller.GetAccountFinance(accountId) as ObjectResult;
+
+        controllerResult.Should().NotBeNull();
+        var model = controllerResult.Value as GetAccountFinanceResponse;
+
+        model.PayeSchemes.Should().NotBeNull();
+        model.PayeSchemes.Should().BeEquivalentTo(getAccountFinanceResult.PayeSchemes);
+        model.Transactions.Should().NotBeNull();
+        model.Transactions.Should().BeEquivalentTo(getAccountFinanceResult.Transactions);
+        model.Balance.Should().Be(getAccountFinanceResult.Balance);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Gets_PayeLevyDeclarations_From_Mediator(
+       long accountId,
+       string hashedPayeRef,
+       [Frozen] Mock<IMediator> mockMediator,
+       [Greedy] EmployerAccountController controller)
+    {
+        var getPayeLevyDeclarationsResult = new GetPayeSchemeLevyDeclarationsResult();
+        mockMediator
+               .Setup(mediator => mediator.Send(
+                   It.Is<GetPayeSchemeLevyDeclarationsQuery>(x =>
+                   x.AccountId == accountId &&
+                   x.HashedPayeRef == hashedPayeRef),
+                   It.IsAny<CancellationToken>())).ReturnsAsync(getPayeLevyDeclarationsResult);
+
+        var controllerResult = await controller.GetPayeLevyDeclarations(accountId, hashedPayeRef) as ObjectResult;
+
+        controllerResult.Should().NotBeNull();
+        var model = controllerResult.Value as GetPayeLevyDeclarationsResponse;
+
+        model.LevyDeclarations.Should().NotBeNull();
+        model.LevyDeclarations.Count.Should().Be(getPayeLevyDeclarationsResult.LevySubmissions.Declarations.Count);
+
+        model.UnexpectedError.Should().Be(getPayeLevyDeclarationsResult.StatusCode == PayeLevySubmissionsResponseCodes.UnexpectedError);
+        model.PayeSchemeName.Should().BeEquivalentTo(getPayeLevyDeclarationsResult.PayeScheme.Name);
+        model.PayeSchemeRef.Should().BeEquivalentTo(getPayeLevyDeclarationsResult.PayeScheme.ObscuredPayeRef);
+        model.PayeSchemeFormatedAddedDate.Should().BeEquivalentTo(string.Empty);
     }
 
     [Test, MoqAutoData]

@@ -22,6 +22,7 @@ public class GetPayeLevyDeclarationsResponse
             return payeLevyDeclaration;
         }
 
+        payeLevyDeclaration.UnexpectedError = source.StatusCode == PayeLevySubmissionsResponseCodes.UnexpectedError;
         payeLevyDeclaration.PayeSchemeName = source.PayeScheme?.Name;
         payeLevyDeclaration.PayeSchemeRef = source.PayeScheme?.ObscuredPayeRef;
         payeLevyDeclaration.LevyDeclarations = source.LevySubmissions?.Declarations?.Select(o => MapLevyDeclarationViewModel(o)).ToList();
