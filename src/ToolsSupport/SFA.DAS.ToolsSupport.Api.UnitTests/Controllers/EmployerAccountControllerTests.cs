@@ -12,7 +12,6 @@ using SFA.DAS.ToolsSupport.Application.Commands.ChangeUserRole;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportCreateInvitation;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportResendInvitation;
 using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
-using SFA.DAS.ToolsSupport.Models.Constants;
 
 namespace SFA.DAS.ToolsSupport.Api.UnitTests.Controllers;
 
@@ -28,11 +27,10 @@ public class EmployerAccountControllerTests
         mockMediator
                .Setup(mediator => mediator.Send(
                    It.Is<GetEmployerAccountDetailsQuery>(x =>
-                   x.AccountId == accountId
-                   && x.SelectedField == AccountFieldSelection.EmployerAccount),
+                   x.AccountId == accountId),
                    It.IsAny<CancellationToken>())).ReturnsAsync(getDetailsResult);
 
-        var controllerResult = await controller.GetAccountDetails(accountId, AccountFieldSelection.EmployerAccount) as ObjectResult;
+        var controllerResult = await controller.GetAccountDetails(accountId) as ObjectResult;
 
         controllerResult.Should().NotBeNull();
         var model = controllerResult.Value as GetEmployerAccountDetailsResponse;

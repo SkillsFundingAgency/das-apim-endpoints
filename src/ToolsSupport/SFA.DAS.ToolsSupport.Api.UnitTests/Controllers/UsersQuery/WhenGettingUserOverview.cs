@@ -6,6 +6,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.ToolsSupport.Api.Controllers;
+using SFA.DAS.ToolsSupport.Api.Models.EmployerAccount;
 using SFA.DAS.ToolsSupport.Application.Queries.GetUserOverview;
 
 namespace SFA.DAS.ToolsSupport.Api.UnitTests.Controllers.UsersQuery;
@@ -29,7 +30,7 @@ public class WhenGettingUserOverview
         var controllerResult = await controller.GetUserOverview(userId) as ObjectResult;
 
         controllerResult.Should().NotBeNull();
-        var model = controllerResult.Value as GetUserOverviewQueryResult;
+        var model = controllerResult.Value as GetUserOverviewResponse;
 
         model.Should().NotBeNull();
         model.Id.Should().Be(getOverviewResult.Id);
