@@ -2,6 +2,7 @@
 {
     public string ApplicationName { get; set; }
     public string Reference { get; set; }
+    public string? QualificationNumber { get; set; }
 
     public bool ReadyForSubmit { get; set; }
     public DateTime? SubmittedAt { get; set; }
