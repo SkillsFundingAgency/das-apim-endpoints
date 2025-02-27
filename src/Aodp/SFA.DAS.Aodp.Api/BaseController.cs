@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace SFA.DAS.AODP.Api;
+namespace SFA.DAS.Aodp.Api.Controllers;
 
 public class BaseController : Controller
 {

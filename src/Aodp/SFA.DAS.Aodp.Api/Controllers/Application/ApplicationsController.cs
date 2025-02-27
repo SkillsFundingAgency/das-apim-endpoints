@@ -35,11 +35,8 @@ public class ApplicationsController : BaseController
     public async Task<IActionResult> GetByIdAsync(int pageOrder, Guid sectionId, Guid formVersionId)
     {
         var query = new GetApplicationPageByIdQuery(pageOrder, sectionId, formVersionId);
-
-        var response = await _mediator.Send(query);
         return await SendRequestAsync(query);
     }
-
 
     [HttpGet("/api/applications/forms/{formVersionId}")]
     [ProducesResponseType(typeof(GetApplicationFormByIdQueryResponse), StatusCodes.Status200OK)]
@@ -93,7 +90,6 @@ public class ApplicationsController : BaseController
 
     [HttpGet("/api/applications/{applicationId}/form-preview")]
     [ProducesResponseType(typeof(GetApplicationFormPreviewByIdQueryResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetApplicationFormPreviewByIdAsync(Guid applicationId)
     {
@@ -143,7 +139,6 @@ public class ApplicationsController : BaseController
 
     [HttpGet("/api/applications/{applicationId}")]
     [ProducesResponseType(typeof(GetApplicationByIdQueryResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetApplicationByIdAsync(Guid applicationId)
     {

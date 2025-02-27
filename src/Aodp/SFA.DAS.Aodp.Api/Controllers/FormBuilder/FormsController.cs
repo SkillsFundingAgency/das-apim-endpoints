@@ -25,14 +25,7 @@ public class FormsController : BaseController
     public async Task<IActionResult> GetAllAsync()
     {
         var query = new GetAllFormVersionsQuery();
-        var response = await _mediator.Send(query);
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        _logger.LogError(response.ErrorMessage);
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
     [HttpGet("/api/forms/{formVersionId}")]
@@ -41,15 +34,7 @@ public class FormsController : BaseController
     public async Task<IActionResult> GetByIdAsync(Guid formVersionId)
     {
         var query = new GetFormVersionByIdQuery(formVersionId);
-
-        var response = await _mediator.Send(query);
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-        _logger.LogError(response.ErrorMessage);
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
     [HttpPost("/api/forms")]
@@ -57,13 +42,7 @@ public class FormsController : BaseController
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateAsync([FromBody] CreateFormVersionCommand command)
     {
-        var response = await _mediator.Send(command);
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-        _logger.LogError(response.ErrorMessage);
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(command);
     }
 
     [HttpPut("/api/forms/{formVersionId}")]
@@ -73,15 +52,7 @@ public class FormsController : BaseController
     {
         command.FormVersionId = formVersionId;
 
-        var response = await _mediator.Send(command);
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        _logger.LogError(response.ErrorMessage);
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(command);
     }
 
     [HttpPut("/api/forms/{formVersionId}/publish")]
@@ -91,13 +62,7 @@ public class FormsController : BaseController
     {
         var command = new PublishFormVersionCommand(formVersionId);
 
-        var response = await _mediator.Send(command);
-
-        if (response.Success)
-            return Ok(response.Value);
-
-        _logger.LogError(response.ErrorMessage);
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(command);
     }
 
     [HttpPut("/api/forms/{formVersionId}/unpublish")]
@@ -107,13 +72,7 @@ public class FormsController : BaseController
     {
         var command = new UnpublishFormVersionCommand(formVersionId);
 
-        var response = await _mediator.Send(command);
-
-        if (response.Success)
-            return Ok(response.Value);
-
-        _logger.LogError(response.ErrorMessage);
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(command);
     }
 
     [HttpPut("/api/forms/{formId}/MoveUp")]
@@ -123,13 +82,7 @@ public class FormsController : BaseController
     {
         var command = new MoveFormUpCommand(formId);
 
-        var response = await _mediator.Send(command);
-
-        if (response.Success)
-            return Ok(response.Value);
-
-        _logger.LogError(response.ErrorMessage);
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(command);
     }
 
     [HttpPut("/api/forms/{formId}/MoveDown")]
@@ -139,13 +92,7 @@ public class FormsController : BaseController
     {
         var command = new MoveFormDownCommand(formId);
 
-        var response = await _mediator.Send(command);
-
-        if (response.Success)
-            return Ok(response.Value);
-
-        _logger.LogError(response.ErrorMessage);
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(command);
     }
 
 
@@ -156,13 +103,7 @@ public class FormsController : BaseController
     {
         var command = new CreateDraftFormVersionCommand(formId);
 
-        var response = await _mediator.Send(command);
-
-        if (response.Success)
-            return Ok(response.Value);
-
-        _logger.LogError(response.ErrorMessage);
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(command);
     }
 
     [HttpDelete("/api/forms/{formVersionId}")]
@@ -172,12 +113,6 @@ public class FormsController : BaseController
     {
         var command = new DeleteFormVersionCommand(formVersionId);
 
-        var response = await _mediator.Send(command);
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-        _logger.LogError(response.ErrorMessage);
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(command);
     }
 }
