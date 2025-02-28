@@ -34,10 +34,12 @@ public class WhenGettingUlnApprovedApprenticeships
                 new
                 {
                     x.Id,
-                    DisplayName = $"{x.FirstName} {x.LastName}",
+                    x.FirstName,
+                    x.LastName,
                     x.EmployerAccountId,
+                    x.ProviderId,
+                    x.EmployerName,
                     x.Uln,
-                    x.DateOfBirth,
                     x.StartDate,
                     x.EndDate,
                     Status = x.PaymentStatus.ToString()

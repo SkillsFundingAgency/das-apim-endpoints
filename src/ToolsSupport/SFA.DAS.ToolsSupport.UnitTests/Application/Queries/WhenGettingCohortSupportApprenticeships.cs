@@ -38,11 +38,11 @@ public class WhenGettingCohortSupportApprenticeships
                 c.GetUrl == expectedApprenticeshipsUrl)))
             .ReturnsAsync(mockApiApprenticeshipsResponse);
 
-
         var actual = await sut.Handle(mockCohortQuery, It.IsAny<CancellationToken>());
 
         actual.CohortId.Should().Be(mockApiResponse.CohortId);
         actual.CohortReference.Should().Be(mockApiResponse.CohortReference);
+        actual.EmployerAccountId.Should().Be(mockApiResponse.AccountId);
         actual.EmployerAccountName.Should().Be(mockApiResponse.LegalEntityName);
         actual.ProviderName.Should().Be(mockApiResponse.ProviderName);
         actual.UkPrn.Should().Be(mockApiResponse.ProviderId);
@@ -54,6 +54,8 @@ public class WhenGettingCohortSupportApprenticeships
                 {
                     x.Id,
                     x.Uln,
+                    x.FirstName,
+                    x.LastName,
                     x.DateOfBirth,
                     x.StartDate,
                     x.EndDate,

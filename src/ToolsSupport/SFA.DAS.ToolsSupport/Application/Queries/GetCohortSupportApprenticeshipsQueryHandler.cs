@@ -30,14 +30,17 @@ public class GetCohortSupportApprenticeshipsQueryHandler(IInternalApiClient<Comm
         {
             CohortId = cohort.CohortId, 
             CohortReference = cohort.CohortReference,
+            EmployerAccountId = cohort.AccountId,
             EmployerAccountName = cohort.LegalEntityName,
             ProviderName = cohort.ProviderName,
             UkPrn = cohort.ProviderId,
             NoOfApprentices = status.NoOfApprentices,
             CohortStatus = status.CohortStatus,
-            ApprovedApprenticeships = apprenticesResponse.ApprovedApprenticeships.Select(x => new ApprovedApprenticeshipSummary
+            ApprovedApprenticeships = apprenticesResponse.ApprovedApprenticeships.Select(x => new ApprovedApprenticeshipCohortSummary
             {
                 Id = x.Id,
+                FirstName = x.FirstName,
+                LastName = x.LastName,
                 Uln = x.Uln,
                 DateOfBirth = x.DateOfBirth,
                 StartDate = x.StartDate,

@@ -18,15 +18,22 @@ public class GetUlnSupportApprenticeshipsQueryHandler(IInternalApiClient<Commitm
             ApprovedApprenticeships = apprentices.ApprovedApprenticeships.Select(x => new ApprovedApprenticeshipUlnSummary
             {
                 Id = x.Id,
-                DisplayName = $"{x.FirstName} {x.LastName}",
+                FirstName = x.FirstName,
+                LastName = x.LastName,
                 EmployerAccountId = x.EmployerAccountId,
+                ProviderId = x.ProviderId,
+                EmployerName = x.EmployerName,
                 Uln = x.Uln,
-                DateOfBirth = x.DateOfBirth,
                 StartDate = x.StartDate,
                 EndDate = x.EndDate,
                 Status = x.PaymentStatus.ToString()
             }).ToList(),
         };
+    }
+
+    private static string BuildTrainingDateString(DateTime startDate, DateTime endDate)
+    {
+        return startDate.ToString("MM/yy") + " to " + endDate.ToString("MM/yy");
     }
 }
 
