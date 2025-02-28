@@ -4,11 +4,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 
 public class SendVacancyClosedEarlyTemplate : EmailTemplateArguments
 {
-    public SendVacancyClosedEarlyTemplate(string templateId,string recipientEmail, string firstName, string vacancy, string vacancyUrl, string employer, string city, string postcode, DateTime dateApplicationStarted, string settingsUrl)
+    public SendVacancyClosedEarlyTemplate(string templateId,string recipientEmail, string firstName, string vacancy, string vacancyUrl, string employer, string location, DateTime dateApplicationStarted, string settingsUrl)
     {
-        var location = string.IsNullOrEmpty(city) ? postcode :
-            string.IsNullOrEmpty(postcode) ? city : $"{city}, {postcode}";
-        
         TemplateId = templateId;
         RecipientAddress = recipientEmail;
         Tokens = new Dictionary<string, string>

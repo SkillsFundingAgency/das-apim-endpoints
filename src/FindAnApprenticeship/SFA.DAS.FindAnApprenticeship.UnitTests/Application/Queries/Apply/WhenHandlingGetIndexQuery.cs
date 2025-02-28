@@ -1,9 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
@@ -11,7 +6,6 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
 {
@@ -30,6 +24,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             [Frozen] Mock<IVacancyService> vacancyService,
             GetIndexQueryHandler handler)
         {
+            var additionalQuestions = applicationApiResponse.AdditionalQuestions.OrderBy(ord => ord.QuestionOrder).ToList();
+
             var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
             var expectedGetPreviousApplicationRequest = new GetApplicationApiRequest(query.CandidateId, applicationApiResponse.PreviousAnswersSourceId!.Value, false);
             candidateApiClient
@@ -54,8 +50,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             result.EmployerName.Should().Be(vacancyApiResponse.EmployerName);
             result.ClosingDate.Should().Be(vacancyApiResponse.ClosingDate);
             result.IsDisabilityConfident.Should().Be(vacancyApiResponse.IsDisabilityConfident);
-            result.ApplicationQuestions.AdditionalQuestion1Label.Should().Be(applicationApiResponse.AdditionalQuestions[0].QuestionText);
-            result.ApplicationQuestions.AdditionalQuestion2Label.Should().Be((applicationApiResponse.AdditionalQuestions[1].QuestionText));
+            result.ApplicationQuestions.AdditionalQuestion1Label.Should().Be(additionalQuestions[0].QuestionText);
+            result.ApplicationQuestions.AdditionalQuestion2Label.Should().Be(additionalQuestions[1].QuestionText);
 
             result.EducationHistory.Qualifications.Should().Be(applicationApiResponse.QualificationsStatus);
             result.EducationHistory.TrainingCourses.Should().Be(applicationApiResponse.TrainingCoursesStatus);
@@ -63,8 +59,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             result.WorkHistory.Jobs.Should().Be(applicationApiResponse.JobsStatus);
             result.ApplicationQuestions.AdditionalQuestion1.Should().Be(applicationApiResponse.AdditionalQuestion1Status);
             result.ApplicationQuestions.AdditionalQuestion2.Should().Be(applicationApiResponse.AdditionalQuestion2Status);
-            result.ApplicationQuestions.AdditionalQuestion1Id.Should().Be(applicationApiResponse.AdditionalQuestions[0].Id);
-            result.ApplicationQuestions.AdditionalQuestion2Id.Should().Be(applicationApiResponse.AdditionalQuestions[1].Id);
+            result.ApplicationQuestions.AdditionalQuestion1Id.Should().Be(additionalQuestions[0].Id);
+            result.ApplicationQuestions.AdditionalQuestion2Id.Should().Be(additionalQuestions[1].Id);
             result.InterviewAdjustments.RequestAdjustments.Should().Be(applicationApiResponse.InterviewAdjustmentsStatus);
             result.DisabilityConfidence.InterviewUnderDisabilityConfident.Should().Be(applicationApiResponse.DisabilityConfidenceStatus);
             result.PreviousApplication.EmployerName.Should().Be(previousVacancyApiResponse.EmployerName);
@@ -82,6 +78,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             [Frozen] Mock<IVacancyService> vacancyService,
             GetIndexQueryHandler handler)
         {
+
+            var additionalQuestions = applicationApiResponse.AdditionalQuestions.OrderBy(ord => ord.QuestionOrder).ToList();
+
             var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
             var expectedGetPreviousApplicationRequest = new GetApplicationApiRequest(query.CandidateId, applicationApiResponse.PreviousAnswersSourceId!.Value, false);
             candidateApiClient
@@ -107,8 +106,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             result.EmployerName.Should().Be(vacancyApiResponse.EmployerName);
             result.ClosingDate.Should().Be(vacancyApiResponse.ClosingDate);
             result.IsDisabilityConfident.Should().Be(vacancyApiResponse.IsDisabilityConfident);
-            result.ApplicationQuestions.AdditionalQuestion1Label.Should().Be(applicationApiResponse.AdditionalQuestions[0].QuestionText);
-            result.ApplicationQuestions.AdditionalQuestion2Label.Should().Be((applicationApiResponse.AdditionalQuestions[1].QuestionText));
+            result.ApplicationQuestions.AdditionalQuestion1Label.Should().Be(additionalQuestions[0].QuestionText);
+            result.ApplicationQuestions.AdditionalQuestion2Label.Should().Be(additionalQuestions[1].QuestionText);
 
             result.EducationHistory.Qualifications.Should().Be(applicationApiResponse.QualificationsStatus);
             result.EducationHistory.TrainingCourses.Should().Be(applicationApiResponse.TrainingCoursesStatus);
@@ -116,8 +115,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             result.WorkHistory.Jobs.Should().Be(applicationApiResponse.JobsStatus);
             result.ApplicationQuestions.AdditionalQuestion1.Should().Be(applicationApiResponse.AdditionalQuestion1Status);
             result.ApplicationQuestions.AdditionalQuestion2.Should().Be(applicationApiResponse.AdditionalQuestion2Status);
-            result.ApplicationQuestions.AdditionalQuestion1Id.Should().Be(applicationApiResponse.AdditionalQuestions[0].Id);
-            result.ApplicationQuestions.AdditionalQuestion2Id.Should().Be(applicationApiResponse.AdditionalQuestions[1].Id);
+            result.ApplicationQuestions.AdditionalQuestion1Id.Should().Be(additionalQuestions[0].Id);
+            result.ApplicationQuestions.AdditionalQuestion2Id.Should().Be(additionalQuestions[1].Id);
             result.InterviewAdjustments.RequestAdjustments.Should().Be(applicationApiResponse.InterviewAdjustmentsStatus);
             result.DisabilityConfidence.InterviewUnderDisabilityConfident.Should().Be(applicationApiResponse.DisabilityConfidenceStatus);
             result.PreviousApplication.Should().BeNull();

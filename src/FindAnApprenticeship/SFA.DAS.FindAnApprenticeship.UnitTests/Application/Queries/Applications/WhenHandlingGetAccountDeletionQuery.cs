@@ -1,16 +1,10 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDeletionQuery;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDeletionQuery;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 using static SFA.DAS.FindAnApprenticeship.InnerApi.Responses.PostGetVacanciesByReferenceApiResponse;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Applications
@@ -64,8 +58,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     CreatedDate = application.CreatedDate,
                     ClosingDate = vacancy.ClosedDate ?? vacancy.ClosingDate,
                     SubmittedDate = application.SubmittedDate,
-                    City = vacancy.City,
-                    Postcode = vacancy.Postcode,
+                    Address = vacancy?.Address,
+                    OtherAddresses = vacancy?.OtherAddresses,
+                    EmployerLocationOption = vacancy?.EmployerLocationOption,
+                    EmploymentLocationInformation = vacancy?.EmploymentLocationInformation,
                     Status = Enum.Parse<ApplicationStatus>(application.Status)
                 });
             }
