@@ -133,5 +133,24 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var badRequestValue = badRequestResult.Value?.GetType().GetProperty("message")?.GetValue(badRequestResult.Value, null);
             Assert.That(badRequestValue, Is.EqualTo("Qualification reference cannot be empty"));
         }
+
+        [Test]
+        public async Task GetChangedQualifications_ReturnsOkResult_WithChangedQualifications()
+        {
+            // Arrange
+            var queryResponse = _fixture.Create<BaseMediatrResponse<GetChangedQualificationsQueryResponse>>();
+            queryResponse.Success = true;
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetChangedQualificationsQuery>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await _controller.GetChangedQualifications();
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = (OkObjectResult)result;
+            Assert.That(okResult.Value, Is.AssignableFrom<GetChangedQualificationsQueryResponse>());
+        }
     }
 }
