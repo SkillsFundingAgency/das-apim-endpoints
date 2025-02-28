@@ -9,6 +9,7 @@ using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateSh
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistItem;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetExpiredShortlists;
+using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetShortlistCountForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetShortlistForUser;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
@@ -48,6 +49,14 @@ public class ShortlistsController(IMediator _mediator, ILogger<ShortlistsControl
             ShortlistId = id
         });
         return Accepted();
+    }
+
+    [HttpGet]
+    [Route("/users/{userId}/count")]
+    public async Task<IActionResult> GetShortlistCountForUser(Guid userId)
+    {
+        var result = await _mediator.Send(new GetShortlistCountForUserQuery(userId));
+        return Ok(result);
     }
 
     [HttpGet]
