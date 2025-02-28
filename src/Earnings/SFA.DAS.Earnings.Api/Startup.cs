@@ -6,31 +6,27 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Earnings.Api.AppStart;
+using SFA.DAS.Earnings.Api.Controllers;
+using SFA.DAS.Earnings.Api.Learnerdata;
+using SFA.DAS.Earnings.Application.LearnerData;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.Earnings.Api;
 
 [ExcludeFromCodeCoverage]
-public class Startup
+public class Startup(IConfiguration configuration, IWebHostEnvironment env)
 {
-    private readonly IWebHostEnvironment _env;
-    private readonly IConfiguration _configuration;
-
-    public Startup(IConfiguration configuration, IWebHostEnvironment env)
-    {
-        _env = env;
-        _configuration = configuration.BuildSharedConfiguration();
-    }
+    private readonly IConfiguration _configuration = configuration.BuildSharedConfiguration();
 
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddNLog();
         services.AddOptions();
-        services.AddSingleton(_env);
+        services.AddSingleton(env);
 
         services.AddConfigurationOptions(_configuration);
-
+        
         if (!_configuration.IsLocalOrDev())
         {
             var azureAdConfiguration = _configuration
@@ -45,6 +41,7 @@ public class Startup
         }
 
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(Earning).Assembly));
+        services.AddSingleton<ILearnerDataStore, LearnerDataStore>();
         services.AddServiceRegistration(_configuration);
 
         services
