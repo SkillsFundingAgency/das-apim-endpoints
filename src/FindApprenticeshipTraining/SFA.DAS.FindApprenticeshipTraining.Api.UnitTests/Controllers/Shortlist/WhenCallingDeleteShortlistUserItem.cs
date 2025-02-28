@@ -21,7 +21,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
             Guid shortlistUserId,
             Guid id,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ShortlistController controller)
+            [Greedy] ShortlistsController controller)
         {
             var controllerResult = await controller.DeleteShortlistItemForUser(id,shortlistUserId) as ObjectResult;
 
@@ -39,7 +39,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
             Guid shortlistUserId,
             Guid id,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ShortlistController controller)
+            [Greedy] ShortlistsController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(

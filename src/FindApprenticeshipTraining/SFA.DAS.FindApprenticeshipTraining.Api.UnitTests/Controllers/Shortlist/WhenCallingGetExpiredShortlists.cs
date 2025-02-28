@@ -21,7 +21,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
             uint expiryInDays,
             GetExpiredShortlistsQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ShortlistController controller)
+            [Greedy] ShortlistsController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
@@ -40,7 +40,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
         public async Task And_Exception_Then_Returns_Bad_Request(
             uint expiryInDays,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ShortlistController controller)
+            [Greedy] ShortlistsController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
