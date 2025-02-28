@@ -11,16 +11,12 @@ namespace SFA.DAS.Aodp.Api.Controllers.FormBuilder;
 public class PagesController : BaseController
 {
     private readonly IMediator _mediator;
-    private readonly ILogger<FormsController> _logger;
+    private readonly ILogger<PagesController> _logger;
 
-    public PagesController(IMediator mediator, ILogger<FormsController> logger) : base(mediator, logger)
+    public PagesController(IMediator mediator, ILogger<PagesController> logger) : base(mediator, logger)
     {
         _mediator = mediator;
         _logger = logger;
-    }
-
-    public PagesController(IMediator mediator, ILogger logger) : base(mediator, logger)
-    {
     }
 
     [HttpGet("/api/forms/{formVersionId}/sections/{sectionId}/pages")]
