@@ -53,7 +53,6 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryValues.CombinedAdjProp.Should().Be(1);
             learningDelivery.LearningDeliveryValues.Completed.Should().BeFalse();
             learningDelivery.LearningDeliveryValues.FirstIncentiveThresholdDate.Should().BeNull();
-            learningDelivery.LearningDeliveryValues.FundStart.Should().BeTrue();
             learningDelivery.LearningDeliveryValues.LDApplic1618FrameworkUpliftTotalActEarnings.Should().Be(0);
             learningDelivery.LearningDeliveryValues.LearnAimRef.Should().Be("ZPROG001");
             learningDelivery.LearningDeliveryValues.LearnStartDate.Should().Be(apprenticeship.StartDate);
@@ -326,5 +325,40 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryPeriodisedTextValues.Should().Contain(x =>
                 x.AttributeName == "LearnDelContType" && x.AllValuesAreSetTo("Contract for services with the employer"));
         }
+    }
+
+    [TestCase("StillInLearning", true)]
+    [TestCase("WithdrawnAfterQualifyingPeriod", true)]
+    [TestCase("WithdrawnBeforeQualifyingPeriod", false)]
+    public async Task ThenReturnsCorrectFundStartValueForApprenticeship(string status, bool expectedFundingStart)
+    {
+        // Arrange
+        _testFixture.Result.Should().NotBeNull();
+        string uln = string.Empty;
+        _testFixture.EditApprenticeshipResponse(0, x => {
+            switch (status)
+            {
+                case "StillInLearning":
+                    x.WithdrawnDate = null;
+                    break;
+                case "WithdrawnAfterQualifyingPeriod":
+                    x.WithdrawnDate = x.StartDate.AddDays(SFA.DAS.SharedOuterApi.Common.Constants.QualifyingPeriod + 1);
+                    break;
+                case "WithdrawnBeforeQualifyingPeriod":
+                    x.WithdrawnDate = x.StartDate.AddDays(SFA.DAS.SharedOuterApi.Common.Constants.QualifyingPeriod - 1);
+                    break;
+            }
+
+            uln = x.Uln;
+        });
+
+        // Act
+        await _testFixture.CallSubjectUnderTest();// force it to recalculate
+        var learningDelivery = _testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == uln).LearningDeliveries.SingleOrDefault();
+
+        // Assert
+        learningDelivery.Should().NotBeNull();
+        learningDelivery.LearningDeliveryValues.FundStart.Should().Be(expectedFundingStart);
+
     }
 }

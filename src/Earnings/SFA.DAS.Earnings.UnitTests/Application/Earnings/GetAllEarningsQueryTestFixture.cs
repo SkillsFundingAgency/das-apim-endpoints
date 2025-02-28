@@ -278,3 +278,18 @@ public class GetAllEarningsQueryTestFixture
         }
     }
 }
+
+public static class GetAllEarningsQueryTestFixtureExtensions
+{
+    public static void EditApprenticeshipResponse(this GetAllEarningsQueryTestFixture fixture, int index, Action<Apprenticeship> editAction)
+    {
+        if (index < 0 || index >= fixture.ApprenticeshipsResponse.Apprenticeships.Count)
+        {
+            throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+        }
+
+        var apprenticeship = fixture.ApprenticeshipsResponse.Apprenticeships[index];
+        editAction(apprenticeship);
+    }
+
+}

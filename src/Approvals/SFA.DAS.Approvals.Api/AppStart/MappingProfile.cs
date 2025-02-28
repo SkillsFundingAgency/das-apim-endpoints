@@ -29,6 +29,7 @@ namespace SFA.DAS.Approvals.Api.AppStart
             CreateMap<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, GetApprenticeshipsCSVQueryResult.ApprenticeshipDetailsCSVResponse>();
             CreateMap<GetApprenticeshipsCSVQueryResult, PostApprenticeshipsCSVResponse>();
             CreateMap<GetApprenticeshipsCSVQueryResult.ApprenticeshipDetailsCSVResponse, PostApprenticeshipsCSVResponse.ApprenticeshipDetailsCSVResponse>();
+            CreateMap<Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails.LearnerStatusDetails, Models.Apprentices.LearnerStatusDetails>();
         }
     }
 }
