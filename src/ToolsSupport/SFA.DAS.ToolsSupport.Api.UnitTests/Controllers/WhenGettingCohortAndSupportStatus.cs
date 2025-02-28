@@ -18,18 +18,18 @@ public class WhenGettingCohortAndSupportStatus
     [Test, MoqAutoData]
     public async Task Then_CohortSupportStatusQueryResponse_Returned_From_Mediator(
         long id,
-        GetCohortAndSupportStatusQueryResult mockQueryResult,
+        GetCohortSupportApprenticeshipsQueryResult mockQueryResult,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] CohortsController sut)
     {
-        mockMediator.Setup(x => x.Send(It.Is<GetCohortAndSupportStatusQuery>(p=>p.CohortId == id), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
+        mockMediator.Setup(x => x.Send(It.Is<GetCohortSupportApprenticeshipsQuery>(p=>p.CohortId == id), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
 
         var actual = await sut.Get(id) as ObjectResult;
 
         using (new AssertionScope())
         {
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().BeOfType<GetCohortAndSupportStatusQueryResult>()
+            actual.Value.Should().BeOfType<GetCohortSupportApprenticeshipsQueryResult>()
                 .Which.Should().BeEquivalentTo(mockQueryResult);
         }
     }
@@ -41,8 +41,8 @@ public class WhenGettingCohortAndSupportStatus
         [Greedy] CohortsController sut)
     {
         mockMediator
-            .Setup(x => x.Send(It.Is<GetCohortAndSupportStatusQuery>(p => p.CohortId == id),
-                It.IsAny<CancellationToken>())).ReturnsAsync((GetCohortAndSupportStatusQueryResult)null);
+            .Setup(x => x.Send(It.Is<GetCohortSupportApprenticeshipsQuery>(p => p.CohortId == id),
+                It.IsAny<CancellationToken>())).ReturnsAsync((GetCohortSupportApprenticeshipsQueryResult)null);
 
         var actual = await sut.Get(id) as StatusCodeResult;
 
@@ -56,7 +56,7 @@ public class WhenGettingCohortAndSupportStatus
         [Greedy] CohortsController sut)
     {
         mockMediator
-            .Setup(x => x.Send(It.Is<GetCohortAndSupportStatusQuery>(p => p.CohortId == id),
+            .Setup(x => x.Send(It.Is<GetCohortSupportApprenticeshipsQuery>(p => p.CohortId == id),
                 It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException());
 
         var actual = await sut.Get(id) as StatusCodeResult;

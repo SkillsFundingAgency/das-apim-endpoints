@@ -24,7 +24,7 @@ public class CohortsController : ControllerBase
     {
         try
         {
-            var response = await _mediator.Send(new GetCohortAndSupportStatusQuery { CohortId = id });
+            var response = await _mediator.Send(new GetCohortSupportApprenticeshipsQuery { CohortId = id });
             if (response == null)
                 return NotFound();
             return Ok(response);
