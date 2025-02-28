@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Security;
 using Azure.Identity;
 using Azure.Security.KeyVault.Certificates;
 using System.Security.Authentication;
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
@@ -33,24 +35,35 @@ public static class AddServiceRegistrationExtensions
         services.AddHttpClient("SecureClient")
             .ConfigurePrimaryHttpMessageHandler(() =>
             {
-                var handler = new HttpClientHandler
+                var handler = new SocketsHttpHandler
                 {
-                    SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13
+                    SslOptions = new SslClientAuthenticationOptions
+                    {
+                        EnabledSslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13,
+                        ClientCertificates = new X509CertificateCollection(),
+                        RemoteCertificateValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
+                        {
+                            return sslPolicyErrors == SslPolicyErrors.None;
+                        }
+                    }
                 };
 
                 try
                 {
-                    // Retrieve the certificate from Key Vault
+                    // Retrieve the certificate from Azure Key Vault
                     var certificateResponse = certificateClient.DownloadCertificate(configuration["LepsLaApiConfiguration:CertificateName"]);
-                    var certificate = certificateResponse.Value;
+                    var keyVaultCertificate = certificateResponse.Value;
 
-                    if (certificate == null || !certificate.HasPrivateKey)
+                    if (keyVaultCertificate == null || !keyVaultCertificate.HasPrivateKey)
                     {
                         throw new Exception("❌ The certificate is invalid or does not have a private key.");
                     }
 
-                    // Attach the certificate to HttpClientHandler
-                    handler.ClientCertificates.Add(certificate);
+                    // Convert the certificate to X509Certificate2 format
+                    var x509Certificate = new X509Certificate2(keyVaultCertificate);
+
+                    // Add certificate to the collection
+                    handler.SslOptions.ClientCertificates.Add(x509Certificate);
                 }
                 catch (Exception ex)
                 {
@@ -60,6 +73,8 @@ public static class AddServiceRegistrationExtensions
 
                 return handler;
             });
+
+
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient(typeof(ILepsNeApiClient<>), typeof(LepsNeApiClient<>));
