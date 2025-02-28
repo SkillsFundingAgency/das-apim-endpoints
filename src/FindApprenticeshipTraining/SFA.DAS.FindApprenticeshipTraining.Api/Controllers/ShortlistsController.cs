@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistForUser;
-using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistItemForUser;
+using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistItem;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetExpiredShortlists;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetShortlistForUser;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
@@ -37,6 +37,17 @@ public class ShortlistsController(IMediator _mediator, ILogger<ShortlistsControl
             });
 
         return CreatedAtAction(nameof(GetAllForUser), new { UserId = shortlistRequest.ShortlistUserId }, result);
+    }
+
+    [HttpDelete]
+    [Route("{id}")]
+    public async Task<IActionResult> DeleteShortlistItemForUser(Guid id)
+    {
+        await _mediator.Send(new DeleteShortlistItemCommand
+        {
+            ShortlistId = id
+        });
+        return Accepted();
     }
 
     [HttpGet]
@@ -76,26 +87,6 @@ public class ShortlistsController(IMediator _mediator, ILogger<ShortlistsControl
         catch (Exception e)
         {
             _logger.LogError(e, "Error getting list of expired shortlists");
-            return BadRequest();
-        }
-    }
-
-    [HttpDelete]
-    [Route("users/{userId}/items/{id}")]
-    public async Task<IActionResult> DeleteShortlistItemForUser(Guid id, Guid userId)
-    {
-        try
-        {
-            await _mediator.Send(new DeleteShortlistItemForUserCommand
-            {
-                Id = id,
-                UserId = userId
-            });
-            return Accepted();
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error deleting shortlist item");
             return BadRequest();
         }
     }
