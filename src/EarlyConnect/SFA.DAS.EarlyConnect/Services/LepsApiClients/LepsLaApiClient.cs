@@ -2,17 +2,18 @@
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
+//using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using Azure.Security.KeyVault.Certificates;
-using Azure.Identity;
+//using Azure.Identity;
 using SFA.DAS.EarlyConnect.Services.Interfaces;
 using SFA.DAS.EarlyConnect.Services.Configuration;
-using System.Net.Http;
-using Azure.Security.KeyVault.Secrets;
-using System.Security.Cryptography;
+//using System.Net.Http;
+//using Azure.Security.KeyVault.Secrets;
+//using System.Security.Cryptography;
+//using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 {
@@ -22,9 +23,11 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         protected LepsLaApiConfiguration Configuration;
         protected HttpClient HttpClient;
         public LepsLaApiClient(IInternalApiClient<LepsLaApiConfiguration> apiClient,
+            IHttpClientFactory httpClientFactory,
             LepsLaApiConfiguration apiConfiguration)
         {
-            _apiClient = apiClient;
+            HttpClient = httpClientFactory.CreateClient("SecureClient");
+            HttpClient.BaseAddress = new Uri(apiConfiguration.Url);
             Configuration = apiConfiguration;
         }
 
@@ -61,7 +64,7 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
 
-            AddAuthenticationCertificate();
+            //AddAuthenticationCertificate();
 
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -162,50 +165,50 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         //    }
         //}
 
-        private void AddAuthenticationCertificate()
-        {
-            try
-            {
-                // Authenticate with Azure Key Vault
-                var credential = new DefaultAzureCredential();
-                var secretClient = new SecretClient(new Uri(Configuration.KeyVaultIdentifier), credential);
+        //private void AddAuthenticationCertificate()
+        //{
+        //    try
+        //    {
+        //        // Authenticate with Azure Key Vault
+        //        var credential = new DefaultAzureCredential();
+        //        var secretClient = new SecretClient(new Uri(Configuration.KeyVaultIdentifier), credential);
 
-                // Retrieve the certificate as a secret (Base64 encoded PFX)
-                KeyVaultSecret certificateSecret = secretClient.GetSecret(Configuration.CertificateName);
-                byte[] certificateBytes = Convert.FromBase64String(certificateSecret.Value);
+        //        // Retrieve the certificate as a secret (Base64 encoded PFX)
+        //        KeyVaultSecret certificateSecret = secretClient.GetSecret(Configuration.CertificateName);
+        //        byte[] certificateBytes = Convert.FromBase64String(certificateSecret.Value);
 
-                // Load certificate with private key
-                X509Certificate2 certificate = new X509Certificate2(certificateBytes, (string)null,
-                    X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
+        //        // Load certificate with private key
+        //        X509Certificate2 certificate = new X509Certificate2(certificateBytes, (string)null,
+        //            X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable);
 
-                if (!certificate.HasPrivateKey)
-                {
-                    throw new Exception("Certificate does not contain a private key.");
-                }
+        //        if (!certificate.HasPrivateKey)
+        //        {
+        //            throw new Exception("Certificate does not contain a private key.");
+        //        }
 
-                // Extract Private Key (RSA or ECDSA)
-                RSA rsaKey = certificate.GetRSAPrivateKey();
-                ECDsa ecdsaKey = certificate.GetECDsaPrivateKey();
+        //        // Extract Private Key (RSA or ECDSA)
+        //        RSA rsaKey = certificate.GetRSAPrivateKey();
+        //        ECDsa ecdsaKey = certificate.GetECDsaPrivateKey();
 
-                if (rsaKey == null && ecdsaKey == null)
-                {
-                    throw new Exception("❌ No valid private key found in the certificate.");
-                };
+        //        if (rsaKey == null && ecdsaKey == null)
+        //        {
+        //            throw new Exception("❌ No valid private key found in the certificate.");
+        //        };
            
 
-                // Add certificate to HttpClient
-                var httpClientHandler = new HttpClientHandler();
-                httpClientHandler.ClientCertificates.Add(certificate);
+        //        // Add certificate to HttpClient
+        //        var httpClientHandler = new HttpClientHandler();
+        //        httpClientHandler.ClientCertificates.Add(certificate);
 
-                HttpClient = new HttpClient(httpClientHandler);
-                HttpClient.BaseAddress = new Uri(Configuration.Url);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("❌ Error loading client certificate: " + ex.Message);
-                throw;
-            }
-        }
+        //        HttpClient = new HttpClient(httpClientHandler);
+        //        HttpClient.BaseAddress = new Uri(Configuration.Url);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine("❌ Error loading client certificate: " + ex.Message);
+        //        throw;
+        //    }
+        //}
         public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
         {
             throw new NotImplementedException();

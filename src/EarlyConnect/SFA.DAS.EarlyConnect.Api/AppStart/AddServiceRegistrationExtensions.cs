@@ -1,4 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Azure.Identity;
+using Azure.Security.KeyVault.Certificates;
+using System.Security.Authentication;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
@@ -22,6 +25,41 @@ public static class AddServiceRegistrationExtensions
     public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpClient();
+        var credential = new DefaultAzureCredential();
+        var certificateClient = new CertificateClient(new Uri(configuration["LepsLaApiConfiguration:KeyVaultIdentifier"]), credential);
+
+        services.AddSingleton(certificateClient);
+
+        services.AddHttpClient("SecureClient")
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                var handler = new HttpClientHandler
+                {
+                    SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13
+                };
+
+                try
+                {
+                    // Retrieve the certificate from Key Vault
+                    var certificateResponse = certificateClient.DownloadCertificate(configuration["LepsLaApiConfiguration:CertificateName"]);
+                    var certificate = certificateResponse.Value;
+
+                    if (certificate == null || !certificate.HasPrivateKey)
+                    {
+                        throw new Exception("❌ The certificate is invalid or does not have a private key.");
+                    }
+
+                    // Attach the certificate to HttpClientHandler
+                    handler.ClientCertificates.Add(certificate);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ Failed to load certificate from Key Vault: {ex.Message}");
+                    throw;
+                }
+
+                return handler;
+            });
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient(typeof(ILepsNeApiClient<>), typeof(LepsNeApiClient<>));
