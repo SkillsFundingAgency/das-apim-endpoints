@@ -53,7 +53,6 @@ public class GetTasksQueryHandler(
             ApplicationStatusFilter = ApplicationStatus.Accepted
         });
         
-
         var apprenticeChangesTask = commitmentsV2ApiClient.Get<GetApprenticeshipUpdatesResponse>(new GetPendingApprenticeChangesRequest(request.AccountId));
 
         var transferRequestsTask = commitmentsV2ApiClient.Get<GetTransferRequestSummaryResponse>(new GetTransferRequestsRequest(request.AccountId, TransferType.AsSender));
@@ -95,17 +94,8 @@ public class GetTasksQueryHandler(
         );
 
         var pendingTransferRequestsRequestsToReviewCount = transferRequests?.TransferRequestSummaryResponse?.Count(x => x.Status == TransferApprovalStatus.Pending);
-
-        
-        var isInDateRange = IsInDateRange();
-        var showLevyDeclarationTask = account?.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy && isInDateRange;
-        
-        logger.LogInformation("GetTasksQueryHandler.Handle Tasks for account {AccountId}. ApprenticeshipEmployerType: {ApprenticeshipEmployerType}. isInDateRange: {IsInDateRange}. showLevyDeclarationTask: {ShowLevyDeclarationTask}",
-            request.AccountId,
-            account.ApprenticeshipEmployerType,
-            isInDateRange,
-            showLevyDeclarationTask);
-
+        var isWithinLevyNotificationDateRange = IsWithinLevyNotificationDateRange();
+        var showLevyDeclarationTask = account?.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy && isWithinLevyNotificationDateRange;
         
         return new GetTasksQueryResult
         {
@@ -154,13 +144,8 @@ public class GetTasksQueryHandler(
         return acceptedApplicationIdsWithoutApprentices;
     }
 
-    private bool IsInDateRange()
+    private bool IsWithinLevyNotificationDateRange()
     {
-        int dayOfMonth = currentDateTime.Now.Day;
-        //var isInDateRange = dayOfMonth >= 16 && dayOfMonth < 20;
-        // TODO REMOVE THE BELOW TESTING CODE
-        var isInDateRange = dayOfMonth >= 16 && dayOfMonth < 30;
-        
-        return isInDateRange;
+        return currentDateTime.Now.Day is >= 16 and < 20;
     }
 }
