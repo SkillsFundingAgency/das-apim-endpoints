@@ -215,7 +215,11 @@
                                 {
                                     "name": "WEBSITE_LOAD_USER_PROFILE",
                                     "value": "1"
-                                }
+                                },
+           		        {
+                			"name": "DOTNET_VERSION",
+                "value": "[reference(concat('api-app-service-', parameters('appServiceName'))).outputs.currentStack]"
+            }
                             ]
                         }
                     },
