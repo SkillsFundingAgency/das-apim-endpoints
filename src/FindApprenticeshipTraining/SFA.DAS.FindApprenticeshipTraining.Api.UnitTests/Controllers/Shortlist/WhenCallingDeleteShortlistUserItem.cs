@@ -10,6 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistItem;
+using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetShortlistCountForUser;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist;
@@ -26,5 +27,24 @@ public class WhenCallingDeleteShortlistUserItem
 
         controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Accepted);
         mockMediator.Verify(mediator => mediator.Send(It.Is<DeleteShortlistItemCommand>(command => command.ShortlistId == id), It.IsAny<CancellationToken>()), Times.Once);
+    }
+}
+
+public class WhenCallingGetShortlistCountForUser
+{
+    [Test, MoqAutoData]
+    public async Task Then_Gets_Shortlist_Count_For_User_From_Mediator(
+        Guid id,
+        GetShortlistCountForUserQueryResult mediatorResult,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] ShortlistsController sut)
+    {
+        mockMediator.Setup(mediator => mediator.Send(It.Is<GetShortlistCountForUserQuery>(command => command.UserId == id), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
+
+        var controllerResult = await sut.GetShortlistCountForUser(id) as ObjectResult;
+
+        controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        mockMediator.Verify(mediator => mediator.Send(It.Is<GetShortlistCountForUserQuery>(command => command.UserId == id), It.IsAny<CancellationToken>()), Times.Once);
+        controllerResult.Value.As<GetShortlistCountForUserQueryResult>().Count.Should().Be(mediatorResult.Count);
     }
 }
