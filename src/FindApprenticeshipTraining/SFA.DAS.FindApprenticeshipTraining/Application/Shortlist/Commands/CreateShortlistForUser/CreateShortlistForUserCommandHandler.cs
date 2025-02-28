@@ -1,25 +1,20 @@
-﻿using MediatR;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.FindApprenticeshipTraining.Configuration;
-using SFA.DAS.FindApprenticeshipTraining.Services;
+using MediatR;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
+namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser
+public class CreateShortlistForUserCommandHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient) : IRequestHandler<CreateShortlistForUserCommand, PostShortListResponse>
 {
-    public class CreateShortlistForUserCommandHandler : IRequestHandler<CreateShortlistForUserCommand, Unit>
+    public async Task<PostShortListResponse> Handle(CreateShortlistForUserCommand request, CancellationToken cancellationToken)
     {
-        private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortlistApiClient;
-
-        public CreateShortlistForUserCommandHandler(
-            IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
-        {
-            _shortlistApiClient = shortlistApiClient;
-        }
-        public async Task<Unit> Handle(CreateShortlistForUserCommand request, CancellationToken cancellationToken)
-        {
-            await _shortlistApiClient.PostWithResponseCode<PostShortListResponse>(new PostShortlistForUserRequest
+        ApiResponse<PostShortListResponse> response = await _roatpCourseManagementApiClient.PostWithResponseCode<PostShortListResponse>(
+            new PostShortlistForUserRequest
             {
                 Data = new PostShortlistData
                 {
@@ -27,12 +22,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.Crea
                     Longitude = request.Lon,
                     Ukprn = request.Ukprn,
                     LocationDescription = request.LocationDescription,
-                    Larscode = request.StandardId,
-                    ShortlistUserId = request.ShortlistUserId
-                } 
-            },false);
-            
-            return Unit.Value;
-        }
+                    LarsCode = request.StandardId,
+                    UserId = request.ShortlistUserId
+                }
+            },
+            false);
+
+        response.EnsureSuccessStatusCode();
+
+        return response.Body;
     }
 }
