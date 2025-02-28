@@ -19,10 +19,6 @@ public class PagesController : BaseController
         _logger = logger;
     }
 
-    public PagesController(IMediator mediator, ILogger logger) : base(mediator, logger)
-    {
-    }
-
     [HttpGet("/api/forms/{formVersionId}/sections/{sectionId}/pages")]
     [ProducesResponseType(typeof(GetAllPagesQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
