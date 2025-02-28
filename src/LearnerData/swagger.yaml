@@ -36,30 +36,72 @@ paths:
           $ref: '#/components/responses/healthCheckResponse'
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse' 
-  /learners/{guid}:
+
+  /providers/{ukprn}/academicyears/{academicyear}/learners:
     put:
-      summary: External authenticated endpoint for creating or updating individual learners
-      parameters:
-        - name: guid
-          in: path
-          required: true
-          description: A unique record id from the ILR
-          schema:
-            type: string
-            format: guid
+      summary: External authenticated endpoint for pushing ILR data (leaner data in our domain) into the apprenticeship service
       security:
         - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner cohort
+          schema:
+            type: string
+        - name: academicyear
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner cohort
+          schema:
+            type: integer
+            example: 2324
       requestBody:
-        require: true
-        $ref: '#/components/requestBodies/learnerRequest'
+        $ref: '#/components/requestBodies/learnerRequestArray'
       responses:
         '202':
-          description: The resource has been accepted. The resource will appear on the GET endpoint under eventual consistency
           $ref: '#/components/responses/acceptedResponse'
         '401':
           $ref: '#/components/responses/unauthorized'
+        '400':
+          $ref: '#/components/responses/badRequest'
         '429':
-          $ref: '#/components/responses/rateLimitExceededResponse'     
+          $ref: '#/components/responses/rateLimitExceededResponse'   
+  /providers/{ukprn}/academicyears/{academicyear}/learners/{uln}:
+    put:
+      summary: External authenticated endpoint for updating specific learners.
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: academicyear
+          in: path
+          required: true
+          example: 2425
+          schema:
+            type: integer
+        - name: uln
+          in: path
+          required: true
+          description: The Unique Learner Number for this learner
+          schema:
+            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/learnerRequest'
+      responses:
+        '202':
+          $ref: '#/components/responses/acceptedResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse'                       
   /providers/{ukprn}/academicyears/{academicyear}/apprenticeships:
     get:
       summary: Returns a paged list of apprenticeships for this provider
@@ -103,6 +145,11 @@ components:
       name: X-API-Key
       description: "Enter your API key in the `X-API-Key` header."
   headers:
+    location:
+      schema:
+        type: string
+        format: url
+        example: /providers/234324/leaners/24321432
     X-RateLimit-Limit:
       description: The maximum number of requests allowed in a time window
       schema:
@@ -131,7 +178,16 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/learner'
+            $ref: '#/components/schemas/learnerRequest'
+    learnerRequestArray:
+      description: The ilr record array to be submitted to AS
+      required: true
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/learnerRequest'
 
   responses:
     pagedApprenticeshipsResponse:
@@ -153,6 +209,8 @@ components:
     acceptedResponse:
       description: A resource has been created or updated through the service
       headers:
+        Location:
+          $ref: '#/components/headers/location'
         X-RateLimit-Limit:
           $ref: '#/components/headers/X-RateLimit-Limit'
         X-RateLimit-Remaining:
@@ -171,13 +229,6 @@ components:
                 type: string
                 example: "Rate limit exceeded. Try again later."
 
-    learnerResponse:
-      description: A single response to a specific learner
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/learner'
-
     notFound:
       description: The specified resource was not found
       content:
@@ -193,13 +244,6 @@ components:
             type: string
             example: OK
 
-    badRequest:
-      description: A bad request was detected
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/error'
-    
     unauthorized:
       description: Unauthorized
       content:
@@ -207,6 +251,15 @@ components:
           schema:
             $ref: '#/components/schemas/error'
 
+    badRequest:
+      description: A bad request was sent and validation of the payload failed
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/error'
+    
     healthCheckResponse:
       description: Results of a health check
       content:
@@ -279,7 +332,7 @@ components:
         uln:
           type: string
     
-    learner:
+    learnerRequest:
       type: object
       properties:
         uln:
@@ -328,7 +381,6 @@ components:
         - epaoPrice
         - startDate
         - plannedEndDate
-        - agreementId
-
+        - agreementId      
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
