@@ -33,7 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
             var mockMediator = new Mock<IMediator>();
             var shortlistUserId = Guid.NewGuid();
             var mediatorResult = new GetShortlistForUserResult();
-            var controller = new ShortlistController(mockMediator.Object, new Mock<ILogger<ShortlistController>>().Object);
+            var controller = new ShortlistsController(mockMediator.Object, new Mock<ILogger<ShortlistsController>>().Object);
 
             mediatorResult.Shortlist = new List<InnerApi.Responses.GetShortlistItem>();
 
@@ -63,7 +63,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
              var mockMediator = new Mock<IMediator>();
              var shortlistUserId = Guid.NewGuid();
              var mediatorResult = new GetShortlistForUserResult();
-             var controller = new ShortlistController(mockMediator.Object, new Mock<ILogger<ShortlistController>>().Object);
+             var controller = new ShortlistsController(mockMediator.Object, new Mock<ILogger<ShortlistsController>>().Object);
 
              var shortlist = new List<InnerApi.Responses.GetShortlistItem>();
              shortlist.Add(BuildShortlistItem(Location1, distance1, locationType1));
@@ -89,7 +89,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
         public async Task And_Exception_Then_Returns_Bad_Request(
             Guid shortlistUserId,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ShortlistController controller)
+            [Greedy] ShortlistsController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
