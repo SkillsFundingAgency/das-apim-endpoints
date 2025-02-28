@@ -1,20 +1,16 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Aodp.Api.Controllers;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 
 namespace SFA.DAS.AODP.Api.Controllers.Qualification
 {
     [ApiController]
     [Route("api/qualifications")]
-    public class QualificationsController : ControllerBase
+    public class QualificationsController : BaseController
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<QualificationsController> _logger;
-
-        public QualificationsController(IMediator mediator, ILogger<QualificationsController> logger)
+        public QualificationsController(IMediator mediator, ILogger<QualificationsController> logger) : base(mediator, logger)
         {
-            _mediator = mediator;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -83,6 +79,15 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             };
 
             return response;
+        }
+
+        [HttpGet("changed")]
+        [ProducesResponseType(typeof(GetChangedQualificationsQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetChangedQualifications()
+        {
+            var query = new GetChangedQualificationsQuery();
+            return await SendRequestAsync(query);
         }
 
         private async Task<IActionResult> HandleNewQualifications()
