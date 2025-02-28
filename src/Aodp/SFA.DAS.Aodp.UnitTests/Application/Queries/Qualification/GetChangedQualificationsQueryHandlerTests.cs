@@ -30,7 +30,7 @@ public class GetChangedQualificationsQueryHandlerTests
     [Test]
     public async Task Test_Get_Changed_Qualification()
     {
-        var qualifications = _fixture.CreateMany<GetChangedQualificationsQueryResponse.Qualification>().ToList();
+        var qualifications = _fixture.CreateMany<GetChangedQualificationsQueryResponse.ChangedQualification>().ToList();
         var responseType = new BaseMediatrResponse<GetChangedQualificationsQueryResponse>();
         responseType.Value.Data = qualifications;
         _apiClient.Setup(v => v.Get<BaseMediatrResponse<GetChangedQualificationsQueryResponse>>(It.IsAny<GetChangedQualificationsApiRequest>()))
