@@ -9,8 +9,13 @@
   <ItemGroup>
     <PackageReference Include="Azure.Security.KeyVault.Certificates" />
     <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="System.Net.Http" />
     <PackageReference Include="System.Net.Security" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="9.0.2" />
   </ItemGroup>
 
   <ItemGroup>
