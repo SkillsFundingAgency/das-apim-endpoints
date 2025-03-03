@@ -52,16 +52,23 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryValues.ApplicCompDate.Should().Be(new DateTime(9999, 9, 9));
             learningDelivery.LearningDeliveryValues.CombinedAdjProp.Should().Be(1);
             learningDelivery.LearningDeliveryValues.Completed.Should().BeFalse();
-            learningDelivery.LearningDeliveryValues.FirstIncentiveThresholdDate.Should().BeNull();
+            var firstAdditionalPaymentDueDate =
+                earningEpisode.AdditionalPayments.OrderBy(x => x.DueDate).First().DueDate;
+            var expectedFirstIncentiveThresholdDate =
+                firstAdditionalPaymentDueDate >= apprenticeship.StartDate &&
+                firstAdditionalPaymentDueDate <= apprenticeship.PlannedEndDate
+                    ? firstAdditionalPaymentDueDate
+                    : (DateTime?)null;
+            learningDelivery.LearningDeliveryValues.FirstIncentiveThresholdDate.Should().Be(expectedFirstIncentiveThresholdDate);
             learningDelivery.LearningDeliveryValues.LDApplic1618FrameworkUpliftTotalActEarnings.Should().Be(0);
             learningDelivery.LearningDeliveryValues.LearnAimRef.Should().Be("ZPROG001");
             learningDelivery.LearningDeliveryValues.LearnStartDate.Should().Be(apprenticeship.StartDate);
             learningDelivery.LearningDeliveryValues.LearnDel1618AtStart.Should().Be(apprenticeship.AgeAtStartOfApprenticeship < 19);
             learningDelivery.LearningDeliveryValues.LearnDelAppAccDaysIL.Should().Be(1 + (expectedPriceEpisodeEndDate - apprenticeship.StartDate).Days);
             learningDelivery.LearningDeliveryValues.LearnDelApplicDisadvAmount.Should().Be(0);
-            learningDelivery.LearningDeliveryValues.LearnDelApplicEmp1618Incentive.Should().Be(0);
+            learningDelivery.LearningDeliveryValues.LearnDelApplicEmp1618Incentive.Should().Be(earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").Sum(x => x.Amount));
             learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618FrameworkUplift.Should().Be(0);
-            learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618Incentive.Should().Be(0);
+            learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618Incentive.Should().Be(earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").Sum(x => x.Amount));
             learningDelivery.LearningDeliveryValues.LearnDelAppPrevAccDaysIL.Should().Be(1 + (expectedPriceEpisodeEndDate - expectedPriceEpisodeStartDate).Days);
             learningDelivery.LearningDeliveryValues.LearnDelDisadAmount.Should().Be(0);
             learningDelivery.LearningDeliveryValues.LearnDelEligDisadvPayment.Should().BeFalse();
@@ -82,7 +89,14 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryValues.PlannedTotalDaysIL.Should().Be(expectedPlannedTotalDays);
             learningDelivery.LearningDeliveryValues.ProgType.Should().Be(25);
             learningDelivery.LearningDeliveryValues.PwayCode.Should().BeNull();
-            learningDelivery.LearningDeliveryValues.SecondIncentiveThresholdDate.Should().BeNull();
+            var secondAdditionalPaymentDueDate =
+                earningEpisode.AdditionalPayments.OrderBy(x => x.DueDate).Skip(1).FirstOrDefault()?.DueDate;
+            var expectedSecondIncentiveThresholdDate =
+                secondAdditionalPaymentDueDate >= apprenticeship.StartDate &&
+                secondAdditionalPaymentDueDate <= apprenticeship.PlannedEndDate
+                    ? secondAdditionalPaymentDueDate
+                    : (DateTime?)null;
+            learningDelivery.LearningDeliveryValues.SecondIncentiveThresholdDate.Should().Be(expectedSecondIncentiveThresholdDate);
             learningDelivery.LearningDeliveryValues.StdCode.Should().Be(int.Parse(apprenticeship.Episodes.Single().TrainingCode));
             learningDelivery.LearningDeliveryValues.ThresholdDays.Should().Be(42);
             learningDelivery.LearningDeliveryValues.LearnDelApplicCareLeaverIncentive.Should().Be(0);

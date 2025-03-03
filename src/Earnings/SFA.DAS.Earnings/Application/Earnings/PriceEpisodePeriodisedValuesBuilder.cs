@@ -1,4 +1,5 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using Microsoft.Azure.Amqp.Framing;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 
 namespace SFA.DAS.Earnings.Application.Earnings;
@@ -74,11 +75,42 @@ public static class PriceEpisodePeriodisedValuesBuilder
         };
     }
 
+    public static PriceEpisodePeriodisedValues BuildAdditionalPaymentsValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName, string additionalPaymentType)
+    {
+        var additionalPayments = GetAdditionalPaymentsForAcademicYear(earningsApprenticeship, academicYear, additionalPaymentType);
+
+        return new PriceEpisodePeriodisedValues
+        {
+            AttributeName = attributeName,
+            Period1 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault(),
+            Period2 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount).GetValueOrDefault(),
+            Period3 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount).GetValueOrDefault(),
+            Period4 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount).GetValueOrDefault(),
+            Period5 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount).GetValueOrDefault(),
+            Period6 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount).GetValueOrDefault(),
+            Period7 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount).GetValueOrDefault(),
+            Period8 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount).GetValueOrDefault(),
+            Period9 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount).GetValueOrDefault(),
+            Period10 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount).GetValueOrDefault(),
+            Period11 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount).GetValueOrDefault(),
+            Period12 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount).GetValueOrDefault()
+        };
+    }
+
     private static List<Instalment> GetInstalmentsForAcademicYear(Apprenticeship earningsApprenticeship, short academicYear)
     {
         return earningsApprenticeship.Episodes
             .SelectMany(episode => episode.Instalments)
             .Where(i => i.AcademicYear == academicYear)
+            .ToList();
+    }
+
+    private static List<AdditionalPayment> GetAdditionalPaymentsForAcademicYear(Apprenticeship earningsApprenticeship, short academicYear, string additionalPaymentType)
+    {
+        return earningsApprenticeship.Episodes
+            .SelectMany(episode => episode.AdditionalPayments)
+            .Where(i => i.AcademicYear == academicYear
+                        && i.AdditionalPaymentType == additionalPaymentType)
             .ToList();
     }
 }
