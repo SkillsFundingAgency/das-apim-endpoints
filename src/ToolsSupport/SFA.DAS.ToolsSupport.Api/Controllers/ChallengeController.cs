@@ -2,9 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ToolsSupport.Api.Models.Challenge;
-using SFA.DAS.ToolsSupport.Api.Models.EmployerAccount;
 using SFA.DAS.ToolsSupport.Application.Commands.ChallengeEntry;
-using SFA.DAS.ToolsSupport.Application.Commands.SupportCreateInvitation;
 using SFA.DAS.ToolsSupport.Application.Queries.GetChallenge;
 
 namespace SFA.DAS.ToolsSupport.Api.Controllers;
@@ -43,17 +41,17 @@ public class ChallengeController(IMediator mediator, ILogger<ChallengeController
 
             var command = new ChallengeEntryCommand
             {
-                AccountId = accountId,
-                Id = request.Id,
-                Challenge1 = request.Challenge1,
-                Challenge2 = request.Challenge2,
-                Balance = request.Balance,
-                FirstCharacterPosition = request.FirstCharacterPosition,
-                SecondCharacterPosition = request.SecondCharacterPosition
+                    AccountId = accountId,
+                    Id = request.Id,
+                    Challenge1 = request.Challenge1,
+                    Challenge2 = request.Challenge2,
+                    Balance = request.Balance,
+                    FirstCharacterPosition = request.FirstCharacterPosition,
+                    SecondCharacterPosition = request.SecondCharacterPosition
             };
 
             var response = await mediator.Send(command);
-           
+
             return Ok((ChallengeEntryResponse)response);
         }
         catch (Exception ex)
