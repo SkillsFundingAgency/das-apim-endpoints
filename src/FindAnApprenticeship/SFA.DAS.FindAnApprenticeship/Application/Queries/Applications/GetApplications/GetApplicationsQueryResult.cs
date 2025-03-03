@@ -1,6 +1,9 @@
-﻿using System;
+﻿using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
+using System;
 using System.Collections.Generic;
-using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 
@@ -23,5 +26,9 @@ public class GetApplicationsQueryResult
         public string? ResponseNotes { get; set; }
         public ApplicationStatus Status { get; set; }
         public DateTime? WithdrawnDate { get; set; }
+        public Address Address { get; set; }
+        public List<Address> OtherAddresses { get; set; } = [];
+        public string? EmploymentLocationInformation { get; set; }
+        public AvailableWhere? EmployerLocationOption { get; set; }
     }
 }

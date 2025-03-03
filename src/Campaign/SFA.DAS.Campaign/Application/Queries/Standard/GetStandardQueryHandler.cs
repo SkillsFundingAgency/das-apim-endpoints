@@ -31,8 +31,8 @@ namespace SFA.DAS.Campaign.Application.Queries.Standard
                     Level = standard.Level,
                     StandardUId = standard.StandardUId,
                     LarsCode = standard.LarsCode,
-                    TimeToComplete = standard.ApprenticeshipFunding.Last().Duration,
-                    MaxFunding = standard.ApprenticeshipFunding.Last().MaxEmployerLevyCap
+                    TimeToComplete = standard.VersionDetail.ProposedTypicalDuration,
+                    MaxFunding = standard.VersionDetail.ProposedMaxFunding
                 }
             };
         }
