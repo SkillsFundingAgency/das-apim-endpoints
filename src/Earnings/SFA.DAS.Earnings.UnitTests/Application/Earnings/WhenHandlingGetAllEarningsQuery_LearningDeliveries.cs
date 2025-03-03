@@ -130,17 +130,9 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryPeriodisedValues.Should()
                 .Contain(x => x.AttributeName == "LDApplic1618FrameworkUpliftOnProgPayment" && x.AllValuesAreSetToZero());
             learningDelivery.LearningDeliveryPeriodisedValues.Should()
-                .Contain(x => x.AttributeName == "LearnDelFirstEmp1618Pay" && x.AllValuesAreSetToZero());
-            learningDelivery.LearningDeliveryPeriodisedValues.Should()
-                .Contain(x => x.AttributeName == "LearnDelFirstProv1618Pay" && x.AllValuesAreSetToZero());
-            learningDelivery.LearningDeliveryPeriodisedValues.Should()
                 .Contain(x => x.AttributeName == "LearnDelLearnAddPayment" && x.AllValuesAreSetToZero());
             learningDelivery.LearningDeliveryPeriodisedValues.Should()
                 .Contain(x => x.AttributeName == "LearnDelLevyNonPayInd" && x.AllValuesAreSetToZero());
-            learningDelivery.LearningDeliveryPeriodisedValues.Should()
-                .Contain(x => x.AttributeName == "LearnDelSecondEmp1618Pay" && x.AllValuesAreSetToZero());
-            learningDelivery.LearningDeliveryPeriodisedValues.Should()
-                .Contain(x => x.AttributeName == "LearnDelSecondProv1618Pay" && x.AllValuesAreSetToZero());
             learningDelivery.LearningDeliveryPeriodisedValues.Should()
                 .Contain(x => x.AttributeName == "LearnDelSEMContWaiver" && x.AllValuesAreSetToZero());
             learningDelivery.LearningDeliveryPeriodisedValues.Should()
@@ -357,10 +349,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
             var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelFirstProv1618Pay");
             result.Should().NotBeNull();
-            var expectedLearnDelFirstProv1618Pay = providerIncentives.MinBy(x => x.DueDate);
-            //var expectedLearnDelSecondProv1618Pay = providerIncentives.OrderBy(x => x.DueDate).Skip(1).FirstOrDefault();
-            //var expectedLearnDelFirstEmp1618Pay = employerIncentives.MinBy(x => x.DueDate);
-            //var expectedLearnDelSecondEmp1618Pay = employerIncentives.OrderBy(x => x.DueDate).Skip(1).FirstOrDefault();
+            var expectedLearnDelFirstProv1618Pay = providerIncentives.Where(x => x.AcademicYear.ToString() == _testFixture.CollectionCalendarResponse.AcademicYear).MinBy(x => x.DeliveryPeriod);
             
             result.Period1.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 1 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
             result.Period2.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 2 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
@@ -374,6 +363,105 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             result.Period10.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 10 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
             result.Period11.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 11 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
             result.Period12.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 12 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
+        }
+    }
+
+    [Test]
+    public void ThenReturnsLearningDeliveryPeriodisedLearnDelSecondProv1618PayValuesForEachApprenticeship()
+    {
+        // Assert
+        _testFixture.Result.Should().NotBeNull();
+
+        foreach (var apprenticeship in _testFixture.ApprenticeshipsResponse.Apprenticeships)
+        {
+            var earningEpisode = _testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+            var providerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").ToList();
+
+            var learningDelivery = _testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+            learningDelivery.Should().NotBeNull();
+            learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
+            var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelSecondProv1618Pay");
+            result.Should().NotBeNull();
+            var expectedLearnDelSecondProv1618Pay = providerIncentives.Where(x => x.AcademicYear.ToString() == _testFixture.CollectionCalendarResponse.AcademicYear).OrderBy(x => x.DeliveryPeriod).Skip(1).FirstOrDefault();
+
+            result.Period1.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 1 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
+            result.Period2.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 2 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
+            result.Period3.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 3 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
+            result.Period4.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 4 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
+            result.Period5.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 5 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
+            result.Period6.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 6 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
+            result.Period7.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 7 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
+            result.Period8.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 8 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
+            result.Period9.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 9 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
+            result.Period10.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 10 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
+            result.Period11.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 11 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
+            result.Period12.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 12 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
+        }
+    }
+
+    [Test]
+    public void ThenReturnsLearningDeliveryPeriodisedLearnDelFirstEmp1618PayValuesForEachApprenticeship()
+    {
+        // Assert
+        _testFixture.Result.Should().NotBeNull();
+
+        foreach (var apprenticeship in _testFixture.ApprenticeshipsResponse.Apprenticeships)
+        {
+            var earningEpisode = _testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+            var employerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").ToList();
+
+            var learningDelivery = _testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+            learningDelivery.Should().NotBeNull();
+            learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
+            var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelFirstEmp1618Pay");
+            result.Should().NotBeNull();
+            var expectedLearnDelFirstEmp1618Pay = employerIncentives.Where(x => x.AcademicYear.ToString() == _testFixture.CollectionCalendarResponse.AcademicYear).MinBy(x => x.DeliveryPeriod);
+
+            result.Period1.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 1 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
+            result.Period2.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 2 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
+            result.Period3.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 3 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
+            result.Period4.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 4 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
+            result.Period5.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 5 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
+            result.Period6.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 6 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
+            result.Period7.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 7 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
+            result.Period8.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 8 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
+            result.Period9.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 9 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
+            result.Period10.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 10 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
+            result.Period11.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 11 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
+            result.Period12.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 12 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
+        }
+    }
+
+    [Test]
+    public void ThenReturnsLearningDeliveryPeriodisedLearnDelSecondEmp1618PayValuesForEachApprenticeship()
+    {
+        // Assert
+        _testFixture.Result.Should().NotBeNull();
+
+        foreach (var apprenticeship in _testFixture.ApprenticeshipsResponse.Apprenticeships)
+        {
+            var earningEpisode = _testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+            var employerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").ToList();
+
+            var learningDelivery = _testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+            learningDelivery.Should().NotBeNull();
+            learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
+            var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelSecondEmp1618Pay");
+            result.Should().NotBeNull();
+            var expectedLearnDelSecondEmp1618Pay = employerIncentives.Where(x => x.AcademicYear.ToString() == _testFixture.CollectionCalendarResponse.AcademicYear).OrderBy(x => x.DeliveryPeriod).Skip(1).FirstOrDefault();
+
+            result.Period1.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 1 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
+            result.Period2.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 2 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
+            result.Period3.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 3 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
+            result.Period4.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 4 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
+            result.Period5.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 5 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
+            result.Period6.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 6 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
+            result.Period7.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 7 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
+            result.Period8.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 8 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
+            result.Period9.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 9 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
+            result.Period10.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 10 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
+            result.Period11.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 11 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
+            result.Period12.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 12 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
         }
     }
 

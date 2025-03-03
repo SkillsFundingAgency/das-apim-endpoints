@@ -180,18 +180,11 @@ public class GetAllEarningsQueryTestFixture
                         },
                         AdditionalPayments = new List<AdditionalPayment>
                         {
-                            new AdditionalPayment{ AcademicYear = 1920, DeliveryPeriod = 6, Amount = 500, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 1, 1)},
-                            new AdditionalPayment{ AcademicYear = 1920, DeliveryPeriod = 7, Amount = 500, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 2, 1)},
-                            new AdditionalPayment{ AcademicYear = 1920, DeliveryPeriod = 8, Amount = 500, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 3, 1)},
-                            new AdditionalPayment{ AcademicYear = 1920, DeliveryPeriod = 9, Amount = 500, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 4, 1)},
-                            new AdditionalPayment{ AcademicYear = 1920, DeliveryPeriod = 10, Amount = 500, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 5, 1) },
-                            new AdditionalPayment{ AcademicYear = 1920, DeliveryPeriod = 11, Amount = 500, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 6, 1) },
-                            new AdditionalPayment{ AcademicYear = 1920, DeliveryPeriod = 12, Amount = 500, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 7, 1) },
                             new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 500, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 8, 1) },
                             new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 500, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 9, 1) },
 
-                            new AdditionalPayment{ AcademicYear = 1920, DeliveryPeriod = 6, Amount = 500, AdditionalPaymentType = additionalPaymentTypeEmployerIncentive, DueDate = new DateTime(2020, 10, 1)},
-                            new AdditionalPayment{ AcademicYear = 1920, DeliveryPeriod = 7, Amount = 500, AdditionalPaymentType = additionalPaymentTypeEmployerIncentive, DueDate = new DateTime(2020, 11, 1)}
+                            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 6, Amount = 500, AdditionalPaymentType = additionalPaymentTypeEmployerIncentive, DueDate = new DateTime(2021, 1, 1)},
+                            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 500, AdditionalPaymentType = additionalPaymentTypeEmployerIncentive, DueDate = new DateTime(2021, 2, 1)}
                         }
                     }
                 }
