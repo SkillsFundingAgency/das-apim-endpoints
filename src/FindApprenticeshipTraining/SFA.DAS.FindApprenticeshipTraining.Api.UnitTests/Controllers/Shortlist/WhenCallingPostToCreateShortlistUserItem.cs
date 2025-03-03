@@ -39,7 +39,7 @@ public class WhenCallingPostToCreateShortlistUserItem
                     && command.Lon.Equals(shortlistRequest.Lon)
                     && command.Ukprn.Equals(shortlistRequest.Ukprn)
                     && command.LocationDescription.Equals(shortlistRequest.LocationDescription)
-                    && command.StandardId.Equals(shortlistRequest.StandardId)
+                    && command.LarsCode.Equals(shortlistRequest.LarsCode)
                 ), It.IsAny<CancellationToken>()));
 
         controllerResult.As<CreatedAtActionResult>().Should().NotBeNull();

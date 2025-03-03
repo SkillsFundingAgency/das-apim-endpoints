@@ -38,7 +38,7 @@ public class WhenCreatingShortlistForUser
                 && ((PostShortlistData)c.Data).Longitude.Equals(command.Lon)
                 && ((PostShortlistData)c.Data).Ukprn.Equals(command.Ukprn)
                 && ((PostShortlistData)c.Data).LocationDescription.Equals(command.LocationDescription)
-                && ((PostShortlistData)c.Data).LarsCode.Equals(command.StandardId)
+                && ((PostShortlistData)c.Data).LarsCode.Equals(command.LarsCode)
                 && ((PostShortlistData)c.Data).UserId.Equals(command.ShortlistUserId)), false));
         actualResult.Should().BeEquivalentTo(expectedResult);
     }
