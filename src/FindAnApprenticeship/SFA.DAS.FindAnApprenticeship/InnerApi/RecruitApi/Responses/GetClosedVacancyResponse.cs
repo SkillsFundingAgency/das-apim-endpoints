@@ -23,8 +23,7 @@ public class GetClosedVacancyResponse: IVacancy
     public int CourseId => Convert.ToInt32(ProgrammeId);
     public Address EmployerLocation { get; set; }
     public List<Address>? EmployerLocations { get; set; }
-    public Address? Address
-    {
+    public Address? Address {
         get
         {
             return EmployerLocationOption switch
@@ -39,7 +38,11 @@ public class GetClosedVacancyResponse: IVacancy
     public List<Address>? OtherAddresses {
         get
         {
-            if (EmployerLocationOption is not AvailableWhere.MultipleLocations) return null;
+            if (EmployerLocationOption is not AvailableWhere.MultipleLocations)
+            {
+                return null;
+            }
+
             var firstAddress = EmployerLocations!.FirstOrDefault().ToSingleLineAddress();
             var otherAddresses = EmployerLocations
                 .Skip(1)
@@ -54,7 +57,7 @@ public class GetClosedVacancyResponse: IVacancy
     [JsonPropertyName("employmentLocationInformation")]
     public string? EmploymentLocationInformation { get; set; }
 
-    [JsonPropertyName("employerLocationOption"), JsonConverter(typeof(JsonStringEnumConverter<AvailableWhere>))]
+    [JsonPropertyName("employerLocationOption")]
     public AvailableWhere? EmployerLocationOption { get; set; }
     public TrainingProviderDetails TrainingProvider { get; set; }
     public string AdditionalQuestion1 { get; set; }
