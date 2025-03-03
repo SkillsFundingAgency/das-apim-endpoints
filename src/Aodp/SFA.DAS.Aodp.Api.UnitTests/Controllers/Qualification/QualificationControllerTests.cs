@@ -155,5 +155,11 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var badRequestValue = badRequestResult.Value?.GetType().GetProperty("message")?.GetValue(badRequestResult.Value, null);
             Assert.That(badRequestValue, Is.EqualTo("Qualification reference cannot be empty"));
         }
+
+        [TearDownAttribute]
+        public void TearDown()
+        {
+            _controller.Dispose();
+        }
     }
 }
