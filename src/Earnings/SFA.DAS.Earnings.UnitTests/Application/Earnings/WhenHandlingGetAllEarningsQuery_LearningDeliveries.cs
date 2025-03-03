@@ -465,32 +465,6 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         }
     }
 
-    //[Test]
-    //public void ThenReturnsLearningDeliveryPeriodisedFirstAndSecond1618IncentiveValuesForEachApprenticeship()
-    //{
-    //    // Assert
-    //    _testFixture.Result.Should().NotBeNull();
-
-    //    foreach (var apprenticeship in _testFixture.ApprenticeshipsResponse.Apprenticeships)
-    //    {
-    //        var earningEpisode = _testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
-    //        var providerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").ToList();
-    //        var employerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").ToList();
-
-    //        var learningDelivery = _testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
-    //        learningDelivery.Should().NotBeNull();
-    //        learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
-    //        var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelFirstProv1618Pay");
-    //        result.Should().NotBeNull();
-    //        var expectedLearnDelFirstProv1618Pay = providerIncentives.MinBy(x => x.DueDate);
-    //        var expectedLearnDelSecondProv1618Pay = providerIncentives.OrderBy(x => x.DueDate).Skip(1).FirstOrDefault();
-    //        var expectedLearnDelFirstEmp1618Pay = employerIncentives.MinBy(x => x.DueDate);
-    //        var expectedLearnDelSecondEmp1618Pay = employerIncentives.OrderBy(x => x.DueDate).Skip(1).FirstOrDefault();
-
-    //        result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault());
-    //    }
-    //}
-
     [TestCase("StillInLearning", true)]
     [TestCase("WithdrawnAfterQualifyingPeriod", true)]
     [TestCase("WithdrawnBeforeQualifyingPeriod", false)]
