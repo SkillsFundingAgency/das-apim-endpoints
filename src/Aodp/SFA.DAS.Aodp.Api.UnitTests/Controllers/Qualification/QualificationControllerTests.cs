@@ -50,6 +50,28 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         }
 
         [Test]
+        public async Task GetQualifications_ReturnsOkResult_WithListOfChangedQualifications()
+        {
+            // Arrange
+            var queryResponse = _fixture.Create<BaseMediatrResponse<GetChangedQualificationsQueryResponse>>();
+            queryResponse.Success = true;
+            queryResponse.Value.Data = _fixture.CreateMany<GetChangedQualificationsQueryResponse.ChangedQualification>(2).ToList();
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetChangedQualificationsQuery>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await _controller.GetQualifications("changed");
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = (OkObjectResult)result;
+            Assert.That(okResult.Value, Is.AssignableFrom<GetChangedQualificationsQueryResponse>());
+            var model = (GetChangedQualificationsQueryResponse)okResult.Value;
+            Assert.That(model.Data.Count, Is.EqualTo(2));
+        }
+
+        [Test]
         public async Task GetQualifications_ReturnsNotFound_WhenQueryFails()
         {
             // Arrange
@@ -134,23 +156,10 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             Assert.That(badRequestValue, Is.EqualTo("Qualification reference cannot be empty"));
         }
 
-        [Test]
-        public async Task GetChangedQualifications_ReturnsOkResult_WithChangedQualifications()
+        [TearDownAttribute]
+        public void TearDown()
         {
-            // Arrange
-            var queryResponse = _fixture.Create<BaseMediatrResponse<GetChangedQualificationsQueryResponse>>();
-            queryResponse.Success = true;
-
-            _mediatorMock.Setup(m => m.Send(It.IsAny<GetChangedQualificationsQuery>(), default))
-                         .ReturnsAsync(queryResponse);
-
-            // Act
-            var result = await _controller.GetChangedQualifications();
-
-            // Assert
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
-            var okResult = (OkObjectResult)result;
-            Assert.That(okResult.Value, Is.AssignableFrom<GetChangedQualificationsQueryResponse>());
+            _controller.Dispose();
         }
     }
 }
