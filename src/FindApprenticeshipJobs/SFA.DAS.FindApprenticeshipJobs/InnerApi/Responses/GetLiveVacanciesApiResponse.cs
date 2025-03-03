@@ -1,7 +1,6 @@
 ﻿using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Text.Json.Serialization;
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 public class GetLiveVacanciesApiResponse
@@ -29,7 +28,6 @@ public class LiveVacancy
     public string? EmployerDescription { get; set; }
     public Address? EmployerLocation { get; set; }
     public List<Address>? EmployerLocations { get; set; } = [];
-    [JsonPropertyName("employerLocationOption"), JsonConverter(typeof(JsonStringEnumConverter<AvailableWhere>))]
     public AvailableWhere? EmployerLocationOption { get; set; }
     public string? EmployerLocationInformation { get; set; }
 
