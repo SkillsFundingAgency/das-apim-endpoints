@@ -154,4 +154,15 @@ public class ApplicationsController : BaseController
 
         return await SendRequestAsync(command);
     }
+
+
+    [HttpPut("/api/applications/{applicationId}/submit")]
+    [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> SubmitApplicationByIdAsync(Guid applicationId, SubmitApplicationCommand submitApplicationCommand)
+    {
+        submitApplicationCommand.ApplicationId = applicationId;
+        return await SendRequestAsync(submitApplicationCommand);
+    }
 }
