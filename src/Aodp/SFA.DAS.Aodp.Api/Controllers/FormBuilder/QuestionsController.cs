@@ -100,7 +100,10 @@ public class QuestionsController : BaseController
     {
         var query = new DeleteQuestionCommand()
         {
-            QuestionId = questionId
+            QuestionId = questionId,
+            SectionId = sectionId,
+            PageId = pageId,
+            FormVersionId = formVersionId
         };
 
         return await SendRequestAsync(query);

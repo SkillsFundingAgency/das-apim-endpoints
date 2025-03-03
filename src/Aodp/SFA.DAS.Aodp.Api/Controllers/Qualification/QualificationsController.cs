@@ -104,8 +104,8 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
 
             if (result == null || !result.Success || result.Value == null)
             {
-                _logger.LogWarning(result.ErrorMessage);
-                return NotFound(new { message = result.ErrorMessage });
+                _logger.LogWarning(result?.ErrorMessage);
+                return NotFound(new { message = result?.ErrorMessage });
             }
 
             return Ok(result);
