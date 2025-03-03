@@ -19,7 +19,6 @@ public class GetPayeSchemeLevyDeclarationsQueryHandlerTests
         PayeScheme payeScheme,
         PayeSchemeLevyDeclarations levyDeclarations,
         [Frozen] Mock<IAccountsService> mockAccountsService,
-        [Frozen] Mock<IPayRefHashingService> mockHashingService,
         [Frozen] Mock<IHmrcApiClient<HmrcApiConfiguration>> mockHmrcApiClient,
         GetPayeSchemeLevyDeclarationsQueryHandler handler)
     {
@@ -27,7 +26,6 @@ public class GetPayeSchemeLevyDeclarationsQueryHandlerTests
         account.PayeSchemes = [new() { Id = actualPayeId, Href = "/paye/123" }];
 
         mockAccountsService.Setup(s => s.GetAccount(query.AccountId)).ReturnsAsync(account);
-        mockHashingService.Setup(s => s.DecodeValueToString(query.HashedPayeRef)).Returns(actualPayeId);
         mockAccountsService.Setup(s => s.GetEmployerAccountPayeScheme("/paye/123")).ReturnsAsync(payeScheme);
 
         levyDeclarations.Declarations =
@@ -52,7 +50,6 @@ public class GetPayeSchemeLevyDeclarationsQueryHandlerTests
         result.LevySubmissions.Declarations[1].SubmissionTime.Should().Be(new DateTime(2017, 5, 1));
 
         mockAccountsService.Verify(s => s.GetAccount(query.AccountId), Times.Once());
-        mockHashingService.Verify(s => s.DecodeValueToString(query.HashedPayeRef), Times.Once());
         mockAccountsService.Verify(s => s.GetEmployerAccountPayeScheme("/paye/123"), Times.Once());
         mockHmrcApiClient.Verify(s => s.Get<PayeSchemeLevyDeclarations>(It.IsAny<GetPayeSchemeLevyDeclarationsRequest>()), Times.Once());
     }
@@ -88,14 +85,12 @@ public class GetPayeSchemeLevyDeclarationsQueryHandlerTests
         string actualPayeId,
         PayeScheme payeScheme,
         [Frozen] Mock<IAccountsService> mockAccountsService,
-        [Frozen] Mock<IPayRefHashingService> mockHashingService,
         [Frozen] Mock<IHmrcApiClient<HmrcApiConfiguration>> mockHmrcApiClient,
         GetPayeSchemeLevyDeclarationsQueryHandler handler)
     {
         // Arrange
         account.PayeSchemes = [new () { Id = actualPayeId, Href = "/paye/123" }];
         mockAccountsService.Setup(s => s.GetAccount(query.AccountId)).ReturnsAsync(account);
-        mockHashingService.Setup(s => s.DecodeValueToString(query.HashedPayeRef)).Returns(actualPayeId);
         mockAccountsService.Setup(s => s.GetEmployerAccountPayeScheme("/paye/123")).ReturnsAsync(payeScheme);
 
         mockHmrcApiClient.Setup(s => s.Get<PayeSchemeLevyDeclarations>(It.IsAny<GetPayeSchemeLevyDeclarationsRequest>()))
@@ -111,7 +106,6 @@ public class GetPayeSchemeLevyDeclarationsQueryHandlerTests
         result.LevySubmissions.Should().NotBeNull();
         result.LevySubmissions.Declarations.Should().BeEmpty();
         mockAccountsService.Verify(s => s.GetAccount(query.AccountId), Times.Once());
-        mockHashingService.Verify(s => s.DecodeValueToString(query.HashedPayeRef), Times.Once());
         mockHmrcApiClient.Verify(s => s.Get<PayeSchemeLevyDeclarations>(It.IsAny<GetPayeSchemeLevyDeclarationsRequest>()), Times.Once());
     }
 }

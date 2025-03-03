@@ -14,7 +14,6 @@ public interface IFinanceDataService
 public class FinanceDataService(
     IAccountsService accountsService,
     IEmployerFinanceService employerFinanceService,
-    IPayRefHashingService hashingService,
     IPayeSchemeObfuscator payeSchemeObfuscator,
     ILogger<FinanceDataService> logger,
     IDatetimeService datetimeService) : IFinanceDataService
@@ -48,7 +47,6 @@ public class FinanceDataService(
             AddedDate = payeScheme.AddedDate,
             RemovedDate = payeScheme.RemovedDate,
             Name = payeScheme.Name,
-            HashedPayeRef = hashingService.HashValue(payeScheme.Ref),
             ObscuredPayeRef = payeSchemeObfuscator.ObscurePayeScheme(payeScheme.Ref)
         }).ToList();
     }

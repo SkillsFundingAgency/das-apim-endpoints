@@ -101,14 +101,14 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
 
     [HttpGet]
     [Route("{accountId}/paye-levy-declarations")]
-    public async Task<IActionResult> GetPayeLevyDeclarations(long accountId, [FromQuery, Required] string hashedPayeRef)
+    public async Task<IActionResult> GetPayeLevyDeclarations(long accountId, [FromQuery, Required] string payeRef)
     {
         try
         {
             var result = await mediator.Send(new GetPayeSchemeLevyDeclarationsQuery
             {
                 AccountId = accountId,
-                HashedPayeRef = hashedPayeRef,
+                PayeRef = payeRef,
             });
             return Ok((GetPayeLevyDeclarationsResponse)result);
 

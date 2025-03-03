@@ -117,7 +117,7 @@ public class EmployerAccountControllerTests
     [Test, MoqAutoData]
     public async Task Then_Gets_PayeLevyDeclarations_From_Mediator(
        long accountId,
-       string hashedPayeRef,
+       string payeRef,
        [Frozen] Mock<IMediator> mockMediator,
        [Greedy] EmployerAccountController controller)
     {
@@ -126,10 +126,10 @@ public class EmployerAccountControllerTests
                .Setup(mediator => mediator.Send(
                    It.Is<GetPayeSchemeLevyDeclarationsQuery>(x =>
                    x.AccountId == accountId &&
-                   x.HashedPayeRef == hashedPayeRef),
+                   x.PayeRef == payeRef),
                    It.IsAny<CancellationToken>())).ReturnsAsync(getPayeLevyDeclarationsResult);
 
-        var controllerResult = await controller.GetPayeLevyDeclarations(accountId, hashedPayeRef) as ObjectResult;
+        var controllerResult = await controller.GetPayeLevyDeclarations(accountId, payeRef) as ObjectResult;
 
         controllerResult.Should().NotBeNull();
         var model = controllerResult.Value as GetPayeLevyDeclarationsResponse;

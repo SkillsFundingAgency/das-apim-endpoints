@@ -7,7 +7,6 @@ public class PayeScheme
     public string Name { get; set; } = "";
     public DateTime AddedDate { get; set; }
     public DateTime? RemovedDate { get; set; }
-    public string HashedPayeRef { get; set; } = "";
     public string ObscuredPayeRef { get; set; } = "";
     public string PayeRefWithOutSlash
     {

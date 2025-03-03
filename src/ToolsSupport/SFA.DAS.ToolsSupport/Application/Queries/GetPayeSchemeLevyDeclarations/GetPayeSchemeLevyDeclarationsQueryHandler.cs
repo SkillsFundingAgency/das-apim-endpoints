@@ -8,7 +8,7 @@ namespace SFA.DAS.ToolsSupport.Application.Queries.GetPayeSchemeLevyDeclarations
 
 public class GetPayeSchemeLevyDeclarationsQueryHandler(
     IAccountsService accountsService,
-    IPayRefHashingService hashingService, IHmrcApiClient<HmrcApiConfiguration> hmrcApiClient) : IRequestHandler<GetPayeSchemeLevyDeclarationsQuery, GetPayeSchemeLevyDeclarationsResult>
+    IHmrcApiClient<HmrcApiConfiguration> hmrcApiClient) : IRequestHandler<GetPayeSchemeLevyDeclarationsQuery, GetPayeSchemeLevyDeclarationsResult>
 {
     public async Task<GetPayeSchemeLevyDeclarationsResult> Handle(GetPayeSchemeLevyDeclarationsQuery query, CancellationToken cancellationToken)
     {
@@ -21,10 +21,8 @@ public class GetPayeSchemeLevyDeclarationsQueryHandler(
             return result;
         }
 
-        var actualPayeId = hashingService.DecodeValueToString(query.HashedPayeRef);
-
-        result.PayeScheme = await GetSelectedPayeSchemeFromAccount(account, actualPayeId);
-        result.LevySubmissions = await GetLevyDeclarationsForPayeScheme(actualPayeId);
+        result.PayeScheme = await GetSelectedPayeSchemeFromAccount(account, query.PayeRef);
+        result.LevySubmissions = await GetLevyDeclarationsForPayeScheme(query.PayeRef);
         result.StatusCode = PayeLevySubmissionsResponseCodes.Success;
 
         return result;

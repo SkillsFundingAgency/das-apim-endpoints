@@ -32,12 +32,6 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IChallengeService, ChallengeService>();
         services.AddTransient<IFinanceDataService, FinanceDataService>();
 
-        services.AddSingleton<IPayRefHashingService, PayRefHashingService>(static sp =>
-        {
-            var hashConfig = sp.GetService<HashingServiceConfiguration>();
-            return new PayRefHashingService(hashConfig.AllowedCharacters, hashConfig.Hashstring);
-        });
-
         return services;
     }
 }
