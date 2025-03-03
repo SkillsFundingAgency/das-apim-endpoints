@@ -13,7 +13,6 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Hashids.net" />
 		<PackageReference Include="MediatR" />
 	</ItemGroup>
 	

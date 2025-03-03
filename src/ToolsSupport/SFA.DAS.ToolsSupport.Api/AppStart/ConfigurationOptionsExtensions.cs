@@ -28,9 +28,6 @@ public static class AddConfigurationOptionsExtension
         
         services.Configure<EmployerUsersApiConfiguration>(configuration.GetSection("EmployerUsersInnerApi"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerUsersApiConfiguration>>().Value);
-
-        services.Configure<HashingServiceConfiguration>(configuration.GetSection(nameof(HashingServiceConfiguration)));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<HashingServiceConfiguration>>().Value);
         
         services.Configure<TokenServiceApiConfiguration>(configuration.GetSection("TokenServiceApi"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<TokenServiceApiConfiguration>>().Value);
