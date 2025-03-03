@@ -27,7 +27,11 @@ public class WhenMappingFromGetClosedVacancyResponseToVacancy
         actual.AdditionalTrainingDescription.Should().Be(source.AdditionalTrainingDescription);
         actual.AdditionalQuestion1.Should().Be(source.AdditionalQuestion1);
         actual.AdditionalQuestion2.Should().Be(source.AdditionalQuestion2);
-        actual.Address.Should().BeEquivalentTo(source.EmployerLocation, options => options.ExcludingMissingMembers());
+        actual.Address.Should().BeEquivalentTo(source.Address, options => options.ExcludingMissingMembers());
+        actual.OtherAddresses.Should().BeEquivalentTo(source.OtherAddresses, options => options
+            .Excluding(c =>c.Latitude)
+            .Excluding(c => c.Longitude)
+        );
         actual.AnonymousEmployerName.Should().Be(source.IsAnonymous ? source.EmployerName : null);
         actual.ApplicationInstructions.Should().Be(source.ApplicationInstructions);
         actual.ApplicationUrl.Should().Be(source.ApplicationUrl);
@@ -47,8 +51,8 @@ public class WhenMappingFromGetClosedVacancyResponseToVacancy
         actual.IsEmployerAnonymous.Should().Be(source.IsAnonymous);
         actual.IsPositiveAboutDisability.Should().Be(false);
         actual.IsRecruitVacancy.Should().Be(true);
-        actual.Location.Lat.Should().Be(source.EmployerLocation.Latitude);
-        actual.Location.Lon.Should().Be(source.EmployerLocation.Longitude);
+        actual.Location.Lat.Should().Be(source.Address.Latitude);
+        actual.Location.Lon.Should().Be(source.Address.Longitude);
         actual.LongDescription.Should().Be(source.Description);
         actual.NumberOfPositions.Should().Be(source.NumberOfPositions);
         actual.OutcomeDescription.Should().Be(source.OutcomeDescription);

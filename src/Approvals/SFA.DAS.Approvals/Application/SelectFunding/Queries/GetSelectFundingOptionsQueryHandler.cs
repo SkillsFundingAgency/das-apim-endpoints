@@ -33,7 +33,7 @@ public class GetSelectFundingOptionsQueryHandler : IRequestHandler<GetSelectFund
 
     public async Task<GetSelectFundingOptionsQueryResult> Handle(GetSelectFundingOptionsQuery request, CancellationToken cancellationToken)
     {
-        var statusTask = _reservationsApiClient.Get<GetAccountReservationsStatusResponse>(new GetAccountReservationsStatusRequest(request.AccountId, null));
+        var statusTask = _reservationsApiClient.Get<GetAccountReservationsStatusResponse>(new GetAccountReservationsStatusRequest(request.AccountId));
         var connectionsTask = _financeApiClient.Get<IEnumerable<GetTransferConnectionsResponse.TransferConnection>>(new GetTransferConnectionsRequest { AccountId = request.AccountId});
         var accountTask = _accountsApiClient.Get<GetAccountResponse>(new GetAccountRequest(request.AccountId.ToString()));
         var ltmTask = _ltmApiClient.Get<GetApplicationsResponse>(new GetAcceptedEmployerAccountPledgeApplicationsRequest(request.AccountId));

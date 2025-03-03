@@ -33,7 +33,11 @@ public class WithdrawApplicationQueryHandler(
             ClosedDate = vacancy.ClosedDate,
             EmployerName = vacancy.EmployerName,
             SubmittedDate = application.SubmittedDate,
-            AdvertTitle = vacancy.Title
+            AdvertTitle = vacancy.Title,
+            Address = vacancy.Address,
+            OtherAddresses = vacancy.OtherAddresses,
+            EmployerLocationOption = vacancy.EmployerLocationOption,
+            EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
         };
     }
 }

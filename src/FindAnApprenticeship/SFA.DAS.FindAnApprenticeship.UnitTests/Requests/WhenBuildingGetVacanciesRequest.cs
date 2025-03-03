@@ -21,11 +21,29 @@ public class WhenBuildingGetVacanciesRequest
         List<string> categories,
         List<int> levels,
         bool disabilityConfident,
-        List<VacancyDataSource> additionalDataSources)
+        List<VacancyDataSource> additionalDataSources,
+        bool? excludeNational)
     {
-        var actual = new GetVacanciesRequest(lat, lon, distance,whatSearchTerm, pageNumber, pageSize, categories, levels, sort, skipWageType, disabilityConfident, additionalDataSources);
+        // arrange
+        var expectedUrl = $"/api/vacancies?" +
+                          $"lat={lat}" +
+                          $"&lon={lon}" +
+                          $"&distanceInMiles={distance}" +
+                          $"&sort={sort}" +
+                          $"&pageNumber={pageNumber}" +
+                          $"&pageSize={pageSize}" +
+                          $"&categories={string.Join("&categories=", categories)}" +
+                          $"&levels={string.Join("&levels=", levels)}" +
+                          $"&searchTerm={whatSearchTerm}" +
+                          $"&disabilityConfident={disabilityConfident}" +
+                          $"&skipWageType={skipWageType}" +
+                          $"&additionalDataSources={string.Join("&additionalDataSources=", additionalDataSources)}" +
+                          $"&excludeNational={excludeNational}";
+        
+        // act
+        var actual = new GetVacanciesRequest(lat, lon, distance,whatSearchTerm, pageNumber, pageSize, categories, levels, sort, skipWageType, disabilityConfident, additionalDataSources, excludeNational);
 
-        actual.GetUrl.Should().Be($"/api/vacancies?lat={lat}&lon={lon}&distanceInMiles={distance}&sort={sort}&pageNumber={pageNumber}&pageSize={pageSize}&categories={string.Join("&categories=", categories)}&levels={string.Join("&levels=", levels)}&searchTerm={whatSearchTerm}&disabilityConfident={disabilityConfident}&skipWageType={skipWageType}&additionalDataSources={string.Join("&additionalDataSources=", additionalDataSources)}");
+        actual.GetUrl.Should().Be(expectedUrl);
         actual.Version.Should().Be("2.0");
     }
 }

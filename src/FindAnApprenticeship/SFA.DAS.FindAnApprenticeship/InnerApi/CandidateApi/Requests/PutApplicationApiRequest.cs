@@ -20,7 +20,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
         public class PutApplicationApiRequestData
         {
             public Guid CandidateId { get; set; }
-            public IEnumerable<string> AdditionalQuestions { get; set; }
+            public List<KeyValuePair<int, string>> AdditionalQuestions { get; set; }
             public short IsAdditionalQuestion1Complete { get; set; }
             public short IsAdditionalQuestion2Complete { get; set; }
             public short IsDisabilityConfidenceComplete { get; set; }

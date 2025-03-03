@@ -28,6 +28,8 @@ pr:
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
+- name: ProductShortName
+  value: ea
 
 resources:
   repositories:
@@ -40,7 +42,7 @@ resources:
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/5.1.14
+    ref: refs/tags/5.1.19
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-employer-config
@@ -54,3 +56,4 @@ stages:
     OuterApiName: EmployerAccounts
     ConfigurationSecrets:
       CompaniesHouseApiKey: $(CompaniesHouseApiKey)
+    useProductAppInsights: 'True'
