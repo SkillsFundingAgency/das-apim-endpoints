@@ -22,7 +22,7 @@ public class CreateShortlistForUserCommandHandler(IRoatpCourseManagementApiClien
                     Longitude = request.Lon,
                     Ukprn = request.Ukprn,
                     LocationDescription = request.LocationDescription,
-                    LarsCode = request.StandardId,
+                    LarsCode = request.LarsCode,
                     UserId = request.ShortlistUserId
                 }
             },

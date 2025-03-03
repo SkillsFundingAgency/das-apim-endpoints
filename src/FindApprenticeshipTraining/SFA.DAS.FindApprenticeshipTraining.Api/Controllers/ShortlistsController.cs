@@ -33,7 +33,7 @@ public class ShortlistsController(IMediator _mediator, ILogger<ShortlistsControl
                 Lon = shortlistRequest.Lon,
                 Ukprn = shortlistRequest.Ukprn,
                 LocationDescription = shortlistRequest.LocationDescription,
-                StandardId = shortlistRequest.StandardId,
+                LarsCode = shortlistRequest.LarsCode,
                 ShortlistUserId = shortlistRequest.ShortlistUserId
             });
 
