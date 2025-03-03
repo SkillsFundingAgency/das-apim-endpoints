@@ -1,14 +1,12 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ToolsSupport.Application.Services;
-using SFA.DAS.ToolsSupport.InnerApi.Requests;
-using SFA.DAS.ToolsSupport.InnerApi.Responses;
 using SFA.DAS.ToolsSupport.Interfaces;
 
 namespace SFA.DAS.ToolsSupport.Application.Queries.GetAccountFinance;
 
 public class GetAccountFinanceQueryHandler(
-        IAccountsService accountsService,    
+        IAccountsService accountsService,
     IFinanceDataService financeDataService,
     ILogger<GetAccountFinanceQueryHandler> logger)
         : IRequestHandler<GetAccountFinanceQuery, GetAccountFinanceQueryResult>
@@ -25,6 +23,4 @@ public class GetAccountFinanceQueryHandler(
 
         return new GetAccountFinanceQueryResult();
     }
-
-   
 }

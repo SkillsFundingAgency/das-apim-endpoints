@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Http;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.ToolsSupport.Configuration;
 using SFA.DAS.ToolsSupport.Interfaces;
@@ -15,7 +13,5 @@ public class HmrcApiClient<T>(IHttpClientFactory httpClientFactory, T apiConfigu
     {
         var tokenResult = await _tokenService.GetPrivilegedAccessTokenAsync();
         httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokenResult.AccessCode);
-
-        //httpRequestMessage.Headers.Add("Authorization", $"Bearer {tokenResult}");
     }
 }

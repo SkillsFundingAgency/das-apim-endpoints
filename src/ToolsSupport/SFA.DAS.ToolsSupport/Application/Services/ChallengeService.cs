@@ -3,7 +3,6 @@ using SFA.DAS.ToolsSupport.Application.Queries.GetChallenge;
 using SFA.DAS.ToolsSupport.InnerApi.Responses;
 using SFA.DAS.ToolsSupport.Models;
 
-
 namespace SFA.DAS.ToolsSupport.Application.Services;
 public class ChallengeService : IChallengeService
 {
