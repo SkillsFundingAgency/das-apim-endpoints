@@ -3,9 +3,11 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models
 {
@@ -84,6 +86,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public IEnumerable<VacancyQualificationApiResponse> Qualifications { get; init; }
 
         public AddressApiResponse Address { get; init; }
+        public List<AddressApiResponse>? OtherAddresses { get; init; } = [];
+        public string? EmploymentLocationInformation { get; set; }
+        
+        [JsonProperty("availableWhere"), System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter<AvailableWhere>))]
+        public AvailableWhere? EmployerLocationOption { get; set; }
         public List<string> CourseSkills { get; set; }
         public List<string> CourseCoreDuties { get; set; }
         public string CourseOverviewOfRole { get; set; }
@@ -106,80 +113,79 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         {
             return new GetApprenticeshipVacancyApiResponse
             {
-                LongDescription = source.ApprenticeshipVacancy.LongDescription,
-                OutcomeDescription = source.ApprenticeshipVacancy.OutcomeDescription,
-                TrainingDescription = source.ApprenticeshipVacancy.TrainingDescription,
-                ThingsToConsider = source.ApprenticeshipVacancy.ThingsToConsider,
-                Skills = source.ApprenticeshipVacancy.Skills,
-                Id = source.ApprenticeshipVacancy.Id,
-                ClosingDate = source.ApprenticeshipVacancy.ClosingDate,
-                PostedDate = source.ApprenticeshipVacancy.PostedDate,
-                EmployerName = source.ApprenticeshipVacancy.EmployerName,
-                Title = source.ApprenticeshipVacancy.Title,
-                VacancyReference = source.ApprenticeshipVacancy.VacancyReference,
-                CourseTitle = source.ApprenticeshipVacancy.CourseTitle,
-                WageAmount = source.ApprenticeshipVacancy.WageAmount,
-                WageType = source.ApprenticeshipVacancy.WageType,
-                Distance = source.ApprenticeshipVacancy.Distance,
-                CourseLevel = source.ApprenticeshipVacancy.CourseLevel,
-                CourseId = source.ApprenticeshipVacancy.CourseId,
-                CourseRoute = source.ApprenticeshipVacancy.CourseRoute,
+                AdditionalTrainingDescription = source.ApprenticeshipVacancy.AdditionalTrainingDescription,
+                Address = source.ApprenticeshipVacancy.Address,
+                AnonymousEmployerName = source.ApprenticeshipVacancy.AnonymousEmployerName,
+                Application = (CandidateApplication)source.Application,
+                ApplicationInstructions = source.ApprenticeshipVacancy.ApplicationInstructions,
+                ApplicationUrl = source.ApprenticeshipVacancy.ApplicationUrl,
                 ApprenticeshipLevel = source.ApprenticeshipVacancy.ApprenticeshipLevel,
-
+                CandidatePostcode = source.CandidatePostcode,
                 Category = source.ApprenticeshipVacancy.Category,
                 CategoryCode = source.ApprenticeshipVacancy.CategoryCode,
+                ClosingDate = source.ApprenticeshipVacancy.ClosingDate,
+                CompanyBenefitsInformation = source.ApprenticeshipVacancy.CompanyBenefitsInformation,
+                CourseCoreDuties = source.CourseDetail?.CoreDuties ?? [],
+                CourseId = source.ApprenticeshipVacancy.CourseId,
+                CourseLevel = source.ApprenticeshipVacancy.CourseLevel,
+                CourseOverviewOfRole = source.CourseDetail?.OverviewOfRole ?? string.Empty,
+                CourseRoute = source.ApprenticeshipVacancy.CourseRoute,
+                CourseSkills = source.CourseDetail?.Skills ?? [],
+                CourseTitle = source.ApprenticeshipVacancy.CourseTitle,
                 Description = source.ApprenticeshipVacancy.Description,
-                FrameworkLarsCode = source.ApprenticeshipVacancy.FrameworkLarsCode,
-                HoursPerWeek = source.ApprenticeshipVacancy.HoursPerWeek,
-                IsDisabilityConfident = source.ApprenticeshipVacancy.IsDisabilityConfident,
-                IsPositiveAboutDisability = source.ApprenticeshipVacancy.IsPositiveAboutDisability,
-                IsRecruitVacancy = source.ApprenticeshipVacancy.IsRecruitVacancy,
-                Location = source.ApprenticeshipVacancy.Location,
-                NumberOfPositions = source.ApprenticeshipVacancy.NumberOfPositions,
-                ProviderName = source.ApprenticeshipVacancy.ProviderName,
-                StandardLarsCode = source.ApprenticeshipVacancy.CourseId,
-                StartDate = source.ApprenticeshipVacancy.StartDate,
-                SubCategory = source.ApprenticeshipVacancy.SubCategory,
-                SubCategoryCode = source.ApprenticeshipVacancy.SubCategoryCode,
-                Ukprn = source.ApprenticeshipVacancy.Ukprn,
-
-                VacancyLocationType = source.ApprenticeshipVacancy.VacancyLocationType,
-                WageAmountLowerBound = source.ApprenticeshipVacancy.WageAmountLowerBound,
-                WageAmountUpperBound = source.ApprenticeshipVacancy.WageAmountUpperBound,
-                WageText = source.ApprenticeshipVacancy.WageText,
-                WageUnit = source.ApprenticeshipVacancy.WageUnit,
-                WageAdditionalInformation = source.ApprenticeshipVacancy.WageAdditionalInformation,
-                WorkingWeek = source.ApprenticeshipVacancy.WorkingWeek,
-                ExpectedDuration = source.ApprenticeshipVacancy.ExpectedDuration,
-                Score = source.ApprenticeshipVacancy.Score,
-                EmployerDescription = source.ApprenticeshipVacancy.EmployerDescription,
+                Distance = source.ApprenticeshipVacancy.Distance,
                 EmployerContactEmail = source.ApprenticeshipVacancy.EmployerContactEmail,
                 EmployerContactName = source.ApprenticeshipVacancy.EmployerContactName,
                 EmployerContactPhone = source.ApprenticeshipVacancy.EmployerContactPhone,
+                EmployerDescription = source.ApprenticeshipVacancy.EmployerDescription,
+                EmployerName = source.ApprenticeshipVacancy.EmployerName,
+                EmployerWebsiteUrl = source.ApprenticeshipVacancy.EmployerWebsiteUrl,
+                EmploymentLocationInformation = source.ApprenticeshipVacancy.EmploymentLocationInformation,
+                EmployerLocationOption = source.ApprenticeshipVacancy.EmployerLocationOption,
+                ExpectedDuration = source.ApprenticeshipVacancy.ExpectedDuration,
+                FrameworkLarsCode = source.ApprenticeshipVacancy.FrameworkLarsCode,
+                HoursPerWeek = source.ApprenticeshipVacancy.HoursPerWeek,
+                Id = source.ApprenticeshipVacancy.Id,
+                IsClosed = source.ApprenticeshipVacancy.IsClosed,
+                IsDisabilityConfident = source.ApprenticeshipVacancy.IsDisabilityConfident,
+                IsEmployerAnonymous = source.ApprenticeshipVacancy.IsEmployerAnonymous,
+                IsPositiveAboutDisability = source.ApprenticeshipVacancy.IsPositiveAboutDisability,
+                IsRecruitVacancy = source.ApprenticeshipVacancy.IsRecruitVacancy,
+                IsSavedVacancy = source.IsSavedVacancy,
+                Levels = source.Levels,
+                Location = source.ApprenticeshipVacancy.Location,
+                LongDescription = source.ApprenticeshipVacancy.LongDescription,
+                NumberOfPositions = source.ApprenticeshipVacancy.NumberOfPositions,
+                OtherAddresses = source.ApprenticeshipVacancy.OtherAddresses?.Select(a => (AddressApiResponse) a).ToList(),
+                OutcomeDescription = source.ApprenticeshipVacancy.OutcomeDescription,
+                PostedDate = source.ApprenticeshipVacancy.PostedDate,
                 ProviderContactEmail = source.ApprenticeshipVacancy.ProviderContactEmail,
                 ProviderContactName = source.ApprenticeshipVacancy.ProviderContactName,
                 ProviderContactPhone = source.ApprenticeshipVacancy.ProviderContactPhone,
-                EmployerWebsiteUrl = source.ApprenticeshipVacancy.EmployerWebsiteUrl,
-                AnonymousEmployerName = source.ApprenticeshipVacancy.AnonymousEmployerName,
-
-                IsEmployerAnonymous = source.ApprenticeshipVacancy.IsEmployerAnonymous,
-                Address = source.ApprenticeshipVacancy.Address,
+                ProviderName = source.ApprenticeshipVacancy.ProviderName,
                 Qualifications = source.ApprenticeshipVacancy.Qualifications?.Select(l => (VacancyQualificationApiResponse) l),
-                CourseOverviewOfRole = source.CourseDetail?.OverviewOfRole ?? string.Empty,
+                Score = source.ApprenticeshipVacancy.Score,
+                Skills = source.ApprenticeshipVacancy.Skills,
+                StandardLarsCode = source.ApprenticeshipVacancy.CourseId,
                 StandardPageUrl = source.CourseDetail?.StandardPageUrl ?? string.Empty,
-                CourseCoreDuties = source.CourseDetail?.CoreDuties ?? [],
-                CourseSkills = source.CourseDetail?.Skills ?? [],
-                Levels = source.Levels,
-                Application = (CandidateApplication)source.Application,
-
-                IsClosed = source.ApprenticeshipVacancy.IsClosed,
-                IsSavedVacancy = source.IsSavedVacancy,
-                CandidatePostcode = source.CandidatePostcode,
-                ApplicationUrl = source.ApprenticeshipVacancy.ApplicationUrl,
-                ApplicationInstructions = source.ApprenticeshipVacancy.ApplicationInstructions,
-                CompanyBenefitsInformation = source.ApprenticeshipVacancy.CompanyBenefitsInformation,
-                AdditionalTrainingDescription = source.ApprenticeshipVacancy.AdditionalTrainingDescription,
+                StartDate = source.ApprenticeshipVacancy.StartDate,
+                SubCategory = source.ApprenticeshipVacancy.SubCategory,
+                SubCategoryCode = source.ApprenticeshipVacancy.SubCategoryCode,
+                ThingsToConsider = source.ApprenticeshipVacancy.ThingsToConsider,
+                Title = source.ApprenticeshipVacancy.Title,
+                TrainingDescription = source.ApprenticeshipVacancy.TrainingDescription,
+                Ukprn = source.ApprenticeshipVacancy.Ukprn,
+                VacancyLocationType = source.ApprenticeshipVacancy.VacancyLocationType,
+                VacancyReference = source.ApprenticeshipVacancy.VacancyReference,
                 VacancySource = source.ApprenticeshipVacancy.VacancySource,
+                WageAdditionalInformation = source.ApprenticeshipVacancy.WageAdditionalInformation,
+                WageAmount = source.ApprenticeshipVacancy.WageAmount,
+                WageAmountLowerBound = source.ApprenticeshipVacancy.WageAmountLowerBound,
+                WageAmountUpperBound = source.ApprenticeshipVacancy.WageAmountUpperBound,
+                WageText = source.ApprenticeshipVacancy.WageText,
+                WageType = source.ApprenticeshipVacancy.WageType,
+                WageUnit = source.ApprenticeshipVacancy.WageUnit,
+                WorkingWeek = source.ApprenticeshipVacancy.WorkingWeek,
             };
         }
     }
@@ -213,6 +219,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
 
         public static implicit operator AddressApiResponse(Address source)
         {
+            if (source is null)
+            {
+                return null;
+            }
+
             return new AddressApiResponse
             {
                 AddressLine1 = source.AddressLine1,
