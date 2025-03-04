@@ -64,7 +64,7 @@ public class GetPayeSchemeLevyDeclarationsQueryHandlerTests
             GetPayeSchemeLevyDeclarationsQueryHandler handler)
     {
         // Arrange
-        mockAccountsService.Setup(s => s.GetAccount(query.AccountId)).ReturnsAsync((Account)null);
+        mockAccountsService.Setup(s => s.GetAccount(query.AccountId)).ReturnsAsync(() => null);
     
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
@@ -96,7 +96,7 @@ public class GetPayeSchemeLevyDeclarationsQueryHandlerTests
         mockAccountsService.Setup(s => s.GetEmployerAccountPayeScheme("/paye/123")).ReturnsAsync(payeScheme);
 
         mockHmrcApiClient.Setup(s => s.Get<PayeSchemeLevyDeclarations>(It.IsAny<GetPayeSchemeLevyDeclarationsRequest>()))
-            .ReturnsAsync((PayeSchemeLevyDeclarations)null);
+            .ReturnsAsync(() => null);
       
         // Act
         var result = await handler.Handle(query, CancellationToken.None);

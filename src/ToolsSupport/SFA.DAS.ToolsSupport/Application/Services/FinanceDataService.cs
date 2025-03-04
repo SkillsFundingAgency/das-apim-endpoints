@@ -113,7 +113,6 @@ public class FinanceDataService(
 
     private async Task<List<Transaction>> GetAccountTransactions(string accountId)
     {
-        var endDate = DateTime.Now.Date;
         var financialYearIterator = datetimeService.GetBeginningFinancialYear(new DateTime(2017, 4, 1));
         var response = new List<Transaction>();
 
@@ -149,11 +148,10 @@ public class FinanceDataService(
                 return 0;
             }
 
-            return response.Body.First().Balance;
+            return response.Body[0].Balance;
         }
-        catch (Exception exception)
+        catch
         {
-            logger.LogError(exception, "Account Balance with id {Id} not found", hashedAccountId);
             throw;
         }
     }

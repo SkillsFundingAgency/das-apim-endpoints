@@ -24,9 +24,9 @@ public class ChallengeController(IMediator mediator, ILogger<ChallengeController
 
             return Ok((GetChallengeResponse)result);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            logger.LogError("Error: GetChallenge: {error}", e);
+            logger.LogError(ex,"Error calling GetChallenge");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -56,7 +56,7 @@ public class ChallengeController(IMediator mediator, ILogger<ChallengeController
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error in ChallengeEntry for AccountId Id: {Id}", accountId);
+            logger.LogError(ex, "Error calling ChallengeEntry");
             return BadRequest();
         }
     }

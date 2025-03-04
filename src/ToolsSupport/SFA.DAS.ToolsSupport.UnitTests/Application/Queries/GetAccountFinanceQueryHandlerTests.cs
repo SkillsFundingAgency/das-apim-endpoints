@@ -44,7 +44,7 @@ public class GetAccountFinanceQueryHandlerTests
         GetAccountFinanceQueryHandler handler)
     {
         // Arrange
-        mockAccountsService.Setup(s => s.GetAccount(query.AccountId)).ReturnsAsync((Account)null)
+        mockAccountsService.Setup(s => s.GetAccount(query.AccountId)).ReturnsAsync(() => null)
             .Verifiable();
 
         // Act

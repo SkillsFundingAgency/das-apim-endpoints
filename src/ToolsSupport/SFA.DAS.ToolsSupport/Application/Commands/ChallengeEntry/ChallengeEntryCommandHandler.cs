@@ -56,7 +56,7 @@ public class ChallengeEntryCommandHandler(
         var accountBalances = await financeService.GetAccountBalances(new GetAccountBalancesRequest([message.Id]));
         if (accountBalances != null && accountBalances.Body != null && accountBalances.Body.Count > 0)
         {
-            accountBalance = accountBalances.Body.First().Balance;
+            accountBalance = accountBalances.Body[0].Balance;
         }
         var validPayeSchemesData = CheckPayeSchemesData(payeSchemes, message);
 

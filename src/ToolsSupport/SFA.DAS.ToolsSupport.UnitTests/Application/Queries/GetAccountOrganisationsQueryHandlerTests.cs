@@ -47,7 +47,7 @@ public class GetAccountOrganisationsQueryHandlerTests
         GetAccountOrganisationsQueryHandler handler)
     {
         // Arrange
-        mockAccountsService.Setup(s => s.GetAccount(query.AccountId)).ReturnsAsync((Account)null);
+        mockAccountsService.Setup(s => s.GetAccount(query.AccountId)).ReturnsAsync(() => null);
 
         // Act
         var result = await handler.Handle(query, CancellationToken.None);

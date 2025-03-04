@@ -5,5 +5,5 @@ public class SupportCreateInvitationRequest
     public string HashedAccountId { get; set; } = "";
     public string FullName { get; set; } = "";
     public string Email { get; set; } = "";
-    public int Role { get; set; }
+    public required int Role { get; set; }
 }

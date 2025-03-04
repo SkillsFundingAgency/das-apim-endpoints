@@ -6,5 +6,5 @@ public class ChangeUserRoleRequest
 {
     public string HashedAccountId { get; set; } = "";
     public string Email { get; set; } = "";
-    public Role Role { get; set; }
+    public required Role Role { get; set; }
 }

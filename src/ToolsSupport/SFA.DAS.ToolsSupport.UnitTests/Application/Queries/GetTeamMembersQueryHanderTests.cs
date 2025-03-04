@@ -36,7 +36,7 @@ public class GetTeamMembersQueryHanderTests
         GetTeamMembersQueryHander handler)
     {
         // Arrange
-        mockAccountsService.Setup(s => s.GetAccountTeamMembers(query.AccountId)).ReturnsAsync((List<TeamMember>)null);
+        mockAccountsService.Setup(s => s.GetAccountTeamMembers(query.AccountId)).ReturnsAsync(() => null);
 
         // Act
         var result = await handler.Handle(query, CancellationToken.None);

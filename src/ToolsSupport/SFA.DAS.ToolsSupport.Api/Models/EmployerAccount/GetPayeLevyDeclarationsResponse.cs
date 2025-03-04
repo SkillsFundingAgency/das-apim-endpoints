@@ -83,8 +83,8 @@ public class GetPayeLevyDeclarationsResponse
 
 public class DeclarationResponse
 {
-    public string SubmissionDate { get; set; }
-    public string PayrollDate { get; set; }
+    public string SubmissionDate { get; set; } = "";
+    public string PayrollDate { get; set; } = "";
     public long LevySubmissionId { get; set; }
-    public string YearToDateAmount { get; set; }
+    public string YearToDateAmount { get; set; } = "";
 }

@@ -25,7 +25,7 @@ public class ChallengeService : IChallengeService
     {
         var payeSchemeModels = payeSchemes as PayeScheme[] ?? payeSchemes.ToArray();
 
-        if (!payeSchemeModels.Any())
+        if (payeSchemeModels.Length == 0)
         {
             return [];
         }

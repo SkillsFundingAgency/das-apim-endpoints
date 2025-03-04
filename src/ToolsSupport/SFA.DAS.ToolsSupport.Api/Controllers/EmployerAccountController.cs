@@ -34,7 +34,7 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
         }
         catch (Exception e)
         {
-            logger.LogError("Error: GetAccountDetails: {error}", e);
+            logger.LogError(e, "Error calling GetAccountDetails");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -54,7 +54,7 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
         }
         catch (Exception e)
         {
-            logger.LogError("Error: GetAccountOrganisations: {error}", e);
+            logger.LogError(e, "Error calling GetAccountOrganisations");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -74,7 +74,7 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
         }
         catch (Exception e)
         {
-            logger.LogError("Error: GetTeamMembers: {error}", e);
+            logger.LogError(e, "Error calling GetTeamMembers");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -94,7 +94,7 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
         }
         catch (Exception e)
         {
-            logger.LogError("Error: GetAccountFinance: {error}", e);
+            logger.LogError(e, "Error calling GetAccountFinance");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -115,7 +115,7 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
         }
         catch (Exception e)
         {
-            logger.LogError("Error: GetPayeLevyDeclarations: {error}", e);
+            logger.LogError(e, "Error calling GetPayeLevyDeclarations");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -145,7 +145,7 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error in SendInvitation for AccountId Id: {Id}", request.HashedAccountId);
+            logger.LogError(ex, "Error calling SendInvitation");
             return BadRequest();
         }
     }
@@ -173,7 +173,7 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error in ResendInvitation for AccountId Id: {Id}", request.HashedAccountId);
+            logger.LogError(ex, "Error calling ResendInvitation");
             return BadRequest();
         }
     }
@@ -202,7 +202,7 @@ public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccou
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error in ChangeUserRole for AccountId Id: {Id}", request.HashedAccountId);
+            logger.LogError(ex, "Error calling ChangeUserRole");
             return BadRequest();
         }
     }
