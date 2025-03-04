@@ -2,6 +2,7 @@
 using AutoFixture.AutoMoq;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Amqp.Transaction;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -15,16 +16,14 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
     {
         private IFixture _fixture;
         private Mock<ILogger<QualificationsController>> _loggerMock;
-        private Mock<IMediator> _mediatorMock;
-        private QualificationsController _controller;
+        private Mock<IMediator> _mediatorMock;        
 
         [SetUp]
         public void SetUp()
         {
             _fixture = new Fixture().Customize(new AutoMoqCustomization());
             _loggerMock = _fixture.Freeze<Mock<ILogger<QualificationsController>>>();
-            _mediatorMock = _fixture.Freeze<Mock<IMediator>>();
-            _controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+            _mediatorMock = _fixture.Freeze<Mock<IMediator>>();            
         }
 
         [Test]
@@ -33,20 +32,21 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             // Arrange
             var queryResponse = _fixture.Create<BaseMediatrResponse<GetNewQualificationsQueryResponse>>();
             queryResponse.Success = true;
-            queryResponse.Value.NewQualifications = _fixture.CreateMany<NewQualification>(2).ToList();
+            queryResponse.Value.Data = _fixture.CreateMany<NewQualification>(2).ToList();
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetNewQualificationsQuery>(), default))
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await _controller.GetQualifications("new");
+            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "");
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
             Assert.That(okResult.Value, Is.AssignableFrom<BaseMediatrResponse<GetNewQualificationsQueryResponse>>());
             var model = (BaseMediatrResponse<GetNewQualificationsQueryResponse>)okResult.Value;
-            Assert.That(model.Value.NewQualifications.Count, Is.EqualTo(2));
+            Assert.That(model.Value.Data.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -55,12 +55,13 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             // Arrange
             var queryResponse = _fixture.Create<BaseMediatrResponse<GetNewQualificationsQueryResponse>>();
             queryResponse.Success = false;
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetNewQualificationsQuery>(), default))
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await _controller.GetQualifications("new");
+            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "");
 
             // Assert
             Assert.That(result, Is.InstanceOf<NotFoundObjectResult>());
@@ -72,8 +73,11 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         [Test]
         public async Task GetQualifications_ReturnsBadRequest_WhenStatusIsEmpty()
         {
+            //Arrange
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
             // Act
-            var result = await _controller.GetQualifications(string.Empty);
+            var result = await controller.GetQualifications(status: "", skip: 0, take: 10, name: "", organisation: "", qan: "");
 
             // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
@@ -86,6 +90,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         public async Task GetQualificationDetails_ReturnsOkResult_WithQualificationDetails()
         {
             // Arrange
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
             var queryResponse = _fixture.Create<BaseMediatrResponse<GetQualificationDetailsQueryResponse>>();
             queryResponse.Success = true;
 
@@ -93,7 +98,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await _controller.GetQualificationDetails("Ref123");
+            var result = await controller.GetQualificationDetails("Ref123");
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
@@ -107,6 +112,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         public async Task GetQualificationDetails_ReturnsNotFound_WhenQueryFails()
         {
             // Arrange
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
             var queryResponse = _fixture.Create<BaseMediatrResponse<GetQualificationDetailsQueryResponse>>();
             queryResponse.Success = false;
             queryResponse.ErrorMessage = "No details found for qualification reference: Ref123";
@@ -115,7 +121,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await _controller.GetQualificationDetails("Ref123");
+            var result = await controller.GetQualificationDetails("Ref123");
 
             // Assert
             Assert.That(result, Is.InstanceOf<NotFoundObjectResult>());
@@ -124,8 +130,11 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         [Test]
         public async Task GetQualificationDetails_ReturnsBadRequest_WhenQualificationReferenceIsEmpty()
         {
+            //Arrange
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
             // Act
-            var result = await _controller.GetQualificationDetails(string.Empty);
+            var result = await controller.GetQualificationDetails(string.Empty);
 
             // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());

@@ -35,7 +35,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
             var query = _fixture.Create<GetNewQualificationsQuery>();
             var response = _fixture.Create<BaseMediatrResponse<GetNewQualificationsQueryResponse>>();
             response.Success = true;
-            response.Value.NewQualifications = _fixture.CreateMany<NewQualification>(2).ToList();
+            response.Value.Data = _fixture.CreateMany<NewQualification>(2).ToList();
 
             _apiClientMock.Setup(x => x.Get<BaseMediatrResponse<GetNewQualificationsQueryResponse>>(It.IsAny<GetNewQualificationsApiRequest>()))
                           .ReturnsAsync(response);
@@ -46,7 +46,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
             // Assert
             _apiClientMock.Verify(x => x.Get<BaseMediatrResponse<GetNewQualificationsQueryResponse>>(It.IsAny<GetNewQualificationsApiRequest>()), Times.Once);
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Value.NewQualifications.Count, Is.EqualTo(2));
+            Assert.That(result.Value.Data.Count, Is.EqualTo(2));
         }
 
         [Test]
