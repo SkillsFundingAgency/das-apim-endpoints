@@ -66,13 +66,13 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
                 var postVacancyRequestData = (PostVacancyRequestData)request;
                 postVacancyRequestData.OwnerType = (OwnerType)account.AccountType;
                 postVacancyRequestData.AccountType = account.AccountType;
-
                 var contactDetails = new ContactDetails
                 {
                     Email = request.SubmitterContactDetails.Email,
                     Name = request.SubmitterContactDetails.Name,
                     Phone = request.SubmitterContactDetails.Phone,
                 };
+                
                 switch (account.AccountType)
                 {
                     case AccountType.Provider:
@@ -97,10 +97,7 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
             }
             catch (HttpRequestContentException e)
             {
-                var content = e.ErrorContent
-                    .Replace("ProgrammeId", "standardLarsCode", StringComparison.CurrentCultureIgnoreCase)
-                    .Replace(@"EmployerName""",@"alternativeEmployerName""", StringComparison.CurrentCultureIgnoreCase);
-                
+                var content = ReverseMapFieldNamesForErrors(e.ErrorContent);
                 return StatusCode((int) e.StatusCode, content);
             }
             catch (SecurityException)
@@ -113,5 +110,12 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+
+        private static string ReverseMapFieldNamesForErrors(string content) => content
+            .Replace("ProgrammeId", "standardLarsCode", StringComparison.CurrentCultureIgnoreCase)
+            .Replace(@"EmployerName""",@"alternativeEmployerName""", StringComparison.CurrentCultureIgnoreCase)
+            .Replace("Address", "address", StringComparison.CurrentCultureIgnoreCase)
+            .Replace("Addresses", "multipleAddresses", StringComparison.CurrentCultureIgnoreCase)
+            .Replace("EmployerLocationInformation", "recruitingNationallyDetails", StringComparison.CurrentCultureIgnoreCase);
     }
 }

@@ -6,15 +6,15 @@ public class WhenComparingSearchParametersDto
 {
     private static readonly object?[] EqualTestCases =
     [
-        new object[] { new SearchParametersDto("foo", null, null, false, null, null, null, null), new SearchParametersDto("foo", null, null, false, null, null, null, null) },
-        new object[] { new SearchParametersDto(null, [1, 2], null, false, null, null, null, null), new SearchParametersDto(null, [1, 2], null, false, null, null, null, null) },
-        new object[] { new SearchParametersDto(null, null, 1, false, null, null, null, null), new SearchParametersDto(null, null, 1, false, null, null, null, null) },
-        new object[] { new SearchParametersDto(null, null, null, false, null, null, null, null), new SearchParametersDto(null, null, null, false, null, null, null, null) },
-        new object[] { new SearchParametersDto(null, null, null, true, null, null, null, null), new SearchParametersDto(null, null, null, true, null, null, null, null) },
-        new object[] { new SearchParametersDto(null, null, null, false, [1, 2], null, null, null), new SearchParametersDto(null, null, null, false, [1, 2], null, null, null) },
-        new object[] { new SearchParametersDto(null, null, null, false, null, "London", null, null), new SearchParametersDto(null, null, null, false, null, "London", null, null) },
-        new object[] { new SearchParametersDto(null, null, null, false, null, null, "1.0", null), new SearchParametersDto(null, null, null, false, null, null, "1.0", null) },
-        new object[] { new SearchParametersDto(null, null, null, false, null, null, null, "1.0"), new SearchParametersDto(null, null, null, false, null, null, null, "1.0") },
+        new object[] { new SearchParametersDto("foo", null, null, false, false, null, null, null, null), new SearchParametersDto("foo", null, null, false, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, [1, 2], null, false, false, null, null, null, null), new SearchParametersDto(null, [1, 2], null, false, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, 1, false, false, null, null, null, null), new SearchParametersDto(null, null, 1, false, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, false, null, null, null, null), new SearchParametersDto(null, null, null, false, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, true, true, null, null, null, null), new SearchParametersDto(null, null, null, true, true, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, false, [1, 2], null, null, null), new SearchParametersDto(null, null, null, false, false, [1, 2], null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, false, null, "London", null, null), new SearchParametersDto(null, null, null, false, false, null, "London", null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, false, null, null, "1.0", null), new SearchParametersDto(null, null, null, false, false, null, null, "1.0", null) },
+        new object[] { new SearchParametersDto(null, null, null, false, false, null, null, null, "1.0"), new SearchParametersDto(null, null, null, false, false, null, null, null, "1.0") },
     ];
     
     [TestCaseSource(nameof(EqualTestCases))]
@@ -29,14 +29,14 @@ public class WhenComparingSearchParametersDto
     
     private static readonly object?[] NotEqualTestCases =
     [
-        new object[] { new SearchParametersDto("foo", null, null, false, null, null, null, null), new SearchParametersDto("foo2", null, null, false, null, null, null, null) },
-        new object[] { new SearchParametersDto(null, [1, 2], null, false, null, null, null, null), new SearchParametersDto(null, [1, 3], null, false, null, null, null, null) },
-        new object[] { new SearchParametersDto(null, null, 1, false, null, null, null, null), new SearchParametersDto(null, null, 2, false, null, null, null, null) },
-        new object[] { new SearchParametersDto(null, null, null, false, null, null, null, null), new SearchParametersDto(null, null, null, true, null, null, null, null) },
-        new object[] { new SearchParametersDto(null, null, null, false, [1, 2], null, null, null), new SearchParametersDto(null, null, null, false, [1, 3], null, null, null) },
-        new object[] { new SearchParametersDto(null, null, null, false, null, "London", null, null), new SearchParametersDto(null, null, null, false, null, "Glasgow", null, null) },
-        new object[] { new SearchParametersDto(null, null, null, false, null, null, "1.0", null), new SearchParametersDto(null, null, null, false, null, null, "1.1", null) },
-        new object[] { new SearchParametersDto(null, null, null, false, null, null, null, "1.0 "), new SearchParametersDto(null, null, null, false, null, null, null, "1.1") },
+        new object[] { new SearchParametersDto("foo", null, null, false, false, null, null, null, null), new SearchParametersDto("foo2", null, null, false, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, [1, 2], null, false, false, null, null, null, null), new SearchParametersDto(null, [1, 3], null, false, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, 1, false, false, null, null, null, null), new SearchParametersDto(null, null, 2, false, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, false, null, null, null, null), new SearchParametersDto(null, null, null, true,true, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, false, [1, 2], null, null, null), new SearchParametersDto(null, null, null, false, false, [1, 3], null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, false, null, "London", null, null), new SearchParametersDto(null, null, null, false, false, null, "Glasgow", null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, false, null, null, "1.0", null), new SearchParametersDto(null, null, null, false, false, null, null, "1.1", null) },
+        new object[] { new SearchParametersDto(null, null, null, false, false, null, null, null, "1.0 "), new SearchParametersDto(null, null, null, false, false, null, null, null, "1.1") },
     ];
     
     [TestCaseSource(nameof(NotEqualTestCases))]

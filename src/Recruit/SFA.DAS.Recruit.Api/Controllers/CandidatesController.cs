@@ -29,6 +29,7 @@ public class CandidatesController(IMediator mediator, ILogger<CandidatesControll
                 VacancyReference = request.VacancyReference,
                 VacancyCity = request.VacancyCity,
                 VacancyPostcode = request.VacancyPostcode,
+                VacancyLocation = request.VacancyLocation,
                 VacancyTitle = request.VacancyTitle,
                 VacancyEmployerName = request.VacancyEmployerName
             });
