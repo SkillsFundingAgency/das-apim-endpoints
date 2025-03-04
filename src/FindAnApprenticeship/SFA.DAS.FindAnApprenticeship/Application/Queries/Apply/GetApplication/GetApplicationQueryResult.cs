@@ -84,6 +84,7 @@ public record GetApplicationQueryResult
             public string? Grade { get; set; }
             public string? AdditionalInformation { get; set; }
             public bool? IsPredicted { get; set; }
+            public short? QualificationOrder { get; set; }
             public QualificationReference QualificationReference { get; set; }
 
             public static implicit operator Qualification(InnerApi.CandidateApi.Responses.Qualification source)
@@ -95,6 +96,7 @@ public record GetApplicationQueryResult
                     Grade = source.Grade,
                     AdditionalInformation = source.AdditionalInformation,
                     IsPredicted = source.IsPredicted,
+                    QualificationOrder = source.QualificationOrder,
                     QualificationReference = source.QualificationReference
                 };
             }

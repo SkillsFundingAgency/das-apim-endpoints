@@ -48,8 +48,9 @@ public class PostSubmitApplicationRequestData
                 Grade = c.Grade,
                 IsPredicted = c.IsPredicted,
                 QualificationType = c.QualificationReference.Name,
-                AdditionalInformation = c.AdditionalInformation
-            }).ToList(),
+                AdditionalInformation = c.AdditionalInformation,
+                QualificationOrder = c.QualificationOrder
+            }).OrderBy(fil => fil.QualificationOrder).ToList(),
             TrainingCourses = source.TrainingCourses?.Select(c=>new TrainingCourse
             {
                 Title = c.CourseName,
@@ -116,6 +117,7 @@ public class ApplicationQualification
     public string Subject { get; set; }
     public string Grade { get; set; }
     public bool? IsPredicted { get; set; }
+    public short? QualificationOrder {get; set; }
     public string AdditionalInformation { get; set; }
 }
 
