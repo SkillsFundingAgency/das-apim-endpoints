@@ -215,6 +215,14 @@
                                 {
                                     "name": "WEBSITE_LOAD_USER_PROFILE",
                                     "value": "1"
+                                },
+                                {
+                                    "name": "WEBSITES_LOAD_CERTIFICATES",
+                                    "value": "*"
+                                },
+                                {
+                                    "name": "WEBSITE_LOAD_ROOT_CERTIFICATES",
+                                    "value": "ADA56C2E76EE5091179D7407F1AC9B216D71AC75,4D5961C95B8156EF6FE2A4601E8906B70EF44649,6E6793F9724241135B21F29E31EAD329B2115FA2"
                                 }
                             ]
                         }
