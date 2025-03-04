@@ -15,5 +15,6 @@ public class GetChangedQualificationsQueryResponse
         public string AgeGroup { get; set; } = string.Empty;
         public string Subject { get; set; } = string.Empty;
         public string SectorSubjectArea { get; set; } = string.Empty;
+        public string ChangedFieldNames { get; set; } = string.Empty;
     }
 }
