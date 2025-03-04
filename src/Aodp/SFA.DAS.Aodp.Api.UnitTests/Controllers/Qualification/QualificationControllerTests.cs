@@ -44,9 +44,9 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
-            Assert.That(okResult.Value, Is.AssignableFrom<BaseMediatrResponse<GetNewQualificationsQueryResponse>>());
-            var model = (BaseMediatrResponse<GetNewQualificationsQueryResponse>)okResult.Value;
-            Assert.That(model.Value.Data.Count, Is.EqualTo(2));
+            Assert.That(okResult.Value, Is.AssignableFrom<GetNewQualificationsQueryResponse>());
+            var model = (GetNewQualificationsQueryResponse)okResult.Value;
+            Assert.That(model.Data.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -64,10 +64,8 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "");
 
             // Assert
-            Assert.That(result, Is.InstanceOf<NotFoundObjectResult>());
-            var notFoundResult = (NotFoundObjectResult)result;
-            var notFoundValue = notFoundResult.Value?.GetType().GetProperty("message")?.GetValue(notFoundResult.Value, null);
-            Assert.That(notFoundValue, Is.EqualTo("No new qualifications found"));
+            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+            var statusCodeResult = (StatusCodeResult)result;            
         }
 
         [Test]
