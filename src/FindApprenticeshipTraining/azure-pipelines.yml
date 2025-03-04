@@ -16,6 +16,7 @@ pr:
   branches:
     include:
       - "master"
+      - "FAT-25-Development"
   paths:
     include:
     - src/FindApprenticeshipTraining
