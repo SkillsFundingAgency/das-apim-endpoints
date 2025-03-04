@@ -23,7 +23,7 @@ public class SupportApprenticeshipDetails
     public GetApprenticeshipUpdatesResponse.DeliveryModel DeliveryModel { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
-    public DateTime PauseDate { get; set; }
+    public DateTime? PauseDate { get; set; }
     public PaymentStatus PaymentStatus { get; set; }
     public ApprenticeshipStatus ApprenticeshipStatus { get; set; }
     public IEnumerable<Alerts> Alerts { get; set; }

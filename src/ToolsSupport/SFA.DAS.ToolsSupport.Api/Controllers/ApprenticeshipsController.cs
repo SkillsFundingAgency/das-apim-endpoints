@@ -19,8 +19,26 @@ public class ApprenticeshipsController : ControllerBase
     }
 
     [HttpGet]
+    [Route("{id}")]
+    public async Task<IActionResult> GetById(long id)
+    {
+        try
+        {
+            var response = await _mediator.Send(new GetApprenticeshipQuery() { Id = id });
+            if(response == null)
+                return NotFound();
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error attempting to query by apprenticeship Id {id}");
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpGet]
     [Route("uln/{uln}")]
-    public async Task<IActionResult> Get(string uln)
+    public async Task<IActionResult> GetByUln(string uln)
     {
         try
         {

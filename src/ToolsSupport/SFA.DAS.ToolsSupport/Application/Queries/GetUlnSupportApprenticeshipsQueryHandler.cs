@@ -6,7 +6,7 @@ using SFA.DAS.ToolsSupport.InnerApi.Responses;
 
 namespace SFA.DAS.ToolsSupport.Application.Queries;
 
-public class GetUlnSupportApprenticeshipsQueryHandler(IInternalApiClient<CommitmentsV2ApiConfiguration> client)
+public class  GetUlnSupportApprenticeshipsQueryHandler(IInternalApiClient<CommitmentsV2ApiConfiguration> client)
     : IRequestHandler<GetUlnSupportApprenticeshipsQuery, GetUlnSupportApprenticeshipsQueryResult?>
 {
     public async Task<GetUlnSupportApprenticeshipsQueryResult?> Handle(GetUlnSupportApprenticeshipsQuery request, CancellationToken cancellationToken)
@@ -29,11 +29,6 @@ public class GetUlnSupportApprenticeshipsQueryHandler(IInternalApiClient<Commitm
                 Status = x.PaymentStatus.ToString()
             }).ToList(),
         };
-    }
-
-    private static string BuildTrainingDateString(DateTime startDate, DateTime endDate)
-    {
-        return startDate.ToString("MM/yy") + " to " + endDate.ToString("MM/yy");
     }
 }
 
