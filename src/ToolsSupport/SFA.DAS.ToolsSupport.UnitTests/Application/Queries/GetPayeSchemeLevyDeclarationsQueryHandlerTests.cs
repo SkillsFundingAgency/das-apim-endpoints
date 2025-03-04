@@ -23,6 +23,7 @@ public class GetPayeSchemeLevyDeclarationsQueryHandlerTests
         GetPayeSchemeLevyDeclarationsQueryHandler handler)
     {
         // Arrange
+        query.PayeRef = actualPayeId;
         account.PayeSchemes = [new() { Id = actualPayeId, Href = "/paye/123" }];
 
         mockAccountsService.Setup(s => s.GetAccount(query.AccountId)).ReturnsAsync(account);
@@ -89,6 +90,7 @@ public class GetPayeSchemeLevyDeclarationsQueryHandlerTests
         GetPayeSchemeLevyDeclarationsQueryHandler handler)
     {
         // Arrange
+        query.PayeRef = actualPayeId;
         account.PayeSchemes = [new () { Id = actualPayeId, Href = "/paye/123" }];
         mockAccountsService.Setup(s => s.GetAccount(query.AccountId)).ReturnsAsync(account);
         mockAccountsService.Setup(s => s.GetEmployerAccountPayeScheme("/paye/123")).ReturnsAsync(payeScheme);
