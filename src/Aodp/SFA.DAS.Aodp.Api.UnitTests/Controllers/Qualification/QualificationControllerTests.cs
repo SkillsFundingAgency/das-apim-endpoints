@@ -2,10 +2,8 @@
 using AutoFixture.AutoMoq;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Amqp.Transaction;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.AODP.Api.Controllers.Qualification;
 
@@ -56,12 +54,13 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var queryResponse = _fixture.Create<BaseMediatrResponse<GetChangedQualificationsQueryResponse>>();
             queryResponse.Success = true;
             queryResponse.Value.Data = _fixture.CreateMany<GetChangedQualificationsQueryResponse.ChangedQualification>(2).ToList();
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetChangedQualificationsQuery>(), default))
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await _controller.GetQualifications("changed");
+            var result = await controller.GetQualifications(status: "changed", skip: 0, take: 10, name: "", organisation: "", qan: "");
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
@@ -161,12 +160,6 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var badRequestResult = (BadRequestObjectResult)result;
             var badRequestValue = badRequestResult.Value?.GetType().GetProperty("message")?.GetValue(badRequestResult.Value, null);
             Assert.That(badRequestValue, Is.EqualTo("Qualification reference cannot be empty"));
-        }
-
-        [TearDownAttribute]
-        public void TearDown()
-        {
-            _controller.Dispose();
         }
     }
 }

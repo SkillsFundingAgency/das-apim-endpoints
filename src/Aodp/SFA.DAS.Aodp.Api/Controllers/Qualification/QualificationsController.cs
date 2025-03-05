@@ -15,6 +15,8 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
 
         public QualificationsController(IMediator mediator, ILogger<QualificationsController> logger) : base(mediator, logger)
         {
+            _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -28,33 +30,37 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             [FromQuery] string? organisation,
             [FromQuery] string? qan)
         {
-            var validationResult = ValidateQualificationParams(status, skip, take, name, organisation, qan);            
+            var validationResult = ValidateQualificationParams(status, skip, take, name, organisation, qan);
 
-            if (validationResult.IsValid && validationResult.ProcessedStatus == "new")
+            if (validationResult.IsValid)
             {
-                var query = new GetNewQualificationsQuery()
+                if (validationResult.ProcessedStatus == "new")
                 {
-                    Name = name,
-                    Organisation = organisation,
-                    QAN = qan,
-                    Skip = skip,
-                    Take = take
-                };
-                return await SendRequestAsync(query);
+                    var query = new GetNewQualificationsQuery()
+                    {
+                        Name = name,
+                        Organisation = organisation,
+                        QAN = qan,
+                        Skip = skip,
+                        Take = take
+                    };
+                    return await SendRequestAsync(query);
+                }
+                else if (validationResult.ProcessedStatus == "changed")
+                {
+                    var query = new GetChangedQualificationsQuery();
+                    return await SendRequestAsync(query);
+                }
+                else
+                {
+                    return BadRequest(new { message = $"Invalid status: {validationResult.ProcessedStatus}" });
+                }
             }
             else
             {
                 return BadRequest(new { message = validationResult.ErrorMessage });
-            }
-
-            IActionResult response = validationResult.ProcessedStatus switch
-            {
-                "new" => await HandleNewQualifications(),
-                "changed" => await HandleChangedQualifications(),
-                _ => BadRequest(new { message = $"Invalid status: {validationResult.ProcessedStatus}" })
-            };
-
-            return response;
+            }           
+         
         }
 
         [HttpGet("{qualificationReference}")]
@@ -91,26 +97,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             IActionResult response = await HandleNewQualificationCSVExport();          
 
             return response;
-        }
-
-        private async Task<IActionResult> HandleNewQualifications()
-        {
-            var result = await _mediator.Send(new GetNewQualificationsQuery());
-
-            if (result == null || !result.Success || result.Value == null)
-            {
-                _logger.LogWarning("No new qualifications found.");
-                return NotFound(new { message = "No new qualifications found" });
-            }
-
-            return Ok(result);
-        }
-
-        private async Task<IActionResult> HandleChangedQualifications()
-        {
-            var query = new GetChangedQualificationsQuery();
-            return await SendRequestAsync(query);
-        }
+        }       
 
         private async Task<IActionResult> HandleNewQualificationCSVExport()
         {
