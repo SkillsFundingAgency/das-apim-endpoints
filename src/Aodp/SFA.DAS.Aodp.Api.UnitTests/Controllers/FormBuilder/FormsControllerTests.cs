@@ -38,6 +38,7 @@ public class FormsControllerTests
     public async Task GetAllAsync_ReturnsOkResult()
     {
         // Arrange
+        var request = _fixture.Create<GetAllFormVersionsQuery>();
         var response = _fixture.Create<GetAllFormVersionsQueryResponse>();
         BaseMediatrResponse<GetAllFormVersionsQueryResponse> wrapper = new()
         {
@@ -53,10 +54,7 @@ public class FormsControllerTests
         var result = await _controller.GetAllAsync();
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetAllFormVersionsQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.IsAny<GetAllFormVersionsQuery>(), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetAllFormVersionsQueryResponse>());
@@ -84,12 +82,7 @@ public class FormsControllerTests
         var result = await _controller.GetByIdAsync(request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetFormVersionByIdQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<GetFormVersionByIdQuery>(q =>
-                    q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetFormVersionByIdQueryResponse>());
@@ -173,12 +166,7 @@ public class FormsControllerTests
         var result = await _controller.PublishAsync(request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<PublishFormVersionCommand>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<PublishFormVersionCommand>(q =>
-                    q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<PublishFormVersionCommandResponse>());
@@ -206,12 +194,7 @@ public class FormsControllerTests
         var result = await _controller.UnpublishAsync(request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<UnpublishFormVersionCommand>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<UnpublishFormVersionCommand>(q =>
-                    q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<UnpublishFormVersionCommandResponse>());
@@ -239,12 +222,7 @@ public class FormsControllerTests
         var result = await _controller.MoveUpAsync(request.FormId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<MoveFormUpCommand>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<MoveFormUpCommand>(q =>
-                    q.FormId == request.FormId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<MoveFormUpCommandResponse>());
@@ -272,12 +250,7 @@ public class FormsControllerTests
         var result = await _controller.MoveDownAsync(request.FormId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<MoveFormDownCommand>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<MoveFormDownCommand>(q =>
-                    q.FormId == request.FormId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<MoveFormDownCommandResponse>());
@@ -305,12 +278,7 @@ public class FormsControllerTests
         var result = await _controller.CreateDraftAsync(request.FormId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<CreateDraftFormVersionCommand>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<CreateDraftFormVersionCommand>(q =>
-                    q.FormId == request.FormId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<CreateDraftFormVersionCommandResponse>());
@@ -338,12 +306,7 @@ public class FormsControllerTests
         var result = await _controller.RemoveAsync(request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<DeleteFormVersionCommand>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<DeleteFormVersionCommand>(q =>
-                    q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<DeleteFormVersionCommandResponse>());

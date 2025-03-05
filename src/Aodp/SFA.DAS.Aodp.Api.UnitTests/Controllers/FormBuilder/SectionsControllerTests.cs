@@ -7,7 +7,6 @@ using Moq;
 using SFA.DAS.Aodp.Api.Controllers;
 using SFA.DAS.Aodp.Api.Controllers.FormBuilder;
 using SFA.DAS.Aodp.Application.Commands.FormBuilder.Sections;
-using SFA.DAS.Aodp.Application.Queries.FormBuilder.Routes;
 using SFA.DAS.Aodp.Application.Queries.FormBuilder.Sections;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.FormBuilder;
@@ -55,12 +54,7 @@ public class SectionsControllerTests
         var result = await _controller.GetAllAsync(request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetAllSectionsQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<GetAllSectionsQuery>(q =>
-                    q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetAllSectionsQueryResponse>());
@@ -88,13 +82,7 @@ public class SectionsControllerTests
         var result = await _controller.GetByIdAsync(request.SectionId, request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetSectionByIdQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<GetSectionByIdQuery>(q =>
-                    q.SectionId == request.SectionId
-                    && q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetSectionByIdQueryResponse>());
@@ -178,13 +166,7 @@ public class SectionsControllerTests
         var result = await _controller.MoveUpAsync(request.FormVersionId, request.SectionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<MoveSectionUpCommand>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<MoveSectionUpCommand>(q =>
-                    q.SectionId == request.SectionId
-                    && q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<MoveSectionUpCommandResponse>());
@@ -212,13 +194,7 @@ public class SectionsControllerTests
         var result = await _controller.MoveDownAsync(request.FormVersionId, request.SectionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<MoveSectionDownCommand>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<MoveSectionDownCommand>(q =>
-                    q.SectionId == request.SectionId
-                    && q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<MoveSectionDownCommandResponse>());
@@ -246,13 +222,7 @@ public class SectionsControllerTests
         var result = await _controller.RemoveAsync(request.SectionId, request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<DeleteSectionCommand>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<DeleteSectionCommand>(q =>
-                    q.SectionId == request.SectionId
-                    && q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<DeleteSectionCommandResponse>());

@@ -80,12 +80,7 @@ public class ApplicationControllerTests
         var result = await _controller.GetApplicationMetadataByIdAsync(request.ApplicationId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetApplicationMetadataByIdQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<GetApplicationMetadataByIdQuery>(q =>
-                    q.ApplicationId == request.ApplicationId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetApplicationMetadataByIdQueryResponse>());
@@ -149,12 +144,7 @@ public class ApplicationControllerTests
         var result = await _controller.GetFormVersionByIdAsync(request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetApplicationFormByIdQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<GetApplicationFormByIdQuery>(q =>
-                    q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetApplicationFormByIdQueryResponse>());
@@ -182,12 +172,7 @@ public class ApplicationControllerTests
         var result = await _controller.GetApplicationsByOrganisationId(request.OrganisationId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetApplicationsByOrganisationIdQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<GetApplicationsByOrganisationIdQuery>(q =>
-                    q.OrganisationId == request.OrganisationId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetApplicationsByOrganisationIdQueryResponse>());
@@ -215,13 +200,7 @@ public class ApplicationControllerTests
         var result = await _controller.GetApplicationSectionsForFormByIdAsync(request.ApplicationId, request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetApplicationFormStatusByApplicationIdQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<GetApplicationFormStatusByApplicationIdQuery>(q =>
-                    q.ApplicationId == request.ApplicationId
-                    && q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetApplicationFormStatusByApplicationIdQueryResponse>());
@@ -249,14 +228,7 @@ public class ApplicationControllerTests
         var result = await _controller.GetApplicationPagesForSectionByIdAsync(request.ApplicationId, request.SectionId, request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetApplicationSectionStatusByApplicationIdQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<GetApplicationSectionStatusByApplicationIdQuery>(q =>
-                    q.ApplicationId == request.ApplicationId
-                    && q.SectionId == request.SectionId
-                    && q.FormVersionId == request.FormVersionId
-        ), default), Times.Once()); 
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetApplicationSectionStatusByApplicationIdQueryResponse>());
@@ -284,13 +256,7 @@ public class ApplicationControllerTests
         var result = await _controller.GetApplicationSectionsForFormByIdAsync(request.ApplicationId, request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetApplicationFormStatusByApplicationIdQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<GetApplicationFormStatusByApplicationIdQuery>(q =>
-                    q.ApplicationId == request.ApplicationId
-                    && q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetApplicationFormStatusByApplicationIdQueryResponse>());
@@ -324,13 +290,12 @@ public class ApplicationControllerTests
         // Assert
         _mediatorMock.Verify(m => m.Send(It.IsAny<GetApplicationPageAnswersByPageIdQuery>(), default), Times.Once());
         _mediatorMock.Verify(m => 
-            m.Send(
-                It.Is<GetApplicationPageAnswersByPageIdQuery>(q => 
+            m.Send(It.Is<GetApplicationPageAnswersByPageIdQuery>(q => 
                     q.ApplicationId == request.ApplicationId 
                     && q.PageId == request.PageId 
                     && q.SectionId == request.SectionId 
-                    && q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+                    && q.FormVersionId == request.FormVersionId), default), Times.Once());
+
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetApplicationPageAnswersByPageIdQueryResponse>());

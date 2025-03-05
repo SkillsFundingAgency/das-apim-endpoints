@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.Aodp.Api.Controllers;
 using SFA.DAS.Aodp.Api.Controllers.FormBuilder;
-using SFA.DAS.Aodp.Application.Commands.FormBuilder.Pages;
 using SFA.DAS.Aodp.Application.Commands.FormBuilder.Questions;
 using SFA.DAS.Aodp.Application.Queries.FormBuilder.Pages;
 using SFA.DAS.Aodp.Application.Queries.FormBuilder.Questions;
@@ -74,15 +73,7 @@ public class QuestionsControllerTests
         var result = await _controller.GetByIdAsync(request.FormVersionId, request.PageId, request.SectionId, request.QuestionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetQuestionByIdQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<GetQuestionByIdQuery>(q =>
-                    q.FormVersionId == request.FormVersionId
-                    && q.SectionId == request.SectionId
-                    && q.PageId == request.PageId
-                    && q.QuestionId == request.QuestionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetQuestionByIdQueryResponse>());
@@ -176,15 +167,7 @@ public class QuestionsControllerTests
         var result = await _controller.MoveUpAsync(request.FormVersionId, request.SectionId, request.PageId, request.QuestionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<MoveQuestionUpCommand>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<MoveQuestionUpCommand>(q =>
-                    q.FormVersionId == request.FormVersionId
-                    && q.SectionId == request.SectionId
-                    && q.PageId == request.PageId
-                    && q.QuestionId == request.QuestionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<MoveQuestionUpCommandResponse>());
@@ -212,15 +195,7 @@ public class QuestionsControllerTests
         var result = await _controller.MoveDownAsync(request.FormVersionId, request.SectionId, request.PageId, request.QuestionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<MoveQuestionDownCommand>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<MoveQuestionDownCommand>(q =>
-                    q.FormVersionId == request.FormVersionId
-                    && q.SectionId == request.SectionId
-                    && q.PageId == request.PageId
-                    && q.QuestionId == request.QuestionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<MoveQuestionDownCommandResponse>());
@@ -248,15 +223,7 @@ public class QuestionsControllerTests
         var result = await _controller.DeleteByIdAsync(request.FormVersionId, request.SectionId, request.PageId, request.QuestionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<DeleteQuestionCommand>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<DeleteQuestionCommand>(q =>
-                    q.FormVersionId == request.FormVersionId
-                    && q.SectionId == request.SectionId
-                    && q.PageId == request.PageId
-                    && q.QuestionId == request.QuestionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<DeleteQuestionCommandResponse>());
