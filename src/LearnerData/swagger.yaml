@@ -108,7 +108,7 @@ components:
     ApiKeyAuth:
       type: apiKey
       in: header
-      name: X-API-Key
+      name: Ocp-Apim-Subscription-Key
       description: "Enter your API key in the `X-API-Key` header."
   headers:
     location:
