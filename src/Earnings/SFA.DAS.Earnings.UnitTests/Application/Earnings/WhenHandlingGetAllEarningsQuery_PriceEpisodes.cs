@@ -433,11 +433,11 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         }
     }
 
-    [TestCase("ProviderIncentive", "PriceEpisodeFirstProv1618Pay")]
-    [TestCase("ProviderIncentive", "PriceEpisodeSecondProv1618Pay")]
-    [TestCase("EmployerIncentive", "PriceEpisodeFirstEmp1618Pay")]
-    [TestCase("EmployerIncentive", "PriceEpisodeSecondEmp1618Pay")]
-    public void ThenReturnsProviderAndEmployerIncentiveValuesForEachApprenticeship(string incentiveType, string attributeName)
+    [TestCase("ProviderIncentive", "PriceEpisodeFirstProv1618Pay", 1)]
+    [TestCase("ProviderIncentive", "PriceEpisodeSecondProv1618Pay", 2)]
+    [TestCase("EmployerIncentive", "PriceEpisodeFirstEmp1618Pay", 1)]
+    [TestCase("EmployerIncentive", "PriceEpisodeSecondEmp1618Pay", 2)]
+    public void ThenReturnsProviderAndEmployerIncentiveValuesForEachApprenticeship(string incentiveType, string attributeName, int paymentNumber)
     {
         // Assert
         _testFixture.Result.Should().NotBeNull();
@@ -454,24 +454,26 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.Should().NotBeNull();
 
                 var earningEpisode = _testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
-                var academicYearAdditionalPayments = earningEpisode.AdditionalPayments
+                var expectedAdditionalPayment = earningEpisode.AdditionalPayments
                     .Where(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear) && x.AdditionalPaymentType == incentiveType)
-                    .ToList();
+                    .OrderBy(x => x.DueDate)
+                    .Skip(paymentNumber - 1)
+                    .FirstOrDefault();
 
                 var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == attributeName);
                 result.Should().NotBeNull();
-                result.Period1.Should().Be((academicYearAdditionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault());
-                result.Period2.Should().Be((academicYearAdditionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount).GetValueOrDefault());
-                result.Period3.Should().Be((academicYearAdditionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount).GetValueOrDefault());
-                result.Period4.Should().Be((academicYearAdditionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount).GetValueOrDefault());
-                result.Period5.Should().Be((academicYearAdditionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount).GetValueOrDefault());
-                result.Period6.Should().Be((academicYearAdditionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount).GetValueOrDefault());
-                result.Period7.Should().Be((academicYearAdditionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount).GetValueOrDefault());
-                result.Period8.Should().Be((academicYearAdditionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount).GetValueOrDefault());
-                result.Period9.Should().Be((academicYearAdditionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount).GetValueOrDefault());
-                result.Period10.Should().Be((academicYearAdditionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount).GetValueOrDefault());
-                result.Period11.Should().Be((academicYearAdditionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount).GetValueOrDefault());
-                result.Period12.Should().Be((academicYearAdditionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount).GetValueOrDefault());
+                result.Period1.Should().Be(expectedAdditionalPayment?.DeliveryPeriod == 1 ? expectedAdditionalPayment.Amount : 0);
+                result.Period2.Should().Be(expectedAdditionalPayment?.DeliveryPeriod == 2 ? expectedAdditionalPayment.Amount : 0);
+                result.Period3.Should().Be(expectedAdditionalPayment?.DeliveryPeriod == 3 ? expectedAdditionalPayment.Amount : 0);
+                result.Period4.Should().Be(expectedAdditionalPayment?.DeliveryPeriod == 4 ? expectedAdditionalPayment.Amount : 0);
+                result.Period5.Should().Be(expectedAdditionalPayment?.DeliveryPeriod == 5 ? expectedAdditionalPayment.Amount : 0);
+                result.Period6.Should().Be(expectedAdditionalPayment?.DeliveryPeriod == 6 ? expectedAdditionalPayment.Amount : 0);
+                result.Period7.Should().Be(expectedAdditionalPayment?.DeliveryPeriod == 7 ? expectedAdditionalPayment.Amount : 0);
+                result.Period8.Should().Be(expectedAdditionalPayment?.DeliveryPeriod == 8 ? expectedAdditionalPayment.Amount : 0);
+                result.Period9.Should().Be(expectedAdditionalPayment?.DeliveryPeriod == 9 ? expectedAdditionalPayment.Amount : 0);
+                result.Period10.Should().Be(expectedAdditionalPayment?.DeliveryPeriod == 10 ? expectedAdditionalPayment.Amount : 0);
+                result.Period11.Should().Be(expectedAdditionalPayment?.DeliveryPeriod == 11 ? expectedAdditionalPayment.Amount : 0);
+                result.Period12.Should().Be(expectedAdditionalPayment?.DeliveryPeriod == 12 ? expectedAdditionalPayment.Amount : 0);
             }
         }
     }

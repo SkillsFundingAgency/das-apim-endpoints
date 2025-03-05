@@ -90,7 +90,12 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryValues.ProgType.Should().Be(25);
             learningDelivery.LearningDeliveryValues.PwayCode.Should().BeNull();
             var secondAdditionalPaymentDueDate =
-                earningEpisode.AdditionalPayments.OrderBy(x => x.DueDate).Skip(1).FirstOrDefault()?.DueDate;
+                earningEpisode.AdditionalPayments
+                    .DistinctBy(x => x.DueDate)
+                    .OrderBy(x => x.DueDate)
+                    .Skip(1)
+                    .FirstOrDefault()?
+                    .DueDate;
             var expectedSecondIncentiveThresholdDate =
                 secondAdditionalPaymentDueDate >= apprenticeship.StartDate &&
                 secondAdditionalPaymentDueDate <= apprenticeship.PlannedEndDate
