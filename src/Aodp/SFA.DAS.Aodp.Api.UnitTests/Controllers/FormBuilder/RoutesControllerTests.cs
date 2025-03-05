@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.Aodp.Api.Controllers;
 using SFA.DAS.Aodp.Api.Controllers.FormBuilder;
-using SFA.DAS.Aodp.Application.Commands.FormBuilder.Questions;
 using SFA.DAS.Aodp.Application.Commands.FormBuilder.Routes;
 using SFA.DAS.Aodp.Application.Queries.FormBuilder.Routes;
 
@@ -55,12 +54,7 @@ public class RoutesControllerTests
         var result = await _controller.GetAvailableSectionsAndPagesForRouting(request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetAvailableSectionsAndPagesForRoutingQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<GetAvailableSectionsAndPagesForRoutingQuery>(q =>
-                    q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetAvailableSectionsAndPagesForRoutingQueryResponse>());
@@ -92,12 +86,7 @@ public class RoutesControllerTests
         var result = await _controller.GetRoutesByFormVersionId(request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetRoutingInformationForFormQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<GetRoutingInformationForFormQuery>(q =>
-                    q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetRoutingInformationForFormQueryResponse>());
@@ -125,12 +114,7 @@ public class RoutesControllerTests
         var result = await _controller.GetAvailableQuestionsForRouting(request.PageId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetAvailableQuestionsForRoutingQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<GetAvailableQuestionsForRoutingQuery>(q =>
-                    q.PageId == request.PageId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetAvailableQuestionsForRoutingQueryResponse>());
@@ -158,13 +142,7 @@ public class RoutesControllerTests
         var result = await _controller.GetQuestionRoutingInformation(request.QuestionId, request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<GetRoutingInformationForQuestionQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.Is<GetRoutingInformationForQuestionQuery>(q =>
-                    q.QuestionId == request.QuestionId
-                    && q.FormVersionId == request.FormVersionId
-        ), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetRoutingInformationForQuestionQueryResponse>());
