@@ -21,29 +21,33 @@ namespace SFA.DAS.Earnings.Application.Earnings
                 PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeBalanceValue, 0),
                 PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeCompletionPayment, 0),
                 PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstDisadvantagePayment, 0),
-                PriceEpisodePeriodisedValuesBuilder.BuildAdditionalPaymentsValues(
+                PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
                     earningsApprenticeship,
                     currentAcademicYear.GetShortAcademicYear(),
                     EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstEmp1618Pay,
-                    EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive),
-                PriceEpisodePeriodisedValuesBuilder.BuildAdditionalPaymentsValues(
+                    EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive, 
+                    1),
+                PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
                     earningsApprenticeship,
                     currentAcademicYear.GetShortAcademicYear(),
                     EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstProv1618Pay,
-                    EarningsFM36Constants.AdditionalPaymentsTypes.ProviderIncentive),
+                    EarningsFM36Constants.AdditionalPaymentsTypes.ProviderIncentive,
+                    1),
                 PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLevyNonPayInd, 0),
                 PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLSFCash, 0),
                 PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondDisadvantagePayment, 0),
-                PriceEpisodePeriodisedValuesBuilder.BuildAdditionalPaymentsValues(
+                PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
                     earningsApprenticeship,
                     currentAcademicYear.GetShortAcademicYear(),
                     EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondEmp1618Pay,
-                    EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive),
-                PriceEpisodePeriodisedValuesBuilder.BuildAdditionalPaymentsValues(
+                    EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive,
+                    2),
+                PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
                     earningsApprenticeship,
                     currentAcademicYear.GetShortAcademicYear(),
                     EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondProv1618Pay,
-                    EarningsFM36Constants.AdditionalPaymentsTypes.ProviderIncentive),
+                    EarningsFM36Constants.AdditionalPaymentsTypes.ProviderIncentive, 
+                    2),
                 PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLearnerAdditionalPayment, 0),
                 PriceEpisodePeriodisedValuesBuilder.BuildPriceEpisodeInstalmentsThisPeriodValues(earningsApprenticeship, currentAcademicYear.GetShortAcademicYear()),
                 PriceEpisodePeriodisedValuesBuilder.BuildInstallmentAmountValues(earningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeOnProgPayment),
@@ -149,7 +153,11 @@ namespace SFA.DAS.Earnings.Application.Earnings
             var firstAdditionalPaymentDate = joinedEarningsApprenticeship.EarningsApprenticeship.Episodes
                 .SelectMany(x => x.AdditionalPayments).MinBy(x => x.DueDate)?.DueDate;
             var secondAdditionalPaymentDate = joinedEarningsApprenticeship.EarningsApprenticeship.Episodes
-                .SelectMany(x => x.AdditionalPayments).OrderBy(x => x.DueDate).Skip(1).FirstOrDefault()?.DueDate;
+                .SelectMany(x => x.AdditionalPayments)
+                .DistinctBy(x => x.DueDate)
+                .OrderBy(x => x.DueDate)
+                .Skip(1)
+                .FirstOrDefault()?.DueDate;
             return new LearningDeliveryValues
             {
                 ActualDaysIL = daysInLearning,

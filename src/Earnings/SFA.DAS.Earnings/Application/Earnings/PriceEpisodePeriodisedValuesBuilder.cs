@@ -74,26 +74,32 @@ public static class PriceEpisodePeriodisedValuesBuilder
             Period12 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount * multiplier).GetValueOrDefault()
         };
     }
-
-    public static PriceEpisodePeriodisedValues BuildAdditionalPaymentsValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName, string additionalPaymentType)
+    
+    public static PriceEpisodePeriodisedValues BuildNthIncentivePaymentValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName, string additionalPaymentType, int n)
     {
-        var additionalPayments = GetAdditionalPaymentsForAcademicYear(earningsApprenticeship, academicYear, additionalPaymentType);
+        var additionalPayments = GetAdditionalPayments(earningsApprenticeship, additionalPaymentType);
+
+        var nthPayment = additionalPayments
+            .OrderBy(i => i.AcademicYear)
+            .ThenBy(i => i.DeliveryPeriod)
+            .Skip(n - 1)
+            .FirstOrDefault();
 
         return new PriceEpisodePeriodisedValues
         {
             AttributeName = attributeName,
-            Period1 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault(),
-            Period2 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount).GetValueOrDefault(),
-            Period3 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount).GetValueOrDefault(),
-            Period4 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount).GetValueOrDefault(),
-            Period5 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount).GetValueOrDefault(),
-            Period6 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount).GetValueOrDefault(),
-            Period7 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount).GetValueOrDefault(),
-            Period8 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount).GetValueOrDefault(),
-            Period9 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount).GetValueOrDefault(),
-            Period10 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount).GetValueOrDefault(),
-            Period11 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount).GetValueOrDefault(),
-            Period12 = (additionalPayments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount).GetValueOrDefault()
+            Period1 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 1 ? nthPayment.Amount : 0,
+            Period2 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 2 ? nthPayment.Amount : 0,
+            Period3 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 3 ? nthPayment.Amount : 0,
+            Period4 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 4 ? nthPayment.Amount : 0,
+            Period5 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 5 ? nthPayment.Amount : 0,
+            Period6 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 6 ? nthPayment.Amount : 0,
+            Period7 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 7 ? nthPayment.Amount : 0,
+            Period8 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 8 ? nthPayment.Amount : 0,
+            Period9 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 9 ? nthPayment.Amount : 0,
+            Period10 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 10 ? nthPayment.Amount : 0,
+            Period11 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 11 ? nthPayment.Amount : 0,
+            Period12 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 12 ? nthPayment.Amount : 0
         };
     }
 
@@ -105,12 +111,11 @@ public static class PriceEpisodePeriodisedValuesBuilder
             .ToList();
     }
 
-    private static List<AdditionalPayment> GetAdditionalPaymentsForAcademicYear(Apprenticeship earningsApprenticeship, short academicYear, string additionalPaymentType)
+    private static List<AdditionalPayment> GetAdditionalPayments(Apprenticeship earningsApprenticeship, string additionalPaymentType)
     {
         return earningsApprenticeship.Episodes
             .SelectMany(episode => episode.AdditionalPayments)
-            .Where(i => i.AcademicYear == academicYear
-                        && i.AdditionalPaymentType == additionalPaymentType)
+            .Where(i => i.AdditionalPaymentType == additionalPaymentType)
             .ToList();
     }
 }
