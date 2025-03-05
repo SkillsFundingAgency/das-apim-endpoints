@@ -45,7 +45,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Services.TotalPositionsAvailabl
                 new List<VacancyDataSource>
                 {
                     VacancyDataSource.Nhs
-                });
+                },
+                null);
 
             findApprenticeshipApiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(

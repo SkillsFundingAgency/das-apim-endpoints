@@ -11,6 +11,7 @@ public class GetSectionByIdQueryResponse
     public string Description { get; set; }
     public List<Page> Pages { get; set; }
     public bool Editable { get; set; }
+    public bool HasAssociatedRoutes { get; set; }
 
     public class Page
     {
