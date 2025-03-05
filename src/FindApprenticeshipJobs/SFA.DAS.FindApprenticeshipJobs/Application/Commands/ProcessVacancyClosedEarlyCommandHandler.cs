@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Constants;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
@@ -30,9 +31,10 @@ public class ProcessVacancyClosedEarlyCommandHandler(
 
         var employmentWorkLocation = vacancyTask.Result.EmployerLocationOption switch
         {
+            AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
             AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancyTask.Result.EmployerLocations),
-            AvailableWhere.AcrossEngland => "Recruiting nationally",
-            _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancyTask.Result.EmployerLocation)
+            AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancyTask.Result.EmployerLocations!.First()),
+            _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancyTask.Result.Address)
         };
 
         foreach (var candidate in allCandidateApplicationsTask.Result.Candidates)

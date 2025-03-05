@@ -47,11 +47,11 @@ public class WhenHandlingProcessApplicationReminder
     {
         recruitApiResponse.EmployerLocationOption = employerLocationOption;
 
-        recruitApiResponse.EmployerLocation.AddressLine1 = address1;
-        recruitApiResponse.EmployerLocation.AddressLine2 = address2;
-        recruitApiResponse.EmployerLocation.AddressLine3 = address3;
-        recruitApiResponse.EmployerLocation.AddressLine4 = address4;
-        recruitApiResponse.EmployerLocation.Postcode = postcode;
+        recruitApiResponse.EmployerLocations[0].AddressLine1 = address1;
+        recruitApiResponse.EmployerLocations[0].AddressLine2 = address2;
+        recruitApiResponse.EmployerLocations[0].AddressLine3 = address3;
+        recruitApiResponse.EmployerLocations[0].AddressLine4 = address4;
+        recruitApiResponse.EmployerLocations[0].Postcode = postcode;
 
 
         candidatePreference.PreferenceType = "Closing";
