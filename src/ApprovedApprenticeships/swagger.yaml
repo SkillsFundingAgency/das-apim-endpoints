@@ -77,8 +77,8 @@ components:
     ApiKeyAuth:
       type: apiKey
       in: header
-      name: X-API-Key
-      description: "Enter your API key in the `X-API-Key` header."
+      name: Ocp-Apim-Subscription-Key
+      description: "Enter your API key in the `Ocp-Apim-Subscription-Key` header."
   headers:
     location:
       schema:
