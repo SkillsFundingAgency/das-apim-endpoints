@@ -16,7 +16,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
         VacancySort sort,
         WageType? skipWageType,
         bool disabilityConfident,
-        IReadOnlyCollection<VacancyDataSource> additionalDataSources)
+        IReadOnlyCollection<VacancyDataSource> additionalDataSources,
+        bool? excludeNational)
         : IGetApiRequest
     {
         private readonly string _categories = categories is { Count: > 0 } ? string.Join("&categories=", categories) : string.Empty;
@@ -25,6 +26,19 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests
 
         public string Version => "2.0";
         public string GetUrl =>
-            $"/api/vacancies?lat={lat}&lon={lon}&distanceInMiles={distance}&sort={sort}&pageNumber={pageNumber}&pageSize={pageSize}&categories={_categories}&levels={_levels}&searchTerm={searchTerm}&disabilityConfident={disabilityConfident}&skipWageType={skipWageType}&additionalDataSources={_additionalDataSources}";
+            $"/api/vacancies?" +
+            $"lat={lat}" +
+            $"&lon={lon}" +
+            $"&distanceInMiles={distance}" +
+            $"&sort={sort}" +
+            $"&pageNumber={pageNumber}" +
+            $"&pageSize={pageSize}" +
+            $"&categories={_categories}" +
+            $"&levels={_levels}" +
+            $"&searchTerm={searchTerm}" +
+            $"&disabilityConfident={disabilityConfident}" +
+            $"&skipWageType={skipWageType}" +
+            $"&additionalDataSources={_additionalDataSources}" +
+            $"&excludeNational={excludeNational}";
     }
 }

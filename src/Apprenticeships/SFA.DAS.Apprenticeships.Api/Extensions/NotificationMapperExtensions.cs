@@ -61,6 +61,14 @@ namespace SFA.DAS.Apprenticeships.Api.Extensions
             };
         }
 
+        public static PaymentStatusActiveCommand ToNotificationCommand(this PostUnfreezePaymentsRequest request, Guid apprenticeshipKey)
+        {
+            return new PaymentStatusActiveCommand
+            {
+                ApprenticeshipKey = apprenticeshipKey
+            };
+        }
+        
         public static ApprenticeshipWithdrawnCommand ToNotificationCommand(this HandleWithdrawalNotificationsRequest request, Guid apprenticeshipKey)
         {
             return new ApprenticeshipWithdrawnCommand
