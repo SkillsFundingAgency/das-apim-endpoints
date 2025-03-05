@@ -7,7 +7,7 @@ namespace SFA.DAS.Earnings.Api.Controllers;
 
 [ApiController]
 [Route("leanerdata")]
-public class ApprovedApprenticeshipsController(
+public class LearnerDataController(
     IMediator mediator) : Controller
 {
     [HttpGet]
