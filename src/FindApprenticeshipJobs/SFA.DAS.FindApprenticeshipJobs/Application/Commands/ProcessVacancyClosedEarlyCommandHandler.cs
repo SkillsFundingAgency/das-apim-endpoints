@@ -2,12 +2,14 @@ using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using Polly;
 using Polly.Retry;
@@ -39,7 +41,14 @@ public class ProcessVacancyClosedEarlyCommandHandler(
 
         var notificationTasks = new List<Task>();
         var updateCandidate = new List<Task>();
-        
+
+        var employmentWorkLocation = vacancy.Body.EmployerLocationOption switch
+        {
+            AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancy.Body.EmployerLocations),
+            AvailableWhere.AcrossEngland => "Recruiting nationally",
+            _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.Body.EmployerLocation)
+        };
+
         foreach (var candidate in allCandidateApplications.Candidates)
         {
             var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
@@ -53,8 +62,7 @@ public class ProcessVacancyClosedEarlyCommandHandler(
                 vacancy.Body.Title,
                 helper.VacancyUrl,
                 vacancy.Body.EmployerName,
-                vacancy.Body.EmployerLocation.AddressLine4 ?? vacancy.Body.EmployerLocation.AddressLine3 ?? vacancy.Body.EmployerLocation.AddressLine2 ?? vacancy.Body.EmployerLocation.AddressLine1, 
-                vacancy.Body.EmployerLocation?.Postcode, 
+                employmentWorkLocation, 
                 candidate.ApplicationCreatedDate,
                 helper.SettingsUrl);
             notificationTasks.Add(notificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens)));
