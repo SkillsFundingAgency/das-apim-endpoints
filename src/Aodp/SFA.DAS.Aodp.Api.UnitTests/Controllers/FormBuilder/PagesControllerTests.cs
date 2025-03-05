@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.Aodp.Api.Controllers;
 using SFA.DAS.Aodp.Api.Controllers.FormBuilder;
+using SFA.DAS.Aodp.Application.Commands.FormBuilder.Forms;
 using SFA.DAS.Aodp.Application.Commands.FormBuilder.Pages;
 using SFA.DAS.Aodp.Application.Queries.FormBuilder.Forms;
 using SFA.DAS.Aodp.Application.Queries.FormBuilder.Pages;
@@ -55,7 +56,13 @@ public class PagesControllerTests
         var result = await _controller.GetAllAsync(request.SectionId, request.FormVersionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
+        _mediatorMock.Verify(m => m.Send(It.IsAny<GetAllPagesQuery>(), default), Times.Once());
+        _mediatorMock.Verify(m =>
+            m.Send(
+                It.Is<GetAllPagesQuery>(q =>
+                    q.FormVersionId == request.FormVersionId
+                    && q.SectionId == request.SectionId
+        ), default), Times.Once());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetAllPagesQueryResponse>());
@@ -80,10 +87,17 @@ public class PagesControllerTests
             .ReturnsAsync(wrapper);
 
         // Act
-        var result = await _controller.GetByIdAsync(request.PageId, request.SectionId, request.FormVersionId);
+        var result = await _controller.GetByIdAsync(request.FormVersionId, request.PageId, request.SectionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
+        _mediatorMock.Verify(m => m.Send(It.IsAny<GetPageByIdQuery>(), default), Times.Once());
+        _mediatorMock.Verify(m =>
+            m.Send(
+                It.Is<GetPageByIdQuery>(q =>
+                    q.FormVersionId == request.FormVersionId
+                    && q.SectionId == request.SectionId
+                    && q.PageId == request.PageId
+        ), default), Times.Once());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetPageByIdQueryResponse>());
@@ -111,7 +125,14 @@ public class PagesControllerTests
         var result = await _controller.GetPagePreviewByIdAsync(request.FormVersionId, request.PageId, request.SectionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
+        _mediatorMock.Verify(m => m.Send(It.IsAny<GetPagePreviewByIdQuery>(), default), Times.Once());
+        _mediatorMock.Verify(m =>
+            m.Send(
+                It.Is<GetPagePreviewByIdQuery>(q =>
+                    q.FormVersionId == request.FormVersionId
+                    && q.SectionId == request.SectionId
+                    && q.PageId == request.PageId
+        ), default), Times.Once());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetPagePreviewByIdQueryResponse>());
@@ -195,7 +216,14 @@ public class PagesControllerTests
         var result = await _controller.MoveUpAsync(request.FormVersionId, request.SectionId, request.PageId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
+        _mediatorMock.Verify(m => m.Send(It.IsAny<MovePageUpCommand>(), default), Times.Once());
+        _mediatorMock.Verify(m =>
+            m.Send(
+                It.Is<MovePageUpCommand>(q =>
+                    q.FormVersionId == request.FormVersionId
+                    && q.SectionId == request.SectionId
+                    && q.PageId == request.PageId
+        ), default), Times.Once());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<MovePageUpCommandResponse>());
@@ -223,7 +251,14 @@ public class PagesControllerTests
         var result = await _controller.MoveDownAsync(request.FormVersionId, request.SectionId, request.PageId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
+        _mediatorMock.Verify(m => m.Send(It.IsAny<MovePageDownCommand>(), default), Times.Once());
+        _mediatorMock.Verify(m =>
+            m.Send(
+                It.Is<MovePageDownCommand>(q =>
+                    q.FormVersionId == request.FormVersionId
+                    && q.SectionId == request.SectionId
+                    && q.PageId == request.PageId
+        ), default), Times.Once());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<MovePageDownCommandResponse>());
@@ -251,7 +286,14 @@ public class PagesControllerTests
         var result = await _controller.RemoveAsync(request.PageId, request.FormVersionId, request.SectionId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(request, default), Times.Never());
+        _mediatorMock.Verify(m => m.Send(It.IsAny<DeletePageCommand>(), default), Times.Once());
+        _mediatorMock.Verify(m =>
+            m.Send(
+                It.Is<DeletePageCommand>(q =>
+                    q.FormVersionId == request.FormVersionId
+                    && q.SectionId == request.SectionId
+                    && q.PageId == request.PageId
+        ), default), Times.Once());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<DeletePageCommandResponse>());
