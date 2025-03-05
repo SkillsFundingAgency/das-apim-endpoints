@@ -43,9 +43,9 @@ public class SupportApprenticeshipDetails
     public DateTime? CompletionDate { get; set; }
     public bool? MadeRedundant { get; set; }
     public string StandardUId { get; set; }
-    public string TrainingCourseVersion { get; set; }
+    public string? TrainingCourseVersion { get; set; }
     public bool TrainingCourseVersionConfirmed { get; set; }
-    public string TrainingCourseOption { get; set; }
+    public string? TrainingCourseOption { get; set; }
     public long EmployerAccountId { get; set; }
     public int? EmploymentPrice { get; set; }
     public DateTime? EmploymentEndDate { get; set; }

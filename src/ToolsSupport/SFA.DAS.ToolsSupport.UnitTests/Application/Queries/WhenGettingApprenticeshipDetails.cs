@@ -9,6 +9,7 @@ using SFA.DAS.ToolsSupport.InnerApi.Requests;
 using SFA.DAS.ToolsSupport.InnerApi.Responses;
 using FluentAssertions;
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.ToolsSupport.Mappers;
 
 namespace SFA.DAS.ToolsSupport.UnitTests.Application.Queries;
 
@@ -33,6 +34,8 @@ public class WhenGettingApprenticeshipDetails
         actual.Should().BeEquivalentTo(
                 new
                 {
+                    ApprenticeshipId = mockApiApprenticeshipDetailsResponse.Id,
+                    EmployerAccountId = mockApiApprenticeshipDetailsResponse.EmployerAccountId,
                     AgreementStatus = mockApiApprenticeshipDetailsResponse.AgreementStatus.GetDescription(),
                     MadeRedundant = mockApiApprenticeshipDetailsResponse.MadeRedundant,
                     Uln = mockApiApprenticeshipDetailsResponse.Uln,
@@ -76,6 +79,28 @@ public class WhenGettingApprenticeshipDetails
                     Version = mockApiApprenticeshipDetailsResponse.TrainingCourseVersionConfirmed ? mockApiApprenticeshipDetailsResponse.TrainingCourseVersion : null,
                     ConfirmationStatusDescription = mockApiApprenticeshipDetailsResponse.ConfirmationStatus == null ? mockApiApprenticeshipDetailsResponse.ConfirmationStatus.ToString() : null,
                 });
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Gets_ApprenticeshipDetails_And_Returns_PendingChnages_Correctly(
+        long id,
+        List<PendingChange> pendingChanges,
+        SupportApprenticeshipDetails mockApiApprenticeshipDetailsResponse,
+        [Frozen] Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> mockApiClient,
+        [Frozen] Mock<IPendingChangesMapper> mockPendingChanges,
+        GetApprenticeshipQueryHandler sut)
+    {
+        var mockQuery = new GetApprenticeshipQuery { Id = id };
+        mockApiClient.Setup(client => client.Get<SupportApprenticeshipDetails>(
+                It.IsAny<GetApprovedApprenticeshipByIdRequest>()))
+            .ReturnsAsync(mockApiApprenticeshipDetailsResponse);
+
+        mockPendingChanges.Setup(x => x.MapToPendingChanges(It.IsAny<GetApprenticeshipPendingUpdatesResponse>(),
+            It.IsAny<SupportApprenticeshipDetails>())).Returns(pendingChanges);
+
+        var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
+
+        actual.PendingChanges.Should().BeEquivalentTo(pendingChanges);
     }
 
     [Test, MoqAutoData]
@@ -227,31 +252,6 @@ public class WhenGettingApprenticeshipDetails
         var actual = sut.MapToOverlappingTrainingDateRequest(response);
 
         actual.Should().Be(createdOn);
-    }
-
-    [Test, MoqAutoData]
-    public void And_When_PendingUpdates_Do_Not_Exists_Then_Returns_Null(
-        long id,
-        GetApprenticeshipPendingUpdatesResponse response,
-        [Frozen] Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> mockApiClient,
-        GetApprenticeshipQueryHandler sut)
-    {
-        response.ApprenticeshipUpdates = null;
-        var actual = sut.MapToApprenticeshipUpdate(response);
-
-        actual.Should().BeNull();
-    }
-
-    [Test, MoqAutoData]
-    public void And_When_PendingUpdates_Do_Exists_Then_Returns_FirstOne(
-        long id,
-        GetApprenticeshipPendingUpdatesResponse response,
-        [Frozen] Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> mockApiClient,
-        GetApprenticeshipQueryHandler sut)
-    {
-        var actual = sut.MapToApprenticeshipUpdate(response);
-
-        actual.Should().Be(response.ApprenticeshipUpdates[0]);
     }
 
     [Test, MoqAutoData]

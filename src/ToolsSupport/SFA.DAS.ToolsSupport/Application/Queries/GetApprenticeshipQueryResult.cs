@@ -5,6 +5,8 @@ namespace SFA.DAS.ToolsSupport.Application.Queries;
 
 public class GetApprenticeshipQueryResult
 {
+    public long ApprenticeshipId { get; set; }
+    public long EmployerAccountId { get; set; }
     public string PaymentStatus { get; set; }
     public string AgreementStatus { get; set; }
     public string? ConfirmationStatusDescription { get; set; }
@@ -39,5 +41,12 @@ public class GetApprenticeshipQueryResult
 
     public DateTime? OverlappingTrainingDateRequestCreatedOn { get; set; }
     public List<ChangeOfProviderLink> ChangeOfProviderChain { get; set; }
-    public ApprenticeshipUpdate? ApprenticeshipUpdate { get; set; }
+    public List<PendingChange> PendingChanges { get; set; } = new ();
+}
+
+public class PendingChange
+{
+    public string Name { get; set; }
+    public string OriginalValue { get; set; }
+    public string NewValue { get; set; }
 }

@@ -4,11 +4,12 @@ using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.ToolsSupport.InnerApi.Requests;
 using SFA.DAS.ToolsSupport.InnerApi.Responses;
+using SFA.DAS.ToolsSupport.Mappers;
 using static SFA.DAS.ToolsSupport.InnerApi.Responses.GetApprenticeshipPriceEpisodesResponse;
 
 namespace SFA.DAS.ToolsSupport.Application.Queries;
 
-public class GetApprenticeshipQueryHandler(IInternalApiClient<CommitmentsV2ApiConfiguration> client)
+public class GetApprenticeshipQueryHandler(IInternalApiClient<CommitmentsV2ApiConfiguration> client, IPendingChangesMapper pendingChangesMapper)
     : IRequestHandler<GetApprenticeshipQuery, GetApprenticeshipQueryResult?>
 {
     public async Task<GetApprenticeshipQueryResult?> Handle(GetApprenticeshipQuery request, CancellationToken cancellationToken)
@@ -33,6 +34,8 @@ public class GetApprenticeshipQueryHandler(IInternalApiClient<CommitmentsV2ApiCo
 
         return new GetApprenticeshipQueryResult
         {
+            ApprenticeshipId = apprenticeship.Id,
+            EmployerAccountId = apprenticeship.EmployerAccountId,
             AgreementStatus = apprenticeship.AgreementStatus.GetDescription(),
             PaymentStatus = paymentStatusText,
             MadeRedundant = apprenticeship.MadeRedundant,
@@ -58,7 +61,7 @@ public class GetApprenticeshipQueryHandler(IInternalApiClient<CommitmentsV2ApiCo
             TrainingEndDate = apprenticeship.EndDate,
             OverlappingTrainingDateRequestCreatedOn = MapToOverlappingTrainingDateRequest(trainingDate),
             TrainingCost = GetPrice(priceEpisode.PriceEpisodes, apprenticeship.Cost),
-            ApprenticeshipUpdate = MapToApprenticeshipUpdate(pendingUpdates),
+            PendingChanges = pendingChangesMapper.MapToPendingChanges(pendingUpdates, apprenticeship).ToList(),
             ChangeOfProviderChain = changeOfProvider.ChangeOfProviderChain
         };
     }
@@ -101,16 +104,6 @@ public class GetApprenticeshipQueryHandler(IInternalApiClient<CommitmentsV2ApiCo
         }
 
         return pendingRequest.CreatedOn;
-    }
-
-    public ApprenticeshipUpdate? MapToApprenticeshipUpdate(GetApprenticeshipPendingUpdatesResponse? pendingUpdateResponse)
-    {
-        var updateCount = pendingUpdateResponse?.ApprenticeshipUpdates?.Count;
-        if (updateCount == null || updateCount == 0)
-        {
-            return null;
-        }
-        return pendingUpdateResponse.ApprenticeshipUpdates.ToList()[0];
     }
 
     public decimal? GetPrice(IEnumerable<PriceEpisode> priceEpisodes, decimal? cost)

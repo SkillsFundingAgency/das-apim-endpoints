@@ -23,9 +23,25 @@ public class EmployerAccountsController : ControllerBase
     {
         try
         {
-            var response = await _mediator.Send(new GetEmployerAccountsQuery {AccountId = accountId, PayeSchemeRef = payeSchemeRef});
+            //var response = await _mediator.Send(new GetEmployerAccountsQuery {AccountId = accountId, PayeSchemeRef = payeSchemeRef});
 
-            return Ok(response);
+            //return Ok(response);
+
+            return Ok(new GetEmployerAccountsQueryResult()
+            {
+                Accounts = new List<EmployerAccount>
+                {
+                    new EmployerAccount
+                    {
+                        AccountId = 30060,
+                        HashedAccountId = "VNR6P9",
+                        DasAccountName = "Rapid Logistics Co Ltd",
+                        PublicHashedAccountId = "7Y94BK"
+
+                    }
+                }
+            });
+
         }
         catch (Exception ex)
         {
