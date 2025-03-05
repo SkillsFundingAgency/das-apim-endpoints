@@ -5,8 +5,8 @@ namespace SFA.DAS.Aodp.Api.Controllers;
 
 public class BaseController : Controller
 {
-    private readonly IMediator _mediator;
-    private readonly ILogger _logger;
+    protected readonly IMediator _mediator;
+    protected readonly ILogger _logger;
 
     public BaseController(IMediator mediator, ILogger logger)
     {

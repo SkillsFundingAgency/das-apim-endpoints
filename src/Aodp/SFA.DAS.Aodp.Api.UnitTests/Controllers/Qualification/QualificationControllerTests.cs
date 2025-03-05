@@ -50,6 +50,28 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         }
 
         [Test]
+        public async Task GetQualifications_ReturnsOkResult_WithListOfChangedQualifications()
+        {
+            // Arrange
+            var queryResponse = _fixture.Create<BaseMediatrResponse<GetChangedQualificationsQueryResponse>>();
+            queryResponse.Success = true;
+            queryResponse.Value.Data = _fixture.CreateMany<GetChangedQualificationsQueryResponse.ChangedQualification>(2).ToList();
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetChangedQualificationsQuery>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await _controller.GetQualifications("changed");
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = (OkObjectResult)result;
+            Assert.That(okResult.Value, Is.AssignableFrom<GetChangedQualificationsQueryResponse>());
+            var model = (GetChangedQualificationsQueryResponse)okResult.Value;
+            Assert.That(model.Data.Count, Is.EqualTo(2));
+        }
+
+        [Test]
         public async Task GetQualifications_ReturnsNotFound_WhenQueryFails()
         {
             // Arrange
@@ -139,6 +161,12 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var badRequestResult = (BadRequestObjectResult)result;
             var badRequestValue = badRequestResult.Value?.GetType().GetProperty("message")?.GetValue(badRequestResult.Value, null);
             Assert.That(badRequestValue, Is.EqualTo("Qualification reference cannot be empty"));
+        }
+
+        [TearDownAttribute]
+        public void TearDown()
+        {
+            _controller.Dispose();
         }
     }
 }

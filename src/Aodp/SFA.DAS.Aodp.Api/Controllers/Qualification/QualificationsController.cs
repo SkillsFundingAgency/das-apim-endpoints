@@ -15,8 +15,6 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
 
         public QualificationsController(IMediator mediator, ILogger<QualificationsController> logger) : base(mediator, logger)
         {
-            _mediator = mediator;
-            _logger = logger;
         }
 
         [HttpGet]
@@ -47,7 +45,16 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             else
             {
                 return BadRequest(new { message = validationResult.ErrorMessage });
-            }        
+            }
+
+            IActionResult response = validationResult.ProcessedStatus switch
+            {
+                "new" => await HandleNewQualifications(),
+                "changed" => await HandleChangedQualifications(),
+                _ => BadRequest(new { message = $"Invalid status: {validationResult.ProcessedStatus}" })
+            };
+
+            return response;
         }
 
         [HttpGet("{qualificationReference}")]
@@ -84,6 +91,25 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             IActionResult response = await HandleNewQualificationCSVExport();          
 
             return response;
+        }
+
+        private async Task<IActionResult> HandleNewQualifications()
+        {
+            var result = await _mediator.Send(new GetNewQualificationsQuery());
+
+            if (result == null || !result.Success || result.Value == null)
+            {
+                _logger.LogWarning("No new qualifications found.");
+                return NotFound(new { message = "No new qualifications found" });
+            }
+
+            return Ok(result);
+        }
+
+        private async Task<IActionResult> HandleChangedQualifications()
+        {
+            var query = new GetChangedQualificationsQuery();
+            return await SendRequestAsync(query);
         }
 
         private async Task<IActionResult> HandleNewQualificationCSVExport()
