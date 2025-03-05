@@ -1,10 +1,10 @@
-﻿using System.Globalization;
+﻿using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Constants;
+using SFA.DAS.SharedOuterApi.Extensions;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
-using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
 {
@@ -80,8 +80,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 string? wageText;
                 var employmentWorkLocation = vacancy.EmployerLocationOption switch
                 {
+                    AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
                     AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocations(vacancy.EmployerLocations),
-                    AvailableWhere.AcrossEngland => "Recruiting nationally",
+                    AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.EmployerLocations!.First()),
                     _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.EmployerLocation)
                 };
 
