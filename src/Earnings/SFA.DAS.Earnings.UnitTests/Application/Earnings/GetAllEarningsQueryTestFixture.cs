@@ -145,6 +145,9 @@ public class GetAllEarningsQueryTestFixture
 
     public GetFm36DataResponse BuildEarningsResponse(GetApprenticeshipsResponse apprenticeshipsResponse)
     {
+        const string additionalPaymentTypeProviderIncentive = "ProviderIncentive";
+        const string additionalPaymentTypeEmployerIncentive = "EmployerIncentive";
+
         var response = new GetFm36DataResponse
         {
             new SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship
@@ -174,6 +177,14 @@ public class GetAllEarningsQueryTestFixture
                             new Instalment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 1000 },
                             new Instalment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 1000 },
                             new Instalment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 1000 }
+                        },
+                        AdditionalPayments = new List<AdditionalPayment>
+                        {
+                            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 500, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 8, 1) },
+                            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 500, AdditionalPaymentType = additionalPaymentTypeEmployerIncentive, DueDate = new DateTime(2020, 8, 1)},
+
+                            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 500, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2021, 2, 1) },
+                            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 500, AdditionalPaymentType = additionalPaymentTypeEmployerIncentive, DueDate = new DateTime(2021, 2, 1)}
                         }
                     }
                 }
@@ -205,6 +216,10 @@ public class GetAllEarningsQueryTestFixture
                             new Instalment{ AcademicYear = 2021, DeliveryPeriod = 10, Amount = 4375 },
                             new Instalment{ AcademicYear = 2021, DeliveryPeriod = 11, Amount = 4375 },
                             new Instalment{ AcademicYear = 2021, DeliveryPeriod = 12, Amount = 4375 }
+                        },
+                        AdditionalPayments = new List<AdditionalPayment>
+                        {
+                            new AdditionalPayment{ AcademicYear = 2020, DeliveryPeriod = 12, Amount = 1875, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 7, 1)},
                         }
                     }
                 }
