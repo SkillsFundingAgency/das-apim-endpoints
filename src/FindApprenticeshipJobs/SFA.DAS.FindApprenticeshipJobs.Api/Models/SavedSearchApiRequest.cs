@@ -29,7 +29,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
 
             public Address? EmployerLocation { get; set; }
             public List<Address>? OtherAddresses { get; set; }
-            public AvailableWhere? EmployerLocationOption { get; set; }
+            public AvailableWhere? EmploymentLocationOption { get; set; }
 
             public string? Wage { get; set; }
 
@@ -104,7 +104,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
                         Wage = vacancy.Wage,
                         EmployerLocation = vacancy.EmployerLocation,
                         OtherAddresses = vacancy.OtherAddresses,
-                        EmployerLocationOption = vacancy.EmployerLocationOption,
+                        EmploymentLocationOption = vacancy.EmploymentLocationOption,
                         VacancySource = vacancy.VacancySource,
                         WageUnit = vacancy.WageUnit,
                         WageType = vacancy.WageType
