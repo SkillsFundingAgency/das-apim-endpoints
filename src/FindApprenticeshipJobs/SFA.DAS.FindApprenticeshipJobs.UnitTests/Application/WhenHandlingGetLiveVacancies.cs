@@ -1,4 +1,5 @@
-﻿using AutoFixture;
+﻿using System.Net;
+using AutoFixture;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
@@ -18,7 +19,6 @@ public class WhenHandlingGetLiveVacancies
     [Test, MoqAutoData]
     public async Task Then_Gets_Live_Vacancies(
         GetLiveVacanciesQuery mockQuery,
-        ApiResponse<GetLiveVacanciesApiResponse> mockApiResponse,
         GetStandardsListResponse getStandardsListResponse,
         [Frozen] Mock<ICourseService> courseService,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockApiClient,
@@ -26,6 +26,16 @@ public class WhenHandlingGetLiveVacancies
         GetLiveVacanciesQueryHandler sut)
     {
         var expectedUrl = new GetLiveVacanciesApiRequest(mockQuery.PageNumber, mockQuery.PageSize, mockQuery.ClosingDate);
+        var fixture = new Fixture();
+        var liveVacancies =  fixture.Build<LiveVacancy>().With(c => c.VacancyType, VacancyType.Apprenticeship).CreateMany().ToList();
+        var noType = fixture.Build<LiveVacancy>().Create();
+        noType.VacancyType = null;
+        liveVacancies.Add(noType);
+        var mockApiResponse =
+            new ApiResponse<GetLiveVacanciesApiResponse>(new GetLiveVacanciesApiResponse { Vacancies = liveVacancies, TotalLiveVacancies = liveVacancies.Count , TotalLiveVacanciesReturned = liveVacancies.Count , TotalPages = 1, PageNo = 1, PageSize = 10 },
+                HttpStatusCode.OK, "");
+        mockApiResponse.Body.Vacancies.First().VacancyType = null;
+        
         mockApiClient.Setup(client => client.GetWithResponseCode<GetLiveVacanciesApiResponse>(It.Is<GetLiveVacanciesApiRequest>(c=>c.GetUrl == expectedUrl.GetUrl))).ReturnsAsync(mockApiResponse);
         courseService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
             .ReturnsAsync(getStandardsListResponse);
@@ -100,10 +110,10 @@ public class WhenHandlingGetLiveVacancies
 
     private static void AssertResponse(GetLiveVacanciesQueryResult actual, List<FindApprenticeshipJobs.Application.Shared.LiveVacancy> mockedVacancies)
     {
-        foreach (var actualVacancy in actual.Vacancies)
+        foreach (var expectedVacancy in mockedVacancies)
         {
-            var expected = mockedVacancies.Single(x => x.VacancyId == actualVacancy.VacancyId);
-            actualVacancy.Should().BeEquivalentTo(expected);
+            var expected = actual.Vacancies.Single(x => x.VacancyId == expectedVacancy.VacancyId);
+            expectedVacancy.Should().BeEquivalentTo(expected);
         }
     }
 }
