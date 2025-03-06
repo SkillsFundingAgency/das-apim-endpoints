@@ -3,7 +3,7 @@ using SFA.DAS.Aodp.InnerApi.AodpApi.Application.Messages;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Aodp.Application.Commands.Application.Message;
+namespace SFA.DAS.Aodp.Application.Commands.Application.Application;
 
 public class CreateApplicationMessageCommandHandler : IRequestHandler<CreateApplicationMessageCommand, BaseMediatrResponse<CreateApplicationMessageCommandResponse>>
 {
@@ -24,7 +24,7 @@ public class CreateApplicationMessageCommandHandler : IRequestHandler<CreateAppl
         {
             var result = await _apiClient.PostWithResponseCode<CreateApplicationMessageCommandResponse>(new CreateApplicationMessageApiRequest()
             {
-                ApplicationId = (Guid)request.ApplicationId,
+                ApplicationId = request.ApplicationId,
                 Data = request
             });
 

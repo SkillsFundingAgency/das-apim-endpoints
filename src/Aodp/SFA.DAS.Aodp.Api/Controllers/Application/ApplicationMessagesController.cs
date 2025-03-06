@@ -1,6 +1,8 @@
-﻿using MediatR;
+﻿using Azure.Core;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Aodp.Application.Commands.Application.Message;
+using SFA.DAS.Aodp.Application.Commands.Application.Application;
+using SFA.DAS.Aodp.Application.Queries.Application.Application;
 
 namespace SFA.DAS.Aodp.Api.Controllers.Application;
 
@@ -18,21 +20,29 @@ public class ApplicationMessagesController : BaseController
     }
 
 
-    //[HttpGet("/api/applications/{applicationId}/messages")]
-    //[ProducesResponseType(typeof(GetApplicationMessagesByIdQueryResponse), StatusCodes.Status200OK)]
-    //[ProducesResponseType(StatusCodes.Status404NotFound)]
-    //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    //public async Task<IActionResult> GetApplicationMessagesByIdAsync(Guid applicationId)
-    //{
-    //    var query = new GetApplicationMessagesByIdQuery(applicationId);
-    //    return await SendRequestAsync(query);
-    //}
+    [HttpGet("/api/applications/{applicationId}/messages")]
+    [ProducesResponseType(typeof(GetApplicationMessagesByIdQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetApplicationMessagesByIdAsync(Guid applicationId)
+    {
+        var query = new GetApplicationMessagesByIdQuery(applicationId);
+        return await SendRequestAsync(query);
+    }
 
     [HttpPost("/api/applicationMessages/{applicationId}/messages")]
     [ProducesResponseType(typeof(CreateApplicationMessageCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateApplicationMessageAsync([FromBody] CreateApplicationMessageCommand command, [FromRoute] Guid applicationId)
     {
-        return await SendRequestAsync(command);
+        var response = await _mediator.Send(command);
+
+        if (response.Success)
+        {
+            return Ok(response.Value);
+        }
+
+        _logger.LogError(message: $"Error thrown handling request: {response.ErrorMessage}");
+        return StatusCode(StatusCodes.Status500InternalServerError);
     }
 }

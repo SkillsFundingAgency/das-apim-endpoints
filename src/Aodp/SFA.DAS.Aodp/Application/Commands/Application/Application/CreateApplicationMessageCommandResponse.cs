@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Aodp.Application.Commands.Application.Message;
+﻿namespace SFA.DAS.Aodp.Application.Commands.Application.Application;
 
 public class CreateApplicationMessageCommandResponse
 {
