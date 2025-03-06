@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Collections.Generic;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests
 {

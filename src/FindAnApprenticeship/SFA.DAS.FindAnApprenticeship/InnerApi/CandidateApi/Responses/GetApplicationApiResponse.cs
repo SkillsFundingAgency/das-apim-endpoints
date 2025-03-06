@@ -45,5 +45,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
         public required Guid Id { get; init; }
         public required string QuestionText { get; init; }
         public string Answer { get; set; }
+        public short? QuestionOrder { get; set; }
     }
 }

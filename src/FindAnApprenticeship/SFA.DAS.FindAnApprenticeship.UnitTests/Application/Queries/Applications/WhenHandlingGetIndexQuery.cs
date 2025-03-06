@@ -1,16 +1,10 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 using static SFA.DAS.FindAnApprenticeship.InnerApi.Responses.PostGetVacanciesByReferenceApiResponse;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Applications
@@ -73,6 +67,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     SubmittedDate = application.SubmittedDate,
                     ResponseDate = application.ResponseDate,
                     ResponseNotes = application.ResponseNotes,
+                    Address = vacancy.Address,
+                    OtherAddresses = vacancy.OtherAddresses,
+                    EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
+                    EmployerLocationOption = vacancy.EmployerLocationOption,
                 });
             }
 
@@ -134,7 +132,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     WithdrawnDate = application.WithdrawnDate,
                     ResponseDate = application.ResponseDate,
                     ResponseNotes = application.ResponseNotes,
-                    Status = Enum.Parse<ApplicationStatus>(application.Status)
+                    Status = Enum.Parse<ApplicationStatus>(application.Status),
+                    Address = vacancy.Address,
+                    OtherAddresses = vacancy.OtherAddresses,
+                    EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
+                    EmployerLocationOption = vacancy.EmployerLocationOption,
                 });
             }
 
@@ -196,11 +198,70 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
                     WithdrawnDate = application.WithdrawnDate,
                     ResponseDate = application.ResponseDate,
                     ResponseNotes = application.ResponseNotes,
-                    Status = Enum.Parse<ApplicationStatus>(application.Status)
+                    Status = Enum.Parse<ApplicationStatus>(application.Status),
+                    Address = vacancy.Address,
+                    OtherAddresses = vacancy.OtherAddresses,
+                    EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
+                    EmployerLocationOption = vacancy.EmployerLocationOption,
                 });
             }
 
             result.Should().BeEquivalentTo(expectedResult);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Vacancies_Not_Found_Empty_Returned(
+            GetCandidateApiResponse candidateResponse,
+            GetApplicationsQuery query,
+            GetApplicationsApiResponse applicationApiResponse,
+            List<ApprenticeshipVacancy> vacancies,
+            [Frozen] Mock<IVacancyService> vacancyService,
+            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            GetApplicationsQueryHandler handler)
+        {
+            var expectedGetApplicationRequest = new GetApplicationsApiRequest(query.CandidateId);
+            candidateApiClient
+                .Setup(client => client.Get<GetApplicationsApiResponse>(
+                    It.Is<GetApplicationsApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
+                .ReturnsAsync(applicationApiResponse);
+
+            candidateApiClient
+                .Setup(x => x.Get<GetCandidateApiResponse>(
+                    It.Is<GetCandidateApiRequest>(c => c.GetUrl.Contains(query.CandidateId.ToString()))))
+                .ReturnsAsync(candidateResponse);
+
+            vacancyService.Setup(x => x.GetVacancies(It.IsAny<List<string>>()))
+                .ReturnsAsync(vacancies.Select(x => (IVacancy)x).ToList());
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            using var scope = new AssertionScope();
+
+            result.Applications.Count.Should().Be(0);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Applications_Are_Empty_Then_Empty_Returned(
+            GetApplicationsQuery query,
+            GetApplicationsApiResponse applicationApiResponse,
+            List<ApprenticeshipVacancy> vacancies,
+            [Frozen] Mock<IVacancyService> vacancyService,
+            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            GetApplicationsQueryHandler handler)
+        {
+            applicationApiResponse.Applications = [];
+
+            var expectedGetApplicationRequest = new GetApplicationsApiRequest(query.CandidateId);
+            candidateApiClient
+                .Setup(client => client.Get<GetApplicationsApiResponse>(
+                    It.Is<GetApplicationsApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
+                .ReturnsAsync(applicationApiResponse);
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            using var scope = new AssertionScope();
+
+            result.Applications.Count.Should().Be(0);
         }
     }
 }
