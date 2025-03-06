@@ -14,6 +14,6 @@ public class ApprovedApprenticeshipsController(
     [Route("/providers/{ukprn}/academicyears/{academicyear}/apprenticeships")]
     public async  Task<IActionResult> Search(long ukprn, int academicyear)
     {
-        return Ok();
+        return Accepted();
     }   
 }
