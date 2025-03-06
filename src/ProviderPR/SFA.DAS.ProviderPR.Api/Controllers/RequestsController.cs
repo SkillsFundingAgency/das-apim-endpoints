@@ -48,9 +48,9 @@ public class RequestsController(IMediator _mediator, IProviderRelationshipsApiRe
     [HttpGet]
     [ProducesResponseType(typeof(GetRequestResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetRequest([FromQuery] long ukprn, [FromQuery] string? paye, [FromQuery] string? email, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetRequest([FromQuery] long ukprn, [FromQuery] string? paye, [FromQuery] string? email, [FromQuery] long? accountLegalEntityId, CancellationToken cancellationToken)
     {
-        GetRequestResponse? result = await _providerRelationshipsApiRestClient.GetRequest(ukprn, paye, email, cancellationToken);
+        GetRequestResponse? result = await _providerRelationshipsApiRestClient.GetRequest(ukprn, paye, email, accountLegalEntityId, cancellationToken);
 
         if (result is null)
         {
