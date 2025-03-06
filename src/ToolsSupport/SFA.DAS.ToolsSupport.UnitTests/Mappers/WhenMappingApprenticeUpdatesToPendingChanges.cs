@@ -1,20 +1,15 @@
-﻿using System.Net;
-using AutoFixture;
-using AutoFixture.NUnit3;
+﻿using AutoFixture;
 using FluentAssertions;
-using Moq;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.ToolsSupport.Application.Queries;
 using SFA.DAS.ToolsSupport.Extensions;
-using SFA.DAS.ToolsSupport.InnerApi.Requests;
 using SFA.DAS.ToolsSupport.InnerApi.Responses;
 using SFA.DAS.ToolsSupport.Mappers;
+using Party = SFA.DAS.ToolsSupport.InnerApi.Responses.Party;
 
 namespace SFA.DAS.ToolsSupport.UnitTests.Mappers;
+
 public class WhenMappingApprenticeUpdatesToPendingChanges
 {
     [TestCase(null)]
@@ -29,11 +24,37 @@ public class WhenMappingApprenticeUpdatesToPendingChanges
 
         var sut = new PendingChangesMapper();
 
-        var actual = sut.MapToPendingChanges(updatesResponse, fixture.Create<SupportApprenticeshipDetails>());
+        var actual = sut.CreatePendingChangesResponse(updatesResponse, fixture.Create<SupportApprenticeshipDetails>());
 
-        actual.ToList().Count.Should().Be(0);
+        actual.Changes.ToList().Count.Should().Be(0);
+        actual.Description.Should().Be("There are no changes for this record");
     }
 
+    [Test, MoqAutoData]
+    public void Then_Description_Should_Should_Show_Employer_Changes(
+        GetApprenticeshipPendingUpdatesResponse updatesResponse,
+        SupportApprenticeshipDetails apprenticeship,
+        PendingChangesMapper sut)
+    {
+        updatesResponse.ApprenticeshipUpdates[0].OriginatingParty = Party.Employer;
+
+        var actual = sut.CreatePendingChangesResponse(updatesResponse, apprenticeship);
+
+        actual.Description.Should().Be("Requested By Employer");
+    }
+
+    [Test, MoqAutoData]
+    public void Then_Description_Should_Should_Show_Provider_Changes(
+        GetApprenticeshipPendingUpdatesResponse updatesResponse,
+        SupportApprenticeshipDetails apprenticeship,
+        PendingChangesMapper sut)
+    {
+        updatesResponse.ApprenticeshipUpdates[0].OriginatingParty = Party.Provider;
+
+        var actual = sut.CreatePendingChangesResponse(updatesResponse, apprenticeship);
+
+        actual.Description.Should().Be("Requested By Training Provider");
+    }
 
     [Test, MoqAutoData]
     public void Then_Name_Should_Be_Mapped(
@@ -48,7 +69,7 @@ public class WhenMappingApprenticeUpdatesToPendingChanges
             LastName = lastName
         };
 
-        var actual = sut.MapToPendingChanges(BuildPendingUpdateResponseWith(update), apprenticeship).ToList().First();
+        var actual = sut.CreatePendingChangesResponse(BuildPendingUpdateResponseWith(update), apprenticeship).Changes.ToList().First();
 
         actual.Name.Should().Be("Name");
         actual.OriginalValue.Should().Be($"{apprenticeship.FirstName} {apprenticeship.LastName}");
@@ -66,7 +87,7 @@ public class WhenMappingApprenticeUpdatesToPendingChanges
             Email = email
         };
 
-        var actual = sut.MapToPendingChanges(BuildPendingUpdateResponseWith(update), apprenticeship).ToList().First();
+        var actual = sut.CreatePendingChangesResponse(BuildPendingUpdateResponseWith(update), apprenticeship).Changes.ToList().First();
 
         actual.Name.Should().Be("Email");
         actual.OriginalValue.Should().Be(apprenticeship.Email);
@@ -84,7 +105,7 @@ public class WhenMappingApprenticeUpdatesToPendingChanges
             DateOfBirth = dob
         };
 
-        var actual = sut.MapToPendingChanges(BuildPendingUpdateResponseWith(update), apprenticeship).ToList().First();
+        var actual = sut.CreatePendingChangesResponse(BuildPendingUpdateResponseWith(update), apprenticeship).Changes.ToList().First();
 
         actual.Name.Should().Be("Date of birth");
         actual.OriginalValue.Should().Be(apprenticeship.DateOfBirth.ToString("dd MMM yyyy"));
@@ -102,7 +123,7 @@ public class WhenMappingApprenticeUpdatesToPendingChanges
             DeliveryModel = dm
         };
 
-        var actual = sut.MapToPendingChanges(BuildPendingUpdateResponseWith(update), apprenticeship).ToList().First();
+        var actual = sut.CreatePendingChangesResponse(BuildPendingUpdateResponseWith(update), apprenticeship).Changes.ToList().First();
 
         actual.Name.Should().Be("Apprenticeship delivery model");
         actual.OriginalValue.Should().Be(apprenticeship.DeliveryModel.ToDescription());
@@ -120,7 +141,7 @@ public class WhenMappingApprenticeUpdatesToPendingChanges
             EmploymentEndDate = empEndDate
         };
 
-        var actual = sut.MapToPendingChanges(BuildPendingUpdateResponseWith(update), apprenticeship).ToList().First();
+        var actual = sut.CreatePendingChangesResponse(BuildPendingUpdateResponseWith(update), apprenticeship).Changes.ToList().First();
 
         actual.Name.Should().Be("Planned end date of this employment");
         actual.OriginalValue.Should().Be(apprenticeship.EmploymentEndDate.Value.ToString("dd MMM yyyy"));
@@ -138,7 +159,7 @@ public class WhenMappingApprenticeUpdatesToPendingChanges
             EmploymentPrice = price
         };
 
-        var actual = sut.MapToPendingChanges(BuildPendingUpdateResponseWith(update), apprenticeship).ToList().First();
+        var actual = sut.CreatePendingChangesResponse(BuildPendingUpdateResponseWith(update), apprenticeship).Changes.ToList().First();
 
         actual.Name.Should().Be("Training price for this employment");
         actual.OriginalValue.Should().Be($"£{apprenticeship.EmploymentPrice.Value:n0}");
@@ -156,7 +177,7 @@ public class WhenMappingApprenticeUpdatesToPendingChanges
             StartDate = date
         };
 
-        var actual = sut.MapToPendingChanges(BuildPendingUpdateResponseWith(update), apprenticeship).ToList().First();
+        var actual = sut.CreatePendingChangesResponse(BuildPendingUpdateResponseWith(update), apprenticeship).Changes.ToList().First();
 
         actual.Name.Should().Be("Planned training start date");
         actual.OriginalValue.Should().Be(apprenticeship.StartDate.ToString("MMM yyyy"));
@@ -174,7 +195,7 @@ public class WhenMappingApprenticeUpdatesToPendingChanges
             EndDate = date
         };
 
-        var actual = sut.MapToPendingChanges(BuildPendingUpdateResponseWith(update), apprenticeship).ToList().First();
+        var actual = sut.CreatePendingChangesResponse(BuildPendingUpdateResponseWith(update), apprenticeship).Changes.ToList().First();
 
         actual.Name.Should().Be("Planned training end date");
         actual.OriginalValue.Should().Be(apprenticeship.EndDate.ToString("MMM yyyy"));
@@ -192,7 +213,7 @@ public class WhenMappingApprenticeUpdatesToPendingChanges
             Cost = price
         };
 
-        var actual = sut.MapToPendingChanges(BuildPendingUpdateResponseWith(update), apprenticeship).ToList().First();
+        var actual = sut.CreatePendingChangesResponse(BuildPendingUpdateResponseWith(update), apprenticeship).Changes.ToList().First();
 
         actual.Name.Should().Be("Cost");
         actual.OriginalValue.Should().Be($"£{apprenticeship.Cost.Value:n0}");
@@ -210,7 +231,7 @@ public class WhenMappingApprenticeUpdatesToPendingChanges
             TrainingCode = code
         };
 
-        var actual = sut.MapToPendingChanges(BuildPendingUpdateResponseWith(update), apprenticeship).ToList().First();
+        var actual = sut.CreatePendingChangesResponse(BuildPendingUpdateResponseWith(update), apprenticeship).Changes.ToList().First();
 
         actual.Name.Should().Be("Apprenticeship training course");
         actual.OriginalValue.Should().Be(apprenticeship.CourseName);
@@ -228,7 +249,7 @@ public class WhenMappingApprenticeUpdatesToPendingChanges
             Version = code
         };
 
-        var actual = sut.MapToPendingChanges(BuildPendingUpdateResponseWith(update), apprenticeship).ToList().First();
+        var actual = sut.CreatePendingChangesResponse(BuildPendingUpdateResponseWith(update), apprenticeship).Changes.ToList().First();
 
         actual.Name.Should().Be("Version");
         actual.OriginalValue.Should().Be(apprenticeship.TrainingCourseVersion);
@@ -246,7 +267,7 @@ public class WhenMappingApprenticeUpdatesToPendingChanges
             Option = code
         };
 
-        var actual = sut.MapToPendingChanges(BuildPendingUpdateResponseWith(update), apprenticeship).ToList().First();
+        var actual = sut.CreatePendingChangesResponse(BuildPendingUpdateResponseWith(update), apprenticeship).Changes.ToList().First();
 
         actual.Name.Should().Be("Option");
         actual.OriginalValue.Should().Be(apprenticeship.TrainingCourseOption);

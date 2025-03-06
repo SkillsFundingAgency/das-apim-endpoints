@@ -6,21 +6,40 @@ namespace SFA.DAS.ToolsSupport.Mappers;
 
 public interface IPendingChangesMapper
 {
-    IEnumerable<PendingChange> MapToPendingChanges(GetApprenticeshipPendingUpdatesResponse pendingUpdatesResponse, SupportApprenticeshipDetails apprenticeship);
+    PendingChangesResponse CreatePendingChangesResponse(GetApprenticeshipPendingUpdatesResponse pendingUpdatesResponse, SupportApprenticeshipDetails apprenticeship);
 }
 
 public class PendingChangesMapper : IPendingChangesMapper
 {
-    public IEnumerable<PendingChange> MapToPendingChanges(GetApprenticeshipPendingUpdatesResponse pendingUpdatesResponse,
+
+    public PendingChangesResponse CreatePendingChangesResponse(GetApprenticeshipPendingUpdatesResponse updatesResponse,
         SupportApprenticeshipDetails apprenticeship)
     {
-        if (pendingUpdatesResponse?.ApprenticeshipUpdates == null ||
-            !pendingUpdatesResponse.ApprenticeshipUpdates.Any())
+        var pendingChanges = new PendingChangesResponse();
+
+        var update = updatesResponse?.ApprenticeshipUpdates?.FirstOrDefault();
+        pendingChanges.Description = BuildPendingChangeDescription(update);
+        pendingChanges.Changes = MapToPendingChanges(update, apprenticeship).ToList();
+
+        return pendingChanges;
+    }
+
+    private string BuildPendingChangeDescription(ApprenticeshipUpdate? apprenticeshipApprenticeshipUpdate)
+    {
+        if (apprenticeshipApprenticeshipUpdate == null)
+            return "There are no changes for this record";
+
+        return "Requested By " + (apprenticeshipApprenticeshipUpdate.OriginatingParty == Party.Employer
+            ? "Employer"
+            : "Training Provider");
+    }
+
+    private IEnumerable<PendingChange> MapToPendingChanges(ApprenticeshipUpdate? updates, SupportApprenticeshipDetails apprenticeship)
+    {
+        if (updates == null)
         {
             yield break;
         }
-
-        var updates = pendingUpdatesResponse.ApprenticeshipUpdates[0];
 
         if (!string.IsNullOrWhiteSpace(updates.FirstName) || !string.IsNullOrWhiteSpace(updates.LastName))
         {

@@ -61,7 +61,7 @@ public class GetApprenticeshipQueryHandler(IInternalApiClient<CommitmentsV2ApiCo
             TrainingEndDate = apprenticeship.EndDate,
             OverlappingTrainingDateRequestCreatedOn = MapToOverlappingTrainingDateRequest(trainingDate),
             TrainingCost = GetPrice(priceEpisode.PriceEpisodes, apprenticeship.Cost),
-            PendingChanges = pendingChangesMapper.MapToPendingChanges(pendingUpdates, apprenticeship).ToList(),
+            PendingChanges = pendingChangesMapper.CreatePendingChangesResponse(pendingUpdates, apprenticeship),
             ChangeOfProviderChain = changeOfProvider.ChangeOfProviderChain
         };
     }

@@ -41,7 +41,13 @@ public class GetApprenticeshipQueryResult
 
     public DateTime? OverlappingTrainingDateRequestCreatedOn { get; set; }
     public List<ChangeOfProviderLink> ChangeOfProviderChain { get; set; }
-    public List<PendingChange> PendingChanges { get; set; } = new ();
+    public PendingChangesResponse PendingChanges { get; set; }
+}
+
+public class PendingChangesResponse
+{
+    public string Description { get; set; }
+    public List<PendingChange> Changes { get; set; } = new ();
 }
 
 public class PendingChange

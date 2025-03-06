@@ -84,7 +84,7 @@ public class WhenGettingApprenticeshipDetails
     [Test, MoqAutoData]
     public async Task Then_Gets_ApprenticeshipDetails_And_Returns_PendingChnages_Correctly(
         long id,
-        List<PendingChange> pendingChanges,
+        PendingChangesResponse pendingChanges,
         SupportApprenticeshipDetails mockApiApprenticeshipDetailsResponse,
         [Frozen] Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> mockApiClient,
         [Frozen] Mock<IPendingChangesMapper> mockPendingChanges,
@@ -95,7 +95,7 @@ public class WhenGettingApprenticeshipDetails
                 It.IsAny<GetApprovedApprenticeshipByIdRequest>()))
             .ReturnsAsync(mockApiApprenticeshipDetailsResponse);
 
-        mockPendingChanges.Setup(x => x.MapToPendingChanges(It.IsAny<GetApprenticeshipPendingUpdatesResponse>(),
+        mockPendingChanges.Setup(x => x.CreatePendingChangesResponse(It.IsAny<GetApprenticeshipPendingUpdatesResponse>(),
             It.IsAny<SupportApprenticeshipDetails>())).Returns(pendingChanges);
 
         var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
