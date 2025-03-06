@@ -1,10 +1,10 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.SharedOuterApi.AppStart;
-using System.Text.Json.Serialization;
 using SFA.DAS.ToolsSupport.Api.AppStart;
-using SFA.DAS.ToolsSupport.Application.Queries;
+using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration.BuildSharedConfiguration();
 
 builder.Services
-    .AddLogging()
+
     .AddApplicationInsightsTelemetry()
     .AddServiceRegistration(configuration)
     .AddEndpointsApiExplorer()
@@ -35,6 +35,7 @@ builder.Services
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
+builder.Services.AddLogging();  
 
 builder.Logging.AddApplicationInsights();
 builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("SFA.DAS", LogLevel.Information);
@@ -43,19 +44,19 @@ builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLev
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
-builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetUsersByEmailQuery).Assembly));
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEmployerAccountDetailsQueryHandler).Assembly));
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment()) 
+if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 
 app
     .UseSwagger()
     .UseSwaggerUI(s =>
     {
-        s.RoutePrefix = "swagger";
         s.SwaggerEndpoint("/swagger/v1/swagger.json", "ToolsSupportOuterApi");
+        s.RoutePrefix = string.Empty;
     })
     .UseHttpsRedirection()
     .UseHealthChecks()

@@ -10,7 +10,7 @@ using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.ToolsSupport.Api.Controllers;
 using SFA.DAS.ToolsSupport.Application.Queries;
 
-namespace SFA.DAS.ToolsSupport.Api.UnitTests.Controllers;
+namespace SFA.DAS.ToolsSupport.Api.UnitTests.Controllers.UsersQuery;
 
 [TestFixture]
 public class WhenGettingUsersByEmail
@@ -22,7 +22,7 @@ public class WhenGettingUsersByEmail
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] UsersQueryController sut)
     {
-        mockMediator.Setup(x => x.Send(It.Is<GetUsersByEmailQuery>(p=>p.Email == email), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
+        mockMediator.Setup(x => x.Send(It.Is<GetUsersByEmailQuery>(p => p.Email == email), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
 
         var actual = await sut.Get(email) as ObjectResult;
 

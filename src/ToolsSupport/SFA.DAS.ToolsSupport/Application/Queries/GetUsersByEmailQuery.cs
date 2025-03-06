@@ -3,6 +3,6 @@
 namespace SFA.DAS.ToolsSupport.Application.Queries;
 public class GetUsersByEmailQuery : IRequest<GetUsersByEmailQueryResult>
 {
-    public string Email { get; set; }
+    public string Email { get; set; } = "";
 }
 

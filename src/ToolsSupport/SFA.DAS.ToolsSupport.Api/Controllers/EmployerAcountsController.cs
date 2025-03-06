@@ -31,7 +31,7 @@ public class EmployerAccountsController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error attempting to query Employer Account using accountId {0} or PayeSchemeRef {1}", accountId, payeSchemeRef);
+            _logger.LogError(ex, "Error attempting to query Employer Account using accountId {accountId} or PayeSchemeRef {payeSchemeRef}", accountId, payeSchemeRef);
             return StatusCode((int) HttpStatusCode.InternalServerError);
         }
     }
