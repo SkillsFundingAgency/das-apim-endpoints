@@ -55,7 +55,6 @@ app
     .UseSwagger()
     .UseSwaggerUI(s =>
     {
-        s.RoutePrefix = "swagger";
         s.SwaggerEndpoint("/swagger/v1/swagger.json", "ToolsSupportOuterApi");
     })
     .UseHttpsRedirection()
