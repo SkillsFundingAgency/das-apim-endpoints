@@ -7,80 +7,70 @@ using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetCounts;
 using System;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.EmployerFinance.Api.Controllers
+namespace SFA.DAS.EmployerFinance.Api.Controllers;
+
+[ApiController]
+[Route("[controller]/")]
+public class TransfersController(IMediator mediator, ILogger<TransfersController> logger) : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]/")]
-    public class TransfersController : ControllerBase
+    [HttpGet]
+    [Route("{accountId}/counts")]
+    public async Task<IActionResult> GetCounts(long accountId)
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<TransfersController> _logger;
-
-        public TransfersController(IMediator mediator, ILogger<TransfersController> logger)
+        try
         {
-            _mediator = mediator;
-            _logger = logger;
+            var response = await mediator.Send(new GetCountsQuery()
+            {
+                AccountId = accountId,
+            });
+
+            var model = new GetCountsResponse
+            {
+                PledgesCount = response.PledgesCount,
+                ApplicationsCount = response.ApplicationsCount,
+                CurrentYearEstimatedCommittedSpend = response.CurrentYearEstimatedCommittedSpend
+            };
+
+            return Ok(model);
         }
-
-        [HttpGet]
-        [Route("{accountId}/counts")]
-        public async Task<IActionResult> GetCounts(long accountId)
+        catch (Exception e)
         {
-            try
-            {
-                var response = await _mediator.Send(new GetCountsQuery()
-                {
-                    AccountId = accountId,
-                });
-
-                var model = new GetCountsResponse
-                {
-                    PledgesCount = response.PledgesCount,
-                    ApplicationsCount = response.ApplicationsCount,
-                    CurrentYearEstimatedCommittedSpend = response.CurrentYearEstimatedCommittedSpend
-                };
-
-                return Ok(model);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error getting transfer counts");
-                return BadRequest();
-            }
+            logger.LogError(e, "Error getting transfer counts");
+            return BadRequest();
         }
+    }
 
-        [HttpGet]
-        [Route("{accountId}/financial-breakdown")]
-        public async Task<IActionResult> GetFinancialBreakdown(long accountId)
+    [HttpGet]
+    [Route("{accountId}/financial-breakdown")]
+    public async Task<IActionResult> GetFinancialBreakdown(long accountId)
+    {
+        try
         {
-            try
+            var response = await mediator.Send(new GetFinancialBreakdownQuery()
             {
-                var response = await _mediator.Send(new GetFinancialBreakdownQuery()
-                {
-                    AccountId = accountId,
-                });
+                AccountId = accountId,
+            });
 
-                var model = new GetFinancialBreakdownResponse
-                {
-                    TransferConnections = response.TransferConnections,
-                    AcceptedPledgeApplications = response.AcceptedPledgeApplications,
-                    ApprovedPledgeApplications = response.ApprovedPledgeApplications,                    
-                    PledgeOriginatedCommitments =  response.PledgeOriginatedCommitments,
-                    Commitments = response.Commitments,
-                    ProjectionStartDate = response.ProjectionStartDate,                    
-                    CurrentYearEstimatedCommittedSpend = response.CurrentYearEstimatedCommittedSpend,
-                    NextYearEstimatedCommittedSpend = response.NextYearEstimatedCommittedSpend,                    
-                    YearAfterNextYearEstimatedCommittedSpend  = response.YearAfterNextYearEstimatedCommittedSpend,
-                    AmountPledged = response.AmountPledged
-                };
-
-                return Ok(model);
-            }
-            catch (Exception e)
+            var model = new GetFinancialBreakdownResponse
             {
-                _logger.LogError(e, "Error getting financial breakdown");
-                return BadRequest();
-            }
+                TransferConnections = response.TransferConnections,
+                AcceptedPledgeApplications = response.AcceptedPledgeApplications,
+                ApprovedPledgeApplications = response.ApprovedPledgeApplications,                    
+                PledgeOriginatedCommitments =  response.PledgeOriginatedCommitments,
+                Commitments = response.Commitments,
+                ProjectionStartDate = response.ProjectionStartDate,                    
+                CurrentYearEstimatedCommittedSpend = response.CurrentYearEstimatedCommittedSpend,
+                NextYearEstimatedCommittedSpend = response.NextYearEstimatedCommittedSpend,                    
+                YearAfterNextYearEstimatedCommittedSpend  = response.YearAfterNextYearEstimatedCommittedSpend,
+                AmountPledged = response.AmountPledged
+            };
+
+            return Ok(model);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error getting financial breakdown");
+            return BadRequest();
         }
     }
 }

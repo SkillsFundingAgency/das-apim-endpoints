@@ -8,61 +8,54 @@ using SFA.DAS.EmployerFinance.Api.Models;
 using SFA.DAS.EmployerFinance.Application.Queries.GetFrameworks;
 using SFA.DAS.EmployerFinance.Application.Queries.GetStandards;
 
-namespace SFA.DAS.EmployerFinance.Api.Controllers
-{
-    [ApiController]
-    [Route("[controller]/")]
-    public class TrainingCoursesController : ControllerBase
-    {
-        private readonly IMediator _mediator;
-        private readonly ILogger<TrainingCoursesController> _logger;
+namespace SFA.DAS.EmployerFinance.Api.Controllers;
 
-        public TrainingCoursesController (IMediator mediator, ILogger<TrainingCoursesController> logger)
+[ApiController]
+[Route("[controller]/")]
+public class TrainingCoursesController(IMediator mediator, ILogger<TrainingCoursesController> logger)
+    : ControllerBase
+{
+    [HttpGet]
+    [Route("standards")]
+    public async Task<IActionResult> GetStandards()
+    {
+        try
         {
-            _mediator = mediator;
-            _logger = logger;
+            var result = await mediator.Send(new GetStandardsQuery());
+                
+            var response = new GetStandardsResponse
+            {
+                Standards = result.Standards.Select(c=>(StandardResponse)c)
+            };
+                
+            return Ok(response);
         }
-        [HttpGet]
-        [Route("standards")]
-        public async Task<IActionResult> GetStandards()
+        catch (Exception e)
         {
-            try
-            {
-                var result = await _mediator.Send(new GetStandardsQuery());
-                
-                var response = new GetStandardsResponse
-                {
-                    Standards = result.Standards.Select(c=>(StandardResponse)c)
-                };
-                
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error getting list of standards");
-                return BadRequest();
-            }
+            logger.LogError(e, "Error getting list of standards");
+            return BadRequest();
         }
-        [HttpGet]
-        [Route("frameworks")]
-        public async Task<IActionResult> GetFrameworks()
+    }
+    
+    [HttpGet]
+    [Route("frameworks")]
+    public async Task<IActionResult> GetFrameworks()
+    {
+        try
         {
-            try
-            {
-                var result = await _mediator.Send(new GetFrameworksQuery());
+            var result = await mediator.Send(new GetFrameworksQuery());
                 
-                var response = new GetFrameworksResponse
-                {
-                    Frameworks = result.Frameworks.Select(c=>(FrameworkResponse)c)
-                };
-                
-                return Ok(response);
-            }
-            catch (Exception e)
+            var response = new GetFrameworksResponse
             {
-                _logger.LogError(e, "Error getting list of frameworks");
-                return BadRequest();
-            }
+                Frameworks = result.Frameworks.Select(c=>(FrameworkResponse)c)
+            };
+                
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error getting list of frameworks");
+            return BadRequest();
         }
     }
 }

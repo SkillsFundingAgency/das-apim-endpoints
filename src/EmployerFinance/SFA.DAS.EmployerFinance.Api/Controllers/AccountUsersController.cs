@@ -6,38 +6,30 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerFinance.Api.Models;
 using SFA.DAS.EmployerFinance.Application.Queries.AccountUsers.Queries;
 
-namespace SFA.DAS.EmployerFinance.Api.Controllers
+namespace SFA.DAS.EmployerFinance.Api.Controllers;
+
+[ApiController]
+[Route("[controller]/")]
+public class AccountUsersController(IMediator mediator) : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]/")]
-    public class AccountUsersController : ControllerBase
+    [HttpGet]
+    [Route("{userId}/accounts")]
+    public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery]string email)
     {
-        private readonly IMediator _mediator;
-
-        public AccountUsersController (IMediator mediator)
+        try
         {
-            _mediator = mediator;
+            var result = await mediator.Send(new GetAccountsQuery
+            {
+                UserId = userId,
+                Email = email
+            });
+
+            return Ok((UserAccountsApiResponse) result);
         }
-        
-        [HttpGet]
-        [Route("{userId}/accounts")]
-        public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery]string email)
+        catch (Exception e)
         {
-            try
-            {
-                var result = await _mediator.Send(new GetAccountsQuery
-                {
-                    UserId = userId,
-                    Email = email
-                });
-
-                return Ok((UserAccountsApiResponse) result);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
-            }
+            Console.WriteLine(e);
+            return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
         }
     }
 }
