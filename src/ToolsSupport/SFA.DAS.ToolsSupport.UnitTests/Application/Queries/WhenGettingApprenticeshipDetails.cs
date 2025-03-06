@@ -104,6 +104,23 @@ public class WhenGettingApprenticeshipDetails
     }
 
     [Test, MoqAutoData]
+    public async Task Then_Gets_ApprenticeshipDetails_And_Returns_ChangeOfProvidChain_Correctly(
+        long id,
+        GetApprenticeshipChangeOfProviderChainResponse providerHistory,
+        [Frozen] Mock<IInternalApiClient<CommitmentsV2ApiConfiguration>> mockApiClient,
+        GetApprenticeshipQueryHandler sut)
+    {
+        var mockQuery = new GetApprenticeshipQuery { Id = id };
+        mockApiClient.Setup(client => client.Get<GetApprenticeshipChangeOfProviderChainResponse>(
+                It.IsAny<GetApprenticeshipChangeOfProviderChainRequest>()))
+            .ReturnsAsync(providerHistory);
+
+        var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
+
+        actual.ChangeOfProviderChain.Should().BeEquivalentTo(providerHistory.ChangeOfProviderChain);
+    }
+
+    [Test, MoqAutoData]
     public async Task Then_Gets_ApprenticeshipDetails_And_TrainingProviderChain_Correctly(
         long id,
         SupportApprenticeshipDetails mockApiApprenticeshipDetailsResponse,
