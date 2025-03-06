@@ -11,6 +11,6 @@ public class ApprovedApprenticeshipsController : Controller
     [Route("/providers/{ukprn}/academicyears/{academicyear}/apprenticeships")]
     public async Task<IActionResult> Search(long ukprn, int academicyear)
     {
-        return Accepted( new { reference = 1231333 });
+        return Accepted( new { correlationId = 1231333 });
     }   
 }
