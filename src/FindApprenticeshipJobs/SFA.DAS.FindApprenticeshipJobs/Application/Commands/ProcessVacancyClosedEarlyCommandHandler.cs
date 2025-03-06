@@ -32,7 +32,7 @@ public class ProcessVacancyClosedEarlyCommandHandler(
         var employmentWorkLocation = vacancyTask.Result.EmployerLocationOption switch
         {
             AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
-            AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancyTask.Result.EmployerLocations),
+            AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancyTask.Result.OtherAddresses),
             AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancyTask.Result.EmployerLocations!.First()),
             _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancyTask.Result.Address)
         };

@@ -291,7 +291,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         AddressLine1 = "123 Main St",
                         Postcode = "12345"
                     },
-                    EmployerLocations =
+                    OtherAddresses =
                     [
                         new Address
                         {
@@ -409,7 +409,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         AddressLine1 = "123 Main St",
                         Postcode = "12345"
                     },
-                    EmployerLocations =
+                    OtherAddresses =
                     [
                         new Address
                         {
@@ -564,7 +564,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         Postcode = "12345"
                     },
                     EmployerLocationOption = AvailableWhere.MultipleLocations,
-                    EmployerLocations =
+                    OtherAddresses =
                     [
                         new Address
                         {
@@ -642,7 +642,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         Postcode = "12345"
                     },
                     EmployerLocationOption = AvailableWhere.AcrossEngland,
-                    EmployerLocations =
+                    OtherAddresses =
                     [
                         new Address
                         {

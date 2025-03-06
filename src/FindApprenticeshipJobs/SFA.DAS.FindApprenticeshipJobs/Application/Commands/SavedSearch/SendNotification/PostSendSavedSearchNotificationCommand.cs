@@ -40,7 +40,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
             public string? EmployerName { get; set; }
 
             public Address? EmployerLocation { get; set; }
-            public List<Address>? EmployerLocations { get; set; }
+            public List<Address>? OtherAddresses { get; set; }
             public AvailableWhere? EmployerLocationOption { get; set; }
 
 

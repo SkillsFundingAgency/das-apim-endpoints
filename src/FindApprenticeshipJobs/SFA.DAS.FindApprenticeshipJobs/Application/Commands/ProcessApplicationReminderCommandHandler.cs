@@ -8,7 +8,6 @@ using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using static SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification.PostSendSavedSearchNotificationCommand;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands;
 
@@ -37,7 +36,7 @@ public class ProcessApplicationReminderCommandHandler(
         var employmentWorkLocation = vacancyTask.Result.EmployerLocationOption switch
         {
             AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
-            AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancyTask.Result.EmployerLocations),
+            AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancyTask.Result.OtherAddresses),
             AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancyTask.Result.EmployerLocations!.First()),
             _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancyTask.Result.Address)
         };

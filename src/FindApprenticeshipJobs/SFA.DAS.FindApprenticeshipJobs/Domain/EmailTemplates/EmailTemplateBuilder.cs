@@ -81,8 +81,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 var employmentWorkLocation = vacancy.EmployerLocationOption switch
                 {
                     AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
-                    AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocations(vacancy.EmployerLocations),
-                    AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.EmployerLocations!.First()),
+                    AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocations(vacancy.OtherAddresses),
+                    AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.OtherAddresses!.First()),
                     _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.EmployerLocation)
                 };
 
