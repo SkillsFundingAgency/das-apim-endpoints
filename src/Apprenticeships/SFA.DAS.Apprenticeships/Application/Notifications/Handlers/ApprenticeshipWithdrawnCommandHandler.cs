@@ -8,11 +8,13 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
     public class ApprenticeshipWithdrawnCommand : NotificationCommandBase, IRequest<NotificationResponse>
     {
         public DateTime LastDayOfLearning { get; set; }
+        public string Reason { get; set; }
     }
 
     public class ApprenticeshipWithdrawnCommandHandler : NotificationCommandHandlerBase<ApprenticeshipWithdrawnCommand>
     {
         private readonly UrlBuilder _externalEmployerUrlHelper;
+        private const string WithdrawFromBeta = "WithdrawFromBeta";
 
         public ApprenticeshipWithdrawnCommandHandler(
             IExtendedNotificationService notificationService,
@@ -24,6 +26,9 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers
 
         public override async Task<NotificationResponse> Handle(ApprenticeshipWithdrawnCommand request, CancellationToken cancellationToken)
         {
+            if (request.Reason == WithdrawFromBeta)
+                return new NotificationResponse { Success = true };
+
             return await SendToEmployer(request, ApprenticeshipStatusWithdrawnToEmployer.TemplateId, (_, apprenticeship) => GetEmployerTokens(apprenticeship, request.LastDayOfLearning));
         }
 

@@ -47,5 +47,24 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications.Handlers
                 { "Apprentice details URL", $"https://approvals.at-eas.apprenticeships.education.gov.uk/{ExpectedApprenticeshipDetails.EmployerAccountHashedId}/apprentices/{ExpectedApprenticeshipDetails.ApprenticeshipHashedId}/details" }
             });
         }
+
+        [Test]
+        public async Task ShouldNotSendInWithdrawFromBetaScenario()
+        {
+            // Arrange
+            var command = new ApprenticeshipWithdrawnCommand
+            {
+                ApprenticeshipKey = Guid.NewGuid(),
+                LastDayOfLearning = new DateTime(2024, 05, 01),
+                Reason = "WithdrawFromBeta"
+            };
+            var handler = new ApprenticeshipWithdrawnCommandHandler(GetExtendedNotificationService(), _externalEmployerUrlHelper);
+
+            // Act
+            var response = await handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            VerifyNoMessageSentToEmployer();
+        }
     }
 }

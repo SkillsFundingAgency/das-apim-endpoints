@@ -74,7 +74,8 @@ namespace SFA.DAS.Apprenticeships.Api.Extensions
             return new ApprenticeshipWithdrawnCommand
             {
                 ApprenticeshipKey = apprenticeshipKey,
-                LastDayOfLearning = request.LastDayOfLearning
+                LastDayOfLearning = request.LastDayOfLearning,
+                Reason = request.Reason
             };
         }
     }
