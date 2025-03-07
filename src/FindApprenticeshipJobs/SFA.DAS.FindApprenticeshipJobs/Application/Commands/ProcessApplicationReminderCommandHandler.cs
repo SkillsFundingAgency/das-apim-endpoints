@@ -33,28 +33,30 @@ public class ProcessApplicationReminderCommandHandler(
 
         await Task.WhenAll(vacancyTask, candidatesTask);
 
-        var employmentWorkLocation = vacancyTask.Result.EmployerLocationOption switch
+        var vacancy = vacancyTask.Result;
+        var candidates = candidatesTask.Result;
+
+        var employmentWorkLocation = vacancy.EmployerLocationOption switch
         {
             AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
-            AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancyTask.Result.OtherAddresses),
-            AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancyTask.Result.Address),
-            _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancyTask.Result.Address)
+            AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancy.OtherAddresses),
+            AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.Address),
+            _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.Address)
         };
 
-        foreach (var candidate in candidatesTask.Result.Candidates)
+        foreach (var email in candidates.Candidates.Select(candidate => new SendSubmitApplicationEmailReminderTemplate(
+                     helper.ApplicationReminderEmailTemplateId,
+                     candidate.Candidate.Email,
+                     candidate.Candidate.FirstName,
+                     request.DaysUntilClosing,
+                     vacancy.Title,
+                     helper.VacancyUrl,
+                     vacancy.EmployerName,
+                     employmentWorkLocation,
+                     helper.CandidateApplicationUrl,
+                     vacancy.ClosingDate,
+                     helper.SettingsUrl)))
         {
-            var email = new SendSubmitApplicationEmailReminderTemplate(
-                helper.ApplicationReminderEmailTemplateId,
-                candidate.Candidate.Email,
-                candidate.Candidate.FirstName,
-                request.DaysUntilClosing,
-                vacancyTask.Result.Title,
-                helper.VacancyUrl,
-                vacancyTask.Result.EmployerName,
-                employmentWorkLocation,
-                helper.CandidateApplicationUrl,
-                vacancyTask.Result.ClosingDate,
-                helper.SettingsUrl);
             await notificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens));
         }
 
