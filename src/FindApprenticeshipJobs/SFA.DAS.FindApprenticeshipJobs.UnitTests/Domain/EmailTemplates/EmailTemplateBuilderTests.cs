@@ -568,11 +568,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                     [
                         new Address
                         {
-                            AddressLine1 = "123 Main St",
-                            Postcode = "12345"
-                        },
-                        new Address
-                        {
                             AddressLine1 = "address 1",
                             Postcode = "postcode 1"
                         },
