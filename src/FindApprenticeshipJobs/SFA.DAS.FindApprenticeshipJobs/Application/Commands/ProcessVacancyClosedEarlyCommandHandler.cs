@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Constants;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
@@ -28,14 +29,18 @@ public class ProcessVacancyClosedEarlyCommandHandler(
         var notificationTasks = new List<Task>();
         var updateCandidate = new List<Task>();
 
-        var employmentWorkLocation = vacancyTask.Result.EmployerLocationOption switch
+        var vacancy = vacancyTask.Result;
+        var allCandidateApplications = allCandidateApplicationsTask.Result;
+
+        var employmentWorkLocation = vacancy.EmployerLocationOption switch
         {
-            AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancyTask.Result.EmployerLocations),
-            AvailableWhere.AcrossEngland => "Recruiting nationally",
-            _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancyTask.Result.EmployerLocation)
+            AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
+            AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancy.OtherAddresses),
+            AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.Address),
+            _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.Address)
         };
 
-        foreach (var candidate in allCandidateApplicationsTask.Result.Candidates)
+        foreach (var candidate in allCandidateApplications.Candidates)
         {
             var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
             jsonPatchDocument.Replace(x => x.Status, ApplicationStatus.Expired);
@@ -45,9 +50,9 @@ public class ProcessVacancyClosedEarlyCommandHandler(
                 helper.VacancyClosedEarlyTemplateId,
                 candidate.Candidate.Email,
                 candidate.Candidate.FirstName,
-                vacancyTask.Result.Title,
+                vacancy.Title,
                 helper.VacancyUrl,
-                vacancyTask.Result.EmployerName,
+                vacancy.EmployerName,
                 employmentWorkLocation, 
                 candidate.ApplicationCreatedDate,
                 helper.SettingsUrl);

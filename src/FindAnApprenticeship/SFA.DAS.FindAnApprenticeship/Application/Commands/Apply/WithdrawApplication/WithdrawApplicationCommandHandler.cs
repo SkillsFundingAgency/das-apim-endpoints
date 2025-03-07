@@ -70,7 +70,7 @@ public class WithdrawApplicationCommandHandler(
             application.Candidate.FirstName,
             vacancyResponse.Title,
             vacancyResponse.EmployerName,
-            vacancyService.GetVacancyWorkLocation(vacancyResponse));
+            vacancyService.GetVacancyWorkLocation(vacancyResponse, true));
     }
 
     private WithdrawApplicationEmail GetWithdrawApplicationEmail(GetApplicationApiResponse application, GetApprenticeshipVacancyItemResponse vacancyResponse)
@@ -81,6 +81,6 @@ public class WithdrawApplicationCommandHandler(
             application.Candidate.FirstName,
             vacancyResponse.Title,
             vacancyResponse.EmployerName,
-            vacancyService.GetVacancyWorkLocation(vacancyResponse));
+            vacancyService.GetVacancyWorkLocation(vacancyResponse, true));
     }
 }
