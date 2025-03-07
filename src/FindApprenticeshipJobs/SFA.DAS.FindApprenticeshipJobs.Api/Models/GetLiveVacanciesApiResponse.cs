@@ -54,9 +54,9 @@ public class GetLiveVacanciesApiResponse
                 Route = source.Route,
                 Description = source.Description,
                 Address = source.Address,
-                EmploymentLocations = source.EmploymentLocations,
+                EmployerLocations = source.EmployerLocations,
                 EmploymentLocationInformation = source.EmploymentLocationInformation,
-                EmploymentLocationOption = source.EmploymentLocationOption,
+                EmployerLocationOption = source.EmployerLocationOption,
                 ClosingDate = source.ClosingDate,
                 StartDate = source.StartDate,
                 PostedDate = source.PostedDate,
@@ -124,9 +124,9 @@ public class GetLiveVacanciesApiResponse
         public string ApprenticeshipTitle { get; set; }
         public string? Description { get; set; }
         public Address? Address { get; set; }
-        public List<Address>? EmploymentLocations { get; set; }
+        public List<Address>? EmployerLocations { get; set; }
         public string? EmploymentLocationInformation { get; set; }
-        public AvailableWhere? EmploymentLocationOption { get; set; }
+        public AvailableWhere? EmployerLocationOption { get; set; }
         public string? EmployerName { get; set; }
         public long? Ukprn { get; set; }
         public string? ProviderName { get; set; }

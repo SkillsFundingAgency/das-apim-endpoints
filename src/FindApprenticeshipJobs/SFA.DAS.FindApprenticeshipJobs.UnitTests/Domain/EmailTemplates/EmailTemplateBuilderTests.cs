@@ -285,7 +285,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                     Title = "Software Developer",
                     VacancyReference = "12345",
                     EmployerName = "ABC Company",
-                    EmploymentLocationOption = AvailableWhere.OneLocation,
+                    EmployerLocationOption = AvailableWhere.OneLocation,
                     EmployerLocation = new Address
                     {
                         AddressLine1 = "123 Main St",
@@ -563,7 +563,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         AddressLine1 = "123 Main St",
                         Postcode = "12345"
                     },
-                    EmploymentLocationOption = AvailableWhere.MultipleLocations,
+                    EmployerLocationOption = AvailableWhere.MultipleLocations,
                     OtherAddresses =
                     [
                         new Address
@@ -636,7 +636,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         AddressLine1 = "123 Main St",
                         Postcode = "12345"
                     },
-                    EmploymentLocationOption = AvailableWhere.AcrossEngland,
+                    EmployerLocationOption = AvailableWhere.AcrossEngland,
                     OtherAddresses =
                     [
                         new Address

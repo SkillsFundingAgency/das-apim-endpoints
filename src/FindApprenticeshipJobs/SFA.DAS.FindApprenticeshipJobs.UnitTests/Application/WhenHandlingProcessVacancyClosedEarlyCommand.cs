@@ -203,7 +203,7 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
 
         foreach (var candidate in candidateApiResponseAll.Candidates)
         {
-            var employmentWorkLocation =
+            var employerWorkLocation =
                 EmailTemplateAddressExtension.GetEmploymentLocationCityNames(recruitApiResponse.OtherAddresses);
 
             candidateApiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
@@ -222,7 +222,7 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
                     && c.Tokens["vacancy"] == recruitApiResponse.Title
                     && c.Tokens["employer"] == recruitApiResponse.EmployerName
                     && c.Tokens["dateApplicationStarted"] == candidate.ApplicationCreatedDate.ToString("d MMM yyyy")
-                    && c.Tokens["location"] == employmentWorkLocation
+                    && c.Tokens["location"] == employerWorkLocation
                     && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
                     && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
                 )
@@ -274,10 +274,10 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
 
         foreach (var candidate in candidateApiResponseAll.Candidates)
         {
-            var employmentWorkLocation =
+            var employerWorkLocation =
                 EmailTemplateAddressExtension.GetEmploymentLocationCityNames(recruitApiResponse.OtherAddresses);
 
-            employmentWorkLocation.Should().Be(expectedAddress);
+            employerWorkLocation.Should().Be(expectedAddress);
 
             candidateApiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
                     c.PatchUrl.Contains(candidate.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
@@ -347,10 +347,10 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
 
         foreach (var candidate in candidateApiResponseAll.Candidates)
         {
-            var employmentWorkLocation =
+            var employerWorkLocation =
                 EmailTemplateAddressExtension.GetEmploymentLocationCityNames(recruitApiResponse.OtherAddresses);
 
-            employmentWorkLocation.Should().Be(expectedAddress);
+            employerWorkLocation.Should().Be(expectedAddress);
 
             candidateApiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
                     c.PatchUrl.Contains(candidate.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
@@ -368,7 +368,7 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
                     && c.Tokens["vacancy"] == recruitApiResponse.Title
                     && c.Tokens["employer"] == recruitApiResponse.EmployerName
                     && c.Tokens["dateApplicationStarted"] == candidate.ApplicationCreatedDate.ToString("d MMM yyyy")
-                    && c.Tokens["location"] == employmentWorkLocation
+                    && c.Tokens["location"] == employerWorkLocation
                     && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
                     && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
                 )

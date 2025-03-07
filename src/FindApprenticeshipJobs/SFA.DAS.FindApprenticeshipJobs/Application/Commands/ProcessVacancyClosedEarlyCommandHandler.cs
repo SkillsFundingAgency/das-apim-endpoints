@@ -32,7 +32,7 @@ public class ProcessVacancyClosedEarlyCommandHandler(
         var vacancy = vacancyTask.Result;
         var allCandidateApplications = allCandidateApplicationsTask.Result;
 
-        var employmentWorkLocation = vacancy.EmployerLocationOption switch
+        var employerWorkLocation = vacancy.EmployerLocationOption switch
         {
             AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
             AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancy.OtherAddresses),
@@ -53,7 +53,7 @@ public class ProcessVacancyClosedEarlyCommandHandler(
                 vacancy.Title,
                 helper.VacancyUrl,
                 vacancy.EmployerName,
-                employmentWorkLocation, 
+                employerWorkLocation, 
                 candidate.ApplicationCreatedDate,
                 helper.SettingsUrl);
             notificationTasks.Add(notificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens)));
