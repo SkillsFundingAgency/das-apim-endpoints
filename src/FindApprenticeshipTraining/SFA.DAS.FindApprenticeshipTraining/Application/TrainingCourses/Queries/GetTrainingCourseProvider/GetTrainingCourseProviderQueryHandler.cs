@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
@@ -9,8 +5,14 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider
 {
@@ -46,8 +48,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             await Task.WhenAll(locationTask, courseTask);
 
-            var ukprnsCountTask = _roatpCourseManagementApiClient.Get<GetTotalProvidersForStandardResponse>(
-                new GetTotalProvidersForStandardRequest(request.CourseId));
+            var ukprnsCountTask = _roatpCourseManagementApiClient.Get<GetCourseTrainingProvidersCountResponse>(
+                    new GetCourseTrainingProvidersCountRequest([request.CourseId])
+                );
 
             var providerCoursesTask = _roatpCourseManagementApiClient.Get<List<GetProviderAdditionalStandardsItem>>(
                 new GetProviderAdditionalStandardsRequest(request.ProviderId));
@@ -63,6 +66,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 : Task.FromResult(new List<ShortlistItem>());
 
             await Task.WhenAll(providerCoursesTask, ukprnsCountTask, overallAchievementRatesTask, shortlistTask, apprenticeFeedbackTask, employerFeedbackTask);
+
+            var providersCountResponse = ukprnsCountTask?.Result?.Courses?.FirstOrDefault();
 
             var providerDetails = await GetProviderDetails(request.ProviderId, request.CourseId, locationTask.Result, shortlistTask.Result);
 
@@ -86,8 +91,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
                 Course = courseTask.Result,
                 AdditionalCourses = additionalCourses,
                 OverallAchievementRates = overallAchievementRatesTask.Result.OverallAchievementRates,
-                TotalProviders = ukprnsCountTask.Result.ProvidersCount,
-                TotalProvidersAtLocation = ukprnsCountTask.Result.ProvidersCount,
+                TotalProviders = providersCountResponse?.TotalProvidersCount ?? 0,
+                TotalProvidersAtLocation = providersCountResponse?.TotalProvidersCount ?? 0,
                 Location = locationTask.Result,
                 ShortlistItemCount = shortlistTask.Result?.Count ?? 0
             };
