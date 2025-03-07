@@ -285,13 +285,13 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                     Title = "Software Developer",
                     VacancyReference = "12345",
                     EmployerName = "ABC Company",
-                    EmployerLocationOption = AvailableWhere.OneLocation,
+                    EmploymentLocationOption = AvailableWhere.OneLocation,
                     EmployerLocation = new Address
                     {
                         AddressLine1 = "123 Main St",
                         Postcode = "12345"
                     },
-                    EmployerLocations =
+                    OtherAddresses =
                     [
                         new Address
                         {
@@ -409,7 +409,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         AddressLine1 = "123 Main St",
                         Postcode = "12345"
                     },
-                    EmployerLocations =
+                    OtherAddresses =
                     [
                         new Address
                         {
@@ -563,14 +563,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         AddressLine1 = "123 Main St",
                         Postcode = "12345"
                     },
-                    EmployerLocationOption = AvailableWhere.MultipleLocations,
-                    EmployerLocations =
+                    EmploymentLocationOption = AvailableWhere.MultipleLocations,
+                    OtherAddresses =
                     [
-                        new Address
-                        {
-                            AddressLine1 = "123 Main St",
-                            Postcode = "12345"
-                        },
                         new Address
                         {
                             AddressLine1 = "address 1",
@@ -641,8 +636,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         AddressLine1 = "123 Main St",
                         Postcode = "12345"
                     },
-                    EmployerLocationOption = AvailableWhere.AcrossEngland,
-                    EmployerLocations =
+                    EmploymentLocationOption = AvailableWhere.AcrossEngland,
+                    OtherAddresses =
                     [
                         new Address
                         {

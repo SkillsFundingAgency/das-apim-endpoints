@@ -51,11 +51,8 @@ public class LiveVacancy
         get
         {
             if (EmployerLocationOption is not AvailableWhere.MultipleLocations) return null;
-            var firstAddress = EmployerLocations!.FirstOrDefault().ToSingleLineAddress();
             var otherAddresses = EmployerLocations?
-                .Skip(1)
                 .DistinctBy(x => x.ToSingleLineAddress())
-                .Where(x => x.ToSingleLineAddress() != firstAddress)
                 .ToList();
             return otherAddresses;
         }

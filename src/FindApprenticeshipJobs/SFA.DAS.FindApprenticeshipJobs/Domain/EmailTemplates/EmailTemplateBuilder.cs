@@ -5,6 +5,7 @@ using SFA.DAS.SharedOuterApi.Extensions;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
 {
@@ -78,11 +79,15 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
             {
                 string? trainingCourseText;
                 string? wageText;
-                var employmentWorkLocation = vacancy.EmployerLocationOption switch
+                
+                var employmentWorkLocation = vacancy.EmploymentLocationOption switch
                 {
                     AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
-                    AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocations(vacancy.EmployerLocations),
-                    AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.EmployerLocations!.First()),
+                    AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocations(
+                        vacancy.OtherAddresses is { Count: > 0 }
+                        ? new List<Address> { vacancy.EmployerLocation! }.Concat(vacancy.OtherAddresses).ToList()
+                        : [ vacancy.EmployerLocation! ]),
+                    AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.EmployerLocation),
                     _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.EmployerLocation)
                 };
 
