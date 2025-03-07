@@ -356,4 +356,19 @@ public class ApprenticeshipController : ControllerBase
 
         return Ok();
     }
+
+    [HttpPost]
+    [Route("{apprenticeshipKey}/handleWithdrawalNotifications")]
+    public async Task<ActionResult> HandleWithdrawalNotifications(Guid apprenticeshipKey, [FromBody] HandleWithdrawalNotificationsRequest request)
+    {
+        var apprenticeshipWithdrawnCommand = request.ToNotificationCommand(apprenticeshipKey);
+        var notificationResponse = await _mediator.Send(apprenticeshipWithdrawnCommand);
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to send apprenticeship withdrawn Notification(s) to the related party(ies)");
+            return BadRequest();
+        }
+        return Ok();
+    }
 }
