@@ -7,6 +7,7 @@
         public class Application
         {
             public Guid Id { get; set; }
+            public Guid ApplicationReviewId { get; set; }
             public string Name { get; set; }
             public DateTime LastUpdated { get; set; }
             public int Reference { get; set; }
