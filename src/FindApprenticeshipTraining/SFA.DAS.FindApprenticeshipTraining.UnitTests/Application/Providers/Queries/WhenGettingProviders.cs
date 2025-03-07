@@ -1,4 +1,5 @@
 ﻿using AutoFixture.NUnit3;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Providers.GetRoatpProviders;
@@ -36,6 +37,6 @@ public class WhenGettingProviders
 
         var _sut = await handler.Handle(query, cancellationToken);
 
-        Assert.That(_sut.Providers, Is.EquivalentTo(expected.RegisteredProviders.Select(provider => (RoatpProvider)provider)));
+        _sut.Providers.Should().BeEquivalentTo(expected.RegisteredProviders.Select(provider => (RoatpProvider)provider));
     }
 }
