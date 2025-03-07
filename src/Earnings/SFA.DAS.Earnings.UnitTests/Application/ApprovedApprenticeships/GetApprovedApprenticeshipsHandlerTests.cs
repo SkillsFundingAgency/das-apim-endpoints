@@ -5,9 +5,9 @@ using SFA.DAS.Earnings.Application.ApprovedApprenticeships;
 using SFA.DAS.Earnings.Application.ApprovedApprenticeships.GetApprovedApprenticeships;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Earnings.UnitTests.Application.LearnerData;
+namespace SFA.DAS.Earnings.UnitTests.Application.ApprovedApprenticeships;
 
-public class GetLearnerDataHandlerTests
+public class GetApprovedApprenticeshipsHandlerTests
 {
     [Test, MoqAutoData]
         public async Task Handle_Should_Return_Correct_Learner_Data(

@@ -1,9 +1,9 @@
 using FluentAssertions;
 using SFA.DAS.Earnings.Application.ApprovedApprenticeships;
 
-namespace SFA.DAS.Earnings.UnitTests.Application.LearnerData;
+namespace SFA.DAS.Earnings.UnitTests.Application.ApprovedApprenticeships;
 
-public class LeanerDataStoreTests
+public class ApprovedApprenticeshipsStoreTests
 {     
     [Test]
     public void Pagination_happy_path_returns_correct_data()

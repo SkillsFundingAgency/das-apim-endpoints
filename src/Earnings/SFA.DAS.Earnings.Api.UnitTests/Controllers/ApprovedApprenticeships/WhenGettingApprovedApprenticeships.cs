@@ -5,17 +5,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.Earnings.Api.Controllers;
-using SFA.DAS.Earnings.Application.LearnerData.GetLearnerData;
+using SFA.DAS.Earnings.Application.ApprovedApprenticeships.GetApprovedApprenticeships;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Earnings.Api.UnitTests.Controllers.LearnerData;
+namespace SFA.DAS.Earnings.Api.UnitTests.Controllers.ApprovedApprenticeships;
 
-public class WhenGettingLearnerData
+public class WhenGettingApprovedApprenticeships
 {
     [Test, MoqAutoData]
     public async Task Then_Should_Return_Learner_Data_Response(
         [Frozen] Mock<IMediator> mediator,
-        [Greedy]LearnerDataController controller)
+        [Greedy]ApprovedApprenticeshipsController controller)
     {
         // Arrange
         const int ukprn = 1000001;
@@ -25,14 +25,14 @@ public class WhenGettingLearnerData
     
         const int totalRecords = 30;
 
-        var learnerDataResponse = new GetLearnerDataQueryResult
+        var learnerDataResponse = new GetApprovedApprenticeshipsQueryResult
         {
             TotalRecords = totalRecords
         };
         
         SetUpHttpContext(controller, ukprn, academicYear);
 
-        mediator.Setup(m => m.Send(It.IsAny<GetLearnerDataQuery>(), It.IsAny<CancellationToken>()))
+        mediator.Setup(m => m.Send(It.IsAny<GetApprovedApprenticeshipsQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(learnerDataResponse);
 
         // Act
@@ -53,7 +53,7 @@ public class WhenGettingLearnerData
         linkHeader.Should().Contain(expectedNextPage);
     }
     
-    private void SetUpHttpContext(LearnerDataController controller, long ukprn, int academicYear)
+    private void SetUpHttpContext(ApprovedApprenticeshipsController controller, long ukprn, int academicYear)
     {
         var context = new DefaultHttpContext();
         controller.ControllerContext = new ControllerContext
