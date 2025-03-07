@@ -50,7 +50,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
         public string? EmploymentLocationInformation { get; set; }
 
         [JsonPropertyName("availableWhere"), JsonConverter(typeof(JsonStringEnumConverter<AvailableWhere>))]
-        public AvailableWhere? EmploymentLocationOption { get; set; }
+        public AvailableWhere? EmployerLocationOption { get; set; }
 
         [JsonPropertyName("distance")]
         public decimal? Distance { get; set; }

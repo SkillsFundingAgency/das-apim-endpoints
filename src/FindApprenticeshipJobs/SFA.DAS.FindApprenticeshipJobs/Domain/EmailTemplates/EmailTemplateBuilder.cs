@@ -80,7 +80,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                 string? trainingCourseText;
                 string? wageText;
                 
-                var employmentWorkLocation = vacancy.EmploymentLocationOption switch
+                var employerWorkLocation = vacancy.EmployerLocationOption switch
                 {
                     AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
                     AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocations(
@@ -106,7 +106,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                     wageText = (vacancy.WageType == "Competitive") ? vacancy.WageType : vacancy.Wage;
                 }
                 sb.AppendLine(vacancy.EmployerName);
-                sb.AppendLine(employmentWorkLocation);
+                sb.AppendLine(employerWorkLocation);
 
                 sb.AppendLine();
                 if (hasSearchLocation)

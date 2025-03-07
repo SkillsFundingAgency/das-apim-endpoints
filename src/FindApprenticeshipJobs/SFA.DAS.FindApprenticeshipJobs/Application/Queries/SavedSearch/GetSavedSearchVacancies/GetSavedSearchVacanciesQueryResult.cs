@@ -38,7 +38,7 @@ public class GetSavedSearchVacanciesQueryResult
         public Address Address { get; set; }
         public List<Address>? OtherAddresses { get; set; }
         public string? EmploymentLocationInformation { get; set; }
-        public AvailableWhere? EmploymentLocationOption { get; set; }
+        public AvailableWhere? EmployerLocationOption { get; set; }
         public string? Wage { get; set; }
         public string? WageUnit { get; set; }
         public string? WageType { get; set; }
@@ -61,7 +61,7 @@ public class GetSavedSearchVacanciesQueryResult
                 WageType = ((WageType)source.WageType).ToString(),
                 Address = source.Address,
                 OtherAddresses = source.OtherAddresses,
-                EmploymentLocationOption = source.EmploymentLocationOption,
+                EmployerLocationOption = source.EmployerLocationOption,
                 EmploymentLocationInformation = source.EmploymentLocationInformation,
                 TrainingCourse = $"{source.CourseTitle} (level {source.CourseLevel})",
                 Distance = source.Distance.HasValue ? Math.Round(source.Distance.Value, 1) : null,

@@ -135,7 +135,7 @@ public class WhenHandlingProcessApplicationReminder
 
         foreach (var candidate in candidateApiResponse.Candidates)
         {
-            var employmentWorkLocation =
+            var employerWorkLocation =
                 EmailTemplateAddressExtension.GetEmploymentLocationCityNames(recruitApiResponse.OtherAddresses);
 
             notificationService.Verify(x => x.Send(
@@ -146,7 +146,7 @@ public class WhenHandlingProcessApplicationReminder
                     && c.Tokens["daysRemaining"] == command.DaysUntilClosing.ToString()
                     && c.Tokens["vacancy"] == recruitApiResponse.Title
                     && c.Tokens["employer"] == recruitApiResponse.EmployerName
-                    && c.Tokens["location"] == $"{employmentWorkLocation}"
+                    && c.Tokens["location"] == $"{employerWorkLocation}"
                     && c.Tokens["closingDate"] == recruitApiResponse.ClosingDate.ToString("d MMM yyyy")
                     && !string.IsNullOrEmpty(c.Tokens["continueApplicationLink"])
                     && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
@@ -205,10 +205,10 @@ public class WhenHandlingProcessApplicationReminder
 
         foreach (var candidate in candidateApiResponse.Candidates)
         {
-            var employmentWorkLocation =
+            var employerWorkLocation =
                 EmailTemplateAddressExtension.GetEmploymentLocationCityNames(recruitApiResponse.OtherAddresses);
             
-            employmentWorkLocation.Should().Be(expectedAddress);
+            employerWorkLocation.Should().Be(expectedAddress);
 
             notificationService.Verify(x => x.Send(
                 It.Is<SendEmailCommand>(c =>
@@ -277,10 +277,10 @@ public class WhenHandlingProcessApplicationReminder
 
         foreach (var candidate in candidateApiResponse.Candidates)
         {
-            var employmentWorkLocation =
+            var employerWorkLocation =
                 EmailTemplateAddressExtension.GetEmploymentLocationCityNames(recruitApiResponse.OtherAddresses);
 
-            employmentWorkLocation.Should().Be(expectedAddress);
+            employerWorkLocation.Should().Be(expectedAddress);
 
             notificationService.Verify(x => x.Send(
                 It.Is<SendEmailCommand>(c =>

@@ -36,7 +36,7 @@ public class ProcessApplicationReminderCommandHandler(
         var vacancy = vacancyTask.Result;
         var candidates = candidatesTask.Result;
 
-        var employmentWorkLocation = vacancy.EmployerLocationOption switch
+        var employerWorkLocation = vacancy.EmployerLocationOption switch
         {
             AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
             AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancy.OtherAddresses),
@@ -52,7 +52,7 @@ public class ProcessApplicationReminderCommandHandler(
                      vacancy.Title,
                      helper.VacancyUrl,
                      vacancy.EmployerName,
-                     employmentWorkLocation,
+                     employerWorkLocation,
                      helper.CandidateApplicationUrl,
                      vacancy.ClosingDate,
                      helper.SettingsUrl)))
