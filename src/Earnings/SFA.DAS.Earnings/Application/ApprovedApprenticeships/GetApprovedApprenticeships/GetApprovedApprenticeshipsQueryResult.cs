@@ -1,6 +1,6 @@
-namespace SFA.DAS.Earnings.Application.LearnerData.GetLearnerData;
+namespace SFA.DAS.Earnings.Application.ApprovedApprenticeships.GetApprovedApprenticeships;
 
-public class GetLearnerDataQueryResult
+public class GetApprovedApprenticeshipsQueryResult
 {
     public long TotalRecords { get; init; }
     public List<ApprenticeshipResult> Apprenticeships { get; set; } = [];

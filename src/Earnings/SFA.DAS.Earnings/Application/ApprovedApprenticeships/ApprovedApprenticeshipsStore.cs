@@ -1,19 +1,18 @@
 using System.Reflection;
-using SFA.DAS.Earnings.Api.Learnerdata;
 
-namespace SFA.DAS.Earnings.Application.LearnerData;
+namespace SFA.DAS.Earnings.Application.ApprovedApprenticeships;
 
-public class LearnerDataStore : ILearnerDataStore
+public class ApprovedApprenticeshipsStore : IApprovedApprenticeshipsStore
 {
-    private readonly List<LearnerDataCsvRecord> _data = [];
+    private readonly List<ApprovedApprenticeshipCsvRecord> _data = [];
 
-    public LearnerDataStore()
+    public ApprovedApprenticeshipsStore()
     {
         try
         {
             var assembly = Assembly.GetExecutingAssembly();
 
-            var resourcePath = "SFA.DAS.Earnings.cannedLearnerData.csv";
+            var resourcePath = "SFA.DAS.Earnings.cannedApprovedApprenticeshipsData.csv";
 
             using var stream = assembly.GetManifestResourceStream(resourcePath);
             if (stream == null)
@@ -31,7 +30,7 @@ public class LearnerDataStore : ILearnerDataStore
 
                 if (entries.Length == 3)
                 {
-                    _data.Add(new LearnerDataCsvRecord(++count, long.Parse(entries[0]), int.Parse(entries[1]), long.Parse(entries[2])
+                    _data.Add(new ApprovedApprenticeshipCsvRecord(++count, long.Parse(entries[0]), int.Parse(entries[1]), long.Parse(entries[2])
                     ));
                 }
                 else
@@ -46,7 +45,7 @@ public class LearnerDataStore : ILearnerDataStore
         }
     }
 
-    public LearnerDataStore(List<LearnerDataCsvRecord> data)
+    public ApprovedApprenticeshipsStore(List<ApprovedApprenticeshipCsvRecord> data)
     {
         _data = data;
     }
