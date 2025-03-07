@@ -37,7 +37,7 @@ public class ProcessApplicationReminderCommandHandler(
         {
             AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
             AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancyTask.Result.OtherAddresses),
-            AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancyTask.Result.EmployerLocations!.First()),
+            AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancyTask.Result.Address),
             _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancyTask.Result.Address)
         };
 

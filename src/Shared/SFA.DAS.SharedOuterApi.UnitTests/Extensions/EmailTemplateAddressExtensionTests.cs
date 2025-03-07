@@ -39,6 +39,66 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Extensions
         }
 
         [Test]
+        public void GetEmploymentLocations_ShouldReturnCorrectString_With_Same_Cities()
+        {
+            // Arrange
+            var addresses = new List<Address>
+            {
+                new Address { AddressLine1 = "Coventry", Postcode = "CV2" },
+                new Address { AddressLine1 = "Leeds", Postcode = "LS6" },
+                new Address { AddressLine1 = "Leeds", Postcode = "LS16" },
+                new Address { AddressLine1 = "Leeds", Postcode = "LS9" },
+                new Address { AddressLine1 = "London", Postcode = "SW1A" },
+                new Address { AddressLine1 = "Newcastle", Postcode = "ST5" },
+            };
+
+            // Act
+            var result = EmailTemplateAddressExtension.GetEmploymentLocations(addresses);
+
+            // Assert
+            result.Should().Be("Coventry (CV2) and 5 other available locations");
+        }
+
+        [Test]
+        public void GetEmploymentLocations_ShouldReturnCorrectString_With_Same_Not_Alphabetical_Cities()
+        {
+            // Arrange
+            var addresses = new List<Address>
+            {
+                new Address { AddressLine1 = "Newcastle", Postcode = "ST5" },
+                new Address { AddressLine1 = "Coventry", Postcode = "CV2" },
+                new Address { AddressLine1 = "Leeds", Postcode = "LS6" },
+                new Address { AddressLine1 = "Leeds", Postcode = "LS16" },
+                new Address { AddressLine1 = "Leeds", Postcode = "LS9" },
+                new Address { AddressLine1 = "London", Postcode = "SW1A" },
+            };
+
+            // Act
+            var result = EmailTemplateAddressExtension.GetEmploymentLocations(addresses);
+
+            // Assert
+            result.Should().Be("Newcastle (ST5) and 5 other available locations");
+        }
+
+        [Test]
+        public void GetEmploymentLocations_ShouldReturnCorrectString_With_Same_Cities_With_Different_Postcodes()
+        {
+            // Arrange
+            var addresses = new List<Address>
+            {
+                new Address { AddressLine1 = "Leeds", Postcode = "LS6" },
+                new Address { AddressLine1 = "Leeds", Postcode = "LS16" },
+                new Address { AddressLine1 = "Leeds", Postcode = "LS9" },
+            };
+
+            // Act
+            var result = EmailTemplateAddressExtension.GetEmploymentLocations(addresses);
+
+            // Assert
+            result.Should().Be("Leeds (LS6) and 2 other available locations");
+        }
+
+        [Test]
         public void GetOneLocationCityName_ShouldReturnEmptyString_WhenAddressIsNull()
         {
             // Act
@@ -106,20 +166,39 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Extensions
         }
 
         [Test]
-        public void GetEmploymentLocationCityNames_ShouldReturnCorrectString_WhenAllAddressesHaveSameCity()
+        public void GetEmploymentLocationCityNames_ShouldReturnCorrectString_WhenAddressesIsNotEmpty_Not_In_Different_Ordering()
         {
             // Arrange
             var addresses = new List<Address>
             {
+                new Address { AddressLine1 = "456 Elm St", AddressLine2 = "CityB", Postcode = "67890" },
                 new Address { AddressLine1 = "123 Main St", AddressLine2 = "CityA", Postcode = "12345" },
-                new Address { AddressLine1 = "456 Elm St", AddressLine2 = "CityA", Postcode = "67890" }
+                new Address { AddressLine1 = "789 Oak St", AddressLine2 = "CityA", Postcode = "54321" }
             };
 
             // Act
             var result = EmailTemplateAddressExtension.GetEmploymentLocationCityNames(addresses);
 
             // Assert
-            result.Should().Be("CityA (2 available locations)");
+            result.Should().Be("CityA, CityB");
+        }
+
+        [Test]
+        public void GetEmploymentLocationCityNames_ShouldReturnCorrectString_WhenAddressesIsNotEmpty_Not_In_Different_Postcode()
+        {
+            // Arrange
+            var addresses = new List<Address>
+            {
+                new Address { AddressLine1 = "456 Elm St", AddressLine2 = "CityA", Postcode = "67890" },
+                new Address { AddressLine1 = "123 Main St", AddressLine2 = "CityA", Postcode = "67890" },
+                new Address { AddressLine1 = "789 Oak St", AddressLine2 = "CityA", Postcode = "67890" }
+            };
+
+            // Act
+            var result = EmailTemplateAddressExtension.GetEmploymentLocationCityNames(addresses);
+
+            // Assert
+            result.Should().Be("CityA (3 available locations)");
         }
     }
 }
