@@ -1,5 +1,5 @@
 using FluentAssertions;
-using SFA.DAS.Earnings.Application.LearnerData;
+using SFA.DAS.Earnings.Application.ApprovedApprenticeships;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.LearnerData;
 
@@ -8,7 +8,7 @@ public class LeanerDataStoreTests
     [Test]
     public void Pagination_happy_path_returns_correct_data()
     {
-        var learnerData = new List<LearnerDataCsvRecord>
+        var learnerData = new List<ApprovedApprenticeshipCsvRecord>
         {
             new(1, 21222, 2021, 100),
             new(2, 21222, 2021, 200),
@@ -23,7 +23,7 @@ public class LeanerDataStoreTests
             new(12, 21222, 2021, 1100)
         };
         
-        var store = new LearnerDataStore(learnerData);
+        var store = new ApprovedApprenticeshipsStore(learnerData);
 
         var results = store.Search(21222, 2021, 1, 3);
 
@@ -34,7 +34,7 @@ public class LeanerDataStoreTests
     [Test]
     public void Sending_invalid_data_to_paging()
     {
-        var learnerData = new List<LearnerDataCsvRecord>
+        var learnerData = new List<ApprovedApprenticeshipCsvRecord>
         {
             new(1, 21222, 2021, 100),
             new(2, 21222, 2021, 200),
@@ -49,7 +49,7 @@ public class LeanerDataStoreTests
             new(11, 21222, 2021, 1100)
         };
         
-        var store = new LearnerDataStore(learnerData);
+        var store = new ApprovedApprenticeshipsStore(learnerData);
 
         var results = store.Search(21222, 2021, 100, 3);
         results.Should().BeEmpty();
@@ -58,7 +58,7 @@ public class LeanerDataStoreTests
     [Test]
     public void Count_returns_correct_data()
     {
-        var learnerData = new List<LearnerDataCsvRecord>
+        var learnerData = new List<ApprovedApprenticeshipCsvRecord>
         {
             new(1, 21222, 2021, 100),
             new(2, 21222, 2021, 200),
@@ -89,7 +89,7 @@ public class LeanerDataStoreTests
             new(27, 21223, 2223, 1000112)
         };
 
-        var store = new LearnerDataStore(learnerData);
+        var store = new ApprovedApprenticeshipsStore(learnerData);
 
         Assert.That(store.Count(21222, 2021), Is.EqualTo(11));
         Assert.That(store.Count(21223, 2021), Is.EqualTo(5));

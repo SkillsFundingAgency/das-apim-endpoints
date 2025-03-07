@@ -1,6 +1,6 @@
-namespace SFA.DAS.Earnings.Application.LearnerData;
+namespace SFA.DAS.Earnings.Application.ApprovedApprenticeships;
 
-public class LearnerDataCsvRecord(long id, long ukprn, int academicYear, long uln)
+public class ApprovedApprenticeshipCsvRecord(long id, long ukprn, int academicYear, long uln)
 {
     public long Id { get; set; } = id;
     public long Ukprn { get; set; } = ukprn;

@@ -7,8 +7,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Earnings.Api.AppStart;
 using SFA.DAS.Earnings.Api.Controllers;
-using SFA.DAS.Earnings.Api.Learnerdata;
-using SFA.DAS.Earnings.Application.LearnerData;
+using SFA.DAS.Earnings.Application.ApprovedApprenticeships;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
@@ -41,7 +40,7 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment env)
         }
 
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(Earning).Assembly));
-        services.AddSingleton<ILearnerDataStore, LearnerDataStore>();
+        services.AddSingleton<IApprovedApprenticeshipsStore, ApprovedApprenticeshipsStore>();
         services.AddServiceRegistration(_configuration);
 
         services
