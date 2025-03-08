@@ -8,6 +8,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Extensions;
 using static System.Enum;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
@@ -43,7 +44,7 @@ public class GetApplicationsQueryHandler(
 
         foreach (var application in applicationList)
         {
-            var vacancy = vacancies.FirstOrDefault(v => v.VacancyReference.Replace("VAC", string.Empty) == application.VacancyReference);
+            var vacancy = vacancies.FirstOrDefault(v => v.VacancyReference.TrimVacancyReference() == application.VacancyReference);
             
             if(vacancy is null) continue;
 

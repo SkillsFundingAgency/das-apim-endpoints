@@ -7,6 +7,7 @@ using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies.DeleteSavedVacancy;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -21,8 +22,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Vacancies
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             DeleteSavedVacancyCommandHandler handler)
         {
-            var vacancyReference =
-                command.VacancyReference.Replace("VAC", string.Empty, StringComparison.CurrentCultureIgnoreCase);
+            var vacancyReference = command.VacancyReference.TrimVacancyReference();
             var expectedRequest = new PostDeleteSavedVacancyApiRequest(command.CandidateId, vacancyReference);
 
             var actual = await handler.Handle(command, CancellationToken.None);
