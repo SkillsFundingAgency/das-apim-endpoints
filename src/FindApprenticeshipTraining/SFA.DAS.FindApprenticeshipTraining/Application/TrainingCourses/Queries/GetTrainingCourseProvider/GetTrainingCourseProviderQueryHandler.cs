@@ -121,7 +121,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             if (apiResponse == null) return null;
 
-            if (apiResponse != null && apiResponse.ProviderHeadOfficeDistanceInMiles == 0 && locationItem != null)
+            if (apiResponse.ProviderHeadOfficeDistanceInMiles == 0 && locationItem != null)
             {
                 //provider found without location
                 return new GetProviderStandardItem();
