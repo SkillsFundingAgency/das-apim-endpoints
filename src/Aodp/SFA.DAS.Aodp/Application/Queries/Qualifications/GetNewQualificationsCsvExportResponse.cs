@@ -4,7 +4,7 @@
     {
         public bool Success { get; set; }
         public string? ErrorMessage { get; set; }
-        public List<GetNewQualificationsCsvExportResponse>? QualificationExports { get; set; }
+        public List<QualificationExport>? QualificationExports { get; set; }
     }
 
     public class QualificationExport
