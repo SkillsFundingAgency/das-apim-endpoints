@@ -23,6 +23,7 @@ public class GetApplicationMessagesByIdQueryHandler : IRequestHandler<GetApplica
             var result = await _apiClient.Get<GetApplicationMessagesByIdQueryResponse>(new GetApplicationMessagesByIdApiRequest()
             {
                 ApplicationId = request.ApplicationId,
+                UserType = request.UserType,
             });
             response.Value = result;
             response.Success = true;

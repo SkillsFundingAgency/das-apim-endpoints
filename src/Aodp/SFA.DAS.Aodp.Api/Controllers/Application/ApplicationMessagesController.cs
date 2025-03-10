@@ -24,13 +24,13 @@ public class ApplicationMessagesController : BaseController
     [ProducesResponseType(typeof(GetApplicationMessagesByIdQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetApplicationMessagesByIdAsync(Guid applicationId)
+    public async Task<IActionResult> GetApplicationMessagesByIdAsync([FromRoute] Guid applicationId, [FromQuery] string userType)
     {
-        var query = new GetApplicationMessagesByIdQuery(applicationId);
+        var query = new GetApplicationMessagesByIdQuery(applicationId, userType);
         return await SendRequestAsync(query);
     }
 
-    [HttpPost("/api/applicationMessages/{applicationId}/messages")]
+    [HttpPost("/api/applications/{applicationId}/messages")]
     [ProducesResponseType(typeof(CreateApplicationMessageCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateApplicationMessageAsync([FromBody] CreateApplicationMessageCommand command, [FromRoute] Guid applicationId)
