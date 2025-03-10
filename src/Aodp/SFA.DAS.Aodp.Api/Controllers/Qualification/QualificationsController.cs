@@ -88,7 +88,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         }
 
         [HttpGet("export")]
-        [ProducesResponseType(typeof(BaseMediatrResponse<GetNewQualificationsCsvExportResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetNewQualificationsExportResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -101,7 +101,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
 
         private async Task<IActionResult> HandleNewQualificationCSVExport()
         {
-            var result = await _mediator.Send(new GetNewQualificationsCsvExportQuery());
+            var result = await _mediator.Send(new GetNewQualificationsExportQuery());
 
             if (result == null || !result.Success || result.Value == null)
             {
