@@ -12,6 +12,8 @@ using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using Polly;
 using Polly.Retry;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Constants;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands;
@@ -42,10 +44,8 @@ public class ProcessVacancyClosedEarlyCommandHandler(
         var notificationTasks = new List<Task>();
         var updateCandidate = new List<Task>();
 
-        var vacancy = vacancyTask.Result;
-        var allCandidateApplications = allCandidateApplicationsTask.Result;
 
-        var employmentWorkLocation = vacancy.EmployerLocationOption switch
+        var employmentWorkLocation = vacancy.Body.EmployerLocationOption switch
         {
             AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
             AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancy.OtherAddresses),
