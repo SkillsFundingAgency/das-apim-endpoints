@@ -117,7 +117,7 @@ public class WhenHandlingSubmitApplicationCommand
                 ), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
 
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
-        vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse)).Returns(expectedAddress);
+        vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse, true)).Returns(expectedAddress);
 
 
         var actual = await handler.Handle(request, CancellationToken.None);
@@ -180,7 +180,7 @@ public class WhenHandlingSubmitApplicationCommand
                 ), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
 
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
-        vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse)).Returns(expectedAddress);
+        vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse, true)).Returns(expectedAddress);
 
 
         var actual = await handler.Handle(request, CancellationToken.None);
@@ -249,7 +249,7 @@ public class WhenHandlingSubmitApplicationCommand
                 ), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
 
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
-        vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse)).Returns(expectedAddress);
+        vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse, true)).Returns(expectedAddress);
 
 
         var actual = await handler.Handle(request, CancellationToken.None);

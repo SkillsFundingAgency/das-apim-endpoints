@@ -188,7 +188,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         AddressLine1 = "123 Main St",
                         Postcode = "12345"
                     },
-                    EmployerLocationOption = AvailableWhere.OneLocation,
                     Distance = 10,
                     TrainingCourse = "Software Engineering",
                     Wage = "£30,000 a year",
@@ -241,7 +240,65 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         AddressLine1 = "123 Main St",
                         Postcode = "12345"
                     },
-                    EmployerLocationOption = AvailableWhere.OneLocation,
+                    Distance = 10,
+                    TrainingCourse = "Software Engineering",
+                    Wage = "£30,000 a year",
+                    ClosingDate = "2022-12-31"
+                }
+            };
+
+            const string expectedSnippet = """
+
+                                           #[Software Developer](https://example.com/vacancy/12345)
+                                           ABC Company
+                                           123 Main St (12345)
+
+                                           * Training course: Software Engineering
+                                           * Wage: £30,000 a year
+
+                                           2022-12-31
+
+                                           ---
+
+                                           """;
+
+            // Act
+            var snippet = EmailTemplateBuilder.GetSavedSearchVacanciesSnippet(environmentHelper, vacancies, false);
+
+            // Assert
+            snippet.Should().Be(expectedSnippet);
+        }
+
+        [Test]
+        public void GetSavedSearchVacanciesSnippet_Should_Return_Correct_Snippet_With_One_Location()
+        {
+            // Arrange
+            var environmentHelper = new EmailEnvironmentHelper("test")
+            {
+                VacancyDetailsUrl = "https://example.com/vacancy/{vacancy-reference}"
+            };
+
+            var vacancies = new List<PostSendSavedSearchNotificationCommand.Vacancy>
+            {
+                new()
+                {
+                    Title = "Software Developer",
+                    VacancyReference = "12345",
+                    EmployerName = "ABC Company",
+                    EmploymentLocationOption = AvailableWhere.OneLocation,
+                    EmployerLocation = new Address
+                    {
+                        AddressLine1 = "123 Main St",
+                        Postcode = "12345"
+                    },
+                    OtherAddresses =
+                    [
+                        new Address
+                        {
+                            AddressLine1 = "123 Main St",
+                            Postcode = "12345"
+                        }
+                    ],
                     Distance = 10,
                     TrainingCourse = "Software Engineering",
                     Wage = "£30,000 a year",
@@ -295,7 +352,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         AddressLine1 = "123 Main St",
                         Postcode = "12345"
                     },
-                    EmployerLocationOption = AvailableWhere.OneLocation,
                     Distance = 1,
                     TrainingCourse = "Software Engineering",
                     Wage = "£30,000 a year",
@@ -321,6 +377,71 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                                            ---
 
                                            """;
+
+            // Act
+            var snippet = EmailTemplateBuilder.GetSavedSearchVacanciesSnippet(environmentHelper, vacancies, true);
+
+            // Assert
+            snippet.Should().Be(expectedSnippet);
+        }
+
+        [TestCase("Competitive", "", "Competitive")]
+        [TestCase("", "month", "£30,000 a year")]
+        [TestCase("", "hour", "£30,000 a year")]
+        public void GetSavedSearchVacanciesSnippet_Should_Return_Snippet_With_Correct_Wage_Text_For_Faa_VacancySource_And_Different_WageTypes_With_OneLocation(
+            string wagetype, string wageUnit, string expectedWageText)
+        {
+            // Arrange
+            var environmentHelper = new EmailEnvironmentHelper("test")
+            {
+                VacancyDetailsUrl = "https://example.com/vacancy/{vacancy-reference}"
+            };
+
+            var vacancies = new List<PostSendSavedSearchNotificationCommand.Vacancy>
+            {
+                new()
+                {
+                    Title = "Software Developer",
+                    VacancyReference = "12345",
+                    EmployerName = "ABC Company",
+                    EmployerLocation = new Address
+                    {
+                        AddressLine1 = "123 Main St",
+                        Postcode = "12345"
+                    },
+                    OtherAddresses =
+                    [
+                        new Address
+                        {
+                            AddressLine1 = "123 Main St",
+                            Postcode = "12345"
+                        }
+                    ],
+                    Distance = 1,
+                    TrainingCourse = "Software Engineering",
+                    Wage = "£30,000 a year",
+                    ClosingDate = "2022-12-31",
+                    VacancySource = "FAA",
+                    WageUnit = wageUnit,
+                    WageType = wagetype
+                }
+            };
+
+            var expectedSnippet = $"""
+
+                                   #[Software Developer](https://example.com/vacancy/12345)
+                                   ABC Company
+                                   123 Main St (12345)
+
+                                   * Distance: 1 mile
+                                   * Training course: Software Engineering
+                                   * Wage: {expectedWageText}
+
+                                   2022-12-31
+
+                                   ---
+
+                                   """;
 
             // Act
             var snippet = EmailTemplateBuilder.GetSavedSearchVacanciesSnippet(environmentHelper, vacancies, true);
@@ -442,14 +563,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         AddressLine1 = "123 Main St",
                         Postcode = "12345"
                     },
-                    EmployerLocationOption = AvailableWhere.MultipleLocations,
-                    EmployerLocations =
+                    EmploymentLocationOption = AvailableWhere.MultipleLocations,
+                    OtherAddresses =
                     [
-                        new Address
-                        {
-                            AddressLine1 = "123 Main St",
-                            Postcode = "12345"
-                        },
                         new Address
                         {
                             AddressLine1 = "address 1",
@@ -520,8 +636,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                         AddressLine1 = "123 Main St",
                         Postcode = "12345"
                     },
-                    EmployerLocationOption = AvailableWhere.AcrossEngland,
-                    EmployerLocations =
+                    EmploymentLocationOption = AvailableWhere.AcrossEngland,
+                    OtherAddresses =
                     [
                         new Address
                         {
