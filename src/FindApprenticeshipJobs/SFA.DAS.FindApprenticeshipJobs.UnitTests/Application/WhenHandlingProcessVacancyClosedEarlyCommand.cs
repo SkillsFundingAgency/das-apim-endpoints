@@ -49,11 +49,11 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
     {
         recruitApiResponse.EmployerLocationOption = employerLocationOption;
 
-        recruitApiResponse.EmployerLocations![0].AddressLine1 = address1;
-        recruitApiResponse.EmployerLocations[0].AddressLine2 = address2;
-        recruitApiResponse.EmployerLocations[0].AddressLine3 = address3;
-        recruitApiResponse.EmployerLocations[0].AddressLine4 = address4;
-        recruitApiResponse.EmployerLocations[0].Postcode = postcode;
+        recruitApiResponse.Address.AddressLine1 = address1;
+        recruitApiResponse.Address.AddressLine2 = address2;
+        recruitApiResponse.Address.AddressLine3 = address3;
+        recruitApiResponse.Address.AddressLine4 = address4;
+        recruitApiResponse.Address.Postcode = postcode;
 
         candidateApiClient.Setup(x => 
                 x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()))
@@ -111,6 +111,7 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
         [Frozen] Mock<INotificationService> notificationService,
         ProcessVacancyClosedEarlyCommandHandler handler)
     {
+        recruitApiResponse.EmployerLocationOption = AvailableWhere.OneLocation;
         recruitApiResponse.Address.AddressLine1 = "address1";
         recruitApiResponse.Address.AddressLine2 = null;
         recruitApiResponse.Address.AddressLine3 = null;
@@ -154,7 +155,7 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
                     && c.Tokens["vacancy"] == recruitApiResponse.Title
                     && c.Tokens["employer"] == recruitApiResponse.EmployerName 
                     && c.Tokens["dateApplicationStarted"] == candidate.ApplicationCreatedDate.ToString("d MMM yyyy") 
-                    && c.Tokens["location"] == $"address1, {recruitApiResponse.Address!.Postcode}"
+                    && c.Tokens["location"] == $"address1 ({recruitApiResponse.Address!.Postcode})"
                     && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
                     && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
                 )
@@ -188,7 +189,7 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
     public async Task Then_The_Vacancy_EmployerLocation_Null_Candidates_Are_Found_Emails_Sent_And_Application_Status_Updated(
         ProcessVacancyClosedEarlyCommand command,
         GetCandidateApplicationApiResponse candidateApiResponseAll,
-        GetLiveVacancyApiResponse recruitApiResponse,
+        GetClosedVacancyApiResponse recruitApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
@@ -217,10 +218,10 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
                  It.Is<GetCandidateApplicationsByVacancyRequest>(c =>
                      c.GetUrl == candidateGetRequestAll.GetUrl))).ReturnsAsync(candidateApiResponseAll);
         recruitApiClient
-            .Setup(x => x.Get<GetLiveVacancyApiResponse>(
-                It.Is<GetLiveVacancyApiRequest>(c =>
+            .Setup(x => x.GetWithResponseCode<GetClosedVacancyApiResponse>(
+                It.Is<GetClosedVacancyApiRequest>(c =>
                     c.GetUrl.Contains(command.VacancyReference.ToString()))))
-            .ReturnsAsync(recruitApiResponse);
+            .ReturnsAsync(new ApiResponse<GetClosedVacancyApiResponse>(recruitApiResponse, HttpStatusCode.OK,""));
 
         await handler.Handle(command, CancellationToken.None);
 
@@ -255,7 +256,7 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
         List<Address> addresses,
         ProcessVacancyClosedEarlyCommand command,
         GetCandidateApplicationApiResponse candidateApiResponseAll,
-        GetLiveVacancyApiResponse recruitApiResponse,
+        GetClosedVacancyApiResponse recruitApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
@@ -278,10 +279,10 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
                  It.Is<GetCandidateApplicationsByVacancyRequest>(c =>
                      c.GetUrl == candidateGetRequestAll.GetUrl))).ReturnsAsync(candidateApiResponseAll);
         recruitApiClient
-            .Setup(x => x.Get<GetLiveVacancyApiResponse>(
-                It.Is<GetLiveVacancyApiRequest>(c =>
+            .Setup(x => x.GetWithResponseCode<GetClosedVacancyApiResponse>(
+                It.Is<GetClosedVacancyApiRequest>(c =>
                     c.GetUrl.Contains(command.VacancyReference.ToString()))))
-            .ReturnsAsync(recruitApiResponse);
+            .ReturnsAsync(new ApiResponse<GetClosedVacancyApiResponse>(recruitApiResponse, HttpStatusCode.OK, ""));
 
         await handler.Handle(command, CancellationToken.None);
 
@@ -318,7 +319,7 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
     public async Task Then_The_Vacancy_With_Anon_Multiple_Locations_And_Candidates_Are_Found_Emails_Sent_And_Application_Status_Updated(
         ProcessVacancyClosedEarlyCommand command,
         GetCandidateApplicationApiResponse candidateApiResponseAll,
-        GetLiveVacancyApiResponse recruitApiResponse,
+        GetClosedVacancyApiResponse recruitApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
@@ -349,10 +350,10 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
                  It.Is<GetCandidateApplicationsByVacancyRequest>(c =>
                      c.GetUrl == candidateGetRequestAll.GetUrl))).ReturnsAsync(candidateApiResponseAll);
         recruitApiClient
-            .Setup(x => x.Get<GetLiveVacancyApiResponse>(
-                It.Is<GetLiveVacancyApiRequest>(c =>
+            .Setup(x => x.GetWithResponseCode<GetClosedVacancyApiResponse>(
+                It.Is<GetClosedVacancyApiRequest>(c =>
                     c.GetUrl.Contains(command.VacancyReference.ToString()))))
-            .ReturnsAsync(recruitApiResponse);
+            .ReturnsAsync(new ApiResponse<GetClosedVacancyApiResponse>(recruitApiResponse, HttpStatusCode.OK, ""));
 
         await handler.Handle(command, CancellationToken.None);
 
@@ -391,7 +392,7 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
     public async Task Then_The_Vacancy_With_Multiple_Locations_And_Candidates_Are_Found_Emails_Sent_And_Application_Status_Updated(
         ProcessVacancyClosedEarlyCommand command,
         GetCandidateApplicationApiResponse candidateApiResponseAll,
-        GetLiveVacancyApiResponse recruitApiResponse,
+        GetClosedVacancyApiResponse recruitApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
@@ -422,10 +423,10 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
                  It.Is<GetCandidateApplicationsByVacancyRequest>(c =>
                      c.GetUrl == candidateGetRequestAll.GetUrl))).ReturnsAsync(candidateApiResponseAll);
         recruitApiClient
-            .Setup(x => x.Get<GetLiveVacancyApiResponse>(
-                It.Is<GetLiveVacancyApiRequest>(c =>
+            .Setup(x => x.GetWithResponseCode<GetClosedVacancyApiResponse>(
+                It.Is<GetClosedVacancyApiRequest>(c =>
                     c.GetUrl.Contains(command.VacancyReference.ToString()))))
-            .ReturnsAsync(recruitApiResponse);
+            .ReturnsAsync(new ApiResponse<GetClosedVacancyApiResponse>(recruitApiResponse, HttpStatusCode.OK, ""));
 
         await handler.Handle(command, CancellationToken.None);
 
