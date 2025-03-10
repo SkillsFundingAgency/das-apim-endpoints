@@ -95,5 +95,7 @@
     <PackageVersion Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageVersion Include="contentful.csharp" Version="7.5.2" />
     <PackageVersion Include="contentful.aspnetcore" Version="7.5.2" />
+    <PackageVersion Include="Polly" Version="8.5.2" />
+    <PackageVersion Include="Polly.Extensions.Http" Version="3.0.0" />
   </ItemGroup>
 </Project>
