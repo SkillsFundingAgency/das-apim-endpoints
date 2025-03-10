@@ -35,14 +35,6 @@ public class ApplicationMessagesController : BaseController
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateApplicationMessageAsync([FromBody] CreateApplicationMessageCommand command, [FromRoute] Guid applicationId)
     {
-        var response = await _mediator.Send(command);
-
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        _logger.LogError(message: $"Error thrown handling request: {response.ErrorMessage}");
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(command);
     }
 }
