@@ -40,7 +40,6 @@ public class ProcessVacancyClosedEarlyCommandHandler(
         
         var allCandidateApplications = await candidateApiClient.Get<GetCandidateApplicationApiResponse>(new GetCandidateApplicationsByVacancyRequest(request.VacancyReference.ToString(), null, false));
 
-        await Task.WhenAll(vacancyTask, allCandidateApplicationsTask);
         var notificationTasks = new List<Task>();
         var updateCandidate = new List<Task>();
 
@@ -48,9 +47,9 @@ public class ProcessVacancyClosedEarlyCommandHandler(
         var employmentWorkLocation = vacancy.Body.EmployerLocationOption switch
         {
             AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
-            AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancy.OtherAddresses),
-            AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.Address),
-            _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.Address)
+            AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancy.Body.OtherAddresses),
+            AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.Body.Address),
+            _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.Body.Address)
         };
 
         foreach (var candidate in allCandidateApplications.Candidates)
@@ -65,7 +64,7 @@ public class ProcessVacancyClosedEarlyCommandHandler(
                 candidate.Candidate.FirstName,
                 vacancy.Body.Title,
                 helper.VacancyUrl,
-                vacancy.EmployerName,
+                vacancy.Body.EmployerName,
                 employmentWorkLocation, 
                 candidate.ApplicationCreatedDate,
                 helper.SettingsUrl);
