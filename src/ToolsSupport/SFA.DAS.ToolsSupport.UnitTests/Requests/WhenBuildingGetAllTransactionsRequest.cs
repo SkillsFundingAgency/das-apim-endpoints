@@ -6,10 +6,10 @@ namespace SFA.DAS.ToolsSupport.UnitTests.Requests;
 public class WhenBuildingGetAllTransactionsRequest
 {
     [Test, AutoData]
-    public void Then_The_Request_Is_Correctly_Build(string accountId, int year, int month)
+    public void Then_The_Request_Is_Correctly_Build(string accountId, DateTime fromdate, DateTime toDate)
     {
-        var actual = new GetAllTransactionsRequest(accountId, year, month);
+        var actual = new GetAllTransactionsRequest(accountId, fromdate, toDate);
 
-        actual.GetUrl.Should().Be($"api/accounts/{accountId}/transactions/all-transactions/{year}/{month}");
+        actual.GetUrl.Should().Be($"api/accounts/{accountId}/transactions/query?fromDate={fromdate:yyyy-MM-dd}&toDate={toDate:yyyy-MM-dd}");
     }
 }

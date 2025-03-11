@@ -113,18 +113,17 @@ public class FinanceDataService(
 
     private async Task<List<Transaction>> GetAccountTransactions(string accountId)
     {
-        var financialYearIterator = datetimeService.GetBeginningFinancialYear(new DateTime(2017, 4, 1));
+        var fromDate = datetimeService.GetBeginningFinancialYear(new DateTime(2017, 4, 1));
         var response = new List<Transaction>();
 
         try
         {
-            var transactions = await employerFinanceService.GetAllTransactions(accountId, financialYearIterator.Year,
-                financialYearIterator.Month);
+            var transactions = await employerFinanceService.GetAllTransactions(accountId, fromDate, DateTime.UtcNow);
             response.AddRange(transactions);
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "Exception occured in Finance API type of {TransactionsViewModel} for period {FinancialYearIteratorYear}.{FinancialYearIteratorMonth} id {AccountId}", nameof(TransactionsViewModel), financialYearIterator.Year, financialYearIterator.Month, accountId);
+            logger.LogError(exception, "Exception occured in Finance API type of {TransactionsViewModel} for period {year}.{month} id {AccountId}", nameof(TransactionsViewModel), fromDate.Year, fromDate.Month, accountId);
         }
 
 
