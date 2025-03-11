@@ -1,7 +1,11 @@
-﻿using System.Globalization;
+﻿using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Constants;
+using SFA.DAS.SharedOuterApi.Extensions;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
 {
@@ -75,6 +79,17 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
             {
                 string? trainingCourseText;
                 string? wageText;
+                
+                var employmentWorkLocation = vacancy.EmploymentLocationOption switch
+                {
+                    AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
+                    AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocations(
+                        vacancy.OtherAddresses is { Count: > 0 }
+                        ? new List<Address> { vacancy.EmployerLocation! }.Concat(vacancy.OtherAddresses).ToList()
+                        : [ vacancy.EmployerLocation! ]),
+                    AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.EmployerLocation),
+                    _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.EmployerLocation)
+                };
 
                 sb.AppendLine();
 
@@ -91,11 +106,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
                     wageText = (vacancy.WageType == "Competitive") ? vacancy.WageType : vacancy.Wage;
                 }
                 sb.AppendLine(vacancy.EmployerName);
-                sb.AppendLine(!string.IsNullOrEmpty(vacancy.Address.AddressLine4) ? $"{vacancy.Address.AddressLine4}, {vacancy.Address.Postcode}" :
-                    !string.IsNullOrEmpty(vacancy.Address.AddressLine3) ? $"{vacancy.Address.AddressLine3}, {vacancy.Address.Postcode}" :
-                    !string.IsNullOrEmpty(vacancy.Address.AddressLine2) ? $"{vacancy.Address.AddressLine2}, {vacancy.Address.Postcode}" :
-                    !string.IsNullOrEmpty(vacancy.Address.AddressLine1) ? $"{vacancy.Address.AddressLine1}, {vacancy.Address.Postcode}" :
-                    vacancy.Address.Postcode);
+                sb.AppendLine(employmentWorkLocation);
 
                 sb.AppendLine();
                 if (hasSearchLocation)

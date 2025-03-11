@@ -1,7 +1,3 @@
-using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.FindAnApprenticeship.Domain.EmailTemplates;
@@ -16,6 +12,11 @@ using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.WithdrawApplication;
 
@@ -37,7 +38,7 @@ public class WithdrawApplicationCommandHandler(
         }
 
         var response = await recruitApiClient.PostWithResponseCode<NullResponse>(
-            new PostWithdrawApplicationRequest(request.CandidateId, Convert.ToInt64(application.VacancyReference.Replace("VAC", ""))), false);
+            new PostWithdrawApplicationRequest(request.CandidateId, Convert.ToInt64(application.VacancyReference.TrimVacancyReference())), false);
 
         if (response.StatusCode != HttpStatusCode.NoContent)
         {
@@ -70,8 +71,7 @@ public class WithdrawApplicationCommandHandler(
             application.Candidate.FirstName,
             vacancyResponse.Title,
             vacancyResponse.EmployerName,
-            vacancyResponse.EmployerLocation.AddressLine4 ?? vacancyResponse.EmployerLocation.AddressLine3 ?? vacancyResponse.EmployerLocation.AddressLine2 ?? vacancyResponse.EmployerLocation.AddressLine1 ?? "Unknown",
-            vacancyResponse.EmployerLocation.Postcode);
+            vacancyService.GetVacancyWorkLocation(vacancyResponse, true));
     }
 
     private WithdrawApplicationEmail GetWithdrawApplicationEmail(GetApplicationApiResponse application, GetApprenticeshipVacancyItemResponse vacancyResponse)
@@ -82,7 +82,6 @@ public class WithdrawApplicationCommandHandler(
             application.Candidate.FirstName,
             vacancyResponse.Title,
             vacancyResponse.EmployerName,
-            vacancyResponse.Address.AddressLine4 ?? vacancyResponse.Address.AddressLine3 ?? vacancyResponse.Address.AddressLine2 ?? vacancyResponse.Address.AddressLine1 ?? "Unknown",
-            vacancyResponse.Address.Postcode);
+            vacancyService.GetVacancyWorkLocation(vacancyResponse, true));
     }
 }

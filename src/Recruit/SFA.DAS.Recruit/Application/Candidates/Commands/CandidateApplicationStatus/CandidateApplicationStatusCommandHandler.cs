@@ -68,8 +68,7 @@ public class CandidateApplicationStatusCommandHandler : IRequestHandler<Candidat
                 _emailEnvironmentHelper.SuccessfulApplicationEmailTemplateId, 
                 candidate.Body.Email,
                 candidate.Body.FirstName, request.VacancyTitle, request.VacancyEmployerName,
-                request.VacancyCity,
-                request.VacancyPostcode);
+                GetLocation(request));
             sendEmailCommand = new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens);
         }
         else
@@ -78,15 +77,27 @@ public class CandidateApplicationStatusCommandHandler : IRequestHandler<Candidat
                 _emailEnvironmentHelper.UnsuccessfulApplicationEmailTemplateId,
                 candidate.Body.Email,
                 candidate.Body.FirstName, request.VacancyTitle, request.VacancyEmployerName,
-                request.VacancyCity,
-                request.VacancyPostcode,
+                GetLocation(request),
                 request.Feedback, _emailEnvironmentHelper.CandidateApplicationUrl);
             sendEmailCommand = new SendEmailCommand(unsuccessfulEmail.TemplateId, unsuccessfulEmail.RecipientAddress, unsuccessfulEmail.Tokens);
         }
         
-        
         await Task.WhenAll(_notificationService.Send(sendEmailCommand), _candidateApiClient.PatchWithResponseCode(patchRequest));
-        
         return new Unit();
+    }
+
+    private static string GetLocation(CandidateApplicationStatusCommand request)
+    {
+        if (!string.IsNullOrWhiteSpace(request.VacancyLocation))
+        {
+            return request.VacancyLocation;
+        }
+
+        // TODO: remove once MultipleLocations is released
+        return string.IsNullOrEmpty(request.VacancyCity)
+            ? request.VacancyPostcode
+            : string.IsNullOrEmpty(request.VacancyPostcode)
+                ? request.VacancyCity
+                : $"{request.VacancyCity}, {request.VacancyPostcode}";
     }
 }

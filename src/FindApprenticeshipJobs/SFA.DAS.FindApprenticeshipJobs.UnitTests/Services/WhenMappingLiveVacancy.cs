@@ -34,10 +34,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
         }
         
         [Test]
-        [InlineAutoData(null, "NonNational")]
-        [InlineAutoData(AvailableWhere.OneLocation, "NonNational")]
-        [InlineAutoData(AvailableWhere.MultipleLocations, "NonNational")]
-        [InlineAutoData(AvailableWhere.AcrossEngland, "National")]
+        [MoqInlineAutoData(null, "NonNational")]
+        [MoqInlineAutoData(AvailableWhere.OneLocation, "NonNational")]
+        [MoqInlineAutoData(AvailableWhere.MultipleLocations, "NonNational")]
+        [MoqInlineAutoData(AvailableWhere.AcrossEngland, "National")]
         public void Then_The_Mapped_Vacancy_Has_The_Correct_VacancyLocationType(
             AvailableWhere? locationType,
             string expectedLocationType,
@@ -158,17 +158,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 
                 standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Route,
                 standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).RouteCode,
-                Address = new FindApprenticeshipJobs.Application.Shared.Address
-                {
-                    AddressLine1 = source.EmployerLocation?.AddressLine1,
-                    AddressLine2 = source.EmployerLocation?.AddressLine2,
-                    AddressLine3 = source.EmployerLocation?.AddressLine3,
-                    AddressLine4 = source.EmployerLocation?.AddressLine4,
-                    Postcode = source.EmployerLocation?.Postcode,
-                    Latitude = source.EmployerLocation?.Latitude ?? 0,
-                    Longitude = source.EmployerLocation?.Longitude ?? 0,
-                    Country = source.EmployerLocation?.Country
-                },
+                source.Address,
                 source.EmployerLocations,
                 source.EmployerLocationInformation,
                 source.EmployerLocationOption,

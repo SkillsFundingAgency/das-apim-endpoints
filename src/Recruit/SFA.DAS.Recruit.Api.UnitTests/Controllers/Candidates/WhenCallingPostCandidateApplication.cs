@@ -39,6 +39,7 @@ public class WhenCallingPostCandidateApplication
                 && c.VacancyEmployerName == request.VacancyEmployerName
                 && c.VacancyCity == request.VacancyCity
                 && c.VacancyPostcode == request.VacancyPostcode
+                && c.VacancyLocation == request.VacancyLocation
             ), CancellationToken.None), Times.Once);
     }
     [Test, MoqAutoData]

@@ -62,6 +62,15 @@ public static class AddServiceCollectionExtensions
             .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
                 tags: new[] { Ready })
+            .AddCheck<RoatpCourseManagementApiHealthCheck>(RoatpCourseManagementApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready })
+            .AddCheck<PensionsRegulatorApiHealthCheck>(PensionsRegulatorApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready })
+            .AddCheck<ProviderRelationshipsApiHealthCheck>(ProviderRelationshipsApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready })
             .AddCheck<EmployerProfilesApiHealthCheck>(EmployerProfilesApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
                 tags: new[] { Ready });

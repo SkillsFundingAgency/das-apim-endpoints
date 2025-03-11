@@ -6,11 +6,10 @@ public class GetAccountReservationsStatusRequest : IGetApiRequest
     public readonly long AccountId;
     public readonly long? TransferSenderId;
 
-    public GetAccountReservationsStatusRequest(long accountId, long? transferSenderId)
+    public GetAccountReservationsStatusRequest(long accountId)
     {
         AccountId = accountId;
-        TransferSenderId = transferSenderId;
     }
 
-    public string GetUrl => $"api/accounts/{AccountId}/status?transferSenderId={TransferSenderId}";
+    public string GetUrl => $"api/accounts/{AccountId}/status";
 }
