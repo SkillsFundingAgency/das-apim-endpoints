@@ -21,8 +21,12 @@ public class GetPayeSchemeLevyDeclarationsQueryHandler(
             return result;
         }
 
-        result.PayeScheme = await GetSelectedPayeSchemeFromAccount(account, query.PayeRef);
-        result.LevySubmissions = await GetLevyDeclarationsForPayeScheme(query.PayeRef);
+        var schemeTask = GetSelectedPayeSchemeFromAccount(account, query.PayeRef);
+        var levySubmissionsTask = GetLevyDeclarationsForPayeScheme(query.PayeRef);
+        await Task.WhenAll(schemeTask, levySubmissionsTask);
+
+        result.PayeScheme = await schemeTask;
+        result.LevySubmissions = await levySubmissionsTask;
         result.StatusCode = PayeLevySubmissionsResponseCodes.Success;
 
         return result;
