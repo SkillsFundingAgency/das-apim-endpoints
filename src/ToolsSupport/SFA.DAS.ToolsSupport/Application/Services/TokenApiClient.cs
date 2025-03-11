@@ -6,7 +6,7 @@ using SFA.DAS.ToolsSupport.Interfaces;
 
 namespace SFA.DAS.ToolsSupport.Application.Services;
 
-public class SecureTokenHttpClient(IInternalApiClient<TokenServiceApiConfiguration> client) : ISecureTokenHttpClient<TokenServiceApiConfiguration>
+public class TokenApiClient(IInternalApiClient<TokenServiceApiConfiguration> client) : ITokenApiClient<TokenServiceApiConfiguration>
 {
     public Task Delete(IDeleteApiRequest request)
     {
