@@ -123,7 +123,7 @@ public class FinanceDataService(
         }
         catch (Exception exception)
         {
-            logger.LogError(exception, "Exception occured in Finance API type of {TransactionsViewModel} for period {FinancialYearIteratorYear}.{FinancialYearIteratorMonth} id {AccountId}", nameof(TransactionsViewModel), financialYearIterator.Year, financialYearIterator.Month, accountId);
+            logger.LogError(exception, "Exception occured in Finance API type of {TransactionsViewModel} for period {year}.{month} id {AccountId}", nameof(TransactionsViewModel), fromDate.Year, fromDate.Month, accountId);
         }
 
 
