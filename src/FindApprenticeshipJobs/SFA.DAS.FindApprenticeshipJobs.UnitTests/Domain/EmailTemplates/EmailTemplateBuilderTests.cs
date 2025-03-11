@@ -20,6 +20,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             List<string> categories = ["IT", "Engineering"];
             List<string> levels = ["Intermediate", "Advanced"];
             const bool disabilityConfident = true;
+            const bool excludeNational = false;
 
             const string expected = """
                                     
@@ -32,11 +33,41 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                                     """;
 
             // Act
-            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident);
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident, excludeNational);
 
             // Assert
             result.Trim().Should().BeEquivalentTo(expected.Trim());
         }
+
+        [Test]
+        public void GetSavedSearchSearchParams_When_ExcludeNational_True_ReturnsExpectedResult()
+        {
+            // Arrange
+            const string searchTerm = "Software Developer";
+            const int distance = 10;
+            const string location = "London";
+            List<string> categories = ["IT", "Engineering"];
+            List<string> levels = ["Intermediate", "Advanced"];
+            const bool disabilityConfident = true;
+            const bool excludeNational = true;
+
+            const string expected = """
+                                    
+                                    What: Software Developer
+                                    Where: London (within 10 miles) - hide companies recruiting nationally
+                                    Categories: IT, Engineering
+                                    Apprenticeship levels: Intermediate, Advanced
+                                    Only show Disability Confident apprenticeships
+                                    
+                                    """;
+
+            // Act
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident, excludeNational);
+
+            // Assert
+            result.Trim().Should().BeEquivalentTo(expected.Trim());
+        }
+
         [Test]
         public void GetSavedSearchSearchParams_WhenCalled_ReturnsExpectedResult_Across_All_Of_England()
         {
@@ -46,6 +77,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             List<string> categories = ["IT", "Engineering"];
             List<string> levels = ["Intermediate", "Advanced"];
             const bool disabilityConfident = true;
+            const bool excludeNational = false;
 
             const string expected = """
 
@@ -58,7 +90,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                                     """;
 
             // Act
-            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, null, location, categories, levels, disabilityConfident);
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, null, location, categories, levels, disabilityConfident, excludeNational);
 
             // Assert
             result.Trim().Should().BeEquivalentTo(expected.Trim());
@@ -74,6 +106,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             List<string> categories = ["IT", "Engineering"];
             List<string> levels = ["Intermediate", "Advanced"];
             const bool disabilityConfident = true;
+            const bool excludeNational = false;
 
             const string expected = """
 
@@ -86,7 +119,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                                     """;
 
             // Act
-            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident);
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident, excludeNational);
 
             // Assert
             result.Trim().Should().BeEquivalentTo(expected.Trim());
@@ -102,6 +135,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             List<string> categories = ["IT", "Engineering"];
             List<string> levels = ["Intermediate", "Advanced"];
             const bool disabilityConfident = true;
+            const bool excludeNational = false;
 
             const string expected = """
 
@@ -114,7 +148,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                                     """;
 
             // Act
-            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident);
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident, excludeNational);
 
             // Assert
             result.Trim().Should().BeEquivalentTo(expected.Trim());
@@ -141,7 +175,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                 """;
 
             // Act
-            var result = EmailTemplateBuilder.GetSavedSearchSearchParams("Software Developer", distance, location, ["IT", "Engineering"], ["Intermediate", "Advanced"], true);
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams("Software Developer", distance, location, ["IT", "Engineering"], ["Intermediate", "Advanced"], true, false);
 
             // Assert
             result.Trim().Should().BeEquivalentTo(expected);
@@ -157,11 +191,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             List<string> categoryIds = ["1", "2", "3"];
             List<string> levelCodes = ["4", "5"];
             const bool disabilityConfident = true;
+            const bool excludeNational = true;
 
-            const string expectedQueryParameters = "&searchTerm=software developer&location=London&distance=10&routeIds=1&routeIds=2&routeIds=3&levelIds=4&levelIds=5&DisabilityConfident=true";
+            const string expectedQueryParameters = "&searchTerm=software developer&location=London&distance=10&routeIds=1&routeIds=2&routeIds=3&levelIds=4&levelIds=5&DisabilityConfident=true&excludeNational=true";
 
             // Act
-            var queryParameters = EmailTemplateBuilder.GetSavedSearchUrl(searchTerm, distance, location, categoryIds, levelCodes, disabilityConfident);
+            var queryParameters = EmailTemplateBuilder.GetSavedSearchUrl(searchTerm, distance, location, categoryIds, levelCodes, disabilityConfident, excludeNational);
 
             // Assert
             queryParameters.Should().Be(expectedQueryParameters);
