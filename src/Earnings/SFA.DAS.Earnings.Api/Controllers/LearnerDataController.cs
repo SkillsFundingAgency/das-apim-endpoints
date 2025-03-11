@@ -9,7 +9,10 @@ public class LearnerDataController : Controller
 {
     [HttpPut]
     [Route("/providers/{ukprn}/academicyears/{academicYear}/apprenticeships")]
-    public async Task<IActionResult> Search([FromRoute]long ukprn, [FromRoute]int academicYear)
+    public async Task<IActionResult> Search(
+        [FromRoute]long ukprn,
+        [FromRoute]int academicYear,
+        [FromBody] LearnerRecord[] records)
     {
         if (ModelState.IsValid)
         {
