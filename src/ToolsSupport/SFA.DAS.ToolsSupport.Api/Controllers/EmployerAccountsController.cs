@@ -7,6 +7,7 @@ using SFA.DAS.ToolsSupport.Api.sources.EmployerAccount;
 using SFA.DAS.ToolsSupport.Application.Commands.ChangeUserRole;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportCreateInvitation;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportResendInvitation;
+using SFA.DAS.ToolsSupport.Application.Queries;
 using SFA.DAS.ToolsSupport.Application.Queries.GetAccountFinance;
 using SFA.DAS.ToolsSupport.Application.Queries.GetAccountOrganisations;
 using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
@@ -17,8 +18,26 @@ namespace SFA.DAS.ToolsSupport.Api.Controllers;
 
 [Route("[controller]/")]
 [ApiController]
-public class EmployerAccountController(IMediator mediator, ILogger<EmployerAccountController> logger) : ControllerBase
+public class EmployerAccountsController(IMediator mediator, ILogger<EmployerAccountsController> logger) : ControllerBase
 {
+    [HttpGet]
+    public async Task<IActionResult> Get([FromQuery] long? accountId, [FromQuery] string? payeSchemeRef)
+    {
+
+        try
+        {
+            var response = await mediator.Send(new GetEmployerAccountsQuery { AccountId = accountId, PayeSchemeRef = payeSchemeRef });
+
+            return Ok(response);
+
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error attempting to query Employer Account using accountId {accountId} or PayeSchemeRef {payeSchemeRef}", accountId, payeSchemeRef);
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
     [HttpGet]
     [Route("{accountId}/account-details")]
     public async Task<IActionResult> GetAccountDetails(long accountId)

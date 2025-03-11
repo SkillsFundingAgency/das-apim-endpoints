@@ -20,13 +20,13 @@ using SFA.DAS.ToolsSupport.Application.Queries.GetTeamMembers;
 
 namespace SFA.DAS.ToolsSupport.Api.UnitTests.Controllers;
 
-public class EmployerAccountControllerTests
+public class EmployerAccountsControllerTests
 {
     [Test, MoqAutoData]
     public async Task Then_Gets_Account_Details_From_Mediator(
            long accountId,
            [Frozen] Mock<IMediator> mockMediator,
-           [Greedy] EmployerAccountController controller)
+           [Greedy] EmployerAccountsController controller)
     {
         var getDetailsResult = new GetEmployerAccountDetailsResult();
 
@@ -50,7 +50,7 @@ public class EmployerAccountControllerTests
        long accountId,
        GetAccountOrganisationsQueryResult getOrganisationsResult,
        [Frozen] Mock<IMediator> mockMediator,
-       [Greedy] EmployerAccountController controller)
+       [Greedy] EmployerAccountsController controller)
     {
         mockMediator
                .Setup(mediator => mediator.Send(
@@ -72,7 +72,7 @@ public class EmployerAccountControllerTests
        long accountId,
        GetTeamMembersQueryResult getTeamMembersResult,
        [Frozen] Mock<IMediator> mockMediator,
-       [Greedy] EmployerAccountController controller)
+       [Greedy] EmployerAccountsController controller)
     {
         mockMediator
                .Setup(mediator => mediator.Send(
@@ -93,7 +93,7 @@ public class EmployerAccountControllerTests
     public async Task Then_Gets_FinanceData_From_Mediator(
        long accountId,
        [Frozen] Mock<IMediator> mockMediator,
-       [Greedy] EmployerAccountController controller)
+       [Greedy] EmployerAccountsController controller)
     {
         var getAccountFinanceResult = new GetAccountFinanceQueryResult();
         mockMediator
@@ -119,7 +119,7 @@ public class EmployerAccountControllerTests
        long accountId,
        string payeRef,
        [Frozen] Mock<IMediator> mockMediator,
-       [Greedy] EmployerAccountController controller)
+       [Greedy] EmployerAccountsController controller)
     {
         var getPayeLevyDeclarationsResult = new GetPayeSchemeLevyDeclarationsResult();
         mockMediator
@@ -147,7 +147,7 @@ public class EmployerAccountControllerTests
     public async Task SendInvitation_ShouldReturnOk_WhenRequestIsValid(
         SupportCreateInvitationRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] EmployerAccountController controller
+        [Greedy] EmployerAccountsController controller
         )
     {
         // Arrange
@@ -171,7 +171,7 @@ public class EmployerAccountControllerTests
     public async Task SendInvitation_ShouldReturnBadRequest_WhenResponseStatusIsNotOk(
         SupportCreateInvitationRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] EmployerAccountController controller
+        [Greedy] EmployerAccountsController controller
         )
     {
         // Arrange
@@ -191,7 +191,7 @@ public class EmployerAccountControllerTests
     public async Task SendInvitation_ShouldReturnBadRequest_WhenExceptionIsThrown(
         SupportCreateInvitationRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] EmployerAccountController controller
+        [Greedy] EmployerAccountsController controller
         )
     {
         // Arrange
@@ -211,7 +211,7 @@ public class EmployerAccountControllerTests
     public async Task ResendInvitation_ShouldReturnOk_WhenRequestIsValid(
         SupportResendInvitationRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] EmployerAccountController controller
+        [Greedy] EmployerAccountsController controller
         )
     {
         // Arrange
@@ -233,7 +233,7 @@ public class EmployerAccountControllerTests
     public async Task ResendInvitation_ShouldReturnBadRequest_WhenResponseStatusIsNotOk(
         SupportResendInvitationRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] EmployerAccountController controller
+        [Greedy] EmployerAccountsController controller
         )
     {
         // Arrange
@@ -253,7 +253,7 @@ public class EmployerAccountControllerTests
     public async Task ResendInvitation_ShouldReturnBadRequest_WhenExceptionIsThrown(
         SupportResendInvitationRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] EmployerAccountController controller
+        [Greedy] EmployerAccountsController controller
         )
     {
         // Arrange
@@ -273,7 +273,7 @@ public class EmployerAccountControllerTests
     public async Task ChangeUserRole_ShouldReturnOk_WhenRequestIsValid(
     ChangeUserRoleRequest request,
     [Frozen] Mock<IMediator> mockMediator,
-    [Greedy] EmployerAccountController controller
+    [Greedy] EmployerAccountsController controller
         )
     {
         // Arrange
@@ -295,7 +295,7 @@ public class EmployerAccountControllerTests
     public async Task ChangeUserRole_ShouldReturnBadRequest_WhenResponseStatusIsNotOk(
         ChangeUserRoleRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] EmployerAccountController controller
+        [Greedy] EmployerAccountsController controller
         )
     {
         // Arrange
@@ -315,7 +315,7 @@ public class EmployerAccountControllerTests
     public async Task ChangeUserRole_ShouldReturnBadRequest_WhenExceptionIsThrown(
         ChangeUserRoleRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] EmployerAccountController controller
+        [Greedy] EmployerAccountsController controller
         )
     {
         // Arrange
