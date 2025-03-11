@@ -1,9 +1,10 @@
-﻿using System.Globalization;
+﻿using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Constants;
+using SFA.DAS.SharedOuterApi.Extensions;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
-using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
-using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
@@ -90,10 +91,15 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
             {
                 string? trainingCourseText;
                 string? wageText;
-                var employmentWorkLocation = vacancy.EmployerLocationOption switch
+                
+                var employmentWorkLocation = vacancy.EmploymentLocationOption switch
                 {
-                    AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocations(vacancy.EmployerLocations),
-                    AvailableWhere.AcrossEngland => "Recruiting nationally",
+                    AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
+                    AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocations(
+                        vacancy.OtherAddresses is { Count: > 0 }
+                        ? new List<Address> { vacancy.EmployerLocation! }.Concat(vacancy.OtherAddresses).ToList()
+                        : [ vacancy.EmployerLocation! ]),
+                    AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.EmployerLocation),
                     _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.EmployerLocation)
                 };
 
