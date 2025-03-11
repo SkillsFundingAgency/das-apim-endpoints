@@ -5,6 +5,7 @@ using SFA.DAS.Aodp.Application.Queries.FormBuilder.Forms;
 using SFA.DAS.Aodp.InnerApi.AodpApi.FormBuilder.Forms;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Aodp.UnitTests.Application.Queries.FormBuilder.Forms
 {
@@ -30,14 +31,16 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.FormBuilder.Forms
             var query = _fixture.Create<GetFormVersionByIdQuery>();
             var response = _fixture.Create<GetFormVersionByIdQueryResponse>();
 
-            _apiClientMock.Setup(x => x.Get<GetFormVersionByIdQueryResponse>(It.IsAny<GetFormVersionByIdApiRequest>()))
-                          .ReturnsAsync(response);
+            ApiResponse<GetFormVersionByIdQueryResponse> apiResponse = new(response, System.Net.HttpStatusCode.OK, string.Empty);
+
+            _apiClientMock.Setup(x => x.GetWithResponseCode<GetFormVersionByIdQueryResponse>(It.IsAny<GetFormVersionByIdApiRequest>()))
+                          .ReturnsAsync(apiResponse);
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
-            _apiClientMock.Verify(x => x.Get<GetFormVersionByIdQueryResponse>(It.IsAny<GetFormVersionByIdApiRequest>()), Times.Once);
+            _apiClientMock.Verify(x => x.GetWithResponseCode<GetFormVersionByIdQueryResponse>(It.IsAny<GetFormVersionByIdApiRequest>()), Times.Once);
 
             Assert.That(result.Success, Is.True);
             Assert.That(result.Value, Is.EqualTo(response));
@@ -50,7 +53,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.FormBuilder.Forms
             var query = _fixture.Create<GetFormVersionByIdQuery>();
             var exception = _fixture.Create<Exception>();
 
-            _apiClientMock.Setup(x => x.Get<GetFormVersionByIdQueryResponse>(It.IsAny<GetFormVersionByIdApiRequest>()))
+            _apiClientMock.Setup(x => x.GetWithResponseCode<GetFormVersionByIdQueryResponse>(It.IsAny<GetFormVersionByIdApiRequest>()))
                           .ThrowsAsync(exception);
 
             // Act
