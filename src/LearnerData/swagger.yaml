@@ -286,6 +286,10 @@ components:
         plannedEndDate:
           type: string
           format: date
+        isFlexiJob:
+          type: boolean
+        plannedOTJTrainingHours:
+          type: integer
       required:
         - uln,
         - firstName
@@ -299,6 +303,8 @@ components:
         - epaoPrice
         - startDate
         - plannedEndDate
-        - agreementId      
+        - agreementId     
+        - plannedOTJTrainingHours
+        - isFlexiJob 
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
