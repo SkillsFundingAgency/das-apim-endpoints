@@ -116,6 +116,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 
             var savedSearchesCount = 0;
             var searchAlreadySaved = false;
+            DateTime? candidateDateOfBirth = null;
 
             if (request.CandidateId != null)
             {
@@ -124,6 +125,10 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 var candidateApplicationsTask =
                     candidateApiClient.Get<GetApplicationsApiResponse>(
                         new GetApplicationsApiRequest(candidateId));
+
+                var candidateTask =
+                    candidateApiClient.Get<GetCandidateApiResponse>(
+                        new GetCandidateApiRequest(candidateId.ToString()));
 
                 var savedVacanciesResponseTask =
                     candidateApiClient.Get<GetSavedVacanciesApiResponse>(
@@ -136,11 +141,13 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 await Task.WhenAll(
                     candidateApplicationsTask,
                     savedVacanciesResponseTask,
-                    savedSearchesResponseTask
+                    savedSearchesResponseTask,
+                    candidateTask
                 );
 
                 var candidateApplications = candidateApplicationsTask.Result;
                 var savedVacanciesResponse = savedVacanciesResponseTask.Result;
+                candidateDateOfBirth = candidateTask.Result.DateOfBirth;
 
                 foreach (var vacancy in vacancyResult.ApprenticeshipVacancies)
                 {
@@ -199,7 +206,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 Levels = courseLevels.Levels.ToList(),
                 DisabilityConfident = request.DisabilityConfident,
                 SavedSearchesCount = savedSearchesCount,
-                SearchAlreadySaved = searchAlreadySaved
+                SearchAlreadySaved = searchAlreadySaved,
+                CandidateDateOfBirth = candidateDateOfBirth
             };
         }
     }
