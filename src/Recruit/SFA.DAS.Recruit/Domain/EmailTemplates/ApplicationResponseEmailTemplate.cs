@@ -5,10 +5,8 @@ namespace SFA.DAS.Recruit.Domain.EmailTemplates;
 
 public class ApplicationResponseSuccessEmailTemplate : EmailTemplateArguments
 {
-    public ApplicationResponseSuccessEmailTemplate(string templateId,string recipientEmail, string firstName, string vacancy, string employer, string city, string postcode)
+    public ApplicationResponseSuccessEmailTemplate(string templateId,string recipientEmail, string firstName, string vacancy, string employer, string location)
     {
-        var location = string.IsNullOrEmpty(city) ? postcode :
-            string.IsNullOrEmpty(postcode) ? city : $"{city}, {postcode}";
         TemplateId = templateId;
         RecipientAddress = recipientEmail;
         Tokens = new Dictionary<string, string>

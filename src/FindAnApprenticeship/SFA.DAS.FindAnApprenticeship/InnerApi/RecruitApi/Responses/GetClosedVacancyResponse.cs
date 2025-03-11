@@ -57,7 +57,7 @@ public class GetClosedVacancyResponse: IVacancy
     [JsonPropertyName("employmentLocationInformation")]
     public string? EmploymentLocationInformation { get; set; }
 
-    [JsonPropertyName("employerLocationOption")]
+    [JsonPropertyName("employerLocationOption"), JsonConverter(typeof(JsonStringEnumConverter<AvailableWhere>))]
     public AvailableWhere? EmployerLocationOption { get; set; }
     public TrainingProviderDetails TrainingProvider { get; set; }
     public string AdditionalQuestion1 { get; set; }
