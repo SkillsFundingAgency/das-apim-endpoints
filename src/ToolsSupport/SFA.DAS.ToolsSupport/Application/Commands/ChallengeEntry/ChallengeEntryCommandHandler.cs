@@ -25,12 +25,12 @@ public class ChallengeEntryCommandHandler(
         };
 
         var isValidInput = !(string.IsNullOrEmpty(command.Balance)
-                        || string.IsNullOrEmpty(command.Challenge1)
-                        || string.IsNullOrEmpty(command.Challenge2)
-                        || !int.TryParse(command.Balance.Split('.')[0].Replace("£", string.Empty), out _)
-                        || command.Challenge1.Length != 1
-                        || command.Challenge2.Length != 1
-                       );
+            || string.IsNullOrEmpty(command.Challenge1)
+            || string.IsNullOrEmpty(command.Challenge2)
+            || !int.TryParse(command.Balance.Split('.')[0].Replace("£", string.Empty), out _)
+            || command.Challenge1.Length != 1
+            || command.Challenge2.Length != 1
+            );
 
         if (!isValidInput)
         {
