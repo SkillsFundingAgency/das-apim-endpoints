@@ -1,7 +1,9 @@
-﻿namespace SFA.DAS.ToolsSupport.Configuration;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-public class TokenServiceApiConfiguration
+namespace SFA.DAS.ToolsSupport.Configuration;
+
+public class TokenServiceApiConfiguration: IInternalApiConfiguration
 {
-    public string ApiBaseUrl { get; set; } = "";
-    public string IdentifierUri { get; set; } = "";
+    public string Url { get; set; } = "";
+    public string Identifier { get; set; } = "";
 }
