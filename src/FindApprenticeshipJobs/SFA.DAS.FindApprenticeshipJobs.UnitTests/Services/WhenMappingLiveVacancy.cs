@@ -34,10 +34,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
         }
         
         [Test]
-        [InlineAutoData(null, "NonNational")]
-        [InlineAutoData(AvailableWhere.OneLocation, "NonNational")]
-        [InlineAutoData(AvailableWhere.MultipleLocations, "NonNational")]
-        [InlineAutoData(AvailableWhere.AcrossEngland, "National")]
+        [MoqInlineAutoData(null, "NonNational")]
+        [MoqInlineAutoData(AvailableWhere.OneLocation, "NonNational")]
+        [MoqInlineAutoData(AvailableWhere.MultipleLocations, "NonNational")]
+        [MoqInlineAutoData(AvailableWhere.AcrossEngland, "National")]
         public void Then_The_Mapped_Vacancy_Has_The_Correct_VacancyLocationType(
             AvailableWhere? locationType,
             string expectedLocationType,
