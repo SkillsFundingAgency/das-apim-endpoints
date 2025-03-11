@@ -18,18 +18,21 @@ All outer APIs should act as an aggregation layer between the inner apis, having
 ## 🚀 Installation
 
 ### Pre-Requisites
-* A clone of this repository(https://github.com/SkillsFundingAgency/das-apim-endpoints)
-* A code editor that supports .NetCore 8 and above
-* A storage emulator like Azurite (https://learn.microsoft.com/en-us/azure/storage/common/storage-use-emulator)
+* [a clone of this repository](https://github.com/SkillsFundingAgency/das-apim-endpoints)
+* .Net Core 8
+* an appropriate IDE for development
+* a storage emulator like [Azurite](https://learn.microsoft.com/en-us/azure/storage/common/storage-use-emulator)
 
 ### Config
 You can find the latest config file in [das-employer-config repository](https://github.com/SkillsFundingAgency/das-employer-config/blob/master/das-apim-endpoints/SFA.DAS.Recruit.OuterApi.json)
 
 * If you are using Azure Storage Emulator for local development purpose, then In your Azure Storage Account, create a table called Configuration and Add the following
 
-ParitionKey: LOCAL
-RowKey: SFA.DAS.Vacancies.Manage.Outer.Api.json
+```
+Partition Key: LOCAL
+Row Key: SFA.DAS.Recruit.Outer.Api.json
 Data:
+```
 ```json
 {
   "CoursesApiConfiguration": {
