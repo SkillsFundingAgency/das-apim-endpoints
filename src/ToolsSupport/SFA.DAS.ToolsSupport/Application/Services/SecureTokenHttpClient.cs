@@ -1,35 +1,85 @@
-﻿using System.Net.Http.Headers;
-using Azure.Core;
-using Azure.Identity;
+﻿using System.Net;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.ToolsSupport.Configuration;
 using SFA.DAS.ToolsSupport.Interfaces;
 
 namespace SFA.DAS.ToolsSupport.Application.Services;
 
-public class SecureTokenHttpClient(TokenServiceApiConfiguration configuration) : ISecureTokenHttpClient
+public class SecureTokenHttpClient(IInternalApiClient<TokenServiceApiConfiguration> client) : ISecureTokenHttpClient<TokenServiceApiConfiguration>
 {
-    public async Task<string> GetAsync(string url)
+    public Task Delete(IDeleteApiRequest request)
     {
-        var accessToken = await GetManagedIdentityAuthenticationResult(configuration.IdentifierUri);
-
-        using var client = new HttpClient();
-
-        using var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
-        httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-
-        using var response = await client.SendAsync(httpRequest);
-
-        response.EnsureSuccessStatusCode();
-
-        return await response.Content.ReadAsStringAsync();
+        throw new System.NotImplementedException();
     }
 
-    private static async Task<string> GetManagedIdentityAuthenticationResult(string resource)
+    public Task<TResponse> Get<TResponse>(IGetApiRequest request)
     {
-        var tokenCredential = new DefaultAzureCredential();
-        var accessToken = await tokenCredential.GetTokenAsync(
-            new TokenRequestContext(scopes: [resource + "/.default"]) { }
-        );
-        return accessToken.Token;
+        return client.Get<TResponse>(request);
+    }
+
+    public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task Patch<TData>(IPatchApiRequest<TData> request)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<TResponse> Post<TResponse>(IPostApiRequest request)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task Post<TData>(IPostApiRequest<TData> request)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task Put(IPutApiRequest request)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task Put<TData>(IPutApiRequest<TData> request)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+    {
+        throw new System.NotImplementedException();
     }
 }

@@ -110,8 +110,6 @@ public class ChallengeEntryCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_ShouldReturnInvalidResult_WhenInputIsInvalid(
         ChallengeEntryCommand command,
-        Account account,
-        GetChallengeQueryResult challengeResponse,
         [Frozen] Mock<IAccountsService> mockAccountsService,
         [Frozen] Mock<IFinanceDataService> mockFinanceDataService,
         [Frozen] Mock<IChallengeService> mockChallengeService,
@@ -122,12 +120,6 @@ public class ChallengeEntryCommandHandlerTests
         var financeData = new GetAccountFinanceQueryResult();
 
         command.Challenge1 = "";
-        mockAccountsService.Setup(s => s.GetAccount(command.AccountId)).ReturnsAsync(account);
-        mockFinanceDataService.Setup(s => s.GetFinanceData(account)).ReturnsAsync(financeData);
-        challengeResponse.StatusCode = SearchResponseCodes.Success;
-        challengeResponse.Characters = [2, 4];
-        mockChallengeService.Setup(s => s.GetChallengeQueryResultFromAccount(account, financeData.PayeSchemes))
-            .Returns(challengeResponse);
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);
@@ -136,8 +128,10 @@ public class ChallengeEntryCommandHandlerTests
         result.Should().NotBeNull();
         result.Id.Should().Be(command.Id);
         result.IsValid.Should().BeFalse();
-        result.Characters.Should().BeEquivalentTo(challengeResponse.Characters);
+        result.Characters.Should().BeEquivalentTo([command.FirstCharacterPosition, command.SecondCharacterPosition]);
         mockFinanceService.Verify(s => s.GetAccountBalances(It.IsAny<GetAccountBalancesRequest>()), Times.Never());
+        mockAccountsService.Verify(s => s.GetAccount(It.IsAny<long>()), Times.Never());
+        mockFinanceDataService.Verify(s => s.GetFinanceData(It.IsAny<Account>()), Times.Never());
     }
 
     [Test, MoqAutoData]
@@ -167,7 +161,7 @@ public class ChallengeEntryCommandHandlerTests
         result.Should().NotBeNull();
         result.Id.Should().Be(command.Id);
         result.IsValid.Should().BeFalse();
-        result.Characters.Should().BeEmpty();
+        result.Characters.Should().BeEquivalentTo([command.FirstCharacterPosition, command.SecondCharacterPosition]);
         mockFinanceService.Verify(s => s.GetAccountBalances(It.IsAny<GetAccountBalancesRequest>()), Times.Never());
     }
 }

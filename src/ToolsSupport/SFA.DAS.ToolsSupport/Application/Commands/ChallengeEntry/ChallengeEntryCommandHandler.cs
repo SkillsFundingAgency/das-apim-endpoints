@@ -17,35 +17,37 @@ public class ChallengeEntryCommandHandler(
 {
     public async Task<ChallengeEntryCommandResult> Handle(ChallengeEntryCommand command, CancellationToken cancellationToken)
     {
+        var response = new ChallengeEntryCommandResult
+        {
+            Id = command.Id,
+            IsValid = false,
+            Characters = [command.FirstCharacterPosition, command.SecondCharacterPosition]
+        };
+
+        var isValidInput = !(string.IsNullOrEmpty(command.Balance)
+            || string.IsNullOrEmpty(command.Challenge1)
+            || string.IsNullOrEmpty(command.Challenge2)
+            || !int.TryParse(command.Balance.Split('.')[0].Replace("£", string.Empty), out _)
+            || command.Challenge1.Length != 1
+            || command.Challenge2.Length != 1
+            );
+
+        if (!isValidInput)
+        {
+            return response;
+        }
+
         var account = await accountsService.GetAccount(command.AccountId);
         var financeData = await financeDataService.GetFinanceData(account);
 
         var challengeResponse = challengeService.GetChallengeQueryResultFromAccount(account, financeData.PayeSchemes);
-        var isValidInput = !(string.IsNullOrEmpty(command.Balance)
-                        || string.IsNullOrEmpty(command.Challenge1)
-                        || string.IsNullOrEmpty(command.Challenge2)
-                        || !int.TryParse(command.Balance.Split('.')[0].Replace("£", string.Empty), out _)
-                        || command.Challenge1.Length != 1
-                        || command.Challenge2.Length != 1
-                       );
-
-        var response = new ChallengeEntryCommandResult
-        {
-            Id = command.Id,
-            IsValid = false
-        };
 
         if (challengeResponse.StatusCode != SearchResponseCodes.Success)
         {
             return response;
         }
 
-        if (isValidInput)
-        {
-            response.IsValid = await CheckData(financeData.PayeSchemes, command);
-        }
-
-        response.Characters = challengeResponse.Characters;
+        response.IsValid = await CheckData(financeData.PayeSchemes, command);
 
         return response;
     }

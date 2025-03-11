@@ -28,8 +28,8 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         services.AddTransient<IFinanceApiClient<FinanceApiConfiguration>, FinanceApiClient>();
         services.AddTransient<IHmrcApiClient<HmrcApiConfiguration>, HmrcApiClient<HmrcApiConfiguration>>();
+        services.AddTransient<ISecureTokenHttpClient<TokenServiceApiConfiguration>, SecureTokenHttpClient>();
         services.AddTransient<ITokenService, TokenService>();
-        services.AddTransient<ISecureTokenHttpClient, SecureTokenHttpClient>();
         services.AddTransient<IChallengeService, ChallengeService>();
         services.AddTransient<IFinanceDataService, FinanceDataService>();
 

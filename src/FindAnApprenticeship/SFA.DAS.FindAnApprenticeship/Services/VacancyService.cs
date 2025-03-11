@@ -24,7 +24,7 @@ namespace SFA.DAS.FindAnApprenticeship.Services
 
         public async Task<IVacancy> GetClosedVacancy(string vacancyReference)
         {
-            var response = await recruitApiClient.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(vacancyReference.Replace("VAC", "")));
+            var response = await recruitApiClient.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(vacancyReference.TrimVacancyReference()));
             return AnonymizeClosedVacancy(response);
         }
 
@@ -79,7 +79,7 @@ namespace SFA.DAS.FindAnApprenticeship.Services
             return response;
         }
 
-        public string GetVacancyWorkLocation(IVacancy vacancy)
+        public string GetVacancyWorkLocation(IVacancy vacancy, bool cityNamesOnly = false)
         {
             switch (vacancy.EmployerLocationOption)
             {
@@ -89,7 +89,9 @@ namespace SFA.DAS.FindAnApprenticeship.Services
                 {
                     var addresses = new List<Address> { vacancy.Address };
                     if (vacancy.OtherAddresses != null) addresses.AddRange(vacancy.OtherAddresses);
-                    return EmailTemplateAddressExtension.GetEmploymentLocations(addresses);
+                    return cityNamesOnly 
+                        ? EmailTemplateAddressExtension.GetEmploymentLocationCityNames(addresses)
+                        : EmailTemplateAddressExtension.GetEmploymentLocations(addresses);
                 }
                 case null:
                 case AvailableWhere.OneLocation:

@@ -4,6 +4,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
 using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
+using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVacancyReference;
 
@@ -45,7 +46,7 @@ public class WhenMappingFromGetClosedVacancyResponseToVacancy
         actual.EmployerWebsiteUrl.Should().Be(source.EmployerWebsiteUrl);
         actual.ExpectedDuration.Should().Be(((DurationUnit)source.Wage.DurationUnit).GetDisplayName().ToLower().ToQuantity(source.Wage.Duration));
         actual.HoursPerWeek.Should().Be(source.Wage.WeeklyHours);
-        actual.Id.Should().Be(source.VacancyReference.Replace("VAC", ""));
+        actual.Id.Should().Be(source.VacancyReference.TrimVacancyReference());
         actual.IsClosed.Should().Be(source.ClosedDate.HasValue);
         actual.IsDisabilityConfident.Should().Be(source.IsDisabilityConfident);
         actual.IsEmployerAnonymous.Should().Be(source.IsAnonymous);
@@ -69,7 +70,7 @@ public class WhenMappingFromGetClosedVacancyResponseToVacancy
         actual.TrainingDescription.Should().Be(source.TrainingDescription);
         actual.Ukprn.Should().Be(source.TrainingProvider.Ukprn.ToString());
         actual.VacancyLocationType.Should().Be(source.VacancyLocationType);
-        actual.VacancyReference.Should().Be(source.VacancyReference.Replace("VAC", ""));
+        actual.VacancyReference.Should().Be(source.VacancyReference.TrimVacancyReference());
         actual.WageAdditionalInformation.Should().Be(source.Wage.WageAdditionalInformation);
         actual.WageType.Should().Be(source.Wage.WageType);
         actual.WageUnit.Should().Be(source.Wage.DurationUnit);
