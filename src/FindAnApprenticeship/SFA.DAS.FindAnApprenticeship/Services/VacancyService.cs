@@ -24,7 +24,7 @@ namespace SFA.DAS.FindAnApprenticeship.Services
 
         public async Task<IVacancy> GetClosedVacancy(string vacancyReference)
         {
-            var response = await recruitApiClient.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(vacancyReference.Replace("VAC", "")));
+            var response = await recruitApiClient.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(vacancyReference.TrimVacancyReference()));
             return AnonymizeClosedVacancy(response);
         }
 
