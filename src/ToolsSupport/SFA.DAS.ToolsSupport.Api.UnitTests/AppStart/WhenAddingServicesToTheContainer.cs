@@ -35,7 +35,7 @@ public class WhenAddingServicesToTheContainer
         type.Should().NotBeNull();
     }
 
-    private static IConfigurationRoot GenerateConfiguration()
+    private static ConfigurationRoot GenerateConfiguration()
     {
         var configSource = new MemoryConfigurationSource
         {
