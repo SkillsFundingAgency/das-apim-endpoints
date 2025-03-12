@@ -24,7 +24,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Application
         }
 
         [Test]
-        public async Task Then_The_Api_Is_Called_With_The_Request_And_FormPreviewData_Is_Returned()
+        public async Task Then_The_Api_Is_Called_With_The_Request_And_FormPreviewData_By_Id_Is_Returned()
         {
             // Arrange
             var query = _fixture.Create<GetApplicationFormPreviewByIdQuery>();
