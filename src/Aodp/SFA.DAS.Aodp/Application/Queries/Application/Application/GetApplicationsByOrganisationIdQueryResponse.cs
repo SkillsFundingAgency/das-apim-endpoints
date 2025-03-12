@@ -14,6 +14,8 @@ public partial class GetApplicationsByOrganisationIdQueryResponse
         public string Owner { get; set; }
         public string Reference { get; set; }
         public Guid FormVersionId { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+        public string? Status { get; set; }
 
     }
 }
