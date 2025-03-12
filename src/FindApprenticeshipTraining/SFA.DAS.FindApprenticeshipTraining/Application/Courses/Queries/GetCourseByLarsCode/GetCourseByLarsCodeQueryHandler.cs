@@ -53,27 +53,19 @@ public sealed class GetCourseByLarsCodeQueryHandler(
                 courseTrainingProvidersCountResponse.Body.Courses[0] : 
                 null;
 
-        return new GetCourseByLarsCodeQueryResult()
-        {
-            StandardUId = standardDetails.StandardUId,
-            IFateReferenceNumber = standardDetails.IfateReferenceNumber,
-            LarsCode = standardDetails.LarsCode,
-            ProvidersCount = trainingCourseCountDetails?.ProvidersCount ?? 0,
-            TotalProvidersCount = trainingCourseCountDetails?.TotalProvidersCount ?? 0,
-            Title = standardDetails.Title,
-            Level = standardDetails.Level,
-            Version = standardDetails.Version,
-            OverviewOfRole = standardDetails.OverviewOfRole,
-            Route = standardDetails.Route,
-            RouteCode = standardDetails.RouteCode,
-            MaxFunding = apprenticeshipFunding.MaxEmployerLevyCap,
-            TypicalDuration = apprenticeshipFunding.Duration,
-            TypicalJobTitles = standardDetails.TypicalJobTitles,
-            StandardPageUrl = standardDetails.StandardPageUrl,
-            Skills = standardDetails.Ksbs.Where(a => a.Type == KsbsSkillsType).Select(a => a.Description).ToArray(),
-            Knowledge = standardDetails.Ksbs.Where(a => a.Type == KsbsKnowledgeType).Select(a => a.Description).ToArray(),
-            Behaviours = standardDetails.Ksbs.Where(a => a.Type == KsbsBehaviorType).Select(a => a.Description).ToArray()
-        };
+        GetCourseByLarsCodeQueryResult result = standardDetails;
+
+        result.MaxFunding = apprenticeshipFunding.MaxEmployerLevyCap;
+        result.TypicalDuration = apprenticeshipFunding.Duration;
+
+        result.ProvidersCount = trainingCourseCountDetails?.ProvidersCount ?? 0;
+        result.TotalProvidersCount = trainingCourseCountDetails?.TotalProvidersCount ?? 0;
+
+        result.Skills = standardDetails.Ksbs.Where(a => a.Type == KsbsSkillsType).Select(a => a.Description).ToArray();
+        result.Knowledge = standardDetails.Ksbs.Where(a => a.Type == KsbsKnowledgeType).Select(a => a.Description).ToArray();
+        result.Behaviours = standardDetails.Ksbs.Where(a => a.Type == KsbsBehaviorType).Select(a => a.Description).ToArray();
+
+        return result;
     }
 }
 

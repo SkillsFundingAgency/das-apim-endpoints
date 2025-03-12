@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
+
+namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 
 public sealed class GetCourseByLarsCodeQueryResult
 {
@@ -20,4 +22,22 @@ public sealed class GetCourseByLarsCodeQueryResult
     public string[] Skills { get; set; }
     public string[] Knowledge { get; set; }
     public string[] Behaviours { get; set; }
+
+    public static implicit operator GetCourseByLarsCodeQueryResult(StandardDetailResponse source)
+    {
+        return new() 
+        { 
+            StandardUId = source.StandardUId,
+            IFateReferenceNumber = source.IfateReferenceNumber,
+            LarsCode = source.LarsCode,
+            Title = source.Title,
+            Level = source.Level,
+            Version = source.Version,
+            OverviewOfRole = source.OverviewOfRole,
+            Route = source.Route,
+            RouteCode = source.RouteCode,
+            TypicalJobTitles = source.TypicalJobTitles,
+            StandardPageUrl = source.StandardPageUrl,
+        };
+    }
 }
