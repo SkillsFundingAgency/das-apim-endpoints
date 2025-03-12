@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.AODP.Api.Controllers.Qualification;
 
@@ -160,6 +161,25 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var badRequestResult = (BadRequestObjectResult)result;
             var badRequestValue = badRequestResult.Value?.GetType().GetProperty("message")?.GetValue(badRequestResult.Value, null);
             Assert.That(badRequestValue, Is.EqualTo("Qualification reference cannot be empty"));
+        }
+
+        [Test]
+        public async Task AddQualificationDiscussionHistory_ReturnsOkResult()
+        {
+            //Arrange
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+            var queryResponse = _fixture.Create<BaseMediatrResponse<EmptyResponse>>();
+            var command = _fixture.Create<AddQualificationDiscussionHistoryCommand>();
+            queryResponse.Success = true;
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<AddQualificationDiscussionHistoryCommand>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await controller.AddQualificationDiscussionHistory(command);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
         }
     }
 }
