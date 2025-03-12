@@ -117,13 +117,13 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         public CreateVacancyWage Wage { get; set; }
         
         /// <summary>
-        /// Where the apprenticeship will be based, this could be a different location to the organisation address. Use the place the apprentice will spend most of their time.
+        /// Where the apprenticeship will be based, this could be a different location to the organisation address. Use the place the apprentice will spend most of their time. Must be within England.
         /// </summary>
         [JsonPropertyName("address")]
         public CreateVacancyAddress Address { get; set; }
         
         /// <summary>
-        /// If the apprenticeship is available at more than one location, use this to submit multiple addresses for the vacancy. You can submit up to and including 10 addresses. Each location must contain address line 1 and a valid postcode.
+        /// If the apprenticeship is available at more than one location, use this to submit multiple addresses for the vacancy. You can submit up to and including 10 addresses. Each location must contain address line 1 and a valid postcode. Each location must be within England.
         /// </summary>
         [JsonPropertyName("multipleAddresses")]
         [MinLength(2)]
@@ -296,7 +296,7 @@ namespace SFA.DAS.VacanciesManage.Api.Models
     
     
     /// <summary>
-    /// Address for the apprenticeship advert. Must contain address line 1 and a valid postcode.
+    /// Address for the apprenticeship advert. Must contain address line 1 and a valid postcode. Must be within England.
     /// </summary>
     public class CreateVacancyAddress
     {

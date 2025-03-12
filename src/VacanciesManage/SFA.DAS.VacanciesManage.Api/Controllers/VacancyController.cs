@@ -97,7 +97,7 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
             }
             catch (HttpRequestContentException e)
             {
-                var content = ReverseMapFieldNamesForErrors(e.ErrorContent);
+                var content = ReverseMapFieldNamesForErrors(request, e.ErrorContent);
                 return StatusCode((int) e.StatusCode, content);
             }
             catch (SecurityException)
@@ -111,11 +111,24 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
             }
         }
 
-        private static string ReverseMapFieldNamesForErrors(string content) => content
-            .Replace("ProgrammeId", "standardLarsCode", StringComparison.CurrentCultureIgnoreCase)
-            .Replace(@"EmployerName""",@"alternativeEmployerName""", StringComparison.CurrentCultureIgnoreCase)
-            .Replace("Address", "address", StringComparison.CurrentCultureIgnoreCase)
-            .Replace("Addresses", "multipleAddresses", StringComparison.CurrentCultureIgnoreCase)
-            .Replace("EmployerLocationInformation", "recruitingNationallyDetails", StringComparison.CurrentCultureIgnoreCase);
+        private static string ReverseMapFieldNamesForErrors(CreateVacancyRequest request, string content)
+        {
+            var result = content
+                .Replace("ProgrammeId", "standardLarsCode", StringComparison.CurrentCultureIgnoreCase)
+                .Replace(@"EmployerName""", @"alternativeEmployerName""", StringComparison.CurrentCultureIgnoreCase)
+                .Replace(".Country", ".postcode", StringComparison.CurrentCultureIgnoreCase)
+                .Replace("Country must be England", "Postcode must be in England", StringComparison.CurrentCultureIgnoreCase)
+                .Replace("EmployerLocationInformation", "recruitingNationallyDetails", StringComparison.CurrentCultureIgnoreCase);
+            
+            if (request.Address is not null)
+            {
+                return result
+                    .Replace("Addresses[0]", "address", StringComparison.CurrentCultureIgnoreCase)
+                    .Replace("Address", "address", StringComparison.CurrentCultureIgnoreCase);
+            }
+            
+            return result
+                .Replace("Addresses", "multipleAddresses", StringComparison.CurrentCultureIgnoreCase);
+        }
     }
 }
