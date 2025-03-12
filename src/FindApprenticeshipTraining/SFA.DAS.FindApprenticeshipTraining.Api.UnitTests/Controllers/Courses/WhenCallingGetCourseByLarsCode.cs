@@ -36,7 +36,7 @@ public sealed class WhenCallingGetCourseByLarsCode
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(result);
 
-        var sut = await controller.GetCourseByLarsCode(query) as ObjectResult;
+        var sut = await controller.GetCourseByLarsCode(query.LarsCode, query.Distance, query.Lat, query.Lon) as ObjectResult;
 
         Assert.That(sut, Is.Not.Null);
         Assert.That(sut.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
@@ -65,7 +65,7 @@ public sealed class WhenCallingGetCourseByLarsCode
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync((GetCourseByLarsCodeQueryResult)null);
 
-        var sut = await controller.GetCourseByLarsCode(query) as NotFoundResult;
+        var sut = await controller.GetCourseByLarsCode(query.LarsCode, query.Distance, query.Lat, query.Lon) as NotFoundResult;
 
         Assert.That(sut, Is.Not.Null);
         Assert.That(sut.StatusCode, Is.EqualTo((int)HttpStatusCode.NotFound));
