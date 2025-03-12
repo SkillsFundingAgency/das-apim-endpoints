@@ -1,5 +1,4 @@
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 
