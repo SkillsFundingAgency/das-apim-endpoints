@@ -172,6 +172,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     request.SelectedRouteIds?.Select(x => Convert.ToInt32(x)).ToList(),
                     request.Distance,
                     request.DisabilityConfident,
+                    request.ExcludeNational,
                     request.SelectedLevelIds?.Select(x => Convert.ToInt32(x)).ToList(),
                     request.Location,
                     location?.GeoPoint?.FirstOrDefault().ToString(CultureInfo.InvariantCulture),

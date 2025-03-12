@@ -159,6 +159,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Route,
                 standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).RouteCode,
                 source.Address,
+                source.OtherAddresses,
                 source.EmployerLocations,
                 source.EmployerLocationInformation,
                 source.EmployerLocationOption,
