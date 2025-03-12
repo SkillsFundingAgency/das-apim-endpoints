@@ -1,54 +1,85 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoMoq;
-using Microsoft.Azure.Amqp.Framing;
 using Moq;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualification;
 
-[TestFixture]
-public class GetChangedQualificationsQueryHandlerTests
+namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
 {
-    private readonly IFixture _fixture;
-    private readonly Mock<IAodpApiClient<AodpApiConfiguration>> _apiClient = new();
-    public GetChangedQualificationsQueryHandler _getChangedQualificationsQueryHandler { get; set; }
-
-    public GetChangedQualificationsQueryHandlerTests()
+    [TestFixture]
+    public class GetChangedQualificationsQueryHandlerTests
     {
-        _fixture = new Fixture().Customize(new AutoMoqCustomization());
-        _getChangedQualificationsQueryHandler = new(_apiClient.Object);
-    }
+        private IFixture _fixture;
+        private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClientMock;
+        private GetChangedQualificationsQueryHandler _handler;
 
-    [Test]
-    public async Task Test_Get_Changed_Qualification()
-    {
-        var qualifications = _fixture.CreateMany<GetChangedQualificationsQueryResponse.ChangedQualification>().ToList();
-        var responseType = new BaseMediatrResponse<GetChangedQualificationsQueryResponse>();
-        responseType.Value.Data = qualifications;
-        _apiClient.Setup(v => v.Get<BaseMediatrResponse<GetChangedQualificationsQueryResponse>>(It.IsAny<GetChangedQualificationsApiRequest>()))
-            .Returns(Task.FromResult(responseType));
+        [SetUp]
+        public void SetUp()
+        {
+            _fixture = new Fixture().Customize(new AutoMoqCustomization());
+            _apiClientMock = _fixture.Freeze<Mock<IAodpApiClient<AodpApiConfiguration>>>();
+            _handler = _fixture.Create<GetChangedQualificationsQueryHandler>();
+        }
 
-        var response = await _getChangedQualificationsQueryHandler.Handle(new GetChangedQualificationsQuery(), default);
+        [Test]
+        public async Task Then_The_Api_Is_Called_With_The_Request_And_ChangedQualificationsData_Is_Returned()
+        {
+            // Arrange
+            var query = _fixture.Create<GetChangedQualificationsQuery>();
+            var response = _fixture.Create<GetChangedQualificationsApiResponse>();
+            response.Data = _fixture.CreateMany<ChangedQualification>(2).ToList();
 
-        Assert.That(response.Success, Is.True);
-    }
+            _apiClientMock.Setup(x => x.Get<GetChangedQualificationsApiResponse>(It.IsAny<GetChangedQualificationsApiRequest>()))
+                          .ReturnsAsync(response);
 
-    [Test]
-    public async Task Test_Get_Changed_Qualification_Throws_Returns_Error()
-    {
-        _apiClient.Setup(v => v.Get<BaseMediatrResponse<GetChangedQualificationsQueryResponse>>(It.IsAny<GetChangedQualificationsApiRequest>()))
-            .Throws(new Exception());
+            // Act
+            var result = await _handler.Handle(query, CancellationToken.None);
 
-        var response = await _getChangedQualificationsQueryHandler.Handle(new GetChangedQualificationsQuery(), default);
+            // Assert
+            _apiClientMock.Verify(x => x.Get<GetChangedQualificationsApiResponse>(It.IsAny<GetChangedQualificationsApiRequest>()), Times.Once);
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Value.Data.Count, Is.EqualTo(2));
+        }
 
-        Assert.That(response.Success, Is.False);
+        [Test]
+        public async Task Then_The_Api_Is_Called_With_The_Request_And_Failure_Is_Returned()
+        {
+            // Arrange
+            var query = _fixture.Create<GetChangedQualificationsQuery>();
+            var baseResponse = new GetChangedQualificationsApiResponse
+            {
+                Data = null
+            };
+
+            _apiClientMock.Setup(x => x.Get<GetChangedQualificationsApiResponse>(It.IsAny<GetChangedQualificationsApiRequest>()))
+                          .ReturnsAsync(baseResponse);
+
+            // Act
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            _apiClientMock.Verify(x => x.Get<GetChangedQualificationsApiResponse>(It.IsAny<GetChangedQualificationsApiRequest>()), Times.Once);
+            Assert.That(result.Success, Is.False);
+        }
+
+        [Test]
+        public async Task Then_The_Api_Is_Called_With_The_Request_And_Exception_Is_Handled()
+        {
+            // Arrange
+            var query = _fixture.Create<GetChangedQualificationsQuery>();
+            var exceptionMessage = "An error occurred";
+            _apiClientMock.Setup(x => x.Get<GetChangedQualificationsApiResponse>(It.IsAny<GetChangedQualificationsApiRequest>()))
+                          .ThrowsAsync(new Exception(exceptionMessage));
+
+            // Act
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            _apiClientMock.Verify(x => x.Get<GetChangedQualificationsApiResponse>(It.IsAny<GetChangedQualificationsApiRequest>()), Times.Once);
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.ErrorMessage, Is.EqualTo(exceptionMessage));
+        }
     }
 }

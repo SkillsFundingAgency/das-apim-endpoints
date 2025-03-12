@@ -1,42 +1,59 @@
 ﻿using MediatR;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications;
+using SFA.DAS.AODP.Domain.Qualifications.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Aodp.Application.Queries.Qualifications;
-
-public class GetChangedQualificationsQueryHandler(IAodpApiClient<AodpApiConfiguration> apiClient) 
-    : IRequestHandler<GetChangedQualificationsQuery, BaseMediatrResponse<GetChangedQualificationsQueryResponse>>
+namespace SFA.DAS.Aodp.Application.Queries.Qualifications
 {
-    private readonly IAodpApiClient<AodpApiConfiguration> _apiClient = apiClient;
-
-    public async Task<BaseMediatrResponse<GetChangedQualificationsQueryResponse>> Handle(
-        GetChangedQualificationsQuery query, 
-        CancellationToken cancellationToken)
+    public class GetChangedQualificationsQueryHandler : IRequestHandler<GetChangedQualificationsQuery, BaseMediatrResponse<GetChangedQualificationsQueryResponse>>
     {
-        var response = new BaseMediatrResponse<GetChangedQualificationsQueryResponse>();
-        response.Success = false;
+        private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
-        try
+        public GetChangedQualificationsQueryHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
         {
-            var result = await _apiClient.Get<BaseMediatrResponse<GetChangedQualificationsQueryResponse>>(
-                new GetChangedQualificationsApiRequest());
-            if (result != null && result.Value != null)
-            {
-                response.Value = result.Value;
-                response.Success = true;
-            }
-            else
-            {
-                response.Success = false;
-            }
-        }
-        catch (Exception ex)
-        {
-            response.ErrorMessage = ex.Message;
+            _apiClient = apiClient;
         }
 
-        return response;
+        public async Task<BaseMediatrResponse<GetChangedQualificationsQueryResponse>> Handle(GetChangedQualificationsQuery request, CancellationToken cancellationToken)
+        {
+            var response = new BaseMediatrResponse<GetChangedQualificationsQueryResponse>();
+            response.Success = false;
+            try
+            {
+                var qualificationsResponse = await _apiClient.Get<GetChangedQualificationsApiResponse>(new GetChangedQualificationsApiRequest()
+                {
+                    Skip = request.Skip,
+                    Take = request.Take,
+                    Name = request.Name,
+                    Organisation = request.Organisation,
+                    QAN = request.QAN,
+                });
+
+                if (qualificationsResponse?.Data != null)
+                {
+                    response.Value.TotalRecords = qualificationsResponse.TotalRecords;
+                    response.Value.Take = qualificationsResponse.Take;
+                    response.Value.Skip = qualificationsResponse.Skip;
+                    response.Value.Data = qualificationsResponse.Data;
+                    response.Success = true;
+                }
+
+                var jobResponse = await _apiClient.Get<GetJobByNameQueryResponse>(new GetJobByNameApiRequest("RegulatedQualifications"));
+                if (jobResponse != null)
+                {
+                    response.Value.Job.Status = jobResponse.Status;
+                    response.Value.Job.LastRunTime = jobResponse.LastRunTime;
+                    response.Value.Job.Name = jobResponse.Name;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.ErrorMessage = ex.Message;
+            }
+
+            return response;
+        }
     }
-
 }
