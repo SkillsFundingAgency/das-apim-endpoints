@@ -49,7 +49,7 @@ public sealed class GetCourseByLarsCodeQueryHandler(
         courseTrainingProvidersCountResponse.EnsureSuccessStatusCode();
 
         CourseTrainingProviderCountModel trainingCourseCountDetails = 
-            courseTrainingProvidersCountResponse.Body.Courses.Any() ?
+            courseTrainingProvidersCountResponse.Body.Courses.Count > 0 ?
                 courseTrainingProvidersCountResponse.Body.Courses[0] : 
                 null;
 
