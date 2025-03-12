@@ -14,6 +14,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
         public string? Location { get; set; }
         public string? SearchTerm { get; set; }
         public bool DisabilityConfident { get; set; }
+        public bool? ExcludeNational { get; set; }
         public string? UnSubscribeToken { get; set; }
         public List<Vacancy> Vacancies { get; set; } = [];
 
