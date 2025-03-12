@@ -54,6 +54,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public DateTime ClosingDate { get; set; }
         public string EmployerName { get; set; }
         public DateTime PostedDate { get; set; }
+        public DateTime StartDate { get; set; }
         public string Title { get; set; }
         public string VacancyReference { get; set; }
         public string CourseTitle { get; set; }
@@ -132,6 +133,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 AdditionalTrainingDescription = source.AdditionalTrainingDescription,
                 IsSavedVacancy = source.IsSavedVacancy,
                 VacancySource = source.VacancySource,
+                StartDate = source.StartDate
             };
         }
     }
