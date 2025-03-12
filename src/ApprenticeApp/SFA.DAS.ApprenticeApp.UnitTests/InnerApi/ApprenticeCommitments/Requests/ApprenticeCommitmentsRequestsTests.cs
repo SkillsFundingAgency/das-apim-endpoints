@@ -16,5 +16,14 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.ApprenticeAccounts.Requests
 
             instance.GetUrl.Should().Be($"apprentices/84489dbb-cd85-4c39-847d-2eced378960b/apprenticeships");
         }
+
+        [Test, AutoData]
+        public void TestApprenticeshipRegistrationUrlIsCorrectlyBuilt()
+        {
+            long apprenticeshipId = 1000;
+            var instance = new GetApprenticeshipRegistrationRequest(apprenticeshipId);
+
+            instance.GetUrl.Should().Be($"approvals/1000/registration");
+        }
     }
 }
