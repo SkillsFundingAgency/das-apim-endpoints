@@ -3,6 +3,7 @@ using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
@@ -168,7 +169,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
         }
 
         [Test]
-        public void GetSavedSearchVacanciesSnippet_Should_Return_Correct_Snippet()
+        public void GetSavedSearchVacanciesSnippet_Then_Source_RAA_Should_Return_Correct_Snippet()
         {
             // Arrange
             var environmentHelper = new EmailEnvironmentHelper("test")
@@ -192,7 +193,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                     TrainingCourse = "Software Engineering",
                     Wage = "£30,000 a year",
                     ClosingDate = "2022-12-31",
-                    VacancySource = "FAA"
+                    StartDate = "2025-03-01",
+                    VacancySource = nameof(VacancyDataSource.Raa)
                 }
             };
 
@@ -203,7 +205,61 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                                            123 Main St (12345)
 
                                            * Distance: 10 miles
+                                           * Start date: 2025-03-01
                                            * Training course: Software Engineering
+                                           * Wage: £30,000 a year
+
+                                           2022-12-31
+
+                                           ---
+
+                                           """;
+
+            // Act
+            var snippet = EmailTemplateBuilder.GetSavedSearchVacanciesSnippet(environmentHelper, vacancies, true);
+
+            // Assert
+            snippet.Should().Be(expectedSnippet);
+        }
+
+        [Test]
+        public void GetSavedSearchVacanciesSnippet_Then_Source_NHS_Should_Return_Correct_Snippet()
+        {
+            // Arrange
+            var environmentHelper = new EmailEnvironmentHelper("test")
+            {
+                VacancyDetailsUrl = "https://example.com/vacancy/{vacancy-reference}"
+            };
+
+            var vacancies = new List<PostSendSavedSearchNotificationCommand.Vacancy>
+            {
+                new()
+                {
+                    Title = "Software Developer",
+                    VacancyReference = "12345",
+                    EmployerName = "ABC Company",
+                    EmployerLocation = new Address
+                    {
+                        AddressLine1 = "123 Main St",
+                        Postcode = "12345"
+                    },
+                    Distance = 10,
+                    TrainingCourse = "Software Engineering",
+                    Wage = "£30,000 a year",
+                    ClosingDate = "2022-12-31",
+                    StartDate = "0001-01-01",
+                    VacancySource = nameof(VacancyDataSource.Nhs)
+                }
+            };
+
+            const string expectedSnippet = """
+
+                                           #[Software Developer (from NHS Jobs)](https://example.com/vacancy/12345)
+                                           ABC Company
+                                           123 Main St (12345)
+
+                                           * Distance: 10 miles
+                                           * Training course: See more details on NHS Jobs
                                            * Wage: £30,000 a year
 
                                            2022-12-31

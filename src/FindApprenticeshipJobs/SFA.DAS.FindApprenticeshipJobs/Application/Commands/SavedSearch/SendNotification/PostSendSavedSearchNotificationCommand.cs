@@ -51,6 +51,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
             public string? WageType { get; set; }
 
             public string? ClosingDate { get; set; }
+            public string? StartDate { get; set; }
 
             public string? TrainingCourse { get; set; }
 
