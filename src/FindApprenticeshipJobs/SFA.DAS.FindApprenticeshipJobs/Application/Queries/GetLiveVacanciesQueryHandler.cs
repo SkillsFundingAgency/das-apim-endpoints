@@ -38,7 +38,7 @@ public class GetLiveVacanciesQueryHandler(
     private static IEnumerable<LiveVacancy> RemoveTraineeships(GetLiveVacanciesApiResponse response)
     {
         return response.Vacancies.Select(x => x)
-            .Where(x => x.VacancyType == VacancyType.Apprenticeship)
+            .Where(x => x.VacancyType is null or VacancyType.Apprenticeship)
             .ToList();
     }
 }
