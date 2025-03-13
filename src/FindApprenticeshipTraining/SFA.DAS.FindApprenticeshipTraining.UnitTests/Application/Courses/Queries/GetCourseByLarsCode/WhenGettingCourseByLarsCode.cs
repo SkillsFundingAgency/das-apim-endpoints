@@ -241,7 +241,7 @@ public sealed class WhenGettingCourseByLarsCode
 
         Assert.Multiple(() =>
         {
-            Assert.That(sut.Skills.Count(), Is.EqualTo(1));
+            Assert.That(sut.Skills.Length, Is.EqualTo(1));
             Assert.That(sut.Skills[0], Is.EqualTo("Skill A"));
         });
     }
@@ -298,7 +298,7 @@ public sealed class WhenGettingCourseByLarsCode
 
         Assert.Multiple(() =>
         {
-            Assert.That(sut.Knowledge.Count(), Is.EqualTo(1));
+            Assert.That(sut.Knowledge.Length, Is.EqualTo(1));
             Assert.That(sut.Knowledge[0], Is.EqualTo("Knowledge A"));
         });
     }
@@ -355,7 +355,7 @@ public sealed class WhenGettingCourseByLarsCode
 
         Assert.Multiple(() =>
         {
-            Assert.That(sut.Behaviours.Count(), Is.EqualTo(1));
+            Assert.That(sut.Behaviours.Length, Is.EqualTo(1));
             Assert.That(sut.Behaviours[0], Is.EqualTo("Behavior A"));
         });
     }
