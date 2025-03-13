@@ -20,10 +20,7 @@ public class GetApplicationFormPreviewByIdQueryHandler : IRequestHandler<GetAppl
         response.Success = false;
         try
         {
-            var result = await _apiClient.Get<GetApplicationFormPreviewByIdQueryResponse>(new GetApplicationFormPreviewApiRequest(request.ApplicationId)
-            {
-                ApplicationId = request.ApplicationId,
-            });
+            var result = await _apiClient.Get<GetApplicationFormPreviewByIdQueryResponse>(new GetApplicationFormPreviewApiRequest(request.ApplicationId));
             response.Value = result;
             response.Success = true;
         }

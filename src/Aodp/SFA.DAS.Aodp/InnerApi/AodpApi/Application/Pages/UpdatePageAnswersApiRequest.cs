@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Configuration;using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
 public class UpdatePageAnswersApiRequest(Guid applicationId, Guid pageId, Guid formVersionId, Guid sectionId) : IPutApiRequest
 {
@@ -10,5 +10,4 @@ public class UpdatePageAnswersApiRequest(Guid applicationId, Guid pageId, Guid f
     public string PutUrl => $"/api/applications/{ApplicationId}/forms/{FormVersionId}/sections/{SectionId}/Pages/{PageId}";
 
     public object Data { get; set; }
-
 }
