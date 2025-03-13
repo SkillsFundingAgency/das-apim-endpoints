@@ -57,6 +57,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                     .Excluding(x => x.IsSavedVacancy)
                     .Excluding(x => x.VacancySource)
                     .Excluding(x => x.IsPrimaryLocation)
+                    .Excluding(x => x.Over25NationalMinimumWage)
+                    .Excluding(x => x.Between18AndUnder21NationalMinimumWage)
+                    .Excluding(x => x.Between21AndUnder25NationalMinimumWage)
+                    .Excluding(x => x.Under18NationalMinimumWage)
+                    .Excluding(x => x.ApprenticeMinimumWage)
                 );
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
@@ -133,6 +138,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                     .Excluding(x => x.IsSavedVacancy)
                     .Excluding(x => x.VacancySource)
                     .Excluding(x => x.IsPrimaryLocation)
+                    .Excluding(x => x.Over25NationalMinimumWage)
+                    .Excluding(x => x.Between18AndUnder21NationalMinimumWage)
+                    .Excluding(x => x.Between21AndUnder25NationalMinimumWage)
+                    .Excluding(x => x.Under18NationalMinimumWage)
+                    .Excluding(x => x.ApprenticeMinimumWage)
                 );
 
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
@@ -193,6 +203,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                     .Excluding(x => x.IsSavedVacancy)
                     .Excluding(x => x.VacancySource)
                     .Excluding(x => x.IsPrimaryLocation)
+                    .Excluding(x => x.Over25NationalMinimumWage)
+                    .Excluding(x => x.Between18AndUnder21NationalMinimumWage)
+                    .Excluding(x => x.Between21AndUnder25NationalMinimumWage)
+                    .Excluding(x => x.Under18NationalMinimumWage)
+                    .Excluding(x => x.ApprenticeMinimumWage)
                 );
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);

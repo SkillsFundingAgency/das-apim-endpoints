@@ -40,6 +40,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 
         [JsonPropertyName("postedDate")] 
         public DateTime PostedDate { get; set; }
+        [JsonPropertyName("startDate")] 
+        public DateTime StartDate { get; set; }
 
         [JsonPropertyName("title")] 
         public string Title { get; set; }
@@ -57,6 +59,16 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public int WageType { get; set; }
         [JsonPropertyName("wageText")]
         public string WageText { get; set; }
+        [JsonPropertyName("over25NationalMinimumWage")]
+        public decimal? Over25NationalMinimumWage { get; set; }
+        [JsonPropertyName("between21AndUnder25NationalMinimumWage")]
+        public decimal? Between21AndUnder25NationalMinimumWage { get; set; }
+        [JsonPropertyName("between18AndUnder21NationalMinimumWage")]
+        public decimal? Between18AndUnder21NationalMinimumWage { get; set; }
+        [JsonPropertyName("under18NationalMinimumWage")]
+        public decimal? Under18NationalMinimumWage { get; set; }
+        [JsonPropertyName("apprenticeMinimumWage")]
+        public decimal? ApprenticeMinimumWage { get; set; }
         [JsonPropertyName("address")]
         public Address Address { get; set; }
 
