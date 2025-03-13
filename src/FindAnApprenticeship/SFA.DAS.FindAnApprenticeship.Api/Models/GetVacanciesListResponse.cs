@@ -54,6 +54,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public DateTime ClosingDate { get; set; }
         public string EmployerName { get; set; }
         public DateTime PostedDate { get; set; }
+        public DateTime StartDate { get; set; }
         public string Title { get; set; }
         public string VacancyReference { get; set; }
         public string CourseTitle { get; set; }
@@ -92,6 +93,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
             {
                 Id = source.Id,
                 ClosingDate = source.ClosingDate,
+                StartDate = source.StartDate,
                 EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
                 PostedDate = source.PostedDate,
                 Title = source.Title,
