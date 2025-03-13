@@ -34,7 +34,9 @@ public sealed class GetCourseByLarsCodeQueryHandler(
 
         StandardDetailResponse standardDetails = coursesApiStandardResponse.Body;
 
-        ApprenticeshipFunding apprenticeshipFunding = standardDetails.ApprenticeshipFunding[standardDetails.ApprenticeshipFunding.Count - 1];
+        ApprenticeshipFunding apprenticeshipFunding = standardDetails.ApprenticeshipFunding?.Count > 0 ?
+            standardDetails.ApprenticeshipFunding[standardDetails.ApprenticeshipFunding.Count - 1] :
+            null;
 
         var courseTrainingProvidersCountResponse =
             await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
@@ -55,10 +57,10 @@ public sealed class GetCourseByLarsCodeQueryHandler(
 
         GetCourseByLarsCodeQueryResult result = standardDetails;
 
-        result.MaxFunding = apprenticeshipFunding.MaxEmployerLevyCap;
-        result.TypicalDuration = apprenticeshipFunding.Duration;
+        result.MaxFunding = apprenticeshipFunding?.MaxEmployerLevyCap ?? 0;
+        result.TypicalDuration = apprenticeshipFunding?.Duration ?? 0;
 
-        result.ProvidersCount = trainingCourseCountDetails?.ProvidersCount ?? 0;
+        result.ProvidersCountWithinDistance = trainingCourseCountDetails?.ProvidersCount ?? 0;
         result.TotalProvidersCount = trainingCourseCountDetails?.TotalProvidersCount ?? 0;
 
         result.Skills = standardDetails.Ksbs.Where(a => a.Type == KsbsSkillsType).Select(a => a.Description).ToArray();

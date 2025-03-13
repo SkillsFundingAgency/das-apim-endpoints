@@ -98,7 +98,7 @@ public sealed class WhenGettingCourseByLarsCode
             Assert.That(sut, Is.Not.Null);
             Assert.That(sut.MaxFunding, Is.EqualTo(6000));
             Assert.That(sut.TypicalDuration, Is.EqualTo(18));
-            Assert.That(sut.ProvidersCount, Is.EqualTo(10));
+            Assert.That(sut.ProvidersCountWithinDistance, Is.EqualTo(10));
             Assert.That(sut.TotalProvidersCount, Is.EqualTo(20));
             Assert.That(sut.Skills[0], Is.EqualTo("Skill A"));
             Assert.That(sut.Knowledge[0], Is.EqualTo("Knowledge A"));
@@ -184,11 +184,261 @@ public sealed class WhenGettingCourseByLarsCode
             Assert.That(sut, Is.Not.Null);
             Assert.That(sut.MaxFunding, Is.EqualTo(7000));
             Assert.That(sut.TypicalDuration, Is.EqualTo(24));
-            Assert.That(sut.ProvidersCount, Is.EqualTo(0));
+            Assert.That(sut.ProvidersCountWithinDistance, Is.EqualTo(0));
             Assert.That(sut.TotalProvidersCount, Is.EqualTo(0));
-            Assert.That(sut.Skills[0], Is.EqualTo("Skill B"));
-            Assert.That(sut.Knowledge, Is.Empty);
-            Assert.That(sut.Behaviours, Is.Empty);
+        });
+    }
+
+    [Test]
+    [MoqAutoData]
+    public async Task Handle_Returns_Correct_Skills(GetCourseByLarsCodeQuery query)
+    {
+        var standardDetailResponse = new StandardDetailResponse
+        {
+            ApprenticeshipFunding = new List<ApprenticeshipFunding>
+            {
+                new ApprenticeshipFunding { MaxEmployerLevyCap = 7000, Duration = 24 }
+            },
+            Ksbs = new List<KsbResponse>
+            {
+                new KsbResponse
+                {
+                    Type = GetCourseByLarsCodeQueryHandler.KsbsSkillsType,
+                    Description = "Skill A"
+                }
+            }
+        };
+
+        _coursesApiClientMock
+            .Setup(x => x.GetWithResponseCode<StandardDetailResponse>(
+                It.Is<GetStandardDetailsByIdRequest>(a =>
+                    a.Id.Equals(query.LarsCode.ToString())
+                )
+            ))
+            .ReturnsAsync(
+                new ApiResponse<StandardDetailResponse>(
+                    standardDetailResponse,
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        _roatpCourseManagementApiClientMock
+            .Setup(x =>
+                x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                    It.IsAny<GetCourseTrainingProvidersCountRequest>()
+                )
+            )
+            .ReturnsAsync(
+                new ApiResponse<GetCourseTrainingProvidersCountResponse>(
+                    new GetCourseTrainingProvidersCountResponse(),
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        var sut = await _handler.Handle(query, CancellationToken.None);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.Skills.Count(), Is.EqualTo(1));
+            Assert.That(sut.Skills[0], Is.EqualTo("Skill A"));
+        });
+    }
+
+    [Test]
+    [MoqAutoData]
+    public async Task Handle_Returns_Correct_Knowledge(GetCourseByLarsCodeQuery query)
+    {
+        var standardDetailResponse = new StandardDetailResponse
+        {
+            ApprenticeshipFunding = new List<ApprenticeshipFunding>
+            {
+                new ApprenticeshipFunding { MaxEmployerLevyCap = 7000, Duration = 24 }
+            },
+            Ksbs = new List<KsbResponse>
+            {
+                new KsbResponse
+                {
+                    Type = GetCourseByLarsCodeQueryHandler.KsbsKnowledgeType,
+                    Description = "Knowledge A"
+                }
+            }
+        };
+
+        _coursesApiClientMock
+            .Setup(x => x.GetWithResponseCode<StandardDetailResponse>(
+                It.Is<GetStandardDetailsByIdRequest>(a =>
+                    a.Id.Equals(query.LarsCode.ToString())
+                )
+            ))
+            .ReturnsAsync(
+                new ApiResponse<StandardDetailResponse>(
+                    standardDetailResponse,
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        _roatpCourseManagementApiClientMock
+            .Setup(x =>
+                x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                    It.IsAny<GetCourseTrainingProvidersCountRequest>()
+                )
+            )
+            .ReturnsAsync(
+                new ApiResponse<GetCourseTrainingProvidersCountResponse>(
+                    new GetCourseTrainingProvidersCountResponse(),
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        var sut = await _handler.Handle(query, CancellationToken.None);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.Knowledge.Count(), Is.EqualTo(1));
+            Assert.That(sut.Knowledge[0], Is.EqualTo("Knowledge A"));
+        });
+    }
+
+    [Test]
+    [MoqAutoData]
+    public async Task Handle_Returns_Correct_Behaviors(GetCourseByLarsCodeQuery query)
+    {
+        var standardDetailResponse = new StandardDetailResponse
+        {
+            ApprenticeshipFunding = new List<ApprenticeshipFunding>
+            {
+                new ApprenticeshipFunding { MaxEmployerLevyCap = 7000, Duration = 24 }
+            },
+            Ksbs = new List<KsbResponse>
+            {
+                new KsbResponse
+                {
+                    Type = GetCourseByLarsCodeQueryHandler.KsbsBehaviorType,
+                    Description = "Behavior A"
+                }
+            }
+        };
+
+        _coursesApiClientMock
+            .Setup(x => x.GetWithResponseCode<StandardDetailResponse>(
+                It.Is<GetStandardDetailsByIdRequest>(a =>
+                    a.Id.Equals(query.LarsCode.ToString())
+                )
+            ))
+            .ReturnsAsync(
+                new ApiResponse<StandardDetailResponse>(
+                    standardDetailResponse,
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        _roatpCourseManagementApiClientMock
+            .Setup(x =>
+                x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                    It.IsAny<GetCourseTrainingProvidersCountRequest>()
+                )
+            )
+            .ReturnsAsync(
+                new ApiResponse<GetCourseTrainingProvidersCountResponse>(
+                    new GetCourseTrainingProvidersCountResponse(),
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        var sut = await _handler.Handle(query, CancellationToken.None);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.Behaviours.Count(), Is.EqualTo(1));
+            Assert.That(sut.Behaviours[0], Is.EqualTo("Behavior A"));
+        });
+    }
+
+    [Test]
+    [MoqAutoData]
+    public async Task Handle_Returns_Default_Funding_When_TrainingProviderCount_Is_Null(GetCourseByLarsCodeQuery query)
+    {
+        _coursesApiClientMock
+            .Setup(x => x.GetWithResponseCode<StandardDetailResponse>(
+                It.Is<GetStandardDetailsByIdRequest>(a =>
+                    a.Id.Equals(query.LarsCode.ToString())
+                )
+            ))
+            .ReturnsAsync(
+                new ApiResponse<StandardDetailResponse>(
+                    new StandardDetailResponse() { Ksbs = [] },
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        _roatpCourseManagementApiClientMock
+            .Setup(x =>
+                x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                    It.IsAny<GetCourseTrainingProvidersCountRequest>()
+                )
+            )
+            .ReturnsAsync(
+                new ApiResponse<GetCourseTrainingProvidersCountResponse>(
+                    new GetCourseTrainingProvidersCountResponse(),
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        var sut = await _handler.Handle(query, CancellationToken.None);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.TypicalDuration, Is.EqualTo(0));
+            Assert.That(sut.MaxFunding, Is.EqualTo(0));
+        });
+    }
+
+    [Test]
+    [MoqAutoData]
+    public async Task Handle_Returns_Default_Provider_Counts_When_TrainingProviderCount_Is_Null(GetCourseByLarsCodeQuery query)
+    {
+        _coursesApiClientMock
+            .Setup(x => x.GetWithResponseCode<StandardDetailResponse>(
+                It.Is<GetStandardDetailsByIdRequest>(a =>
+                    a.Id.Equals(query.LarsCode.ToString())
+                )
+            ))
+            .ReturnsAsync(
+                new ApiResponse<StandardDetailResponse>(
+                    new StandardDetailResponse() { Ksbs = [] },
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        _roatpCourseManagementApiClientMock
+            .Setup(x =>
+                x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                    It.IsAny<GetCourseTrainingProvidersCountRequest>()
+                )
+            )
+            .ReturnsAsync(
+                new ApiResponse<GetCourseTrainingProvidersCountResponse>(
+                    new GetCourseTrainingProvidersCountResponse(),
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        var sut = await _handler.Handle(query, CancellationToken.None);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.TotalProvidersCount, Is.EqualTo(0));
+            Assert.That(sut.ProvidersCountWithinDistance, Is.EqualTo(0));
         });
     }
 }
