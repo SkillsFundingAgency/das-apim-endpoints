@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Aodp.Application.Queries.Application.Application;
 
 namespace SFA.DAS.Aodp.Api.Controllers.Application;
 
@@ -174,5 +175,15 @@ public class ApplicationsController : BaseController
     {
         submitApplicationCommand.ApplicationId = applicationId;
         return await SendRequestAsync(submitApplicationCommand);
+    }
+
+    [HttpGet("/api/applications/{applicationId}/details")]
+    [ProducesResponseType(typeof(GetApplicationDetailsByIdQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetApplicationDetailsByIdAsync(Guid applicationId)
+    {
+        var query = new GetApplicationDetailsByIdQuery(applicationId);
+        return await SendRequestAsync(query);
     }
 }
