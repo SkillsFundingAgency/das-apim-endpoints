@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Api.Controllers;
+using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 
@@ -106,6 +107,16 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         public async Task<IActionResult> GetFeedbackForQualificationFundingById(Guid qualificationVersionId)
         {
             return await SendRequestAsync(new GetFeedbackForQualificationFundingByIdQuery(qualificationVersionId));
+        }
+
+        [HttpPut("/api/qualifications/{qualificationVersionId}/save-qualification-funding-offers")]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SaveQualificationFundingOffers(SaveQualificationFundingOffersCommand command, Guid qualificationVersionId)
+        {
+            command.QualificationVersionId = qualificationVersionId;
+
+            return await SendRequestAsync(command);
         }
 
         private async Task<IActionResult> HandleNewQualificationCSVExport()
