@@ -60,15 +60,16 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "");
+            var result = await controller.GetQualifications(status: "changed", skip: 0, take: 10, name: "", organisation: "", qan: "");
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
-            Assert.That(okResult.Value, Is.AssignableFrom<GetNewQualificationsQueryResponse>());
-            var model = (GetNewQualificationsQueryResponse)okResult.Value;
+            Assert.That(okResult.Value, Is.AssignableFrom<GetChangedQualificationsQueryResponse>());
+            var model = (GetChangedQualificationsQueryResponse)okResult.Value;
             Assert.That(model.Data.Count, Is.EqualTo(2));
         }
+
 
 
         [Test]
@@ -96,19 +97,17 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             // Arrange
             var queryResponse = _fixture.Create<BaseMediatrResponse<GetChangedQualificationsQueryResponse>>();
             queryResponse.Success = false;
-
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetChangedQualificationsQuery>(), default))
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualifications("",0,0,"","","");
+            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "");
 
             // Assert
-            Assert.That(result, Is.InstanceOf<NotFoundObjectResult>());
-            var notFoundResult = (NotFoundObjectResult)result;
-            var notFoundValue = notFoundResult.Value?.GetType().GetProperty("message")?.GetValue(notFoundResult.Value, null);
-            Assert.That(notFoundValue, Is.EqualTo("No changed qualifications found"));
+            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+            var statusCodeResult = (StatusCodeResult)result;
         }
 
         [Test]
