@@ -21,6 +21,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
         [JsonPropertyName("closingDate")]
         public DateTime ClosingDate { get; set; }
 
+        [JsonPropertyName("startDate")]
+        public DateTime StartDate { get; set; }
+
         [JsonPropertyName("employerName")]
         public string EmployerName { get; set; }
        
