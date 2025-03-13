@@ -148,6 +148,7 @@ public record GetApplicationViewApiResponse
             public string? AdditionalInformation { get; set; }
             public bool? IsPredicted { get; set; }
             public Guid QualificationReferenceId { get; set; }
+            public short? QualificationOrder { get; set; }
             public QualificationReference QualificationReference { get; set; }
 
             public static implicit operator Qualification(GetApplicationViewQueryResult.EducationHistorySection.Qualification source)
@@ -159,6 +160,7 @@ public record GetApplicationViewApiResponse
                     Grade = source.Grade,
                     AdditionalInformation = source.AdditionalInformation,
                     IsPredicted = source.IsPredicted,
+                    QualificationOrder = source.QualificationOrder,
                     QualificationReference = source.QualificationReference,
                     QualificationReferenceId = source.QualificationReference.Id,
                 };

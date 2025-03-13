@@ -17,7 +17,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications.Qualifications
             return new GetDeleteQualificationsApiResponse
             {
                 QualificationReference = source.QualificationReference,
-                Qualifications = source.Qualifications.Select(x => (ApplicationQualificationApiResponse)x).ToList()
+                Qualifications = source.Qualifications.Select(x => (ApplicationQualificationApiResponse)x).OrderBy(fil => fil.QualificationOrder).ToList()
             };
         }
 
@@ -26,7 +26,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications.Qualifications
             return new GetDeleteQualificationsApiResponse
             {
                 QualificationReference = source.QualificationReference,
-                Qualifications = source.Qualifications.Select(x => (ApplicationQualificationApiResponse)x).ToList()
+                Qualifications = source.Qualifications.Select(x => (ApplicationQualificationApiResponse)x).OrderBy(fil => fil.QualificationOrder).ToList()
             };
         }
     }

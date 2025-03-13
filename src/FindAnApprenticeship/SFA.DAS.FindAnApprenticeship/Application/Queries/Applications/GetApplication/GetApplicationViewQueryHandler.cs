@@ -89,7 +89,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
                 EducationHistory = new GetApplicationViewQueryResult.EducationHistorySection
                 {
                     TrainingCourses = trainingCourses?.Select(x => (GetApplicationViewQueryResult.EducationHistorySection.TrainingCourse)x).ToList(),
-                    Qualifications = application.Qualifications.Select(x => (GetApplicationViewQueryResult.EducationHistorySection.Qualification)x).ToList(),
+                    Qualifications = application.Qualifications.Select(x => (GetApplicationViewQueryResult.EducationHistorySection.Qualification)x).OrderBy(fil => fil.QualificationOrder).ToList(),
                     QualificationTypes = qualificationTypes.QualificationReferences.Select(x => (GetApplicationViewQueryResult.EducationHistorySection.QualificationReference)x).ToList()
                 },
                 WorkHistory = new GetApplicationViewQueryResult.WorkHistorySection

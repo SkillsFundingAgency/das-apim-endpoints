@@ -18,7 +18,7 @@ public class GetQualificationReferenceTypeApiResponse
         return new GetQualificationReferenceTypeApiResponse
         {
             QualificationType = source.QualificationType,
-            Qualifications = source.Qualifications.Select(c=>(ApplicationQualificationApiResponse)c).ToList(),
+            Qualifications = source.Qualifications.Select(c=>(ApplicationQualificationApiResponse)c).OrderBy(fil => fil.QualificationOrder).ToList(),
             Courses = source.Courses.Select(c=>(CoursesResponseItem)c).ToList()
         };
     }

@@ -102,7 +102,7 @@ public record GetApplicationApiResponse
                 QualificationsStatus = source.QualificationsStatus,
                 TrainingCoursesStatus = source.TrainingCoursesStatus,
                 TrainingCourses = source.TrainingCourses.Select(x => (GetApplicationApiResponse.EducationHistorySection.TrainingCourse)x).ToList(),
-                Qualifications = source.Qualifications.Select(x => (GetApplicationApiResponse.EducationHistorySection.Qualification)x).ToList(),
+                Qualifications = source.Qualifications.Select(x => (GetApplicationApiResponse.EducationHistorySection.Qualification)x).OrderBy(fil => fil.QualificationOrder).ToList(),
                 QualificationTypes = source.QualificationTypes.Select(x => (GetApplicationApiResponse.EducationHistorySection.QualificationReference)x).ToList()
             };
         }
@@ -130,6 +130,7 @@ public record GetApplicationApiResponse
             public string? Grade { get; set; }
             public string? AdditionalInformation { get; set; }
             public bool? IsPredicted { get; set; }
+            public short? QualificationOrder { get; set; }
             public Guid QualificationReferenceId { get; set; }
             public QualificationReference QualificationReference { get; set; }
 
@@ -142,6 +143,7 @@ public record GetApplicationApiResponse
                     Grade = source.Grade,
                     AdditionalInformation = source.AdditionalInformation,
                     IsPredicted = source.IsPredicted,
+                    QualificationOrder = source.QualificationOrder,
                     QualificationReference = source.QualificationReference,
                     QualificationReferenceId = source.QualificationReference.Id,
                 };
