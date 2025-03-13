@@ -11,16 +11,17 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
         private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
         public GetChangedQualificationsQueryHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
-        {
+{
             _apiClient = apiClient;
         }
 
         public async Task<BaseMediatrResponse<GetChangedQualificationsQueryResponse>> Handle(GetChangedQualificationsQuery request, CancellationToken cancellationToken)
+    {
+        var response = new BaseMediatrResponse<GetChangedQualificationsQueryResponse>();
+        response.Success = false;
+
+        try
         {
-            var response = new BaseMediatrResponse<GetChangedQualificationsQueryResponse>();
-            response.Success = false;
-            try
-            {
                 var qualificationsResponse = await _apiClient.Get<GetChangedQualificationsApiResponse>(new GetChangedQualificationsApiRequest()
                 {
                     Skip = request.Skip,
@@ -31,29 +32,29 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
                 });
 
                 if (qualificationsResponse?.Data != null)
-                {
+            {
                     response.Value.TotalRecords = qualificationsResponse.TotalRecords;
                     response.Value.Take = qualificationsResponse.Take;
                     response.Value.Skip = qualificationsResponse.Skip;
                     response.Value.Data = qualificationsResponse.Data;
-                    response.Success = true;
-                }
+                response.Success = true;
+            }
 
                 var jobResponse = await _apiClient.Get<GetJobByNameQueryResponse>(new GetJobByNameApiRequest("RegulatedQualifications"));
                 if (jobResponse != null)
-                {
+            {
                     response.Value.Job.Status = jobResponse.Status;
                     response.Value.Job.LastRunTime = jobResponse.LastRunTime;
                     response.Value.Job.Name = jobResponse.Name;
-                }
-
-            }
-            catch (Exception ex)
-            {
-                response.ErrorMessage = ex.Message;
             }
 
-            return response;
         }
+        catch (Exception ex)
+        {
+            response.ErrorMessage = ex.Message;
+        }
+
+        return response;
+    }
     }
 }

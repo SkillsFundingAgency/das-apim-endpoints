@@ -43,7 +43,7 @@ namespace SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications
                 }
 
                 if (!string.IsNullOrWhiteSpace(QAN))
-                {
+{
                     queryParams.Add("QAN", QAN);
                 }
 

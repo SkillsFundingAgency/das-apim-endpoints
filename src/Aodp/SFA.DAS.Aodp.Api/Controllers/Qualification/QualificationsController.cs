@@ -130,12 +130,12 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         {
             var result = await _mediator.Send(new GetChangedQualificationsCsvExportQuery());
 
+
             if (result == null || !result.Success || result.Value == null)
             {
                 _logger.LogWarning(result?.ErrorMessage);
                 return NotFound(new { message = result?.ErrorMessage });
             }
-
             return Ok(result);
         }
 
