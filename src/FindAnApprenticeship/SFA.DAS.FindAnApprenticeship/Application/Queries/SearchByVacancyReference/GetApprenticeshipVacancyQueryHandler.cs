@@ -50,6 +50,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
 
             GetApprenticeshipVacancyQueryResult.CandidateApplication candidateApplicationDetails = null;
             string candidatePostcode = null;
+            DateTime? candidateDateOfBirth = null;
             var isSavedVacancy = false;
 
             if (request.CandidateId.HasValue)
@@ -60,13 +61,13 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                 var application = candidateApiClient.Get<GetApplicationByReferenceApiResponse>(
                     new GetApplicationByReferenceApiRequest(request.CandidateId.Value, vacancyReference));
 
-                var candidateAddress = candidateApiClient.Get<GetCandidateAddressApiResponse>(
-                    new GetCandidateAddressApiRequest(request.CandidateId.Value));
+                var candidate = candidateApiClient.Get<GetCandidateApiResponse>(
+                    new GetCandidateApiRequest(request.CandidateId.Value.ToString()));
 
                 var savedVacancy = candidateApiClient.Get<GetSavedVacancyApiResponse>(
                     new GetSavedVacancyApiRequest(request.CandidateId.Value, vacancyReference));
 
-                await Task.WhenAll(application, candidateAddress, savedVacancy);
+                await Task.WhenAll(application, candidate, savedVacancy);
 
                 if (application.Result != null)
                 {
@@ -79,9 +80,10 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     };
                 }
 
-                if (candidateAddress.Result != null)
+                if (candidate.Result != null)
                 {
-                    candidatePostcode = candidateAddress.Result.Postcode;
+                    candidatePostcode = candidate.Result.Address.Postcode;
+                    candidateDateOfBirth = candidate.Result.DateOfBirth;
                 }
 
                 if (savedVacancy.Result != null)
@@ -97,6 +99,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                 Levels = courseLevels.Levels.ToList(),
                 Application = candidateApplicationDetails,
                 CandidatePostcode = candidatePostcode,
+                CandidateDateOfBirth = candidateDateOfBirth,
                 IsSavedVacancy = isSavedVacancy
             };
         }

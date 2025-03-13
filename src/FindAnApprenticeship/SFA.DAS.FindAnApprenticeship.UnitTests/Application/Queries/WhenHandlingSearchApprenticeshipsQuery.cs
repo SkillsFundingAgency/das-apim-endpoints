@@ -138,7 +138,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
         }
 
         [Test, MoqAutoData]
-        public async Task Then_The_Services_Are_Called_And_Data_Returned_Based_On_Request_When_Candidate_Id_Given(
+        public async Task Then_The_Services_Are_Called_And_Data_Returned_Based_On_Request_When_Candidate_Id_Given_And_Candidate_Returned(
             List<int> routesIds,
             List<int> levelIds,
             Guid candidateId,
@@ -148,6 +148,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             GetApplicationsApiResponse getApplicationsApiResponse,
             GetSavedVacanciesApiResponse getSavedVacanciesApiResponse,
             GetApprenticeshipCountResponse apprenticeshipCountResponse,
+            GetCandidateApiResponse getCandidateApiResponse,
             [Frozen] Mock<IMetrics> metricsService,
             [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<ILocationLookupService> locationLookupService,
@@ -177,10 +178,14 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             courseService.Setup(x => x.GetRoutes()).ReturnsAsync(routesResponse);
 
             var expectedUrl = new GetApplicationsApiRequest(candidateId);
+            var expectedGetCandidateUrl = new GetCandidateApiRequest(candidateId.ToString());
             candidateApiClient.Setup(service =>
                     service.Get<GetApplicationsApiResponse>(
                         It.Is<GetApplicationsApiRequest>(r => r.GetUrl == expectedUrl.GetUrl)))
                 .ReturnsAsync(getApplicationsApiResponse);
+            candidateApiClient.Setup(service =>
+                    service.Get<GetCandidateApiResponse>(It.Is<GetCandidateApiRequest>(r => r.GetUrl == expectedGetCandidateUrl.GetUrl)))
+                .ReturnsAsync(getCandidateApiResponse);
 
             var expectedSavedApplicationsApiRequestUrl = new GetSavedVacanciesApiRequest(candidateId);
             candidateApiClient.Setup(service =>
@@ -255,6 +260,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 result.TotalPages.Should().Be(totalPages);
                 result.DisabilityConfident.Should().Be(query.DisabilityConfident);
                 result.TotalWageTypeVacanciesCount.Should().Be(apprenticeshipCountResponse.TotalVacancies);
+                result.CandidateDateOfBirth.Should().Be(getCandidateApiResponse.DateOfBirth);
                 metricsService.Verify(x => x.IncreaseVacancySearchResultViews(It.IsAny<string>(), 1), Times.Exactly(vacanciesResponse.ApprenticeshipVacancies.Count(fil => fil.VacancySource == VacancyDataSource.Raa)));
                 apiClient.Verify(client =>
                     client.Get<GetApprenticeshipCountResponse>(
