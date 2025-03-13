@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
@@ -12,7 +12,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         [FromQuery]
         public decimal? Distance { get; set; }
         [FromQuery]
-        public string? Location { get; set; }
+        public string Location { get; set; }
 
         [FromQuery]
         public List<DeliveryMode?> DeliveryModes { get; set; }
