@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +9,9 @@ using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteSh
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistItem;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetExpiredShortlists;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetShortlistCountForUser;
-using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetShortlistForUser;
+using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetShortlistsForUser;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using GetShortlistForUserResponse = SFA.DAS.FindApprenticeshipTraining.Api.Models.GetShortlistForUserResponse;
-using GetShortlistItem = SFA.DAS.FindApprenticeshipTraining.Api.Models.GetShortlistItem;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 
@@ -37,7 +34,7 @@ public class ShortlistsController(IMediator _mediator, ILogger<ShortlistsControl
                 ShortlistUserId = shortlistRequest.ShortlistUserId
             });
 
-        return CreatedAtAction(nameof(GetAllForUser), new { UserId = shortlistRequest.ShortlistUserId }, result);
+        return CreatedAtAction(nameof(GetShortlistsForUser), new { UserId = shortlistRequest.ShortlistUserId }, result);
     }
 
     [HttpDelete]
@@ -52,7 +49,7 @@ public class ShortlistsController(IMediator _mediator, ILogger<ShortlistsControl
     }
 
     [HttpGet]
-    [Route("/users/{userId}/count")]
+    [Route("users/{userId}/count")]
     public async Task<IActionResult> GetShortlistCountForUser(Guid userId)
     {
         var result = await _mediator.Send(new GetShortlistCountForUserQuery(userId));
@@ -61,26 +58,11 @@ public class ShortlistsController(IMediator _mediator, ILogger<ShortlistsControl
 
     [HttpGet]
     [Route("users/{userId}")]
-    public async Task<IActionResult> GetAllForUser(Guid userId)
+    [ProducesResponseType<GetShortlistsForUserResponse>(200)]
+    public async Task<IActionResult> GetShortlistsForUser(Guid userId)
     {
-        try
-        {
-            var result = await _mediator.Send(new GetShortlistForUserQuery { ShortlistUserId = userId });
-
-            var shortlist = result.Shortlist.OrderBy(x => x.ProviderDetails.DeliveryModelsShortestDistance)
-                .ThenByDescending(x => x.ProviderDetails.DeliveryModels.Any(d => d.LocationType == LocationType.National));
-
-            var response = new GetShortlistForUserResponse
-            {
-                Shortlist = shortlist.Select(item => (GetShortlistItem)item)
-            };
-            return Ok(response);
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error attempting to get shortlist for user:{UserId}", userId);
-            return BadRequest();
-        }
+        GetShortlistsForUserResponse result = await _mediator.Send(new GetShortlistsForUserQuery { UserId = userId });
+        return Ok(result);
     }
 
     [HttpGet]
@@ -118,5 +100,4 @@ public class ShortlistsController(IMediator _mediator, ILogger<ShortlistsControl
             return BadRequest();
         }
     }
-
 }
