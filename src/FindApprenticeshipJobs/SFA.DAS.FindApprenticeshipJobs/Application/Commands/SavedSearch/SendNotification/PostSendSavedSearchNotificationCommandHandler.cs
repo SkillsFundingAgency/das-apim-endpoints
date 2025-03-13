@@ -39,16 +39,18 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
             var searchParamsEmailSnippet = EmailTemplateBuilder.GetSavedSearchSearchParams(command.SearchTerm,
                 command.Distance,
                 command.Location,
-                (command.Categories != null && command.Categories.Any()) ? command.Categories?.Select(cat => cat.Name).ToList() : null,
+                command.Categories != null && command.Categories.Any() ? command.Categories?.Select(cat => cat.Name).ToList() : null,
                 command.Levels != null && command.Levels.Any() ? command.Levels.Select(lev => lev.Name).ToList() : null,
-                command.DisabilityConfident);
+                command.DisabilityConfident,
+                command.ExcludeNational);
 
             var queryParameters = EmailTemplateBuilder.GetSavedSearchUrl(command.SearchTerm,
                 command.Distance,
                 command.Location,
-                (command.Categories != null && command.Categories.Any()) ? command.Categories?.Select(cat => cat.Id.ToString()).ToList() : null,
+                command.Categories != null && command.Categories.Any() ? command.Categories?.Select(cat => cat.Id.ToString()).ToList() : null,
                 command.Levels != null && command.Levels.Any() ? command.Levels.Select(lev => lev.Code.ToString()).ToList() : null,
-                command.DisabilityConfident);
+                command.DisabilityConfident,
+                command.ExcludeNational);
 
             var email = new SavedSearchEmailNotificationTemplate(
                 EmailEnvironmentHelper.SavedSearchEmailNotificationTemplateId,
