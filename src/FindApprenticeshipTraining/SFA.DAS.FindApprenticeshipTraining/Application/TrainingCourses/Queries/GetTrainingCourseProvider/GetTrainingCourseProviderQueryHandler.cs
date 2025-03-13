@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
@@ -9,10 +13,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider
 {
@@ -62,7 +62,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
             var employerFeedbackTask = _employerFeedbackApiClient.GetWithResponseCode<GetEmployerFeedbackResponse>(new GetEmployerFeedbackDetailsRequest(request.ProviderId));
 
             var shortlistTask = request.ShortlistUserId.HasValue
-                ? _shortlistApiClient.Get<List<ShortlistItem>>(new GetShortlistForUserRequest(request.ShortlistUserId.Value))
+                ? _shortlistApiClient.Get<List<ShortlistItem>>(new GetShortlistsForUserRequest(request.ShortlistUserId.Value))
                 : Task.FromResult(new List<ShortlistItem>());
 
             await Task.WhenAll(providerCoursesTask, ukprnsCountTask, overallAchievementRatesTask, shortlistTask, apprenticeFeedbackTask, employerFeedbackTask);
@@ -121,7 +121,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries
 
             if (apiResponse == null) return null;
 
-            if (apiResponse != null && apiResponse.ProviderHeadOfficeDistanceInMiles == 0 && locationItem != null)
+            if (apiResponse.ProviderHeadOfficeDistanceInMiles == 0 && locationItem != null)
             {
                 //provider found without location
                 return new GetProviderStandardItem();
