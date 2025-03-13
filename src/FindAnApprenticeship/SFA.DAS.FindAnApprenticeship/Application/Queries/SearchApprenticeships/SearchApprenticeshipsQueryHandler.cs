@@ -16,6 +16,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
@@ -164,6 +165,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     request.SelectedRouteIds?.Select(x => Convert.ToInt32(x)).ToList(),
                     request.Distance,
                     request.DisabilityConfident,
+                    request.ExcludeNational,
                     request.SelectedLevelIds?.Select(x => Convert.ToInt32(x)).ToList(),
                     request.Location,
                     location?.GeoPoint?.FirstOrDefault().ToString(CultureInfo.InvariantCulture),
@@ -181,7 +183,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             // increase the count of vacancy appearing in search results counter metrics.
             foreach (var vacancy in apprenticeshipVacancies.Where(fil => fil.VacancySource == VacancyDataSource.Raa))
             {
-                metrics.IncreaseVacancySearchResultViews(vacancy.Id);
+                metrics.IncreaseVacancySearchResultViews(vacancy.VacancyReference.TrimVacancyReference());
             }
 
             return new SearchApprenticeshipsResult

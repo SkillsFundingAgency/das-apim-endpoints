@@ -8,6 +8,7 @@ public record SaveSearchCommand(
     Guid Id,
     Guid CandidateId,
     bool DisabilityConfident,
+    bool? ExcludeNational,
     int? Distance,
     string? Location,
     string SearchTerm,
