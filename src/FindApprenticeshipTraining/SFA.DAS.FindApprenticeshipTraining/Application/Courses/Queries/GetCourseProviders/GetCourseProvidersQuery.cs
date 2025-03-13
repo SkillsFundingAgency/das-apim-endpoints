@@ -1,7 +1,7 @@
-using MediatR;
-using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
+using MediatR;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders
 {
@@ -10,7 +10,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCour
         public int Id { get; set; }
         public ProviderOrderBy? OrderBy { get; set; }
         public decimal? Distance { get; set; }
-        public string? Location { get; set; }
+        public string Location { get; set; }
         public List<DeliveryMode?> DeliveryModes { get; set; }
 
         public List<ProviderRating?> EmployerProviderRatings { get; set; }
