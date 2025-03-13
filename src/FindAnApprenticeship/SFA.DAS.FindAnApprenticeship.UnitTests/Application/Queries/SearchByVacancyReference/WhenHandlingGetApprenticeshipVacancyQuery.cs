@@ -77,7 +77,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             GetStandardsListItemResponse courseResponse,
             GetCourseLevelsListResponse courseLevelsResponse,
             GetApplicationByReferenceApiResponse applicationResponse,
-            GetCandidateAddressApiResponse candidateAddressApiResponse,
+            GetCandidateApiResponse candidateApiResponse,
             GetSavedVacancyApiResponse savedVacancyApiResponse,
             [Frozen] Mock<IVacancyService> vacancyService,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> courseApiClient,
@@ -106,16 +106,14 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                         It.Is<GetApplicationByReferenceApiRequest>(c=>c.GetUrl == expectedGetCandidateApplicationRequest.GetUrl)))
                 .ReturnsAsync(applicationResponse);
             
-            var expectedGetCandidateAddressRequest =
-                new GetCandidateAddressApiRequest(query.CandidateId.Value);
+            var expectedGetCandidateAddressRequest = new GetCandidateApiRequest(query.CandidateId.Value.ToString());
             candidateApiClient
                 .Setup(client =>
-                    client.Get<GetCandidateAddressApiResponse>(
-                        It.Is<GetCandidateAddressApiRequest>(c=>c.GetUrl == expectedGetCandidateAddressRequest.GetUrl)))
-                .ReturnsAsync(candidateAddressApiResponse);
+                    client.Get<GetCandidateApiResponse>(
+                        It.Is<GetCandidateApiRequest>(c=>c.GetUrl == expectedGetCandidateAddressRequest.GetUrl)))
+                .ReturnsAsync(candidateApiResponse);
 
-            var expectedGetSavedVacancyApiRequest =
-                new GetSavedVacancyApiRequest(query.CandidateId.Value, query.VacancyReference.TrimVacancyReference());
+            var expectedGetSavedVacancyApiRequest = new GetSavedVacancyApiRequest(query.CandidateId.Value, query.VacancyReference.TrimVacancyReference());
             candidateApiClient
                 .Setup(client =>
                     client.Get<GetSavedVacancyApiResponse>(
@@ -138,11 +136,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                     .Excluding(x => x.IsSavedVacancy)
                     .Excluding(x => x.VacancySource)
                     .Excluding(x => x.IsPrimaryLocation)
-                    .Excluding(x => x.Over25NationalMinimumWage)
-                    .Excluding(x => x.Between18AndUnder21NationalMinimumWage)
-                    .Excluding(x => x.Between21AndUnder25NationalMinimumWage)
-                    .Excluding(x => x.Under18NationalMinimumWage)
-                    .Excluding(x => x.ApprenticeMinimumWage)
                 );
 
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
@@ -152,7 +145,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             result.Application.Status.Should().Be(applicationResponse.Status);
             result.Application.SubmittedDate.Should().Be(applicationResponse.SubmittedDate);
             result.ApprenticeshipVacancy.ClosingDate.Should().Be(vacancy.ClosedDate ?? vacancy.ClosingDate);
-            result.CandidatePostcode.Should().Be(candidateAddressApiResponse.Postcode);
+            result.CandidatePostcode.Should().Be(candidateApiResponse.Address.Postcode);
+            result.CandidateDateOfBirth.Should().Be(candidateApiResponse.DateOfBirth);
             result.IsSavedVacancy.Should().BeTrue();
         }
 
