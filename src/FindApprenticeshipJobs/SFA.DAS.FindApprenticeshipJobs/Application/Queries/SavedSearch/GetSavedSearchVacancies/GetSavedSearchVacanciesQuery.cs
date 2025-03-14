@@ -11,6 +11,7 @@ public record GetSavedSearchVacanciesQuery(
     string? SearchTerm,
     string? Location,
     bool DisabilityConfident,
+    bool? ExcludeNational,
     string? Longitude,
     string? Latitude,
     List<int>? SelectedLevelIds,

@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using SFA.DAS.Aodp.Application;
-using SFA.DAS.SharedOuterApi.Configuration;using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 public class GetApplicationsByOrganisationIdQueryHandler : IRequestHandler<GetApplicationsByOrganisationIdQuery, BaseMediatrResponse<GetApplicationsByOrganisationIdQueryResponse>>
 {
@@ -17,7 +17,10 @@ public class GetApplicationsByOrganisationIdQueryHandler : IRequestHandler<GetAp
         response.Success = false;
         try
         {
-            var result = await _apiClient.Get<GetApplicationsByOrganisationIdQueryResponse>(new GetApplicationsByOrganisationIdApiRequest());
+            var result = await _apiClient.Get<GetApplicationsByOrganisationIdQueryResponse>(new GetApplicationsByOrganisationIdApiRequest()
+            {
+                OrganisationId = request.OrganisationId
+            });
             response.Value = result;
             response.Success = true;
         }

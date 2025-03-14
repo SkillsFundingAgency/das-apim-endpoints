@@ -7,3 +7,4 @@ public class EditApplicationCommand : IRequest<BaseMediatrResponse<EmptyResponse
     public string Owner { get; set; }
     public Guid ApplicationId { get; set; }
 }
+

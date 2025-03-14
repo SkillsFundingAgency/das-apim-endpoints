@@ -1,15 +1,10 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoMoq;
 using Moq;
-using NUnit.Framework;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
 {
@@ -33,20 +28,19 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
         {
             // Arrange
             var query = _fixture.Create<GetNewQualificationsQuery>();
-            var response = _fixture.Create<BaseMediatrResponse<GetNewQualificationsQueryResponse>>();
-            response.Success = true;
-            response.Value.NewQualifications = _fixture.CreateMany<NewQualification>(2).ToList();
+            var response = _fixture.Create<GetNewQualificationsApiResponse>();            
+            response.Data = _fixture.CreateMany<NewQualification>(2).ToList();
 
-            _apiClientMock.Setup(x => x.Get<BaseMediatrResponse<GetNewQualificationsQueryResponse>>(It.IsAny<GetNewQualificationsApiRequest>()))
+            _apiClientMock.Setup(x => x.Get<GetNewQualificationsApiResponse>(It.IsAny<GetNewQualificationsApiRequest>()))
                           .ReturnsAsync(response);
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
-            _apiClientMock.Verify(x => x.Get<BaseMediatrResponse<GetNewQualificationsQueryResponse>>(It.IsAny<GetNewQualificationsApiRequest>()), Times.Once);
+            _apiClientMock.Verify(x => x.Get<GetNewQualificationsApiResponse>(It.IsAny<GetNewQualificationsApiRequest>()), Times.Once);
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Value.NewQualifications.Count, Is.EqualTo(2));
+            Assert.That(result.Value.Data.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -54,23 +48,20 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
         {
             // Arrange
             var query = _fixture.Create<GetNewQualificationsQuery>();
-            var baseResponse = new BaseMediatrResponse<GetNewQualificationsQueryResponse>
+            var baseResponse = new GetNewQualificationsApiResponse
             {
-                Success = false,
-                Value = null,
-                ErrorMessage = "No new qualifications found."
+                Data = null
             };
 
-            _apiClientMock.Setup(x => x.Get<BaseMediatrResponse<GetNewQualificationsQueryResponse>>(It.IsAny<GetNewQualificationsApiRequest>()))
+            _apiClientMock.Setup(x => x.Get<GetNewQualificationsApiResponse>(It.IsAny<GetNewQualificationsApiRequest>()))
                           .ReturnsAsync(baseResponse);
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
-            _apiClientMock.Verify(x => x.Get<BaseMediatrResponse<GetNewQualificationsQueryResponse>>(It.IsAny<GetNewQualificationsApiRequest>()), Times.Once);
+            _apiClientMock.Verify(x => x.Get<GetNewQualificationsApiResponse>(It.IsAny<GetNewQualificationsApiRequest>()), Times.Once);
             Assert.That(result.Success, Is.False);
-            Assert.That(result.ErrorMessage, Is.EqualTo("No new qualifications found."));
         }
 
         [Test]
@@ -79,14 +70,14 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
             // Arrange
             var query = _fixture.Create<GetNewQualificationsQuery>();
             var exceptionMessage = "An error occurred";
-            _apiClientMock.Setup(x => x.Get<BaseMediatrResponse<GetNewQualificationsQueryResponse>>(It.IsAny<GetNewQualificationsApiRequest>()))
+            _apiClientMock.Setup(x => x.Get<GetNewQualificationsApiResponse>(It.IsAny<GetNewQualificationsApiRequest>()))
                           .ThrowsAsync(new Exception(exceptionMessage));
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
-            _apiClientMock.Verify(x => x.Get<BaseMediatrResponse<GetNewQualificationsQueryResponse>>(It.IsAny<GetNewQualificationsApiRequest>()), Times.Once);
+            _apiClientMock.Verify(x => x.Get<GetNewQualificationsApiResponse>(It.IsAny<GetNewQualificationsApiRequest>()), Times.Once);
             Assert.That(result.Success, Is.False);
             Assert.That(result.ErrorMessage, Is.EqualTo(exceptionMessage));
         }

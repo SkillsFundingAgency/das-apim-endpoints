@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.Aodp.InnerApi.AodpApi.FormBuilder.Forms;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Aodp.Application.Queries.FormBuilder.Forms;
@@ -22,8 +23,9 @@ public class GetFormVersionByIdQueryHandler : IRequestHandler<GetFormVersionById
         response.Success = false;
         try
         {
-            var result = await _apiClient.Get<GetFormVersionByIdQueryResponse>(new GetFormVersionByIdApiRequest(request.FormVersionId));
-            response.Value = result;
+            var result = await _apiClient.GetWithResponseCode<GetFormVersionByIdQueryResponse>(new GetFormVersionByIdApiRequest(request.FormVersionId));
+            result.EnsureSuccessStatusCode();
+            response.Value = result.Body;
             response.Success = true;
         }
         catch (Exception ex)

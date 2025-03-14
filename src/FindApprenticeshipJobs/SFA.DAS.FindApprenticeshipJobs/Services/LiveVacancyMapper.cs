@@ -85,6 +85,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
                 Address = source.Address,
+                OtherAddresses = source.OtherAddresses,
                 EmploymentLocations = source.EmployerLocations,
                 EmploymentLocationInformation = source.EmployerLocationInformation,
                 EmploymentLocationOption = source.EmployerLocationOption,

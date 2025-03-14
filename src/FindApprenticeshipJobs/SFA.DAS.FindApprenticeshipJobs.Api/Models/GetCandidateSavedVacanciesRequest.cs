@@ -11,6 +11,7 @@ public class GetCandidateSavedVacanciesRequest
     public string? SearchTerm { get; set; }
     public string? Location { get; set; }
     public bool DisabilityConfident { get; set; }
+    public bool? ExcludeNational { get; set; }
     public string? Longitude { get; set; }
     public string? Latitude { get; set; }
     public List<int>? SelectedLevelIds { get; set; } = [];

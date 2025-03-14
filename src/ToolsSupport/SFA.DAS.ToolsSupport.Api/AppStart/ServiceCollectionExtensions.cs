@@ -10,6 +10,7 @@ using SFA.DAS.ToolsSupport.ExternalApi;
 using SFA.DAS.ToolsSupport.Helpers;
 using SFA.DAS.ToolsSupport.Interfaces;
 using SFA.DAS.ToolsSupport.Services;
+using SFA.DAS.ToolsSupport.Mappers;
 
 namespace SFA.DAS.ToolsSupport.Api.AppStart;
 
@@ -32,6 +33,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IChallengeService, ChallengeService>();
         services.AddTransient<IFinanceDataService, FinanceDataService>();
 
+        services.AddTransient<IPendingChangesMapper, PendingChangesMapper>();
         return services;
     }
 }

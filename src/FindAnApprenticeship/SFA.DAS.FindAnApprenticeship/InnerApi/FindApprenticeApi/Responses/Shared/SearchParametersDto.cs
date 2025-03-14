@@ -9,6 +9,7 @@ public record SearchParametersDto(
     List<int>? SelectedRouteIds,
     int? Distance,
     bool DisabilityConfident,
+    bool? ExcludeNational,
     List<int>? SelectedLevelIds,
     string? Location,
     string? Latitude,
@@ -40,6 +41,7 @@ public record SearchParametersDto(
             && SearchTerm == other.SearchTerm
             && Distance == other.Distance
             && DisabilityConfident == other.DisabilityConfident
+            && ExcludeNational == other.ExcludeNational
             && Location == other.Location
             && Latitude == other.Latitude
             && Longitude == other.Longitude;

@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Shared
 {
@@ -15,6 +15,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Shared
         public string? EmploymentLocationInformation { get; set; }
         public AvailableWhere? EmploymentLocationOption { get; set; }
         public Address? Address { get; set; }
+        public List<Address>? OtherAddresses { get; set; }
         public string? EmployerName { get; set; }
         public string ProviderName { get; set; } = null!;
         public long Ukprn { get; set; }

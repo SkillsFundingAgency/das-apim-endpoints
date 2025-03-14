@@ -7,6 +7,7 @@ public record SearchParameters(
     List<int>? SelectedRouteIds,
     int? Distance,
     bool DisabilityConfident,
+    bool? ExcludeNational,
     List<int>? SelectedLevelIds,
     string? Location,
     string? Latitude,

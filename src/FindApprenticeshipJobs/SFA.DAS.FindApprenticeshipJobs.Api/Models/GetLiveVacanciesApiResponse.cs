@@ -1,4 +1,4 @@
-﻿using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
+using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -54,6 +54,7 @@ public class GetLiveVacanciesApiResponse
                 Route = source.Route,
                 Description = source.Description,
                 Address = source.Address,
+                OtherAddresses = source.OtherAddresses,
                 EmploymentLocations = source.EmploymentLocations,
                 EmploymentLocationInformation = source.EmploymentLocationInformation,
                 EmploymentLocationOption = source.EmploymentLocationOption,
@@ -124,6 +125,7 @@ public class GetLiveVacanciesApiResponse
         public string ApprenticeshipTitle { get; set; }
         public string? Description { get; set; }
         public Address? Address { get; set; }
+        public List<Address>? OtherAddresses { get; set; }
         public List<Address>? EmploymentLocations { get; set; }
         public string? EmploymentLocationInformation { get; set; }
         public AvailableWhere? EmploymentLocationOption { get; set; }

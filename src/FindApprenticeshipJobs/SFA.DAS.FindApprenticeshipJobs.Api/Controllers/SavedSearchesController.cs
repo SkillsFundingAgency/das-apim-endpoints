@@ -58,6 +58,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers
                         request.SearchTerm,
                         request.Location,
                         request.DisabilityConfident,
+                        request.ExcludeNational,
                         request.Longitude,
                         request.Latitude,
                         request.SelectedLevelIds,
