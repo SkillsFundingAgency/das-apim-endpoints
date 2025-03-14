@@ -1,0 +1,56 @@
+﻿@Api_HostAddress = https://localhost:5003
+
+@LarsCode = 119
+@OrderByDistance = Distance
+@QarExcellent = Excellent
+@QarNone = None
+@QarGood = Good
+@QarPoor = Poor
+@QarVeryPoor = VeryPoor
+@QarInvalidValue = NotGood
+
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&Qar={{QarExcellent}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for given QAR
+
+### 
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&Qar={{QarNone}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for given QAR
+
+### 
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&Qar={{QarGood}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for given QAR
+
+### 
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&Qar={{QarPoor}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for given QAR
+
+### 
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&Qar={{QarVeryPoor}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for given QAR
+ ### 
+ 
+ GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&Qar={{QarExcellent}}&Qar={{QarNone}}&Qar={{QarGood}}&Qar={{QarPoor}}&Qar={{QarVeryPoor}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for given QAR
+
+### 
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&Qar={{QarInvalidValue}}
+
+# expect validation error as Qar value  is not acceptable
+#  {
+#   "errors": {
+#     "ApprenticeProviderRatings": [
+#       "The value 'xxx' is not valid."
+#     ]
+#   },
+#   "type": "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+#   "title": "One or more validation errors occurred.",
+#   "status": 400,
+#   "traceId": ...
+# }

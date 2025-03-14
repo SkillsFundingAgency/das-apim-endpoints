@@ -20,7 +20,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
         public async Task Then_Deletes_Shortlist_For_User_From_Mediator(
             Guid id,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ShortlistController controller)
+            [Greedy] ShortlistsController controller)
         {
             var controllerResult = await controller.DeleteShortlistForUser(id) as ObjectResult;
 
@@ -36,7 +36,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist
         public async Task And_Exception_Then_Returns_Bad_Request(
             Guid id,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ShortlistController controller)
+            [Greedy] ShortlistsController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(

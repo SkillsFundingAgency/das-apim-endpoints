@@ -2,6 +2,7 @@
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
+    [Obsolete("FAT25 should be deleted eventually")]
     public class GetShortlistItem
     {
         public Guid Id { get; set; }
