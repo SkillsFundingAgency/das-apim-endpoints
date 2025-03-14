@@ -5,24 +5,24 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Aodp.Application.Queries.Qualifications
 {
-    public class GetNewQualificationsExportHandler : IRequestHandler<GetNewQualificationsExportQuery, BaseMediatrResponse<GetQualificationsExportResponse>>
+    public class GetChangedQualificationsExportHandler : IRequestHandler<GetChangedQualificationsExportQuery, BaseMediatrResponse<GetQualificationsExportResponse>>
     {
         private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
-        public GetNewQualificationsExportHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
+        public GetChangedQualificationsExportHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
-        public async Task<BaseMediatrResponse<GetQualificationsExportResponse>> Handle(GetNewQualificationsExportQuery request, CancellationToken cancellationToken)
+        public async Task<BaseMediatrResponse<GetQualificationsExportResponse>> Handle(GetChangedQualificationsExportQuery request, CancellationToken cancellationToken)
         {
             var response = new BaseMediatrResponse<GetQualificationsExportResponse>();
             try
             {
-                var result = await _apiClient.Get<BaseMediatrResponse<GetQualificationsExportResponse>>(new GetNewQualificationCsvExportApiRequest());
+                var result = await _apiClient.Get<BaseMediatrResponse<GetQualificationsExportResponse>>(new GetChangedQualificationCsvExportApiRequest());
                 if (!result.Success || result?.Value == null)
                 {
                     response.Success = false;
-                    response.ErrorMessage = "No new qualifications found.";
+                    response.ErrorMessage = "No changed qualifications found.";
                 }
                 else
                 {
@@ -31,7 +31,7 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
                         QualificationExports = result.Value.QualificationExports
                     };
                     response.Success = true;
-                }               
+                }
             }
             catch (Exception ex)
             {

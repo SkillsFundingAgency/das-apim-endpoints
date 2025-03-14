@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Aodp.Application.Queries.Qualifications
 {
-    public class GetNewQualificationsExportQuery : IRequest<BaseMediatrResponse<GetNewQualificationsExportResponse>>
+    public class GetNewQualificationsExportQuery : IRequest<BaseMediatrResponse<GetQualificationsExportResponse>>
     {
     }
 

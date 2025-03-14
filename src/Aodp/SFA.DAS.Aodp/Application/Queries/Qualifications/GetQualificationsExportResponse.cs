@@ -1,8 +1,8 @@
 ﻿namespace SFA.DAS.Aodp.Application.Queries.Qualifications
 {
-    public class GetNewQualificationsExportResponse
+    public class GetQualificationsExportResponse
     {
-        public List<QualificationExport>? QualificationExports { get; set; }
+        public IEnumerable<QualificationExport> QualificationExports { get; set; } = new List<QualificationExport>();
     }
 
     public class QualificationExport
