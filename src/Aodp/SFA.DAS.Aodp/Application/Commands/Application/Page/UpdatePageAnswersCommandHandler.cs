@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 public class UpdatePageAnswersCommandHandler : IRequestHandler<UpdatePageAnswersCommand, BaseMediatrResponse<UpdatePageAnswersCommandResponse>>
 {
@@ -10,7 +10,6 @@ public class UpdatePageAnswersCommandHandler : IRequestHandler<UpdatePageAnswers
     public UpdatePageAnswersCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
     {
         _apiClient = apiClient;
-
     }
 
     public async Task<BaseMediatrResponse<UpdatePageAnswersCommandResponse>> Handle(UpdatePageAnswersCommand request, CancellationToken cancellationToken)

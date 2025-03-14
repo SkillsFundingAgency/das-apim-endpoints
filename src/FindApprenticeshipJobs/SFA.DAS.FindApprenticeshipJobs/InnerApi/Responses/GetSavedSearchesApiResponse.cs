@@ -68,6 +68,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
             
             [JsonProperty("disabilityConfident")]
             public bool DisabilityConfident { get; set; }
+
+            [JsonProperty("excludeNational")]
+            public bool? ExcludeNational { get; set; }
         }
     }
 }

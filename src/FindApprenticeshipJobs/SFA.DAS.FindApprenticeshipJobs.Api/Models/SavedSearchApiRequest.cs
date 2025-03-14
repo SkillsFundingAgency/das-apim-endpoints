@@ -14,6 +14,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
         public decimal? Distance { get; set; }
         public string? SearchTerm { get; set; }
         public bool DisabilityConfident { get; set; }
+        public bool? ExcludeNational { get; set; }
         public string? UnSubscribeToken { get; set; }
         public List<Vacancy> Vacancies { get; set; } = [];
 
@@ -80,6 +81,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
                 }).ToList(),
                 Distance = savedSearchApiRequest.Distance,
                 DisabilityConfident = savedSearchApiRequest.DisabilityConfident,
+                ExcludeNational = savedSearchApiRequest.ExcludeNational,
                 Location = savedSearchApiRequest.Location,
                 SearchTerm = savedSearchApiRequest.SearchTerm,
                 UnSubscribeToken = savedSearchApiRequest.UnSubscribeToken,
