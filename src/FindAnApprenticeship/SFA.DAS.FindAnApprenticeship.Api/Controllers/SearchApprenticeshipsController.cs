@@ -108,6 +108,7 @@ public class SearchApprenticeshipsController(ILogger<SearchApprenticeshipsContro
                 id,
                 candidateId,
                 apiRequest.DisabilityConfident,
+                apiRequest.ExcludeNational,
                 apiRequest.Distance,
                 apiRequest.Location,
                 apiRequest.SearchTerm,

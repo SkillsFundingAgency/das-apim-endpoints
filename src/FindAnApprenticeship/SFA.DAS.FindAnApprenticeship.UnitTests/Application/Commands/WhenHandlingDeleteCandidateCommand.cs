@@ -88,7 +88,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                 .Setup(x => x.PostWithResponseCode<NullResponse>(
                     It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
             vacancyService.Setup(x => x.GetVacancy($"VAC{vacancyRef}")).ReturnsAsync(vacancyResponse);
-            vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse)).Returns(expectedAddress);
+            vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse, false)).Returns(expectedAddress);
 
             var actual = await handler.Handle(command, CancellationToken.None);
 
@@ -182,7 +182,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                 .Setup(x => x.PostWithResponseCode<NullResponse>(
                     It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
             vacancyService.Setup(x => x.GetVacancy($"VAC{vacancyRef}")).ReturnsAsync(vacancyResponse);
-            vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse)).Returns(expectedAddress);
+            vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse, false)).Returns(expectedAddress);
 
             var actual = await handler.Handle(command, CancellationToken.None);
 
@@ -408,7 +408,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
             
             vacancyService.Setup(x => x.GetVacancy($"VAC{vacancyRef}")).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
             vacancyService.Setup(x => x.GetClosedVacancy($"VAC{vacancyRef}")).ReturnsAsync(closedVacancyResponse);
-            vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse)).Returns(expectedAddress);
+            vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse, false)).Returns(expectedAddress);
 
             var actual = await handler.Handle(command, CancellationToken.None);
 
@@ -504,7 +504,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
 
             vacancyService.Setup(x => x.GetVacancy($"VAC{vacancyRef}")).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
             vacancyService.Setup(x => x.GetClosedVacancy($"VAC{vacancyRef}")).ReturnsAsync(closedVacancyResponse);
-            vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse)).Returns(expectedAddress);
+            vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse, false)).Returns(expectedAddress);
 
             var actual = await handler.Handle(command, CancellationToken.None);
 
@@ -607,7 +607,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
 
             vacancyService.Setup(x => x.GetVacancy($"VAC{vacancyRef}")).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
             vacancyService.Setup(x => x.GetClosedVacancy($"VAC{vacancyRef}")).ReturnsAsync(closedVacancyResponse);
-            vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse)).Returns(expectedAddress);
+            vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse, false)).Returns(expectedAddress);
 
             var actual = await handler.Handle(command, CancellationToken.None);
 

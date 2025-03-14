@@ -16,6 +16,7 @@ using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.WithdrawApplication;
 
@@ -37,7 +38,7 @@ public class WithdrawApplicationCommandHandler(
         }
 
         var response = await recruitApiClient.PostWithResponseCode<NullResponse>(
-            new PostWithdrawApplicationRequest(request.CandidateId, Convert.ToInt64(application.VacancyReference.Replace("VAC", ""))), false);
+            new PostWithdrawApplicationRequest(request.CandidateId, Convert.ToInt64(application.VacancyReference.TrimVacancyReference())), false);
 
         if (response.StatusCode != HttpStatusCode.NoContent)
         {
@@ -70,7 +71,7 @@ public class WithdrawApplicationCommandHandler(
             application.Candidate.FirstName,
             vacancyResponse.Title,
             vacancyResponse.EmployerName,
-            vacancyService.GetVacancyWorkLocation(vacancyResponse));
+            vacancyService.GetVacancyWorkLocation(vacancyResponse, true));
     }
 
     private WithdrawApplicationEmail GetWithdrawApplicationEmail(GetApplicationApiResponse application, GetApprenticeshipVacancyItemResponse vacancyResponse)
@@ -81,6 +82,6 @@ public class WithdrawApplicationCommandHandler(
             application.Candidate.FirstName,
             vacancyResponse.Title,
             vacancyResponse.EmployerName,
-            vacancyService.GetVacancyWorkLocation(vacancyResponse));
+            vacancyService.GetVacancyWorkLocation(vacancyResponse, true));
     }
 }

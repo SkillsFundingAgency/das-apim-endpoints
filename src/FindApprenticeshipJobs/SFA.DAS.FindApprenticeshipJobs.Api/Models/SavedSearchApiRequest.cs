@@ -1,4 +1,4 @@
-﻿using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
+using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -14,6 +14,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
         public decimal? Distance { get; set; }
         public string? SearchTerm { get; set; }
         public bool DisabilityConfident { get; set; }
+        public bool? ExcludeNational { get; set; }
         public string? UnSubscribeToken { get; set; }
         public List<Vacancy> Vacancies { get; set; } = [];
 
@@ -27,9 +28,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
 
             public string? EmployerName { get; set; }
 
-            public Address? EmployerLocation { get; set; }
-            public List<Address>? EmployerLocations { get; set; }
-            public AvailableWhere? EmployerLocationOption { get; set; }
+            public Address? Address { get; set; }
+            public List<Address>? OtherAddresses { get; set; }
+            public AvailableWhere? EmploymentLocationOption { get; set; }
 
             public string? Wage { get; set; }
 
@@ -80,6 +81,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
                 }).ToList(),
                 Distance = savedSearchApiRequest.Distance,
                 DisabilityConfident = savedSearchApiRequest.DisabilityConfident,
+                ExcludeNational = savedSearchApiRequest.ExcludeNational,
                 Location = savedSearchApiRequest.Location,
                 SearchTerm = savedSearchApiRequest.SearchTerm,
                 UnSubscribeToken = savedSearchApiRequest.UnSubscribeToken,
@@ -102,9 +104,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
                         TrainingCourse = vacancy.TrainingCourse,
                         VacancyReference = vacancy.VacancyReference,
                         Wage = vacancy.Wage,
-                        EmployerLocation = vacancy.EmployerLocation,
-                        EmployerLocations = vacancy.EmployerLocations,
-                        EmployerLocationOption = vacancy.EmployerLocationOption,
+                        EmployerLocation = vacancy.Address,
+                        OtherAddresses = vacancy.OtherAddresses,
+                        EmploymentLocationOption = vacancy.EmploymentLocationOption,
                         VacancySource = vacancy.VacancySource,
                         WageUnit = vacancy.WageUnit,
                         WageType = vacancy.WageType

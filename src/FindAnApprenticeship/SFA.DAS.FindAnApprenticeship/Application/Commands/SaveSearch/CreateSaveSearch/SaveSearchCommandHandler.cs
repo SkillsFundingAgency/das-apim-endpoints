@@ -27,6 +27,7 @@ public class SaveSearchCommandHandler(
                     request.SelectedRouteIds,
                     request.Distance,
                     request.DisabilityConfident,
+                    request.ExcludeNational,
                     request.SelectedLevelIds,
                     request.Location,
                     location?.GeoPoint[0].ToString(CultureInfo.InvariantCulture),
