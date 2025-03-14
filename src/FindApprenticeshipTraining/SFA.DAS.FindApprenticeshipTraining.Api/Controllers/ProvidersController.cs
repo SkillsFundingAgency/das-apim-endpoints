@@ -14,8 +14,8 @@ public class ProvidersController(IMediator _mediator) : ControllerBase
     [HttpGet]
     [Produces("application/json")]
     [ProducesResponseType(typeof(GetRoatpProvidersQueryResult), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetProviders(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetProviders([FromQuery] bool? Live, CancellationToken cancellationToken)
     {
-        return Ok(await _mediator.Send(new GetRoatpProvidersQuery(), cancellationToken));
+        return Ok(await _mediator.Send(new GetRoatpProvidersQuery() { Live = Live ?? false }, cancellationToken));
     }
 }
