@@ -3,8 +3,14 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications;
 
 public class GetChangedQualificationsQueryResponse
 {
-    public List<ChangedQualification> Data { get; set; } = new();
 
+    public int TotalRecords { get; set; }
+    public int? Skip { get; set; }
+    public int Take { get; set; }
+    public List<ChangedQualification> Data { get; set; } = new();
+    public Job Job { get; set; } = new();
+
+}
     public class ChangedQualification
     {
         public string QualificationReference { get; set; } = string.Empty;
@@ -16,5 +22,5 @@ public class GetChangedQualificationsQueryResponse
         public string Subject { get; set; } = string.Empty;
         public string SectorSubjectArea { get; set; } = string.Empty;
         public string ChangedFieldNames { get; set; } = string.Empty;
-    }
+    public string Status { get; set; } = string.Empty;
 }

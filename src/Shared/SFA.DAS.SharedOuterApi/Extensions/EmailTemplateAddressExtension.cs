@@ -27,12 +27,11 @@ namespace SFA.DAS.SharedOuterApi.Extensions
             var cityNames = addresses
                 .Select(address => address.GetLastNonEmptyField())
                 .Distinct()
-                .OrderBy(city => city)
                 .ToList();
 
             return cityNames.Count == 1 && addresses.Count > 1
                 ? $"{cityNames.First()} ({addresses.Count} available locations)"
-                : string.Join(", ", cityNames);
+                : string.Join(", ", cityNames.OrderBy(x => x));
         }
     }
 }

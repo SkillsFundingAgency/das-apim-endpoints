@@ -7,6 +7,7 @@ public class PostApplicationFeedbackRequest
     public long VacancyReference { get; set; }
     public string VacancyCity { get; set; }
     public string VacancyPostcode { get; set; }
+    public string VacancyLocation { get; set; }
     public string VacancyTitle { get; set; }
     public string VacancyEmployerName { get; set; }
 }

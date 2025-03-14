@@ -6,6 +6,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -93,7 +94,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             courseService.Setup(x => x.GetLevels()).ReturnsAsync(courseLevelsResponse);
 
             var expectedGetCandidateApplicationRequest =
-                new GetApplicationByReferenceApiRequest(query.CandidateId.Value, query.VacancyReference.Replace("VAC","", StringComparison.CurrentCultureIgnoreCase));
+                new GetApplicationByReferenceApiRequest(query.CandidateId.Value, query.VacancyReference.TrimVacancyReference());
             candidateApiClient
                 .Setup(client =>
                     client.Get<GetApplicationByReferenceApiResponse>(
@@ -109,7 +110,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                 .ReturnsAsync(candidateAddressApiResponse);
 
             var expectedGetSavedVacancyApiRequest =
-                new GetSavedVacancyApiRequest(query.CandidateId.Value, query.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase));
+                new GetSavedVacancyApiRequest(query.CandidateId.Value, query.VacancyReference.TrimVacancyReference());
             candidateApiClient
                 .Setup(client =>
                     client.Get<GetSavedVacancyApiResponse>(

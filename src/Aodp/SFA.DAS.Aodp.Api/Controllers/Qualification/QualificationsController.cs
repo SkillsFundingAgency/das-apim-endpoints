@@ -21,6 +21,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
 
         [HttpGet]
         [ProducesResponseType(typeof(BaseMediatrResponse<GetNewQualificationsQueryResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetChangedQualificationsQueryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetQualifications([FromQuery] string? status,
@@ -48,7 +49,14 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                 }
                 else if (validationResult.ProcessedStatus == "changed")
                 {
-                    var query = new GetChangedQualificationsQuery();
+                    var query = new GetChangedQualificationsQuery()
+                    {
+                        Name = name,
+                        Organisation = organisation,
+                        QAN = qan,
+                        Skip = skip,
+                        Take = take
+                    };
                     return await SendRequestAsync(query);
                 }
                 else
@@ -88,20 +96,40 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         }
 
         [HttpGet("export")]
-        [ProducesResponseType(typeof(BaseMediatrResponse<GetNewQualificationsExportResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetNewQualificationsCsvExportResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetChangedQualificationsCsvExportResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetQualificationCSVExportData([FromQuery] string? status)
         {
-            IActionResult response = await HandleNewQualificationCSVExport();          
+     
+
+            IActionResult response = status switch
+            {
+                "new" => await HandleNewQualificationCSVExport(),
+                "changed" => await HandleChangedQualificationCSVExport(),
+       
+            };
 
             return response;
-        }       
-
+        }
         private async Task<IActionResult> HandleNewQualificationCSVExport()
         {
             var result = await _mediator.Send(new GetNewQualificationsExportQuery());
+
+            if (result == null || !result.Success || result.Value == null)
+            {
+                _logger.LogWarning(result?.ErrorMessage);
+                return NotFound(new { message = result?.ErrorMessage });
+            }
+            return Ok(result);
+        }
+
+        private async Task<IActionResult> HandleChangedQualificationCSVExport()
+        {
+            var result = await _mediator.Send(new GetChangedQualificationsCsvExportQuery());
+
 
             if (result == null || !result.Success || result.Value == null)
             {
