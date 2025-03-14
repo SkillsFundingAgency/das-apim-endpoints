@@ -136,39 +136,41 @@ public class GetManageApprenticeshipDetailsQueryHandler(
 
     private static PendingPriceChange ToResponse(GetPendingPriceChangeResponse pendingPriceChangeResponse)
     {
-        if (pendingPriceChangeResponse == null || !pendingPriceChangeResponse.HasPendingPriceChange)
+        if (pendingPriceChangeResponse is not { HasPendingPriceChange: true })
         {
             return null;
         }
 
-        var pendingPriceChange = new PendingPriceChange();
-           
-        pendingPriceChange.Cost = pendingPriceChangeResponse.PendingPriceChange.PendingTotalPrice;
-        pendingPriceChange.EndPointAssessmentPrice = pendingPriceChangeResponse.PendingPriceChange.PendingAssessmentPrice;
-        pendingPriceChange.TrainingPrice = pendingPriceChangeResponse.PendingPriceChange.PendingTrainingPrice;
-        pendingPriceChange.ProviderApprovedDate = pendingPriceChangeResponse.PendingPriceChange.ProviderApprovedDate;
-        pendingPriceChange.EmployerApprovedDate = pendingPriceChangeResponse.PendingPriceChange.EmployerApprovedDate;
-        pendingPriceChange.Initiator = pendingPriceChangeResponse.PendingPriceChange.Initiator;
+        var pendingPriceChange = new PendingPriceChange
+        {
+            Cost = pendingPriceChangeResponse.PendingPriceChange.PendingTotalPrice,
+            EndPointAssessmentPrice = pendingPriceChangeResponse.PendingPriceChange.PendingAssessmentPrice,
+            TrainingPrice = pendingPriceChangeResponse.PendingPriceChange.PendingTrainingPrice,
+            ProviderApprovedDate = pendingPriceChangeResponse.PendingPriceChange.ProviderApprovedDate,
+            EmployerApprovedDate = pendingPriceChangeResponse.PendingPriceChange.EmployerApprovedDate,
+            Initiator = pendingPriceChangeResponse.PendingPriceChange.Initiator
+        };
 
         return pendingPriceChange;
     }
 
     private static PendingStartDateChange ToResponse(GetPendingStartDateChangeApiResponse pendingStartDateChangeResponse)
     {
-        if (pendingStartDateChangeResponse == null || !pendingStartDateChangeResponse.HasPendingStartDateChange) return null;
+        if (pendingStartDateChangeResponse is not { HasPendingStartDateChange: true }) return null;
 
-        var pendingStartDateChange = new PendingStartDateChange();
-        
-        pendingStartDateChange.PendingActualStartDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingActualStartDate;
-        pendingStartDateChange.PendingPlannedEndDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingPlannedEndDate;
-        pendingStartDateChange.ProviderApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate;
-        pendingStartDateChange.EmployerApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate;
-        pendingStartDateChange.Initiator = pendingStartDateChangeResponse.PendingStartDateChange.Initiator;
+        var pendingStartDateChange = new PendingStartDateChange
+        {
+            PendingActualStartDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingActualStartDate,
+            PendingPlannedEndDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingPlannedEndDate,
+            ProviderApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate,
+            EmployerApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate,
+            Initiator = pendingStartDateChangeResponse.PendingStartDateChange.Initiator
+        };
 
         return pendingStartDateChange;
     }
 
-    private PaymentsStatus ToResponse(GetPaymentStatusApiResponse source)
+    private static PaymentsStatus ToResponse(GetPaymentStatusApiResponse source)
     {
         if (source == null) return new PaymentsStatus { PaymentsFrozen = false };
 
@@ -180,11 +182,9 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         };
     }
 
-    private LearnerStatus ToResponse(GetLearnerStatusResponse source)
+    private static LearnerStatus ToResponse(GetLearnerStatusResponse source)
     {
-        if (source == null) return LearnerStatus.None;
-
-        return source.LearnerStatus;
+        return source?.LearnerStatus ?? LearnerStatus.None;
     }
 
     private async Task<bool?> CanActualStartDateBeChanged(DateTime? actualStartDate)
