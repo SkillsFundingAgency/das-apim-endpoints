@@ -200,29 +200,27 @@ public class WhenGettingApprenticeshipDetails
         actual.Should().BeNull();
     }
 
-    [TestCase(PaymentStatus.Active, "Live", "blue")]
-    [TestCase(PaymentStatus.Paused, "Paused", "grey")]
-    [TestCase(PaymentStatus.Withdrawn, "Stopped", "red")]
-    [TestCase(PaymentStatus.Completed, "Completed", "green")]
-    public void Then_Map_Past_Payment_Status_As_Expected(PaymentStatus status, string expectedDesc, string expectedTag)
+    [TestCase(PaymentStatus.Active, "Live")]
+    [TestCase(PaymentStatus.Paused, "Paused")]
+    [TestCase(PaymentStatus.Withdrawn, "Stopped")]
+    [TestCase(PaymentStatus.Completed, "Completed")]
+    public void Then_Map_Past_Payment_Status_As_Expected(PaymentStatus status, string expectedDesc)
     {
-        var (text, tagColor) = GetApprenticeshipQueryHandler.MapPaymentStatus(status, DateTime.Now.AddMonths(-2));
+        var text = GetApprenticeshipQueryHandler.MapPaymentStatus(status, DateTime.Now.AddMonths(-2));
 
         text.Should().Be(expectedDesc);
-        tagColor.Should().Be(expectedTag);
     }
 
 
-    [TestCase(PaymentStatus.Active, "Waiting to start", "")]
-    [TestCase(PaymentStatus.Paused, "Paused", "grey")]
-    [TestCase(PaymentStatus.Withdrawn, "Stopped", "red")]
-    [TestCase(PaymentStatus.Completed, "Completed", "green")]
-    public void Then_Map_Future_Payment_Status_As_Expected(PaymentStatus status, string expectedDesc, string expectedTag)
+    [TestCase(PaymentStatus.Active, "Waiting to start")]
+    [TestCase(PaymentStatus.Paused, "Paused")]
+    [TestCase(PaymentStatus.Withdrawn, "Stopped")]
+    [TestCase(PaymentStatus.Completed, "Completed")]
+    public void Then_Map_Future_Payment_Status_As_Expected(PaymentStatus status, string expectedDesc)
     {
-        var (text, tagColor) = GetApprenticeshipQueryHandler.MapPaymentStatus(status, DateTime.Now.AddMonths(2));
+        var text = GetApprenticeshipQueryHandler.MapPaymentStatus(status, DateTime.Now.AddMonths(2));
 
         text.Should().Be(expectedDesc);
-        tagColor.Should().Be(expectedTag);
     }
 
     [Test, MoqAutoData]

@@ -25,24 +25,17 @@ public class SupportApprenticeshipDetails
     public DateTime EndDate { get; set; }
     public DateTime? PauseDate { get; set; }
     public PaymentStatus PaymentStatus { get; set; }
-    public ApprenticeshipStatus ApprenticeshipStatus { get; set; }
-    public IEnumerable<Alerts> Alerts { get; set; }
     public DateTime DateOfBirth { get; set; }
     public string ProviderRef { get; set; }
     public string EmployerRef { get; set; }
-    public decimal? TotalAgreedPrice { get; set; }
     public string CohortReference { get; set; }
-    public long AccountLegalEntityId { get; set; }
     public ConfirmationStatus? ConfirmationStatus { get; set; }
-    public long? TransferSenderId { get; set; }
-    public bool HasHadDataLockSuccess { get; set; }
     public string CourseCode { get; set; }
     public decimal? Cost { get; set; }
     public AgreementStatus AgreementStatus { get; set; }
     public DateTime? StopDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public bool? MadeRedundant { get; set; }
-    public string StandardUId { get; set; }
     public string? TrainingCourseVersion { get; set; }
     public bool TrainingCourseVersionConfirmed { get; set; }
     public string? TrainingCourseOption { get; set; }
@@ -53,46 +46,10 @@ public class SupportApprenticeshipDetails
 
 public enum PaymentStatus : short
 {
-    //PendingApproval = 0, //TODO : Remove later
     Active = 1,
     Paused = 2,
     Withdrawn = 3,
     Completed = 4
-}
-
-public enum ApprenticeshipStatus : short
-{
-    [Description("Waiting to start")]
-    WaitingToStart = 0,
-    [Description("Live")]
-    Live = 1,
-    [Description("Paused")]
-    Paused = 2,
-    [Description("Stopped")]
-    Stopped = 3,
-    [Description("Completed")]
-    Completed = 4,
-    [Description("Unknown")]
-    Unknown
-}
-
-[Flags]
-public enum Alerts
-{
-    [Description("ILR data mismatch")]
-    IlrDataMismatch = 0,
-
-    [Description("Changes pending")]
-    ChangesPending = 1,
-
-    [Description("Changes requested")]
-    ChangesRequested = 2,
-
-    [Description("Changes for review")]
-    ChangesForReview = 3,
-
-    [Description("Confirm dates")]
-    ConfirmDates = 4
 }
 
 public enum ConfirmationStatus : short

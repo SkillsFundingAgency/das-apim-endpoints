@@ -2,13 +2,8 @@
 
 namespace SFA.DAS.ToolsSupport.InnerApi.Requests;
 
-public class GetApprovedApprenticeshipsByCohortIdRequest : IGetApiRequest
+public class GetApprovedApprenticeshipsByCohortIdRequest(long cohortId) : IGetApiRequest
 {
-    public readonly long CohortId;
+    public readonly long CohortId = cohortId;
     public string GetUrl => $"api/cohorts/{CohortId}/approved-apprenticeships";
-
-    public GetApprovedApprenticeshipsByCohortIdRequest(long cohortId)
-    {
-        CohortId = cohortId;
-    }
 }

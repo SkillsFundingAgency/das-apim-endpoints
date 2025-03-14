@@ -2,13 +2,8 @@
 
 namespace SFA.DAS.ToolsSupport.InnerApi.Requests;
 
-public class GetCohortByIdRequest : IGetApiRequest
+public class GetCohortByIdRequest(long cohortId) : IGetApiRequest
 {
-    public readonly long CohortId;
+    public readonly long CohortId = cohortId;
     public string GetUrl => $"api/cohorts/{CohortId}";
-
-    public GetCohortByIdRequest(long cohortId)
-    {
-        CohortId = cohortId;
-    }
 }

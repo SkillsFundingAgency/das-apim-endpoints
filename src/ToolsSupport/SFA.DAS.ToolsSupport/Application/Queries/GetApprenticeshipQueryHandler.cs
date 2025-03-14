@@ -30,14 +30,12 @@ public class GetApprenticeshipQueryHandler(IInternalApiClient<CommitmentsV2ApiCo
         var trainingDate = await trainingDateTask;
         var priceEpisode = await priceEpisodeTask;
 
-        var (paymentStatusText, paymentStatusTagColour) = MapPaymentStatus(apprenticeship.PaymentStatus, apprenticeship.StartDate);
-
         return new GetApprenticeshipQueryResult
         {
             ApprenticeshipId = apprenticeship.Id,
             EmployerAccountId = apprenticeship.EmployerAccountId,
             AgreementStatus = apprenticeship.AgreementStatus.GetDescription(),
-            PaymentStatus = paymentStatusText,
+            PaymentStatus = MapPaymentStatus(apprenticeship.PaymentStatus, apprenticeship.StartDate),
             MadeRedundant = apprenticeship.MadeRedundant,
             CompletionDate = apprenticeship.PaymentStatus == PaymentStatus.Completed ? apprenticeship.CompletionDate : null,
             StopDate = apprenticeship.PaymentStatus == PaymentStatus.Withdrawn ? apprenticeship.StopDate : null,
@@ -66,26 +64,26 @@ public class GetApprenticeshipQueryHandler(IInternalApiClient<CommitmentsV2ApiCo
         };
     }
 
-    public static (string paymentStatusText, string paymentStatusTagColour) MapPaymentStatus(PaymentStatus paymentStatus, DateTime? startDate)
+    public static string MapPaymentStatus(PaymentStatus paymentStatus, DateTime? startDate)
     {
         var isStartDateInFuture = startDate.HasValue && startDate.Value > new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
 
         switch (paymentStatus)
         {
             case PaymentStatus.Active:
-                return isStartDateInFuture ? ("Waiting to start", "") : ("Live", "blue");
+                return isStartDateInFuture ? "Waiting to start" : "Live";
 
             case PaymentStatus.Paused:
-                return ("Paused", "grey");
+                return "Paused";
 
             case PaymentStatus.Withdrawn:
-                return ("Stopped", "red");
+                return "Stopped";
 
             case PaymentStatus.Completed:
-                return ("Completed", "green");
+                return "Completed";
 
             default:
-                return (string.Empty, string.Empty);
+                return string.Empty;
         }
     }
 

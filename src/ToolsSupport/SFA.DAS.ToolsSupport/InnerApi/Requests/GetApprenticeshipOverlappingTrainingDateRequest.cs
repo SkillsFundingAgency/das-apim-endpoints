@@ -2,13 +2,8 @@
 
 namespace SFA.DAS.ToolsSupport.InnerApi.Requests;
 
-public class GetApprenticeshipOverlappingTrainingDateRequest : IGetApiRequest
+public class GetApprenticeshipOverlappingTrainingDateRequest(long id) : IGetApiRequest
 {
-    public readonly long Id;
+    public readonly long Id = id;
     public string GetUrl => $"api/overlapping-training-date-request/{Id}";
-
-    public GetApprenticeshipOverlappingTrainingDateRequest(long id)
-    {
-        Id = id;
-    }
 }

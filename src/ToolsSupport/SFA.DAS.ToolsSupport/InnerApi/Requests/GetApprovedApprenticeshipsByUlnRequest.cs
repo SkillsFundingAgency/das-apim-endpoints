@@ -2,13 +2,8 @@
 
 namespace SFA.DAS.ToolsSupport.InnerApi.Requests;
 
-public class GetApprovedApprenticeshipsByUlnRequest : IGetApiRequest
+public class GetApprovedApprenticeshipsByUlnRequest(string uln) : IGetApiRequest
 {
-    public readonly string Uln;
+    public readonly string Uln = uln;
     public string GetUrl => $"api/apprenticeships/uln/{Uln}/approved-apprenticeships";
-
-    public GetApprovedApprenticeshipsByUlnRequest(string uln)
-    {
-        Uln = uln;
-    }
 }

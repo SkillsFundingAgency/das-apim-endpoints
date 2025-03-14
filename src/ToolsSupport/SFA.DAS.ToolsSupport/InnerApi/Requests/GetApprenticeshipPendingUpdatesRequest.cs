@@ -2,13 +2,8 @@
 
 namespace SFA.DAS.ToolsSupport.InnerApi.Requests;
 
-public class GetApprenticeshipPendingUpdatesRequest : IGetApiRequest
+public class GetApprenticeshipPendingUpdatesRequest(long id) : IGetApiRequest
 {
-    public readonly long Id;
+    public readonly long Id = id;
     public string GetUrl => $"api/apprenticeships/{Id}/updates";
-
-    public GetApprenticeshipPendingUpdatesRequest(long id)
-    {
-        Id = id;
-    }
 }

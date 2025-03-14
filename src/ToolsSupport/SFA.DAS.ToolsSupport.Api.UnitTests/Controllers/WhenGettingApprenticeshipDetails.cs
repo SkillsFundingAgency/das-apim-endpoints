@@ -28,12 +28,9 @@ public class WhenGettingApprenticeshipDetails
 
         var actual = await sut.GetById(id) as ObjectResult;
 
-        using (new AssertionScope())
-        {
-            actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().BeOfType<GetApprenticeshipQueryResult>()
-                .Which.Should().BeEquivalentTo(mockQueryResult);
-        }
+        actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        actual.Value.Should().BeOfType<GetApprenticeshipQueryResult>()
+            .Which.Should().BeEquivalentTo(mockQueryResult);
     }
 
     [Test, MoqAutoData]

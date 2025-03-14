@@ -28,12 +28,9 @@ public class WhenGettingApprenticeshipsByUln
 
         var actual = await sut.GetByUln(uln) as ObjectResult;
 
-        using (new AssertionScope())
-        {
-            actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().BeOfType<GetUlnSupportApprenticeshipsQueryResult>()
-                .Which.Should().BeEquivalentTo(mockQueryResult);
-        }
+        actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        actual.Value.Should().BeOfType<GetUlnSupportApprenticeshipsQueryResult>()
+            .Which.Should().BeEquivalentTo(mockQueryResult);
     }
 
     [Test, MoqAutoData]
