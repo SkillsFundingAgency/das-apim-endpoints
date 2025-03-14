@@ -4,7 +4,7 @@ using SFA.DAS.ToolsSupport.Interfaces;
 
 namespace SFA.DAS.ToolsSupport.Application.Services;
 
-public class TokenService(ISecureTokenHttpClient<TokenServiceApiConfiguration> secureTokenHttpClient) : ITokenService
+public class TokenService(ITokenApiClient<TokenServiceApiConfiguration> secureTokenHttpClient) : ITokenService
 {
     public async Task<PrivilegedAccessToken> GetPrivilegedAccessTokenAsync()
     {
