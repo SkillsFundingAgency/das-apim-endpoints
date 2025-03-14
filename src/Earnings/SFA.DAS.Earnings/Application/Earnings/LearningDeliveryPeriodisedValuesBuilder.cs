@@ -74,11 +74,47 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         };
     }
 
+    public static LearningDeliveryPeriodisedValues BuildNthIncentivePaymentValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName, string additionalPaymentType, int n)
+    {
+        var additionalPayments = GetAdditionalPayments(earningsApprenticeship, additionalPaymentType);
+
+        var nthPayment = additionalPayments
+            .OrderBy(i => i.AcademicYear)
+            .ThenBy(i => i.DeliveryPeriod)
+            .Skip(n - 1)
+            .FirstOrDefault();
+
+        return new LearningDeliveryPeriodisedValues
+        {
+            AttributeName = attributeName,
+            Period1 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 1 ? nthPayment.Amount : 0,
+            Period2 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 2 ? nthPayment.Amount : 0,
+            Period3 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 3 ? nthPayment.Amount : 0,
+            Period4 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 4 ? nthPayment.Amount : 0,
+            Period5 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 5 ? nthPayment.Amount : 0,
+            Period6 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 6 ? nthPayment.Amount : 0,
+            Period7 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 7 ? nthPayment.Amount : 0,
+            Period8 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 8 ? nthPayment.Amount : 0,
+            Period9 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 9 ? nthPayment.Amount : 0,
+            Period10 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 10 ? nthPayment.Amount : 0,
+            Period11 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 11 ? nthPayment.Amount : 0,
+            Period12 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 12 ? nthPayment.Amount : 0
+        };
+    }
+
     private static List<Instalment> GetInstalmentsForAcademicYear(Apprenticeship earningsApprenticeship, short academicYear)
     {
         return earningsApprenticeship.Episodes
             .SelectMany(episode => episode.Instalments)
             .Where(i => i.AcademicYear == academicYear)
+            .ToList();
+    }
+
+    private static List<AdditionalPayment> GetAdditionalPayments(Apprenticeship earningsApprenticeship, string additionalPaymentType)
+    {
+        return earningsApprenticeship.Episodes
+            .SelectMany(episode => episode.AdditionalPayments)
+            .Where(i => i.AdditionalPaymentType == additionalPaymentType)
             .ToList();
     }
 }
