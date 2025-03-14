@@ -20,7 +20,7 @@ public class WhenGettingUsersByEmail
         [Frozen] Mock<IInternalApiClient<EmployerProfilesApiConfiguration>> mockApiClient,
         GetUsersByEmailQueryHandler sut)
     {
-        var expectedUrl = $"api/users?email={WebUtility.UrlEncode(mockQuery.Email)}";
+        var expectedUrl = $"api/users/query?email={WebUtility.UrlEncode(mockQuery.Email)}";
         mockApiClient.Setup(client => client.Get<GetUsersByEmailResponse>(It.Is<GetUsersByEmailRequest>(c => c.GetUrl == expectedUrl)))
             .ReturnsAsync(mockApiResponse);
 
