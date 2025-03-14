@@ -14,7 +14,11 @@ public class GetRoatpProvidersQueryHandler(IRoatpCourseManagementApiClient<Roatp
     {
         var result =
             await _roatpCourseManagementApiClient.GetWithResponseCode<GetProvidersResponse>(
-                new GetRoatpProvidersRequest());
+                new GetRoatpProvidersRequest()
+                {
+                    Live = request.Live
+                }
+        );
 
         var providers = result.Body.RegisteredProviders.Select(provider => (RoatpProvider)provider);
         return new GetRoatpProvidersQueryResult { Providers = providers };
