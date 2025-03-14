@@ -11,6 +11,6 @@ public class WhenBuildingGetUsersByEmailRequest
     {
         var actual = new GetUsersByEmailRequest(email);
 
-        actual.GetUrl.Should().Be($"api/users?email={WebUtility.UrlEncode(email)}");
+        actual.GetUrl.Should().Be($"api/users/query?email={WebUtility.UrlEncode(email)}");
     }
 }
