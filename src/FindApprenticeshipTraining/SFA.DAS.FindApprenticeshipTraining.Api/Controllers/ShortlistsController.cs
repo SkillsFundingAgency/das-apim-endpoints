@@ -7,7 +7,6 @@ using SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistItem;
-using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetExpiredShortlists;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetShortlistCountForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetShortlistsForUser;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
@@ -63,23 +62,6 @@ public class ShortlistsController(IMediator _mediator, ILogger<ShortlistsControl
     {
         GetShortlistsForUserResponse result = await _mediator.Send(new GetShortlistsForUserQuery { UserId = userId });
         return Ok(result);
-    }
-
-    [HttpGet]
-    [Route("expired")]
-    public async Task<IActionResult> GetExpiredShortlistUserIds([FromQuery] uint expiryInDays)
-    {
-        try
-        {
-            var result = await _mediator.Send(new GetExpiredShortlistsQuery { ExpiryInDays = expiryInDays });
-
-            return Ok(new { result.UserIds });
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error getting list of expired shortlists");
-            return BadRequest();
-        }
     }
 
     [HttpDelete]
