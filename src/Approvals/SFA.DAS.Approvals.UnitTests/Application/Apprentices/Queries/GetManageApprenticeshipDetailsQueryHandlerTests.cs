@@ -572,4 +572,29 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         result.PaymentsStatus.ReasonFrozen.Should().BeNull();
         result.PaymentsStatus.FrozenOn.Should().BeNull();
     }
+
+    [Test]
+    public async Task Handle_Non_Participants_In_PaymentsSimplification_Beta_Do_Not_Call_Payments_Endpoints()
+    {
+        _apprenticeshipKey = Guid.NewGuid();
+        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<Guid>(It.Is<GetApprenticeshipKeyRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId))).ReturnsAsync(new ApiResponse<Guid>(_apprenticeshipKey, HttpStatusCode.NotFound, string.Empty));
+        
+        await _handler.Handle(_query, CancellationToken.None);
+
+        _apprenticeshipsApiClient.Verify(
+            x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(
+                It.Is<GetPendingPriceChangeRequest>(r => r.ApprenticeshipKey == _apprenticeshipKey)), Times.Never);
+
+        _apprenticeshipsApiClient.Verify(x =>
+            x.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(
+                It.Is<GetPendingStartDateChangeRequest>(r => r.ApprenticeshipKey == _apprenticeshipKey)), Times.Never);
+
+        _apprenticeshipsApiClient.Verify(
+            x => x.GetWithResponseCode<GetPaymentStatusApiResponse>(
+                It.Is<GetPaymentStatusRequest>(r => r.ApprenticeshipKey == _apprenticeshipKey)), Times.Never);
+
+        _apprenticeshipsApiClient.Verify(
+            x => x.GetWithResponseCode<GetLearnerStatusResponse>(
+                It.Is<GetLearnerStatusRequest>(r => r.ApprenticeshipKey == _apprenticeshipKey)), Times.Never);
+    }
 }
