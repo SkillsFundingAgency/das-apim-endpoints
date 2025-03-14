@@ -9,6 +9,7 @@ public class GetShortlistsForUserResponse
 {
     public Guid UserId { get; set; }
     public DateTime MaxCreatedDate { get; set; }
+    public DateTime ShortlistsExpiryDate { get; set; }
     public string QarPeriod { get; set; }
     public string ReviewPeriod { get; set; }
     public List<ShortlistCourseModel> Courses { get; set; } = [];
