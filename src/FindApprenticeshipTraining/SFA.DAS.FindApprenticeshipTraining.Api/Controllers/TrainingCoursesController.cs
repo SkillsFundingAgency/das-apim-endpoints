@@ -2,7 +2,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
-using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourse;
 using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCourseProvider;
 using System;
 using System.Linq;
@@ -23,46 +22,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers
         {
             _logger = logger;
             _mediator = mediator;
-        }
-
-        [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> Get(int id, [FromQuery] double lat = 0, [FromQuery] double lon = 0, [FromQuery] string location = "", Guid? shortlistUserId = null)
-        {
-            try
-            {
-                var result = await _mediator.Send(new GetTrainingCourseQuery
-                {
-                    Id = id,
-                    Lat = lat,
-                    Lon = lon,
-                    LocationName = location,
-                    ShortlistUserId = shortlistUserId
-                });
-
-                if (result.Course == null)
-                {
-                    _logger.LogInformation($"Training course {id} not found");
-                    return NotFound();
-                }
-
-                var model = new GetTrainingCourseResponse
-                {
-                    TrainingCourse = result.Course,
-                    ProvidersCount = new GetTrainingCourseProviderCountResponse
-                    {
-                        TotalProviders = result.ProvidersCount,
-                        ProvidersAtLocation = result.ProvidersCountAtLocation
-                    },
-                    ShortlistItemCount = result.ShortlistItemCount
-                };
-                return Ok(model);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Error attempting to get a training course {id}");
-                return BadRequest();
-            }
         }
 
         [HttpGet]
