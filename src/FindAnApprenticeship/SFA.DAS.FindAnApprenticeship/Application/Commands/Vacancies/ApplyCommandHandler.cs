@@ -36,8 +36,7 @@ public class ApplyCommandHandler(
             IsAdditionalQuestion2Complete = string.IsNullOrEmpty(result.AdditionalQuestion2) ? (short)4 : (short)0,
             IsDisabilityConfidenceComplete = result.IsDisabilityConfident ? (short)0 : (short)4
         };
-        var vacancyReference =
-            request.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
+        var vacancyReference = request.VacancyReference.TrimVacancyReference();
         var putRequest = new PutApplicationApiRequest(vacancyReference, putApplicationApiRequestData);
 
         var applicationResult =

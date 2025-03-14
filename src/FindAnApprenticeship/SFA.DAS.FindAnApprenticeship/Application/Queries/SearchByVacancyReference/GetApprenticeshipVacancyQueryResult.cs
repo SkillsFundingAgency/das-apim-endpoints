@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Extensions;
 using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference
@@ -150,7 +151,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     EmployerWebsiteUrl = source.EmployerWebsiteUrl,
                     ExpectedDuration = durationUnit.GetDisplayName().ToLower().ToQuantity(source.Wage.Duration),
                     HoursPerWeek = source.Wage.WeeklyHours,
-                    Id = source.VacancyReference.Replace("VAC", ""),
+                    Id = source.VacancyReference.TrimVacancyReference(),
                     IsClosed = source.ClosedDate.HasValue,
                     IsDisabilityConfident = source.IsDisabilityConfident,
                     IsEmployerAnonymous = source.IsAnonymous,
@@ -183,7 +184,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     TrainingDescription = source.TrainingDescription,
                     Ukprn = source.TrainingProvider.Ukprn.ToString(),
                     VacancyLocationType = source.VacancyLocationType,
-                    VacancyReference = source.VacancyReference.Replace("VAC", ""),
+                    VacancyReference = source.VacancyReference.TrimVacancyReference(),
                     WageAdditionalInformation = source.Wage.WageAdditionalInformation,
                     WageType = source.Wage.WageType,
                     WageUnit = source.Wage.DurationUnit,

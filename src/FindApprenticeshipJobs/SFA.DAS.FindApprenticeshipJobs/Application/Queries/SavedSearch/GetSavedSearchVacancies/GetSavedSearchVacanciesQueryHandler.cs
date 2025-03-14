@@ -1,6 +1,4 @@
-using System.Collections.Concurrent;
 using MediatR;
-using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearches;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
@@ -71,10 +69,10 @@ public class GetSavedSearchVacanciesQueryHandler(
                 levels.Select(level => level.Code).ToList(),
                 request.ApprenticeshipSearchResultsSortOrder,
                 request.DisabilityConfident,
-                new List<VacancyDataSource>
-                {
+                request.ExcludeNational,
+                [
                     VacancyDataSource.Nhs
-                }));
+                ]));
 
         var searchResult = new GetSavedSearchVacanciesQueryResult
         {
@@ -85,6 +83,7 @@ public class GetSavedSearchVacanciesQueryHandler(
             Categories = categories,
             Levels = levels,
             DisabilityConfident = request.DisabilityConfident,
+            ExcludeNational = request.ExcludeNational,
             Distance = request.Distance,
             UnSubscribeToken = request.UnSubscribeToken,
             Vacancies = vacanciesResponse?.ApprenticeshipVacancies != null ? vacanciesResponse.ApprenticeshipVacancies.Select(x =>
