@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser;
-using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistItem;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetShortlistCountForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Queries.GetShortlistsForUser;
@@ -62,24 +61,5 @@ public class ShortlistsController(IMediator _mediator, ILogger<ShortlistsControl
     {
         GetShortlistsForUserResponse result = await _mediator.Send(new GetShortlistsForUserQuery { UserId = userId });
         return Ok(result);
-    }
-
-    [HttpDelete]
-    [Route("users/{userId}")]
-    public async Task<IActionResult> DeleteShortlistForUser(Guid userId)
-    {
-        try
-        {
-            await _mediator.Send(new DeleteShortlistForUserCommand
-            {
-                UserId = userId
-            });
-            return Accepted();
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "Error deleting shortlist");
-            return BadRequest();
-        }
     }
 }
