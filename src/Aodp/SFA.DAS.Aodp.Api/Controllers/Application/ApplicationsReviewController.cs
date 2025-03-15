@@ -37,6 +37,14 @@ public class ApplicationsReviewController : BaseController
         return await SendRequestAsync(new GetApplicationForReviewByIdQuery(applicationReviewId));
     }
 
+    [HttpGet("/api/application-reviews/{applicationReviewId}/share-status")]
+    [ProducesResponseType(typeof(GetApplicationReviewSharingStatusByIdQueryHandler), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetApplicationReviewSharingStatusById(Guid applicationReviewId)
+    {
+        return await SendRequestAsync(new GetApplicationReviewSharingStatusByIdQuery(applicationReviewId));
+    }
+
     [HttpGet("/api/application-reviews/{applicationReviewId}/feedback/{userType}")]
     [ProducesResponseType(typeof(GetFeedbackForApplicationReviewByIdQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
