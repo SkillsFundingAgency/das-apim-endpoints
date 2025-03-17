@@ -9,6 +9,7 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
     public class GetQualificationDetailsQueryResponse
     {
         public int Id { get; set; }
+        public Guid? QualificationVersionId { get; set; }
         public string? Status { get; set; }
         public string? Priority { get; set; }
         public string? Changes { get; set; }

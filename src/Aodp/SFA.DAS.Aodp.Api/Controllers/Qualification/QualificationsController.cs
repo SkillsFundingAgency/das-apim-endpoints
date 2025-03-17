@@ -110,6 +110,15 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(new GetFeedbackForQualificationFundingByIdQuery(qualificationVersionId));
         }
 
+        [HttpPut("/api/qualifications/{qualificationVersionId}/save-qualification-funding-offers-outcome")]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SaveQualificationFundingOffersOutcome(SaveQualificationFundingOffersOutcomeCommand command, Guid qualificationVersionId)
+        {
+            command.QualificationVersionId = qualificationVersionId;
+            return await SendRequestAsync(command);
+        }
+
         [HttpPut("/api/qualifications/{qualificationVersionId}/save-qualification-funding-offers")]
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
