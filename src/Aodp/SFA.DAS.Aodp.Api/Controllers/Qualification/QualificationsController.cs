@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Api.Controllers;
 using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
+using SFA.DAS.AODP.Application.Commands.Qualification;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 
 namespace SFA.DAS.AODP.Api.Controllers.Qualification
@@ -102,6 +103,14 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         public async Task<IActionResult> AddQualificationDiscussionHistory([FromBody] AddQualificationDiscussionHistoryCommand qualificationDiscussionHistory)
         {
             return await SendRequestAsync(qualificationDiscussionHistory);
+        }
+
+        [HttpPost("qualificationstatus")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateQualificationStatus([FromBody] UpdateQualificationStatusCommand qualificationStatus)
+        {
+            return await SendRequestAsync(qualificationStatus);
         }
 
         [HttpGet("export")]
