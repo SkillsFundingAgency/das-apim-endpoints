@@ -10,7 +10,7 @@ public class GetApprenticeshipsQueryHandler(IApprenticeshipsApiClient<Apprentice
     public async Task<GetApprenticeshipsQueryResult> Handle(GetApprenticeshipsQuery request, CancellationToken cancellationToken)
     {
         var applicationsResponse = await apprenticeshipApiClient.Get<PagedApprenticeshipsResponse>(
-            new GetAllApprenticeshipsForAcademicYear(
+            new GetAllApprenticeshipsForAcademicYearRequest(
                 request.Ukprn,
                 request.AcademicYear,
                 request.Page,
@@ -20,4 +20,4 @@ public class GetApprenticeshipsQueryHandler(IApprenticeshipsApiClient<Apprentice
 
         return (GetApprenticeshipsQueryResult)applicationsResponse;
     }
-}
+}   

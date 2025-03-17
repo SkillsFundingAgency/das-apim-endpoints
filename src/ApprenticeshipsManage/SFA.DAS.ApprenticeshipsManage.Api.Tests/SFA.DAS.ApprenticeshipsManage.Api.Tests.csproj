@@ -23,7 +23,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\SFA.DAS.ApprenticeshipsManage.Api\SFA.DAS.ApprenticeshipsManage.Api.csproj" />
-	  <ProjectReference Include="..\SFA.DAS.ApprenticeshipsManage\SFA.DAS.ApprenticeshipsManage.csproj" />
 	</ItemGroup>
 
   <ItemGroup>
