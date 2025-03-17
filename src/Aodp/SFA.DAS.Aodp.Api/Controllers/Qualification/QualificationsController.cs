@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Api.Controllers;
+using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 
@@ -93,6 +94,14 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             }
 
             return Ok(result);
+        }
+
+        [HttpPost("qualificationdiscussionhistory")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddQualificationDiscussionHistory([FromBody] AddQualificationDiscussionHistoryCommand qualificationDiscussionHistory)
+        {
+            return await SendRequestAsync(qualificationDiscussionHistory);
         }
 
         [HttpGet("export")]
