@@ -4,6 +4,6 @@ namespace SFA.DAS.Aodp.InnerApi.AodpApi.Application.Applications;
 
 public class GetApplicationDetailsByIdRequest : IGetApiRequest
 {
-    public Guid ApplicationId { get; set; }
-    public string GetUrl => $"/api/applications/{ApplicationId}/details";
+    public Guid ApplicationReviewId { get; set; }
+    public string GetUrl => $"/api/application-reviews/{ApplicationReviewId}/details";
 }

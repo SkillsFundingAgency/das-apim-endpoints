@@ -21,7 +21,7 @@ public class GetApplicationDetailsByIdQueryHandler : IRequestHandler<GetApplicat
         {
             var result = await _apiClient.Get<GetApplicationDetailsByIdQueryResponse>(new GetApplicationDetailsByIdRequest()
             {
-                ApplicationId = request.ApplicationId,
+                ApplicationReviewId = request.ApplicationReviewId,
             });
             response.Value = result;
             response.Success = true;
