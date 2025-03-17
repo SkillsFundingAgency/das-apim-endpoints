@@ -68,7 +68,7 @@ public class WhenHandlingWithdrawApplicationCommand
             .Setup(x => x.PostWithResponseCode<NullResponse>(
                 It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
-        vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse)).Returns(expectedAddress);
+        vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse, true)).Returns(expectedAddress);
 
         var actual = await handler.Handle(request, CancellationToken.None);
 
@@ -242,7 +242,7 @@ public class WhenHandlingWithdrawApplicationCommand
         
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
         vacancyService.Setup(x => x.GetClosedVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(closedVacancyResponse);
-        vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse)).Returns(expectedAddress);
+        vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse, true)).Returns(expectedAddress);
 
         var actual = await handler.Handle(request, CancellationToken.None);
 
@@ -306,7 +306,7 @@ public class WhenHandlingWithdrawApplicationCommand
 
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
         vacancyService.Setup(x => x.GetClosedVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(closedVacancyResponse);
-        vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse)).Returns(expectedAddress);
+        vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse, true)).Returns(expectedAddress);
 
         var actual = await handler.Handle(request, CancellationToken.None);
 
@@ -376,7 +376,7 @@ public class WhenHandlingWithdrawApplicationCommand
 
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
         vacancyService.Setup(x => x.GetClosedVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(closedVacancyResponse);
-        vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse)).Returns(expectedAddress);
+        vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse, true)).Returns(expectedAddress);
 
         var actual = await handler.Handle(request, CancellationToken.None);
 
