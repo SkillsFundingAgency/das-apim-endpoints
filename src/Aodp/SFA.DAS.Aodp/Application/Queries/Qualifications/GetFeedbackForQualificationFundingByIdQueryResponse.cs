@@ -3,6 +3,7 @@
     public class GetFeedbackForQualificationFundingByIdQueryResponse
     {
         public Guid QualificationVersionId { get; set; }
+        public string? QualificationReference { get; set; }
         public string Status { get; set; }
         public string? Comments { get; set; }
 
