@@ -7,4 +7,3 @@ public class GetUsersByEmailRequest(string email) : IGetApiRequest
 {
     public string GetUrl => $"api/users/query?email={WebUtility.UrlEncode(email)}";
 }
-
