@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.ApprenticeshipsManage.Configuration;
+using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.ApprenticeshipsManage.Api.AppStart;
 

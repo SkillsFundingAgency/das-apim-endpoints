@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.ApprenticeshipsManage.Api.AppStart;
+using SFA.DAS.ApprenticeshipsManage.Application.Queries.GetApprenticeships;
 using SFA.DAS.SharedOuterApi.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,7 +43,7 @@ builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
 
-//builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEmployerAccountDetailsQueryHandler).Assembly));
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetApprenticeshipsQueryHandler).Assembly));
 
 var app = builder.Build();
 
