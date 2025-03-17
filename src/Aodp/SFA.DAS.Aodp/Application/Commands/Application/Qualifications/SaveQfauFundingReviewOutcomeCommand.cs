@@ -6,7 +6,7 @@ namespace SFA.DAS.Aodp.Application.Commands.Application.Review
     {
         public Guid QualificationVersionId { get; set; }
         public string? Comments { get; set; }
-        public bool Approved { get; set; }
+        public bool? Approved { get; set; }
     }
 
 }

@@ -4,7 +4,7 @@
     {
         public Guid QualificationVersionId { get; set; }
         public string? QualificationReference { get; set; }
-        public string Status { get; set; }
+        public bool? Approved { get; set; }
         public string? Comments { get; set; }
 
         public List<QualificationFunding> QualificationFundedOffers { get; set; } = new();
