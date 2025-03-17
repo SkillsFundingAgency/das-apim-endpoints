@@ -32,6 +32,9 @@ public class GetApplicationDetailsByIdQueryResponse
 
     public class QuestionAnswer
     {
-        public string AnswerText { get; set; }
+        public string? AnswerTextValue { get; set; }
+        public string? AnswerDateValue { get; set; }
+        public string? AnswerChoiceValue { get; set; }
+        public decimal? AnswerNumberValue { get; set; }
     }
 }
