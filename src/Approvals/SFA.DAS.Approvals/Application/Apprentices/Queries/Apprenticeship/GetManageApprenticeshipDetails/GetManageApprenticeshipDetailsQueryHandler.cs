@@ -59,15 +59,16 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         {
             throw new UnauthorizedAccessException($"You do not permissions to access apprenticeship {request.ApprenticeshipId}");
         }
-        var apprenticeshipKeyResponse = await apprenticeshipsApiClient.GetWithResponseCode<Guid>(new GetApprenticeshipKeyRequest(request.ApprenticeshipId));
 
         ApiResponse<GetPendingPriceChangeResponse> pendingPriceChangeResponse = null;
         ApiResponse<GetPendingStartDateChangeApiResponse> pendingStartDateResponse = null;
         ApiResponse<GetLearnerStatusResponse> learnerStatusResponse = null;
         ApiResponse<GetPaymentStatusApiResponse> paymentStatusResponse = null;
         
-        if (apprenticeshipKeyResponse.StatusCode != HttpStatusCode.NotFound)
+        if (apprenticeship.IsOnFlexiPaymentPilot is true)
         {
+            var apprenticeshipKeyResponse = await apprenticeshipsApiClient.GetWithResponseCode<Guid>(new GetApprenticeshipKeyRequest(request.ApprenticeshipId));
+
             var pendingPriceChangeTask = apprenticeshipsApiClient.GetWithResponseCode<GetPendingPriceChangeResponse>(new GetPendingPriceChangeRequest(apprenticeshipKeyResponse.Body));
             var pendingStartDateChangeTask = apprenticeshipsApiClient.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(new GetPendingStartDateChangeRequest(apprenticeshipKeyResponse.Body));
             var paymentStatusTask = apprenticeshipsApiClient.GetWithResponseCode<GetPaymentStatusApiResponse>(new GetPaymentStatusRequest(apprenticeshipKeyResponse.Body));

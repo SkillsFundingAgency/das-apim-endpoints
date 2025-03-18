@@ -67,6 +67,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
             .With(x => x.EmployerAccountId, 123)
             .With(x => x.Id, _query.ApprenticeshipId)
             .With(x => x.ActualStartDate, (DateTime?)null)
+            .With(x => x.IsOnFlexiPaymentPilot, true)
             .Create();
 
         _priceEpisodesResponse = fixture.Create<GetPriceEpisodesResponse>();
@@ -577,10 +578,13 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     [Test]
     public async Task Handle_If_Not_On_PaymentsSimplificationPilot_Do_Not_Call_ApprenticeshipsApi_Subsequently()
     {
-        _apprenticeshipKey = Guid.NewGuid();
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<Guid>(It.Is<GetApprenticeshipKeyRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId))).ReturnsAsync(new ApiResponse<Guid>(_apprenticeshipKey, HttpStatusCode.NotFound, string.Empty));
-        
+        _apprenticeship.IsOnFlexiPaymentPilot = false;
+
         var result = await _handler.Handle(_query, CancellationToken.None);
+
+        _apprenticeshipsApiClient.Verify(
+            x => x.GetWithResponseCode<Guid>(
+                It.Is<GetApprenticeshipKeyRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)), Times.Never);
 
         _apprenticeshipsApiClient.Verify(
             x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(
