@@ -11,6 +11,7 @@ using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.Services;
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Extensions;
@@ -36,8 +37,6 @@ public class GetManageApprenticeshipDetailsQueryHandler(
     ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
     : IRequestHandler<GetManageApprenticeshipDetailsQuery, GetManageApprenticeshipDetailsQueryResult>
 {
-    public const int QualifyingPeriod = 42; // number of days
-
     public async Task<GetManageApprenticeshipDetailsQueryResult> Handle(GetManageApprenticeshipDetailsQuery request, CancellationToken cancellationToken)
     {
         var apprenticeshipResponse = await apiClient.GetWithResponseCode<GetApprenticeshipResponse>(new GetApprenticeshipRequest(request.ApprenticeshipId));
@@ -129,7 +128,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         result.PendingPriceChange = pendingPriceChangeResponse == null ? null : ToResponse(pendingPriceChangeResponse.Body);
         result.PendingStartDateChange = pendingStartDateResponse == null ? null : ToResponse(pendingStartDateResponse.Body);
         result.PaymentsStatus = paymentStatusResponse == null ? null : ToResponse(paymentStatusResponse.Body);
-        result.LearnerStatus = learnerStatusResponse == null ? LearnerStatus.None : ToResponse(learnerStatusResponse.Body);
+        result.LearnerStatusDetails = learnerStatusResponse == null ? null : ToResponse(learnerStatusResponse.Body);
 
         return result;
     }
@@ -182,9 +181,18 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         };
     }
 
-    private static LearnerStatus ToResponse(GetLearnerStatusResponse source)
+    private LearnerStatusDetails ToResponse(GetLearnerStatusResponse source)
     {
-        return source?.LearnerStatus ?? LearnerStatus.None;
+        if (source?.LearnerStatus == null) return new LearnerStatusDetails{ LearnerStatus = LearnerStatus.None };
+
+        return new LearnerStatusDetails
+        {
+            LearnerStatus = source.LearnerStatus.Value,
+            WithdrawalChangedDate = source.WithdrawalChangedDate,
+            WithdrawalReason = source.WithdrawalReason,
+            LastCensusDateOfLearning = source.LastCensusDateOfLearning,
+            LastDayOfLearning = source.LastDayOfLearning
+        };
     }
 
     private async Task<bool?> CanActualStartDateBeChanged(DateTime? actualStartDate)
@@ -194,7 +202,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
             return null;
         }
 
-        var fundingQualifyingPeriodEnd = actualStartDate.Value.AddDays(QualifyingPeriod + 1).AddTicks(-1);
+        var fundingQualifyingPeriodEnd = actualStartDate.Value.AddDays(Constants.QualifyingPeriod + 1).AddTicks(-1);
         if (fundingQualifyingPeriodEnd < DateTime.Now)
         {
             return false;
