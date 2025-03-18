@@ -5,7 +5,7 @@ trigger:
       - "master"
   paths:
     include:
-    - src/Apprenticeships
+    - src/ApprenticeshipsManage
     exclude:
     - azure
     - pipeline-templates
