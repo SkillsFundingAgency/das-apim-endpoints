@@ -7,6 +7,7 @@ using AutoFixture;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 using SFA.DAS.Approvals.Exceptions;
@@ -579,7 +580,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         _apprenticeshipKey = Guid.NewGuid();
         _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<Guid>(It.Is<GetApprenticeshipKeyRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId))).ReturnsAsync(new ApiResponse<Guid>(_apprenticeshipKey, HttpStatusCode.NotFound, string.Empty));
         
-        await _handler.Handle(_query, CancellationToken.None);
+        var result = await _handler.Handle(_query, CancellationToken.None);
 
         _apprenticeshipsApiClient.Verify(
             x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(
@@ -596,5 +597,10 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         _apprenticeshipsApiClient.Verify(
             x => x.GetWithResponseCode<GetLearnerStatusResponse>(
                 It.IsAny<GetLearnerStatusRequest>()), Times.Never);
+
+        result.LearnerStatusDetails.Should().NotBeNull();
+        result.LearnerStatusDetails.LearnerStatus.Should().Be(LearnerStatus.None);
+        result.PaymentsStatus.Should().NotBeNull();
+        result.PaymentsStatus.PaymentsFrozen.Should().BeFalse();
     }
 }

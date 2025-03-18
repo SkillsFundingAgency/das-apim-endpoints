@@ -127,8 +127,8 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         result.CanActualStartDateBeChanged = canActualStartDateBeChanged;
         result.PendingPriceChange = pendingPriceChangeResponse == null ? null : ToResponse(pendingPriceChangeResponse.Body);
         result.PendingStartDateChange = pendingStartDateResponse == null ? null : ToResponse(pendingStartDateResponse.Body);
-        result.PaymentsStatus = paymentStatusResponse == null ? null : ToResponse(paymentStatusResponse.Body);
-        result.LearnerStatusDetails = learnerStatusResponse == null ? null : ToResponse(learnerStatusResponse.Body);
+        result.PaymentsStatus = ToResponse(paymentStatusResponse?.Body);
+        result.LearnerStatusDetails = ToResponse(learnerStatusResponse?.Body);
 
         return result;
     }
