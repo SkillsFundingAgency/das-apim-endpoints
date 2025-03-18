@@ -101,6 +101,15 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return response;
         }
 
+        [HttpGet("/api/qualifications/{qualificationReference}/QualificationVersions")]
+        [ProducesResponseType(typeof(GetQualificationVersionsForQualificationByReferenceQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetQualificationVersionsForQualificationByReference(string qualificationReference)
+        {
+            return await SendRequestAsync(new GetQualificationVersionsForQualificationByReferenceQuery(qualificationReference));
+        }
+
         [HttpGet("api/qualifications/{qualificationVersionId}/feedback")]
         [ProducesResponseType(typeof(GetFeedbackForQualificationFundingByIdQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
