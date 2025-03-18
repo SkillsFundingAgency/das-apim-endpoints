@@ -20,7 +20,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.AppStart
         public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpClient();
-            services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+            services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
             services.AddTransient<IRoatpServiceApiClient<RoatpConfiguration>, RoatpServiceApiClient>();
