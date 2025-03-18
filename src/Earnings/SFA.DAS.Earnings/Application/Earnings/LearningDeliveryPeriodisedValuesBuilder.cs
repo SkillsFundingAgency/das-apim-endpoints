@@ -25,9 +25,9 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         };
     }
 
-    public static LearningDeliveryPeriodisedValues BuildInstPerPeriodValues(Apprenticeship earningsApprenticeship, short academicYear)
+    public static LearningDeliveryPeriodisedValues BuildInstPerPeriodValues(JoinedEarningsApprenticeship apprenticeship, short academicYear)
     {
-        var instalments = GetInstalmentsForAcademicYear(earningsApprenticeship, academicYear);
+        var instalments = GetInstalmentsForAcademicYear(apprenticeship, academicYear);
 
         return new LearningDeliveryPeriodisedValues
         {
@@ -47,14 +47,14 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         };
     }
 
-    public static LearningDeliveryPeriodisedValues BuildInstallmentAmountValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName)
+    public static LearningDeliveryPeriodisedValues BuildInstallmentAmountValues(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName)
     {
-        return BuildCoInvestmentValues(earningsApprenticeship, academicYear, attributeName, 1);
+        return BuildCoInvestmentValues(apprenticeship, academicYear, attributeName, 1);
     }
 
-    public static LearningDeliveryPeriodisedValues BuildCoInvestmentValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName, decimal multiplier)
+    public static LearningDeliveryPeriodisedValues BuildCoInvestmentValues(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName, decimal multiplier)
     {
-        var instalments = GetInstalmentsForAcademicYear(earningsApprenticeship, academicYear);
+        var instalments = GetInstalmentsForAcademicYear(apprenticeship, academicYear);
 
         return new LearningDeliveryPeriodisedValues
         {
@@ -74,9 +74,9 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         };
     }
 
-    public static LearningDeliveryPeriodisedValues BuildNthIncentivePaymentValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName, string additionalPaymentType, int n)
+    public static LearningDeliveryPeriodisedValues BuildNthIncentivePaymentValues(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName, string additionalPaymentType, int n)
     {
-        var additionalPayments = GetAdditionalPayments(earningsApprenticeship, additionalPaymentType);
+        var additionalPayments = GetAdditionalPayments(apprenticeship, additionalPaymentType);
 
         var nthPayment = additionalPayments
             .OrderBy(i => i.AcademicYear)
@@ -102,17 +102,17 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         };
     }
 
-    private static List<Instalment> GetInstalmentsForAcademicYear(Apprenticeship earningsApprenticeship, short academicYear)
+    private static List<JoinedInstalment> GetInstalmentsForAcademicYear(JoinedEarningsApprenticeship apprenticeship, short academicYear)
     {
-        return earningsApprenticeship.Episodes
+        return apprenticeship.Episodes
             .SelectMany(episode => episode.Instalments)
             .Where(i => i.AcademicYear == academicYear)
             .ToList();
     }
 
-    private static List<AdditionalPayment> GetAdditionalPayments(Apprenticeship earningsApprenticeship, string additionalPaymentType)
+    private static List<JoinedAdditionalPayment> GetAdditionalPayments(JoinedEarningsApprenticeship apprenticeship, string additionalPaymentType)
     {
-        return earningsApprenticeship.Episodes
+        return apprenticeship.Episodes
             .SelectMany(episode => episode.AdditionalPayments)
             .Where(i => i.AdditionalPaymentType == additionalPaymentType)
             .ToList();

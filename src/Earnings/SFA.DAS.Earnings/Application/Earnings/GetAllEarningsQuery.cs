@@ -1,6 +1,8 @@
-﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using Azure.Core;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
@@ -9,6 +11,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Reflection;
 using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode;
 
 namespace SFA.DAS.Earnings.Application.Earnings;
@@ -67,34 +70,32 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
 
         _logger.LogInformation("Found {apprenticeshipsCount} apprenticeships, {earningsApprenticeshipsCount} earnings apprenticeships, for provider {ukprn}", apprenticeshipsData.Apprenticeships.Count, earningsData.Count, request.Ukprn);
 
+        var joinedApprenticeships = apprenticeshipsData.Apprenticeships
+                .Join(earningsData, 
+                    a => a.Key, 
+                    e => e.Key, 
+                    (apprenticeship, earningsApprenticeship) => new JoinedEarningsApprenticeship(apprenticeship, earningsApprenticeship)).ToList();
+
         var result = new GetAllEarningsQueryResult
         {
 
-            FM36Learners = apprenticeshipsData.Apprenticeships
-                .Join(earningsData, a => a.Key, e => e.Key, (apprenticeship,earningsApprenticeship) => new JoinedEarningsApprenticeship (apprenticeship, earningsApprenticeship))
-                .Select(model => {
-                    var priceEpisodesForAcademicYear = GetApprenticeshipPriceEpisodesForAcademicYearStarting(model.Apprenticeship.Episodes, currentAcademicYear.StartDate).ToList();
+            FM36Learners = joinedApprenticeships
+                .Select(joinedApprenticeship => {
+                    var priceEpisodesForAcademicYear = GetPriceEpisodesByFm36StartAndFinishPeriods(joinedApprenticeship.Episodes, currentAcademicYear).ToList();
                     return new FM36Learner
                     {
-                        ULN = long.Parse(model.Apprenticeship.Uln),
+                        ULN = long.Parse(joinedApprenticeship.Uln),
                         LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
                         EarningsPlatform = SimplificationEarningsPlatform,
-                        PriceEpisodes = priceEpisodesForAcademicYear
-                            .Join(model.EarningsApprenticeship.Episodes, a => a.Episode.Key, b => b.Key, (episodePrice, earningsEpisode) => new JoinedPriceEpisodeModel(episodePrice.Episode, episodePrice.Price, earningsEpisode ) )
-                            .Select(priceEpisodeModel => new PriceEpisode
-                            {
-                                PriceEpisodeIdentifier = $"{EarningsFM36Constants.ProgType}-{priceEpisodeModel.ApprenticeshipEpisode.TrainingCode.Trim()}-{priceEpisodeModel.ApprenticeshipEpisodePrice.StartDate:dd/MM/yyyy}",
-                                PriceEpisodeValues = model.GetPriceEpisodeValues(priceEpisodeModel, priceEpisodesForAcademicYear, currentAcademicYear, request.CollectionPeriod, priceEpisodeModel.ApprenticeshipEpisodePrice != priceEpisodesForAcademicYear.Last().Price),
-                                PriceEpisodePeriodisedValues = model.GetPriceEpisodePeriodisedValues(currentAcademicYear)
-                            }).ToList(),
+                        PriceEpisodes = GetPriceEpisodes(joinedApprenticeship, priceEpisodesForAcademicYear, currentAcademicYear, request.CollectionPeriod),
                         LearningDeliveries = new List<LearningDelivery>
                         {
                             new LearningDelivery
                             {
                                 AimSeqNumber = 1,
-                                LearningDeliveryValues = model.GetLearningDelivery(currentAcademicYear),
-                                LearningDeliveryPeriodisedValues = model.GetLearningDeliveryPeriodisedValues(currentAcademicYear),
-                                LearningDeliveryPeriodisedTextValues = model.GetLearningDeliveryPeriodisedTextValues()
+                                LearningDeliveryValues = joinedApprenticeship.GetLearningDelivery(currentAcademicYear),
+                                LearningDeliveryPeriodisedValues = joinedApprenticeship.GetLearningDeliveryPeriodisedValues(currentAcademicYear),
+                                LearningDeliveryPeriodisedTextValues = joinedApprenticeship.GetLearningDeliveryPeriodisedTextValues()
                             }
                         },
                         HistoricEarningOutputValues = new List<HistoricEarningOutputValues>()
@@ -103,6 +104,30 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
         };
 
         return result;
+    }
+
+    private List<PriceEpisode> GetPriceEpisodes(
+        JoinedEarningsApprenticeship joinedEarningsApprenticeship,
+        List<JoinedPriceEpisode> priceEpisodesForAcademicYear,
+        GetAcademicYearsResponse currentAcademicYear,
+           byte collectionPeriod)
+    {
+
+        var lastPriceEpisode = priceEpisodesForAcademicYear.OrderBy(x => x.EndDate).Last();
+
+        return priceEpisodesForAcademicYear
+            .Select(priceEpisodeModel => {
+
+                var hasSubsequentPriceEpisodes = priceEpisodeModel.EndDate != lastPriceEpisode.EndDate;
+                return new PriceEpisode
+                {
+                    PriceEpisodeIdentifier = $"{EarningsFM36Constants.ProgType}-{priceEpisodeModel.TrainingCode.Trim()}-{priceEpisodeModel.StartDate:dd/MM/yyyy}",
+
+                    PriceEpisodeValues = joinedEarningsApprenticeship.GetPriceEpisodeValues(priceEpisodeModel, currentAcademicYear, collectionPeriod, hasSubsequentPriceEpisodes),
+                    PriceEpisodePeriodisedValues = joinedEarningsApprenticeship.GetPriceEpisodePeriodisedValues(currentAcademicYear)
+                };
+
+            }).ToList();
     }
 
     private bool IsDataReturnedValid(long ukprn, GetApprenticeshipsResponse apprenticeshipsData, GetFm36DataResponse earningsData)
@@ -120,34 +145,33 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
         }
 
         return true;
-    } 
+    }
 
-    private static IEnumerable<(Episode Episode, EpisodePrice Price)> GetApprenticeshipPriceEpisodesForAcademicYearStarting(List<Episode> apprenticeshipEpisodes, DateTime academicYearStartDate)
+    // The fm36 expects PriceEpisodes to be split by academic year, so we need to split the price episodes by the academic year start and finish periods
+    // the exception is where there is a price change within the academic year, in which case we need to split the price episodes by the start and finish periods of the price change
+    private static IEnumerable<JoinedPriceEpisode> GetPriceEpisodesByFm36StartAndFinishPeriods(List<JoinedPriceEpisode> priceEpisodes, GetAcademicYearsResponse academicYearDetails)
     {
-        foreach (var episodePrice in apprenticeshipEpisodes
-                     .SelectMany(episode => episode.Prices.Select(price => (Episode: episode, Price: price))))
+        foreach (var episodePrice in priceEpisodes)
         {
-            if (episodePrice.Price.StartDate < academicYearStartDate)
+            if (episodePrice.StartDate <= academicYearDetails.StartDate && episodePrice.EndDate >= academicYearDetails.StartDate)
             {
-                //Price started before the current academic year, and so we need to create a price episode from the start of the current AY to satisfy the way the fm36 expects PriceEpisodes to be split by AY
-                var price = new EpisodePrice
-                {
-                    StartDate = academicYearStartDate,
-                    EndDate = episodePrice.Price.EndDate,
-                    EndPointAssessmentPrice = episodePrice.Price.EndPointAssessmentPrice,
-                    FundingBandMaximum = episodePrice.Price.FundingBandMaximum,
-                    TotalPrice = episodePrice.Price.TotalPrice,
-                    TrainingPrice = episodePrice.Price.TrainingPrice
-                };
-
-                yield return new ValueTuple<Episode, EpisodePrice>(episodePrice.Episode, price);
+                // Some of the later instalments are in the current academic year, capture these as a price episode
+                yield return new JoinedPriceEpisode(episodePrice, academicYearDetails.StartDate, episodePrice.EndDate);
+            }
+            else if(episodePrice.StartDate < academicYearDetails.EndDate && episodePrice.EndDate > academicYearDetails.EndDate)
+            {
+                // Some of the earlier instalments are in the current academic year, capture these as a price episode
+                yield return new JoinedPriceEpisode(episodePrice, episodePrice.StartDate, academicYearDetails.EndDate);
+            }
+            else if (episodePrice.StartDate > academicYearDetails.EndDate || episodePrice.EndDate < academicYearDetails.StartDate)
+            {
+                // no part of the price episode is in the current academic year, so ignore it
             }
             else
             {
-                //Otherwise the price started during this AY so is valid to be included in the fm36 as is
+                // start and end dates are within the current academic year, so capture the price episode as is
                 yield return episodePrice;
             }
         }
     }
-
 }
