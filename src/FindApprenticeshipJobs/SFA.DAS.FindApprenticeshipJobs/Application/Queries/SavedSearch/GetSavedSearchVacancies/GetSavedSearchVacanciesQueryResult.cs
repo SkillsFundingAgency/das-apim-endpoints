@@ -16,6 +16,7 @@ public class GetSavedSearchVacanciesQueryResult
     public string? SearchTerm { get; set; }
     public string? Location { get; set; }
     public bool DisabilityConfident { get; set; }
+    public bool? ExcludeNational { get; set; }
     public string? UnSubscribeToken { get; set; }
     public List<ApprenticeshipVacancy> Vacancies { get; set; } = [];
     

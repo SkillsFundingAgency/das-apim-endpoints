@@ -19,6 +19,7 @@ public record GetSavedSearchesQueryResult
         public string? SearchTerm { get; set; }
         public string? Location { get; set; }
         public bool DisabilityConfident { get; set; }
+        public bool? ExcludeNational { get; set; }
         public string? Longitude { get; set; }
         public string? Latitude { get; set; }
         public List<int>? SelectedLevelIds { get; set; } = [];
@@ -35,6 +36,7 @@ public record GetSavedSearchesQueryResult
                 SearchTerm = savedSearch.SearchParameters.SearchTerm,
                 Location = savedSearch.SearchParameters.Location,
                 DisabilityConfident = savedSearch.SearchParameters.DisabilityConfident,
+                ExcludeNational = savedSearch.SearchParameters.ExcludeNational,
                 UnSubscribeToken = savedSearch.UnSubscribeToken,
                 Longitude = savedSearch.SearchParameters.Longitude,
                 Latitude = savedSearch.SearchParameters.Latitude,

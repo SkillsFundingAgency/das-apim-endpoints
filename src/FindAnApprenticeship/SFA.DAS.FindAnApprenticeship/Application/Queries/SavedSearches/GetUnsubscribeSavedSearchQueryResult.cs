@@ -27,6 +27,7 @@ public record GetUnsubscribeSavedSearchQueryResult(SavedSearch SavedSearch, IEnu
                 source.SearchParameters.SelectedRouteIds,
                 source.SearchParameters.Distance,
                 source.SearchParameters.DisabilityConfident,
+                source.SearchParameters.ExcludeNational,
                 source.SearchParameters.SelectedLevelIds,
                 source.SearchParameters.Location,
                 source.SearchParameters.Latitude,

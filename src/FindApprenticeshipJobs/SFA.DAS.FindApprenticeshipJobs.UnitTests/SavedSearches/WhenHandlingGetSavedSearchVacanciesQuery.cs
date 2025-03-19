@@ -107,6 +107,7 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
             levels.Select(c=>c.Code).ToList(),
             mockQuery.ApprenticeshipSearchResultsSortOrder,
             mockQuery.DisabilityConfident,
+            mockQuery.ExcludeNational,
             new List<VacancyDataSource> { VacancyDataSource.Nhs });
 
         mockFindApprenticeshipApiClient.Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c => c.GetUrl == getVacanciesExpectedUrl.GetUrl))).ReturnsAsync(getVacanciesResponse);
