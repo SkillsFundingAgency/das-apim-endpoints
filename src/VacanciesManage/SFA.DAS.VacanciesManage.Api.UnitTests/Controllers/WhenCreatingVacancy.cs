@@ -147,26 +147,37 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Controllers
             controllerResult.Value.Should().BeEquivalentTo("Account Identifier is not in the correct format.");
         }
         
-        [Test, MoqAutoData]
+        [Test]
+        [MoqInlineAutoData("ProgrammeId", "standardLarsCode")]
+        [MoqInlineAutoData("employerName", "alternativeEmployerName")]
+        [MoqInlineAutoData("employerNameOption", "employerNameOption")]
+        [MoqInlineAutoData("Address", "address")]
+        [MoqInlineAutoData("Addresses", "multipleAddresses")]
+        [MoqInlineAutoData("EmployerLocationInformation", "recruitingNationallyDetails")]
         public async Task Then_If_ContentException_Bad_Request_Is_Returned_And_Error_Keys_Mapped(
+            string fieldName,
+            string expectedFieldName,
             Guid id,
             string errorContent,
             CreateVacancyRequest request,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
+            // arrange
             var accountId = "ABC123";
             var accountIdentifier = $"Employer-{accountId}-product";
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.IsAny<CreateVacancyCommand>(),
                     It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new HttpRequestContentException("Error", HttpStatusCode.BadRequest,@"{""errors"":[{""field"":""ProgrammeId"",""message"":""Training programme a does not exist.""},{""field"":""employerName"",""message"":""Employer name is not in the correct format.""},{""field"":""employerNameOption"",""message"":""Invalid employer name option.""}]}"));
+                .ThrowsAsync(new HttpRequestContentException("Error", HttpStatusCode.BadRequest,$"{{\"errors\":[{{\"field\":\"{fieldName}\",\"message\":\"An error message\"}}]}}"));
             
+            // act
             var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as ObjectResult;
 
+            // assert
             controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
-            controllerResult.Value.Should().Be(@"{""errors"":[{""field"":""standardLarsCode"",""message"":""Training programme a does not exist.""},{""field"":""alternativeEmployerName"",""message"":""Employer name is not in the correct format.""},{""field"":""employerNameOption"",""message"":""Invalid employer name option.""}]}");
+            controllerResult.Value.Should().Be($"{{\"errors\":[{{\"field\":\"{expectedFieldName}\",\"message\":\"An error message\"}}]}}");
         }
         
         [Test, MoqAutoData]

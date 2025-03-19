@@ -21,6 +21,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
 
         [HttpGet]
         [ProducesResponseType(typeof(BaseMediatrResponse<GetNewQualificationsQueryResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetChangedQualificationsQueryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetQualifications([FromQuery] string? status,
@@ -48,7 +49,14 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                 }
                 else if (validationResult.ProcessedStatus == "changed")
                 {
-                    var query = new GetChangedQualificationsQuery();
+                    var query = new GetChangedQualificationsQuery()
+                    {
+                        Name = name,
+                        Organisation = organisation,
+                        QAN = qan,
+                        Skip = skip,
+                        Take = take
+                    };
                     return await SendRequestAsync(query);
                 }
                 else
@@ -87,28 +95,36 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return Ok(result);
         }
 
-        [HttpGet("export")]
-        [ProducesResponseType(typeof(BaseMediatrResponse<GetNewQualificationsCsvExportResponse>), StatusCodes.Status200OK)]
+        [HttpGet("export")]        
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationsExportResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQualificationCSVExportData([FromQuery] string? status)
+        public async Task<IActionResult> GetQualificationExportData([FromQuery] string? status)
         {
-            IActionResult response = await HandleNewQualificationCSVExport();          
+            if (string.IsNullOrWhiteSpace(status))
+            {
+                _logger.LogWarning("Status parameter is empty");
+                return BadRequest(new { message = "Status parameter cannot be empty" });
+            }
+
+            IActionResult response = status.ToLower() switch
+            {
+                "new" => await HandleNewQualificationCSVExport(),
+                "changed" => await HandleChangedQualificationCSVExport(),
+                _ => BadRequest(new { message = "Status parameter not a valid value" })
+            };
 
             return response;
-        }       
-
+        }
         private async Task<IActionResult> HandleNewQualificationCSVExport()
-        {
-            var result = await _mediator.Send(new GetNewQualificationsCsvExportQuery());
+        {           
+            return await SendRequestAsync(new GetNewQualificationsExportQuery());
+        }
 
-            if (result == null || !result.Success || result.Value == null)
-            {
-                _logger.LogWarning(result?.ErrorMessage);
-                return NotFound(new { message = result?.ErrorMessage });
-            }
-            return Ok(result);
+        private async Task<IActionResult> HandleChangedQualificationCSVExport()
+        {
+            return await SendRequestAsync(new GetChangedQualificationsExportQuery());
         }
 
         private ParamValidationResult ValidateQualificationParams(string? status, int? skip, int? take, string? name, string? organisation, string? qan)
