@@ -2,6 +2,7 @@
 using AutoFixture.AutoMoq;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Amqp.Transaction;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.Aodp.Application.Commands.Qualification;
@@ -215,6 +216,42 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetDiscussionHistoriesForQualification_ReturnsOk()
+        {
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+            // Arrange
+            var queryResponse = _fixture.Create<BaseMediatrResponse<GetDiscussionHistoriesForQualificationQueryResponse>>();
+            queryResponse.Success = true;
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetDiscussionHistoriesForQualificationQuery>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await controller.GetDiscussionHistoriesForQualification("Ref123");
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = (OkObjectResult)result;
+            Assert.That(okResult.Value, Is.InstanceOf<GetDiscussionHistoriesForQualificationQueryResponse>());
+            var model = (GetDiscussionHistoriesForQualificationQueryResponse)okResult.Value;
+            Assert.That(queryResponse.Value.QualificationDiscussionHistories[0].Id, Is.EqualTo(model.QualificationDiscussionHistories[0].Id));
+        }
+
+        [Test]
+        public async Task GetDiscussionHistoriesForQualification_ReturnsBadRequest_WhenQualificationReferenceIsEmpty()
+        {
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+            // Act
+            var result = await controller.GetDiscussionHistoriesForQualification(string.Empty);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+            var badRequestResult = (BadRequestObjectResult)result;
+            var badRequestValue = badRequestResult.Value?.GetType().GetProperty("message")?.GetValue(badRequestResult.Value, null);
+            Assert.That(badRequestValue, Is.EqualTo("Qualification reference cannot be empty"));
         }
     }
 }

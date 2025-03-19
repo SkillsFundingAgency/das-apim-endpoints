@@ -105,6 +105,19 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(qualificationDiscussionHistory);
         }
 
+        [HttpGet("{qualificationReference}/qualificationdiscussionhistories")]
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetDiscussionHistoriesForQualificationQueryResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetDiscussionHistoriesForQualification(string qualificationReference)
+        {
+            if (string.IsNullOrWhiteSpace(qualificationReference))
+            {
+                _logger.LogWarning("Qualification reference is empty");
+                return BadRequest(new { message = "Qualification reference cannot be empty" });
+            }
+            return await SendRequestAsync(new GetDiscussionHistoriesForQualificationQuery { QualificationReference = qualificationReference });
+        }
+
         [HttpPost("qualificationstatus")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
