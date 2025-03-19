@@ -1,6 +1,5 @@
-﻿using System.Web;
+﻿using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests
 {
@@ -50,9 +49,4 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests
         public string Version => "2.0";
         public string GetUrl => $"/api/vacancies?lat={_lat}&lon={_lon}&distanceInMiles={_distance}&sort={_sort}&pageNumber={_pageNumber}&pageSize={_pageSize}&categories={_categories}&levels={_levels}&searchTerm={_searchTerm}&disabilityConfident={_disabilityConfident}&excludeNational={_excludeNational}&additionalDataSources={_additionalDataSources}&postedInLastNumberOfDays=7";
     }
-}
-public enum VacancyDataSource
-{
-    Raa,
-    Nhs,
 }
