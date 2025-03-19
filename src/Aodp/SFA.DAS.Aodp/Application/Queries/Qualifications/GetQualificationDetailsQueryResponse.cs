@@ -68,6 +68,7 @@ public class GetQualificationDetailsQueryResponse
     public virtual LifecycleStage Stage { get; set; } = null!;
     public virtual AwardingOrganisation Organisation { get; set; } = null!;
     public virtual Qualification Qual { get; set; } = null!;
+    public virtual ProcessStatus ProcStatus { get; set; } = null!;
     public partial class LifecycleStage
     {
         public Guid Id { get; set; }
@@ -109,5 +110,12 @@ public class GetQualificationDetailsQueryResponse
     {
         public Guid Id { get; set; }
         public string? Description { get; set; }
+    }
+
+    public partial class ProcessStatus
+    {
+        public Guid Id { get; set; }
+        public string? Name { get; set; }
+        public int? IsOutcomeDecision { get; set; }
     }
 }
