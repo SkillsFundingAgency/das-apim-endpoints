@@ -102,12 +102,17 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         }
 
         [HttpGet("/api/qualifications/{qualificationReference}/QualificationVersions")]
-        [ProducesResponseType(typeof(GetQualificationVersionsForQualificationByReferenceQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationVersionsForQualificationByReferenceQueryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetQualificationVersionsForQualificationByReference(string qualificationReference)
         {
-            return await SendRequestAsync(new GetQualificationVersionsForQualificationByReferenceQuery(qualificationReference));
+            var response = await _mediator.Send(new GetQualificationVersionsForQualificationByReferenceQuery(qualificationReference));
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, response.ErrorMessage);
         }
 
         [HttpGet("api/qualifications/{qualificationVersionId}/feedback")]
@@ -125,7 +130,12 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         public async Task<IActionResult> SaveQualificationFundingOffersOutcome(SaveQualificationFundingOffersOutcomeCommand command, Guid qualificationVersionId)
         {
             command.QualificationVersionId = qualificationVersionId;
-            return await SendRequestAsync(command);
+            var response = await SendRequestAsync(command);
+            if (response is OkObjectResult)
+            {
+                return Ok();
+            }
+            return response;
         }
 
         [HttpPut("/api/qualifications/{qualificationVersionId}/save-qualification-funding-offers")]
@@ -134,8 +144,12 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         public async Task<IActionResult> SaveQualificationFundingOffers(SaveQualificationFundingOffersCommand command, Guid qualificationVersionId)
         {
             command.QualificationVersionId = qualificationVersionId;
-
-            return await SendRequestAsync(command);
+            var response = await SendRequestAsync(command);
+            if (response is OkObjectResult)
+            {
+                return Ok();
+            }
+            return response;
         }
 
         [HttpPut("/api/qualifications/{qualificationVersionId}/save-qualification-funding-offers-details")]
@@ -144,8 +158,12 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         public async Task<IActionResult> SaveFundingOfferDetails(SaveQualificationFundingOffersDetailsCommand command, Guid qualificationVersionId)
         {
             command.QualificationVersionId = qualificationVersionId;
-
-            return await SendRequestAsync(command);
+            var response = await SendRequestAsync(command);
+            if (response is OkObjectResult)
+            {
+                return Ok();
+            }
+            return response;
         }
 
         [HttpPut("/api/qualifications/{qualificationVersionId}/Create-QualificationDiscussionHistory")]
@@ -154,9 +172,14 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         public async Task<IActionResult> QualificationFundingOffersSummary(CreateQualificationDiscussionHistoryCommand command, Guid qualificationVersionId)
         {
             command.QualificationVersionId = qualificationVersionId;
-
-            return await SendRequestAsync(command);
+            var response = await SendRequestAsync(command);
+            if (response is OkObjectResult)
+            {
+                return Ok();
+            }
+            return response;
         }
+
 
         private async Task<IActionResult> HandleNewQualificationCSVExport()
         {
