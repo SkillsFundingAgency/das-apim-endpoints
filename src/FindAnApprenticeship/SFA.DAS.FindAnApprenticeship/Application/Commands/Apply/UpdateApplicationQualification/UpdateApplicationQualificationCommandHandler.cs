@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +20,7 @@ public class UpdateApplicationQualificationCommandHandler(ICandidateApiClient<Ca
                 Subject = subject.Name,
                 AdditionalInformation = subject.AdditionalInformation,
                 IsPredicted = subject.IsPredicted,
+                QualificationOrder = subject.QualificationOrder,
                 ToYear = subject.ToYear,
                 QualificationReferenceId = request.QualificationReferenceId
             }))
@@ -33,7 +33,7 @@ public class UpdateApplicationQualificationCommandHandler(ICandidateApiClient<Ca
         var deleteRequests = request.Subjects.Where(c => c.IsDeleted is true)
             .Select(deletedQualification =>
                 new DeleteQualificationApiRequest(request.CandidateId, request.ApplicationId, deletedQualification.Id))
-            .Select(deleteRequest => candidateApiClient.Delete(deleteRequest)).ToList();
+            .Select(candidateApiClient.Delete).ToList();
 
         await Task.WhenAll(deleteRequests);
         
