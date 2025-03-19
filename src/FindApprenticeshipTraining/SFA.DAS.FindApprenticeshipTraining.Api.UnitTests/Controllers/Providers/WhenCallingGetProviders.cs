@@ -16,32 +16,57 @@ public class WhenCallingGetProviders
 {
 
     [Test, MoqAutoData]
-    public async Task Then_Sends_Query_To_Mediator(
+    public async Task Then_it_Sends_Query_With_Live_False_To_Mediator(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ProvidersController sut,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
-        await sut.GetProviders(cancellationToken);
+        await sut.GetProviders(false, cancellationToken);
 
         mediatorMock.Verify(
-            m => m.Send(It.IsAny<GetRoatpProvidersQuery>(),
-                It.IsAny<CancellationToken>()));
+            m => m.Send(
+                It.Is<GetRoatpProvidersQuery>(a => a.Live.Equals(false)),
+                It.IsAny<CancellationToken>()
+            )
+        );
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Gets_ExpectedResponse_From_Mediator(
+    public async Task Then_it_Sends_Query_With_Live_True_To_Mediator(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] ProvidersController sut,
+        CancellationToken cancellationToken
+    )
+    {
+        await sut.GetProviders(true, cancellationToken);
+
+        mediatorMock.Verify(
+            m => m.Send(
+                It.Is<GetRoatpProvidersQuery>(a => a.Live.Equals(true)),
+                It.IsAny<CancellationToken>()
+            )
+        );
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_it_Return_ExpectedResponse_From_Mediator(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ProvidersController sut,
         GetRoatpProvidersQueryResult queryResult,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
-        mediatorMock.Setup(m => m.Send(It.IsAny<GetRoatpProvidersQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(queryResult);
+        mediatorMock.Setup(m => 
+            m.Send(
+                It.Is<GetRoatpProvidersQuery>(a => a.Live.Equals(false)), 
+                It.IsAny<CancellationToken>()
+            )
+        ).ReturnsAsync(queryResult);
 
-        var result = await sut.GetProviders(cancellationToken);
+        var result = await sut.GetProviders(false, cancellationToken);
 
         result.As<OkObjectResult>().Should().NotBeNull();
         result.As<OkObjectResult>().Value.Should().Be(queryResult);
     }
-
 }
