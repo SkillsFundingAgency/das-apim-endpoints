@@ -322,32 +322,26 @@ public class FormsControllerTests
     public async Task RemoveAsync_ReturnsOkResult()
     {
         // Arrange
-        var request = _fixture.Create<DeleteFormVersionCommand>();
-        var response = _fixture.Create<DeleteFormVersionCommandResponse>();
-        BaseMediatrResponse<DeleteFormVersionCommandResponse> wrapper = new()
+        var request = _fixture.Create<DeleteFormCommand>();
+        BaseMediatrResponse<EmptyResponse> wrapper = new()
         {
-            Value = response,
             Success = true
         };
 
         _mediatorMock
-            .Setup(m => m.Send(It.IsAny<DeleteFormVersionCommand>(), default))
+            .Setup(m => m.Send(It.IsAny<DeleteFormCommand>(), default))
             .Returns(Task.FromResult(wrapper));
 
         // Act
-        var result = await _controller.RemoveAsync(request.FormVersionId);
+        var result = await _controller.RemoveAsync(request.FormId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(It.IsAny<DeleteFormVersionCommand>(), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(It.IsAny<DeleteFormCommand>(), default), Times.Once());
         _mediatorMock.Verify(m =>
             m.Send(
-                It.Is<DeleteFormVersionCommand>(q =>
-                    q.FormVersionId == request.FormVersionId
+                It.Is<DeleteFormCommand>(q =>
+                    q.FormId == request.FormId
         ), default), Times.Once());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
-        var okResult = (OkObjectResult)result;
-        Assert.That(okResult.Value, Is.AssignableFrom<DeleteFormVersionCommandResponse>());
-        var model = (DeleteFormVersionCommandResponse)okResult.Value;
-        Assert.That(model, Is.EqualTo(response));
     }
 }
