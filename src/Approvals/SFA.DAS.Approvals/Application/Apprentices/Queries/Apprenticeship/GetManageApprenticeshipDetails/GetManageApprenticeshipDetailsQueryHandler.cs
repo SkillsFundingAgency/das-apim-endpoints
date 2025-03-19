@@ -60,7 +60,27 @@ public class GetManageApprenticeshipDetailsQueryHandler(
             throw new UnauthorizedAccessException($"You do not permissions to access apprenticeship {request.ApprenticeshipId}");
         }
 
-        var apprenticeshipKey = await apprenticeshipsApiClient.GetWithResponseCode<Guid>(new GetApprenticeshipKeyRequest(request.ApprenticeshipId));
+        ApiResponse<GetPendingPriceChangeResponse> pendingPriceChangeResponse = null;
+        ApiResponse<GetPendingStartDateChangeApiResponse> pendingStartDateResponse = null;
+        ApiResponse<GetLearnerStatusResponse> learnerStatusResponse = null;
+        ApiResponse<GetPaymentStatusApiResponse> paymentStatusResponse = null;
+        
+        if (apprenticeship.IsOnFlexiPaymentPilot is true)
+        {
+            var apprenticeshipKeyResponse = await apprenticeshipsApiClient.GetWithResponseCode<Guid>(new GetApprenticeshipKeyRequest(request.ApprenticeshipId));
+
+            var pendingPriceChangeTask = apprenticeshipsApiClient.GetWithResponseCode<GetPendingPriceChangeResponse>(new GetPendingPriceChangeRequest(apprenticeshipKeyResponse.Body));
+            var pendingStartDateChangeTask = apprenticeshipsApiClient.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(new GetPendingStartDateChangeRequest(apprenticeshipKeyResponse.Body));
+            var paymentStatusTask = apprenticeshipsApiClient.GetWithResponseCode<GetPaymentStatusApiResponse>(new GetPaymentStatusRequest(apprenticeshipKeyResponse.Body));
+            var learnerStatusTask = apprenticeshipsApiClient.GetWithResponseCode<GetLearnerStatusResponse>(new GetLearnerStatusRequest(apprenticeshipKeyResponse.Body));
+
+            await Task.WhenAll(pendingPriceChangeTask, pendingStartDateChangeTask, paymentStatusTask, learnerStatusTask);
+
+            pendingPriceChangeResponse = pendingPriceChangeTask.Result;
+            pendingStartDateResponse = pendingStartDateChangeTask.Result;
+            paymentStatusResponse = paymentStatusTask.Result;
+            learnerStatusResponse = learnerStatusTask.Result;
+        }
 
         var priceEpisodesResponseTask = apiClient.GetWithResponseCode<GetPriceEpisodesResponse>(new GetPriceEpisodesRequest(apprenticeship.Id));
         var apprenticeshipUpdatesResponseTask = apiClient.GetWithResponseCode<GetApprenticeshipUpdatesResponse>(new GetApprenticeshipUpdatesRequest(apprenticeship.Id, ApprenticeshipUpdateStatus.Pending));
@@ -70,13 +90,10 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         var changeOfEmployerChainResponseTask = apiClient.GetWithResponseCode<GetChangeOfEmployerChainResponse>(new GetChangeOfEmployerChainRequest(apprenticeship.Id));
         var overlappingTrainingDateResponseTask = apiClient.GetWithResponseCode<GetOverlappingTrainingDateResponse>(new GetOverlappingTrainingDateRequest(apprenticeship.Id));
         var deliveryModelTask = deliveryModelService.GetDeliveryModels(apprenticeship.ProviderId, apprenticeship.CourseCode, apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
-        var pendingPriceChangeTask = apprenticeshipsApiClient.GetWithResponseCode<GetPendingPriceChangeResponse>(new GetPendingPriceChangeRequest(apprenticeshipKey.Body));
         var canActualStartDateBeChangedTask = CanActualStartDateBeChanged(apprenticeship.ActualStartDate);
-        var pendingStartDateChangeTask = apprenticeshipsApiClient.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(new GetPendingStartDateChangeRequest(apprenticeshipKey.Body));
-        var paymentStatusTask = apprenticeshipsApiClient.GetWithResponseCode<GetPaymentStatusApiResponse>(new GetPaymentStatusRequest(apprenticeshipKey.Body));
-        var learnerStatusTask = apprenticeshipsApiClient.GetWithResponseCode<GetLearnerStatusResponse>(new GetLearnerStatusRequest(apprenticeshipKey.Body));
 
-        await Task.WhenAll(priceEpisodesResponseTask,
+        await Task.WhenAll(
+            priceEpisodesResponseTask,
             apprenticeshipUpdatesResponseTask,
             apprenticeshipDataLockStatusResponseTask,
             changeOfPartyRequestsResponseTask,
@@ -84,11 +101,8 @@ public class GetManageApprenticeshipDetailsQueryHandler(
             changeOfEmployerChainResponseTask,
             overlappingTrainingDateResponseTask,
             deliveryModelTask,
-            pendingPriceChangeTask,
-            canActualStartDateBeChangedTask,
-            pendingStartDateChangeTask,
-            paymentStatusTask,
-            learnerStatusTask);
+            canActualStartDateBeChangedTask
+        );
 
         var priceEpisodesResponse = priceEpisodesResponseTask.Result;
         var apprenticeshipUpdatesResponse = apprenticeshipUpdatesResponseTask.Result;
@@ -98,11 +112,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         var changeOfEmployerChainResponse = changeOfEmployerChainResponseTask.Result;
         var overlappingTrainingDateResponse = overlappingTrainingDateResponseTask.Result;
         var deliveryModel = deliveryModelTask.Result;
-        var pendingPriceChangeResponse = pendingPriceChangeTask.Result;
         var canActualStartDateBeChanged = canActualStartDateBeChangedTask.Result;
-        var pendingStartDateResponse = pendingStartDateChangeTask.Result;
-        var paymentStatusResponse = paymentStatusTask.Result;
-        var learnerStatusResponse = learnerStatusTask.Result;
 
         var result = new GetManageApprenticeshipDetailsQueryResult();
         
@@ -115,50 +125,52 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         result.ChangeOfEmployerChain = changeOfEmployerChainResponse.Body?.ChangeOfEmployerChain;
         result.OverlappingTrainingDateRequest = overlappingTrainingDateResponse.Body?.OverlappingTrainingDateRequest;
         result.HasMultipleDeliveryModelOptions = deliveryModel?.Count > 1;
-        result.PendingPriceChange = ToResponse(pendingPriceChangeResponse.Body);
         result.CanActualStartDateBeChanged = canActualStartDateBeChanged;
-        result.PendingStartDateChange = ToResponse(pendingStartDateResponse.Body);
-        result.PaymentsStatus = ToResponse(paymentStatusResponse.Body);
-        result.LearnerStatusDetails = ToResponse(learnerStatusResponse.Body);
+        result.PendingPriceChange = pendingPriceChangeResponse == null ? null : ToResponse(pendingPriceChangeResponse.Body);
+        result.PendingStartDateChange = pendingStartDateResponse == null ? null : ToResponse(pendingStartDateResponse.Body);
+        result.PaymentsStatus = ToResponse(paymentStatusResponse?.Body);
+        result.LearnerStatusDetails = ToResponse(learnerStatusResponse?.Body);
 
         return result;
     }
 
     private static PendingPriceChange ToResponse(GetPendingPriceChangeResponse pendingPriceChangeResponse)
     {
-        if (pendingPriceChangeResponse == null || !pendingPriceChangeResponse.HasPendingPriceChange)
+        if (pendingPriceChangeResponse is not { HasPendingPriceChange: true })
         {
             return null;
         }
 
-        var pendingPriceChange = new PendingPriceChange();
-           
-        pendingPriceChange.Cost = pendingPriceChangeResponse.PendingPriceChange.PendingTotalPrice;
-        pendingPriceChange.EndPointAssessmentPrice = pendingPriceChangeResponse.PendingPriceChange.PendingAssessmentPrice;
-        pendingPriceChange.TrainingPrice = pendingPriceChangeResponse.PendingPriceChange.PendingTrainingPrice;
-        pendingPriceChange.ProviderApprovedDate = pendingPriceChangeResponse.PendingPriceChange.ProviderApprovedDate;
-        pendingPriceChange.EmployerApprovedDate = pendingPriceChangeResponse.PendingPriceChange.EmployerApprovedDate;
-        pendingPriceChange.Initiator = pendingPriceChangeResponse.PendingPriceChange.Initiator;
+        var pendingPriceChange = new PendingPriceChange
+        {
+            Cost = pendingPriceChangeResponse.PendingPriceChange.PendingTotalPrice,
+            EndPointAssessmentPrice = pendingPriceChangeResponse.PendingPriceChange.PendingAssessmentPrice,
+            TrainingPrice = pendingPriceChangeResponse.PendingPriceChange.PendingTrainingPrice,
+            ProviderApprovedDate = pendingPriceChangeResponse.PendingPriceChange.ProviderApprovedDate,
+            EmployerApprovedDate = pendingPriceChangeResponse.PendingPriceChange.EmployerApprovedDate,
+            Initiator = pendingPriceChangeResponse.PendingPriceChange.Initiator
+        };
 
         return pendingPriceChange;
     }
 
     private static PendingStartDateChange ToResponse(GetPendingStartDateChangeApiResponse pendingStartDateChangeResponse)
     {
-        if (pendingStartDateChangeResponse == null || !pendingStartDateChangeResponse.HasPendingStartDateChange) return null;
+        if (pendingStartDateChangeResponse is not { HasPendingStartDateChange: true }) return null;
 
-        var pendingStartDateChange = new PendingStartDateChange();
-        
-        pendingStartDateChange.PendingActualStartDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingActualStartDate;
-        pendingStartDateChange.PendingPlannedEndDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingPlannedEndDate;
-        pendingStartDateChange.ProviderApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate;
-        pendingStartDateChange.EmployerApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate;
-        pendingStartDateChange.Initiator = pendingStartDateChangeResponse.PendingStartDateChange.Initiator;
+        var pendingStartDateChange = new PendingStartDateChange
+        {
+            PendingActualStartDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingActualStartDate,
+            PendingPlannedEndDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingPlannedEndDate,
+            ProviderApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate,
+            EmployerApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate,
+            Initiator = pendingStartDateChangeResponse.PendingStartDateChange.Initiator
+        };
 
         return pendingStartDateChange;
     }
 
-    private PaymentsStatus ToResponse(GetPaymentStatusApiResponse source)
+    private static PaymentsStatus ToResponse(GetPaymentStatusApiResponse source)
     {
         if (source == null) return new PaymentsStatus { PaymentsFrozen = false };
 
