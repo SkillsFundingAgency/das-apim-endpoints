@@ -34,6 +34,7 @@ public class GetQualificationDetailsQueryResponse
     public DateTime? OperationalEndDate { get; set; }
     public DateTime? CertificationEndDate { get; set; }
     public DateTime? ReviewDate { get; set; }
+    public DateTime? InsertedTimestamp { get; set; }
     public bool OfferedInEngland { get; set; }
     public bool OfferedInNi { get; set; }
     public bool? OfferedInternationally { get; set; }
