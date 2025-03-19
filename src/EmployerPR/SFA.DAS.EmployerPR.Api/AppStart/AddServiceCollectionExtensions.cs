@@ -41,7 +41,7 @@ public static class AddServiceCollectionExtensions
     {
         services.AddHttpClient();
 
-        services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
