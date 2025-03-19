@@ -1,0 +1,6 @@
+@SFA.DAS.LearnerDataJobs.Api_HostAddress = http://localhost:5062
+
+GET {{SFA.DAS.LearnerDataJobs.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
