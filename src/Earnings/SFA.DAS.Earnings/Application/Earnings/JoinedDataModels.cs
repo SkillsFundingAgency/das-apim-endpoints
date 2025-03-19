@@ -52,7 +52,7 @@ public class JoinedEarningsApprenticeship
                 
                 if(earningEpisode == null)
                 {
-                    earningEpisode = ReallyNastyMethodThatShouldNotExistButIsRequiredAsExistingEarningsDataDoesNotRecordEpisodePriceKey(earningsApprenticeship, apprenticeshipEpisodePrice);
+                    earningEpisode = ResolveLegacyEpisodes(earningsApprenticeship, apprenticeshipEpisodePrice);
                 }
 
                 var joinedEpisode = new JoinedPriceEpisode(apprenticeshipEpisode, apprenticeshipEpisodePrice, earningEpisode);
@@ -66,7 +66,7 @@ public class JoinedEarningsApprenticeship
     }
 
     // This beautiful method can be deleted once all Instalment records in the earnings database have the EpisodePriceKey populated
-    private static EarningsEpisode ReallyNastyMethodThatShouldNotExistButIsRequiredAsExistingEarningsDataDoesNotRecordEpisodePriceKey(EarningsApprenticeship earningsApprenticeship, EpisodePrice episodePrice)
+    private static EarningsEpisode ResolveLegacyEpisodes(EarningsApprenticeship earningsApprenticeship, EpisodePrice episodePrice)
     {
         return earningsApprenticeship.Episodes.Single(x => 
             x.Instalments.Any(y => 
@@ -175,11 +175,11 @@ public class JoinedPriceEpisode
             return matchingInstalments;
         }
 
-        return ReallyHorribleMethodToGetInstalmentsIfEpisodePriceKeyMissing(apprenticeshipEpisodePrice, instalments);
+        return ResolveLegacyInstalments(apprenticeshipEpisodePrice, instalments);
     }
 
     // This beautiful method can be deleted once all Instalment records in the earnings database have the EpisodePriceKey populated
-    private static List<JoinedInstalment> ReallyHorribleMethodToGetInstalmentsIfEpisodePriceKeyMissing(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments)
+    private static List<JoinedInstalment> ResolveLegacyInstalments(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments)
     {
         return instalments.Where(y =>
                 y.AcademicYear.GetDateTime(y.DeliveryPeriod) >= apprenticeshipEpisodePrice.StartDate &&
