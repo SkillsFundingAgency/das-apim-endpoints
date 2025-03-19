@@ -3,7 +3,7 @@
     public class GetNewQualificationsQueryResponse
     {
         public int TotalRecords { get; set; }
-        public int Skip { get; set; }
+        public int? Skip { get; set; }
         public int Take { get; set; }        
         public List<NewQualification> Data { get; set; } = new();
         public Job Job { get; set; } = new();

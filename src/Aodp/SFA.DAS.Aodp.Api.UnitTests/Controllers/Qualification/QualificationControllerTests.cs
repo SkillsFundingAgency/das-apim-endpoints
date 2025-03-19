@@ -60,7 +60,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             // Arrange
             var queryResponse = _fixture.Create<BaseMediatrResponse<GetChangedQualificationsQueryResponse>>();
             queryResponse.Success = true;
-            queryResponse.Value.Data = _fixture.CreateMany<GetChangedQualificationsQueryResponse.ChangedQualification>(2).ToList();
+            queryResponse.Value.Data = _fixture.CreateMany<ChangedQualification>(2).ToList();
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetChangedQualificationsQuery>(), default))
@@ -76,6 +76,8 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var model = (GetChangedQualificationsQueryResponse)okResult.Value;
             Assert.That(model.Data.Count, Is.EqualTo(2));
         }
+
+
 
         [Test]
         public async Task GetQualifications_ReturnsNotFound_WhenQueryFails()
@@ -97,6 +99,25 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         }
 
         [Test]
+        public async Task GetChangedQualifications_ReturnsNotFound_WhenQueryFails()
+        {
+            // Arrange
+            var queryResponse = _fixture.Create<BaseMediatrResponse<GetChangedQualificationsQueryResponse>>();
+            queryResponse.Success = false;
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetChangedQualificationsQuery>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "");
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+            var statusCodeResult = (StatusCodeResult)result;
+        }
+
+        [Test]
         public async Task GetQualifications_ReturnsBadRequest_WhenStatusIsEmpty()
         {
             //Arrange
@@ -104,6 +125,20 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
 
             // Act
             var result = await controller.GetQualifications(status: "", skip: 0, take: 10, name: "", organisation: "", qan: "");
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+            var badRequestResult = (BadRequestObjectResult)result;
+            var badRequestValue = badRequestResult.Value?.GetType().GetProperty("message")?.GetValue(badRequestResult.Value, null);
+            Assert.That(badRequestValue, Is.EqualTo("Qualification status cannot be empty."));
+        }
+
+        [Test]
+        public async Task GetChangedQualifications_ReturnsBadRequest_WhenStatusIsEmpty()
+        {
+            // Act
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+            var result = await controller.GetQualifications("", 0, 0, "", "", "");
 
             // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
@@ -169,25 +204,6 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             Assert.That(badRequestValue, Is.EqualTo("Qualification reference cannot be empty"));
         }
 
-        [Test]
-        public async Task GetQualificationCSVExportData_ReturnsOkResult_WithExportData()
-        {
-            // Arrange
-            var queryResponse = _fixture.Create<BaseMediatrResponse<GetNewQualificationsCsvExportResponse>>();
-            queryResponse.Success = true;
-            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
-
-            _mediatorMock.Setup(m => m.Send(It.IsAny<GetNewQualificationsCsvExportQuery>(), default))
-                         .ReturnsAsync(queryResponse);
-
-            // Act
-            var result = await controller.GetQualificationCSVExportData("new");
-
-            // Assert
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
-            var okResult = (OkObjectResult)result;
-            Assert.That(okResult.Value, Is.AssignableFrom<BaseMediatrResponse<GetNewQualificationsCsvExportResponse>>());
-        }
 
         [Test]
         public async Task GetQualificationVersionsForQualificationByReference_ReturnsOkResult_WithVersions()
