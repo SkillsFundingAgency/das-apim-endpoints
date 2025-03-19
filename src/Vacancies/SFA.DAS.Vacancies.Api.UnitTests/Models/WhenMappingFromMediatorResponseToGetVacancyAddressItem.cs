@@ -11,18 +11,20 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
         [Test, AutoData]
         public void Then_The_Values_Are_Mapped(GetVacanciesListItem source)
         {
-            var actual = (GetVacancyAddressItem)source;
+            // act
+            var actual = GetVacancyAddressItem.From(source.Address);
             
+            // assert
             actual.Should().BeEquivalentTo(source.Address);
         }
         
         [Test, AutoData]
         public void Then_Empty_Object_Returned_If_Null(GetVacanciesListItem source)
         {
-            source.Address = null;
+            // act
+            var actual = GetVacancyAddressItem.From(null);
             
-            var actual = (GetVacancyAddressItem)source;
-            
+            // assert
             actual.Should().BeEquivalentTo(new GetVacancyAddressItem());
         }
     }

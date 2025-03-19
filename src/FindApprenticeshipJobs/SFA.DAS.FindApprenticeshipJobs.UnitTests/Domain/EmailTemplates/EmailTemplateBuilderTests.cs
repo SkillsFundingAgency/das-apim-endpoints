@@ -3,6 +3,7 @@ using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
@@ -20,6 +21,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             List<string> categories = ["IT", "Engineering"];
             List<string> levels = ["Intermediate", "Advanced"];
             const bool disabilityConfident = true;
+            const bool excludeNational = false;
 
             const string expected = """
                                     
@@ -32,11 +34,41 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                                     """;
 
             // Act
-            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident);
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident, excludeNational);
 
             // Assert
             result.Trim().Should().BeEquivalentTo(expected.Trim());
         }
+
+        [Test]
+        public void GetSavedSearchSearchParams_When_ExcludeNational_True_ReturnsExpectedResult()
+        {
+            // Arrange
+            const string searchTerm = "Software Developer";
+            const int distance = 10;
+            const string location = "London";
+            List<string> categories = ["IT", "Engineering"];
+            List<string> levels = ["Intermediate", "Advanced"];
+            const bool disabilityConfident = true;
+            const bool excludeNational = true;
+
+            const string expected = """
+                                    
+                                    What: Software Developer
+                                    Where: London (within 10 miles) - hide companies recruiting nationally
+                                    Categories: IT, Engineering
+                                    Apprenticeship levels: Intermediate, Advanced
+                                    Only show Disability Confident apprenticeships
+                                    
+                                    """;
+
+            // Act
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident, excludeNational);
+
+            // Assert
+            result.Trim().Should().BeEquivalentTo(expected.Trim());
+        }
+
         [Test]
         public void GetSavedSearchSearchParams_WhenCalled_ReturnsExpectedResult_Across_All_Of_England()
         {
@@ -46,6 +78,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             List<string> categories = ["IT", "Engineering"];
             List<string> levels = ["Intermediate", "Advanced"];
             const bool disabilityConfident = true;
+            const bool excludeNational = false;
 
             const string expected = """
 
@@ -58,7 +91,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                                     """;
 
             // Act
-            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, null, location, categories, levels, disabilityConfident);
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, null, location, categories, levels, disabilityConfident, excludeNational);
 
             // Assert
             result.Trim().Should().BeEquivalentTo(expected.Trim());
@@ -74,6 +107,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             List<string> categories = ["IT", "Engineering"];
             List<string> levels = ["Intermediate", "Advanced"];
             const bool disabilityConfident = true;
+            const bool excludeNational = false;
 
             const string expected = """
 
@@ -86,7 +120,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                                     """;
 
             // Act
-            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident);
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident, excludeNational);
 
             // Assert
             result.Trim().Should().BeEquivalentTo(expected.Trim());
@@ -102,6 +136,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             List<string> categories = ["IT", "Engineering"];
             List<string> levels = ["Intermediate", "Advanced"];
             const bool disabilityConfident = true;
+            const bool excludeNational = false;
 
             const string expected = """
 
@@ -114,7 +149,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                                     """;
 
             // Act
-            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident);
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams(searchTerm, distance, location, categories, levels, disabilityConfident, excludeNational);
 
             // Assert
             result.Trim().Should().BeEquivalentTo(expected.Trim());
@@ -141,7 +176,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                 """;
 
             // Act
-            var result = EmailTemplateBuilder.GetSavedSearchSearchParams("Software Developer", distance, location, ["IT", "Engineering"], ["Intermediate", "Advanced"], true);
+            var result = EmailTemplateBuilder.GetSavedSearchSearchParams("Software Developer", distance, location, ["IT", "Engineering"], ["Intermediate", "Advanced"], true, false);
 
             // Assert
             result.Trim().Should().BeEquivalentTo(expected);
@@ -157,18 +192,19 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
             List<string> categoryIds = ["1", "2", "3"];
             List<string> levelCodes = ["4", "5"];
             const bool disabilityConfident = true;
+            const bool excludeNational = true;
 
-            const string expectedQueryParameters = "&searchTerm=software developer&location=London&distance=10&routeIds=1&routeIds=2&routeIds=3&levelIds=4&levelIds=5&DisabilityConfident=true";
+            const string expectedQueryParameters = "&searchTerm=software developer&location=London&distance=10&routeIds=1&routeIds=2&routeIds=3&levelIds=4&levelIds=5&DisabilityConfident=true&excludeNational=true";
 
             // Act
-            var queryParameters = EmailTemplateBuilder.GetSavedSearchUrl(searchTerm, distance, location, categoryIds, levelCodes, disabilityConfident);
+            var queryParameters = EmailTemplateBuilder.GetSavedSearchUrl(searchTerm, distance, location, categoryIds, levelCodes, disabilityConfident, excludeNational);
 
             // Assert
             queryParameters.Should().Be(expectedQueryParameters);
         }
 
         [Test]
-        public void GetSavedSearchVacanciesSnippet_Should_Return_Correct_Snippet()
+        public void GetSavedSearchVacanciesSnippet_Then_Source_RAA_Should_Return_Correct_Snippet()
         {
             // Arrange
             var environmentHelper = new EmailEnvironmentHelper("test")
@@ -192,7 +228,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                     TrainingCourse = "Software Engineering",
                     Wage = "£30,000 a year",
                     ClosingDate = "2022-12-31",
-                    VacancySource = "FAA"
+                    StartDate = "2025-03-01",
+                    VacancySource = nameof(VacancyDataSource.Raa)
                 }
             };
 
@@ -203,7 +240,61 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates
                                            123 Main St (12345)
 
                                            * Distance: 10 miles
+                                           * Start date: 2025-03-01
                                            * Training course: Software Engineering
+                                           * Wage: £30,000 a year
+
+                                           2022-12-31
+
+                                           ---
+
+                                           """;
+
+            // Act
+            var snippet = EmailTemplateBuilder.GetSavedSearchVacanciesSnippet(environmentHelper, vacancies, true);
+
+            // Assert
+            snippet.Should().Be(expectedSnippet);
+        }
+
+        [Test]
+        public void GetSavedSearchVacanciesSnippet_Then_Source_NHS_Should_Return_Correct_Snippet()
+        {
+            // Arrange
+            var environmentHelper = new EmailEnvironmentHelper("test")
+            {
+                VacancyDetailsUrl = "https://example.com/vacancy/{vacancy-reference}"
+            };
+
+            var vacancies = new List<PostSendSavedSearchNotificationCommand.Vacancy>
+            {
+                new()
+                {
+                    Title = "Software Developer",
+                    VacancyReference = "12345",
+                    EmployerName = "ABC Company",
+                    EmployerLocation = new Address
+                    {
+                        AddressLine1 = "123 Main St",
+                        Postcode = "12345"
+                    },
+                    Distance = 10,
+                    TrainingCourse = "Software Engineering",
+                    Wage = "£30,000 a year",
+                    ClosingDate = "2022-12-31",
+                    StartDate = "0001-01-01",
+                    VacancySource = nameof(VacancyDataSource.Nhs)
+                }
+            };
+
+            const string expectedSnippet = """
+
+                                           #[Software Developer (from NHS Jobs)](https://example.com/vacancy/12345)
+                                           ABC Company
+                                           123 Main St (12345)
+
+                                           * Distance: 10 miles
+                                           * Training course: See more details on NHS Jobs
                                            * Wage: £30,000 a year
 
                                            2022-12-31
