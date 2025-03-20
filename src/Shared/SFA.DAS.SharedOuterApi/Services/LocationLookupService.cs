@@ -103,7 +103,7 @@ public class LocationLookupService : ILocationLookupService
 
     public async Task<GetAddressesListResponse> GetExactMatchAddresses(string fullPostcode)
     {
-        if (!Regex.IsMatch(fullPostcode, PostcodeRegex))
+        if (!Regex.IsMatch(fullPostcode, PostcodeRegex, RegexOptions.None, TimeSpan.FromMilliseconds(500)))
         {
             return null;
         }
