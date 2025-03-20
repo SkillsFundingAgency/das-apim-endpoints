@@ -83,11 +83,11 @@ public class RoutesController : BaseController
     [HttpDelete("/api/routes/forms/{formVersionId}/sections/{sectionId}/pages/{pageId}/questions/{questionId}")]
     [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> DeleteRouteAsync(Guid formVersionid, Guid sectionId, Guid pageId, Guid questionId)
+    public async Task<IActionResult> DeleteRouteAsync(Guid formVersionId, Guid sectionId, Guid pageId, Guid questionId)
     {
         return await SendRequestAsync(new DeleteRouteCommand()
         {
-            FormVersionId = formVersionid,
+            FormVersionId = formVersionId,
             SectionId = sectionId,
             PageId = pageId,
             QuestionId = questionId
