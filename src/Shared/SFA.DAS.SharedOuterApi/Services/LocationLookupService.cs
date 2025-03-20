@@ -23,6 +23,8 @@ public class LocationLookupService : ILocationLookupService
 
     public const int LocationItemCacheExpirationInHours = 1;
 
+    private TimeSpan RegexTimeOut = TimeSpan.FromMilliseconds(500);
+
     public LocationLookupService(ILocationApiClient<LocationApiConfiguration> locationApiClient, ICacheStorageService cacheStorageService)
     {
         _locationApiClient = locationApiClient;
@@ -50,13 +52,13 @@ public class LocationLookupService : ILocationLookupService
 
         GetLocationsListItem getLocationsListItem  = null;
         
-        if (Regex.IsMatch(location, PostcodeRegex))
+        if (Regex.IsMatch(location, PostcodeRegex, RegexOptions.None, RegexTimeOut))
         {
             getLocationsListItem =  await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcodeRequest(location));
             getLocationsListItem.IncludeDistrictNameInPostcodeDisplayName = includeDistrictNameInPostcodeDisplayName;
             location = getLocationsListItem.DisplayName;
         }
-        else if (Regex.IsMatch(location, OutcodeDistrictRegex))
+        else if (Regex.IsMatch(location, OutcodeDistrictRegex, RegexOptions.None, RegexTimeOut))
         {
             getLocationsListItem = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByOutcodeAndDistrictRequest(location.Split(' ').FirstOrDefault()));
             if (getLocationsListItem.Location != null)
@@ -64,7 +66,7 @@ public class LocationLookupService : ILocationLookupService
                 location = getLocationsListItem.DisplayName;
             }
         }
-        else if(Regex.IsMatch(location, OutcodeRegex))
+        else if(Regex.IsMatch(location, OutcodeRegex, RegexOptions.None, RegexTimeOut))
         {
             getLocationsListItem = await _locationApiClient.Get<GetLocationsListItem>(new GetLocationByOutcodeRequest(location));
         }
@@ -103,7 +105,7 @@ public class LocationLookupService : ILocationLookupService
 
     public async Task<GetAddressesListResponse> GetExactMatchAddresses(string fullPostcode)
     {
-        if (!Regex.IsMatch(fullPostcode, PostcodeRegex, RegexOptions.None, TimeSpan.FromMilliseconds(500)))
+        if (!Regex.IsMatch(fullPostcode, PostcodeRegex, RegexOptions.None, RegexTimeOut))
         {
             return null;
         }
